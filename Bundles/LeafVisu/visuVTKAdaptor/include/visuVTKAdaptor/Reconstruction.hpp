@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,8 +34,14 @@ public:
 
     VISUVTKADAPTOR_API void setForceHide(bool hide);
 
+    /// Set underlying actor visible or not
+    VISUVTKADAPTOR_API void setVisibility(bool visible);
+
     /// Active/Inactive automatic reset on camera for triangular mesh adaptor. By default =true.
     VISUVTKADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
+
+    /// Retrieve a weak_ptr on underlying mesh adaptor service
+    ::fwRenderVTK::IVtkAdaptorService::wptr getMeshService() const { return m_meshService; }
 
 protected:
 

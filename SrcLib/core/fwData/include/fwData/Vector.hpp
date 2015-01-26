@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_VECTOR_HPP_
-#define _FWDATA_VECTOR_HPP_
+#ifndef __FWDATA_VECTOR_HPP__
+#define __FWDATA_VECTOR_HPP__
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
@@ -23,15 +23,10 @@ namespace fwData
 {
 
 /**
- * @class   Vector
- * @brief   This class defines a vector of objects.
+ * @brief This class defines a vector of objects.
  *
  * Vector contains a vector of ::fwData::Object.
- *
- * 
- * @date    2007-2009.
  */
-
 class FWDATA_CLASS_API Vector : public Object
 {
 
@@ -140,7 +135,8 @@ protected:
 
     ContainerType m_attrContainer;
 };
+
 } //namespace fwData
 
-#endif /* _FWDATA_VECTOR_HPP_ */
+#endif /* __FWDATA_VECTOR_HPP__ */
 

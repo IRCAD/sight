@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,19 +29,27 @@ namespace fwActivities
 namespace ut
 {
 
+struct ActivityRegistryTestPimpl
+{
+public:
+    SPTR(::fwRuntime::Bundle) bundle;
+    ::fwActivities::registry::Activities::sptr activities;
+};
+
 //------------------------------------------------------------------------------
 
 void ActivityRegistryTest::setUp()
 {
+    m_pimpl = ::boost::make_shared< ActivityRegistryTestPimpl >();
 
     ::boost::filesystem::path plugin = "share/tu_exec_fwActivities_0-0/tu_registry";
-    m_bundle = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
+    m_pimpl->bundle = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
 
-    m_activities = fwActivities::registry::Activities::New();
+    m_pimpl->activities = fwActivities::registry::Activities::New();
 
-    ::fwRuntime::Bundle::ExtensionContainer extensionsSet( m_bundle->extensionsBegin(), m_bundle->extensionsEnd());
+    ::fwRuntime::Bundle::ExtensionContainer extensionsSet( m_pimpl->bundle->extensionsBegin(), m_pimpl->bundle->extensionsEnd());
     std::vector< SPTR( ::fwRuntime::Extension ) > extensions(extensionsSet.begin(), extensionsSet.end());
-    m_activities->parseBundleInformation(extensions);
+    m_pimpl->activities->parseBundleInformation(extensions);
 
     CPPUNIT_ASSERT_EQUAL( size_t(8) , extensions.size());
 
@@ -53,7 +61,7 @@ void ActivityRegistryTest::setUp()
 void ActivityRegistryTest::tearDown()
 {
     // Clean up after the test run.
-    m_bundle.reset();
+    m_pimpl.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -75,7 +83,7 @@ void ActivityRegistryTest::registryTest()
 
     // 1 image
     v->getContainer().push_back( ::fwData::Image::New() );
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(4), activities.size() );
@@ -87,7 +95,7 @@ void ActivityRegistryTest::registryTest()
 
     // 2 images
     v->getContainer().push_back( ::fwData::Image::New() );
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(3), activities.size() );
@@ -97,7 +105,7 @@ void ActivityRegistryTest::registryTest()
 
     // 3 images
     v->getContainer().push_back( ::fwData::Image::New() );
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(1), activities.size() );
@@ -105,7 +113,7 @@ void ActivityRegistryTest::registryTest()
 
     // 4 images
     v->getContainer().push_back( ::fwData::Image::New() );
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
@@ -114,7 +122,7 @@ void ActivityRegistryTest::registryTest()
 
     // 5 images
     v->getContainer().push_back( ::fwData::Image::New() );
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
@@ -123,7 +131,7 @@ void ActivityRegistryTest::registryTest()
 
     // 6 images
     v->getContainer().push_back( ::fwData::Image::New() );
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
@@ -132,7 +140,7 @@ void ActivityRegistryTest::registryTest()
 
     // 7 images
     v->getContainer().push_back( ::fwData::Image::New() );
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
@@ -141,7 +149,7 @@ void ActivityRegistryTest::registryTest()
 
     // 8 images
     v->getContainer().push_back( ::fwData::Image::New() );
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
@@ -150,7 +158,7 @@ void ActivityRegistryTest::registryTest()
 
     // 9 images
     v->getContainer().push_back( ::fwData::Image::New() );
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(1), activities.size() );
@@ -158,7 +166,7 @@ void ActivityRegistryTest::registryTest()
 
     // 9 images, 1 mesh
     v->getContainer().push_back( ::fwData::Mesh::New() );
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(0), activities.size() );
@@ -168,7 +176,7 @@ void ActivityRegistryTest::registryTest()
     v->getContainer().push_back( ::fwData::Image::New() );
     v->getContainer().push_back( ::fwData::Mesh::New() );
 
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(2), activities.size() );
@@ -180,7 +188,7 @@ void ActivityRegistryTest::registryTest()
     v->getContainer().push_back( ::fwMedData::ImageSeries::New() );
     v->getContainer().push_back( ::fwMedData::ModelSeries::New() );
 
-    activities = m_activities->getInfos(v);
+    activities = m_pimpl->activities->getInfos(v);
     std::sort(activities.begin(), activities.end(), activities_less_than_key());
 
     CPPUNIT_ASSERT_EQUAL( size_t(1), activities.size() );

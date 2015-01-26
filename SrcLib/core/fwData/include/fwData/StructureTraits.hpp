@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,10 +17,7 @@ fwCampAutoDeclareDataMacro((fwData)(StructureTraits), FWDATA_API);
 namespace fwData
 {
 /**
- * @class   StructureTraits
- * @brief   This class defines structure traits.
- * 
- * @date    2007-2011.
+ * @brief This class defines structure traits.
  *
  * A structure traits contains :
  *  - [required] a type (ie. Skin, Liver, ...)
@@ -137,3 +134,4 @@ private:
 } // namespace fwData
 
 #endif // __FWDATA_STRUCTURETRAITS_HPP__
+

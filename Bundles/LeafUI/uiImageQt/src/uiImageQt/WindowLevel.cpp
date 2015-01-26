@@ -256,29 +256,7 @@ void WindowLevel::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTool
 
     if (msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
     {
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-
-        bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-        if (imageIsValid)
-        {
-            this->updateImageInfos(image);
-            this->updateTransferFunction(image, this->getSptr());
-
-
-            if(m_autoWindowing)
-            {
-                double min, max;
-                ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-                this->updateImageWindowLevel(min, max);
-            }
-
-            ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
-            SLM_ASSERT("TransferFunction null pointer", pTF);
-            ::fwData::TransferFunction::TFValuePairType minMax = pTF->getWLMinMax();
-            this->onImageWindowLevelChanged( minMax.first, minMax.second );
-        }
-        this->setEnabled(imageIsValid);
-
+        this->updating();
     }
     if (msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ))
     {

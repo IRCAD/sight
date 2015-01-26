@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,22 +7,23 @@
 #ifndef _VISUVTKADAPTOR_MATERIAL_HPP_
 #define _VISUVTKADAPTOR_MATERIAL_HPP_
 
-
-#include <fwServices/ObjectMsg.hpp>
-
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwServices/ObjectMsg.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
 
 
 class VISUVTKADAPTOR_CLASS_API vtkProperty;
 
+fwCorePredeclare( (fwData)(Material) )
 
 namespace visuVTKAdaptor
 {
 
 
-
+/**
+* @brief Manage material representation of meshes
+*/
 class VISUVTKADAPTOR_CLASS_API Material: public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -44,10 +45,10 @@ protected:
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-   VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-   VISUVTKADAPTOR_API void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
-    void updateMaterial( ::fwData::Material::sptr material );
+    void updateMaterial( SPTR(::fwData::Material) material );
 
 
     vtkProperty *m_property;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -158,7 +158,7 @@ void PlaneSelectionNotifier::doReceive( ::fwServices::ObjectMsg::csptr msg) thro
         ::fwData::PlaneList::sptr planeList = ::fwData::PlaneList::dynamicCast(planeListMsg->getSubject().lock());
         SLM_ASSERT("Messsage's subject should be a PlaneList", planeList);
         bool showPlanes;
-        showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true));
+        showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
 
         if(!planeList->getRefPlanes().empty())
         {

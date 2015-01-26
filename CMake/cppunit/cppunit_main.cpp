@@ -279,7 +279,7 @@ int main( int argc, char* argv[] )
         }
     }
 
-    // Print test in a compiler compatible format.
+    // Print test results in a compiler compatible format.
     CPPUNIT_NS::CompilerOutputter outputter( &result, std::cerr );
     outputter.write();
 
@@ -289,6 +289,11 @@ int main( int argc, char* argv[] )
         CPPUNIT_NS::XmlOutputter xml( &result, file );
         xml.write();
         file.close();
+    }
+
+    if (result.testFailuresTotal())
+    {
+        return 1;
     }
 
     return 0;

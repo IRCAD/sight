@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_INTERACTIONMSG_HPP_
-#define _FWCOMED_INTERACTIONMSG_HPP_
+#ifndef __FWCOMED_INTERACTIONMSG_HPP__
+#define __FWCOMED_INTERACTIONMSG_HPP__
+
+#include <fwCore/HiResClock.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwData/Integer.hpp>
@@ -23,7 +25,6 @@ namespace fwComEd
  * @brief   Object event message specialized for interaction : store modification information
  * @class   InteractionMsg
  * 
- * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API InteractionMsg : public ::fwServices::ObjectMsg
@@ -121,6 +122,11 @@ public:
     /// Return the point coordinates of the event.
     FWCOMED_API ::fwData::Point::csptr getEventPoint() const;
 
+    /// Sets the event timestamp
+    FWCOMED_API void setEventTimestamp(::fwCore::HiResClock::HiResClockType timestamp);
+    /// Gets the event timestamp
+    FWCOMED_API ::fwCore::HiResClock::HiResClockType getEventTimestamp() const;
+
 protected:
 
     /// Event point coordinates
@@ -129,10 +135,12 @@ protected:
     /// Modifiers status
     unsigned char m_modifiersStatus;
 
+    /// Event timestamp
+    ::fwCore::HiResClock::HiResClockType m_eventTimestamp;
 
 };
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_INTERACTIONMSG_HPP_
+#endif //__FWCOMED_INTERACTIONMSG_HPP__
 

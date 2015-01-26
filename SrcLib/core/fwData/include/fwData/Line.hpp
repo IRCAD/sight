@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_LINE_HPP_
-#define _FWDATA_LINE_HPP_
+#ifndef __FWDATA_LINE_HPP__
+#define __FWDATA_LINE_HPP__
 
 #include <vector>
 #include <utility>
@@ -20,11 +20,7 @@ fwCampAutoDeclareDataMacro((fwData)(Line), FWDATA_API);
 namespace fwData
 {
 /**
- * @class   Line
- * @brief   This class defines a Line defined by two points.
- * @see     ::fwData::Line
- * 
- * @date    2007-2009.
+ * @brief This class defines a Line defined by two points.
  */
 class FWDATA_CLASS_API Line : public Object
 {
@@ -63,8 +59,9 @@ protected :
     ::fwData::Point::sptr m_position;
     ::fwData::Point::sptr m_direction;
 
-}; // end class Line
+}; // class Line
 
-} // end namespace fwData
+} // namespace fwData
 
-#endif // _FWDATA_LINE_HPP_
+#endif // __FWDATA_LINE_HPP__
+

@@ -148,6 +148,9 @@ void ConversionTest::dataToAtomTest()
                             ( ( classname == "::fwData::Mesh" ) && ( attribute == "cell_normals" ) ) ||
                             ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_colors" ) ) ||
                             ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_normals" ) ) ||
+                            ( ( classname == "::fwData::Mesh" ) && ( attribute == "cell_tex_coords" ) ) ||
+                            ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_tex_coords" ) ) ||
+                            ( ( classname == "::fwData::Material" ) && ( attribute == "diffuse_texture" ) ) ||
                             ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "image" ) ) ||
                             ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "mesh" ) ) )
                     {

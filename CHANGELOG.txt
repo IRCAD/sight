@@ -1,3 +1,100 @@
+=== fw4spl_0.9.2.3 ( diff from fw4spl_0.9.2.2 ) 10/09/2014 ===
+
+ * Transplanted from fw4spl_0.10.0:
+  * Removed all services working on deprecated data PatientDB
+  * Removed ARLcore dependency in uiMeasurement : load/save landmarks with ioAtoms
+  * Moved Examples, POC and Training to fw4spl-ext repository
+  * Fixed AppConfig::getUniqueIdentifier()
+  * Fixed wrong warning in PushObjectSrv.
+  * Fixed gui doxygen (menuBar and toolBar)
+  * Removed useless notify in TransferFunctionEditor::initTransferFunctions()
+
+ * General:
+  * Updated fwAtomsPatch and spyLogger according to Bost 1.54
+  * Removed author field in doxygen
+  * Fixed Mac OS issue with Qt (QTBUG-32789)
+  * Fixed ProfileRunner for Mac OS
+  * Fixed guiQt, SliceCursor and WindowLevel memory leak
+  * Moved gdcmIO, ioGdcm and ioGdcmQt to FW4SPL-ext
+  * Added CMakeLists
+  * Removed useless SelectedNodeIOUpdater service
+
+ * Core:
+  * Added getConfigDesc in fwServices
+  * Fixed timer asio one shot
+  * Changed SigSevBacktrace log level to ERROR
+  * Fixed PushObjectSrv
+  * Added 'launched' signal to ConfigActionSrv and SConfigLauncher
+  * Added 'updated' signal on Graph and Node
+  * Optimized Graph route
+  * Added SSignal service
+  * Updated template arguments to manage five parameters in fwCom
+  * Fixed fwRuntime compilation on Linux
+  * Added support of ! operator in seshat path (returns a string pointed by the seshat path if possible, the uid otherwise)
+  * Allowed empty string in XML <parameter> default value.
+
+ * Memory dump system
+  * Set default streamFactory when buffer's streamFactory was never explicitly set
+  * Fixed buffer lock and buffer streams
+  * Fixed an issue due to some implementations returning a non-NULL pointer for malloc(0) in buffer allocation
+  * Fixed BufferManager and StructureTraits binding
+  * Added getTemporaryFolder in System
+
+ * IO:
+  * Fixed fwData::Array initialization in vtkGdcmIO/fwVtkIO SeriesDB reader
+  * Fixed zipped json/xml loading
+  * Updated ioAtoms to be able to overwrite a lazy-loaded file
+  * Added custom extensions ability in ioAtoms
+  * Fixed atom custom extension when using JSON/XML backends
+
+ * UI:
+  * Added a way to configure button state
+  * Fixed relative URLs in uiGenericQt::action::LaunchBrowserActionService
+  * Updated IOSelector to display config's description if applicable
+  * Fixed compilation of DataInfoFromMsgUpdaterSrv
+  * Updated SExportSeries to use an existing activity description or physician name
+  * Added ability to pass parameters in config
+  * Updated Qt MessageDialog to manage a default button
+  * Added several editors and services to propose a new export config
+  * Set SShowAbout to modal
+
+ * Tools:
+  * Added fwDataTools::TransformationMatrix3D to manipulate ::fwData::TransformationMatrix3D
+  * Removed useless dimension check for medical images
+  * Added lib fwMedDataTools to manage fwMedData UID
+
+ * Visu:
+  * Added autoRender option in genericScene
+  * Added ability of hidding cropping box by default in visuVTKVRAdaptor::Volume
+  * Added locks in VTK adaptors
+  * Updated VTK text adaptor to manage Seshat path, text alignment and font size
+  * Added patient name in all generic scene.
+
+ * Patch system:
+  * Fixed fatal when visiting enum object in ::fwDataCamp::visitor::getObject class.
+  * Added medical workspace filtering for MedicalData V2 context
+  * Added ImageSeries and ActivitySeries to fwStructuralPatch
+  * Added resection patching in MedicalData V2 context
+
+ * Activities:
+  * Added activity validator concept to fwActivites
+  * Added image properties validator
+  * Added new option for SActivityLauncher to define a default association
+  * Made activity launch cancelable
+  * Added a new validator for authorizing activity launching with several series from the same study
+  * Added seshat path ability in activity launcher
+
+ * UT:
+  * Fixed several compilation issues (b4be6561e715 and 20ff6c2d0cda)
+  * Fixed working directory
+
+ * Software:
+  * Updated VRRender activities:
+   * 3DVisualisationActivity
+   * blendActivity
+   * volumeRenderingActivity
+
+
 === fw4spl_0.9.2.2 ( diff from fw4spl_0.9.2.1 ) 20/06/2013 ===
  
  * Transplanted from fw4spl_0.9.1.4.:

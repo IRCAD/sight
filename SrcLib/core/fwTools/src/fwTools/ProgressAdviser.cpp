@@ -6,7 +6,8 @@
 
 #include "fwTools/ProgressAdviser.hpp"
 
-namespace fwTools {
+namespace fwTools
+{
 
 ProgressAdviser::ProgressAdviser()
 {}
@@ -20,9 +21,9 @@ void ProgressAdviser::addHandler(const ProgessHandler &handler)
     m_progressSignal.connect(handler);
 }
 
-void ProgressAdviser::notifyProgress(float percent, std::string msg)
+void ProgressAdviser::notifyProgress(float percent, const std::string& msg) const
 {
-    m_progressSignal(percent,msg);
+    m_progressSignal(percent, msg);
 }
 
 }

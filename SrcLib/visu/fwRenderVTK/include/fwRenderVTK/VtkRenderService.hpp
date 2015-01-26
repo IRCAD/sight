@@ -10,6 +10,8 @@
 
 #include <map>
 
+#include <fwServices/helper/SigSlotConnection.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwRender/IRender.hpp>
@@ -72,6 +74,9 @@ public :
     /// Returns the vtkObject with the given id
     FWRENDERVTK_API vtkObject * getVtkObject(VtkObjectIdType objectId);
 
+    /// Returns the adaptor with the given id
+    FWRENDERVTK_API SPTR (IVtkAdaptorService) getAdaptor(AdaptorIdType adaptorId);
+
     bool getPendingRenderRequest(){return m_pendingRenderRequest;}
     void setPendingRenderRequest(bool b){m_pendingRenderRequest=b;}
 
@@ -101,6 +106,11 @@ protected:
             <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
                 <config ...... />
             </adaptor>
+
+            <connect>
+                <signal>adaptorUID/objectModified</signal>
+                <slot>serviceUid/updateTM</slot>
+            </connect>
         </scene>
     </service> 
        @endverbatim
@@ -126,6 +136,9 @@ protected:
      *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used 
      *     when the adaptor works on the scene's composite.
      *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
+     *  - \b connect : not mandatory, connects signal to slot
+     *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name
+     *    - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
      */
     FWRENDERVTK_API virtual void configuring() throw( ::fwTools::Failed) ;
 
@@ -191,6 +204,8 @@ private :
     void configureObject   ( ConfigurationType conf );
     void configureVtkObject( ConfigurationType conf );
     vtkTransform * createVtkTransform( ConfigurationType conf );
+
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
 };
 
 }

@@ -1,3 +1,4 @@
+fwEnableCpp11(${FWPROJECT_NAME})
 fwLoadProperties()
 fwUseForwardInclude(
     fwCom
@@ -19,5 +20,6 @@ fwLink(
     ${Boost_LIBRARIES} 
     vtkInteractionWidgets
     vtkInteractionStyle
+    vtkFiltersTexture
     )
 

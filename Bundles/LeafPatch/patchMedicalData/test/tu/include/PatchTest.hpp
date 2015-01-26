@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,18 +8,6 @@
 #define __PATCHMEDICALDATA_TEST_TU_PATCHTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
-
-#include <fwRuntime/EConfigurationElement.hpp>
-
-namespace fwData
-{
-    class Object;
-}
-
-namespace fwRuntime
-{
-    class EConfigurationElement;
-}
 
 namespace patchMedicalData
 {

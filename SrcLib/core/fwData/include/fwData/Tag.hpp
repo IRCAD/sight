@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_TAG_HPP_
-#define _FWDATA_TAG_HPP_
+#ifndef __FWDATA_TAG_HPP__
+#define __FWDATA_TAG_HPP__
 
 
 #include <vector>
@@ -19,13 +19,10 @@ fwCampAutoDeclareDataMacro((fwData)(Tag), FWDATA_API);
 
 namespace fwData
 {
+
 /**
- * @class   Tag
- * @brief   This class represent a tag. A tag contains a list of points.
- *
+ * @brief This class represent a tag. A tag contains a list of points.
  * @see ::fwData::PointList
- * 
- * @date    2007-2009.
  */
 class FWDATA_CLASS_API Tag : public Object
 {
@@ -73,4 +70,5 @@ protected :
 } // end namespace fwData
 
 
-#endif // _FWDATA_TAG_HPP_
+#endif // __FWDATA_TAG_HPP__
+

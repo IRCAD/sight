@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_TRANSFERFUNCTION_HPP_
-#define _FWDATA_TRANSFERFUNCTION_HPP_
+#ifndef __FWDATA_TRANSFERFUNCTION_HPP__
+#define __FWDATA_TRANSFERFUNCTION_HPP__
 
 #include <vector>
 #include <map>
@@ -20,18 +20,15 @@ fwCampAutoDeclareDataMacro((fwData)(TransferFunction), FWDATA_API);
 
 namespace fwData
 {
+
 /**
- * @class   TransferFunction
- * @brief   This class defines a transfer function.
+ * @brief This class defines a transfer function.
  *
  * A transfer function is composed of some points which have a color and a value.
- *
- * 
- * @date    2007-2009.
  */
-
 class FWDATA_CLASS_API TransferFunction : public Object
 {
+
 public :
 
     fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()), ::fwData::factory::New< TransferFunction >) ;
@@ -213,9 +210,9 @@ private :
     **/
     bool m_attrIsClamped;
 
-}; // end class TransferFunction
+}; // class TransferFunction
 
-} // end namespace fwData
+} // namespace fwData
 
+#endif // __FWDATA_TRANSFERFUNCTION_HPP__
 
-#endif // _FWDATA_TRANSFERFUNCTION_HPP_

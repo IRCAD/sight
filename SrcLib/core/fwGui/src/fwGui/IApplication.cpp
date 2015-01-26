@@ -14,7 +14,7 @@ const IApplication::FactoryRegistryKeyType IApplication::REGISTRY_KEY =  "::fwGu
 
 //-----------------------------------------------------------------------------
 
-IApplication::IApplication()
+IApplication::IApplication() : m_confirm(false)
 {}
 
 //-----------------------------------------------------------------------------

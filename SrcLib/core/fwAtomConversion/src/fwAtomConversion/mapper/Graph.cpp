@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,6 +8,8 @@
 #include <fwAtoms/Map.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwData/Graph.hpp>
+#include <fwTools/UUID.hpp>
+
 
 #include "fwAtomConversion/mapper/Graph.hpp"
 #include "fwAtomConversion/mapper/registry/macros.hpp"
@@ -43,6 +45,8 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
     {
         value = ::fwAtoms::Object::New();
 
+        value->setMetaInfo("ID_METAINFO", ::fwTools::UUID::generateUUID());
+
         value->setAttribute("edge", ::fwAtomConversion::convert(elem.first, cache));
         value->setAttribute("source", ::fwAtomConversion::convert(elem.second.first, cache));
         value->setAttribute("destination", ::fwAtomConversion::convert(elem.second.second, cache));
@@ -75,7 +79,6 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
                 elemAtom->type() != ::fwAtoms::Base::OBJECT );
 
         ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast( elemAtom );
-
         ::fwAtoms::Object::sptr edgeAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("edge") );
         ::fwData::Edge::sptr edge = ::fwData::Edge::dynamicCast( ::fwAtomConversion::convert( edgeAtom, cache, uuidPolicy ) );
 

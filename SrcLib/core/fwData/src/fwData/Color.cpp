@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,6 @@ namespace fwData
 
 Color::Color ( ::fwData::Object::Key key )
 {
-    SLM_TRACE_FUNC();
     m_vRGBA[0] = 1.0;
     m_vRGBA[1] = 1.0;
     m_vRGBA[2] = 1.0;
@@ -41,7 +40,6 @@ Color::sptr Color::ColorFactory(Color::ColorType red, Color::ColorType green, Co
 
 Color::~Color ()
 {
-    SLM_TRACE_FUNC();
 }
 
 

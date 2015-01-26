@@ -9,6 +9,8 @@
 
 #include <QApplication>
 #include <QMessageBox>
+#include <QVector>
+#include <QPushButton>
 
 #include <fwGui/registry/macros.hpp>
 
@@ -82,6 +84,13 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 
 //-----------------------------------------------------------------------------
 
+void MessageDialog::addCustomButton(QPushButton* button)
+{
+    m_customButtons.push_back(button);
+}
+
+//-----------------------------------------------------------------------------
+
 void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons button )
 {
     m_defaultButton = button;
@@ -108,6 +117,16 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     }
 
     QMessageBox box(icon, title, text, buttons, qApp->activeWindow());
+
+    for(int i = 0; i < m_customButtons.size(); ++i)
+    {
+        box.addButton(m_customButtons[i], QMessageBox::ActionRole);
+    }
+
+    for(int i = 0; i < m_customButtons.size(); ++i)
+    {
+        box.addButton(m_customButtons[i], QMessageBox::ActionRole);
+    }
 
     MessageDialogQtButtonType::const_iterator iter = messageDialogQtButton.find(m_defaultButton);
     if(iter != messageDialogQtButton.end())

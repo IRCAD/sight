@@ -7,6 +7,7 @@
         <param name="imageUid" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
         <param name="patient_name" default="" />
+        <param name="IMAGE_LOCATIONS" default="" />
     </parameters>
     <config>
 
@@ -75,6 +76,13 @@
 
                             <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageKey">
                                 <config renderer="default" picker="negatodefault" text="" />
+                            </adaptor>
+
+                            <adaptor id="imageSliceOrientationText" class="::visuVTKAdaptor::ImageSliceOrientationText" objectId="imageKey">
+                                <config renderer="default" >
+                                    <locations>${IMAGE_LOCATIONS}</locations>
+                                    <initialOrientation>${orientation}</initialOrientation>
+                                </config>
                             </adaptor>
 
                             <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">

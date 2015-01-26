@@ -16,9 +16,10 @@
 
 #include "uiMedDataQt/config.hpp"
 
-class QListWidget;
+class QTreeWidget;
 class QCheckBox;
 class QListWidgetItem;
+class QTreeWidgetItem;
 
 namespace fwData
 {
@@ -34,6 +35,9 @@ namespace uiMedData
 {
 namespace editor
 {
+
+
+class ValueView;
 
 /**
  * @brief   SModelSeriesList service.
@@ -73,11 +77,20 @@ protected:
      *
      * Configuration example :
      @verbatim
-     <config enable_hide_all="true" />
+     <enable_hide_all>true</enable_hide_all>
+     <columns>
+         <organ_name>@organ_name</organ_name>
+         <volume_cc view="positive" >@volume</volume_cc>
+     </columns>
      @endverbatim
      *
      * \b enable_hide_all : if 'true', allows to hide all models through a single checkbox displayed in UI (default
      * value is 'true', allowed values are 'true' and 'false').
+     *
+     * \b columns : defines colums to be shown in reconstruction list. XML child element names follow
+     * ::fwData::Reconstruction serialization attribute names.
+     * The attribute 'view' is optional and can has the following values :
+     *  - positive : a numeric value is displayed only if it is positive. Otherwise, 'Unknown' is displayed.
      *
      * @throw fwTools::Failed
      */
@@ -86,28 +99,31 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream ) ;
 
-    typedef std::map< std::string, SPTR(::fwData::Reconstruction) > OrganNameReconstruction;
+    typedef std::map< std::string, ValueView* > DisplayedInformation;
 
     void updateReconstructions();
+
+    void fillTree();
 
 protected Q_SLOTS:
 
     /// Slot called when new current item is setted in m_organChoice
-    void onCurrentItemChanged ( QListWidgetItem * current, QListWidgetItem * previous );
+    void onCurrentItemChanged ( QTreeWidgetItem * current, QTreeWidgetItem * previous );
+
+    void onCurrentItemChanged ( QTreeWidgetItem * current, int column );
 
     void onShowReconstructions(int state);
 
-    void onOrganChoiceVisibility(QListWidgetItem * item);
+    void onOrganChoiceVisibility(QTreeWidgetItem * item , int column);
 
 private:
 
     void refreshVisibility();
     QPointer< QCheckBox > m_showCheckBox;
-    QPointer< QListWidget > m_organChoice;
-    OrganNameReconstruction m_map ;
+    QPointer< QTreeWidget > m_tree;
+    DisplayedInformation m_displayedInfo ;
 
     bool m_enableHideAll;
-
 };
 
 } // namespace editor

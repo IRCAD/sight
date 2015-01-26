@@ -1,4 +1,6 @@
 fwLoadProperties()
+fwEnableCpp11()
+
 fwUseForwardInclude(
     fwActivities
     fwGui

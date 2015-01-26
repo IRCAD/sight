@@ -52,10 +52,8 @@ AtomCacheType::mapped_type hitCache(const AtomCacheType::key_type &path) const
     AtomCacheType::const_iterator iter = m_cache.find(path);
     if(iter != m_cache.end())
     {
-        OSLM_TRACE(" cache hit : '" << path  << "'" );
         return iter->second;
     }
-    OSLM_TRACE(" cache miss : '" << path  << "'" );
     return AtomCacheType::mapped_type();
 }
 
@@ -63,7 +61,6 @@ AtomCacheType::mapped_type hitCache(const AtomCacheType::key_type &path) const
 
 void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
 {
-    OSLM_TRACE(" cache : '" << ptpath << "' : " << atom->getClassname() );
     m_cache.insert( AtomCacheType::value_type( ptpath, atom ) );
 }
 
@@ -164,6 +161,12 @@ void cache(const std::string &ptpath, const AtomCacheType::mapped_type &atom)
         attributes.insert( value );
     }
     atom->setAttributes(attributes);
+
+    // Managing object with no id
+    if(atom->getMetaInfo("ID_METAINFO").empty())
+    {
+        atom->setMetaInfo("ID_METAINFO", ::fwTools::UUID::generateUUID());
+    }
 
     return atom;
 }

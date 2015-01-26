@@ -4,6 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGuiQt/WorkerQt.hpp"
+
+#include "fwGuiQt/App.hpp"
+#include "fwGuiQt/util/FuncSlot.hpp"
+
+#include <fwCore/util/LazyInstantiator.hpp>
+
+#include <fwGui/registry/worker.hpp>
+
+#include <fwThread/Worker.hpp>
+#include <fwThread/Timer.hpp>
+
+#include <fwServices/registry/ActiveWorkers.hpp>
+
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 
@@ -15,21 +29,9 @@
 #include <QSharedPointer>
 #include <QFont>
 
-#include <fwCore/util/LazyInstantiator.hpp>
-
-#include <fwThread/Worker.hpp>
-#include <fwThread/Timer.hpp>
-
-#include <fwServices/registry/ActiveWorkers.hpp>
-
-#include "fwGuiQt/App.hpp"
-#include "fwGuiQt/util/FuncSlot.hpp"
-
-#include "fwGuiQt/WorkerQt.hpp"
 
 namespace fwGuiQt
 {
-
 
 class WorkerQtTask : public QEvent
 {
@@ -104,7 +106,7 @@ protected:
 struct FWGUIQT_CLASS_API WorkerQtInstanciator
 {
 
-    FWGUIQT_API WorkerQtInstanciator(bool reg = true) ;
+    FWGUIQT_API WorkerQtInstanciator(bool reg = true ) ;
 
     FWGUIQT_API SPTR(::fwThread::Worker) getWorker();
 
@@ -112,12 +114,14 @@ struct FWGUIQT_CLASS_API WorkerQtInstanciator
 
     FWGUIQT_API static int    s_argc;
     FWGUIQT_API static char **s_argv;
+    FWGUIQT_API static bool   s_GUIenabled;
 };
 
 int WorkerQtInstanciator::s_argc = 0 ;
 char** WorkerQtInstanciator::s_argv = NULL;
+bool WorkerQtInstanciator::s_GUIenabled = true;
 
-FWGUIQT_API WorkerQtInstanciator::WorkerQtInstanciator(bool reg ) :
+FWGUIQT_API WorkerQtInstanciator::WorkerQtInstanciator(bool reg) :
     m_qtWorker(::boost::make_shared< WorkerQt >())
 {
     m_qtWorker->init( boost::ref(s_argc), s_argv);
@@ -251,6 +255,8 @@ void WorkerQt::init( int &argc, char **argv )
     }
 #endif
 
+    m_app = QSharedPointer< QApplication > ( new ::fwGuiQt::App( argc, argv, WorkerQtInstanciator::s_GUIenabled ) );
+
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
 
     QDir pluginDir("./qtplugins");
@@ -258,9 +264,9 @@ void WorkerQt::init( int &argc, char **argv )
     {
         QCoreApplication::setLibraryPaths(QStringList(pluginDir.absolutePath()));
     }
-    m_app = QSharedPointer< QApplication > ( new ::fwGuiQt::App(argc, argv) );
-    
+
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Finish");
+
 }
 
 WorkerQt::~WorkerQt()
@@ -317,7 +323,7 @@ void WorkerQt::processTasks()
 
 void WorkerQt::processTasks(PeriodType maxtime)
 {
-    QCoreApplication::processEvents(QEventLoop::AllEvents, maxtime);
+    QCoreApplication::processEvents(QEventLoop::AllEvents, int(maxtime));
 }
 
 // ---------- Timer private implementation ----------
@@ -340,7 +346,9 @@ TimerQt::~TimerQt()
 void TimerQt::setDuration(TimeDurationType duration)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
-    m_timerQt->setInterval( ::boost::chrono::duration_cast< ::boost::chrono::milliseconds >(duration).count() );
+    m_timerQt->setInterval( static_cast<int>(
+                                    ::boost::chrono::duration_cast< ::boost::chrono::milliseconds >(duration).count())
+                            );
 }
 
 void TimerQt::start()

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_RESECTION_HPP_
-#define _FWDATA_RESECTION_HPP_
+#ifndef __FWDATA_RESECTION_HPP__
+#define __FWDATA_RESECTION_HPP__
 
 #include <vector>
 
@@ -18,10 +18,7 @@ fwCampAutoDeclareDataMacro((fwData)(Resection), FWDATA_API);
 namespace fwData
 {
 /**
- * @class   Resection
- * @brief   This class defines a resection
- * 
- * @date    2007-2009.
+ * @brief This class defines a resection.
  */
 class FWDATA_CLASS_API Resection : public ::fwData::Object
 {
@@ -93,4 +90,5 @@ protected :
 
 } // end namespace fwData
 
-#endif // _FWDATA_RESECTION_HPP_
+#endif // __FWDATA_RESECTION_HPP__
+

@@ -1,11 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwMedData/ImageSeries.hpp"
-#include "fwMedData/ModelSeries.hpp"
 
 #include "SeriesTest.hpp"
 
@@ -77,7 +75,7 @@ void SeriesTest::attrInstanceUIDTest()
     for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
     {
         ::fwMedData::Series::sptr series = *iter;
-        series->setInstanceUID( instanceUID ); 
+        series->setInstanceUID( instanceUID );
 
         CPPUNIT_ASSERT_EQUAL( instanceUID , series->getInstanceUID() );
     }
@@ -92,7 +90,7 @@ void SeriesTest::attrModalityTest()
     for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
     {
         ::fwMedData::Series::sptr series = *iter;
-        series->setModality( modality ); 
+        series->setModality( modality );
 
         CPPUNIT_ASSERT_EQUAL( modality , series->getModality() );
     }
@@ -107,7 +105,7 @@ void SeriesTest::attrDateTest()
     for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
     {
         ::fwMedData::Series::sptr series = *iter;
-        series->setDate( date ); 
+        series->setDate( date );
 
         CPPUNIT_ASSERT_EQUAL( date , series->getDate() );
     }
@@ -122,7 +120,7 @@ void SeriesTest::attrTimeTest()
     for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
     {
         ::fwMedData::Series::sptr series = *iter;
-        series->setTime( time ); 
+        series->setTime( time );
 
         CPPUNIT_ASSERT_EQUAL( time , series->getTime() );
     }
@@ -141,7 +139,7 @@ void SeriesTest::attrPerformingPhysiciansNameTest()
     for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
     {
         ::fwMedData::Series::sptr series = *iter;
-        series->setPerformingPhysiciansName( performingPhysiciansName ); 
+        series->setPerformingPhysiciansName( performingPhysiciansName );
 
         CPPUNIT_ASSERT( performingPhysiciansName == series->getPerformingPhysiciansName() );
     }
@@ -156,7 +154,7 @@ void SeriesTest::attrDescriptionTest()
     for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
     {
         ::fwMedData::Series::sptr series = *iter;
-        series->setDescription( description ); 
+        series->setDescription( description );
 
         CPPUNIT_ASSERT_EQUAL( description , series->getDescription() );
     }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,9 +31,7 @@ namespace uiMedData
 namespace editor
 {
 
-
 /**
- * @class SOrganTransformation
  * @brief Display the organs list and allow an interactive selection to set the corresponding meshes in a composite
  */
 class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject, public ::gui::editor::IEditor

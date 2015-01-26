@@ -60,7 +60,7 @@ void IoItkTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void IoItkTest::executeService(
+void executeService(
         const SPTR(::fwData::Object)& obj,
         const std::string& srvType,
         const std::string& srvImpl,
@@ -101,7 +101,7 @@ void IoItkTest::testImageSeriesWriterJPG()
     srvCfg->addConfigurationElement(folderCfg);
 
     // Create and execute service
-    this->executeService(imageSeries, "::io::IWriter", "::ioITK::SJpgImageSeriesWriter", srvCfg);
+    executeService(imageSeries, "::io::IWriter", "::ioITK::SJpgImageSeriesWriter", srvCfg);
 
     // Remove path
     ::boost::filesystem::remove_all( path.string() );
@@ -127,7 +127,7 @@ void IoItkTest::testImageWriterJPG()
     srvCfg->addConfigurationElement(folderCfg);
 
     // Create and execute service
-    this->executeService( image, "::io::IWriter", "::ioITK::JpgImageWriterService", srvCfg );
+    executeService( image, "::io::IWriter", "::ioITK::JpgImageWriterService", srvCfg );
 
     // Remove path
     ::boost::filesystem::remove_all( path.string() );
@@ -160,11 +160,11 @@ void IoItkTest::testSaveLoadInr()
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
-    this->executeService( image, "::io::IWriter", "::ioITK::InrImageWriterService", srvCfg );
+    executeService( image, "::io::IWriter", "::ioITK::InrImageWriterService", srvCfg );
 
     // load Image
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    this->executeService( image2, "::io::IReader", "::ioITK::InrImageReaderService", srvCfg );
+    executeService( image2, "::io::IReader", "::ioITK::InrImageReaderService", srvCfg );
 
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
@@ -205,11 +205,11 @@ void IoItkTest::ImageSeriesInrTest()
     srvCfg->addConfigurationElement(fileCfg);
 
     // Create and execute service
-    this->executeService( imageSeries, "::io::IWriter", "::ioITK::SImageSeriesWriter", srvCfg );
+    executeService( imageSeries, "::io::IWriter", "::ioITK::SImageSeriesWriter", srvCfg );
 
     // load Image
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
-    this->executeService( image2, "::io::IReader", "::ioITK::InrImageReaderService", srvCfg );
+    executeService( image2, "::io::IReader", "::ioITK::InrImageReaderService", srvCfg );
 
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
@@ -247,7 +247,7 @@ void IoItkTest::SeriesDBInrTest()
 
     // load SeriesDB
     ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
-    this->executeService( sdb, "::io::IReader", "::ioITK::SInrSeriesDBReader", srvCfg );
+    executeService( sdb, "::io::IReader", "::ioITK::SInrSeriesDBReader", srvCfg );
 
     ::fwData::Image::SpacingType spacing = list_of(0.781)(0.781)(1.6);
     ::fwData::Image::SizeType size = list_of(512)(512)(134);

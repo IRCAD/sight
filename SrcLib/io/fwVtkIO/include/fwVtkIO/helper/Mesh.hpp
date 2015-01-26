@@ -23,7 +23,7 @@ namespace helper
 /**
  * @brief   Helper to manage vtkPolyData and fwData::Mesh.
  * @class   Mesh
- * 
+ *
  * @date    2011.
  *
  */
@@ -107,6 +107,23 @@ public :
      */
     VTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
 
+    /*!
+     * @brief Update a vtkPolyData with point texCoords of fwData::Mesh
+     *
+     * @param[out] polyDataDst vtkPolyData
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @return the updated vtkPolyPata
+     */
+    VTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataPointTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
+
+    /*!
+     * @brief Update a vtkPolyData with cell texCoords of fwData::Mesh
+     *
+     * @param[out] polyDataDst vtkPolyData
+     * @param[in]  meshSrc ::fwData::Mesh::sptr
+     * @return the updated vtkPolyPata
+     */
+    VTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
 
     /*!
      * @brief Compute the volume of the mesh using MassProperties vtk class

@@ -16,16 +16,12 @@ namespace fwData
 /**
  * @namespace ::fwData::location
  * @brief This namespace contains the classes which define a %location ( fileSystem, directory(IES) etc.... ).
- * 
- * @date    2007-2009.
- *
  */
 namespace location
 {
 
 /**
  * @brief Abstract class to define a %location ( fileSystem, directory(IES) etc.... )
- *
  * @note cannot be instantiated but derived class OK
  * @see Folder, MultiFiles, SingleFile
  */

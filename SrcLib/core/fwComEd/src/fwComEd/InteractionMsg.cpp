@@ -31,10 +31,11 @@ std::string InteractionMsg::MOUSE_MOVE               = "MOUSE_MOVE";
 
 //-----------------------------------------------------------------------------
 
-InteractionMsg::InteractionMsg(::fwServices::ObjectMsg::Key key)
+InteractionMsg::InteractionMsg(::fwServices::ObjectMsg::Key key) :
+        m_eventPoint(::fwData::Point::New()),
+        m_modifiersStatus(NONE),
+        m_eventTimestamp(0.)
 {
-    m_eventPoint = ::fwData::Point::New();
-    m_modifiersStatus = NONE;
 }
 
 //-----------------------------------------------------------------------------
@@ -95,6 +96,20 @@ void InteractionMsg::setEventPoint(PointCoordType x, PointCoordType y, PointCoor
 ::fwData::Point::csptr InteractionMsg::getEventPoint() const
 {
     return m_eventPoint;
+}
+
+//-----------------------------------------------------------------------------
+
+void InteractionMsg::setEventTimestamp(::fwCore::HiResClock::HiResClockType timestamp)
+{
+    m_eventTimestamp = timestamp;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwCore::HiResClock::HiResClockType InteractionMsg::getEventTimestamp() const
+{
+    return m_eventTimestamp;
 }
 
 //-----------------------------------------------------------------------------

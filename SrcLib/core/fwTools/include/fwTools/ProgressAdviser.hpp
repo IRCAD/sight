@@ -8,7 +8,7 @@
 #define __FWTOOLS_PROGRESSADVISER_HPP__
 
 #include <string>
-#include <boost/signal.hpp>
+#include <boost/signals2.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwTools/config.hpp>
@@ -27,16 +27,17 @@ namespace fwTools
  * 
  * @date    2007-2009.
  */
-class FWTOOLS_CLASS_API ProgressAdviser : public ::boost::signals::trackable
+class FWTOOLS_CLASS_API ProgressAdviser : public ::boost::signals2::trackable
 {
 public:
 
     /// define a boost signal signature for the ProgessHandler
-    typedef ::boost::signal< void(float, std::string) >   ProgessSignal; // signal for fctor or function returning void and
+    typedef ::boost::signals2::signal< void(float, std::string) >  ProgessSignal; // signal for fctor or function returning void
+
     /// define the ProgessHandler type
-    typedef ProgessSignal::slot_type         ProgessHandler; // signal for fctor or function returning void and
-                                                            // accepting a float as argument percent
-                                                            // string for information
+    typedef ProgessSignal::slot_type ProgessHandler; // signal for fctor or function returning void and
+                                                     // accepting a float as argument percent
+                                                     // string for information
 
     FWTOOLS_API ProgressAdviser();
     FWTOOLS_API virtual ~ProgressAdviser();
@@ -45,10 +46,10 @@ public:
      * @brief append a new handler ( a functor accepting a float as argument an returning void)
      * @param[in] handler can be either  a function or functor or boost::signal with a signature( float, std::string ) and returning nothing
      */
-    FWTOOLS_API void   addHandler(const ProgessHandler &handler);
+    FWTOOLS_API void addHandler(const ProgessHandler &handler);
 
     /// notify modification for all handler
-    FWTOOLS_API void   notifyProgress(float percent,std::string msg="");
+    FWTOOLS_API void notifyProgress(float percent, const std::string& msg="") const;
 
 protected :
 
