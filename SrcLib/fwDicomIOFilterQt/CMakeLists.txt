@@ -1,22 +1,27 @@
 fwLoadProperties()
 
-add_definitions("-DQT_NO_KEYWORDS")
+fwUseForwardInclude(
+    fwCore
+    fwTools
+    fwMedData
+    fwDicomData
+    fwDicomIOFilter
+    fwGui
+    fwGuiQt
+    fwDicomIOExt
+)
 
-find_package(Boost REQUIRED)
+
+find_package (Boost REQUIRED)
+fwForwardInclude(${Boost_INCLUDE_DIRS})
+
 find_package(DCMTK REQUIRED)
-find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
-include(${QT_USE_FILE})
+fwForwardInclude( ${DCMTK_config_INCLUDE_DIRS} )
+fwLink( ${DCMTK_LIBRARIES} )
 
-fwForwardInclude(
-    ${Boost_INCLUDE_DIRS}
-    ${DCMTK_config_INCLUDE_DIRS}
-    ${QT_INCLUDE_DIR}
-    )
-fwLink(
-    ${Boost_LIBRARIES}
-    ${DCMTK_LIBRARIES}
-    ${QT_LIBRARIES}
-    )
+find_package(Qt5 COMPONENTS Core Gui Widgets Concurrent REQUIRED)
+QT5_USE_MODULES(${FWPROJECT_NAME} Core Gui Widgets Concurrent)
+fwLink(${QT_LIBRARIES})
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 
