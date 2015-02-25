@@ -1,0 +1,8 @@
+<plugin id="ioNetwork" class="::ioNetwork::Plugin" version="0.1">
+
+    <library name="ioNetwork" />
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+
+</plugin>
