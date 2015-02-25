@@ -1,0 +1,21 @@
+<plugin id="uiZMQ" class="::uiZMQ::Plugin">
+
+    <library name="uiZMQ" />
+    <requirement id="gui" />
+    <requirement id="guiQt" />
+    <requirement id="ioZMQ" />
+
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::uiZMQ::SZMQConfigEditor</type>
+        <service>::uiZMQ::SZMQSenderConfigEditor</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+   <extension implements="::fwServices::registry::ServiceFactory">
+       <type>::uiZMQ::SZMQConfigEditor</type>
+       <service>::uiZMQ::SZMQListenerConfigEditor</service>
+       <object>::fwData::Object</object>
+   </extension>
+
+</plugin>
