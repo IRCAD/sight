@@ -54,14 +54,14 @@ protected :
     * @brief Starting method.
     *
     * This method is used to initialize the service.
-    * Initialize VTK renderer and wxWidget containers
+    * Initialize VTK renderer and gui containers
     */
     VTKSIMPLENEGATO_API virtual void starting() throw(fwTools::Failed);
 
     /**
     * @brief Stopping method.
     *
-    * Destroy VTK renderer and wxWidget containers
+    * Destroy VTK renderer and gui containers
     */
     VTKSIMPLENEGATO_API virtual void stopping() throw(fwTools::Failed);
 

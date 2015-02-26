@@ -20,7 +20,7 @@ namespace dialog
  * @brief   Defines the generic file/folder selector dialog for IHM.
  *
  * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
- * The specific implementation are in fwWX and fwQT libraries.
+ * The specific implementation are in fwGuiWX and fwGuiQT libraries.
  *
  * @class   LocationDialog
  * 

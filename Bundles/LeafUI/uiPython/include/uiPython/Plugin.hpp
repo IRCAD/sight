@@ -35,7 +35,7 @@ public:
      * @exception ::fwRuntime::RuntimeException.
      *
      * Register first basic services of type IAction, IEditor and IView.
-     * Secondly, verifies if the command line and profile.xml are well formed and starts the wxWidgets IHM.
+     * Secondly, verifies if the command line and profile.xml are well formed and starts the IHM.
      */
     UIPYTHON_API void start() throw(::fwRuntime::RuntimeException);
 

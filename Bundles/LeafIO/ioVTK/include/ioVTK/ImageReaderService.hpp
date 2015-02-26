@@ -41,7 +41,7 @@ public :
     fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)( ::io::IReader) ) ;
 
     /**
-     * @brief Configure the image path with an wxWidget dialogBox.
+     * @brief Configure the image path with a dialogBox.
      *
      * This method is used to find the file path using a file selector.
      */

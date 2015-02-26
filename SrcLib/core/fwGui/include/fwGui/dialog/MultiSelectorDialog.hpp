@@ -20,7 +20,7 @@ namespace dialog
  * @brief   MultiSelectorDialog allows the choice of some element among several (_selections)
  *
  * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro
- * The specific implementation are in fwWX and fwQT libraries
+ * The specific implementation are in fwGuiWX and fwGuiQT libraries
  * @class   MultiSelectorDialog
  * 
  * @date    2009-2010.
