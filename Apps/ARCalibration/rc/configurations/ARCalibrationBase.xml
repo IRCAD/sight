@@ -1,0 +1,103 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>ARCalibrationBase</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="appName" />
+        <param name="appIconPath" />
+    </parameters>
+    <config>
+        <object uid="seriesDB" type="::fwMedData::SeriesDB">
+
+            <service uid="action_open" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
+                <IOSelectorSrvConfig name="SDBOpenIOSelectorConfig" />
+            </service>
+            <service uid="action_save" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <start uid="SDBWriter" />
+            </service>
+            <service uid="SDBWriter" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
+                <type mode="writer" />
+                <selection mode="include" />
+                <addSelection service="::ioAtoms::SWriter" />
+                <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
+            </service>
+
+
+            <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <gui>
+                    <frame>
+                        <name>${appName}</name>
+                        <icon>${appIconPath}</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="dynamicView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Preferences" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_file" start="yes" />
+                    <menu sid="menu_preferences" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu_file" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Open" shortcut="Ctrl+O" />
+                        <menuItem name="Save" shortcut="Ctrl+S" />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_open" start="yes" />
+                    <menuItem sid="action_save" start="yes" />
+                    <menuItem sid="action_quit" start="yes" />
+                </registry>
+            </service>
+            
+            <service uid="menu_preferences" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Video directory" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_videoDir" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="action_videoDir" impl="::videoQt::action::SVideoConfiguration" type="::fwGui::IActionSrv" autoConnect="no" />
+            
+            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+
+            <service uid="dynamicView" type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes">
+                <config>
+                    <appConfig id="SDBARCalibration" title="SDB" closable="false">
+                        <parameters>
+                            <parameter replace="SERIESDB" by="seriesDB" />
+                            <parameter replace="ICON_PATH" by="${appIconPath}" />
+                            <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicView" />
+                        </parameters>
+                    </appConfig>
+                </config>
+            </service>
+
+            <proxy channel="dynamicView">
+                <slot>dynamicView/receive</slot>
+            </proxy>
+
+            <start uid="mainFrame" />
+        </object>
+
+    </config>
+</extension>

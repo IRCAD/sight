@@ -1,0 +1,7 @@
+<plugin id="arDataReg" class="::arDataReg::Plugin" version="0.1">
+    
+    <library name="arDataReg" />
+    <requirement id="dataReg" />
+
+</plugin>
+

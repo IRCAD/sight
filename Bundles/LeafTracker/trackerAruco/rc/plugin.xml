@@ -1,0 +1,17 @@
+<plugin id="trackerAruco" class="::trackerAruco::Plugin" version="0.1" >
+
+    <library name="trackerAruco" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="extDataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="tracker" />
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::tracker::ITracker</type>
+        <service>::trackerAruco::SArucoTracker</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+</plugin>

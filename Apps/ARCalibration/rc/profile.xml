@@ -1,0 +1,65 @@
+<profile name="ARCalibration" version="0.5.0">
+
+    <activate id="dataReg" version="0-1" />
+    <activate id="extDataReg" version="0-1" />
+    <activate id="arDataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" />
+
+    <activate id="gui" version="0-1" />
+    <activate id="guiQt" version="0-1" />
+
+    <activate id="io" version="0-1" />
+    <activate id="ioAtoms" version="0-1" />
+    <activate id="patchMedicalData" version="0-1" />
+    
+    <activate id="uiIO" version="0-1" />
+    <activate id="uiGenericQt" version="0-1" />
+    <activate id="uiMedDataQt" version="0-1" />
+    <activate id="uiImageQt" version="0-1" />
+    <activate id="uiTools" version="0-1"/> 
+
+    <activate id="ctrlSelection" version="0-1" />
+    <activate id="memory" version="0-1" />
+
+    <activate id="media" version="0-1" />
+    <activate id="mediaExt" version="0-1" />
+    <activate id="arMedia" version="0-1" />
+
+    <activate id="visu" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
+    <activate id="visuVTKQt" version="0-1" />
+    <activate id="visuVTKAdaptor" version="0-1" />
+    <activate id="visuVTKARAdaptor" version="0-1" />
+    
+    <activate id="videoQt" version="0-1" />
+
+    <activate id="activities" version="0-1" />
+    <activate id="calibrationActivity" version="0-1" />
+    
+    <activate id="ioCalibration" version="0-1" />
+    <activate id="uiCalibration" version="0-1" />
+
+    <activate id="ARCalibration" />
+    <activate id="appXml" version="0-1" >
+        <param id="config" value="ARCalibrationBase" />
+        <param id="parameters" value="ARCalibrationAppBase" />
+    </activate>
+
+    <activate id="preferences" version="0-1" />
+    <activate id="videoTools" version="0-1" />
+    <activate id="videoCalibration" version="0-1" />
+
+    <start id="dataReg" />
+    <start id="extDataReg" />
+    <start id="arDataReg" />
+    <start id="memory" />
+    <start id="preferences" />
+    <start id="patchMedicalData"/>
+    <start id="visuVTK" />
+    <start id="visuVTKQt" />
+    <start id="guiQt" />
+    <start id="activities" />
+    <start id="appXml" />
+    
+
+</profile>

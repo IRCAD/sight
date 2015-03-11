@@ -1,0 +1,115 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>calibration</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="GENERIC_UID" />
+        <param name="SERIESDB" />
+        <param name="AS_UID" />
+        <param name="cameraSeriesUid" />
+        <param name="chessboardWidth" default="11" />
+        <param name="chessboardHeight" default="8" />
+    </parameters>
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view caption="Calibration" align="center" />
+                    </layout>
+                    <toolBar />
+                </gui>
+                <registry>
+                    <parent wid="${WID_PARENT}" />
+                    <view wid="${GENERIC_UID}_calibrationView" />
+                    <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Export camera series" icon="Bundles/media_0-1/icons/Export.svg" />
+                        <menuItem name="Export activity" icon="Bundles/arMedia_0-1/icons/export_activity.svg" />
+                        <separator/>
+                        <menuItem name="Export XML" icon="Bundles/arMedia_0-1/icons/save.svg" />
+                        <separator/>
+                        <editor/>
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="${GENERIC_UID}_ActionExport" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionWriteXmlCalib" start="yes"/>
+                    <editor sid="${GENERIC_UID}_cameraLauncher" start="no" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_ActionWriteXmlCalib" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_CalibrationXmlWriter/update</slot>
+                </slots>
+            </service>
+            
+            <service uid="${GENERIC_UID}_cameraLauncher" type="::gui::editor::IEditor" impl="::uiCalibration::SCameraConfigLauncher" autoConnect="no">
+                <config>
+                 <intrinsic>
+                    <appConfig id="calIntrinsicView" >
+                        <parameters>
+                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_calibrationView"  />
+                            <parameter replace="chessboardWidth" by="${chessboardWidth}"  />
+                            <parameter replace="chessboardHeight" by="${chessboardHeight}"  />
+                        </parameters>
+                    </appConfig>
+                </intrinsic>
+                <extrinsic>
+                    <appConfig id="calExtrinsicView" >
+                        <parameters>
+                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_calibrationView"  />
+                            <parameter replace="chessboardWidth" by="${chessboardWidth}"  />
+                            <parameter replace="chessboardHeight" by="${chessboardHeight}"  />
+                            <parameter replace="cameraSeriesUid" by="${cameraSeriesUid}"  />
+                        </parameters>
+                    </appConfig>
+                </extrinsic>
+                <cameraSeriesKey>cameraSeries</cameraSeriesKey>
+                <activitySeriesKey>activitySeries</activitySeriesKey>
+            </config>
+            </service>
+            
+            <item key="seriesDB">
+                <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB">
+                    <service uid="${GENERIC_UID}_ActionExport" type="::fwGui::IActionSrv" impl="::uiMedData::action::SExportSeries" autoConnect="yes">
+                        <seriesId>${cameraSeriesUid}</seriesId>
+                    </service>
+                    <service uid="${GENERIC_UID}_ActionExportActivity" type="::fwGui::IActionSrv" impl="::uiMedData::action::SExportSeries" autoConnect="yes">
+                        <seriesId>${AS_UID}</seriesId>
+                    </service>
+                </object>
+            </item>
+            
+            <item key="activitySeries">
+                <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
+            </item>
+            
+            <item key="cameraSeries">
+                <object uid="${cameraSeriesUid}" type="::arData::CameraSeries" src="ref" >
+                    <service uid="${GENERIC_UID}_CalibrationXmlWriter" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                        <type mode="writer" />
+                        <selection mode="include" />
+                        <addSelection service="::ioCalibration::SExportCalibrationXml" />
+                    </service>
+                </object>
+            </item>
+
+            <!-- START AND STOP SERVICES -->
+            <start uid="${GENERIC_UID}_mainView" />
+            <start uid="${GENERIC_UID}_cameraLauncher" /> <!-- Must be started after mainView  -->
+            <start uid="${GENERIC_UID}_CalibrationXmlWriter" />
+
+        </object>
+
+    </config>
+</extension>

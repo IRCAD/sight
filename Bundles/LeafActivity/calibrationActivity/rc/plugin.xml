@@ -1,0 +1,43 @@
+<plugin id="calibrationActivity" >
+
+    <library name="calibrationActivity" />
+
+    <requirement id="servicesReg" />
+    <requirement id="dataReg" />
+    <requirement id="extDataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="gui" />
+    <requirement id="visuVTKAdaptor" />
+    <requirement id="visuVTKARAdaptor" />
+    <requirement id="videoQt" />
+    <requirement id="media" />
+    <requirement id="mediaExt" />
+    <requirement id="arMedia" />
+    <requirement id="videoCalibration" />
+    <requirement id="uiCalibration" />
+
+    <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calIntrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calExtrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calCameraView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/displayImageConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    
+    
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Calibration</id>
+        <title>Calibration</title>
+        <desc>Calibration activity</desc>
+        <icon>Bundles/arMedia_0-1/icons/calibrationActivity.svg</icon>
+        <requirements>
+             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
+        <appConfig id="calibration">
+            <parameters>
+                <parameter replace="cameraSeriesUid" by="@values.cameraSeries" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+</plugin>

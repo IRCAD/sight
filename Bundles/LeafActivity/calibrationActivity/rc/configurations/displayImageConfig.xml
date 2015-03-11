@@ -1,0 +1,57 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>displayImageConfig</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="GENERIC_UID" />
+        <param name="imageId1" />
+        <param name="pointListId1" />
+    </parameters>
+    <config>
+
+        <!-- <object uid="${imageUid}" src="ref" type="::fwData::Image"> -->
+        <object uid="${GENERIC_UID}_composite" type="::fwData::Composite">
+            <service uid="${GENERIC_UID}_BasicViewerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>Display calibration image</name>
+                        <minSize width="900" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_view_image" start="no" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_view_image" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                <scene>
+                    <renderer id="default" background="0.0" />
+                    <adaptor id="interactor2D" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
+                    <adaptor id="image" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey">
+                        <config renderer="default" />
+                    </adaptor>
+                    <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey">
+                        <config renderer="default" imageId="${imageId1}" color="#cb1f72"/>
+                    </adaptor>
+                </scene>
+            </service>
+            
+            <item key="imageKey">
+                 <object uid="${imageId1}" src='ref' type="::fwData::Image"/>
+            </item>
+
+            <item key="pointListKey">
+                 <object uid="${pointListId1}" src='ref' type="::fwData::PointList"/>
+            </item>
+
+            <start uid="${GENERIC_UID}_BasicViewerFrame" />
+            <start uid="${GENERIC_UID}_view_image" />
+
+            <update uid="${GENERIC_UID}_view_image" />
+
+        </object>
+
+    </config>
+</extension>

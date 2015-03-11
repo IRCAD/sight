@@ -1,0 +1,37 @@
+<plugin id="ARCalibration">
+
+    <requirement id="servicesReg" />
+
+    <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwServices::registry::AppConfigParameters">
+        <id>ARCalibrationAppBase</id>
+        <parameters>
+            <param name="appName" value="ARCalibration 0.1" />
+            <param name="appIconPath" value="Bundles/ARCalibration_0-1/app.ico" />
+        </parameters>
+    </extension>
+
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>SDBOpenIOSelectorConfig</id>
+        <service>::uiIO::editor::IOSelectorService</service>
+        <desc>"Open" action's IOSelector config</desc>
+        <config>
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SReader" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>MDAtomsConfig</id>
+        <desc>reader/writer config to read/write an atom representing a medical data</desc>
+        <config>
+            <patcher context="MedicalData" version="V06AGO" /> 
+         </config>
+     </extension>
+
+</plugin>

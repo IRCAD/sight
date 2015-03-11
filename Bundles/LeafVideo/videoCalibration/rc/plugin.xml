@@ -1,0 +1,44 @@
+<plugin id="videoCalibration" class="::videoCalibration::Plugin" >
+
+    <library name="videoCalibration" />
+
+    <requirement id="arDataReg"/>
+    <requirement id="servicesReg"/>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::videoCalibration::ICalibration</type>
+        <service>::videoCalibration::SIntrinsic</service>
+        <object>::arData::Camera</object>
+    </extension>
+        
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::videoCalibration::ICalibration</type>
+        <service>::videoCalibration::SExtrinsic</service>
+        <object>::arData::CameraSeries</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::videoCalibration::ICalibration</type>
+        <service>::videoCalibration::SOpenCVIntrinsic</service>
+        <object>::arData::Camera</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::videoCalibration::ICalibration</type>
+        <service>::videoCalibration::SOpenCVExtrinsic</service>
+        <object>::arData::CameraSeries</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::videoCalibration::SChessBoardDetector</service>
+        <object>::fwData::Composite</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::videoCalibration::SCheckChessBoard</service>
+        <object>::fwData::Composite</object>
+    </extension>   
+
+</plugin>

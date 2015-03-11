@@ -1,0 +1,14 @@
+<plugin id="preferences" class="preferences::Plugin">
+
+    <library name="preferences"/>
+    
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::preferences::IPreferencesService</type>
+        <service>::preferences::SPreferences</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+</plugin>

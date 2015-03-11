@@ -1,0 +1,38 @@
+<profile name="VideoTracking" version="0.1" check-single-instance="true">
+
+    <activate id="dataReg" version="0-1" />
+    <activate id="extDataReg" version="0-1" />
+    <activate id="arDataReg" version="0-1" />
+    <activate id="servicesReg" version="0-1" />
+    <activate id="visu" version="0-1" />
+    <activate id="visuVTK" version="0-1" />
+    <activate id="visuVTKQt" version="0-1" />
+    <activate id="visuVTKAdaptor" version="0-1" />
+    <activate id="visuVTKARAdaptor" version="0-1" />
+    <activate id="arMedia" version="0-1" />
+
+    <activate id="gui" version="0-1" />
+    <activate id="guiQt" version="0-1" />
+
+    <activate id="VideoTracking" version="0-1" />
+    <activate id="appXml" version="0-1">
+        <param id="config" value="VideoTracking" />
+    </activate>
+
+    <activate id="videoQt" version="0-1" />
+    <activate id="videoTools" version="0-1" />
+    <activate id="tracker" version="0-1" />
+    <activate id="trackerAruco" version="0-1" />
+    
+    <activate id="uiTracking" version="0-1" />
+
+    <start id="guiQt" />
+    <start id="visuVTK" />
+    <start id="visuVTKQt" />
+    <start id="extDataReg" />
+    <start id="arDataReg" />
+    <start id="appXml" />
+    <start id="arMedia" />
+    <start id="uiTracking" />
+
+</profile>

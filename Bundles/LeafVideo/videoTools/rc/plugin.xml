@@ -1,0 +1,34 @@
+<plugin id="videoTools" class="videoTools::Plugin" version="0.1" >
+
+    <library name="videoTools" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::videoTools::ISynchronizer</type>
+        <service>::videoTools::SFrameMatrixSynchronizer</service>
+        <object>::fwData::Composite</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::videoTools::ISynchronizer</type>
+        <service>::videoTools::SMatrixSynchronizer</service>
+        <object>::fwData::TransformationMatrix3D</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::videoTools::ISynchronizer</type>
+        <service>::videoTools::SMatrixTLSelector</service>
+        <object>::fwData::Composite</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::videoTools::SFrameUpdater</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    
+</plugin>
+

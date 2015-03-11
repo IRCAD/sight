@@ -1,0 +1,35 @@
+<plugin id="visuVTKARAdaptor" class="visuVTKARAdaptor::Plugin" version="0.1">
+    
+    <library name="visuVTKARAdaptor" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="visu" />
+    <requirement id="visuVTK" />
+    
+   
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKARAdaptor::SVideoAdapter</service>
+        <object>::fwData::Image</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKARAdaptor::SPointList</service>
+        <object>::fwData::PointList</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKARAdaptor::SCamera</service>
+        <object>::fwData::TransformationMatrix3D</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKARAdaptor::SText</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+</plugin>
