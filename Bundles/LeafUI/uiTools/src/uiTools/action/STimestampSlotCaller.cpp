@@ -91,7 +91,7 @@ void STimestampSlotCaller::updating() throw( ::fwTools::Failed )
         if (::fwTools::fwID::exist(HasSlotId))
         {
             ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(HasSlotId);
-            ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+            ::fwCom::HasSlots::sptr hasSlots = ::std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
             SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
             ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotKey);
