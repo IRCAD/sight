@@ -1,9 +1,0 @@
-TYPE = 'shared'
-VERSION = '0.1'
-USE=[
-     'boost', 
-     'boostFilesystem',
-     'qtNetwork'
-     ]
-LIB=['fwCore_0-1']
-
