@@ -73,5 +73,58 @@ void ModelSeriesTest::modelTest()
 
 //------------------------------------------------------------------------------
 
+void ModelSeriesTest::deepCopyTest()
+{
+    CPPUNIT_ASSERT(m_series);
+
+    ::fwData::Reconstruction::sptr rec1 = ::fwData::Reconstruction::New();
+    ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
+
+    rec1->setMesh(mesh1);
+    ModelSeries::ReconstructionVectorType recs;
+    recs.push_back(rec1);
+    m_series->setReconstructionDB(recs);
+
+    ::fwMedData::ModelSeries::sptr secondSeries = ::fwMedData::ModelSeries::New();
+
+    secondSeries->deepCopy(m_series);
+
+    CPPUNIT_ASSERT_EQUAL(1, (int)m_series->getReconstructionDB().size());
+    CPPUNIT_ASSERT_EQUAL(1, (int)secondSeries->getReconstructionDB().size());
+    CPPUNIT_ASSERT (m_series->getReconstructionDB()[0] != secondSeries->getReconstructionDB()[0]);
+
+}
+
+//------------------------------------------------------------------------------
+
+void ModelSeriesTest::shallowCopyTest()
+{
+    CPPUNIT_ASSERT(m_series);
+
+    ::fwData::Reconstruction::sptr rec1 = ::fwData::Reconstruction::New();
+    ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
+    rec1->setMesh(mesh1);
+    ModelSeries::ReconstructionVectorType recs;
+    recs.push_back(rec1);
+    m_series->setReconstructionDB(recs);
+
+    ::fwMedData::ModelSeries::sptr secondSeries = ::fwMedData::ModelSeries::New();
+
+    secondSeries->shallowCopy(m_series);
+
+    CPPUNIT_ASSERT(m_series->getReconstructionDB()[0] == secondSeries->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT_EQUAL(m_series->getReconstructionDB()[0], secondSeries->getReconstructionDB()[0]);
+
+    CPPUNIT_ASSERT_EQUAL(recs[0], m_series->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT_EQUAL(recs[0], secondSeries->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT_EQUAL(1, (int)m_series->getReconstructionDB().size());
+    CPPUNIT_ASSERT_EQUAL(1, (int)secondSeries->getReconstructionDB().size());
+
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace ut
 } //namespace fwMedData

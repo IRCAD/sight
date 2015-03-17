@@ -18,6 +18,8 @@ class ModelSeriesTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( ModelSeriesTest );
     CPPUNIT_TEST(modelTest);
+    CPPUNIT_TEST(deepCopyTest);
+    CPPUNIT_TEST(shallowCopyTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -26,6 +28,8 @@ public:
     void tearDown();
 
     void modelTest();
+    void deepCopyTest();
+    void shallowCopyTest();
 
 private:
     ModelSeries::sptr m_series;
