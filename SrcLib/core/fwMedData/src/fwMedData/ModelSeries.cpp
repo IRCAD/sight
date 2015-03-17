@@ -8,6 +8,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/registry/macros.hpp>
 #include <fwData/Exception.hpp>
+#include <fwData/Reconstruction.hpp>
 
 #include "fwMedData/ModelSeries.hpp"
 
@@ -50,7 +51,11 @@ void ModelSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCop
 
     this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 
-    m_attrReconstructionDB = other->m_attrReconstructionDB;
+    m_attrReconstructionDB.clear();
+    for(const ::fwData::Reconstruction::sptr &rec : other->m_attrReconstructionDB)
+    {
+        m_attrReconstructionDB.push_back(::fwData::Object::copy(rec, cache));
+    }
 }
 
 //------------------------------------------------------------------------------
