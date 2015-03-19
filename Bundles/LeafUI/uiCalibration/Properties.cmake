@@ -13,7 +13,8 @@ set( DEPENDENCIES
         extData
         fwGui
         fwGuiQt
-        fwCom 
+        fwCom
+        fwMedData
         
         gui 
 )
