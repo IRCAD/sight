@@ -8,21 +8,21 @@
 #ifndef __ARDATA_CAMERASERIES_HPP__
 #define __ARDATA_CAMERASERIES_HPP__
 
-#include <map>
-#include <vector>
-
-#include <fwCore/macros.hpp>
+#include "arData/Camera.hpp"
+#include "arData/config.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
+
+#include <fwCore/macros.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwMedData/Series.hpp>
 
-#include "arData/Camera.hpp"
-#include "arData/config.hpp"
+#include <map>
+#include <vector>
 
 
 fwCampAutoDeclareDataMacro((arData)(CameraSeries), ARDATA_API);

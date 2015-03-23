@@ -4,18 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "arData/CameraSeries.hpp"
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
-
-#include <fwData/registry/macros.hpp>
 #include <fwData/Exception.hpp>
-
-#include <fwData/PointList.hpp>
-#include <fwData/Point.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/Point.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/registry/macros.hpp>
 
-#include "arData/CameraSeries.hpp"
 
 namespace arData
 {

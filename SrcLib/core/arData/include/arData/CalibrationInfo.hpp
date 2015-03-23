@@ -8,20 +8,18 @@
 #ifndef __ARDATA_CALIBRATIONINFO_HPP__
 #define __ARDATA_CALIBRATIONINFO_HPP__
 
-
-#include <list>
+#include "arData/config.hpp"
 
 #include <fwCore/macros.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
-#include <fwData/Object.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/Object.hpp>
 #include <fwData/PointList.hpp>
 
-
-#include "arData/config.hpp"
+#include <list>
 
 fwCampAutoDeclareDataMacro((arData)(CalibrationInfo), ARDATA_API);
 
@@ -33,9 +31,9 @@ namespace arData
  * and the second one contains pointList
  *
  */
-class ARDATA_CLASS_API CalibrationInfo: public ::fwData::Object
+class ARDATA_CLASS_API CalibrationInfo : public ::fwData::Object
 {
-    //ARDATA_API
+//ARDATA_API
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro((CalibrationInfo)( ::fwData::Object),(()),
@@ -52,16 +50,16 @@ public:
      * @{
      */
     ARDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_RECORD_SIG;
-    typedef ::fwCom::Signal<void()> AddedRecordSignalType;
+    typedef ::fwCom::Signal<void ()> AddedRecordSignalType;
 
     ARDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_RECORD_SIG;
-    typedef ::fwCom::Signal<void()> RemovedRecordSignalType;
+    typedef ::fwCom::Signal<void ()> RemovedRecordSignalType;
 
     ARDATA_API static const ::fwCom::Signals::SignalKeyType s_RESET_RECORD_SIG;
-    typedef ::fwCom::Signal<void()> ResetRecordSignalType;
+    typedef ::fwCom::Signal<void ()> ResetRecordSignalType;
 
     ARDATA_API static const ::fwCom::Signals::SignalKeyType s_GET_RECORD_SIG;
-    typedef ::fwCom::Signal<void(size_t)> GetRecordSignalType;
+    typedef ::fwCom::Signal<void (size_t)> GetRecordSignalType;
 
     /**
      * @}
@@ -95,7 +93,7 @@ public:
     ARDATA_API void resetRecords();
 
     ///Get all the images
-    ARDATA_API ImageContainerType getImageContainer() const ;
+    ARDATA_API ImageContainerType getImageContainer() const;
 
     ///Get all the pointLists
     ARDATA_API PointListContainerType getPointListContainer() const;
@@ -131,13 +129,13 @@ protected:
     ///List of pointList
     PointListContainerType m_pointListContainer;
     ///added record signal
-    AddedRecordSignalType::sptr   m_sigAddedRecord;
+    AddedRecordSignalType::sptr m_sigAddedRecord;
     /// removed record signal
-    RemovedRecordSignalType::sptr   m_sigRemovedRecord;
+    RemovedRecordSignalType::sptr m_sigRemovedRecord;
     ///reset records signal
-    ResetRecordSignalType::sptr   m_sigResetRecord;
+    ResetRecordSignalType::sptr m_sigResetRecord;
     ///get record signal
-    GetRecordSignalType::sptr   m_sigGetRecord;
+    GetRecordSignalType::sptr m_sigGetRecord;
 
 };
 

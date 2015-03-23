@@ -1,5 +1,8 @@
 fwLoadProperties()
 
+find_package(CppUnit)
+find_package(CAMP REQUIRED)
+
 fwUseForwardInclude(
     fwCore
     fwTest
@@ -9,9 +12,6 @@ fwUseForwardInclude(
     arDataCamp
     fwData
 )
-
-find_package(CppUnit)
-find_package(CAMP REQUIRED)
 
 fwInclude(
     ${CPPUNIT_INCLUDE_DIR}

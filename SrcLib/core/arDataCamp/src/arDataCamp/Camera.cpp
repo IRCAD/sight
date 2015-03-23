@@ -13,14 +13,14 @@
 fwCampImplementDataMacro((arData)(Camera))
 {
     builder
-        .tag("object_version", "1")
-        .tag("lib_name", "arData")
-        .base< ::fwData::Object>()
-        .property("intrinsic",&::arData::Camera::m_intrinsic)
-        .property("is_calibrated",&::arData::Camera::m_attrIsCalibrated)
-        .property("skew",&::arData::Camera::m_attrSkew)
-        .property("distortion_coefficient",&::arData::Camera::m_attrDistortionCoefficient)
-        .property("description",&::arData::Camera::m_description)
-        .property("camera_id",&::arData::Camera::m_cameraID)
+    .tag("object_version", "1")
+    .tag("lib_name", "arData")
+    .base< ::fwData::Object>()
+    .property("intrinsic",&::arData::Camera::m_intrinsic)
+    .property("is_calibrated",&::arData::Camera::m_isCalibrated)
+    .property("skew",&::arData::Camera::m_skew)
+    .property("distortion_coefficient",&::arData::Camera::m_distortionCoefficient)
+    .property("description",&::arData::Camera::m_description)
+    .property("camera_id",&::arData::Camera::m_cameraID)
     ;
 }
