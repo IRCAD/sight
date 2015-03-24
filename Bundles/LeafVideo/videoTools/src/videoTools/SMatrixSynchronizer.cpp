@@ -111,8 +111,7 @@ void SMatrixSynchronizer::updateMatrix(::fwCore::HiResClock::HiResClockType time
         msg->setSubject(matrix3D);
         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
         sig = matrix3D->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-        fwServicesNotifyMsgMacro( this->getLightID(), sig, msg );
-
+        sig->asyncEmit(msg);
     }
 
 }

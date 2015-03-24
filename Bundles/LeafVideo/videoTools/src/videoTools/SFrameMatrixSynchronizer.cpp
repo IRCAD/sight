@@ -249,8 +249,7 @@ void SFrameMatrixSynchronizer::synchronize()
         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
         sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(
             ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-
-        fwServicesNotifyMsgMacro( this->getLightID(), sig, msg );
+        sig->asyncEmit(msg);
     }
 
 
@@ -289,7 +288,7 @@ void SFrameMatrixSynchronizer::synchronize()
                         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
                         sig = matrix->signal< ::fwData::Object::ObjectModifiedSignalType >(
                             ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-                        fwServicesNotifyMsgMacro( this->getLightID(), sig, msg );
+                        sig->asyncEmit(msg);
                     }
                 }
                 else
