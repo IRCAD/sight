@@ -149,7 +149,10 @@ void SFrameUpdater::updateFrame( ::fwCore::HiResClock::HiResClockType timestamp 
             sig =
                 m_image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
-            fwServicesBlockAndNotifyMsgMacro( this->getLightID(), sig, msg, m_slotReceive );
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit(msg);
+            }
         }
 
         this->updateImage();
@@ -190,7 +193,10 @@ void SFrameUpdater::updateImage()
             sig =
                 m_image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
-            fwServicesBlockAndNotifyMsgMacro( this->getLightID(), sig, msg, m_slotReceive );
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit(msg);
+            }
         }
     }
 
