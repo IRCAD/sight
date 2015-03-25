@@ -18,7 +18,6 @@
 #include <fwTools/Object.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 namespace uiCalibration

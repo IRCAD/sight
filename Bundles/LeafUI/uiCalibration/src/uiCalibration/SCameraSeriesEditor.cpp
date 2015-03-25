@@ -20,7 +20,6 @@
 #include <fwTools/Object.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>

@@ -23,7 +23,6 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>

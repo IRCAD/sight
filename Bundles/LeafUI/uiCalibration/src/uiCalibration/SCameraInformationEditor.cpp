@@ -21,7 +21,6 @@
 #include <fwTools/Object.hpp>
 
 #include <fwServices/IController.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/ObjectService.hpp>
