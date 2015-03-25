@@ -13,7 +13,9 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 
 fwServicesRegisterMacro(::fwServices::IController, ::maths::SConcatenateMatrices, ::fwData::TransformationMatrix3D);
@@ -116,7 +118,14 @@ void SConcatenateMatrices::updating() throw (fwTools::Failed)
 
     ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
     msg->addEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
-    ::fwServices::IEditionService::notify(this->getSptr(), matrix, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( matrix);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = matrix->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 // ----------------------------------------------------------------------------

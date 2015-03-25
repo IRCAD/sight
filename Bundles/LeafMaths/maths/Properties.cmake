@@ -8,6 +8,7 @@ set( DEPENDENCIES
     fwTools
     fwCore
     fwComEd
+    fwCom
     fwServices
 )
 set( REQUIREMENTS dataReg servicesReg)
