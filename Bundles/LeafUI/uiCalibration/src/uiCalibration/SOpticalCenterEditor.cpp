@@ -202,7 +202,7 @@ void SOpticalCenterEditor::onCxSliderReleased()
     sig = camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >(
         ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
 
-    fwServicesNotifyMacro( camera->getLightID(), sig, ());
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
@@ -222,7 +222,7 @@ void SOpticalCenterEditor::onCySliderReleased()
     sig = camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >(
         ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
 
-    fwServicesNotifyMacro( camera->getLightID(), sig, ());
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
@@ -242,7 +242,7 @@ void SOpticalCenterEditor::onFySliderReleased()
     sig = camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >(
         ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
 
-    fwServicesNotifyMacro( camera->getLightID(), sig, ());
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

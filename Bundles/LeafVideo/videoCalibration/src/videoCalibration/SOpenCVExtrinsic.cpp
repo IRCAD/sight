@@ -251,7 +251,7 @@ void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
         sig = camSeries->signal< ::arData::CameraSeries::ExtrinsicCalibratedSignalType > (
             ::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
 
-        fwServicesNotifyMacro( camSeries->getLightID(), sig, ());
+        sig->asyncEmit();
     }
 }
 

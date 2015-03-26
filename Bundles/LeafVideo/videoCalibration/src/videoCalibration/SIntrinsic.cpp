@@ -163,7 +163,7 @@ void SIntrinsic::updating() throw (fwTools::Failed)
         sig = cam->signal< ::arData::Camera::IntrinsicCalibratedSignalType >(
             ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
 
-        fwServicesNotifyMacro( cam->getLightID(), sig, ());
+        sig->asyncEmit();
     }
 }
 

@@ -230,7 +230,7 @@ void SCameraConfigLauncher::onRemoveClicked()
         ::arData::CameraSeries::RemovedCameraSignalType::sptr sig;
         sig = m_cameraSeries->signal< ::arData::CameraSeries::RemovedCameraSignalType >(
             ::arData::CameraSeries::s_REMOVED_CAMERA_SIG);
-        fwServicesNotifyMacro(this->getLightID(), sig, (camera));
+        sig->asyncEmit(camera);
 
         // Remove calibrationInfo
         std::string calibrationInfoKey = "calibrationInfo" + ::boost::lexical_cast<std::string>(index);
@@ -367,7 +367,7 @@ void SCameraConfigLauncher::addCamera()
     ::arData::CameraSeries::AddedCameraSignalType::sptr sig;
     sig = m_cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
         ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
-    fwServicesNotifyMacro(this->getLightID(), sig, (camera));
+    sig->asyncEmit(camera);
 
     m_cameraComboBox->blockSignals(true);
     m_cameraComboBox->addItem(QString("Camera %1").arg(nbCam+1));

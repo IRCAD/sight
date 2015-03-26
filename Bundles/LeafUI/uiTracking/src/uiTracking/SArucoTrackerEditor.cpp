@@ -215,38 +215,37 @@ void SArucoTrackerEditor::onMethodChanged(int value)
     if(value >=0)
     {
         unsigned int i = value;
-        fwServicesNotifyMacro( this->getLightID(), m_sigMethodChanged, (i));
+        m_sigMethodChanged->asyncEmit(i);
     }
-
 }
 
 //------------------------------------------------------------------------------
 
 void SArucoTrackerEditor::onConstantChanged(double value)
 {
-    //Notify
-    fwServicesNotifyMacro( this->getLightID(), m_sigConstantChanged, (value));
+    //Emit
+    m_sigConstantChanged->asyncEmit (value);
 }
 
 //------------------------------------------------------------------------------
 void SArucoTrackerEditor::onBlockSizeChanged(double value)
 {
     //Notify
-    fwServicesNotifyMacro( this->getLightID(), m_sigBlockSizeChanged, (value));
+    m_sigBlockSizeChanged->asyncEmit(value);
 }
 
 //------------------------------------------------------------------------------
 void SArucoTrackerEditor::onBorderWidthChanged(double value)
 {
     //Notify
-    fwServicesNotifyMacro( this->getLightID(), m_sigBorderWidthChanged, (value));
+    m_sigBorderWidthChanged->asyncEmit (value);
 }
 
 //------------------------------------------------------------------------------
 void SArucoTrackerEditor::onPatternWidthChanged(double value)
 {
     //Notify
-    fwServicesNotifyMacro( this->getLightID(), m_sigPatternWidthChanged, (value));
+    m_sigPatternWidthChanged->asyncEmit(value);
 }
 
 //------------------------------------------------------------------------------
@@ -256,7 +255,7 @@ void SArucoTrackerEditor::onCornerMethodChanged(int value)
     if(value >=0)
     {
         unsigned int i = value;
-        fwServicesNotifyMacro( this->getLightID(), m_sigCornerMethodChanged, (i));
+        m_sigCornerMethodChanged->asyncEmit(i);
     }
 }
 
@@ -267,7 +266,7 @@ void SArucoTrackerEditor::onSpeedChanged(int value)
     if(value >= 0)
     {
         unsigned int i = value;
-        fwServicesNotifyMacro( this->getLightID(), m_sigSpeedChanged, (i));
+        m_sigSpeedChanged->asyncEmit(i);
     }
 }
 
@@ -275,14 +274,7 @@ void SArucoTrackerEditor::onSpeedChanged(int value)
 
 void SArucoTrackerEditor::onTagsDisplayed(int value)
 {
-    bool b = false;
-
-    if(value == 2)
-    {
-        b = true;
-    }
-
-    fwServicesNotifyMacro( this->getLightID(), m_sigTagsDisplayed, (b));
+    m_sigTagsDisplayed->asyncEmit((value == 2));
 }
 
 //------------------------------------------------------------------------------

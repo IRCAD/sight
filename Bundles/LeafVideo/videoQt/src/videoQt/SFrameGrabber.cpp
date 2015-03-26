@@ -334,7 +334,7 @@ void SFrameGrabber::onPositionChanged(qint64 position)
     sig = this->signal< ::videoQt::SFrameGrabber::PositionModifiedSignalType >
               ( ::videoQt::SFrameGrabber::s_POSITION_MODIFIED_SIG );
 
-    fwServicesNotifyMacro( this->getLightID(), sig, (position));
+    sig->asyncEmit(position);
 }
 
 //----------------------------------------------------------------------------
@@ -346,7 +346,7 @@ void SFrameGrabber::onDurationChanged(qint64 duration)
     sig = this->signal< ::videoQt::SFrameGrabber::DurationModifiedSignalType >
               ( ::videoQt::SFrameGrabber::s_DURATION_MODIFIED_SIG );
 
-    fwServicesNotifyMacro( SFrameGrabber->getLightID(), sig, (duration));
+    sig->asyncEmit(duration);
 }
 
 //----------------------------------------------------------------------------

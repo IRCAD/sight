@@ -377,8 +377,8 @@ void SArucoTracker::detectMarker(::fwCore::HiResClock::HiResClockType timestamp)
                     index = 0;
                 }
             }
-            //Notify
-            fwServicesNotifyMacro( this->getLightID(), m_sigDetectionDone, (timestamp));
+            //Emit
+            m_sigDetectionDone->asyncEmit(timestamp);
         }
     }
 }

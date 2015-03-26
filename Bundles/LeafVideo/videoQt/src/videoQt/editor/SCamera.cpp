@@ -213,7 +213,7 @@ void SCamera::onApply(int index)
         ::arData::Camera::IdModifiedSignalType::sptr sig;
         sig = camera->signal< ::arData::Camera::IdModifiedSignalType >( ::arData::Camera::s_ID_MODIFIED_SIG );
 
-        fwServicesNotifyMacro( camera->getLightID(), sig, (device.toStdString()));
+        sig->asyncEmit(device.toStdString());
     }
 }
 

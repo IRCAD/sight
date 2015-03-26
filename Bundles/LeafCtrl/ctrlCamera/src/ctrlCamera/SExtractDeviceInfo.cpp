@@ -170,7 +170,7 @@ void SExtractDeviceInfo::updating() throw( ::fwTools::Failed )
         ::arData::Camera::IntrinsicCalibratedSignalType::sptr sig;
         sig = m_camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >
                   ( ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
-        fwServicesNotifyMacro( m_camera->getLightID(), sig, ( ) );
+        sig->asyncEmit();
     }
 }
 

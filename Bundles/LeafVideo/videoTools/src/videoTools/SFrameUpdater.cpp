@@ -206,7 +206,7 @@ void SFrameUpdater::updateImage()
 
 void SFrameUpdater::requestRender()
 {
-    fwServicesNotifyMacro( this->getLightID(), m_sigRenderRequested, ());
+    m_sigRenderRequested->asyncEmit();
 }
 
 

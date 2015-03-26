@@ -165,7 +165,7 @@ void SSlider::changePosition()
     sig = this->signal< ::videoQt::editor::SSlider::PositionChangedSignalType >
               ( ::videoQt::editor::SSlider::s_POSITION_CHANGED_SIG );
 
-    fwServicesNotifyMacro( this->getLightID(), sig, (newPos));
+    sig->asyncEmit(newPos);
 
     m_sliderPressed = false;
 }
