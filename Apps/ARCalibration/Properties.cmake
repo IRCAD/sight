@@ -1,7 +1,7 @@
 
 set( NAME ARCalibration )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
@@ -39,3 +39,20 @@ set( REQUIREMENTS
     launcher
     uiTools
     )
+
+bundle_param(appXml PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)
+
+set(START_BUNDLES
+    dataReg
+    extDataReg
+    arDataReg
+    memory
+    preferences
+    patchMedicalData
+    visuVTK
+    visuVTKQt
+    guiQt
+    activities
+    appXml
+
+)
