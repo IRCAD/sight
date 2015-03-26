@@ -376,6 +376,13 @@ void SFrameGrabber::presentFrame()
     SPTR(::extData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
     ::boost::uint64_t* destBuffer               = reinterpret_cast< ::boost::uint64_t* >( buffer->addElement(0) );
 
+    // Sometimes we lost sync and Qt throws us an invalid frame
+    if( m_videoFrame.pixelFormat() == QVideoFrame::Format_Invalid )
+    {
+        SLM_WARN("Dropped frame");
+        return;
+    }
+
     SLM_ASSERT("Pixel format must be RGB32", m_videoFrame.pixelFormat() == QVideoFrame::Format_RGB32 ||
                m_videoFrame.pixelFormat() == QVideoFrame::Format_ARGB32_Premultiplied ||
                m_videoFrame.pixelFormat() == QVideoFrame::Format_ARGB32);
