@@ -20,7 +20,6 @@
 #include <fwServices/Base.hpp>
 
 #include <aruco/markerdetector.h>
-#include <boost/shared_ptr.hpp>
 
 namespace trackerAruco
 {

@@ -20,7 +20,6 @@
 #include <arlcore/Point.h>
 #include <arlcore/Reconst3D.h>
 
-#include <boost/shared_ptr.hpp>
 
 namespace tracker
 {
