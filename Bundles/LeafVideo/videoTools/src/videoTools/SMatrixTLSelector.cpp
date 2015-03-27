@@ -26,6 +26,8 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
+#include <functional>
+
 fwServicesRegisterMacro(::videoTools::ISynchronizer, ::videoTools::SMatrixTLSelector, ::fwData::Composite);
 
 namespace videoTools
@@ -128,7 +130,7 @@ void SMatrixTLSelector::starting() throw (fwTools::Failed)
     SLM_ASSERT("No valid worker for timer.", m_associatedWorker);
     m_timer                                      = m_associatedWorker->createTimer();
     ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(m_timeStep);
-    m_timer->setFunction( ::boost::bind( &SMatrixTLSelector::synchronize, this)  );
+    m_timer->setFunction( std::bind( &SMatrixTLSelector::synchronize, this)  );
     m_timer->setDuration(duration);
     m_timer->start();
 
