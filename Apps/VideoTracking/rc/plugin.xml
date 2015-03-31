@@ -16,7 +16,7 @@
                 <gui>
                     <frame>
                         <name>VideoTracking</name>
-                        <icon>Bundles/VideoTracking_0-1/tuto.ico</icon>
+                        <icon>Bundles/VideoTracking_0-1/videotracking.ico</icon>
                     </frame>
                     <toolBar />
                 </gui>

@@ -9,7 +9,7 @@
         <id>ARCalibrationAppBase</id>
         <parameters>
             <param name="appName" value="ARCalibration 0.1" />
-            <param name="appIconPath" value="Bundles/ARCalibration_0-1/app.ico" />
+            <param name="appIconPath" value="Bundles/ARCalibration_0-1/arcalibration.ico" />
         </parameters>
     </extension>
 
