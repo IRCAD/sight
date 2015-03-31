@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UICALIBRATION_SCAMERAINFORMATIONEDITOR_HPP_
-#define _UICALIBRATION_SCAMERAINFORMATIONEDITOR_HPP_
+#ifndef __UICALIBRATION_SCAMERAINFORMATIONEDITOR_HPP__
+#define __UICALIBRATION_SCAMERAINFORMATIONEDITOR_HPP__
 
 #include <list>
 
@@ -18,7 +18,6 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/List.hpp>
-#include <fwData/Camera.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -31,7 +30,7 @@ namespace uiCalibration
  * @class   SCameraInformationEditor
  *
  * Service registered details : \n
- * fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, ::fwData::Camera)
+ * fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraInformationEditor, ::arData::Camera)
  */
 class UICALIBRATION_CLASS_API SCameraInformationEditor : public QObject,
                                                          public ::gui::editor::IEditor
@@ -185,4 +184,4 @@ protected:
 };
 } // namespace uiCameraSelectorQt
 
-#endif // _UICALIBRATION_SCAMERAINFORMATIONEDITOR_HPP_
+#endif // __UICALIBRATION_SCAMERAINFORMATIONEDITOR_HPP__
