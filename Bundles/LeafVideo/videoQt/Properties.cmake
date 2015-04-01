@@ -19,4 +19,6 @@ set( DEPENDENCIES
         gui
         )
 set( REQUIREMENTS  )
-
+set( PLUGINS
+    mediaservice
+)
