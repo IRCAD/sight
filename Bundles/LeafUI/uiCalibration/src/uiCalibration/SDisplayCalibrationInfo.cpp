@@ -39,9 +39,7 @@ SDisplayCalibrationInfo::SDisplayCalibrationInfo() throw ()
     m_slotDisplayImage = ::fwCom::newSlot( &SDisplayCalibrationInfo::displayImage, this );
     ::fwCom::HasSlots::m_slots( s_DISPLAY_IMAGE_SLOT, m_slotDisplayImage );
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }

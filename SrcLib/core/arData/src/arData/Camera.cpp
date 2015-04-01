@@ -35,9 +35,7 @@ Camera::Camera( ::fwData::Object::Key key ) :
     ::fwCom::HasSignals::m_signals(s_INTRINSIC_CALIBRATED_SIG, m_sigIntrinsicCalibrated)
         (s_ID_MODIFIED_SIG, m_sigIdModified);
 
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
+
 }
 
 // -------------------------------------------------------------------------

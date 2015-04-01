@@ -42,9 +42,7 @@ SChessBoardDetector::SChessBoardDetector() throw () : m_width(0),
     ::fwCom::HasSlots::m_slots(s_DETECTPTS_SLOT, m_slotDetectPts);
 
 
-#ifdef COM_LOG
-    m_slotUpdateFrame->setID( s_DETECTPTS_SLOT );
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }

@@ -44,10 +44,7 @@ SFrameUpdater::SFrameUpdater() throw() :
     m_signals( s_RENDER_REQUESTED_SIG,  m_sigRenderRequested);
 
 
-#ifdef COM_LOG
-    m_slotUpdateFrame->setID( s_UPDATE_FRAME_SLOT );
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 

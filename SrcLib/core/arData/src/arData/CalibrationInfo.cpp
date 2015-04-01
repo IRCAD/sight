@@ -41,9 +41,7 @@ CalibrationInfo::CalibrationInfo(::fwData::Object::Key key)
     ::fwCom::HasSignals::m_signals(s_GET_RECORD_SIG, m_sigGetRecord);
 
 
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
+
 }
 
 //------------------------------------------------------------------------------

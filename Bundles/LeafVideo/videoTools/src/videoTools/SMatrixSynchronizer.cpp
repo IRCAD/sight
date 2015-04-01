@@ -49,9 +49,7 @@ SMatrixSynchronizer::SMatrixSynchronizer() throw () : m_lastTimestamp(0)
 
     ::fwCom::HasSlots::m_slots(s_UPDATE_MATRIX_SLOT, m_slotUpdateMatrix);
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }

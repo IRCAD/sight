@@ -42,9 +42,7 @@ SCameraSeriesEditor::SCameraSeriesEditor() throw () : m_camIndex(1)
     m_slotUpdateInfos = ::fwCom::newSlot(&SCameraSeriesEditor::updateInformations, this);
     ::fwCom::HasSlots::m_slots(s_UPDATE_INFOS_SLOT, m_slotUpdateInfos);
 
-#ifdef COM_LOG
-    m_slotUpdateInfos->setID( s_UPDATE_INFOS_SLOT );
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }

@@ -55,9 +55,7 @@ SStatus::SStatus() throw()
     ;
 
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
 }

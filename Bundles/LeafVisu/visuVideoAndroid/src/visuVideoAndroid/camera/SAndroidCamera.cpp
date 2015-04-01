@@ -50,9 +50,7 @@ SAndroidCamera::SAndroidCamera() throw()
     m_slotOpenCamera = ::fwCom::newSlot( &SAndroidCamera::openCamera, this );
     ::fwCom::HasSlots::m_slots( s_OPEN_CAMERA_SLOT, m_slotOpenCamera);
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
+
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 
     m_cameraId  = 0;

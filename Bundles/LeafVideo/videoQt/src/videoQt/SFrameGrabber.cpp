@@ -83,10 +83,6 @@ SFrameGrabber::SFrameGrabber() throw() : m_cameraID(""),
         ( s_SET_POSITION_VIDEO_SLOT, m_slotSetPositionVideo)
         ( s_PRESENT_SLOT, m_slotPresentFrame);
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
-
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 
     // Create a worker for the frame copy, we don't want this on the main thread

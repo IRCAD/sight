@@ -48,10 +48,7 @@ SCheckChessBoard::SCheckChessBoard() throw () : m_width(0),
     ::fwCom::HasSignals::m_signals(s_CHESSBOARD_DETECTED_SIG, m_sigChessboardDetected)
         (s_CHESSBOARD_NOT_DETECTED_SIG, m_sigChessboardNotDetected);
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots->setID();
-    ::fwCom::HasSignals::m_signals->setID();
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }

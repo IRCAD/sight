@@ -47,9 +47,7 @@ SImagesSelector::SImagesSelector() throw() : m_captureIdx(0)
         ( s_RESET_SLOT, m_slotReset)
         ( s_ADD_SLOT, m_slotAdd);
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }

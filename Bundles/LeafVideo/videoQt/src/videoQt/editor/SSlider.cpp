@@ -78,10 +78,7 @@ SSlider::SSlider() throw() :
     ::fwCom::HasSlots::m_slots( s_SET_POSITION_SLIDER_SLOT, m_slotChangePosition)
         ( s_SET_DURATION_SLIDER_SLOT, m_slotChangeDuration);
 
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 

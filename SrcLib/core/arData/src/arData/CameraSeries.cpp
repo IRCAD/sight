@@ -37,9 +37,7 @@ CameraSeries::CameraSeries(::fwData::Object::Key key) : Series(key)
         (s_REMOVED_CAMERA_SIG, m_sigRemovedCamera)
         (s_EXTRINSIC_CALIBRATED_SIG, m_sigExtrinsicCalibrated);
 
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
+
 }
 
 //------------------------------------------------------------------------------

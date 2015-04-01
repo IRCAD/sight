@@ -44,9 +44,7 @@ SCameraInformationEditor::SCameraInformationEditor() throw ()
     m_slotUpdateInfos = ::fwCom::newSlot(&SCameraInformationEditor::updateInformations, this);
     ::fwCom::HasSlots::m_slots(s_UPDATE_INFOS_SLOT, m_slotUpdateInfos);
 
-#ifdef COM_LOG
-    m_slotUpdateInfos->setID( s_UPDATE_INFOS_SLOT );
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }

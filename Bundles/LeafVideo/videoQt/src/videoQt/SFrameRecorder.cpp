@@ -48,9 +48,7 @@ SFrameRecorder::SFrameRecorder() throw() : m_count(0),
         (s_STOP_RECORD_SLOT, m_slotStopRecord)
         (s_PAUSE_RECORD_SLOT, m_slotPauseRecord);
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
 }

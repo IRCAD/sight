@@ -67,9 +67,7 @@ SArucoTracker::SArucoTracker() throw () :
     m_sigDetectionDone = DetectionDoneSignalType::New();
     m_signals( s_DETECTION_DONE_SIG,  m_sigDetectionDone);
 
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
+
 
     m_slotChangeMethod           = ::fwCom::newSlot(&SArucoTracker::setMethod, this);
     m_slotChangeBlockSize        = ::fwCom::newSlot(&SArucoTracker::setBlockSize, this);

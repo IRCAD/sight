@@ -61,9 +61,7 @@ SArucoTrackerEditor::SArucoTrackerEditor() throw()
     m_sigSpeedChanged = SpeedChangedSignalType::New();
     m_signals( s_SPEED_CHANGED_SIG,  m_sigSpeedChanged);
 
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
+
 }
 
 //------------------------------------------------------------------------------

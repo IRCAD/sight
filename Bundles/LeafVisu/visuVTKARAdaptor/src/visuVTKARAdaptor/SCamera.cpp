@@ -84,9 +84,7 @@ SCamera::SCamera() throw()
 
     ::fwCom::HasSlots::m_slots(s_CALIBRATE_SLOT, m_slotCalibrate);
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
 }

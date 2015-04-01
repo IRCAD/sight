@@ -47,9 +47,7 @@ SCalibrationInfoEditor::SCalibrationInfoEditor() throw () : m_calInfo1Key(""),
     ::fwCom::HasSlots::m_slots( s_RESET_SLOT, m_slotReset);
     ::fwCom::HasSlots::m_slots( s_GET_SELECTION_SLOT, m_slotGetSelection);
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
