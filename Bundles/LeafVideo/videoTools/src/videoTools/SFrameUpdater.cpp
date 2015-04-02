@@ -17,7 +17,6 @@
 
 #include <extData/timeline/Buffer.hpp>
 
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/helper/Array.hpp>
 

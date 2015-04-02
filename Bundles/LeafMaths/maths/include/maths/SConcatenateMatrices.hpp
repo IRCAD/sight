@@ -71,8 +71,6 @@ protected:
     /// Does nothing.
     MATHS_API void updating() throw (fwTools::Failed);
 
-    MATHS_API void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
 private:
 
     struct TransformMatrix

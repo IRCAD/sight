@@ -26,7 +26,6 @@
 
 #include <fwCom/Signal.hxx>
 #include <fwComEd/helper/Array.hpp>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -104,12 +103,8 @@ void SMatrixSynchronizer::updateMatrix(::fwCore::HiResClock::HiResClockType time
             }
         }
 
-        ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-        msg->addEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
-        msg->setSubject(matrix3D);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = matrix3D->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-        sig->asyncEmit(msg);
+        auto sig = matrix3D->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
     }
 
 }

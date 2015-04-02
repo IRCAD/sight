@@ -6,8 +6,6 @@
 
 #include "maths/SConcatenateMatrices.hpp"
 
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -116,28 +114,10 @@ void SConcatenateMatrices::updating() throw (fwTools::Failed)
         }
     }
 
-    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( matrix);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = matrix->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
-}
-
-// ----------------------------------------------------------------------------
-
-void SConcatenateMatrices::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-    ::fwComEd::TransformationMatrix3DMsg::csptr matrixMsg =
-        ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(_msg);
-
-    if (matrixMsg && matrixMsg->getSubject().lock() != this->getObject())
-    {
-        this->updating();
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

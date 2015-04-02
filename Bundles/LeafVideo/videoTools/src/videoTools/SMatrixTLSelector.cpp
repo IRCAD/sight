@@ -21,7 +21,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/helper/Array.hpp>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -222,13 +221,9 @@ void SMatrixTLSelector::synchronize()
                             }
                         }
 
-                        ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-                        msg->addEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
-                        msg->setSubject(matrix);
-                        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-                        sig = matrix->signal< ::fwData::Object::ObjectModifiedSignalType >(
-                            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-                        sig->asyncEmit(msg);
+                        auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
+                            ::fwData::Object::s_MODIFIED_SIG);
+                        sig->asyncEmit();
                     }
                 }
                 else

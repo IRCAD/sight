@@ -17,7 +17,6 @@
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -148,7 +147,7 @@ void SCamera::doStart() throw(fwTools::Failed)
 
 void SCamera::doUpdate() throw(fwTools::Failed)
 {
-
+    this->updateFromTMatrix3D();
 }
 
 //------------------------------------------------------------------------------
@@ -173,15 +172,6 @@ void SCamera::doStop() throw(fwTools::Failed)
 
 void SCamera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    if (msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
-    {
-        this->calibrate();
-    }
-
-    if (msg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED))
-    {
-        this->updateFromTMatrix3D();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -209,15 +199,10 @@ void SCamera::updateFromVtk()
         }
     }
 
-    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( trf);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = trf->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = trf->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 
     camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
