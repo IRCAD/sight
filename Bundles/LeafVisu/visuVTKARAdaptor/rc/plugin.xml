@@ -2,8 +2,6 @@
     
     <library name="visuVTKARAdaptor" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
     <requirement id="visu" />
     <requirement id="visuVTK" />
     

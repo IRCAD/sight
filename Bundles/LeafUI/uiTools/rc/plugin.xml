@@ -2,8 +2,6 @@
  
  <library name="uiTools" />
  
-    <requirement id="dataReg" />
-    <requirement id="servicesReg" />
     <requirement id="gui" />
     
     <extension implements="::fwServices::registry::ServiceFactory">

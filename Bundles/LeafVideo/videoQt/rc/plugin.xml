@@ -2,8 +2,6 @@
     
     <library name="videoQt" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
     <requirement id="visu" />
        
     <extension implements="::fwServices::registry::ServiceFactory">

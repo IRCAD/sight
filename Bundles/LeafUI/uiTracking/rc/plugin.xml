@@ -1,8 +1,6 @@
 <plugin id="uiTracking" class="::uiTracking::Plugin" >
     <library name="uiTracking" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
     <requirement id="gui"/>
 
     <extension implements="::fwServices::registry::ServiceFactory">

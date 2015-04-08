@@ -2,10 +2,6 @@
 
     <library name="trackerAruco" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
-    <requirement id="extDataReg" />
-    <requirement id="arDataReg" />
     <requirement id="tracker" />
     
     <extension implements="::fwServices::registry::ServiceFactory">

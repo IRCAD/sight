@@ -2,9 +2,6 @@
     
     <library name="ctrlCamera" />
     
-    <requirement id="dataReg" />
-    <requirement id="arDataReg" />
-    
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::ctrlCamera::SExtractDeviceInfo</service>

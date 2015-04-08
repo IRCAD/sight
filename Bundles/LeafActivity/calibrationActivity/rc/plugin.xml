@@ -2,10 +2,6 @@
 
     <library name="calibrationActivity" />
 
-    <requirement id="servicesReg" />
-    <requirement id="dataReg" />
-    <requirement id="extDataReg" />
-    <requirement id="arDataReg" />
     <requirement id="gui" />
     <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKARAdaptor" />

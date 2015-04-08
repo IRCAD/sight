@@ -1,11 +1,7 @@
 <plugin id="uiCalibration" class="uiCalibration::Plugin" >
     <library name="uiCalibration" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
     <requirement id="gui"/>
-    <requirement id="arDataReg"/>
-    <requirement id="extDataReg"/>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
