@@ -27,15 +27,3 @@ set( REQUIREMENTS
     )
 
 bundle_param(appXml PARAM_LIST config PARAM_VALUES VideoTracking)
-
-set(START_BUNDLES
-    extDataReg
-    arDataReg
-    uiTracking
-    visuVTK
-    visuVTKQt
-    guiQt
-    arMedia
-    appXml
-
-)
