@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "MatrixFunctionsTest.hpp"
 
 #include <fwMath/MatrixFunctions.hpp>
 #include <fwMath/IntrasecTypes.hpp>
@@ -10,7 +12,8 @@
 #include <fwMath/LineFunctions.hpp>
 #include <fwMath/MatrixFunctions.hpp>
 
-#include "MatrixFunctionsTest.hpp"
+#include <vnl/vnl_matrix_fixed.h>
+#include <vnl/vnl_vector_fixed.h>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMath::ut::MatrixFunctionsTest );
@@ -25,14 +28,17 @@ void MatrixFunctionsTest::setUp()
     // Set up context before running a test.
 }
 
+//------------------------------------------------------------------------------
+
 void MatrixFunctionsTest::tearDown()
 {
     // Clean up after the test run.
 }
 
+//------------------------------------------------------------------------------
+
 void MatrixFunctionsTest::checkMultVecMatrix()
 {
-    // Produit scalaire.
     const double X = rand()%1 + 0.9;
     const double Y = rand()%10 + 0.8;
     const double Z = rand()%70 + 0.2;
@@ -42,20 +48,38 @@ void MatrixFunctionsTest::checkMultVecMatrix()
     const double c3 = rand()%29+0.5;
     const double c4 = rand()%50+0.6;
 
+
+    /// fwMaths version
     const fwVec3d source = {X, Y, Z};
     fwVec3d result;
-    const fwMatrix4x4 matrice = {1,c1,1,c2, 1,2,c3,c4, 1,1,5,c2, c3,1,c1,1};
+    const fwMatrix4x4 matrice = { 1., c1, 1., c2,
+                                  1., 2., c3, c4,
+                                  1., 1., 5., c2,
+                                  c3, 1., c1, 1. };
     ::fwMath::multVecMatrix(matrice, source, result);
 
-//  SbVec3f src(X, Y, Z);
-//  SbVec3f sbResult;
-//  SbMatrix sbmatrix(1,c1,1,c2, 1,2,c3,c4, 1,1,5,c2, c3,1,c1,1);
-//  sbmatrix.multVecMatrix(src, sbResult);
-//
-//  CPPUNIT_ASSERT_DOUBLES_EQUAL(result[0], sbResult[0], 0.00001);
-//  CPPUNIT_ASSERT_DOUBLES_EQUAL(result[1], sbResult[1], 0.00001);
-//  CPPUNIT_ASSERT_DOUBLES_EQUAL(result[2], sbResult[2], 0.00001);
+
+    /// VNL version
+    const double elementsMat[] = { 1., c1, 1., c2,
+                                   1., 2., c3, c4,
+                                   1., 1., 5., c2,
+                                   c3, 1., c1, 1. };
+    const double elementsSrc[] = {X, Y, Z, 1.};
+
+    vnl_vector<double> vnlSource(4);
+    vnlSource.set(elementsSrc);
+
+    vnl_matrix<double> vnlMatrice(4, 4);
+    vnlMatrice.set(elementsMat);
+
+    vnl_vector_fixed<double, 4> vnlResult = vnlMatrice * vnlSource;
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(result[0], vnlResult[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(result[1], vnlResult[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(result[2], vnlResult[2], 0.00001);
 }
+
+//------------------------------------------------------------------------------
 
 void MatrixFunctionsTest::checkRotationMatrix()
 {
@@ -92,6 +116,8 @@ void MatrixFunctionsTest::checkRotationMatrix()
 //  CPPUNIT_ASSERT_DOUBLES_EQUAL(result[3][2], sbResult[3][2], 0.00001);
 //  CPPUNIT_ASSERT_DOUBLES_EQUAL(result[3][3], sbResult[3][3], 0.00001);
 }
+
+//------------------------------------------------------------------------------
 
 } //namespace ut
 } //namespace fwMath

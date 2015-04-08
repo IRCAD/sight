@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2014.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,9 +17,9 @@ void multVecMatrix(const fwMatrix4x4 & _matrix, const fwVec3d& _source ,fwVec3d&
     y = _source[1];
     z = _source[2];
 
-    _dest[0] = _matrix[0][0] * x + _matrix[1][0] * y + _matrix[2][0] * z + _matrix[3][0];
-    _dest[1] = _matrix[0][1] * x + _matrix[1][1] * y + _matrix[2][1] * z + _matrix[3][1];
-    _dest[2] = _matrix[0][2] * x + _matrix[1][2] * y + _matrix[2][2] * z + _matrix[3][2];
+    _dest[0] = _matrix[0][0] * x + _matrix[0][1] * y + _matrix[0][2] * z + _matrix[0][3];
+    _dest[1] = _matrix[1][0] * x + _matrix[1][1] * y + _matrix[1][2] * z + _matrix[1][3];
+    _dest[2] = _matrix[2][0] * x + _matrix[2][1] * y + _matrix[2][2] * z + _matrix[2][3];
 }
 
 //------------------------------------------------------------------------------
