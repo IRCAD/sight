@@ -27,18 +27,18 @@
 
 #include "visuVTKAdaptor/Transform.hpp"
 
-class TransformClallback : public ::vtkCommand
+class TransformCallback : public ::vtkCommand
 {
 public:
 
-    static TransformClallback* New(::visuVTKAdaptor::Transform* adaptor) {
-        TransformClallback *cb = new TransformClallback;
+    static TransformCallback* New(::visuVTKAdaptor::Transform* adaptor) {
+        TransformCallback *cb = new TransformCallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
 
-     TransformClallback() : m_adaptor(NULL) {}
-    ~TransformClallback() {}
+     TransformCallback() : m_adaptor(NULL) {}
+    ~TransformCallback() {}
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )
     {
@@ -59,7 +59,7 @@ namespace visuVTKAdaptor
 Transform::Transform() throw()
 {
     m_transform = 0;
-    m_transformCommand = TransformClallback::New(this);
+    m_transformCommand = TransformCallback::New(this);
     //addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
@@ -86,25 +86,55 @@ void Transform::configuring() throw(fwTools::Failed)
         const bool autoRenderValue = (autoRender == "true");
         this->setAutoRender(autoRenderValue);
     }
+
+    if ( m_configuration->hasAttribute( "parent" ) )
+    {
+        m_parentId   = m_configuration->getAttributeValue("parent");
+
+        if(m_parentId.empty())
+        {
+            OSLM_ERROR("Can't find vtkTransform '" << m_parentId << "'");
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void Transform::doStart() throw(fwTools::Failed)
 {
+    if(!m_transformId.empty())
+    {
+        m_renderService.lock()->getOrAddVtkTransform(m_transformId);
+    }
+    if(!m_parentId.empty())
+    {
+        m_parentTransform = m_renderService.lock()->getOrAddVtkTransform(m_parentId);
+    }
 
     this->doUpdate();
     getTransform()->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
-
 }
 
-
+//------------------------------------------------------------------------------
 
 void Transform::updateFromVtk()
 {
-    getTransform()->RemoveObserver( m_transformCommand );
+    vtkTransform* vtkTrf = this->getTransform();
+
+    vtkTrf->RemoveObserver( m_transformCommand );
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
-    vtkMatrix4x4* mat = getTransform()->GetMatrix();
+
+    vtkMatrix4x4* mat = NULL;
+
+    if(m_parentTransform)
+    {
+        // Get the matrix before concatenation
+        mat = vtkTrf->GetConcatenatedTransform(0)->GetMatrix();
+    }
+    else
+    {
+        mat = vtkTrf->GetMatrix();
+    }
 
     {
         ::fwData::mt::ObjectWriteLock lock(trf);
@@ -116,19 +146,21 @@ void Transform::updateFromVtk()
             }
         }
     }
+
     ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
     msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
     ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
 
-    getTransform()->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
+    vtkTrf->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
 }
-
 
 //------------------------------------------------------------------------------
 
 void Transform::doUpdate() throw(fwTools::Failed)
 {
-    getTransform()->RemoveObserver( m_transformCommand );
+    vtkTransform* vtkTrf = this->getTransform();
+
+    vtkTrf->RemoveObserver( m_transformCommand );
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
     vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
@@ -142,17 +174,28 @@ void Transform::doUpdate() throw(fwTools::Failed)
             }
         }
     }
-    vtkTransform* vtkTrf = this->getTransform();
-    vtkTrf->SetMatrix(mat);
+
+    if(m_parentTransform)
+    {
+        vtkTrf->PostMultiply();
+        vtkTrf->SetMatrix( mat );
+        vtkTrf->Concatenate( m_parentTransform );
+    }
+    else
+    {
+        vtkTrf->SetMatrix(mat);
+    }
+
     vtkTrf->Modified();
-    getTransform()->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
+    vtkTrf->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
     mat->Delete();
     this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
 
-void Transform::setTransform(vtkTransform *t){
+void Transform::setTransform(vtkTransform *t)
+{
     if ( m_transform != t )
     {
         if (m_transform)
@@ -166,11 +209,12 @@ void Transform::setTransform(vtkTransform *t){
     }
 
     m_transform = t;
-};
+}
 
 //------------------------------------------------------------------------------
 
-vtkTransform * Transform::getTransform(){
+vtkTransform * Transform::getTransform()
+{
     vtkTransform *t = m_transform;
     if (t == 0)
     {

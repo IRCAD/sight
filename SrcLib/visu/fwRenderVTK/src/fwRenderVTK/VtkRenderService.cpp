@@ -304,9 +304,10 @@ vtkTransform * VtkRenderService::createVtkTransform( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::addVtkObject( VtkObjectIdType _id, vtkObject * _vtkObj )
+void VtkRenderService::addVtkObject( const VtkObjectIdType& _id, vtkObject * _vtkObj )
 {
-    assert( ! _id.empty() );
+    SLM_ASSERT( !_id.empty(), "vtkObject id is empty" );
+    SLM_ASSERT( _vtkObj, "vtkObject is NULL" );
 
     if( m_vtkObjects.count(_id) == 0 )
     {
@@ -545,12 +546,12 @@ vtkAbstractPropPicker * VtkRenderService::getPicker(PickerIdType pickerId)
 
 //-----------------------------------------------------------------------------
 
-vtkObject * VtkRenderService::getVtkObject(VtkObjectIdType objectId)
+vtkObject * VtkRenderService::getVtkObject(const VtkObjectIdType& objectId)
 {
     OSLM_WARN_IF("vtkObject '" << objectId << "' not found",
             !(objectId.empty() ||  ( !objectId.empty() && m_vtkObjects.count(objectId) == 1)));
 
-    if ( objectId.empty() )
+    if ( objectId.empty() || m_vtkObjects.count(objectId) == 0)
     {
         return NULL;
     }
@@ -572,6 +573,19 @@ SPTR (IVtkAdaptorService) VtkRenderService::getAdaptor(VtkRenderService::Adaptor
     }
 
     return adaptor;
+}
+
+//-----------------------------------------------------------------------------
+
+vtkTransform * VtkRenderService::getOrAddVtkTransform( const VtkObjectIdType& _id )
+{
+    vtkTransform *t = vtkTransform::SafeDownCast(getVtkObject(_id));
+    if(t == 0)
+    {
+        t = vtkTransform::New();
+        this->addVtkObject(_id, t);
+    }
+    return t;
 }
 
 //-----------------------------------------------------------------------------

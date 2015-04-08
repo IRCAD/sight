@@ -72,10 +72,13 @@ public :
     FWRENDERVTK_API vtkAbstractPropPicker * getPicker(PickerIdType pickerId);
 
     /// Returns the vtkObject with the given id
-    FWRENDERVTK_API vtkObject * getVtkObject(VtkObjectIdType objectId);
+    FWRENDERVTK_API vtkObject * getVtkObject(const VtkObjectIdType& objectId);
 
     /// Returns the adaptor with the given id
     FWRENDERVTK_API SPTR (IVtkAdaptorService) getAdaptor(AdaptorIdType adaptorId);
+
+    /// Get a vtkTransform in the VtkRenderService, referenced by a key. Create it if it does not exist.
+    FWRENDERVTK_API vtkTransform * getOrAddVtkTransform( const VtkObjectIdType& _id );
 
     bool getPendingRenderRequest(){return m_pendingRenderRequest;}
     void setPendingRenderRequest(bool b){m_pendingRenderRequest=b;}
@@ -149,7 +152,7 @@ protected:
     FWRENDERVTK_API void updating() throw( ::fwTools::Failed);
 
     /// Add a vtk object in the VtkRenderService, referenced by a key.
-    void addVtkObject( VtkObjectIdType _id, vtkObject * _vtkObj );
+    FWRENDERVTK_API void addVtkObject( const VtkObjectIdType& _id, vtkObject * _vtkObj );
 
     /// Slot to call render method
     RenderSlotType::sptr m_slotRender;

@@ -626,7 +626,8 @@ void Mesh::createTransformService()
 
     if(!this->getTransformId().empty())
     {
-        m_transform->Concatenate(this->getTransform());
+        vtkTransform *t = m_renderService.lock()->getOrAddVtkTransform(m_transformId);
+        m_transform->Concatenate(t);
     }
 
     ::fwData::TransformationMatrix3D::sptr fieldTransform;

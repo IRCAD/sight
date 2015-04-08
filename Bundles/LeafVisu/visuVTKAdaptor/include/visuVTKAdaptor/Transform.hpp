@@ -13,6 +13,8 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
+#include <vtkSmartPointer.h>
+
 class vtkTransform;
 
 namespace visuVTKAdaptor
@@ -52,13 +54,14 @@ protected:
      * @brief Configure the adaptor.
      * @verbatim
     <adaptor id="tmAdaptor" class="::visuVTKAdaptor::Transform" objectId="tm3dKey" >
-        <config transform="transform" autoRender="true" />
+        <config transform="transform" autoRender="true" parent="parentTransform" />
     </adaptor> 
        @endverbatim
      * With : 
      *  - \b transform (mandatory) : the vtkTransform to associate to the adaptor
      *  - \b autoRender (optional, "true" by default): if autoRender=true,  the scene is automatically rendered after
      *    doStart, doUpdate, doSwap, doReceive and doStop if m_vtkPipelineModified=true.
+     *  - \b parent (optional): id of the parent vtkTransform, it will be concatenated with this current vtkTransform.
      */
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     
@@ -79,6 +82,12 @@ protected:
     
     /// Command used to listen m_transform changes
     vtkCommand* m_transformCommand;
+
+    /// Parent vtkTransform id (optional)
+    std::string m_parentId;
+
+    /// Parent vtkTransform (optional)
+    vtkSmartPointer<vtkTransform> m_parentTransform;
 };
 
 
