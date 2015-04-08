@@ -25,7 +25,6 @@ void IEditionService::notify(
 
     _pMsg->setSource(_pSource);
     _pMsg->setSubject(_pSubject);
-    _pMsg->timeModified();
 
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = _pSubject->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
@@ -46,7 +45,6 @@ void IEditionService::notify(
 
     _pMsg->setSource(_pSource);
     _pMsg->setSubject(_pSubject);
-    _pMsg->timeModified();
 
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = _pSubject->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );

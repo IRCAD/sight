@@ -106,7 +106,6 @@ std::string ObjectMsg::convertToLightString( std::string _initialString )
 std::string ObjectMsg::getGeneralInfo() const
 {
     ::fwServices::IService::sptr source = m_source.lock();
-    std::string msgUUID    = convertToLightString( const_cast< ObjectMsg * >(this)->getID() );
 
     std::string sourceUUID = convertToLightString( source? source->getID():"[source died]" );
     std::string destUUID   = convertToLightString( m_subject.expired()?"[subject died]":m_subject.lock()->getID());
@@ -121,7 +120,7 @@ std::string ObjectMsg::getGeneralInfo() const
 
 
     std::stringstream sstream;
-    sstream << msgUUID << " | " << sourceUUID << " ===> " << destUUID << eventstream.str();
+    sstream << sourceUUID << " ===> " << destUUID << eventstream.str();
 
     return sstream.str();
 }

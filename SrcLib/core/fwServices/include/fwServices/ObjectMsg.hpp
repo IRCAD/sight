@@ -7,18 +7,19 @@
 #ifndef _FWSERVICES_OBJECTMSG_HPP_
 #define _FWSERVICES_OBJECTMSG_HPP_
 
-#include <map>
-#include <string>
-#include <vector>
-
-#include <boost/function.hpp>
-
+#include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
 #include <fwData/Object.hpp>
 
 #include "fwServices/factory/message/new.hpp"
 #include "fwServices/registry/message/detail.hpp"
 #include "fwServices/config.hpp"
+
+#include <map>
+#include <string>
+#include <vector>
+
+#include <boost/function.hpp>
 
 namespace fwServices
 {
@@ -44,7 +45,7 @@ class IService;
  *
  * The ObjectMsg contains event identifiers with associated additional information.
  */
-class FWSERVICES_CLASS_API ObjectMsg : public ::fwTools::Object
+class FWSERVICES_CLASS_API ObjectMsg : public ::fwCore::BaseObject
 {
 
 public:
