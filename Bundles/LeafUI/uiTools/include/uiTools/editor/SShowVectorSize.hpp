@@ -4,16 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UITOOLS_EDITOR_SSHOWVECTORSIZE_HPP_
-#define _UITOOLS_EDITOR_SSHOWVECTORSIZE_HPP_
+#ifndef __UITOOLS_EDITOR_SSHOWVECTORSIZE_HPP__
+#define __UITOOLS_EDITOR_SSHOWVECTORSIZE_HPP__
 
-#include <QPointer>
-#include <QLabel>
+#include "uiTools/config.hpp"
+
+#include <fwData/Vector.hpp>
+
 #include <fwTools/Failed.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
-#include "uiTools/config.hpp"
+#include <QPointer>
+#include <QLabel>
 
 class QPushButton;
 
@@ -41,6 +44,15 @@ public:
     /// Destructor. Do nothing.
     UITOOLS_API virtual ~SShowVectorSize() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_ADD_OBJECTS_SLOT
+     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_REMOVE_OBJECTS_SLOT
+     */
+    UITOOLS_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
@@ -54,9 +66,6 @@ protected:
      * @brief Destroy the layout.
      */
     virtual void stopping() throw(::fwTools::Failed);
-
-    /// Does nothing
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Does nothing
     virtual void updating() throw(::fwTools::Failed);
@@ -83,7 +92,13 @@ protected:
 
 private:
 
-    unsigned int m_vectorSize; ///< size of the vector
+    /// Slot: add objects
+    void addObjects(::fwData::Vector::ContainerType objects);
+
+    /// Slot: remove objects
+    void removeObjects(::fwData::Vector::ContainerType objects);
+
+    size_t m_vectorSize; ///< size of the vector
     QPointer< QLabel > m_label; ///< label where the text will be displayed
     QString m_textToShow; ///< text to show next to the size
 };
@@ -91,6 +106,6 @@ private:
 } // namespace editor
 } // namespace uiTools
 
-#endif /*_UITOOLS_EDITOR_SSHOWVECTORSIZE_HPP_*/
+#endif /*__UITOOLS_EDITOR_SSHOWVECTORSIZE_HPP__*/
 
 

@@ -4,32 +4,38 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "uiTools/editor/SShowVectorSize.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwCore/base.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/operations.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/IService.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
 #include <QHBoxLayout>
 #include <QString>
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
 
-#include <fwCore/base.hpp>
-
-#include <fwComEd/VectorMsg.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IService.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include "uiTools/editor/SShowVectorSize.hpp"
-
 namespace uiTools
 {
 
 namespace editor
 {
+
+static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTools::editor::SShowVectorSize, ::fwData::Vector );
 
@@ -38,6 +44,8 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTools::editor::SShowVectorS
 SShowVectorSize::SShowVectorSize() throw() : m_vectorSize(0),
                                              m_textToShow("")
 {
+    newSlot(s_ADD_OBJECTS_SLOT, &SShowVectorSize::addObjects, this);
+    newSlot(s_REMOVE_OBJECTS_SLOT, &SShowVectorSize::removeObjects, this);
 
 }
 
@@ -103,25 +111,6 @@ void SShowVectorSize::swapping() throw(::fwTools::Failed)
 {
 
 }
-//------------------------------------------------------------------------------
-
-void SShowVectorSize::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    if(_msg->hasEvent(::fwComEd::VectorMsg::ADDED_OBJECTS))
-    {
-        this->m_vectorSize++;
-        QString text = m_textToShow + QString::number(this->m_vectorSize);
-        m_label->setText(text);
-
-    }
-    else if(_msg->hasEvent(::fwComEd::VectorMsg::REMOVED_OBJECTS))
-    {
-        this->m_vectorSize--;
-        QString text = m_textToShow + QString::number(this->m_vectorSize);
-        m_label->setText(text);
-
-    }
-}
 
 //------------------------------------------------------------------------------
 
@@ -129,7 +118,36 @@ void SShowVectorSize::info( std::ostream &_sstream )
 {
 }
 
+//------------------------------------------------------------------------------
 
+void SShowVectorSize::addObjects(::fwData::Vector::ContainerType objects)
+{
+    m_vectorSize += objects.size();
+    QString text = m_textToShow + QString::number(m_vectorSize);
+    m_label->setText(text);
+}
+
+//------------------------------------------------------------------------------
+
+void SShowVectorSize::removeObjects(::fwData::Vector::ContainerType objects)
+{
+    m_vectorSize -= objects.size();
+    QString text = m_textToShow + QString::number(m_vectorSize);
+    m_label->setText(text);
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SShowVectorSize::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace editor
 } // namespace auroraTracker

@@ -153,7 +153,7 @@ void SImagesSelector::remove()
 
         ::fwComEd::helper::Vector vectorHelper(vector);
         vectorHelper.remove(obj);
-        vectorHelper.notify(this->getSptr());
+        vectorHelper.notify();
 
         this->updating();
     }
@@ -167,7 +167,7 @@ void SImagesSelector::reset()
 
     ::fwComEd::helper::Vector vectorHelper(vector);
     vectorHelper.clear();
-    vectorHelper.notify(this->getSptr());
+    vectorHelper.notify();
 
     m_capturesListWidget->clear();
     m_nbCapturesLabel->setText(QString("0"));
@@ -214,7 +214,7 @@ void SImagesSelector::add(::fwCore::HiResClock::HiResClockType timestamp)
 
     ::fwComEd::helper::Vector vectorHelper(vector);
     vectorHelper.add(image);
-    vectorHelper.notify(this->getSptr());
+    vectorHelper.notify();
 
     this->updating();
 }
