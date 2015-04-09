@@ -1,7 +1,5 @@
 <plugin id="ARCalibration">
 
-    <requirement id="servicesReg" />
-
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 

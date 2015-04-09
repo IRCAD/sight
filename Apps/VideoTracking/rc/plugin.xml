@@ -1,6 +1,5 @@
 <plugin id="VideoTracking">
 
-    <requirement id="servicesReg" />
     <requirement id="tracker" />
     <requirement id="trackerAruco" />
     <requirement id="arMedia" />
