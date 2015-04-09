@@ -115,13 +115,6 @@ protected:
      **/
     VIDEOQT_API virtual void configuring() throw( ::fwTools::Failed );
 
-    /// Signal when the position os the slider modified
-    PositionModifiedSignalType::sptr m_sigPositionModified;
-    /// Signal when duration is modified
-    DurationModifiedSignalType::sptr m_sigDurationModified;
-    /// Signal when the frame is present
-    FramePresentedSignalType::sptr m_sigFramePresented;
-
     /// SLOT : Initialize and start camera (restart camera if is already started)
     void startCamera();
     /// SLOT : Stop camera
@@ -156,18 +149,6 @@ protected Q_SLOTS:
 
 private:
 
-    /// Slot to call start camera method
-    StartCameraSlotType::sptr m_slotStartCamera;
-    /// Slot to call stop camera method
-    StopCameraSlotType::sptr m_slotStopCamera;
-    /// Slot to call pause camera method
-    StopCameraSlotType::sptr m_slotPauseCamera;
-    /// Slot to call select camera method
-    SelectCameraSlotType::sptr m_slotSelectCamera;
-    /// Slot to change the reading state of the video (one shot or loop)
-    LoopVideoSlotType::sptr m_slotLoopVideo;
-    /// Slot to set the reading position in the video
-    SetPositionVideoSlotType::sptr m_slotSetPositionVideo;
     /// Slot to call present frame method
     PresentFrameSlotType::sptr m_slotPresentFrame;
 
@@ -191,9 +172,6 @@ private:
 
     /// Video frame
     QVideoFrame m_videoFrame;
-
-    /// Connections
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
 
     /// Worker for the m_slotPresentFrame
     ::fwThread::Worker::sptr m_worker;

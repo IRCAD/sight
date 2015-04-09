@@ -106,8 +106,7 @@ bool VideoSurfaceQt::present(const QVideoFrame& frame)
         if (currentFrame.map(QAbstractVideoBuffer::ReadOnly))
         {
             m_frameGrabber->setVideoFrame(frame);
-            ::videoQt::SFrameGrabber::FramePresentedSignalType::sptr sig;
-            sig = m_frameGrabber->signal< ::videoQt::SFrameGrabber::FramePresentedSignalType >(
+            auto sig = m_frameGrabber->signal< ::videoQt::SFrameGrabber::FramePresentedSignalType >(
                 ::videoQt::SFrameGrabber::s_FRAME_PRESENTED_SIG );
             sig->asyncEmit();
         }

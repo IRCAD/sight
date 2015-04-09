@@ -59,38 +59,24 @@ SFrameGrabber::SFrameGrabber() throw() : m_cameraID(""),
                                          m_horizontallyFlip(false),
                                          m_verticallyFlip(false)
 {
-    m_slotStartCamera      = ::fwCom::newSlot( &SFrameGrabber::startCamera, this );
-    m_slotStopCamera       = ::fwCom::newSlot( &SFrameGrabber::stopCamera, this );
-    m_slotPauseCamera      = ::fwCom::newSlot( &SFrameGrabber::pauseCamera, this );
-    m_slotSelectCamera     = ::fwCom::newSlot( &SFrameGrabber::selectCamera, this );
-    m_slotLoopVideo        = ::fwCom::newSlot( &SFrameGrabber::toogleLoopMode, this );
-    m_slotSetPositionVideo = ::fwCom::newSlot( &SFrameGrabber::setPosition, this );
-    m_slotPresentFrame     = ::fwCom::newSlot( &SFrameGrabber::presentFrame, this );
+    newSignal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+    newSignal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
+    newSignal< FramePresentedSignalType >( s_FRAME_PRESENTED_SIG );
 
-    m_sigPositionModified = PositionModifiedSignalType::New();
-    m_sigDurationModified = DurationModifiedSignalType::New();
-    m_sigFramePresented   = FramePresentedSignalType::New();
+    newSlot( s_START_CAMERA_SLOT, &SFrameGrabber::startCamera, this );
+    newSlot( s_STOP_CAMERA_SLOT, &SFrameGrabber::stopCamera, this );
+    newSlot( s_PAUSE_CAMERA_SLOT, &SFrameGrabber::pauseCamera, this );
+    newSlot( s_SELECT_CAMERA_SLOT, &SFrameGrabber::selectCamera, this );
+    newSlot( s_LOOP_VIDEO_SLOT, &SFrameGrabber::toogleLoopMode, this );
+    newSlot( s_SET_POSITION_VIDEO_SLOT, &SFrameGrabber::setPosition, this );
 
-    ::fwCom::HasSignals::m_signals(s_POSITION_MODIFIED_SIG, m_sigPositionModified)
-        (s_DURATION_MODIFIED_SIG, m_sigDurationModified)
-        (s_FRAME_PRESENTED_SIG, m_sigFramePresented);
-
-    ::fwCom::HasSlots::m_slots( s_START_CAMERA_SLOT, m_slotStartCamera)
-        ( s_STOP_CAMERA_SLOT, m_slotStopCamera)
-        ( s_PAUSE_CAMERA_SLOT, m_slotPauseCamera)
-        ( s_SELECT_CAMERA_SLOT, m_slotSelectCamera)
-        ( s_LOOP_VIDEO_SLOT, m_slotLoopVideo)
-        ( s_SET_POSITION_VIDEO_SLOT, m_slotSetPositionVideo)
-        ( s_PRESENT_SLOT, m_slotPresentFrame);
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    // Do not register the slot in the service, we want to put it on its own worker
+    m_slotPresentFrame = ::fwCom::newSlot( &SFrameGrabber::presentFrame, this );
 
     // Create a worker for the frame copy, we don't want this on the main thread
     // since it takes around 4/9ms (release/debug) to copy a full HD frame
     m_worker = ::fwThread::Worker::New();
     m_slotPresentFrame->setWorker(m_worker);
-
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -103,9 +89,7 @@ SFrameGrabber::~SFrameGrabber() throw()
 
 void SFrameGrabber::starting() throw(::fwTools::Failed)
 {
-
-    m_connections->connect(this->getSptr(), ::videoQt::SFrameGrabber::s_FRAME_PRESENTED_SIG, this->getSptr(),
-                           ::videoQt::SFrameGrabber::s_PRESENT_SLOT);
+    this->signal<FramePresentedSignalType>(s_FRAME_PRESENTED_SIG)->connect(m_slotPresentFrame);
 
     // Always create the media player, it does not hurt that much if we don't use it later...
     m_mediaPlayer = new QMediaPlayer(0, QMediaPlayer::VideoSurface);
@@ -119,7 +103,7 @@ void SFrameGrabber::starting() throw(::fwTools::Failed)
 
 void SFrameGrabber::stopping() throw(::fwTools::Failed)
 {
-    m_connections->disconnect();
+    this->signal<FramePresentedSignalType>(s_FRAME_PRESENTED_SIG)->disconnect(m_slotPresentFrame);
     this->stopCamera();
 
     delete m_mediaPlayer;
@@ -325,11 +309,7 @@ void SFrameGrabber::setPosition(int position)
 
 void SFrameGrabber::onPositionChanged(qint64 position)
 {
-    // notify the new position
-    ::videoQt::SFrameGrabber::PositionModifiedSignalType::sptr sig;
-    sig = this->signal< ::videoQt::SFrameGrabber::PositionModifiedSignalType >
-              ( ::videoQt::SFrameGrabber::s_POSITION_MODIFIED_SIG );
-
+    auto sig = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
     sig->asyncEmit(position);
 }
 
@@ -337,11 +317,7 @@ void SFrameGrabber::onPositionChanged(qint64 position)
 
 void SFrameGrabber::onDurationChanged(qint64 duration)
 {
-    // Notify the new duration
-    ::videoQt::SFrameGrabber::DurationModifiedSignalType::sptr sig;
-    sig = this->signal< ::videoQt::SFrameGrabber::DurationModifiedSignalType >
-              ( ::videoQt::SFrameGrabber::s_DURATION_MODIFIED_SIG );
-
+    auto sig = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
     sig->asyncEmit(duration);
 }
 
