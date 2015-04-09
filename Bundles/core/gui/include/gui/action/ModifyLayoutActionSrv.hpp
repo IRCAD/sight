@@ -83,11 +83,17 @@ protected:
          <disable uid="action_to_disabled" />
      </config>
        @endverbatim
-     * - \b move configures the services to move in the new view given by wid
-     * - \b show configures the view to show
-     * - \b hide configures the view to hide
-     * - \b show or hide configures the view to show or hide. If the action is activated, the view is shown else it is
-     * hidden. The action in the menu/toolbar must be checkable (style="check").
+     * - \b <move> configures the services to move in the new view given by wid
+     * - \b <show> configures the element to show
+     * - \b <hide> configures the element to hide
+     * - \b <show_or_hide> configures the element to show or hide.
+     *      If action is activated, element is shown else it is hidden.
+     *
+     * <show>, <hide> and <show_or_hide> tags can have 2 type of attribute : 
+     * - wid to show  or hide windows container (view)
+     * - sid  to show or hide a gui container service (IEditor, IView, IRender...)
+     *
+     * The action in the menu/toolbar must be checkable (style="check").
      */
     GUI_API void configuring() throw( ::fwTools::Failed );
 
@@ -105,7 +111,10 @@ private:
     /// < wid, showState>
     typedef std::vector< std::pair< std::string, ::boost::logic::tribool > > ShowSrvVectType;
     /// map representing wid container and show state
-    ShowSrvVectType m_showSrv;
+    ShowSrvVectType m_showSrvWid;
+
+    /// map representing sid container and show state
+    ShowSrvVectType m_showSrvSid;
 
     /// < fwID, enableState>
     typedef std::vector< std::pair< std::string, bool > > EnableSrvVectType;

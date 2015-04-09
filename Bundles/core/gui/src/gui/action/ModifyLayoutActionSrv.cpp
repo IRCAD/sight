@@ -27,7 +27,7 @@ namespace gui
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::gui::action::ModifyLayoutActionSrv , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ModifyLayoutActionSrv, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
@@ -66,14 +66,14 @@ void ModifyLayoutActionSrv::info(std::ostream &_sstream )
 
 void ModifyLayoutActionSrv::updating() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
 
     BOOST_FOREACH(MoveSrvVectType::value_type elt, m_moveSrv )
     {
         std::string uid = elt.first;
         std::string wid = elt.second;
         OSLM_ASSERT( uid << " doesn't exist", ::fwTools::fwID::exist(uid) );
-        ::fwServices::IService::sptr service = ::fwServices::get( uid ) ;
+        ::fwServices::IService::sptr service = ::fwServices::get( uid );
         SLM_ASSERT("service not found", service);
         ::fwGui::IGuiContainerSrv::sptr container = ::fwGui::IGuiContainerSrv::dynamicCast(service);
         SLM_ASSERT("::fwGui::IGuiContainerSrv dynamicCast failed", container);
@@ -85,9 +85,9 @@ void ModifyLayoutActionSrv::updating() throw( ::fwTools::Failed )
     BOOST_FOREACH(EnableSrvVectType::value_type elt, m_enableSrv )
     {
         std::string uid = elt.first;
-        bool isEnable = elt.second;
+        bool isEnable   = elt.second;
         OSLM_ASSERT( uid << " doesn't exist", ::fwTools::fwID::exist(uid) );
-        ::fwServices::IService::sptr service = ::fwServices::get( uid ) ;
+        ::fwServices::IService::sptr service = ::fwServices::get( uid );
         SLM_ASSERT("service not found", service);
         if(service->isStarted())
         {
@@ -105,12 +105,38 @@ void ModifyLayoutActionSrv::updating() throw( ::fwTools::Failed )
         }
     }
 
-    BOOST_FOREACH(ShowSrvVectType::value_type elt, m_showSrv)
+    BOOST_FOREACH(ShowSrvVectType::value_type elt, m_showSrvWid)
     {
         std::string wid = elt.first;
-        ::boost::logic::tribool isVisible = elt.second;
+        ::boost::logic::tribool isVisible               = elt.second;
         ::fwGui::container::fwContainer::sptr container = ::fwGui::GuiRegistry::getWIDContainer(wid);
         OSLM_ASSERT("::fwGui::IGuiContainerSrv " << wid << " is unknown", container);
+
+        if(isVisible)
+        {
+            container->setVisible(true);
+        }
+        else if(!isVisible)
+        {
+            container->setVisible(false);
+        }
+        else
+        {
+            container->setVisible(this->getIsActive());
+        }
+    }
+
+    BOOST_FOREACH(ShowSrvVectType::value_type elt, m_showSrvSid)
+    {
+        std::string uid = elt.first;
+        ::boost::logic::tribool isVisible = elt.second;
+        OSLM_ASSERT( uid << " doesn't exist", ::fwTools::fwID::exist(uid) );
+        ::fwServices::IService::sptr service = ::fwServices::get( uid );
+
+        ::fwGui::IGuiContainerSrv::sptr containerSrv = ::fwGui::IGuiContainerSrv::dynamicCast(service);
+        SLM_ASSERT("::fwGui::IGuiContainerSrv dynamicCast failed", containerSrv);
+
+        ::fwGui::container::fwContainer::sptr container = containerSrv->getContainer();
 
         if(isVisible)
         {
@@ -138,20 +164,20 @@ void ModifyLayoutActionSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) thr
 
 void ModifyLayoutActionSrv::configuring() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
     this->initialize();
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
-    if( ! vectConfig.empty() )
+    if( !vectConfig.empty() )
     {
         ConfigurationType config = vectConfig.at(0);
         BOOST_FOREACH(ConfigurationType actionCfg, config->getElements() )
         {
             if(actionCfg->getName() == "move")
             {
-                SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid")) ;
-                std::string uuid = actionCfg->getExistingAttributeValue("uid") ;
-                SLM_ASSERT("Attribute wid missing", actionCfg->hasAttribute("wid")) ;
-                std::string wid = actionCfg->getExistingAttributeValue("wid") ;
+                SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
+                std::string uuid = actionCfg->getExistingAttributeValue("uid");
+                SLM_ASSERT("Attribute wid missing", actionCfg->hasAttribute("wid"));
+                std::string wid = actionCfg->getExistingAttributeValue("wid");
 
                 m_moveSrv.push_back( std::make_pair(uuid, wid) );
             }
@@ -159,8 +185,6 @@ void ModifyLayoutActionSrv::configuring() throw( ::fwTools::Failed )
                     || actionCfg->getName() == "hide"
                     || actionCfg->getName() == "show_or_hide")
             {
-                SLM_ASSERT("Attribute wid missing", actionCfg->hasAttribute("wid")) ;
-                std::string wid = actionCfg->getExistingAttributeValue("wid") ;
                 ::boost::logic::tribool isVisible;
                 if (actionCfg->getName() == "show")
                 {
@@ -174,13 +198,27 @@ void ModifyLayoutActionSrv::configuring() throw( ::fwTools::Failed )
                 {
                     isVisible = ::boost::logic::indeterminate;
                 }
-                m_showSrv.push_back( std::make_pair(wid, isVisible) );
+
+                if(actionCfg->hasAttribute("wid"))
+                {
+                    std::string wid = actionCfg->getExistingAttributeValue("wid");
+                    m_showSrvWid.push_back( std::make_pair(wid, isVisible) );
+                }
+                else if(actionCfg->hasAttribute("sid"))
+                {
+                    std::string sid = actionCfg->getExistingAttributeValue("sid");
+                    m_showSrvSid.push_back( std::make_pair(sid, isVisible) );
+                }
+                else
+                {
+                    SLM_ERROR("Attribute wid or sid missing");
+                }
             }
             else if(actionCfg->getName() == "enable" || actionCfg->getName() == "disable")
             {
-                SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid")) ;
-                std::string uuid = actionCfg->getExistingAttributeValue("uid") ;
-                bool isEnable = (actionCfg->getName() == "enable");
+                SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
+                std::string uuid = actionCfg->getExistingAttributeValue("uid");
+                bool isEnable    = (actionCfg->getName() == "enable");
 
                 m_enableSrv.push_back( std::make_pair(uuid, isEnable) );
             }
