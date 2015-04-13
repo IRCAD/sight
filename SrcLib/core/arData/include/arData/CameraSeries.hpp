@@ -42,7 +42,7 @@ public:
 
     fwCampMakeFriendDataMacro((arData)(CameraSeries));
 
-    typedef std::vector< arData::Camera::sptr > CameraContainerType;
+    typedef std::vector< ::arData::Camera::sptr > CameraContainerType;
 
     /**
      *@brief Constructor

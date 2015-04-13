@@ -7,14 +7,14 @@
 #ifndef __UICALIBRATION_SUPDATEINTRINSICDIALOG_HPP__
 #define __UICALIBRATION_SUPDATEINTRINSICDIALOG_HPP__
 
+#include "uiCalibration/config.hpp"
+
 #include <QObject>
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
 
-#include <boost/array.hpp>
-
-#include "uiCalibration/config.hpp"
+#include <array>
 
 namespace uiCalibration
 {
@@ -38,11 +38,11 @@ public:
      * @brief setParameters
      * @param calibration parameters in a array< double , 12>
      */
-    void setParameters(::boost::array< double, 12>& parameters);
+    void setParameters(std::array< double, 12>& parameters);
 
 Q_SIGNALS:
 
-    void newCalibration(::boost::array< double, 12 >& newParameters);
+    void newCalibration(std::array< double, 12 >& newParameters);
 
 
 private Q_SLOTS:
@@ -72,11 +72,11 @@ private:
     /**
      * @brief concatenation of resolution (0-1) , intrinsic parameters (2-5), distortions (6-10), and skew(11)
      */
-    ::boost::array< double, 12 > m_calibration;
+    std::array< double, 12 > m_calibration;
     /**
      * @brief store the original calibration (to reset)
      */
-    ::boost::array< double, 12 > m_originCalibration;
+    std::array< double, 12 > m_originCalibration;
 
     /**
      * @brief Width of the video.

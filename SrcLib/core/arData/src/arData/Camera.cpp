@@ -29,6 +29,9 @@ Camera::Camera( ::fwData::Object::Key key ) :
     m_skew(0.0),
     m_isCalibrated(false)
 {
+    m_intrinsic.fill(0.);
+    m_distortionCoefficient.fill(0.);
+
     m_sigIntrinsicCalibrated = IntrinsicCalibratedSignalType::New();
     m_sigIdModified          = IdModifiedSignalType::New();
 

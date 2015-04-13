@@ -33,7 +33,6 @@ namespace arData
  */
 class ARDATA_CLASS_API CalibrationInfo : public ::fwData::Object
 {
-//ARDATA_API
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro((CalibrationInfo)( ::fwData::Object),(()),

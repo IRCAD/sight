@@ -32,8 +32,8 @@ SIntrinsicEdition::SIntrinsicEdition()
     m_dialog = new SUpdateIntrinsicDialog();
 
 
-    QObject::connect(m_dialog, SIGNAL(newCalibration(::boost::array< double, 12 >&)),
-                     this, SLOT(onNewCalibration(::boost::array< double, 12 >&)));
+    QObject::connect(m_dialog, SIGNAL(newCalibration(std::array< double, 12 >&)),
+                     this, SLOT(onNewCalibration(std::array< double, 12 >&)));
 
 }
 
@@ -41,13 +41,13 @@ SIntrinsicEdition::SIntrinsicEdition()
 
 SIntrinsicEdition::~SIntrinsicEdition()
 {
-    QObject::disconnect(m_dialog, SIGNAL(newCalibration(::boost::array< double, 12 >&)),
-                        this, SLOT(onNewCalibration(::boost::array< double, 12 >&)));
+    QObject::disconnect(m_dialog, SIGNAL(newCalibration(std::array< double, 12 >&)),
+                        this, SLOT(onNewCalibration(std::array< double, 12 >&)));
 }
 
 // -------------------------------------------------------------------------
 
-void SIntrinsicEdition::onNewCalibration(::boost::array< double, 12 >& cal)
+void SIntrinsicEdition::onNewCalibration(std::array< double, 12 >& cal)
 {
     m_calibration = cal;
 

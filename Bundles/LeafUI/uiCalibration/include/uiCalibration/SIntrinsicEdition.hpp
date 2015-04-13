@@ -7,17 +7,18 @@
 #ifndef __UICALIBRATION_SINTRINSICEDITION_HPP__
 #define __UICALIBRATION_SINTRINSICEDITION_HPP__
 
-#include <list>
-#include <QObject>
-
+#include "uiCalibration/SUpdateIntrinsicDialog.hpp"
+#include "uiCalibration/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
 #include <fwServices/IService.hpp>
 
-#include "uiCalibration/SUpdateIntrinsicDialog.hpp"
-#include "uiCalibration/config.hpp"
+#include <QObject>
+
+#include <array>
+#include <list>
 
 namespace uiCalibration
 {
@@ -76,7 +77,7 @@ private Q_SLOTS:
      * @brief onNewCalibration
      * @param cal
      */
-    void onNewCalibration( ::boost::array< double, 12 > & cal);
+    void onNewCalibration( std::array< double, 12 > & cal);
 
 private:
 
@@ -85,18 +86,17 @@ private:
     void readCalibration();
 
 
-    ::boost::array<double,4>    m_intrinsic;
-    ::boost::array<double,5>    m_distParameters;
+    std::array<double,4>    m_intrinsic;
+    std::array<double,5>    m_distParameters;
 
     double m_skew;
-    ::boost::array< double, 2 > m_resolution;
+    std::array< double, 2 > m_resolution;
 
-    ::boost::array< double, 12 > m_calibration;
+    std::array< double, 12 > m_calibration;
 
     SUpdateIntrinsicDialog* m_dialog;
-
-
 };
+
 } // namespace uiCalibration
 
 #endif // __UICALIBRATION_SINTRINSICEDITION_HPP__

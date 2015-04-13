@@ -6,6 +6,8 @@
 
 #include "uiCalibration/SUpdateIntrinsicDialog.hpp"
 
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -14,16 +16,13 @@
 
 #include <sstream>
 
-#include <fwGui/dialog/MessageDialog.hpp>
 
 namespace uiCalibration
 {
 //-----------------------------------------------------------------------------
 
-SUpdateIntrinsicDialog::SUpdateIntrinsicDialog() :
-    QDialog()
+SUpdateIntrinsicDialog::SUpdateIntrinsicDialog() : QDialog(), m_ratio(0.)
 {
-
     //Design of the QDialog
     QHBoxLayout              *validateButtonLayout;
     QHBoxLayout              *computeButtonLayout;
@@ -108,12 +107,11 @@ SUpdateIntrinsicDialog::SUpdateIntrinsicDialog() :
 
 SUpdateIntrinsicDialog::~SUpdateIntrinsicDialog()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 
-void SUpdateIntrinsicDialog::setParameters(::boost::array< double, 12 > &parameters)
+void SUpdateIntrinsicDialog::setParameters(std::array< double, 12 > &parameters)
 {
     m_calibration       = parameters;
     m_originCalibration = parameters;
@@ -188,8 +186,6 @@ void SUpdateIntrinsicDialog::onPushCompute()
     m_calibration[9] = p2_new;
 
     this->updateInfos();
-
-
 }
 
 //-----------------------------------------------------------------------------

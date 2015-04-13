@@ -78,7 +78,7 @@ void CalibrationInfo::cachedDeepCopy(const ::fwData::Object::csptr& _source, Dee
     this->fieldDeepCopy( other );
 
     this->resetRecords();
-    SLM_ASSERT("", other->m_pointListContainer.size() == other->m_imageContainer.size());
+    SLM_ASSERT("Lists have not the same size", other->m_pointListContainer.size() == other->m_imageContainer.size());
 
     ImageContainerType::const_iterator imgIter = other->m_imageContainer.begin();
     for(const ::fwData::PointList::sptr& pl : other->m_pointListContainer)
@@ -114,7 +114,6 @@ void CalibrationInfo::removeRecord(size_t idx)
 
     m_pointListContainer.erase(plIt);
     m_imageContainer.erase(imgIt);
-
 }
 
 //------------------------------------------------------------------------------

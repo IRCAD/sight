@@ -16,8 +16,8 @@
 #include <fwData/factory/new.hpp>
 
 #include <boost/cstdint.hpp>
-#include <boost/array.hpp>
 
+#include <array>
 #include <utility>
 
 fwCampAutoDeclareDataMacro((arData)(Camera), ARDATA_API);
@@ -34,8 +34,8 @@ public:
     fwCampMakeFriendDataMacro((arData)(Camera));
     fwCoreClassDefinitionsWithFactoryMacro((Camera)(::fwData::Object), (()), ::fwData::factory::New< Camera >);
 
-    typedef ::boost::array<double, 5> DistArrayType;
-    typedef ::boost::array<double, 6> IntrinsecType;
+    typedef std::array<double, 5> DistArrayType;
+    typedef std::array<double, 6> IntrinsecType;
 
     /**
      * @brief Constructor
