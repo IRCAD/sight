@@ -10,7 +10,6 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/PointListMsg.hpp>
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>

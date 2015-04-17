@@ -19,7 +19,6 @@
 #include <extData/timeline/Buffer.hpp>
 
 #include <fwCom/Signal.hxx>
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/helper/Array.hpp>
 
 #include <fwServices/Base.hpp>
@@ -193,8 +192,6 @@ void SFrameMatrixSynchronizer::synchronize()
         }
     }
 
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent(::fwComEd::ImageMsg::BUFFER);
     for(FrameTLKeyType::value_type elt : m_frameTLs)
     {
         ::extData::FrameTL::sptr frameTL = elt.second;
@@ -225,7 +222,9 @@ void SFrameMatrixSynchronizer::synchronize()
             m_imagesInitialized = true;
 
             //Notify (needed for instance to update the texture in ::visuVTKARAdaptor::SVideoAdapter)
-            msg->addEvent(::fwComEd::ImageMsg::MODIFIED);
+            auto sig = image->signal< ::fwData::Image::ModifiedSignalType >(
+                ::fwData::Image::s_MODIFIED_SIG );
+            sig->asyncEmit();
         }
 
         ::fwData::mt::ObjectWriteLock destLock(image);
@@ -247,10 +246,9 @@ void SFrameMatrixSynchronizer::synchronize()
         std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
         //Notify
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(
-            ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-        sig->asyncEmit(msg);
+        auto sig = image->signal< ::fwData::Image::BufferModifiedSignalType >(
+            ::fwData::Image::s_BUFFER_MODIFIED_SIG );
+        sig->asyncEmit();
     }
 
 

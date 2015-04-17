@@ -8,7 +8,6 @@
 
 #include <fwCom/Slots.hxx>
 #include <fwComEd/helper/Vector.hpp>
-#include <fwComEd/InteractionMsg.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>

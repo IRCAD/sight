@@ -86,7 +86,7 @@ private:
     /// Slots used when the frame have been refreshed
     UpdateFrameSlotType::sptr m_slotUpdateFrame;
 
-    /// Signal that emits CompositeMsg when refresh is requested
+    /// Signal that emits signal when refresh is requested
     RenderRequestedSignalType::sptr m_sigRenderRequested;
 
     /// Connections

@@ -8,6 +8,11 @@
 
 #include <arData/Camera.hpp>
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwData/Boolean.hpp>
@@ -29,12 +34,15 @@
 #include <vtkRenderer.h>
 #include <vtkTexture.h>
 
-
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::SVideoAdapter, ::fwData::Image );
 
 
 namespace visuVTKARAdaptor
 {
+
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
+
 //------------------------------------------------------------------------------
 
 SVideoAdapter::SVideoAdapter() throw() :
@@ -45,6 +53,9 @@ SVideoAdapter::SVideoAdapter() throw() :
 {
     m_imageData = vtkImageData::New();
     m_texture   = vtkTexture::New();
+
+    newSlot(s_UPDATE_IMAGE_SLOT, &SVideoAdapter::updateImage, this);
+    newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideoAdapter::updateImageOpacity, this);
 }
 
 //------------------------------------------------------------------------------
@@ -178,28 +189,7 @@ void SVideoAdapter::doStop() throw(fwTools::Failed)
 
 void SVideoAdapter::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    ::fwComEd::ImageMsg::csptr imMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
 
-    if ( imMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )
-         || imMsg->hasEvent( ::fwComEd::ImageMsg::MODIFIED )
-         )
-    {
-        // If the image has changed, we need to modify the texture
-        m_isTextureInit = false;
-    }
-
-    if ( imMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER )
-         || imMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )
-         || imMsg->hasEvent( ::fwComEd::ImageMsg::MODIFIED )
-         )
-    {
-        this->doUpdate();
-    }
-
-    if ( imMsg->hasEvent( ::fwComEd::ImageMsg::TRANSPARENCY ) || imMsg->hasEvent( ::fwComEd::ImageMsg::VISIBILITY ) )
-    {
-        this->updateImageOpacity();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -221,5 +211,30 @@ void SVideoAdapter::updateImageOpacity()
 
     this->setVtkPipelineModified();
 }
+
+
+//------------------------------------------------------------------------------
+
+void SVideoAdapter::updateImage()
+{
+    m_isTextureInit = false;
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SVideoAdapter::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG,
+                                           s_UPDATE_IMAGE_OPACITY_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKARAdaptor

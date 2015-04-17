@@ -17,7 +17,6 @@
 
 #include <extData/timeline/Buffer.hpp>
 
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/helper/Array.hpp>
 
 #include <fwServices/Base.hpp>
@@ -138,16 +137,12 @@ void SFrameUpdater::updateFrame( ::fwCore::HiResClock::HiResClockType timestamp 
             m_imageInitialized = true;
 
             //Notify (needed for instance to update the texture in ::visuVTKARAdaptor::SVideoAdapter)
-            ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-            msg->addEvent(::fwComEd::ImageMsg::MODIFIED);
-
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            sig =
-                m_image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+            auto sig =
+                m_image->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
 
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit(msg);
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sig->asyncEmit();
             }
         }
 
@@ -182,17 +177,9 @@ void SFrameUpdater::updateImage()
             std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
             //Notify
-            ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-            msg->addEvent(::fwComEd::ImageMsg::BUFFER);
-
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            sig =
-                m_image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-
-            {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit(msg);
-            }
+            auto sig =
+                m_image->signal< ::fwData::Image::BufferModifiedSignalType >( ::fwData::Image::s_BUFFER_MODIFIED_SIG );
+            sig->asyncEmit();
         }
     }
 

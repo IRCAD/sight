@@ -9,8 +9,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/PointList.hpp>
 
-#include <fwComEd/PointListMsg.hpp>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -39,9 +37,6 @@ namespace visuVTKARAdaptor
 
 SPointList::SPointList() throw()
 {
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
 }
 
 //------------------------------------------------------------------------------

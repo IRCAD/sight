@@ -16,7 +16,6 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>

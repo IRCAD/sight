@@ -35,6 +35,17 @@ public:
     /// Destructor
     virtual ~SVideoAdapter() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_IMAGE_SLOT
+     * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_IMAGE_OPACITY_SLOT
+     * Connect Image::s_TRANSPARENCY_MODIFIED_SIG to this::s_UPDATE_IMAGE_OPACITY_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKARADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     /// Create the actor and mapper used to show the video frame.
@@ -66,8 +77,11 @@ protected:
 
 private:
 
-    /// Update image opacity and visibility
+    /// Slot: Update image opacity and visibility
     void updateImageOpacity();
+
+    /// Slot: update image
+    void updateImage();
 
     vtkImageData* m_imageData; ///< vtk image created from current data Image. It is shown in the frame.
     vtkTexture* m_texture;  ///< texture used to show the image
