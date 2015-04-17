@@ -3,6 +3,12 @@
     <library name="videoCalibration" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::videoCalibration::action::SCalibrationConfiguration</service>
+        <object>::fwData::Composite</object>
+    </extension>  
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::videoCalibration::ICalibration</type>
         <service>::videoCalibration::SIntrinsic</service>
         <object>::arData::Camera</object>
@@ -37,5 +43,5 @@
         <service>::videoCalibration::SCheckChessBoard</service>
         <object>::fwData::Composite</object>
     </extension>   
-
+    
 </plugin>

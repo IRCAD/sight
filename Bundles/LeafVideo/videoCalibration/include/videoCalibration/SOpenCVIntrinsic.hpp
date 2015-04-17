@@ -10,6 +10,9 @@
 #include "videoCalibration/ICalibration.hpp"
 #include "videoCalibration/config.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
+
 namespace videoCalibration
 {
 /**
@@ -20,6 +23,8 @@ class VIDEOCALIBRATION_CLASS_API SOpenCVIntrinsic : public ::videoCalibration::I
 {
 public:
     fwCoreServiceClassDefinitionsMacro((SOpenCVIntrinsic)(::videoCalibration::ICalibration));
+
+    typedef ::fwCom::Slot <void (int, int)> UpdateChessboardSizeSlotType;
 
     /// Constructor.
     VIDEOCALIBRATION_API SOpenCVIntrinsic() throw ();
@@ -55,6 +60,13 @@ protected:
     /// Removes connections
     VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
 
+    /**
+     * @brief SLOT: update the chessboard size.
+     * @param width chessboard's width expresses by the number of square.
+     * @param height chessboard's height expresses by the number of square.
+     */
+    void updateChessboardSize(const int width, const int height);
+
 private:
 
     ///  FwId of calibrationInfo
@@ -66,7 +78,8 @@ private:
     /// Height of the chessboard used for calibration
     unsigned int m_height;
 
-
+    /// Slot that calls update chessboard size method
+    UpdateChessboardSizeSlotType::sptr m_slotUpdateChessboardSize;
 };
 } // namespace videoCalibration
 

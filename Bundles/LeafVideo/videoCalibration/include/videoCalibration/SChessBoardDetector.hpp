@@ -7,9 +7,7 @@
 #ifndef __VIDEOCALIBRATION_SCHESSBOARDDETECTOR_HPP__
 #define __VIDEOCALIBRATION_SCHESSBOARDDETECTOR_HPP__
 
-
-#include <vector>
-#include <string>
+#include "videoCalibration/config.hpp"
 
 #include <fwData/Image.hpp>
 #include <extData/FrameTL.hpp>
@@ -19,7 +17,8 @@
 
 #include <fwServices/IController.hpp>
 
-#include "videoCalibration/config.hpp"
+#include <vector>
+#include <string>
 
 namespace videoCalibration
 {
@@ -44,6 +43,7 @@ public:
     VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_DETECTPTS_SLOT;
     typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> DetectPtsSlotType;
 
+    typedef ::fwCom::Slot <void (int, int)> UpdateChessboardSizeSlotType;
     ///@}
 
 
@@ -84,11 +84,24 @@ protected:
     VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
 
     /**
+     * @name Slots API
+     * @{
+     */
+    /**
      * @brief SLOT: Checks on each timeline if points are visible in each frame. Then it add the detected points and the
      * associated image in the CalibrationInfo.
      * @param timestamp timestamp used to gets image frame
      */
     void detectPoints(::fwCore::HiResClock::HiResClockType timestamp);
+
+    /**
+     * @brief SLOT: update the chessboard size.
+     * @param width chessboard's width expresses by the number of square.
+     * @param height chessboard's height expresses by the number of square.
+     */
+    void updateChessboardSize(const int width, const int height);
+    ///@}
+
 
     /// Returns a fwData::Image from FrameTL at the given timestamp
     ::fwData::Image::sptr createImage(::extData::FrameTL::sptr tl, ::fwCore::HiResClock::HiResClockType timestamp);
@@ -101,6 +114,8 @@ private:
     /// Slot that calls detectPoints method
     DetectPtsSlotType::sptr m_slotDetectPts;
 
+    /// Slot that calls update chessboard size method
+    UpdateChessboardSizeSlotType::sptr m_slotUpdateChessboardSize;
 
     /// Width of the chessboard used for calibration
     size_t m_width;

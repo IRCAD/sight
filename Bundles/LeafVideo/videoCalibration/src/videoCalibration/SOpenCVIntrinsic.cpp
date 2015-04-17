@@ -4,8 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/calib3d/calib3d.hpp>
+#include "videoCalibration/SOpenCVIntrinsic.hpp"
+
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwTools/fwID.hpp>
 #include <fwTools/Object.hpp>
@@ -23,12 +25,15 @@
 #include <arData/Camera.hpp>
 #include <arData/CalibrationInfo.hpp>
 
-#include "videoCalibration/SOpenCVIntrinsic.hpp"
+#include <opencv2/core/core.hpp>
+#include <opencv2/calib3d/calib3d.hpp>
 
 fwServicesRegisterMacro(::videoCalibration::ICalibration, ::videoCalibration::SOpenCVIntrinsic, ::arData::Camera);
 
 namespace videoCalibration
 {
+
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
 
 // ----------------------------------------------------------------------------
 
@@ -36,6 +41,8 @@ SOpenCVIntrinsic::SOpenCVIntrinsic() throw () :
     m_width(0),
     m_height(0)
 {
+
+    m_slotUpdateChessboardSize = newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateChessboardSize, this);
 
 }
 
@@ -163,6 +170,14 @@ void SOpenCVIntrinsic::updating() throw (fwTools::Failed)
 
         sig->asyncEmit ();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SOpenCVIntrinsic::updateChessboardSize(const int width, const int height)
+{
+    m_width  = width;
+    m_height = height;
 }
 
 //------------------------------------------------------------------------------

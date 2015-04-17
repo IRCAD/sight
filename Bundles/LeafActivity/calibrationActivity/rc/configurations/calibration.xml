@@ -37,6 +37,8 @@
                         <menuItem name="Export XML" icon="Bundles/arMedia_0-1/icons/save.svg" />
                         <separator/>
                         <editor/>
+                        <separator/>
+                        <menuItem name="Chessboard size" icon="Bundles/arMedia_0-1/icons/chessboard.svg" />                        
                     </layout>
                 </gui>
                 <registry>
@@ -44,6 +46,7 @@
                     <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionWriteXmlCalib" start="yes"/>
                     <editor sid="${GENERIC_UID}_cameraLauncher" start="no" />
+                    <menuItem sid="${GENERIC_UID}_action_chessBoardSize" start="yes" />                    
                 </registry>
             </service>
 
@@ -59,8 +62,9 @@
                     <appConfig id="calIntrinsicView" >
                         <parameters>
                             <parameter replace="WID_PARENT" by="${GENERIC_UID}_calibrationView"  />
-                            <parameter replace="chessboardWidth" by="${chessboardWidth}"  />
-                            <parameter replace="chessboardHeight" by="${chessboardHeight}"  />
+                            <parameter replace="chessboardWidth" by="!values.chessboardParameters.values.chessboardWidth.value" />
+                            <parameter replace="chessboardHeight" by="!values.chessboardParameters.values.chessboardHeight.value" />
+                            <parameter replace="chessboardProxy" by="${GENERIC_UID}_chessboardProxy"  />
                         </parameters>
                     </appConfig>
                 </intrinsic>
@@ -68,9 +72,10 @@
                     <appConfig id="calExtrinsicView" >
                         <parameters>
                             <parameter replace="WID_PARENT" by="${GENERIC_UID}_calibrationView"  />
-                            <parameter replace="chessboardWidth" by="${chessboardWidth}"  />
-                            <parameter replace="chessboardHeight" by="${chessboardHeight}"  />
+                            <parameter replace="chessboardWidth" by="!values.chessboardParameters.values.chessboardWidth.value" />
+                            <parameter replace="chessboardHeight" by="!values.chessboardParameters.values.chessboardHeight.value" />                            
                             <parameter replace="cameraSeriesUid" by="${cameraSeriesUid}"  />
+                            <parameter replace="chessboardProxy" by="${GENERIC_UID}_chessboardProxy"  />
                         </parameters>
                     </appConfig>
                 </extrinsic>
@@ -78,6 +83,12 @@
                 <activitySeriesKey>activitySeries</activitySeriesKey>
             </config>
             </service>
+            
+            <service uid="${GENERIC_UID}_action_chessBoardSize" impl="::videoCalibration::action::SCalibrationConfiguration" type="::fwGui::IActionSrv" autoConnect="no" >
+                <config>
+                    <parametersKey>chessboardParameters</parametersKey>
+                </config>
+            </service>         
             
             <item key="seriesDB">
                 <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB">
@@ -103,6 +114,25 @@
                     </service>
                 </object>
             </item>
+            
+            <item key="chessboardParameters">
+                <object type="::fwData::Composite">
+                    <item key="chessboardWidth">
+                        <object type="::fwData::String">
+                            <value>${chessboardWidth}</value>
+                        </object>
+                    </item>                    
+                    <item key="chessboardHeight">
+                        <object type="::fwData::String">
+                            <value>${chessboardHeight}</value>
+                        </object>
+                    </item>
+                </object>
+            </item>
+            
+            <proxy channel="${GENERIC_UID}_chessboardProxy">
+                <signal>${GENERIC_UID}_action_chessBoardSize/updatedChessboardSize</signal>
+            </proxy>
 
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_mainView" />

@@ -4,16 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/lexical_cast.hpp>
 
-#include <QDialog>
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QFileDialog>
-#include <QComboBox>
-#include <QCamera>
+#include "videoQt/action/SVideoConfiguration.hpp"
+#include "videoQt/helper/preferences.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -29,8 +22,13 @@
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
-#include "videoQt/action/SVideoConfiguration.hpp"
-#include "videoQt/helper/preferences.hpp"
+#include <boost/lexical_cast.hpp>
+
+#include <QDialog>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
 
 namespace videoQt
 {

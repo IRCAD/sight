@@ -7,7 +7,9 @@
 #include "videoCalibration/SCheckChessBoard.hpp"
 
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
+
 #include <fwComEd/helper/Array.hpp>
 
 #include <fwData/Composite.hpp>
@@ -32,8 +34,9 @@ fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SCheckChe
 
 const ::fwCom::Signals::SignalKeyType SCheckChessBoard::s_CHESSBOARD_DETECTED_SIG     = "chessboardDetected";
 const ::fwCom::Signals::SignalKeyType SCheckChessBoard::s_CHESSBOARD_NOT_DETECTED_SIG = "chessboardNotDetected";
-const ::fwCom::Slots::SlotKeyType SCheckChessBoard::s_DETECT_POINTS_SLOT              = "detectPoints";
 
+const ::fwCom::Slots::SlotKeyType SCheckChessBoard::s_DETECT_POINTS_SLOT = "detectPoints";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT   = "updateChessboardSize";
 // ----------------------------------------------------------------------------
 
 SCheckChessBoard::SCheckChessBoard() throw () : m_width(0),
@@ -48,9 +51,9 @@ SCheckChessBoard::SCheckChessBoard() throw () : m_width(0),
     ::fwCom::HasSignals::m_signals(s_CHESSBOARD_DETECTED_SIG, m_sigChessboardDetected)
         (s_CHESSBOARD_NOT_DETECTED_SIG, m_sigChessboardNotDetected);
 
-
-
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+
+    m_slotUpdateChessboardSize = newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SCheckChessBoard::updateChessboardSize, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -213,6 +216,15 @@ void SCheckChessBoard::detectPoints( ::fwCore::HiResClock::HiResClockType timest
     }
 
     return image;
+}
+
+// ----------------------------------------------------------------------------
+
+void SCheckChessBoard::updateChessboardSize(const int width, const int height)
+{
+    m_width  = width;
+    m_height = height;
+    m_sigChessboardNotDetected->asyncEmit();
 }
 
 } //namespace videoCalibration

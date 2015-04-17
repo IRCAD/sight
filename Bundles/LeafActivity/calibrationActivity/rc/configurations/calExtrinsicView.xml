@@ -12,6 +12,7 @@
         <param name="chessboardWidth" />
         <param name="chessboardHeight" />
         <param name="camIndex" />
+        <param name="chessboardProxy" />
     </parameters>
     <config>
 
@@ -324,7 +325,12 @@
                 <signal>${calibrationInfo1Uid}/resetRecord</signal>
                 <slot>${GENERIC_UID}_ExtrinsicCalibrationInfoEditor/update</slot>
             </proxy>
-            
+
+            <proxy channel="${chessboardProxy}">
+                 <slot>${GENERIC_UID}_openCVExtrinsicCal/updateChessboardSize</slot>
+                 <slot>${GENERIC_UID}_ChessboardDetector/updateChessboardSize</slot>
+                 <slot>${GENERIC_UID}_CheckChessboard/updateChessboardSize</slot>                
+            </proxy>
                                     
             <start uid="${GENERIC_UID}_extrinsicCameraView" />
             <start uid="${GENERIC_UID}_openCVExtrinsicCal" />

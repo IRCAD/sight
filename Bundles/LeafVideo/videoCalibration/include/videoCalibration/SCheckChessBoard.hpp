@@ -8,15 +8,18 @@
 #define __VIDEOCALIBRATION_SCHECKCHESSBOARD_HPP__
 
 
-#include <vector>
-#include <string>
+#include "videoCalibration/config.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
 
 #include <fwData/Image.hpp>
 #include <extData/FrameTL.hpp>
 
 #include <fwServices/IController.hpp>
 
-#include "videoCalibration/config.hpp"
+#include <vector>
+#include <string>
 
 namespace videoCalibration
 {
@@ -30,7 +33,6 @@ class VIDEOCALIBRATION_CLASS_API SCheckChessBoard : public ::fwServices::IContro
 {
 public:
     fwCoreServiceClassDefinitionsMacro((SCheckChessBoard)(::fwServices::IController));
-
 
     VIDEOCALIBRATION_API SCheckChessBoard() throw ();
 
@@ -50,9 +52,17 @@ public:
      * @name Slots API
      * @{
      */
+    typedef fwCom::Slot <void (int, int)> UpdateChessboardSizeSlotType;
+
     VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_DETECT_POINTS_SLOT;
     typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> DetectPointsSlotType;
 
+    /**
+     * @brief SLOT: update the chessboard size.
+     * @param width chessboard's width expresses by the number of square.
+     * @param height chessboard's height expresses by the number of square.
+     */
+    void updateChessboardSize(const int width, const int height);
     ///@}
 
 protected:
@@ -98,8 +108,11 @@ private:
     /// Signal emitted when chessboard is detected
     ChessboardDetectedSignalType::sptr m_sigChessboardDetected;
 
-    /// Signal emitted when chessboard is  not detected
+    /// Signal emitted when chessboard is not detected
     ChessboardNotDetectedSignalType::sptr m_sigChessboardNotDetected;
+
+    // Slot that calls update chessboard size method
+    UpdateChessboardSizeSlotType::sptr m_slotUpdateChessboardSize;
 
     /// Slot to call detect
     DetectPointsSlotType::sptr m_slotDetectPoints;

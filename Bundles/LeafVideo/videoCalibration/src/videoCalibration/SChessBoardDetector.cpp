@@ -13,7 +13,7 @@
 
 #include <arData/CalibrationInfo.hpp>
 
-#include <fwCom/Slots.hpp>
+#include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwComEd/helper/Array.hpp>
@@ -33,6 +33,8 @@ namespace videoCalibration
 fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SChessBoardDetector, ::fwData::Composite);
 
 const ::fwCom::Slots::SlotKeyType SChessBoardDetector::s_DETECTPTS_SLOT = "detectPoints";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT  = "updateChessboardSize";
+
 // ----------------------------------------------------------------------------
 
 SChessBoardDetector::SChessBoardDetector() throw () : m_width(0),
@@ -41,10 +43,11 @@ SChessBoardDetector::SChessBoardDetector() throw () : m_width(0),
     m_slotDetectPts = ::fwCom::newSlot(&SChessBoardDetector::detectPoints, this);
     ::fwCom::HasSlots::m_slots(s_DETECTPTS_SLOT, m_slotDetectPts);
 
-
-
-
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+
+    m_slotUpdateChessboardSize =
+        newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SChessBoardDetector::updateChessboardSize, this);
+
 }
 
 // ----------------------------------------------------------------------------
@@ -215,6 +218,14 @@ void SChessBoardDetector::detectPoints( ::fwCore::HiResClock::HiResClockType tim
     std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
     return image;
+}
+
+// ----------------------------------------------------------------------------
+
+void SChessBoardDetector::updateChessboardSize(const int width, const int height)
+{
+    m_width  = width;
+    m_height = height;
 }
 
 } //namespace videoCalibration
