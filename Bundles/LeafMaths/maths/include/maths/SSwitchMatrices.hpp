@@ -22,8 +22,8 @@ namespace maths
 {
 
 /**
- * @brief   This service concatenates the matrices.
- * @class   SConcatenateMatrices
+ * @brief   This service switch between several matrices
+ * @class   SSwitchMatrices
  */
 class MATHS_CLASS_API SSwitchMatrices : public ::fwServices::IController
 {
@@ -58,7 +58,6 @@ protected:
        <service impl="::maths::SConcatenateMatrices" type="::fwServices::IController">
            <matrix>matrix1Uid</matrix>
            <matrix>matrix2Uid</matrix>
-           <default>1</default>
        </service>
        @endverbatim
      */
