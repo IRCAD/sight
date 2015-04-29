@@ -162,11 +162,6 @@ void SVideoConfiguration::swapping() throw(::fwTools::Failed)
 {
 
 }
-//------------------------------------------------------------------------------
-
-void SVideoConfiguration::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-}
 
 //------------------------------------------------------------------------------
 

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VIDEOQT_ACTION_SVIDEOCONFIGURATION_HPP_
-#define _VIDEOQT_ACTION_SVIDEOCONFIGURATION_HPP_
+#ifndef __VIDEOQT_ACTION_SVIDEOCONFIGURATION_HPP__
+#define __VIDEOQT_ACTION_SVIDEOCONFIGURATION_HPP__
 
 #include <QObject>
 #include <QPointer>
@@ -56,9 +56,6 @@ protected:
     /// Does nothing
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Does nothing
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
     /// Shows a dialog to configure aurora port id and fps.
     virtual void updating() throw(::fwTools::Failed);
 
@@ -84,6 +81,6 @@ private:
 } // namespace action
 } // namespace videoQt
 
-#endif /*_VIDEOQT_ACTION_SVIDEOCONFIGURATION_HPP_*/
+#endif /*__VIDEOQT_ACTION_SVIDEOCONFIGURATION_HPP__*/
 
 

@@ -172,13 +172,6 @@ void SCameraConfigLauncher::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    SLM_ASSERT("TODO check if cameraSeries is swapped", false);
-}
-
-//------------------------------------------------------------------------------
-
 void SCameraConfigLauncher::onCameraChanged(int index)
 {
     OSLM_ASSERT("Bad index: " << index, index >=0 && static_cast<size_t>(index) < m_cameraSeries->getNumberOfCameras());

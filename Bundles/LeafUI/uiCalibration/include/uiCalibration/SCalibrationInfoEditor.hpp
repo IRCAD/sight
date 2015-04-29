@@ -95,12 +95,6 @@ protected:
     UICALIBRATION_API void updating() throw (fwTools::Failed);
 
     /**
-     * @brief Receiving method : This method is used to update the service.
-     * @param[in] msg Information message for modification.
-     */
-    UICALIBRATION_API void receiving(fwServices::ObjectMsg::csptr msg) throw (fwTools::Failed);
-
-    /**
      * @brief Slot called when the user presses the remove acquisition button.
      */
     UICALIBRATION_API void remove();

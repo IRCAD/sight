@@ -72,9 +72,6 @@ protected:
     /// Does nothing
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Does nothing
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
     /// Shows a dialog to configure aurora port id and fps.
     virtual void updating() throw(::fwTools::Failed);
 

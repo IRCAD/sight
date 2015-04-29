@@ -151,11 +151,6 @@ void SCalibrationConfiguration::updating() throw(::fwTools::Failed)
 void SCalibrationConfiguration::swapping() throw(::fwTools::Failed)
 {
 }
-//------------------------------------------------------------------------------
-
-void SCalibrationConfiguration::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-}
 
 //------------------------------------------------------------------------------
 

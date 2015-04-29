@@ -201,13 +201,6 @@ void SArucoTrackerEditor::updating() throw (fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SArucoTrackerEditor::receiving(fwServices::ObjectMsg::csptr msg) throw (fwTools::Failed)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
 void SArucoTrackerEditor::onMethodChanged(int value)
 {
     if(value >=0)

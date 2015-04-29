@@ -58,9 +58,6 @@ protected:
     ///This method launches the IEditor::stopping method.
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Management of observations ( overrides )
-    virtual void receiving( SPTR(const ::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
     virtual void updating() throw(::fwTools::Failed);
 
     virtual void swapping() throw(::fwTools::Failed);

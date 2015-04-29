@@ -78,13 +78,6 @@ public:
     }
 
     /**
-     * @brief receiving method : This method is used to update the service.
-     * @param[in] msg Information message for modification.
-     */
-    UICALIBRATION_API void receiving(fwServices::ObjectMsg::csptr msg)
-    throw(fwTools::Failed);
-
-    /**
      * @brief Swapping method : This method is used to swap the service.
      */
     UICALIBRATION_API void swapping() throw ( ::fwTools::Failed );

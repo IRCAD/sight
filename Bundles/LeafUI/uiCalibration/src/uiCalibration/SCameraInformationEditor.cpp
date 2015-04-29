@@ -121,13 +121,6 @@ void SCameraInformationEditor::starting() throw (fwTools::Failed)
 
 // -------------------------------------------------------------------------
 
-void SCameraInformationEditor::receiving(fwServices::ObjectMsg::csptr msg) throw (fwTools::Failed)
-{
-
-}
-
-// -------------------------------------------------------------------------
-
 void SCameraInformationEditor::stopping() throw (fwTools::Failed)
 {
     getContainer()->clean();

@@ -175,13 +175,6 @@ void SCalibrationInfoEditor::stopping() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SCalibrationInfoEditor::receiving(fwServices::ObjectMsg::csptr msg) throw (fwTools::Failed)
-{
-
-}
-
-// ----------------------------------------------------------------------------
-
 void SCalibrationInfoEditor::remove()
 {
     int idx = m_capturesListWidget->currentRow();
