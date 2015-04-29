@@ -8,4 +8,10 @@
         <object>::fwData::TransformationMatrix3D</object>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::maths::SSwitchMatrices</service>
+        <object>::fwData::TransformationMatrix3D</object>
+    </extension>
+
 </plugin>
