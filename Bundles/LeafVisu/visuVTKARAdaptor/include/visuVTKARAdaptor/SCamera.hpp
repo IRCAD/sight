@@ -78,10 +78,6 @@ protected:
     /// Removes camera observers and connections
     VISUVTKARADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    /// Listens the image message to update the adaptor.
-    VISUVTKARADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
-
-
 private:
 
     /// Update vtk camera from current TransformationMatrix3D

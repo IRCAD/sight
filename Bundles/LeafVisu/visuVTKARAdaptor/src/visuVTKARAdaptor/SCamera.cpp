@@ -74,17 +74,11 @@ const ::fwCom::Slots::SlotKeyType SCamera::s_CALIBRATE_SLOT = "calibrate";
 
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() throw()
+SCamera::SCamera() throw() :
+    m_transOrig(nullptr),
+    m_cameraCommand(CameraCallback::New(this))
 {
-    m_cameraCommand = CameraCallback::New(this);
-
-    m_slotCalibrate = ::fwCom::newSlot( &SCamera::calibrate, this);
-
-    ::fwCom::HasSlots::m_slots(s_CALIBRATE_SLOT, m_slotCalibrate);
-
-
-
-    ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
+    m_slotCalibrate = newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
 }
 
 //------------------------------------------------------------------------------
@@ -165,12 +159,6 @@ void SCamera::doStop() throw(fwTools::Failed)
     camera->RemoveObserver(m_cameraCommand);
     m_transOrig->Delete();
     m_connections->disconnect();
-}
-
-//------------------------------------------------------------------------------
-
-void SCamera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
 }
 
 //-----------------------------------------------------------------------------

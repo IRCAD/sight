@@ -121,14 +121,6 @@ void SPointList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPointList::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-
-}
-
-//------------------------------------------------------------------------------
-
 void SPointList::doSwap() throw(fwTools::Failed)
 {
     this->doStop();

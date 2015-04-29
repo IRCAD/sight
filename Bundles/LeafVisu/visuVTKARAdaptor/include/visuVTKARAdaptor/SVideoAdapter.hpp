@@ -72,9 +72,6 @@ protected:
     /// Removes the actor from the renderer
     VISUVTKARADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    /// Listens the image message to update the adaptor.
-    VISUVTKARADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
-
 private:
 
     /// Slot: Update image opacity and visibility

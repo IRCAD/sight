@@ -101,9 +101,6 @@ protected:
     /// updates the shown text and its properties.
     virtual void doUpdate() throw(::fwTools::Failed);
 
-    /// calling doUpdate if event OJECT_MODIFIED is received.
-    virtual void doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed);
-
     /**
      * @brief Configure the adaptor
      *

@@ -46,14 +46,12 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateIm
 //------------------------------------------------------------------------------
 
 SVideoAdapter::SVideoAdapter() throw() :
+    m_imageData(vtkImageData::New()),
+    m_texture(vtkTexture::New()),
     m_actor(vtkActor::New()),
     m_isTextureInit(false),
     m_reverse(true)
-
 {
-    m_imageData = vtkImageData::New();
-    m_texture   = vtkTexture::New();
-
     newSlot(s_UPDATE_IMAGE_SLOT, &SVideoAdapter::updateImage, this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideoAdapter::updateImageOpacity, this);
 }
@@ -63,7 +61,7 @@ SVideoAdapter::SVideoAdapter() throw() :
 SVideoAdapter::~SVideoAdapter() throw()
 {
     m_actor->Delete();
-    m_actor = 0;
+    m_actor = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -187,13 +185,6 @@ void SVideoAdapter::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
 void SVideoAdapter::updateImageOpacity()
 {
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
@@ -226,11 +217,10 @@ void SVideoAdapter::updateImage()
 ::fwServices::IService::KeyConnectionsType SVideoAdapter::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG,
-                                           s_UPDATE_IMAGE_OPACITY_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair(::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT));
+    connections.push_back( std::make_pair(::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
+    connections.push_back( std::make_pair(::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
+    connections.push_back( std::make_pair(::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT));
 
     return connections;
 }

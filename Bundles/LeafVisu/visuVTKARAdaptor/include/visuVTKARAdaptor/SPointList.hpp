@@ -68,9 +68,6 @@ protected:
     /// Create adaptors
     VISUVTKARADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
-    /// Do nothing, no message is handled
-    VISUVTKARADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
-
 private:
 
     /// Copy of the points so that we can modify them freely

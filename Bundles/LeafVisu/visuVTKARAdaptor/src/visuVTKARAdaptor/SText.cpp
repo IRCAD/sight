@@ -24,11 +24,10 @@ fwServicesRegisterMacro(::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::S
 namespace visuVTKARAdaptor
 {
 
-SText::SText()
+SText::SText() :
+    m_actor(vtkActor2D::New()),
+    m_mapper(vtkTextMapper::New())
 {
-    m_mapper = vtkTextMapper::New();
-    m_actor  = vtkActor2D::New();
-
     m_actor->SetMapper(m_mapper);
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
     m_actor->GetPosition2Coordinate()->SetCoordinateSystemToNormalizedViewport();
@@ -39,10 +38,10 @@ SText::SText()
 SText::~SText() throw()
 {
     m_actor->Delete();
-    m_actor = 0;
+    m_actor = nullptr;
 
     m_mapper->Delete();
-    m_mapper = 0;
+    m_mapper = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -204,13 +203,6 @@ void SText::doUpdate() throw(::fwTools::Failed)
 {
     this->updateStyle();
     this->updateText();
-}
-
-//-----------------------------------------------------------------------------
-
-void SText::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
-{
-    this->doUpdate();
 }
 
 //-----------------------------------------------------------------------------
