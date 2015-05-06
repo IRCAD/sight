@@ -93,7 +93,7 @@
             </service>
 
             <proxy channel="dynamicView">
-                <slot>dynamicView/receive</slot>
+                <slot>dynamicView/createTab</slot>
             </proxy>
 
             <start uid="mainFrame" />

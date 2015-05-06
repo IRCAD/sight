@@ -17,7 +17,6 @@
 
 #include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <arData/CalibrationInfo.hpp>
