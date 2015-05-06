@@ -3,6 +3,7 @@
     <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
         <param name="imageId1" />
         <param name="imageId2" />
         <param name="pointListId1" />
@@ -29,8 +30,8 @@
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
-                        <view/>
-                        <view/>
+                        <view />
+                        <view />
                     </layout>
                 </gui>
                 <registry>
@@ -49,7 +50,7 @@
                         <config renderer="default" />
                     </adaptor>
                     <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey1">
-                    <config renderer="default" imageId="${imageId1}" color="#cb1f72"/>
+                        <config renderer="default" imageId="${imageId1}" color="#cb1f72" />
                     </adaptor>
                 </scene>
             </service>
@@ -64,24 +65,28 @@
                         <config renderer="default" />
                     </adaptor>
                     <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey2">
-                        <config renderer="default" imageId="${imageId2}" color="#31f4e3"/>
+                        <config renderer="default" imageId="${imageId2}" color="#31f4e3" />
                     </adaptor>
                 </scene>
             </service>
 
             <item key="imageKey1">
-                 <object uid="${imageId1}" src='ref' type="::fwData::Image"/>
+                <object uid="${imageId1}" src='ref' type="::fwData::Image" />
             </item>
             <item key="imageKey2">
-                 <object uid="${imageId2}" src='ref' type="::fwData::Image"/>
+                <object uid="${imageId2}" src='ref' type="::fwData::Image" />
             </item>
 
             <item key="pointListKey1">
-                 <object uid="${pointListId1}" src='ref' type="::fwData::PointList"/>
+                <object uid="${pointListId1}" src='ref' type="::fwData::PointList" />
             </item>
             <item key="pointListKey2">
-                 <object uid="${pointListId2}" src='ref' type="::fwData::PointList"/>
+                <object uid="${pointListId2}" src='ref' type="::fwData::PointList" />
             </item>
+
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>${GENERIC_UID}_BasicViewerFrame/closed</signal>
+            </proxy>
 
             <start uid="${GENERIC_UID}_BasicViewerFrame" />
             <start uid="${GENERIC_UID}_view_image1" />

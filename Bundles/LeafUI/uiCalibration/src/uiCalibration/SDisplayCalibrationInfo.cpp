@@ -18,6 +18,7 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/registry/Proxy.hpp>
 
 #include <arData/CalibrationInfo.hpp>
 
@@ -31,17 +32,16 @@ namespace uiCalibration
 fwServicesRegisterMacro(::fwServices::IController, ::uiCalibration::SDisplayCalibrationInfo, ::fwData::Composite);
 
 const ::fwCom::Slots::SlotKeyType SDisplayCalibrationInfo::s_DISPLAY_IMAGE_SLOT = "displayImage";
+static const ::fwCom::Slots::SlotKeyType s_STOP_CONFIG_SLOT                     = "stopConfig";
+
+static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 //------------------------------------------------------------------------------
 
 SDisplayCalibrationInfo::SDisplayCalibrationInfo() throw ()
 {
-    m_slotDisplayImage = ::fwCom::newSlot( &SDisplayCalibrationInfo::displayImage, this );
-    ::fwCom::HasSlots::m_slots( s_DISPLAY_IMAGE_SLOT, m_slotDisplayImage );
-
-
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    newSlot( s_DISPLAY_IMAGE_SLOT, &SDisplayCalibrationInfo::displayImage, this );
+    newSlot(s_STOP_CONFIG_SLOT, &SDisplayCalibrationInfo::stopConfig, this);
 }
 
 //------------------------------------------------------------------------------
@@ -54,20 +54,17 @@ SDisplayCalibrationInfo::~SDisplayCalibrationInfo() throw ()
 
 void SDisplayCalibrationInfo::starting() throw (::fwTools::Failed)
 {
+    m_proxychannel = this->getID() + "_stopConfig";
 }
 
 //------------------------------------------------------------------------------
 
 void SDisplayCalibrationInfo::stopping() throw (::fwTools::Failed)
 {
-    if (m_connections)
-    {
-        m_connections->disconnect();
-        m_connections.reset();
-    }
-
     if (m_configMgr)
     {
+        ::fwServices::registry::Proxy::sptr proxies = ::fwServices::registry::Proxy::getDefault();
+        proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
         m_configMgr->stopAndDestroy();
         m_configMgr.reset();
     }
@@ -96,9 +93,9 @@ void SDisplayCalibrationInfo::updating() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::receiving(::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed)
+void SDisplayCalibrationInfo::stopConfig()
 {
-    if(_msg->hasEvent("WINDOW_CLOSED") && m_configMgr )
+    if( m_configMgr )
     {
         this->stopping();
     }
@@ -114,7 +111,7 @@ void SDisplayCalibrationInfo::info(std::ostream &_sstream)
 
 void SDisplayCalibrationInfo::displayImage(size_t idx)
 {
-    if(idx >= 0 && !m_configMgr )
+    if( !m_configMgr )
     {
         // Grab images from our composite data
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
@@ -142,24 +139,24 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         std::ostringstream os;
         os << idx;
 
-        ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
-        (*replaceMap)["GENERIC_UID"]         = ::fwData::String::New(
-            ::fwServices::registry::AppConfig::getUniqueIdentifier(strConfig)
-            );
+        ::fwServices::registry::AppConfig::FieldAdaptorType replaceMap;
+        replaceMap["GENERIC_UID"] = ::fwServices::registry::AppConfig::getUniqueIdentifier(strConfig);
 
         ::fwData::Image::sptr img1           = calInfo1->getImage(idx);
-        (*replaceMap)["imageId1"]            = ::fwData::String::New(img1->getID());
+        replaceMap["imageId1"]               = img1->getID();
         ::fwData::PointList::sptr pointList1 = calInfo1->getPointList(img1);
-        (*replaceMap)["pointListId1"]        = ::fwData::String::New(pointList1->getID());
+        replaceMap["pointListId1"]           = pointList1->getID();
 
         ::fwRuntime::ConfigurationElement::csptr config;
         if(m_calInfoKeys.size() > 1)
         {
             ::fwData::Image::sptr img2           = calInfo2->getImage(idx);
-            (*replaceMap)["imageId2"]            = ::fwData::String::New(img2->getID());
+            replaceMap["imageId2"]               = img2->getID();
             ::fwData::PointList::sptr pointList2 = calInfo2->getPointList(img2);
-            (*replaceMap)["pointListId2"]        = ::fwData::String::New(pointList2->getID());
+            replaceMap["pointListId2"]           = pointList2->getID();
         }
+
+        replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
 
         config = ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap);
 
@@ -168,10 +165,9 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         m_configMgr->setConfig( config );
         m_configMgr->launch();
 
-        // Connection to be notified of the window closure
-        ::fwData::Object::sptr root = m_configMgr->getConfigRoot();
-        m_connections               = ::fwServices::helper::SigSlotConnection::New();
-        m_connections->connect( root, this->getSptr(), this->getObjSrvConnections() );
+        // Proxy to be notified of the window closure
+        ::fwServices::registry::Proxy::sptr proxies = ::fwServices::registry::Proxy::getDefault();
+        proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
     }
 }
 

@@ -22,9 +22,6 @@
 #include <QComboBox>
 #include <QPushButton>
 
-
-fwCorePredeclare((fwServices)(ObjectMsg))
-
 namespace uiCalibration
 {
 

@@ -75,9 +75,6 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Does nothing
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
-    /// Does nothing
     virtual void updating() throw(::fwTools::Failed);
 
     /**
@@ -99,22 +96,30 @@ protected:
     /// Overrides
     virtual void info( std::ostream &_sstream );
 
-    /// Launch an appConfig to display an image on an external window.
-    void displayImage(size_t idx);
+
 
 private:
 
-    /// Slot to call displayImage(size_t idx)
-    DisplayImageSlotType::sptr m_slotDisplayImage;
+    /**
+     * @name Slots
+     * @}
+     */
+    /// Slot: stop the config.
+    void stopConfig();
+
+    /// Launch an appConfig to display an image on an external window.
+    void displayImage(size_t idx);
+    /**
+     * @}
+     */
 
     /// AppConfig manager, used to launch the config
     ::fwServices::AppConfigManager::sptr m_configMgr;
 
-    /// To manage connection to the config root
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
-
     /// Calibration information
     std::vector< std::string > m_calInfoKeys;
+
+    std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 };
 
 } // uiCalibration
