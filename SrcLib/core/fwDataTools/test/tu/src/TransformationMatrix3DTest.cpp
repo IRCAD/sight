@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,11 +42,11 @@ bool isIdentity(::fwData::TransformationMatrix3D::sptr tm)
 {
     bool isIdentity = true;
 
-    for (size_t i=0 ; i<4 ; ++i)
+    for (size_t i = 0; i<4; ++i)
     {
-        for (size_t j=0 ; j<4 ; ++j)
+        for (size_t j = 0; j<4; ++j)
         {
-            isIdentity &= (i==j?1.:0.) == tm->getCoefficient(i,j);
+            isIdentity &= (i==j ? 1. : 0.) == tm->getCoefficient(i,j);
         }
     }
     return isIdentity;
@@ -91,14 +91,14 @@ void TransformationMatrix3DTest::matrixTest()
     ::fwDataTools::TransformationMatrix3D::identity(tm2);
 
     ::fwData::TransformationMatrix3D::TMCoefArray tm1Coefs(16);
-    for (int i=0 ; i<16 ; ++i)
+    for (int i = 0; i<16; ++i)
     {
-        tm1Coefs[i]=i+1;
+        tm1Coefs[i] = i+1;
     }
 
-    for (int i=0 ; i<4 ; ++i)
+    for (int i = 0; i<4; ++i)
     {
-        for (int j=0 ; j<4 ; ++j)
+        for (int j = 0; j<4; ++j)
         {
             tm2->setCoefficient(i,j, fabs(static_cast<double>(i-j)) + 1);
         }
@@ -110,12 +110,12 @@ void TransformationMatrix3DTest::matrixTest()
     ::fwData::Point::sptr p2 = ::fwData::Point::New();
 
     ::fwDataTools::TransformationMatrix3D::multiply(tm1, tm2, tm3);
-    for (size_t i=0 ; i<4 ; ++i)
+    for (size_t i = 0; i<4; ++i)
     {
-        for (size_t j=0 ; j<4 ; ++j)
+        for (size_t j = 0; j<4; ++j)
         {
             double val = 0;
-            for (size_t k=0 ; k<4 ; ++k)
+            for (size_t k = 0; k<4; ++k)
             {
                 val += tm1->getCoefficient(i,k)*tm2->getCoefficient(k,j);
             }

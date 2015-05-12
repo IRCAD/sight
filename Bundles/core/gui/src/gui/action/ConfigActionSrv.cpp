@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ namespace action
 //------------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ConfigActionSrv, ::fwData::Object );
-const ::fwCom::Signals::SignalKeyType  ConfigActionSrv::s_LAUNCHED_SIG = "launched";
+const ::fwCom::Signals::SignalKeyType ConfigActionSrv::s_LAUNCHED_SIG = "launched";
 
 //------------------------------------------------------------------------------
 
@@ -41,7 +41,8 @@ ConfigActionSrv::ConfigActionSrv() throw() :
 //------------------------------------------------------------------------------
 
 ConfigActionSrv::~ConfigActionSrv() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -85,7 +86,7 @@ void ConfigActionSrv::configuring() throw(fwTools::Failed)
     SLM_ASSERT( "Sorry, missing attribute id in <config> xml element.", configElement->hasAttribute("id") );
     m_viewConfigId = configElement->getExistingAttributeValue("id");
 
-    SLM_ASSERT( "Sorry, the attribute id in <config> xml element is empty.", ! m_viewConfigId.empty() );
+    SLM_ASSERT( "Sorry, the attribute id in <config> xml element is empty.", !m_viewConfigId.empty() );
 
     std::vector < ConfigurationType > replaceTagsConfig = m_configuration->find("replace");
     std::string adaptor("");
@@ -95,7 +96,7 @@ void ConfigActionSrv::configuring() throw(fwTools::Failed)
         SLM_ASSERT("<replace> tag must have one attribut val.", replaceItem->hasAttribute("val"));
         adaptor = replaceItem->getAttributeValue("val");
         SLM_ASSERT("<replace> tag must have one attribut pattern.", replaceItem->hasAttribute("pattern"));
-        pattern = replaceItem->getAttributeValue("pattern");
+        pattern                  = replaceItem->getAttributeValue("pattern");
         m_fieldAdaptors[pattern] = adaptor;
     }
 }
@@ -118,7 +119,8 @@ void ConfigActionSrv::setIsActive(bool isActive)
 //------------------------------------------------------------------------------
 
 void ConfigActionSrv::updating() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -134,7 +136,8 @@ void ConfigActionSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::f
 //------------------------------------------------------------------------------
 
 void ConfigActionSrv::info( std::ostream &_sstream )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 void ConfigActionSrv::AddGenericUidToFieldApadtor( )
@@ -152,7 +155,9 @@ void ConfigActionSrv::startConfig()
 {
     AddGenericUidToFieldApadtor();
 
-    ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_viewConfigId, m_fieldAdaptors );
+    ::fwRuntime::ConfigurationElement::csptr config =
+        ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_viewConfigId,
+                                                                                   m_fieldAdaptors );
     m_configTemplateManager = ::fwServices::AppConfigManager::New();
     m_configTemplateManager->setConfig( config );
 

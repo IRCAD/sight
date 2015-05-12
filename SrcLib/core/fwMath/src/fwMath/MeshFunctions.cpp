@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,8 @@ namespace fwMath
 
 //-----------------------------------------------------------------------------
 
-bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0, fwVec3d _vert1, fwVec3d _vert2, double &_t, double &_u, double &_v)
+bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0, fwVec3d _vert1, fwVec3d _vert2, double &_t,
+                        double &_u, double &_v)
 {
     const double Epsilon = 0.000001;
 
@@ -35,7 +36,10 @@ bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0, fwVec3d _ve
     /* if determinant is near zero, ray lies in plane of triangle */
     const double Det = ::fwMath::dot(edge1, pvec);
 
-    if (Det > -Epsilon && Det < Epsilon) return false;
+    if (Det > -Epsilon && Det < Epsilon)
+    {
+        return false;
+    }
     const double Inv_det = 1.0 / Det;
 
     /* calculate distance from vert0 to ray origin */
@@ -43,14 +47,20 @@ bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0, fwVec3d _ve
 
     /* calculate U parameter and test bounds */
     _u = Inv_det * ::fwMath::dot(tvec, pvec);
-    if (_u < 0.0 || _u > 1.0) return false;
+    if (_u < 0.0 || _u > 1.0)
+    {
+        return false;
+    }
 
     /* prepare to test V parameter */
     qvec = ::fwMath::cross(tvec, edge1);
 
     /* calculate V parameter and test bounds */
-    _v =  Inv_det * ::fwMath::dot(_dir, qvec);
-    if (_v < 0.0 || _u + _v > 1.0) return false;
+    _v = Inv_det * ::fwMath::dot(_dir, qvec);
+    if (_v < 0.0 || _u + _v > 1.0)
+    {
+        return false;
+    }
 
     /* calculate t, ray intersects triangle */
     _t = Inv_det * ::fwMath::dot(edge2, qvec);
@@ -61,22 +71,29 @@ bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0, fwVec3d _ve
 
 bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_vertexIndex, const fwVec3d &_P)
 {
-    const unsigned int X=0, Y=1, Z=2;
-    const size_t ElementNbr  = _vertexIndex.size();
+    const unsigned int X    = 0, Y = 1, Z = 2;
+    const size_t ElementNbr = _vertexIndex.size();
     if ( ElementNbr == 0 )
+    {
         return false;
+    }
 
     // on regarde tous les triangles du maillage
     unsigned int IntersectionNbr = 0;
-    for ( size_t i = 0 ; i < ElementNbr ; ++i )
+    for ( size_t i = 0; i < ElementNbr; ++i )
     {
         //recuperation des trois sommets du triangle
-        const fwVec3d P1 = {{_vertex[ _vertexIndex[i][0] ][0], _vertex[ _vertexIndex[i][0] ][1], _vertex[ _vertexIndex[i][0] ][2]}};
-        const fwVec3d P2 = {{_vertex[ _vertexIndex[i][1] ][0], _vertex[ _vertexIndex[i][1] ][1], _vertex[ _vertexIndex[i][1] ][2]}};
-        const fwVec3d P3 = {{_vertex[ _vertexIndex[i][2] ][0], _vertex[ _vertexIndex[i][2] ][1], _vertex[ _vertexIndex[i][2] ][2]}};
+        const fwVec3d P1 =
+        {{_vertex[ _vertexIndex[i][0] ][0], _vertex[ _vertexIndex[i][0] ][1], _vertex[ _vertexIndex[i][0] ][2]}};
+        const fwVec3d P2 =
+        {{_vertex[ _vertexIndex[i][1] ][0], _vertex[ _vertexIndex[i][1] ][1], _vertex[ _vertexIndex[i][1] ][2]}};
+        const fwVec3d P3 =
+        {{_vertex[ _vertexIndex[i][2] ][0], _vertex[ _vertexIndex[i][2] ][1], _vertex[ _vertexIndex[i][2] ][2]}};
 
         //on enleve les triangles s'ils sont situes au dessus du point
-        OSLM_TRACE("Trg : " << i << " with Z = [" << P1[Z]  << "][" << P2[Z]  << "][" << P3[Z]  << "] compare with " << _P[Z] );
+        OSLM_TRACE(
+            "Trg : " << i << " with Z = [" << P1[Z]  << "][" << P2[Z]  << "][" << P3[Z]  << "] compare with " <<
+            _P[Z] );
 
         if ( !(P1[Z] > _P[Z] && P2[Z] > _P[Z] && P3[Z] > _P[Z] ) ) //trianglePotentiallyWellPositionned
         {
@@ -84,7 +101,7 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
             //Si P1[X] > P[X] alors il faut necessairement P2[X] < P[X] ou P3[X] < P[X], idem pour les 2 autres axes
             //En outre cela permet d'exclure les points qui sont situes sur les axes
             bool stop = false;
-            for ( unsigned int axe = X ; axe <= Y && !stop ; ++axe )
+            for ( unsigned int axe = X; axe <= Y && !stop; ++axe )
             {
                 const double Delta1 = P1[axe] - _P[axe];
                 const double Delta2 = P2[axe] - _P[axe];
@@ -92,8 +109,14 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
 
                 OSLM_TRACE("d1 : " << Delta1 << "d2 : " << Delta2 << "d3 : " << Delta3 );
 
-                if ( Delta1 >= 0.f && Delta2 >= 0.f && Delta3 >= 0.f ) { stop = true; break;}
-                if ( Delta1 < 0.f && Delta2 < 0.f && Delta3 < 0.f ) { stop = true; break;}
+                if ( Delta1 >= 0.f && Delta2 >= 0.f && Delta3 >= 0.f )
+                {
+                    stop = true; break;
+                }
+                if ( Delta1 < 0.f && Delta2 < 0.f && Delta3 < 0.f )
+                {
+                    stop = true; break;
+                }
             }
             if ( !stop )
             {
@@ -101,7 +124,7 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
 
                 fwVec3d orig = {{_P[0], _P[1], _P[2]}};
 
-                fwVec3d dir = {{ 0.f, 0.f, 1.f}};
+                fwVec3d dir   = {{ 0.f, 0.f, 1.f}};
                 fwVec3d vert0 = {{ P1[0], P1[1], P1[2]}};
                 fwVec3d vert1 = {{ P2[0], P2[1], P2[2]}};
                 fwVec3d vert2 = {{ P3[0], P3[1], P3[2]}};
@@ -154,17 +177,18 @@ bool isBorderlessSurface(const fwVertexIndex &_vertexIndex)
 //-----------------------------------------------------------------------------
 
 // container of connected component
-void findBorderEdges( const fwVertexIndex &_vertexIndex , std::vector< std::vector<  std::pair< int, int  > > > &contours)
+void findBorderEdges( const fwVertexIndex &_vertexIndex,
+                      std::vector< std::vector<  std::pair< int, int  > > > &contours)
 {
     typedef std::pair< int, int  >  Edge;
     typedef std::vector< Edge > Contour; // at Border
     typedef std::vector< Contour> Contours;
 
-    std::map< Edge  , int > edgesHistogram;
-    for ( fwVertexIndex::const_iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
+    std::map< Edge, int > edgesHistogram;
+    for ( fwVertexIndex::const_iterator iter = _vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
     {
         assert (iter->size()>2 );
-        int i1=  (*iter)[0];
+        int i1 = (*iter)[0];
         int i2 = (*iter)[1];
         int i3 = (*iter)[2];
         edgesHistogram[std::make_pair(std::min(i1,i2),std::max(i1,i2) )]++;
@@ -172,7 +196,7 @@ void findBorderEdges( const fwVertexIndex &_vertexIndex , std::vector< std::vect
         edgesHistogram[std::make_pair(std::min(i3,i2),std::max(i3,i2) )]++;
     }
 
-    for ( std::map< Edge  , int >::const_iterator iter=edgesHistogram.begin(); iter!=edgesHistogram.end(); ++iter )
+    for ( std::map< Edge, int >::const_iterator iter = edgesHistogram.begin(); iter!=edgesHistogram.end(); ++iter )
     {
         if (iter->second<2) // an orphan found
         {
@@ -187,18 +211,19 @@ void findBorderEdges( const fwVertexIndex &_vertexIndex , std::vector< std::vect
                 Edge current = fifo.front();
                 contour.push_back( current );
                 fifo.pop_front();
-                edgesHistogram[current]=2; // to mark it processed;
+                edgesHistogram[current] = 2; // to mark it processed;
                 // search neighboor at border and insert in fifo
-                for ( std::map< Edge  , int >::const_iterator iterL=edgesHistogram.begin(); iterL!=edgesHistogram.end(); ++iterL )
+                for ( std::map< Edge, int >::const_iterator iterL = edgesHistogram.begin(); iterL!=edgesHistogram.end();
+                      ++iterL )
                 {
-                    Edge candidate= iterL->first;
+                    Edge candidate = iterL->first;
                     if ( iterL->second < 2 ) // at border
                     {
                         if ( candidate.first == current.first ||  candidate.second == current.second || // neighboor
                              candidate.first == current.second ||  candidate.second == current.first
-                           )
+                             )
                         {
-                            edgesHistogram[candidate]=2; // mark processed;
+                            edgesHistogram[candidate] = 2; // mark processed;
                             fifo.push_back( candidate );
                         }
                     }
@@ -219,29 +244,29 @@ bool closeSurface(  fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex )
     typedef std::vector< Contour> Contours;
 
     Contours contours;
-    findBorderEdges( _vertexIndex , contours);
-    bool closurePerformed = !contours.empty() ;
+    findBorderEdges( _vertexIndex, contours);
+    bool closurePerformed = !contours.empty();
     // close each hole
-    for ( Contours::iterator contour=contours.begin();  contour != contours.end(); ++contour )
+    for ( Contours::iterator contour = contours.begin(); contour != contours.end(); ++contour )
     {
-        int newVertexIndex = _vertex.size() ;
+        int newVertexIndex = _vertex.size();
         // create gravity point & insert new triangle
         std::vector< float > massCenter(3,0);
-        for ( Contour::iterator edge =contour->begin();  edge != contour->end(); ++edge )
+        for ( Contour::iterator edge = contour->begin(); edge != contour->end(); ++edge )
         {
-            for (int i=0; i<3; ++i )
+            for (int i = 0; i<3; ++i )
             {
-                massCenter[i]  += _vertex[edge->first][i];
-                massCenter[i]  += _vertex[edge->second][i];
+                massCenter[i] += _vertex[edge->first][i];
+                massCenter[i] += _vertex[edge->second][i];
             }
             // create new Triangle
             std::vector< int > triangleIndex(3);
-            triangleIndex[0] =  edge->first;
-            triangleIndex[1] =  edge->second;
-            triangleIndex[2] =  newVertexIndex;
+            triangleIndex[0] = edge->first;
+            triangleIndex[1] = edge->second;
+            triangleIndex[2] = newVertexIndex;
             _vertexIndex.push_back( triangleIndex ); // TEST
         }
-        for (int i=0; i<3; ++i )
+        for (int i = 0; i<3; ++i )
         {
             massCenter[i] /= contour->size()*2;
         }
@@ -259,7 +284,7 @@ bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexInde
 
     std::set< int > indexPointToKeep;
 
-    for ( fwVertexIndex::const_iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
+    for ( fwVertexIndex::const_iterator iter = _vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
     {
         indexPointToKeep.insert( (*iter)[0] );
         indexPointToKeep.insert( (*iter)[1] );
@@ -271,16 +296,16 @@ bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexInde
     if (orphanFound)
     {
         // rebuild index table according to element suppression
-        int idx=0;
+        int idx = 0;
         std::map< int, int > translate; // map oldIndex -> newIndex (to take into account removal
         std::set< int >::iterator idxIter;
-        for ( idxIter =  indexPointToKeep.begin() ; idxIter !=  indexPointToKeep.end() ; ++idxIter )
+        for ( idxIter = indexPointToKeep.begin(); idxIter !=  indexPointToKeep.end(); ++idxIter )
         {
             translate[ *idxIter ] = idx++;
             newVertex.push_back(  _vertex[ *idxIter  ] );
         }
 
-        for ( fwVertexIndex::iterator iter=_vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
+        for ( fwVertexIndex::iterator iter = _vertexIndex.begin(); iter!= _vertexIndex.end(); ++iter )
         {
             (*iter)[0] = translate[ (*iter)[0]  ];
             (*iter)[1] = translate[ (*iter)[1]  ];

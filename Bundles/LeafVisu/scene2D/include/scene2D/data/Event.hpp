@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_DATA_EVENT_HPP_
-#define _SCENE2D_DATA_EVENT_HPP_
+#ifndef __SCENE2D_DATA_EVENT_HPP__
+#define __SCENE2D_DATA_EVENT_HPP__
 
 #include <Qt>
 
@@ -21,9 +21,9 @@ namespace data
 //-----------------------------------------------------------------------------
 
 /**
-* @brief This class manage events on the scene 2D (mouse event, keyboard event ,
-* ...).
-*/
+ * @brief This class manage events on the scene 2D (mouse event, keyboard event ,
+ * ...).
+ */
 class SCENE2D_CLASS_API Event : public ::fwData::Object
 {
 
@@ -40,25 +40,22 @@ public:
       MouseWheelUp,
       MouseWheelDown,
       KeyPress,
-      KeyRelease
-    } Type;
+      KeyRelease} Type;
 
     typedef enum
     {   NoButton,
         LeftButton,
         RightButton,
-        MidButton
-    } Button;
+        MidButton} Button;
 
     typedef enum
     {  NoModifier,
        ShiftModifier,
        ControlModifier,
-       AltModifier
-    } Modifier;
+       AltModifier} Modifier;
 
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Event)(::fwData::Object), (()), ::fwData::factory::New< Event >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Event)(::fwData::Object), (()), ::fwData::factory::New< Event >);
 
     /**
      * @brief Constructor
@@ -99,5 +96,5 @@ private:
 } // namespace scene2D
 
 
-#endif // _SCENE2D_DATA_SCENEEVENT_HPP_
+#endif // __SCENE2D_DATA_EVENT_HPP__
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef GUI_DEFAULTTOOLBARSRV_HPP_
-#define GUI_DEFAULTTOOLBARSRV_HPP_
+#ifndef __GUI_ASPECT_DEFAULTTOOLBARSRV_HPP__
+#define __GUI_ASPECT_DEFAULTTOOLBARSRV_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -25,9 +25,9 @@ namespace aspect
 class GUI_CLASS_API DefaultToolBarSrv : public ::fwGui::IToolBarSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultToolBarSrv)(::fwGui::IToolBarSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DefaultToolBarSrv)(::fwGui::IToolBarSrv) );
 
     /// Constructor. Do nothing.
     GUI_API DefaultToolBarSrv() throw();
@@ -49,7 +49,7 @@ protected:
      * @brief Create the toolBar
      * @see ::fwGui::IToolBarSrv::create()
      */
-    GUI_API virtual void starting() throw( ::fwTools::Failed ) ;
+    GUI_API virtual void starting() throw( ::fwTools::Failed );
 
     /**
      * @brief This method remove the tools situated in the ToolBar.
@@ -124,4 +124,4 @@ protected:
 
 }
 
-#endif // GUI_DEFAULTTOOLBARSRV_HPP_
+#endif // __GUI_ASPECT_DEFAULTTOOLBARSRV_HPP__

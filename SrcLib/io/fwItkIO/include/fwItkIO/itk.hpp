@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWITKIO_ITK_HPP_
-#define _FWITKIO_ITK_HPP_
+#ifndef __FWITKIO_ITK_HPP__
+#define __FWITKIO_ITK_HPP__
 
 #include <boost/shared_ptr.hpp>
 
@@ -36,7 +36,8 @@ template< class ITKIMAGE>
  * ::fwData::Image does not manage the image buffer.
  */
 template< class ITKIMAGE>
-void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sptr _dataImage,  bool bufferManagerIsDataImage = true );
+void dataImageFactory( typename ITKIMAGE::Pointer itkImage, ::fwData::Image::sptr _dataImage,
+                       bool bufferManagerIsDataImage = true );
 
 /**
  * @brief Create an ITK image from an ::fwData::Image.
@@ -56,4 +57,4 @@ typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::sptr imageData, boo
 
 #include "fwItkIO/itk.hxx"
 
-#endif // _FWITKIO_ITK_HPP_
+#endif // __FWITKIO_ITK_HPP__

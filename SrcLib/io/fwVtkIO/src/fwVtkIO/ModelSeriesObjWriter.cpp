@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 ModelSeriesObjWriter::ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key key)
-: ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
+    : ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -56,12 +56,12 @@ vtkSmartPointer< vtkActor > createActor( const ::fwData::Reconstruction::sptr & 
 {
     vtkSmartPointer< vtkActor >  actor = vtkSmartPointer< vtkActor >::New();
 
-    ::fwData::Mesh::sptr mesh = pReconstruction->getMesh();
+    ::fwData::Mesh::sptr mesh         = pReconstruction->getMesh();
     ::fwData::Material::sptr material = pReconstruction->getMaterial();
 
     vtkSmartPointer< vtkPolyData > polyData = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, polyData);
-    vtkSmartPointer<vtkPolyDataMapper> mapper  = vtkSmartPointer<vtkPolyDataMapper>::New();
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(polyData);
     actor->SetMapper(mapper);
 
@@ -86,14 +86,14 @@ void ModelSeriesObjWriter::write()
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
-    ::boost::filesystem::path prefix =  this->getFolder();
+    ::boost::filesystem::path prefix = this->getFolder();
 
     ::fwMedData::ModelSeries::sptr modelSeries = getConcreteObject();
 
     BOOST_FOREACH( ::fwData::Reconstruction::sptr rec, modelSeries->getReconstructionDB() )
     {
         vtkSmartPointer< vtkRenderer > renderer = vtkSmartPointer< vtkRenderer >::New();
-        vtkSmartPointer< vtkActor >  actor = createActor(rec);
+        vtkSmartPointer< vtkActor >  actor      = createActor(rec);
         renderer->AddActor(actor);
 
         vtkSmartPointer< vtkRenderWindow > renderWindow = vtkSmartPointer< vtkRenderWindow >::New();

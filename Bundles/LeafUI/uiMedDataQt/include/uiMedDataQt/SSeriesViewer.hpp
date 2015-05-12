@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIMEDDATAQT_SSERIESVIEWER_HPP_
-#define _UIMEDDATAQT_SSERIESVIEWER_HPP_
+#ifndef __UIMEDDATAQT_SSERIESVIEWER_HPP__
+#define __UIMEDDATAQT_SSERIESVIEWER_HPP__
 
 #include <map>
 
@@ -20,20 +20,20 @@ namespace uiMedData
  * @brief  This Service allows to preview the selected series in the Vector. For the moment, it works only on a
  * single selection.
  * @class   SSeriesViewer
- * 
+ *
  * @date    2013.
  */
 class UIMEDDATAQT_CLASS_API SSeriesViewer : public ::fwServices::IController
 {
 
-    public :
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesViewer)(::fwServices::IController) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (SSeriesViewer)(::fwServices::IController) );
 
     /// Constructor
     UIMEDDATAQT_API SSeriesViewer();
 
     /// Destructor
-    UIMEDDATAQT_API virtual ~SSeriesViewer() throw() ;
+    UIMEDDATAQT_API virtual ~SSeriesViewer() throw();
 
 protected:
 
@@ -46,7 +46,7 @@ protected:
     /**
      * @brief Configures the service.
      * @verbatim
-    <service uid="seriesViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
+       <service uid="seriesViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
         <parentView>preview</parentView>
         <configs>
             <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
@@ -57,13 +57,13 @@ protected:
             </config>
             <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
         </configs>
-    </service>
-     @endverbatim
+       </service>
+       @endverbatim
      * - \b parentView : wid of the view where the config will install its windows.
      * - \b config : gives the available association between data type and associated config.
      *   - \b id : identifier of the AppConfig to launch
      *   - \b type : classname of the object stored in Vector associated to this config.
-     *   - \b parameter : allow to pass specific value to the associ config 
+     *   - \b parameter : allow to pass specific value to the associ config
      *     - \b replace : name of the parameter to be replaced
      *     - \b by : specific value to replace for the parameter
      * - \b extract : extracts the object from the path and replaces pattern with its fwID
@@ -115,5 +115,5 @@ private:
 };
 } // namespace uiMedData
 
-#endif // _UIMEDDATAQT_SSERIESVIEWER_HPP_
+#endif // __UIMEDDATAQT_SSERIESVIEWER_HPP__
 

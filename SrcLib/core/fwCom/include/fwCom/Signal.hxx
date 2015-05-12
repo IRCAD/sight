@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,24 +28,24 @@
 namespace fwCom
 {
 
-template < typename R, typename ...A >
-typename Signal< R (A...) >::sptr Signal< R (A...) >::New()
+template < typename R, typename ... A >
+typename Signal< R (A ...) >::sptr Signal< R (A ...) >::New()
 {
-    return ::boost::make_shared< Signal< R (A...) > > () ;
+    return ::boost::make_shared< Signal< R (A ...) > > ();
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ...A >
-Connection Signal< R (A...) >::connect( SlotBase::sptr slot )
+template < typename R, typename ... A >
+Connection Signal< R (A ...) >::connect( SlotBase::sptr slot )
 {
     return this->connect< SignatureType >(slot);
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ...A >
-void Signal< R (A...) >::disconnect( SlotBase::sptr slot )
+template < typename R, typename ... A >
+void Signal< R (A ...) >::disconnect( SlotBase::sptr slot )
 {
     ::fwCore::mt::ReadToWriteLock lock(m_connectionsMutex);
 
@@ -70,8 +70,8 @@ void Signal< R (A...) >::disconnect( SlotBase::sptr slot )
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ...A >
-void Signal< R (A...) >::disconnectAll()
+template < typename R, typename ... A >
+void Signal< R (A ...) >::disconnectAll()
 {
     ::fwCore::mt::WriteLock lock(m_connectionsMutex);
 
@@ -90,45 +90,45 @@ void Signal< R (A...) >::disconnectAll()
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ...A >
-void Signal< R (A...) >::emit( A...a ) const
+template < typename R, typename ... A >
+void Signal< R (A ...) >::emit( A ... a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     OSLM_COM("emit '"<< this->getID() <<"' sig ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
-    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    for ( iter = m_slots.begin(); iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            (*iter)->second->run(a...);
+            (*iter)->second->run(a ...);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ...A >
-void Signal< R (A...) >::asyncEmit( A...a ) const
+template < typename R, typename ... A >
+void Signal< R (A ...) >::asyncEmit( A ... a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     OSLM_COM("asyncEmit '"<< this->getID() <<"' sig ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
-    for ( iter = m_slots.begin() ; iter != end; ++iter )
+    for ( iter = m_slots.begin(); iter != end; ++iter )
     {
         if ((*iter)->first)
         {
-            (*iter)->second->asyncRun(a...);
+            (*iter)->second->asyncRun(a ...);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ...A >
+template < typename R, typename ... A >
 template< typename FROM_F >
-Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
+Connection Signal< R( A ... ) >::connect( SlotBase::sptr slot )
 {
     {
         ::fwCore::mt::ReadLock lock(m_connectionsMutex);
@@ -139,7 +139,7 @@ Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
         }
     }
 
-    typedef SlotConnection< void( A... ) > ConnectionType;
+    typedef SlotConnection< void ( A ... ) > ConnectionType;
     Connection connection;
 
     unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
@@ -149,8 +149,8 @@ Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
         if(slotToConnect)
         {
             ::fwCore::mt::WriteLock lock(m_connectionsMutex);
-            typename Signal< R( A... ) >::sptr sig =
-                ::boost::dynamic_pointer_cast < Signal< R( A... ) > > ( this->shared_from_this() );
+            typename Signal< R( A ... ) >::sptr sig =
+                ::boost::dynamic_pointer_cast < Signal< R( A ... ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
@@ -171,9 +171,9 @@ Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
         if(wrappedSlot)
         {
             ::fwCore::mt::WriteLock lock(m_connectionsMutex);
-            SlotSptr slotToConnect = Slot < Slot < void (A...) > >::New(wrappedSlot);
-            typename Signal< R( A... ) >::sptr sig =
-                ::boost::dynamic_pointer_cast < Signal< R( A... ) > > ( this->shared_from_this() );
+            SlotSptr slotToConnect = Slot < Slot < void (A ...) > >::New(wrappedSlot);
+            typename Signal< R( A ... ) >::sptr sig =
+                ::boost::dynamic_pointer_cast < Signal< R( A ... ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
@@ -196,8 +196,8 @@ Connection Signal< R( A... ) >::connect( SlotBase::sptr slot )
 
 //-----------------------------------------------------------------------------
 
-template < typename R, typename ...A >
-Connection Signal< R( A... ) >::getConnection( SlotBase::sptr slot, bool throws )
+template < typename R, typename ... A >
+Connection Signal< R( A ... ) >::getConnection( SlotBase::sptr slot, bool throws )
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
     Connection connection;

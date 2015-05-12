@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,16 +25,19 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Native::Native( const ::boost::filesystem::path & modulePath, const ::boost::shared_ptr< INameDecorator > nameDecorator ) throw()
-:   m_modulePath        ( modulePath ),
-    m_nameDecorator ( nameDecorator ),
-    m_bundle            ( 0 )
-{}
+Native::Native( const ::boost::filesystem::path & modulePath,
+                const ::boost::shared_ptr< INameDecorator > nameDecorator ) throw()
+    :   m_modulePath        ( modulePath ),
+      m_nameDecorator ( nameDecorator ),
+      m_bundle            ( 0 )
+{
+}
 
 //------------------------------------------------------------------------------
 
 Native::~Native() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -50,7 +53,7 @@ const ::boost::filesystem::path Native::getFullPath( const bool _bMustBeFile ) c
     {
         throw RuntimeException("Unable to find a native library for the bundle.");
     }
-    if( ! ::boost::filesystem::exists(result) )
+    if( !::boost::filesystem::exists(result) )
     {
 #if BOOST_FILESYSTEM_VERSION > 2
         throw RuntimeException("'" + result.string() + "': invalid native module file name.");
@@ -63,7 +66,8 @@ const ::boost::filesystem::path Native::getFullPath( const bool _bMustBeFile ) c
 #if BOOST_FILESYSTEM_VERSION > 2
         throw RuntimeException("'" + result.string() + "': is a file. Perhaps dynamic librairie is missing.");
 #else
-        throw RuntimeException("'" + result.native_file_string() + "': is a file. Perhaps dynamic librairie is missing.");
+        throw RuntimeException("'" + result.native_file_string() +
+                               "': is a file. Perhaps dynamic librairie is missing.");
 #endif
     }
     return result;
@@ -94,13 +98,13 @@ const ::boost::filesystem::path Native::getPath() const throw(RuntimeException)
 #if BOOST_FILESYSTEM_VERSION > 2
         if( ::boost::regex_match( curEntryPath.filename().string(), nativeFileRegex ) )
         {
-            result =  m_modulePath.parent_path() / curEntryPath.filename();
+            result = m_modulePath.parent_path() / curEntryPath.filename();
             break;
         }
 #else
         if( ::boost::regex_match( curEntryPath.leaf(), nativeFileRegex ) )
         {
-            result =  m_modulePath.parent_path() / curEntryPath.leaf();
+            result = m_modulePath.parent_path() / curEntryPath.leaf();
             break;
         }
 #endif // BOOST_FILESYSTEM_VERSION > 2
@@ -123,7 +127,8 @@ void Native::setBundle( const Bundle * bundle ) throw()
 //------------------------------------------------------------------------------
 
 void Native::operator=(const Native&) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

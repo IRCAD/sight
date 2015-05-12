@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP_
-#define _FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP_
+#ifndef __FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP__
+#define __FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -21,10 +21,10 @@ namespace ut
  */
 class TransferFunctionTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( TransferFunctionTest );
-    CPPUNIT_TEST( toVtkLookupTableTest );
-    CPPUNIT_TEST( toBWVtkLookupTableTest );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( TransferFunctionTest );
+CPPUNIT_TEST( toVtkLookupTableTest );
+CPPUNIT_TEST( toBWVtkLookupTableTest );
+CPPUNIT_TEST_SUITE_END();
 
 
 public:
@@ -35,7 +35,7 @@ public:
     void toVtkLookupTableTest();
     void toBWVtkLookupTableTest();
 
-private :
+private:
 
     ::fwData::TransferFunction::sptr createTFColor();
 
@@ -44,4 +44,4 @@ private :
 } // end namespace ut
 } // end namespace fwVtkIO
 
-#endif //_FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP_
+#endif //__FWVTKIO_UT_TRANSFERFUNCTIONTEST_HPP__

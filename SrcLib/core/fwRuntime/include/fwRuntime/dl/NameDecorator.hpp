@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_DL_NAMEDECORATOR_HPP_
-#define _FWRUNTIME_DL_NAMEDECORATOR_HPP_
+#ifndef __FWRUNTIME_DL_NAMEDECORATOR_HPP__
+#define __FWRUNTIME_DL_NAMEDECORATOR_HPP__
 
 
 
@@ -26,7 +26,7 @@ namespace dl
  *          to do plateform specific decorations.
  * @class   NameDecorator
  * @date    2004-2009
- * 
+ *
  */
 struct NameDecorator : public INameDecorator
 {
@@ -39,34 +39,34 @@ struct NameDecorator : public INameDecorator
     //@}
 
 
-protected:
+    protected:
 
-    /**
-     * @brief   Retrieves the native file prefix.
-     *
-     * @remark  The default implements does nothing and should be overridden.
-     *
-     * @return  a string containing the native file prefix
-     */
-    virtual const std::string getNativePrefix() const throw();
+        /**
+         * @brief   Retrieves the native file prefix.
+         *
+         * @remark  The default implements does nothing and should be overridden.
+         *
+         * @return  a string containing the native file prefix
+         */
+        virtual const std::string getNativePrefix() const throw();
 
-    /**
-     * @brief   Retrieves the native file suffix.
-     *
-     * @remark  The default implements adds the release or debug suffix.
-     *
-     * @return  a string containing the native file suffix
-     */
-    virtual const std::string getNativeSuffix() const throw();
+        /**
+         * @brief   Retrieves the native file suffix.
+         *
+         * @remark  The default implements adds the release or debug suffix.
+         *
+         * @return  a string containing the native file suffix
+         */
+        virtual const std::string getNativeSuffix() const throw();
 
-    /**
-     * @brief   Retrieves the native file extension.
-     *
-     * @remark  The default implements does nothing and should be overridden.
-     *
-     * @return  a string containing the native file extension
-     */
-    virtual const std::string getNativeExtension() const throw();
+        /**
+         * @brief   Retrieves the native file extension.
+         *
+         * @remark  The default implements does nothing and should be overridden.
+         *
+         * @return  a string containing the native file extension
+         */
+        virtual const std::string getNativeExtension() const throw();
 
 };
 
@@ -78,4 +78,4 @@ protected:
 
 
 
-#endif /*_FWRUNTIME_DL_NAMEDECORATOR_HPP_*/
+#endif /*__FWRUNTIME_DL_NAMEDECORATOR_HPP__*/

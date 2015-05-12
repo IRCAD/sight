@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -80,7 +80,7 @@ protected:
  * @class TimerAsio
  * @brief Private Timer implementation using boost::asio.
  *
- * 
+ *
  * @date   2012.
  */
 class TimerAsio : public ::fwThread::Timer
@@ -144,10 +144,10 @@ protected:
     TimeDurationType m_duration;
 
     /// Timer's mode.
-    bool             m_oneShot;
+    bool m_oneShot;
 
     /// Timer's state.
-    bool             m_running;
+    bool m_running;
 };
 
 //------------------------------------------------------------------------------
@@ -159,7 +159,8 @@ WorkerAsio::WorkerAsio() :
     m_ioService(),
     m_work( ::boost::make_shared< WorkType >(::boost::ref(m_ioService)) )
 {
-    ::boost::packaged_task< ::fwThread::Worker::ExitReturnType > task( ::boost::bind(&WorkerThread, ::boost::ref(m_ioService)) );
+    ::boost::packaged_task< ::fwThread::Worker::ExitReturnType > task( ::boost::bind(&WorkerThread, ::boost::ref(
+                                                                                         m_ioService)) );
     ::boost::future< ::fwThread::Worker::ExitReturnType > ufuture = task.get_future();
 
     m_thread = ::boost::make_shared< ThreadType >( ::boost::move( task ) );
@@ -260,7 +261,7 @@ void TimerAsio::stop()
 void TimerAsio::rearmNoLock(TimeDurationType duration)
 {
     this->cancelNoLock();
-    ::boost::posix_time::time_duration d  =
+    ::boost::posix_time::time_duration d =
         ::boost::posix_time::microseconds(boost::chrono::duration_cast<boost::chrono::microseconds>(duration).count());
     m_timer.expires_from_now( d );
     m_timer.async_wait( ::boost::bind(&TimerAsio::call, this, _1));
@@ -274,7 +275,7 @@ void TimerAsio::call(const ::boost::system::error_code & error)
         bool oneShot;
         {
             ::fwCore::mt::ScopedLock lock(m_mutex);
-            oneShot = m_oneShot;
+            oneShot  = m_oneShot;
             duration = m_duration;
         }
 

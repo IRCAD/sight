@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,12 +18,14 @@ namespace fwGui
 IGuiContainerSrv::IGuiContainerSrv()
     : m_viewLayoutManagerIsCreated (false),
       m_hasToolBar(false)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 IGuiContainerSrv::~IGuiContainerSrv()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -35,7 +37,7 @@ void IGuiContainerSrv::initialize()
     m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::New( this->getID() );
     // find ViewRegistrar configuration
     std::vector < ConfigurationType > vectViewMng = m_configuration->find("registry");
-    if ( ! vectViewMng.empty() )
+    if ( !vectViewMng.empty() )
     {
         m_viewRegistrarConfig = vectViewMng.at(0);
         m_viewRegistrar->initialize(m_viewRegistrarConfig);
@@ -44,13 +46,13 @@ void IGuiContainerSrv::initialize()
     // Create initializeLayoutManager
     // find gui configuration
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
-    if( ! vectGui.empty() )
+    if( !vectGui.empty() )
     {
         SLM_ASSERT("Sorry, no <registry> tag is allowed in <gui> section", vectGui.at(0)->find("registry").empty());
 
         // find view LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
-        if( ! vectLayoutMng.empty() )
+        if( !vectLayoutMng.empty() )
         {
             m_viewLayoutConfig = vectLayoutMng.at(0);
             this->initializeLayoutManager( m_viewLayoutConfig );
@@ -78,7 +80,7 @@ void IGuiContainerSrv::create()
     SLM_ASSERT("Parent container is unknown.", parent);
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IContainerBuilder::REGISTRY_KEY);
-    m_containerBuilder = ::fwGui::builder::IContainerBuilder::dynamicCast(guiObj);
+    m_containerBuilder                  = ::fwGui::builder::IContainerBuilder::dynamicCast(guiObj);
 
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IContainerBuilder::REGISTRY_KEY,
                 m_containerBuilder);
@@ -127,12 +129,12 @@ void IGuiContainerSrv::destroy()
 void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
-            layoutConfig->getName() == "layout");
+                layoutConfig->getName() == "layout");
     SLM_ASSERT("<layout> tag must have type attribute", layoutConfig->hasAttribute("type"));
     const std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(layoutManagerClassName);
-    m_viewLayoutManager = ::fwGui::layoutManager::IViewLayoutManager::dynamicCast(guiObj);
+    m_viewLayoutManager                 = ::fwGui::layoutManager::IViewLayoutManager::dynamicCast(guiObj);
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< layoutManagerClassName, m_viewLayoutManager);
 
     m_viewLayoutManager->initialize(layoutConfig);
@@ -146,7 +148,7 @@ void IGuiContainerSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
                 toolBarConfig->getName() == "toolBar");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
-    m_toolBarBuilder = ::fwGui::builder::IToolBarBuilder::dynamicCast(guiObj);
+    m_toolBarBuilder                    = ::fwGui::builder::IToolBarBuilder::dynamicCast(guiObj);
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY,
                 m_toolBarBuilder);
 

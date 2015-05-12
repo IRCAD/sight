@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -69,18 +69,18 @@ MarkedSphereHandleRepresentation::MarkedSphereHandleRepresentation() : vtkSphere
 //----------------------------------------------------------------------
 MarkedSphereHandleRepresentation::~MarkedSphereHandleRepresentation()
 {
-  this->Marker->Delete();
-  this->CleanPolyData->Delete();
-  this->MarkerMapper->Delete();
-  this->Follower->Delete();
-  this->MarkerProperty->Delete();
+    this->Marker->Delete();
+    this->CleanPolyData->Delete();
+    this->MarkerMapper->Delete();
+    this->Follower->Delete();
+    this->MarkerProperty->Delete();
 }
 
 //-------------------------------------------------------------------------
 void MarkedSphereHandleRepresentation::SetWorldPosition(double p[3])
 {
-  this->vtkSphereHandleRepresentation::SetWorldPosition(p);
-  this->Follower->SetPosition(this->GetWorldPosition());// p may have been clamped
+    this->vtkSphereHandleRepresentation::SetWorldPosition(p);
+    this->Follower->SetPosition(this->GetWorldPosition());// p may have been clamped
 }
 
 //----------------------------------------------------------------------
@@ -94,24 +94,24 @@ void MarkedSphereHandleRepresentation::CreateDefaultProperties()
 //----------------------------------------------------------------------
 void MarkedSphereHandleRepresentation::BuildRepresentation()
 {
-  // The net effect is to resize the handle
+    // The net effect is to resize the handle
 //  if ( this->GetMTime() > this->BuildTime ||
 //       (this->Renderer && this->Renderer->GetVTKWindow() &&
 //        this->Renderer->GetVTKWindow()->GetMTime() > this->BuildTime) )
 //  {
-      if ( ! this->Placed )
-      {
-          this->ValidPick = 1;
-          this->Placed = 1;
-      }
+    if ( !this->Placed )
+    {
+        this->ValidPick = 1;
+        this->Placed    = 1;
+    }
 
-      this->SizeBounds();
-      this->Sphere->Update();
+    this->SizeBounds();
+    this->Sphere->Update();
 
-      this->Follower->SetCamera( this->GetRenderer()->GetActiveCamera() );
-      this->Marker->SetRadius(this->MarkerRadiusFactor * this->Sphere->GetRadius() );
-      this->Marker->Update();
-      this->BuildTime.Modified();
+    this->Follower->SetCamera( this->GetRenderer()->GetActiveCamera() );
+    this->Marker->SetRadius(this->MarkerRadiusFactor * this->Sphere->GetRadius() );
+    this->Marker->Update();
+    this->BuildTime.Modified();
 //  }
 
 }
@@ -119,39 +119,39 @@ void MarkedSphereHandleRepresentation::BuildRepresentation()
 //----------------------------------------------------------------------
 void MarkedSphereHandleRepresentation::GetActors(vtkPropCollection *pc)
 {
-  this->Actor->GetActors(pc);
-  this->Follower->GetActors(pc);
+    this->Actor->GetActors(pc);
+    this->Follower->GetActors(pc);
 }
 
 //----------------------------------------------------------------------
 void MarkedSphereHandleRepresentation::ReleaseGraphicsResources(vtkWindow *win)
 {
-  this->Actor->ReleaseGraphicsResources(win);
-  this->Follower->ReleaseGraphicsResources(win);
+    this->Actor->ReleaseGraphicsResources(win);
+    this->Follower->ReleaseGraphicsResources(win);
 }
 
 //----------------------------------------------------------------------
 int MarkedSphereHandleRepresentation::RenderOpaqueGeometry(vtkViewport *viewport)
 {
-  this->BuildRepresentation();
-  int ret = 0;
-  if (this->GetRenderer()->GetActiveCamera()->GetParallelProjection())
-  {
-      ret = this->Follower->RenderOpaqueGeometry(viewport);
-  }
-  return this->Actor->RenderOpaqueGeometry(viewport) + ret;
+    this->BuildRepresentation();
+    int ret = 0;
+    if (this->GetRenderer()->GetActiveCamera()->GetParallelProjection())
+    {
+        ret = this->Follower->RenderOpaqueGeometry(viewport);
+    }
+    return this->Actor->RenderOpaqueGeometry(viewport) + ret;
 }
 
 //----------------------------------------------------------------------
 int MarkedSphereHandleRepresentation::RenderTranslucentPolygonalGeometry(vtkViewport *viewport)
 {
-  this->BuildRepresentation();
-  int ret = 0;
-  if (this->GetRenderer()->GetActiveCamera()->GetParallelProjection())
-  {
-     ret = this->Follower->RenderTranslucentPolygonalGeometry(viewport);
-  }
-  return this->Actor->RenderTranslucentPolygonalGeometry(viewport) + ret;
+    this->BuildRepresentation();
+    int ret = 0;
+    if (this->GetRenderer()->GetActiveCamera()->GetParallelProjection())
+    {
+        ret = this->Follower->RenderTranslucentPolygonalGeometry(viewport);
+    }
+    return this->Actor->RenderTranslucentPolygonalGeometry(viewport) + ret;
 }
 
 //----------------------------------------------------------------------

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_COMPOSITEMSGFORWARDERSRV_HPP_
-#define _CTRLSELECTION_COMPOSITEMSGFORWARDERSRV_HPP_
+#ifndef __CTRLSELECTION_WRAPPER_OBJTOCOMPOSITEMSGFORWARDERSRV_HPP__
+#define __CTRLSELECTION_WRAPPER_OBJTOCOMPOSITEMSGFORWARDERSRV_HPP__
 
 #include <boost/tuple/tuple.hpp>
 
@@ -23,21 +23,21 @@ namespace wrapper
 /**
  * @class  ObjToCompositeMsgForwarderSrv
  * @brief  This service forwards an event from all objects of composite to the composite .
- * 
+ *
 
  * @date   2011.
  */
 class CTRLSELECTION_CLASS_API ObjToCompositeMsgForwarderSrv : public ::ctrlSelection::IWrapperSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ObjToCompositeMsgForwarderSrv)(::ctrlSelection::IWrapperSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ObjToCompositeMsgForwarderSrv)(::ctrlSelection::IWrapperSrv) );
 
 
-    CTRLSELECTION_API ObjToCompositeMsgForwarderSrv() throw() ;
+    CTRLSELECTION_API ObjToCompositeMsgForwarderSrv() throw();
 
-    CTRLSELECTION_API virtual ~ObjToCompositeMsgForwarderSrv() throw() ;
+    CTRLSELECTION_API virtual ~ObjToCompositeMsgForwarderSrv() throw();
 
 protected:
 
@@ -54,8 +54,8 @@ protected:
      * @brief Configures the service.
      *
      * @verbatim
-     <forward fromKey="objKey" onEvent="UPDATED_OBJECT" msgType="::fwComEd::ImageMsg" />
-     @endverbatim
+       <forward fromKey="objKey" onEvent="UPDATED_OBJECT" msgType="::fwComEd::ImageMsg" />
+       @endverbatim
      * With this configuration : message with event "UPDATED_OBJECT" received from oject with key objKey" are
      * forwarded to the composite. New message of type ::fwComEd::ImageMsg will be created and sent to the composite.
      *
@@ -71,7 +71,7 @@ protected:
 
     CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
-private :
+private:
 
     // < fromKey, onEvent, msgType >
     typedef ::boost::tuple< std::string, std::string, std::string > EventType;
@@ -87,4 +87,4 @@ private :
 } // wrapper
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_COMPOSITEMSGFORWARDERSRV_HPP_
+#endif // __CTRLSELECTION_WRAPPER_OBJTOCOMPOSITEMSGFORWARDERSRV_HPP__

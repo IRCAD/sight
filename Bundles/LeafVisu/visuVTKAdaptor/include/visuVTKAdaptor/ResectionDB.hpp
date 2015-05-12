@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_RESECTIONDB_HPP_
-#define _VISUVTKADAPTOR_RESECTIONDB_HPP_
+#ifndef __VISUVTKADAPTOR_RESECTIONDB_HPP__
+#define __VISUVTKADAPTOR_RESECTIONDB_HPP__
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -17,19 +17,25 @@ namespace visuVTKAdaptor
 
 
 
-class VISUVTKADAPTOR_CLASS_API ResectionDB: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API ResectionDB : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ResectionDB)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ResectionDB)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API ResectionDB() throw();
 
     VISUVTKADAPTOR_API virtual ~ResectionDB() throw();
 
-    void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id){ m_clippingPlanes = id ; }
+    void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id)
+    {
+        m_clippingPlanes = id;
+    }
 
-    void setSharpEdgeAngle(double angle){ m_sharpEdgeAngle = angle; }
+    void setSharpEdgeAngle(double angle)
+    {
+        m_sharpEdgeAngle = angle;
+    }
 
 protected:
 
@@ -52,4 +58,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_RESECTIONDB_HPP_
+#endif // __VISUVTKADAPTOR_RESECTIONDB_HPP__

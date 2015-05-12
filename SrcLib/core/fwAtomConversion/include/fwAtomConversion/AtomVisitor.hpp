@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@
 
 namespace fwData
 {
-    class Object;
+class Object;
 }
 
 namespace fwAtomConversion
@@ -45,20 +45,23 @@ public:
     /**
      * @brief This policy reuses the data associated with an existing uuid
      */
-    struct ReusePolicy: IReadPolicy
-    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
+    struct ReusePolicy : IReadPolicy
+    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator() (const std::string &uuid,
+                                                                      const std::string &classname) const; };
 
     /**
      * @brief This policy changes data's uuid if it already exists
      */
-    struct ChangePolicy: IReadPolicy
-    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
+    struct ChangePolicy : IReadPolicy
+    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator() (const std::string &uuid,
+                                                                      const std::string &classname) const; };
 
     /**
      * @brief This policy throws an exception if the loaded uuid is not available
      */
-    struct StrictPolicy: IReadPolicy
-    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator() (const std::string &uuid, const std::string &classname) const; };
+    struct StrictPolicy : IReadPolicy
+    { FWATOMCONVERSION_API virtual SPTR(::fwData::Object) operator() (const std::string &uuid,
+                                                                      const std::string &classname) const; };
     /** @} */
 
 

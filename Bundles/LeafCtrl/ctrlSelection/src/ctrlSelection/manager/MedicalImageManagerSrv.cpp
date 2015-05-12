@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,8 @@ namespace manager
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::MedicalImageManagerSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::MedicalImageManagerSrv,
+                         ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
@@ -37,7 +38,8 @@ MedicalImageManagerSrv::MedicalImageManagerSrv() throw()
 //-----------------------------------------------------------------------------
 
 MedicalImageManagerSrv::~MedicalImageManagerSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -66,7 +68,7 @@ void MedicalImageManagerSrv::receiving( ::fwServices::ObjectMsg::csptr message )
 
 void MedicalImageManagerSrv::convertImages( ::fwData::Composite::sptr _composite )
 {
-    for(    ::fwData::Composite::IteratorType  objectId = _composite->begin();
+    for(    ::fwData::Composite::IteratorType objectId = _composite->begin();
             objectId != _composite->end();
             ++objectId )
     {
@@ -88,12 +90,14 @@ void MedicalImageManagerSrv::convertImages( ::fwData::Composite::sptr _composite
 //-----------------------------------------------------------------------------
 
 void MedicalImageManagerSrv::starting()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void MedicalImageManagerSrv::stopping()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -101,15 +105,17 @@ void MedicalImageManagerSrv::configuring()  throw ( ::fwTools::Failed )
 {
     ::fwRuntime::ConfigurationElementContainer updaters = m_configuration->findAllConfigurationElement("update");
 
-    SLM_ASSERT("Problem with configuration for MedicalImageManagerSrv type, missing element \"update\"", updaters.size() != 0 );
+    SLM_ASSERT("Problem with configuration for MedicalImageManagerSrv type, missing element \"update\"",
+               updaters.size() != 0 );
     OSLM_DEBUG( "updaters.size() = " << updaters.size() );
     m_imageCompositeKeys.clear();
     for(    ::fwRuntime::ConfigurationElementContainer::Iterator item = updaters.begin();
             item != updaters.end();
             ++item )
     {
-        SLM_FATAL_IF( "Sorry, attribute \"imageCompositeKey\" is missing", !(*item)->hasAttribute("imageCompositeKey") );
-        std::string imageCompositeKey =  (*item)->getExistingAttributeValue("imageCompositeKey");
+        SLM_FATAL_IF( "Sorry, attribute \"imageCompositeKey\" is missing",
+                      !(*item)->hasAttribute("imageCompositeKey") );
+        std::string imageCompositeKey = (*item)->getExistingAttributeValue("imageCompositeKey");
         m_imageCompositeKeys.push_back(imageCompositeKey);
     }
 }
@@ -117,17 +123,20 @@ void MedicalImageManagerSrv::configuring()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void MedicalImageManagerSrv::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void MedicalImageManagerSrv::updating() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void MedicalImageManagerSrv::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

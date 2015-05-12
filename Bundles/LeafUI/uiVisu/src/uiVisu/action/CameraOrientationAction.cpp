@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ namespace uiVisu
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiVisu::action::CameraOrientationAction , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::CameraOrientationAction, ::fwData::Image );
 
 
 CameraOrientationAction::CameraOrientationAction() throw() : m_orientation("axial")
@@ -43,7 +43,8 @@ CameraOrientationAction::CameraOrientationAction() throw() : m_orientation("axia
 //------------------------------------------------------------------------------
 
 CameraOrientationAction::~CameraOrientationAction() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -70,9 +71,10 @@ void CameraOrientationAction::configuring() throw(fwTools::Failed)
 
     if( this->m_configuration->size() > 0 )
     {
-        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
-        SLM_ASSERT("Sorry, only one xml element \"orientation\" is accepted.", this->m_configuration->size() == 1 && (*iter)->getName() == "orientation" );
-        SLM_ASSERT("Sorry, xml element \"orientation\" is empty.", ! (*iter)->getValue().empty() );
+        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
+        SLM_ASSERT("Sorry, only one xml element \"orientation\" is accepted.",
+                   this->m_configuration->size() == 1 && (*iter)->getName() == "orientation" );
+        SLM_ASSERT("Sorry, xml element \"orientation\" is empty.", !(*iter)->getValue().empty() );
         m_orientation = (*iter)->getValue();
         ::boost::algorithm::trim(m_orientation);
         ::boost::algorithm::to_lower(m_orientation);
@@ -92,7 +94,7 @@ void CameraOrientationAction::updating() throw(::fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwData::String::sptr dataInfo = ::fwData::String::New();
-    dataInfo->value() = m_orientation;
+    dataInfo->value()               = m_orientation;
 
     ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "CAMERA_ORIENTATION", dataInfo );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,13 +30,13 @@ bool isSeriesKnown(const SPTR(::fwAtoms::Object)& series)
     bool isKnown = false;
 
     namespace reg = ::fwActivities::registry;
-    reg::Activities::sptr registry = reg::Activities::getDefault();
+    reg::Activities::sptr registry                = reg::Activities::getDefault();
     const std::vector< reg::ActivityInfo >& infos = registry->getInfos();
 
     const std::string& classname = ::fwAtomsPatch::helper::getClassname(series);
 
-    SPTR(::fwData::registry::Type) objectRegistry = ::fwData::registry::get();
-    ::fwData::registry::Type::KeyVectorType keys = objectRegistry->getFactoryKeys();
+    SPTR(::fwData::registry::Type) objectRegistry           = ::fwData::registry::get();
+    ::fwData::registry::Type::KeyVectorType keys            = objectRegistry->getFactoryKeys();
     ::fwData::registry::Type::KeyVectorType::iterator itKey = std::find(keys.begin(), keys.end(), classname);
 
     if(itKey != keys.end())

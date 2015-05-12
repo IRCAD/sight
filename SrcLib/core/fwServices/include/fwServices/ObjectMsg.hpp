@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_OBJECTMSG_HPP_
-#define _FWSERVICES_OBJECTMSG_HPP_
+#ifndef __FWSERVICES_OBJECTMSG_HPP__
+#define __FWSERVICES_OBJECTMSG_HPP__
 
 #include <fwCore/base.hpp>
 #include <fwTools/Object.hpp>
@@ -29,7 +29,7 @@ class IService;
 /**
  * @brief Object message : indicate modifications having occurred or being performed on a object.
  * @class ObjectMsg
- * 
+ *
  * @date 2007-2009.
  *
  * The message only provides identifiers enabling to retrieve the modified information on the object. This should be embed the information. The m_subject is present
@@ -69,7 +69,8 @@ public:
     };
 
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object), (()), ::fwServices::factory::message::New< ObjectMsg > );
+    fwCoreClassDefinitionsWithFactoryMacro( (ObjectMsg)(::fwTools::Object), (()),
+                                            ::fwServices::factory::message::New< ObjectMsg > );
 
     /// Defines callback type
     typedef ::boost::function< void () > MessageCallbackType;
@@ -112,7 +113,7 @@ public:
      * @param[in] _pDataInfo additional information concerning message ( it is an optional parameter )
      * @note a message can contain many events.
      */
-    FWSERVICES_API void addEvent( std::string _eventId , ::fwData::Object::csptr _pDataInfo = ::fwData::Object::sptr() );
+    FWSERVICES_API void addEvent( std::string _eventId, ::fwData::Object::csptr _pDataInfo = ::fwData::Object::sptr() );
 
     /**
      * @brief This method is used to know if a specific event declared in the message
@@ -125,7 +126,7 @@ public:
      * @brief This method returns all id event contained in the message
      * @return the list of event
      */
-    FWSERVICES_API std::vector< std::string > getEventIds() const ;
+    FWSERVICES_API std::vector< std::string > getEventIds() const;
 
     /**
      * @brief This method returns the data info associated to event, this data can be an null ptr when the event not needs some additional informations.
@@ -195,7 +196,8 @@ public:
      * @param[in]   oldObject : the old object which will be replaced.
      * @param[in]   newObject : the new object.
      */
-    FWSERVICES_API void appendChangedField( const FieldNameType &fieldName, ::fwData::Object::sptr oldObject, ::fwData::Object::sptr newObject );
+    FWSERVICES_API void appendChangedField( const FieldNameType &fieldName, ::fwData::Object::sptr oldObject,
+                                            ::fwData::Object::sptr newObject );
 
     /**
      * @brief   Return a map of old object in changed fields list.
@@ -203,8 +205,8 @@ public:
     FWSERVICES_API const ModifiedFieldsContainerType &getOldChangedFields() const;
 
     /**
-    * @brief   Return a map of new object in changed fields list.
-    */
+     * @brief   Return a map of new object in changed fields list.
+     */
     FWSERVICES_API const ModifiedFieldsContainerType &getNewChangedFields() const;
 
     //@}
@@ -218,12 +220,12 @@ public:
      * @see ObjectMsg::operator<<(std::ostream & _ostream, ObjectMsg& _service)
      * @note Invoke ObjectMsg::info( std::ostream )
      */
-    FWSERVICES_API friend std::ostream & operator<<(std::ostream & _sstream, const ObjectMsg& _message) ;
+    FWSERVICES_API friend std::ostream & operator<<(std::ostream & _sstream, const ObjectMsg& _message);
 
     /// Set a callback to the message which will be executed during message destruction
     FWSERVICES_API void setMessageCallback( MessageCallbackType callback );
 
-protected :
+protected:
 
     /// Constructor, do nothing.
     FWSERVICES_API ObjectMsg();
@@ -233,17 +235,17 @@ protected :
      *
      * Some event has not data info, in this cases, the event is in map  but the ::fwData::Object::sptr is null.
      */
-    std::map< std::string , ::fwData::Object::csptr > m_eventId2DataInfo;
+    std::map< std::string, ::fwData::Object::csptr > m_eventId2DataInfo;
 
     /// Give some message informations, this method uses getGeneralInfo.
-    FWSERVICES_API virtual void info(std::ostream &_sstream ) const ;
+    FWSERVICES_API virtual void info(std::ostream &_sstream ) const;
 
     ModifiedFieldsContainerType m_removedFields;
     ModifiedFieldsContainerType m_addedFields;
     ModifiedFieldsContainerType m_oldChangedFields;
     ModifiedFieldsContainerType m_newChangedFields;
 
-private :
+private:
 
     /// Message source. It is the service which creates msg and sends it at all subject observers
     WPTR(::fwServices::IService) m_source;
@@ -264,5 +266,5 @@ private :
 
 } // namespace fwServices
 
-#endif //_FWSERVICES_OBJECTMSG_HPP_
+#endif //__FWSERVICES_OBJECTMSG_HPP__
 

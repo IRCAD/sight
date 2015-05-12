@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP_
-#define _SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP_
+#ifndef __SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP__
+#define __SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP__
 
 #include <scene2D/adaptor/IAdaptor.hpp>
 
@@ -39,100 +39,100 @@ namespace adaptor
  */
 class SCENE2D_CLASS_API CurvedHistogram : public ::scene2D::adaptor::IAdaptor
 {
-    public:
-        fwCoreServiceClassDefinitionsMacro( (CurvedHistogram)( ::scene2D::adaptor::IAdaptor) );
+public:
+    fwCoreServiceClassDefinitionsMacro( (CurvedHistogram)( ::scene2D::adaptor::IAdaptor) );
 
-        typedef ::scene2D::adaptor::IAdaptor::Point2DType Point;
-        typedef std::vector< Point > Points;
+    typedef ::scene2D::adaptor::IAdaptor::Point2DType Point;
+    typedef std::vector< Point > Points;
 
-        SCENE2D_API CurvedHistogram() throw();
-        SCENE2D_API virtual ~CurvedHistogram() throw();
+    SCENE2D_API CurvedHistogram() throw();
+    SCENE2D_API virtual ~CurvedHistogram() throw();
 
-    protected:
-        SCENE2D_API void configuring()  throw ( ::fwTools::Failed );
-        SCENE2D_API void doStart()      throw ( ::fwTools::Failed );
-        SCENE2D_API void doUpdate()     throw ( ::fwTools::Failed );
-        SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-        SCENE2D_API void doSwap()       throw ( ::fwTools::Failed );
-        SCENE2D_API void doStop()       throw ( ::fwTools::Failed );
+protected:
+    SCENE2D_API void configuring()  throw ( ::fwTools::Failed );
+    SCENE2D_API void doStart()      throw ( ::fwTools::Failed );
+    SCENE2D_API void doUpdate()     throw ( ::fwTools::Failed );
+    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    SCENE2D_API void doSwap()       throw ( ::fwTools::Failed );
+    SCENE2D_API void doStop()       throw ( ::fwTools::Failed );
 
-        SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );
+    SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );
 
-        /// Ratio used for vertical scaling (default value: 1.1)
-        static const float SCALE;
+    /// Ratio used for vertical scaling (default value: 1.1)
+    static const float SCALE;
 
-        /// The number of points between to points of the final Bezier curve to compute
-        static const float NB_POINTS_BEZIER;
+    /// The number of points between to points of the final Bezier curve to compute
+    static const float NB_POINTS_BEZIER;
 
-    private:
+private:
 
-        Points getControlPoints( ::fwData::Histogram::sptr _histogram );
+    Points getControlPoints( ::fwData::Histogram::sptr _histogram );
 
-        Points getBSplinePoints( Points & _controlPoints );
+    Points getBSplinePoints( Points & _controlPoints );
 
-        Points getResampledBSplinePoints( Points & _bSplinePoints );
+    Points getResampledBSplinePoints( Points & _bSplinePoints );
 
-        void buildBSplineFromPoints( Points & _bSplinePoints );
+    void buildBSplineFromPoints( Points & _bSplinePoints );
 
-        void computePointToPathLengthMapFromBSplinePoints( Points & _bSplinePoints );
+    void computePointToPathLengthMapFromBSplinePoints( Points & _bSplinePoints );
 
-        /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
-        void updateCurrentPoint( ::scene2D::data::Event::sptr _event );
+    /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
+    void updateCurrentPoint( ::scene2D::data::Event::sptr _event );
 
-        /// Build and add a part of histogram's border, according to the given path.
-        void addBorderItem( const QPainterPath & _path );
+    /// Build and add a part of histogram's border, according to the given path.
+    void addBorderItem( const QPainterPath & _path );
 
-        /// Build and add a part of the histogram, according to the given path.
-        void addInnerItem( const QPainterPath & _path );
-
-
-        Points linearInterpolation( const Point _p1, const Point _p2 );
-
-        Points cosinusInterpolation( const Point _p0, const Point _p1 );
-
-        Points quadraticInterpolation( const Point _p0, const Point _p1, const Point _p2 );
-
-        Points cubicInterpolation(
-                const Point _p0, const Point _p1, const Point _p2, const Point _p3 );
+    /// Build and add a part of the histogram, according to the given path.
+    void addInnerItem( const QPainterPath & _path );
 
 
-        // Map the absciss of the points to the corresponding length within the path.
-        std::map<double, double> m_positionsToPathLength;
+    Points linearInterpolation( const Point _p1, const Point _p2 );
 
-        /// Color used for graphic histogram's border color
-        QPen m_borderColor;
+    Points cosinusInterpolation( const Point _p0, const Point _p1 );
 
-        // Color used for graphic histogram's inner color. If no value is supplied in the configuration,
-        // item's inner will be transparent
-        QPen m_innerColor;
+    Points quadraticInterpolation( const Point _p0, const Point _p1, const Point _p2 );
 
-        /// Inner color.
-        QBrush m_brush;
+    Points cubicInterpolation(
+        const Point _p0, const Point _p1, const Point _p2, const Point _p3 );
 
-        // A Qt painter that is used to build a curve representing the shape of the histogram.
-        // Note that the histogram won't be built thanks to this path because of a lack of performance.
-        // In other words, this painter path won't be used to build a graphic item that will be added to 
-        // a Qt graphics scene. The graphic representation of the histogram will composed of multiple items
-        // build thanks to painters like this one, because it improves significantly the rendering performance.
-        // This painter path will be used to provide information about the hsitogram: for instance, it will help 
-        // to retrieve the coordinates of path's points.
-        QPainterPath * m_painterPath;
 
-        /// Width of histram's border
-        float m_borderWidth;
+    // Map the absciss of the points to the corresponding length within the path.
+    std::map<double, double> m_positionsToPathLength;
 
-        /// Current vertical scaling ratio
-        float m_scale;
+    /// Color used for graphic histogram's border color
+    QPen m_borderColor;
 
-        // Graphis items contained into m_items are also added to this group item,
-        // which is then added to the scene.
-        // (This is the only graphic item which has to be added into the scene).
-        QGraphicsItemGroup* m_layer;
+    // Color used for graphic histogram's inner color. If no value is supplied in the configuration,
+    // item's inner will be transparent
+    QPen m_innerColor;
 
-        // Curve point at the current index of the histogram pointed by the mouse. This adaptor looks for 
-        // mouse move events: when the mouse cursor is onto the histogram, the corresponding point of the 
-        // histogram is informed into the object this UID is all about.
-        std::string m_histogramPointUID;
+    /// Inner color.
+    QBrush m_brush;
+
+    // A Qt painter that is used to build a curve representing the shape of the histogram.
+    // Note that the histogram won't be built thanks to this path because of a lack of performance.
+    // In other words, this painter path won't be used to build a graphic item that will be added to
+    // a Qt graphics scene. The graphic representation of the histogram will composed of multiple items
+    // build thanks to painters like this one, because it improves significantly the rendering performance.
+    // This painter path will be used to provide information about the hsitogram: for instance, it will help
+    // to retrieve the coordinates of path's points.
+    QPainterPath * m_painterPath;
+
+    /// Width of histram's border
+    float m_borderWidth;
+
+    /// Current vertical scaling ratio
+    float m_scale;
+
+    // Graphis items contained into m_items are also added to this group item,
+    // which is then added to the scene.
+    // (This is the only graphic item which has to be added into the scene).
+    QGraphicsItemGroup* m_layer;
+
+    // Curve point at the current index of the histogram pointed by the mouse. This adaptor looks for
+    // mouse move events: when the mouse cursor is onto the histogram, the corresponding point of the
+    // histogram is informed into the object this UID is all about.
+    std::string m_histogramPointUID;
 };
 
 
@@ -140,5 +140,5 @@ class SCENE2D_CLASS_API CurvedHistogram : public ::scene2D::adaptor::IAdaptor
 
 }   // namespace scene2D
 
-#endif  // _SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP_
+#endif  // __SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP__
 

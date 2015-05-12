@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,10 @@
 #include "fwMath/MatrixFunctions.hpp"
 #include "fwMath/VectorFunctions.hpp"
 
-namespace fwMath {
+namespace fwMath
+{
 
-void multVecMatrix(const fwMatrix4x4 & _matrix, const fwVec3d& _source ,fwVec3d& _dest)
+void multVecMatrix(const fwMatrix4x4 & _matrix, const fwVec3d& _source,fwVec3d& _dest)
 {
     SLM_TRACE_FUNC();
     double x,y,z;
@@ -31,8 +32,8 @@ fwMatrix4x4  getRotationMatrix( const fwVec3d &_vecNorm )
     const double FV0 = _vecNorm[0];
     const double FV1 = _vecNorm[1];
     const double YP  = sqrt( FV0 * FV0 + FV1 * FV1 );
-    const double RZ  = - atan2(FV0, FV1);
-    const double RX  = - atan2(YP, _vecNorm[2]);
+    const double RZ  = -atan2(FV0, FV1);
+    const double RX  = -atan2(YP, _vecNorm[2]);
 
 
 //     Rotation Matrix
@@ -44,25 +45,25 @@ fwMatrix4x4  getRotationMatrix( const fwVec3d &_vecNorm )
 //     [                                             ]
 //     [        0                0           0     1 ]
 
-    R[0][0] =  cos(RZ);
-    R[0][1] =  sin(RZ);
-    R[0][2] =  0;
-    R[0][3] =  0.;
+    R[0][0] = cos(RZ);
+    R[0][1] = sin(RZ);
+    R[0][2] = 0;
+    R[0][3] = 0.;
 
     R[1][0] = -cos(RX) * sin(RZ);
-    R[1][1] =  cos(RX) * cos(RZ);
-    R[1][2] =  sin(RX);
-    R[1][3] =  0.;
+    R[1][1] = cos(RX) * cos(RZ);
+    R[1][2] = sin(RX);
+    R[1][3] = 0.;
 
-    R[2][0] =  sin(RX) * sin(RZ);
+    R[2][0] = sin(RX) * sin(RZ);
     R[2][1] = -sin(RX) * cos(RZ);
-    R[2][2] =  cos(RX);
-    R[2][3] =  0.;
+    R[2][2] = cos(RX);
+    R[2][3] = 0.;
 
-    R[3][2] =  0.;
-    R[3][3] =  1.;
-    R[3][0] =  0.;
-    R[3][1] =  0.;
+    R[3][2] = 0.;
+    R[3][3] = 1.;
+    R[3][0] = 0.;
+    R[3][1] = 0.;
 
     return R;
 }

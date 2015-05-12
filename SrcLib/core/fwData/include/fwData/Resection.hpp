@@ -23,9 +23,9 @@ namespace fwData
 class FWDATA_CLASS_API Resection : public ::fwData::Object
 {
 
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (Resection)(::fwData::Object),
-        (()), ::fwData::factory::New< Resection >) ;
+                                            (()), ::fwData::factory::New< Resection >);
 
     fwCampMakeFriendDataMacro((fwData)(Resection));
 
@@ -49,21 +49,21 @@ public :
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// PlaneList
-    fwGettersSettersDocMacro(PlaneList, planeList, ::fwData::PlaneList::sptr, the plane list);
+    fwGettersSettersDocMacro(PlaneList, planeList, ::fwData::PlaneList::sptr, "the plane list");
     /// Inputs
-    fwGettersSettersDocMacro(Inputs, vInputs, ResectionInputs, the resection inputs);
+    fwGettersSettersDocMacro(Inputs, vInputs, ResectionInputs, "the resection inputs");
     /// Outputs
-    fwGettersSettersDocMacro(Outputs, vOutputs, ResectionOutputs, the resection outputs);
+    fwGettersSettersDocMacro(Outputs, vOutputs, ResectionOutputs, "the resection outputs");
 
-    fwGettersSettersDocMacro(IsSafePart, isSafePart, bool, the flag if the part is safe);
+    fwGettersSettersDocMacro(IsSafePart, isSafePart, bool, "the flag if the part is safe");
 
-    fwGettersSettersDocMacro(Name, name, std::string, the resection name);
+    fwGettersSettersDocMacro(Name, name, std::string, "the resection name");
 
-    fwGettersSettersDocMacro(IsVisible, isVisible, bool, the flag if the resection is visible);
+    fwGettersSettersDocMacro(IsVisible, isVisible, bool, "the flag if the resection is visible");
 
-    fwGettersSettersDocMacro(IsValid, isValid, bool, the flag if the resection is valid);
+    fwGettersSettersDocMacro(IsValid, isValid, bool, "the flag if the resection is valid");
 
-protected :
+protected:
 
     //! Resection name
     std::string m_name;

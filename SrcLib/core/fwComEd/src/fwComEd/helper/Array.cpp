@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,11 +63,11 @@ void Array::setBuffer(void *buf, bool takeOwnership)
 //------------------------------------------------------------------------------
 
 void Array::setBuffer(
-        void *buf,
-        bool takeOwnership,
-        const ::fwTools::Type &type,
-        const  ::fwData::Array::SizeType &size,
-        size_t nbOfComponents )
+    void *buf,
+    bool takeOwnership,
+    const ::fwTools::Type &type,
+    const  ::fwData::Array::SizeType &size,
+    size_t nbOfComponents )
 {
     m_array->resize( type, size, nbOfComponents, false);
     this->setBuffer(buf, takeOwnership);
@@ -107,7 +107,7 @@ char *Array::getBufferPtr( const ::fwData::Array::IndexType &id, size_t componen
 {
     size_t sizeOf = m_array->getType().sizeOf();
     size_t offset = m_array->getBufferOffset(id, component, sizeOf);
-    char *item = static_cast<char*>(this->getBuffer()) + offset;
+    char *item    = static_cast<char*>(this->getBuffer()) + offset;
     return item;
 }
 
@@ -115,8 +115,8 @@ char *Array::getBufferPtr( const ::fwData::Array::IndexType &id, size_t componen
 
 const char *Array::getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const
 {
-    size_t sizeOf = m_array->getType().sizeOf();
-    size_t offset = m_array->getBufferOffset(id, component, sizeOf);
+    size_t sizeOf    = m_array->getType().sizeOf();
+    size_t offset    = m_array->getBufferOffset(id, component, sizeOf);
     const char *item = static_cast<const char*>(this->getBuffer()) + offset;
     return item;
 }
@@ -125,9 +125,9 @@ const char *Array::getBufferPtr( const ::fwData::Array::IndexType &id, size_t co
 
 void Array::setItem(const ::fwData::Array::IndexType &id, const void *value)
 {
-    size_t sizeOf = m_array->getType().sizeOf();
-    const char *val  = static_cast<const char*>(value);
-    char *item = this->getBufferPtr(id, 0, sizeOf);
+    size_t sizeOf   = m_array->getType().sizeOf();
+    const char *val = static_cast<const char*>(value);
+    char *item      = this->getBufferPtr(id, 0, sizeOf);
     std::copy(val, val + m_array->getNumberOfComponents()*sizeOf, item);
 }
 //------------------------------------------------------------------------------
@@ -135,9 +135,9 @@ void Array::setItem(const ::fwData::Array::IndexType &id, const void *value)
 
 void Array::setItem(const ::fwData::Array::IndexType &id, const size_t component, const void *value)
 {
-    size_t sizeOf = m_array->getType().sizeOf();
-    const char *val  = static_cast<const char*>(value);
-    char *item = this->getBufferPtr(id, component, sizeOf);
+    size_t sizeOf   = m_array->getType().sizeOf();
+    const char *val = static_cast<const char*>(value);
+    char *item      = this->getBufferPtr(id, component, sizeOf);
     std::copy(val, val + sizeOf, item);
 }
 
@@ -147,7 +147,7 @@ void Array::setItem(const ::fwData::Array::IndexType &id, const size_t component
 void *Array::getItem(const ::fwData::Array::IndexType &id, const size_t component)
 {
     size_t sizeOf = m_array->getType().sizeOf();
-    char *item = this->getBufferPtr(id, component, sizeOf);
+    char *item    = this->getBufferPtr(id, component, sizeOf);
     return item;
 }
 
@@ -155,9 +155,9 @@ void *Array::getItem(const ::fwData::Array::IndexType &id, const size_t componen
 
 void Array::getItem(const ::fwData::Array::IndexType &id, void *value) const
 {
-    size_t sizeOf = m_array->getType().sizeOf();
+    size_t sizeOf    = m_array->getType().sizeOf();
     const char *item = this->getBufferPtr(id, 0, sizeOf);
-    char *val  = static_cast<char*>(value);
+    char *val        = static_cast<char*>(value);
     std::copy(item, item + m_array->getNumberOfComponents()*sizeOf, val);
 }
 
@@ -165,9 +165,9 @@ void Array::getItem(const ::fwData::Array::IndexType &id, void *value) const
 
 void Array::getItem(const ::fwData::Array::IndexType &id, const size_t component, void *value) const
 {
-    size_t sizeOf = m_array->getType().sizeOf();
+    size_t sizeOf    = m_array->getType().sizeOf();
     const char *item = this->getBufferPtr(id, component, sizeOf);
-    char *val  = static_cast<char*>(value);
+    char *val        = static_cast<char*>(value);
     std::copy(item, item + m_array->getNumberOfComponents()*sizeOf, val);
 }
 

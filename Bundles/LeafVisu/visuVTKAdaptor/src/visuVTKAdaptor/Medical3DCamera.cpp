@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,29 +29,29 @@
 #include <fwCom/Slots.hxx>
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType SET_AXIAL_SLOT = "setAxial";
+static const ::fwCom::Slots::SlotKeyType SET_AXIAL_SLOT    = "setAxial";
 static const ::fwCom::Slots::SlotKeyType SET_SAGITTAL_SLOT = "setSagittal";
-static const ::fwCom::Slots::SlotKeyType SET_FRONTAL_SLOT = "setFrontal";
+static const ::fwCom::Slots::SlotKeyType SET_FRONTAL_SLOT  = "setFrontal";
 
 std::map< std::string, ::fwComEd::helper::MedicalImageAdaptor::Orientation >
 Medical3DCamera::m_orientationConversion
-        = ::boost::assign::map_list_of(std::string("axial"),Z_AXIS)
-                                      (std::string("frontal"),Y_AXIS)
-                                      (std::string("sagittal"),X_AXIS);
+    = ::boost::assign::map_list_of(std::string("axial"),Z_AXIS)
+          (std::string("frontal"),Y_AXIS)
+          (std::string("sagittal"),X_AXIS);
 
-Medical3DCamera::Medical3DCamera() throw():
+Medical3DCamera::Medical3DCamera() throw() :
     m_resetAtStart(false)
 
 {
     //addNewHandledEvent( "CAMERA_ORIENTATION" );
-    m_slotSetAxial = ::fwCom::newSlot(&Medical3DCamera::setAxialView, this);
+    m_slotSetAxial    = ::fwCom::newSlot(&Medical3DCamera::setAxialView, this);
     m_slotSetSagittal = ::fwCom::newSlot(&Medical3DCamera::setSagittalView, this);
-    m_slotSetFrontal = ::fwCom::newSlot(&Medical3DCamera::setFrontalView, this);
+    m_slotSetFrontal  = ::fwCom::newSlot(&Medical3DCamera::setFrontalView, this);
 
     ::fwCom::HasSlots::m_slots(SET_AXIAL_SLOT, m_slotSetAxial)
         (SET_SAGITTAL_SLOT, m_slotSetSagittal)
@@ -80,7 +80,7 @@ void Medical3DCamera::configuring() throw(fwTools::Failed)
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     if(m_configuration->hasAttribute("sliceIndex"))
     {
-        std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
+        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
         SLM_ASSERT("Unknown orientation", m_orientationConversion.find(orientation) != m_orientationConversion.end());
         m_orientation = m_orientationConversion[orientation];
     }
@@ -141,7 +141,7 @@ void Medical3DCamera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwToo
         ::fwData::String::csptr orientation = ::fwData::String::dynamicConstCast(dataInfo);
         SLM_ASSERT("dataInfo is missing", orientation);
         SLM_ASSERT("Unknown orientation",
-                m_orientationConversion.find(orientation->value()) != m_orientationConversion.end());
+                   m_orientationConversion.find(orientation->value()) != m_orientationConversion.end());
         m_orientation = m_orientationConversion[orientation->value()];
         this->doUpdate();
     }

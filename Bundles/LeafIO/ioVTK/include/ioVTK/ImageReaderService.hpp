@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOVTK_IMAGEREADERSERVICE_HPP_
-#define _IOVTK_IMAGEREADERSERVICE_HPP_
+#ifndef __IOVTK_IMAGEREADERSERVICE_HPP__
+#define __IOVTK_IMAGEREADERSERVICE_HPP__
 
 #include <boost/filesystem/path.hpp> // Used to save the file system path of loaded image
 
@@ -16,7 +16,7 @@
 // Pre-definition of ::fwData::Image to avoid inclusion file
 namespace fwData
 {
-    class Image;
+class Image;
 }
 
 
@@ -35,10 +35,12 @@ namespace ioVTK
 class IOVTK_CLASS_API ImageReaderService : public ::io::IReader
 {
 
-public :
-    ~ImageReaderService() throw() {}
+public:
+    ~ImageReaderService() throw()
+    {
+    }
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)( ::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)( ::io::IReader) );
 
     /**
      * @brief Configure the image path with a dialogBox.
@@ -75,16 +77,16 @@ protected:
     IOVTK_API void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw ( ::fwTools::Failed );
 
     /// Info method gives some informations on service.
-    IOVTK_API void info(std::ostream &_sstream ) ;
+    IOVTK_API void info(std::ostream &_sstream );
 
-private :
+private:
 
     /**
-    * @brief This method is used to load an vtk image using a file path.
-    * @param[in] _vtkFile file system path of vtk image
-    * @param[out] _pImage new empty image that will contain image loaded, if reading process is a success.
-    * @return bool  \b true if the image loading is a success and \b false if it fails
-    */
+     * @brief This method is used to load an vtk image using a file path.
+     * @param[in] _vtkFile file system path of vtk image
+     * @param[out] _pImage new empty image that will contain image loaded, if reading process is a success.
+     * @return bool  \b true if the image loading is a success and \b false if it fails
+     */
     bool loadImage( const ::boost::filesystem::path _vtkFile, ::boost::shared_ptr< ::fwData::Image > _pImage );
 
     /// This method notifies other image services that a new image has been loaded.
@@ -100,4 +102,4 @@ private :
 
 } // namespace ioVTK
 
-#endif //_IOVTK_IMAGEREADERSERVICE_HPP_
+#endif //__IOVTK_IMAGEREADERSERVICE_HPP__

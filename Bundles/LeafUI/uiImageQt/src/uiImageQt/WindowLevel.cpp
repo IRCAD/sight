@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,19 +45,19 @@
 namespace uiImage
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::WindowLevel , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::WindowLevel, ::fwData::Image );
 
 //------------------------------------------------------------------------------
 
 WindowLevel::WindowLevel() throw()
 {
     m_widgetDynamicRangeMin   = -1024.;
-    m_widgetDynamicRangeWidth =  4000.;
-    m_autoWindowing = false;
-    m_imageMin = -200;
-    m_imageMax = 300;
-    m_isNotifying = false;
-    m_useImageGreyLevelTF = false;
+    m_widgetDynamicRangeWidth = 4000.;
+    m_autoWindowing           = false;
+    m_imageMin                = -200;
+    m_imageMax                = 300;
+    m_isNotifying             = false;
+    m_useImageGreyLevelTF     = false;
 
     //this->installTFSelectionEventHandler(this);
     //this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
@@ -67,7 +67,8 @@ WindowLevel::WindowLevel() throw()
 //------------------------------------------------------------------------------
 
 WindowLevel::~WindowLevel() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -76,7 +77,8 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget * const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -145,10 +147,12 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_valueTextMin, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
     QObject::connect(m_valueTextMax, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
-    QObject::connect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )) , this, SLOT(onWindowLevelWidgetChanged( double, double )));
+    QObject::connect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this,
+                     SLOT(onWindowLevelWidgetChanged( double, double )));
     QObject::connect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
     QObject::connect(m_toggleAutoButton, SIGNAL(toggled( bool )), this, SLOT(onToggleAutoWL( bool )));
-    QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this, SLOT(onDynamicRangeSelectionChanged( QAction * )));
+    QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this,
+                     SLOT(onDynamicRangeSelectionChanged( QAction * )));
 
     this->installTFObserver( this->getSptr() );
 }
@@ -158,13 +162,18 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 void WindowLevel::stopping() throw(::fwTools::Failed)
 {
     this->removeTFObserver();
-    QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this, SLOT(onDynamicRangeSelectionChanged( QAction * )));
+    QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this,
+                        SLOT(onDynamicRangeSelectionChanged( QAction * )));
     QObject::disconnect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
-    QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this, SLOT(onWindowLevelWidgetChanged( double, double )));
-    QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
-    QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
+    QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this,
+                        SLOT(onWindowLevelWidgetChanged( double, double )));
+    QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished( QString )), this,
+                        SLOT(onTextEditingFinished( QString )));
+    QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( QString )), this,
+                        SLOT(onTextEditingFinished( QString )));
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
 
     // deletes contained widgets
     this->getContainer()->clean();
@@ -186,14 +195,16 @@ void WindowLevel::configuring() throw(fwTools::Failed)
     if (config->hasAttribute("autoWindowing"))
     {
         std::string autoWindowing = config->getExistingAttributeValue("autoWindowing");
-        SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!", autoWindowing == "yes" || autoWindowing == "no");
+        SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!",
+                   autoWindowing == "yes" || autoWindowing == "no");
         m_autoWindowing = (autoWindowing == "yes");
     }
 
     if ( config->hasAttribute("useImageGreyLevelTF") )
     {
         std::string useImageGreyLevelTF = config->getExistingAttributeValue("useImageGreyLevelTF");
-        SLM_ASSERT("Bad value for 'useImageGreyLevelTF' attribute. It must be 'yes' or 'no'!", useImageGreyLevelTF == "yes" || useImageGreyLevelTF == "no");
+        SLM_ASSERT("Bad value for 'useImageGreyLevelTF' attribute. It must be 'yes' or 'no'!",
+                   useImageGreyLevelTF == "yes" || useImageGreyLevelTF == "no");
         m_useImageGreyLevelTF = (useImageGreyLevelTF == "yes");
     }
 
@@ -217,7 +228,7 @@ void WindowLevel::updating() throw(::fwTools::Failed)
 
         // test if service must use image grey level tf ( when another tf pool is defined )
         if( m_useImageGreyLevelTF &&
-            ! this->getTFSelectionFwID().empty() )
+            !this->getTFSelectionFwID().empty() )
         {
             ::fwData::TransferFunction::sptr newTF = this->getImageGreyLevelTF();
             this->swapCurrentTFAndNotify( newTF );
@@ -324,7 +335,7 @@ double WindowLevel::toWindowLevel(double _val)
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
+void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 {
     m_imageMin = _imageMin;
     m_imageMax = _imageMax;
@@ -337,7 +348,7 @@ void  WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
+void WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 {
     double imageMin = this->toWindowLevel(_min);
     double imageMax = this->toWindowLevel(_max);
@@ -350,9 +361,9 @@ void  WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
 {
     WindowLevelMinMaxType wl = this->getImageWindowMinMax();
-    double min = m_widgetDynamicRangeMin;
-    double max = m_widgetDynamicRangeWidth + min;
-    int index = action->data().toInt();
+    double min               = m_widgetDynamicRangeMin;
+    double max               = m_widgetDynamicRangeWidth + min;
+    int index                = action->data().toInt();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     switch (index)
@@ -361,11 +372,11 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
             break;
         case 1: // -1024; 1023
             min = -1024;
-            max =  1023;
+            max = 1023;
             break;
         case 2: // -100; 300
             min = -100;
-            max =  300;
+            max = 300;
             break;
         case 3: // Fit Window/Level
             min = std::min(wl.first, wl.second);
@@ -386,7 +397,7 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onImageWindowLevelChanged(double _imageMin, double _imageMax)
+void WindowLevel::onImageWindowLevelChanged(double _imageMin, double _imageMax)
 {
     this->updateWidgetMinMax( _imageMin, _imageMax );
     this->updateTextWindowLevel( _imageMin, _imageMax );
@@ -415,7 +426,7 @@ struct WLCallback
     WindowLevel::wptr m_wl;
 };
 
-void  WindowLevel::notifyWindowLevel(double _imageMin, double _imageMax)
+void WindowLevel::notifyWindowLevel(double _imageMin, double _imageMax)
 {
     m_notifiedImageMin = _imageMin;
     m_notifiedImageMax = _imageMax;
@@ -429,7 +440,7 @@ void  WindowLevel::notifyWindowLevel(double _imageMin, double _imageMax)
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::notifyWindowLevelCallback()
+void WindowLevel::notifyWindowLevelCallback()
 {
     m_isNotifying = false;
 
@@ -441,7 +452,7 @@ void  WindowLevel::notifyWindowLevelCallback()
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
+void WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 {
     m_valueTextMin->setText(QString("%1").arg(_imageMin));
     m_valueTextMax->setText(QString("%1").arg(_imageMax));
@@ -449,7 +460,7 @@ void  WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onToggleTF(bool squareTF)
+void WindowLevel::onToggleTF(bool squareTF)
 {
     bool usedGreyLevelTF = false;
 
@@ -469,9 +480,9 @@ void  WindowLevel::onToggleTF(bool squareTF)
     {
         // test if service must use image grey level tf ( when another tf pool is defined )
         if(     m_useImageGreyLevelTF &&
-                ! this->getTFSelectionFwID().empty() )
+                !this->getTFSelectionFwID().empty() )
         {
-            newTF = this->getImageGreyLevelTF();
+            newTF           = this->getImageGreyLevelTF();
             usedGreyLevelTF = true;
         }
         else
@@ -493,23 +504,23 @@ void  WindowLevel::onToggleTF(bool squareTF)
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onToggleAutoWL(bool autoWL)
+void WindowLevel::onToggleAutoWL(bool autoWL)
 {
-     m_autoWindowing = autoWL;
+    m_autoWindowing = autoWL;
 
-     if (m_autoWindowing)
-     {
-         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-         double min, max;
-         ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-         this->updateImageWindowLevel(min, max);
-         this->onImageWindowLevelChanged(min, max);
-     }
+    if (m_autoWindowing)
+    {
+        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+        double min, max;
+        ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+        this->updateImageWindowLevel(min, max);
+        this->onImageWindowLevelChanged(min, max);
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onTextEditingFinished()
+void WindowLevel::onTextEditingFinished()
 {
     double min, max;
     if(this->getWidgetDoubleValue(m_valueTextMin, min) && this->getWidgetDoubleValue(m_valueTextMax, max))
@@ -523,7 +534,7 @@ void  WindowLevel::onTextEditingFinished()
 
 bool WindowLevel::getWidgetDoubleValue(QLineEdit *widget, double &val)
 {
-    bool ok=false;
+    bool ok = false;
     val = widget->text().toDouble(&ok);
 
     QPalette palette;
@@ -543,7 +554,8 @@ bool WindowLevel::getWidgetDoubleValue(QLineEdit *widget, double &val)
 
 void WindowLevel::setEnabled(bool enable)
 {
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget * const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
     container->setEnabled(enable);
@@ -557,7 +569,7 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
     {
         max = min + 1.e-05;
     }
-    m_widgetDynamicRangeMin = min;
+    m_widgetDynamicRangeMin   = min;
     m_widgetDynamicRangeWidth = max - min;
 
     m_dynamicRangeSelection->setText(QString("%1, %2 ").arg(min).arg(max));

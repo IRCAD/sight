@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,8 +48,8 @@ public:
 
     /// Applies the patch to the specified object
     FWATOMSPATCH_API virtual void apply(const ::fwAtoms::Object::sptr& previous,
-             const ::fwAtoms::Object::sptr& current,
-             ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)=0;
+                                        const ::fwAtoms::Object::sptr& current,
+                                        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions) = 0;
 
     /// Returns the origin classname of the object
     FWATOMSPATCH_API virtual const std::string& getOriginClassname() const;

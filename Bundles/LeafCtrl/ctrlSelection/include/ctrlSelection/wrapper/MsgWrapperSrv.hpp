@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_MANAGER_MSGWRAPPERSRV_HPP_
-#define _CTRLSELECTION_MANAGER_MSGWRAPPERSRV_HPP_
+#ifndef __CTRLSELECTION_WRAPPER_MSGWRAPPERSRV_HPP__
+#define __CTRLSELECTION_WRAPPER_MSGWRAPPERSRV_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -21,19 +21,19 @@ namespace wrapper
 /**
  * @class  MsgWrapperSrv
  * @brief  Convert generic message by specific message
- * 
+ *
 
  * @date   2007-2009.
  */
 class CTRLSELECTION_CLASS_API MsgWrapperSrv : public ::ctrlSelection::IWrapperSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MsgWrapperSrv)(::ctrlSelection::IWrapperSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MsgWrapperSrv)(::ctrlSelection::IWrapperSrv) );
 
 //    /// Constructor.  Do nothing.
-    CTRLSELECTION_API MsgWrapperSrv() throw() ;
+    CTRLSELECTION_API MsgWrapperSrv() throw();
 
     /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~MsgWrapperSrv() throw();
@@ -41,28 +41,38 @@ public :
 protected:
 
     /// Implements starting method derived from IService. Do nothing.
-   virtual void starting()  throw ( ::fwTools::Failed ) {};
+    virtual void starting()  throw ( ::fwTools::Failed )
+    {
+    }
 
     /// Implements stopping method derived from IService. Do nothing.
-    virtual void stopping()  throw ( ::fwTools::Failed ) {};
+    virtual void stopping()  throw ( ::fwTools::Failed )
+    {
+    }
 
     /**
      * Convert message with event by a specific message with another event and type.
      *
      * @verbatim
-     <wrapper onEvent="UPDATED_OBJECT" toEvent="NEW_IMAGE" toMsgType="::fwComEd::ImageMsg" />
-     @endverbatim
+       <wrapper onEvent="UPDATED_OBJECT" toEvent="NEW_IMAGE" toMsgType="::fwComEd::ImageMsg" />
+       @endverbatim
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements reconfiguring method derived from IService. Do nothing.
-    virtual void reconfiguring()  throw ( ::fwTools::Failed ) {};
+    virtual void reconfiguring()  throw ( ::fwTools::Failed )
+    {
+    }
 
     /// Implements updating method derived from IService. Do nothing.
-    virtual void updating() throw ( ::fwTools::Failed ) {};
+    virtual void updating() throw ( ::fwTools::Failed )
+    {
+    }
 
     /// Implements info method derived from IService. Print classname.
-    virtual void info( std::ostream &_sstream ) {};
+    virtual void info( std::ostream &_sstream )
+    {
+    }
 
     /// Convert message with event by a specific message with another event and type.
     CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
@@ -76,4 +86,4 @@ protected:
 } // wrapper
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_MANAGER_MSGWRAPPERSRV_HPP_
+#endif // __CTRLSELECTION_WRAPPER_MSGWRAPPERSRV_HPP__

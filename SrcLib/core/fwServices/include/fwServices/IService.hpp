@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_ISERVICE_HPP_
-#define _FWSERVICES_ISERVICE_HPP_
+#ifndef __FWSERVICES_ISERVICE_HPP__
+#define __FWSERVICES_ISERVICE_HPP__
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -34,12 +34,12 @@ namespace registry
 class ObjectService;
 }
 
-typedef std::pair< std::string , std::string > ObjectServiceKeyType ;
+typedef std::pair< std::string, std::string > ObjectServiceKeyType;
 
 /**
  * @brief   Base class for all services.
  * @class   IService
- * 
+ *
  * @date    2007-2009.
  *
  * This class defines the API to use and declare services. The service state aims at imposing method execution order (i.e. configure(), start(), update() or update(const fwServices::ObjectMsg::sptr), stop()).
@@ -48,16 +48,18 @@ typedef std::pair< std::string , std::string > ObjectServiceKeyType ;
  * @todo Refactoring of SWAPPING status. Perhaps must be a special status as UPDATING or UPDATING must be another GlobalStatus. it must be homogeneous.
  * @todo Add a new method to test if m_associatedObject has expired
  */
-class FWSERVICES_CLASS_API IService : public ::fwTools::Object, public ::fwCom::HasSlots, public ::fwCom::HasSignals
+class FWSERVICES_CLASS_API IService : public ::fwTools::Object,
+                                      public ::fwCom::HasSlots,
+                                      public ::fwCom::HasSignals
 {
 
-    // to give to OSR an access on IService.m_associatedObject;
-    friend class registry::ObjectService;
+// to give to OSR an access on IService.m_associatedObject;
+friend class registry::ObjectService;
 
-public :
+public:
     typedef ::boost::property_tree::ptree ConfigType;
 
-    fwCoreServiceClassDefinitionsMacro ( (IService)(::fwTools::Object) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IService)(::fwTools::Object) );
     fwCoreAllowSharedFromThis();
 
     /**
@@ -112,7 +114,7 @@ public :
     typedef ::fwCom::Slot<SharedFutureType()> UpdateSlotType;
 
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_RECEIVE_SLOT;
-    typedef ::fwCom::Slot<void(ObjectMsg::csptr)> ReceiveSlotType;
+    typedef ::fwCom::Slot<void (ObjectMsg::csptr)> ReceiveSlotType;
 
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SWAP_SLOT;
     typedef ::fwCom::Slot<SharedFutureType(::fwData::Object::sptr)> SwapSlotType;
@@ -136,14 +138,14 @@ public :
      * @param[in] _cfgElement a structure which represents the xml configuration
      * @post m_configurationState == UNCONFIGURED
      */
-    FWSERVICES_API void setConfiguration( const ::fwRuntime::ConfigurationElement::sptr _cfgElement ) ;
+    FWSERVICES_API void setConfiguration( const ::fwRuntime::ConfigurationElement::sptr _cfgElement );
 
     /**
      * @brief Affect the configuration, using a boost property tree
      * @param[in] ptree property tree
      * @post m_configurationState == UNCONFIGURED
      */
-    FWSERVICES_API void setConfiguration( const ConfigType &ptree ) ;
+    FWSERVICES_API void setConfiguration( const ConfigType &ptree );
 
     /**
      * @brief Invoke configuring() if m_globalState == STOPPED. Invoke reconfiguring() if m_globalState == STARTED. Does nothing otherwise.
@@ -151,7 +153,7 @@ public :
      * @post m_configurationState == CONFIGURED
      * @note invoke checkConfiguration()
      */
-    FWSERVICES_API void configure() ;
+    FWSERVICES_API void configure();
 
     /**
      * @brief Invoke starting() if m_globalState == STOPPED. Does nothing otherwise.
@@ -182,8 +184,8 @@ public :
      * This method provides to associate te service to another object without stopping
      * and deleting it. Furthermore, this method modify all observations to be aware to
      * _obj notifications.
-     * 
-     * 
+     *
+     *
      */
     FWSERVICES_API SharedFutureType swap( ::fwData::Object::sptr _obj ); //throw( ::fwTools::Failed );
 
@@ -199,31 +201,31 @@ public :
      * @brief Return the global process status
      * @return m_globalState
      */
-    FWSERVICES_API GlobalStatus getStatus() const throw() ;
+    FWSERVICES_API GlobalStatus getStatus() const throw();
 
     /**
      * @brief Test if the service is started or not
      * @return true if m_globalState == STARTED
      */
-    FWSERVICES_API bool isStarted() const throw() ;
+    FWSERVICES_API bool isStarted() const throw();
 
     /**
      * @brief Test if the service is stopped or not
      * @return true if m_globalState == STOPPED
      */
-    FWSERVICES_API bool isStopped() const throw() ;
+    FWSERVICES_API bool isStopped() const throw();
 
     /**
      * @brief Return the configuration process status
      * @return m_configurationState
      */
-    FWSERVICES_API ConfigurationStatus getConfigurationStatus() const throw() ;
+    FWSERVICES_API ConfigurationStatus getConfigurationStatus() const throw();
 
     /**
      * @brief Return the update process status
      * @return m_updatingState
      */
-    FWSERVICES_API UpdatingStatus getUpdatingStatus() const throw() ;
+    FWSERVICES_API UpdatingStatus getUpdatingStatus() const throw();
     //@}
 
 
@@ -242,7 +244,7 @@ public :
     /**
      * @brief Return the configuration, in an boost property tree
      */
-    FWSERVICES_API ConfigType getConfigTree() const ;
+    FWSERVICES_API ConfigType getConfigTree() const;
 
 
 //    /**
@@ -306,20 +308,20 @@ public :
      * @see IService::operator<<(std::ostream & _ostream, IService& _service)
      * @note Invoke IService::info( std::ostream )
      */
-    FWSERVICES_API friend std::ostream & operator<<(std::ostream & _sstream, IService & _service) ;
+    FWSERVICES_API friend std::ostream & operator<<(std::ostream & _sstream, IService & _service);
 
     //@}
 
 #ifdef COM_LOG
     /**
-      * @brief Set a newID  for the service, the oldest one is released.
-      * @warning Cannot set a empty ID.
-      * @note This method is thread-safe. This method is used to better trace communication between signals and slots
-      */
+     * @brief Set a newID  for the service, the oldest one is released.
+     * @warning Cannot set a empty ID.
+     * @note This method is thread-safe. This method is used to better trace communication between signals and slots
+     */
     FWSERVICES_API void setID( ::fwTools::fwID::IDType newID );
 #endif
 
-protected :
+protected:
 
     /**
      * @name Constructor and Destructor
@@ -333,14 +335,14 @@ protected :
      * This constructor does nothing. By default, m_associatedObject is null and
      * service is considered as STOPPED, NOTUPDATING and UNCONFIGURED.
      */
-    FWSERVICES_API IService() ;
+    FWSERVICES_API IService();
 
     /**
      * @brief IService desctructor.
      *
      * This destructor does nothing.
      */
-    FWSERVICES_API virtual ~IService() ;
+    FWSERVICES_API virtual ~IService();
 
     //@}
 
@@ -354,7 +356,7 @@ protected :
      * @brief Invoke receiving(fwServices::ObjectMsg::csptr) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
      * @pre m_globalState == STARTED
      */
-    FWSERVICES_API void receive( fwServices::ObjectMsg::csptr _msg ) ;
+    FWSERVICES_API void receive( fwServices::ObjectMsg::csptr _msg );
 
     /**
      * @brief Initialize the service activity.
@@ -363,14 +365,14 @@ protected :
      * installs a button in a frame and show the frame.
      * @see start()
      */
-    FWSERVICES_API virtual void starting() throw ( ::fwTools::Failed ) = 0 ;
+    FWSERVICES_API virtual void starting() throw ( ::fwTools::Failed ) = 0;
 
     /**
      * @brief Uninitialize the service activity. The stop() method is always invoked before destroying a service.
      *
      * @see stop()
      */
-    FWSERVICES_API virtual void stopping() throw ( ::fwTools::Failed ) = 0 ;
+    FWSERVICES_API virtual void stopping() throw ( ::fwTools::Failed ) = 0;
 
     /**
      * @brief Swap the service from associated object to another object
@@ -379,13 +381,15 @@ protected :
      * @todo FIXME after code update for all services
      * @todo This method must have in parameter the new object or the old ?
      */
-    virtual void swapping() throw ( ::fwTools::Failed ) {} ;
+    virtual void swapping() throw ( ::fwTools::Failed )
+    {
+    }
 
     /**
      * @brief Configure the service before starting. Apply the configuration to service.
      * @see configure()
      */
-    FWSERVICES_API virtual void configuring() throw ( ::fwTools::Failed ) = 0 ;
+    FWSERVICES_API virtual void configuring() throw ( ::fwTools::Failed ) = 0;
 
     /**
      * @brief Reconfigure the service activity when is started.
@@ -398,7 +402,7 @@ protected :
      * @brief Perform some computations according to object (this service is attached to) attribute values and its internal state.
      * @see update()
      */
-    FWSERVICES_API virtual void updating() throw ( ::fwTools::Failed ) = 0 ;
+    FWSERVICES_API virtual void updating() throw ( ::fwTools::Failed ) = 0;
 
     /**
      * @brief Perform some computations according to modifications specified in the _msg parameter. _msg generally indicates modification to occur (or having occured) on the object the service
@@ -420,7 +424,7 @@ protected :
     /**
      * @brief Configuration element used to configure service internal state using a generic XML like structure
      */
-    ::fwRuntime::ConfigurationElement::sptr  m_configuration ;
+    ::fwRuntime::ConfigurationElement::sptr m_configuration;
 
     /**
      * @brief associated object of service
@@ -453,7 +457,7 @@ protected :
 
     //@}
 
-private :
+private:
 
     /**
      * @brief Defines the current global status of the service.
@@ -476,4 +480,4 @@ private :
 
 #include "fwServices/IService.hxx"
 
-#endif // _FWSERVICES_ISERVICE_HPP_
+#endif // __FWSERVICES_ISERVICE_HPP__

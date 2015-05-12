@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,42 +19,44 @@ namespace fwDataTools
 //-----------------------------------------------------------------------------
 
 AlgoMeshDeformation::AlgoMeshDeformation() throw() :
-        m_amplitude(40),
-        m_step(0),
-        m_direction(1),
-        m_nbPoints(0),
-        m_nbCells(0),
-        m_yCenter(0),
-        m_nbStep(0)
-{}
+    m_amplitude(40),
+    m_step(0),
+    m_direction(1),
+    m_nbPoints(0),
+    m_nbCells(0),
+    m_yCenter(0),
+    m_nbStep(0)
+{
+}
 
 //-----------------------------------------------------------------------------
 
 AlgoMeshDeformation::~AlgoMeshDeformation() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void AlgoMeshDeformation::setParam(
-            ::fwData::Mesh::sptr _mesh,
-            const unsigned int _nbStep,
-            const unsigned int _amplitude)
+    ::fwData::Mesh::sptr _mesh,
+    const unsigned int _nbStep,
+    const unsigned int _amplitude)
 {
     SLM_TRACE_FUNC();
-    m_mesh = _mesh;
-    m_nbStep = _nbStep;
+    m_mesh      = _mesh;
+    m_nbStep    = _nbStep;
     m_amplitude = _amplitude;
     m_direction = 1;
 
     m_nbPoints = _mesh->getNumberOfPoints();
-    m_nbCells = _mesh->getNumberOfCells();
+    m_nbCells  = _mesh->getNumberOfCells();
 }
 
 //-----------------------------------------------------------------------------
 
 void AlgoMeshDeformation::computeDeformation( ::fwData::Mesh::sptr _mesh,
-        const unsigned int _nbStep,
-        const unsigned int _amplitude )
+                                              const unsigned int _nbStep,
+                                              const unsigned int _amplitude )
 {
     if (    m_mesh.expired() ||
             m_nbPoints != _mesh->getNumberOfPoints() ||
@@ -76,9 +78,9 @@ void AlgoMeshDeformation::initSimu()
 {
     SLM_TRACE_FUNC();
     m_originPoints = ::fwData::Object::copy( m_mesh.lock()->getPointsArray() );
-    m_step = 0;
+    m_step         = 0;
 
-    if ( ! m_mesh.lock()->getPointColorsArray() )
+    if ( !m_mesh.lock()->getPointColorsArray() )
     {
         ::fwDataTools::Mesh::colorizeMeshPoints( m_mesh.lock() );
     }
@@ -93,8 +95,14 @@ void AlgoMeshDeformation::initSimu()
     for(unsigned int i = 0; i < m_nbPoints; ++i)
     {
         coord = points[i][1];
-        if ( coord < min ) { min = coord; }
-        if ( coord > max ) { max = coord; }
+        if ( coord < min )
+        {
+            min = coord;
+        }
+        if ( coord > max )
+        {
+            max = coord;
+        }
     }
 
     m_yCenter = (max - min) / 2 + min;
@@ -105,7 +113,7 @@ void AlgoMeshDeformation::initSimu()
 void AlgoMeshDeformation::computeSimu()
 {
     SLM_TRACE_FUNC();
-    m_step+=m_direction;
+    m_step += m_direction;
     if ( m_step == m_nbStep )
     {
         m_direction = -1;
@@ -119,11 +127,11 @@ void AlgoMeshDeformation::computeSimu()
 
     ::fwComEd::helper::Array originPointsHelper(m_originPoints);
 
-    ::fwData::Mesh::PointsMultiArrayType points = m_meshHelper->getPoints();
+    ::fwData::Mesh::PointsMultiArrayType points      = m_meshHelper->getPoints();
     ::fwData::Mesh::PointColorsMultiArrayType colors = m_meshHelper->getPointColors();
 
     ::fwData::Mesh::PointsMultiArrayType opoints =
-            ::fwData::Mesh::PointsMultiArrayType(
+        ::fwData::Mesh::PointsMultiArrayType(
             static_cast< ::fwData::Mesh::PointsMultiArrayType::element* >(originPointsHelper.getBuffer()),
             boost::extents[m_nbPoints][3] );
 

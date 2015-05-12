@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,7 @@
 
 #include "visuVTKAdaptor/InteractorStyle.hpp"
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::InteractorStyle, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::InteractorStyle, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
@@ -55,13 +55,13 @@ void InteractorStyle::configuring() throw(fwTools::Failed)
 
 void InteractorStyle::doStart() throw(fwTools::Failed)
 {
-    vtkObject* objectStyle = vtkInstantiator::CreateInstance(m_configuredStyle.c_str());
+    vtkObject* objectStyle         = vtkInstantiator::CreateInstance(m_configuredStyle.c_str());
     vtkInteractorStyle *interactor = vtkInteractorStyle::SafeDownCast(objectStyle);
     OSLM_ASSERT(
-            "InsteractorStyle adaptor is waiting "
-            "for a vtkInteractorStyle object, but '"
-            << m_configuredStyle <<
-            "' has been given.", interactor);
+        "InsteractorStyle adaptor is waiting "
+        "for a vtkInteractorStyle object, but '"
+        << m_configuredStyle <<
+        "' has been given.", interactor);
     this->setInteractorStyle(interactor);
 }
 
@@ -88,13 +88,15 @@ void InteractorStyle::doStop() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void InteractorStyle::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void InteractorStyle::setInteractorStyle(vtkInteractorStyle *interactor)
 {
-    if ( m_interactorStyle != NULL ){
+    if ( m_interactorStyle != NULL )
+    {
         m_interactorStyle->Delete();
         m_interactorStyle = NULL;
     }

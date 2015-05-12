@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,21 +15,23 @@ namespace fwComEd
 
 //-----------------------------------------------------------------------------
 
-std::string ResectionMsg::ADD_RECONSTRUCTION = "ADD_RECONSTRUCTION";
-std::string ResectionMsg::VISIBILITY = "VISIBILITY";
+std::string ResectionMsg::ADD_RECONSTRUCTION          = "ADD_RECONSTRUCTION";
+std::string ResectionMsg::VISIBILITY                  = "VISIBILITY";
 std::string ResectionMsg::NEW_RECONSTRUCTION_SELECTED = "NEW_RECONSTRUCTION_SELECTED";
-std::string ResectionMsg::MODIFIED = "MODIFIED";
+std::string ResectionMsg::MODIFIED                    = "MODIFIED";
 
 
 //-----------------------------------------------------------------------------
 
 ResectionMsg::ResectionMsg(::fwServices::ObjectMsg::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ResectionMsg::~ResectionMsg() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

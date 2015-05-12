@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_WRITER_IOBJECTWRITER_HPP_
-#define _FWDATAIO_WRITER_IOBJECTWRITER_HPP_
+#ifndef __FWDATAIO_WRITER_IOBJECTWRITER_HPP__
+#define __FWDATAIO_WRITER_IOBJECTWRITER_HPP__
 
 #include <boost/filesystem/path.hpp>
 
@@ -28,7 +28,7 @@ namespace writer
 /**
  * @brief   Base class for all object writers.
  * @class   IObjectWriter
- * 
+ *
  * @date    2009
  *
  * This class defines the API to use basic object writers. This writer is not
@@ -41,7 +41,7 @@ namespace writer
 class FWDATAIO_CLASS_API IObjectWriter : public ::fwCore::BaseObject
 {
 
-public :
+public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IObjectWriter) );
 
@@ -106,9 +106,9 @@ public :
      * The extension can be empty (for a repository for example) or must return a string BEGINNING WITH A DOT
      * by default be empty
      */
-    FWDATAIO_API virtual std::string  extension()=0;
+    FWDATAIO_API virtual std::string  extension() = 0;
 
-protected :
+protected:
 
     /// Constructor. Do nothing.
     FWDATAIO_API IObjectWriter();
@@ -136,4 +136,4 @@ protected :
 } // namespace fwDataIO
 
 
-#endif // _FWDATAIO_WRITER_IOBJECTWRITER_HPP_
+#endif // __FWDATAIO_WRITER_IOBJECTWRITER_HPP__

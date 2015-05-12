@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_IUPDATERSRV_HPP_
-#define _CTRLSELECTION_IUPDATERSRV_HPP_
+#ifndef __CTRLSELECTION_IUPDATERSRV_HPP__
+#define __CTRLSELECTION_IUPDATERSRV_HPP__
 
 #include <boost/tuple/tuple.hpp>
 
@@ -24,7 +24,7 @@ namespace ctrlSelection
  * @brief   An updater is attached on a composite. It is use to add, swap and remove object in the composite when it
  * receives specific message (declared in configuration) and sends corresponding message message.
  * It work mainly with a IManager.
- * 
+ *
  * @date    2007-2009.
  */
 class CTRLSELECTION_CLASS_API IUpdaterSrv : public ::fwServices::IService
@@ -33,7 +33,8 @@ class CTRLSELECTION_CLASS_API IUpdaterSrv : public ::fwServices::IService
 public:
 
     /// Action to do on object in the composite
-    enum ActionType {
+    enum ActionType
+    {
         ADD,
         SWAP,
         REMOVE,
@@ -42,7 +43,7 @@ public:
         ADD_OR_SWAP
     };
 
-    fwCoreServiceClassDefinitionsMacro ( (IUpdaterSrv)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IUpdaterSrv)(::fwServices::IService) );
 
     ///@brief IUpdaterSrv constructor. Do nothing.
     CTRLSELECTION_API IUpdaterSrv();
@@ -60,7 +61,8 @@ protected:
      * @param _action action to do with the object
      * @note the _obj can be null if the action is REMOVE, REMOVE_IF_PRESENT or DO_NOTHING
      */
-    void updateComposite( ::fwData::Composite::sptr composite, ::fwData::Object::sptr _obj, std::string _compositeKey, ActionType _action );
+    void updateComposite( ::fwData::Composite::sptr composite, ::fwData::Object::sptr _obj, std::string _compositeKey,
+                          ActionType _action );
 
     /**
      * @brief Configure the event to manage and its corresponding action
@@ -87,4 +89,4 @@ protected:
 
 }
 
-#endif // _CTRLSELECTION_IUPDATERSRV_HPP_
+#endif // __CTRLSELECTION_IUPDATERSRV_HPP__

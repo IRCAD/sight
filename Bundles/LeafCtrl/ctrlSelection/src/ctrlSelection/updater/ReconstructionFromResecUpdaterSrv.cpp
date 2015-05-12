@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,17 +22,20 @@ namespace updater
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv,
+                         ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
 ReconstructionFromResecUpdaterSrv::ReconstructionFromResecUpdaterSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ReconstructionFromResecUpdaterSrv::~ReconstructionFromResecUpdaterSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -73,12 +76,13 @@ void ReconstructionFromResecUpdaterSrv::receiving( ::fwServices::ObjectMsg::cspt
     ::fwComEd::ResectionMsg::csptr pResectionMsg = ::fwComEd::ResectionMsg::dynamicConstCast( msg );
     SLM_FATAL_IF("Sorry, it's not an ResectionMsg", !pResectionMsg);
 
-    SLM_ASSERT("Sorry, there's not NEW_RECONSTRUCTION_SELECTED in ResectionMsg", pResectionMsg->hasEvent( ::fwComEd::ResectionMsg::NEW_RECONSTRUCTION_SELECTED ));
+    SLM_ASSERT("Sorry, there's not NEW_RECONSTRUCTION_SELECTED in ResectionMsg",
+               pResectionMsg->hasEvent( ::fwComEd::ResectionMsg::NEW_RECONSTRUCTION_SELECTED ));
     ::fwData::Object::csptr dataInfo = pResectionMsg->getDataInfo(::fwComEd::ResectionMsg::NEW_RECONSTRUCTION_SELECTED);
     SLM_ASSERT("Sorry, there is no dataInfo", dataInfo);
-    ::fwData::String::csptr reconstructionSelectedUID = ::fwData::String::dynamicConstCast( dataInfo ) ;
+    ::fwData::String::csptr reconstructionSelectedUID = ::fwData::String::dynamicConstCast( dataInfo );
     SLM_ASSERT("Sorry,  there is no reconstruction selected", reconstructionSelectedUID);
-    reconst =  ::fwData::Reconstruction::dynamicCast(  ::fwTools::fwID::getObject( reconstructionSelectedUID->value()) );
+    reconst = ::fwData::Reconstruction::dynamicCast(  ::fwTools::fwID::getObject( reconstructionSelectedUID->value()) );
 
     return reconst;
 }
@@ -93,7 +97,8 @@ void ReconstructionFromResecUpdaterSrv::starting()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void ReconstructionFromResecUpdaterSrv::stopping()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -106,17 +111,20 @@ void ReconstructionFromResecUpdaterSrv::configuring()  throw ( ::fwTools::Failed
 //-----------------------------------------------------------------------------
 
 void ReconstructionFromResecUpdaterSrv::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void ReconstructionFromResecUpdaterSrv::updating() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void ReconstructionFromResecUpdaterSrv::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

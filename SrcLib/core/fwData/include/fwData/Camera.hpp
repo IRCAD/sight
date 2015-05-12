@@ -29,9 +29,9 @@ class FWDATA_CLASS_API Camera : public Object
 public:
     fwCampMakeFriendDataMacro((fwData)(Camera));
     fwCoreClassDefinitionsWithFactoryMacro(
-            (Camera)(::fwData::Object),
-            (()),
-            ::fwData::factory::New< Camera >);
+        (Camera)(::fwData::Object),
+        (()),
+        ::fwData::factory::New< Camera >);
 
     typedef struct
     {
@@ -54,71 +54,99 @@ public:
 
     /// @brief set the extrinsic transformation matrix
     void setExtrinsicCameraTransformation(
-            ::fwData::TransformationMatrix3D::sptr transMat)
-    { m_extrinsicMatrix = transMat; }
+        ::fwData::TransformationMatrix3D::sptr transMat)
+    {
+        m_extrinsicMatrix = transMat;
+    }
 
     /// @brief set the intrinsic transformation matrix
     void setIntrinsicCameraTransformation(
-            ::fwData::TransformationMatrix3D::sptr transMat)
-    { m_intrinsicMatrix = transMat; }
+        ::fwData::TransformationMatrix3D::sptr transMat)
+    {
+        m_intrinsicMatrix = transMat;
+    }
 
     /// @brief get the extrinsic transformation matrix
     ::fwData::TransformationMatrix3D::sptr
-     getExtrinsicCameraTransformation() const
-    { return m_extrinsicMatrix; };
+    getExtrinsicCameraTransformation() const
+    {
+        return m_extrinsicMatrix;
+    }
 
     /// @brief get the intrinsic transformation matrix
     ::fwData::TransformationMatrix3D::sptr
-     getIntrinsicCameraTransformation() const
-    { return m_intrinsicMatrix; };
+    getIntrinsicCameraTransformation() const
+    {
+        return m_intrinsicMatrix;
+    }
 
     /// @return cx or u0 = x-coordinate of optical center
     ::fwData::TransformationMatrix3D::TM3DType getCx() const
-    { return m_intrinsicMatrix->getCoefficient(0, 2); };
+    {
+        return m_intrinsicMatrix->getCoefficient(0, 2);
+    }
 
     /// @return cy or v0 = y-coordinate of optical center
     ::fwData::TransformationMatrix3D::TM3DType getCy() const
-    { return m_intrinsicMatrix->getCoefficient(1, 2); };
+    {
+        return m_intrinsicMatrix->getCoefficient(1, 2);
+    }
 
     /// @brief set cx or u0 = x-coordinate of optical center
     void setCx(::fwData::TransformationMatrix3D::TM3DType cx)
-    { m_intrinsicMatrix->setCoefficient(0, 2, cx); };
+    {
+        m_intrinsicMatrix->setCoefficient(0, 2, cx);
+    }
 
     /// @brief set cy or v0 = y-coordinate of optical center
     void setCy(::fwData::TransformationMatrix3D::TM3DType cy)
-    { m_intrinsicMatrix->setCoefficient(1, 2, cy); };
+    {
+        m_intrinsicMatrix->setCoefficient(1, 2, cy);
+    }
 
     /// @return fx = x-coordinate of optical center
     ::fwData::TransformationMatrix3D::TM3DType getFx() const
-    { return m_intrinsicMatrix->getCoefficient(0, 0); };
+    {
+        return m_intrinsicMatrix->getCoefficient(0, 0);
+    }
 
     /// @brief set fx = x-coordinate of optical center
     void setFx(::fwData::TransformationMatrix3D::TM3DType fx)
-    { m_intrinsicMatrix->setCoefficient(0, 0, fx); };
+    {
+        m_intrinsicMatrix->setCoefficient(0, 0, fx);
+    }
 
     /// @return fy = y-coordinate of optical center
     ::fwData::TransformationMatrix3D::TM3DType getFy() const
-    { return m_intrinsicMatrix->getCoefficient(1, 1); };
+    {
+        return m_intrinsicMatrix->getCoefficient(1, 1);
+    }
 
     /// @brief set fy = y-coordinate of optical center
     void setFy(::fwData::TransformationMatrix3D::TM3DType fy)
-    { m_intrinsicMatrix->setCoefficient(1, 1, fy); };
+    {
+        m_intrinsicMatrix->setCoefficient(1, 1, fy);
+    }
 
     FWDATA_API void setDistortionCoefficient(
-            double k1, double k2, double p1, double p2, double k3);
+        double k1, double k2, double p1, double p2, double k3);
     fwDataGetSetCRefMacro(DistortionCoefficient, DistArray);
 
     fwDataGetSetMacro(Skew, double);
 
     /// @brief get flag if data is available
     bool &dataAvailable()
-    { return m_dataAvailable; }
+    {
+        return m_dataAvailable;
+    }
 
     /**
      * @brief get universal ID for the physic's camera
      */
     std::pair< bool, uint32HL > getCameraGUID() const
-                { return m_cameraGUID; };
+    {
+        return m_cameraGUID;
+    }
 
     /**
      * @brief set universal ID for the physic's camera

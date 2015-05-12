@@ -29,9 +29,10 @@ namespace fwData
 class FWDATA_CLASS_API TransferFunction : public Object
 {
 
-public :
+public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()), ::fwData::factory::New< TransferFunction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()),
+                                            ::fwData::factory::New< TransferFunction >);
 
     /// Macro for deep and shallow copies
 
@@ -59,7 +60,7 @@ public :
             g = 0.0;
             b = 0.0;
             a = 0.0;
-        };
+        }
 
         TFColor( ColorType _r, ColorType _g, ColorType _b, ColorType _a )
         {
@@ -67,12 +68,12 @@ public :
             g = _g;
             b = _b;
             a = _a;
-        };
+        }
 
         inline bool operator== (const TFColor& _color) const
         {
             return (r == _color.r && g == _color.g && b == _color.b && a == _color.a);
-        };
+        }
 
     };
 
@@ -182,7 +183,7 @@ public :
     /// Default transfer function name
     FWDATA_API static const std::string s_DEFAULT_TF_NAME;
 
-private :
+private:
 
     /// Current visualization level
     double m_attrLevel;
@@ -207,7 +208,7 @@ private :
      *
      *  if m_isClamped == true then after extremity point, the returned TF color is TFColor(0,0,0,0).
      *  if m_isClamped == false then after extremity point, the returned TF color is one of the extremity color value.
-    **/
+     **/
     bool m_attrIsClamped;
 
 }; // class TransferFunction

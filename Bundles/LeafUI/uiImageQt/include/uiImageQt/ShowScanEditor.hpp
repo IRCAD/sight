@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIMAGEQT_SHOW_SCAN_EDITOR_HPP_
-#define _UIIMAGEQT_SHOW_SCAN_EDITOR_HPP_
+#ifndef __UIIMAGEQT_SHOWSCANEDITOR_HPP__
+#define __UIIMAGEQT_SHOWSCANEDITOR_HPP__
 
 #include <QObject>
 #include <QPointer>
@@ -24,22 +24,23 @@ namespace uiImage
 /**
  * @brief   This editor service represent a button to show/hide scan in a generic scene.
  * @class   ShowScanEditor
- * 
+ *
  * @date    2010.
  */
-class UIIMAGEQT_CLASS_API ShowScanEditor : public QObject, public ::gui::editor::IEditor
+class UIIMAGEQT_CLASS_API ShowScanEditor : public QObject,
+                                           public ::gui::editor::IEditor
 {
 
-    Q_OBJECT
-public :
+Q_OBJECT
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ShowScanEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ShowScanEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIIMAGEQT_API ShowScanEditor() throw() ;
+    UIIMAGEQT_API ShowScanEditor() throw();
 
     /// Destructor. Do nothing.
-    UIIMAGEQT_API virtual ~ShowScanEditor() throw() ;
+    UIIMAGEQT_API virtual ~ShowScanEditor() throw();
 
 protected:
 
@@ -69,16 +70,16 @@ protected:
      *
      * Example of configuration
      * @verbatim
-     <service uid="showScanNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
+       <service uid="showScanNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
          <negatoAdaptor uid="myNegatoMPR" />
-     </service>
+       </service>
        @endverbatim
        \b myNegatoMPR is the uid of the ::visuVTKAdaptor::NegatoMPR service where the scan will be show/hide.
      */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 protected Q_SLOTS:
     /**
@@ -101,6 +102,6 @@ private:
 
 } // uiImage
 
-#endif /*_UIIMAGEQT_SHOW_SCAN_EDITOR_HPP_*/
+#endif /*__UIIMAGEQT_SHOWSCANEDITOR_HPP__*/
 
 

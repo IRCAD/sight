@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ class VISUVTKADAPTOR_CLASS_API Texture : public ::fwRenderVTK::IVtkAdaptorServic
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Texture)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Texture)(::fwRenderVTK::IVtkAdaptorService) );
 
     /**
      * @name Slots API
@@ -46,15 +46,15 @@ protected:
 
     /// Calls doUpdate()
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    
-    /** 
+
+    /**
      * @brief Configure the adaptor.
      * @verbatim
-    <adaptor id="texAdaptor" class="::visuVTKAdaptor::Texture" objectId="imageKey" >
+       <adaptor id="texAdaptor" class="::visuVTKAdaptor::Texture" objectId="imageKey" >
         <config texture="texture" autoRender="true" meshAdaptor="meshAdaptor" filtering="linear" wrapping="repeat" />
-    </adaptor> 
+       </adaptor>
        @endverbatim
-     * With : 
+     * With :
      *  - \b texture (mandatory) : the vtkTexture to associate to the adaptor
      *  - \b autoRender (optional, "true" by default): if autoRender=true,  the scene is automatically rendered after
      *    doStart, doUpdate, doSwap, doReceive and doStop if m_vtkPipelineModified=true.
@@ -66,16 +66,16 @@ protected:
      *  - \b modelSeries : a model series data, the first mesh adaptor of all reconstructions are used
      */
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
-    
+
     /// Calls doUpdate()
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    
+
     /// Updates the vtkTransform from the TransformationMatrix3D
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    
+
     /// Does nothing
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
- 
+
     /// Calls doUpdate() when it receives MATRIX_IS_MODIFIED event
     VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 

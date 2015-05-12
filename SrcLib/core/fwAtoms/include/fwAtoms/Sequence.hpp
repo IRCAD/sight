@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWATOMS_BASE_SEQUENCE_HPP_
-#define _FWATOMS_BASE_SEQUENCE_HPP_
+#ifndef __FWATOMS_SEQUENCE_HPP__
+#define __FWATOMS_SEQUENCE_HPP__
 
 #include <vector>
 
@@ -22,7 +22,7 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Sequence : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Sequence)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Sequence > ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Sequence)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Sequence > );
 
     typedef std::vector<Base::sptr> SequenceType;
 
@@ -52,47 +52,82 @@ public:
      * @param key Private construction key
      */
     Sequence(::fwAtoms::Base::Key key)
-    {}
+    {
+    }
 
     /**
      * @brief   Destructor
      */
     virtual ~Sequence()
-    {}
+    {
+    }
 
     /**
      * @brief push an atom in the sequence.
      */
-    void push_back(const Base::sptr &value){m_value.push_back(value);};
+    void push_back(const Base::sptr &value)
+    {
+        m_value.push_back(value);
+    }
 
     //! Begin of sequence iterator
-    IteratorType  begin(){return m_value.begin();}
+    IteratorType  begin()
+    {
+        return m_value.begin();
+    }
 
     //! End of sequence iterator
-    IteratorType  end() {return m_value.end();}
+    IteratorType  end()
+    {
+        return m_value.end();
+    }
 
     //! Begin of sequence const iterator
-    ConstIteratorType begin() const {return m_value.begin();}
+    ConstIteratorType begin() const
+    {
+        return m_value.begin();
+    }
 
     //! End of sequence const iterator
-    ConstIteratorType end() const {return m_value.end();}
+    ConstIteratorType end() const
+    {
+        return m_value.end();
+    }
 
 
     //! Returns the sequence size
-    size_type size() const {return m_value.size();}
+    size_type size() const
+    {
+        return m_value.size();
+    }
 
     //! clear the sequence
-    void  clear() {m_value.clear();}
+    void  clear()
+    {
+        m_value.clear();
+    }
 
     //! Test if the sequence is empty
-    bool empty() const {return m_value.empty();}
+    bool empty() const
+    {
+        return m_value.empty();
+    }
 
     //! Returns internal vector
-    const SequenceType& getValue() const{return m_value;};
+    const SequenceType& getValue() const
+    {
+        return m_value;
+    }
 
     //! access an element in position index
-    Base::sptr &operator[](unsigned int index){return m_value[index];}
-    const Base::sptr &operator[](unsigned int index) const {return m_value[index];}
+    Base::sptr &operator[](unsigned int index)
+    {
+        return m_value[index];
+    }
+    const Base::sptr &operator[](unsigned int index) const
+    {
+        return m_value[index];
+    }
 
     /**
      * @brief Returns a clone object
@@ -102,7 +137,10 @@ public:
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const {return ::fwAtoms::Base::SEQUENCE;};
+    ::fwAtoms::Base::AtomType type() const
+    {
+        return ::fwAtoms::Base::SEQUENCE;
+    }
 
 
 protected:
@@ -110,5 +148,5 @@ protected:
 };
 
 }
-#endif
+#endif //__FWATOMS_SEQUENCE_HPP__
 

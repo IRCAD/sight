@@ -37,70 +37,82 @@ public:
     typedef T ValueType;
 
     /// @brief Get the value (mutable version).
-    T& value() throw() { return m_value; }
+    T& value() throw()
+    {
+        return m_value;
+    }
 
     /// @brief Get the value (constant version).
-    const T& value() const throw() { return m_value; }
+    const T& value() const throw()
+    {
+        return m_value;
+    }
 
     /// @brief set the value
-    void setValue(const T &newValue) throw() { m_value = newValue; }
+    void setValue(const T &newValue) throw()
+    {
+        m_value = newValue;
+    }
 
     /// @brief get the value
-    T getValue() const throw() { return m_value; }
+    T getValue() const throw()
+    {
+        return m_value;
+    }
 
     /// @brief Conversion to a scalar type.
     operator T() throw() { return m_value; }
 
     bool operator== (const GenericFieldBase &lf)
     {
-        const ::fwData::GenericField<T> &gField =  dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField );
         return ( this->m_value == gField.value() );
     }
 
     bool operator!= (const GenericFieldBase &lf )
     {
-        const ::fwData::GenericField<T> &gField =  dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField);
         return ( this->m_value != gField.value() );
     }
 
     bool operator< (const GenericFieldBase &lf )
     {
-        const ::fwData::GenericField<T> &gField =  dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField);
         return ( this->m_value < gField.value() );
     }
 
     bool operator> (const GenericFieldBase &lf)
     {
-        const ::fwData::GenericField<T> &gField =  dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField);
         return ( this->m_value > gField.value() );
     }
 
     bool operator<= (const GenericFieldBase &lf)
     {
-        const ::fwData::GenericField<T> &gField =  dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField);
         return ( this->m_value <= gField.value() );
     }
 
     bool operator>= (const GenericFieldBase &lf )
     {
-        const ::fwData::GenericField<T> &gField =  dynamic_cast< const ::fwData::GenericField<T> & >(lf);
+        const ::fwData::GenericField<T> &gField = dynamic_cast< const ::fwData::GenericField<T> & >(lf);
         SLM_ASSERT("GenericField must have same ValueType.", &gField);
         return ( this->m_value >= gField.value() );
     }
 
     virtual ::std::string toString() const
     {
-       return ::boost::lexical_cast< ::std::string >(this->m_value);
+        return ::boost::lexical_cast< ::std::string >(this->m_value);
     }
 
     virtual void fromString(const ::std::string &_value)
     {
-       this->m_value = ::boost::lexical_cast< T >(_value);
+        this->m_value = ::boost::lexical_cast< T >(_value);
     }
 
 protected:
@@ -116,13 +128,16 @@ protected:
      * @param[in] value The initial value.
      */
     GenericField( const T value = T( ) ) throw()
-    :   m_value( value )
-    {}
+        :   m_value( value )
+    {
+    }
 
     /**
      * @brief Destructor.
      */
-    virtual ~GenericField() throw() {}
+    virtual ~GenericField() throw()
+    {
+    }
 
     virtual std::ostream & toOStream( std::ostream &_os ) const
     {
@@ -139,7 +154,7 @@ template< typename GT >
 typename GT::sptr GenericField<T>::GenericFieldFactory(const typename GT::ValueType value)
 {
     typename GT::sptr field;
-    field = ::fwData::factory::New< GT >();
+    field          = ::fwData::factory::New< GT >();
     field->value() = value;
     return field;
 }
@@ -148,7 +163,7 @@ template< typename T >
 typename GenericField<T>::sptr GenericField<T>::GenericFieldFactory(const T value)
 {
     typename GenericField<T>::sptr field;
-    field = GenericFieldFactory< GenericField<T> >(value);
+    field          = GenericFieldFactory< GenericField<T> >(value);
     field->value() = value;
     return field;
 }

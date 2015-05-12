@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,7 @@ namespace manager
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SwapperSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SwapperSrv, ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
@@ -44,7 +44,8 @@ SwapperSrv::SwapperSrv() throw() : m_dummyStopMode(false)
 //-----------------------------------------------------------------------------
 
 SwapperSrv::~SwapperSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -78,7 +79,8 @@ void SwapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::f
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -91,7 +93,8 @@ void SwapperSrv::updating() throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void SwapperSrv::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -144,7 +147,7 @@ void SwapperSrv::configuring()  throw ( ::fwTools::Failed )
         std::string mode = modeConfiguration->getAttributeValue("type");
         SLM_ASSERT("Wrong type mode", (mode == "dummy" ) || (mode == "stop" ) || mode=="startAndUpdate");
         m_dummyStopMode = (mode == "dummy" );
-        m_mode = mode;
+        m_mode          = mode;
     }
 
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
@@ -158,13 +161,13 @@ void SwapperSrv::starting()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
-    for (iter = m_managerConfiguration->begin() ; iter != m_managerConfiguration->end() ; ++iter)
+    for (iter = m_managerConfiguration->begin(); iter != m_managerConfiguration->end(); ++iter)
     {
         if ((*iter)->getName() == "object")
         {
-            const std::string objectId      = (*iter)->getAttributeValue("id");
+            const std::string objectId = (*iter)->getAttributeValue("id");
 
             if (composite->find(objectId) != composite->end())
             {
@@ -199,25 +202,26 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::sptr SwapperSrv::add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt )
+::fwServices::IService::sptr SwapperSrv::add( ::fwData::Object::sptr obj, ::fwRuntime::ConfigurationElement::sptr _elt )
 {
-    OSLM_ASSERT("ConfigurationElement node name must be \"service\" not "<<_elt->getName(), _elt->getName() == "service" ) ;
-    SLM_ASSERT("Attribute \"type\" is missing", _elt->hasAttribute("type") ) ;
-    SLM_ASSERT("Attribute \"impl\" is missing", _elt->hasAttribute("impl") ) ;
+    OSLM_ASSERT("ConfigurationElement node name must be \"service\" not "<<_elt->getName(),
+                _elt->getName() == "service" );
+    SLM_ASSERT("Attribute \"type\" is missing", _elt->hasAttribute("type") );
+    SLM_ASSERT("Attribute \"impl\" is missing", _elt->hasAttribute("impl") );
 
-    ::fwServices::IService::sptr service ;
+    ::fwServices::IService::sptr service;
 
-    std::string serviceType = _elt->getExistingAttributeValue("type") ;
+    std::string serviceType        = _elt->getExistingAttributeValue("type");
     std::string implementationType = _elt->getExistingAttributeValue("impl");
 
     // Add service with possible id
     if( _elt->hasAttribute("uid")  )
     {
-        service = ::fwServices::add( obj , serviceType , implementationType , _elt->getExistingAttributeValue("uid") );
+        service = ::fwServices::add( obj, serviceType, implementationType, _elt->getExistingAttributeValue("uid") );
     }
     else
     {
-        service =  ::fwServices::add( obj , serviceType , implementationType )  ;
+        service = ::fwServices::add( obj, serviceType, implementationType );
     }
 
     // Search for configuration : inline or offline
@@ -225,18 +229,18 @@ void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
     if( _elt->hasAttribute("config"))
     {
         cfg = ::fwRuntime::ConfigurationElement::constCast(
-                ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
-                        _elt->getExistingAttributeValue("config") , implementationType ) );
+            ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
+                _elt->getExistingAttributeValue("config"), implementationType ) );
     }
 
     // Set configuration
-    service->setConfiguration( cfg ) ;
+    service->setConfiguration( cfg );
 
     // Configure
     service->configure();
 
     // Return
-    return service ;
+    return service;
 }
 
 //-----------------------------------------------------------------------------
@@ -245,11 +249,11 @@ void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr 
 {
     if(!m_managerConfiguration->find("object", "id", objectId).empty())
     {
-        ConfigurationType conf = m_managerConfiguration->find("object", "id", objectId).at(0);
-        const std::string objectType   = conf->getAttributeValue("type");
+        ConfigurationType conf       = m_managerConfiguration->find("object", "id", objectId).at(0);
+        const std::string objectType = conf->getAttributeValue("type");
 
         OSLM_ASSERT("ObjectType "<<objectType<<" does not match ObjectType in Composite "<<object->getClassname(),
-                objectType == object->getClassname());
+                    objectType == object->getClassname());
         SubServicesVecType subVecSrv;
         std::vector< ConfigurationType > confVec = conf->find("service");
         BOOST_FOREACH( ConfigurationType cfg, confVec )
@@ -257,9 +261,9 @@ void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr 
             ::fwServices::IService::sptr srv = this->add( object, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
 
-            SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
-            subSrv->m_config = cfg;
-            subSrv->m_service = srv;
+            SPTR(SubService) subSrv = SPTR(SubService)( new SubService());
+            subSrv->m_config        = cfg;
+            subSrv->m_service       = srv;
 
             // Standard communication management
             if ( cfg->getAttributeValue("autoConnect") == "yes" )
@@ -276,7 +280,8 @@ void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr 
 
             if (!workerKey.empty())
             {
-                ::fwServices::registry::ActiveWorkers::sptr activeWorkers = ::fwServices::registry::ActiveWorkers::getDefault();
+                ::fwServices::registry::ActiveWorkers::sptr activeWorkers =
+                    ::fwServices::registry::ActiveWorkers::getDefault();
                 ::fwThread::Worker::sptr worker;
                 worker = activeWorkers->getWorker(workerKey);
                 if (!worker)
@@ -374,8 +379,8 @@ void SwapperSrv::removeObject( const std::string &objectId )
 {
     if(!m_managerConfiguration->find("object", "id", objectId).empty())
     {
-        ConfigurationType conf = m_managerConfiguration->find("object", "id", objectId).at(0);
-        const std::string objectType   = conf->getAttributeValue("type");
+        ConfigurationType conf       = m_managerConfiguration->find("object", "id", objectId).at(0);
+        const std::string objectType = conf->getAttributeValue("type");
 
         this->removeConnections(objectId);
         this->disconnectProxies(objectId);
@@ -425,12 +430,12 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
 {
     SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
 
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
     OSLM_ASSERT(objectId << " not found in composite.", composite->find(objectId) == composite->end());
 
-    ConfigurationType conf = m_managerConfiguration->find("object", "id", objectId).at(0);
-    const std::string objectType    = conf->getAttributeValue("type");
+    ConfigurationType conf       = m_managerConfiguration->find("object", "id", objectId).at(0);
+    const std::string objectType = conf->getAttributeValue("type");
     SLM_ASSERT( "'type' required attribute missing or empty", !objectType.empty() );
 
     // Any subServices have been registered with object.
@@ -447,15 +452,15 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
             ::fwServices::IService::sptr srv = this->add( dummyObj, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
 
-            SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
-            subSrv->m_config = cfg;
-            subSrv->m_service = srv;
-            subSrv->m_dummy = dummyObj;
+            SPTR(SubService) subSrv = SPTR(SubService)( new SubService());
+            subSrv->m_config        = cfg;
+            subSrv->m_service       = srv;
+            subSrv->m_dummy         = dummyObj;
 
             if ( cfg->getAttributeValue("autoConnect") == "yes" )
             {
                 subSrv->m_hasAutoConnection = true;
-                subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();
+                subSrv->m_connections       = ::fwServices::helper::SigSlotConnection::New();
             }
 
             subVecSrv.push_back(subSrv);

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIMAGEQT_SLICELISTEDITOR2_HPP_
-#define _UIIMAGEQT_SLICELISTEDITOR2_HPP_
+#ifndef __UIIMAGEQT_SLICELISTEDITOR2_HPP__
+#define __UIIMAGEQT_SLICELISTEDITOR2_HPP__
 
 #include <QObject>
 #include <QPointer>
@@ -26,23 +26,24 @@ namespace uiImage
 /**
  * @brief   SliceListEditor2 service allows to change the number of slice to show.
  * @class   SliceListEditor2
- * 
+ *
  * @date    2010.
  */
-class UIIMAGEQT_CLASS_API SliceListEditor2 : public QObject, public ::gui::editor::IEditor
+class UIIMAGEQT_CLASS_API SliceListEditor2 : public QObject,
+                                             public ::gui::editor::IEditor
 {
 
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SliceListEditor2)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SliceListEditor2)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIIMAGEQT_API SliceListEditor2() throw() ;
+    UIIMAGEQT_API SliceListEditor2() throw();
 
     /// Destructor. Do nothing.
-    UIIMAGEQT_API virtual ~SliceListEditor2() throw() ;
+    UIIMAGEQT_API virtual ~SliceListEditor2() throw();
 
 protected:
 
@@ -72,9 +73,9 @@ protected:
      *
      * Example of configuration
      * @verbatim
-     <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor2" autoConnect="yes">
+       <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor2" autoConnect="yes">
          <negatoAdaptor uid="myNegatoMPR" slices="1"/>
-     </service>
+       </service>
        @endverbatim
         - \b uid is the uid of the ::visuVTKAdaptor::NegatoMPR service where the scan will be show/hide.
         - \b slices is the number of slide to show
@@ -82,7 +83,7 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 protected Q_SLOTS:
     /// This method is called when the popup menu is clicked. Notify the slice mode changed.
@@ -104,6 +105,6 @@ private:
 
 } // uiImageQt
 
-#endif /*_UIIMAGEQT_SLICELISTEDITOR2_HPP_*/
+#endif /*__UIIMAGEQT_SLICELISTEDITOR2_HPP__*/
 
 

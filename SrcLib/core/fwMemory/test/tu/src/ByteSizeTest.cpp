@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -140,21 +140,21 @@ void ByteSizeTest::byteSizeTest()
     {
         std::string size("  1.42   MiB ");
         ::fwMemory::ByteSize bsize(size);
-        ::fwMemory::ByteSize::SizeType refSize = 1488977 ;
+        ::fwMemory::ByteSize::SizeType refSize    = 1488977;
         ::fwMemory::ByteSize::SizeType resultSize = bsize.getSize();
         CPPUNIT_ASSERT_EQUAL(refSize, resultSize);
     }
     {
         std::string size("1.42 TB  ");
         ::fwMemory::ByteSize bsize(size);
-        ::fwMemory::ByteSize::SizeType refSize = 1420000000000LL ;
+        ::fwMemory::ByteSize::SizeType refSize    = 1420000000000LL;
         ::fwMemory::ByteSize::SizeType resultSize = bsize.getSize();
         CPPUNIT_ASSERT_EQUAL(refSize, resultSize);
     }
     {
         std::string size("  1.42 PiB");
         ::fwMemory::ByteSize bsize(size);
-        ::fwMemory::ByteSize::SizeType refSize = 1598777867716526LL ;
+        ::fwMemory::ByteSize::SizeType refSize    = 1598777867716526LL;
         ::fwMemory::ByteSize::SizeType resultSize = bsize.getSize();
         CPPUNIT_ASSERT_EQUAL(refSize, resultSize);
     }
@@ -162,7 +162,7 @@ void ByteSizeTest::byteSizeTest()
     {
         std::string size("1.66MiB");
         ::fwMemory::ByteSize bsize(size);
-        ::fwMemory::ByteSize::SizeType refSize = 1740636 ;
+        ::fwMemory::ByteSize::SizeType refSize    = 1740636;
         ::fwMemory::ByteSize::SizeType resultSize = bsize.getSize();
         CPPUNIT_ASSERT_EQUAL(refSize, resultSize);
     }

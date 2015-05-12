@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIRECONSTRUCTIONQT_REPRESENTATION_EDITOR_HPP_
-#define _UIRECONSTRUCTIONQT_REPRESENTATION_EDITOR_HPP_
+#ifndef __UIRECONSTRUCTIONQT_REPRESENTATIONEDITOR_HPP__
+#define __UIRECONSTRUCTIONQT_REPRESENTATIONEDITOR_HPP__
 
 #include <QObject>
 #include <QPointer>
@@ -29,22 +29,23 @@ namespace uiReconstruction
 /**
  * @brief   RepresentationEditor service.
  * @class   RepresentationEditor
- * 
+ *
  * @date    2010.
  */
-class UIRECONSTRUCTIONQT_CLASS_API RepresentationEditor : public  QObject, public ::gui::editor::IEditor
+class UIRECONSTRUCTIONQT_CLASS_API RepresentationEditor : public QObject,
+                                                          public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (RepresentationEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (RepresentationEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIRECONSTRUCTIONQT_API RepresentationEditor() throw() ;
+    UIRECONSTRUCTIONQT_API RepresentationEditor() throw();
 
     /// Destructor. Do nothing.
-    UIRECONSTRUCTIONQT_API virtual ~RepresentationEditor() throw() ;
+    UIRECONSTRUCTIONQT_API virtual ~RepresentationEditor() throw();
 
 protected:
 
@@ -67,7 +68,7 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
     void notifyMaterial();
     void notifyMesh();
@@ -82,19 +83,19 @@ protected Q_SLOTS:
 private:
 
     void refreshNormals();
-    void refreshRepresentation() ;
-    void refreshShading() ;
+    void refreshRepresentation();
+    void refreshShading();
 
     QPointer<QButtonGroup> m_buttonGroup;
     QPointer<QButtonGroup> m_buttonGroupShading;
-    QPointer<QButtonGroup> m_normalsRadioBox ;
+    QPointer<QButtonGroup> m_normalsRadioBox;
 
-    ::fwData::Material::sptr m_material ;
+    ::fwData::Material::sptr m_material;
 
 };
 
 } // uiReconstruction
 
-#endif /*_UIRECONSTRUCTIONQT_REPRESENTATION_EDITOR_HPP_*/
+#endif /*__UIRECONSTRUCTIONQT_REPRESENTATIONEDITOR_HPP__*/
 
 

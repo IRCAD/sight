@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,7 +54,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
     fileLocation << "share/fwRuntime_" <<  FWRUNTIME_VER << "/profile.xsd";
     const ::boost::filesystem::path profileXSDLocation( ::boost::filesystem::current_path() / fileLocation.str() );
 
-    Validator   validator(profileXSDLocation);
+    Validator validator(profileXSDLocation);
 
     if( validator.validate(normalizedPath) == false )
     {
@@ -81,7 +81,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
         char* pVersion = (char *) xmlGetProp(rootNode, (const xmlChar*) VERSION.c_str());
         char* pChkInst = (char *) xmlGetProp(rootNode, (const xmlChar*) CHECK_SINGLE_INSTANCE.c_str());
 
-        SLM_ASSERT("Application profile MUST have a name attribute"   , pName);
+        SLM_ASSERT("Application profile MUST have a name attribute", pName);
         SLM_ASSERT("Application profile MUST have a version attribute", pVersion);
 
         std::string sName( pName );
@@ -93,7 +93,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
         xmlFree(pChkInst);
 
         // Creates and process the profile element.
-         ::boost::shared_ptr< ::fwRuntime::profile::Profile > profile = processProfile(rootNode);
+        ::boost::shared_ptr< ::fwRuntime::profile::Profile > profile = processProfile(rootNode);
 
         profile->setFilePath(normalizedPath);
         profile->setName(sName);
@@ -107,7 +107,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
     catch(std::exception& exception)
     {
         xmlFreeDoc(document);
-        throw ;
+        throw;
     }
 }
 
@@ -120,7 +120,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
 
     // Process child nodes.
     ::boost::shared_ptr< Profile > profile( new Profile() );
-    xmlNodePtr              curChild = node->children;
+    xmlNodePtr curChild = node->children;
     for(curChild = node->children; curChild != 0; curChild = curChild->next)
     {
         if(xmlStrcmp(curChild->name, (const xmlChar*) ACTIVATE.c_str()) == 0)
@@ -166,7 +166,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
     ::boost::shared_ptr< Activater >   activater( new Activater(identifier, version) );
 
     // Processes child node that are the parameters
-    xmlNodePtr  curChild = node->children;
+    xmlNodePtr curChild = node->children;
     for(curChild = node->children; curChild != 0; curChild = curChild->next)
     {
         if(xmlStrcmp(curChild->name, (const xmlChar*) PARAM.c_str()) == 0)
@@ -193,7 +193,8 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
 
 //------------------------------------------------------------------------------
 
-void ProfileReader::processActivaterParam(xmlNodePtr node, ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
+void ProfileReader::processActivaterParam(xmlNodePtr node,
+                                          ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
@@ -219,7 +220,8 @@ void ProfileReader::processActivaterParam(xmlNodePtr node, ::boost::shared_ptr< 
 
 //------------------------------------------------------------------------------
 
-void ProfileReader::processActivaterDisableExtensionPoint(xmlNodePtr node, ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
+void ProfileReader::processActivaterDisableExtensionPoint(xmlNodePtr node,
+                                                          ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
@@ -239,7 +241,8 @@ void ProfileReader::processActivaterDisableExtensionPoint(xmlNodePtr node, ::boo
 
 //------------------------------------------------------------------------------
 
-void ProfileReader::processActivaterDisableExtension(xmlNodePtr node, ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
+void ProfileReader::processActivaterDisableExtension(xmlNodePtr node,
+                                                     ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;

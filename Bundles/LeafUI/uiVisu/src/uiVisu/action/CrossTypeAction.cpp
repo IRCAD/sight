@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,14 +32,14 @@ namespace uiVisu
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiVisu::action::CrossTypeAction , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::CrossTypeAction, ::fwData::Image );
 
 
 std::map< std::string, float >
 CrossTypeAction::m_scaleConversion
-        = ::boost::assign::map_list_of(std::string("full"),1.0)
-                                      (std::string("half"),0.5)
-                                      (std::string("hide"),0.0);
+    = ::boost::assign::map_list_of(std::string("full"),1.0)
+          (std::string("half"),0.5)
+          (std::string("hide"),0.0);
 
 CrossTypeAction::CrossTypeAction() throw()
 {
@@ -49,7 +49,8 @@ CrossTypeAction::CrossTypeAction() throw()
 //------------------------------------------------------------------------------
 
 CrossTypeAction::~CrossTypeAction() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -92,7 +93,7 @@ void CrossTypeAction::updating() throw(::fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwData::Float::sptr dataInfo = ::fwData::Float::New();
-    dataInfo->value() = m_scaleConversion[m_crossType];
+    dataInfo->value()              = m_scaleConversion[m_crossType];
 
     ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "CROSS_TYPE", dataInfo );

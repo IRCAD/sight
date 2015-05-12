@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@
 
 #include "ioData/MeshWriterService.hpp"
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioData::MeshWriterService , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioData::MeshWriterService, ::fwData::Mesh );
 
 namespace ioData
 {
@@ -35,23 +35,24 @@ MeshWriterService::MeshWriterService()
 
 void MeshWriterService::info(std::ostream &_sstream )
 {
-    this->SuperClass::info( _sstream ) ;
-    _sstream << std::endl << " Mesh writer" ;
+    this->SuperClass::info( _sstream );
+    _sstream << std::endl << " Mesh writer";
 }
 
 //-----------------------------------------------------------------------------
 
 std::vector< std::string > MeshWriterService::getSupportedExtensions()
 {
-    std::vector< std::string > extensions ;
+    std::vector< std::string > extensions;
     extensions.push_back(".trian");
-    return extensions ;
+    return extensions;
 }
 
 //-----------------------------------------------------------------------------
 
 MeshWriterService::~MeshWriterService() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -73,8 +74,8 @@ void MeshWriterService::configureWithIHM()
     dialogFile.addFilter("TrianMesh","*.trian");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
@@ -112,9 +113,9 @@ void MeshWriterService::updating() throw(::fwTools::Failed)
             ss << "Warning during writing Mesh : " << e.what();
 
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Warning",
-                    ss.str(),
-                    ::fwGui::dialog::IMessageDialog::WARNING);
+                "Warning",
+                ss.str(),
+                ::fwGui::dialog::IMessageDialog::WARNING);
         }
 
     }

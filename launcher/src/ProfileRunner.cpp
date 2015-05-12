@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,21 +50,21 @@
  #pragma message ( "Setting up manifest..." )
 
  #if defined(_DEBUG)
-     // add a dependency on the retail crt even in debug
+// add a dependency on the retail crt even in debug
      #pragma comment(linker,"/manifestdependency:\"type='win32' " \
-             "name='" __LIBRARIES_ASSEMBLY_NAME_PREFIX ".CRT' "   \
-             "version='" _CRT_ASSEMBLY_VERSION "' "               \
-             "processorArchitecture='*' "                         \
-             "publicKeyToken='" _VC_ASSEMBLY_PUBLICKEYTOKEN "' "  \
-             "language='*'\"")
+    "name='" __LIBRARIES_ASSEMBLY_NAME_PREFIX ".CRT' " \
+    "version='" _CRT_ASSEMBLY_VERSION "' " \
+    "processorArchitecture='*' " \
+    "publicKeyToken='" _VC_ASSEMBLY_PUBLICKEYTOKEN "' " \
+    "language='*'\"")
  #endif /* _DEBUG */
 
  #pragma comment(linker,"/manifestdependency:\"type='win32' " \
-        "name='Microsoft.Windows.Common-Controls' "           \
-        "version='6.0.0.0' "                                  \
-        "processorArchitecture='*' "                          \
-        "publicKeyToken='6595b64144ccf1df' "                  \
-        "language='*'\"")
+    "name='Microsoft.Windows.Common-Controls' " \
+    "version='6.0.0.0' " \
+    "processorArchitecture='*' " \
+    "publicKeyToken='6595b64144ccf1df' " \
+    "language='*'\"")
 
 #endif /* _WIN32 && _MSC_VER > 1499 &&  _MSC_VER < 1600 */
 
@@ -76,7 +76,8 @@ typedef fs::path PathType;
 typedef std::vector< PathType > PathListType;
 typedef std::vector< std::string > StringListType;
 
-namespace std {
+namespace std
+{
 template<class A1, class A2>
 inline ostream& operator<<(ostream& s, vector<A1, A2> const& vec)
 {
@@ -119,10 +120,10 @@ int main(int argc, char* argv[])
         ("help,h", "Show help message")
         ("bundle-path,B", po::value(&bundlePaths)->default_value(PathListType(1,"./Bundles/")), "Adds a bundle path")
         ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
-        ;
+    ;
 
     bool consoleLog = CONSOLE_LOG;
-    bool fileLog = FILE_LOG;
+    bool fileLog    = FILE_LOG;
     std::string logFile;
     const std::string defaultLogFile = "SLM.log";
 
@@ -143,17 +144,17 @@ int main(int argc, char* argv[])
         ("log-warn",  po::value(&logLevel)->implicit_value(SpyLogger::SL_WARN )->zero_tokens(), "Set loglevel to warn")
         ("log-error", po::value(&logLevel)->implicit_value(SpyLogger::SL_ERROR)->zero_tokens(), "Set loglevel to error")
         ("log-fatal", po::value(&logLevel)->implicit_value(SpyLogger::SL_FATAL)->zero_tokens(), "Set loglevel to fatal")
-        ;
+    ;
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
 #ifdef __MACOSX__
-        ("psn", po::value<std::string>(), "Application PSN number")
+    ("psn", po::value<std::string>(), "Application PSN number")
         ("NSDocumentRevisionsDebugMode", po::value<std::string>()->zero_tokens(), "DocumentRevisionsDebugMode")
 #endif
-        ("profile", po::value(&profileFile)->default_value(DEFAULT_PROFILE_STRING), "Profile file")
+    ("profile", po::value(&profileFile)->default_value(DEFAULT_PROFILE_STRING), "Profile file")
         ("profile-args", po::value(&profileArgs)->multitoken(), "Profile args")
-        ;
+    ;
 
     po::options_description cmdline_options;
     cmdline_options.add(options).add(logOptions).add(hidden);
@@ -166,13 +167,13 @@ int main(int argc, char* argv[])
     try
     {
         po::store(po::command_line_parser(argc, argv)
-                .options(cmdline_options)
+                  .options(cmdline_options)
 #ifdef __MACOSX__
-                .extra_parser(parsePns)
+                  .extra_parser(parsePns)
 #endif
-                .positional(p)
-                .run(),
-                vm);
+                  .positional(p)
+                  .run(),
+                  vm);
         po::notify(vm);
     }
     catch(const po::error &e)
@@ -211,7 +212,7 @@ int main(int argc, char* argv[])
             else
             {
                 // creates SLM.log in temp directory: default dir unreachable
-                sysTmp = sysTmp / "SLM.log";
+                sysTmp  = sysTmp / "SLM.log";
                 logFile = sysTmp.string();
                 logger.addFileAppender(logFile, static_cast<SpyLogger::LevelType>(logLevel));
             }
@@ -256,20 +257,20 @@ int main(int argc, char* argv[])
     }
 #endif
 
-    OSLM_INFO_IF( "Bundle paths are: "  << bundlePaths << std::endl, vm.count("bundle-path") );
-    OSLM_INFO_IF( "Profile: "           << profileFile << std::endl, vm.count("profile"));
-    OSLM_INFO_IF( "Profile-args: "      << profileArgs << std::endl, vm.count("profile-args") );
+    OSLM_INFO_IF( "Bundle paths are: " << bundlePaths << std::endl, vm.count("bundle-path") );
+    OSLM_INFO_IF( "Profile: " << profileFile << std::endl, vm.count("profile"));
+    OSLM_INFO_IF( "Profile-args: " << profileArgs << std::endl, vm.count("profile-args") );
 
     std::transform( bundlePaths.begin(), bundlePaths.end(), bundlePaths.begin(), absolute );
     profileFile = fs::absolute(profileFile);
 
     bool isChdirOk = false;
 #ifdef _WIN32
-        isChdirOk = (bool)(SetCurrentDirectory(rwd.string().c_str()) != 0);
+    isChdirOk = (bool)(SetCurrentDirectory(rwd.string().c_str()) != 0);
 #else
-        isChdirOk = ( chdir(rwd.string().c_str()) == 0 );
+    isChdirOk = ( chdir(rwd.string().c_str()) == 0 );
 #endif // _WIN32
-    OSLM_ERROR_IF( "Was not able to change directory to : " << rwd , !isChdirOk);
+    OSLM_ERROR_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
     BOOST_FOREACH(const fs::path &bundlePath, bundlePaths )
     {

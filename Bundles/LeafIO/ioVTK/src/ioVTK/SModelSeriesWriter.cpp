@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::SModelSeriesWriter , ::fwMedData::ModelSeries ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SModelSeriesWriter, ::fwMedData::ModelSeries );
 
 //------------------------------------------------------------------------------
 
@@ -121,7 +121,7 @@ void SModelSeriesWriter::updating() throw(::fwTools::Failed)
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >() ;
+        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
         SLM_ASSERT("ModelSeries is not instanced", modelSeries);
 
         ::fwGui::Cursor cursor;
@@ -134,8 +134,8 @@ void SModelSeriesWriter::updating() throw(::fwTools::Failed)
             ::fwData::Mesh::sptr mesh = rec->getMesh();
             SLM_ASSERT("Mesh from reconstruction is not instanced", mesh);
             MeshWriterService::saveMesh(
-                    this->getFolder() / (rec->getOrganName() + "_" + ::fwTools::UUID::get(mesh) + ".vtk"),
-                    mesh);
+                this->getFolder() / (rec->getOrganName() + "_" + ::fwTools::UUID::get(mesh) + ".vtk"),
+                mesh);
         }
 
         cursor.setDefaultCursor();

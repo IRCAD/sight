@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,8 @@
 #include "scene2D/Scene2DGraphicsView.hpp"
 
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportRangeSelector, ::scene2D::data::Viewport);
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportRangeSelector,
+                         ::scene2D::data::Viewport);
 
 namespace scene2D
 {
@@ -48,7 +49,7 @@ void ViewportRangeSelector::configuring() throw( ::fwTools::Failed)
     this->IAdaptor::configuring();
 
     const double viewportWidth = viewport->getWidth();
-    const double defaultWidth = 2 * viewportWidth / 4;
+    const double defaultWidth  = 2 * viewportWidth / 4;
 
     if (!m_configuration->getAttributeValue("initialWidth").empty())
     {
@@ -94,9 +95,9 @@ void ViewportRangeSelector::doStart() throw( ::fwTools::Failed)
     QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
 
     std::pair< double, double > pair = this->mapAdaptorToScene(
-            std::pair< double, double >( m_initialX, viewport->getHeight() ), m_xAxis, m_yAxis );
+        std::pair< double, double >( m_initialX, viewport->getHeight() ), m_xAxis, m_yAxis );
     m_shutter = new QGraphicsRectItem(
-            pair.first, 0, m_initialWidth * m_xAxis->getScale(), pair.second );
+        pair.first, 0, m_initialWidth * m_xAxis->getScale(), pair.second );
     m_shutter->setBrush( QBrush(QColor(127, 127, 127, 127)) );
     m_shutter->setPen( Qt::NoPen );
 
@@ -158,13 +159,13 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
     // Shutter coordinates in scene
     std::pair< double, double > shutterCoordPair;
     shutterCoordPair = this->mapAdaptorToScene(
-            std::pair< double, double >( m_shutter->rect().x(), m_shutter->rect().y() ), m_xAxis, m_yAxis);
+        std::pair< double, double >( m_shutter->rect().x(), m_shutter->rect().y() ), m_xAxis, m_yAxis);
     double shutterWidth = m_shutter->rect().width() * m_xAxis->getScale();
 
     QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
 
-    bool onShutterLeft = mouseOnShutterLeft( coord );
-    bool onShutterRight = mouseOnShutterRight( coord );
+    bool onShutterLeft   = mouseOnShutterLeft( coord );
+    bool onShutterRight  = mouseOnShutterRight( coord );
     bool onShutterMiddle = mouseOnShutterMiddle( coord );
 
     QRectF rect = m_shutter->rect();
@@ -184,7 +185,7 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
             this->getScene2DRender()->getView()->setCursor( Qt::ClosedHandCursor );
 
             // Interaction when clicking on the center of the shutter
-            m_isInteracting = true;
+            m_isInteracting  = true;
             m_dragStartPoint = coord;
             m_dragStartShutterPos.setX( shutterCoordPair.first );
             m_dragStartShutterPos.setY( shutterCoordPair.second );
@@ -192,8 +193,8 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
     }
     else if( _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
     {
-        m_isInteracting = false;
-        m_isLeftInteracting = false;
+        m_isInteracting      = false;
+        m_isLeftInteracting  = false;
         m_isRightInteracting = false;
 
         // Reset cursor
@@ -253,7 +254,7 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
         }
         else if( m_isRightInteracting )
         {
-            double newWidth = coord.getX() - shutterCoordPair.first;
+            double newWidth        = coord.getX() - shutterCoordPair.first;
             double shutterRightPos = abs(sceneRect.x()) + shutterCoordPair.first + newWidth;
 
             if( newWidth > m_clickCatchRange ) // Shutter's width must be greater than the allowed picking range
@@ -276,8 +277,8 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
         }
         else if( m_isInteracting )
         {
-            double offset = coord.getX() - m_dragStartPoint.getX();
-            double newX = m_dragStartShutterPos.getX() + offset;
+            double offset          = coord.getX() - m_dragStartPoint.getX();
+            double newX            = m_dragStartShutterPos.getX() + offset;
             double shutterRightPos = abs(sceneRect.x()) + newX + shutterWidth;
 
             if( newX >= sceneRect.x() && shutterRightPos < sceneRect.width() )
@@ -308,7 +309,8 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
             updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
             ::scene2D::data::ViewportMsg::sptr msg = ::scene2D::data::ViewportMsg::New();
             msg->addEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
-            ::fwServices::IEditionService::notify( this->getSptr(), this->getObject< ::scene2D::data::Viewport>(), msg );
+            ::fwServices::IEditionService::notify( this->getSptr(), this->getObject< ::scene2D::data::Viewport>(),
+                                                   msg );
         }
     }
 }
@@ -335,10 +337,11 @@ void ViewportRangeSelector::updateViewportFromShutter( double _x, double _y, dou
 bool ViewportRangeSelector::mouseOnShutterMiddle( ::scene2D::data::Coord _coord)
 {
     Point2DType shutterCoordPair;
-    shutterCoordPair = this->mapAdaptorToScene( Point2DType( m_shutter->rect().x(), m_shutter->rect().y() ), m_xAxis, m_yAxis );
+    shutterCoordPair = this->mapAdaptorToScene( Point2DType( m_shutter->rect().x(),
+                                                             m_shutter->rect().y() ), m_xAxis, m_yAxis );
 
     return ( _coord.getX() > m_shutter->rect().x() + m_clickCatchRange )
-        && ( _coord.getX() < m_shutter->rect().x() + m_shutter->rect().width() - m_clickCatchRange );
+           && ( _coord.getX() < m_shutter->rect().x() + m_shutter->rect().width() - m_clickCatchRange );
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -346,10 +349,12 @@ bool ViewportRangeSelector::mouseOnShutterMiddle( ::scene2D::data::Coord _coord)
 bool ViewportRangeSelector::mouseOnShutterLeft( ::scene2D::data::Coord _coord)
 {
     std::pair< double, double > shutterCoordPair;
-    shutterCoordPair = this->mapAdaptorToScene( std::pair< double, double >( m_shutter->rect().x(), m_shutter->rect().y() ), m_xAxis, m_yAxis );
+    shutterCoordPair =
+        this->mapAdaptorToScene( std::pair< double, double >( m_shutter->rect().x(),
+                                                              m_shutter->rect().y() ), m_xAxis, m_yAxis );
 
     return ( _coord.getX() >= shutterCoordPair.first - m_clickCatchRange )
-        && ( _coord.getX() <= shutterCoordPair.first + m_clickCatchRange );
+           && ( _coord.getX() <= shutterCoordPair.first + m_clickCatchRange );
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -357,12 +362,14 @@ bool ViewportRangeSelector::mouseOnShutterLeft( ::scene2D::data::Coord _coord)
 bool ViewportRangeSelector::mouseOnShutterRight( ::scene2D::data::Coord _coord)
 {
     std::pair< double, double > shutterCoordPair;
-    shutterCoordPair = this->mapAdaptorToScene( std::pair< double, double >( m_shutter->rect().x(), m_shutter->rect().y() ), m_xAxis, m_yAxis );
+    shutterCoordPair =
+        this->mapAdaptorToScene( std::pair< double, double >( m_shutter->rect().x(),
+                                                              m_shutter->rect().y() ), m_xAxis, m_yAxis );
 
     double shutterRightPos = shutterCoordPair.first + m_shutter->rect().width() * m_xAxis->getScale();
 
     return ( _coord.getX() >=  shutterRightPos - m_clickCatchRange )
-        && ( _coord.getX() <=  shutterRightPos + m_clickCatchRange );
+           && ( _coord.getX() <=  shutterRightPos + m_clickCatchRange );
 }
 
 //---------------------------------------------------------------------------------------------------------------

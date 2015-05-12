@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,33 +33,33 @@ BOOST_LOG_GLOBAL_LOGGER(lg_channel,
 
 BOOST_LOG_GLOBAL_LOGGER_CTOR_ARGS(lg_channel,
                                   ::boost::log::sources::channel_logger_mt<std::string>,
-                                   (std::string("patch")));
+                                  (std::string("patch")));
 
 
 Logger::Logger()
 {
-    namespace expr = ::boost::log::expressions;
+    namespace expr     = ::boost::log::expressions;
     namespace keywords = ::boost::log::keywords;
 
     ::boost::log::add_file_log (
-                // file name pattern
-                keywords::file_name = "PATCH.log",
-                // rotate files every 10 MiB...
-                keywords::rotation_size = 10 * 1024 * 1024,
-                // ...or at midnight
-                keywords::time_based_rotation = ::boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
-                // log record format
-                keywords::format = (
-                        expr::stream
-                        << "[" << expr::format_date_time< ::boost::posix_time::ptime >("TimeStamp", "%d.%m.%Y %H:%M:%S.%f")
-                        << "][" << expr::format_date_time< ::boost::posix_time::ptime >("Uptime", "%H:%M:%S.%f")
-                        << "][" << expr::attr< std::string >("Channel")
-                        << "] " << expr::smessage
-                ),
-                // auto-flush feature of the backend
-                keywords::auto_flush = true,
-                keywords::filter = (expr::attr< std::string >("Channel") == "patch")
-    );
+        // file name pattern
+        keywords::file_name = "PATCH.log",
+        // rotate files every 10 MiB...
+        keywords::rotation_size = 10 * 1024 * 1024,
+        // ...or at midnight
+        keywords::time_based_rotation = ::boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
+        // log record format
+        keywords::format = (
+            expr::stream
+            << "[" << expr::format_date_time< ::boost::posix_time::ptime >("TimeStamp", "%d.%m.%Y %H:%M:%S.%f")
+            << "][" << expr::format_date_time< ::boost::posix_time::ptime >("Uptime", "%H:%M:%S.%f")
+            << "][" << expr::attr< std::string >("Channel")
+            << "] " << expr::smessage
+            ),
+        // auto-flush feature of the backend
+        keywords::auto_flush = true,
+        keywords::filter = (expr::attr< std::string >("Channel") == "patch")
+        );
 
     // Construct the sink
     typedef ::boost::log::sinks::synchronous_sink< ::boost::log::sinks::text_ostream_backend > text_sink;
@@ -75,7 +75,8 @@ Logger::Logger()
 // ----------------------------------------------------------------------------
 
 Logger::~Logger()
-{}
+{
+}
 
 // ----------------------------------------------------------------------------
 

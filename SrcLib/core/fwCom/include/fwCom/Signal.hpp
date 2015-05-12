@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,21 +33,21 @@ struct SlotRun;
  * @brief Signal implementation.
  * Template parameter T must always be void.
  */
-template < typename R, typename ...A >
-struct Signal< R (A...) > : SignalBase
+template < typename R, typename ... A >
+struct Signal< R (A ...) > : SignalBase
 {
     /**
      * @name Typedefs
      * @{ */
-    typedef R SignatureType(A...);
+    typedef R SignatureType (A ...);
 
     typedef Signal< SignatureType > SelfType;
 
-    typedef SPTR( SelfType ) sptr;
-    typedef WPTR( SelfType ) wptr;
+    typedef SPTR ( SelfType ) sptr;
+    typedef WPTR ( SelfType ) wptr;
 
     typedef SlotRun< SignatureType > SlotRunType;
-    typedef SPTR( SlotRunType )      SlotSptr;
+    typedef SPTR ( SlotRunType )      SlotSptr;
 
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
@@ -83,10 +83,10 @@ struct Signal< R (A...) > : SignalBase
     void disconnectAll();
 
     /// Requests execution of slots with given arguments.
-    void emit( A...a ) const;
+    void emit( A ... a ) const;
 
     /// Requests asynchronous execution of slots with given arguments.
-    void asyncEmit( A...a ) const;
+    void asyncEmit( A ... a ) const;
 
     /// Returns number of connected slots.
     size_t getNumberOfConnections() const
@@ -102,33 +102,33 @@ struct Signal< R (A...) > : SignalBase
      */
     Connection getConnection( SPTR( SlotBase ) slot, bool throws = false );
 
-protected:
+    protected:
 
-    template < typename F >
-    friend struct SlotConnection;
+        template < typename F >
+        friend struct SlotConnection;
 
-    /**
-     * @brief Connects the given slot.
-     * Tries to connect a slot of type R (A1, A2, ..., Am, An) :
-     * returns a connection on success, otherwise try to connect
-     * the same slot with the type R (A1, A2, ..., Am).
-     *
-     * @throws BadSlot If given slot doesn't match signal type.
-     * @throws AlreadyConnected If given slot is already connected.
-     */
-    template< typename FROM_F >
-    Connection connect( SPTR( SlotBase ) slot );
+        /**
+         * @brief Connects the given slot.
+         * Tries to connect a slot of type R (A1, A2, ..., Am, An) :
+         * returns a connection on success, otherwise try to connect
+         * the same slot with the type R (A1, A2, ..., Am).
+         *
+         * @throws BadSlot If given slot doesn't match signal type.
+         * @throws AlreadyConnected If given slot is already connected.
+         */
+        template< typename FROM_F >
+        Connection connect( SPTR( SlotBase ) slot );
 
-    /// Connected slots.
-    SlotContainerType m_slots;
+        /// Connected slots.
+        SlotContainerType m_slots;
 
-    /// Container of current connections.
-    ConnectionMapType m_connections;
+        /// Container of current connections.
+        ConnectionMapType m_connections;
 
-    mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
+        mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
 
-private:
-    BOOST_STATIC_ASSERT( (::boost::is_same<void, R>::value) );
+    private:
+        BOOST_STATIC_ASSERT( (::boost::is_same<void, R>::value) );
 
 };
 

@@ -24,12 +24,12 @@
 
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::OrientationMarker, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::OrientationMarker, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
 
-OrientationMarker::OrientationMarker(): m_hAlign("left")
+OrientationMarker::OrientationMarker() : m_hAlign("left")
 {
 }
 
@@ -41,7 +41,7 @@ void OrientationMarker::doStart() throw(fwTools::Failed)
     reader->SetFileName("Bundles/visuVTKAdaptor_0-1/human.vtk");
     reader->Update();
     vtkDataObject *obj = reader->GetOutput();
-    vtkPolyData* mesh = vtkPolyData::SafeDownCast(obj);
+    vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
 
     if(!obj)
     {
@@ -89,7 +89,7 @@ void OrientationMarker::configuring() throw(fwTools::Failed)
         SLM_ASSERT("'hAlign' value must be 'left', 'center' or 'right'",
                    m_hAlign == "left"
                    || m_hAlign == "right"
-                  );
+                   );
     }
 }
 

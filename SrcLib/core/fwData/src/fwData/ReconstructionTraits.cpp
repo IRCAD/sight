@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@ void ReconstructionTraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
 
 void ReconstructionTraits::setMeshOpNode( ::fwData::Node::sptr meshOpNode )
 {
-    m_meshOpNode =  meshOpNode;
+    m_meshOpNode = meshOpNode;
 }
 
 //------------------------------------------------------------------------------
@@ -62,13 +62,15 @@ void ReconstructionTraits::setStructureTraits( ::fwData::StructureTraits::sptr s
 //------------------------------------------------------------------------------
 
 ReconstructionTraits::ReconstructionTraits(::fwData::Object::Key key)
-{}
+{
+}
 
 
 //------------------------------------------------------------------------------
 
 ReconstructionTraits::~ReconstructionTraits()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -76,8 +78,8 @@ void ReconstructionTraits::cachedDeepCopy(const Object::csptr &source, DeepCopyC
 {
     ReconstructionTraits::csptr other = ReconstructionTraits::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
     OSLM_FATAL("Not implemented." );

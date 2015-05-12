@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,17 +30,17 @@ void StringTest::tearDown()
 
 void StringTest::methode1()
 {
-    const std::string VALUES[]  = { "", "chaine_caractere" };
+    const std::string VALUES[] = { "", "chaine_caractere" };
 
     BOOST_FOREACH ( std::string VALUE, VALUES )
     {
         ::fwData::String::sptr s0 = ::fwData::String::New();
-        s0->value() = VALUE;
+        s0->value()               = VALUE;
         ::fwData::String::sptr s1 = ::fwData::String::New( VALUE );
 
-        CPPUNIT_ASSERT_EQUAL( VALUE , s0->value() );
-        CPPUNIT_ASSERT_EQUAL( VALUE , s1->value() );
-        CPPUNIT_ASSERT_EQUAL( VALUE , ::fwData::String::New( VALUE )->value() );
+        CPPUNIT_ASSERT_EQUAL( VALUE, s0->value() );
+        CPPUNIT_ASSERT_EQUAL( VALUE, s1->value() );
+        CPPUNIT_ASSERT_EQUAL( VALUE, ::fwData::String::New( VALUE )->value() );
     }
 }
 

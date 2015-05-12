@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,10 +22,10 @@ namespace fwGuiQt
 
 //------------------------------------------------------------------------------
 
-SliceSelector::SliceSelector(QWidget* const parent ) throw(): QWidget( parent )
+SliceSelector::SliceSelector(QWidget* const parent ) throw() : QWidget( parent )
 {
     m_fctChangeIndexCallback = ::boost::bind( &::fwGuiQt::SliceSelector::printIndex, this, _1);
-    m_fctChangeTypeCallback = ::boost::bind( &::fwGuiQt::SliceSelector::printType, this, _1);
+    m_fctChangeTypeCallback  = ::boost::bind( &::fwGuiQt::SliceSelector::printType, this, _1);
 
     m_sliceType = new QComboBox( this );
     /// Slice type names as a qt string array.

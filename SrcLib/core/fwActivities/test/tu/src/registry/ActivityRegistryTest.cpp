@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,9 +31,9 @@ namespace ut
 
 struct ActivityRegistryTestPimpl
 {
-public:
-    SPTR(::fwRuntime::Bundle) bundle;
-    ::fwActivities::registry::Activities::sptr activities;
+    public:
+        SPTR(::fwRuntime::Bundle) bundle;
+        ::fwActivities::registry::Activities::sptr activities;
 };
 
 //------------------------------------------------------------------------------
@@ -43,15 +43,16 @@ void ActivityRegistryTest::setUp()
     m_pimpl = ::boost::make_shared< ActivityRegistryTestPimpl >();
 
     ::boost::filesystem::path plugin = "share/tu_exec_fwActivities_0-0/tu_registry";
-    m_pimpl->bundle = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
+    m_pimpl->bundle                  = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
 
     m_pimpl->activities = fwActivities::registry::Activities::New();
 
-    ::fwRuntime::Bundle::ExtensionContainer extensionsSet( m_pimpl->bundle->extensionsBegin(), m_pimpl->bundle->extensionsEnd());
+    ::fwRuntime::Bundle::ExtensionContainer extensionsSet(
+        m_pimpl->bundle->extensionsBegin(), m_pimpl->bundle->extensionsEnd());
     std::vector< SPTR( ::fwRuntime::Extension ) > extensions(extensionsSet.begin(), extensionsSet.end());
     m_pimpl->activities->parseBundleInformation(extensions);
 
-    CPPUNIT_ASSERT_EQUAL( size_t(8) , extensions.size());
+    CPPUNIT_ASSERT_EQUAL( size_t(8), extensions.size());
 
     // Set up context before running a test.
 }

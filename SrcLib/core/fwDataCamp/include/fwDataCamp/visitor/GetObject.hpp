@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ namespace visitor
 {
 
 /**
- * @brief Check if object introspection process mathes a given path. 
+ * @brief Check if object introspection process mathes a given path.
  */
 struct PathVisitor
 {
@@ -35,7 +35,7 @@ struct PathVisitor
     /**
      * @brief Constructor.
      *
-     * @param path 
+     * @param path
      */
     PathVisitor(const std::string& path)
     {
@@ -47,7 +47,7 @@ struct PathVisitor
      */
     void merge(PathVisitor::sptr pathVisitor)
     {
-        const ObjectsNamesType& vectObjFound =  pathVisitor->m_vectObjFound;
+        const ObjectsNamesType& vectObjFound = pathVisitor->m_vectObjFound;
         m_vectObjFound.reserve(m_vectObjFound.size() + vectObjFound.size());
         m_vectObjFound.insert(m_vectObjFound.end(), vectObjFound.begin(), vectObjFound.end());
     }
@@ -64,13 +64,13 @@ struct PathVisitor
         return m_vectObj == m_vectObjFound;
     }
 
-private:
+    private:
 
-    /// Path elements to introspect.
-    ObjectsNamesType m_vectObj;
+        /// Path elements to introspect.
+        ObjectsNamesType m_vectObj;
 
-    /// Introspected path elements.
-    ObjectsNamesType m_vectObjFound;
+        /// Introspected path elements.
+        ObjectsNamesType m_vectObjFound;
 
 };
 
@@ -122,7 +122,7 @@ public:
         return m_pathVisitor;
     }
 
-private :
+private:
 
     /*
      * @brief Parses m_newSubObjPath, returns the substring until the first dot ( property name, key map or

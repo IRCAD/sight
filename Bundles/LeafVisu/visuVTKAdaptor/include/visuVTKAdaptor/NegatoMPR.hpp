@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_NEGATOMPR_HPP_
-#define _VISUVTKADAPTOR_NEGATOMPR_HPP_
+#ifndef __VISUVTKADAPTOR_NEGATOMPR_HPP__
+#define __VISUVTKADAPTOR_NEGATOMPR_HPP__
 
 #include <boost/logic/tribool.hpp>
 
@@ -18,12 +18,13 @@ namespace visuVTKAdaptor
 {
 
 
-class VISUVTKADAPTOR_CLASS_API NegatoMPR: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API NegatoMPR : public ::fwComEd::helper::MedicalImageAdaptor,
+                                           public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API NegatoMPR() throw();
 
@@ -36,9 +37,18 @@ public:
         THREE_SLICES
     } SliceMode;
 
-    void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
-    void setInterpolation(bool interpolation){m_interpolation = interpolation;};
-    void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
+    void setAllowAlphaInTF(bool allow)
+    {
+        m_allowAlphaInTF = allow;
+    }
+    void setInterpolation(bool interpolation)
+    {
+        m_interpolation = interpolation;
+    }
+    void setVtkImageSourceId(std::string id)
+    {
+        m_imageSourceId = id;
+    }
 
     void setSliceMode(SliceMode sliceMode);
     SliceMode getSliceMode();
@@ -46,9 +56,12 @@ public:
     void set3dMode( bool enabled );
 
     /// Set actor opacity
-    void setActorOpacity(double actorOpacity) {m_actorOpacity = actorOpacity;};
+    void setActorOpacity(double actorOpacity)
+    {
+        m_actorOpacity = actorOpacity;
+    }
 
-protected :
+protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
@@ -86,7 +99,7 @@ protected :
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
-    void addAdaptor(std::string adaptor, int axis=-1);
+    void addAdaptor(std::string adaptor, int axis = -1);
 
 
 private:
@@ -107,4 +120,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_NEGATOMPR_HPP_
+#endif // __VISUVTKADAPTOR_NEGATOMPR_HPP__

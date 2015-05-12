@@ -25,7 +25,7 @@ class FWSTRUCTURALPATCH_CLASS_API V1ToV3 : public ::fwAtomsPatch::IStructuralPat
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro(
-            (V1ToV3)(::fwStructuralPatch::fwData::Mesh::V1ToV3), (()), new V1ToV3) ;
+        (V1ToV3)(::fwStructuralPatch::fwData::Mesh::V1ToV3), (()), new V1ToV3);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V1ToV3();
@@ -42,9 +42,9 @@ public:
      * Added new map of additional array.
      */
     FWSTRUCTURALPATCH_API virtual void apply(
-            const ::fwAtoms::Object::sptr& previous,
-            const ::fwAtoms::Object::sptr& current,
-            ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
+        const ::fwAtoms::Object::sptr& previous,
+        const ::fwAtoms::Object::sptr& current,
+        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
 
 };
 

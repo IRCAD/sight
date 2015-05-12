@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@
 #include <sstream>
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageText, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageText, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -43,7 +43,8 @@ ImageText::ImageText() throw()
 //-----------------------------------------------------------------------------
 
 ImageText::~ImageText() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -95,12 +96,12 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
         int max = this->getLevel() + this->getWindow()/2.0;
 
         double window = max - min;
-        double level = min + window*0.5;
+        double level  = min + window*0.5;
 
         ss <<  ( ::boost::format("[% 3li,% 3li]") % min % max ) << std::endl;
         ss <<  ( ::boost::format("W:% 3lg L:% 3lg") % window % level ) << std::endl;
         ss <<  ( ::boost::format("(% 4li,% 4li,% 4li): %s") % sagittalIndex % frontalIndex % axialIndex %
-                imageHelper.getPixelAsString(sagittalIndex, frontalIndex, axialIndex ));
+                 imageHelper.getPixelAsString(sagittalIndex, frontalIndex, axialIndex ));
     }
 
     this->setText(ss.str());
@@ -113,8 +114,8 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
 void ImageText::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     // update only if new LandMarks
-    ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
-    ::fwComEd::TransferFunctionMsg::csptr tfMsg =  ::fwComEd::TransferFunctionMsg::dynamicConstCast( msg );
+    ::fwComEd::ImageMsg::csptr imgMsg           = ::fwComEd::ImageMsg::dynamicConstCast( msg );
+    ::fwComEd::TransferFunctionMsg::csptr tfMsg = ::fwComEd::TransferFunctionMsg::dynamicConstCast( msg );
 
     if ( imgMsg )
     {
@@ -124,7 +125,7 @@ void ImageText::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools:
         }
         this->doUpdate();
     }
-    else  if ( tfMsg || this->upadteTFObserver(msg, this->getSptr()))
+    else if ( tfMsg || this->upadteTFObserver(msg, this->getSptr()))
     {
         this->doUpdate();
     }

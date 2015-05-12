@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -75,8 +75,8 @@ struct WeakCall
                  << this->m_objectType << ", " << this->m_objectId);
 
         OSLM_COM_IF( "Failed to execute WeakCall related to :"
-                 << this->m_objectType << ", " << this->m_objectId,
-                 this->m_weakPtr.expired() );
+                     << this->m_objectType << ", " << this->m_objectId,
+                     this->m_weakPtr.expired() );
 
         ::boost::shared_ptr< T const > ptr(this->m_weakPtr.lock());
 
@@ -103,14 +103,14 @@ struct WeakCall
         return this->m_func();
     }
 
-protected:
-    mutable ::boost::weak_ptr< T const > m_weakPtr;
-    ::boost::function< R() > m_func;
-    mutable ::boost::shared_ptr< ::fwCore::mt::ReadLock > m_lock;
+    protected:
+        mutable ::boost::weak_ptr< T const > m_weakPtr;
+        ::boost::function< R() > m_func;
+        mutable ::boost::shared_ptr< ::fwCore::mt::ReadLock > m_lock;
 
 #ifdef COM_LOG
-    std::string m_objectType;
-    std::string m_objectId;
+        std::string m_objectType;
+        std::string m_objectId;
 #endif // COM_LOG
 };
 
@@ -124,7 +124,8 @@ WeakCall<T, R> weakcall( const ::boost::shared_ptr< T const > &ptr, ::boost::fun
 
 /// Returns weak call from given object, function and mutex.
 template <typename T, typename R >
-WeakCall<T, R> weakcall( const ::boost::shared_ptr< T const > &ptr, ::boost::function< R() > f, ::fwCore::mt::ReadWriteMutex& m)
+WeakCall<T, R> weakcall( const ::boost::shared_ptr< T const > &ptr,
+                         ::boost::function< R() > f, ::fwCore::mt::ReadWriteMutex& m)
 {
     return WeakCall<T, R>(ptr, f, m);
 }

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_METAIMAGEWRITER_HPP_
-#define _VTKIO_METAIMAGEWRITER_HPP_
+#ifndef __FWVTKIO_METAIMAGEWRITER_HPP__
+#define __FWVTKIO_METAIMAGEWRITER_HPP__
 
 #include <boost/filesystem/path.hpp>
 
@@ -22,22 +22,23 @@ namespace fwVtkIO
 /**
  * @brief   Write a MetaImage.
  * @class   MetaImageWriter
- * 
+ *
  * @date    2011.
  *
  * Write a MetaImage using the VTK lib
  */
 class MetaImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
-                             public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
-                             public ::fwTools::ProgressAdviser
+                        public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
+                        public ::fwTools::ProgressAdviser
 {
 
-public :
+public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((MetaImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
-                                           (()),
-                                           ::fwDataIO::writer::factory::New< MetaImageWriter >
-                                          );
+    fwCoreClassDefinitionsWithFactoryMacro(
+        (MetaImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
+        (()),
+        ::fwDataIO::writer::factory::New< MetaImageWriter >
+        );
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
@@ -50,9 +51,9 @@ public :
     FWVTKIO_API void write();
 
     /// @return ".mhd"
-    FWVTKIO_API  std::string extension();
+    FWVTKIO_API std::string extension();
 };
 
 } // namespace fwVtkIO
 
-#endif // _VTKIO_METAIMAGEWRITER_HPP_
+#endif // __FWVTKIO_METAIMAGEWRITER_HPP__

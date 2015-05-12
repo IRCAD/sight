@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,7 +43,7 @@
 #include <algorithm>
 #include <sstream>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageMultiDistances, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageMultiDistances, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -53,7 +53,7 @@ namespace visuVTKAdaptor
 class vtkDistanceDeleteCallBack : public vtkCommand
 {
 
-public :
+public:
 
     static vtkDistanceDeleteCallBack * New( ImageMultiDistances * service )
     {
@@ -61,16 +61,16 @@ public :
     }
 
     vtkDistanceDeleteCallBack( ImageMultiDistances *service )
-    : m_service(service),
-      m_picker( vtkCellPicker::New() ),
-      m_propCollection( vtkPropCollection::New() )
+        : m_service(service),
+          m_picker( vtkCellPicker::New() ),
+          m_propCollection( vtkPropCollection::New() )
     {
         m_lastPos[0] = -1;
         m_lastPos[1] = -1;
         m_picker->PickFromListOn();
         m_picker->SetTolerance(0.001);
 
-        m_display[2]=0.0;
+        m_display[2] = 0.0;
     }
 
     void fillPickList()
@@ -106,7 +106,7 @@ public :
 
 
             this->fillPickList();
-            if (m_picker->Pick( m_display , m_service->getRenderer() ) )
+            if (m_picker->Pick( m_display, m_service->getRenderer() ) )
             {
                 vtkPropCollection *propc = m_picker->GetActors();
                 vtkProp *prop;
@@ -119,12 +119,13 @@ public :
 
                     if(plist)
                     {
-                        ::fwData::Image::sptr image = m_service->getObject< ::fwData::Image >();
+                        ::fwData::Image::sptr image   = m_service->getObject< ::fwData::Image >();
                         ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
                         msg->addEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE, plist );
 
                         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-                        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+                        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                            ::fwData::Object::s_OBJECT_MODIFIED_SIG );
                         fwServicesNotifyMsgMacro( image->getLightID(), sig, msg );
 
                         break;
@@ -134,7 +135,7 @@ public :
         }
     }
 
-protected :
+protected:
 
     ImageMultiDistances * m_service;
     vtkPicker * m_picker;
@@ -146,7 +147,7 @@ protected :
 
 //------------------------------------------------------------------------------
 
-ImageMultiDistances::ImageMultiDistances() throw():
+ImageMultiDistances::ImageMultiDistances() throw() :
     m_rightButtonCommand(0),
     m_needSubservicesDeletion(false)
 {
@@ -179,9 +180,9 @@ void ImageMultiDistances::doStart() throw(fwTools::Failed)
     SLM_TRACE_FUNC();
 
     m_rightButtonCommand = vtkDistanceDeleteCallBack::New(this);
-    this->getInteractor()->AddObserver( "RightButtonPressEvent" , m_rightButtonCommand, 1 );
-    this->getInteractor()->AddObserver( "RightButtonReleaseEvent" , m_rightButtonCommand, 1 ); // jamais reçu quand TrackBallCameraStyle activé (GrabFocus)
-    this->getInteractor()->AddObserver( "StartInteractionEvent" , m_rightButtonCommand, 0);    // par contre ce style lance un event d'interaction
+    this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
+    this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );  // jamais reçu quand TrackBallCameraStyle activé (GrabFocus)
+    this->getInteractor()->AddObserver( "StartInteractionEvent", m_rightButtonCommand, 0);     // par contre ce style lance un event d'interaction
 
     this->doUpdate();
 }
@@ -223,7 +224,7 @@ void ImageMultiDistances::doSwap() throw(fwTools::Failed)
         colors.push_back( violet );
 
         Color::sptr vertpomme = Color::New();
-        vertpomme->setRGBA( .65, 1 , 0);
+        vertpomme->setRGBA( .65, 1, 0);
         colors.push_back( vertpomme );
 
         Color::sptr jaune = Color::New();
@@ -236,7 +237,7 @@ void ImageMultiDistances::doSwap() throw(fwTools::Failed)
 //                    Color::New( .5, 0.26, 1 ), // violet
 //                    Color::New( .65, 1 , 0), // vert pomme
 //                    Color::New( 1, 1, 0 ); // jaune
-        current= colors.begin();
+        current = colors.begin();
     }
 
     if ( ++current == colors.end() )
@@ -259,7 +260,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         ::fwRenderVTK::IVtkAdaptorService::sptr serviceDistance;
         serviceDistance =
             ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-        ( pl , "::visuVTKAdaptor::Distance");
+                ( pl, "::visuVTKAdaptor::Distance");
         SLM_ASSERT("serviceDistance not instanced", serviceDistance);
 
         // install  Color Field if none
@@ -277,7 +278,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         ::fwRenderVTK::IVtkAdaptorService::sptr servicePointList;
         servicePointList =
             ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-        ( pl , "::visuVTKAdaptor::PointList");
+                ( pl, "::visuVTKAdaptor::PointList");
         SLM_ASSERT("servicePointList not instanced", servicePointList);
 
         servicePointList->setPickerId( this->getPickerId() );
@@ -299,25 +300,25 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
     double *world;
     double display[3];
     double worldTmp[4];
-    display[0]=X;
-    display[1]=Y;
-    display[2]=0;
+    display[0] = X;
+    display[1] = Y;
+    display[2] = 0;
 
-    if ( this->getPicker() && this->getPicker()->Pick( display , this->getRenderer() ) )
+    if ( this->getPicker() && this->getPicker()->Pick( display, this->getRenderer() ) )
     {
         world = this->getPicker()->GetPickPosition();
     }
     else
     {
         // set temporaly the clipping around the focal point : see (1)
-        vtkCamera *camera = this->getRenderer()->GetActiveCamera();
+        vtkCamera *camera         = this->getRenderer()->GetActiveCamera();
         double *clippingCamBackup = camera->GetClippingRange();
-        camera->SetClippingRange( camera->GetDistance() - 0.1 , camera->GetDistance() + 0.1 ); // set the clipping around the focal point
+        camera->SetClippingRange( camera->GetDistance() - 0.1, camera->GetDistance() + 0.1 );  // set the clipping around the focal point
 
-        world=worldTmp;
+        world = worldTmp;
         // (1) this function use the near clipping range to estimate the world point (by defaut 0.1 from camera view). The clipping can be modified
         // by insertion of new object. By setting previously the clipping to the focal point we ensure to not place new point a camera position
-        this->getInteractor()->GetInteractorStyle()->ComputeDisplayToWorld ( this->getRenderer(), X , Y , 0 , world); // RETURN HOMOGEN COORD !!!
+        this->getInteractor()->GetInteractorStyle()->ComputeDisplayToWorld ( this->getRenderer(), X, Y, 0, world);    // RETURN HOMOGEN COORD !!!
 
         // restore initial clipping
         camera->SetClippingRange( clippingCamBackup );
@@ -350,11 +351,12 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
     if( isShown && distanceField )
     {
 
-        bool filtering = m_configuration->getAttributeValue("filter") == "true" ;
+        bool filtering = m_configuration->getAttributeValue("filter") == "true";
         BOOST_FOREACH(::fwData::Object::sptr object, *distanceField)
         {
-            ::fwData::PointList::sptr distance = ::fwData::PointList::dynamicCast(object);
-            ::fwData::String::sptr relatedService = distance->getField< ::fwData::String >(::fwComEd::Dictionary::m_relatedServiceId);
+            ::fwData::PointList::sptr distance    = ::fwData::PointList::dynamicCast(object);
+            ::fwData::String::sptr relatedService = distance->getField< ::fwData::String >(
+                ::fwComEd::Dictionary::m_relatedServiceId);
 
             if ( filtering && relatedService )
             {
@@ -395,13 +397,14 @@ void ImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove ) 
 
 void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwTools::Failed)
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image     = this->getObject< ::fwData::Image >();
     ::fwData::PointList::sptr newPL = ::fwData::PointList::New();
 
     newPL->setField( ::fwComEd::Dictionary::m_relatedServiceId, ::fwData::String::New( sceneId ) );
 
     ::fwData::Vector::sptr distanceField;
-    distanceField = image->setDefaultField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
+    distanceField = image->setDefaultField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId,
+                                                               ::fwData::Vector::New());
     distanceField->getContainer().push_back(newPL);
 
     OSLM_INFO("DistanceField size: " << distanceField->size() );
@@ -425,16 +428,16 @@ void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwToo
 void ImageMultiDistances::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     // update only if new LandMarks
-    ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    std::string  sceneId =  getRenderService()->getID();
+    ::fwComEd::ImageMsg::csptr imgMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
+    ::fwData::Image::sptr image       = this->getObject< ::fwData::Image >();
+    std::string sceneId = getRenderService()->getID();
 
     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::NEW_DISTANCE ) )
     {
         ::fwData::String::csptr dataInfo;
         dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::NEW_DISTANCE));
         OSLM_FATAL_IF(" ImageMultiDistances::doUpdate with RenderService "
-                     <<  sceneId << "missing sceneId dataInfo !!!", !dataInfo);
+                      <<  sceneId << "missing sceneId dataInfo !!!", !dataInfo);
         if ( dataInfo->value() == sceneId )
         {
             this->createNewDistance( sceneId );
@@ -451,7 +454,7 @@ void ImageMultiDistances::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(
         // update only if the distance is added in this scene
         // or if the service is not filtered
         if ( !dataInfo || dataInfo->value() ==  this->getRenderService()->getID()
-                || m_configuration->getAttributeValue("filter") == "false")
+             || m_configuration->getAttributeValue("filter") == "false")
         {
             this->doUpdate();
         }

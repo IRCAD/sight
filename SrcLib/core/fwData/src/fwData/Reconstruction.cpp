@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,13 +47,13 @@ void Reconstruction::shallowCopy(const Object::csptr &_source )
 {
     Reconstruction::csptr other = Reconstruction::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
-    m_bIsVisible            = other->m_bIsVisible;
-    m_sOrganName            = other->m_sOrganName;
-    m_sStructureType        = other->m_sStructureType;
+    m_bIsVisible     = other->m_bIsVisible;
+    m_sOrganName     = other->m_sOrganName;
+    m_sStructureType = other->m_sStructureType;
 
     m_attrMaterial = other->m_attrMaterial;
     m_attrImage    = other->m_attrImage;
@@ -68,13 +68,13 @@ void Reconstruction::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheT
 {
     Reconstruction::csptr other = Reconstruction::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
-    m_bIsVisible            = other->m_bIsVisible;
-    m_sOrganName            = other->m_sOrganName;
-    m_sStructureType        = other->m_sStructureType;
+    m_bIsVisible     = other->m_bIsVisible;
+    m_sOrganName     = other->m_sOrganName;
+    m_sStructureType = other->m_sStructureType;
 
     m_attrMaterial = ::fwData::Object::copy(other->m_attrMaterial, cache);
     m_attrImage    = ::fwData::Object::copy(other->m_attrImage, cache);

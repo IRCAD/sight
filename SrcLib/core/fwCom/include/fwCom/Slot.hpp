@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,52 +21,54 @@ class Slot;
 
 //-----------------------------------------------------------------------------
 
-template<typename R, typename ...A >
-class Slot< R ( A... ) > : public SlotCall< R (A...) >
+template<typename R, typename ... A >
+class Slot< R ( A ... ) > : public SlotCall< R (A ...) >
 {
 public:
-    typedef R SignatureType(A...);
+    typedef R SignatureType (A ...);
     typedef Slot< SignatureType > SelfType;
-    typedef SPTR( SelfType ) sptr;
-    typedef WPTR( SelfType ) wptr;
+    typedef SPTR ( SelfType ) sptr;
+    typedef WPTR ( SelfType ) wptr;
 
     Slot();
 
     template< typename F >
-    static SPTR( Slot< R(A...) > ) New( F f );
+    static SPTR( Slot< R(A ...) > ) New( F f );
 
     template< typename F, typename O >
-    static SPTR( Slot< R(A...) > ) New( F f, O o );
+    static SPTR( Slot< R(A ...) > ) New( F f, O o );
 };
 
 
 //-----------------------------------------------------------------------------
 
-template<typename R, typename ...A >
-class Slot< ::boost::function< R ( A... ) > > : public Slot< R ( A... ) >
+template<typename R, typename ... A >
+class Slot< ::boost::function< R ( A ... ) > > : public Slot< R ( A ... ) >
 {
 public:
-    typedef R SignatureType(A...);
+    typedef R SignatureType (A ...);
     typedef ::boost::function< SignatureType > FunctionType;
 
 
     template< typename FUNCTOR >
-    Slot( FUNCTOR f ) : Slot< R ( A... ) >(),  m_func(f)
-    {}
+    Slot( FUNCTOR f ) : Slot< R ( A ... ) >(),  m_func(f)
+    {
+    }
 
     virtual ~Slot()
-    {}
+    {
+    }
 
-    virtual void run(A...a) const
+    virtual void run(A ... a) const
     {
         OSLM_COM("run '"<< this->getID() <<"' slot");
-        m_func(a...);
+        m_func(a ...);
     }
-    
-    virtual R   call(A...a) const
+
+    virtual R   call(A ... a) const
     {
         OSLM_COM("call '"<< this->getID() <<"'  slot");
-        return m_func(a...);
+        return m_func(a ...);
     }
 
 protected:
@@ -75,28 +77,28 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-template<typename R, typename ...A >
-class Slot< Slot< R ( A... ) > > : public Slot< ::boost::function < R ( A... ) > >
+template<typename R, typename ... A >
+class Slot< Slot< R ( A ... ) > > : public Slot< ::boost::function < R ( A ... ) > >
 {
 public:
 
-    typedef R SignatureType ( A... ) ;
+    typedef R SignatureType ( A ... );
     typedef ::boost::function< SignatureType > FunctionType;
 
     template< typename F >
-    Slot( SPTR( SlotRun< F > ) slot );
+    Slot( SPTR( SlotRun< F > )slot );
 
     template< typename F >
-    Slot( SPTR( Slot< F > ) slot );
+    Slot( SPTR( Slot< F > )slot );
 
     template< typename F >
-    static SPTR( Slot< R(A...) > ) New( SPTR( SlotRun< F > ) slot );
+    static SPTR( Slot< R(A ...) > ) New( SPTR( SlotRun< F > ) slot );
 };
 
 //-----------------------------------------------------------------------------
 
-template<typename F, typename ...Bindings>
-SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings ...bindings);
+template<typename F, typename ... Bindings>
+SPTR( Slot< typename ::fwCom::util::convert_function_type< F >::type > ) newSlot(F f, Bindings ... bindings);
 
 
 } // namespace fwCom

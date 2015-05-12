@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,7 +37,7 @@ void AppConfigParametersTest::setUp()
     runtime->addBundles(bundlesLocation);
 
     ::boost::filesystem::path location = ::boost::filesystem::current_path() / "share/tu_exec_fwServices_0-0";
-    if( ! ::boost::filesystem::exists( location ) )
+    if( !::boost::filesystem::exists( location ) )
     {
         location = ::boost::filesystem::current_path() / "share/tu_xml_fwServices_0-0";
     }
@@ -76,11 +76,11 @@ void AppConfigParametersTest::appConfigParametersTest()
     ::fwServices::registry::AppConfigParameters::sptr appConfigParam;
     appConfigParam = ::fwServices::registry::AppConfigParameters::getDefault();
 
-    ::fwServices::registry::AppConfig::FieldAdaptorType parameters =  appConfigParam->getParameters("id1");
+    ::fwServices::registry::AppConfig::FieldAdaptorType parameters = appConfigParam->getParameters("id1");
     CPPUNIT_ASSERT(!parameters.empty());
     CPPUNIT_ASSERT_EQUAL(std::string("value1"), parameters["param1"]);
 
-    ::fwServices::registry::AppConfig::FieldAdaptorType parameters2 =  appConfigParam->getParameters("id2");
+    ::fwServices::registry::AppConfig::FieldAdaptorType parameters2 = appConfigParam->getParameters("id2");
     CPPUNIT_ASSERT(!parameters2.empty());
     CPPUNIT_ASSERT_EQUAL(std::string("value3"), parameters2["param3"]);
 }
@@ -91,15 +91,15 @@ void AppConfigParametersTest::concurentAccessToAppConfigParametersTest()
 {
     const unsigned int nbThreads = 20;
     std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i=0 ; i<nbThreads ; ++i)
+    for (int i = 0; i<nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
-                new ::fwTest::helper::Thread(::boost::bind(&AppConfigParametersTest::appConfigParametersTest, this)));
+            new ::fwTest::helper::Thread(::boost::bind(&AppConfigParametersTest::appConfigParametersTest, this)));
         threads.push_back(thread);
     }
 
-    for (int i=0 ; i<nbThreads ; ++i)
+    for (int i = 0; i<nbThreads; ++i)
     {
         std::stringstream str;
         str << "thread " << i;

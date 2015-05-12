@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,7 +62,7 @@ void setValue(vtkMedicalImageProperties *medprop,
 //------------------------------------------------------------------------------
 
 ImageSeriesWriter::ImageSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-        ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
+    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
 
@@ -71,10 +71,10 @@ ImageSeriesWriter::ImageSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
 void ImageSeriesWriter::write()
 {
     ::fwMedData::ImageSeries::sptr imgSeries = this->getConcreteObject();
-    ::fwData::Image::sptr dataImage = imgSeries->getImage();
-    ::fwMedData::Patient::sptr patient = imgSeries->getPatient();
-    ::fwMedData::Study::sptr study = imgSeries->getStudy();
-    ::fwMedData::Equipment::sptr equipment = imgSeries->getEquipment();
+    ::fwData::Image::sptr dataImage          = imgSeries->getImage();
+    ::fwMedData::Patient::sptr patient       = imgSeries->getPatient();
+    ::fwMedData::Study::sptr study           = imgSeries->getStudy();
+    ::fwMedData::Equipment::sptr equipment   = imgSeries->getEquipment();
 
     // Vtk Conversion
     vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
@@ -165,7 +165,7 @@ void ImageSeriesWriter::write()
         ::fwMedData::DicomValuesType::const_iterator itr = performingPhysicians.begin();
 
         physicians << *itr++;
-        for (; itr < performingPhysicians.end() ; ++itr)
+        for (; itr < performingPhysicians.end(); ++itr)
         {
             physicians << "\\" << *itr;
         }
@@ -184,16 +184,16 @@ void ImageSeriesWriter::write()
     // tagkey = "0028|0030";
     std::string value;
     std::vector<double> spacing = dataImage->getSpacing();
-    value = ::fwTools::getString< double >(spacing[0]);
+    value  = ::fwTools::getString< double >(spacing[0]);
     value += '\\';
     value += ::fwTools::getString< double >(spacing[1]);
     setValue(medprop, 0x0028, 0x0030, value);
 
     std::string origin;
     ::fwData::Image::OriginType orginVec = dataImage->getOrigin();
-    origin = ::fwTools::getString< ::fwData::Image::OriginType::value_type >(orginVec[0]);
-    origin += '\\';
-    origin = ::fwTools::getString< ::fwData::Image::OriginType::value_type >(orginVec[1]);
+    origin                               = ::fwTools::getString< ::fwData::Image::OriginType::value_type >(orginVec[0]);
+    origin                              += '\\';
+    origin                               = ::fwTools::getString< ::fwData::Image::OriginType::value_type >(orginVec[1]);
 
     if (dataImage->getNumberOfDimensions() > 2)
     {
@@ -209,7 +209,7 @@ void ImageSeriesWriter::write()
         setValue(medprop, 0x0018, 0x0088, value);
 
         origin += '\\';
-        origin = ::fwTools::getString< ::fwData::Image::OriginType::value_type >(orginVec[2]);
+        origin  = ::fwTools::getString< ::fwData::Image::OriginType::value_type >(orginVec[2]);
     }
 
     setValue(medprop, 0x0020, 0x0032, origin);
@@ -234,7 +234,7 @@ void ImageSeriesWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string  ImageSeriesWriter::extension()
+std::string ImageSeriesWriter::extension()
 {
     return "";
 }

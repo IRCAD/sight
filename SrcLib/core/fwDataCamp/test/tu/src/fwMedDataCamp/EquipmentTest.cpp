@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,9 +38,9 @@ void EquipmentTest::tearDown()
 
 void EquipmentTest::propertiesTest()
 {
-    const std::string institution_name = "IHU Strasbourg / IRCAD";
+    const std::string institution_name                        = "IHU Strasbourg / IRCAD";
     const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                       ("institution_name");
+                                                                    ("institution_name");
 
     ::fwMedData::Equipment::sptr obj = ::fwMedData::Equipment::New();
     obj->setInstitutionName(institution_name);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,10 +39,10 @@
 namespace uiImage
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ShowScanEditor , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ShowScanEditor, ::fwData::Image );
 
 
-ShowScanEditor::ShowScanEditor() throw(): m_scanAreShown(true)
+ShowScanEditor::ShowScanEditor() throw() : m_scanAreShown(true)
 {
     //handlingEventOff();
 }
@@ -50,7 +50,8 @@ ShowScanEditor::ShowScanEditor() throw(): m_scanAreShown(true)
 //------------------------------------------------------------------------------
 
 ShowScanEditor::~ShowScanEditor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -59,7 +60,8 @@ void ShowScanEditor::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -67,12 +69,12 @@ void ShowScanEditor::starting() throw(::fwTools::Failed)
     OSLM_ASSERT("Image "<< pathImageScan << "is missing", ::boost::filesystem::exists(pathImageScan));
     m_imageShowScan = QIcon(QString::fromStdString(pathImageScan.string()));
 
-    pathImageScan  = "Bundles/uiImageQt_" + std::string(UIIMAGEQT_VER) + "/sliceHide.png";
+    pathImageScan = "Bundles/uiImageQt_" + std::string(UIIMAGEQT_VER) + "/sliceHide.png";
     OSLM_ASSERT("Image "<< pathImageScan << "is missing", ::boost::filesystem::exists(pathImageScan));
     m_imageHideScan = QIcon(QString::fromStdString(pathImageScan.string()));
 
 
-    m_showScanButton = new QPushButton( m_imageShowScan, "", container) ;
+    m_showScanButton = new QPushButton( m_imageShowScan, "", container);
     m_showScanButton->setToolTip(QObject::tr("Show/Hide Scan"));
     m_showScanButton->setIconSize( QSize( 40, 16 ) );
 
@@ -151,13 +153,13 @@ void ShowScanEditor::onChangeScanMode()
         }
 
         ::fwServices::IService::sptr service = ::fwServices::get(m_adaptorUID);
-        ::fwData::Image::sptr image = service->getObject< ::fwData::Image >();
-        SLM_ASSERT("ShowScanEditor adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?" , image);
+        ::fwData::Image::sptr image          = service->getObject< ::fwData::Image >();
+        SLM_ASSERT("ShowScanEditor adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?", image);
 
         ::fwData::Boolean::sptr dataInfo = ::fwData::Boolean::New();
-        dataInfo->value() = m_scanAreShown;
+        dataInfo->value()                = m_scanAreShown;
 
-        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::New( m_adaptorUID ) );
+        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId,  ::fwData::String::New( m_adaptorUID ) );
         ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
         imageMsg->addEvent( "SCAN_SHOW", dataInfo );
         ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);

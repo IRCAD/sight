@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _TUTOTRIANCONVERTERCTRL_PLUGIN_HPP_
-#define _TUTOTRIANCONVERTERCTRL_PLUGIN_HPP_
+#ifndef __TUTOTRIANCONVERTERCTRL_PLUGIN_HPP__
+#define __TUTOTRIANCONVERTERCTRL_PLUGIN_HPP__
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -48,4 +48,4 @@ private:
 
 } // namespace TutoTrianConverterCtrl
 
-#endif // _TUTOTRIANCONVERTERCTRL_PLUGIN_HPP_
+#endif // __TUTOTRIANCONVERTERCTRL_PLUGIN_HPP__

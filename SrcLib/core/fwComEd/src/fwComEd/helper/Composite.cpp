@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,19 +21,22 @@ namespace helper
 
 Composite::Composite( ::fwData::Composite::wptr _composite )
     :   m_compositeMsg ( ::fwComEd::CompositeMsg::New() ),
-        m_composite ( _composite )
-{}
+      m_composite ( _composite )
+{
+}
 
 //-----------------------------------------------------------------------------
 
 Composite::~Composite()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void Composite::add( std::string _compositeKey, ::fwData::Object::sptr _newObject )
 {
-    OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must not exist in composite." , m_composite.lock()->find(_compositeKey) != m_composite.lock()->end() );
+    OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must not exist in composite.",
+                   m_composite.lock()->find(_compositeKey) != m_composite.lock()->end() );
 
     // Modify composite
     m_composite.lock()->getContainer()[ _compositeKey ] = _newObject;
@@ -47,7 +50,8 @@ void Composite::add( std::string _compositeKey, ::fwData::Object::sptr _newObjec
 
 void Composite::remove( std::string _compositeKey )
 {
-    OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must exist in composite." , m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
+    OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must exist in composite.",
+                   m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
 
     // Get old object
     ::fwData::Object::sptr objBackup = m_composite.lock()->getContainer()[ _compositeKey ];
@@ -67,8 +71,8 @@ void Composite::clear()
     ::fwData::Composite::sptr composite = m_composite.lock();
     std::vector<std::string> vectKey;
     std::transform( composite->begin(), composite->end(),
-                std::back_inserter(vectKey),
-                ::boost::bind(& ::fwData::Composite::value_type::first,_1) );
+                    std::back_inserter(vectKey),
+                    ::boost::bind(&::fwData::Composite::value_type::first,_1) );
 
     BOOST_FOREACH(std::string key, vectKey)
     {
@@ -80,7 +84,8 @@ void Composite::clear()
 
 void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObject )
 {
-    OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must exist in composite." , m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
+    OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must exist in composite.",
+                   m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
 
 
     // Get old object
@@ -96,7 +101,9 @@ void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObje
     }
     else
     {
-        OSLM_INFO("Cannot swap this object ( "<< _compositeKey <<" ) in composite because it is the same object. Do nothing (not notification)");
+        OSLM_INFO(
+            "Cannot swap this object ( "<< _compositeKey <<
+            " ) in composite because it is the same object. Do nothing (not notification)");
     }
 }
 
@@ -106,9 +113,10 @@ void Composite::notify( ::fwServices::IService::sptr _serviceSource, bool _allow
 {
     if ( m_compositeMsg->getEventIds().size() > 0 )
     {
-        ::fwServices::IEditionService::notify( _serviceSource, m_composite.lock(), m_compositeMsg , _allowLoops );
+        ::fwServices::IEditionService::notify( _serviceSource, m_composite.lock(), m_compositeMsg, _allowLoops );
     }
-    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.", m_compositeMsg->getEventIds().size() == 0);
+    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
+                m_compositeMsg->getEventIds().size() == 0);
 }
 
 //-----------------------------------------------------------------------------

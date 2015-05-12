@@ -27,7 +27,8 @@ namespace fwData
 class FWDATA_CLASS_API ProcessObject : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()), ::fwData::factory::New< ProcessObject >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()),
+                                            ::fwData::factory::New< ProcessObject >);
 
 
     fwCampMakeFriendDataMacro((fwData)(ProcessObject));
@@ -40,7 +41,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    FWDATA_API ProcessObject(::fwData::Object::Key key) ;
+    FWDATA_API ProcessObject(::fwData::Object::Key key);
 
     /**
      * @brief   Destructor
@@ -62,7 +63,7 @@ public:
     template< class OBJECTTYPE >
     typename OBJECTTYPE::sptr getInput(const ParamNameType& name)
     {
-        return OBJECTTYPE::dynamicCast( this->getInput( name ) ) ;
+        return OBJECTTYPE::dynamicCast( this->getInput( name ) );
     }
 
     /**
@@ -80,7 +81,7 @@ public:
     template< class OBJECTTYPE >
     typename OBJECTTYPE::sptr getOutput(const ParamNameType& name)
     {
-        return OBJECTTYPE::dynamicCast( this->getOutput( name ) ) ;
+        return OBJECTTYPE::dynamicCast( this->getOutput( name ) );
     }
 
     /// Retrieve the input data

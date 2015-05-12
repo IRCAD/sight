@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_MESHESBOXWIDGET_HPP_
-#define _VISUVTKADAPTOR_MESHESBOXWIDGET_HPP_
+#ifndef __VISUVTKADAPTOR_MESHESBOXWIDGET_HPP__
+#define __VISUVTKADAPTOR_MESHESBOXWIDGET_HPP__
 
 #include <fwCom/Connection.hpp>
 
@@ -24,15 +24,15 @@ namespace visuVTKAdaptor
 /**
  * @brief   Create a Box widget around the meshes contained in the composite.
  * @class   MeshesBoxWidget
- * 
+ *
  * @date    2010.
  */
-class VISUVTKADAPTOR_CLASS_API MeshesBoxWidget: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API MeshesBoxWidget : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MeshesBoxWidget)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MeshesBoxWidget)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API MeshesBoxWidget() throw();
 
@@ -75,4 +75,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_MESHESBOXWIDGET_HPP_
+#endif // __VISUVTKADAPTOR_MESHESBOXWIDGET_HPP__

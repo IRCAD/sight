@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_OBJFROMMSGUPDATERSRV_HPP_
-#define _CTRLSELECTION_OBJFROMMSGUPDATERSRV_HPP_
+#ifndef __CTRLSELECTION_UPDATER_OBJFROMMSGUPDATERSRV_HPP__
+#define __CTRLSELECTION_UPDATER_OBJFROMMSGUPDATERSRV_HPP__
 
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
@@ -19,22 +19,22 @@ namespace updater
 /**
  * @class  ObjFromMsgUpdaterSrv
  * @brief  Update the composite with the object which send the message.
- * 
+ *
 
  * @date    2009-2010.
  */
 class CTRLSELECTION_CLASS_API ObjFromMsgUpdaterSrv : public ::ctrlSelection::IUpdaterSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ObjFromMsgUpdaterSrv)(::ctrlSelection::IUpdaterSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ObjFromMsgUpdaterSrv)(::ctrlSelection::IUpdaterSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API ObjFromMsgUpdaterSrv() throw() ;
+    CTRLSELECTION_API ObjFromMsgUpdaterSrv() throw();
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~ObjFromMsgUpdaterSrv() throw() ;
+    CTRLSELECTION_API virtual ~ObjFromMsgUpdaterSrv() throw();
 
 protected:
 
@@ -52,7 +52,7 @@ protected:
             <update compositeKey="myObject" onEvent="NEW_OBJECT" fromUID="myObject" actionType="ADD_OR_SWAP"/>
             <update compositeKey="myObject" onEvent="REMOVE_OBJECT" fromUID="myObject" actionType="REMOVE"/>
         </service>
-      @endverbatim
+       @endverbatim
      * @see IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
@@ -72,4 +72,4 @@ protected:
 } // updater
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_OBJFROMMSGUPDATERSRV_HPP_
+#endif // __CTRLSELECTION_UPDATER_OBJFROMMSGUPDATERSRV_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,17 +18,20 @@ SemanticPatchDB::sptr SemanticPatchDB::s_default = ::boost::make_shared<Semantic
 // ----------------------------------------------------------------------------
 
 SemanticPatchDB::SemanticPatchDB()
-{}
+{
+}
 
 // ----------------------------------------------------------------------------
 
 SemanticPatchDB::~SemanticPatchDB()
-{}
+{
+}
 
 // ----------------------------------------------------------------------------
 
 SemanticPatchDB::SemanticPatchDB( const SemanticPatchDB &cpy )
-{}
+{
+}
 
 // ----------------------------------------------------------------------------
 
@@ -42,11 +45,11 @@ void SemanticPatchDB::registerPatch(::fwAtomsPatch::ISemanticPatch::sptr patch)
 // ----------------------------------------------------------------------------
 
 ::fwAtomsPatch::ISemanticPatch::sptr SemanticPatchDB::getPatch(
-        const std::string& context,
-        const std::string& originVersion,
-        const std::string& targetVersion,
-        const std::string& objOriginClassname,
-        const std::string& objOriginVersion) const
+    const std::string& context,
+    const std::string& originVersion,
+    const std::string& targetVersion,
+    const std::string& objOriginClassname,
+    const std::string& objOriginVersion) const
 {
     VersionIDType origin = std::make_pair(objOriginClassname, objOriginVersion);
 

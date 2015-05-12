@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,24 +32,25 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioData::TransformationMatrix3DWriterService , ::fwData::TransformationMatrix3D ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioData::TransformationMatrix3DWriterService,
+                         ::fwData::TransformationMatrix3D );
 
 
 //-----------------------------------------------------------------------------
 
 void TransformationMatrix3DWriterService::info(std::ostream &_sstream )
 {
-    this->SuperClass::info( _sstream ) ;
-    _sstream << std::endl << " TransformationMatrix3D object writer" ;
+    this->SuperClass::info( _sstream );
+    _sstream << std::endl << " TransformationMatrix3D object writer";
 }
 
 //-----------------------------------------------------------------------------
 
 std::vector< std::string > TransformationMatrix3DWriterService::getSupportedExtensions()
 {
-    std::vector< std::string > extensions ;
+    std::vector< std::string > extensions;
     extensions.push_back(".trf");
-    return extensions ;
+    return extensions;
 }
 
 //-----------------------------------------------------------------------------
@@ -80,8 +81,8 @@ void TransformationMatrix3DWriterService::configureWithIHM()
     dialogFile.addFilter("TRF files","*.trf");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
@@ -113,7 +114,8 @@ void TransformationMatrix3DWriterService::updating() throw(::fwTools::Failed)
         ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
         SLM_ASSERT("matrix not instanced", matrix);
 
-        ::fwDataIO::writer::TransformationMatrix3DWriter::sptr writer = ::fwDataIO::writer::TransformationMatrix3DWriter::New();
+        ::fwDataIO::writer::TransformationMatrix3DWriter::sptr writer =
+            ::fwDataIO::writer::TransformationMatrix3DWriter::New();
         writer->setObject( matrix );
         writer->setFile(this->getFile());
         writer->write();

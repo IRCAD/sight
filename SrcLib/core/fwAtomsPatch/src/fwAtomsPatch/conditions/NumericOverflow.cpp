@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,7 @@ void NumericOverflow::setTreshold(::fwAtoms::Numeric::sptr treshold)
 // ----------------------------------------------------------------------------
 
 bool NumericOverflow::test(::fwAtoms::Base::sptr old,
-                     ::fwAtoms::Base::sptr newValue)
+                           ::fwAtoms::Base::sptr newValue)
 {
     return this->test(newValue);
 }
@@ -41,7 +41,7 @@ bool NumericOverflow::test(::fwAtoms::Base::sptr value)
 {
     if(value->isNumeric())
     {
-        ::fwAtoms::Numeric::sptr numeric =  ::fwAtoms::Numeric::dynamicCast(value);
+        ::fwAtoms::Numeric::sptr numeric = ::fwAtoms::Numeric::dynamicCast(value);
         return numeric->getValue<double>() <= m_treshold->getValue<double>();
     }
     else

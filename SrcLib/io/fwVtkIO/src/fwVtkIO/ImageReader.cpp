@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key key)
-: ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
+    : ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -56,7 +56,7 @@ void ImageReader::read()
     reader->PropagateUpdateExtent();
 
     vtkDataObject *obj = reader->GetOutput();
-    vtkImageData* img = vtkImageData::SafeDownCast(obj);
+    vtkImageData* img  = vtkImageData::SafeDownCast(obj);
 
     FW_RAISE_IF("ImageReader cannot read VTK image file :"<<this->getFile().string(), !img);
     try
@@ -72,9 +72,9 @@ void ImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string  ImageReader::extension()
+std::string ImageReader::extension()
 {
-   return ".vtk";
+    return ".vtk";
 }
 
 } // namespace fwVtkIO

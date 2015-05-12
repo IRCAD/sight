@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,11 +30,11 @@ namespace widget
 
 StudyEditor::StudyEditor(QWidget *parent) : QWidget(parent)
 {
-    m_date = new QLineEdit();
-    m_time = new QLineEdit();
+    m_date                   = new QLineEdit();
+    m_time                   = new QLineEdit();
     m_referringPhysicianName = new QLineEdit();
-    m_description = new QLineEdit();
-    m_patientAge = new QLineEdit();
+    m_description            = new QLineEdit();
+    m_patientAge             = new QLineEdit();
 
     QFormLayout* layout = new QFormLayout();
 
@@ -44,9 +44,9 @@ StudyEditor::StudyEditor(QWidget *parent) : QWidget(parent)
     layout->addRow(tr("Description"), m_description);
     layout->addRow(tr("Patient age"), m_patientAge);
 
-    QObject::connect(m_date, SIGNAL(textChanged(const QString&)), this, SLOT(onDateChanged(const QString&)));
-    QObject::connect(m_time, SIGNAL(textChanged(const QString&)), this, SLOT(onTimeChanged(const QString&)));
-    QObject::connect(m_description, SIGNAL(textChanged(const QString&)), this, SLOT(onDescChanged(const QString&)));
+    QObject::connect(m_date, SIGNAL(textChanged(const QString &)), this, SLOT(onDateChanged(const QString &)));
+    QObject::connect(m_time, SIGNAL(textChanged(const QString &)), this, SLOT(onTimeChanged(const QString &)));
+    QObject::connect(m_description, SIGNAL(textChanged(const QString &)), this, SLOT(onDescChanged(const QString &)));
 
     QGroupBox* group = new QGroupBox(tr("Study"));
     group->setLayout(layout);
@@ -59,9 +59,10 @@ StudyEditor::StudyEditor(QWidget *parent) : QWidget(parent)
 
 StudyEditor::~StudyEditor()
 {
-    QObject::disconnect(m_date, SIGNAL(textChanged(const QString&)), this, SLOT(onDateChanged(const QString&)));
-    QObject::disconnect(m_time, SIGNAL(textChanged(const QString&)), this, SLOT(onTimeChanged(const QString&)));
-    QObject::disconnect(m_description, SIGNAL(textChanged(const QString&)), this, SLOT(onDescChanged(const QString&)));
+    QObject::disconnect(m_date, SIGNAL(textChanged(const QString &)), this, SLOT(onDateChanged(const QString &)));
+    QObject::disconnect(m_time, SIGNAL(textChanged(const QString &)), this, SLOT(onTimeChanged(const QString &)));
+    QObject::disconnect(m_description, SIGNAL(textChanged(const QString &)), this,
+                        SLOT(onDescChanged(const QString &)));
 }
 
 //-----------------------------------------------------------------------------
@@ -69,8 +70,8 @@ StudyEditor::~StudyEditor()
 bool StudyEditor::isValid() const
 {
     return !m_date->text().trimmed().isEmpty()
-        && m_description->text().trimmed().toStdString() != s_NEW_STUDY_TEXT
-        && !m_time->text().trimmed().isEmpty();
+           && m_description->text().trimmed().toStdString() != s_NEW_STUDY_TEXT
+           && !m_time->text().trimmed().isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -78,7 +79,7 @@ bool StudyEditor::isValid() const
 SPTR(::fwMedData::Study) StudyEditor::getStudy()
 {
     ::fwMedData::Study::sptr srcStudy = m_series->getStudy();
-    ::fwMedData::Study::sptr study = ::fwMedData::Study::New();
+    ::fwMedData::Study::sptr study    = ::fwMedData::Study::New();
     study->setDescription(m_description->text().trimmed().toStdString());
     study->setDate(m_date->text().trimmed().toStdString());
     study->setTime(m_time->text().trimmed().toStdString());
@@ -97,10 +98,10 @@ SPTR(::fwMedData::Study) StudyEditor::getStudy()
 
     // Study description comparison ommitted here
     const bool same = study->getDate() == date
-        && study->getTime() == time
-        && study->getReferringPhysicianName() == refP
-        && study->getInstanceUID() == srcStudy->getInstanceUID()
-        && study->getPatientAge() == age;
+                      && study->getTime() == time
+                      && study->getReferringPhysicianName() == refP
+                      && study->getInstanceUID() == srcStudy->getInstanceUID()
+                      && study->getPatientAge() == age;
 
     ::fwData::String::sptr fieldNewStudy = srcStudy->getField< ::fwData::String>(s_NEW_STUDY_FIELD_NAME);
     if(fieldNewStudy || !same)
@@ -161,7 +162,7 @@ void StudyEditor::onDescChanged(const QString& text)
 
 //-----------------------------------------------------------------------------
 
-void StudyEditor::setSeries(SPTR(::fwMedData::Series) series)
+void StudyEditor::setSeries(SPTR(::fwMedData::Series)series)
 {
     SLM_ASSERT("Given series is null", series);
     m_series = series;

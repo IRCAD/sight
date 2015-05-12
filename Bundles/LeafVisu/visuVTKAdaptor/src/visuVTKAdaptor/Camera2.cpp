@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,14 +34,19 @@ class Camera2Clallback : public ::vtkCommand
 {
 public:
 
-    static Camera2Clallback* New(::visuVTKAdaptor::Camera2* adaptor) {
+    static Camera2Clallback* New(::visuVTKAdaptor::Camera2* adaptor)
+    {
         Camera2Clallback *cb = new Camera2Clallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
 
-     Camera2Clallback() : m_adaptor(NULL) {}
-    ~Camera2Clallback() {}
+    Camera2Clallback() : m_adaptor(NULL)
+    {
+    }
+    ~Camera2Clallback()
+    {
+    }
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )
     {
@@ -51,7 +56,8 @@ public:
     ::visuVTKAdaptor::Camera2 *m_adaptor;
 };
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera2, ::fwData::TransformationMatrix3D ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera2,
+                         ::fwData::TransformationMatrix3D );
 
 namespace visuVTKAdaptor
 {
@@ -66,7 +72,8 @@ Camera2::Camera2() throw()
 //------------------------------------------------------------------------------
 
 Camera2::~Camera2() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -84,9 +91,9 @@ void Camera2::doStart() throw(fwTools::Failed)
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
 
-    double position[]={0.0, 0.0, 0.0};
-    double focal[]={1.0, 0.0, 0.0};
-    double viewUp[]={0.0, 0.0, 1.0};
+    double position[] = {0.0, 0.0, 0.0};
+    double focal[]    = {1.0, 0.0, 0.0};
+    double viewUp[]   = {0.0, 0.0, 1.0};
 
     m_transOrig = vtkPerspectiveTransform::New();
     m_transOrig->Identity();
@@ -103,7 +110,8 @@ void Camera2::doStart() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void Camera2::doUpdate() throw(fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -137,9 +145,9 @@ void Camera2::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fail
 
         ::fwData::mt::ObjectReadLock lock(transMat);
 
-        for(int lt=0; lt<4; lt++)
+        for(int lt = 0; lt<4; lt++)
         {
-            for(int ct=0; ct<4; ct++)
+            for(int ct = 0; ct<4; ct++)
             {
                 mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
             }
@@ -156,7 +164,7 @@ void Camera2::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fail
         oldTrans->Inverse();
 
         // Apply new transform
-        vtkTransform* trans =  vtkTransform::New();
+        vtkTransform* trans = vtkTransform::New();
         trans->SetMatrix(mat);
         trans->Concatenate(oldTrans->GetMatrix());
         camera->ApplyTransform(trans);
@@ -190,9 +198,9 @@ void Camera2::updateFromVtk()
     trans->Concatenate(m_transOrig);
     vtkMatrix4x4* mat = trans->GetMatrix();
 
-    for(int lt=0; lt<4; lt++)
+    for(int lt = 0; lt<4; lt++)
     {
-        for(int ct=0; ct<4; ct++)
+        for(int ct = 0; ct<4; ct++)
         {
             trf->setCoefficient(lt,ct, mat->GetElement(lt,ct));
         }
@@ -201,7 +209,7 @@ void Camera2::updateFromVtk()
     lock.unlock();
 
     ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
+    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
     ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
 
     camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );

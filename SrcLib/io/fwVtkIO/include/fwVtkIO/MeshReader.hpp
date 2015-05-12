@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_MESHREADER_HPP_
-#define _VTKIO_MESHREADER_HPP_
+#ifndef __FWVTKIO_MESHREADER_HPP__
+#define __FWVTKIO_MESHREADER_HPP__
 
 #include <boost/filesystem/path.hpp>
 
@@ -23,23 +23,23 @@ namespace fwVtkIO
 /**
  * @brief   Read a mesh.
  * @class   MeshReader
- * 
+ *
  * @date    2011.
  *
  * Read a VTK Mesh using the VTK lib
  */
 
 class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
-                             public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
-                             public ::fwTools::ProgressAdviser
+                   public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
+                   public ::fwTools::ProgressAdviser
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro((MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >),
                                            (()),
                                            ::fwDataIO::reader::factory::New< MeshReader >
-                                          );
+                                           );
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
@@ -52,9 +52,9 @@ public :
     FWVTKIO_API void read();
 
     /// @return ".vtk"
-    FWVTKIO_API  std::string extension();
+    FWVTKIO_API std::string extension();
 };
 
 } // namespace fwVtkIO
 
-#endif // _VTKIO_MESHREADER_HPP_
+#endif // __FWVTKIO_MESHREADER_HPP__

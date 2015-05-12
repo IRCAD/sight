@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_DATA_VIEWPORT_HPP_
-#define _SCENE2D_DATA_VIEWPORT_HPP_
+#ifndef __SCENE2D_DATA_VIEWPORT_HPP__
+#define __SCENE2D_DATA_VIEWPORT_HPP__
 
 #include <fwData/Object.hpp>
 
@@ -19,14 +19,14 @@ namespace data
 
 
 /**
-* @brief Manage the current viewport of the scene2D.
-*/
+ * @brief Manage the current viewport of the scene2D.
+ */
 class SCENE2D_CLASS_API Viewport : public ::fwData::Object
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Viewport)(::fwData::Object), (()), ::fwData::factory::New< Viewport >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Viewport)(::fwData::Object), (()), ::fwData::factory::New< Viewport >);
 
     /**
      * @brief Constructor
@@ -60,5 +60,5 @@ private:
 } // namespace scene2D
 
 
-#endif // _SCENE2D_DATA_VIEWPORT_HPP_
+#endif // __SCENE2D_DATA_VIEWPORT_HPP__
 

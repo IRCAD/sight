@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _DATA_LOCATION_FOLDER_HPP_
-#define _DATA_LOCATION_FOLDER_HPP_
+#ifndef __FWDATA_LOCATION_FOLDER_HPP__
+#define __FWDATA_LOCATION_FOLDER_HPP__
 
 
 #include <boost/filesystem.hpp>
@@ -29,10 +29,10 @@ class FWDATA_CLASS_API Folder  : public ILocation
 public:
 
     fwCoreClassDefinitionsWithNFactoriesMacro(
-            (Folder)(ILocation),
-            ((::fwData::factory::New< Folder > ,() ))
-            ((FolderFactory ,((::boost::filesystem::path)) ((bool)(false)) ))
-    );
+        (Folder)(ILocation),
+        ((::fwData::factory::New< Folder >,() ))
+            ((FolderFactory,((::boost::filesystem::path))((bool)(false)) ))
+        );
 
     fwCampMakeFriendDataMacro((fwData)(location)(Folder));
 
@@ -60,9 +60,9 @@ public:
     /// @brief Get the flag if folder location is recursive
     FWDATA_API bool getRecursive();
 
-protected :
+protected:
 
-    FWDATA_API static sptr FolderFactory(PathType path, bool recursive=false );
+    FWDATA_API static sptr FolderFactory(PathType path, bool recursive = false );
 
     /// %Folder path
     PathType m_folder;
@@ -114,16 +114,16 @@ struct enableFolder
         return getLocation<Folder>(m_rw)->getRecursive();
     }
 
-private :
-    /// Not implemented must use constructor with one parameter
-    enableFolder();
+    private:
+        /// Not implemented must use constructor with one parameter
+        enableFolder();
 
-    /// Reader or writer
-    RW *m_rw;
+        /// Reader or writer
+        RW *m_rw;
 
 };
 
 }
 }
 
-#endif /* _DATA_LOCATION_FOLDER_HPP_ */
+#endif /* __FWDATA_LOCATION_FOLDER_HPP__ */

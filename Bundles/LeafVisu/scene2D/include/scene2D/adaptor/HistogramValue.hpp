@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_HISTOGRAMVALUE_HPP_
-#define _SCENE2D_HISTOGRAMVALUE_HPP_
+#ifndef __SCENE2D_ADAPTOR_HISTOGRAMVALUE_HPP__
+#define __SCENE2D_ADAPTOR_HISTOGRAMVALUE_HPP__
 
 #include <scene2D/adaptor/IAdaptor.hpp>
 
@@ -42,7 +42,7 @@ class HistogramValue : public ::scene2D::adaptor::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (HistogramValue)(::scene2D::adaptor::IAdaptor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (HistogramValue)(::scene2D::adaptor::IAdaptor) );
     SCENE2D_API HistogramValue() throw();
     SCENE2D_API virtual ~HistogramValue() throw();
 
@@ -95,5 +95,5 @@ private:
 }   // namespace adaptor
 }   // namespace scene2D
 
-#endif  // _SCENE2D_HISTOGRAMVALUEHPP_
+#endif  // __SCENE2D_ADAPTOR_HISTOGRAMVALUE_HPP__
 

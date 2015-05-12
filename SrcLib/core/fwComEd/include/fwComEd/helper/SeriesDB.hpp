@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,7 +29,7 @@ namespace helper
 class FWCOMED_CLASS_API SeriesDB
 {
 
-public :
+public:
 
     /// Constructor. Initialize parameters.
     FWCOMED_API SeriesDB( ::fwMedData::SeriesDB::wptr seriesDB );
@@ -70,7 +70,7 @@ public :
     /// Send the message of modification
     FWCOMED_API void notify( ::fwServices::IService::sptr serviceSource, bool notifySource = false );
 
-private :
+private:
 
     ::fwComEd::SeriesDBMsg::sptr m_seriesDBMsg;
     ::fwMedData::SeriesDB::wptr m_seriesDB;

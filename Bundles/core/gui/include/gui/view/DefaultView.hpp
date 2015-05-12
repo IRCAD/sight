@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_VIEW_DEFAULT_VIEW_HPP_
-#define _GUI_VIEW_DEFAULT_VIEW_HPP_
+#ifndef __GUI_VIEW_DEFAULTVIEW_HPP__
+#define __GUI_VIEW_DEFAULTVIEW_HPP__
 
 #include <fwTools/Failed.hpp>
 
@@ -21,23 +21,23 @@ namespace view
 /**
  * @brief   Defines the generic layout for application.
  * @class   DefaultView
- * 
+ *
 
  * @date    2009-2010.
  */
 class GUI_CLASS_API DefaultView : public ::gui::view::IView
 {
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultView)(::gui::view::IView) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DefaultView)(::gui::view::IView) );
 
     /// Constructor. Do nothing.
-    GUI_API DefaultView() throw() ;
+    GUI_API DefaultView() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~DefaultView() throw() ;
+    GUI_API virtual ~DefaultView() throw();
 
-protected :
+protected:
 
     /**
      * @name Service methods ( override from ::fwServices::IService )
@@ -65,17 +65,17 @@ protected :
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
-    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUI_API virtual void updating() throw(::fwTools::Failed) ;
+    GUI_API virtual void updating() throw(::fwTools::Failed);
 
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream &_sstream ) ;
+    GUI_API virtual void info(std::ostream &_sstream );
     ///@}
 
 };
@@ -85,4 +85,4 @@ protected :
 } // namespace gui
 
 
-#endif /*_GUI_VIEW_DEFAULT_VIEW_HPP_*/
+#endif /*__GUI_VIEW_DEFAULTVIEW_HPP__*/

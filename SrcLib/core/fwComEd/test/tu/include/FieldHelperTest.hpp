@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_TU_FIELDHELPERTEST_HPP_
-#define _FWCOMED_TU_FIELDHELPERTEST_HPP_
+#ifndef __FWCOMED_UT_FIELDHELPERTEST_HPP__
+#define __FWCOMED_UT_FIELDHELPERTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -27,9 +27,9 @@ namespace ut
  */
 class FieldHelperTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( FieldHelperTest );
-    CPPUNIT_TEST( testHelper );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( FieldHelperTest );
+CPPUNIT_TEST( testHelper );
+CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -46,4 +46,4 @@ public:
 } //namespace ut
 } //namespace fwComEd
 
-#endif // _FWCOMED_TU_FIELDHELPERTEST_HPP_
+#endif // __FWCOMED_UT_FIELDHELPERTEST_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,13 +14,14 @@ namespace fwData
 namespace ut
 {
 
-class GraphTest : public CPPUNIT_NS::TestFixture {
+class GraphTest : public CPPUNIT_NS::TestFixture
+{
 
-    CPPUNIT_TEST_SUITE( GraphTest );
-    CPPUNIT_TEST( normalCase );
-    CPPUNIT_TEST( limitCase1 );
-    CPPUNIT_TEST( limitCase2 );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( GraphTest );
+CPPUNIT_TEST( normalCase );
+CPPUNIT_TEST( limitCase1 );
+CPPUNIT_TEST( limitCase2 );
+CPPUNIT_TEST_SUITE_END();
 
 public:
 

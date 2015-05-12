@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,7 @@ namespace widget
 
 ListInput::ListInput()
 {
-    m_physicianInput = new QLineEdit();
+    m_physicianInput     = new QLineEdit();
     m_addPhysicianButton = new QPushButton(tr("+"));
     m_addPhysicianButton->setEnabled(false);
     m_removePhysicianButton = new QPushButton(tr("-"));
@@ -46,12 +46,12 @@ ListInput::ListInput()
     vLayout->addLayout(inputLayout);
     vLayout->addWidget(m_performingPhysiciansName);
 
-    QObject::connect(m_physicianInput, SIGNAL(textChanged(const QString&)),
-            this, SLOT(onInputChanged(const QString&))); 
+    QObject::connect(m_physicianInput, SIGNAL(textChanged(const QString &)),
+                     this, SLOT(onInputChanged(const QString &)));
     QObject::connect(m_addPhysicianButton, SIGNAL(clicked()),
-            this, SLOT(onAddPhysician()));
+                     this, SLOT(onAddPhysician()));
     QObject::connect(m_removePhysicianButton, SIGNAL(clicked()),
-            this, SLOT(onRemovePhysician()));
+                     this, SLOT(onRemovePhysician()));
     QObject::connect(m_performingPhysiciansName, SIGNAL(itemSelectionChanged()), this, SLOT(onSelectionChanged()));
     this->setLayout(vLayout);
 }
@@ -92,11 +92,11 @@ void ListInput::onSelectionChanged()
 
 SeriesEditor::SeriesEditor(QWidget *parent) : QWidget(parent)
 {
-    m_modality = new QLineEdit();
-    m_date = new QLineEdit();
-    m_time = new QLineEdit();
+    m_modality    = new QLineEdit();
+    m_date        = new QLineEdit();
+    m_time        = new QLineEdit();
     m_description = new QLineEdit();
-    m_physicians = new ListInput();
+    m_physicians  = new ListInput();
 
     QFormLayout* layout = new QFormLayout();
 
@@ -107,9 +107,9 @@ SeriesEditor::SeriesEditor(QWidget *parent) : QWidget(parent)
 
     layout->addRow(tr("Physicians"), m_physicians);
 
-    QObject::connect(m_date, SIGNAL(textChanged(const QString&)), this, SLOT(onDateChanged(const QString&)));
-    QObject::connect(m_time, SIGNAL(textChanged(const QString&)), this, SLOT(onTimeChanged(const QString&)));
-    QObject::connect(m_description, SIGNAL(textChanged(const QString&)), this, SLOT(onDescChanged(const QString&)));
+    QObject::connect(m_date, SIGNAL(textChanged(const QString &)), this, SLOT(onDateChanged(const QString &)));
+    QObject::connect(m_time, SIGNAL(textChanged(const QString &)), this, SLOT(onTimeChanged(const QString &)));
+    QObject::connect(m_description, SIGNAL(textChanged(const QString &)), this, SLOT(onDescChanged(const QString &)));
 
     QGroupBox* group = new QGroupBox(tr("Series"));
     group->setLayout(layout);
@@ -122,9 +122,10 @@ SeriesEditor::SeriesEditor(QWidget *parent) : QWidget(parent)
 
 SeriesEditor::~SeriesEditor()
 {
-    QObject::disconnect(m_date, SIGNAL(textChanged(const QString&)), this, SLOT(onDateChanged(const QString&)));
-    QObject::disconnect(m_time, SIGNAL(textChanged(const QString&)), this, SLOT(onTimeChanged(const QString&)));
-    QObject::disconnect(m_description, SIGNAL(textChanged(const QString&)), this, SLOT(onDescChanged(const QString&)));
+    QObject::disconnect(m_date, SIGNAL(textChanged(const QString &)), this, SLOT(onDateChanged(const QString &)));
+    QObject::disconnect(m_time, SIGNAL(textChanged(const QString &)), this, SLOT(onTimeChanged(const QString &)));
+    QObject::disconnect(m_description, SIGNAL(textChanged(const QString &)), this,
+                        SLOT(onDescChanged(const QString &)));
 }
 
 //-----------------------------------------------------------------------------
@@ -178,7 +179,7 @@ void SeriesEditor::onDescChanged(const QString& text)
 
 //-----------------------------------------------------------------------------
 
-void SeriesEditor::setSeries(SPTR(::fwMedData::Series) series)
+void SeriesEditor::setSeries(SPTR(::fwMedData::Series)series)
 {
     SLM_ASSERT("Given series is null", series);
     m_series = series;
@@ -197,7 +198,7 @@ void SeriesEditor::setSeries(SPTR(::fwMedData::Series) series)
     {
         QListWidgetItem* newVal
             = new QListWidgetItem(QString::fromStdString(value).trimmed(), m_physicians->getListWidget());
-    } 
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -226,8 +227,8 @@ SPTR(::fwMedData::Series) SeriesEditor::getSeries()
 bool SeriesEditor::isValid() const
 {
     return !m_date->text().trimmed().isEmpty()
-        && !m_time->text().trimmed().isEmpty()
-        && m_description->text().trimmed().toStdString() != s_INSERT_NEW_SERIES_TEXT;
+           && !m_time->text().trimmed().isEmpty()
+           && m_description->text().trimmed().toStdString() != s_INSERT_NEW_SERIES_TEXT;
 }
 
 //-----------------------------------------------------------------------------

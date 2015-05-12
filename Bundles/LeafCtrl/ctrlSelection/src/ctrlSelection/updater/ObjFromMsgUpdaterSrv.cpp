@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,17 +22,20 @@ namespace updater
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::ObjFromMsgUpdaterSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::ObjFromMsgUpdaterSrv,
+                         ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
 ObjFromMsgUpdaterSrv::ObjFromMsgUpdaterSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ObjFromMsgUpdaterSrv::~ObjFromMsgUpdaterSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -69,7 +72,8 @@ void ObjFromMsgUpdaterSrv::starting()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void ObjFromMsgUpdaterSrv::stopping()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -82,17 +86,20 @@ void ObjFromMsgUpdaterSrv::configuring()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void ObjFromMsgUpdaterSrv::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void ObjFromMsgUpdaterSrv::updating() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void ObjFromMsgUpdaterSrv::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

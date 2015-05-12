@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,14 +33,14 @@ fwVec3d normalized(const fwVec3d& vec)
 
 //------------------------------------------------------------------------------
 
-double dot(const fwVec3d& v1, const fwVec3d& v2) 
+double dot(const fwVec3d& v1, const fwVec3d& v2)
 {
     return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
 }
 
 //------------------------------------------------------------------------------
 
-fwVec3d cross(const fwVec3d& v1, const fwVec3d& v2) 
+fwVec3d cross(const fwVec3d& v1, const fwVec3d& v2)
 {
     fwVec3d v;
     v[0] = v1[1] * v2[2] - v1[2] * v2[1];
@@ -61,9 +61,9 @@ double vecLength(const fwVec3d &_vec)
 
 void negate(fwVec3d &_vec)
 {
-    _vec[0]=-_vec[0];
-    _vec[1]=-_vec[1];
-    _vec[2]=-_vec[2];
+    _vec[0] = -_vec[0];
+    _vec[1] = -_vec[1];
+    _vec[2] = -_vec[2];
 }
 } //namespace fwMath
 
@@ -168,10 +168,10 @@ fwVec3d operator-(const fwVec3d& _vec1, const fwVec3d& _vec2)
 
 int operator==(const fwVec3d& _vec1, const fwVec3d& _vec2)
 {
-    return (((float)(_vec1[0]) == (float)(_vec2[0])) && 
-            ((float)(_vec1[1]) == (float)(_vec2[1])) && 
+    return (((float)(_vec1[0]) == (float)(_vec2[0])) &&
+            ((float)(_vec1[1]) == (float)(_vec2[1])) &&
             ((float)(_vec1[2]) == (float)(_vec2[2]))
-            ) ;
+            );
 }
 
 //------------------------------------------------------------------------------

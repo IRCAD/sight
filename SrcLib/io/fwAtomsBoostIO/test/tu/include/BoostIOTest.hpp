@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMSBOOSTIO_UT_WRITERTEST_HPP__
-#define __FWATOMSBOOSTIO_UT_WRITERTEST_HPP__
+#ifndef __FWATOMSBOOSTIO_UT_BOOSTIOTEST_HPP__
+#define __FWATOMSBOOSTIO_UT_BOOSTIOTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -22,10 +22,10 @@ namespace ut
 
 class BoostIOTest :  public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( BoostIOTest );
-    CPPUNIT_TEST( readWriteZipTest );
-    CPPUNIT_TEST( readWriteDirTest );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( BoostIOTest );
+CPPUNIT_TEST( readWriteZipTest );
+CPPUNIT_TEST( readWriteDirTest );
+CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -38,7 +38,7 @@ public:
 protected:
     void readProcess(::fwZip::IReadArchive::sptr readArchive,
                      const ::boost::filesystem::path& rootFilename,
-                    const ::fwAtomsBoostIO::FormatType& formatType = ::fwAtomsBoostIO::JSON);
+                     const ::fwAtomsBoostIO::FormatType& formatType = ::fwAtomsBoostIO::JSON);
 
     void writeProcess(::fwZip::IWriteArchive::sptr writeArchive,
                       const ::boost::filesystem::path& rootFilename,
@@ -51,6 +51,6 @@ protected:
 
 
 
-#endif // __FWATOMSBOOSTIO_UT_WRITERTEST_HPP__
+#endif // __FWATOMSBOOSTIO_UT_BOOSTIOTEST_HPP__
 
 

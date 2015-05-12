@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,16 +33,16 @@ void FloatTest::tearDown()
 
 void FloatTest::methode1()
 {
-    const float VALUES[]  = { -3.141592f, 0.f, 2.04f, 10, std::numeric_limits< float >::infinity() };
-    const float NAN_VALUES[]  = {
+    const float VALUES[]     = { -3.141592f, 0.f, 2.04f, 10, std::numeric_limits< float >::infinity() };
+    const float NAN_VALUES[] = {
         std::numeric_limits< float >::quiet_NaN(),
         std::numeric_limits< float >::signaling_NaN()
-    } ;
+    };
 
     BOOST_FOREACH ( float VALUE, VALUES )
     {
         ::fwData::Float::sptr f0 = ::fwData::Float::New();
-        f0->value() = VALUE;
+        f0->value()              = VALUE;
         ::fwData::Float::sptr f1 = ::fwData::Float::New( VALUE );
 
         CPPUNIT_ASSERT_EQUAL( VALUE, f0->value() );
@@ -53,7 +53,7 @@ void FloatTest::methode1()
     BOOST_FOREACH ( float VALUE, NAN_VALUES )
     {
         ::fwData::Float::sptr f0 = ::fwData::Float::New();
-        f0->value() = VALUE;
+        f0->value()              = VALUE;
         ::fwData::Float::sptr f1 = ::fwData::Float::New( VALUE );
 
         CPPUNIT_ASSERT( !( VALUE == f0->value() ) );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,11 +20,13 @@ struct Connection
     struct Blocker
     {
         Blocker()
-        { }
+        {
+        }
 
         Blocker( Connection connection )
             : m_blocker(connection.getBlocker())
-        { }
+        {
+        }
 
         /// Unblock the related Connection.
         void reset()
@@ -32,12 +34,13 @@ struct Connection
             m_blocker.reset();
         }
 
-    protected:
-        SlotConnectionBase::BlockerSptrType m_blocker;
+        protected:
+            SlotConnectionBase::BlockerSptrType m_blocker;
     };
 
     Connection()
-    { }
+    {
+    }
 
     Connection(const SlotConnectionBase::sptr &connection) : m_connectionBase(connection)
     {
@@ -51,7 +54,7 @@ struct Connection
         {
             connection->disconnect();
         }
-    };
+    }
 
     /// Returns whether this Connection is expired or not.
     bool expired() const
@@ -59,21 +62,21 @@ struct Connection
         return m_connectionBase.expired();
     }
 
-protected:
+    protected:
 
-    /// Returns a Blocker.
-    SlotConnectionBase::BlockerSptrType getBlocker()
-    {
-        SlotConnectionBase::BlockerSptrType blocker;
-        SlotConnectionBase::sptr connection(m_connectionBase.lock());
-        if(connection)
+        /// Returns a Blocker.
+        SlotConnectionBase::BlockerSptrType getBlocker()
         {
-            blocker = connection->getBlocker();
+            SlotConnectionBase::BlockerSptrType blocker;
+            SlotConnectionBase::sptr connection(m_connectionBase.lock());
+            if(connection)
+            {
+                blocker = connection->getBlocker();
+            }
+            return blocker;
         }
-        return blocker;
-    }
 
-    SlotConnectionBase::wptr m_connectionBase;
+        SlotConnectionBase::wptr m_connectionBase;
 
 };
 

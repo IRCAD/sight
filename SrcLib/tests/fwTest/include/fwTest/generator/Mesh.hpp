@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,7 @@ namespace generator
 class Mesh
 {
 
-public :
+public:
 
     typedef std::map< ::fwDataTools::Point, ::fwData::Mesh::Id> PointsMapType;
 
@@ -99,8 +99,8 @@ public :
 protected:
 
     FWTEST_API static ::fwData::Mesh::Id addPoint(::fwData::Mesh::PointValueType* pt,
-                                                       ::fwComEd::helper::Mesh::sptr meshHelper,
-                                                       PointsMapType& points);
+                                                  ::fwComEd::helper::Mesh::sptr meshHelper,
+                                                  PointsMapType& points);
 
 
 };

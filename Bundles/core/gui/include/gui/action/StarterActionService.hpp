@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_ACTION_STARTERACTIONSERVICE_HPP_
-#define _GUI_ACTION_STARTERACTIONSERVICE_HPP_
+#ifndef __GUI_ACTION_STARTERACTIONSERVICE_HPP__
+#define __GUI_ACTION_STARTERACTIONSERVICE_HPP__
 
 #include <vector>
 #include <fwServices/IService.hpp>
@@ -71,24 +71,25 @@ namespace action
 class GUI_CLASS_API StarterActionService : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (StarterActionService)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (StarterActionService)(::fwGui::IActionSrv) );
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /**
-    * @brief Constructor. Do nothing.
-    */
+     * @brief Constructor. Do nothing.
+     */
     GUI_API StarterActionService() throw();
 
     /**
-    * @brief Destructor. Do nothing.
-    */
+     * @brief Destructor. Do nothing.
+     */
     GUI_API virtual ~StarterActionService() throw();
 
 protected:
 
-    enum ActionType {
+    enum ActionType
+    {
         START,
         STOP,
         START_OR_STOP,
@@ -100,12 +101,12 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream &_sstream ) ;
+    GUI_API virtual void info(std::ostream &_sstream );
 
     /**
      * @brief This method starts-updates or stops the specified services
      */
-    GUI_API void updating()throw (fwTools::Failed);
+    GUI_API void updating() throw (fwTools::Failed);
 
     /**
      * @brief This method is used to update services on notification. Do nothing.
@@ -141,4 +142,4 @@ private:
 } // namespace gui
 
 
-#endif /*_GUI_ACTION_STARTERACTIONSERVICE_HPP_*/
+#endif /*__GUI_ACTION_STARTERACTIONSERVICE_HPP__*/

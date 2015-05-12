@@ -1,4 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2004-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+/* ***** BEGIN LICENSE BLOCK *****
  * Copyright (C) IRCAD, 2004-2010.
  * Distributed under the terms of the BSD Licence as
  * published by the Open Source Initiative.
@@ -31,7 +37,7 @@ class MiniLauncher
 public:
     MiniLauncher( ::boost::filesystem::path profilePath )
     {
-        ::boost::filesystem::path cwd = ::boost::filesystem::current_path();
+        ::boost::filesystem::path cwd        = ::boost::filesystem::current_path();
         ::boost::filesystem::path bundlePath = cwd / "Bundles";
 
         ::fwRuntime::addBundles(bundlePath);
@@ -83,11 +89,12 @@ struct Options
     std::string profile;
 #endif
 
-    Options(): verbose(false), xmlReport(false), listTests(false)
+    Options() : verbose(false), xmlReport(false), listTests(false)
 #ifdef BUNDLE_TEST_PROFILE
-               , profile( BUNDLE_TEST_PROFILE )
+                , profile( BUNDLE_TEST_PROFILE )
 #endif
-    { }
+    {
+    }
 
     bool parse(int argc, char* argv[])
     {
@@ -100,8 +107,8 @@ struct Options
 
         std::string programName( *argv != 0 ? *argv : "test_runner" );
 
-        int argn = 0;
-        char** args = argv + 1;
+        int argn       = 0;
+        char** args    = argv + 1;
         char** argsEnd = argv + argc;
         while (args < argsEnd)
         {
@@ -169,7 +176,7 @@ struct Options
         return true;
     }
 
-} ;
+};
 
 
 CPPUNIT_NS_BEGIN
@@ -179,23 +186,26 @@ class SynchronizationObject;
 class TestLister : public TestResult
 {
 public:
-    TestLister( SynchronizationObject *syncObject = 0 ){};
+    TestLister( SynchronizationObject *syncObject = 0 )
+    {
+    }
 
     virtual void startTest( Test *test )
     {
         std::cout << test->getName() << std::endl;
-    };
+    }
 
     virtual void runTest( Test *test )
     {
         test->run( this );
-    };
+    }
 
     virtual bool protect( const Functor &functor,
                           Test *test,
-                          const std::string &shortDescription = std::string("") ){
+                          const std::string &shortDescription = std::string("") )
+    {
         return false;
-    };
+    }
 
 };
 CPPUNIT_NS_END

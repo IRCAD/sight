@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,12 +8,12 @@
  * @file fwGui/layoutManager/IMenuLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a menu.
  *
- * 
+ *
  * @date 2009-2010
  */
 
-#ifndef _FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP_
-#define _FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP_
+#ifndef __FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP__
+#define __FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP__
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -31,7 +31,7 @@ namespace layoutManager
 /**
  * @brief   Defines the menu layout manager for IHM.
  * @class   IMenuLayoutManager
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -44,7 +44,8 @@ public:
     typedef std::string RegistryKeyType;
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
-    typedef enum {
+    typedef enum
+    {
         DEFAULT,
         QUIT,
         ABOUT,
@@ -55,7 +56,7 @@ public:
 
     class ActionInfo
     {
-    public :
+    public:
 
         ActionInfo() :
             m_name(""),
@@ -66,16 +67,17 @@ public:
             m_type(DEFAULT),
             m_isSeparator(false),
             m_isMenu(false)
-        {}
+        {
+        }
 
         std::string m_name;
         std::string m_shortcut;
         std::string m_icon;
-        bool        m_isCheckable;
-        bool        m_isRadio;
-        ActionType  m_type;
-        bool        m_isSeparator;
-        bool        m_isMenu;
+        bool m_isCheckable;
+        bool m_isRadio;
+        ActionType m_type;
+        bool m_isSeparator;
+        bool m_isMenu;
     };
 
     FWGUI_API const static RegistryKeyType REGISTRY_KEY;
@@ -166,7 +168,10 @@ public:
     /**
      * @brief Sets callbacks associate with menu items.
      */
-    virtual void setCallbacks(CallbacksType callbacks) {m_callbacks = callbacks;};
+    virtual void setCallbacks(CallbacksType callbacks)
+    {
+        m_callbacks = callbacks;
+    }
 
 protected:
 
@@ -191,6 +196,6 @@ protected:
 } // namespace layoutManager
 } // namespace fwGui
 
-#endif /*_FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP_*/
+#endif /*__FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP__*/
 
 

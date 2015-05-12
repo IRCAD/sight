@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,27 +32,27 @@ namespace helper
 //-----------------------------------------------------------------------------
 
 ::fwServices::ObjectMsg::sptr buildActivityMsg( ::fwMedData::ActivitySeries::sptr series,
-        const ::fwActivities::registry::ActivityInfo & info,
-        const ParametersType& parameters)
+                                                const ::fwActivities::registry::ActivityInfo & info,
+                                                const ParametersType& parameters)
 {
     namespace ActiReg = fwActivities::registry;
 
     ::fwServices::ObjectMsg::sptr activityMsg = ::fwServices::ObjectMsg::New();
-    ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
+    ::fwData::Composite::sptr replaceMap      = ::fwData::Composite::New();
     SLM_ASSERT("ActivitySeries instantiation failed", series);
 
-    const std::string eventID              = "NEW_CONFIGURATION_HELPER";
-    const std::string fieldID              = "APPCONFIG";
-    const std::string viewConfigFieldID    = "VIEWCONFIGID";
-    const std::string closableFieldID      = "CLOSABLE";
-    const std::string iconFieldID          = "ICON";
-    const std::string tooltipFieldID       = "TOOLTIP";
-    const std::string tabIDFieldID         = "TABID";
-    const std::string tabInfoID            = "TABINFO";
-    const std::string asFieldID            = "ACTIVITYSERIES";
-    const std::string asUID                = "AS_UID";
-    const std::string genericUID           = "GENERIC_UID";
-    const std::string tabID                = "TABID_" + ::fwTools::UUID::generateUUID();
+    const std::string eventID           = "NEW_CONFIGURATION_HELPER";
+    const std::string fieldID           = "APPCONFIG";
+    const std::string viewConfigFieldID = "VIEWCONFIGID";
+    const std::string closableFieldID   = "CLOSABLE";
+    const std::string iconFieldID       = "ICON";
+    const std::string tooltipFieldID    = "TOOLTIP";
+    const std::string tabIDFieldID      = "TABID";
+    const std::string tabInfoID         = "TABINFO";
+    const std::string asFieldID         = "ACTIVITYSERIES";
+    const std::string asUID             = "AS_UID";
+    const std::string genericUID        = "GENERIC_UID";
+    const std::string tabID             = "TABID_" + ::fwTools::UUID::generateUUID();
 
     ::fwData::String::sptr title = ::fwData::String::New();
 
@@ -115,7 +115,7 @@ namespace helper
     params.insert(params.end(), parameters.begin(), parameters.end());
     ActiReg::ActivityAppConfigParam asConfigParam;
     asConfigParam.replace = asUID;
-    asConfigParam.by = series->getID();
+    asConfigParam.by      = series->getID();
     params.push_back(asConfigParam);
     BOOST_FOREACH(const ActiReg::ActivityAppConfigParam& param, params)
     {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,10 +54,15 @@ struct A
     A() :
         m_method0(false),
         m_method1(false)
-    {}
+    {
+    }
 
-    void method0(){ m_method0 = true; }
-    float method1(float f){
+    void method0()
+    {
+        m_method0 = true;
+    }
+    float method1(float f)
+    {
         m_method1 = true;
         return 2*f;
     }
@@ -81,25 +86,25 @@ void SlotTest::buildTest ()
     A a;
 
     ::fwCom::Slot< int (int, int) >::sptr slot1 = ::fwCom::newSlot( &sum );
-    ::fwCom::Slot< void () >::sptr        slot2 = ::fwCom::newSlot( &A::method0, &a );
-    ::fwCom::Slot< float (float) >::sptr  slot3 = ::fwCom::newSlot( &A::method1, &a  );
+    ::fwCom::Slot< void () >::sptr slot2        = ::fwCom::newSlot( &A::method0, &a );
+    ::fwCom::Slot< float (float) >::sptr slot3  = ::fwCom::newSlot( &A::method1, &a  );
 
     CPPUNIT_ASSERT( slot1 );
     CPPUNIT_ASSERT( slot2 );
     CPPUNIT_ASSERT( slot3 );
 
 
-    CPPUNIT_ASSERT_EQUAL( (unsigned int) 2 , slot1->arity() );
-    CPPUNIT_ASSERT_EQUAL( (unsigned int) 0 , slot2->arity() );
-    CPPUNIT_ASSERT_EQUAL( (unsigned int) 1 , slot3->arity() );
+    CPPUNIT_ASSERT_EQUAL( (unsigned int) 2, slot1->arity() );
+    CPPUNIT_ASSERT_EQUAL( (unsigned int) 0, slot2->arity() );
+    CPPUNIT_ASSERT_EQUAL( (unsigned int) 1, slot3->arity() );
 
 
 
     ::fwCom::SlotCall< int (int, int) >::sptr slotcall1
         = ::boost::dynamic_pointer_cast< ::fwCom::SlotCall< int (int, int) > > ( slot1 );
-    ::fwCom::SlotCall< void () >::sptr          slotcall2
+    ::fwCom::SlotCall< void () >::sptr slotcall2
         = ::boost::dynamic_pointer_cast< ::fwCom::SlotCall< void () >        > ( slot2 );
-    ::fwCom::SlotCall< float (float) >::sptr  slotcall3
+    ::fwCom::SlotCall< float (float) >::sptr slotcall3
         = ::boost::dynamic_pointer_cast< ::fwCom::SlotCall< float (float) >  > ( slot3 );
 
     CPPUNIT_ASSERT( slotcall1 );
@@ -110,9 +115,9 @@ void SlotTest::buildTest ()
 
     ::fwCom::SlotRun< void (int, int) >::sptr slotrun1
         = ::boost::dynamic_pointer_cast< ::fwCom::SlotRun< void (int, int) > > ( slot1 );
-    ::fwCom::SlotRun< void () >::sptr          slotrun2
+    ::fwCom::SlotRun< void () >::sptr slotrun2
         = ::boost::dynamic_pointer_cast< ::fwCom::SlotRun< void () >         > ( slot2 );
-    ::fwCom::SlotRun< void (float) >::sptr  slotrun3
+    ::fwCom::SlotRun< void (float) >::sptr slotrun3
         = ::boost::dynamic_pointer_cast< ::fwCom::SlotRun< void (float) >    > ( slot3 );
 
     CPPUNIT_ASSERT( slotrun1 );
@@ -140,8 +145,8 @@ void SlotTest::runTest ()
     A a;
 
     ::fwCom::Slot< int (int, int) >::sptr slot1 = ::fwCom::newSlot( &sum );
-    ::fwCom::Slot< void () >::sptr        slot2 = ::fwCom::newSlot( &A::method0, &a );
-    ::fwCom::Slot< float (float) >::sptr  slot3 = ::fwCom::newSlot( &A::method1, &a );
+    ::fwCom::Slot< void () >::sptr slot2        = ::fwCom::newSlot( &A::method0, &a );
+    ::fwCom::Slot< float (float) >::sptr slot3  = ::fwCom::newSlot( &A::method1, &a );
 
     lastSumResult = 0;
     CPPUNIT_ASSERT( !a.m_method0 );
@@ -162,8 +167,8 @@ void SlotTest::callTest ()
     A a;
 
     ::fwCom::Slot< int (int, int) >::sptr slot1 = ::fwCom::newSlot( &sum );
-    ::fwCom::Slot< void () >::sptr        slot2 = ::fwCom::newSlot( &A::method0, &a );
-    ::fwCom::Slot< float (float) >::sptr  slot3 = ::fwCom::newSlot( &A::method1, &a );
+    ::fwCom::Slot< void () >::sptr slot2        = ::fwCom::newSlot( &A::method0, &a );
+    ::fwCom::Slot< float (float) >::sptr slot3  = ::fwCom::newSlot( &A::method1, &a );
 
     CPPUNIT_ASSERT_EQUAL( 42, slot1->call(40,2) );
     slot2->call();
@@ -179,8 +184,8 @@ void SlotTest::asyncTest ()
     A a;
 
     ::fwCom::Slot< int (int, int) >::sptr slot1 = ::fwCom::newSlot( &sum );
-    ::fwCom::Slot< void () >::sptr        slot2 = ::fwCom::newSlot( &A::method0, &a );
-    ::fwCom::Slot< float (float) >::sptr  slot3 = ::fwCom::newSlot( &A::method1, &a );
+    ::fwCom::Slot< void () >::sptr slot2        = ::fwCom::newSlot( &A::method0, &a );
+    ::fwCom::Slot< float (float) >::sptr slot3  = ::fwCom::newSlot( &A::method1, &a );
 
     fwThread::Worker::sptr w = fwThread::Worker::New();
 
@@ -198,8 +203,8 @@ void SlotTest::asyncTest ()
     CPPUNIT_ASSERT( a.m_method1 );
 
     lastSumResult = 0;
-    a.m_method0 = false;
-    a.m_method1 = false;
+    a.m_method0   = false;
+    a.m_method1   = false;
 
     boost::shared_future< int >   f1 = slot1->asyncCall(40,2);
     boost::shared_future< void >  f2 = slot2->asyncCall();
@@ -250,8 +255,8 @@ void SlotTest::slotBaseTest ()
     CPPUNIT_ASSERT( a.m_method1 );
 
     lastSumResult = 0;
-    a.m_method0 = false;
-    a.m_method1 = false;
+    a.m_method0   = false;
+    a.m_method1   = false;
 
     CPPUNIT_ASSERT_EQUAL( 42, slot1->call<int>(40,2) );
     slot2->call<void>();
@@ -261,8 +266,8 @@ void SlotTest::slotBaseTest ()
 
 
     lastSumResult = 0;
-    a.m_method0 = false;
-    a.m_method1 = false;
+    a.m_method0   = false;
+    a.m_method1   = false;
 
     fwThread::Worker::sptr w = fwThread::Worker::New();
 
@@ -279,8 +284,8 @@ void SlotTest::slotBaseTest ()
     CPPUNIT_ASSERT( a.m_method1 );
 
     lastSumResult = 0;
-    a.m_method0 = false;
-    a.m_method1 = false;
+    a.m_method0   = false;
+    a.m_method1   = false;
 
     boost::shared_future< int >   f1 = slot1->asyncCall<int>(40,2);
     boost::shared_future< void >  f2 = slot2->asyncCall<void>();
@@ -352,7 +357,7 @@ struct B
 void SlotTest::workerSwapTest()
 {
     {
-        typedef ::boost::thread::id Signature(const unsigned int);
+        typedef ::boost::thread::id Signature (const unsigned int);
 
         B b;
 
@@ -379,7 +384,7 @@ void SlotTest::workerSwapTest()
 
 
     {
-        typedef ::boost::thread::id Signature(const unsigned int);
+        typedef ::boost::thread::id Signature (const unsigned int);
 
         B b;
 

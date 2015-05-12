@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_ACTION_PUSHOBJECTSRV_HPP_
-#define _GUI_ACTION_PUSHOBJECTSRV_HPP_
+#ifndef __GUI_ACTION_PUSHOBJECTSRV_HPP__
+#define __GUI_ACTION_PUSHOBJECTSRV_HPP__
 
 #include <set>
 #include <map>
@@ -27,21 +27,21 @@ namespace action
 /**
  * @class   PushObjectSrv
  * @brief   To add or remove object in composite with specific key.
- * 
+ *
  * @date    2011.
  */
 class GUI_CLASS_API PushObjectSrv : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PushObjectSrv)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PushObjectSrv)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API PushObjectSrv() throw() ;
+    GUI_API PushObjectSrv() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~PushObjectSrv() throw() ;
+    GUI_API virtual ~PushObjectSrv() throw();
 
 protected:
 
@@ -68,7 +68,7 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 private:
 
@@ -80,13 +80,13 @@ private:
      * @brief keep the association between associated key and source object
      */
     DestKeyMapType m_key2src;
-    SrcKeyMapType  m_srcMap;
+    SrcKeyMapType m_srcMap;
 };
 
 } //action
 } // GUI
 
 
-#endif // _GUI_ACTION_PUSHOBJECTSRV_HPP_
+#endif // __GUI_ACTION_PUSHOBJECTSRV_HPP__
 
 

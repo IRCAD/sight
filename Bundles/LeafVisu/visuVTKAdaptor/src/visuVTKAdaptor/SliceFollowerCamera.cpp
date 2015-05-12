@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@
 
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SliceFollowerCamera, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SliceFollowerCamera, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -64,19 +64,19 @@ void SliceFollowerCamera::configuring() throw(fwTools::Failed)
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
     if(m_configuration->hasAttribute("sliceIndex"))
     {
-         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
-         if(orientation == "axial" )
-         {
-             m_orientation = Z_AXIS;
-         }
-         else if(orientation == "frontal" )
-         {
-             m_orientation = Y_AXIS;
-         }
-         else if(orientation == "sagittal" )
-         {
-             m_orientation = X_AXIS;
-         }
+        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
+        if(orientation == "axial" )
+        {
+            m_orientation = Z_AXIS;
+        }
+        else if(orientation == "frontal" )
+        {
+            m_orientation = Y_AXIS;
+        }
+        else if(orientation == "sagittal" )
+        {
+            m_orientation = X_AXIS;
+        }
     }
 }
 
@@ -136,11 +136,11 @@ void SliceFollowerCamera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(f
         if ( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ))
         {
             ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-            ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-            ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+            ::fwData::Object::sptr objInfo   = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+            ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
 
             int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
-            int toSliceType =   ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
+            int toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
 
             if( toSliceType == static_cast<int>(m_orientation) )
             {
@@ -170,10 +170,10 @@ void SliceFollowerCamera::initializeCamera()
         double imageSize[3];
         this->getImageSize(imageSize);
         int orientation = orientationToAxe [m_orientation];
-        double size = imageSize[ orientation ];
+        double size     = imageSize[ orientation ];
 
         double distance = (1.1 * size)
-                    / ( std::tan( m_camera->GetViewAngle() * (vtkMath::Pi() / 180.0) ) );
+                          / ( std::tan( m_camera->GetViewAngle() * (vtkMath::Pi() / 180.0) ) );
 
         m_camera->ParallelProjectionOn();
         setVtkPipelineModified();
@@ -217,10 +217,10 @@ void SliceFollowerCamera::updateCamera(double distance, double size)
     // m_orientation = 1 : 0, 0,1
     // m_orientation = 2 : 0,-1,0
     m_camera->SetViewUp(
-            0,
-            (m_orientation == 2 ? -1 : 0) ,
-            (m_orientation <= 1 ?  1 : 0)
-    );
+        0,
+        (m_orientation == 2 ? -1 : 0),
+        (m_orientation <= 1 ?  1 : 0)
+        );
     m_camera->OrthogonalizeViewUp();
 
     this->getRenderer()->ResetCameraClippingRange();

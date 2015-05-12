@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -49,7 +49,7 @@ void MeshTrianTest::testSimpleMesh()
 {
     ::boost::filesystem::path trianPath = ::fwTools::System::getTemporaryFolder() / "test.trian";
 
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    ::fwData::Mesh::sptr mesh  = ::fwData::Mesh::New();
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
     ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
     ::fwDataTools::Mesh::shakePoint(mesh);
@@ -79,7 +79,7 @@ void MeshTrianTest::testMeshWithCellNormals()
 {
     ::boost::filesystem::path trianPath = ::fwTools::System::getTemporaryFolder() / "test.trian";
 
-    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    ::fwData::Mesh::sptr mesh  = ::fwData::Mesh::New();
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
     ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
     ::fwDataTools::Mesh::shakePoint(mesh);
@@ -107,35 +107,36 @@ void MeshTrianTest::testMeshWithCellNormals()
 //------------------------------------------------------------------------------
 
 #define COMPAREBUFFER(type, buff1, buff2)                             \
-{                                                                     \
-    CPPUNIT_ASSERT( (!buff1 && !buff2) || (buff1 && buff2));          \
-    if(buff1)                                                         \
-    {                                                                 \
-        CPPUNIT_ASSERT(buff1->getSize() == buff2->getSize());         \
-        ::fwComEd::helper::Array helper1(buff1);                      \
-        ::fwComEd::helper::Array helper2(buff2);                      \
+    {                                                                     \
+        CPPUNIT_ASSERT( (!buff1 && !buff2) || (buff1 && buff2));          \
+        if(buff1)                                                         \
+        {                                                                 \
+            CPPUNIT_ASSERT(buff1->getSize() == buff2->getSize());         \
+            ::fwComEd::helper::Array helper1(buff1);                      \
+            ::fwComEd::helper::Array helper2(buff2);                      \
                                                                       \
-        type *iter1 = helper1.begin<type>();                          \
-        type *iter2 = helper2.begin<type>();                          \
+            type *iter1 = helper1.begin<type>();                          \
+            type *iter2 = helper2.begin<type>();                          \
                                                                       \
-        for (; iter1 != helper1.end<type>() ; ++iter1, ++iter2)       \
-        {                                                             \
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(*iter1, *iter2, 0.000001);   \
-        }                                                             \
-    }                                                                 \
-}
+            for (; iter1 != helper1.end<type>(); ++iter1, ++iter2)       \
+            {                                                             \
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(*iter1, *iter2, 0.000001);   \
+            }                                                             \
+        }                                                                 \
+    }
 
 //------------------------------------------------------------------------------
 
 void MeshTrianTest::compareMesh(::fwData::Mesh::sptr mesh1, ::fwData::Mesh::sptr mesh2)
 {
     CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfPoints(), mesh2->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells() , mesh2->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(mesh1->getCellDataSize()  , mesh2->getCellDataSize());
+    CPPUNIT_ASSERT_EQUAL(mesh1->getNumberOfCells(), mesh2->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(mesh1->getCellDataSize(), mesh2->getCellDataSize());
 
     COMPAREBUFFER(::fwData::Mesh::PointValueType, mesh1->getPointsArray(), mesh2->getPointsArray());
     COMPAREBUFFER(::fwData::Mesh::CellTypes, mesh1->getCellTypesArray(), mesh2->getCellTypesArray());
-    COMPAREBUFFER(::fwData::Mesh::CellDataOffsetType, mesh1->getCellDataOffsetsArray(), mesh2->getCellDataOffsetsArray());
+    COMPAREBUFFER(::fwData::Mesh::CellDataOffsetType, mesh1->getCellDataOffsetsArray(),
+                  mesh2->getCellDataOffsetsArray());
     COMPAREBUFFER(::fwData::Mesh::CellValueType, mesh1->getCellDataArray(), mesh2->getCellDataArray());
     COMPAREBUFFER(::fwData::Mesh::ColorValueType, mesh1->getPointColorsArray(), mesh2->getPointColorsArray());
     COMPAREBUFFER(::fwData::Mesh::ColorValueType, mesh1->getCellColorsArray(), mesh2->getCellColorsArray());

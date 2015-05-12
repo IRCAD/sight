@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@ namespace fwTools
 /**
  * @brief   Helper for BinaryCartesianProduct two Set
  * @struct  AppendValueFirst
- * 
+ *
  * @date    2007-2009.
  * @param   TYPE should be a simple type
  * @param   SETOFSET should be a container of type list i.e vector< vector< singleTypes>, vector< singleTypes>, ... >.
@@ -42,9 +42,11 @@ struct AppendValueFirst
     {
 
         typedef BOOST_DEDUCED_TYPENAME boost::mpl::eval_if< boost::mpl::empty<SETOFSET>,
-                                                        boost::mpl::vector< boost::mpl::vector<TYPE> >,
-                                                        boost::mpl::transform< SETOFSET, boost::mpl::push_front< boost::mpl::_1 , TYPE > >
-                                                    >::type type;
+                                                            boost::mpl::vector< boost::mpl::vector<TYPE> >,
+                                                            boost::mpl::transform< SETOFSET,
+                                                                                   boost::mpl::push_front< boost::mpl::
+                                                                                                           _1, TYPE > >
+                                                            >::type type;
     };
 };
 
@@ -52,7 +54,7 @@ struct AppendValueFirst
 /**
  * @brief   MetaFunction which create an boost::boost::mpl::vector
  * @struct  make_vector
- * 
+ *
  * @date    2007-2009.
  */
 struct make_vector
@@ -69,7 +71,7 @@ struct make_vector
  * @brief   MetaFunction ( used for pseudo Curryfication ) which transform a set where new elements are
  * singleton of 1st set elements i.e { a , b , c } --> { {a}, {b}, {c} }
  * @struct  makeSetOfSingletons
- * 
+ *
  * @date    2007-2009.
  **/
 struct makeSetOfSingletons
@@ -87,7 +89,7 @@ struct makeSetOfSingletons
 /**
  * @brief   Helper which compute from a set and a multi set
  * @struct  BinaryCartesianProductRecurser
- * 
+ *
  * @date    2007-2009.
  *
  * Set1: A = { a_1, a_2, ..., a_N }  \n  MultiSet = {   { ... b_i ...} , { ... c_i ...}, ... { z_i ...}  }\n
@@ -101,10 +103,14 @@ struct BinaryCartesianProductRecurser
     struct apply
     {
         typedef BOOST_DEDUCED_TYPENAME boost::mpl::accumulate< Set1,
-                                                boost::mpl::vector<>,
-                                                boost::mpl::copy<   boost::mpl::apply2< AppendValueFirst, boost::mpl::_2, MultiSet > ,  boost::mpl::back_inserter< boost::mpl::_1>  >
+                                                               boost::mpl::vector<>,
+                                                               boost::mpl::copy<   boost::mpl::apply2< AppendValueFirst,
+                                                                                                       boost::mpl::_2,
+                                                                                                       MultiSet >,
+                                                                                   boost::mpl::back_inserter< boost::mpl
+                                                                                                              ::_1>  >
 
-                                                      >::type type;
+                                                               >::type type;
     };
 };
 
@@ -113,7 +119,7 @@ struct BinaryCartesianProductRecurser
 /**
  * @brief   Compute Cartesian Product of two set (type list) to generate all possible combinaison.
  * @struct  BinaryCartesianProduct
- * 
+ *
  * @date    2007-2009.
  *
  * From two type list generate a new type list where all elemenent a combinaison of each set. For example :
@@ -153,9 +159,10 @@ struct BinaryCartesianProduct
     template< class Set1, class Set2 >
     struct apply
     {
-        typedef BOOST_DEDUCED_TYPENAME  boost::mpl::apply1< makeSetOfSingletons,  Set2>::type  Set2WithSingletons;
+        typedef BOOST_DEDUCED_TYPENAME boost::mpl::apply1< makeSetOfSingletons,  Set2>::type Set2WithSingletons;
 
-        typedef BOOST_DEDUCED_TYPENAME  boost::mpl::apply2<BinaryCartesianProductRecurser, Set1, Set2WithSingletons >::type type;
+        typedef BOOST_DEDUCED_TYPENAME boost::mpl::apply2<BinaryCartesianProductRecurser, Set1,
+                                                          Set2WithSingletons >::type type;
     };
 };
 
@@ -165,7 +172,7 @@ struct BinaryCartesianProduct
 /**
  * @brief compute the cartesian product of many set
  * @struct  CartesianProduct
- * 
+ *
  * @date    2007-2009.
  * @param   MultiSet must be of the following form vector<  vector< ElementaryType1, ElementaryType2,... > , vector< ...ElementaryTypes...> ... > where Elementary
  *          types are not boost::mpl::Container : i.e int, classes, std::vector<int> etc...
@@ -201,10 +208,11 @@ struct CartesianProduct
     template< class MultiSet >
     struct apply
     {
-        typedef BOOST_DEDUCED_TYPENAME  boost::mpl::reverse_fold<   MultiSet,
-                                                            boost::mpl::vector<>,
-                                                            boost::mpl::apply2< BinaryCartesianProductRecurser, boost::mpl::_2, boost::mpl::_1 >
-                            >::type type;
+        typedef BOOST_DEDUCED_TYPENAME boost::mpl::reverse_fold<   MultiSet,
+                                                                   boost::mpl::vector<>,
+                                                                   boost::mpl::apply2< BinaryCartesianProductRecurser,
+                                                                                       boost::mpl::_2, boost::mpl::_1 >
+                                                                   >::type type;
     };
 };
 

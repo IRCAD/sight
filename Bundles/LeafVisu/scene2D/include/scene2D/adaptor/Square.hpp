@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_ADAPTOR_SQUARE_HPP_
-#define _SCENE2D_ADAPTOR_SQUARE_HPP_
+#ifndef __SCENE2D_ADAPTOR_SQUARE_HPP__
+#define __SCENE2D_ADAPTOR_SQUARE_HPP__
 
 #include <QGraphicsItem>
 
@@ -18,14 +18,14 @@ namespace adaptor
 {
 
 /**
-* @brief Create a square on the scene2D
-*/
+ * @brief Create a square on the scene2D
+ */
 class SCENE2D_CLASS_API Square : public ::scene2D::adaptor::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Square)(::scene2D::adaptor::IAdaptor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Square)(::scene2D::adaptor::IAdaptor) );
 
     SCENE2D_API Square() throw();
     SCENE2D_API virtual ~Square() throw();
@@ -43,7 +43,8 @@ protected:
 
     SCENE2D_API void setColor( std::string _color );
     SCENE2D_API bool coordViewIsInItem( const ::scene2D::data::Coord & coord, QGraphicsItem * item );
-    SCENE2D_API ::scene2D::data::Coord coordViewToCoordItem( const ::scene2D::data::Coord & coord, QGraphicsItem * item );
+    SCENE2D_API ::scene2D::data::Coord coordViewToCoordItem( const ::scene2D::data::Coord & coord,
+                                                             QGraphicsItem * item );
 
 private:
 
@@ -61,5 +62,5 @@ private:
 } // namespace scene2D
 
 
-#endif // _SCENE2D_ADAPTOR_SQUARE_HPP_
+#endif // __SCENE2D_ADAPTOR_SQUARE_HPP__
 

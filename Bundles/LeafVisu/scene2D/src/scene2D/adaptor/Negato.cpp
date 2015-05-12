@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@
 #include "scene2D/adaptor/Negato.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Negato  , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Negato, ::fwData::Image );
 
 
 namespace scene2D
@@ -39,8 +39,8 @@ typedef ::fwComEd::helper::MedicalImageAdaptor MedicalImageAdaptor;
 //-----------------------------------------------------------------------------
 
 Negato::Negato() throw()
-: m_pointIsCaptured (false),
-    m_orientation(MedicalImageAdaptor::Z_AXIS), m_changeSliceTypeAllowed(true)
+    : m_pointIsCaptured (false),
+      m_orientation(MedicalImageAdaptor::Z_AXIS), m_changeSliceTypeAllowed(true)
 {
     this->installTFSelectionEventHandler(this);
 //    this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
@@ -51,7 +51,8 @@ Negato::Negato() throw()
 //-----------------------------------------------------------------------------
 
 Negato::~Negato() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -112,9 +113,9 @@ void Negato::updateBufferFromImage( QImage * qimg )
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     ::fwComEd::helper::Image imgHelper(image);
     const ::fwData::Image::SizeType size = image->getSize();
-    signed short * imgBuff = (signed short *) imgHelper.getBuffer();
-    const double window = tf->getWindow();
-    const size_t imageZOffset = size[0] * size[1];
+    signed short * imgBuff               = (signed short *) imgHelper.getBuffer();
+    const double window                  = tf->getWindow();
+    const size_t imageZOffset            = size[0] * size[1];
 
     const double tfMin = tf->getMinMaxTFValues().first;
     const double tfMax = tf->getMinMaxTFValues().second;
@@ -125,8 +126,8 @@ void Negato::updateBufferFromImage( QImage * qimg )
     {
         for( size_t z = 0; z < size[2]; ++z)
         {
-            const size_t zOffset = z * imageZOffset;
-            const int zPos = static_cast<int>(size[2] - 1 - z);
+            const size_t zOffset  = z * imageZOffset;
+            const int zPos        = static_cast<int>(size[2] - 1 - z);
             const size_t zxOffset = zOffset + m_sagittalIndex->value();
 
             for( size_t y = 0; y < size[1]; y++ )
@@ -142,8 +143,8 @@ void Negato::updateBufferFromImage( QImage * qimg )
 
         for( ::boost::int32_t z = 0; z < size[2]; ++z)
         {
-            const double zOffset = z * imageZOffset;
-            const double zPos = size[2] - 1 - z;
+            const double zOffset  = z * imageZOffset;
+            const double zPos     = size[2] - 1 - z;
             const double zyOffset = zOffset + yOffset;
 
             for( ::boost::int32_t x = 0; x < size[0]; x++ )
@@ -159,7 +160,7 @@ void Negato::updateBufferFromImage( QImage * qimg )
 
         for( ::boost::int32_t y = 0; y < size[1]; y++ )
         {
-            const unsigned int yOffset = static_cast<unsigned int>(y * size[0]);
+            const unsigned int yOffset  = static_cast<unsigned int>(y * size[0]);
             const unsigned int zyOffset = zOffset + yOffset;
 
             for( ::boost::int32_t x = 0; x < size[0]; x++ )
@@ -199,9 +200,9 @@ QImage * Negato::createQImage()
 
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
 
-    const ::fwData::Image::SizeType size = img->getSize();
+    const ::fwData::Image::SizeType size       = img->getSize();
     const ::fwData::Image::SpacingType spacing = img->getSpacing();
-    const ::fwData::Image::OriginType origin = img->getOrigin();
+    const ::fwData::Image::OriginType origin   = img->getOrigin();
 
     double qImageSpacing[2];
     double qImageOrigin[2];
@@ -216,7 +217,7 @@ QImage * Negato::createQImage()
             qImageSpacing[0] = spacing[1];
             qImageSpacing[1] = spacing[2];
             qImageOrigin[0]  = origin[1] - 0.5f*spacing[1];
-            qImageOrigin[1]  =  - ( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
+            qImageOrigin[1]  = -( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
             break;
 
         case MedicalImageAdaptor::Y_AXIS:// frontal
@@ -225,7 +226,7 @@ QImage * Negato::createQImage()
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[2];
             qImageOrigin[0]  = origin[0] - 0.5f*spacing[0];
-            qImageOrigin[1]  =  - ( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
+            qImageOrigin[1]  = -( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
             break;
 
         case MedicalImageAdaptor::Z_AXIS:// axial
@@ -305,11 +306,11 @@ void Negato::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Fai
     {
         ::fwData::Object::csptr dataInfo = msg->getDataInfo(::fwComEd::ImageMsg::VISIBILITY);
         SLM_ASSERT("dataInfo is missing", dataInfo);
-            
+
         ::fwData::Boolean::csptr boolean = ::fwData::Boolean::dynamicConstCast(dataInfo);
-            
+
         SLM_ASSERT("dataInfo is missing", boolean);
-           
+
         if( boolean->getValue() ) // display the scene
         {
             m_layer->setVisible(true);
@@ -322,11 +323,11 @@ void Negato::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Fai
     if( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE) && m_changeSliceTypeAllowed )
     {
         ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-        ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-        ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+        ::fwData::Object::sptr objInfo   = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+        ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
 
         ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] );
-        ::fwData::Integer::sptr toSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] );
+        ::fwData::Integer::sptr toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] );
 
         if( toSliceType->value() == static_cast< int > ( m_orientation ) )
         {
@@ -356,8 +357,8 @@ void Negato::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Fai
     }
 
     if ( this->upadteTFObserver(msg, this->getSptr() )
-            || msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING )
-            || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
+         || msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING )
+         || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
     {
         this->updateBufferFromImage( m_qimg );
     }
@@ -407,37 +408,37 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
         if ( _event->getKey() == Qt::Key_R )
         {
             // get image origin
-            QRectF recImage =  m_pixmapItem->sceneBoundingRect();
-       
+            QRectF recImage = m_pixmapItem->sceneBoundingRect();
+
             ::scene2D::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
             float sceneWidth  = static_cast<float>(this->getScene2DRender()->getView()->width());
             float sceneHeight = static_cast<float>(this->getScene2DRender()->getView()->height());
 
             float ratioYonXimage = recImage.height() / recImage.width();
-            float sceneRatio      = sceneHeight / sceneWidth;
+            float sceneRatio     = sceneHeight / sceneWidth;
 
             if ( sceneRatio > ratioYonXimage ) // used scene ratio
             {
-                float widthViewPortNew = recImage.width();
+                float widthViewPortNew  = recImage.width();
                 float heightViewPortNew = widthViewPortNew * sceneRatio;
 
                 // computes new y origin
-                float newOrigineY =  recImage.y() - ( heightViewPortNew - recImage.height() ) / 2.f;
-                
+                float newOrigineY = recImage.y() - ( heightViewPortNew - recImage.height() ) / 2.f;
+
                 sceneViewport->setX(  recImage.x() );
                 sceneViewport->setY( newOrigineY );
                 sceneViewport->setWidth(  widthViewPortNew );
                 sceneViewport->setHeight( heightViewPortNew );
             }
             else
-            {               
+            {
                 float heightViewPortNew = recImage.height();
-                float widthViewPortNew = heightViewPortNew / sceneRatio;
+                float widthViewPortNew  = heightViewPortNew / sceneRatio;
 
                 // computes new x origin
-                float newOrigineX =  recImage.x() - (widthViewPortNew - recImage.width() )/ 2.f;
-                
+                float newOrigineX = recImage.x() - (widthViewPortNew - recImage.width() )/ 2.f;
+
                 sceneViewport->setX( newOrigineX );
                 sceneViewport->setY( recImage.y() );
                 sceneViewport->setWidth(  widthViewPortNew );
@@ -467,11 +468,11 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
     coord.setY( coord.getY() / m_layer->scale());
 
     if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress
-            && _event->getButton() == ::scene2D::data::Event::RightButton
-            && _event->getModifier() == ::scene2D::data::Event::NoModifier )
+         && _event->getButton() == ::scene2D::data::Event::RightButton
+         && _event->getModifier() == ::scene2D::data::Event::NoModifier )
     {
         m_pointIsCaptured = true;
-        m_oldCoord = _event->getCoord();
+        m_oldCoord        = _event->getCoord();
         _event->setAccepted(true);
     }
     else if ( m_pointIsCaptured )
@@ -484,7 +485,7 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
             _event->setAccepted(true);
         }
         else if( _event->getButton() == ::scene2D::data::Event::RightButton
-                && _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
+                 && _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
         {
             m_pointIsCaptured = false;
             _event->setAccepted(true);
@@ -496,20 +497,20 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
 
 void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord )
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     double min = tf->getWLMinMax().first;
     double max = tf->getWLMinMax().second;
 
     double window = newCoord.getX() - m_oldCoord.getX();
-    double level = newCoord.getY() - m_oldCoord.getY();
+    double level  = newCoord.getY() - m_oldCoord.getY();
 
     double imgWindow = max - min;
-    double imgLevel = min + imgWindow/2.0;
+    double imgLevel  = min + imgWindow/2.0;
 
 
-    double newImgLevel = imgLevel + level;
+    double newImgLevel  = imgLevel + level;
     double newImgWindow = imgWindow + imgWindow * window/100.0;
 
     double newMin = newImgLevel - newImgWindow/2.0;

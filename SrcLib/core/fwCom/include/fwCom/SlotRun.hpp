@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,19 +26,21 @@ struct SlotRun;
  * @tparam A Slot's arguments types.
  */
 template< typename ... A >
-struct SlotRun< void (A...) > : SlotBase
+struct SlotRun< void (A ...) > : SlotBase
 {
 
     /**
      * @name Typedefs
      * @{ */
-    typedef void SignatureType(A...);
+    typedef void SignatureType (A ...);
     typedef SlotRun< SignatureType > SelfType;
-    typedef SPTR( SelfType ) sptr;
-    typedef WPTR( SelfType ) wptr;
+    typedef SPTR ( SelfType ) sptr;
+    typedef WPTR ( SelfType ) wptr;
     /**  @} */
 
-    SlotRun() : SlotBase( sizeof...(A) ) {}
+    SlotRun() : SlotBase( sizeof ... (A) )
+    {
+    }
 
     /**
      * @brief Run the Slot with the given parameters.
@@ -54,7 +56,7 @@ struct SlotRun< void (A...) > : SlotBase
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SlotBase::VoidSharedFutureType asyncRun( const SPTR(::fwThread::Worker) &worker, A... args ) const;
+    virtual SlotBase::VoidSharedFutureType asyncRun( const SPTR(::fwThread::Worker) &worker, A ... args ) const;
 
     /**
      * @brief Run the Slot with the given parameters asynchronously.
@@ -64,19 +66,19 @@ struct SlotRun< void (A...) > : SlotBase
      * @return a shared_future object associated with Slot's run result.
      * @throws NoWorker if slot has no worker set.
      */
-    virtual SlotBase::VoidSharedFutureType asyncRun(A... args) const;
+    virtual SlotBase::VoidSharedFutureType asyncRun(A ... args) const;
 
-protected:
+    protected:
 
-    template< typename R, typename WEAKCALL >
-    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+        template< typename R, typename WEAKCALL >
+        static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
 
-    /**
-     * @brief Binds the given parameters to the run method within a void() function.
-     *
-     * @return a void() function.
-     */
-    virtual ::boost::function< void() > bindRun( A...args  ) const;
+        /**
+         * @brief Binds the given parameters to the run method within a void() function.
+         *
+         * @return a void() function.
+         */
+        virtual ::boost::function< void() > bindRun( A ... args  ) const;
 
 };
 

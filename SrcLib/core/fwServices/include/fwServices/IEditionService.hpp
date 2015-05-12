@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_IEDITIONSERVICE_HPP_
-#define _FWSERVICES_IEDITIONSERVICE_HPP_
+#ifndef __FWSERVICES_IEDITIONSERVICE_HPP__
+#define __FWSERVICES_IEDITIONSERVICE_HPP__
 
 #include <list>
 
@@ -18,7 +18,7 @@
 
 namespace fwServices
 {
-class ObjectMsg ;
+class ObjectMsg;
 }
 
 namespace fwServices
@@ -27,7 +27,7 @@ namespace fwServices
 /**
  * @brief   This interface defines edition service API. It mainly has the role of the subject in the observer design pattern.
  * @class   IEditionService
- * 
+ *
 
  * @date    2007-2009.
  *
@@ -39,11 +39,11 @@ namespace fwServices
  */
 class FWSERVICES_CLASS_API IEditionService : public fwServices::IService
 {
-    friend class GlobalEventManager;
+friend class GlobalEventManager;
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IEditionService)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IEditionService)(::fwServices::IService) );
 
     /**
      * @brief Invoke the IEditionService::notify( ObjectMsg::csptr ) method on _pSubject.
@@ -54,9 +54,9 @@ public :
      *  This method notifies observers of _pSubject. It changes notification status of _pSource during all notification, set correct source and subject of msg and timestamp the message.
      */
     FWSERVICES_API static void notify(
-            ::fwServices::IService::sptr _pSource,
-            ::fwData::Object::sptr _pSubject,
-            ObjectMsg::sptr _pMsg );
+        ::fwServices::IService::sptr _pSource,
+        ::fwData::Object::sptr _pSubject,
+        ObjectMsg::sptr _pMsg );
 
     /**
      * @brief Invoke the IEditionService::notify( ObjectMsg::csptr ) method on _pSubject.
@@ -68,15 +68,15 @@ public :
      *  This method notifies observers of _pSubject. It changes notification status of _pSource during all notification, set correct source and subject of msg and timestamp the message.
      */
     FWSERVICES_API static void notify(
-            ::fwServices::IService::sptr _pSource,
-            ::fwData::Object::sptr _pSubject,
-            ObjectMsg::sptr _pMsg,
-            bool _allowLoops );
+        ::fwServices::IService::sptr _pSource,
+        ::fwData::Object::sptr _pSubject,
+        ObjectMsg::sptr _pMsg,
+        bool _allowLoops );
 
 protected:
 
     /// Constructor. Do nothing.
-    FWSERVICES_API IEditionService() ;
+    FWSERVICES_API IEditionService();
 
     /// Destructor. Do nothing.
     FWSERVICES_API virtual ~IEditionService() throw();
@@ -85,4 +85,4 @@ protected:
 
 }
 
-#endif // _FWSERVICES_IEDITIONSERVICE_HPP_
+#endif // __FWSERVICES_IEDITIONSERVICE_HPP__

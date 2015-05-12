@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,8 +15,8 @@ namespace fwComEd
 
 //-----------------------------------------------------------------------------
 
-std::string CameraMsg::NEW_CAMERA="NEW_CAMERA";
-std::string CameraMsg::CAMERA_MOVING="CAMERA_MOVING";
+std::string CameraMsg::NEW_CAMERA    = "NEW_CAMERA";
+std::string CameraMsg::CAMERA_MOVING = "CAMERA_MOVING";
 
 //-----------------------------------------------------------------------------
 
@@ -39,13 +39,14 @@ CameraMsg::CameraMsg(::fwServices::ObjectMsg::Key key)
 //-----------------------------------------------------------------------------
 
 CameraMsg::~CameraMsg() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void CameraMsg::info(std::ostream &_sstream ) const
 {
-    this->ObjectMsg::info(_sstream) ;
+    this->ObjectMsg::info(_sstream);
 }
 
 //-----------------------------------------------------------------------------
@@ -59,9 +60,9 @@ void CameraMsg::setPositionCamera( const double _positionValue[3]  )
 
 //-----------------------------------------------------------------------------
 
-const double* CameraMsg::getPositionCamera( void )const
+const double* CameraMsg::getPositionCamera( void ) const
 {
-    return m_positionCamera ;
+    return m_positionCamera;
 }
 
 //-----------------------------------------------------------------------------
@@ -76,9 +77,9 @@ void CameraMsg::setFocalCamera( const double _focalValue[4] )
 
 //-----------------------------------------------------------------------------
 
-const double* CameraMsg::getFocalCamera( void )const
+const double* CameraMsg::getFocalCamera( void ) const
 {
-    return m_focalCamera ;
+    return m_focalCamera;
 }
 
 //-----------------------------------------------------------------------------
@@ -92,7 +93,7 @@ void CameraMsg::setViewUpCamera( const double _viewUpValue[3] )
 
 //-----------------------------------------------------------------------------
 
-const double* CameraMsg::getViewUpCamera( void )const
+const double* CameraMsg::getViewUpCamera( void ) const
 {
     return m_viewUpCamera;
 }

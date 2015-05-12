@@ -1,4 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2004-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +13,7 @@
 
 namespace fwRuntime
 {
-    struct ConfigurationElement;
+struct ConfigurationElement;
 }
 
 namespace fwServices
@@ -37,7 +38,7 @@ public:
      * @param SigSlotConnection helper to connect signals and slots
      */
     FWSERVICES_API static void createConnections(
-            CSPTR(::fwRuntime::ConfigurationElement) cfg, SPTR(::fwServices::helper::SigSlotConnection) helper);
+        CSPTR(::fwRuntime::ConfigurationElement) cfg, SPTR(::fwServices::helper::SigSlotConnection) helper);
 };
 
 } // namespace helper

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,7 @@
 
 #include "fwComEd/parser/Object.hpp"
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser , ::fwComEd::parser::Object , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::Object, ::fwData::Object );
 
 namespace fwComEd
 {
@@ -20,12 +20,14 @@ namespace parser
 //------------------------------------------------------------------------------
 
 Object::Object( )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 Object::~Object()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -39,7 +41,9 @@ bool Object::refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgEl
         if(     subElementName != "service" &&
                 subElementName != "serviceList"    )
         {
-            OSLM_ERROR("xml subelement \""<< subElementName <<"\" for element object is not supported for the moment when you use a reference on item composite.");
+            OSLM_ERROR(
+                "xml subelement \""<< subElementName <<
+                "\" for element object is not supported for the moment when you use a reference on item composite.");
             isOk = false;
         }
     }
@@ -61,8 +65,8 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
 {
     // Declaration of attributes values
     const std::string OBJECT_BUILD_MODE = "src";
-    const std::string BUILD_OBJECT = "new";
-    const std::string GET_OBJECT = "ref";
+    const std::string BUILD_OBJECT      = "new";
+    const std::string GET_OBJECT        = "ref";
 
     ::fwData::Object::sptr associatedObject = ::fwData::Object::dynamicCast(_obj);
     SLM_ASSERT("associatedObject not instanced", associatedObject);
@@ -78,19 +82,24 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
             if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
                 buildMode = elem->getExistingAttributeValue( OBJECT_BUILD_MODE );
-                OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.", buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
+                OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.",
+                             buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
 
 
-            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" .", elem->hasAttribute("key") );
+            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" .",
+                        elem->hasAttribute("key") );
             std::string key = elem->getExistingAttributeValue("key");
-            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" not empty.", ! key.empty() );
-            SLM_ASSERT( "Sorry, xml element item must have one (and only one) xml sub-element \"object\".", elem->size() == 1 && (*(elem->getElements().begin()))->getName() == "object" );
+            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" not empty.",
+                        !key.empty() );
+            SLM_ASSERT( "Sorry, xml element item must have one (and only one) xml sub-element \"object\".",
+                        elem->size() == 1 && (*(elem->getElements().begin()))->getName() == "object" );
 
             if( buildMode == BUILD_OBJECT )
             {
                 // Test if key already exist in object
-                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the object.", !associatedObject->getField( key ) );
+                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the object.", !associatedObject->getField(
+                                key ) );
 
                 // Create and manage object config
                 ::fwServices::AppConfigManager::sptr ctm = ::fwServices::AppConfigManager::New();

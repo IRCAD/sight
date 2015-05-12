@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRENDERVTK_VTKRENDERSERVICE_HPP_
-#define _FWRENDERVTK_VTKRENDERSERVICE_HPP_
+#ifndef __FWRENDERVTK_VTKRENDERSERVICE_HPP__
+#define __FWRENDERVTK_VTKRENDERSERVICE_HPP__
 
 
 #include <map>
@@ -42,12 +42,12 @@ class IVtkAdaptorService;
 
 /**
  * @class VtkRenderService
- * @brief The generic scene service shows adaptors in a 3D VTK scene. 
+ * @brief The generic scene service shows adaptors in a 3D VTK scene.
  */
 class FWRENDERVTK_CLASS_API VtkRenderService : public ::fwRender::IRender
 {
-public :
-    fwCoreServiceClassDefinitionsMacro ( (VtkRenderService)(::fwRender::IRender) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (VtkRenderService)(::fwRender::IRender) );
 
     typedef std::string RendererIdType;
     typedef std::string PickerIdType;
@@ -56,11 +56,11 @@ public :
     typedef std::string VtkObjectIdType;
 
     FWRENDERVTK_API static const ::fwCom::Slots::SlotKeyType s_RENDER_SLOT;
-    typedef ::fwCom::Slot<void()> RenderSlotType;
+    typedef ::fwCom::Slot<void ()> RenderSlotType;
 
-    FWRENDERVTK_API VtkRenderService() throw() ;
+    FWRENDERVTK_API VtkRenderService() throw();
 
-    FWRENDERVTK_API virtual ~VtkRenderService() throw() ;
+    FWRENDERVTK_API virtual ~VtkRenderService() throw();
 
     /// Returns the vtkRenderer with the given id
     FWRENDERVTK_API vtkRenderer * getRenderer(RendererIdType rendererId);
@@ -80,8 +80,14 @@ public :
     /// Get a vtkTransform in the VtkRenderService, referenced by a key. Create it if it does not exist.
     FWRENDERVTK_API vtkTransform * getOrAddVtkTransform( const VtkObjectIdType& _id );
 
-    bool getPendingRenderRequest(){return m_pendingRenderRequest;}
-    void setPendingRenderRequest(bool b){m_pendingRenderRequest=b;}
+    bool getPendingRenderRequest()
+    {
+        return m_pendingRenderRequest;
+    }
+    void setPendingRenderRequest(bool b)
+    {
+        m_pendingRenderRequest = b;
+    }
 
 protected:
 
@@ -96,7 +102,7 @@ protected:
     /**
      * @brief configures the adaptor
      * @verbatim
-    <service uid="generiSceneUID" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender">
+       <service uid="generiSceneUID" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender">
         <scene autoRender="false">
             <renderer id="background" layer="0" background="0.0" />
             <vtkObject id="transform" class="vtkTransform" />
@@ -115,16 +121,16 @@ protected:
                 <slot>serviceUid/updateTM</slot>
             </connect>
         </scene>
-    </service> 
+       </service>
        @endverbatim
-     * With : 
-     *  - \b autoRender (optional, "true" by default): this attribute is forwarded to all adaptors. For each adaptor, 
-     *    if autoRender=true,  the scene is automatically rendered after doStart, doUpdate, doSwap, doReceive and 
+     * With :
+     *  - \b autoRender (optional, "true" by default): this attribute is forwarded to all adaptors. For each adaptor,
+     *    if autoRender=true,  the scene is automatically rendered after doStart, doUpdate, doSwap, doReceive and
      *    doStop and m_vtkPipelineModified=true.
-     *  - \b renderer 
+     *  - \b renderer
      *     - \b id (mandatory): the identifier of the renderer
      *     - \b layer (optional): defines the layer of the vtkRenderer. This is only used if there are layered renderers.
-     *     - \b background (optional): the background color of the rendering screen. The color value can be defines as a 
+     *     - \b background (optional): the background color of the rendering screen. The color value can be defines as a
      *       grey level value (ex . 1.0 for white) or as a hexadecimal value (ex : \#ffffff for white).
      *  - \b vtkObject
      *    - \b id (mandatory): the identifier of the vtkObject
@@ -136,14 +142,14 @@ protected:
      *    - \b id (mandatory): the identifier of the adaptor
      *    - \b class (mandatory): the classname of the adaptor service
      *    - \b uid (optional): the fwID to specify for the adaptor service
-     *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used 
+     *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used
      *     when the adaptor works on the scene's composite.
      *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
      *  - \b connect : not mandatory, connects signal to slot
      *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name
      *    - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
      */
-    FWRENDERVTK_API virtual void configuring() throw( ::fwTools::Failed) ;
+    FWRENDERVTK_API virtual void configuring() throw( ::fwTools::Failed);
 
     /// Updates the scene's adaptors with the modified objects contained in the composite.
     FWRENDERVTK_API void receiving( ::fwServices::ObjectMsg::csptr message ) throw( ::fwTools::Failed);
@@ -157,7 +163,7 @@ protected:
     /// Slot to call render method
     RenderSlotType::sptr m_slotRender;
 
-private :
+private:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     ConfigurationType m_sceneConfiguration;
@@ -166,12 +172,15 @@ private :
     ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
 
 
-    class SceneAdaptor {
+    class SceneAdaptor
+    {
 
-        public:
+    public:
 
         SPTR (IVtkAdaptorService) getService()
-        { return m_service.lock(); }
+        {
+            return m_service.lock();
+        }
 
         ConfigurationType m_config;
         WPTR(IVtkAdaptorService) m_service;
@@ -179,21 +188,21 @@ private :
     };
 
     /// @brief scene's renderers
-    typedef std::map< RendererIdType , vtkRenderer* > RenderersMapType ;
+    typedef std::map< RendererIdType, vtkRenderer* > RenderersMapType;
 
     /// @brief scene's pickers
-    typedef std::map< PickerIdType , vtkAbstractPropPicker * > PickersMapType ;
+    typedef std::map< PickerIdType, vtkAbstractPropPicker * > PickersMapType;
 
     /// @brief scene's transforms
-    typedef std::map< VtkObjectIdType , vtkObject  * > VtkObjectMapType ;
+    typedef std::map< VtkObjectIdType, vtkObject  * > VtkObjectMapType;
 
     /// @brief Actives adaptors in scene
-    typedef std::map< AdaptorIdType, SceneAdaptor > SceneAdaptorsMapType ;
+    typedef std::map< AdaptorIdType, SceneAdaptor > SceneAdaptorsMapType;
 
-    RenderersMapType     m_renderers;
-    PickersMapType       m_pickers;
+    RenderersMapType m_renderers;
+    PickersMapType m_pickers;
     SceneAdaptorsMapType m_sceneAdaptors;
-    VtkObjectMapType     m_vtkObjects;
+    VtkObjectMapType m_vtkObjects;
 
     bool m_pendingRenderRequest;
 
@@ -213,4 +222,4 @@ private :
 
 }
 
-#endif //_FWRENDERVTK_VTKRENDERSERVICE_HPP_
+#endif //__FWRENDERVTK_VTKRENDERSERVICE_HPP__

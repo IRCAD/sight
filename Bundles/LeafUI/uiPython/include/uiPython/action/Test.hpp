@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIPYTHON_ACTION_QUITACTION_HPP_
-#define _UIPYTHON_ACTION_QUITACTION_HPP_
+#ifndef __UIPYTHON_ACTION_TEST_HPP__
+#define __UIPYTHON_ACTION_TEST_HPP__
 
 
 #include <fwServices/IService.hpp>
@@ -22,26 +22,26 @@ namespace action
 /**
  * @brief   This action tries to close the window and reset root object.
  * @class   Test
- * 
+ *
 
  * @date    2009-2010.
  */
 class UIPYTHON_CLASS_API Test : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-     fwCoreServiceClassDefinitionsMacro ( (Test)(::fwGui::IActionSrv) ) ;
-
-    /**
-    * @brief Constructor. Do nothing.
-    */
-    UIPYTHON_API Test() throw() ;
+    fwCoreServiceClassDefinitionsMacro ( (Test)(::fwGui::IActionSrv) );
 
     /**
-    * @brief Destructor. Do nothing.
-    */
-    UIPYTHON_API virtual ~Test() throw() ;
+     * @brief Constructor. Do nothing.
+     */
+    UIPYTHON_API Test() throw();
+
+    /**
+     * @brief Destructor. Do nothing.
+     */
+    UIPYTHON_API virtual ~Test() throw();
 
 protected:
 
@@ -67,7 +67,7 @@ protected:
     /*
      * @brief This method gives information about the class.
      */
-    UIPYTHON_API virtual void info(std::ostream &_sstream ) ;
+    UIPYTHON_API virtual void info(std::ostream &_sstream );
 
 };
 
@@ -76,4 +76,4 @@ protected:
 } // namespace uiPython
 
 
-#endif /*_UIPYTHON_ACTION_QUITACTION_HPP_*/
+#endif /*__UIPYTHON_ACTION_TEST_HPP__*/

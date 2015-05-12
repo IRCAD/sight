@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleNegato::RendererService , ::fwData::Image) ;
+fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleNegato::RendererService, ::fwData::Image);
 
 //-----------------------------------------------------------------------------
 
@@ -80,7 +80,10 @@ void RendererService::starting() throw(fwTools::Failed)
 
 void RendererService::stopping() throw(fwTools::Failed)
 {
-    if( m_render == 0 ) return;
+    if( m_render == 0 )
+    {
+        return;
+    }
 
     if(m_bPipelineIsInit)
     {
@@ -115,7 +118,7 @@ void RendererService::updating() throw(fwTools::Failed)
 void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
 {
     // If message is a ImageMsg
-    ::fwComEd::ImageMsg::csptr pImageMsg = ::fwComEd::ImageMsg::dynamicConstCast( _msg ) ;
+    ::fwComEd::ImageMsg::csptr pImageMsg = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
     if (pImageMsg)
     {
         if( pImageMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) || pImageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
@@ -145,8 +148,8 @@ void RendererService::refresh()
 
 
         //
-        unsigned int axialIndex = img->getSize()[2]/2;
-        unsigned int frontalIndex = img->getSize()[1]/2;
+        unsigned int axialIndex    = img->getSize()[2]/2;
+        unsigned int frontalIndex  = img->getSize()[1]/2;
         unsigned int sagittalIndex = img->getSize()[0]/2;
 
         m_negatoAxial->SetSliceIndex( axialIndex );
@@ -169,7 +172,7 @@ void RendererService::initVTKPipeline()
     vtkPolyDataMapper* outlineMapper = vtkPolyDataMapper::New();
     outlineMapper->SetInputConnection(m_outline->GetOutputPort());
 
-    vtkActor* outlineActor =  vtkActor::New();
+    vtkActor* outlineActor = vtkActor::New();
     outlineActor->SetMapper( outlineMapper);
 
     vtkCellPicker* picker = vtkCellPicker::New();

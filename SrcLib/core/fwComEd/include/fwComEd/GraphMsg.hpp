@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_GRAPHMSG_HPP_
-#define _FWCOMED_GRAPHMSG_HPP_
+#ifndef __FWCOMED_GRAPHMSG_HPP__
+#define __FWCOMED_GRAPHMSG_HPP__
 
 #include "boost/tuple/tuple.hpp"
 
@@ -24,7 +24,7 @@ namespace fwComEd
 /**
  * @brief   Object message specialized for Graph : store modification information
  * @class   GraphMsg
- * 
+ *
  * @date    2009
  * @see     ::fwServices::ObjectMsg
  */
@@ -68,8 +68,8 @@ public:
     FWCOMED_API GraphMsg(::fwServices::ObjectMsg::Key key);
 
     /**
-      * @brief  Destuctor : does nothing.
-      */
+     * @brief  Destuctor : does nothing.
+     */
     FWCOMED_API virtual ~GraphMsg() throw();
 
     /// Add a ADD_NODE event with a dataInfo containing the node.
@@ -88,9 +88,11 @@ public:
     FWCOMED_API virtual ::fwData::Node::csptr getRemovingNode() const;
 
     /// Add a ADDING_EDGE event with a dataInfo containing the node.
-    FWCOMED_API virtual void addingEdge( ::fwData::Node::csptr nodeFrom, ::fwData::Node::csptr nodeTo, std::string outputPortId, std::string inputPortId );
+    FWCOMED_API virtual void addingEdge( ::fwData::Node::csptr nodeFrom, ::fwData::Node::csptr nodeTo,
+                                         std::string outputPortId, std::string inputPortId );
     /// Return the removed node contained in the dataInfo of ADDING_EDGE event
-    FWCOMED_API virtual ::boost::tuple< ::fwData::Node::csptr, ::fwData::Node::csptr, std::string, std::string > getAddingEdge() const;
+    FWCOMED_API virtual ::boost::tuple< ::fwData::Node::csptr, ::fwData::Node::csptr, std::string,
+                                        std::string > getAddingEdge() const;
 
 
     /// Add a SELECTED_NODE event with a dataInfo containing the node.
@@ -107,5 +109,5 @@ public:
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_GRAPHMSG_HPP_
+#endif //__FWCOMED_GRAPHMSG_HPP__
 

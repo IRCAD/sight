@@ -26,7 +26,9 @@ namespace fwData
 { class Composite; }
 
 inline boost::mpl::true_ * boost_foreach_is_noncopyable( ::fwData::Composite *&, BOOST_FOREACH_TAG_DEFAULT )
-{ return 0; }
+{
+    return 0;
+}
 
 #endif //BOOST_VERSION >= 104700
 
@@ -83,33 +85,77 @@ public:
     FWDATA_API virtual ~Composite();
 
 
-    IteratorType begin() { return m_attrContainer.begin(); }
-    IteratorType end()   { return m_attrContainer.end(); }
-    ConstIteratorType begin() const { return m_attrContainer.begin(); }
-    ConstIteratorType end()   const { return m_attrContainer.end(); }
+    IteratorType begin()
+    {
+        return m_attrContainer.begin();
+    }
+    IteratorType end()
+    {
+        return m_attrContainer.end();
+    }
+    ConstIteratorType begin() const
+    {
+        return m_attrContainer.begin();
+    }
+    ConstIteratorType end()   const
+    {
+        return m_attrContainer.end();
+    }
 
-    ReverseIteratorType rbegin() { return m_attrContainer.rbegin(); }
-    ReverseIteratorType rend()   { return m_attrContainer.rend(); }
-    ConstReverseIteratorType rbegin() const { return m_attrContainer.rbegin(); }
-    ConstReverseIteratorType rend()   const { return m_attrContainer.rend(); }
+    ReverseIteratorType rbegin()
+    {
+        return m_attrContainer.rbegin();
+    }
+    ReverseIteratorType rend()
+    {
+        return m_attrContainer.rend();
+    }
+    ConstReverseIteratorType rbegin() const
+    {
+        return m_attrContainer.rbegin();
+    }
+    ConstReverseIteratorType rend()   const
+    {
+        return m_attrContainer.rend();
+    }
 
-    bool empty() const { return m_attrContainer.empty(); }
-    SizeType size() const { return m_attrContainer.size(); }
+    bool empty() const
+    {
+        return m_attrContainer.empty();
+    }
+    SizeType size() const
+    {
+        return m_attrContainer.size();
+    }
 
     mapped_type& operator[] ( KeyType n )
-    {return this->m_attrContainer[n]; }
+    {
+        return this->m_attrContainer[n];
+    }
 
-    IteratorType find ( const KeyType& x ) { return m_attrContainer.find(x); }
-    ConstIteratorType find ( const KeyType& x ) const { return m_attrContainer.find(x); }
+    IteratorType find ( const KeyType& x )
+    {
+        return m_attrContainer.find(x);
+    }
+    ConstIteratorType find ( const KeyType& x ) const
+    {
+        return m_attrContainer.find(x);
+    }
 
-    SizeType count ( const KeyType& x ) const { return m_attrContainer.count(x); }
+    SizeType count ( const KeyType& x ) const
+    {
+        return m_attrContainer.count(x);
+    }
     /// @}
 
 
 
     /// @brief get/set the map of std::string/::fwData::Object
     /// @{
-    ContainerType &getContainer(){ return m_attrContainer; }
+    ContainerType &getContainer()
+    {
+        return m_attrContainer;
+    }
     fwDataGetSetCRefMacro(Container, ContainerType);
     /// @}
 

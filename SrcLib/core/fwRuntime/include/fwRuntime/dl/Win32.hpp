@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifdef _WIN32
 
 
-#ifndef _FWRUNTIME_DL_WIN32_HPP
-#define _FWRUNTIME_DL_WIN32_HPP
+#ifndef __FWRUNTIME_DL_WIN32_HPP__
+#define __FWRUNTIME_DL_WIN32_HPP__
 
 
 #include <windows.h>
@@ -27,7 +27,7 @@ namespace dl
  * @brief   Implements a win32 native module.
  * @struct  Win32
  * @date    2004-2009
- * 
+ *
  */
 struct Win32 : public Native
 {
@@ -65,12 +65,12 @@ struct Win32 : public Native
     void unload() throw(RuntimeException);
 
 
-private:
+    private:
 
-    /**
-     * @brief   A handle of the loaded module.
-     */
-    HMODULE m_handle;
+        /**
+         * @brief   A handle of the loaded module.
+         */
+        HMODULE m_handle;
 
 };
 
@@ -80,7 +80,7 @@ private:
 } // namespace fwRuntime
 
 
-#endif // #define _FWRUNTIME_DL_WIN32_HPP
+#endif // __FWRUNTIME_DL_WIN32_HPP__
 
 
 #endif // #ifdef _WIN32

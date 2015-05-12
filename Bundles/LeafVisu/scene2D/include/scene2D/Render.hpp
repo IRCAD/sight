@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_RENDER_HPP_
-#define _SCENE2D_RENDER_HPP_
+#ifndef __SCENE2D_RENDER_HPP__
+#define __SCENE2D_RENDER_HPP__
 
 #include <Qt>
 #include <QGraphicsScene>
@@ -24,18 +24,18 @@
 
 namespace  fwData
 {
-    class Composite;
+class Composite;
 } //namespace fwData
 
 namespace scene2D
 {
-    // Not declared in the #include because of mutual inclusion.
-    class Scene2DGraphicsView;
+// Not declared in the #include because of mutual inclusion.
+class Scene2DGraphicsView;
 
 namespace adaptor
 {
-    // Not declared in the #include because of mutual inclusion.
-    class IAdaptor;
+// Not declared in the #include because of mutual inclusion.
+class IAdaptor;
 }
 
 /**
@@ -46,7 +46,7 @@ class SCENE2D_CLASS_API Render : public ::fwRender::IRender
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Render)(::fwRender::IRender) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Render)(::fwRender::IRender) );
 
     /// A string type representing adaptors id.
     typedef std::string AdaptorIDType;
@@ -90,11 +90,11 @@ public:
 
 protected:
     /**
-    * @brief Configuring the Render service.
-    *
-    * Example of configuration
-    * @verbatim
-    <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+     * @brief Configuring the Render service.
+     *
+     * Example of configuration
+     * @verbatim
+       <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
 
         <scene>
 
@@ -114,53 +114,53 @@ protected:
 
         </scene>
 
-    </service>
-    @endverbatim
-    *
-    * - \<scene x="-1100" y="-1.1" width="2500" height="1.2" /\> : Set the scene coordinates
-    *
-    * \b x : mandatory : Set the x coordinate of the top left scene corner
-    *
-    * \b y : mandatory : Set the y coordinate of the top left scene corner
-    *
-    * \b width : mandatory : Set the width of the scene
-    *
-    * \b height : mandatory : Set the height of the scene
-    *
-    * \b antialiasing :  not mandatory : activate scene antialiasing if attribute's value set to 'true'
-    *
-    * - \<viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" /\> : Set a viewport coordinates
-    *
-    * \b id : mandatory : Set the viewport id
-    *
-    * \b x : mandatory : Set the x coordinate of the top left viewport corner
-    *
-    * \b y : mandatory : Set the y coordinate of the top left viewport corner
-    *
-    * \b width : mandatory : Set the width of the viewport
-    *
-    * \b height : mandatory : Set the height of the viewport
-    *
-    * - \<axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" /\> : Set an axis specifications
-    *
-    * \b id : mandatory : Set the axis id
-    *
-    * \b origin : mandatory : Set the axis origin
-    *
-    * \b scale : mandatory : Set the axis scale
-    *
-    * \b scaleType : mandatory : Set the axis scaleType
-    *
-    * - \<adaptor id="grid" class="::scene2D::adaptor::GridFromFloat" objectId="myData"\> : Set an adaptor
-    *
-    * \b id : mandatory : Set the adaptor id
-    *
-    * \b class : mandatory : Set the adaptor type
-    *
-    * \b objectId : mandatory : Set the adaptor related object id
-    *
-    * \b uid : no mandatory : Set the adaptor uid
-    */
+       </service>
+       @endverbatim
+     *
+     * - \<scene x="-1100" y="-1.1" width="2500" height="1.2" /\> : Set the scene coordinates
+     *
+     * \b x : mandatory : Set the x coordinate of the top left scene corner
+     *
+     * \b y : mandatory : Set the y coordinate of the top left scene corner
+     *
+     * \b width : mandatory : Set the width of the scene
+     *
+     * \b height : mandatory : Set the height of the scene
+     *
+     * \b antialiasing :  not mandatory : activate scene antialiasing if attribute's value set to 'true'
+     *
+     * - \<viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" /\> : Set a viewport coordinates
+     *
+     * \b id : mandatory : Set the viewport id
+     *
+     * \b x : mandatory : Set the x coordinate of the top left viewport corner
+     *
+     * \b y : mandatory : Set the y coordinate of the top left viewport corner
+     *
+     * \b width : mandatory : Set the width of the viewport
+     *
+     * \b height : mandatory : Set the height of the viewport
+     *
+     * - \<axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" /\> : Set an axis specifications
+     *
+     * \b id : mandatory : Set the axis id
+     *
+     * \b origin : mandatory : Set the axis origin
+     *
+     * \b scale : mandatory : Set the axis scale
+     *
+     * \b scaleType : mandatory : Set the axis scaleType
+     *
+     * - \<adaptor id="grid" class="::scene2D::adaptor::GridFromFloat" objectId="myData"\> : Set an adaptor
+     *
+     * \b id : mandatory : Set the adaptor id
+     *
+     * \b class : mandatory : Set the adaptor type
+     *
+     * \b objectId : mandatory : Set the adaptor related object id
+     *
+     * \b uid : no mandatory : Set the adaptor uid
+     */
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
 
     /// Call startContext to set the scene, the viewport and the view, and add'em to the QtContainer and start the adaptors
@@ -184,20 +184,23 @@ protected:
 private:
 
     /// A ConfigurationElement type representing a configuration.
-    typedef SPTR(::fwRuntime::ConfigurationElement) ConfigurationType;
+    typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationType;
 
     /// An internal class to store adaptors representations.
-    class SceneAdaptor2D {
+    class SceneAdaptor2D
+    {
 
-        public:
+    public:
 
         /// Basic construtor, do nothing.
         SceneAdaptor2D()
-        { }
+        {
+        }
 
         /// Basic destructor, do nothing.
         ~SceneAdaptor2D()
-        { }
+        {
+        }
 
         /// Get the related service.
         SPTR (adaptor::IAdaptor) getService()
@@ -265,11 +268,11 @@ private:
 
     /// Map of std::vector<AdaptorIDType> referenced by ObjectIDType;
     ObjectsID2AdaptorIDVector m_objectsID2AdaptorIDVector;
-    typedef std::map< AdaptorIDType, SceneAdaptor2D > AdaptorID2SceneAdaptor2D ;
+    typedef std::map< AdaptorIDType, SceneAdaptor2D > AdaptorID2SceneAdaptor2D;
 
     /// Map of SceneAdaptor2D referenced by AdaptorIDType;
     AdaptorID2SceneAdaptor2D m_adaptorID2SceneAdaptor2D;
-    typedef std::map< ObjectIDType, SPTR(::fwData::Object) > ObjectID2Object ;
+    typedef std::map< ObjectIDType, SPTR(::fwData::Object) > ObjectID2Object;
 
     /// Map of SPTR(::fwData::Object) referenced by ObjectIDType;
     ObjectID2Object m_objectID2Object;
@@ -305,5 +308,5 @@ private:
 } // namespace scene2D
 
 
-#endif // _SCENE2D_RENDER_HPP_
+#endif // __SCENE2D_RENDER_HPP__
 

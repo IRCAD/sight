@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,16 +47,16 @@ void ImageTest::tearDown()
 
 void ImageTest::testGetterSetter()
 {
-    const size_t DIMENSION = 2 ;
-    ::fwTools::Type TYPE = ::fwTools::Type::create("int16")  ;
-    double CREFSPACING = 2.5 ;
-    std::vector<double> VECTORSPACING(DIMENSION, CREFSPACING) ;
-    double CREFORIGIN = 2.7 ;
-    std::vector<double> VECTORORIGIN(DIMENSION, CREFORIGIN)     ;
-    ::boost::int32_t CREFSIZE = 42 ;
-    ::fwData::Image::SizeType VECTORSIZE(DIMENSION, CREFSIZE)  ;
-    const double WINDOWCENTER = 10.10 ;
-    const double WINDOWWIDTH = 11.34 ;
+    const size_t DIMENSION = 2;
+    ::fwTools::Type TYPE = ::fwTools::Type::create("int16");
+    double CREFSPACING = 2.5;
+    std::vector<double> VECTORSPACING(DIMENSION, CREFSPACING);
+    double CREFORIGIN = 2.7;
+    std::vector<double> VECTORORIGIN(DIMENSION, CREFORIGIN);
+    ::boost::int32_t CREFSIZE = 42;
+    ::fwData::Image::SizeType VECTORSIZE(DIMENSION, CREFSIZE);
+    const double WINDOWCENTER = 10.10;
+    const double WINDOWWIDTH  = 11.34;
 
     // process
     ::fwData::Image::sptr img1 = ::fwData::Image::New();
@@ -89,9 +89,9 @@ void ImageTest::testGetterSetter()
 
 void ImageTest::testAllocation()
 {
-    const ::boost::uint8_t DIMENSION = 3 ;
-    ::fwTools::Type TYPE = ::fwTools::Type::create("int16")  ;
-    ::fwData::Image::SizeType VECTORSIZE(DIMENSION)  ;
+    const ::boost::uint8_t DIMENSION = 3;
+    ::fwTools::Type TYPE = ::fwTools::Type::create("int16");
+    ::fwData::Image::SizeType VECTORSIZE(DIMENSION);
     VECTORSIZE[0] = 14;
     VECTORSIZE[1] = 15;
     VECTORSIZE[2] = 26;
@@ -135,13 +135,13 @@ void ImageTest::testAllocation()
 
 void ImageTest::testReallocation()
 {
-    const ::boost::uint8_t DIMENSION = 3 ;
-    ::fwTools::Type TYPE1 = ::fwTools::Type::create("int16")  ;
-    ::fwTools::Type TYPE2 = ::fwTools::Type::create("int64")  ;
-    ::fwTools::Type TYPE3 = ::fwTools::Type::create("uint8")  ;
-    ::fwData::Image::SizeType VECTORSIZE1(DIMENSION, 10)  ;
-    ::fwData::Image::SizeType VECTORSIZE2(DIMENSION, 20)  ;
-    ::fwData::Image::SizeType VECTORSIZE3(DIMENSION, 5)  ;
+    const ::boost::uint8_t DIMENSION = 3;
+    ::fwTools::Type TYPE1 = ::fwTools::Type::create("int16");
+    ::fwTools::Type TYPE2 = ::fwTools::Type::create("int64");
+    ::fwTools::Type TYPE3 = ::fwTools::Type::create("uint8");
+    ::fwData::Image::SizeType VECTORSIZE1(DIMENSION, 10);
+    ::fwData::Image::SizeType VECTORSIZE2(DIMENSION, 20);
+    ::fwData::Image::SizeType VECTORSIZE3(DIMENSION, 5);
     size_t SIZE1 = 10*10*10*TYPE1.sizeOf();
     size_t SIZE2 = 20*20*20*TYPE2.sizeOf();
     size_t SIZE3 = 5*5*5*TYPE3.sizeOf();
@@ -216,9 +216,9 @@ void ImageTest::testSetGetPixel()
     ::fwData::Image::sptr img = ::fwData::Image::New();
     ::fwComEd::helper::Image imgHelper(img);
 
-    const ::boost::uint8_t DIMENSION = 3 ;
-    ::fwTools::Type TYPE = ::fwTools::Type::create("int16")  ;
-    ::fwData::Image::SizeType VECTORSIZE(DIMENSION)  ;
+    const ::boost::uint8_t DIMENSION = 3;
+    ::fwTools::Type TYPE = ::fwTools::Type::create("int16");
+    ::fwData::Image::SizeType VECTORSIZE(DIMENSION);
     VECTORSIZE[0] = 10;
     VECTORSIZE[1] = 20;
     VECTORSIZE[2] = 30;
@@ -231,22 +231,23 @@ void ImageTest::testSetGetPixel()
     // test 1 : use getPixelBuffer
     short count = 0;
     short *iter = arrayHelper.begin<short>();
-    for (; iter != arrayHelper.end<short>() ; ++iter)
+    for (; iter != arrayHelper.end<short>(); ++iter)
     {
         *iter = count++;
     }
 
-    for (unsigned int x=0 ; x<VECTORSIZE[0] ; ++x)
+    for (unsigned int x = 0; x<VECTORSIZE[0]; ++x)
     {
-        for (unsigned int y=0 ; y<VECTORSIZE[1] ; ++y)
+        for (unsigned int y = 0; y<VECTORSIZE[1]; ++y)
         {
-            for (unsigned int z=0 ; z<VECTORSIZE[2] ; ++z)
+            for (unsigned int z = 0; z<VECTORSIZE[2]; ++z)
             {
                 short val = static_cast<short>(x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1]);
                 ::fwData::Image::IndexType index = val;
                 CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(x,y,z)));
                 CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(index)));
-                ::fwData::Image::BufferType* buffer = reinterpret_cast< ::fwData::Image::BufferType* >(imgHelper.getBuffer());
+                ::fwData::Image::BufferType* buffer =
+                    reinterpret_cast< ::fwData::Image::BufferType* >(imgHelper.getBuffer());
                 CPPUNIT_ASSERT_EQUAL(val, *reinterpret_cast<short*>(imgHelper.getPixelBuffer(index)));
 
                 std::stringstream ss;
@@ -257,11 +258,11 @@ void ImageTest::testSetGetPixel()
     }
 
     // test 2 : use setPixelBuffer
-    for (unsigned int x=0 ; x<VECTORSIZE[0] ; ++x)
+    for (unsigned int x = 0; x<VECTORSIZE[0]; ++x)
     {
-        for (unsigned int y=0 ; y<VECTORSIZE[1] ; ++y)
+        for (unsigned int y = 0; y<VECTORSIZE[1]; ++y)
         {
-            for (unsigned int z=0 ; z<VECTORSIZE[2] ; ++z)
+            for (unsigned int z = 0; z<VECTORSIZE[2]; ++z)
             {
                 ::fwData::Image::IndexType index = x+y*VECTORSIZE[0]+z*VECTORSIZE[0]*VECTORSIZE[1];
                 short val = static_cast<short>(index * 2);
@@ -271,8 +272,8 @@ void ImageTest::testSetGetPixel()
     }
 
     count = 0;
-    iter = arrayHelper.begin<short>();
-    for (; iter != arrayHelper.end<short>() ; ++iter)
+    iter  = arrayHelper.begin<short>();
+    for (; iter != arrayHelper.end<short>(); ++iter)
     {
         CPPUNIT_ASSERT_EQUAL(static_cast<short>(count++ *2), *iter);
     }

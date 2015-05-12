@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,18 +21,18 @@
 #include "MacrosTest.hpp"
 
 #define __FWDATA_UT_TEST_RETURN_TYPE(Func, ExpectedType)                                            \
-{                                                                                                   \
-    typedef BOOST_TYPEOF(&Func) F;                                                                  \
-    typedef ::boost::function_types::result_type< F >::type R;                                      \
-    typedef ::boost::is_same<ExpectedType, R >::type IsFuncOfExpectedType;                          \
-    std::stringstream ss;                                                                           \
-    ss << "Expected type : " << #ExpectedType << " (typeid: "                                       \
-            << typeid(ExpectedType).name() << "), got typeid: "                                     \
-            << ( ( ::boost::is_const< ::boost::remove_reference<R>::type >::value) ? " const " : "")\
-            << typeid(R).name()  << ( ( ::boost::is_reference<R>::value) ? " &" : "")               \
-            ;                                                                                       \
-    CPPUNIT_ASSERT_MESSAGE( ss.str(), IsFuncOfExpectedType::value );                                \
-}
+    {                                                                                                   \
+        typedef BOOST_TYPEOF (&Func) F;                                                                  \
+        typedef ::boost::function_types::result_type< F >::type R;                                      \
+        typedef ::boost::is_same<ExpectedType, R >::type IsFuncOfExpectedType;                          \
+        std::stringstream ss;                                                                           \
+        ss << "Expected type : " << #ExpectedType << " (typeid: "                                       \
+           << typeid(ExpectedType).name() << "), got typeid: "                                     \
+           << ( ( ::boost::is_const< ::boost::remove_reference<R>::type >::value) ? " const " : "") \
+           << typeid(R).name()  << ( ( ::boost::is_reference<R>::value) ? " &" : "")               \
+        ;                                                                                       \
+        CPPUNIT_ASSERT_MESSAGE( ss.str(), IsFuncOfExpectedType::value );                                \
+    }
 
 
 

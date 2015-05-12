@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,14 +30,14 @@ namespace profile
 namespace
 {
 
-    template< typename E >
-    struct Apply
+template< typename E >
+struct Apply
+{
+    void operator() ( E e )
     {
-        void operator() ( E e )
-        {
-            e->apply();
-        }
-    };
+        e->apply();
+    }
+};
 
 }
 
@@ -56,7 +56,7 @@ Profile::sptr getCurrentProfile()
 
 // =========================================================
 
-Profile::Profile():
+Profile::Profile() :
     m_checkSingleInstance(false),
     m_argc(0),
     m_argv(NULL)
@@ -78,33 +78,33 @@ Profile::~Profile()
 
 //------------------------------------------------------------------------------
 
-void Profile::add( SPTR( Activater ) activater )
+void Profile::add( SPTR( Activater )activater )
 {
     m_activaters.push_back( activater );
 }
 
 //------------------------------------------------------------------------------
 
-void Profile::add( SPTR( Starter ) starter )
+void Profile::add( SPTR( Starter )starter )
 {
     m_starters.push_back( starter );
 }
 
 //------------------------------------------------------------------------------
 
-void Profile::add( SPTR( Stopper ) stopper )
+void Profile::add( SPTR( Stopper )stopper )
 {
     m_stoppers.push_back( stopper );
 }
 
 //------------------------------------------------------------------------------
-void Profile::add( SPTR( Initializer ) initializer )
+void Profile::add( SPTR( Initializer )initializer )
 {
     m_initializers.push_back(initializer);
 }
 
 //------------------------------------------------------------------------------
-void Profile::add( SPTR( Uninitializer ) uninitializer )
+void Profile::add( SPTR( Uninitializer )uninitializer )
 {
     m_uninitializers.push_back(uninitializer);
 }
@@ -120,8 +120,9 @@ void Profile::start()
     for( Runtime::ExtensionIterator i = rntm->extensionsBegin(); i != rntm->extensionsEnd(); ++i )
     {
         SPTR( Extension ) extension( *i );
-        OSLM_FATAL_IF( "Validation not ok for bundle = '" << extension->getBundle()->getIdentifier() << "'  (extension id = '" << extension->getIdentifier() << "' )",
-                extension->getBundle()->isEnable() && extension->validate() == Extension::Invalid );
+        OSLM_FATAL_IF(
+            "Validation not ok for bundle = '" << extension->getBundle()->getIdentifier() << "'  (extension id = '" << extension->getIdentifier() << "' )",
+            extension->getBundle()->isEnable() && extension->validate() == Extension::Invalid );
     }
 
     std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );
@@ -233,7 +234,7 @@ void Profile::setParams(const Profile::ParamsContainer &params)
     m_argv = new char*[m_params.size()];
 
     // for each string, allocate memory in the character array and copy
-    for (unsigned long i=0; i<m_params.size(); i++)
+    for (unsigned long i = 0; i<m_params.size(); i++)
     {
         size_t paramSize = m_params[i].size();
         m_argv[i] = new char[paramSize+1];

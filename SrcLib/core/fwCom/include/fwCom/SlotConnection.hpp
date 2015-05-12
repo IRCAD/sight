@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,26 +24,26 @@ struct SlotBase;
  * @brief Slot connection implementation.
  * This class is for internal use purpose.
  */
-template < typename ...A >
-struct SlotConnection< void (A...) > : SlotConnectionBase
+template < typename ... A >
+struct SlotConnection< void (A ...) > : SlotConnectionBase
 {
     /**
      * @name Typedefs
      * @{ */
-    typedef void SignatureType( A... );
+    typedef void SignatureType ( A ... );
     typedef SlotConnection< SignatureType > SelfType;
 
-    typedef SPTR( SelfType ) sptr;
+    typedef SPTR ( SelfType ) sptr;
 
     typedef Signal< SignatureType > SignalType;
-    typedef SPTR( SignalType )      SignalSptrType;
-    typedef WPTR( SignalType )      SignalWptrType;
+    typedef SPTR ( SignalType )      SignalSptrType;
+    typedef WPTR ( SignalType )      SignalWptrType;
 
     typedef SlotRun< SignatureType > SlotWrapperType;
-    typedef SPTR( SlotWrapperType )  SlotWrapperSptrType;
+    typedef SPTR ( SlotWrapperType )  SlotWrapperSptrType;
 
     typedef SlotRun< SignatureType > SlotRunType;
-    typedef SPTR( SlotRunType )      SlotRunSptrType;
+    typedef SPTR ( SlotRunType )      SlotRunSptrType;
 
     typedef std::pair< bool, SlotRunType* > PairType;
     /**  @} */
@@ -55,7 +55,7 @@ struct SlotConnection< void (A...) > : SlotConnectionBase
     static sptr New( const SignalSptrType &signal,
                      const SPTR( SlotBase ) &slot,
                      const SlotWrapperSptrType &slotWrapper
-                    );
+                     );
 
     /// Disconnect the related slot.
     void disconnect();
@@ -73,52 +73,52 @@ struct SlotConnection< void (A...) > : SlotConnectionBase
                     );
 
 
-protected:
+    protected:
 
-    template < typename F >
-    friend struct Signal;
+        template < typename F >
+        friend struct Signal;
 
-    /// Connect the related Signal and Slot together.
-    void connectNoLock();
+        /// Connect the related Signal and Slot together.
+        void connectNoLock();
 
 
-    /// *NOT THREAD SAFE* Disconnect the related signal.
-    void disconnectSignalNoLock(const SignalSptrType &sig);
+        /// *NOT THREAD SAFE* Disconnect the related signal.
+        void disconnectSignalNoLock(const SignalSptrType &sig);
 
-    /// *NOT THREAD SAFE* Disconnect the related slot.
-    void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
+        /// *NOT THREAD SAFE* Disconnect the related slot.
+        void disconnectSlotNoLock(const SPTR( SlotBase ) &slot);
 
-    /// *NOT THREAD SAFE* Disconnect the related slot and signal.
-    void disconnectWeakLock();
+        /// *NOT THREAD SAFE* Disconnect the related slot and signal.
+        void disconnectWeakLock();
 
-    /**
-     * @brief Returns a blocker on the connection.
-     * The connection is blocked until the returned shared pointer dies.
-     */
-    SlotConnectionBase::BlockerSptrType getBlocker();
+        /**
+         * @brief Returns a blocker on the connection.
+         * The connection is blocked until the returned shared pointer dies.
+         */
+        SlotConnectionBase::BlockerSptrType getBlocker();
 
-    /// Unblock this connection.
-    void unblock();
+        /// Unblock this connection.
+        void unblock();
 
-    /// Related Signal.
-    SignalWptrType m_signal;
+        /// Related Signal.
+        SignalWptrType m_signal;
 
-    /// Related Slot.
-    WPTR( SlotBase ) m_connectedSlot;
+        /// Related Slot.
+        WPTR( SlotBase ) m_connectedSlot;
 
-    /// Slot wrapper.
-    SlotWrapperSptrType m_slotWrapper;
+        /// Slot wrapper.
+        SlotWrapperSptrType m_slotWrapper;
 
-    /**
-     * @brief Associates state of this connection to related Slot.
-     * If m_pair.first is false, the connection is blocked.
-     */
-    PairType m_pair;
+        /**
+         * @brief Associates state of this connection to related Slot.
+         * If m_pair.first is false, the connection is blocked.
+         */
+        PairType m_pair;
 
-    /// Connection blocker.
-    SlotConnectionBase::BlockerWptrType m_weakBlocker;
+        /// Connection blocker.
+        SlotConnectionBase::BlockerWptrType m_weakBlocker;
 
-    mutable ::fwCore::mt::ReadWriteMutex m_mutex;
+        mutable ::fwCore::mt::ReadWriteMutex m_mutex;
 };
 
 

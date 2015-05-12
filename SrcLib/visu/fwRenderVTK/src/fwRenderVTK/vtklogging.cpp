@@ -1,3 +1,8 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2004-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #include <vtkObjectFactory.h>
 #include <vtkOutputWindow.h>
@@ -8,22 +13,22 @@ class vtkOutputWindowToSpyLog : public vtkOutputWindow
 {
 public:
 
-  vtkTypeRevisionMacro(vtkOutputWindowToSpyLog,vtkObject);
-  // Description:
-  // Print ObjectFactor to stream.
-  virtual void PrintSelf(ostream& os, vtkIndent indent);
+    vtkTypeRevisionMacro(vtkOutputWindowToSpyLog,vtkObject);
+    // Description:
+    // Print ObjectFactor to stream.
+    virtual void PrintSelf(ostream& os, vtkIndent indent);
 
-   static vtkOutputWindowToSpyLog* New();
+    static vtkOutputWindowToSpyLog* New();
 
-  virtual void DisplayText(const char*);
+    virtual void DisplayText(const char*);
 
 protected:
-  vtkOutputWindowToSpyLog();
-  virtual ~vtkOutputWindowToSpyLog();
-  
+    vtkOutputWindowToSpyLog();
+    virtual ~vtkOutputWindowToSpyLog();
+
 private:
-  vtkOutputWindowToSpyLog(const vtkOutputWindowToSpyLog&);  // Not implemented.
-  void operator=(const vtkOutputWindowToSpyLog&);  // Not implemented.
+    vtkOutputWindowToSpyLog(const vtkOutputWindowToSpyLog&); // Not implemented.
+    void operator=(const vtkOutputWindowToSpyLog&); // Not implemented.
 };
 
 
@@ -48,16 +53,16 @@ vtkOutputWindowToSpyLog::~vtkOutputWindowToSpyLog()
 
 void vtkOutputWindowToSpyLog::PrintSelf(ostream& os, vtkIndent indent)
 {
-  this->Superclass::PrintSelf(os, indent);
+    this->Superclass::PrintSelf(os, indent);
 
-  os << indent << "vtkOutputWindowToSpyLog" << std::endl;
+    os << indent << "vtkOutputWindowToSpyLog" << std::endl;
 }
 
 //------------------------------------------------------------------------------
 
 void vtkOutputWindowToSpyLog::DisplayText(const char* txt)
 {
-  OSLM_WARN("[VTK]: " << txt);
+    OSLM_WARN("[VTK]: " << txt);
 }
 
 //------------------------------------------------------------------------------

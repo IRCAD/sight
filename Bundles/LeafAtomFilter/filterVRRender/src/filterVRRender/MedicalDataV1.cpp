@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,10 +21,12 @@ namespace filterVRRender
 fwAtomsFilterRegisterMacro( ::filterVRRender::MedicalDataV1, "VRRenderMedicalDataV1" );
 
 MedicalDataV1::MedicalDataV1(::fwAtomsFilter::IFilter::Key key)
-{}
+{
+}
 
 MedicalDataV1::~MedicalDataV1()
-{}
+{
+}
 
 void clearMapAttribute(const std::string& key, const ::fwAtoms::Map::sptr& values)
 {
@@ -47,7 +49,7 @@ void MedicalDataV1::apply(const SPTR(::fwAtoms::Object)& atom)
 
     const std::string& classname = ::fwAtomsPatch::helper::getClassname(atom);
     FW_RAISE_IF("Unable to filter atom of class '" << classname << "'. Expected class is '::fwData::Composite'",
-            classname != "::fwData::Composite");
+                classname != "::fwData::Composite");
 
     ::fwAtoms::Map::sptr values = atom->getAttribute< ::fwAtoms::Map >("values");
     SLM_ASSERT("Failed to retrieve 'values' attribute as ::fwAtoms::Map", values);

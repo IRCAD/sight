@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,7 +29,7 @@ namespace fwCom
 template< typename A1, typename A2, typename A3 >
 void SlotBase::run(A1 a1, A2 a2, A3 a3) const
 {
-    typedef SlotRun< void(A1, A2, A3) > SlotFuncType;
+    typedef SlotRun< void (A1, A2, A3) > SlotFuncType;
     const SlotFuncType *fun = dynamic_cast< const SlotFuncType* >(this);
     if(fun)
     {
@@ -47,7 +47,7 @@ void SlotBase::run(A1 a1, A2 a2, A3 a3) const
 template< typename A1, typename A2 >
 void SlotBase::run(A1 a1, A2 a2) const
 {
-    typedef SlotRun< void(A1, A2) > SlotFuncType;
+    typedef SlotRun< void (A1, A2) > SlotFuncType;
     const SlotFuncType *fun = dynamic_cast< const SlotFuncType* >(this);
     if(fun)
     {
@@ -65,7 +65,7 @@ void SlotBase::run(A1 a1, A2 a2) const
 template< typename A1 >
 void SlotBase::run(A1 a1) const
 {
-    typedef SlotRun< void(A1) > SlotFuncType;
+    typedef SlotRun< void (A1) > SlotFuncType;
     const SlotFuncType *fun = dynamic_cast< const SlotFuncType* >(this);
     if(fun)
     {
@@ -152,7 +152,7 @@ R SlotBase::call() const
 template< typename A1, typename A2, typename A3 >
 SlotBase::VoidSharedFutureType SlotBase::asyncRun(A1 a1, A2 a2, A3 a3) const
 {
-    typedef SlotRun< void(A1, A2, A3) > SlotFuncType;
+    typedef SlotRun< void (A1, A2, A3) > SlotFuncType;
     const SlotFuncType *fun = dynamic_cast< const SlotFuncType* >(this);
     if(fun)
     {
@@ -160,7 +160,8 @@ SlotBase::VoidSharedFutureType SlotBase::asyncRun(A1 a1, A2 a2, A3 a3) const
     }
     else
     {
-        OSLM_ERROR(  "failed to asyncRun : " << m_signature << " with " << SlotBase::getTypeName< void(A1, A2, A3) >() );
+        OSLM_ERROR(  "failed to asyncRun : " << m_signature << " with " <<
+                     SlotBase::getTypeName< void(A1, A2, A3) >() );
         return this->asyncRun(a1,a2);
     }
 }
@@ -170,7 +171,7 @@ SlotBase::VoidSharedFutureType SlotBase::asyncRun(A1 a1, A2 a2, A3 a3) const
 template< typename A1, typename A2 >
 SlotBase::VoidSharedFutureType SlotBase::asyncRun(A1 a1, A2 a2) const
 {
-    typedef SlotRun< void(A1, A2) > SlotFuncType;
+    typedef SlotRun< void (A1, A2) > SlotFuncType;
     const SlotFuncType *fun = dynamic_cast< const SlotFuncType* >(this);
     if(fun)
     {
@@ -188,7 +189,7 @@ SlotBase::VoidSharedFutureType SlotBase::asyncRun(A1 a1, A2 a2) const
 template< typename A1 >
 SlotBase::VoidSharedFutureType SlotBase::asyncRun(A1 a1) const
 {
-    typedef SlotRun< void(A1) > SlotFuncType;
+    typedef SlotRun< void (A1) > SlotFuncType;
     const SlotFuncType *fun = dynamic_cast< const SlotFuncType* >(this);
     if(fun)
     {

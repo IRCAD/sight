@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWMATH_PLANEFUNCTIONS_HPP_
-#define _FWMATH_PLANEFUNCTIONS_HPP_
+#ifndef __FWMATH_PLANEFUNCTIONS_HPP__
+#define __FWMATH_PLANEFUNCTIONS_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -15,7 +15,8 @@
 #include "fwMath/config.hpp"
 #include "fwMath/MatrixFunctions.hpp"
 
-namespace fwMath {
+namespace fwMath
+{
 
 static const double EPSILON = 0.001;
 
@@ -100,4 +101,4 @@ FWMATH_API void transform(fwPlane& _plane, const fwMatrix4x4& _matrix);
 FWMATH_API void offset(fwPlane& _plane, double _offset);
 
 }
-#endif /* _FWMATH_PLANEFUNCTIONS_HPP_ */
+#endif /* __FWMATH_PLANEFUNCTIONS_HPP__ */

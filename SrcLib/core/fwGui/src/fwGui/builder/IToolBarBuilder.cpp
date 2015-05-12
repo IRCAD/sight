@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,7 @@
  * @file fwGui/builder/IToolBarBuilder.cpp
  * @brief This file defines the implementation of the interface class  for the toolbar builder.
  *
- * 
+ *
  * @date 2009-2010
  */
 
@@ -26,7 +26,7 @@ const IToolBarBuilder::RegistryKeyType IToolBarBuilder::REGISTRY_KEY = "::fwGui:
 
 //-----------------------------------------------------------------------------
 
-IToolBarBuilder::IToolBarBuilder(): m_aligment(TOP)
+IToolBarBuilder::IToolBarBuilder() : m_aligment(TOP)
 {
     m_toolBitmapSize = std::make_pair(32, 32);
 }
@@ -34,7 +34,8 @@ IToolBarBuilder::IToolBarBuilder(): m_aligment(TOP)
 //-----------------------------------------------------------------------------
 
 IToolBarBuilder::~IToolBarBuilder()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -51,15 +52,15 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
         {
             m_aligment = TOP;
         }
-        else  if (aligment == "bottom")
+        else if (aligment == "bottom")
         {
             m_aligment = BOTTOM;
         }
-        else  if (aligment == "right")
+        else if (aligment == "right")
         {
             m_aligment = RIGHT;
         }
-        else  if (aligment == "left")
+        else if (aligment == "left")
         {
             m_aligment = LEFT;
         }
@@ -69,8 +70,8 @@ void IToolBarBuilder::initialize( ::fwRuntime::ConfigurationElement::sptr config
         }
     }
 
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
-    for( iter = configuration->begin() ; iter != configuration->end() ; ++iter )
+    ::fwRuntime::ConfigurationElementContainer::Iterator iter;
+    for( iter = configuration->begin(); iter != configuration->end(); ++iter )
     {
         if( (*iter)->getName() == "toolBitmapSize" )
         {

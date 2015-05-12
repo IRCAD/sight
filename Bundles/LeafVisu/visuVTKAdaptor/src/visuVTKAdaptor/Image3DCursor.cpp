@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@
 
 #include "visuVTKAdaptor/Image3DCursor.hpp"
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image );
 
 
 namespace visuVTKAdaptor
@@ -54,7 +54,8 @@ Image3DCursor::Image3DCursor() throw() : m_priority(.6)
 //------------------------------------------------------------------------------
 
 Image3DCursor::~Image3DCursor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 void Image3DCursor::setVisibility( bool visibility )
@@ -92,7 +93,7 @@ void Image3DCursor::doStart() throw(fwTools::Failed)
     if ( img->getField("IMAGE3DCURSOR_RADIUS") && img->getField("IMAGE3DCURSOR_COLOR") )
     {
         ::fwData::Float::sptr radius = img->getField< ::fwData::Float >("IMAGE3DCURSOR_RADIUS");
-        ::fwData::Color::sptr color = img->getField< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
+        ::fwData::Color::sptr color  = img->getField< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
 
         this->buildPolyData(radius->value());
         m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
@@ -170,9 +171,9 @@ void Image3DCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools
 
     if ( msg->hasEvent( "NEW_SPHERE_CONFIG" ) )
     {
-        ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+        ::fwData::Image::sptr img    = this->getObject< ::fwData::Image >();
         ::fwData::Float::sptr radius = img->getField< ::fwData::Float >("IMAGE3DCURSOR_RADIUS");
-        ::fwData::Color::sptr color = img->getField< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
+        ::fwData::Color::sptr color  = img->getField< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
 
         m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
         buildPolyData(radius->value());

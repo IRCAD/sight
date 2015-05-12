@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for Vector : store modification information
  * @class   VectorMsg
- * 
+ *
  * @date    2005-2009.
  * @see     ::fwServices::ObjectMsg
  */
@@ -72,7 +72,7 @@ public:
      */
     FWCOMED_API ::fwData::Vector::sptr getRemovedObjects() const;
 
-private :
+private:
 
     /// Stores removed object from the vector
     ::fwData::Vector::sptr m_removedObjects;

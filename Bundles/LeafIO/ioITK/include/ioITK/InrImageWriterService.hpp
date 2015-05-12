@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,8 +24,8 @@ namespace ioITK
 class IOITK_CLASS_API InrImageWriterService : public ::io::IWriter
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (InrImageWriterService)( ::io::IWriter) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (InrImageWriterService)( ::io::IWriter) );
 
     IOITK_API InrImageWriterService() throw();
 
@@ -45,10 +45,12 @@ protected:
     IOITK_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
+    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+    {
+    }
 
     /// Override
-    IOITK_API void info(std::ostream &_sstream ) ;
+    IOITK_API void info(std::ostream &_sstream );
 
     /// Override
     IOITK_API virtual void configureWithIHM();

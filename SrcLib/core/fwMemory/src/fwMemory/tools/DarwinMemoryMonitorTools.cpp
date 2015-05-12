@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -59,15 +59,15 @@ DarwinMemoryMonitorTools::~DarwinMemoryMonitorTools()
     mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
 
     if (KERN_SUCCESS != task_info(mach_task_self(),
-                TASK_BASIC_INFO, (task_info_t)&t_info,
-                &t_info_count))
+                                  TASK_BASIC_INFO, (task_info_t)&t_info,
+                                  &t_info_count))
     {
         SLM_ASSERT("Failed to retrieve used process memory information", 0);
         return 0;
     }
 
     // Hard coded 3Gb limit for 32bit process
-    const ::boost::uint64_t maxMemory = 3221225472LL; // 3 Go
+    const ::boost::uint64_t maxMemory         = 3221225472LL; // 3 Go
     const ::boost::uint64_t usedProcessMemory = getUsedProcessMemory();
     freeMemory = std::min( maxMemory - usedProcessMemory, freeMemory);
     const ::boost::uint64_t maxVMemory = 4294967296LL; // 4 Go
@@ -80,12 +80,14 @@ DarwinMemoryMonitorTools::~DarwinMemoryMonitorTools()
 //-----------------------------------------------------------------------------
 
 void DarwinMemoryMonitorTools::printProcessMemoryInformation()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void DarwinMemoryMonitorTools::printSystemMemoryInformation()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -123,15 +125,15 @@ void DarwinMemoryMonitorTools::printMemoryInformation()
     vm_statistics_data_t vm_stats;
 
     mach_port = mach_host_self();
-    count = sizeof(vm_stats) / sizeof(natural_t);
+    count     = sizeof(vm_stats) / sizeof(natural_t);
     if (KERN_SUCCESS == host_page_size(mach_port, &page_size) &&
-            KERN_SUCCESS == host_statistics(mach_port, HOST_VM_INFO,
-                (host_info_t)&vm_stats, &count))
+        KERN_SUCCESS == host_statistics(mach_port, HOST_VM_INFO,
+                                        (host_info_t)&vm_stats, &count))
     {
         uint64_t used_memory = (
-                (int64_t)vm_stats.active_count +
-                (int64_t)vm_stats.wire_count
-                ) *  (int64_t)page_size;
+            (int64_t)vm_stats.active_count +
+            (int64_t)vm_stats.wire_count
+            ) *  (int64_t)page_size;
 
         return used_memory;
     }
@@ -149,15 +151,15 @@ void DarwinMemoryMonitorTools::printMemoryInformation()
     vm_statistics_data_t vm_stats;
 
     mach_port = mach_host_self();
-    count = sizeof(vm_stats) / sizeof(natural_t);
+    count     = sizeof(vm_stats) / sizeof(natural_t);
     if (KERN_SUCCESS == host_page_size(mach_port, &page_size) &&
-            KERN_SUCCESS == host_statistics(mach_port, HOST_VM_INFO,
-                (host_info_t)&vm_stats, &count))
+        KERN_SUCCESS == host_statistics(mach_port, HOST_VM_INFO,
+                                        (host_info_t)&vm_stats, &count))
     {
         uint64_t freeMemory = (
-                (int64_t)vm_stats.free_count +
-                (int64_t)vm_stats.inactive_count
-                ) * (int64_t)page_size;
+            (int64_t)vm_stats.free_count +
+            (int64_t)vm_stats.inactive_count
+            ) * (int64_t)page_size;
         return freeMemory;
     }
     SLM_ASSERT("Failed to retrieve free system memory information", 0);
@@ -172,8 +174,8 @@ void DarwinMemoryMonitorTools::printMemoryInformation()
     mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;
 
     if (KERN_SUCCESS != task_info(mach_task_self(),
-                TASK_BASIC_INFO, (task_info_t)&t_info,
-                &t_info_count))
+                                  TASK_BASIC_INFO, (task_info_t)&t_info,
+                                  &t_info_count))
     {
         SLM_ASSERT("Failed to retrieve used process memory information", 0);
         return 0;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,7 +37,8 @@ Image::Image( ::fwData::Image::sptr image )
 //-----------------------------------------------------------------------------
 
 Image::~Image()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -47,7 +48,8 @@ void Image::notify( ::fwServices::IService::sptr _serviceSource )
     {
         ::fwServices::IEditionService::notify( _serviceSource, m_image, m_imageMsg );
     }
-    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.", m_imageMsg->getEventIds().empty());
+    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
+                m_imageMsg->getEventIds().empty());
 }
 
 //------------------------------------------------------------------------------
@@ -57,7 +59,7 @@ bool Image::createLandmarks()
     bool fieldIsCreated = false;
 
     // Manage image landmarks
-    if ( ! m_image->getField( ::fwComEd::Dictionary::m_imageLandmarksId ) )
+    if ( !m_image->getField( ::fwComEd::Dictionary::m_imageLandmarksId ) )
     {
         ::fwData::PointList::sptr pl = ::fwData::PointList::New();
         m_image->setField( ::fwComEd::Dictionary::m_imageLandmarksId, pl );
@@ -72,13 +74,13 @@ bool Image::createLandmarks()
 
 bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSource)
 {
-    bool fieldIsCreated = false;
+    bool fieldIsCreated             = false;
     const std::string poolFieldName = ::fwComEd::Dictionary::m_transferFunctionCompositeId;
     ::fwData::Composite::sptr tfPool;
 
     tfPool = m_image->getField< ::fwData::Composite >(poolFieldName);
     // Transfer functions
-    if ( ! tfPool )
+    if ( !tfPool )
     {
         tfPool = ::fwData::Composite::New();
 
@@ -130,12 +132,15 @@ bool Image::createImageSliceIndex()
 
     const ::fwData::Image::SizeType &imageSize = m_image->getSize();
 
-    ::fwData::Integer::sptr axialIdx    = m_image->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId );
-    ::fwData::Integer::sptr frontalIdx  = m_image->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId);
-    ::fwData::Integer::sptr sagittalIdx = m_image->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId );
+    ::fwData::Integer::sptr axialIdx = m_image->getField< ::fwData::Integer >(
+        ::fwComEd::Dictionary::m_axialSliceIndexId );
+    ::fwData::Integer::sptr frontalIdx = m_image->getField< ::fwData::Integer >(
+        ::fwComEd::Dictionary::m_frontalSliceIndexId);
+    ::fwData::Integer::sptr sagittalIdx = m_image->getField< ::fwData::Integer >(
+        ::fwComEd::Dictionary::m_sagittalSliceIndexId );
 
     // Manage image slice index
-    if ( ! (axialIdx && frontalIdx && sagittalIdx) )
+    if ( !(axialIdx && frontalIdx && sagittalIdx) )
     {
         // Set value
         axialIdx = ::fwData::Integer::New(-1);
@@ -152,28 +157,28 @@ bool Image::createImageSliceIndex()
 
 
     SLM_ASSERT (
-            "Information on image slice index is not correct, miss one of these fields : "
-            "m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.",
-            axialIdx && frontalIdx && sagittalIdx
-            );
+        "Information on image slice index is not correct, miss one of these fields : "
+        "m_axialSliceIndexId, m_frontalSliceIndexId, m_sagittalSliceIndexId.",
+        axialIdx && frontalIdx && sagittalIdx
+        );
 
     // Get value
     if( axialIdx->value() < 0 ||  imageSize[2] < axialIdx->value() )
     {
         axialIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[2] / 2);
-        fieldIsCreated = true;
+        fieldIsCreated    = true;
     }
 
     if( frontalIdx->value() < 0 ||  imageSize[1] < frontalIdx->value() )
     {
         frontalIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[1] / 2);
-        fieldIsCreated = true;
+        fieldIsCreated      = true;
     }
 
     if( sagittalIdx->value() < 0 ||  imageSize[0] < sagittalIdx->value() )
     {
         sagittalIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[0] / 2);
-        fieldIsCreated = true;
+        fieldIsCreated       = true;
     }
 
     return fieldIsCreated;
@@ -190,7 +195,7 @@ void * Image::getBuffer()
 
 void* Image::getPixelBuffer( SizeType::value_type x, SizeType::value_type y, SizeType::value_type z )
 {
-    SizeType size = m_image->getSize();
+    SizeType size    = m_image->getSize();
     IndexType offset = x + size[0]*y + z*size[0]*size[1];
     return this->getPixelBuffer(offset);
 }
@@ -200,14 +205,14 @@ void* Image::getPixelBuffer( SizeType::value_type x, SizeType::value_type y, Siz
 void* Image::getPixelBuffer( IndexType index )
 {
     ::boost::uint8_t imagePixelSize = m_image->getType().sizeOf();
-    BufferType * buf = static_cast < BufferType * > (this->getBuffer());
+    BufferType * buf         = static_cast < BufferType * > (this->getBuffer());
     BufferIndexType bufIndex = index * imagePixelSize;
     return buf + bufIndex;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setPixelBuffer( IndexType index , Image::BufferType * pixBuf)
+void Image::setPixelBuffer( IndexType index, Image::BufferType * pixBuf)
 {
     ::boost::uint8_t imagePixelSize = m_image->getType().sizeOf();
     BufferType * buf = static_cast < BufferType * > (this->getPixelBuffer(index));

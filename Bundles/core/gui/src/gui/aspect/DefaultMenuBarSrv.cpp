@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@
 #include "gui/aspect/DefaultMenuBarSrv.hpp"
 
 
-fwServicesRegisterMacro( ::fwGui::IMenuBarSrv , ::gui::aspect::DefaultMenuBarSrv , ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IMenuBarSrv, ::gui::aspect::DefaultMenuBarSrv, ::fwData::Object );
 
 namespace gui
 {
@@ -30,12 +30,14 @@ namespace aspect
 //-----------------------------------------------------------------------------
 
 DefaultMenuBarSrv::DefaultMenuBarSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 DefaultMenuBarSrv::~DefaultMenuBarSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

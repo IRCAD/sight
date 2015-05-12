@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_REGISTRAR_MENUBARREGISTRYMANAGER_HPP_
-#define _FWGUI_REGISTRAR_MENUBARREGISTRYMANAGER_HPP_
+#ifndef __FWGUI_REGISTRAR_MENUBARREGISTRAR_HPP__
+#define __FWGUI_REGISTRAR_MENUBARREGISTRAR_HPP__
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -22,7 +22,7 @@ namespace registrar
 /**
  * @brief   Defines the menuBar registrar for IHM.
  * @class   MenuBarRegistrar
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -31,7 +31,8 @@ class FWGUI_CLASS_API MenuBarRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new MenuBarRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (MenuBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )),
+                                            new MenuBarRegistrar );
 
     /// Constructor.
     FWGUI_API MenuBarRegistrar( const std::string &sid);
@@ -47,14 +48,15 @@ public:
      * @param menuSid sid of the menu service
      * @param menus  vector containing the fwMenu manages by this registrar.
      */
-    FWGUI_API virtual ::fwGui::container::fwMenu::sptr getFwMenu(std::string menuSid, std::vector< ::fwGui::container::fwMenu::sptr > menus);
+    FWGUI_API virtual ::fwGui::container::fwMenu::sptr getFwMenu(std::string menuSid,
+                                                                 std::vector< ::fwGui::container::fwMenu::sptr > menus);
 
     /**
      * @brief Initialize registry managers.
      *
      * Example of configuration
      * @verbatim
-      <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+       <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
           <gui>
               <layout>
                   <menu name="My Menu"/>
@@ -65,7 +67,7 @@ public:
               <menu sid="myMenu" start="yes" />
               <menu sid="myMenu2" start="yes" />
           </registry>
-      </service>
+       </service>
        @endverbatim
      * This method analyzes the registry section of the configuration.
      *  - \<menu sid="myMenu" start="yes" /\> : define the service of the menu to add in the menu bar.
@@ -108,6 +110,6 @@ protected:
 } // namespace registrar
 } // namespace fwGui
 
-#endif /*_FWGUI_REGISTRAR_MENUBARREGISTRYMANAGER_HPP_*/
+#endif /*__FWGUI_REGISTRAR_MENUBARREGISTRAR_HPP__*/
 
 

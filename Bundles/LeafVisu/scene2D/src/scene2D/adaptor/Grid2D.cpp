@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,7 @@
 #include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/data/ViewportMsg.hpp"
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Grid2D  , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Grid2D, ::fwData::Composite );
 
 
 namespace scene2D
@@ -85,20 +85,20 @@ void Grid2D::draw()
 
     // Calculate the start, end and step on x for the lines
     const float xStartVal = getXStartVal();    // Allows to start drawing the grid from 0 with the correct step
-    const float xEndVal = getXEndVal();      // Allows to start drawing the grid from 0 with the correct step
+    const float xEndVal   = getXEndVal();    // Allows to start drawing the grid from 0 with the correct step
 
     // Calculate the start, end and step on y for the lines
     const float yStartVal = getYStartVal();    // Allows to start drawing the grid from 0 with the correct step
-    const float yEndVal = getYEndVal();        // Allows to start drawing the grid from 0 with the correct step
+    const float yEndVal   = getYEndVal();      // Allows to start drawing the grid from 0 with the correct step
 
     // Holds the current computed coordinates:
     std::pair< double, double > coord1, coord2;
 
     // Draw the horizontal lines
-    for ( float yVal = yStartVal ; yVal <= yEndVal ; yVal += m_ySpacing )
+    for ( float yVal = yStartVal; yVal <= yEndVal; yVal += m_ySpacing )
     {
-        coord1 = this->mapAdaptorToScene( std::pair< double, double >( xStartVal, yVal) , m_xAxis, m_yAxis );
-        coord2 = this->mapAdaptorToScene( std::pair< double, double >( xEndVal, yVal) , m_xAxis, m_yAxis );
+        coord1 = this->mapAdaptorToScene( std::pair< double, double >( xStartVal, yVal), m_xAxis, m_yAxis );
+        coord2 = this->mapAdaptorToScene( std::pair< double, double >( xEndVal, yVal), m_xAxis, m_yAxis );
 
         QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
 
@@ -108,10 +108,10 @@ void Grid2D::draw()
     }
 
     // Draw the vertical lines
-    for ( float xVal = xStartVal ; xVal <= xEndVal ; xVal += m_xSpacing )
+    for ( float xVal = xStartVal; xVal <= xEndVal; xVal += m_xSpacing )
     {
-        coord1 = this->mapAdaptorToScene(std::pair< double, double >( xVal, yStartVal) , m_xAxis, m_yAxis);
-        coord2 = this->mapAdaptorToScene(std::pair< double, double >( xVal, yEndVal) , m_xAxis, m_yAxis);
+        coord1 = this->mapAdaptorToScene(std::pair< double, double >( xVal, yStartVal), m_xAxis, m_yAxis);
+        coord2 = this->mapAdaptorToScene(std::pair< double, double >( xVal, yEndVal), m_xAxis, m_yAxis);
 
         QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
 
@@ -121,7 +121,7 @@ void Grid2D::draw()
     }
 
     // Add the lines contained in the lines vector to the layer
-    for ( unsigned int i = 0 ; i < m_lines.size() ; i++)
+    for ( unsigned int i = 0; i < m_lines.size(); i++)
     {
         m_layer->addToGroup(m_lines.at(i));
     }

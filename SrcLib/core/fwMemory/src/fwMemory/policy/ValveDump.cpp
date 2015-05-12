@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ ValveDump::ValveDump() :
 //------------------------------------------------------------------------------
 
 void ValveDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType size )
+                                   BufferInfo::SizeType size )
 {
     FwCoreNotUsedMacro(buffer);
     this->apply((size > info.size) ? size - info.size : 0);
@@ -54,7 +54,7 @@ void ValveDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::
 //------------------------------------------------------------------------------
 
 void ValveDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType size )
+                            BufferInfo::SizeType size )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -65,7 +65,7 @@ void ValveDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBu
 //------------------------------------------------------------------------------
 
 void ValveDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType newSize )
+                                   BufferInfo::SizeType newSize )
 {
     FwCoreNotUsedMacro(buffer);
     this->apply((newSize > info.size) ? newSize - info.size : 0);
@@ -131,8 +131,8 @@ size_t ValveDump::dump(size_t nbOfBytes)
         const ::fwMemory::BufferManager::BufferInfoMapType bufferInfos = manager->getBufferInfos().get();
 
         typedef std::pair<
-            fwMemory::BufferManager::BufferInfoMapType::key_type,
-            fwMemory::BufferManager::BufferInfoMapType::mapped_type
+                fwMemory::BufferManager::BufferInfoMapType::key_type,
+                fwMemory::BufferManager::BufferInfoMapType::mapped_type
                 > BufferInfosPairType;
         typedef std::vector< BufferInfosPairType > BufferVectorType;
 
@@ -141,7 +141,7 @@ size_t ValveDump::dump(size_t nbOfBytes)
         BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, bufferInfos)
         {
             const ::fwMemory::BufferInfo &info = elt.second;
-            if( ! ( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
+            if( !( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
             {
                 buffers.push_back(elt);
             }
@@ -173,7 +173,9 @@ void ValveDump::apply(size_t supplement)
 {
     if(this->needDump(supplement))
     {
-        this->dump( (m_minFreeMem + m_hysteresisOffset + supplement) - ::fwMemory::tools::MEMORYTOOLIMPL::getFreeSystemMemory() );
+        this->dump(
+            (m_minFreeMem + m_hysteresisOffset + supplement) -
+            ::fwMemory::tools::MEMORYTOOLIMPL::getFreeSystemMemory() );
     }
 }
 
@@ -218,7 +220,7 @@ const fwMemory::IPolicy::ParamNamesType &ValveDump::getParamNames() const
 {
     static const fwMemory::IPolicy::ParamNamesType params
         = ::boost::assign::list_of ("min_free_mem")
-                                   ("hysteresis_offet");
+              ("hysteresis_offet");
     return params;
 }
 
@@ -231,12 +233,12 @@ std::string ValveDump::getParam(const std::string &name, bool *ok ) const
     if(name == "min_free_mem")
     {
         value = std::string(::fwMemory::ByteSize( ::fwMemory::ByteSize::SizeType(m_minFreeMem) ));
-        isOk = true;
+        isOk  = true;
     }
     else if(name == "hysteresis_offet")
     {
         value = std::string(::fwMemory::ByteSize( ::fwMemory::ByteSize::SizeType(m_hysteresisOffset) ));
-        isOk = true;
+        isOk  = true;
     }
     if (ok)
     {

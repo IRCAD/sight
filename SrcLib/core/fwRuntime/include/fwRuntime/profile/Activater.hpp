@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_PROFILE_ACTIVATER_HPP_
-#define _FWRUNTIME_PROFILE_ACTIVATER_HPP_
+#ifndef __FWRUNTIME_PROFILE_ACTIVATER_HPP__
+#define __FWRUNTIME_PROFILE_ACTIVATER_HPP__
 
 #include <map>
 #include <vector>
@@ -29,7 +29,7 @@ namespace profile
  * @brief   Activates a given bundle with optional parameters.
  * @class  Activater
  * @date    2007-2009.
- * 
+ *
  */
 class Activater : public boost::noncopyable
 {
@@ -81,12 +81,12 @@ private:
     typedef std::vector< std::string >              DisableExtensionContainer;
 
 
-    const std::string               m_identifier;               ///< a bundle identifier
-    const Version                   m_version;                  ///< a bundle version
+    const std::string m_identifier;                             ///< a bundle identifier
+    const Version m_version;                                    ///< a bundle version
 
-    ParameterContainer              m_parameters;               ///< all parameters
-    DisableExtensionPointContainer  m_disableExtensionPoints;   ///< all disable extension points
-    DisableExtensionContainer       m_disableExtensions;        ///< all disable extensions
+    ParameterContainer m_parameters;                            ///< all parameters
+    DisableExtensionPointContainer m_disableExtensionPoints;    ///< all disable extension points
+    DisableExtensionContainer m_disableExtensions;              ///< all disable extensions
 
 };
 
@@ -98,4 +98,4 @@ private:
 
 
 
-#endif /*_FWRUNTIME_PROFILE_ACTIVATER_HPP_*/
+#endif /*__FWRUNTIME_PROFILE_ACTIVATER_HPP__*/

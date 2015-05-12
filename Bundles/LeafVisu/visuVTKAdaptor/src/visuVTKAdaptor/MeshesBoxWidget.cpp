@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,8 +46,12 @@ public:
         return cb;
     }
 
-    MeshesBoxClallback() : m_adaptor(NULL) {}
-    ~MeshesBoxClallback() {}
+    MeshesBoxClallback() : m_adaptor(NULL)
+    {
+    }
+    ~MeshesBoxClallback()
+    {
+    }
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )
     {
@@ -59,7 +63,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshesBoxWidget, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshesBoxWidget, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
@@ -172,7 +176,7 @@ void MeshesBoxWidget::doStop() throw(fwTools::Failed)
 
 void MeshesBoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg ) ;
+    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg );
     if (compositeMsg)
     {
         if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS))
@@ -216,7 +220,7 @@ void MeshesBoxWidget::updateFromVtk()
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
     vtkBoxRepresentation *boxRep = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
-    vtkTransform * boxTransform = vtkTransform::New();
+    vtkTransform * boxTransform  = vtkTransform::New();
     boxRep->GetTransform(boxTransform);
 
     BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
@@ -226,22 +230,22 @@ void MeshesBoxWidget::updateFromVtk()
         SLM_ASSERT("Mesh must have a TransformMatrix field", mesh->getField("TransformMatrix"));
         fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
 
-        vtkTransform * transform = vtkTransform::New();
+        vtkTransform * transform           = vtkTransform::New();
         vtkLinearTransform * meshTransform = m_meshMap[elt.first]->GetUserTransform();
         transform->Concatenate(boxTransform);
         transform->Concatenate(meshTransform);
 
         vtkMatrix4x4* mat = transform->GetMatrix();
-        for(int lt=0; lt<4; lt++)
+        for(int lt = 0; lt<4; lt++)
         {
-            for(int ct=0; ct<4; ct++)
+            for(int ct = 0; ct<4; ct++)
             {
                 fieldTransform->setCoefficient(lt,ct, mat->GetElement(lt,ct));
             }
         }
 
         ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-        msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
+        msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
         ::fwServices::IEditionService::notify(this->getSptr(), fieldTransform, msg);
         transform->Delete();
     }
@@ -267,9 +271,9 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
 
         vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
 
-        for(int lt=0; lt<4; lt++)
+        for(int lt = 0; lt<4; lt++)
         {
-            for(int ct=0; ct<4; ct++)
+            for(int ct = 0; ct<4; ct++)
             {
                 matrix->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
             }
@@ -286,7 +290,7 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
         if (m_meshMap.find(elt.first) == m_meshMap.end())
         {
             ::fwCom::Connection connection = fieldTransform->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->
-                                connect(this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+                                             connect(this->slot(::fwServices::IService::s_RECEIVE_SLOT));
             m_connections[elt.first] = connection;
         }
 
@@ -312,9 +316,9 @@ void MeshesBoxWidget::updateMeshTransform()
 
         vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
 
-        for(int lt=0; lt<4; lt++)
+        for(int lt = 0; lt<4; lt++)
         {
-            for(int ct=0; ct<4; ct++)
+            for(int ct = 0; ct<4; ct++)
             {
                 matrix->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
             }

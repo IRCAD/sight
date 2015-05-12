@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ namespace uiMedData
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController , ::uiMedData::SSeriesViewer , ::fwData::Vector);
+fwServicesRegisterMacro( ::fwServices::IController, ::uiMedData::SSeriesViewer, ::fwData::Vector);
 
 //------------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ void SSeriesViewer::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
     ::fwComEd::VectorMsg::csptr vectorMsg = ::fwComEd::VectorMsg::dynamicConstCast(msg);
 
     if ( vectorMsg && (vectorMsg->hasEvent( ::fwComEd::VectorMsg::ADDED_OBJECTS )
-                      || vectorMsg->hasEvent( ::fwComEd::VectorMsg::REMOVED_OBJECTS ) ))
+                       || vectorMsg->hasEvent( ::fwComEd::VectorMsg::REMOVED_OBJECTS ) ))
     {
         this->updating();
     }
@@ -95,20 +95,20 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
     if(vector->size() == 1)
     {
         ::fwData::Object::sptr obj = vector->front();
-        std::string classname = obj->getClassname();
+        std::string classname             = obj->getClassname();
         SeriesConfigMapType::iterator itr = m_seriesConfigs.find(classname);
 
         if(itr != m_seriesConfigs.end())
         {
             SeriesConfigInfo info = itr->second;
-            std::string configId =  info.configId;
+            std::string configId  = info.configId;
 
             std::map< std::string, std::string > replaceMap;
             // Generate generic UID
             std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( this->getID() );
             replaceMap["GENERIC_UID"] = genericUidAdaptor;
-            replaceMap["WID_PARENT"] = m_parentView;
-            replaceMap["objectID"] = obj->getID();
+            replaceMap["WID_PARENT"]  = m_parentView;
+            replaceMap["objectID"]    = obj->getID();
 
             BOOST_FOREACH(const ReplaceValuesMapType::value_type &elt, info.extractValues)
             {
@@ -126,7 +126,7 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
 
             // Init manager
             ::fwRuntime::ConfigurationElement::csptr config =
-                   ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceMap );
+                ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceMap );
             m_configTemplateManager = ::fwServices::AppConfigManager::New();
             m_configTemplateManager->setConfig( config );
 

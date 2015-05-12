@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,8 @@ PushObjectSrv::PushObjectSrv() throw()
 //------------------------------------------------------------------------------
 
 PushObjectSrv::~PushObjectSrv() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -51,12 +52,14 @@ void PushObjectSrv::starting() throw(::fwTools::Failed)
         src_uid = valElt.first;
         SLM_TRACE("start check : " + src_uid );
         OSLM_ASSERT( src_uid << " doesn't exist", ::fwTools::fwID::exist(src_uid) );
-        ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( src_uid ) );
+        ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject(
+                                                                                        src_uid ) );
         OSLM_ASSERT("fwData::Composite dynamicCast failed for "<<src_uid, composite_src);
         BOOST_FOREACH(SrcKeyMapType::key_type keyElt, valElt.second )
         {
             executable &= (composite_src->find(keyElt)!= composite_src->end());
-            OSLM_TRACE("start check : " << src_uid << "[" << keyElt << "] : " <<(composite_src->find(keyElt)!= composite_src->end()) );
+            OSLM_TRACE("start check : " << src_uid << "[" << keyElt << "] : " <<
+                       (composite_src->find(keyElt)!= composite_src->end()) );
         }
     }
     this->::fwGui::IActionSrv::setIsExecutable( executable );
@@ -115,17 +118,18 @@ void PushObjectSrv::updating() throw(::fwTools::Failed)
     std::string key("");
     BOOST_FOREACH(DestKeyMapType::value_type elt, m_key2src )
     {
-        key = elt.first;
+        key     = elt.first;
         src_uid = elt.second.first;
         src_key = elt.second.second;
         OSLM_ASSERT( src_uid << " doesn't exist", ::fwTools::fwID::exist(src_uid) );
-        ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( src_uid ) );
+        ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject(
+                                                                                        src_uid ) );
         OSLM_ASSERT("fwData::Composite dynamicCast failed for "<<src_uid, composite_src);
 
 
         ::fwData::Composite::const_iterator iter = composite_src->find(src_key);
 
-        OSLM_WARN_IF("'" << src_key << "' not found in composite '" << src_uid << "'" ,iter == composite_src->end());
+        OSLM_WARN_IF("'" << src_key << "' not found in composite '" << src_uid << "'",iter == composite_src->end());
         if (iter != composite_src->end())
         {
             ::fwData::Object::sptr obj = composite_src->getContainer()[src_key];
@@ -157,15 +161,16 @@ void PushObjectSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
         src_uid = valElt.first;
         SLM_TRACE("check : " + src_uid);
         if( src_uid == subject->getID() &&
-                ( msg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) ||
-                  msg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS))  )
+            ( msg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) ||
+              msg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS))  )
         {
             ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( subject );
             OSLM_ASSERT("fwData::Composite dynamicCast failed for "<<src_uid, composite_src);
             BOOST_FOREACH(SrcKeyMapType::key_type keyElt, valElt.second )
             {
                 executable &= (composite_src->find(keyElt)!= composite_src->end());
-                OSLM_TRACE("check : " << src_uid << "[" << keyElt << "] : " << (composite_src->find(keyElt)!= composite_src->end()) );
+                OSLM_TRACE("check : " << src_uid << "[" << keyElt << "] : " <<
+                           (composite_src->find(keyElt)!= composite_src->end()) );
             }
         }
     }
@@ -177,7 +182,8 @@ void PushObjectSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
 //------------------------------------------------------------------------------
 
 void PushObjectSrv::info( std::ostream &_sstream )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

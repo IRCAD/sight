@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,33 +37,38 @@ namespace opVTKMesh
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::opVTKMesh::IMesher , ::opVTKMesh::SVTKMesher , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::opVTKMesh::IMesher, ::opVTKMesh::SVTKMesher, ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
 SVTKMesher::SVTKMesher() throw() :
     m_reduction(0)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 SVTKMesher::~SVTKMesher() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SVTKMesher::starting() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SVTKMesher::stopping() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SVTKMesher::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -79,12 +84,12 @@ void SVTKMesher::configuring() throw ( ::fwTools::Failed )
     SLM_ASSERT("You must have one <image/> element.", config.count("image") == 1);
     SLM_ASSERT("You must have one <modelSeries/> element.", config.count("modelSeries") == 1);
 
-    const ::fwServices::IService::ConfigType& reductionCfg = config.get_child("percentReduction");
-    const ::fwServices::IService::ConfigType& imageCfg = config.get_child("image");
+    const ::fwServices::IService::ConfigType& reductionCfg   = config.get_child("percentReduction");
+    const ::fwServices::IService::ConfigType& imageCfg       = config.get_child("image");
     const ::fwServices::IService::ConfigType& modelSeriesCfg = config.get_child("modelSeries");
 
-    m_reduction = reductionCfg.get_value<unsigned int>();
-    m_imageKey = imageCfg.get_value<std::string>();
+    m_reduction      = reductionCfg.get_value<unsigned int>();
+    m_imageKey       = imageCfg.get_value<std::string>();
     m_modelSeriesKey = modelSeriesCfg.get_value<std::string>();
 }
 
@@ -92,8 +97,8 @@ void SVTKMesher::configuring() throw ( ::fwTools::Failed )
 
 void SVTKMesher::updating() throw ( ::fwTools::Failed )
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    ::fwData::Composite::iterator iterImg = composite->find(m_imageKey);
+    ::fwData::Composite::sptr composite           = this->getObject< ::fwData::Composite >();
+    ::fwData::Composite::iterator iterImg         = composite->find(m_imageKey);
     ::fwData::Composite::iterator iterModelSeries = composite->find(m_modelSeriesKey);
 
     SLM_ASSERT("Key '"+m_imageKey+"' not found in composite.", iterImg != composite->end());
@@ -120,7 +125,8 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
     contourFilter->Update();
 
     // smooth filter
-    vtkSmartPointer< vtkWindowedSincPolyDataFilter > smoothFilter = vtkSmartPointer< vtkWindowedSincPolyDataFilter >::New();
+    vtkSmartPointer< vtkWindowedSincPolyDataFilter > smoothFilter =
+        vtkSmartPointer< vtkWindowedSincPolyDataFilter >::New();
     smoothFilter->SetInputConnection(contourFilter->GetOutputPort());
     smoothFilter->SetNumberOfIterations( 50 );
     smoothFilter->BoundarySmoothingOn();
@@ -175,14 +181,15 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
 
     /// Notification
     ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
-    msg->addEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION ) ;
+    msg->addEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION );
     ::fwServices::IEditionService::notify( this->getSptr(), modelSeries, msg );
 }
 
 //-----------------------------------------------------------------------------
 
 void SVTKMesher::info ( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

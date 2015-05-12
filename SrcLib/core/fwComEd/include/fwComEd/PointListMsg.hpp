@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_POINTLISTMSG_HPP_
-#define _FWCOMED_POINTLISTMSG_HPP_
+#ifndef __FWCOMED_POINTLISTMSG_HPP__
+#define __FWCOMED_POINTLISTMSG_HPP__
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for PointList : store modification information
  * @class   PointListMsg
- * 
+ *
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */
@@ -55,5 +55,5 @@ public:
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_POINTLISTMSG_HPP_
+#endif //__FWCOMED_POINTLISTMSG_HPP__
 

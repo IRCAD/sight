@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_RECONSTRUCTION_HPP_
-#define _VISUVTKADAPTOR_RECONSTRUCTION_HPP_
+#ifndef __VISUVTKADAPTOR_RECONSTRUCTION_HPP__
+#define __VISUVTKADAPTOR_RECONSTRUCTION_HPP__
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -17,20 +17,26 @@
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API Reconstruction: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Reconstruction : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Reconstruction)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Reconstruction)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Reconstruction() throw();
 
     VISUVTKADAPTOR_API virtual ~Reconstruction() throw();
 
-    void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id){ m_clippingPlanesId = id ; }
+    void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id)
+    {
+        m_clippingPlanesId = id;
+    }
 
-    void setSharpEdgeAngle(double angle){ m_sharpEdgeAngle = angle; }
+    void setSharpEdgeAngle(double angle)
+    {
+        m_sharpEdgeAngle = angle;
+    }
 
     VISUVTKADAPTOR_API void setForceHide(bool hide);
 
@@ -41,7 +47,10 @@ public:
     VISUVTKADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
 
     /// Retrieve a weak_ptr on underlying mesh adaptor service
-    ::fwRenderVTK::IVtkAdaptorService::wptr getMeshService() const { return m_meshService; }
+    ::fwRenderVTK::IVtkAdaptorService::wptr getMeshService() const
+    {
+        return m_meshService;
+    }
 
 protected:
 
@@ -60,10 +69,10 @@ protected:
 
     ::fwRenderVTK::IVtkAdaptorService::wptr m_meshService;
 
-    double      m_sharpEdgeAngle;
+    double m_sharpEdgeAngle;
 
 private:
-    bool   m_autoResetCamera;
+    bool m_autoResetCamera;
 };
 
 
@@ -71,4 +80,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_RECONSTRUCTION_HPP_
+#endif // __VISUVTKADAPTOR_RECONSTRUCTION_HPP__

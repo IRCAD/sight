@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,19 +33,20 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
-        m_style(::fwGui::dialog::ILocationDialog::NONE),
-        m_type(::fwGui::dialog::ILocationDialog::SINGLE_FILE)
-{}
+    m_style(::fwGui::dialog::ILocationDialog::NONE),
+    m_type(::fwGui::dialog::ILocationDialog::SINGLE_FILE)
+{
+}
 
 //------------------------------------------------------------------------------
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
-    QWidget *parent = qApp->activeWindow();
-    QString caption = QString::fromStdString(this->getTitle());
+    QWidget *parent                             = qApp->activeWindow();
+    QString caption                             = QString::fromStdString(this->getTitle());
     const ::boost::filesystem::path defaultPath = this->getDefaultLocation();
-    QString path = QString::fromStdString(defaultPath.string());
-    QString filter = this->fileFilters();
+    QString path                                = QString::fromStdString(defaultPath.string());
+    QString filter                              = this->fileFilters();
     ::fwData::location::ILocation::sptr location;
 
     if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
@@ -69,7 +70,8 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     else if (m_type == ::fwGui::dialog::ILocationDialog::SINGLE_FILE)
     {
         QString fileName;
-        if ( (m_style & ::fwGui::dialog::ILocationDialog::READ) || (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST) )
+        if ( (m_style & ::fwGui::dialog::ILocationDialog::READ) ||
+             (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST) )
         {
             fileName = QFileDialog::getOpenFileName(parent, caption, path, filter);
 
@@ -87,7 +89,8 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     }
     else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
     {
-        QString dir = QFileDialog::getExistingDirectory(parent, caption, path, QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        QString dir = QFileDialog::getExistingDirectory(parent, caption, path,
+                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
         if(!dir.isNull())
         {
             ::boost::filesystem::path bpath( dir.toStdString()  );
@@ -110,17 +113,19 @@ void LocationDialog::setType( ::fwGui::dialog::ILocationDialog::Types type )
 {
     if ( option == ::fwGui::dialog::ILocationDialog::WRITE )
     {
-        m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style & ~ ::fwGui::dialog::ILocationDialog::READ) ;
+        m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style & ~::fwGui::dialog::ILocationDialog::READ);
         m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style | ::fwGui::dialog::ILocationDialog::WRITE);
     }
     else if ( option == ::fwGui::dialog::ILocationDialog::READ )
     {
-        m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style & ~::fwGui::dialog::ILocationDialog::WRITE) ;
-        m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style | ::fwGui::dialog::ILocationDialog::READ) ;
+        m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style & ~::fwGui::dialog::ILocationDialog::WRITE);
+        m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style | ::fwGui::dialog::ILocationDialog::READ);
     }
     else if ( option == ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST )
     {
-        m_style = (::fwGui::dialog::ILocationDialog::Options) (m_style | ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST)  ;
+        m_style =
+            (::fwGui::dialog::ILocationDialog::Options) (m_style |
+                                                         ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
     }
 
     return *this;
@@ -143,14 +148,14 @@ QString LocationDialog::fileFilters()
     std::vector< std::pair < std::string, std::string > >::const_iterator iter;
     for ( iter = m_filters.begin(); iter!= m_filters.end(); ++iter)
     {
-        std::string filterName = iter->first;
+        std::string filterName   = iter->first;
         std::string rawWildcards = iter->second;
 
         if (iter!=m_filters.begin() )
         {
             result += ";;";
         }
-        result += filterName +" (" +  rawWildcards +")" ;
+        result += filterName +" (" +  rawWildcards +")";
     }
     return QString::fromStdString(result);
 }

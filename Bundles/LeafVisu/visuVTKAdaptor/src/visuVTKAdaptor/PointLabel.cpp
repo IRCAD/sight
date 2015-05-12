@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@
 #include <sstream>
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointLabel, ::fwData::Point ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointLabel, ::fwData::Point );
 
 namespace visuVTKAdaptor
 {
@@ -57,7 +57,7 @@ void PointLabel::doUpdate() throw(::fwTools::Failed)
 {
     ::fwData::Point::sptr point = this->getObject< ::fwData::Point >();
 
-    std::string label = point->getField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New())->value() ;
+    std::string label = point->getField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New())->value();
 
     setText( label );
 

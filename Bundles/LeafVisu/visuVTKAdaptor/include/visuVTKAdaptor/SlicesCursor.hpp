@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_SLICESCURSOR_HPP_
-#define _VISUVTKADAPTOR_SLICECURSOR_HPP_
+#ifndef __VISUVTKADAPTOR_SLICESCURSOR_HPP__
+#define __VISUVTKADAPTOR_SLICESCURSOR_HPP__
 
 #include <fwData/Image.hpp>
 
@@ -24,17 +24,18 @@ namespace visuVTKAdaptor
 {
 
 
-class VISUVTKADAPTOR_CLASS_API SlicesCursor: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
+class VISUVTKADAPTOR_CLASS_API SlicesCursor : public ::fwComEd::helper::MedicalImageAdaptor,
+                                              public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SlicesCursor)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SlicesCursor)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API SlicesCursor()  throw();
 
     VISUVTKADAPTOR_API virtual ~SlicesCursor()  throw();
 
-protected :
+protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
@@ -57,22 +58,20 @@ protected :
     vtkPolyDataMapper   *m_cursorMapper;
     vtkActor            *m_cursorActor;
     float m_scale;
-    bool  m_isSelected;
+    bool m_isSelected;
 
-private :
+private:
 
 
     /// Compute the barycenter : result = scale*ptA + (1-scale)*ptB
     static void barycenter( double ptA[3], double ptB[3], float scale, double result[3] );
 
     /// Compute points A' and B' on A------A'<---P--->B'---B
-    static void computeCrossPoints( double _ptA[3], double _ptB[3], double _ptP[3], double _scale, double _ptAprime[3], double _ptBprime[3] );
+    static void computeCrossPoints( double _ptA[3], double _ptB[3], double _ptP[3], double _scale, double _ptAprime[3],
+                                    double _ptBprime[3] );
 
 };
 
-
-
-
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_SLICESCURSOR_HPP_
+#endif // __VISUVTKADAPTOR_SLICESCURSOR_HPP__

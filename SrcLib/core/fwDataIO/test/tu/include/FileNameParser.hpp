@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_TEST_TU_FILENAMEPARSER_HPP_
-#define _FWDATAIO_TEST_TU_FILENAMEPARSER_HPP_
+#ifndef __FWDATAIO_UT_FILENAMEPARSER_HPP__
+#define __FWDATAIO_UT_FILENAMEPARSER_HPP__
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
@@ -27,19 +27,20 @@ bool parseMeshFileName(const std::string &name, T &points, T &cells)
     namespace phx = boost::phoenix;
 
     std::string::const_iterator first = name.begin();
-    std::string::const_iterator last = name.end();
+    std::string::const_iterator last  = name.end();
 
     bool r = phrase_parse(first, last,
-            ("Mesh-" >> ulong_long >> "-" >> ulong_long >> "pts-" >> ulong_long >> "cells.trian")[ phx::ref(points) = _2, phx::ref(cells) = _3 ],
-            space);
+                          ("Mesh-" >> ulong_long >> "-" >> ulong_long >> "pts-" >> ulong_long >>
+                           "cells.trian")[ phx::ref(points) = _2, phx::ref(cells) = _3 ],
+                          space);
 
     if (first != last) // fail if we didn't get a full match
     {
-            return false;
+        return false;
     }
 
     return r;
 }
 
 
-#endif //_FWDATAIO_TEST_TU_FILENAMEPARSER_HPP_
+#endif //__FWDATAIO_UT_FILENAMEPARSER_HPP__

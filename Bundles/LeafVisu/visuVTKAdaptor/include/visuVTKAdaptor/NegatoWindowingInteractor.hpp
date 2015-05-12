@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_NEGATOWINDOWINGINTERACTOR_HPP_
-#define _VISUVTKADAPTOR_NEGATOWINDOWINGINTERACTOR_HPP_
+#ifndef __VISUVTKADAPTOR_NEGATOWINDOWINGINTERACTOR_HPP__
+#define __VISUVTKADAPTOR_NEGATOWINDOWINGINTERACTOR_HPP__
 
 #include <fwData/TransferFunction.hpp>
 
@@ -21,12 +21,13 @@ namespace visuVTKAdaptor
 
 
 
-class VISUVTKADAPTOR_CLASS_API NegatoWindowingInteractor: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService 
+class VISUVTKADAPTOR_CLASS_API NegatoWindowingInteractor : public ::fwComEd::helper::MedicalImageAdaptor,
+                                                           public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoWindowingInteractor)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (NegatoWindowingInteractor)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API NegatoWindowingInteractor() throw();
 
@@ -36,7 +37,7 @@ public:
 
     VISUVTKADAPTOR_API void stopWindowing();
 
-    VISUVTKADAPTOR_API void updateWindowing( double , double);
+    VISUVTKADAPTOR_API void updateWindowing( double, double);
 
     VISUVTKADAPTOR_API void resetWindowing();
 
@@ -62,4 +63,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_NEGATOWINDOWINGINTERACTOR_HPP_
+#endif // __VISUVTKADAPTOR_NEGATOWINDOWINGINTERACTOR_HPP__

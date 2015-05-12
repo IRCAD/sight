@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,13 +17,13 @@
 
 namespace fwData
 {
-    class ObjectLock;
-    class Composite;
+class ObjectLock;
+class Composite;
 }
 
 namespace fwServices
 {
-    class ObjectMsg;
+class ObjectMsg;
 }
 
 namespace ctrlMemory
@@ -39,17 +39,17 @@ namespace manager
 class CTRLMEMORY_CLASS_API LockDumpManagerSrv : public ::ctrlSelection::IManagerSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (LockDumpManagerSrv)(::ctrlSelection::IManagerSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (LockDumpManagerSrv)(::ctrlSelection::IManagerSrv) );
 
     /// Constructor.  Does nothing.
-    CTRLMEMORY_API LockDumpManagerSrv() throw() ;
+    CTRLMEMORY_API LockDumpManagerSrv() throw();
 
     /// Destructor. Does nothing.
-    CTRLMEMORY_API virtual ~LockDumpManagerSrv() throw() ;
+    CTRLMEMORY_API virtual ~LockDumpManagerSrv() throw();
 
-protected :
+protected:
 
     /// Dump lock composite objects
     CTRLMEMORY_API virtual void starting()  throw ( ::fwTools::Failed );
@@ -76,7 +76,7 @@ protected :
     /// Updates dump locks when object are pushed removed or swaped in composite
     CTRLMEMORY_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw ( ::fwTools::Failed );
 
-private :
+private:
 
     typedef std::string CompositeKeyType;
 

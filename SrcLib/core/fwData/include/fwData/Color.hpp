@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_COLOR_HPP_
-#define _FWDATA_COLOR_HPP_
+#ifndef __FWDATA_COLOR_HPP__
+#define __FWDATA_COLOR_HPP__
 
 #include <boost/array.hpp>
 
@@ -24,15 +24,17 @@ namespace fwData
 class FWDATA_CLASS_API Color : public Object
 {
 
-public :
+public:
 
     typedef float ColorType;
     typedef ::boost::array<ColorType,4> ColorArray;
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Color)(::fwData::Object),
-       ((::fwData::factory::New< Color > ,() ))
-       ((ColorFactory ,((ColorType)) ((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(1.0)) ))
-       );
+                                               ((::fwData::factory::New< Color >,() ))
+                                                   ((ColorFactory,
+                                                     ((ColorType))((ColorType)(1.0)) ((ColorType) (1.0)) ((ColorType)(
+                                                                                                              1.0)) ))
+                                               );
 
     fwCampMakeFriendDataMacro((fwData)(Color));
 
@@ -51,7 +53,7 @@ public :
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    fwGettersSettersDocMacro(RGBA, vRGBA, ColorArray, the array of color values (red, green, blue, alpha).);
+    fwGettersSettersDocMacro(RGBA, vRGBA, ColorArray, "the array of color values (red, green, blue, alpha).");
 
     ///@{
     ///@brief set RGBA color
@@ -59,7 +61,8 @@ public :
     ///@param[in] green
     ///@param[in] blue
     ///@param[in] alpha
-    FWDATA_API void setRGBA( const ColorType red, const ColorType green, const ColorType blue, const ColorType alpha=1.0 );
+    FWDATA_API void setRGBA( const ColorType red, const ColorType green, const ColorType blue,
+                             const ColorType alpha = 1.0 );
 
     ///@brief set RGBA from hexadecimal format (\#ffffff)
     ///@param[in] hexaColor c hexadecimal format (\#ffffff)
@@ -79,19 +82,19 @@ public :
     /**@brief Get read-only reference to color attributes
      * @{
      */
-    FWDATA_API const ColorType  &red()   const ;
-    FWDATA_API const ColorType  &green() const ;
-    FWDATA_API const ColorType  &blue()  const ;
+    FWDATA_API const ColorType  &red()   const;
+    FWDATA_API const ColorType  &green() const;
+    FWDATA_API const ColorType  &blue()  const;
     FWDATA_API const ColorType  &alpha() const;
     //@}
 
-protected :
+protected:
 
 
     FWDATA_API static sptr ColorFactory(ColorType red, ColorType green, ColorType blue, ColorType alpha);
 
     //! RGBA of the image (in terms of points)
-    ColorArray  m_vRGBA;
+    ColorArray m_vRGBA;
 
 
 
@@ -100,4 +103,4 @@ protected :
 } // end namespace fwData
 
 
-#endif // _FWDATA_COLOR_HPP_
+#endif // __FWDATA_COLOR_HPP__

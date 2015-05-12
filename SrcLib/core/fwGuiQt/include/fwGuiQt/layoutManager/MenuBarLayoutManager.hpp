@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_LAYOUTMANAGER_MENUBARLAYOUTMANAGER_HPP_
-#define _FWGUIQT_LAYOUTMANAGER_MENUBARLAYOUTMANAGER_HPP_
+#ifndef __FWGUIQT_LAYOUTMANAGER_MENUBARLAYOUTMANAGER_HPP__
+#define __FWGUIQT_LAYOUTMANAGER_MENUBARLAYOUTMANAGER_HPP__
 
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -25,7 +25,7 @@ namespace layoutManager
 /**
  * @brief   Defines the menu bar layout manager for IHM.
  * @class   MenuBarLayoutManager
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -71,6 +71,6 @@ protected:
 } // namespace layoutManager
 } // namespace fwGui
 
-#endif /*_FWGUIQT_LAYOUTMANAGER_MENUBARLAYOUTMANAGER_HPP_*/
+#endif /*__FWGUIQT_LAYOUTMANAGER_MENUBARLAYOUTMANAGER_HPP__*/
 
 

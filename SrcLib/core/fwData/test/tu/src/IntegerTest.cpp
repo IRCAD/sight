@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ void IntegerTest::tearDown()
 
 void IntegerTest::methode1()
 {
-    const int VALUES[]  = {
+    const int VALUES[] = {
         std::numeric_limits< int >::min(),
         -1654, 0, 123456,
         std::numeric_limits< int >::max()
@@ -41,12 +41,12 @@ void IntegerTest::methode1()
     BOOST_FOREACH ( int VALUE, VALUES )
     {
         ::fwData::Integer::sptr i0 = ::fwData::Integer::New();
-        i0->value() = VALUE;
+        i0->value()                = VALUE;
         ::fwData::Integer::sptr i1 = ::fwData::Integer::New( VALUE );
 
-        CPPUNIT_ASSERT_EQUAL( VALUE , i0->value() );
-        CPPUNIT_ASSERT_EQUAL( VALUE , i1->value() );
-        CPPUNIT_ASSERT_EQUAL( VALUE , ::fwData::Integer::New( VALUE )->value() );
+        CPPUNIT_ASSERT_EQUAL( VALUE, i0->value() );
+        CPPUNIT_ASSERT_EQUAL( VALUE, i1->value() );
+        CPPUNIT_ASSERT_EQUAL( VALUE, ::fwData::Integer::New( VALUE )->value() );
     }
 }
 

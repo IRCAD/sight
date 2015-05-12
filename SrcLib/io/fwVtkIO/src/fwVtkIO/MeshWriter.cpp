@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key)
-: ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+    : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -46,7 +46,7 @@ void MeshWriter::write()
     ::fwData::Mesh::sptr pMesh = getConcreteObject();
 
     vtkSmartPointer< vtkGenericDataObjectWriter > writer = vtkSmartPointer< vtkGenericDataObjectWriter >::New();
-    vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
+    vtkSmartPointer< vtkPolyData > vtkMesh               = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
     writer->SetInputData( vtkMesh );
     writer->SetFileName(this->getFile().string().c_str());
@@ -59,9 +59,9 @@ void MeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string  MeshWriter::extension()
+std::string MeshWriter::extension()
 {
-   return ".vtk";
+    return ".vtk";
 }
 
 } // namespace fwVtkIO

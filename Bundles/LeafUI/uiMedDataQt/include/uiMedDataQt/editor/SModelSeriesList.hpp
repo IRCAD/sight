@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__
-#define _UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__
+#ifndef __UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__
+#define __UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__
 
 #include <QPointer>
 #include <QObject>
@@ -23,12 +23,12 @@ class QTreeWidgetItem;
 
 namespace fwData
 {
-    class Reconstruction;
+class Reconstruction;
 }
 
 namespace fwServices
 {
-    class ObjectMsg;
+class ObjectMsg;
 }
 
 namespace uiMedData
@@ -44,18 +44,19 @@ class ValueView;
  * @class   SModelSeriesList
  * @date    2013.
  */
-class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject, public ::gui::editor::IEditor
+class UIMEDDATAQT_CLASS_API SModelSeriesList :  public QObject,
+                                                public ::gui::editor::IEditor
 {
-    Q_OBJECT
-public :
+Q_OBJECT
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesList)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesList)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIMEDDATAQT_API SModelSeriesList() throw() ;
+    UIMEDDATAQT_API SModelSeriesList() throw();
 
     /// Destructor. Do nothing.
-    UIMEDDATAQT_API virtual ~SModelSeriesList() throw() ;
+    UIMEDDATAQT_API virtual ~SModelSeriesList() throw();
 
 protected:
 
@@ -76,13 +77,13 @@ protected:
      * @brief Configures the editor.
      *
      * Configuration example :
-     @verbatim
-     <enable_hide_all>true</enable_hide_all>
-     <columns>
+       @verbatim
+       <enable_hide_all>true</enable_hide_all>
+       <columns>
          <organ_name>@organ_name</organ_name>
          <volume_cc view="positive" >@volume</volume_cc>
-     </columns>
-     @endverbatim
+       </columns>
+       @endverbatim
      *
      * \b enable_hide_all : if 'true', allows to hide all models through a single checkbox displayed in UI (default
      * value is 'true', allowed values are 'true' and 'false').
@@ -97,7 +98,7 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
     typedef std::map< std::string, ValueView* > DisplayedInformation;
 
@@ -114,14 +115,14 @@ protected Q_SLOTS:
 
     void onShowReconstructions(int state);
 
-    void onOrganChoiceVisibility(QTreeWidgetItem * item , int column);
+    void onOrganChoiceVisibility(QTreeWidgetItem * item, int column);
 
 private:
 
     void refreshVisibility();
     QPointer< QCheckBox > m_showCheckBox;
     QPointer< QTreeWidget > m_tree;
-    DisplayedInformation m_displayedInfo ;
+    DisplayedInformation m_displayedInfo;
 
     bool m_enableHideAll;
 };
@@ -129,6 +130,6 @@ private:
 } // namespace editor
 } // namespace uiMedData
 
-#endif /*_UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__*/
+#endif /*__UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__*/
 
 

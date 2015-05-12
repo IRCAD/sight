@@ -1,8 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWVTKIO_HELPER_PROGRESSVTKTOFW_HXX__
+#define __FWVTKIO_HELPER_PROGRESSVTKTOFW_HXX__
 
 #include <limits>
 #include <sstream>
@@ -22,7 +25,9 @@ class LocalCommand : public vtkCommand
 {
 public:
 
-    LocalCommand() {};
+    LocalCommand()
+    {
+    }
 
     static LocalCommand* New()
     {
@@ -35,10 +40,13 @@ public:
     void Execute(vtkObject *caller, unsigned long eventId, void *callData)
     {
         vtkAlgorithm* algo = vtkAlgorithm::SafeDownCast(caller);
-        if( !algo ) return;
+        if( !algo )
+        {
+            return;
+        }
         double percent = algo->GetProgress();
         SLM_ASSERT("m_adviser no set", m_adviser);
-        m_adviser->notifyProgress( percent , m_msg );
+        m_adviser->notifyProgress( percent, m_msg );
     }
 
     std::string m_msg;
@@ -48,15 +56,16 @@ public:
 //------------------------------------------------------------------------------
 
 template<typename OBSERVEE >
-ProgressVtkToFw<OBSERVEE >::ProgressVtkToFw(OBSERVEE observee, SPTR(::fwTools::ProgressAdviser) observer, std::string msg)
-: m_observee( observee), m_obsTag(std::numeric_limits<unsigned long>::max()), m_initialized(false)
+ProgressVtkToFw<OBSERVEE >::ProgressVtkToFw(OBSERVEE observee, SPTR(::fwTools::ProgressAdviser)observer,
+                                            std::string msg)
+    : m_observee( observee), m_obsTag(std::numeric_limits<unsigned long>::max()), m_initialized(false)
 {
     typename LocalCommand::Pointer vtkCallBack;
-    vtkCallBack = LocalCommand::Pointer::New();
-    vtkCallBack->m_msg = msg;
+    vtkCallBack            = LocalCommand::Pointer::New();
+    vtkCallBack->m_msg     = msg;
     vtkCallBack->m_adviser = observer;
-    m_obsTag = m_observee->AddObserver(vtkCommand::ProgressEvent, vtkCallBack );
-    m_initialized = true;
+    m_obsTag               = m_observee->AddObserver(vtkCommand::ProgressEvent, vtkCallBack );
+    m_initialized          = true;
 }
 
 //------------------------------------------------------------------------------
@@ -70,5 +79,6 @@ ProgressVtkToFw<OBSERVEE >::~ProgressVtkToFw()
     }
 }
 
-}
+} //namespace fwVtkIO
 
+#endif // __FWVTKIO_HELPER_PROGRESSVTKTOFW_HXX__

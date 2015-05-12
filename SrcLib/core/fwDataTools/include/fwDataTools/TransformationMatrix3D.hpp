@@ -1,9 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
- 
+
 #ifndef __FWDATATOOLS_TRANSFORMATIONMATRIX3D_HPP__
 #define __FWDATATOOLS_TRANSFORMATIONMATRIX3D_HPP__
 
@@ -29,7 +29,7 @@ public:
      * @param[out] trf_output Inverted matrix.
      */
     FWDATATOOLS_API static bool invert(::fwData::TransformationMatrix3D::sptr trf_input,
-            ::fwData::TransformationMatrix3D::sptr trf_output);
+                                       ::fwData::TransformationMatrix3D::sptr trf_output);
 
     /**
      * @brief Multiply two matrices.
@@ -38,7 +38,8 @@ public:
      * @param[out] fTrf_C Output matrix.
      */
     FWDATATOOLS_API static void multiply(::fwData::TransformationMatrix3D::sptr fTrf_A,
-            ::fwData::TransformationMatrix3D::sptr fTrf_B, ::fwData::TransformationMatrix3D::sptr fTrf_C);
+                                         ::fwData::TransformationMatrix3D::sptr fTrf_B,
+                                         ::fwData::TransformationMatrix3D::sptr fTrf_C);
 
     /**
      * @brief Set the matrix to identity.
@@ -53,7 +54,7 @@ public:
      * @param[out] output Output point.
      */
     FWDATATOOLS_API static void multiply(::fwData::TransformationMatrix3D::sptr trf,
-            ::fwData::Point::sptr input, ::fwData::Point::sptr output);
+                                         ::fwData::Point::sptr input, ::fwData::Point::sptr output);
 
 };
 } // namespace fwDataTools

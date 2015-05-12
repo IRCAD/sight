@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIO_EDITOR_IOSELECTORSERVICE_HPP_
-#define _UIIO_EDITOR_IOSELECTORSERVICE_HPP_
+#ifndef __UIIO_EDITOR_IOSELECTORSERVICE_HPP__
+#define __UIIO_EDITOR_IOSELECTORSERVICE_HPP__
 
 #include <gui/editor/IDialogEditor.hpp>
 
@@ -19,21 +19,22 @@ namespace editor
 /**
  * @brief   Defines the service interface managing the editor service for object.
  * @class   IOSelectorService
- * 
+ *
  * @date    2009.
  */
 class UIIO_CLASS_API IOSelectorService : public ::gui::editor::IDialogEditor
 {
 
-public :
+public:
 
     /// IOMode enum definition
-    typedef enum {
+    typedef enum
+    {
         READER_MODE, /**< this mode allows to configure the service as a reader */
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    fwCoreServiceClassDefinitionsMacro ( (IOSelectorService)( ::gui::editor::IDialogEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IOSelectorService)( ::gui::editor::IDialogEditor) );
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
@@ -43,22 +44,22 @@ public :
     UIIO_API IOSelectorService();
 
     /// Destructor. Do nothing.
-    UIIO_API virtual ~IOSelectorService() throw() ;
+    UIIO_API virtual ~IOSelectorService() throw();
 
     /**
      * @brief This method allows to configure the service in reader or writer mode (set IOSelectorService::m_mode).
      *
      *@param[in] _mode the value can be IOSelectorService::READER_MODE or IOSelectorService::WRITER_MODE.
      */
-    UIIO_API void setIOMode( IOMode _mode ) ;
+    UIIO_API void setIOMode( IOMode _mode );
 
 protected:
 
     ///Starts the service. Do nothing.
-    UIIO_API void starting() throw( ::fwTools::Failed ) ;
+    UIIO_API void starting() throw( ::fwTools::Failed );
 
     /// Stops the service. Do nothing.
-    UIIO_API void stopping() throw( ::fwTools::Failed ) ;
+    UIIO_API void stopping() throw( ::fwTools::Failed );
 
     /**
      * @brief   This method initializes class member parameters from configuration elements.
@@ -86,19 +87,19 @@ protected:
      *  - \b config
      *      - \b id (mandatory) : the id of the configuration to use.
      *      - \b service (mandatory) :  the name of the service.
-    **/
-    UIIO_API void configuring() throw( ::fwTools::Failed ) ;
+     **/
+    UIIO_API void configuring() throw( ::fwTools::Failed );
 
     /// Create a dialogue box to provide the user different available readers (writer) for the IOSelector associated objects. Then, the selected reader (writer) is executed.
-    UIIO_API void updating() throw( ::fwTools::Failed ) ;
+    UIIO_API void updating() throw( ::fwTools::Failed );
 
     /// SLM_FATAL require an implementation gui::editor::IEditor::updating(msg)
     UIIO_API void receiving( ::fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed );
 
     /// Gives the name of the class. Do nothing.
-    UIIO_API void info( std::ostream &_sstream ) ;
+    UIIO_API void info( std::ostream &_sstream );
 
-private :
+private:
 
     /// Configure the service as writer or reader.
     IOMode m_mode;
@@ -107,10 +108,10 @@ private :
     bool m_servicesAreExcluded;
 
     /**
-    * @brief List of services to be included or excluded.
-    *
-    * @see IOSelectorService::m_servicesAreExcluded.
-    */
+     * @brief List of services to be included or excluded.
+     *
+     * @see IOSelectorService::m_servicesAreExcluded.
+     */
     std::vector< std::string > m_selectedServices;
 
     /// Map that specifies a configuration extension for a service
@@ -123,5 +124,5 @@ private :
 
 } // namespace uiIO
 
-#endif // _UIIO_EDITOR_IOSELECTORSERVICE_HPP_
+#endif // __UIIO_EDITOR_IOSELECTORSERVICE_HPP__
 

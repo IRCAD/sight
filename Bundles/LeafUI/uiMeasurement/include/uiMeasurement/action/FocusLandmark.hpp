@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIMEASUREMENT_ACTION_FOCUSLANDMARK_HPP_
-#define _UIMEASUREMENT_ACTION_FOCUSLANDMARK_HPP_
+#ifndef __UIMEASUREMENT_ACTION_FOCUSLANDMARK_HPP__
+#define __UIMEASUREMENT_ACTION_FOCUSLANDMARK_HPP__
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -19,18 +19,18 @@ namespace action
 /**
  * @brief   This action moves the image slice on chosen landmark.
  * @class   FocusLandmark
- * 
+ *
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API FocusLandmark : public ::fwGui::IActionSrv
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (FocusLandmark)( ::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FocusLandmark)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API FocusLandmark() throw() ;
+    UIMEASUREMENT_API FocusLandmark() throw();
 
-    UIMEASUREMENT_API virtual ~FocusLandmark() throw() ;
+    UIMEASUREMENT_API virtual ~FocusLandmark() throw();
 
 protected:
 
@@ -44,11 +44,11 @@ protected:
 
     UIMEASUREMENT_API void updating() throw ( ::fwTools::Failed );
 
-    UIMEASUREMENT_API void info ( std::ostream &_sstream ) ;
+    UIMEASUREMENT_API void info ( std::ostream &_sstream );
 
 };
 
 } // namespace action
 } // namespace uiMeasurement
 
-#endif // _UIMEASUREMENT_ACTION_FOCUSLANDMARK_HPP_
+#endif // __UIMEASUREMENT_ACTION_FOCUSLANDMARK_HPP__

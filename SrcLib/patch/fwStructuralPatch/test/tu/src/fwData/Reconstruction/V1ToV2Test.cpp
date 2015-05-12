@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -109,7 +109,7 @@ void V1ToV2Test::applyPatchTest()
 
     BOOST_FOREACH(std::string attribut, v1Attributs)
     {
-        CPPUNIT_ASSERT_MESSAGE("'" + attribut + "' attribut must not exist", ! recObjV2->getAttribute(attribut));
+        CPPUNIT_ASSERT_MESSAGE("'" + attribut + "' attribut must not exist", !recObjV2->getAttribute(attribut));
     }
 }
 

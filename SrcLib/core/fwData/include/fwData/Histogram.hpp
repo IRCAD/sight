@@ -87,10 +87,10 @@ public:
      */
     FWDATA_API bool isInRange( float _pixel );
 
-    fwGettersSettersDocMacro(BinsWidth, binsWidth, float, bins width);
-    fwGettersSettersDocMacro(Values, values, fwHistogramValues, histogram values);
-    fwGettersSettersDocMacro(MinValue, minValue, float, minimum value within the histogram);
-    fwGettersSettersDocMacro(MaxValue, maxValue, float, maximum value within the histogram);
+    fwGettersSettersDocMacro(BinsWidth, binsWidth, float, "bins width");
+    fwGettersSettersDocMacro(Values, values, fwHistogramValues, "histogram values");
+    fwGettersSettersDocMacro(MinValue, minValue, float, "minimum value within the histogram");
+    fwGettersSettersDocMacro(MaxValue, maxValue, float, "maximum value within the histogram");
 
 protected:
 

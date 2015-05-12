@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,17 +19,19 @@ namespace wrapper
 {
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::MsgForwarderSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::MsgForwarderSrv, ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
 MsgForwarderSrv::MsgForwarderSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 MsgForwarderSrv::~MsgForwarderSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -56,7 +58,8 @@ void MsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw 
                 {
                     if(event == "*" || message->hasEvent( event ) )
                     {
-                        ::fwServices::IEditionService::notify( this->getSptr(), object, ::fwServices::ObjectMsg::constCast(message) );
+                        ::fwServices::IEditionService::notify(
+                            this->getSptr(), object, ::fwServices::ObjectMsg::constCast(message) );
                     }
                 }
             }
@@ -67,17 +70,20 @@ void MsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw 
 //-----------------------------------------------------------------------------
 
 void MsgForwarderSrv::starting()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void MsgForwarderSrv::stopping()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void MsgForwarderSrv::swapping()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -87,21 +93,22 @@ void MsgForwarderSrv::configuring()  throw ( ::fwTools::Failed )
 
     ::fwRuntime::ConfigurationElementContainer handleEvents = m_configuration->findAllConfigurationElement("forward");
 
-    SLM_ASSERT("Problem with configuration for MsgForwarderSrv type, missing element \"forward\"", handleEvents.size() != 0 );
+    SLM_ASSERT("Problem with configuration for MsgForwarderSrv type, missing element \"forward\"",
+               handleEvents.size() != 0 );
     m_managedEvents.clear();
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElementContainer::Container::value_type item ,handleEvents.getElements())
+    BOOST_FOREACH( ::fwRuntime::ConfigurationElementContainer::Container::value_type item,handleEvents.getElements())
     {
         SLM_FATAL_IF( "Sorry, attribute \"compositeKey\" is missing", !item->hasAttribute("compositeKey") );
-        std::string compositeKey =  item->getExistingAttributeValue("compositeKey");
+        std::string compositeKey = item->getExistingAttributeValue("compositeKey");
 
         SLM_FATAL_IF( "Sorry, attribute \"onEvent\" is missing", !item->hasAttribute("onEvent") );
-        std::string onEvent =  item->getExistingAttributeValue("onEvent");
+        std::string onEvent = item->getExistingAttributeValue("onEvent");
 
         SLM_FATAL_IF( "Sorry, attribute \"fromUID\" is missing", !item->hasAttribute("fromUID") );
-        std::string fromUID =  item->getExistingAttributeValue("fromUID");
+        std::string fromUID = item->getExistingAttributeValue("fromUID");
 
         SLM_FATAL_IF( "Sorry, attribute \"typeMsg\" is missing", !item->hasAttribute("msgType") );
-        std::string msgType =  item->getExistingAttributeValue("msgType");
+        std::string msgType = item->getExistingAttributeValue("msgType");
 
         OSLM_INFO( "Manage event "<< onEvent <<" from this object "<< fromUID <<".");
         EventType managedEvent (compositeKey, onEvent, fromUID, msgType);
@@ -113,12 +120,14 @@ void MsgForwarderSrv::configuring()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void MsgForwarderSrv::updating() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void MsgForwarderSrv::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

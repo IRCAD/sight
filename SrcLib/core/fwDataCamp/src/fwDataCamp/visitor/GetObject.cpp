@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,8 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
 
     GetCampValueVisitor( const std::string & subObjPath, PathVisitor::sptr pathVisitor) :
         m_subObjPath(subObjPath), m_pathVisitor(pathVisitor)
-    {}
+    {
+    }
 
     ::fwData::Object::sptr operator()(camp::NoType value)
     {
@@ -73,9 +74,10 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
         const camp::Class& metaclass = value.getClass();
         if ( value.pointer() )
         {
-            if ( ! m_subObjPath.empty() )
+            if ( !m_subObjPath.empty() )
             {
-                OSLM_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call("classname") <<"' )" );
+                OSLM_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call(
+                                "classname") <<"' )" );
                 ::fwData::Object * ptr = value.get< ::fwData::Object * >();
                 ::fwDataCamp::visitor::GetObject visitor( ptr->getSptr(), m_subObjPath );
                 val = visitor.get();
@@ -84,36 +86,37 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
             else
             {
                 ::fwData::Object * ptr = value.get< ::fwData::Object * >();
-                val = ptr->getSptr();
+                val                    = ptr->getSptr();
             }
         }
         else
         {
             FW_RAISE_EXCEPTION( ::fwDataCamp::exception::NullPointer(
-                    "Object '" + metaclass.name() + "' not instanced.")
-            );
+                                    "Object '" + metaclass.name() + "' not instanced.")
+                                );
         }
 
         return val;
     }
- };
+};
 
 //-----------------------------------------------------------------------------
 
 GetObject::GetObject( ::fwData::Object::sptr object, const std::string & subObjPath ) :
-        m_object(object), m_subObjPath(subObjPath),
-        m_newSubObjPath(subObjPath),
-        m_pathVisitor(::boost::make_shared<PathVisitor>(subObjPath))
+    m_object(object), m_subObjPath(subObjPath),
+    m_newSubObjPath(subObjPath),
+    m_pathVisitor(::boost::make_shared<PathVisitor>(subObjPath))
 {
     SLM_FATAL_IF("Cannot retrieve an object with an empty path.", subObjPath.empty());
-    m_campObj = camp::UserObject( object.get() );
+    m_campObj      = camp::UserObject( object.get() );
     m_propertyName = this->getNextPropertyName();
 }
 
 //-----------------------------------------------------------------------------
 
 GetObject::~GetObject()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -138,7 +141,7 @@ void GetObject::visit(const camp::EnumProperty& property)
 {
     SLM_TRACE_FUNC();
     OSLM_FATAL_IF( "EnumProperty is not still managed : name =" <<  property.name(),
-            property.name() == m_propertyName );
+                   property.name() == m_propertyName );
 }
 
 //-----------------------------------------------------------------------------
@@ -158,7 +161,7 @@ void GetObject::visit(const camp::MapProperty& property)
         std::string mapKey;
         for (unsigned int var = 0; var < property.getSize(m_campObj); ++var)
         {
-            value = property.getElement(m_campObj, var);
+            value  = property.getElement(m_campObj, var);
             mapKey = value.first.to< std::string >();
             if ( key == mapKey )
             {
@@ -225,12 +228,12 @@ std::string GetObject::getNextPropertyName()
     std::string nextItem;
     if ( dotPos != std::string::npos )
     {
-        nextItem = m_newSubObjPath.substr( 0, dotPos );
+        nextItem        = m_newSubObjPath.substr( 0, dotPos );
         m_newSubObjPath = m_newSubObjPath.substr( dotPos+1 );
     }
     else
     {
-        nextItem = m_newSubObjPath;
+        nextItem        = m_newSubObjPath;
         m_newSubObjPath = "";
     }
     OSLM_DEBUG( "nextItem = " << nextItem );

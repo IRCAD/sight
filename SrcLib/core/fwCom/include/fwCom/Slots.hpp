@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,16 +46,16 @@ public:
     FWCOM_API Slots& operator()( const SlotKeyType &key, const SPTR( SlotBase ) &slot );
 
     /// Registers Slot  in m_slots (defined here to avoid compiler error C2244)
-    template<typename R, typename ...A>
-    Slots& operator()( const SlotKeyType &key, SPTR(Slot< R (A...) >) slot )
+    template<typename R, typename ... A>
+    Slots& operator()( const SlotKeyType &key, SPTR(Slot< R (A ...) >)slot )
     {
         SPTR( SlotBase ) slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
         return this->operator()(key, slotBase);
     }
 
     /// Creates in intern a new slot from function and registers it in m_slots
-    template<typename F, typename ...A>
-    Slots& operator()( const SlotKeyType &key, F f, A...a );
+    template<typename F, typename ... A>
+    Slots& operator()( const SlotKeyType &key, F f, A ... a );
 
     /// Returns the SlotBase associated to the key, if key does not exist, the ptr is null
     FWCOM_API SPTR( SlotBase ) operator[]( const SlotKeyType &key ) const;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@
 
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ModelSeries, ::fwMedData::ModelSeries ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ModelSeries, ::fwMedData::ModelSeries );
 
 namespace visuVTKAdaptor
 {
@@ -42,20 +42,21 @@ const ::fwCom::Signals::SignalKeyType ModelSeries::s_TEXTURE_APPLIED_SIG = "text
 ModelSeries::ModelSeries() throw() :
     m_sigTextureApplied(TextureAppliedSignalType::New())
 {
-    m_clippingPlanes = "";
+    m_clippingPlanes  = "";
     m_autoResetCamera = true;
 
     ::fwCom::HasSignals::m_signals(s_TEXTURE_APPLIED_SIG, m_sigTextureApplied);
 
 #ifdef COM_LOG
-   ::fwCom::HasSignals::m_signals.setID();
+    ::fwCom::HasSignals::m_signals.setID();
 #endif
 }
 
 //------------------------------------------------------------------------------
 
 ModelSeries::~ModelSeries() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -110,8 +111,8 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
     if(!m_textureAdaptorUID.empty())
     {
         ::fwRenderVTK::VtkRenderService::sptr renderService = this->getRenderService();
-        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor = renderService->getAdaptor(m_textureAdaptorUID);
-        ::visuVTKAdaptor::Texture::sptr textureAdaptor = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
+        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor     = renderService->getAdaptor(m_textureAdaptorUID);
+        ::visuVTKAdaptor::Texture::sptr textureAdaptor      = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
 
         SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
         m_connections->connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
@@ -121,8 +122,8 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
     BOOST_FOREACH( ::fwData::Reconstruction::sptr reconstruction, modelSeries->getReconstructionDB() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
-                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-        ( reconstruction, "::visuVTKAdaptor::Reconstruction" );
+            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+                ( reconstruction, "::visuVTKAdaptor::Reconstruction" );
         SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
@@ -131,7 +132,7 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
         service->setRenderService(this->getRenderService());
         service->setAutoRender( this->getAutoRender() );
         ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor =
-                ::visuVTKAdaptor::Reconstruction::dynamicCast(service);
+            ::visuVTKAdaptor::Reconstruction::dynamicCast(service);
         renconstructionAdaptor->setClippingPlanes( m_clippingPlanes );
         renconstructionAdaptor->setAutoResetCamera(m_autoResetCamera);
         service->start();
@@ -188,7 +189,7 @@ void ModelSeries::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::
             if(!service.expired())
             {
                 ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor
-                 = ::visuVTKAdaptor::Reconstruction::dynamicCast(service.lock());
+                    = ::visuVTKAdaptor::Reconstruction::dynamicCast(service.lock());
                 if (renconstructionAdaptor)
                 {
                     renconstructionAdaptor->setForceHide( !showRec );

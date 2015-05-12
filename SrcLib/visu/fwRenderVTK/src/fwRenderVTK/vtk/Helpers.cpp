@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,19 +32,19 @@ namespace vtk
 
 vtkIdType getNearestPointId(vtkPoints* pts, vtkRenderer* renderer)
 {
-    vtkIdType id=-1;
+    vtkIdType id = -1;
     double camPosition[3];
     double distance = VTK_DOUBLE_MAX;
     renderer->GetActiveCamera()->GetPosition(camPosition);
 
     for(vtkIdType i = 0; i<pts->GetNumberOfPoints (); i++)
     {
-        double *point = pts->GetPoint(i);
+        double *point        = pts->GetPoint(i);
         double distancePtCam = vtkMath::Distance2BetweenPoints(point, camPosition);
 
         if(distancePtCam < distance)
         {
-            id = i;
+            id       = i;
             distance = distancePtCam;
         }
     }
@@ -99,7 +99,7 @@ vtkProp * getNearestPickedProp(vtkAbstractPropPicker *picker, vtkRenderer *rende
 
 bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *renderer, double position[3])
 {
-    bool res = false;
+    bool res             = false;
     vtkPicker *vtkpicker = vtkPicker::SafeDownCast(picker);
 
     SLM_ASSERT("getNearestPickedProp *need* a picker.", picker);
@@ -109,7 +109,7 @@ bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *render
     if (vtkpicker)
     {
         vtkPoints *pts = vtkpicker->GetPickedPositions();
-        vtkIdType id = getNearestPointId(pts, renderer);
+        vtkIdType id   = getNearestPointId(pts, renderer);
 
         if (id>-1)
         {

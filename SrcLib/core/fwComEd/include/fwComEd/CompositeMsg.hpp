@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_COMPOSITEMSG_HPP_
-#define _FWCOMED_COMPOSITEMSG_HPP_
+#ifndef __FWCOMED_COMPOSITEMSG_HPP__
+#define __FWCOMED_COMPOSITEMSG_HPP__
 
 #include <fwServices/ObjectMsg.hpp>
 #include <fwData/Composite.hpp>
@@ -19,7 +19,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for Composite : store modification information
  * @class   CompositeMsg
- * 
+ *
  * @date    2005-2009.
  * @see     ::fwServices::ObjectMsg
  */
@@ -82,7 +82,8 @@ public:
      * @param[in]   _pOldObject   : the old object which will be replaced.
      * @param[in]   _pNewObject   : the new object.
      */
-    FWCOMED_API void appendChangedKey( std::string _compositeKey, ::fwData::Object::sptr _pOldObject, ::fwData::Object::sptr _pNewObject );
+    FWCOMED_API void appendChangedKey( std::string _compositeKey, ::fwData::Object::sptr _pOldObject,
+                                       ::fwData::Object::sptr _pNewObject );
 
     /**
      * @brief   Return the composite of the old changed keys (key which will be replaced).
@@ -90,11 +91,11 @@ public:
     FWCOMED_API ::fwData::Composite::sptr  getOldChangedKeys() const;
 
     /**
-    * @brief   Return the composite of the new changed keys.
-    */
+     * @brief   Return the composite of the new changed keys.
+     */
     FWCOMED_API ::fwData::Composite::sptr  getNewChangedKeys() const;
 
-private :
+private:
 
     ::fwData::Composite::sptr m_removedKeys;
     ::fwData::Composite::sptr m_addedKeys;
@@ -104,5 +105,5 @@ private :
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_COMPOSITEMSG_HPP_
+#endif //__FWCOMED_COMPOSITEMSG_HPP__
 

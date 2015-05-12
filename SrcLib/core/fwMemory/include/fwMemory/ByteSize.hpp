@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWMEMORY_BYTESIZE_HPP_
-#define _FWMEMORY_BYTESIZE_HPP_
+#ifndef __FWMEMORY_BYTESIZE_HPP__
+#define __FWMEMORY_BYTESIZE_HPP__
 
 #include <string>
 
@@ -27,9 +27,10 @@ class FWMEMORY_CLASS_API ByteSize
 {
 public:
 
-    typedef enum {
+    typedef enum
+    {
         SI, IEC
-    } StandardType ;
+    } StandardType;
 
     FWMEMORY_API static const boost::uint64_t Bytes;
 
@@ -101,7 +102,10 @@ public:
     /**
      * @brief Returns size in bytes.
      */
-    SizeType getSize(){ return m_size; }
+    SizeType getSize()
+    {
+        return m_size;
+    }
 
     /**
      * @brief Build a ByteSize object from given size and unit
@@ -133,8 +137,12 @@ public:
         return this->operator=( SizeType(size) );
     }
 
-    operator SizeType () { return m_size; }
-    operator std::string () { return getHumanReadableSize(); }
+    operator SizeType () {
+        return m_size;
+    }
+    operator std::string () {
+        return getHumanReadableSize();
+    }
 
     FWMEMORY_API static bool parseSize(const std::string &s, boost::uint64_t& size);
     FWMEMORY_API static std::string unitToString( UnitType unit );
@@ -147,4 +155,4 @@ protected:
 
 } //namespace fwMemory
 
-#endif /* _FWMEMORY_BYTESIZE_HPP_ */
+#endif /* __FWMEMORY_BYTESIZE_HPP__ */

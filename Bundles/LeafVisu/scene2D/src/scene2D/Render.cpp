@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,16 +20,16 @@
 #include "scene2D/Render.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
 
-fwServicesRegisterMacro( ::fwRender::IRender , ::scene2D::Render , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRender::IRender, ::scene2D::Render, ::fwData::Composite );
 
 namespace scene2D
 {
 
 
 Render::Render() throw()
-        : m_sceneStart (-100,-100),
-          m_sceneWidth (200,200),
-          m_antialiasing(false)
+    : m_sceneStart (-100,-100),
+      m_sceneWidth (200,200),
+      m_antialiasing(false)
 {
 //    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
 //    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
@@ -75,13 +75,14 @@ SPTR(::fwData::Object) Render::getRegisteredObject(ObjectIDType _objectID)
 {
     SLM_TRACE_FUNC();
 
-    OSLM_ASSERT("Sorry, the object id '"<< _objectID <<"' does not exist in the registered objects map.", m_objectID2Object.find(_objectID) != m_objectID2Object.end() );
+    OSLM_ASSERT("Sorry, the object id '"<< _objectID <<"' does not exist in the registered objects map.", m_objectID2Object.find(
+                    _objectID) != m_objectID2Object.end() );
     return m_objectID2Object[_objectID];
 }
 
 //-----------------------------------------------------------------------------
 
-void Render::dispatchInteraction( SPTR(::scene2D::data::Event) _event)
+void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
 {
     SLM_TRACE_FUNC();
 
@@ -92,7 +93,7 @@ void Render::dispatchInteraction( SPTR(::scene2D::data::Event) _event)
      */
     for(ZValue2AdaptorID::reverse_iterator rit = m_zValue2AdaptorID.rbegin(); rit != m_zValue2AdaptorID.rend(); ++rit )
     {
-        if ( ! _event->getAccepted() && ! m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.expired() )
+        if ( !_event->getAccepted() && !m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.expired() )
         {
             m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.lock()->processInteraction( _event );
         }
@@ -124,7 +125,7 @@ void Render::configuring() throw ( ::fwTools::Failed )
     m_sceneConfiguration = vectConfig.at(0);
 
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
-    for (iter = m_sceneConfiguration->begin() ; iter != m_sceneConfiguration->end() ; ++iter)
+    for (iter = m_sceneConfiguration->begin(); iter != m_sceneConfiguration->end(); ++iter)
     {
         if ((*iter)->getName() == "axis")
         {
@@ -250,7 +251,8 @@ void Render::startContext()
 {
     SLM_TRACE_FUNC();
 
-    SPTR(::fwGuiQt::container::QtContainer) qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+    SPTR(::fwGuiQt::container::QtContainer) qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer());
 
     m_scene = new QGraphicsScene( m_sceneStart.getX(), m_sceneStart.getY(), m_sceneWidth.getX(), m_sceneWidth.getY());
     m_scene->setBackgroundBrush(QBrush(QColor(0,0,0)));
@@ -310,10 +312,10 @@ void Render::configureAxis( ConfigurationType _conf )
 
     SLM_ASSERT("\"axis\" tag required", _conf->getName() == "axis");
 
-    std::string id      = _conf->getAttributeValue("id");
-    std::string origin  = _conf->getAttributeValue("origin");
-    std::string scale   = _conf->getAttributeValue("scale");
-    std::string scaleType    = _conf->getAttributeValue("scaleType");
+    std::string id        = _conf->getAttributeValue("id");
+    std::string origin    = _conf->getAttributeValue("origin");
+    std::string scale     = _conf->getAttributeValue("scale");
+    std::string scaleType = _conf->getAttributeValue("scaleType");
 
 
     if(m_objectID2Object.count(id) == 0)
@@ -334,11 +336,11 @@ void Render::configureViewport( ConfigurationType _conf )
 
     SLM_ASSERT("\"viewport\" tag required", _conf->getName() == "viewport");
 
-    std::string id  = _conf->getAttributeValue("id");
-    std::string x  = _conf->getAttributeValue("x");
-    std::string y   = _conf->getAttributeValue("y");
-    std::string width    = _conf->getAttributeValue("width");
-    std::string height    = _conf->getAttributeValue("height");
+    std::string id     = _conf->getAttributeValue("id");
+    std::string x      = _conf->getAttributeValue("x");
+    std::string y      = _conf->getAttributeValue("y");
+    std::string width  = _conf->getAttributeValue("width");
+    std::string height = _conf->getAttributeValue("height");
 
     m_objectID2Object[id] = ::scene2D::data::Viewport::New();
     SLM_ASSERT( "Sorry, viewport ptr is null",  m_objectID2Object[id] );
@@ -356,9 +358,9 @@ void Render::configureScene( ConfigurationType _conf )
 
     SLM_ASSERT("\"viewport\" tag required", _conf->getName() == "scene");
 
-    std::string x = _conf->getAttributeValue("x");
-    std::string y = _conf->getAttributeValue("y");
-    std::string width = _conf->getAttributeValue("width");
+    std::string x      = _conf->getAttributeValue("x");
+    std::string y      = _conf->getAttributeValue("y");
+    std::string width  = _conf->getAttributeValue("width");
     std::string height = _conf->getAttributeValue("height");
 
     m_sceneStart.setX( ::boost::lexical_cast< float >( x ) );
@@ -377,7 +379,7 @@ void Render::configureScene( ConfigurationType _conf )
     if( _conf->hasAttribute(("aspectRatioMode")))
     {
         m_aspectRatioMode = (_conf->getAttributeValue("aspectRatioMode") == "KeepAspectRatioByExpanding")
-            ? Qt::KeepAspectRatioByExpanding : Qt::IgnoreAspectRatio;
+                            ? Qt::KeepAspectRatioByExpanding : Qt::IgnoreAspectRatio;
     }
 }
 
@@ -389,41 +391,42 @@ void Render::configureAdaptor( ConfigurationType _conf )
 
     SLM_ASSERT("\"adaptor\" tag required", _conf->getName() == "adaptor");
 
-    const std::string id            = _conf->getAttributeValue("id");
-    const std::string objectId      = _conf->getAttributeValue("objectId");
-    const std::string type          = _conf->getAttributeValue("class");
-    const std::string uid           = _conf->getAttributeValue("uid");
+    const std::string id       = _conf->getAttributeValue("id");
+    const std::string objectId = _conf->getAttributeValue("objectId");
+    const std::string type     = _conf->getAttributeValue("class");
+    const std::string uid      = _conf->getAttributeValue("uid");
 
-    SLM_ASSERT( "'id' required attribute missing or empty"      , !id.empty() );
+    SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
-    SLM_ASSERT( "'class' required attribute missing or empty" , !type.empty() );
+    SLM_ASSERT( "'class' required attribute missing or empty", !type.empty() );
 
     m_objectsID2AdaptorIDVector[objectId].push_back(id);
 
     SceneAdaptor2D adaptee;
-    adaptee.m_uid = uid;
-    adaptee.m_type = type;
-    adaptee.m_config = * (_conf->begin());
+    adaptee.m_uid    = uid;
+    adaptee.m_type   = type;
+    adaptee.m_config = *(_conf->begin());
 
     m_adaptorID2SceneAdaptor2D[id] = adaptee;
 }
 
 //-----------------------------------------------------------------------------
 
-void Render::startAdaptorsFromComposite( SPTR(::fwData::Composite) _composite)
+void Render::startAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 {
     SLM_TRACE_FUNC();
 
     BOOST_FOREACH( ::fwData::Composite::value_type elem, (*_composite) )
     {
-        std::string compositeKey = elem.first;
+        std::string compositeKey                       = elem.first;
         ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
         if ( objectIter != m_objectsID2AdaptorIDVector.end() )
         {
             BOOST_FOREACH( AdaptorIDType adaptorId,  objectIter->second )
             {
                 this->startAdaptor( adaptorId, elem.second );
-                OSLM_ASSERT("Service "<<adaptorId<<" is not started", m_adaptorID2SceneAdaptor2D[adaptorId].getService()->isStarted());
+                OSLM_ASSERT("Service "<<adaptorId<<" is not started",
+                            m_adaptorID2SceneAdaptor2D[adaptorId].getService()->isStarted());
             }
         }
     }
@@ -431,19 +434,19 @@ void Render::startAdaptorsFromComposite( SPTR(::fwData::Composite) _composite)
 
 //-----------------------------------------------------------------------------
 
-void Render::swapAdaptorsFromComposite( SPTR(::fwData::Composite) _composite)
+void Render::swapAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 {
     SLM_TRACE_FUNC();
     BOOST_FOREACH( ::fwData::Composite::value_type elem, (*_composite) )
     {
-        std::string compositeKey = elem.first;
+        std::string compositeKey                       = elem.first;
         ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
         if ( objectIter != m_objectsID2AdaptorIDVector.end() )
         {
             BOOST_FOREACH( AdaptorIDType adaptorId,  objectIter->second )
             {
                 ::fwRuntime::ConfigurationElementContainer::Iterator iter;
-                for (iter = m_sceneConfiguration->begin() ; iter != m_sceneConfiguration->end() ; ++iter)
+                for (iter = m_sceneConfiguration->begin(); iter != m_sceneConfiguration->end(); ++iter)
                 {
                     if ((*iter)->getName() == "adaptor" && (*iter)->getAttributeValue("id") == adaptorId)
                     {
@@ -457,12 +460,12 @@ void Render::swapAdaptorsFromComposite( SPTR(::fwData::Composite) _composite)
 
 //-----------------------------------------------------------------------------
 
-void Render::stopAdaptorsFromComposite( SPTR(::fwData::Composite) _composite)
+void Render::stopAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 {
     SLM_TRACE_FUNC();
     BOOST_FOREACH( ::fwData::Composite::value_type elem, (*_composite) )
     {
-        std::string compositeKey = elem.first;
+        std::string compositeKey                       = elem.first;
         ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
         if ( objectIter != m_objectsID2AdaptorIDVector.end() )
         {
@@ -476,24 +479,31 @@ void Render::stopAdaptorsFromComposite( SPTR(::fwData::Composite) _composite)
 
 //-----------------------------------------------------------------------------
 
-void Render::startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object) _object)
+void Render::startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object)_object)
 {
     SLM_TRACE_FUNC();
 
     if (!m_adaptorID2SceneAdaptor2D[_adaptorID].m_uid.empty())
     {
-        m_adaptorID2SceneAdaptor2D[_adaptorID].m_service = ::fwServices::add< ::scene2D::adaptor::IAdaptor >( _object , m_adaptorID2SceneAdaptor2D[_adaptorID].m_type, m_adaptorID2SceneAdaptor2D[_adaptorID].m_uid);
+        m_adaptorID2SceneAdaptor2D[_adaptorID].m_service = ::fwServices::add< ::scene2D::adaptor::IAdaptor >( _object,
+                                                                                                              m_adaptorID2SceneAdaptor2D[
+                                                                                                                  _adaptorID].m_type,
+                                                                                                              m_adaptorID2SceneAdaptor2D[
+                                                                                                                  _adaptorID].m_uid);
     }
     else
     {
-        m_adaptorID2SceneAdaptor2D[_adaptorID].m_service = ::fwServices::add< ::scene2D::adaptor::IAdaptor >( _object , m_adaptorID2SceneAdaptor2D[_adaptorID].m_type);
+        m_adaptorID2SceneAdaptor2D[_adaptorID].m_service = ::fwServices::add< ::scene2D::adaptor::IAdaptor >( _object,
+                                                                                                              m_adaptorID2SceneAdaptor2D[
+                                                                                                                  _adaptorID].m_type);
     }
 
     SLM_ASSERT("\"config\" tag required", m_adaptorID2SceneAdaptor2D[_adaptorID].m_config->getName() == "config");
     SLM_ASSERT("Adaptor service expired", m_adaptorID2SceneAdaptor2D[_adaptorID].getService());
 
     m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->setScene2DRender(Render::dynamicCast(this->shared_from_this()));
-    m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->setConfiguration(m_adaptorID2SceneAdaptor2D[_adaptorID].m_config);
+    m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->setConfiguration(
+        m_adaptorID2SceneAdaptor2D[_adaptorID].m_config);
     m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->configure();
     m_adaptorID2SceneAdaptor2D[_adaptorID].getService()->start();
 
@@ -505,11 +515,11 @@ void Render::startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object) _obje
 
 //-----------------------------------------------------------------------------
 
-void Render::swapAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object) _object)
+void Render::swapAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object)_object)
 {
     SLM_TRACE_FUNC();
 
-     m_adaptorID2SceneAdaptor2D[ _adaptorID ].getService()->swap( _object );
+    m_adaptorID2SceneAdaptor2D[ _adaptorID ].getService()->swap( _object );
 }
 
 //-----------------------------------------------------------------------------

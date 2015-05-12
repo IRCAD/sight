@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_DATAINFOFROMMSGUPDATERSRV_HPP_
-#define _CTRLSELECTION_DATAINFOFROMMSGUPDATERSRV_HPP_
+#ifndef __CTRLSELECTION_UPDATER_DATAINFOFROMMSGUPDATERSRV_HPP__
+#define __CTRLSELECTION_UPDATER_DATAINFOFROMMSGUPDATERSRV_HPP__
 
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
@@ -20,22 +20,22 @@ namespace updater
  * @class   DataInfoFromMsgUpdaterSrv
  * @brief   Updates the composite related to this service according to the data stored (dataInfo) in the event :
  * @warning datainfo MUST be always provided (but can be null), dataInfo MUST have the same type
- * 
+ *
 
  * @date    2009-2010.
  */
 class CTRLSELECTION_CLASS_API DataInfoFromMsgUpdaterSrv : public ::ctrlSelection::IUpdaterSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DataInfoFromMsgUpdaterSrv)(::ctrlSelection::IUpdaterSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DataInfoFromMsgUpdaterSrv)(::ctrlSelection::IUpdaterSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API DataInfoFromMsgUpdaterSrv() throw() ;
+    CTRLSELECTION_API DataInfoFromMsgUpdaterSrv() throw();
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~DataInfoFromMsgUpdaterSrv() throw() ;
+    CTRLSELECTION_API virtual ~DataInfoFromMsgUpdaterSrv() throw();
 
 protected:
 
@@ -52,7 +52,7 @@ protected:
             <update compositeKey="myObject" onEvent="NEW_OBJECT" fromUID="myPatient" actionType="ADD_OR_SWAP"/>
             <update compositeKey="myObject" onEvent="CLEAR_OBJECT" fromUID="myPatient" actionType="REMOVE"/>
         </service>
-      @endverbatim
+       @endverbatim
      * @see IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
@@ -72,4 +72,4 @@ protected:
 } // updater
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_DATAINFOFROMMSGUPDATERSRV_HPP_
+#endif // __CTRLSELECTION_UPDATER_DATAINFOFROMMSGUPDATERSRV_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,17 +43,19 @@ namespace uiGeneric
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiGeneric::action::ShowRevInfo , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGeneric::action::ShowRevInfo, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
 ShowRevInfo::ShowRevInfo( ) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 ShowRevInfo::~ShowRevInfo() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -81,9 +83,9 @@ void ShowRevInfo::updating( ) throw(::fwTools::Failed)
     htmlView->setOpenExternalLinks(true);
     htmlView->setMinimumSize(800, 600);
 
-    QPushButton* okButton = new QPushButton(QObject::tr("Ok"));
+    QPushButton* okButton  = new QPushButton(QObject::tr("Ok"));
     QPushButton* genButton = new QPushButton(QObject::tr("Save report"));
-    QHBoxLayout *hLayout = new QHBoxLayout();
+    QHBoxLayout *hLayout   = new QHBoxLayout();
     hLayout->addStretch();
     hLayout->addWidget(genButton);
     hLayout->addWidget(okButton);
@@ -116,7 +118,8 @@ void ShowRevInfo::starting() throw (::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void ShowRevInfo::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -166,7 +169,7 @@ QTextDocument* ShowRevInfo::generateReport()
     ::boost::filesystem::path bundlePath = ::boost::filesystem::current_path() / "Bundles";
     ::boost::filesystem::path libPath    = ::boost::filesystem::current_path() / "share";
     const FindMapType& bundleMap = this->findRevInfo(bundlePath);
-    const FindMapType& libMap =  this->findRevInfo(libPath);
+    const FindMapType& libMap    = this->findRevInfo(libPath);
 
     RevMapType revMap;
     this->getRevMap(bundleMap, revMap, true);
@@ -224,7 +227,7 @@ const ShowRevInfo::FindMapType ShowRevInfo::findRevInfo(const ::boost::filesyste
 #if BOOST_FILESYSTEM_VERSION > 2
         filename = iter->path().filename().string();
 #else
-        filename =  iter->path().leaf();
+        filename = iter->path().leaf();
 #endif
         if(filename == "rev.info")
         {
@@ -233,7 +236,7 @@ const ShowRevInfo::FindMapType ShowRevInfo::findRevInfo(const ::boost::filesyste
 #else
             findname = iter->path().leaf();
 #endif
-            findname = iter->path().parent_path().filename().string();
+            findname          = iter->path().parent_path().filename().string();
             findMap[findname] = iter->path();
         }
     }
@@ -290,12 +293,12 @@ void ShowRevInfo::saveReport()
     dialogFile.addFilter("HTML","*.html");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr  result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
 
     if( result )
     {
         ::boost::filesystem::path filename = result->getPath();
-        _sDefaultPath = filename.parent_path();
+        _sDefaultPath                      = filename.parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
 
         QTextDocument* document = this->generateReport();

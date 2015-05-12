@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,7 +44,7 @@ AppConfig::~AppConfig()
 void AppConfig::parseBundleInformation()
 {
     std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > >  extensions =
-            ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::AppConfig");
+        ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::AppConfig");
     BOOST_FOREACH( ::boost::shared_ptr< ::fwRuntime::Extension > ext, extensions )
     {
         // Get id
@@ -74,7 +74,7 @@ void AppConfig::parseBundleInformation()
         if ( ext->hasConfigurationElement("parameters") )
         {
             ::fwRuntime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
-            ::fwRuntime::ConfigurationElement::Container elements = parametersConfig->getElements();
+            ::fwRuntime::ConfigurationElement::Container elements     = parametersConfig->getElements();
             BOOST_FOREACH( ::fwRuntime::ConfigurationElement::sptr paramConfig, elements )
             {
                 std::string name = paramConfig->getExistingAttributeValue("name");
@@ -102,7 +102,7 @@ void AppConfig::parseBundleInformation()
 //-----------------------------------------------------------------------------
 
 void AppConfig::addAppInfo
-(   const std::string & configId,
+    (   const std::string & configId,
     AppInfo::ConfigType type,
     const std::string & group,
     const std::string & desc,
@@ -112,19 +112,19 @@ void AppConfig::addAppInfo
     ::fwCore::mt::WriteLock lock(m_registryMutex);
 
     OSLM_DEBUG( "New app config registering : "
-            << " configId =" << configId
-            << " type=" << type
-    );
+                << " configId =" << configId
+                << " type=" << type
+                );
 
     SLM_ASSERT("Sorry, app config id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
 
     AppInfo::sptr info = AppInfo::New();
-    info->type = type;
-    info->group = group;
-    info->desc = desc;
-    info->config =  config;
+    info->type       = type;
+    info->group      = group;
+    info->desc       = desc;
+    info->config     = config;
     info->parameters = parameters;
-    m_reg[configId] = info;
+    m_reg[configId]  = info;
 }
 
 //-----------------------------------------------------------------------------
@@ -144,13 +144,14 @@ void AppConfig::clearRegistry()
 //-----------------------------------------------------------------------------
 
 ::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
-        const std::string & configId,
-        const FieldAdaptorType fieldAdaptors ) const
+    const std::string & configId,
+    const FieldAdaptorType fieldAdaptors ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     // Get config template
     Registry::const_iterator iter = m_reg.find( configId );
-    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry", iter != m_reg.end());
+    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry",
+               iter != m_reg.end());
 
     // Adapt config
     ::fwRuntime::ConfigurationElement::sptr newConfig;
@@ -183,7 +184,9 @@ void AppConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string & configId, ::fwData::Composite::csptr replaceFields ) const
+::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string & configId,
+                                                                              ::fwData::Composite::csptr replaceFields )
+const
 {
     FieldAdaptorType fieldAdaptors = compositeToFieldAdaptor( replaceFields );
     return this->getAdaptedTemplateConfig( configId, fieldAdaptors );
@@ -254,7 +257,8 @@ std::string AppConfig::getUniqueIdentifier(const std::string& serviceUid )
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::EConfigurationElement::sptr AppConfig::adaptConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem, const FieldAdaptorType & fieldAdaptors ) const
+::fwRuntime::EConfigurationElement::sptr AppConfig::adaptConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem,
+                                                                 const FieldAdaptorType & fieldAdaptors ) const
 {
     SLM_TRACE_FUNC();
 
@@ -292,8 +296,8 @@ std::string AppConfig::adaptField( const std::string & _str, const FieldAdaptorT
                 std::stringstream machine_format;
                 machine_format << "\\1" << fieldAdaptor.second << "\\2";
                 newStr = ::boost::regex_replace( newStr,
-                                machine_regex, machine_format.str(),
-                                ::boost::match_default | ::boost::format_sed );
+                                                 machine_regex, machine_format.str(),
+                                                 ::boost::match_default | ::boost::format_sed );
             }
         }
     }

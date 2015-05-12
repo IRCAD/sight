@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,8 +48,8 @@ void SeriesDBTest::tearDown()
 
 void SeriesDBTest::generationTest()
 {
-    const unsigned char nbImgSeries = 3;
-    const unsigned char nbModelSeries = 4;
+    const unsigned char nbImgSeries      = 3;
+    const unsigned char nbModelSeries    = 4;
     const unsigned char nbActivitySeries = 5;
     ::fwMedData::SeriesDB::sptr seriesDB;
     seriesDB = ::fwTest::generator::SeriesDB::createSeriesDB(nbImgSeries, nbModelSeries, nbActivitySeries);
@@ -76,34 +76,34 @@ void SeriesDBTest::generationTest()
         str.width(4);
         str.fill('0');
         str << count++;
-        CPPUNIT_ASSERT_EQUAL(std::string("1.2.826.0.1.3680043.2.1125.102906542887009256605006409108689" + str.str()) ,
+        CPPUNIT_ASSERT_EQUAL(std::string("1.2.826.0.1.3680043.2.1125.102906542887009256605006409108689" + str.str()),
                              series->getInstanceUID());
-        CPPUNIT_ASSERT_EQUAL(std::string("CT") , series->getModality());
-        CPPUNIT_ASSERT_EQUAL(std::string("20130418") , series->getDate());
-        CPPUNIT_ASSERT_EQUAL(std::string("101010.101010 ") , series->getTime());
-        CPPUNIT_ASSERT_EQUAL(std::string("Description ") , series->getDescription());
+        CPPUNIT_ASSERT_EQUAL(std::string("CT"), series->getModality());
+        CPPUNIT_ASSERT_EQUAL(std::string("20130418"), series->getDate());
+        CPPUNIT_ASSERT_EQUAL(std::string("101010.101010 "), series->getTime());
+        CPPUNIT_ASSERT_EQUAL(std::string("Description "), series->getDescription());
         CPPUNIT_ASSERT(performingPhysiciansName == series->getPerformingPhysiciansName());
 
         ::fwMedData::Patient::sptr patient = series->getPatient();
-        CPPUNIT_ASSERT_EQUAL(std::string("NomSeriesDB1^PrenomSeriesDB1") , patient->getName());
-        CPPUNIT_ASSERT_EQUAL(std::string("4564383757") , patient->getPatientId());
-        CPPUNIT_ASSERT_EQUAL(std::string("19710418") , patient->getBirthdate());
-        CPPUNIT_ASSERT_EQUAL(std::string("O ") , patient->getSex());
+        CPPUNIT_ASSERT_EQUAL(std::string("NomSeriesDB1^PrenomSeriesDB1"), patient->getName());
+        CPPUNIT_ASSERT_EQUAL(std::string("4564383757"), patient->getPatientId());
+        CPPUNIT_ASSERT_EQUAL(std::string("19710418"), patient->getBirthdate());
+        CPPUNIT_ASSERT_EQUAL(std::string("O "), patient->getSex());
 
         ::fwMedData::Study::sptr study = series->getStudy();
-        CPPUNIT_ASSERT_EQUAL(std::string("1.2.826.0.1.3680043.2.1125.44278200849347599055201494082232" + str.str()) ,
+        CPPUNIT_ASSERT_EQUAL(std::string("1.2.826.0.1.3680043.2.1125.44278200849347599055201494082232" + str.str()),
                              study->getInstanceUID());
-        CPPUNIT_ASSERT_EQUAL(std::string("20130418") , study->getDate());
-        CPPUNIT_ASSERT_EQUAL(std::string("095948.689872 ") , study->getTime());
-        CPPUNIT_ASSERT_EQUAL(std::string("Dr^Jekyl") , study->getReferringPhysicianName());
-        CPPUNIT_ASSERT_EQUAL(std::string("Say 33. ") , study->getDescription());
-        CPPUNIT_ASSERT_EQUAL(std::string("042Y") , study->getPatientAge());
+        CPPUNIT_ASSERT_EQUAL(std::string("20130418"), study->getDate());
+        CPPUNIT_ASSERT_EQUAL(std::string("095948.689872 "), study->getTime());
+        CPPUNIT_ASSERT_EQUAL(std::string("Dr^Jekyl"), study->getReferringPhysicianName());
+        CPPUNIT_ASSERT_EQUAL(std::string("Say 33. "), study->getDescription());
+        CPPUNIT_ASSERT_EQUAL(std::string("042Y"), study->getPatientAge());
 
         ::fwMedData::Equipment::sptr equipement = series->getEquipment();
         CPPUNIT_ASSERT_EQUAL(std::string("hospital"), equipement->getInstitutionName());
 
-        ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(series);
-        ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(series);
+        ::fwMedData::ImageSeries::sptr imgSeries         = ::fwMedData::ImageSeries::dynamicCast(series);
+        ::fwMedData::ModelSeries::sptr modelSeries       = ::fwMedData::ModelSeries::dynamicCast(series);
         ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
 
         if (imgSeries)

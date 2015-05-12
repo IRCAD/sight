@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,8 +40,8 @@ void ZipTest::commentTest()
 
     const ::boost::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwZipTest";
     ::boost::filesystem::create_directories( dirPath );
-    const ::boost::filesystem::path path = dirPath / "jambon.zip";
-    const ::boost::filesystem::path sourceFile = ::fwTest::Data::dir() / "fw4spl/image/jpg/makao01.jpg";
+    const ::boost::filesystem::path path        = dirPath / "jambon.zip";
+    const ::boost::filesystem::path sourceFile  = ::fwTest::Data::dir() / "fw4spl/image/jpg/makao01.jpg";
     const ::boost::filesystem::path archiveFile = "makao.jpg";
 
 

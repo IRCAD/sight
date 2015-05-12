@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRENDERVTK_VTKADAPTORSERVICE_HPP_
-#define _FWRENDERVTK_VTKADAPTORSERVICE_HPP_
+#ifndef __FWRENDERVTK_IVTKADAPTORSERVICE_HPP__
+#define __FWRENDERVTK_IVTKADAPTORSERVICE_HPP__
 
 #include <string>
 
@@ -27,16 +27,21 @@ namespace fwRenderVTK
 
 class FWRENDERVTK_CLASS_API IVtkAdaptorService : public fwServices::IService
 {
-    friend class VtkRenderService;
-public :
-    fwCoreServiceClassDefinitionsMacro ( (IVtkAdaptorService)(::fwServices::IService) ) ;
+friend class VtkRenderService;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (IVtkAdaptorService)(::fwServices::IService) );
 
-    typedef fwServices::IService SuperClass ;
+    typedef fwServices::IService SuperClass;
 
 
     /// To set a representation
-    virtual void show(bool b = true) {};
-    virtual void hide() {this->show(false);};
+    virtual void show(bool b = true)
+    {
+    }
+    virtual void hide()
+    {
+        this->show(false);
+    }
 
 
     FWRENDERVTK_API void setRenderService( VtkRenderService::sptr service );
@@ -59,7 +64,7 @@ public :
     FWRENDERVTK_API vtkRenderWindowInteractor* getInteractor();
 
 
-    FWRENDERVTK_API virtual ::fwData::Object::sptr getAssociatedObject(vtkProp *prop, int depth=0);
+    FWRENDERVTK_API virtual ::fwData::Object::sptr getAssociatedObject(vtkProp *prop, int depth = 0);
 
     FWRENDERVTK_API void getAllSubProps(vtkPropCollection *propc, int depth = -1);
 
@@ -79,17 +84,17 @@ public :
         m_autoRender = autoRender;
     }
 
-protected :
+protected:
 
     /**
      * @brief   constructor
      */
-    FWRENDERVTK_API IVtkAdaptorService() throw() ;
+    FWRENDERVTK_API IVtkAdaptorService() throw();
 
     /**
      * @brief   destructor
      */
-    FWRENDERVTK_API virtual ~IVtkAdaptorService() throw() ;
+    FWRENDERVTK_API virtual ~IVtkAdaptorService() throw();
 
     ::fwServices::ObjectMsg::sptr m_message;
 
@@ -98,7 +103,7 @@ protected :
      */
     //@{
     /// Overrides
-    FWRENDERVTK_API virtual void info(std::ostream &_sstream ) ;
+    FWRENDERVTK_API virtual void info(std::ostream &_sstream );
     FWRENDERVTK_API void starting() throw(fwTools::Failed);
     FWRENDERVTK_API void stopping() throw(fwTools::Failed);
     FWRENDERVTK_API void swapping() throw(fwTools::Failed);
@@ -112,10 +117,10 @@ protected :
 
     /// state of the pipeline
     bool m_vtkPipelineModified;
-    VtkRenderService::RendererIdType   m_rendererId;
-    VtkRenderService::PickerIdType     m_pickerId;
-    VtkRenderService::VtkObjectIdType  m_transformId;
-    VtkRenderService::wptr             m_renderService;
+    VtkRenderService::RendererIdType m_rendererId;
+    VtkRenderService::PickerIdType m_pickerId;
+    VtkRenderService::VtkObjectIdType m_transformId;
+    VtkRenderService::wptr m_renderService;
 
     ::fwServices::helper::SigSlotConnection::sptr m_connections;
 
@@ -127,14 +132,17 @@ protected :
 
     bool m_autoRender;
 
-    FWRENDERVTK_API virtual void doStart() = 0;
-    FWRENDERVTK_API virtual void doStop() = 0;
-    FWRENDERVTK_API virtual void doSwap() = 0;
-    FWRENDERVTK_API virtual void doUpdate() = 0;
+    FWRENDERVTK_API virtual void doStart()                                     = 0;
+    FWRENDERVTK_API virtual void doStop()                                      = 0;
+    FWRENDERVTK_API virtual void doSwap()                                      = 0;
+    FWRENDERVTK_API virtual void doUpdate()                                    = 0;
     FWRENDERVTK_API virtual void doReceive(::fwServices::ObjectMsg::csptr msg) = 0;
 
 
-    ServiceVector & getRegisteredServices() {return m_subServices;};
+    ServiceVector & getRegisteredServices()
+    {
+        return m_subServices;
+    }
     FWRENDERVTK_API void registerService( ::fwRenderVTK::IVtkAdaptorService::sptr service );
     FWRENDERVTK_API void unregisterServices();
 
@@ -158,4 +166,4 @@ private:
 
 }
 
-#endif /*_FWRENDERVTK_VTKADAPTORSERVICE_HPP_*/
+#endif /*__FWRENDERVTK_IVTKADAPTORSERVICE_HPP__*/

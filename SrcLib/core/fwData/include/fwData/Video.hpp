@@ -31,7 +31,7 @@ namespace fwData
 class FWDATA_CLASS_API Video : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Video)(::fwData::Object), (()), ::fwData::factory::New< Video >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Video)(::fwData::Object), (()), ::fwData::factory::New< Video >);
 
     fwCampMakeFriendDataMacro((fwData)(Video));
 
@@ -49,19 +49,34 @@ public:
     FWDATA_API virtual ~Video() throw();
 
     /// @brief Get the buffer size along X axis
-    ::boost::uint32_t  getXSize() const { return m_ui32XSize; };
+    ::boost::uint32_t  getXSize() const
+    {
+        return m_ui32XSize;
+    }
 
     /// @brief Get the buffer size along Y axis
-    ::boost::uint32_t  getYSize() const { return m_ui32YSize; };
+    ::boost::uint32_t  getYSize() const
+    {
+        return m_ui32YSize;
+    }
 
     /// @brief Get the number of bits per pixel
-    VideoType  getBPP() const { return m_ui8BPP; };
+    VideoType  getBPP() const
+    {
+        return m_ui8BPP;
+    }
 
     /// @brief Get the address of the image buffer
-    VideoType  * getImageBuffer() const { return m_pImageBuffer; };
+    VideoType  * getImageBuffer() const
+    {
+        return m_pImageBuffer;
+    }
 
     /// @brief Get the camera associated with the video
-    ::fwData::Camera::sptr getCamera() const { return m_camera; };
+    ::fwData::Camera::sptr getCamera() const
+    {
+        return m_camera;
+    }
 
     /// @brief Return True if the data is available
     FWDATA_API bool &dataAvailable();
@@ -78,18 +93,18 @@ public:
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     //! The buffer size along X axis
-    ::boost::uint32_t  m_ui32XSize;
+    ::boost::uint32_t m_ui32XSize;
 
     //! The buffer size along Y axis
-    ::boost::uint32_t  m_ui32YSize;
+    ::boost::uint32_t m_ui32YSize;
 
     //! The number of bit by pixel
-    VideoType  m_ui8BPP;
+    VideoType m_ui8BPP;
 
     //! The address of the image buffer
     VideoType  * m_pImageBuffer;
 
-protected :
+protected:
 
     /// Flag if the video is available
     bool m_dataAvailable;

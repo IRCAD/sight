@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@
 #include <fwServices/IEditionService.hpp>
 
 
-fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::MsgWrapperSrv, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::MsgWrapperSrv, ::fwData::Object );
 
 namespace ctrlSelection
 {
@@ -36,7 +36,8 @@ MsgWrapperSrv::MsgWrapperSrv() throw()
 //-----------------------------------------------------------------------------
 
 MsgWrapperSrv::~MsgWrapperSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -46,18 +47,19 @@ void MsgWrapperSrv::configuring()  throw ( ::fwTools::Failed )
 
     ::fwRuntime::ConfigurationElementContainer handleEvents = m_configuration->findAllConfigurationElement("wrapper");
 
-    SLM_ASSERT("Problem with configuration for ObjToCompositeMsgForwarderSrv type, missing element \"wrapper\"", handleEvents.size() != 0 );
+    SLM_ASSERT("Problem with configuration for ObjToCompositeMsgForwarderSrv type, missing element \"wrapper\"",
+               handleEvents.size() != 0 );
     m_managedEvents.clear();
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElementContainer::Container::value_type item ,handleEvents.getElements())
+    BOOST_FOREACH( ::fwRuntime::ConfigurationElementContainer::Container::value_type item,handleEvents.getElements())
     {
         SLM_FATAL_IF( "Sorry, attribute \"onEvent\" is missing", !item->hasAttribute("onEvent") );
-        std::string onEvent =  item->getExistingAttributeValue("onEvent");
+        std::string onEvent = item->getExistingAttributeValue("onEvent");
 
         SLM_FATAL_IF( "Sorry, attribute \"toEvent\" is missing", !item->hasAttribute("toEvent") );
-        std::string toEvent =  item->getExistingAttributeValue("toEvent");
+        std::string toEvent = item->getExistingAttributeValue("toEvent");
 
         SLM_FATAL_IF( "Sorry, attribute \"toMsgType\" is missing", !item->hasAttribute("toMsgType") );
-        std::string msgType =  item->getExistingAttributeValue("toMsgType");
+        std::string msgType = item->getExistingAttributeValue("toMsgType");
 
         OSLM_INFO( "Manage event "<< onEvent <<" to " << toEvent << ".");
         EventType managedEvent ( onEvent, toEvent, msgType);
@@ -73,9 +75,9 @@ void MsgWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( 
 
     BOOST_FOREACH( EventType item, m_managedEvents)
     {
-        std::string onEvent      = item.get<0>();
-        std::string toEvent      = item.get<1>();
-        std::string msgType      = item.get<2>();
+        std::string onEvent = item.get<0>();
+        std::string toEvent = item.get<1>();
+        std::string msgType = item.get<2>();
 
         if(message->hasEvent( onEvent ))
         {

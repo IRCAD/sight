@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_TRANSLATEUPDATER_HPP_
-#define _CTRLSELECTION_TRANSLATEUPDATER_HPP_
+#ifndef __CTRLSELECTION_UPDATER_TRANSLATEUPDATER_HPP__
+#define __CTRLSELECTION_UPDATER_TRANSLATEUPDATER_HPP__
 
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
@@ -19,21 +19,21 @@ namespace updater
 /**
  * @class   TranslateUpdater
  * @brief   Update the composite related to this service according to the receiving composite message and translate the composite keys.
- * 
+ *
  * @date    2011.
  */
 class CTRLSELECTION_CLASS_API TranslateUpdater : public ::ctrlSelection::IUpdaterSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (TranslateUpdater)(::ctrlSelection::IUpdaterSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TranslateUpdater)(::ctrlSelection::IUpdaterSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API TranslateUpdater() throw() ;
+    CTRLSELECTION_API TranslateUpdater() throw();
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~TranslateUpdater() throw() ;
+    CTRLSELECTION_API virtual ~TranslateUpdater() throw();
 
 protected:
 
@@ -50,7 +50,7 @@ protected:
             <translate fromKey="myObject1Key1" toKey="myObject1Key2" fromUID="myComposite" />
             <translate fromKey="myObject2Key1" toKey="myObject2Key2" fromUID="myComposite" />
         </service>
-      @endverbatim
+       @endverbatim
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
@@ -76,4 +76,4 @@ private:
 } // updater
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_TRANSLATEUPDATER_HPP_
+#endif // __CTRLSELECTION_UPDATER_TRANSLATEUPDATER_HPP__

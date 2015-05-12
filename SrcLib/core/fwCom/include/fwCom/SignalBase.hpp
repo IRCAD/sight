@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,8 +30,8 @@ struct SignalBase : virtual fwCore::BaseObject
     /**
      * @name Typedefs
      * @{ */
-    typedef SPTR( SignalBase ) sptr;
-    typedef WPTR( SignalBase )   wptr;
+    typedef SPTR ( SignalBase ) sptr;
+    typedef WPTR ( SignalBase )   wptr;
     /**  @} */
 
     SignalBase()
@@ -40,9 +40,11 @@ struct SignalBase : virtual fwCore::BaseObject
         ::fwCore::mt::ScopedLock lock(s_mutexCounter);
         m_id = "Signal-" + ::boost::lexical_cast<std::string>(s_idCount++);
 #endif
-    };
+    }
 
-    virtual ~SignalBase(){}
+    virtual ~SignalBase()
+    {
+    }
 
     /**
      * @brief Connects the given slot.
@@ -59,41 +61,41 @@ struct SignalBase : virtual fwCore::BaseObject
     /// Returns number of connections.
     virtual size_t getNumberOfConnections() const = 0;
 
-protected:
-    /// Copy constructor forbidden
-    SignalBase( const SignalBase& );
+    protected:
+        /// Copy constructor forbidden
+        SignalBase( const SignalBase& );
 
-    /// Copy operator forbiden
-    SignalBase& operator=( const SignalBase& );
+        /// Copy operator forbiden
+        SignalBase& operator=( const SignalBase& );
 
 #ifdef COM_LOG
 
-public :
+    public:
 
-    typedef std::string IDType;
+        typedef std::string IDType;
 
-    /// Gets current m_id
-    IDType getID() const
-    {
-        return m_id;
-    }
+        /// Gets current m_id
+        IDType getID() const
+        {
+            return m_id;
+        }
 
-    /// Sets new m_id
-    void setID( IDType newId )
-    {
-        m_id = newId;
-    }
+        /// Sets new m_id
+        void setID( IDType newId )
+        {
+            m_id = newId;
+        }
 
-private :
+    private:
 
-    /// Id of signal (not mandatory)
-    IDType m_id;
+        /// Id of signal (not mandatory)
+        IDType m_id;
 
-    /// Id counter
-    FWCOM_API static size_t s_idCount;
+        /// Id counter
+        FWCOM_API static size_t s_idCount;
 
-    /// Mutex to protect id counter
-    FWCOM_API static ::fwCore::mt::Mutex s_mutexCounter;
+        /// Mutex to protect id counter
+        FWCOM_API static ::fwCore::mt::Mutex s_mutexCounter;
 
 #endif
 

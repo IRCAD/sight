@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,7 +37,7 @@ namespace editor
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMedData::editor::SSelector , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SSelector, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -81,7 +81,8 @@ void SSelector::starting() throw(::fwTools::Failed)
 {
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -103,7 +104,7 @@ void SSelector::starting() throw(::fwTools::Failed)
     if(!m_insertMode)
     {
         QObject::connect(m_selectorWidget, SIGNAL(doubleClicked(const QModelIndex &)),
-                this, SLOT(onDoubleClick(const QModelIndex &)));
+                         this, SLOT(onDoubleClick(const QModelIndex &)));
     }
 
     if(m_allowedRemove)
@@ -303,7 +304,7 @@ void SSelector::onDoubleClick(const QModelIndex &index)
     else if (m_selectorWidget->getItemType(index) == ::uiMedData::widget::SelectorModel::SERIES)
     {
         SLM_ASSERT("There must be only one object selected", selectionVector->size() == 1);
-        ::fwData::Object::sptr obj = selectionVector->front();
+        ::fwData::Object::sptr obj       = selectionVector->front();
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
         SLM_ASSERT("Object must be a '::fwMedData::Series'", series);
 
@@ -336,7 +337,7 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
 {
     SLM_ASSERT("Object " << m_selectionId << " doesn't exist", ::fwTools::fwID::exist(m_selectionId));
 
-    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_selectionId);
+    ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(m_selectionId);
     ::fwData::Vector::sptr selection = ::fwData::Vector::dynamicCast(obj);
     SLM_ASSERT("Object " << m_selectionId << " is not a '::fwData::Vector'", selection);
 

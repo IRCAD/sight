@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@
 
 #include <boost/foreach.hpp>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList );
 
 namespace visuVTKAdaptor
 {
@@ -53,21 +53,23 @@ void notifyDeletePlane( ::fwData::PlaneList::sptr planeList, ::fwData::Plane::sp
 class vtkPlaneDeleteCallBack : public vtkCommand
 {
 
-public :
+public:
     static vtkPlaneDeleteCallBack *New( ::fwRenderVTK::IVtkAdaptorService *service)
-    { return new vtkPlaneDeleteCallBack(service); }
+    {
+        return new vtkPlaneDeleteCallBack(service);
+    }
 
     vtkPlaneDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService *service )
-    : m_service(service),
-      m_picker( vtkCellPicker::New() ),
-      m_propCollection( vtkPropCollection::New() )
+        : m_service(service),
+          m_picker( vtkCellPicker::New() ),
+          m_propCollection( vtkPropCollection::New() )
     {
         m_lastPos[0] = -1;
         m_lastPos[1] = -1;
         m_picker->PickFromListOn();
         m_picker->SetTolerance(0.001);
 
-        m_display[2]=0.0;
+        m_display[2] = 0.0;
     }
 
     ~vtkPlaneDeleteCallBack( )
@@ -107,7 +109,7 @@ public :
             m_display[1] = pos[1];
 
             this->fillPickList();
-            if (m_picker->Pick( m_display , m_service->getRenderer() ) )
+            if (m_picker->Pick( m_display, m_service->getRenderer() ) )
             {
                 if(getSelectedPlane())
                 {
@@ -119,7 +121,8 @@ public :
                 }
             }
         }
-        else if ( eventId == vtkCommand::RightButtonReleaseEvent && std::equal(pos, pos+1, m_lastPos) && !m_pickedPlane.expired() )
+        else if ( eventId == vtkCommand::RightButtonReleaseEvent &&
+                  std::equal(pos, pos+1, m_lastPos) && !m_pickedPlane.expired() )
         {
             // backup of plane
             ::fwData::Plane::sptr planeBackup(m_pickedPlane);
@@ -127,14 +130,14 @@ public :
             ::fwData::PlaneList::sptr planeList = m_service->getObject< ::fwData::PlaneList >();
             planeList->getRefPlanes().erase
             (
-                    std::find( planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock())
+                std::find( planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock())
             );
             notifyDeletePlane(planeList, planeBackup);
         }
     }
     bool getSelectedPlane()
     {
-        bool isFind = false;
+        bool isFind              = false;
         vtkPropCollection *propc = m_picker->GetActors();
         vtkProp *prop;
 
@@ -147,7 +150,8 @@ public :
                 ::fwData::PlaneList::sptr planeList = m_service->getObject< ::fwData::PlaneList >();
                 if(!planeList->getRefPlanes().empty())
                 {
-                    ::fwData::PlaneList::PlaneListContainer::iterator itr = std::find( planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock());
+                    ::fwData::PlaneList::PlaneListContainer::iterator itr = std::find(
+                        planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock());
                     if(itr != planeList->getRefPlanes().end() )
                     {
                         isFind = true;
@@ -159,7 +163,7 @@ public :
         return isFind;
     }
 
-protected :
+protected:
     ::fwRenderVTK::IVtkAdaptorService *m_service;
     vtkPicker * m_picker;
     vtkPropCollection * m_propCollection;
@@ -203,8 +207,8 @@ void PlaneList::configuring() throw(fwTools::Failed)
 void PlaneList::doStart() throw(fwTools::Failed)
 {
     m_rightButtonCommand = vtkPlaneDeleteCallBack::New(this);
-    this->getInteractor()->AddObserver( "RightButtonPressEvent" , m_rightButtonCommand, 1 );
-    this->getInteractor()->AddObserver( "RightButtonReleaseEvent" , m_rightButtonCommand, 1 );
+    this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
+    this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
 
     this->doUpdate();
 }
@@ -223,7 +227,7 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
         BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
         {
             ::fwRenderVTK::IVtkAdaptorService::sptr servicePlane =
-                    ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
                     ( plane, "::visuVTKAdaptor::Plane" );
             SLM_ASSERT("servicePlane not instanced", servicePlane);
 
@@ -252,7 +256,7 @@ void PlaneList::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fai
     if ( planeListMsg )
     {
         if (planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::ADD_PLANE )
-                || planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE) )
+            || planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE) )
         {
             this->doStop();
             this->doStart();

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_EXTENSIONPOINT_HPP
-#define _FWRUNTIME_EXTENSIONPOINT_HPP
+#ifndef __FWRUNTIME_EXTENSIONPOINT_HPP__
+#define __FWRUNTIME_EXTENSIONPOINT_HPP__
 
 #include <algorithm>
 #include <iostream>
@@ -22,13 +22,13 @@
 
 namespace fwRuntime
 {
-    struct Bundle;
+struct Bundle;
 
-    namespace io
-    {
-        struct BundleDescriptorReader;
-        struct Validator;
-    }
+namespace io
+{
+struct BundleDescriptorReader;
+struct Validator;
+}
 }
 
 
@@ -40,13 +40,13 @@ namespace fwRuntime
  * @brief   Defines the extension point class.
  * @struct  ExtensionPoint
  * @date    2004-2009
- * 
+ *
  */
 struct ExtensionPoint : public BundleElement
 {
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 
-    typedef Extension::Container    ConfigurationElementContainer;
+    typedef Extension::Container ConfigurationElementContainer;
 
     /**
      * @brief   Retrieves all configuration elements contributed by extensions
@@ -58,8 +58,8 @@ struct ExtensionPoint : public BundleElement
     {
         typedef std::back_insert_iterator< ConfigurationElementContainer >  Inserter;
 
-        ConfigurationElementContainer   container;
-        Inserter                        inserter(container);
+        ConfigurationElementContainer container;
+        Inserter inserter(container);
 
         getAllConfigurationElements<Inserter>( inserter );
 
@@ -80,8 +80,8 @@ struct ExtensionPoint : public BundleElement
         typedef std::vector< ::boost::shared_ptr< Extension > > ExtensionContainer;
         typedef std::back_insert_iterator< ExtensionContainer > Inserter;
 
-        ExtensionContainer  extensions;
-        Inserter            inserter(extensions);
+        ExtensionContainer extensions;
+        Inserter inserter(extensions);
 
         getAllExtensions( inserter );
 
@@ -113,8 +113,8 @@ struct ExtensionPoint : public BundleElement
         {
             ::boost::shared_ptr< Extension >   extension( *i );
             if( extension->getPoint() == m_id && extension->isEnable() == true
-                    && extension->validate() == Extension::Valid
-            )
+                && extension->validate() == Extension::Valid
+                )
             {
                 *output = extension;
                 ++output;
@@ -138,36 +138,36 @@ struct ExtensionPoint : public BundleElement
     FWRUNTIME_API ::boost::shared_ptr< io::Validator > getExtensionValidator() const;
 
 
-protected:
+    protected:
 
 
-    /**
-     * @brief       constructor
-     *
-     * @param[in]   bundle  a shared pointer to the bundle where the extension
-     *                      point is declared
-     * @param[in]   id      a string containing the extension point identifier
-     * @param[in]   schema  a path to a file containing an XML schema used to
-     *                      validate extensions contributed to the point.
-     */
-    ExtensionPoint(
+        /**
+         * @brief       constructor
+         *
+         * @param[in]   bundle  a shared pointer to the bundle where the extension
+         *                      point is declared
+         * @param[in]   id      a string containing the extension point identifier
+         * @param[in]   schema  a path to a file containing an XML schema used to
+         *                      validate extensions contributed to the point.
+         */
+        ExtensionPoint(
             const ::boost::shared_ptr<Bundle>       bundle,
             const std::string&              id,
             const boost::filesystem::path&  schema);
 
 
-private:
+    private:
 
-    const std::string                               m_id;           ///< a string containing the extension point identifier
-    const ::boost::filesystem::path                 m_schema;       ///< a path to the XML schema used to validate contributed extensions
-    mutable ::boost::shared_ptr< io::Validator >    m_validator;    ///< a shared pointer to the extension validator
+        const std::string m_id;                                     ///< a string containing the extension point identifier
+        const ::boost::filesystem::path m_schema;                   ///< a path to the XML schema used to validate contributed extensions
+        mutable ::boost::shared_ptr< io::Validator >    m_validator;///< a shared pointer to the extension validator
 
-    /**
-     * @brief   Assignment operator.
-     *
-     * @remark  Assignment is forbidden for this class.
-     */
-    void operator=(const ExtensionPoint&) throw();
+        /**
+         * @brief   Assignment operator.
+         *
+         * @remark  Assignment is forbidden for this class.
+         */
+        void operator=(const ExtensionPoint&) throw();
 
 };
 
@@ -175,4 +175,4 @@ private:
 
 
 
-#endif // #define _FWRUNTIME_EXTENSIONPOINT_HPP
+#endif // __FWRUNTIME_EXTENSIONPOINT_HPP__

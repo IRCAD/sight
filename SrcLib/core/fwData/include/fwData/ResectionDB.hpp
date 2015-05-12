@@ -26,7 +26,8 @@ class FWDATA_CLASS_API ResectionDB : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object), (()), ::fwData::factory::New< ResectionDB >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ResectionDB)(::fwData::Object), (()),
+                                            ::fwData::factory::New< ResectionDB >);
     fwCampMakeFriendDataMacro((fwData)(ResectionDB));
 
     /**
@@ -59,7 +60,8 @@ public:
 
     fwDataGetSetCRefMacro(Resections, ResectionContainerType);
 
-    fwGettersSettersDocMacro(SafeResection, safeResection, ::fwData::Resection::sptr, Get the safe part of the resections);
+    fwGettersSettersDocMacro(SafeResection, safeResection, ::fwData::Resection::sptr,
+                             "Get the safe part of the resections");
 
 protected:
 

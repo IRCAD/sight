@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIVISU_CAMERA_ORIENTATION_ACTION_HPP_
-#define _UIVISU_CAMERA_ORIENTATION_ACTION_HPP_
+#ifndef __UIVISU_ACTION_CAMERAORIENTATIONACTION_HPP__
+#define __UIVISU_ACTION_CAMERAORIENTATIONACTION_HPP__
 
 #include <fwTools/Failed.hpp>
 
@@ -21,21 +21,21 @@ namespace action
 /**
  * @brief   This action allows change 3D camera orientation (axial, frontal, sagittal)
  * @class   CameraOrientationAction
- * 
+ *
  * @date    2010.
  */
 class UIVISU_CLASS_API CameraOrientationAction : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (CameraOrientationAction)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (CameraOrientationAction)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    UIVISU_API CameraOrientationAction() throw() ;
+    UIVISU_API CameraOrientationAction() throw();
 
     /// Destructor. Do nothing.
-    UIVISU_API virtual ~CameraOrientationAction() throw() ;
+    UIVISU_API virtual ~CameraOrientationAction() throw();
 
 protected:
 
@@ -44,10 +44,10 @@ protected:
     /**
      * @brief Configure action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" impl="::uiData::action::CameraOrientationAction" autoConnect="no">
+       <service type="::fwGui::IActionSrv" impl="::uiData::action::CameraOrientationAction" autoConnect="no">
         <orientation>frontal</orientation>
-    </service>
-    @endverbatim
+       </service>
+       @endverbatim
      * - \b orientation : must be axial, frontal or sagittal
      */
     void configuring() throw(fwTools::Failed);
@@ -68,7 +68,7 @@ protected:
     void swapping() throw(::fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 private:
 
@@ -78,6 +78,6 @@ private:
 } // action
 } // uiVisu
 
-#endif /*_UIVISU_CAMERA_ORIENTATION_ACTION_HPP_*/
+#endif /*__UIVISU_ACTION_CAMERAORIENTATIONACTION_HPP__*/
 
 

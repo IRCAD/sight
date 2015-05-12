@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IO_IWRITER_HPP_
-#define _IO_IWRITER_HPP_
+#ifndef __IO_IWRITER_HPP__
+#define __IO_IWRITER_HPP__
 
 #include <boost/filesystem/path.hpp>
 
@@ -31,8 +31,8 @@ namespace io
 class IO_CLASS_API IWriter : public fwServices::IService
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (IWriter)(::fwServices::IService) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (IWriter)(::fwServices::IService) );
 
     /**
      * @brief Configure the image path (by default does nothing).
@@ -40,7 +40,7 @@ public :
      * This method is used to find
      * the file path  using a file selector.
      */
-    IO_API virtual void configureWithIHM() = 0 ;
+    IO_API virtual void configureWithIHM() = 0;
 
     /**
      * @brief This method must be implemented by concrete service writers
@@ -107,9 +107,9 @@ public :
 
 protected:
 
-    IO_API IWriter() throw() ;
+    IO_API IWriter() throw();
 
-    IO_API virtual ~IWriter() throw() ;
+    IO_API virtual ~IWriter() throw();
 
     /**
      * @brief This method proposes to parse xml configuration to retrieve
@@ -121,24 +121,24 @@ protected:
      *
      * Sample configuration for a file:
      * @verbatim
-     <service ... >
+       <service ... >
         <file>/home/user/myFile.jpg<file/>
-     </service>
-     @endverbatim
+       </service>
+       @endverbatim
      * Sample configuration for many files:
      * @verbatim
-     <service ... >
+       <service ... >
         <file>/home/user/myFile01.jpg<file/>
         <file>/home/user/myFile02.jpg<file/>
         <file>/home/user/myFile03.jpg<file/>
-     </service>
-     @endverbatim
+       </service>
+       @endverbatim
      * Sample configuration for a folder:
      * @verbatim
-     <service ... >
+       <service ... >
         <folder>/home/user/myFolder<folder/>
-     </service>
-     @endverbatim
+       </service>
+       @endverbatim
      */
     IO_API virtual void configuring() throw (fwTools::Failed);
 
@@ -151,4 +151,4 @@ private:
 }
 
 
-#endif // _IO_IWRITER_HPP_
+#endif // __IO_IWRITER_HPP__

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_PLUGIN_HPP
-#define _FWRUNTIME_PLUGIN_HPP
+#ifndef __FWRUNTIME_IPLUGIN_HPP__
+#define __FWRUNTIME_IPLUGIN_HPP__
 
 #include <string>
 
@@ -24,7 +24,7 @@ namespace fwRuntime
  * @brief   Defines the plugin interface.
  * @struct  IPlugin
  * @date    2004-2009
- * 
+ *
  */
 struct FWRUNTIME_CLASS_API IPlugin : public IExecutable
 {
@@ -60,4 +60,4 @@ struct FWRUNTIME_CLASS_API IPlugin : public IExecutable
 
 } // namespace fwRuntime
 
-#endif // #define _FWRUNTIME_PLUGIN_HPP
+#endif //__FWRUNTIME_IPLUGIN_HPP__

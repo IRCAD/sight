@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,7 +46,7 @@
 #include <vtkTextureMapToPlane.h>
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mesh, ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mesh, ::fwData::Mesh );
 
 namespace visuVTKAdaptor
 {
@@ -64,16 +64,18 @@ const ::fwCom::Signals::SignalKeyType Mesh::s_TEXTURE_APPLIED_SIG = "textureAppl
 
 class PlaneShifterCallback : public MeshVtkCommand
 {
-    public:
+public:
 
     static PlaneShifterCallback *New( vtkPlane *src,  vtkPlane *dst, double factor = 1.)
-    { return new PlaneShifterCallback( src, dst, factor ); }
+    {
+        return new PlaneShifterCallback( src, dst, factor );
+    }
 
     //--------------------------------------------------------------------------
     PlaneShifterCallback( vtkPlane *src,  vtkPlane *dst, double factor )
-    : m_planeSrc(src),
-      m_planeDst(dst),
-      m_factor(factor)
+        : m_planeSrc(src),
+          m_planeDst(dst),
+          m_factor(factor)
     {
         m_planeSrc->Register(this);
         m_planeDst->Register(this);
@@ -115,32 +117,34 @@ class PlaneShifterCallback : public MeshVtkCommand
 
     }
 
-    protected:
-        vtkPlane *m_planeSrc;
-        vtkPlane *m_planeDst;
-        double    m_factor;
+protected:
+    vtkPlane *m_planeSrc;
+    vtkPlane *m_planeDst;
+    double m_factor;
 };
 
 
 
 class PlaneCollectionShifterCallback : public MeshVtkCommand
 {
-    public:
+public:
 
     static PlaneCollectionShifterCallback *New(
-            vtkPlaneCollection *src,
-            vtkPlaneCollection *dst,
-            double factor = 1. )
-    { return new PlaneCollectionShifterCallback( src, dst, factor ); }
+        vtkPlaneCollection *src,
+        vtkPlaneCollection *dst,
+        double factor = 1. )
+    {
+        return new PlaneCollectionShifterCallback( src, dst, factor );
+    }
 
     //--------------------------------------------------------------------------
     PlaneCollectionShifterCallback(
-            vtkPlaneCollection *src,
-            vtkPlaneCollection *dst,
-            double factor)
-    : m_planeCollectionSrc(src),
-      m_planeCollectionDst(dst),
-      m_factor(factor)
+        vtkPlaneCollection *src,
+        vtkPlaneCollection *dst,
+        double factor)
+        : m_planeCollectionSrc(src),
+          m_planeCollectionDst(dst),
+          m_factor(factor)
     {
         m_planeCollectionSrc->Register(this);
         m_planeCollectionDst->Register(this);
@@ -165,7 +169,7 @@ class PlaneCollectionShifterCallback : public MeshVtkCommand
         {
             psc->Stop();
             psc->Delete();
-            psc=0;
+            psc = 0;
         }
         m_planeCallbacks.clear();
     }
@@ -178,8 +182,8 @@ class PlaneCollectionShifterCallback : public MeshVtkCommand
 
             vtkPlane *plane = NULL;
             for (  m_planeCollectionSrc->InitTraversal();
-                  (plane=m_planeCollectionSrc->GetNextItem());
-                )
+                   (plane = m_planeCollectionSrc->GetNextItem());
+                   )
             {
                 vtkPlane *newPlane = vtkPlane::New();
                 m_planeCollectionDst->AddItem(newPlane);
@@ -190,36 +194,36 @@ class PlaneCollectionShifterCallback : public MeshVtkCommand
         }
     }
 
-    protected:
-        vtkPlaneCollection *m_planeCollectionSrc;
-        vtkPlaneCollection *m_planeCollectionDst;
+protected:
+    vtkPlaneCollection *m_planeCollectionSrc;
+    vtkPlaneCollection *m_planeCollectionDst;
 
-        std::vector< PlaneShifterCallback* > m_planeCallbacks;
-        double    m_factor;
+    std::vector< PlaneShifterCallback* > m_planeCallbacks;
+    double m_factor;
 };
 
 
 
 class PlaneCollectionAdaptorStarter : public MeshVtkCommand
 {
-    public:
+public:
 
     static PlaneCollectionAdaptorStarter *New(
-            ::visuVTKAdaptor::Mesh::sptr service,
-            vtkPlaneCollection *src,
-            double factor = 1. )
+        ::visuVTKAdaptor::Mesh::sptr service,
+        vtkPlaneCollection *src,
+        double factor = 1. )
     {
         return new PlaneCollectionAdaptorStarter( service, src, factor );
     }
 
     //--------------------------------------------------------------------------
     PlaneCollectionAdaptorStarter(
-            ::visuVTKAdaptor::Mesh::sptr service,
-            vtkPlaneCollection *src,
-            double factor)
-    : m_service(service),
-      m_planeCollectionSrc(src),
-      m_factor(factor)
+        ::visuVTKAdaptor::Mesh::sptr service,
+        vtkPlaneCollection *src,
+        double factor)
+        : m_service(service),
+          m_planeCollectionSrc(src),
+          m_factor(factor)
     {
         m_planeCollectionSrc->Register(this);
         m_planeCollectionSrc->AddObserver(vtkCommand::ModifiedEvent, this);
@@ -249,7 +253,7 @@ class PlaneCollectionAdaptorStarter : public MeshVtkCommand
         {
             psc->Stop();
             psc->Delete();
-            psc=0;
+            psc = 0;
         }
         m_planeCallbacks.clear();
 
@@ -273,7 +277,7 @@ class PlaneCollectionAdaptorStarter : public MeshVtkCommand
         {
             this->Stop();
             this->Delete();
-            return ;
+            return;
         }
 
         if (eventId == vtkCommand::ModifiedEvent)
@@ -284,8 +288,8 @@ class PlaneCollectionAdaptorStarter : public MeshVtkCommand
 
             vtkPlane *plane = NULL;
             for (  m_planeCollectionSrc->InitTraversal();
-                    (plane = m_planeCollectionSrc->GetNextItem());
-                )
+                   (plane = m_planeCollectionSrc->GetNextItem());
+                   )
             {
                 vtkPlane *newPlane = vtkPlane::New();
                 m_planeCallbacks.push_back(PlaneShifterCallback::New(plane, newPlane, m_factor));
@@ -296,8 +300,8 @@ class PlaneCollectionAdaptorStarter : public MeshVtkCommand
 
                 ::fwRenderVTK::IVtkAdaptorService::sptr meshService =
                     ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
-                            service->getObject(),
-                            "::visuVTKAdaptor::Mesh" );
+                        service->getObject(),
+                        "::visuVTKAdaptor::Mesh" );
 
                 ::visuVTKAdaptor::Mesh::sptr meshAdaptor = Mesh::dynamicCast(meshService);
 
@@ -332,19 +336,19 @@ class PlaneCollectionAdaptorStarter : public MeshVtkCommand
         }
     }
 
-    protected:
+protected:
 
-        ::visuVTKAdaptor::Mesh::wptr m_service;
+    ::visuVTKAdaptor::Mesh::wptr m_service;
 
-        vtkPlaneCollection *m_planeCollectionSrc;
-        ::fwData::Mesh::sptr m_mesh;
+    vtkPlaneCollection *m_planeCollectionSrc;
+    ::fwData::Mesh::sptr m_mesh;
 
-        std::vector< ::visuVTKAdaptor::Mesh::wptr > m_meshServices;
+    std::vector< ::visuVTKAdaptor::Mesh::wptr > m_meshServices;
 
-        std::vector< PlaneShifterCallback* > m_planeCallbacks;
-        std::vector< vtkPlaneCollection* >   m_planeCollections;
+    std::vector< PlaneShifterCallback* > m_planeCallbacks;
+    std::vector< vtkPlaneCollection* >   m_planeCollections;
 
-        double    m_factor;
+    double m_factor;
 };
 
 
@@ -352,20 +356,20 @@ class PlaneCollectionAdaptorStarter : public MeshVtkCommand
 
 Mesh::Mesh() throw()
 {
-    m_material               = ::fwData::Material::New();
-    m_unclippedPartMaterial  = ::fwData::Material::New();
+    m_material              = ::fwData::Material::New();
+    m_unclippedPartMaterial = ::fwData::Material::New();
     m_unclippedPartMaterial->ambient()->setRGBA("#aaaaff44");
 
-    m_clippingPlanesId  = "";
+    m_clippingPlanesId = "";
 
-    m_showClippedPart   = false;
-    m_clippingPlanes    = 0;
-    m_actor             = 0;
+    m_showClippedPart = false;
+    m_clippingPlanes  = 0;
+    m_actor           = 0;
 
-    m_polyData          = 0;
-    m_mapper            = vtkPolyDataMapper::New();
+    m_polyData = 0;
+    m_mapper   = vtkPolyDataMapper::New();
 
-    m_autoResetCamera   = true;
+    m_autoResetCamera = true;
 
     m_planeCollectionShifterCallback = 0;
     m_servicesStarterCallback        = 0;
@@ -413,7 +417,7 @@ void Mesh::configuring() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
 
-    std::string color = m_configuration->getAttributeValue("color");
+    std::string color          = m_configuration->getAttributeValue("color");
     std::string unclippedColor = m_configuration->getAttributeValue("unclippedcolor");
 
     m_material->ambient()->setRGBA(color.empty() ? "#ffffffff" : color );
@@ -468,7 +472,7 @@ void Mesh::doUpdate() throw(fwTools::Failed)
 void Mesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     ::fwComEd::MaterialMsg::csptr materialMsg = ::fwComEd::MaterialMsg::dynamicConstCast(msg);
-    ::fwComEd::MeshMsg::csptr meshMsg = ::fwComEd::MeshMsg::dynamicConstCast(msg);
+    ::fwComEd::MeshMsg::csptr meshMsg         = ::fwComEd::MeshMsg::dynamicConstCast(msg);
 
     if( materialMsg && materialMsg->hasEvent(::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED) )
     {
@@ -498,16 +502,16 @@ void Mesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Fail
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED) )
     {
-       ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-       SLM_ASSERT("m_polyData not instanced", m_polyData);
+        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+        SLM_ASSERT("m_polyData not instanced", m_polyData);
 
-       ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
+        ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
 
-       if (m_autoResetCamera)
-       {
-           this->getRenderer()->ResetCamera();
-       }
-       this->setVtkPipelineModified();
+        if (m_autoResetCamera)
+        {
+            this->getRenderer()->ResetCamera();
+        }
+        this->setVtkPipelineModified();
     }
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED))
     {
@@ -559,8 +563,8 @@ void Mesh::doStart() throw(fwTools::Failed)
     if(!m_textureAdaptorUID.empty())
     {
         ::fwRenderVTK::VtkRenderService::sptr renderService = this->getRenderService();
-        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor = renderService->getAdaptor(m_textureAdaptorUID);
-        ::visuVTKAdaptor::Texture::sptr textureAdaptor = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
+        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor     = renderService->getAdaptor(m_textureAdaptorUID);
+        ::visuVTKAdaptor::Texture::sptr textureAdaptor      = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
 
         SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
         m_connections->connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
@@ -602,11 +606,11 @@ void Mesh::doSwap() throw(fwTools::Failed)
     ::fwServices::OSR::unregisterService(m_transformService.lock());
 
 
-    ::fwRenderVTK::IVtkAdaptorService::sptr materialService = m_materialService.lock();
+    ::fwRenderVTK::IVtkAdaptorService::sptr materialService              = m_materialService.lock();
     ::fwRenderVTK::IVtkAdaptorService::sptr unclippedPartMaterialService = m_unclippedPartMaterialService.lock();
 
     this->setServiceOnMaterial(materialService, m_material);
-    this->setServiceOnMaterial(unclippedPartMaterialService , m_unclippedPartMaterial);
+    this->setServiceOnMaterial(unclippedPartMaterialService, m_unclippedPartMaterial);
 
     m_materialService              = materialService;
     m_unclippedPartMaterialService = unclippedPartMaterialService;
@@ -637,9 +641,9 @@ void Mesh::createTransformService()
     vtkFieldTransform->Identity();
     m_transformService = ::visuVTKAdaptor::Transform::dynamicCast(
         ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
-                fieldTransform,
-                "::visuVTKAdaptor::Transform"
-                )
+            fieldTransform,
+            "::visuVTKAdaptor::Transform"
+            )
         );
     SLM_ASSERT("Transform service NULL", m_transformService.lock());
     ::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
@@ -710,7 +714,7 @@ void Mesh::setClippingPlanesId(::fwRenderVTK::VtkRenderService::VtkObjectIdType 
 
 void Mesh::setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::sptr &srv, ::fwData::Material::sptr material)
 {
-    if (! srv)
+    if (!srv)
     {
         srv = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (material, "::visuVTKAdaptor::Material");
         SLM_ASSERT("srv not instanced", srv);
@@ -764,9 +768,9 @@ void Mesh::createNormalsService()
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
 
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
-                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
-                        mesh,
-                        "::visuVTKAdaptor::MeshNormals"
+            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
+                mesh,
+                "::visuVTKAdaptor::MeshNormals"
                 );
         SLM_ASSERT("service not instanced", service);
 
@@ -810,7 +814,7 @@ void Mesh::buildPipeline()
     ::fwRenderVTK::IVtkAdaptorService::sptr unclippedPartMaterialService;
 
     this->setServiceOnMaterial(materialService, m_material);
-    this->setServiceOnMaterial(unclippedPartMaterialService , m_unclippedPartMaterial);
+    this->setServiceOnMaterial(unclippedPartMaterialService, m_unclippedPartMaterial);
 
     m_materialService              = materialService;
     m_unclippedPartMaterialService = unclippedPartMaterialService;
@@ -972,8 +976,8 @@ void Mesh::createServicesStarterCommand()
     {
         ::visuVTKAdaptor::Mesh::sptr srv =
             ::visuVTKAdaptor::Mesh::dynamicCast(
-                    this->getSptr()
-                    );
+                this->getSptr()
+                );
         m_servicesStarterCallback = PlaneCollectionAdaptorStarter::New( srv, m_clippingPlanes, -1. );
     }
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,12 +28,14 @@ std::string ObjectMsg::CHANGED_FIELDS = "CHANGED_FIELDS";
 //-----------------------------------------------------------------------------
 
 ObjectMsg::ObjectMsg(::fwServices::ObjectMsg::Key key) : m_hasCallback (false)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ObjectMsg::ObjectMsg() : m_hasCallback (false)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -47,7 +49,7 @@ ObjectMsg::~ObjectMsg()
 
 //-----------------------------------------------------------------------------
 
-void ObjectMsg::addEvent( std::string _eventId , ::fwData::Object::csptr _pDataInfo )
+void ObjectMsg::addEvent( std::string _eventId, ::fwData::Object::csptr _pDataInfo )
 {
     m_eventId2DataInfo[ _eventId ] = _pDataInfo;
 }
@@ -56,20 +58,20 @@ void ObjectMsg::addEvent( std::string _eventId , ::fwData::Object::csptr _pDataI
 
 bool ObjectMsg::hasEvent( std::string _eventId ) const
 {
-    return m_eventId2DataInfo.find( _eventId ) != m_eventId2DataInfo.end() ;
+    return m_eventId2DataInfo.find( _eventId ) != m_eventId2DataInfo.end();
 }
 
 //-----------------------------------------------------------------------------
 
 std::vector< std::string > ObjectMsg::getEventIds() const
 {
-    std::vector< std::string > result ;
-    std::map< std::string , ::fwData::Object::csptr >::const_iterator iter ;
-    for( iter = m_eventId2DataInfo.begin() ; iter != m_eventId2DataInfo.end() ; ++iter )
+    std::vector< std::string > result;
+    std::map< std::string, ::fwData::Object::csptr >::const_iterator iter;
+    for( iter = m_eventId2DataInfo.begin(); iter != m_eventId2DataInfo.end(); ++iter )
     {
-        result.push_back( iter->first ) ;
+        result.push_back( iter->first );
     }
-    return result ;
+    return result;
 }
 
 //-----------------------------------------------------------------------------
@@ -91,11 +93,13 @@ std::string ObjectMsg::convertToLightString( std::string _initialString )
 
     if ( ::boost::regex_match( _initialString, toolsRegex ) )
     {
-        lightString = ::boost::regex_replace( _initialString, toolsRegex, machine_format, boost::match_default | boost::format_sed );
+        lightString = ::boost::regex_replace( _initialString, toolsRegex, machine_format,
+                                              boost::match_default | boost::format_sed );
     }
     else if ( ::boost::regex_match( _initialString, dataRegex ) )
     {
-        lightString = ::boost::regex_replace( _initialString, dataRegex, machine_format, boost::match_default | boost::format_sed );
+        lightString = ::boost::regex_replace( _initialString, dataRegex, machine_format,
+                                              boost::match_default | boost::format_sed );
     }
 
     return lightString;
@@ -107,8 +111,8 @@ std::string ObjectMsg::getGeneralInfo() const
 {
     ::fwServices::IService::sptr source = m_source.lock();
 
-    std::string sourceUUID = convertToLightString( source? source->getID():"[source died]" );
-    std::string destUUID   = convertToLightString( m_subject.expired()?"[subject died]":m_subject.lock()->getID());
+    std::string sourceUUID = convertToLightString( source ? source->getID() : "[source died]" );
+    std::string destUUID   = convertToLightString( m_subject.expired() ? "[subject died]" : m_subject.lock()->getID());
 
     std::stringstream eventstream;
     for(    std::map< std::string, ::fwData::Object::csptr >::const_iterator itEvent2Data = m_eventId2DataInfo.begin();
@@ -129,8 +133,8 @@ std::string ObjectMsg::getGeneralInfo() const
 
 std::ostream & operator<<(std::ostream & _ostream, const ObjectMsg& _message)
 {
-    _message.info( _ostream ) ;
-    return _ostream ;
+    _message.info( _ostream );
+    return _ostream;
 }
 
 //-----------------------------------------------------------------------------
@@ -172,7 +176,7 @@ void ObjectMsg::setSubject( ::fwData::Object::wptr _subject)
 
 void ObjectMsg::setMessageCallback( MessageCallbackType callback )
 {
-    m_callback = callback;
+    m_callback    = callback;
     m_hasCallback = true;
 }
 
@@ -180,7 +184,7 @@ void ObjectMsg::setMessageCallback( MessageCallbackType callback )
 
 void ObjectMsg::appendAddedField( const FieldNameType &fieldName, ::fwData::Object::sptr object )
 {
-    if( ! this->hasEvent( ADDED_FIELDS ) )
+    if( !this->hasEvent( ADDED_FIELDS ) )
     {
         this->addEvent( ADDED_FIELDS );
     }
@@ -201,7 +205,7 @@ const ObjectMsg::ModifiedFieldsContainerType & ObjectMsg::getAddedFields() const
 
 void ObjectMsg::appendRemovedField( const FieldNameType &fieldName, ::fwData::Object::sptr object )
 {
-    if( ! this->hasEvent( REMOVED_FIELDS ) )
+    if( !this->hasEvent( REMOVED_FIELDS ) )
     {
         this->addEvent( REMOVED_FIELDS );
     }
@@ -220,9 +224,10 @@ const ObjectMsg::ModifiedFieldsContainerType& ObjectMsg::getRemovedFields() cons
 
 //-----------------------------------------------------------------------------
 
-void ObjectMsg::appendChangedField( const FieldNameType &fieldName, ::fwData::Object::sptr oldObject, ::fwData::Object::sptr newObject )
+void ObjectMsg::appendChangedField( const FieldNameType &fieldName, ::fwData::Object::sptr oldObject,
+                                    ::fwData::Object::sptr newObject )
 {
-    if( ! this->hasEvent( CHANGED_FIELDS ) )
+    if( !this->hasEvent( CHANGED_FIELDS ) )
     {
         this->addEvent( CHANGED_FIELDS );
     }

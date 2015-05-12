@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ namespace guiQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::guiQt::editor::Code , ::fwData::String ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::guiQt::editor::Code, ::fwData::String );
 
 //------------------------------------------------------------------------------
 
@@ -45,7 +45,8 @@ Code::Code() throw() : m_language(PYTHON)
 //------------------------------------------------------------------------------
 
 Code::~Code() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -54,7 +55,8 @@ void Code::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 

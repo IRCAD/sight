@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,7 +43,7 @@
 
 #include "visuVTKAdaptor/ProbeCursor.hpp"
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image );
 
 
 #define START_PROBE_EVENT vtkCommand::LeftButtonPressEvent
@@ -59,7 +59,9 @@ class ProbingCallback : public vtkCommand
 {
 public:
     static ProbingCallback *New()
-    { return new ProbingCallback(); }
+    {
+        return new ProbingCallback();
+    }
 
     ProbingCallback()
         : m_priority(-1),
@@ -119,7 +121,7 @@ public:
         display[1] = y;
         display[2] = 0;
 
-        return  m_picker->Pick( display , m_adaptor->getRenderer() );
+        return m_picker->Pick( display, m_adaptor->getRenderer() );
     }
 
 
@@ -150,10 +152,10 @@ public:
         m_priority = priority;
     }
 
-protected :
+protected:
     ProbeCursor::sptr m_adaptor;
     vtkAbstractPropPicker *m_picker;
-    float    m_priority;
+    float m_priority;
 
     bool m_mouseMoveObserved;
 
@@ -162,12 +164,12 @@ protected :
 //------------------------------------------------------------------------------
 
 ProbeCursor::ProbeCursor() throw()
-: m_priority(.6)
-, m_textActor(vtkActor2D::New())
-, m_textMapper(vtkTextMapper::New())
-, m_cursorPolyData( vtkPolyData::New() )
-, m_cursorMapper  ( vtkPolyDataMapper::New() )
-, m_cursorActor(    vtkActor::New() )
+    : m_priority(.6)
+      , m_textActor(vtkActor2D::New())
+      , m_textMapper(vtkTextMapper::New())
+      , m_cursorPolyData( vtkPolyData::New() )
+      , m_cursorMapper  ( vtkPolyDataMapper::New() )
+      , m_cursorActor(    vtkActor::New() )
 {
     ////handlingEventOff();
     //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
@@ -332,7 +334,7 @@ void ProbeCursor::updateView( double world[3] )
          index[0]>= image->getSize()[0] ||
          index[1]>= image->getSize()[1] ||
          index[2]>= image->getSize()[2]
-        )
+         )
     {
         txt = "(---,---,---)";
         m_textMapper->SetInput(txt.c_str());
@@ -351,7 +353,7 @@ void ProbeCursor::updateView( double world[3] )
         this->computeCrossExtremity( index, worldCross);
 
         vtkPoints* points = m_cursorPolyData->GetPoints();
-        for ( int i=0; i < 4; ++i)
+        for ( int i = 0; i < 4; ++i)
         {
             OSLM_TRACE("p=" << worldCross[i][0] << "," << worldCross[i][2] << "," << worldCross[i][2] << "," );
             points->SetPoint(i,worldCross[i]);
@@ -364,7 +366,7 @@ void ProbeCursor::updateView( double world[3] )
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldCross[4][3] )
+void ProbeCursor::computeCrossExtremity( const int probeSlice[3], double worldCross[4][3] )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
@@ -375,7 +377,7 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
     sliceIndex[0] = m_sagittalIndex->value();
 
     double probeWorld[3]; // probe index in world positioning system
-    for (int dim=0; dim<3; ++dim )
+    for (int dim = 0; dim<3; ++dim )
     {
         if ( probeSlice[dim]==sliceIndex[dim] ) // FIXME if (sliceIndex==probeWorld)
         {
@@ -384,18 +386,18 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
         probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
     }
 
-    for ( int p=0; p<2; ++p )
+    for ( int p = 0; p<2; ++p )
     {
-        for (int dim=0; dim<3; ++dim )
+        for (int dim = 0; dim<3; ++dim )
         {
-            worldCross[p][dim] = probeWorld[dim];
+            worldCross[p][dim]   = probeWorld[dim];
             worldCross[p+2][dim] = probeWorld[dim];
             if ( (dim + p + 1)%3 == m_orientation )
             {
-                worldCross[p][dim] = image->getOrigin().at(dim);
-                ::fwData::Image::SizeType::value_type size = image->getSize().at(dim)-1;
+                worldCross[p][dim]                               = image->getOrigin().at(dim);
+                ::fwData::Image::SizeType::value_type size       = image->getSize().at(dim)-1;
                 ::fwData::Image::SpacingType::value_type spacing = image->getSpacing().at(dim);
-                worldCross[p+2][dim] =  size * spacing + image->getOrigin().at(dim);
+                worldCross[p+2][dim]                             = size * spacing + image->getOrigin().at(dim);
             }
         }
     }
@@ -406,22 +408,22 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
 void ProbeCursor::buildPolyData()
 {
     // point are stored Left,right,up,down
-    int nbPoints = 4;
-    vtkPoints* points   = vtkPoints::New(VTK_DOUBLE);
+    int nbPoints      = 4;
+    vtkPoints* points = vtkPoints::New(VTK_DOUBLE);
     points->SetNumberOfPoints(nbPoints);
     int i;
     for (i = 0; i < nbPoints; i++)
     {
-        points->SetPoint(i, 0.0, 0.0 , 0.0);
+        points->SetPoint(i, 0.0, 0.0, 0.0);
     }
 
     vtkCellArray *cells = vtkCellArray::New();
     cells->Allocate(cells->EstimateSize(nbPoints,2));
 
     vtkIdType pts[2];
-    pts[0]=0;pts[1]=2;
+    pts[0] = 0; pts[1] = 2;
     cells->InsertNextCell(2,pts);
-    pts[0]=1;pts[1]=3;
+    pts[0] = 1; pts[1] = 3;
     cells->InsertNextCell(2,pts);
 
     m_cursorPolyData->SetPoints(points);

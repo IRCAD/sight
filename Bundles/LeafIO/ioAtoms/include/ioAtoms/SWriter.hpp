@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,9 @@ public:
     IOATOMS_API SWriter();
 
     /// Does nothing
-    IOATOMS_API  virtual ~SWriter() throw() {};
+    IOATOMS_API virtual ~SWriter() throw()
+    {
+    }
 
     /// Propose to create a medical data file
     IOATOMS_API void configureWithIHM();
@@ -46,13 +48,13 @@ protected:
 
     /**
      * @brief Configures the writer
-     @verbatim
-     <config>
+       @verbatim
+       <config>
         <patcher context="..." version="..." />
 
         <archive backend="json">
             <extension>.j</extension>
-        </archive> 
+        </archive>
 
         <archive backend="jsonz">
             <extension>.vpz</extension>
@@ -61,7 +63,7 @@ protected:
         <archive backend="hdf5">
             <extension>.f4s</extension>
             <extension>.mw</extension>
-        </archive> 
+        </archive>
 
         <extensions>
             <extension label="XML">.xml</extension>
@@ -72,8 +74,8 @@ protected:
             <extension>.vpz</extension>
         </extensions>
 
-     </config>
-     @endverbatim
+       </config>
+       @endverbatim
      *
      * archive : defines custom file extensions. The file to be saved with an extension given in 'archive' tag will be
      * written with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must begin with

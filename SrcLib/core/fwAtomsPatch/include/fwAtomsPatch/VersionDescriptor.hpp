@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,8 @@ public:
      * @brief Struct used to compare two VersionDescriptor
      */
     struct Compare {
-        bool operator() (VersionDescriptor a, VersionDescriptor b) const {
+        bool operator() (VersionDescriptor a, VersionDescriptor b) const
+        {
             return a.getVersionName() < b.getVersionName();
         }
     };
@@ -56,13 +57,22 @@ public:
     ~VersionDescriptor();
 
     /// Returns context name.
-    const std::string& getContext() const { return m_context; }
+    const std::string& getContext() const
+    {
+        return m_context;
+    }
 
     /// Returns version name.
-    const std::string& getVersionName() const { return m_versionName; }
+    const std::string& getVersionName() const
+    {
+        return m_versionName;
+    }
 
     /// Returns versions.
-    const VersionsType& getVersions() const { return m_versions; }
+    const VersionsType& getVersions() const
+    {
+        return m_versions;
+    }
 
 private:
 

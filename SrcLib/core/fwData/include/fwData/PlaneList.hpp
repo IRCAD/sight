@@ -24,9 +24,9 @@ namespace fwData
 class FWDATA_CLASS_API PlaneList : public Object
 {
 
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (PlaneList)(::fwData::Object),
-        (()), ::fwData::factory::New< PlaneList >) ;
+                                            (()), ::fwData::factory::New< PlaneList >);
 
     fwCampMakeFriendDataMacro((fwData)(PlaneList));
 
@@ -52,9 +52,9 @@ public :
     FWDATA_API void deleteDuplicatedPlan(void);
 
     /// Planes container
-    fwGettersSettersDocMacro(Planes, vPlanes, PlaneListContainer, a container of all planes);
+    fwGettersSettersDocMacro(Planes, vPlanes, PlaneListContainer, "a container of all planes");
 
-protected :
+protected:
 
     //! Planes container
     PlaneListContainer m_vPlanes;

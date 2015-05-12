@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opVTKMesh::action::VTKMeshCreation , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opVTKMesh::action::VTKMeshCreation, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
@@ -44,12 +44,14 @@ VTKMeshCreation::VTKMeshCreation() throw() :
     m_imageUID(""),
     m_meshUID(""),
     m_reduction(0)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 VTKMeshCreation::~VTKMeshCreation() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -70,25 +72,29 @@ void VTKMeshCreation::stopping() throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void VTKMeshCreation::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void VTKMeshCreation::configuring() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
     this->initialize();
 
-    SLM_ASSERT( "Mesh UID andImage UID must be defined in the service configuration",  m_configuration->findConfigurationElement("image") && m_configuration->findConfigurationElement("mesh") );
+    SLM_ASSERT( "Mesh UID andImage UID must be defined in the service configuration",  m_configuration->findConfigurationElement(
+                    "image") && m_configuration->findConfigurationElement("mesh") );
 
 
     m_imageUID = m_configuration->findConfigurationElement("image")->getExistingAttributeValue("uid");
 
     m_meshUID = m_configuration->findConfigurationElement("mesh")->getExistingAttributeValue("uid");
 
-    if (m_configuration->findConfigurationElement("percentReduction") && m_configuration->findConfigurationElement("percentReduction")->hasAttribute("value"))
+    if (m_configuration->findConfigurationElement("percentReduction") &&
+        m_configuration->findConfigurationElement("percentReduction")->hasAttribute("value"))
     {
-        std::string reduce = m_configuration->findConfigurationElement("percentReduction")->getExistingAttributeValue("value");
+        std::string reduce = m_configuration->findConfigurationElement("percentReduction")->getExistingAttributeValue(
+            "value");
         m_reduction = boost::lexical_cast<unsigned int>(reduce);
     }
 
@@ -104,10 +110,10 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
 
     /// Retreive object
-    OSLM_ASSERT("Not found the image defined by uid : " << m_imageUID, ::fwTools::fwID::exist(m_imageUID)) ;
-    ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast( ::fwTools::fwID::getObject(m_imageUID) ) ;
-    OSLM_ASSERT("Not found the mesh defined by uid : " << m_meshUID, ::fwTools::fwID::exist(m_meshUID)) ;
-    ::fwData::Mesh::sptr pMesh = ::fwData::Mesh::dynamicCast( ::fwTools::fwID::getObject(m_meshUID) ) ;
+    OSLM_ASSERT("Not found the image defined by uid : " << m_imageUID, ::fwTools::fwID::exist(m_imageUID));
+    ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast( ::fwTools::fwID::getObject(m_imageUID) );
+    OSLM_ASSERT("Not found the mesh defined by uid : " << m_meshUID, ::fwTools::fwID::exist(m_meshUID));
+    ::fwData::Mesh::sptr pMesh = ::fwData::Mesh::dynamicCast( ::fwTools::fwID::getObject(m_meshUID) );
 
     ///VTK Mesher
 
@@ -124,7 +130,8 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
     contourFilter->Update();
 
     // smooth filter
-    vtkSmartPointer< vtkWindowedSincPolyDataFilter > smoothFilter = vtkSmartPointer< vtkWindowedSincPolyDataFilter >::New();
+    vtkSmartPointer< vtkWindowedSincPolyDataFilter > smoothFilter =
+        vtkSmartPointer< vtkWindowedSincPolyDataFilter >::New();
     smoothFilter->SetInputConnection(contourFilter->GetOutputPort());
     smoothFilter->SetNumberOfIterations( 50 );
     smoothFilter->BoundarySmoothingOn();
@@ -166,16 +173,18 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
 //    bool res = ::fwVtkIO::fromVTKMesh( polyData, pMesh);
 
     /// Notification
-    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();;
-    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH ) ;
+    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
+    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
     ::fwServices::IEditionService::notify( this->getSptr(), pMesh, msg );
 }
 
 //-----------------------------------------------------------------------------
 
 void VTKMeshCreation::info ( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
-} }
+}
+}

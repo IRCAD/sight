@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,9 +25,9 @@ namespace fwData
 class FWDATA_CLASS_API TransformationMatrix3D : public Object
 {
 
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3D)(::fwData::Object),
-            (()), ::fwData::factory::New< TransformationMatrix3D >) ;
+                                            (()), ::fwData::factory::New< TransformationMatrix3D >);
 
     fwCampMakeFriendDataMacro((fwData)(TransformationMatrix3D));
 
@@ -77,13 +77,13 @@ public :
         return s;
     }
 
-protected :
+protected:
 
     //! Matrix coefficient number (4x4). m_vCoefficients[0] to m_vCoefficients[3] is the first row of the matrix
     TMCoefArray m_vCoefficients;
 };
 
-}; // namespace fwData
+}  // namespace fwData
 
 #endif // __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
 

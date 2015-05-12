@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWTOOLS_UUID_HPP_
-#define _FWTOOLS_UUID_HPP_
+#ifndef __FWTOOLS_UUID_HPP__
+#define __FWTOOLS_UUID_HPP__
 
 #include <string>
 #include <map>
@@ -21,7 +21,7 @@ namespace fwTools
 /**
  * @brief   Management of UUID on objects.
  * @class   UUID
- * 
+ *
  * @date    2007-2009.
  *
  */
@@ -64,7 +64,7 @@ public:
      */
     FWTOOLS_API static bool set(::fwTools::Object::sptr object,  const UUID::UUIDType & uuid);
 
-protected :
+protected:
 
     /// Store association \::boost::weak_ptr <--> uuid as a string
     typedef std::map< UUIDType, ::fwTools::Object::wptr > UUIDContainer;
@@ -99,4 +99,4 @@ private:
 
 }
 
-#endif /* _FWTOOLS_UUID_HPP_ */
+#endif /* __FWTOOLS_UUID_HPP__ */

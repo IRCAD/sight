@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,14 +27,15 @@ IAdaptor::IAdaptor() throw() : m_zValue(0), m_opacity(1)
 //-----------------------------------------------------------------------------
 
 IAdaptor::~IAdaptor() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void IAdaptor::info(std::ostream &_sstream )
 {
     /*_sstream << "IAdaptor : " ;
-    this->SuperClass::info( _sstream ) ;*/
+       this->SuperClass::info( _sstream ) ;*/
 }
 
 //-----------------------------------------------------------------------------
@@ -56,7 +57,7 @@ float IAdaptor::getZValue()
 void IAdaptor::setScene2DRender( ::scene2D::Render::sptr _scene2DRender)
 {
     SLM_ASSERT("Service not instanced", _scene2DRender);
-    SLM_ASSERT("Adaptor is already started", this->isStopped() ) ;
+    SLM_ASSERT("Adaptor is already started", this->isStopped() );
     m_scene2DRender = _scene2DRender;
 }
 
@@ -72,8 +73,8 @@ void IAdaptor::setScene2DRender( ::scene2D::Render::sptr _scene2DRender)
 IAdaptor::ViewSizeRatio IAdaptor::getViewSizeRatio()
 {
     return ViewSizeRatio(
-            (float) ( m_viewInitialSize.first / this->getScene2DRender()->getView()->width() ),
-            (float) ( m_viewInitialSize.second / this->getScene2DRender()->getView()->height() ) );
+        (float) ( m_viewInitialSize.first / this->getScene2DRender()->getView()->width() ),
+        (float) ( m_viewInitialSize.second / this->getScene2DRender()->getView()->height() ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -81,15 +82,15 @@ IAdaptor::ViewSizeRatio IAdaptor::getViewSizeRatio()
 IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio()
 {
     return ViewportSizeRatio(
-            (float) ( m_viewportInitialSize.first / this->getScene2DRender()->getViewport()->getWidth() ),
-            (float) ( m_viewportInitialSize.second / this->getScene2DRender()->getViewport()->getHeight() ) );
+        (float) ( m_viewportInitialSize.first / this->getScene2DRender()->getViewport()->getWidth() ),
+        (float) ( m_viewportInitialSize.second / this->getScene2DRender()->getViewport()->getHeight() ) );
 }
 
 //-----------------------------------------------------------------------------
 
 IAdaptor::Scene2DRatio IAdaptor::getRatio()
 {
-    ViewSizeRatio ratioView = this->getViewSizeRatio();
+    ViewSizeRatio ratioView         = this->getViewSizeRatio();
     ViewportSizeRatio ratioViewport = this->getViewportSizeRatio();
 
     return Scene2DRatio(    ratioView.first / ratioViewport.first,
@@ -98,7 +99,8 @@ IAdaptor::Scene2DRatio IAdaptor::getRatio()
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis, ::scene2D::data::Axis::sptr _yAxis )
+IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis,
+                                                  ::scene2D::data::Axis::sptr _yAxis )
 {
     double x, y;
 
@@ -140,12 +142,13 @@ IAdaptor::Point2DType IAdaptor::mapAdaptorToScene(Point2DType _xy, ::scene2D::da
         y = _yAxis->getScale() * _xy.second;
     }
 
-    return Point2DType( x , y );
+    return Point2DType( x, y );
 }
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis, ::scene2D::data::Axis::sptr _yAxis )
+IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis,
+                                                  ::scene2D::data::Axis::sptr _yAxis )
 {
     // Do the reverse operation of the mapAdaptorToScene function
     double x, y;
@@ -168,7 +171,7 @@ IAdaptor::Point2DType IAdaptor::mapSceneToAdaptor(Point2DType _xy, ::scene2D::da
         y = _xy.second / _yAxis->getScale();
     }
 
-    return Point2DType( x , y );
+    return Point2DType( x, y );
 }
 
 //-----------------------------------------------------------------------------
@@ -177,17 +180,17 @@ void IAdaptor::configuring() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    m_viewInitialSize.first = -1.0f;
+    m_viewInitialSize.first  = -1.0f;
     m_viewInitialSize.second = -1.0f;
 
-    m_viewportInitialSize.first = -1.0f;
+    m_viewportInitialSize.first  = -1.0f;
     m_viewportInitialSize.second = -1.0f;
 
     // If the corresponding attributes are present in the config, set the xAxis, yAxis and the adaptor zValue
     if ( m_configuration->hasAttribute("xAxis") )
     {
         m_xAxis = ::scene2D::data::Axis::dynamicCast(
-                this->getScene2DRender()->getRegisteredObject(m_configuration->getAttributeValue("xAxis")));
+            this->getScene2DRender()->getRegisteredObject(m_configuration->getAttributeValue("xAxis")));
     }
     else
     {
@@ -197,7 +200,7 @@ void IAdaptor::configuring() throw ( ::fwTools::Failed )
     if ( m_configuration->hasAttribute("yAxis") )
     {
         m_yAxis = ::scene2D::data::Axis::dynamicCast(
-                this->getScene2DRender()->getRegisteredObject(m_configuration->getAttributeValue("yAxis")));
+            this->getScene2DRender()->getRegisteredObject(m_configuration->getAttributeValue("yAxis")));
     }
     else
     {
@@ -325,7 +328,7 @@ void IAdaptor::registerService( ::scene2D::adaptor::IAdaptor::sptr srv )
 void IAdaptor::unregisterServices()
 {
     BOOST_FOREACH( ManagedAdaptorVector::value_type adaptor, m_managedAdaptors )
-    {        
+    {
         adaptor.lock()->stop();
         ::fwServices::OSR::unregisterService(adaptor.lock());
     }

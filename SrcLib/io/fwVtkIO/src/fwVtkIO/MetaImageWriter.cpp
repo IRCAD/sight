@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 MetaImageWriter::MetaImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-        ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -46,7 +46,7 @@ void MetaImageWriter::write()
     ::fwData::Image::sptr pImage = getConcreteObject();
 
     vtkSmartPointer< vtkMetaImageWriter > writer = vtkSmartPointer< vtkMetaImageWriter >::New();
-    vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();
+    vtkSmartPointer< vtkImageData > vtkImage     = vtkSmartPointer< vtkImageData >::New();
     ::fwVtkIO::toVTKImage( pImage, vtkImage );
     writer->SetInputData( vtkImage );
     writer->SetFileName( this->getFile().string().c_str() );
@@ -59,9 +59,9 @@ void MetaImageWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string  MetaImageWriter::extension()
+std::string MetaImageWriter::extension()
 {
-   return ".mhd";
+    return ".mhd";
 }
 
 } // namespace fwVtkIO

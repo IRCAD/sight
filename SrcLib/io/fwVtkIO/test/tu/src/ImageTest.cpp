@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,61 +46,72 @@ namespace ut
 
 using namespace boost::assign;
 
-static const double epsilon = 0.00001;
+static const double epsilon       = 0.00001;
 static const int nbDataTestValues = 1000;
 
-static const ::fwData::Image::SizeType    bostonTeapotSize    = list_of(256)(256)(178);
+static const ::fwData::Image::SizeType bostonTeapotSize       = list_of(256)(256)(178);
 static const ::fwData::Image::SpacingType bostonTeapotSpacing = list_of(1)(1)(1);
-static const ::fwData::Image::OriginType  bostonTeapotOrigin  = list_of(1.1)(2.2)(3.3);
+static const ::fwData::Image::OriginType bostonTeapotOrigin   = list_of(1.1)(2.2)(3.3);
 
 #define COMPARE_IMAGE_ATTRS_MACRO(expSize, expSpacing, expOrigin, size, spacing, origin)                                                                                          \
-{                                                                                                                                                                                         \
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[0]), static_cast< ::fwData::Image::SpacingType::value_type >(spacing[0]), epsilon ); \
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[1]), static_cast< ::fwData::Image::SpacingType::value_type >(spacing[1]), epsilon ); \
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[2]), static_cast< ::fwData::Image::SpacingType::value_type >(spacing[2]), epsilon ); \
+    {                                                                                                                                                                                         \
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[0]), \
+                                      static_cast< ::fwData::Image::SpacingType::value_type >(spacing[0]), epsilon ); \
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[1]), \
+                                      static_cast< ::fwData::Image::SpacingType::value_type >(spacing[1]), epsilon ); \
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::SpacingType::value_type >(expSpacing[2]), \
+                                      static_cast< ::fwData::Image::SpacingType::value_type >(spacing[2]), epsilon ); \
                                                                                                                                                                                           \
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[0]), static_cast< ::fwData::Image::OriginType::value_type >(origin[0]), epsilon );     \
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[1]), static_cast< ::fwData::Image::OriginType::value_type >(origin[1]), epsilon );     \
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[2]), static_cast< ::fwData::Image::OriginType::value_type >(origin[2]), epsilon );     \
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[0]), \
+                                      static_cast< ::fwData::Image::OriginType::value_type >(origin[0]), epsilon );     \
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[1]), \
+                                      static_cast< ::fwData::Image::OriginType::value_type >(origin[1]), epsilon );     \
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( static_cast< ::fwData::Image::OriginType::value_type >(expOrigin[2]), \
+                                      static_cast< ::fwData::Image::OriginType::value_type >(origin[2]), epsilon );     \
                                                                                                                                                                                           \
-    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[0]), static_cast< ::fwData::Image::SizeType::value_type >(size[0]) );                              \
-    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[1]), static_cast< ::fwData::Image::SizeType::value_type >(size[1]) );                              \
-    CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[2]), static_cast< ::fwData::Image::SizeType::value_type >(size[2]) );                              \
-}
+        CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[0]), \
+                              static_cast< ::fwData::Image::SizeType::value_type >(size[0]) );                              \
+        CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[1]), \
+                              static_cast< ::fwData::Image::SizeType::value_type >(size[1]) );                              \
+        CPPUNIT_ASSERT_EQUAL( static_cast< ::fwData::Image::SizeType::value_type >(expSize[2]), \
+                              static_cast< ::fwData::Image::SizeType::value_type >(size[2]) );                              \
+    }
 
 
 #define WRITER_TEST(writerclass, readerclass, imagetype, filename)                                                                 \
-{                                                                                                                                  \
-    const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / filename);                                  \
+    {                                                                                                                                  \
+        const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / filename);                                  \
                                                                                                                                    \
-    ::fwData::Image::sptr image = ::fwData::Image::New();                                                                          \
-    ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type(imagetype));                                            \
+        ::fwData::Image::sptr image = ::fwData::Image::New();                                                                          \
+        ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type(imagetype));                                            \
                                                                                                                                    \
-    writerclass::sptr writer =  writerclass::New();                                                                                \
-    writer->setObject(image);                                                                                                      \
-    writer->setFile(testFile);                                                                                                     \
-    writer->write();                                                                                                               \
+        writerclass::sptr writer = writerclass::New();                                                                                \
+        writer->setObject(image);                                                                                                      \
+        writer->setFile(testFile);                                                                                                     \
+        writer->write();                                                                                                               \
                                                                                                                                    \
-    CPPUNIT_ASSERT_MESSAGE( "test on <" filename ">  of type <" imagetype "> Failed ", ::boost::filesystem::exists(testFile) );    \
+        CPPUNIT_ASSERT_MESSAGE( "test on <" filename ">  of type <" imagetype "> Failed ", \
+                                ::boost::filesystem::exists(testFile) );    \
                                                                                                                                    \
-    ::fwData::Image::sptr image2 = ::fwData::Image::New();                                                                         \
-    readerclass::sptr reader = readerclass::New();                                                                                 \
-    reader->setObject(image2);                                                                                                     \
-    reader->setFile(testFile);                                                                                                     \
-    reader->read();                                                                                                                \
+        ::fwData::Image::sptr image2 = ::fwData::Image::New();                                                                         \
+        readerclass::sptr reader = readerclass::New();                                                                                 \
+        reader->setObject(image2);                                                                                                     \
+        reader->setFile(testFile);                                                                                                     \
+        reader->read();                                                                                                                \
                                                                                                                                    \
-    ::boost::filesystem::remove(testFile);                                                                                         \
+        ::boost::filesystem::remove(testFile);                                                                                         \
                                                                                                                                    \
-    CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" filename "> of type <" imagetype "> Failed ", image->getType(), image2->getType() ); \
-    COMPARE_IMAGE_ATTRS_MACRO(                                                                                                     \
-                image->getSize(),                                                                                                  \
-                image->getSpacing(),                                                                                               \
-                image->getOrigin(),                                                                                                \
-                image2->getSize(),                                                                                                 \
-                image2->getSpacing(),                                                                                              \
-                image2->getOrigin()                                                                                                \
+        CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" filename "> of type <" imagetype "> Failed ", \
+                                      image->getType(), image2->getType() ); \
+        COMPARE_IMAGE_ATTRS_MACRO(                                                                                                     \
+            image->getSize(),                                                                                                  \
+            image->getSpacing(),                                                                                               \
+            image->getOrigin(),                                                                                                \
+            image2->getSize(),                                                                                                 \
+            image2->getSpacing(),                                                                                              \
+            image2->getOrigin()                                                                                                \
             )                                                                                                                      \
-}
+    }
 
 //------------------------------------------------------------------------------
 
@@ -137,15 +148,15 @@ void ImageTest::testImageToVtk()
 
 #define IMAGE_TO_VTK_TEST(imgtype, vtktypes)                                                                                   \
     {                                                                                                                          \
-    ::fwData::Image::sptr image = ::fwData::Image::New();                                                                      \
-    ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(imgtype));                         \
+        ::fwData::Image::sptr image = ::fwData::Image::New();                                                                      \
+        ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(imgtype));                         \
                                                                                                                                \
-    ::fwComEd::helper::Image imageHelper(image);                                                                               \
+        ::fwComEd::helper::Image imageHelper(image);                                                                               \
                                                                                                                                \
-    vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();                                         \
-    ::fwVtkIO::toVTKImage(image, vtkImage);                                                                                      \
+        vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();                                         \
+        ::fwVtkIO::toVTKImage(image, vtkImage);                                                                                      \
                                                                                                                                \
-    COMPARE_IMAGE_ATTRS_MACRO(                                                                                                 \
+        COMPARE_IMAGE_ATTRS_MACRO(                                                                                                 \
             size,                                                                                                              \
             spacing,                                                                                                           \
             origin,                                                                                                            \
@@ -155,28 +166,30 @@ void ImageTest::testImageToVtk()
             vtkImage->GetOrigin()                                                                                              \
             );                                                                                                                 \
                                                                                                                                \
-    std::set<int> types = vtktypes;                                                                                            \
-    CPPUNIT_ASSERT_MESSAGE( "Test failed for type " imgtype, types.find( vtkImage->GetScalarType() ) != types.end() );         \
+        std::set<int> types = vtktypes;                                                                                            \
+        CPPUNIT_ASSERT_MESSAGE( "Test failed for type " imgtype, \
+                                types.find( vtkImage->GetScalarType() ) != types.end() );         \
                                                                                                                                \
-    char *vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());                                                           \
-    char *ptr = static_cast<char*>(imageHelper.getBuffer());                                                                   \
+        char *vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());                                                           \
+        char *ptr    = static_cast<char*>(imageHelper.getBuffer());                                                                   \
                                                                                                                                \
-    CPPUNIT_ASSERT_MESSAGE( "Test failed for type " imgtype, std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );         \
-}
+        CPPUNIT_ASSERT_MESSAGE( "Test failed for type " imgtype, \
+                                std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );         \
+    }
 
-    IMAGE_TO_VTK_TEST("int8"  , list_of(VTK_CHAR)(VTK_SIGNED_CHAR));
-    IMAGE_TO_VTK_TEST("uint8" , list_of(VTK_UNSIGNED_CHAR));
+    IMAGE_TO_VTK_TEST("int8", list_of(VTK_CHAR)(VTK_SIGNED_CHAR));
+    IMAGE_TO_VTK_TEST("uint8", list_of(VTK_UNSIGNED_CHAR));
 
-    IMAGE_TO_VTK_TEST("int16" , list_of(VTK_SHORT));
+    IMAGE_TO_VTK_TEST("int16", list_of(VTK_SHORT));
     IMAGE_TO_VTK_TEST("uint16", list_of(VTK_UNSIGNED_SHORT));
 
-    IMAGE_TO_VTK_TEST("int32" , list_of(VTK_INT));
+    IMAGE_TO_VTK_TEST("int32", list_of(VTK_INT));
     IMAGE_TO_VTK_TEST("uint32", list_of(VTK_UNSIGNED_INT));
 
     // IMAGE_TO_VTK_TEST("int64" , list_of(VTK_LONG));
     // IMAGE_TO_VTK_TEST("uint64", list_of(VTK_UNSIGNED_LONG));
 
-    IMAGE_TO_VTK_TEST("float" , list_of(VTK_FLOAT));
+    IMAGE_TO_VTK_TEST("float", list_of(VTK_FLOAT));
     IMAGE_TO_VTK_TEST("double", list_of(VTK_DOUBLE));
 
 }
@@ -208,19 +221,19 @@ void ImageTest::testFromVtk()
         ::fwComEd::helper::Image imageHelper(image);                                                                   \
                                                                                                                        \
         COMPARE_IMAGE_ATTRS_MACRO(                                                                                     \
-                vtkImage->GetDimensions(),                                                                             \
-                vtkImage->GetSpacing(),                                                                                \
-                vtkImage->GetOrigin(),                                                                                 \
+            vtkImage->GetDimensions(),                                                                             \
+            vtkImage->GetSpacing(),                                                                                \
+            vtkImage->GetOrigin(),                                                                                 \
                                                                                                                        \
-                image->getSize(),                                                                                      \
-                image->getSpacing(),                                                                                   \
-                image->getOrigin()                                                                                     \
-                );                                                                                                     \
+            image->getSize(),                                                                                      \
+            image->getSpacing(),                                                                                   \
+            image->getOrigin()                                                                                     \
+            );                                                                                                     \
                                                                                                                        \
         CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" imagename "> Failed ", ::fwTools::Type(type), image->getType() );    \
                                                                                                                        \
         char *vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());                                               \
-        char *ptr = static_cast<char*>(imageHelper.getBuffer());                                                       \
+        char *ptr    = static_cast<char*>(imageHelper.getBuffer());                                                       \
                                                                                                                        \
         CPPUNIT_ASSERT( std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );                                      \
     }
@@ -252,21 +265,21 @@ void ImageTest::mhdReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd" );
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwData::Image::sptr image             = ::fwData::Image::New();
     ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
     reader->setObject(image);
     reader->setFile(imagePath);
     reader->read();
 
     COMPARE_IMAGE_ATTRS_MACRO(
-            bostonTeapotSize,
-            bostonTeapotSpacing,
-            bostonTeapotOrigin,
+        bostonTeapotSize,
+        bostonTeapotSpacing,
+        bostonTeapotOrigin,
 
-            image->getSize(),
-            image->getSpacing(),
-            image->getOrigin()
-            );
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin()
+        );
 
 }
 
@@ -280,7 +293,7 @@ void ImageTest::mhdWriterTest()
     const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.mhd");
     const ::boost::filesystem::path testZRawFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.zraw");
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwData::Image::sptr image             = ::fwData::Image::New();
     ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
     reader->setObject(image);
     reader->setFile(imagePath);
@@ -321,7 +334,7 @@ void ImageTest::vtiReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vti/BostonTeapot.vti" );
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwData::Image::sptr image            = ::fwData::Image::New();
     ::fwVtkIO::VtiImageReader::sptr reader = ::fwVtkIO::VtiImageReader::New();
 
     reader->setObject(image);
@@ -329,14 +342,14 @@ void ImageTest::vtiReaderTest()
     reader->read();
 
     COMPARE_IMAGE_ATTRS_MACRO(
-            bostonTeapotSize,
-            bostonTeapotSpacing,
-            bostonTeapotOrigin,
+        bostonTeapotSize,
+        bostonTeapotSpacing,
+        bostonTeapotOrigin,
 
-            image->getSize(),
-            image->getSpacing(),
-            image->getOrigin()
-            );
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin()
+        );
 
 
 
@@ -363,7 +376,7 @@ void ImageTest::vtkReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk" );
 
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwData::Image::sptr image         = ::fwData::Image::New();
     ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();
 
     reader->setObject(image);
@@ -380,34 +393,35 @@ void ImageTest::vtkReaderTest()
     vtkOrigin += 34.64,86.6,56;
 
     COMPARE_IMAGE_ATTRS_MACRO(
-            vtkSize,
-            vtkSpacing,
-            vtkOrigin,
+        vtkSize,
+        vtkSpacing,
+        vtkOrigin,
 
-            image->getSize(),
-            image->getSpacing(),
-            image->getOrigin()
-            );
+        image->getSize(),
+        image->getSpacing(),
+        image->getOrigin()
+        );
 
 
 #define VTK_READER_TEST(imagetype)                                                                                                                 \
-{                                                                                                                                                  \
-    const ::boost::filesystem::path testFile(::fwTest::Data::dir() / "fw4spl/image/vtk/img-" imagetype ".vtk");                                    \
+    {                                                                                                                                                  \
+        const ::boost::filesystem::path testFile(::fwTest::Data::dir() / "fw4spl/image/vtk/img-" imagetype ".vtk");                                    \
                                                                                                                                                    \
-    ::fwData::Image::sptr image = ::fwData::Image::New();                                                                                                                \
+        ::fwData::Image::sptr image = ::fwData::Image::New();                                                                                                                \
                                                                                                                                                    \
-    ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();                                                                                                          \
-    reader->setObject(image);                                                                                                                      \
-    reader->setFile(testFile);                                                                                                                     \
-    reader->read();                                                                                                                                \
+        ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();                                                                                                          \
+        reader->setObject(image);                                                                                                                      \
+        reader->setFile(testFile);                                                                                                                     \
+        reader->read();                                                                                                                                \
                                                                                                                                                    \
-    vtkSmartPointer< vtkGenericDataObjectReader > vtkreader = vtkSmartPointer< vtkGenericDataObjectReader >::New();                                \
-    vtkreader->SetFileName(testFile.string().c_str());                                                                                             \
-    vtkreader->Update();                                                                                                                           \
-    vtkSmartPointer< vtkImageData > vtkImage = vtkImageData::SafeDownCast(vtkreader->GetOutput());                                                 \
-    CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" "fw4spl/image/vtk/img-" imagetype ".vtk" "> Failed ", ::fwTools::Type(imagetype), image->getType()); \
+        vtkSmartPointer< vtkGenericDataObjectReader > vtkreader = vtkSmartPointer< vtkGenericDataObjectReader >::New();                                \
+        vtkreader->SetFileName(testFile.string().c_str());                                                                                             \
+        vtkreader->Update();                                                                                                                           \
+        vtkSmartPointer< vtkImageData > vtkImage = vtkImageData::SafeDownCast(vtkreader->GetOutput());                                                 \
+        CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" "fw4spl/image/vtk/img-" imagetype ".vtk" "> Failed ", \
+                                      ::fwTools::Type(imagetype), image->getType()); \
                                                                                                                                                    \
-    COMPARE_IMAGE_ATTRS_MACRO(                                                                                                                     \
+        COMPARE_IMAGE_ATTRS_MACRO(                                                                                                                     \
             image->getSize(),                                                                                                                      \
             image->getSpacing(),                                                                                                                   \
             image->getOrigin(),                                                                                                                    \
@@ -416,7 +430,7 @@ void ImageTest::vtkReaderTest()
             vtkImage->GetSpacing(),                                                                                                                \
             vtkImage->GetOrigin()                                                                                                                  \
             );                                                                                                                                     \
-}
+    }
 
 
     VTK_READER_TEST("int8"  );

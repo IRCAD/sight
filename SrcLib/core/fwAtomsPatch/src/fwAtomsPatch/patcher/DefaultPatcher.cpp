@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,20 +42,20 @@ DefaultPatcher::~DefaultPatcher()
 //----------------------------------------------------------------------------
 
 ::fwAtoms::Object::sptr DefaultPatcher::transformObject(::fwAtoms::Object::sptr object,
-        const std::string &context,
-        const std::string &currentVersion,
-        const std::string &targetVersion)
+                                                        const std::string &context,
+                                                        const std::string &currentVersion,
+                                                        const std::string &targetVersion)
 {
-    m_object = object;
-    m_context = context;
-    m_versionsGraph = ::fwAtomsPatch::VersionsManager::getDefault()->getGraph(context);
+    m_object         = object;
+    m_context        = context;
+    m_versionsGraph  = ::fwAtomsPatch::VersionsManager::getDefault()->getGraph(context);
     m_currentVersion = m_versionsGraph->getNode(currentVersion);
-    m_targetVersion = m_versionsGraph->getNode(targetVersion);
+    m_targetVersion  = m_versionsGraph->getNode(targetVersion);
 
     fwAtomsPatchInfoLogMacro("Transform from version '"
-            + m_versionsGraph->getNode(m_currentVersion).getVersionName() + "' to '"
-            + m_versionsGraph->getNode(m_targetVersion).getVersionName() + "' in context '"
-            + m_context + "'");
+                             + m_versionsGraph->getNode(m_currentVersion).getVersionName() + "' to '"
+                             + m_versionsGraph->getNode(m_targetVersion).getVersionName() + "' in context '"
+                             + m_context + "'");
     fwAtomsPatchInfoLogMacro("Begin structural pass");
 
     // Structural
@@ -68,7 +68,7 @@ DefaultPatcher::~DefaultPatcher()
     // Contextual
     fwAtomsPatchInfoLogMacro("Begin contextual pass");
     m_cache.clear();
-    m_pass = Contextual;
+    m_pass                      = Contextual;
     ::fwAtoms::Object::sptr obj = this->processContextualObject(m_object);
     fwAtomsPatchInfoLogMacro("End contextual pass");
 
@@ -89,11 +89,11 @@ DefaultPatcher::~DefaultPatcher()
 
         // Cache update
         m_cache[current->getMetaInfo( ::fwAtomsPatch::s_OBJ_ID )] = newAtomObject;
-        m_newVersions[current] = newAtomObject;
+        m_newVersions[current]                                    = newAtomObject;
 
         // Set id
         newAtomObject->setMetaInfo( ::fwAtomsPatch::s_OBJ_ID,
-                current->getMetaInfo( ::fwAtomsPatch::s_OBJ_ID ));
+                                    current->getMetaInfo( ::fwAtomsPatch::s_OBJ_ID ));
 
         // Set meta Info
         newAtomObject->setMetaInfos(current->getMetaInfos());
@@ -133,7 +133,7 @@ DefaultPatcher::~DefaultPatcher()
                 if(elem.second->isObject())
                 {
                     ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::dynamicCast(elem.second);
-                    m_newVersions[obj] = this->processContextualObject(obj);
+                    m_newVersions[obj]          = this->processContextualObject(obj);
                 }
                 else
                 {
@@ -157,7 +157,7 @@ DefaultPatcher::~DefaultPatcher()
 {
     ::fwAtoms::Base::sptr newBase;
 
-    if ( ! base )
+    if ( !base )
     {
         return newBase;
     }
@@ -177,12 +177,12 @@ DefaultPatcher::~DefaultPatcher()
     else if(base->isSequence())
     {
         ::fwAtoms::Sequence::sptr seq = ::fwAtoms::Sequence::dynamicCast(base);
-        newBase = this->processSequence(seq);
+        newBase                       = this->processSequence(seq);
     }
     else if(base->isMapping())
     {
         ::fwAtoms::Map::sptr map = ::fwAtoms::Map::dynamicCast(base);
-        newBase = this->processMapping(map);
+        newBase                  = this->processMapping(map);
     }
     else if(base->isString())
     {
@@ -199,7 +199,7 @@ DefaultPatcher::~DefaultPatcher()
     else if(base->isBlob())
     {
         ::fwAtoms::Blob::sptr blob = ::fwAtoms::Blob::dynamicCast(base);
-        newBase = ::fwAtoms::Blob::New(blob->getBufferObject());
+        newBase                    = ::fwAtoms::Blob::New(blob->getBufferObject());
     }
 
 
@@ -218,7 +218,7 @@ DefaultPatcher::~DefaultPatcher()
 
     BOOST_FOREACH( ::fwAtoms::Map::MapType::value_type elem, map->getValue() )
     {
-        key = elem.first;
+        key   = elem.first;
         value = elem.second;
 
         newMap->insert( key, this->processBase(value) );
@@ -245,7 +245,7 @@ DefaultPatcher::~DefaultPatcher()
 //----------------------------------------------------------------------------
 
 ::fwAtoms::Object::sptr DefaultPatcher::applyStructuralPatch(
-        ::fwAtoms::Object::sptr previous, ::fwAtoms::Object::sptr current)
+    ::fwAtoms::Object::sptr previous, ::fwAtoms::Object::sptr current)
 {
     if(previous)
     {
@@ -253,24 +253,24 @@ DefaultPatcher::~DefaultPatcher()
         fwAtomsPatch::LinkDescriptor::VersionIDType currentInfos;
         bool success;
         const std::string& classname = ::fwAtomsPatch::helper::getClassname(current);
-        const std::string& version = ::fwAtomsPatch::helper::getVersion(current);
+        const std::string& version   = ::fwAtomsPatch::helper::getVersion(current);
 
         ::boost::tie(currentInfos,success) = m_versionsGraph->getLinkedVersion(
-                m_currentVersion, m_targetVersion,
-                std::make_pair(classname, version) );
+            m_currentVersion, m_targetVersion,
+            std::make_pair(classname, version) );
 
         if(success)
         {
             // Get patch
             ::fwAtomsPatch::IStructuralPatch::sptr patch = ::fwAtomsPatch::StructuralPatchDB::getDefault()->getPatch(
-                    classname, version, currentInfos.first, currentInfos.second);
+                classname, version, currentInfos.first, currentInfos.second);
 
             if(patch)
             {
                 OSLM_TRACE("[SP] " << classname);
                 fwAtomsPatchInfoLogMacro("Apply structural patch to transform '" + classname
-                                                                + "|" + version + "' to '"
-                                  + currentInfos.first + "|" + currentInfos.second + "'");
+                                         + "|" + version + "' to '"
+                                         + currentInfos.first + "|" + currentInfos.second + "'");
                 // Applying a patch on current (the current object is modified)
                 patch->apply(previous, current, m_newVersions);
                 fwAtomsPatchInfoLogMacro("End structural patch");
@@ -278,7 +278,7 @@ DefaultPatcher::~DefaultPatcher()
             else
             {
                 fwAtomsPatchInfoLogMacro("Move object '" + classname + "|" + version + "' to '"
-                               + currentInfos.first + "|" + currentInfos.second + "'");
+                                         + currentInfos.first + "|" + currentInfos.second + "'");
                 ::fwAtomsPatch::helper::setClassname(current, currentInfos.first);
                 ::fwAtomsPatch::helper::setVersion(current, currentInfos.second);
             }
@@ -286,7 +286,7 @@ DefaultPatcher::~DefaultPatcher()
         else
         {
             fwAtomsPatchErrorLogMacro("No linked version found for object '" + classname
-                                                             + "' with version '" + version + "'");
+                                      + "' with version '" + version + "'");
         }
     }
 
@@ -296,28 +296,28 @@ DefaultPatcher::~DefaultPatcher()
 //----------------------------------------------------------------------------
 
 ::fwAtoms::Object::sptr DefaultPatcher::applyContextualPatch(
-        ::fwAtoms::Object::sptr previous, ::fwAtoms::Object::sptr current)
+    ::fwAtoms::Object::sptr previous, ::fwAtoms::Object::sptr current)
 {
     if(previous)
     {
         const std::string currentName = m_versionsGraph->getNode(m_currentVersion).getVersionName();
-        const std::string targetName = m_versionsGraph->getNode(m_targetVersion).getVersionName();
+        const std::string targetName  = m_versionsGraph->getNode(m_targetVersion).getVersionName();
 
         // Get patch
         ::fwAtomsPatch::SemanticPatchDB::sptr contextDB = ::fwAtomsPatch::SemanticPatchDB::getDefault();
-        ::fwAtomsPatch::ISemanticPatch::sptr patch =
-                contextDB->getPatch(m_context, currentName, targetName,
-                         ::fwAtomsPatch::helper::getClassname(previous),
-                         ::fwAtomsPatch::helper::getVersion(previous));
+        ::fwAtomsPatch::ISemanticPatch::sptr patch      =
+            contextDB->getPatch(m_context, currentName, targetName,
+                                ::fwAtomsPatch::helper::getClassname(previous),
+                                ::fwAtomsPatch::helper::getVersion(previous));
 
         if(patch)
         {
             OSLM_TRACE("[CP] " << ::fwAtomsPatch::helper::getClassname(current));
             fwAtomsPatchInfoLogMacro("Apply contextual patch to transform '"
-                    + ::fwAtomsPatch::helper::getClassname(previous)
-                    + "|" + ::fwAtomsPatch::helper::getVersion(previous) + "' to '"
-                    + ::fwAtomsPatch::helper::getClassname(current)
-                    + "|" + ::fwAtomsPatch::helper::getVersion(current) + "'");
+                                     + ::fwAtomsPatch::helper::getClassname(previous)
+                                     + "|" + ::fwAtomsPatch::helper::getVersion(previous) + "' to '"
+                                     + ::fwAtomsPatch::helper::getClassname(current)
+                                     + "|" + ::fwAtomsPatch::helper::getVersion(current) + "'");
 
             // Applying a patch on current (the current object is modified)
             patch->apply(previous, current, m_newVersions);

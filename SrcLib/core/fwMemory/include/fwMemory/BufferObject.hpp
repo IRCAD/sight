@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWMEMORY_BUFFEROBJECT_HPP_
-#define _FWMEMORY_BUFFEROBJECT_HPP_
+#ifndef __FWMEMORY_BUFFEROBJECT_HPP__
+#define __FWMEMORY_BUFFEROBJECT_HPP__
 
 #include <istream>
 
@@ -27,15 +27,18 @@ fwCampAutoDeclareMacro((fwMemory)(BufferObject), FWMEMORY_API);
 namespace fwMemory
 {
 
-namespace stream {
-namespace in {
-class IFactory ;
-}}
+namespace stream
+{
+namespace in
+{
+class IFactory;
+}
+}
 
 /**
  * @brief   Define Base class for FW4SPL buffers
  * @class   BufferObject
- * 
+ *
  * @date    2007-2009.
  *
  * Keep a pointer to a buffer and it's allocation policy (new malloc) without
@@ -67,9 +70,15 @@ public:
     fwCoreAllowSharedFromThis();
 
     /// return the sub class classname : an alias of this->getClassname
-    std::string className() const { return this->getClassname(); };
+    std::string className() const
+    {
+        return this->getClassname();
+    }
 
-    virtual ::fwMemory::BufferManager::BufferType getBuffer() { return m_buffer;};
+    virtual ::fwMemory::BufferManager::BufferType getBuffer()
+    {
+        return m_buffer;
+    }
 
     /**
      * @brief base class for BufferObject Lock
@@ -109,9 +118,9 @@ public:
 
             ::fwCore::mt::ScopedLock lock(bo->m_lockDumpMutex);
             m_count = bo->m_count.lock();
-            if ( ! m_count )
+            if ( !m_count )
             {
-                m_count = bo->m_bufferManager->lockBuffer(&(bo->m_buffer)).get();
+                m_count     = bo->m_bufferManager->lockBuffer(&(bo->m_buffer)).get();
                 bo->m_count = m_count;
             }
 
@@ -125,7 +134,7 @@ public:
             SPTR(T) bufferObject = m_bufferObject.lock();
             BufferType buffer = bufferObject->m_buffer;
             return buffer;
-        };
+        }
 
         /**
          * @brief Release any count on any Buffer the lock may have.
@@ -179,7 +188,8 @@ public:
      *
      */
     FWMEMORY_API virtual void allocate(SizeType size,
-            const ::fwMemory::BufferAllocationPolicy::sptr &policy = ::fwMemory::BufferMallocPolicy::New());
+                                       const ::fwMemory::BufferAllocationPolicy::sptr &policy =
+                                           ::fwMemory::BufferMallocPolicy::New());
 
     /**
      * @brief Buffer reallocation
@@ -214,7 +224,8 @@ public:
      *
      */
     FWMEMORY_API virtual void setBuffer(::fwMemory::BufferManager::BufferType buffer, SizeType size,
-            const ::fwMemory::BufferAllocationPolicy::sptr &policy = ::fwMemory::BufferMallocPolicy::New());
+                                        const ::fwMemory::BufferAllocationPolicy::sptr &policy =
+                                            ::fwMemory::BufferMallocPolicy::New());
 
 
     /**
@@ -234,29 +245,46 @@ public:
     /**
      * @brief Returns the buffer's size
      */
-    SizeType getSize() const { return m_size; };
+    SizeType getSize() const
+    {
+        return m_size;
+    }
 
     /**
      * @brief Returns true if the buffer is empty
      */
-    bool isEmpty() const { return m_size == 0; };
+    bool isEmpty() const
+    {
+        return m_size == 0;
+    }
 
     /**
      * @brief Returns the number of locks on the BufferObject
      */
-    long lockCount() const { return m_count.use_count(); };
+    long lockCount() const
+    {
+        return m_count.use_count();
+    }
 
     /**
      * @brief Returns true if the buffer has any lock
      */
-    long isLocked() const { return lockCount() != 0; };
+    long isLocked() const
+    {
+        return lockCount() != 0;
+    }
 
     /**
      * @brief Returns pointer on BufferObject's buffer
      */
-    const ::fwMemory::BufferManager::ConstBufferPtrType getBufferPointer() const {return &m_buffer;};
+    const ::fwMemory::BufferManager::ConstBufferPtrType getBufferPointer() const
+    {
+        return &m_buffer;
+    }
 
-    ::fwCore::mt::ReadWriteMutex &getMutex() { return m_mutex; }
+    ::fwCore::mt::ReadWriteMutex &getMutex() {
+        return m_mutex;
+    }
 
     /// Exchanges the content of the BufferObject with the content of _source.
     FWMEMORY_API void swap( const BufferObject::sptr &_source );
@@ -274,14 +302,14 @@ public:
      * @param policy Buffer allocation policy
      */
     FWMEMORY_API void setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory) &factory,
-                           SizeType size,
-                           const ::boost::filesystem::path &sourceFile = "",
-                           ::fwMemory::FileFormatType format = ::fwMemory::OTHER,
-                           const ::fwMemory::BufferAllocationPolicy::sptr &policy = ::fwMemory::BufferMallocPolicy::New()
-                          );
+                                        SizeType size,
+                                        const ::boost::filesystem::path &sourceFile = "",
+                                        ::fwMemory::FileFormatType format = ::fwMemory::OTHER,
+                                        const ::fwMemory::BufferAllocationPolicy::sptr &policy = ::fwMemory::BufferMallocPolicy::New()
+                                        );
 
 
-protected :
+protected:
 
     ::fwMemory::BufferManager::BufferType m_buffer;
 
@@ -299,4 +327,4 @@ protected :
 }
 
 
-#endif // _FWMEMORY_BUFFEROBJECT_HPP_
+#endif // __FWMEMORY_BUFFEROBJECT_HPP__

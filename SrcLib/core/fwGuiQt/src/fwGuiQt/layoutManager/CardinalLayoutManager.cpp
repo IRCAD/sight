@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,12 +28,14 @@ namespace fwGui
 //-----------------------------------------------------------------------------
 
 CardinalLayoutManager::CardinalLayoutManager(::fwGui::GuiBaseObject::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 CardinalLayoutManager::~CardinalLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -79,7 +81,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
 
             QWidget *widget = insideWidget;
             SLM_ASSERT("multiple center views are not managed in Qt version of CardinalLayoutManager",
-                    !hasCentral);
+                       !hasCentral);
 
             if (viewInfo.m_useScrollBar)
             {
@@ -98,18 +100,30 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
         }
         else
         {
-            QDockWidget *dockWidget= new QDockWidget(m_qtWindow);
+            QDockWidget *dockWidget = new QDockWidget(m_qtWindow);
             insideWidget = new QWidget(dockWidget);
             QDockWidget::DockWidgetFeatures features;
 
-            features = QDockWidget::DockWidgetMovable ;
+            features = QDockWidget::DockWidgetMovable;
 
             Qt::DockWidgetArea area;
 
-            if(viewInfo.m_align==RIGHT)       { area = Qt::RightDockWidgetArea;}
-            else if(viewInfo.m_align==LEFT)   { area = Qt::LeftDockWidgetArea;}
-            else if(viewInfo.m_align==BOTTOM) { area = Qt::BottomDockWidgetArea;}
-            else if(viewInfo.m_align==TOP)    { area = Qt::TopDockWidgetArea;}
+            if(viewInfo.m_align==RIGHT)
+            {
+                area = Qt::RightDockWidgetArea;
+            }
+            else if(viewInfo.m_align==LEFT)
+            {
+                area = Qt::LeftDockWidgetArea;
+            }
+            else if(viewInfo.m_align==BOTTOM)
+            {
+                area = Qt::BottomDockWidgetArea;
+            }
+            else if(viewInfo.m_align==TOP)
+            {
+                area = Qt::TopDockWidgetArea;
+            }
 
             m_qtWindow->addDockWidget(area, dockWidget);
             dockWidget->setFeatures(features);

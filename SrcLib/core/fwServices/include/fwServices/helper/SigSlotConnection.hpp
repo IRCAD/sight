@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2004-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWSERVICES_HELPER_SIGSLOTCONNECTION_HPP_
-#define FWSERVICES_HELPER_SIGSLOTCONNECTION_HPP_
+#ifndef __FWSERVICES_HELPER_SIGSLOTCONNECTION_HPP__
+#define __FWSERVICES_HELPER_SIGSLOTCONNECTION_HPP__
 
 #include <list>
 #include <utility>
@@ -30,7 +30,7 @@ namespace helper
  * @brief  This class provides few tools to connect/disconnect signals/slots between obj/srv
  *
  * @class  SigSlotConnection
- * 
+ *
  * @date   2012.
  */
 class FWSERVICES_CLASS_API SigSlotConnection : public ::fwCore::BaseObject
@@ -56,7 +56,7 @@ public:
 
     /// Connect signal to slot, and register this new connection in  m_connections
     FWSERVICES_API void connect( ::fwCom::HasSignals::sptr hasSignals, ::fwCom::Signals::SignalKeyType signalKey,
-                  ::fwCom::HasSlots::sptr hasSlots, ::fwCom::Slots::SlotKeyType slotKey );
+                                 ::fwCom::HasSlots::sptr hasSlots, ::fwCom::Slots::SlotKeyType slotKey );
 
     /// Connect signals to slots, and register these new connections in  m_connections
     FWSERVICES_API void connect( ::fwCom::HasSignals::sptr hasSignals, ::fwCom::HasSlots::sptr hasSlots,
@@ -65,7 +65,7 @@ public:
     /// Disconnect all registered connections and clear m_connections
     FWSERVICES_API void disconnect();
 
-protected :
+protected:
 
     /// Connections storage
     ConnectionContainerType m_connections;
@@ -74,4 +74,4 @@ protected :
 } // end namespace helper
 } // end namespace fwServices
 
-#endif // FWSERVICES_HELPER_SIGSLOTCONNECTION_HPP_
+#endif // __FWSERVICES_HELPER_SIGSLOTCONNECTION_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,12 +8,12 @@
  * @file fwGui/layoutManager/CardinalLayoutManagerBase.hpp
  * @brief This file defines the interface class for managing a cardinal layout geometry.
  *
- * 
+ *
  * @date 2009-2010
  */
 
-#ifndef _FWGUI_LAYOUTMANAGER_CARDINALLAYOUTMANAGERBASE_HPP_
-#define _FWGUI_LAYOUTMANAGER_CARDINALLAYOUTMANAGERBASE_HPP_
+#ifndef __FWGUI_LAYOUTMANAGER_CARDINALLAYOUTMANAGERBASE_HPP__
+#define __FWGUI_LAYOUTMANAGER_CARDINALLAYOUTMANAGERBASE_HPP__
 
 #include <list>
 #include <map>
@@ -32,7 +32,7 @@ namespace layoutManager
 /**
  * @brief   Defines the base for cardinal layout manager.
  * @class   CardinalLayoutManagerBase
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -51,36 +51,37 @@ public:
         LEFT,
         BOTTOM,
         TOP
-     } Align;
+    } Align;
 
-     typedef std::string RegistryKeyType;
+    typedef std::string RegistryKeyType;
 
-     class ViewInfo
-     {
-     public :
+    class ViewInfo
+    {
+    public:
 
-         ViewInfo() :
-             m_align (CENTER),
-             m_minSize (std::make_pair(-1,-1)),
-             m_visible (true),
-             m_isResizable(true),
-             m_position(0),
-             m_layer(0),
-             m_row(0),
-             m_caption (std::make_pair(false,"")),
-             m_useScrollBar(false)
-         {}
+        ViewInfo() :
+            m_align (CENTER),
+            m_minSize (std::make_pair(-1,-1)),
+            m_visible (true),
+            m_isResizable(true),
+            m_position(0),
+            m_layer(0),
+            m_row(0),
+            m_caption (std::make_pair(false,"")),
+            m_useScrollBar(false)
+        {
+        }
 
-         Align                            m_align;
-         std::pair< int, int >            m_minSize;
-         bool                             m_visible;
-         bool                             m_isResizable;
-         int                              m_position;
-         int                              m_layer;
-         int                              m_row;
-         std::pair< bool, std::string >   m_caption;
-         bool                             m_useScrollBar;
-     };
+        Align m_align;
+        std::pair< int, int >            m_minSize;
+        bool m_visible;
+        bool m_isResizable;
+        int m_position;
+        int m_layer;
+        int m_row;
+        std::pair< bool, std::string >   m_caption;
+        bool m_useScrollBar;
+    };
 
     /// Constructor. Do nothing.
     FWGUI_API CardinalLayoutManagerBase();
@@ -107,19 +108,19 @@ public:
                <view sid="view3" start="yes" />
            </registry>
        </service>
-      @endverbatim
-    *  - \<layout type="::fwGui::CardinalLayoutManager" \> : define a cardinal layout.
-    *  - \<view caption="CardinalView1" align="center" /\> : define a new view with following attribute
-    *   - \b caption : name of the view (display on the screen).
-    *   - \b align  {center | bottom | top | right | left}: define the position of the view
-    *   - \b minWidth : minimal width of the view
-    *   - \b minHeight : minimal height of the view
-    *   - \b resizable  {yes | no}: define if the view can be resized.
-    *   - \b position : indicates the sequential position, starting with zero. It uses if more than one view as the same align value (available only with wxWidget see wxAuiManager in wxWidgets documenattion for more details).
-    *   - \b layer : available only with wxWidget. See wxAuiManager in wxWidgets documenattion for more details
-    *   - \b row : use to place several view next to each other (available only with wxWidget). See wxAuiManager in wxWidgets documenattion for more details
-    *   - \b visible  {true | yes | false | no} : define if the view is visible or not.
-    */
+       @endverbatim
+     *  - \<layout type="::fwGui::CardinalLayoutManager" \> : define a cardinal layout.
+     *  - \<view caption="CardinalView1" align="center" /\> : define a new view with following attribute
+     *   - \b caption : name of the view (display on the screen).
+     *   - \b align  {center | bottom | top | right | left}: define the position of the view
+     *   - \b minWidth : minimal width of the view
+     *   - \b minHeight : minimal height of the view
+     *   - \b resizable  {yes | no}: define if the view can be resized.
+     *   - \b position : indicates the sequential position, starting with zero. It uses if more than one view as the same align value (available only with wxWidget see wxAuiManager in wxWidgets documenattion for more details).
+     *   - \b layer : available only with wxWidget. See wxAuiManager in wxWidgets documenattion for more details
+     *   - \b row : use to place several view next to each other (available only with wxWidget). See wxAuiManager in wxWidgets documenattion for more details
+     *   - \b visible  {true | yes | false | no} : define if the view is visible or not.
+     */
 
     FWGUI_API virtual void initialize( ConfigurationType configuration);
 
@@ -127,7 +128,10 @@ public:
 
 protected:
 
-    std::list< ViewInfo> getViewsInfo(){ return m_views;};
+    std::list< ViewInfo> getViewsInfo()
+    {
+        return m_views;
+    }
 
 private:
 
@@ -141,6 +145,6 @@ private:
 } // namespace layoutManager
 } // namespace fwGui
 
-#endif /*_FWGUI_LAYOUTMANAGER_CARDINALLAYOUTMANAGERBASE_HPP_*/
+#endif /*__FWGUI_LAYOUTMANAGER_CARDINALLAYOUTMANAGERBASE_HPP__*/
 
 

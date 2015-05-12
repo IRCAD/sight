@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,11 +31,11 @@ namespace helper
 class ImageDicomInfo
 {
 
-public :
+public:
 
     typedef std::vector< std::string > SeriesFilesType;
 
-    typedef SPTR( ImageDicomInfo ) sptr;
+    typedef SPTR ( ImageDicomInfo ) sptr;
 
     /// Size of image buffer in bytes
     size_t m_buffSizeInBytes;
@@ -53,7 +53,7 @@ public:
 
     typedef char char_type;
 
-    typedef ::boost::iostreams::source_tag  category;
+    typedef ::boost::iostreams::source_tag category;
 
     /// Constructor
     ImageDicomSource( ImageDicomInfo::sptr dcmInfo );
@@ -61,7 +61,7 @@ public:
     /// Method to read n bytes in dicom buffer and write it in s. On the first call, readImage() method is called.
     std::streamsize read(char* s, std::streamsize n);
 
-private :
+private:
 
     /**
      * @brief Helper to read with vtk and gdcm a dicom image, sets m_reader, m_inputReader and m_success

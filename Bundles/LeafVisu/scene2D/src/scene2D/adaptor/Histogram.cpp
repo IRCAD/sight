@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -66,7 +66,7 @@ void Histogram::configuring() throw( ::fwTools::Failed)
     m_histogramPointUID = m_configuration->getAttributeValue("histogramPointUID");
 
     OSLM_WARN_IF("If an histogram cursor is used with this histogram, m_histogramPointUID must be set in order to "
-            << "inform about the position that the cursor should use.", m_histogramPointUID.empty());
+                 << "inform about the position that the cursor should use.", m_histogramPointUID.empty());
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ void Histogram::doUpdate() throw( ::fwTools::Failed)
 
     this->doStop();
 
-    ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
+    ::fwData::Histogram::sptr histogram           = this->getObject< ::fwData::Histogram>();
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
 
     if (!values.empty())
@@ -97,13 +97,13 @@ void Histogram::doUpdate() throw( ::fwTools::Failed)
         color.setAlphaF( m_opacity );
         m_color.setColor( color );
 
-        const float min = histogram->getMinValue();
+        const float min       = histogram->getMinValue();
         const float binsWidth = histogram->getBinsWidth();
 
         // Initialize the path with a start point:
         // The value preceding the current value that we'll use to build the arcs of the path
         std::pair< double, double > startPoint = this->mapAdaptorToScene(
-                std::pair<double, double>(min, values[0]), m_xAxis, m_yAxis);
+            std::pair<double, double>(min, values[0]), m_xAxis, m_yAxis);
 
         std::pair<double, double> pair;
 
@@ -114,7 +114,7 @@ void Histogram::doUpdate() throw( ::fwTools::Failed)
         for(int i = 1; i < nbValues; ++i)
         {
             pair = this->mapAdaptorToScene(
-                    std::pair<double, double>(min + i * binsWidth, values[i]), m_xAxis, m_yAxis);
+                std::pair<double, double>(min + i * binsWidth, values[i]), m_xAxis, m_yAxis);
 
             QPainterPath painter( QPointF(startPoint.first, 0) );
             painter.lineTo( startPoint.first, startPoint.second );
@@ -148,19 +148,19 @@ void Histogram::updateCurrentPoint( ::scene2D::data::Event::sptr _event )
     SLM_TRACE_FUNC();
 
     SLM_ASSERT("m_histogramPointUID must be defined in order to update the related ::fwData::Point data.",
-            !m_histogramPointUID.empty());
+               !m_histogramPointUID.empty());
 
-    ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
+    ::fwData::Histogram::sptr histogram           = this->getObject< ::fwData::Histogram>();
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
-    const float histogramMinValue = histogram->getMinValue();
+    const float histogramMinValue  = histogram->getMinValue();
     const float histogramBinsWidth = histogram->getBinsWidth();
 
     // Event coordinates in scene
     ::scene2D::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( _event->getCoord() );
 
     const int histIndex = (int) sceneCoord.getX();
-    const int index = histIndex - histogramMinValue;
-    const int nbValues = (int)values.size() * histogramBinsWidth;
+    const int index     = histIndex - histogramMinValue;
+    const int nbValues  = (int)values.size() * histogramBinsWidth;
 
     if(index >= 0 && index < nbValues)
     {

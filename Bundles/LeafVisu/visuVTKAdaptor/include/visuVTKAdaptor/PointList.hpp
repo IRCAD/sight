@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_POINTLIST_HPP_
-#define _VISUVTKADAPTOR_POINTLIST_HPP_
+#ifndef __VISUVTKADAPTOR_POINTLIST_HPP__
+#define __VISUVTKADAPTOR_POINTLIST_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
@@ -20,14 +20,14 @@
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API PointList: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API PointList : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
     typedef std::vector< WPTR(::fwData::Point) > WeakPointListType;
     typedef std::set< WPTR(::fwData::Point) > WeakPointSetType;
 
-    fwCoreServiceClassDefinitionsMacro ( (PointList)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PointList)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API PointList() throw();
 
@@ -47,8 +47,8 @@ protected:
     VISUVTKADAPTOR_API WeakPointListType getWeakPointList();
     VISUVTKADAPTOR_API WeakPointListType getNewPoints();
 
-     WeakPointListType m_oldWeakPointList;
-     WeakPointListType m_weakPointList;
+    WeakPointListType m_oldWeakPointList;
+    WeakPointListType m_weakPointList;
 
 };
 
@@ -57,4 +57,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_POINTLIST_HPP_
+#endif // __VISUVTKADAPTOR_POINTLIST_HPP__

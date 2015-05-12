@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_MANAGER_GRAPHWRAPPERSRV_HPP_
-#define _CTRLSELECTION_MANAGER_GRAPHWRAPPERSRV_HPP_
+#ifndef __CTRLSELECTION_WRAPPER_GRAPHWRAPPERSRV_HPP__
+#define __CTRLSELECTION_WRAPPER_GRAPHWRAPPERSRV_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -21,19 +21,19 @@ namespace wrapper
 /**
  * @class  GraphWrapperSrv
  * @brief  Convert generic message by specific message from Graph
- * 
+ *
 
  * @date   2007-2009.
  */
 class CTRLSELECTION_CLASS_API GraphWrapperSrv : public ::ctrlSelection::IWrapperSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (GraphWrapperSrv)(::ctrlSelection::IWrapperSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (GraphWrapperSrv)(::ctrlSelection::IWrapperSrv) );
 
 //    /// Constructor.  Do nothing.
-    CTRLSELECTION_API GraphWrapperSrv() throw() ;
+    CTRLSELECTION_API GraphWrapperSrv() throw();
 
     /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~GraphWrapperSrv() throw();
@@ -41,22 +41,34 @@ public :
 protected:
 
     /// Implements starting method derived from IService. Do nothing.
-   virtual void starting()  throw ( ::fwTools::Failed ) {};
+    virtual void starting()  throw ( ::fwTools::Failed )
+    {
+    }
 
     /// Implements stopping method derived from IService. Do nothing.
-    virtual void stopping()  throw ( ::fwTools::Failed ) {};
+    virtual void stopping()  throw ( ::fwTools::Failed )
+    {
+    }
 
     /// Implements configuring method derived from IService. Do nothing.
-    virtual void configuring()  throw ( ::fwTools::Failed ) {};
+    virtual void configuring()  throw ( ::fwTools::Failed )
+    {
+    }
 
     /// Implements reconfiguring method derived from IService. Do nothing.
-    virtual void reconfiguring()  throw ( ::fwTools::Failed ) {};
+    virtual void reconfiguring()  throw ( ::fwTools::Failed )
+    {
+    }
 
     /// Implements updating method derived from IService. Do nothing.
-    virtual void updating() throw ( ::fwTools::Failed ) {};
+    virtual void updating() throw ( ::fwTools::Failed )
+    {
+    }
 
     /// Implements info method derived from IService. Print classname.
-    virtual void info( std::ostream &_sstream ) {};
+    virtual void info( std::ostream &_sstream )
+    {
+    }
 
     /**
      * @brief Convert the Object message with "UPDATED_OBJECT" event sent on Graph by GraphMsg with "NEW_GRAPH" event
@@ -69,4 +81,4 @@ protected:
 } // wrapper
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_MANAGER_MEDICALIMAGEMANAGERSRV_HPP_
+#endif // __CTRLSELECTION_WRAPPER_GRAPHWRAPPERSRV_HPP__

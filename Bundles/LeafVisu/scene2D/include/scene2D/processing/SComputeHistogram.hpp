@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,7 @@ class SCENE2D_CLASS_API SComputeHistogram : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SComputeHistogram)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SComputeHistogram)(::fwServices::IController) );
 
     /// Constructor. Does nothing.
     SCENE2D_API SComputeHistogram() throw();
@@ -41,16 +41,16 @@ public:
 protected:
 
     /**
-    * @brief Configures the service.
-    * @verbatim
-    <service uid="computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes">
+     * @brief Configures the service.
+     * @verbatim
+       <service uid="computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes">
         <histogramId>Histogram</histogramId>
         <binsWidth>5.0</binsWidth>
-    </service>
-    @endverbatim
-    * - \b histogramId: Id of the histogram object.
-    * - \b binsWidth: desired bins width used to classified pixel.
-    */
+       </service>
+       @endverbatim
+     * - \b histogramId: Id of the histogram object.
+     * - \b binsWidth: desired bins width used to classified pixel.
+     */
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
 
     /// Starts the service. Calls updating().

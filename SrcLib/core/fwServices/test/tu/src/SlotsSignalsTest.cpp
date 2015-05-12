@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ void SlotsSignalsTest::basicTest()
     SLM_TRACE_FUNC();
     using namespace ::fwServices::registry;
 
-    Buffer::sptr buffer = Buffer::New();
+    Buffer::sptr buffer  = Buffer::New();
     Buffer::sptr buffer2 = Buffer::New();
 
     ActiveWorkers::sptr activeWorkers = ActiveWorkers::getDefault();
@@ -110,7 +110,7 @@ void SlotsSignalsTest::comObjectServiceTest()
         readerTestSrv->update().wait();
 
         IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
-        IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+        IService::SharedFutureType stopShowFuture   = showTestSrv->stop();
         stopReaderFuture.wait();
         stopShowFuture.wait();
 
@@ -140,14 +140,14 @@ void SlotsSignalsTest::comObjectServiceTest()
         reader2TestSrv->start();
         showTestSrv->start();
 
-        IService::SharedFutureType updateReaderFuture = readerTestSrv->update();
+        IService::SharedFutureType updateReaderFuture  = readerTestSrv->update();
         IService::SharedFutureType updateReader2Future = reader2TestSrv->update();
         updateReaderFuture.wait();
         updateReader2Future.wait();
 
-        IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
+        IService::SharedFutureType stopReaderFuture  = readerTestSrv->stop();
         IService::SharedFutureType stopReader2Future = reader2TestSrv->stop();
-        IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+        IService::SharedFutureType stopShowFuture    = showTestSrv->stop();
         stopReaderFuture.wait();
         stopReader2Future.wait();
         stopShowFuture.wait();
@@ -190,7 +190,7 @@ void SlotsSignalsTest::comServiceToServiceTest()
     readerTestSrv->update().wait();
 
     IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
-    IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+    IService::SharedFutureType stopShowFuture   = showTestSrv->stop();
     stopReaderFuture.wait();
     stopShowFuture.wait();
 
@@ -225,7 +225,7 @@ void SlotsSignalsTest::blockConnectionTest()
 
     ::fwCom::Connection connection;
     connection = buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->
-                                            connect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+                 connect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
 
     readerTestSrv->start();
     showTestSrv->start();
@@ -235,7 +235,7 @@ void SlotsSignalsTest::blockConnectionTest()
     ::boost::this_thread::sleep_for( ::boost::chrono::seconds(8));
 
     IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
-    IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+    IService::SharedFutureType stopShowFuture   = showTestSrv->stop();
     stopReaderFuture.wait();
     stopShowFuture.wait();
 

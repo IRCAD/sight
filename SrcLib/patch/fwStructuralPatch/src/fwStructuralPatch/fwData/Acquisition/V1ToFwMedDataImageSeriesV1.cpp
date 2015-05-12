@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,8 +33,8 @@ V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1() : ::fwAtomsPatch::IStru
 {
     m_originClassname = "::fwData::Acquisition";
     m_targetClassname = "::fwMedData::ImageSeries";
-    m_originVersion = "1";
-    m_targetVersion = "1";
+    m_originVersion   = "1";
+    m_targetVersion   = "1";
 
 }
 
@@ -46,15 +46,16 @@ V1ToFwMedDataImageSeriesV1::~V1ToFwMedDataImageSeriesV1()
 
 // ----------------------------------------------------------------------------
 
-V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1( const V1ToFwMedDataImageSeriesV1 &cpy ) : ::fwAtomsPatch::IStructuralPatch(cpy)
+V1ToFwMedDataImageSeriesV1::V1ToFwMedDataImageSeriesV1( const V1ToFwMedDataImageSeriesV1 &cpy ) : ::fwAtomsPatch::
+                                                                                                  IStructuralPatch(cpy)
 {
 }
 
 // ----------------------------------------------------------------------------
 
 void V1ToFwMedDataImageSeriesV1::apply(const ::fwAtoms::Object::sptr& previous,
-        const ::fwAtoms::Object::sptr& current,
-        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
+                                       const ::fwAtoms::Object::sptr& current,
+                                       ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -118,7 +119,7 @@ void V1ToFwMedDataImageSeriesV1::apply(const ::fwAtoms::Object::sptr& previous,
 
     // Date and time
     ::boost::posix_time::ptime pdate =
-            ::boost::posix_time::time_from_string(creationDate);
+        ::boost::posix_time::time_from_string(creationDate);
     const std::string date = ::fwTools::getDate(pdate);
     const std::string time = ::fwTools::getTime(pdate);
 

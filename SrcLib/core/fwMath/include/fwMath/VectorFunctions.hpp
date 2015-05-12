@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWMATH_VECTORFUNCTIONS_HPP_
-#define _FWMATH_VECTORFUNCTIONS_HPP_
+#ifndef __FWMATH_VECTORFUNCTIONS_HPP__
+#define __FWMATH_VECTORFUNCTIONS_HPP__
 
 #include <cmath>
 
@@ -140,4 +140,4 @@ FWMATH_API int operator==(const fwVec3d& _vec1, const fwVec3d& _vec2);
 FWMATH_API int operator!=(const fwVec3d& _vec1, const fwVec3d& _vec2);
 
 
-#endif /* _FWMATH_VECTORFUNCTIONS_HPP_ */
+#endif /* __FWMATH_VECTORFUNCTIONS_HPP__ */

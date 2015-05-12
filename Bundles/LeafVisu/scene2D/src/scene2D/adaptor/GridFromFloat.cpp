@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,7 @@
 #include "scene2D/adaptor/GridFromFloat.hpp"
 #include "scene2D/data/InitQtPen.hpp"
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::GridFromFloat  , ::fwData::Float ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::GridFromFloat, ::fwData::Float );
 
 
 namespace scene2D
@@ -22,8 +22,8 @@ namespace adaptor
 {
 
 GridFromFloat::GridFromFloat() throw()
-: m_xSpacing (10),
-  m_ySpacing (10)
+    : m_xSpacing (10),
+      m_ySpacing (10)
 {
 //    addNewHandledEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
 }
@@ -80,44 +80,44 @@ void GridFromFloat::draw()
 
     // Calculate the start, end and step on x for the lines
     float xStartVal = (int)( m_xMin / m_xSpacing ) * m_xSpacing;
-    float xEndVal = (int)( m_xMax / m_xSpacing ) * m_xSpacing;
-    float xStep = m_xSpacing;
+    float xEndVal   = (int)( m_xMax / m_xSpacing ) * m_xSpacing;
+    float xStep     = m_xSpacing;
 
     // Calculate the start, end and step on y for the lines
     float yStartVal = (int)( m_yMin / m_ySpacing ) * m_ySpacing;
-    float yEndVal = (int)( m_yMax / m_ySpacing ) * m_ySpacing;
-    float yStep = m_ySpacing;
+    float yEndVal   = (int)( m_yMax / m_ySpacing ) * m_ySpacing;
+    float yStep     = m_ySpacing;
 
     // Draw the horizontal lines
-    for ( float yVal = yStartVal ; yVal <= yEndVal ; yVal += yStep )
+    for ( float yVal = yStartVal; yVal <= yEndVal; yVal += yStep )
     {
         QGraphicsLineItem* line = new QGraphicsLineItem(
-            this->mapAdaptorToScene(std::pair< double , double >( xStartVal, yVal) , m_xAxis, m_yAxis).first,
-            this->mapAdaptorToScene(std::pair< double , double >( xStartVal, yVal) , m_xAxis, m_yAxis).second,
-            this->mapAdaptorToScene(std::pair< double , double >( xEndVal, yVal) , m_xAxis, m_yAxis).first,
-            this->mapAdaptorToScene(std::pair< double , double >( xEndVal, yVal) , m_xAxis, m_yAxis).second
-        );
+            this->mapAdaptorToScene(std::pair< double, double >( xStartVal, yVal), m_xAxis, m_yAxis).first,
+            this->mapAdaptorToScene(std::pair< double, double >( xStartVal, yVal), m_xAxis, m_yAxis).second,
+            this->mapAdaptorToScene(std::pair< double, double >( xEndVal, yVal), m_xAxis, m_yAxis).first,
+            this->mapAdaptorToScene(std::pair< double, double >( xEndVal, yVal), m_xAxis, m_yAxis).second
+            );
         // Set the line the pen and push it back in to the lines vector
         line->setPen(m_pen);
         m_lines.push_back(line);
     }
 
     // Draw the vertical lines
-    for ( float xVal = xStartVal ; xVal <= xEndVal ; xVal += xStep )
+    for ( float xVal = xStartVal; xVal <= xEndVal; xVal += xStep )
     {
         QGraphicsLineItem* line = new QGraphicsLineItem(
-            this->mapAdaptorToScene(std::pair< double , double >( xVal, yStartVal) , m_xAxis, m_yAxis).first,
-            this->mapAdaptorToScene(std::pair< double , double >( xVal, yStartVal) , m_xAxis, m_yAxis).second,
-            this->mapAdaptorToScene(std::pair< double , double >( xVal, yEndVal) , m_xAxis, m_yAxis).first,
-            this->mapAdaptorToScene(std::pair< double , double >( xVal, yEndVal) , m_xAxis, m_yAxis).second
-        );
+            this->mapAdaptorToScene(std::pair< double, double >( xVal, yStartVal), m_xAxis, m_yAxis).first,
+            this->mapAdaptorToScene(std::pair< double, double >( xVal, yStartVal), m_xAxis, m_yAxis).second,
+            this->mapAdaptorToScene(std::pair< double, double >( xVal, yEndVal), m_xAxis, m_yAxis).first,
+            this->mapAdaptorToScene(std::pair< double, double >( xVal, yEndVal), m_xAxis, m_yAxis).second
+            );
         // Set the line the pen and push it back in to the lines vector
         line->setPen(m_pen);
         m_lines.push_back(line);
     }
 
     // Add the lines contained in the lines vector to the layer
-    for ( unsigned int i = 0 ; i < m_lines.size() ; i++)
+    for ( unsigned int i = 0; i < m_lines.size(); i++)
     {
         m_layer->addToGroup(m_lines.at(i));
     }

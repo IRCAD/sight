@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,8 @@
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointListInteractor, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointListInteractor,
+                         ::fwData::PointList );
 
 namespace visuVTKAdaptor
 {
@@ -43,7 +44,9 @@ class PointListInteractorCallback : public vtkCommand
 {
 public:
     static PointListInteractorCallback *New()
-    { return new PointListInteractorCallback(); }
+    {
+        return new PointListInteractorCallback();
+    }
 
     PointListInteractorCallback()
         : m_priority(-1),
@@ -63,7 +66,8 @@ public:
         assert(m_priority>=0);
         SLM_ASSERT("m_adaptor not instanced", m_adaptor);
         SLM_ASSERT("m_picker not instanced", m_picker);
-        if ( m_mouseMoveObserved || (m_adaptor->getInteractor()->GetControlKey() && m_adaptor->getInteractor()->GetShiftKey()) )
+        if ( m_mouseMoveObserved ||
+             (m_adaptor->getInteractor()->GetControlKey() && m_adaptor->getInteractor()->GetShiftKey()) )
         {
             if ( eventId == vtkCommand::MouseMoveEvent )
             {
@@ -104,7 +108,7 @@ public:
         display[1] = y;
         display[2] = 0;
 
-        return  m_picker->Pick( display , m_adaptor->getRenderer() );
+        return m_picker->Pick( display, m_adaptor->getRenderer() );
     }
 
 
@@ -131,10 +135,10 @@ public:
         m_priority = priority;
     }
 
-protected :
+protected:
     PointListInteractor::sptr m_adaptor;
     vtkAbstractPropPicker *m_picker;
-    float    m_priority;
+    float m_priority;
 
     bool m_mouseMoveObserved;
 
@@ -219,10 +223,10 @@ void PointListInteractor::resetPointList()
 
 void PointListInteractor::addPoint(const double &x, const double &y, const double &z)
 {
-    ::fwData::PointList::sptr list = this->getObject< ::fwData::PointList >();
+    ::fwData::PointList::sptr list             = this->getObject< ::fwData::PointList >();
     ::fwData::Point::PointCoordArrayType coord = {{ x, y, z }};
-    ::fwData::Point::sptr p = ::fwData::Point::New();
-    p->getRefCoord() = coord;
+    ::fwData::Point::sptr p                    = ::fwData::Point::New();
+    p->getRefCoord()                           = coord;
 
     list->getRefPoints().push_back(p);
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,17 +29,18 @@ namespace ut
 
 fwDataRegisterMacro(Buffer);
 
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest , ::fwServices::ut::SBasicTest , ::fwServices::ut::Buffer ) ;
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest , ::fwServices::ut::SReaderTest , ::fwServices::ut::Buffer ) ;
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest , ::fwServices::ut::SShowTest , ::fwServices::ut::Buffer ) ;
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest , ::fwServices::ut::SReader2Test , ::fwServices::ut::Buffer ) ;
-fwServicesRegisterMacro( ::fwServices::ut::IBasicTest , ::fwServices::ut::SShow2Test , ::fwServices::ut::Buffer ) ;
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SBasicTest, ::fwServices::ut::Buffer );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SReaderTest, ::fwServices::ut::Buffer );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SShowTest, ::fwServices::ut::Buffer );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SReader2Test, ::fwServices::ut::Buffer );
+fwServicesRegisterMacro( ::fwServices::ut::IBasicTest, ::fwServices::ut::SShow2Test, ::fwServices::ut::Buffer );
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
 SBasicTest::SBasicTest() : m_updateFinished(false), m_swapFinished(false)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -96,7 +97,7 @@ const ::fwCom::Slots::SlotKeyType SShowTest::s_CHANGE_SLOT = "change";
 
 SShowTest::SShowTest() : m_receiveCount(0), m_changeCount(0)
 {
-    m_slotChange = ::fwCom::newSlot( &SShowTest::change, this ) ;
+    m_slotChange = ::fwCom::newSlot( &SShowTest::change, this );
     ::fwCom::HasSlots::m_slots( s_CHANGE_SLOT, m_slotChange );
 #ifdef COM_LOG
     m_slotChange->setID( s_CHANGE_SLOT );
@@ -152,7 +153,8 @@ void SReader2Test::updating() throw ( ::fwTools::Failed )
 //------------------------------------------------------------------------------
 
 SShow2Test::SShow2Test() : m_receiveCount(0)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

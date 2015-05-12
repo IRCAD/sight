@@ -1,20 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_VTKADAPTOR_MESHFACTORY_HPP_
-#define _VISUVTKADAPTOR_VTKADAPTOR_MESHFACTORY_HPP_
+#ifndef __VISUVTKADAPTOR_MESHFACTORY_HPP__
+#define __VISUVTKADAPTOR_MESHFACTORY_HPP__
 
 #include <fwData/Material.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
 
-class  vtkActor;
-class  vtkDepthSortPolyData;
-class  vtkPolyDataNormals;
-class  vtkPlaneCollection;
+class vtkActor;
+class vtkDepthSortPolyData;
+class vtkPolyDataNormals;
+class vtkPlaneCollection;
 
 namespace visuVTKAdaptor
 {
@@ -39,17 +39,20 @@ protected:
 
     VISUVTKADAPTOR_API void setVtkClippingPlanes(vtkPlaneCollection *planes);
 
-    void setNormalsFeatureAngle(double angle){ m_normalsFeatureAngle = angle; }
+    void setNormalsFeatureAngle(double angle)
+    {
+        m_normalsFeatureAngle = angle;
+    }
 
 protected:
     vtkPolyDataNormals * m_normals;
     vtkPlaneCollection * m_clippingPlanes;
-    vtkActor * m_actor ;
+    vtkActor * m_actor;
 
     double m_normalsFeatureAngle;
 };
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_VTKADAPTOR_MESHFACTORY_HPP_
+#endif // __VISUVTKADAPTOR_MESHFACTORY_HPP__
 

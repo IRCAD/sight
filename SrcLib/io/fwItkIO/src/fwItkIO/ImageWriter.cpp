@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@ namespace fwItkIO
 //------------------------------------------------------------------------------
 
 ImageWriter::ImageWriter(::fwDataIO::writer::IObjectWriter::Key key)
-: ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+    : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -49,13 +49,13 @@ struct ITKSaverFunctor
 
     struct Parameter
     {
-        std::string                m_filename;
-        ::fwData::Image::sptr      m_dataImage;
+        std::string m_filename;
+        ::fwData::Image::sptr m_dataImage;
         ::fwItkIO::ImageWriter::sptr m_fwWriter;
     };
 
     template<class PIXELTYPE>
-    void operator()( const  Parameter &param )
+    void operator()( const Parameter &param )
     {
         OSLM_DEBUG( "itk::ImageFileWriter with PIXELTYPE "<<  fwTools::DynamicType::string<PIXELTYPE>() );
 
@@ -64,7 +64,8 @@ struct ITKSaverFunctor
         // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le reader (voir *3*)
 
         // Reader IO (*1*)
-        typename itk::ImageIOBase::Pointer imageIOWrite = itk::ImageIOFactory::CreateImageIO( param.m_filename.c_str(), itk::ImageIOFactory::WriteMode);
+        typename itk::ImageIOBase::Pointer imageIOWrite = itk::ImageIOFactory::CreateImageIO(
+            param.m_filename.c_str(), itk::ImageIOFactory::WriteMode);
         assert( imageIOWrite.IsNotNull() );
 
         // create writer
@@ -74,7 +75,7 @@ struct ITKSaverFunctor
 
 
         // set observation (*2*)
-        itk::LightProcessObject::Pointer castHelper= (itk::LightProcessObject *)(imageIOWrite.GetPointer());
+        itk::LightProcessObject::Pointer castHelper = (itk::LightProcessObject *)(imageIOWrite.GetPointer());
         assert( castHelper.IsNotNull() );
         Progressor progress(castHelper, param.m_fwWriter, param.m_filename);
 
@@ -98,17 +99,18 @@ void ImageWriter::write()
     assert( m_object.lock() );
 
     ITKSaverFunctor::Parameter saverParam;
-    saverParam.m_filename =  this->getFile().string();
+    saverParam.m_filename  = this->getFile().string();
     saverParam.m_dataImage = getConcreteObject();
-    saverParam.m_fwWriter =  this->getSptr();
+    saverParam.m_fwWriter  = this->getSptr();
     assert( saverParam.m_dataImage );
 
-    ::fwTools::Dispatcher< fwTools::IntrinsicTypes , ITKSaverFunctor >::invoke( saverParam.m_dataImage->getPixelType(), saverParam );
+    ::fwTools::Dispatcher< fwTools::IntrinsicTypes, ITKSaverFunctor >::invoke(
+        saverParam.m_dataImage->getPixelType(), saverParam );
 }
 
 
 
- std::string ImageWriter::extension()
+std::string ImageWriter::extension()
 {
     if ( getFile().empty() ||  ( getFile().string().find(".inr.gz") !=  std::string::npos ) )
     {

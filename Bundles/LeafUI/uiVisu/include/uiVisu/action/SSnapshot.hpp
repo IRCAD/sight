@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ namespace action
 /**
  * @brief   This action allows to snapshot a generic scene
  * @class   SSnapshot
- * 
+ *
  * @date    2012.
  *
  * Send a CompositeMsg with SNAP event containing the uid of the scene to the scene's composite.
@@ -31,15 +31,15 @@ namespace action
 class UIVISU_CLASS_API SSnapshot : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSnapshot)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSnapshot)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    UIVISU_API SSnapshot() throw() ;
+    UIVISU_API SSnapshot() throw();
 
     /// Destructor. Do nothing.
-    UIVISU_API virtual ~SSnapshot() throw() ;
+    UIVISU_API virtual ~SSnapshot() throw();
 
 protected:
 
@@ -63,17 +63,17 @@ protected:
     /**
      * @brief Configure action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" impl="::uiData::action::SSnapshot" autoConnect="no">
+       <service type="::fwGui::IActionSrv" impl="::uiData::action::SSnapshot" autoConnect="no">
         <snap>
             <scene uid="genericScene" />
         </snap>
-    </service>
-    @endverbatim
+       </service>
+       @endverbatim
      * - \b genericScene is the uid of the ::fwRenderVTK::VtkRenderService representing the generic scene which will be printed.
      */
     void configuring() throw(fwTools::Failed);
 
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 private:
     std::string requestFileName();

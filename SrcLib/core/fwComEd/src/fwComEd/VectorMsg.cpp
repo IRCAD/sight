@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,27 +19,28 @@ fwServicesMessageRegisterMacro( ::fwComEd::VectorMsg );
 namespace fwComEd
 {
 
-std::string VectorMsg::ADDED_OBJECTS = "ADDED_OBJECTS";
+std::string VectorMsg::ADDED_OBJECTS   = "ADDED_OBJECTS";
 std::string VectorMsg::REMOVED_OBJECTS = "REMOVED_OBJECTS";
 
 //-------------------------------------------------------------------------
 
 VectorMsg::VectorMsg(::fwServices::ObjectMsg::Key key)
 {
-    m_removedObjects    = ::fwData::Vector::New();
-    m_addedObjects      = ::fwData::Vector::New();
+    m_removedObjects = ::fwData::Vector::New();
+    m_addedObjects   = ::fwData::Vector::New();
 }
 
 //-------------------------------------------------------------------------
 
 VectorMsg::~VectorMsg() throw()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
 void VectorMsg::appendAddedObject( ::fwData::Object::sptr _pNewObject )
 {
-    if( ! this->hasEvent( ADDED_OBJECTS ) )
+    if( !this->hasEvent( ADDED_OBJECTS ) )
     {
         this->addEvent( ADDED_OBJECTS, m_addedObjects );
     }
@@ -61,7 +62,7 @@ void VectorMsg::appendAddedObject( ::fwData::Object::sptr _pNewObject )
 
 void VectorMsg::appendRemovedObject( ::fwData::Object::sptr _pOldObject )
 {
-    if( ! this->hasEvent( REMOVED_OBJECTS ) )
+    if( !this->hasEvent( REMOVED_OBJECTS ) )
     {
         this->addEvent( REMOVED_OBJECTS, m_removedObjects );
     }

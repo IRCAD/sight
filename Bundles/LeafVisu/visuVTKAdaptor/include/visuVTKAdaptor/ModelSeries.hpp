@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@ class VISUVTKADAPTOR_CLASS_API ModelSeries : public ::fwRenderVTK::IVtkAdaptorSe
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ModelSeries)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ModelSeries)(::fwRenderVTK::IVtkAdaptorService) );
 
     /**
      * @name Signals API
@@ -40,7 +40,10 @@ public:
 
     VISUVTKADAPTOR_API virtual ~ModelSeries() throw();
 
-    void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id){ m_clippingPlanes = id ; }
+    void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id)
+    {
+        m_clippingPlanes = id;
+    }
 
 protected:
 
@@ -52,12 +55,12 @@ protected:
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     /// manage SHOW/ADD/REMOVED_RECONSTRUCTIONS event
-   VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_clippingPlanes;
 
 private:
-    bool   m_autoResetCamera;
+    bool m_autoResetCamera;
     std::string m_textureAdaptorUID;
 
     /// Signal to emit when a texture must be applied on a material.

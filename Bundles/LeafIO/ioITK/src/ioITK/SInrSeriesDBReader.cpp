@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,17 +41,19 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioITK::SInrSeriesDBReader , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioITK::SInrSeriesDBReader, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
 SInrSeriesDBReader::SInrSeriesDBReader() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SInrSeriesDBReader::~SInrSeriesDBReader() throw()
-{}
+{
+}
 
 
 //------------------------------------------------------------------------------
@@ -76,7 +78,7 @@ void SInrSeriesDBReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::MultiFiles::sptr  result;
+    ::fwData::location::MultiFiles::sptr result;
     result = ::fwData::location::MultiFiles::dynamicCast( dialogFile.show() );
     if (result)
     {
@@ -116,15 +118,15 @@ bool SInrSeriesDBReader::createImage( const ::boost::filesystem::path inrFile, :
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                ss.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                                                          ss.str(),
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                "Warning during loading",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                                                          "Warning during loading",
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     return ok;
@@ -139,7 +141,7 @@ void SInrSeriesDBReader::updating() throw(::fwTools::Failed)
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >() ;
+        ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
         SLM_ASSERT("SeriesDB not instanced", seriesDB);
 
         ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
@@ -173,7 +175,7 @@ void SInrSeriesDBReader::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void  SInrSeriesDBReader::initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
+void SInrSeriesDBReader::initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
 {
     const std::string unknown = "unknown";
     series->setModality("OT");

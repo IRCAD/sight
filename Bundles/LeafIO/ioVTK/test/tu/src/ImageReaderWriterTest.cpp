@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,10 +50,10 @@ namespace ut
 //------------------------------------------------------------------------------
 
 void runImageSrv(
-        const std::string &srvtype,
-        const std::string &srvname,
-        const SPTR(::fwRuntime::EConfigurationElement)& cfg,
-        const SPTR(::fwData::Object)& image)
+    const std::string &srvtype,
+    const std::string &srvname,
+    const SPTR(::fwRuntime::EConfigurationElement)& cfg,
+    const SPTR(::fwData::Object)& image)
 {
 
     ::fwServices::IService::sptr srv;
@@ -61,7 +61,7 @@ void runImageSrv(
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-    ::fwServices::OSR::registerService( image , srv );
+    ::fwServices::OSR::registerService( image, srv );
 
     CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(cfg) );
     CPPUNIT_ASSERT_NO_THROW( srv->configure() );
@@ -91,7 +91,7 @@ void ImageReaderWriterTest::tearDown()
 ::fwRuntime::EConfigurationElement::sptr getIOConfiguration(const ::boost::filesystem::path &file)
 {
     ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr readerCfg = ::fwRuntime::EConfigurationElement::New("file");
+    ::fwRuntime::EConfigurationElement::sptr readerCfg    = ::fwRuntime::EConfigurationElement::New("file");
     readerCfg->setValue(file.string());
     readerSrvCfg->addConfigurationElement(readerCfg);
 
@@ -128,8 +128,8 @@ void ImageReaderWriterTest::testVtkImageReader()
 
     // Data read.
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
-    ::fwData::Image::SpacingType originRead = image->getOrigin();
-    ::fwData::Image::SizeType sizeRead = image->getSize();
+    ::fwData::Image::SpacingType originRead  = image->getOrigin();
+    ::fwData::Image::SizeType sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -179,8 +179,8 @@ void ImageReaderWriterTest::testVtiImageReader()
 
     // Data read.
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
-    ::fwData::Image::SpacingType originRead = image->getOrigin();
-    ::fwData::Image::SizeType sizeRead = image->getSize();
+    ::fwData::Image::SpacingType originRead  = image->getOrigin();
+    ::fwData::Image::SizeType sizeRead       = image->getSize();
 
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
@@ -232,8 +232,8 @@ void ImageReaderWriterTest::testMhdImageReader()
 
     // Data read.
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
-    ::fwData::Image::SpacingType originRead = image->getOrigin();
-    ::fwData::Image::SizeType sizeRead = image->getSize();
+    ::fwData::Image::SpacingType originRead  = image->getOrigin();
+    ::fwData::Image::SizeType sizeRead       = image->getSize();
 
 
 
@@ -278,7 +278,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
 
         CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-        ::fwServices::OSR::registerService( image , srv );
+        ::fwServices::OSR::registerService( image, srv );
 
         CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(getIOConfiguration(file)) );
         CPPUNIT_ASSERT_NO_THROW( srv->configure() );
@@ -327,8 +327,8 @@ void ImageReaderWriterTest::testVtkImageWriter()
 
     // Data read
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
-    ::fwData::Image::SpacingType originRead = imageFromDisk->getOrigin();
-    ::fwData::Image::SizeType sizeRead = imageFromDisk->getSize();
+    ::fwData::Image::SpacingType originRead  = imageFromDisk->getOrigin();
+    ::fwData::Image::SizeType sizeRead       = imageFromDisk->getSize();
 
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
@@ -351,7 +351,7 @@ void ImageReaderWriterTest::testVtkImageWriter()
     ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
 
     char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
-    char *ptrOnReadImage = static_cast<char*>(imageFromDiskHelper.getBuffer());
+    char *ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType() );
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -362,7 +362,7 @@ void ImageReaderWriterTest::testVtkImageWriter()
 
 void ImageReaderWriterTest::testVtkImageSeriesWriter()
 {
-    ::fwTools::Type type = ::fwTools::Type::create< float >();
+    ::fwTools::Type type        = ::fwTools::Type::create< float >();
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, type);
 
@@ -420,8 +420,8 @@ void ImageReaderWriterTest::testVtiImageWriter()
 
     // Data read
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
-    ::fwData::Image::SpacingType originRead = imageFromDisk->getOrigin();
-    ::fwData::Image::SizeType sizeRead = imageFromDisk->getSize();
+    ::fwData::Image::SpacingType originRead  = imageFromDisk->getOrigin();
+    ::fwData::Image::SizeType sizeRead       = imageFromDisk->getSize();
 
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
@@ -443,7 +443,7 @@ void ImageReaderWriterTest::testVtiImageWriter()
     ::fwComEd::helper::Image imageHelper(image);
     ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
     char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
-    char *ptrOnReadImage = static_cast<char*>(imageFromDiskHelper.getBuffer());
+    char *ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -485,8 +485,8 @@ void ImageReaderWriterTest::testMhdImageWriter()
 
     // Data read
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
-    ::fwData::Image::SpacingType originRead = imageFromDisk->getOrigin();
-    ::fwData::Image::SizeType sizeRead = imageFromDisk->getSize();
+    ::fwData::Image::SpacingType originRead  = imageFromDisk->getOrigin();
+    ::fwData::Image::SizeType sizeRead       = imageFromDisk->getSize();
 
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
@@ -509,7 +509,7 @@ void ImageReaderWriterTest::testMhdImageWriter()
     ::fwComEd::helper::Image imageHelper(image);
     ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
     char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
-    char *ptrOnReadImage = static_cast<char*>(imageFromDiskHelper.getBuffer());
+    char *ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -553,7 +553,7 @@ void ImageReaderWriterTest::testImageWriterExtension()
 
         CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + srvname, srv);
 
-        ::fwServices::OSR::registerService( image , srv );
+        ::fwServices::OSR::registerService( image, srv );
 
         CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(getIOConfiguration(file)) );
         CPPUNIT_ASSERT_NO_THROW( srv->configure() );

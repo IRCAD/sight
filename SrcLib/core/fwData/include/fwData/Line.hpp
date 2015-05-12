@@ -25,9 +25,9 @@ namespace fwData
 class FWDATA_CLASS_API Line : public Object
 {
 
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (Line)(::fwData::Object),
-        (()), ::fwData::factory::New< Line >) ;
+                                            (()), ::fwData::factory::New< Line >);
 
 
     /**
@@ -47,13 +47,13 @@ public :
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    FWDATA_API void setValue( ::fwData::Point::sptr _position, ::fwData::Point::sptr  _direction);
+    FWDATA_API void setValue( ::fwData::Point::sptr _position, ::fwData::Point::sptr _direction);
 
     /// Points container
-    fwGettersSettersDocMacro(Position, position, ::fwData::Point::sptr, a point positon);
-    fwGettersSettersDocMacro(Direction, direction, ::fwData::Point::sptr, a point direction);
+    fwGettersSettersDocMacro(Position, position, ::fwData::Point::sptr, "a point positon");
+    fwGettersSettersDocMacro(Direction, direction, ::fwData::Point::sptr, "a point direction");
 
-protected :
+protected:
 
     //! Points container
     ::fwData::Point::sptr m_position;

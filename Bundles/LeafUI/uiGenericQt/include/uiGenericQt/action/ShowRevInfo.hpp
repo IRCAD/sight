@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIGENERICQT_UI_ACTION_SHOWREVINFO_HPP_
-#define _UIGENERICQT_UI_ACTION_SHOWREVINFO_HPP_
+#ifndef __UIGENERICQT_ACTION_SHOWREVINFO_HPP__
+#define __UIGENERICQT_ACTION_SHOWREVINFO_HPP__
 
 #include <map>
 #include <set>
@@ -28,12 +28,13 @@ namespace action
 /**
  * @brief   This action show the revision info for bundle and lib.
  * @class   ShowRevInfo
- * 
+ *
  * @date    2011.
  */
-class UIGENERICQT_CLASS_API ShowRevInfo : public QObject, public ::fwGui::IActionSrv
+class UIGENERICQT_CLASS_API ShowRevInfo : public QObject,
+                                          public ::fwGui::IActionSrv
 {
-    Q_OBJECT
+Q_OBJECT
 public:
 
     typedef std::map<std::string, ::boost::filesystem::path> FindMapType;
@@ -42,21 +43,21 @@ public:
     typedef std::pair<BundleNameSet, LibNameSet> BundleLibPairType;
     typedef std::map<std::string, BundleLibPairType> RevMapType;
 
-    fwCoreServiceClassDefinitionsMacro ( (ShowRevInfo)( ::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ShowRevInfo)( ::fwGui::IActionSrv) );
 
-    UIGENERICQT_API ShowRevInfo() throw() ;
+    UIGENERICQT_API ShowRevInfo() throw();
 
-    UIGENERICQT_API virtual ~ShowRevInfo() throw() ;
+    UIGENERICQT_API virtual ~ShowRevInfo() throw();
 
 protected:
 
     /**
      * @brief configure the action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowRevInfo" autoConnect="no" />
+       <service type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowRevInfo" autoConnect="no" />
        @endverbatim
      */
-    UIGENERICQT_API void configuring() throw( ::fwTools::Failed ) ;
+    UIGENERICQT_API void configuring() throw( ::fwTools::Failed );
 
     /// Starts action
     UIGENERICQT_API void starting() throw (::fwTools::Failed);
@@ -65,12 +66,12 @@ protected:
     UIGENERICQT_API void updating() throw (::fwTools::Failed);
 
     /// Does nothing
-    UIGENERICQT_API void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    UIGENERICQT_API void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed);
 
     /// Stops action
     UIGENERICQT_API void stopping() throw (::fwTools::Failed);
 
-    UIGENERICQT_API void info(std::ostream &_sstream ) ;
+    UIGENERICQT_API void info(std::ostream &_sstream );
 
 private:
 
@@ -88,4 +89,4 @@ protected Q_SLOTS:
 } // namespace action
 } // namespace uiGeneric
 
-#endif /*_UIGENERICQT_UI_ACTION_SHOWREVINFO_HPP_*/
+#endif /*__UIGENERICQT_ACTION_SHOWREVINFO_HPP__*/

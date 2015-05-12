@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef IXMLPARSER_HPP_
-#define IXMLPARSER_HPP_
+#ifndef __FWSERVICES_IXMLPARSER_HPP__
+#define __FWSERVICES_IXMLPARSER_HPP__
 
 #include <fwTools/Object.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -27,15 +27,15 @@ namespace fwServices
  * added to the object (see ::fwTools::Object). The New(::fwRuntime::ConfigurationElement::sptr ) method on the related child is invoked, therefore allowing to build
  * tree like composite object which services.
  *
- * 
+ *
  */
 class FWSERVICES_CLASS_API IXMLParser : public ::fwServices::IService
 {
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IXMLParser)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IXMLParser)(::fwServices::IService) );
 
-public :
+public:
 
     FWSERVICES_API void setObjectConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem );
 
@@ -56,38 +56,38 @@ protected:
     /**
      * @brief Constructor. Does nothing.
      */
-    FWSERVICES_API IXMLParser( ) ;
+    FWSERVICES_API IXMLParser( );
 
     /**
      * @brief Destructor. Does nothing.
      */
-    FWSERVICES_API virtual ~IXMLParser() ;
+    FWSERVICES_API virtual ~IXMLParser();
 
     /**
      * @brief Does nothing
      */
-    FWSERVICES_API virtual void starting() throw(::fwTools::Failed) ;
+    FWSERVICES_API virtual void starting() throw(::fwTools::Failed);
 
     /**
      * @brief Does nothing
      */
-    FWSERVICES_API virtual void stopping() throw(::fwTools::Failed) ;
+    FWSERVICES_API virtual void stopping() throw(::fwTools::Failed);
 
     /**
      * @brief Does nothing
      */
-    FWSERVICES_API virtual void configuring() throw(::fwTools::Failed) ;
+    FWSERVICES_API virtual void configuring() throw(::fwTools::Failed);
 
     /**
      * @brief Does nothing
      */
-    FWSERVICES_API virtual void receiving( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+    FWSERVICES_API virtual void receiving( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Parse the XML configuration
      * @note Should invoked ( this->::IXMLParser::updating() ) from specific XMLParsers updating method to support both specific compositions and this generic one
      */
-    FWSERVICES_API virtual void updating() throw(::fwTools::Failed) ;
+    FWSERVICES_API virtual void updating() throw(::fwTools::Failed);
 };
 
 
@@ -95,4 +95,4 @@ protected:
 
 }
 
-#endif /* IXMLPARSER_HPP_ */
+#endif /* __FWSERVICES_IXMLPARSER_HPP__ */

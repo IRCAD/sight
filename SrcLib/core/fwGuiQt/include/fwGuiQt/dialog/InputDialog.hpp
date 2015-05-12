@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_INPUTDIALOG_HPP_
-#define _FWGUIQT_INPUTDIALOG_HPP_
+#ifndef __FWGUIQT_DIALOG_INPUTDIALOG_HPP__
+#define __FWGUIQT_DIALOG_INPUTDIALOG_HPP__
 
 #include <string>
 #include <fwCore/base.hpp>
@@ -21,17 +21,17 @@ namespace dialog
 /**
  * @brief   Defines an Input dialog.
  * @class   InputDialog
- * 
+ *
  * @date    2009-2010.
  *
  * Example of use:
  * @verbatim
-  ::fwGui::dialog::InputDialog inputDlg;
-  inputDlg.setTitle("Identification dialog");
-  inputDlg.setMessage("Enter Pin Code: ");
-  inputDlg.setInput ("<Enter your code here>");
-  std::string inputText = inputDlg.getInput();
-  @endverbatim
+   ::fwGui::dialog::InputDialog inputDlg;
+   inputDlg.setTitle("Identification dialog");
+   inputDlg.setMessage("Enter Pin Code: ");
+   inputDlg.setInput ("<Enter your code here>");
+   std::string inputText = inputDlg.getInput();
+   @endverbatim
  */
 class FWGUIQT_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 {
@@ -70,6 +70,6 @@ protected:
 } // namespace dialog
 } // namespace fwGuiQt
 
-#endif /*_FWGUIQT_INPUTDIALOG_HPP_*/
+#endif /*__FWGUIQT_DIALOG_INPUTDIALOG_HPP__*/
 
 

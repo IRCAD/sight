@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ bool List::refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgEleme
 {
     bool isOk = true;
 
-    for(    ::fwRuntime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin() ;
+    for(    ::fwRuntime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin();
             configEltIter != _cfgElement->end();
             ++configEltIter)
     {
@@ -32,7 +32,9 @@ bool List::refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgEleme
         if(     subElementName != "service" &&
                 subElementName != "serviceList"    )
         {
-            OSLM_ERROR("xml subelement \""<< subElementName <<"\" for element object is not supported for the moment when you use a reference on item List.");
+            OSLM_ERROR(
+                "xml subelement \""<< subElementName <<
+                "\" for element object is not supported for the moment when you use a reference on item List.");
             isOk = false;
         }
     }
@@ -53,8 +55,8 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
 {
     // Declaration of attributes values
     const std::string OBJECT_BUILD_MODE = "src";
-    const std::string BUILD_OBJECT = "new";
-    const std::string GET_OBJECT = "ref";
+    const std::string BUILD_OBJECT      = "new";
+    const std::string GET_OBJECT        = "ref";
 
     ::fwData::List::sptr dataList = ::fwData::List::dynamicCast(_obj);
     SLM_ASSERT("Sorry, object given in parameter is not a fwData::List",dataList);
@@ -71,7 +73,8 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
             if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
                 buildMode = elem->getExistingAttributeValue( OBJECT_BUILD_MODE );
-                OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.", buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
+                OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.",
+                             buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
 
             if( buildMode == BUILD_OBJECT )
@@ -79,7 +82,7 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
 
                 // Create and manage object config
                 ::fwServices::AppConfigManager::sptr ctm = ::fwServices::AppConfigManager::New();
-                ctm->setConfig( * ( elem->getElements().begin() ) );
+                ctm->setConfig( *( elem->getElements().begin() ) );
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
                 ::fwData::Object::sptr localObj = ctm->getConfigRoot< ::fwData::Object >();

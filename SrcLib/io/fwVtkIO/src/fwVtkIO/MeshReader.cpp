@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key key) :
-                ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
+    ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -53,16 +53,16 @@ void MeshReader::read()
     reader->Update();
 
     vtkDataObject *obj = reader->GetOutput();
-    vtkPolyData* mesh = vtkPolyData::SafeDownCast(obj);
+    vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
     FW_RAISE_IF("MeshReader cannot read VTK Mesh file : "<< this->getFile().string(), !mesh);
     ::fwVtkIO::helper::Mesh::fromVTKMesh(mesh, pMesh);
 }
 
 //------------------------------------------------------------------------------
 
-std::string  MeshReader::extension()
+std::string MeshReader::extension()
 {
-   return ".vtk";
+    return ".vtk";
 }
 
 } // namespace fwVtkIO

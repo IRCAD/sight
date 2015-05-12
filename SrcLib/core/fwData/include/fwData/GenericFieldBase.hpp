@@ -36,11 +36,11 @@ public:
     FWDATA_API virtual bool operator>= (const GenericFieldBase &lf ) = 0;
     FWDATA_API friend std::ostream& operator<<( std::ostream &, const GenericFieldBase & );
 
-    FWDATA_API virtual ::std::string toString() const = 0;
+    FWDATA_API virtual ::std::string toString() const               = 0;
     FWDATA_API virtual void fromString(const ::std::string &_value) = 0;
 
 
-private :
+private:
     FWDATA_API virtual std::ostream & toOStream( std::ostream &_os ) const = 0;
 };
 

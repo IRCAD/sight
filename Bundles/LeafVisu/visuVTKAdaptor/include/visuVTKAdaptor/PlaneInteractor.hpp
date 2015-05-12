@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_PLANEINTERACTOR_HPP_
-#define _VISUVTKADAPTOR_PLANEINTERACTOR_HPP_
+#ifndef __VISUVTKADAPTOR_PLANEINTERACTOR_HPP__
+#define __VISUVTKADAPTOR_PLANEINTERACTOR_HPP__
 
 #include <fwData/TransferFunction.hpp>
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
@@ -19,12 +19,13 @@ class vtkCommand;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API PlaneInteractor: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService 
+class VISUVTKADAPTOR_CLASS_API PlaneInteractor : public ::fwComEd::helper::MedicalImageAdaptor,
+                                                 public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PlaneInteractor)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PlaneInteractor)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API PlaneInteractor() throw();
 
@@ -56,4 +57,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_PLANEINTERACTOR_HPP_
+#endif // __VISUVTKADAPTOR_PLANEINTERACTOR_HPP__

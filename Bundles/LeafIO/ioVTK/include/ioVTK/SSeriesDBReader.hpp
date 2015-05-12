@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOVTK_SSERIESDBREADER_HPP_
-#define _IOVTK_SSERIESDBREADER_HPP_
+#ifndef __IOVTK_SSERIESDBREADER_HPP__
+#define __IOVTK_SSERIESDBREADER_HPP__
 
 #include <string>
 #include <boost/filesystem/path.hpp>
@@ -35,17 +35,19 @@ namespace ioVTK
 class IOVTK_CLASS_API SSeriesDBReader : public ::io::IReader
 {
 
-public :
-    ~SSeriesDBReader() throw() {}
+public:
+    ~SSeriesDBReader() throw()
+    {
+    }
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) );
 
     /**
-    * @brief Configure the vtk file path.
-    *
-    * This method is used to find
-    * the file path  using a file selector.
-    */
+     * @brief Configure the vtk file path.
+     *
+     * This method is used to find
+     * the file path  using a file selector.
+     */
     IOVTK_API virtual void configureWithIHM();
 
 
@@ -54,25 +56,25 @@ protected:
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 
     /**
-    * @brief Starting method.
-    *
-    * This method is used to initialize the service.
-    */
+     * @brief Starting method.
+     *
+     * This method is used to initialize the service.
+     */
     IOVTK_API virtual void starting() throw(::fwTools::Failed);
 
     /**
-    * @brief Stopping method.
-    *
-    * The stopping method is empty for this service.
-    */
+     * @brief Stopping method.
+     *
+     * The stopping method is empty for this service.
+     */
     IOVTK_API virtual void stopping() throw(::fwTools::Failed);
 
     /**
-    * @brief Updating method.
-    *
-    * This method is used to update the service.
-    * The image is read.
-    */
+     * @brief Updating method.
+     *
+     * This method is used to update the service.
+     * The image is read.
+     */
     IOVTK_API void updating() throw(::fwTools::Failed);
 
     /**
@@ -82,27 +84,29 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    IOVTK_API void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
+    IOVTK_API void receiving( CSPTR(::fwServices::ObjectMsg)_msg ) throw(::fwTools::Failed)
+    {
+    }
 
     /**
-    * @brief Info method.
-    *
-    * This method is used to give
-    * informations about the service.
-    */
-    IOVTK_API void info(std::ostream &_sstream ) ;
+     * @brief Info method.
+     *
+     * This method is used to give
+     * informations about the service.
+     */
+    IOVTK_API void info(std::ostream &_sstream );
 
 
-private :
+private:
 
     /**
-    * @brief Load VTK mesh or image and push it into SeriesDB.
-    * @param[in] vtkFiles vector of boost::filesystem::path.
-    * @param[out] seriesDB ::boost::shared_ptr< ::fwMedData::SeriesDB >.
-    * @return bool.
-    *
-    * This method is used to load a mesh using the file path.
-    */
+     * @brief Load VTK mesh or image and push it into SeriesDB.
+     * @param[in] vtkFiles vector of boost::filesystem::path.
+     * @param[out] seriesDB ::boost::shared_ptr< ::fwMedData::SeriesDB >.
+     * @return bool.
+     *
+     * This method is used to load a mesh using the file path.
+     */
     void loadSeriesDB( const ::fwData::location::ILocation::VectPathType& vtkFiles,
                        ::fwMedData::SeriesDB::sptr seriesDB );
 
@@ -110,4 +114,4 @@ private :
 
 } // namespace ioVTK
 
-#endif //_IOVTK_SSERIESDBREADER_HPP_
+#endif //__IOVTK_SSERIESDBREADER_HPP__

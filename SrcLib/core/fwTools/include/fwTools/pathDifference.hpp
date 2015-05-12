@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWTOOLS_PATHDIFFERENCE_HPP___
-#define __FWTOOLS_PATHDIFFERENCE_HPP___
+#ifndef __FWTOOLS_PATHDIFFERENCE_HPP__
+#define __FWTOOLS_PATHDIFFERENCE_HPP__
 
 #include "fwTools/config.hpp"
 #include <boost/filesystem/path.hpp>
@@ -50,4 +50,4 @@ FWTOOLS_API boost::filesystem::path getPathDifference( boost::filesystem::path p
 
 }
 
-#endif /*__FWTOOLS_PATHDIFFERENCE_HPP___*/
+#endif /*__FWTOOLS_PATHDIFFERENCE_HPP__*/

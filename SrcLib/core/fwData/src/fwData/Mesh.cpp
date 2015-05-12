@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,8 @@ Mesh::Mesh(::fwData::Object::Key key) : m_nbPoints(0), m_nbCells(0),  m_cellsDat
 //------------------------------------------------------------------------------
 
 Mesh::~Mesh()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -46,15 +47,15 @@ void Mesh::initArrays()
 {
     if (!m_points)
     {
-        m_points          = ::fwData::Array::New();
+        m_points = ::fwData::Array::New();
     }
     if (!m_cellTypes)
     {
-        m_cellTypes       = ::fwData::Array::New();
+        m_cellTypes = ::fwData::Array::New();
     }
     if (!m_cellData)
     {
-        m_cellData        = ::fwData::Array::New();
+        m_cellData = ::fwData::Array::New();
     }
     if (!m_cellDataOffsets)
     {
@@ -80,27 +81,27 @@ void Mesh::shallowCopy(const Object::csptr &_source )
 {
     Mesh::csptr other = Mesh::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
-    m_nbPoints        = other->m_nbPoints;
-    m_nbCells         = other->m_nbCells;
-    m_cellsDataSize   = other->m_cellsDataSize;
+    m_nbPoints      = other->m_nbPoints;
+    m_nbCells       = other->m_nbCells;
+    m_cellsDataSize = other->m_cellsDataSize;
 
     m_points          = other->m_points;
     m_cellTypes       = other->m_cellTypes;
     m_cellData        = other->m_cellData;
     m_cellDataOffsets = other->m_cellDataOffsets;
 
-    m_pointColors     = other->m_pointColors;
-    m_cellColors      = other->m_cellColors;
-    m_pointNormals    = other->m_pointNormals;
-    m_cellNormals     = other->m_cellNormals;
-    m_cellTexCoords   = other->m_cellTexCoords;
-    m_pointTexCoords  = other->m_pointTexCoords;
+    m_pointColors    = other->m_pointColors;
+    m_cellColors     = other->m_cellColors;
+    m_pointNormals   = other->m_pointNormals;
+    m_cellNormals    = other->m_cellNormals;
+    m_cellTexCoords  = other->m_cellTexCoords;
+    m_pointTexCoords = other->m_pointTexCoords;
 
-    m_arrayMap        = other->m_arrayMap;
+    m_arrayMap = other->m_arrayMap;
 }
 
 //------------------------------------------------------------------------------
@@ -109,8 +110,8 @@ void Mesh::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache
 {
     Mesh::csptr other = Mesh::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     m_nbPoints      = other->m_nbPoints;
@@ -125,11 +126,11 @@ void Mesh::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache
     m_cellDataOffsets = ::fwData::Object::copy( other->m_cellDataOffsets, cache );
 
     //Object::copy returns a null object if source object is null
-    m_pointColors  = ::fwData::Object::copy( other->m_pointColors , cache );
-    m_cellColors   = ::fwData::Object::copy( other->m_cellColors  , cache );
-    m_pointNormals = ::fwData::Object::copy( other->m_pointNormals, cache );
-    m_cellNormals  = ::fwData::Object::copy( other->m_cellNormals , cache );
-    m_cellTexCoords  = ::fwData::Object::copy( other->m_cellTexCoords , cache );
+    m_pointColors    = ::fwData::Object::copy( other->m_pointColors, cache );
+    m_cellColors     = ::fwData::Object::copy( other->m_cellColors, cache );
+    m_pointNormals   = ::fwData::Object::copy( other->m_pointNormals, cache );
+    m_cellNormals    = ::fwData::Object::copy( other->m_cellNormals, cache );
+    m_cellTexCoords  = ::fwData::Object::copy( other->m_cellTexCoords, cache );
     m_pointTexCoords = ::fwData::Object::copy( other->m_pointTexCoords, cache );
 
     m_arrayMap.clear();
@@ -151,10 +152,10 @@ size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::
 
     size_t allocatedSize = 0;
 
-    allocatedSize += m_points->resize         ( list_of(nbPts)      , true);
-    allocatedSize += m_cellTypes->resize      ( list_of(nbCells)    , true);
+    allocatedSize += m_points->resize         ( list_of(nbPts), true);
+    allocatedSize += m_cellTypes->resize      ( list_of(nbCells), true);
     allocatedSize += m_cellData->resize       ( list_of(nbCellsData), true);
-    allocatedSize += m_cellDataOffsets->resize( list_of(nbCells)    , true);
+    allocatedSize += m_cellDataOffsets->resize( list_of(nbCells), true);
 
     return allocatedSize;
 }
@@ -164,9 +165,9 @@ size_t Mesh::allocate(size_t nbPts, size_t nbCells, size_t nbCellsData) throw(::
 size_t Mesh::allocatePointNormals() throw(::fwData::Exception)
 {
     size_t allocatedSize = 0;
-    if (! m_pointNormals )
+    if (!m_pointNormals )
     {
-        m_pointNormals  = ::fwData::Array::New();
+        m_pointNormals = ::fwData::Array::New();
     }
     allocatedSize += m_pointNormals->resize( ::fwTools::Type::create<NormalValueType>(), list_of(m_nbPoints), 3, true);
     return allocatedSize;
@@ -178,9 +179,9 @@ size_t Mesh::allocatePointColors(ColorArrayTypes t) throw(::fwData::Exception)
 {
     OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
     size_t allocatedSize = 0;
-    if (! m_pointColors )
+    if (!m_pointColors )
     {
-        m_pointColors  = ::fwData::Array::New();
+        m_pointColors = ::fwData::Array::New();
     }
     allocatedSize += m_pointColors->resize( ::fwTools::Type::create<ColorValueType>(), list_of(m_nbPoints), t, true);
     return allocatedSize;
@@ -191,11 +192,12 @@ size_t Mesh::allocatePointColors(ColorArrayTypes t) throw(::fwData::Exception)
 size_t Mesh::allocatePointTexCoords() throw(::fwData::Exception)
 {
     size_t allocatedSize = 0;
-    if (! m_pointTexCoords )
+    if (!m_pointTexCoords )
     {
-        m_pointTexCoords  = ::fwData::Array::New();
+        m_pointTexCoords = ::fwData::Array::New();
     }
-    allocatedSize += m_pointTexCoords->resize( ::fwTools::Type::create<TexCoordValueType>(), list_of(m_nbPoints), 2, true);
+    allocatedSize += m_pointTexCoords->resize( ::fwTools::Type::create<TexCoordValueType>(), list_of(
+                                                   m_nbPoints), 2, true);
     return allocatedSize;
 }
 
@@ -204,9 +206,9 @@ size_t Mesh::allocatePointTexCoords() throw(::fwData::Exception)
 size_t Mesh::allocateCellNormals() throw(::fwData::Exception)
 {
     size_t allocatedSize = 0;
-    if (! m_cellNormals )
+    if (!m_cellNormals )
     {
-        m_cellNormals  = ::fwData::Array::New();
+        m_cellNormals = ::fwData::Array::New();
     }
     allocatedSize += m_cellNormals->resize( ::fwTools::Type::create<NormalValueType>(), list_of(m_nbCells), 3, true);
     return allocatedSize;
@@ -218,9 +220,9 @@ size_t Mesh::allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception)
 {
     OSLM_ASSERT("Bad ColorArrayTypes : " << t, t == RGB || t == RGBA);
     size_t allocatedSize = 0;
-    if (! m_cellColors )
+    if (!m_cellColors )
     {
-        m_cellColors  = ::fwData::Array::New();
+        m_cellColors = ::fwData::Array::New();
     }
     allocatedSize += m_cellColors->resize( ::fwTools::Type::create<ColorValueType>(), list_of(m_nbCells), t, true);
     return allocatedSize;
@@ -231,11 +233,12 @@ size_t Mesh::allocateCellColors(ColorArrayTypes t) throw(::fwData::Exception)
 size_t Mesh::allocateCellTexCoords() throw(::fwData::Exception)
 {
     size_t allocatedSize = 0;
-    if (! m_cellTexCoords )
+    if (!m_cellTexCoords )
     {
-        m_cellTexCoords  = ::fwData::Array::New();
+        m_cellTexCoords = ::fwData::Array::New();
     }
-    allocatedSize += m_cellTexCoords->resize( ::fwTools::Type::create<TexCoordValueType>(), list_of(m_nbCells), 2, true);
+    allocatedSize +=
+        m_cellTexCoords->resize( ::fwTools::Type::create<TexCoordValueType>(), list_of(m_nbCells), 2, true);
     return allocatedSize;
 }
 
@@ -245,7 +248,7 @@ bool Mesh::adjustAllocatedMemory() throw(::fwData::Exception)
 {
     size_t oldAllocatedSize = this->getAllocatedSizeInBytes();
 
-    if(! m_points)
+    if(!m_points)
     {
         this->initArrays();
     }
@@ -264,9 +267,9 @@ bool Mesh::adjustAllocatedMemory() throw(::fwData::Exception)
 
     size_t newAllocatedSize = this->getAllocatedSizeInBytes();
     SLM_ASSERT(
-            "Error adjusting memory : allocated size: " << newAllocatedSize
-            << " != data size : " << this->getDataSizeInBytes(),
-            newAllocatedSize == this->getDataSizeInBytes());
+        "Error adjusting memory : allocated size: " << newAllocatedSize
+                                                    << " != data size : " << this->getDataSizeInBytes(),
+        newAllocatedSize == this->getDataSizeInBytes());
     return oldAllocatedSize != newAllocatedSize;
 }
 
@@ -421,7 +424,7 @@ void Mesh::clearPoints()
 
 void Mesh::clearCells()
 {
-    m_nbCells = 0;
+    m_nbCells       = 0;
     m_cellsDataSize = 0;
 }
 
@@ -597,8 +600,8 @@ std::vector<std::string> Mesh::getDataArrayNames() const
 {
     std::vector<std::string> vectNames;
     std::transform( m_arrayMap.begin(), m_arrayMap.end(),
-            std::back_inserter(vectNames),
-            ::boost::bind(& ArrayMapType::value_type::first,_1) );
+                    std::back_inserter(vectNames),
+                    ::boost::bind(&ArrayMapType::value_type::first,_1) );
     return vectNames;
 }
 

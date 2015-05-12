@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,7 +43,7 @@
 namespace uiImage
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::SliceListEditor , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::SliceListEditor, ::fwData::Image );
 
 
 SliceListEditor::SliceListEditor() throw()
@@ -55,7 +55,8 @@ SliceListEditor::SliceListEditor() throw()
 //------------------------------------------------------------------------------
 
 SliceListEditor::~SliceListEditor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -64,7 +65,8 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -75,7 +77,7 @@ void SliceListEditor::starting() throw(::fwTools::Failed)
     m_pDropDownMenu = new QMenu(container);
     QActionGroup * actionGroup = new QActionGroup(m_pDropDownMenu);
 
-    m_oneSliceItem = new QAction(QObject::tr("One slice"), m_pDropDownMenu);
+    m_oneSliceItem    = new QAction(QObject::tr("One slice"), m_pDropDownMenu);
     m_threeSlicesItem = new QAction(QObject::tr("three slices"), m_pDropDownMenu);
 //  m_obliqueSliceItem = new QAction(QObject::tr("Oblique slice"), m_pDropDownMenu);
     m_oneSliceItem->setCheckable(true);
@@ -181,31 +183,31 @@ void SliceListEditor::onChangeSliceMode( bool checked )
     if(::fwTools::fwID::exist(m_adaptorUID))
     {
         ::fwServices::IService::sptr service = ::fwServices::get(m_adaptorUID);
-        ::fwData::Image::sptr image = service->getObject< ::fwData::Image >();
-        SLM_ASSERT("SliceListEditor adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?" , image);
+        ::fwData::Image::sptr image          = service->getObject< ::fwData::Image >();
+        SLM_ASSERT("SliceListEditor adaptorUID " << m_adaptorUID <<" isn't an Adaptor on an Image?", image);
 
         ::fwData::Integer::sptr dataInfo = ::fwData::Integer::New();
 
         if(m_oneSliceItem->isChecked())
         {
             dataInfo->value() = 1;
-            m_nbSlice = 1;
+            m_nbSlice         = 1;
         }
         else if(m_threeSlicesItem->isChecked())
         {
             dataInfo->value() = 3;
-            m_nbSlice = 3;
+            m_nbSlice         = 3;
         }
         else if(m_obliqueSliceItem->isChecked())
         {
             dataInfo->value() = -1;
-            m_nbSlice = -1;
+            m_nbSlice         = -1;
         }
         else
         {
             OSLM_FATAL("Unknown slice mode");
         }
-        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId ,  ::fwData::String::New( m_adaptorUID ) );
+        dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId,  ::fwData::String::New( m_adaptorUID ) );
         ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
         imageMsg->addEvent( "SLICE_MODE", dataInfo );
         ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);

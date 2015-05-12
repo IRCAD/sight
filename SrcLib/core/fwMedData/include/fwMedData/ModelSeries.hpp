@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ fwCampAutoDeclareDataMacro((fwMedData)(ModelSeries), FWMEDDATA_API);
 
 namespace fwData
 {
-    class Reconstruction;
+class Reconstruction;
 }
 
 namespace fwMedData
@@ -37,7 +37,8 @@ class FWMEDDATA_CLASS_API ModelSeries : public ::fwMedData::Series
 public:
     typedef std::vector< SPTR(::fwData::Reconstruction) > ReconstructionVectorType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ModelSeries)(::fwData::Object), (()), ::fwData::factory::New< ModelSeries >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ModelSeries)(::fwData::Object), (()),
+                                            ::fwData::factory::New< ModelSeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(ModelSeries));
 

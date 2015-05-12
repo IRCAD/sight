@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,13 +33,13 @@
 
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Distance, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Distance, ::fwData::PointList );
 
 namespace visuVTKAdaptor
 {
 
 
-Distance::Distance() throw():
+Distance::Distance() throw() :
     m_distanceRepresentation( vtkDistanceRepresentation2D::New())
 {
     m_distanceRepresentation->InstantiateHandleRepresentation();
@@ -81,13 +81,13 @@ void Distance::setAxisColor( ::fwData::Color::sptr newColor) throw()
 {
     SLM_ASSERT("newColor not instanced", newColor);
     m_distanceRepresentation->GetAxis()->GetProperty()->SetColor(
-            newColor->red(),newColor->green(),newColor->blue() );
+        newColor->red(),newColor->green(),newColor->blue() );
     m_distanceRepresentation->GetAxis()->GetProperty()->SetOpacity(newColor->alpha() );
     m_lineActor->GetProperty()->SetColor(newColor->red(),newColor->green(),newColor->blue());
     m_lineActor->GetProperty()->SetOpacity( newColor->alpha() * 0.4);
 
     m_distanceRepresentation->GetAxis()->GetTitleTextProperty()->SetColor(
-            newColor->red(),newColor->green(),newColor->blue() );
+        newColor->red(),newColor->green(),newColor->blue() );
     this->setVtkPipelineModified();
 }
 
@@ -111,9 +111,9 @@ void Distance::doStart()
     m_point2 = ptList->getPoints().back();
 
     m_point1Connection = m_point1.lock()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                                    this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+        this->slot(::fwServices::IService::s_RECEIVE_SLOT));
     m_point2Connection = m_point2.lock()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                                    this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+        this->slot(::fwServices::IService::s_RECEIVE_SLOT));
 
     // set color to distance if Point List have Color Field
     if ( ptList->getField( ::fwComEd::Dictionary::m_colorId ) )

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@ const ::fwCom::Signals::SignalKeyType Node::s_UPDATED_SIG = "updated";
 
 //------------------------------------------------------------------------------
 
-Node::Node(::fwData::Object::Key key):
+Node::Node(::fwData::Object::Key key) :
     m_sigUpdated(UpdatedSignalType::New())
 {
     m_signals( s_UPDATED_SIG,  m_sigUpdated);
@@ -92,7 +92,7 @@ Port::sptr Node::findPort(const std::string &identifier, /*const std::string &ty
 {
     if ( modeInput)
     {
-        for ( PortContainer::const_iterator i = m_inputs.begin() ; i != m_inputs.end() ; ++i )
+        for ( PortContainer::const_iterator i = m_inputs.begin(); i != m_inputs.end(); ++i )
         {
             if ( (*i)->getIdentifier() == identifier)
             {
@@ -102,7 +102,7 @@ Port::sptr Node::findPort(const std::string &identifier, /*const std::string &ty
     }
     else
     {
-        for ( PortContainer::const_iterator i = m_outputs.begin() ; i != m_outputs.end() ; ++i )
+        for ( PortContainer::const_iterator i = m_outputs.begin(); i != m_outputs.end(); ++i )
         {
             if ( (*i)->getIdentifier() == identifier)
             {
@@ -119,8 +119,8 @@ void Node::shallowCopy(const Object::csptr &_source )
 {
     Node::csptr other = Node::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
     m_inputs.clear();
@@ -149,8 +149,8 @@ void Node::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache
 {
     Node::csptr other = Node::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     m_inputs.clear();

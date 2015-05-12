@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _TUTO02DATASERVICEBASICCTRL_PLUGIN_HPP_
-#define _TUTO02DATASERVICEBASICCTRL_PLUGIN_HPP_
+#ifndef __TUTO02DATASERVICEBASICCTRL_PLUGIN_HPP__
+#define __TUTO02DATASERVICEBASICCTRL_PLUGIN_HPP__
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -55,4 +55,4 @@ private:
 
 } // namespace Tuto02DataServiceBasicCtrl
 
-#endif // _TUTO02DATASERVICEBASICCTRL_PLUGIN_HPP_
+#endif // __TUTO02DATASERVICEBASICCTRL_PLUGIN_HPP__

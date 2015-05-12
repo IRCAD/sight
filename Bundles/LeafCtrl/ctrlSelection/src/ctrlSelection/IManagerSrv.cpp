@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,12 +16,14 @@ namespace ctrlSelection
 //-----------------------------------------------------------------------------
 
 IManagerSrv::IManagerSrv()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 IManagerSrv::~IManagerSrv()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -33,7 +35,8 @@ void IManagerSrv::swapping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void IManagerSrv::manageConnections(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config)
+void IManagerSrv::manageConnections(const std::string &objectId, ::fwData::Object::sptr object,
+                                    ConfigurationType config)
 {
     BOOST_FOREACH(ConfigurationType connectCfg, config->find("connect"))
     {
@@ -68,7 +71,7 @@ void IManagerSrv::manageConnection(const std::string &objectId, ::fwData::Object
             uid.assign(match[1].first, match[1].second);
             key.assign(match[2].first, match[2].second);
 
-            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName() ,
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName(),
                         !uid.empty() && !key.empty());
 
             if (elem->getName() == "signal")
@@ -93,7 +96,7 @@ void IManagerSrv::manageConnection(const std::string &objectId, ::fwData::Object
         }
     }
 
-    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(signalInfo.first);
+    ::fwTools::Object::sptr obj          = ::fwTools::fwID::getObject(signalInfo.first);
     ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
 
     ::fwServices::helper::SigSlotConnection::sptr connection;
@@ -104,13 +107,13 @@ void IManagerSrv::manageConnection(const std::string &objectId, ::fwData::Object
     }
     else
     {
-        connection = ::fwServices::helper::SigSlotConnection::New();
+        connection                    = ::fwServices::helper::SigSlotConnection::New();
         m_objectConnections[objectId] = connection;
     }
 
     BOOST_FOREACH(SlotInfoType slotInfo,  slotInfos)
     {
-        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotInfo.first);
+        ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotInfo.first);
         ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
 
         connection->connect(hasSignals, signalInfo.second, hasSlots, slotInfo.second);
@@ -162,7 +165,7 @@ void IManagerSrv::manageProxy(const std::string &objectId, ::fwData::Object::spt
             uid.assign(match[1].first, match[1].second);
             key.assign(match[2].first, match[2].second);
 
-            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName() ,
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName(),
                         !uid.empty() && !key.empty());
 
             ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
@@ -170,14 +173,14 @@ void IManagerSrv::manageProxy(const std::string &objectId, ::fwData::Object::spt
             if (elem->getName() == "signal")
             {
                 ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
-                ::fwCom::SignalBase::sptr sig = hasSignals->signal(key);
+                ::fwCom::SignalBase::sptr sig        = hasSignals->signal(key);
                 proxy->connect(channel, sig);
                 proxyCnt.addSignalConnection(uid, key);
             }
             else if (elem->getName() == "slot")
             {
                 ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
-                ::fwCom::SlotBase::sptr slot = hasSlots->slot(key);
+                ::fwCom::SlotBase::sptr slot     = hasSlots->slot(key);
                 proxy->connect(channel, slot);
                 proxyCnt.addSlotConnection(uid, key);
             }
@@ -210,16 +213,16 @@ void IManagerSrv::disconnectProxies(const std::string &objectId)
         {
             BOOST_FOREACH(ProxyConnections::ProxyEltType signalElt, proxyConnections.m_signals)
             {
-                ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(signalElt.first);
+                ::fwTools::Object::sptr obj          = ::fwTools::fwID::getObject(signalElt.first);
                 ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
-                ::fwCom::SignalBase::sptr sig = hasSignals->signal(signalElt.second);
+                ::fwCom::SignalBase::sptr sig        = hasSignals->signal(signalElt.second);
                 proxy->disconnect(proxyConnections.m_channel, sig);
             }
             BOOST_FOREACH(ProxyConnections::ProxyEltType slotElt, proxyConnections.m_slots)
             {
-                ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotElt.first);
+                ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotElt.first);
                 ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
-                ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotElt.second);
+                ::fwCom::SlotBase::sptr slot     = hasSlots->slot(slotElt.second);
                 proxy->disconnect(proxyConnections.m_channel, slot);
             }
         }

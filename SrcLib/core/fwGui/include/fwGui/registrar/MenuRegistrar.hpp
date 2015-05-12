@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_REGISTRAR_MENUREGISTRYMANAGER_HPP_
-#define _FWGUI_REGISTRAR_MENUREGISTRYMANAGER_HPP_
+#ifndef __FWGUI_REGISTRAR_MENUREGISTRAR_HPP__
+#define __FWGUI_REGISTRAR_MENUREGISTRAR_HPP__
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -24,7 +24,7 @@ namespace registrar
 /**
  * @brief   Defines the menu registrar for IHM.
  * @class   MenuRegistrar
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -33,7 +33,8 @@ class FWGUI_CLASS_API MenuRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MenuRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new MenuRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (MenuRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )),
+                                            new MenuRegistrar );
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.
@@ -50,7 +51,8 @@ public:
      * @param actionSid sid of the action service
      * @param menuItems  vector containing the fwMenuItem manages by this registrar.
      */
-    FWGUI_API virtual ::fwGui::container::fwMenuItem::sptr getFwMenuItem(std::string actionSid, std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems);
+    FWGUI_API virtual ::fwGui::container::fwMenuItem::sptr getFwMenuItem(std::string actionSid,
+                                                                         std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems);
 
     /**
      * @brief Initialize registry managers.
@@ -131,7 +133,10 @@ public:
     /**
      * @brief Returns callbacks associate with menu items.
      */
-    virtual CallbacksType getCallbacks(){ return m_callbacks;};
+    virtual CallbacksType getCallbacks()
+    {
+        return m_callbacks;
+    }
 
 protected:
 
@@ -160,6 +165,6 @@ protected:
 } // namespace registrar
 } // namespace fwGui
 
-#endif /*_FWGUI_REGISTRAR_MENUREGISTRYMANAGER_HPP_*/
+#endif /*__FWGUI_REGISTRAR_MENUREGISTRAR_HPP__*/
 
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,7 +46,8 @@ struct ProxyTestClass
         m_methodSum(0),
         m_methodSquare(0),
         m_methodDoNothing(0)
-    {}
+    {
+    }
 
     int sum(int a, int b)
     {
@@ -81,14 +82,14 @@ void ProxyTest::basicTest()
 
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
 
-    ::fwCom::Signal< void(int, int) >::sptr sig = ::fwCom::Signal< void(int, int) >::New();
+    ::fwCom::Signal< void(int, int) >::sptr sig        = ::fwCom::Signal< void(int, int) >::New();
     ::fwCom::Signal< void(int, int, char) >::sptr sig2 = ::fwCom::Signal< void(int, int, char) >::New();
 
     ProxyTestClass testObject;
     ::fwCom::Slot< int (int, int) >::sptr slot = ::fwCom::newSlot( &ProxyTestClass::sum, &testObject );
-    ::fwCom::Slot< int (int) >::sptr slot2 = ::fwCom::newSlot( &ProxyTestClass::square, &testObject );
-    ::fwCom::Slot< void() >::sptr slot3 = ::fwCom::newSlot( &ProxyTestClass::doNothing, &testObject );
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    ::fwCom::Slot< int (int) >::sptr slot2     = ::fwCom::newSlot( &ProxyTestClass::square, &testObject );
+    ::fwCom::Slot< void() >::sptr slot3        = ::fwCom::newSlot( &ProxyTestClass::doNothing, &testObject );
+    ::fwThread::Worker::sptr worker            = ::fwThread::Worker::New();
     slot->setWorker(worker);
     slot2->setWorker(worker);
     slot3->setWorker(worker);

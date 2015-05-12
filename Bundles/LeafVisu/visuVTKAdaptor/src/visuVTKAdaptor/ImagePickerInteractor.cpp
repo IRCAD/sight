@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,7 @@
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagePickerInteractor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagePickerInteractor, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -44,7 +44,9 @@ class ImagePickerInteractorCallback : public vtkCommand
 {
 public:
     static ImagePickerInteractorCallback *New()
-    { return new ImagePickerInteractorCallback(); }
+    {
+        return new ImagePickerInteractorCallback();
+    }
 
     ImagePickerInteractorCallback() :  m_caller(NULL), m_priority(-1)
     {
@@ -75,7 +77,7 @@ public:
         display[1] = y;
         display[2] = 0;
 
-        return  m_picker->Pick( display , m_adaptor->getRenderer() );
+        return m_picker->Pick( display, m_adaptor->getRenderer() );
     }
 
 
@@ -86,50 +88,50 @@ public:
 
         switch (eventId)
         {
-            case vtkCommand::LeftButtonPressEvent :
+            case vtkCommand::LeftButtonPressEvent:
                 this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_LEFT_DOWN);
                 break;
-            case vtkCommand::LeftButtonReleaseEvent :
+            case vtkCommand::LeftButtonReleaseEvent:
                 this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_LEFT_UP);
                 break;
-            case vtkCommand::MiddleButtonPressEvent :
+            case vtkCommand::MiddleButtonPressEvent:
                 this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_MIDDLE_DOWN);
                 break;
-            case vtkCommand::MiddleButtonReleaseEvent :
+            case vtkCommand::MiddleButtonReleaseEvent:
                 this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_MIDDLE_UP);
                 break;
-            case vtkCommand::RightButtonPressEvent :
+            case vtkCommand::RightButtonPressEvent:
                 this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_RIGHT_DOWN);
                 break;
-            case vtkCommand::RightButtonReleaseEvent :
+            case vtkCommand::RightButtonReleaseEvent:
                 this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_RIGHT_UP);
                 break;
             //case vtkCommand::EnterEvent :
-                //this->notifyMsg(::fwComEd::InteractionMsg::);
-                //break;
+            //this->notifyMsg(::fwComEd::InteractionMsg::);
+            //break;
             //case vtkCommand::LeaveEvent :
-                //this->notifyMsg(::fwComEd::InteractionMsg::);
-                //break;
+            //this->notifyMsg(::fwComEd::InteractionMsg::);
+            //break;
             //case vtkCommand::KeyPressEvent :
-                //this->notifyMsg(::fwComEd::InteractionMsg::KEY_DOWN);
-                //break;
+            //this->notifyMsg(::fwComEd::InteractionMsg::KEY_DOWN);
+            //break;
             //case vtkCommand::KeyReleaseEvent :
-                //this->notifyMsg(::fwComEd::InteractionMsg::KEY_UP);
-                //break;
-            case vtkCommand::MouseMoveEvent :
+            //this->notifyMsg(::fwComEd::InteractionMsg::KEY_UP);
+            //break;
+            case vtkCommand::MouseMoveEvent:
                 this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_MOVE);
                 break;
-            case vtkCommand::MouseWheelForwardEvent :
+            case vtkCommand::MouseWheelForwardEvent:
                 this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_WHEELFORWARD_DOWN);
                 this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_WHEELFORWARD_UP);
                 break;
-            case vtkCommand::MouseWheelBackwardEvent :
+            case vtkCommand::MouseWheelBackwardEvent:
                 this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_WHEELBACKWARD_DOWN);
                 this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_WHEELBACKWARD_UP);
                 break;
             default:
-                OSLM_ASSERT("Unknown vtk event: " << vtkCommand::GetStringFromEventId(eventId) ,0);
-        };
+                OSLM_ASSERT("Unknown vtk event: " << vtkCommand::GetStringFromEventId(eventId),0);
+        }
 
     }
 
@@ -173,11 +175,11 @@ public:
         m_priority = priority;
     }
 
-protected :
+protected:
     vtkRenderWindowInteractor *m_caller;
     ImagePickerInteractor::sptr m_adaptor;
     vtkAbstractPropPicker *m_picker;
-    float    m_priority;
+    float m_priority;
 
 };
 
@@ -221,19 +223,19 @@ void ImagePickerInteractor::doStart() throw(fwTools::Failed)
     m_interactionCommand = observer;
 
     vtkRenderWindowInteractor *interactor = this->getInteractor();
-    interactor->AddObserver(vtkCommand::LeftButtonPressEvent    , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::LeftButtonReleaseEvent  , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::MiddleButtonPressEvent  , m_interactionCommand, m_priority);
+    interactor->AddObserver(vtkCommand::LeftButtonPressEvent, m_interactionCommand, m_priority);
+    interactor->AddObserver(vtkCommand::LeftButtonReleaseEvent, m_interactionCommand, m_priority);
+    interactor->AddObserver(vtkCommand::MiddleButtonPressEvent, m_interactionCommand, m_priority);
     interactor->AddObserver(vtkCommand::MiddleButtonReleaseEvent, m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::RightButtonPressEvent   , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::RightButtonReleaseEvent , m_interactionCommand, m_priority);
+    interactor->AddObserver(vtkCommand::RightButtonPressEvent, m_interactionCommand, m_priority);
+    interactor->AddObserver(vtkCommand::RightButtonReleaseEvent, m_interactionCommand, m_priority);
     //interactor->AddObserver(vtkCommand::EnterEvent              , m_interactionCommand, m_priority);
     //interactor->AddObserver(vtkCommand::LeaveEvent              , m_interactionCommand, m_priority);
     //interactor->AddObserver(vtkCommand::KeyPressEvent           , m_interactionCommand, m_priority);
     //interactor->AddObserver(vtkCommand::KeyReleaseEvent         , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::MouseMoveEvent          , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::MouseWheelForwardEvent  , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::MouseWheelBackwardEvent , m_interactionCommand, m_priority);
+    interactor->AddObserver(vtkCommand::MouseMoveEvent, m_interactionCommand, m_priority);
+    interactor->AddObserver(vtkCommand::MouseWheelForwardEvent, m_interactionCommand, m_priority);
+    interactor->AddObserver(vtkCommand::MouseWheelBackwardEvent, m_interactionCommand, m_priority);
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -242,7 +244,8 @@ void ImagePickerInteractor::doStart() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void ImagePickerInteractor::doUpdate() throw(fwTools::Failed)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -273,19 +276,19 @@ void ImagePickerInteractor::doSwap() throw(fwTools::Failed)
 void ImagePickerInteractor::doStop() throw(fwTools::Failed)
 {
     vtkRenderWindowInteractor *interactor = this->getInteractor();
-    interactor->RemoveObservers(vtkCommand::LeftButtonPressEvent    , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::LeftButtonReleaseEvent  , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::MiddleButtonPressEvent  , m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::LeftButtonPressEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::LeftButtonReleaseEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::MiddleButtonPressEvent, m_interactionCommand);
     interactor->RemoveObservers(vtkCommand::MiddleButtonReleaseEvent, m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::RightButtonPressEvent   , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::RightButtonReleaseEvent , m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::RightButtonPressEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::RightButtonReleaseEvent, m_interactionCommand);
     //interactor->RemoveObservers(vtkCommand::EnterEvent              , m_interactionCommand);
     //interactor->RemoveObservers(vtkCommand::LeaveEvent              , m_interactionCommand);
     //interactor->RemoveObservers(vtkCommand::KeyPressEvent           , m_interactionCommand);
     //interactor->RemoveObservers(vtkCommand::KeyReleaseEvent         , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::MouseMoveEvent          , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::MouseWheelForwardEvent  , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::MouseWheelBackwardEvent , m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::MouseMoveEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::MouseWheelForwardEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::MouseWheelBackwardEvent, m_interactionCommand);
 
     m_interactionCommand->Delete();
     m_interactionCommand = NULL;

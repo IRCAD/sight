@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,17 +28,20 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 //------------------------------------------------------------------------------
 
 Plugin::Plugin() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 Plugin::~Plugin() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void Plugin::start() throw( ::fwRuntime::RuntimeException )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -55,23 +58,23 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
     po::options_description cmdline_options("TutoTrianConverterCtrl options");
     cmdline_options.add_options()
-                                ("trian", po::value(&trianMeshPath)->required(), "Path of trian mesh file to convert")
-                                ("vtk", po::value(&vtkMeshPath)->required(), "Path of created vtk mesh file")
-                                ;
+        ("trian", po::value(&trianMeshPath)->required(), "Path of trian mesh file to convert")
+        ("vtk", po::value(&vtkMeshPath)->required(), "Path of created vtk mesh file")
+    ;
 
     po::positional_options_description p;
     p.add("trian", 1)
-                 .add("vtk", 2);
+    .add("vtk", 2);
 
     po::variables_map vm;
 
     try
     {
         po::store(po::command_line_parser(params)
-        .options(cmdline_options)
-        .positional(p)
-        .run(),
-        vm);
+                  .options(cmdline_options)
+                  .positional(p)
+                  .run(),
+                  vm);
         po::notify(vm);
     }
     catch(po::error& e)
@@ -80,21 +83,23 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
         return;
     }
 
-    m_mesh = ::fwData::Mesh::New();
-    m_readerSrv = ::fwServices::add(m_mesh, "::io::IReader", "::ioData::MeshReaderService");
-    ::fwRuntime::EConfigurationElement::sptr readerCfg = ::fwRuntime::EConfigurationElement::New( "service" );
+    m_mesh      = ::fwData::Mesh::New();
+    m_readerSrv = ::fwServices::add(m_mesh, "::io::IReader",
+                                    "::ioData::MeshReaderService");
+    ::fwRuntime::EConfigurationElement::sptr readerCfg         = ::fwRuntime::EConfigurationElement::New( "service" );
     ::fwRuntime::EConfigurationElement::sptr readerFilenameCfg = ::fwRuntime::EConfigurationElement::New( "file" );
     readerFilenameCfg->setValue(trianMeshPath);
     readerCfg->addConfigurationElement(readerFilenameCfg);
-    m_readerSrv->setConfiguration( readerCfg ) ;
+    m_readerSrv->setConfiguration( readerCfg );
     m_readerSrv->configure();
 
-    m_writerSrv = ::fwServices::add(m_mesh, "::io::IWriter", "::ioVTK::MeshWriterService");
-    ::fwRuntime::EConfigurationElement::sptr writerCfg = ::fwRuntime::EConfigurationElement::New( "service" );
+    m_writerSrv = ::fwServices::add(m_mesh, "::io::IWriter",
+                                    "::ioVTK::MeshWriterService");
+    ::fwRuntime::EConfigurationElement::sptr writerCfg         = ::fwRuntime::EConfigurationElement::New( "service" );
     ::fwRuntime::EConfigurationElement::sptr writerFilenameCfg = ::fwRuntime::EConfigurationElement::New( "file" );
     writerFilenameCfg->setValue(vtkMeshPath);
     writerCfg->addConfigurationElement(writerFilenameCfg);
-    m_writerSrv->setConfiguration( writerCfg ) ;
+    m_writerSrv->setConfiguration( writerCfg );
     m_writerSrv->configure();
 
     m_readerSrv->start();
@@ -106,7 +111,8 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 //------------------------------------------------------------------------------
 
 void Plugin::stop() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -115,12 +121,12 @@ void Plugin::uninitialize() throw()
     if (m_writerSrv)
     {
         m_writerSrv->stop();
-        ::fwServices::OSR::unregisterService( m_writerSrv ) ;
+        ::fwServices::OSR::unregisterService( m_writerSrv );
     }
     if(m_readerSrv)
     {
         m_readerSrv->stop();
-        ::fwServices::OSR::unregisterService( m_readerSrv ) ;
+        ::fwServices::OSR::unregisterService( m_readerSrv );
     }
     m_mesh.reset();
 }

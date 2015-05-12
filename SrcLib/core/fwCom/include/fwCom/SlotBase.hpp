@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,10 +47,10 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
      * @name typedefs
      * @{
      * Slot pointer types. */
-    typedef SPTR( SlotBase ) sptr;
-    typedef WPTR( SlotBase ) wptr;
-    typedef SPTR( SlotBase const ) csptr;
-    typedef WPTR( SlotBase const ) cwptr;
+    typedef SPTR ( SlotBase ) sptr;
+    typedef WPTR ( SlotBase ) wptr;
+    typedef SPTR ( SlotBase const ) csptr;
+    typedef WPTR ( SlotBase const ) cwptr;
 
     typedef std::string IDType;
     /**  @} */
@@ -61,7 +61,9 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     /// Connections container type
     typedef std::set< CSPTR( SlotConnectionBase ) > ConnectionSetType;
 
-    virtual ~SlotBase() {};
+    virtual ~SlotBase()
+    {
+    }
 
     /**
      * @brief Returns Slot's arity.
@@ -173,83 +175,83 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
         ::fwCore::mt::ReadLock lock(m_connectionsMutex);
         return m_connections.size();
     }
-protected:
+    protected:
 
-    /// Copy constructor forbidden
-    SlotBase( const SlotBase& );
+        /// Copy constructor forbidden
+        SlotBase( const SlotBase& );
 
-    /// Copy operator forbidden
-    SlotBase& operator=( const SlotBase& );
+        /// Copy operator forbidden
+        SlotBase& operator=( const SlotBase& );
 
-    /**
-     * @name SlotBase's friends
-     * @{ */
-    template < typename F >
-    friend struct SlotConnection;
+        /**
+         * @name SlotBase's friends
+         * @{ */
+        template < typename F >
+        friend struct SlotConnection;
 
-    template < typename F >
-    friend struct Signal;
-    /**  @} */
+        template < typename F >
+        friend struct Signal;
+        /**  @} */
 
 
-    /// Returns F typeid name.
-    template < typename F >
-    std::string getTypeName() const
-    {
-        std::string signature = std::string("function_type(") + typeid(F).name() + ")";
-        return signature;
-    }
+        /// Returns F typeid name.
+        template < typename F >
+        std::string getTypeName() const
+        {
+            std::string signature = std::string("function_type(") + typeid(F).name() + ")";
+            return signature;
+        }
 
-    SlotBase(unsigned int arity) : m_arity(arity)
-    {
+        SlotBase(unsigned int arity) : m_arity(arity)
+        {
 #ifdef COM_LOG
-        ::fwCore::mt::ScopedLock lock(s_mutexCounter);
-        m_id = "Slot-" + ::boost::lexical_cast<std::string>(s_idCount++);
+            ::fwCore::mt::ScopedLock lock(s_mutexCounter);
+            m_id = "Slot-" + ::boost::lexical_cast<std::string>(s_idCount++);
 #endif
-    };
+        }
 
 
-    /// Slot's signature based on typeid.
-    std::string m_signature;
+        /// Slot's signature based on typeid.
+        std::string m_signature;
 
-    /// Slot's arity.
-    const unsigned int m_arity;
+        /// Slot's arity.
+        const unsigned int m_arity;
 
-    /// Slot's Worker.
-    SPTR(::fwThread::Worker) m_worker;
+        /// Slot's Worker.
+        SPTR(::fwThread::Worker) m_worker;
 
-    /// Container of current connections.
-    ConnectionSetType m_connections;
+        /// Container of current connections.
+        ConnectionSetType m_connections;
 
-    mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
-    mutable ::fwCore::mt::ReadWriteMutex m_workerMutex;
+        mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
+        mutable ::fwCore::mt::ReadWriteMutex m_workerMutex;
 
 #ifdef COM_LOG
 
-public:
+    public:
 
-    /// Gets current m_id
-    IDType getID() const
-    {
-        return m_id;
-    }
+        /// Gets current m_id
+        IDType getID() const
+        {
+            return m_id;
+        }
 
-    /// Sets new m_id
-    void setID( IDType newId )
-    {
-        m_id = newId;
-    }
+        /// Sets new m_id
+        void setID( IDType newId )
+        {
+            m_id = newId;
+        }
 
-private :
+    private:
 
-    /// Id of signal (not mandatory)
-    IDType m_id;
+        /// Id of signal (not mandatory)
+        IDType m_id;
 
-    /// Id counter
-    FWCOM_API static size_t s_idCount;
+        /// Id counter
+        FWCOM_API static size_t s_idCount;
 
-    /// Mutex to protect id counter
-    FWCOM_API static ::fwCore::mt::Mutex s_mutexCounter;
+        /// Mutex to protect id counter
+        FWCOM_API static ::fwCore::mt::Mutex s_mutexCounter;
 
 #endif
 };

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,14 +36,15 @@ void DicomSearch::searchRecursivelyFiles(const ::boost::filesystem::path &dirPat
 {
     std::vector<std::string> vecStr;
     std::string strIgnoreFile = ".zip|.txt|.htm|.html|.xml|.exe|.gz|.dir|.gif|.jpeg|.jpg|dicomdir|.DS_Store";
-    ::boost::algorithm::split( vecStr, strIgnoreFile, ::boost::algorithm::is_any_of("|"), ::boost::algorithm::token_compress_on );
+    ::boost::algorithm::split( vecStr, strIgnoreFile, ::boost::algorithm::is_any_of(
+                                   "|"), ::boost::algorithm::token_compress_on );
 
     std::string lowerFilename;
     std::string filename;
     for( ::boost::filesystem::recursive_directory_iterator it(dirPath);
-            it != ::boost::filesystem::recursive_directory_iterator(); ++it)
+         it != ::boost::filesystem::recursive_directory_iterator(); ++it)
     {
-        if(! ::boost::filesystem::is_directory(*it))
+        if(!::boost::filesystem::is_directory(*it))
         {
 #if BOOST_FILESYSTEM_VERSION > 2
             lowerFilename = filename = it->path().string();
@@ -82,7 +83,7 @@ bool DicomSearch::compare(std::string & _strOrgin, std::vector<std::string> * ve
     bool res = true;
     for (size_t i = 0; i < vecStr->size() && res; ++i)
     {
-        res = ! ::boost::ends_with(_strOrgin, vecStr->at(i));
+        res = !::boost::ends_with(_strOrgin, vecStr->at(i));
     }
     return res;
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,20 +33,23 @@ namespace reader
 //------------------------------------------------------------------------------
 
 TagReader::TagReader(::fwDataIO::reader::IObjectReader::Key key)
-: ::fwData::location::enableSingleFile< IObjectReader >(this)
-{}
+    : ::fwData::location::enableSingleFile< IObjectReader >(this)
+{
+}
 
 //------------------------------------------------------------------------------
 
 TagReader::~TagReader()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void TagReader::read()
 {
     assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-    ::boost::filesystem::path path = ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+    ::boost::filesystem::path path =
+        ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
 
     OSLM_INFO( "[TagReader::read] Tag file: " << path);
@@ -60,7 +63,7 @@ void TagReader::read()
     {
         OSLM_ERROR( "Tag file loading error for " << path.string());
         std::string str = "Unable to open ";
-        str+= path.string();
+        str += path.string();
         throw std::ios_base::failure(str);
     }
 
@@ -77,11 +80,11 @@ void TagReader::read()
         {
             int nbPts;
             double x,y,z;
-            double radius=0.0;
+            double radius = 0.0;
             file>>x>>y>>z;
             file>>nbPts;
             tag->setType(type);
-            for(int i=0; i < nbPts; i++)
+            for(int i = 0; i < nbPts; i++)
             {
                 ::fwData::Point::sptr p;
 //              ::fwData::Point::PointCoordArray vPoint;
@@ -95,7 +98,7 @@ void TagReader::read()
         {
             OSLM_ERROR( "Tag file loading error for " << path.string() <<" with type "<<type);
             std::string str = "Unable to open ";
-            str+= path.string();
+            str += path.string();
             throw std::ios_base::failure(str);
         }
     }

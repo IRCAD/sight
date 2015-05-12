@@ -1,9 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
- 
+
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/lu.hpp>
 #include <boost/numeric/ublas/io.hpp>
@@ -14,12 +14,15 @@ namespace fwDataTools
 {
 
 bool TransformationMatrix3D::invert(::fwData::TransformationMatrix3D::sptr trf_input,
-        ::fwData::TransformationMatrix3D::sptr trf_output)
+                                    ::fwData::TransformationMatrix3D::sptr trf_output)
 {
     OSLM_INFO("Inverting matrix. Input:" << std::endl << *trf_input);
     ::boost::numeric::ublas::matrix< ::fwData::TransformationMatrix3D::TM3DType, ::boost::numeric::ublas::row_major,
-            ::fwData::TransformationMatrix3D::TMCoefArray > mx_input(4, 4, trf_input->getCRefCoefficients()), mx_output(4,
-            4, trf_output->getCRefCoefficients());
+                                     ::fwData::TransformationMatrix3D::TMCoefArray > mx_input(4, 4,
+                                                                                              trf_input->getCRefCoefficients()),
+    mx_output(4,
+              4,
+              trf_output->getCRefCoefficients());
 
     // create a permutation matrix for the LU-factorization
     ::boost::numeric::ublas::permutation_matrix< std::size_t > mx_perm(mx_input.size1());
@@ -34,7 +37,7 @@ bool TransformationMatrix3D::invert(::fwData::TransformationMatrix3D::sptr trf_i
 
     // create identity matrix of "inverse"
     mx_output.assign(
-            ::boost::numeric::ublas::identity_matrix< ::fwData::TransformationMatrix3D::TM3DType >(mx_input.size1()));
+        ::boost::numeric::ublas::identity_matrix< ::fwData::TransformationMatrix3D::TM3DType >(mx_input.size1()));
 
     // backsubstitute to get the inverse
     ::boost::numeric::ublas::lu_substitute(mx_input, mx_perm, mx_output);
@@ -53,11 +56,15 @@ bool TransformationMatrix3D::invert(::fwData::TransformationMatrix3D::sptr trf_i
 // ----------------------------------------------------------------------------
 
 void TransformationMatrix3D::multiply(::fwData::TransformationMatrix3D::sptr fTrf_A,
-        ::fwData::TransformationMatrix3D::sptr fTrf_B, ::fwData::TransformationMatrix3D::sptr fTrf_C)
+                                      ::fwData::TransformationMatrix3D::sptr fTrf_B,
+                                      ::fwData::TransformationMatrix3D::sptr fTrf_C)
 {
     ::boost::numeric::ublas::matrix< ::fwData::TransformationMatrix3D::TM3DType, ::boost::numeric::ublas::row_major,
-            ::fwData::TransformationMatrix3D::TMCoefArray > mx_a(4, 4, fTrf_A->getCRefCoefficients()), mx_b(4, 4,
-            fTrf_B->getCRefCoefficients()), mx_c(4, 4);
+                                     ::fwData::TransformationMatrix3D::TMCoefArray > mx_a(4, 4,
+                                                                                          fTrf_A->getCRefCoefficients()),
+    mx_b(4, 4,
+         fTrf_B->getCRefCoefficients()),
+    mx_c(4, 4);
 
     mx_c = ::boost::numeric::ublas::prod(mx_a, mx_b);
 
@@ -86,10 +93,11 @@ void TransformationMatrix3D::identity(::fwData::TransformationMatrix3D::sptr trf
 // ----------------------------------------------------------------------------
 
 void TransformationMatrix3D::multiply(::fwData::TransformationMatrix3D::sptr trf,
-            ::fwData::Point::sptr input, ::fwData::Point::sptr output)
+                                      ::fwData::Point::sptr input, ::fwData::Point::sptr output)
 {
     ::boost::numeric::ublas::matrix< ::fwData::TransformationMatrix3D::TM3DType, ::boost::numeric::ublas::row_major,
-            ::fwData::TransformationMatrix3D::TMCoefArray > mx(4, 4, trf->getCRefCoefficients());
+                                     ::fwData::TransformationMatrix3D::TMCoefArray > mx(4, 4,
+                                                                                        trf->getCRefCoefficients());
 
     ::boost::array<double, 3> inCoord = input->getCRefCoord();
     ::boost::numeric::ublas::vector< double > in(4), out(4);

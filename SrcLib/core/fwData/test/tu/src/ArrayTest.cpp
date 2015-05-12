@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -76,7 +76,7 @@ void ArrayTest::allocation()
 
     char *buffer = new char[1000];
 
-    for (int i=0 ; i<1000; i++)
+    for (int i = 0; i<1000; i++)
     {
         buffer[i] = i;
     }
@@ -123,7 +123,7 @@ void ArrayTest::resize()
     unsigned int *iter = arrayHelper.begin<unsigned int>();
 
     // CPPUNIT_ASSERT(iter != NULL);
-    for (; iter != arrayHelper.end<unsigned int>() ; ++iter)
+    for (; iter != arrayHelper.end<unsigned int>(); ++iter)
     {
         *iter = count++;
     }
@@ -216,7 +216,7 @@ void ArrayTest::reallocate()
 
     unsigned int count = 0;
     unsigned int *iter = arrayHelper.begin<unsigned int>();
-    for (; iter != arrayHelper.end<unsigned int>() ; ++iter)
+    for (; iter != arrayHelper.end<unsigned int>(); ++iter)
     {
         *iter = count++;
     }
@@ -344,7 +344,7 @@ void ArrayTest::copy()
 
     unsigned int count = 0;
     unsigned int *iter = arrayHelper.begin<unsigned int>();
-    for (; iter != arrayHelper.end<unsigned int>() ; ++iter)
+    for (; iter != arrayHelper.end<unsigned int>(); ++iter)
     {
         *iter = count++;
     }
@@ -356,18 +356,25 @@ void ArrayTest::copy()
     ::fwComEd::helper::Array deepCopyArrayHelper(deepCopyArray);
 
     // check deepCopy
-    CPPUNIT_ASSERT_EQUAL(  array->getBufferOffset(list_of(1)(0), 0, 4), deepCopyArray->getBufferOffset(list_of(1)(0), 0, 4));
+    CPPUNIT_ASSERT_EQUAL(  array->getBufferOffset(list_of(1)(0), 0, 4),
+                           deepCopyArray->getBufferOffset(list_of(1)(0), 0, 4));
     CPPUNIT_ASSERT_EQUAL(  array->getElementSizeInBytes(), deepCopyArray->getElementSizeInBytes());
     CPPUNIT_ASSERT_EQUAL(  array->getSizeInBytes(), deepCopyArray->getSizeInBytes());
     CPPUNIT_ASSERT(array->getStrides() == deepCopyArray->getStrides());
     CPPUNIT_ASSERT(array->getSize() == deepCopyArray->getSize());
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(0)(0))) , *(deepCopyArrayHelper.getItem< unsigned int >(list_of(0)(0))));
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(0)(1))) , *(deepCopyArrayHelper.getItem< unsigned int >(list_of(0)(1))));
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(9)(99))), *(deepCopyArrayHelper.getItem< unsigned int >(list_of(9)(99))));
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(6)(32))), *(deepCopyArrayHelper.getItem< unsigned int >(list_of(6)(32))));
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(7)(94))), *(deepCopyArrayHelper.getItem< unsigned int >(list_of(7)(94))));
-    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(8)(23))), *(deepCopyArrayHelper.getItem< unsigned int >(list_of(8)(23))));
-    CPPUNIT_ASSERT_EQUAL( true , deepCopyArray->getIsBufferOwner());
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(0)(0))),
+                          *(deepCopyArrayHelper.getItem< unsigned int >(list_of(0)(0))));
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(0)(1))),
+                          *(deepCopyArrayHelper.getItem< unsigned int >(list_of(0)(1))));
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(9)(99))),
+                          *(deepCopyArrayHelper.getItem< unsigned int >(list_of(9)(99))));
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(6)(32))),
+                          *(deepCopyArrayHelper.getItem< unsigned int >(list_of(6)(32))));
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(7)(94))),
+                          *(deepCopyArrayHelper.getItem< unsigned int >(list_of(7)(94))));
+    CPPUNIT_ASSERT_EQUAL( *(arrayHelper.getItem< unsigned int >(list_of(8)(23))),
+                          *(deepCopyArrayHelper.getItem< unsigned int >(list_of(8)(23))));
+    CPPUNIT_ASSERT_EQUAL( true, deepCopyArray->getIsBufferOwner());
 }
 
 //-----------------------------------------------------------------------------

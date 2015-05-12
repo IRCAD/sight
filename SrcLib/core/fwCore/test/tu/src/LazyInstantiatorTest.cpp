@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,7 +61,7 @@ int StaticCounter<SLEEP>::s_counter = 0;
 template < int SLEEP >
 ::fwCore::mt::Mutex StaticCounter<SLEEP>::s_mutex;
 
-struct second_counter{};
+struct second_counter {};
 
 //-----------------------------------------------------------------------------
 
@@ -87,7 +87,7 @@ void LazyInstantiatorTest::lazyTest()
 
 //-----------------------------------------------------------------------------
 
-struct thread_counter_tag {} ;
+struct thread_counter_tag {};
 
 struct CounterThread
 {
@@ -95,12 +95,13 @@ struct CounterThread
     typedef ::boost::shared_ptr< CounterThread > sptr;
 
     CounterThread()
-    {}
+    {
+    }
 
     void run ()
     {
         CounterType::sptr counter;
-        counter = ::fwCore::util::LazyInstantiator< CounterType , thread_counter_tag >::getInstance();
+        counter = ::fwCore::util::LazyInstantiator< CounterType, thread_counter_tag >::getInstance();
     }
 };
 
@@ -115,7 +116,7 @@ void LazyInstantiatorTest::threadSafetyTest()
     for(size_t i = 0; i <= NB_THREAD; i++)
     {
         CounterThread::sptr ct = ::boost::make_shared<CounterThread>();
-        ::boost::thread* t  = new ::boost::thread(::boost::bind(&CounterThread::run, ct) );
+        ::boost::thread* t = new ::boost::thread(::boost::bind(&CounterThread::run, ct) );
         tg.add_thread(t);
     }
     tg.join_all();

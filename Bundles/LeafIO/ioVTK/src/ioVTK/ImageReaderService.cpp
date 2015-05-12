@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ namespace ioVTK
 //------------------------------------------------------------------------------
 
 // Register a new reader of ::fwData::Image
-fwServicesRegisterMacro( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image );
+fwServicesRegisterMacro( ::io::IReader, ::ioVTK::ImageReaderService, ::fwData::Image );
 
 //------------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ void ImageReaderService::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::SingleFile::sptr  result;
+    ::fwData::location::SingleFile::sptr result;
     result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
@@ -109,7 +109,7 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >() ;
+        ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
         SLM_ASSERT("pImage not instanced", pImage);
 
         // Read new image path and update image. If the reading process is a success, we notify all listeners that image has been modified.
@@ -188,17 +188,17 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
         ss << "Warning during loading : " << e.what();
 
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                ss.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            ss.str(),
+            ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                        "Warning",
-                        "Warning during loading.",
-                        ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            "Warning during loading.",
+            ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
 
@@ -223,11 +223,11 @@ void ImageReaderService::notificationOfDBUpdate()
 
     // Creation of an image message to say that image is an new image ( or all fields are modified (old version of msg ) )
     ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
-    msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ;
-    msg->addEvent( ::fwComEd::ImageMsg::REGION ) ;
-    msg->addEvent( ::fwComEd::ImageMsg::SPACING ) ;
-    msg->addEvent( ::fwComEd::ImageMsg::PIXELTYPE ) ;
+    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    msg->addEvent( ::fwComEd::ImageMsg::BUFFER );
+    msg->addEvent( ::fwComEd::ImageMsg::REGION );
+    msg->addEvent( ::fwComEd::ImageMsg::SPACING );
+    msg->addEvent( ::fwComEd::ImageMsg::PIXELTYPE );
 
     // Notify message to all service listeners
     ::fwServices::IEditionService::notify(this->getSptr(), pImage, msg);

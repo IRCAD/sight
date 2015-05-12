@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -91,18 +91,19 @@ struct LogProducerThread
     typedef std::vector< std::string > LogContainerType;
 
     LogProducerThread()
-    {}
+    {
+    }
 
     void run(LogContainerType& logs, size_t nbLogs, size_t offset)
     {
         ::fwCore::log::SpyLogger& log = ::fwCore::log::SpyLogger::getSpyLogger();
-        for(size_t i=offset; i < nbLogs + offset; ++i)
+        for(size_t i = offset; i < nbLogs + offset; ++i)
         {
             std::stringstream ss;
             ss << "msg n ";
             ss.width(10);
             ss.fill('0');
-            ss << i ;
+            ss << i;
             logs[i] = ss.str();
             log.fatal(logs[i], __FILE__, __LINE__);
         }
@@ -113,21 +114,21 @@ struct LogProducerThread
 
 struct RegexLogCompare
 {
-  bool operator() (std::string a, std::string b)
-  {
-      ::boost::regex re(".*(msg n [[:digit:]]+)$");
-      ::boost::smatch matchA;
-      ::boost::smatch matchB;
-      bool doMatchA = boost::regex_match(a, matchA, re);
-      bool doMatchB = boost::regex_match(b, matchB, re);
-      CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + a, doMatchA);
-      CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + b, doMatchB);
+    bool operator() (std::string a, std::string b)
+    {
+        ::boost::regex re(".*(msg n [[:digit:]]+)$");
+        ::boost::smatch matchA;
+        ::boost::smatch matchB;
+        bool doMatchA = boost::regex_match(a, matchA, re);
+        bool doMatchB = boost::regex_match(b, matchB, re);
+        CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + a, doMatchA);
+        CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + b, doMatchB);
 
-      std::string strA(matchA[1].first, matchA[1].second);
-      std::string strB(matchB[1].first, matchB[1].second);
+        std::string strA(matchA[1].first, matchA[1].second);
+        std::string strB(matchB[1].first, matchB[1].second);
 
-      return strA < strB;
-  }
+        return strA < strB;
+    }
 } regex_compare;
 
 void SpyLogTest::threadSafetyTest()
@@ -140,8 +141,9 @@ void SpyLogTest::threadSafetyTest()
     for(size_t i = 0; i < NB_THREAD; ++i)
     {
         LogProducerThread::sptr ct = ::boost::make_shared<LogProducerThread>();
-        size_t offset = i * NB_LOG;
-        ::boost::thread* t  = new ::boost::thread(::boost::bind(&LogProducerThread::run, ct, boost::ref(logs), NB_LOG, offset) );
+        size_t offset              = i * NB_LOG;
+        ::boost::thread* t =
+            new ::boost::thread(::boost::bind(&LogProducerThread::run, ct, boost::ref(logs), NB_LOG, offset) );
         tg.add_thread(t);
     }
     tg.join_all();
@@ -180,16 +182,16 @@ void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const 
     const std::string messagePattern("(.*)$");
 
     ::boost::regex re(
-                linePattern
-                + timePattern
-                + levelPattern
-                + filePattern
-                + fileLinePattern
-                + messagePattern );
+        linePattern
+        + timePattern
+        + levelPattern
+        + filePattern
+        + fileLinePattern
+        + messagePattern );
 
     ::boost::smatch match;
     std::string regexMessage;
-    size_t i=0;
+    size_t i = 0;
 
     BOOST_FOREACH(const std::string &log, logMessages)
     {

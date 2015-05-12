@@ -24,18 +24,18 @@ namespace fwData
 class FWDATA_CLASS_API Point : public Object
 {
 
-public :
+public:
 
     typedef double PointCoordType;
     typedef fwVec3d PointCoordArrayType;
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Point)(::fwData::Object),
-       ((::fwData::factory::New< Point > ,() ))
-       ((PointFactory ,((float)) ((float)(0.0f)) ((float) (0.0f)) ))
-       ((PointFactory ,((double)) ((double)(0.0)) ((double) (0.0)) ))
-       ((PointFactory ,((const PointCoordArrayType&)) ))
-       ((PointFactory ,((Point::sptr)) ))
-       );
+                                               ((::fwData::factory::New< Point >,() ))
+                                                   ((PointFactory,((float))((float)(0.0f)) ((float) (0.0f)) ))
+                                                   ((PointFactory,((double))((double)(0.0)) ((double) (0.0)) ))
+                                                   ((PointFactory,((const PointCoordArrayType &)) ))
+                                                   ((PointFactory,((Point::sptr)) ))
+                                               );
 
     fwCampMakeFriendDataMacro((fwData)(Point));
 
@@ -55,9 +55,9 @@ public :
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// Coordinates of point
-    fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );
+    fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, "point coordinates." );
 
-protected :
+protected:
 
     /// Point factory
     FWDATA_API static Point::sptr PointFactory(float x, float y, float z);

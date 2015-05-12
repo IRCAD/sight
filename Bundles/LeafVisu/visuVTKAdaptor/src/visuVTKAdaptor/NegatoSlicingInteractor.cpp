@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,8 @@
 #include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoSlicingInteractor,
+                         ::fwData::Image );
 
 
 namespace visuVTKAdaptor
@@ -49,7 +50,9 @@ class NegatoSlicingCallback : public vtkCommand
 {
 public:
     static NegatoSlicingCallback *New()
-    { return new NegatoSlicingCallback(); }
+    {
+        return new NegatoSlicingCallback();
+    }
 
     NegatoSlicingCallback() :  m_picker(NULL), m_localPicker(NULL), m_pickedProp(NULL), m_mouseMoveObserved(false)
     {
@@ -64,7 +67,7 @@ public:
     {
         SLM_ASSERT("m_picker should be set before picking.", m_picker);
 
-        if ( m_picker->Pick( pickPoint , m_adaptor->getRenderer() ) )
+        if ( m_picker->Pick( pickPoint, m_adaptor->getRenderer() ) )
         {
             m_picker->GetPickPosition(position);
             return true;
@@ -76,7 +79,7 @@ public:
     {
         SLM_ASSERT("m_localPicker should be set before picking.", m_localPicker);
 
-        if ( m_localPicker->Pick( pickPoint , m_adaptor->getRenderer() ) )
+        if ( m_localPicker->Pick( pickPoint, m_adaptor->getRenderer() ) )
         {
             m_localPicker->GetPickPosition(position);
             return true;
@@ -99,7 +102,9 @@ public:
         pickPoint[1] = y;
         pickPoint[2] = 0;
 
-        OSLM_TRACE("vtkEvent: MiddleButtonPressEvent: picking " << pickPoint[0] << ", " << pickPoint[1] << ", " << pickPoint[2]);
+        OSLM_TRACE(
+            "vtkEvent: MiddleButtonPressEvent: picking " << pickPoint[0] << ", " << pickPoint[1] << ", " <<
+            pickPoint[2]);
 
         if ( this->Pick(pickPoint, pickedPoint) )
         {
@@ -110,7 +115,7 @@ public:
             SetAbortFlag(1);
 
             //m_pickedProp = m_picker->GetProp3D();
-            m_pickedProp = ::fwRenderVTK::vtk::getNearestPickedProp(m_picker, m_adaptor->getRenderer());
+            m_pickedProp  = ::fwRenderVTK::vtk::getNearestPickedProp(m_picker, m_adaptor->getRenderer());
             m_localPicker = fwVtkCellPicker::New();
             m_localPicker->InitializePickList();
             m_localPicker->PickFromListOn();
@@ -135,7 +140,7 @@ public:
         m_adaptor->stopSlicing();
         m_localPicker->Delete();
         m_localPicker = NULL;
-        m_pickedProp = NULL;
+        m_pickedProp  = NULL;
     }
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
@@ -178,7 +183,7 @@ public:
             else if (eventId == vtkCommand::KeyPressEvent && !m_adaptor->getInteractor()->GetControlKey())
             {
                 vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
-                char *keySym = rwi->GetKeySym();
+                char *keySym                   = rwi->GetKeySym();
 
                 if ( std::string(keySym) == "A" || std::string(keySym) == "a" )
                 {
@@ -220,7 +225,7 @@ public:
             else if(eventId == vtkCommand::KeyReleaseEvent)
             {
                 vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
-                char *keySym = rwi->GetKeySym();
+                char *keySym                   = rwi->GetKeySym();
 
                 if (std::string(keySym) == "space" && m_mouseMoveObserved)
                 {
@@ -251,7 +256,7 @@ public:
         m_picker = picker;
     }
 
-protected :
+protected:
     NegatoSlicingInteractor::sptr m_adaptor;
     vtkAbstractPropPicker *m_picker;
     vtkAbstractPropPicker *m_localPicker;
@@ -358,11 +363,11 @@ void NegatoSlicingInteractor::doReceive( ::fwServices::ObjectMsg::csptr msg) thr
     if ( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ))
     {
         ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-        ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-        ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+        ::fwData::Object::sptr objInfo   = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+        ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
 
         int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
-        int toSliceType =   ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
+        int toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
 
         if( toSliceType == static_cast<int>(m_orientation) )
         {
@@ -386,7 +391,7 @@ void NegatoSlicingInteractor::startSlicing( double pickedPoint[3] )
     this->worldToImageSliceIndex(pickedPoint, index);
 
     int i;
-    for (i=0; i<3; i++)
+    for (i = 0; i<3; i++)
     {
         if (index[i] == sliceIndex[i]->value())
         {
@@ -409,7 +414,7 @@ void NegatoSlicingInteractor::stopSlicing( )
     // Fire the message to stop full cross display
     ::fwData::Integer::sptr dataInfo = ::fwData::Integer::New();
     ::fwData::String::sptr sliceMode = ::fwData::String::New();
-    sliceMode->value() = "STOP_SLICING";
+    sliceMode->value()               = "STOP_SLICING";
     dataInfo->setField("SLICE_MODE", sliceMode);
     ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex, dataInfo);
@@ -439,8 +444,8 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
     for ( int i = 0; i < image->getNumberOfDimensions(); i++ )
     {
         OSLM_ASSERT("index["<< i <<"] = " << index[i]
-                << " and image->getSize()[" << i << "] = " << image->getSize()[i],
-                index[i] >=0 && index[i] < image->getSize()[i]);
+                            << " and image->getSize()[" << i << "] = " << image->getSize()[i],
+                    index[i] >=0 && index[i] < image->getSize()[i]);
     }
 #endif
 
@@ -448,7 +453,7 @@ void NegatoSlicingInteractor::updateSlicing( double pickedPoint[3] )
     {
         ::fwData::Integer::sptr dataInfo = ::fwData::Integer::New();
         ::fwData::String::sptr sliceMode = ::fwData::String::New();
-        sliceMode->value() = "UPDATE_SLICING";
+        sliceMode->value()               = "UPDATE_SLICING";
         dataInfo->setField("SLICE_MODE", sliceMode);
 
         // Fire the message
@@ -466,9 +471,9 @@ void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
     this->getSliceIndex(sliceIndex);
 
     int index[3];
-    index[0] = sliceIndex[0]->value();
-    index[1] = sliceIndex[1]->value();
-    index[2] = sliceIndex[2]->value();
+    index[0]     = sliceIndex[0]->value();
+    index[1]     = sliceIndex[1]->value();
+    index[2]     = sliceIndex[2]->value();
     index[axis] += factor;
 
     int size[3];
@@ -489,7 +494,7 @@ void NegatoSlicingInteractor::pushSlice( int factor, Orientation axis)
 
         ::fwData::Integer::sptr dataInfo = ::fwData::Integer::New();
         ::fwData::String::sptr sliceMode = ::fwData::String::New();
-        sliceMode->value() = "STOP_SLICING";
+        sliceMode->value()               = "STOP_SLICING";
         dataInfo->setField("SLICE_MODE", sliceMode);
 
         // Fire the message

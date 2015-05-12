@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@
 #include "visuVTKAdaptor/Point.hpp"
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Plane, ::fwData::Plane ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Plane, ::fwData::Plane );
 
 namespace visuVTKAdaptor
 {
@@ -46,7 +46,7 @@ Plane::Plane() throw()
     SLM_TRACE_FUNC();
 
     m_vtkPlaneCollection = 0;
-    m_vtkImplicitPlane = 0;
+    m_vtkImplicitPlane   = 0;
 
     //addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
     //addNewHandledEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION );
@@ -124,8 +124,8 @@ void Plane::doStart() throw(fwTools::Failed)
     BOOST_FOREACH( ::fwData::Point::sptr point, m_pPlane.lock()->getPoints() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr servicePoint =
-                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-        ( point, "::visuVTKAdaptor::Point" );
+            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+                ( point, "::visuVTKAdaptor::Point" );
         SLM_ASSERT("servicePoint not instanced", servicePoint);
 
         servicePoint->setRenderService(this->getRenderService());
@@ -212,13 +212,13 @@ void Plane::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Fa
         {
             this->doUpdate();
         }
-        else  if (planeMsg->hasEvent( ::fwComEd::PlaneMsg::WAS_SELECTED ) )
+        else if (planeMsg->hasEvent( ::fwComEd::PlaneMsg::WAS_SELECTED ) )
         {
             // highlight selected plan
             this->selectPlane(true);
             setVtkPipelineModified();
         }
-        else  if (planeMsg->hasEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED ) )
+        else if (planeMsg->hasEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED ) )
         {
             this->selectPlane(false);
             setVtkPipelineModified();
@@ -255,7 +255,7 @@ void Plane::setVtkPlaneCollection( vtkObject * col )
             {
                 m_vtkPlaneCollection->RemoveItem(m_vtkImplicitPlane);
             }
-            m_vtkPlaneCollection=0;
+            m_vtkPlaneCollection = 0;
         }
 
         if ( col )

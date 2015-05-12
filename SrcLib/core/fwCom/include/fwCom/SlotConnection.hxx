@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,58 +23,60 @@ namespace fwCom
 {
 
 
-template < typename ...A >
-inline ::boost::shared_ptr< SlotConnection< void (A...) > >  SlotConnection< void (A...) >::New(
-                                                                const SignalSptrType &signal,
-                                                                const SlotRunSptrType &slot
-                                                                )
+template < typename ... A >
+inline ::boost::shared_ptr< SlotConnection< void (A ...) > >  SlotConnection< void (A ...) >::New(
+    const SignalSptrType &signal,
+    const SlotRunSptrType &slot
+    )
 {
     return ::boost::make_shared< SelfType >(signal, slot);
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename ...A >
-inline ::boost::shared_ptr< SlotConnection< void (A...) > > SlotConnection< void (A...) >::New(
-                                                          const SignalSptrType &signal,
-                                                          const SlotBase::sptr &slot,
-                                                          const SlotWrapperSptrType &slotWrapper
-                                                        )
+template < typename ... A >
+inline ::boost::shared_ptr< SlotConnection< void (A ...) > > SlotConnection< void (A ...) >::New(
+    const SignalSptrType &signal,
+    const SlotBase::sptr &slot,
+    const SlotWrapperSptrType &slotWrapper
+    )
 {
     return ::boost::make_shared< SelfType >(signal, slot, slotWrapper);
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename ...A >
-inline SlotConnection< void (A...) >::SlotConnection(const SignalSptrType &signal,
-                                                     const SlotRunSptrType &slot)
+template < typename ... A >
+inline SlotConnection< void (A ...) >::SlotConnection(const SignalSptrType &signal,
+                                                      const SlotRunSptrType &slot)
     : m_signal(signal), m_connectedSlot(slot), m_pair(true, slot.get())
-{ }
+{
+}
 
 //-----------------------------------------------------------------------------
 
-template < typename ...A >
-inline SlotConnection< void (A...) >::SlotConnection(
-                                                     const SignalSptrType &signal,
-                                                     const SlotBase::sptr &slot,
-                                                     const SlotWrapperSptrType &slotWrapper
-                                                    )
+template < typename ... A >
+inline SlotConnection< void (A ...) >::SlotConnection(
+    const SignalSptrType &signal,
+    const SlotBase::sptr &slot,
+    const SlotWrapperSptrType &slotWrapper
+    )
     : m_signal(signal), m_connectedSlot(slot), m_slotWrapper(slotWrapper), m_pair(true, slotWrapper.get())
-{ }
+{
+}
 
 //-----------------------------------------------------------------------------
 
-template < typename ...A >
-inline SlotConnection< void (A...) >::~SlotConnection()
+template < typename ... A >
+inline SlotConnection< void (A ...) >::~SlotConnection()
 {
     this->disconnect();
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename ...A >
-inline void SlotConnection< void (A...) >::connectNoLock()
+template < typename ... A >
+inline void SlotConnection< void (A ...) >::connectNoLock()
 {
     SignalSptrType sig(m_signal);
     sig->m_slots.push_back( &m_pair );
@@ -83,28 +85,28 @@ inline void SlotConnection< void (A...) >::connectNoLock()
 
 //-----------------------------------------------------------------------------
 
-template < typename ...A >
-inline void SlotConnection< void (A...) >::disconnectSignalNoLock(const SignalSptrType &sig)
+template < typename ... A >
+inline void SlotConnection< void (A ...) >::disconnectSignalNoLock(const SignalSptrType &sig)
 {
     sig->m_slots.remove( &m_pair );
     sig->m_connections.erase(m_connectedSlot);
     OSLM_COM("Disconnect '"<< sig->getID() <<"' sig <=> '"  <<
-            (m_connectedSlot.expired() ? "<dead slot>" : m_connectedSlot.lock()->getID()) <<"' slot" );
+             (m_connectedSlot.expired() ? "<dead slot>" : m_connectedSlot.lock()->getID()) <<"' slot" );
 }
 
 //-----------------------------------------------------------------------------
 
-template < typename ...A >
-inline void SlotConnection< void (A...) >::disconnectSlotNoLock(const SlotBase::sptr &slot)
+template < typename ... A >
+inline void SlotConnection< void (A ...) >::disconnectSlotNoLock(const SlotBase::sptr &slot)
 {
     try
     {
-        ::boost::shared_ptr< const SlotConnection< void (A...) > > thisSptr =
-            ::boost::dynamic_pointer_cast< const SlotConnection< void (A...) > > ( this->shared_from_this() );
+        ::boost::shared_ptr< const SlotConnection< void (A ...) > > thisSptr =
+            ::boost::dynamic_pointer_cast< const SlotConnection< void (A ...) > > ( this->shared_from_this() );
         slot->m_connections.erase( thisSptr );
         OSLM_COM("Disconnect '"
-                << (m_signal.expired() ? "<dead signal>" : m_signal.lock()->getID())
-                <<"' sig <=> '"  <<  slot->getID() <<"' slot" );
+                 << (m_signal.expired() ? "<dead signal>" : m_signal.lock()->getID())
+                 <<"' sig <=> '"  <<  slot->getID() <<"' slot" );
     }
     catch(const ::boost::bad_weak_ptr&)
     {
@@ -115,8 +117,8 @@ inline void SlotConnection< void (A...) >::disconnectSlotNoLock(const SlotBase::
 
 //-----------------------------------------------------------------------------
 
-template < typename ...A >
-inline void SlotConnection< void (A...) >::disconnect()
+template < typename ... A >
+inline void SlotConnection< void (A ...) >::disconnect()
 {
     ::fwCore::mt::WriteLock lock(m_mutex);
 
@@ -143,8 +145,8 @@ inline void SlotConnection< void (A...) >::disconnect()
 
 //-----------------------------------------------------------------------------
 
-template < typename ...A >
-inline void SlotConnection< void (A...) >::disconnectWeakLock()
+template < typename ... A >
+inline void SlotConnection< void (A ...) >::disconnectWeakLock()
 {
     ::fwCore::mt::WriteLock lock(m_mutex);
 
@@ -170,8 +172,8 @@ inline void SlotConnection< void (A...) >::disconnectWeakLock()
 
 //-----------------------------------------------------------------------------
 
-template < typename ...A >
-inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A...) >::getBlocker()
+template < typename ... A >
+inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A ...) >::getBlocker()
 {
     ::fwCore::mt::ReadToWriteLock lock(m_mutex);
 
@@ -185,9 +187,9 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A...) >::getBlo
         if(!blocker)
         {
             blocker = SlotConnectionBase::BlockerSptrType(
-                              (void*)NULL,
-                              ::boost::bind( &SlotConnection< void (A...) >::unblock, this )
-                              );
+                (void*)NULL,
+                ::boost::bind( &SlotConnection< void (A ...) >::unblock, this )
+                );
             m_weakBlocker = blocker;
 
             // signal has to be locked : signal got a pointer on m_pair
@@ -201,8 +203,8 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection< void (A...) >::getBlo
 
 //-----------------------------------------------------------------------------
 
-template < typename ...A >
-inline void SlotConnection< void (A...) >::unblock()
+template < typename ... A >
+inline void SlotConnection< void (A ...) >::unblock()
 {
     ::fwCore::mt::WriteLock lock(m_mutex);
     // signal has to be locked : signal got a pointer on m_pair

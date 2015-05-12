@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,7 +37,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::ImageWriterService, ::fwData::Image );
 
 //------------------------------------------------------------------------------
 
@@ -61,8 +61,8 @@ void ImageWriterService::configureWithIHM()
     dialogFile.addFilter("MetaImage","*.mhd");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
@@ -149,17 +149,17 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, co
         ss << "Warning during saving : " << e.what();
 
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                        "Warning",
-                        ss.str(),
-                        ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            ss.str(),
+            ::fwGui::dialog::IMessageDialog::WARNING);
         bValue = false;
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                                "Warning",
-                                "Warning during saving.",
-                                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            "Warning during saving.",
+            ::fwGui::dialog::IMessageDialog::WARNING);
         bValue = false;
     }
     return bValue;
@@ -174,7 +174,7 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >() ;
+        ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
         SLM_ASSERT("Image not instanced", pImage);
 
         ::fwGui::Cursor cursor;
@@ -182,7 +182,7 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
 
         try
         {
-            this->saveImage(this->getFile() ,pImage);
+            this->saveImage(this->getFile(),pImage);
         }
         catch(::fwTools::Failed& e)
         {

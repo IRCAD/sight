@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_MT_OBJECTWRITELOCK_HPP_
-#define _FWDATA_MT_OBJECTWRITELOCK_HPP_
+#ifndef __FWDATA_MT_OBJECTWRITELOCK_HPP__
+#define __FWDATA_MT_OBJECTWRITELOCK_HPP__
 
 #include <fwCore/mt/types.hpp>
 
@@ -24,13 +24,13 @@ namespace mt
 class FWDATA_CLASS_API ObjectWriteLock
 {
 
-public :
+public:
 
     /**
      * @brief Constructor : owns an exclusive lock on object mutex.
      * If adopt_lock==false : the mutex is not locked (call lock() to lock mutex)
      */
-    FWDATA_API ObjectWriteLock( ::fwData::Object::sptr obj, bool adopt_lock=true );
+    FWDATA_API ObjectWriteLock( ::fwData::Object::sptr obj, bool adopt_lock = true );
 
     /// Destructor. Does nothing
     FWDATA_API ~ObjectWriteLock();
@@ -41,7 +41,7 @@ public :
     /// Releases lock on object mutex
     FWDATA_API void unlock();
 
-private :
+private:
 
     /// lock on object mutex
     ::fwCore::mt::WriteLock m_lock;
@@ -50,4 +50,4 @@ private :
 } // mt
 } // fwData
 
-#endif // _FWDATA_MT_OBJECTWRITELOCK_HPP_
+#endif // __FWDATA_MT_OBJECTWRITELOCK_HPP__

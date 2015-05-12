@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_TU_CONFIGPARSERTEST_HPP_
-#define _FWCOMED_TU_CONFIGPARSERTEST_HPP_
+#ifndef __FWCOMED_UT_CONFIGPARSERTEST_HPP__
+#define __FWCOMED_UT_CONFIGPARSERTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -33,10 +33,10 @@ namespace ut
  */
 class ConfigParserTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( ConfigParserTest );
-    CPPUNIT_TEST( testObjectCreationWithConfig );
-    CPPUNIT_TEST( testBuildComposite );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( ConfigParserTest );
+CPPUNIT_TEST( testObjectCreationWithConfig );
+CPPUNIT_TEST( testBuildComposite );
+CPPUNIT_TEST_SUITE_END();
 
 public:
 
@@ -60,4 +60,4 @@ private:
 } //namespace ut
 } //namespace fwComEd
 
-#endif // _FWCOMED_TU_CONFIGPARSERTEST_HPP_
+#endif // __FWCOMED_UT_CONFIGPARSERTEST_HPP__

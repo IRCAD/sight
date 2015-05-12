@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@
 #include <vtkTexture.h>
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Material, ::fwData::Material ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Material, ::fwData::Material );
 
 namespace visuVTKAdaptor
 {
@@ -37,7 +37,7 @@ namespace visuVTKAdaptor
 Material::Material() throw()
 {
     m_manageProperty = true;
-    m_property = vtkProperty::New();
+    m_property       = vtkProperty::New();
     //addNewHandledEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
 }
 
@@ -56,7 +56,8 @@ Material::~Material() throw()
 
 void Material::setVtkProperty(vtkProperty *property)
 {
-    if (m_manageProperty){
+    if (m_manageProperty)
+    {
         m_property->Delete();
         m_property = NULL;
     }
@@ -64,12 +65,12 @@ void Material::setVtkProperty(vtkProperty *property)
     if (property)
     {
         m_manageProperty = false;
-        m_property = property;
+        m_property       = property;
     }
     else
     {
         m_manageProperty = true;
-        m_property = vtkProperty::New();
+        m_property       = vtkProperty::New();
     }
     this->setVtkPipelineModified();
 }
@@ -136,9 +137,9 @@ void Material::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Material::updateMaterial( SPTR(::fwData::Material) material )
+void Material::updateMaterial( SPTR(::fwData::Material)material )
 {
-    ::fwData::Color::sptr color =  material->ambient();
+    ::fwData::Color::sptr color = material->ambient();
     m_property->SetColor( color->red(),
                           color->green(),
                           color->blue());

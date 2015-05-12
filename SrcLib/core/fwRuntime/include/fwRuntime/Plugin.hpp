@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_PLUGIN_HPP_
-#define _FWRUNTIME_PLUGIN_HPP_
+#ifndef __FWRUNTIME_PLUGIN_HPP__
+#define __FWRUNTIME_PLUGIN_HPP__
 
 #include <boost/shared_ptr.hpp>
 
@@ -25,7 +25,7 @@ namespace fwRuntime
  * function must be implemented.
  *
  * @date    2004-2009
- * 
+ *
  */
 struct FWRUNTIME_CLASS_API Plugin : public IPlugin
 {
@@ -35,22 +35,22 @@ struct FWRUNTIME_CLASS_API Plugin : public IPlugin
      */
     //@{
     FWRUNTIME_API ::boost::shared_ptr<Bundle> getBundle() const throw();
-    FWRUNTIME_API virtual void setInitializationData(const SPTR(ConfigurationElement) configuration) throw();
+    FWRUNTIME_API virtual void setInitializationData(const SPTR(ConfigurationElement)configuration) throw();
     //@}
 
 
-protected:
+    protected:
 
-    // Overrides
-    FWRUNTIME_API void setBundle( ::boost::shared_ptr<Bundle> bundle) throw();
+        // Overrides
+        FWRUNTIME_API void setBundle( ::boost::shared_ptr<Bundle> bundle) throw();
 
 
-private:
+    private:
 
-    /**
-     * @brief   a pointer to the bundle the plugin is attached to
-     */
-     ::boost::shared_ptr<Bundle> m_bundle;
+        /**
+         * @brief   a pointer to the bundle the plugin is attached to
+         */
+        ::boost::shared_ptr<Bundle> m_bundle;
 
 };
 
@@ -58,4 +58,4 @@ private:
 } // namespace fwRuntime
 
 
-#endif //_FWRUNTIME_PLUGIN_HPP_
+#endif //__FWRUNTIME_PLUGIN_HPP__

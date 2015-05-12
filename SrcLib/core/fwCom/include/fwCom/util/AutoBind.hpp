@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,8 +43,8 @@ struct AutoBind< F, 0 >
 {
     typedef typename convert_function_type< F >::type FunctionType;
 
-    template< typename W, typename ...A >
-    static ::boost::function< FunctionType > wrap( W f, A...a );
+    template< typename W, typename ... A >
+    static ::boost::function< FunctionType > wrap( W f, A ... a );
 
 };
 
@@ -55,8 +55,8 @@ struct AutoBind< F, 1 >
 {
     typedef typename convert_function_type< F >::type FunctionType;
 
-    template< typename W, typename ...A >
-    static ::boost::function< FunctionType > wrap( W f, A...a );
+    template< typename W, typename ... A >
+    static ::boost::function< FunctionType > wrap( W f, A ... a );
 };
 
 
@@ -66,8 +66,8 @@ struct AutoBind< F, 2 >
 {
     typedef typename convert_function_type< F >::type FunctionType;
 
-    template< typename W, typename ...A >
-    static ::boost::function< FunctionType > wrap( W f, A...a );
+    template< typename W, typename ... A >
+    static ::boost::function< FunctionType > wrap( W f, A ... a );
 };
 
 
@@ -77,8 +77,8 @@ struct AutoBind< F, 3 >
 {
     typedef typename convert_function_type< F >::type FunctionType;
 
-    template< typename W, typename ...A >
-    static ::boost::function< FunctionType > wrap( W f, A...a );
+    template< typename W, typename ... A >
+    static ::boost::function< FunctionType > wrap( W f, A ... a );
 };
 
 
@@ -88,8 +88,8 @@ struct AutoBind< F, 4 >
 {
     typedef typename convert_function_type< F >::type FunctionType;
 
-    template< typename W, typename ...A >
-    static ::boost::function< FunctionType > wrap( W f, A...a );
+    template< typename W, typename ... A >
+    static ::boost::function< FunctionType > wrap( W f, A ... a );
 };
 
 
@@ -99,8 +99,8 @@ struct AutoBind< F, 5 >
 {
     typedef typename convert_function_type< F >::type FunctionType;
 
-    template< typename W, typename ...A >
-    static ::boost::function< FunctionType > wrap( W f, A...a );
+    template< typename W, typename ... A >
+    static ::boost::function< FunctionType > wrap( W f, A ... a );
 };
 
 
@@ -110,8 +110,8 @@ struct AutoBind< F, 6 >
 {
     typedef typename convert_function_type< F >::type FunctionType;
 
-    template< typename W, typename ...A >
-    static ::boost::function< FunctionType > wrap( W f, A...a );
+    template< typename W, typename ... A >
+    static ::boost::function< FunctionType > wrap( W f, A ... a );
 };
 
 
@@ -121,8 +121,8 @@ struct AutoBind< F, 7 >
 {
     typedef typename convert_function_type< F >::type FunctionType;
 
-    template< typename W, typename ...A >
-    static ::boost::function< FunctionType > wrap( W f, A...a );
+    template< typename W, typename ... A >
+    static ::boost::function< FunctionType > wrap( W f, A ... a );
 };
 
 
@@ -132,8 +132,8 @@ struct AutoBind< F, 8 >
 {
     typedef typename convert_function_type< F >::type FunctionType;
 
-    template< typename W, typename ...A >
-    static ::boost::function< FunctionType > wrap( W f, A...a );
+    template< typename W, typename ... A >
+    static ::boost::function< FunctionType > wrap( W f, A ... a );
 };
 
 
@@ -143,21 +143,21 @@ struct AutoBind< F, 9 >
 {
     typedef typename convert_function_type< F >::type FunctionType;
 
-    template< typename W, typename ...A >
-    static ::boost::function< FunctionType > wrap( W f, A...a );
+    template< typename W, typename ... A >
+    static ::boost::function< FunctionType > wrap( W f, A ... a );
 };
 
 
 /**
- * @brief Automatic bind of given function 
+ * @brief Automatic bind of given function
  *
  * @return a boost function of type F if F is a function type, of type *F if F is a function pointer,
  * or of the corresponding function type if F is a member method pointer (like R (C::*)(A1, A2, ..))
  * If F is a member method pointer, autobind takes the object on wich we desire to call the method
  * as second argument.
  */
-template <typename F, typename ...A >
-::boost::function< typename convert_function_type< F >::type > autobind(F f, A...a);
+template <typename F, typename ... A >
+::boost::function< typename convert_function_type< F >::type > autobind(F f, A ... a);
 
 
 

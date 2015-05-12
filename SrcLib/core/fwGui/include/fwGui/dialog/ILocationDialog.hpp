@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_ILOCATIONDIALOG_HPP_
-#define _FWGUI_ILOCATIONDIALOG_HPP_
+#ifndef __FWGUI_DIALOG_ILOCATIONDIALOG_HPP__
+#define __FWGUI_DIALOG_ILOCATIONDIALOG_HPP__
 
 #include <boost/filesystem.hpp>
 
@@ -24,7 +24,7 @@ namespace dialog
 /**
  * @brief   Defines the generic file/folder selector dialog for IHM.
  * @class   LocationDialog
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -35,14 +35,16 @@ public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (ILocationDialog)(::fwGui::GuiBaseObject) )
 
-    typedef enum {
-        NONE            = 0,
-        READ            = 1 << 1,
-        WRITE           = 1 << 2,
-        FILE_MUST_EXIST = 1 << 3,
+    typedef enum
+    {
+        NONE                = 0,
+        READ                = 1 << 1,
+            WRITE           = 1 << 2,
+            FILE_MUST_EXIST = 1 << 3,
     } Options;
 
-    typedef enum {
+    typedef enum
+    {
         SINGLE_FILE,
         FOLDER,
         MULTI_FILES
@@ -76,10 +78,10 @@ public:
     FWGUI_API virtual void saveDefaultLocation(::fwData::location::ILocation::sptr loc);
 
     /// set the type of location for the dialog (SINGLE_FILE, FORLDER, MULTI_FILES)
-    FWGUI_API virtual void setType( Types type ) =0;
+    FWGUI_API virtual void setType( Types type ) = 0;
 
     /// allow to set option to the file dialog mode=READ/WRITE , check=FILE_MUST_EXIST
-    FWGUI_API virtual ILocationDialog& setOption( Options option) =0;
+    FWGUI_API virtual ILocationDialog& setOption( Options option) = 0;
 
     /**
      * @brief specify some filtering when browsing files:
@@ -87,7 +89,7 @@ public:
      * @param[in] wildcardList a string of extension (glob syntax) separated by spaces
      * example : addFilter("images","*.png *.jpg")
      */
-    FWGUI_API virtual void addFilter(const std::string &filterName, const std::string &wildcardList )=0;
+    FWGUI_API virtual void addFilter(const std::string &filterName, const std::string &wildcardList ) = 0;
 
     /**
      * Display the dialog
@@ -112,6 +114,6 @@ private:
 } //namespace dialog
 } // namespace fwGui
 
-#endif /*_FWGUI_ILOCATIONDIALOG_HPP_*/
+#endif /*__FWGUI_DIALOG_ILOCATIONDIALOG_HPP__*/
 
 

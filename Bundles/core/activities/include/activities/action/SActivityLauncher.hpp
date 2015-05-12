@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP_
-#define _ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP_
+#ifndef __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
+#define __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
 
 #include <fwTools/Failed.hpp>
 
@@ -26,15 +26,15 @@ namespace action
 class ACTIVITIES_CLASS_API SActivityLauncher : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SActivityLauncher)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SActivityLauncher)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    ACTIVITIES_API SActivityLauncher() throw() ;
+    ACTIVITIES_API SActivityLauncher() throw();
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SActivityLauncher() throw() ;
+    ACTIVITIES_API virtual ~SActivityLauncher() throw();
 
     ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
     typedef ::fwCom::Slot< void (SPTR( ::fwMedData::Series )) > LaunchSeriesSlotType;
@@ -68,7 +68,7 @@ protected:
      * @see fwGui::IActionSrv::initialize()
      *
      * @verbatim
-     <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+       <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
          <config>
              <!-- SActivityLauncher mode : immediate or message(default)
              Immediate mode starts and stop immediatly the activity's config -->
@@ -95,13 +95,13 @@ protected:
             </quickLaunch>
 
          </config>
-     </service>
-     @endverbatim
-      */
+       </service>
+       @endverbatim
+     */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
     typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
@@ -189,6 +189,6 @@ private:
 } // gui
 
 
-#endif // _ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP_
+#endif // __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
 
 

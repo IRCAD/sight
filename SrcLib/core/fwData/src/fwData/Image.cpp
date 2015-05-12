@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,12 +38,13 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 Image::Image(::fwData::Object::Key key) :
-        m_type(),
-        m_attrWindowCenter(0),
-        m_attrWindowWidth(0),
-        m_attrNumberOfComponents(1),
-        m_dataArray( ::fwData::Array::New() )
-{}
+    m_type(),
+    m_attrWindowCenter(0),
+    m_attrWindowWidth(0),
+    m_attrNumberOfComponents(1),
+    m_dataArray( ::fwData::Array::New() )
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -58,14 +59,14 @@ void Image::shallowCopy(const Object::csptr &_source )
 {
     Image::csptr other = Image::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
     // Assign
     copyInformation( other );
 
-    m_dataArray  = other->m_dataArray;
+    m_dataArray = other->m_dataArray;
 }
 
 //-----------------------------------------------------------------------------
@@ -74,8 +75,8 @@ void Image::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
 {
     Image::csptr other = Image::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     // Assign
@@ -98,7 +99,7 @@ void Image::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
 
 void Image::setDataArray(::fwData::Array::sptr array, bool copyArrayInfo)
 {
-    if( ! array )
+    if( !array )
     {
         array = ::fwData::Array::New();
     }
@@ -129,8 +130,8 @@ size_t Image::allocate() throw(::fwData::Exception)
 size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
                        const ::fwTools::Type &type, size_t numberOfComponents) throw(::fwData::Exception)
 {
-    m_size = { x, y, z};
-    m_type = type;
+    m_size                   = { x, y, z};
+    m_type                   = type;
     m_attrNumberOfComponents = numberOfComponents;
     return allocate();
 }
@@ -138,10 +139,10 @@ size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType
 //------------------------------------------------------------------------------
 
 size_t Image::allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents)
-    throw(::fwData::Exception)
+throw(::fwData::Exception)
 {
-    m_size = size;
-    m_type = type;
+    m_size                   = size;
+    m_type                   = type;
     m_attrNumberOfComponents = numberOfComponents;
     return allocate();
 }
@@ -153,29 +154,37 @@ size_t Image::allocate(const SizeType &size, const ::fwTools::Type &type, size_t
     typedef std::map<std::string, ::fwTools::DynamicType> DynamicTypeMapType;
 
     static DynamicTypeMapType dynamicTypeMap = ::boost::assign::map_list_of
-        (::fwTools::Type().string() , ::fwTools::DynamicType() )
-        ("uint8" , ::fwTools::makeDynamicType<std::string>("unsigned char")  )
-        ("uint16", ::fwTools::makeDynamicType<std::string>("unsigned short") )
-        ("uint32", ::fwTools::makeDynamicType<std::string>("unsigned int")   )
-        ("int8" ,  ::fwTools::makeDynamicType<std::string>("signed char")    )
-        ("int16",  ::fwTools::makeDynamicType<std::string>("signed short")   )
-        ("int32",  ::fwTools::makeDynamicType<std::string>("signed int")     )
-        ("float",  ::fwTools::makeDynamicType<std::string>("float")          )
-        ("double", ::fwTools::makeDynamicType<std::string>("double")         )
+                                                   (::fwTools::Type().string(), ::fwTools::DynamicType() )
+                                                   ("uint8", ::fwTools::makeDynamicType<std::string>("unsigned char")  )
+                                                   ("uint16",
+                                                   ::fwTools::makeDynamicType<std::string>("unsigned short") )
+                                                   ("uint32",
+                                                   ::fwTools::makeDynamicType<std::string>("unsigned int")   )
+                                                   ("int8",  ::fwTools::makeDynamicType<std::string>("signed char")    )
+                                                   ("int16",
+                                                   ::fwTools::makeDynamicType<std::string>("signed short")   )
+                                                   ("int32",
+                                                   ::fwTools::makeDynamicType<std::string>("signed int")     )
+                                                   ("float",
+                                                   ::fwTools::makeDynamicType<std::string>("float")          )
+                                                   ("double",
+                                                   ::fwTools::makeDynamicType<std::string>("double")         )
 
 //special case for dynamic type : 64bits integers was not managed by dynamic type.
 #if ( INT_MAX < LONG_MAX )
-        ("uint64", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
-        ("int64",  ::fwTools::makeDynamicType<std::string>("signed long")    )
+                                               ("uint64", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
+                                                   ("int64",
+                                                   ::fwTools::makeDynamicType<std::string>("signed long")    )
 #else
-        ("uint32", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
-        ("int32",  ::fwTools::makeDynamicType<std::string>("signed long")    )
-        ("uint64", ::fwTools::DynamicType() )
-        ("int64",  ::fwTools::DynamicType() )
+                                               ("uint32", ::fwTools::makeDynamicType<std::string>("unsigned long")  )
+                                                   ("int32",
+                                                   ::fwTools::makeDynamicType<std::string>("signed long")    )
+                                                   ("uint64", ::fwTools::DynamicType() )
+                                                   ("int64",  ::fwTools::DynamicType() )
 #endif
-        ;
+    ;
 
-    ::fwTools::DynamicType dtype = dynamicTypeMap[getType().string()] ;
+    ::fwTools::DynamicType dtype = dynamicTypeMap[getType().string()];
     return dtype;
 }
 
@@ -272,9 +281,9 @@ size_t Image::getSizeInBytes() const
     SLM_TRACE_FUNC();
 
     size_t size = std::accumulate(
-                                  m_size.begin(), m_size.end(),
-                                  static_cast<size_t>(m_type.sizeOf()) * m_attrNumberOfComponents,
-                                  std::multiplies< size_t > () );
+        m_size.begin(), m_size.end(),
+        static_cast<size_t>(m_type.sizeOf()) * m_attrNumberOfComponents,
+        std::multiplies< size_t > () );
     return size;
 }
 

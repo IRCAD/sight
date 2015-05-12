@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ namespace updater
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::SDrop, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::SDrop, ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
@@ -35,7 +35,8 @@ SDrop::SDrop() throw()
 //-----------------------------------------------------------------------------
 
 SDrop::~SDrop() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -44,7 +45,7 @@ void SDrop::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::
     if (_msg->hasEvent("DROPPED_UUID"))
     {
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-        ::fwData::Object::csptr msgObject = _msg->getDataInfo("DROPPED_UUID");
+        ::fwData::Object::csptr msgObject   = _msg->getDataInfo("DROPPED_UUID");
 
         ::fwData::String::csptr id = ::fwData::String::dynamicConstCast(msgObject);
 
@@ -100,7 +101,8 @@ void SDrop::starting()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void SDrop::stopping()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -112,17 +114,20 @@ void SDrop::configuring()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void SDrop::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SDrop::updating() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SDrop::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

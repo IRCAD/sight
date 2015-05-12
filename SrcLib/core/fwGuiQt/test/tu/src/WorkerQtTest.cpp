@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,15 +38,15 @@ class WorkerQt;
 struct FWGUIQT_CLASS_API WorkerQtInstanciator
 {
 
-    FWGUIQT_API WorkerQtInstanciator(bool reg = true ) ;
+    FWGUIQT_API WorkerQtInstanciator(bool reg = true );
 
     FWGUIQT_API SPTR(::fwThread::Worker) getWorker();
 
     SPTR(WorkerQt) m_qtWorker;
 
-    FWGUIQT_API static int    s_argc;
+    FWGUIQT_API static int s_argc;
     FWGUIQT_API static char **s_argv;
-    FWGUIQT_API static bool   s_GUIenabled;
+    FWGUIQT_API static bool s_GUIenabled;
 };
 
 
@@ -91,8 +91,8 @@ void WorkerQtTest::setUp()
     // Set up context before running a test.
     char arg1[] = "fwGuiQtTest";
 #if defined(__linux)
-    char arg2[] = "-platform";
-    char arg3[] = "offscreen";
+    char arg2[]        = "-platform";
+    char arg3[]        = "offscreen";
     static char* arg[] = {arg1, arg2, arg3, 0};
 
     WorkerQtInstanciator::s_argc = 3;
@@ -180,7 +180,8 @@ void WorkerQtTest::postFromInsideTest()
 
 //-----------------------------------------------------------------------------
 void doNothing()
-{ }
+{
+}
 
 void runFromOutsideTest(TestHandler &handler, ::fwThread::Worker::sptr worker)
 {
@@ -195,8 +196,8 @@ void WorkerQtTest::postFromOutsideTest()
     TestHandler handler;
 
     ::boost::thread testThread(
-            boost::bind(&runFromOutsideTest, boost::ref(handler), m_worker)
-            );
+        boost::bind(&runFromOutsideTest, boost::ref(handler), m_worker)
+        );
 
     m_worker->getFuture().wait();
 
@@ -227,30 +228,30 @@ void echo()
 
 
 void runBasicTimerTest(
-        TestHandler &handler,
-        const ::fwThread::Timer::sptr &timer,
-        ::fwThread::Timer::TimeDurationType duration
-        )
+    TestHandler &handler,
+    const ::fwThread::Timer::sptr &timer,
+    ::fwThread::Timer::TimeDurationType duration
+    )
 {
     timer->start();
 
     QT_TEST_START
     {
-    CPPUNIT_ASSERT(timer->isRunning());
-    CPPUNIT_ASSERT(handler.m_threadCheckOk);
-    CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
+        CPPUNIT_ASSERT(timer->isRunning());
+        CPPUNIT_ASSERT(handler.m_threadCheckOk);
+        CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
     }
     QT_TEST_END
 }
 
 
 void oneShotBasicTimerTest(
-        int &i,
-        TestHandler &handler,
-        const ::fwThread::Timer::sptr &timer,
-        ::fwThread::Timer::TimeDurationType duration,
-        const ::fwThread::Worker::sptr &worker
-        )
+    int &i,
+    TestHandler &handler,
+    const ::fwThread::Timer::sptr &timer,
+    ::fwThread::Timer::TimeDurationType duration,
+    const ::fwThread::Worker::sptr &worker
+    )
 {
 
     handler.nextStepNoSleep();
@@ -288,14 +289,14 @@ void WorkerQtTest::basicTimerTest()
 
         ::fwThread::Timer::sptr timer = m_worker->createTimer();
 
-        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(10) ;
+        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(10);
 
         int i = 1;
         timer->setFunction(
-                ::boost::bind(
-                    &oneShotBasicTimerTest,
-                    boost::ref(i), handler, ::boost::ref(timer), duration, ::boost::ref(m_worker) )
-                );
+            ::boost::bind(
+                &oneShotBasicTimerTest,
+                boost::ref(i), handler, ::boost::ref(timer), duration, ::boost::ref(m_worker) )
+            );
         timer->setDuration(duration);
 
         CPPUNIT_ASSERT(!timer->isRunning());

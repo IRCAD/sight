@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,7 +37,8 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 //-----------------------------------------------------------------------------
 
 Plugin::~Plugin() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -47,7 +48,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
-    int &argc = profile->getRawArgCount();
+    int &argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
 
     m_workerQt = ::fwGuiQt::getQtWorker(argc, argv);
@@ -90,7 +91,7 @@ void Plugin::loadStyleSheet()
 {
     if( this->getBundle()->hasParameter("style") )
     {
-        std::string styleFile = this->getBundle()->getParameterValue("style") ;
+        std::string styleFile = this->getBundle()->getParameterValue("style");
 
         QFile data(QString::fromStdString(styleFile));
         QString style;

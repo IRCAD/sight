@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,12 +30,14 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 SelectorDialog::SelectorDialog(::fwGui::GuiBaseObject::Key key) : m_message(""),  m_title("")
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SelectorDialog::~SelectorDialog()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -69,7 +71,7 @@ std::string SelectorDialog::show()
     QListWidgetItem* firstItem = selectionList->item(0);
     selectionList->setCurrentItem(firstItem);
 
-    QPushButton* okButton = new QPushButton(tr("Ok"));
+    QPushButton* okButton     = new QPushButton(tr("Ok"));
     QPushButton* cancelButton = new QPushButton(tr("Cancel"));
 
     QHBoxLayout *hLayout = new QHBoxLayout();

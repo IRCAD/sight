@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ void UUIDTest::setUp()
 {
     // Set up context before running a test.
     m_object = ::boost::make_shared< ::fwTools::Object >();
-    m_uuid = ::fwTools::UUID::generateUUID();
+    m_uuid   = ::fwTools::UUID::generateUUID();
 }
 
 //-----------------------------------------------------------------------------
@@ -41,7 +41,7 @@ void UUIDTest::tearDown()
 
 void UUIDTest::objectUUIDTest()
 {
-    const std::string UUID = "myUUID" ;
+    const std::string UUID = "myUUID";
 
     ::fwTools::Object::sptr obj = ::boost::make_shared< ::fwTools::Object >();
 
@@ -64,15 +64,15 @@ void UUIDTest::conccurentAccessOnUUIDMapTest()
 {
     const unsigned int nbThreads = 10;
     std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i=0 ; i<nbThreads ; ++i)
+    for (int i = 0; i<nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
-                new ::fwTest::helper::Thread(::boost::bind(&UUIDTest::runUUIDCreation, this)));
+            new ::fwTest::helper::Thread(::boost::bind(&UUIDTest::runUUIDCreation, this)));
         threads.push_back(thread);
     }
 
-    for (int i=0 ; i<nbThreads ; ++i)
+    for (int i = 0; i<nbThreads; ++i)
     {
         std::stringstream str;
         str << "thread " << i;
@@ -108,15 +108,15 @@ void UUIDTest::conccurentAccessOnSameObjUUIDTest()
 {
     const unsigned int nbThreads = 10;
     std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i=0 ; i<nbThreads ; ++i)
+    for (int i = 0; i<nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
-                new ::fwTest::helper::Thread(::boost::bind(&UUIDTest::runAccessToObjectUUID, this)));
+            new ::fwTest::helper::Thread(::boost::bind(&UUIDTest::runAccessToObjectUUID, this)));
         threads.push_back(thread);
     }
 
-    for (int i=0 ; i<nbThreads ; ++i)
+    for (int i = 0; i<nbThreads; ++i)
     {
         std::stringstream str;
         str << "thread " << i;

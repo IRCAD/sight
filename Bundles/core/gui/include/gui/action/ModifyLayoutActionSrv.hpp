@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_ACTION_MOVELAYOUTACTIONSERVICE_HPP_
-#define _GUI_ACTION_MOVELAYOUTACTIONSERVICE_HPP_
+#ifndef __GUI_ACTION_MODIFYLAYOUTACTIONSRV_HPP__
+#define __GUI_ACTION_MODIFYLAYOUTACTIONSRV_HPP__
 
 #include <boost/logic/tribool.hpp>
 
@@ -28,24 +28,25 @@ namespace action
 class GUI_CLASS_API ModifyLayoutActionSrv : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ModifyLayoutActionSrv)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ModifyLayoutActionSrv)(::fwGui::IActionSrv) );
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /**
-    * @brief Constructor. Do nothing.
-    */
+     * @brief Constructor. Do nothing.
+     */
     GUI_API ModifyLayoutActionSrv() throw();
 
     /**
-    * @brief Destructor. Do nothing.
-    */
+     * @brief Destructor. Do nothing.
+     */
     GUI_API virtual ~ModifyLayoutActionSrv() throw();
 
 protected:
 
-    enum ActionType {
+    enum ActionType
+    {
         MOVE,
         SHOW,
         HIDE,
@@ -58,12 +59,12 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream &_sstream ) ;
+    GUI_API virtual void info(std::ostream &_sstream );
 
     /**
      * @brief This method starts-updates or stops the specified services
      */
-    GUI_API void updating()throw (fwTools::Failed);
+    GUI_API void updating() throw (fwTools::Failed);
 
     /**
      * @brief This method is used to update services on notification. Do nothing.
@@ -74,14 +75,14 @@ protected:
      * @brief This method is used to configure the service parameters: specifies which views to show/hide/mode.
      *
      * @verbatim
-     <config>
+       <config>
          <move uid="srv_uid" wid="new_view_wid" />
          <show wid="view_to_show" />
          <hide wid="view_to_hide />
          <show_or_hide wid="view_to_show_or_hide />
          <enable uid="action_to_enabled" />
          <disable uid="action_to_disabled" />
-     </config>
+       </config>
        @endverbatim
      * - \b <move> configures the services to move in the new view given by wid
      * - \b <show> configures the element to show
@@ -89,7 +90,7 @@ protected:
      * - \b <show_or_hide> configures the element to show or hide.
      *      If action is activated, element is shown else it is hidden.
      *
-     * <show>, <hide> and <show_or_hide> tags can have 2 type of attribute : 
+     * <show>, <hide> and <show_or_hide> tags can have 2 type of attribute :
      * - wid to show  or hide windows container (view)
      * - sid  to show or hide a gui container service (IEditor, IView, IRender...)
      *
@@ -127,4 +128,4 @@ private:
 } // namespace gui
 
 
-#endif /*_GUI_ACTION_MOVELAYOUTACTIONSERVICE_HPP_*/
+#endif /*__GUI_ACTION_MODIFYLAYOUTACTIONSRV_HPP__*/

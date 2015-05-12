@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,22 +41,22 @@ namespace vtkGdcmIO
  * @brief Reads DICOM data from a directory path in order to create a SeriesDB object in lazy mode.
  */
 class SeriesDBLazyReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                             public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader > ,
-                             public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader > ,
-                             public ::fwTools::ProgressAdviser
+                           public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
+                           public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
+                           public ::fwTools::ProgressAdviser
 {
 
-public :
+public:
 
     typedef std::vector< std::string > SeriesFilesType;
 
     typedef std::map< std::string, SeriesFilesType > MapSeriesType;
 
     fwCoreClassDefinitionsWithFactoryMacro(
-                    (SeriesDBLazyReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
-                    (()),
-                    ::fwDataIO::reader::factory::New< SeriesDBLazyReader >
-                    );
+        (SeriesDBLazyReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
+        (()),
+        ::fwDataIO::reader::factory::New< SeriesDBLazyReader >
+        );
 
     fwCoreAllowSharedFromThis();
 
@@ -69,7 +69,7 @@ public :
     /// Reads DICOM data from configured path and fills SeriesDB object. Use lazy reading process to read images.
     VTKGDCMIO_API void read();
 
-private :
+private:
 
     /**
      * @brief Creates a SeriesDB from the data contained in the given directory path.

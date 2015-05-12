@@ -1,8 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWITKIO_ITK_HXX__
+#define __FWITKIO_ITK_HXX__
 
 #include <assert.h>
 
@@ -18,22 +21,23 @@ namespace fwItkIO
 {
 
 template< class ITKIMAGE>
-void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sptr _dataImage, bool bufferManagerIsDataImage )
+void dataImageFactory( typename ITKIMAGE::Pointer itkImage, ::fwData::Image::sptr _dataImage,
+                       bool bufferManagerIsDataImage )
 {
     SLM_ASSERT("_dataImage not instanced", _dataImage);
 
 
     // Add by arnaud
-    ::boost::uint8_t  dim = ITKIMAGE::ImageDimension;
+    ::boost::uint8_t dim = ITKIMAGE::ImageDimension;
     ::fwData::Image::SpacingType _vSpacing(dim,1);
     ::fwData::Image::OriginType _vOrigin(dim,0);
-    ::fwData::Image::SizeType  _vSize(dim,0);
+    ::fwData::Image::SizeType _vSize(dim,0);
 
-    for (boost::uint8_t  d=0; d<dim; ++d)
+    for (boost::uint8_t d = 0; d<dim; ++d)
     {
         // _vOrigin[d] = itkImage->GetBufferedRegion().GetIndex()[d];
-        _vOrigin[d] = itkImage->GetOrigin()[d];
-        _vSize[d] = itkImage->GetBufferedRegion().GetSize()[d];
+        _vOrigin[d]  = itkImage->GetOrigin()[d];
+        _vSize[d]    = itkImage->GetBufferedRegion().GetSize()[d];
         _vSpacing[d] = itkImage->GetSpacing()[d];
     }
 
@@ -47,14 +51,17 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage , ::fwData::Image::sp
     ::fwComEd::helper::Array arrayHelper(array);
     if( bufferManagerIsDataImage )
     {
-        SLM_ASSERT("Sorry, this method requires that itkImage manages its buffer.",  itkImage->GetPixelContainer()->GetContainerManageMemory() );
-        arrayHelper.setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), true, _dataImage->getType(), _vSize, 1 );
+        SLM_ASSERT("Sorry, this method requires that itkImage manages its buffer.",
+                   itkImage->GetPixelContainer()->GetContainerManageMemory() );
+        arrayHelper.setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), true, _dataImage->getType(), _vSize,
+                               1 );
         /// itk image release its management buffer. dataImage must now deal memory
         itkImage->GetPixelContainer()->SetContainerManageMemory( false );
     }
     else
     {
-        arrayHelper.setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), false, _dataImage->getType(), _vSize, 1 );
+        arrayHelper.setBuffer( static_cast<void *>(itkImage->GetBufferPointer()), false,
+                               _dataImage->getType(), _vSize, 1 );
     }
 
 
@@ -68,14 +75,14 @@ template< class ITKIMAGE>
 ::fwData::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage )
 {
     ::fwData::Image::sptr data = ::fwData::Image::New();
-    ::fwItkIO::dataImageFactory< ITKIMAGE >(itkImage,data, bufferManagerIsDataImage) ;
+    ::fwItkIO::dataImageFactory< ITKIMAGE >(itkImage,data, bufferManagerIsDataImage);
     return data;
 }
 
 //------------------------------------------------------------------------------
 
 template< class ITKIMAGE_PTR >
-void itkImageToFwDataImage( ITKIMAGE_PTR itkImage , ::fwData::Image::sptr _dataImage )
+void itkImageToFwDataImage( ITKIMAGE_PTR itkImage, ::fwData::Image::sptr _dataImage )
 {
     dataImageFactory< typename ITKIMAGE_PTR::ObjectType >(itkImage, _dataImage);
 }
@@ -86,15 +93,16 @@ template< class ITKIMAGE>
 typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageData, bool bufferManagerIsDataImage )
 {
     // Pre Condition
-    SLM_ASSERT("Sorry, itk image dimension not correspond to fwData image", imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension );
+    SLM_ASSERT("Sorry, itk image dimension not correspond to fwData image",
+               imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension );
 
     ::fwComEd::helper::Image imageHelper(imageData);
 
-    typename ITKIMAGE::Pointer itkImage=ITKIMAGE::New();
+    typename ITKIMAGE::Pointer itkImage = ITKIMAGE::New();
 
     // update spacing information ; workaround due to GetSpacing const
     typename ITKIMAGE::SpacingType spacing = itkImage->GetSpacing();
-    for (boost::uint8_t  d=0; d<ITKIMAGE::ImageDimension; ++d)
+    for (boost::uint8_t d = 0; d<ITKIMAGE::ImageDimension; ++d)
     {
         spacing[d] = imageData->getSpacing()[d];
     }
@@ -104,28 +112,33 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageDat
     std::copy(   imageData->getOrigin().begin(),
                  imageData->getOrigin().end(),
                  const_cast< typename ITKIMAGE::PointType * >( &itkImage->GetOrigin())->Begin()
-             );
+                 );
 
     itk::ImageRegion< ITKIMAGE::ImageDimension > itkRegion;
 
-    unsigned long nbpixels=1;
-    for (::boost::uint8_t  d=0; d<ITKIMAGE::ImageDimension; ++d)
+    unsigned long nbpixels = 1;
+    for (::boost::uint8_t d = 0; d<ITKIMAGE::ImageDimension; ++d)
     {
         // itkRegion.SetIndex( d,  static_cast<int>(imageData->getCRefOrigin()[d]) );
         itkRegion.SetSize( d,   static_cast<unsigned long>(imageData->getSize()[d]) );
-        nbpixels *= itkRegion.GetSize()[d];;
+        nbpixels *= itkRegion.GetSize()[d];
     }
 
     itkImage->SetRegions(itkRegion);
 
     if( bufferManagerIsDataImage )
     {
-        itkImage->GetPixelContainer()->SetImportPointer(static_cast< typename ITKIMAGE::PixelType *>( imageHelper.getBuffer() ) , nbpixels , false );
+        itkImage->GetPixelContainer()->SetImportPointer(static_cast< typename ITKIMAGE::PixelType *>( imageHelper.
+                                                                                                      getBuffer() ), nbpixels,
+                                                        false );
     }
     else
     {
-        SLM_ASSERT("Sorry, this method requires that imageData manages its buffer.",   imageData->getDataArray()->getIsBufferOwner() );
-        itkImage->GetPixelContainer()->SetImportPointer(static_cast< typename ITKIMAGE::PixelType *>( imageHelper.getBuffer() ) , nbpixels , true );
+        SLM_ASSERT("Sorry, this method requires that imageData manages its buffer.",
+                   imageData->getDataArray()->getIsBufferOwner() );
+        itkImage->GetPixelContainer()->SetImportPointer(static_cast< typename ITKIMAGE::PixelType *>( imageHelper.
+                                                                                                      getBuffer() ), nbpixels,
+                                                        true );
         imageData->getDataArray()->setIsBufferOwner( false );
     }
 
@@ -144,4 +157,5 @@ typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::sptr imageData, boo
 
 } // end namespace
 
+#endif // __FWITKIO_ITK_HXX__
 

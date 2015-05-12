@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _TUTO15MULTITHREADCTRL_PLUGIN_HPP_
-#define _TUTO15MULTITHREADCTRL_PLUGIN_HPP_
+#ifndef __TUTO15MULTITHREADCTRL_PLUGIN_HPP__
+#define __TUTO15MULTITHREADCTRL_PLUGIN_HPP__
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -16,13 +16,13 @@ namespace Tuto15MultithreadCtrl
 
 /**
  * @brief Class call when bundle is started/stopped
- * 
+ *
  * @date    2012
  */
 class TUTO15MULTITHREADCTRL_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
-public :
+public:
 
     /// PLugin destructor
     TUTO15MULTITHREADCTRL_API ~Plugin() throw();
@@ -43,4 +43,4 @@ public :
 
 } // namespace Tuto15MultithreadCtrl
 
-#endif //_TUTO15MULTITHREADCTRL_PLUGIN_HPP_
+#endif //__TUTO15MULTITHREADCTRL_PLUGIN_HPP__

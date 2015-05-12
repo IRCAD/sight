@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,16 +29,16 @@ namespace fwCom
 {
 
 template< typename ... A >
-inline ::boost::function< void() > SlotRun< void (A...) >::bindRun( A...args  ) const
+inline ::boost::function< void() > SlotRun< void (A ...) >::bindRun( A ... args  ) const
 {
-    return ::boost::bind( ( void (SelfType::*)( A... ) const ) &SelfType::run, this, args... );
+    return ::boost::bind( ( void (SelfType::*)( A ... ) const ) &SelfType::run, this, args ... );
 }
 
 //-----------------------------------------------------------------------------
 
 template< typename ... A >
-inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(
-        const ::fwThread::Worker::sptr &worker, A... args ) const
+inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(
+    const ::fwThread::Worker::sptr &worker, A ... args ) const
 {
     if(!worker)
     {
@@ -48,18 +48,18 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(
     OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
 
     return postWeakCall< void >(
-                worker,
-                ::fwCom::util::weakcall(
-                        this->shared_from_this(),
-                        this->bindRun( args... )
-                        )
-                );
+        worker,
+        ::fwCom::util::weakcall(
+            this->shared_from_this(),
+            this->bindRun( args ... )
+            )
+        );
 }
 
 //-----------------------------------------------------------------------------
 
 template< typename ... A >
-inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args) const
+inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(A ... args) const
 {
     ::fwCore::mt::ReadLock lock(this->m_workerMutex);
 
@@ -69,15 +69,15 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args
     }
 
     OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
-    
+
     return postWeakCall< void >(
-                m_worker,
-                ::fwCom::util::weakcall(
-                        this->shared_from_this(),
-                        this->bindRun( args... ),
-                        this->m_workerMutex
-                        )
-                );
+        m_worker,
+        ::fwCom::util::weakcall(
+            this->shared_from_this(),
+            this->bindRun( args ... ),
+            this->m_workerMutex
+            )
+        );
 
 }
 
@@ -87,7 +87,7 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A...) >::asyncRun(A... args
 // keyword
 template< typename ... A >
 template< typename R, typename WEAKCALL >
-::boost::shared_future< R > SlotRun< void (A...) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
+::boost::shared_future< R > SlotRun< void (A ...) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
     ::boost::future< R > ufuture = task.get_future();

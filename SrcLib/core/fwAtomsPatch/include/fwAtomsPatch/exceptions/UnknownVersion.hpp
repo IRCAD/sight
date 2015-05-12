@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,11 +18,13 @@ namespace exceptions
 /**
  * @brief Thrown when a given object version is unknown and can't be processed.
  */
-class UnknownVersion: public fwAtomsPatch::exceptions::Base
+class UnknownVersion : public fwAtomsPatch::exceptions::Base
 {
 public:
     UnknownVersion(const std::string& message);
-    virtual ~UnknownVersion() throw() {};
+    virtual ~UnknownVersion() throw()
+    {
+    }
 };
 
 } // namespace exceptions

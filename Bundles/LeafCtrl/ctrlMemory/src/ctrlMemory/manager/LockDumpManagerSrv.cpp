@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ namespace manager
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlMemory::manager::LockDumpManagerSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlMemory::manager::LockDumpManagerSrv, ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
@@ -38,7 +38,8 @@ LockDumpManagerSrv::LockDumpManagerSrv() throw()
 //-----------------------------------------------------------------------------
 
 LockDumpManagerSrv::~LockDumpManagerSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -79,12 +80,13 @@ void LockDumpManagerSrv::receiving( ::fwServices::ObjectMsg::csptr message ) thr
 
 //-----------------------------------------------------------------------------
 
-void LockDumpManagerSrv::setDumpLockOnImages( LockMapType &lockMap, ::fwData::Composite::sptr _composite, bool _isLocked )
+void LockDumpManagerSrv::setDumpLockOnImages( LockMapType &lockMap, ::fwData::Composite::sptr _composite,
+                                              bool _isLocked )
 {
     BOOST_FOREACH( ::fwData::Composite::value_type objectId, *_composite )
     {
         if ( m_managedKeys.empty()
-                || std::find(m_managedKeys.begin(), m_managedKeys.end(), objectId.first) != m_managedKeys.end() )
+             || std::find(m_managedKeys.begin(), m_managedKeys.end(), objectId.first) != m_managedKeys.end() )
         {
             if (_isLocked)
             {
@@ -128,7 +130,7 @@ void LockDumpManagerSrv::configuring()  throw ( ::fwTools::Failed )
             ++item )
     {
         SLM_FATAL_IF( "Sorry, attribute \"key\" is missing", !(*item)->hasAttribute("key") );
-        std::string key =  (*item)->getExistingAttributeValue("key");
+        std::string key = (*item)->getExistingAttributeValue("key");
         m_managedKeys.push_back(key);
     }
 }
@@ -136,17 +138,20 @@ void LockDumpManagerSrv::configuring()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void LockDumpManagerSrv::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void LockDumpManagerSrv::updating() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void LockDumpManagerSrv::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

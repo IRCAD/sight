@@ -1,4 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2004-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,8 +30,8 @@ namespace helper
 
 
 void Config::createConnections(
-        ::fwRuntime::ConfigurationElement::csptr connectionCfg,
-        ::fwServices::helper::SigSlotConnection::sptr connections)
+    ::fwRuntime::ConfigurationElement::csptr connectionCfg,
+    ::fwServices::helper::SigSlotConnection::sptr connections)
 {
     typedef std::pair< std::string, ::fwCom::Signals::SignalKeyType > SignalInfoType;
     typedef std::pair< std::string, ::fwCom::Slots::SlotKeyType > SlotInfoType;
@@ -52,7 +53,7 @@ void Config::createConnections(
             uid.assign(match[1].first, match[1].second);
             key.assign(match[2].first, match[2].second);
 
-            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName() ,
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName(),
                         !uid.empty() && !key.empty());
 
             if (elem->getName() == "signal")
@@ -68,18 +69,18 @@ void Config::createConnections(
         }
     }
 
-    ::fwTools::Object::sptr sigSource = ::fwTools::fwID::getObject(signalInfo.first);
+    ::fwTools::Object::sptr sigSource    = ::fwTools::fwID::getObject(signalInfo.first);
     ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(sigSource);
 
-    SLM_ASSERT("Signal source not found" << signalInfo.first , sigSource);
-    SLM_ASSERT("invalid signal source " << signalInfo.first , hasSignals);
+    SLM_ASSERT("Signal source not found" << signalInfo.first, sigSource);
+    SLM_ASSERT("invalid signal source " << signalInfo.first, hasSignals);
 
     BOOST_FOREACH(SlotInfoType slotInfo,  slotInfos)
     {
         ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotInfo.first);
         SLM_ASSERT("Failed to retrieve object '" + slotInfo.first + "'", obj);
         ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
-        SLM_ASSERT("invalid slot owner " << slotInfo.first , hasSlots);
+        SLM_ASSERT("invalid slot owner " << slotInfo.first, hasSlots);
 
         connections->connect(hasSignals, signalInfo.second, hasSlots, slotInfo.second);
     }

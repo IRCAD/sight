@@ -20,8 +20,8 @@ namespace adaptor
 {
 
 /**
-* @brief Root class for all scene2D adaptors.
-*/
+ * @brief Root class for all scene2D adaptors.
+ */
 class SCENE2D_CLASS_API IAdaptor : public ::fwServices::IService
 {
 
@@ -39,7 +39,7 @@ public:
     // <width, height>
     typedef std::pair<float, float> Scene2DRatio;
 
-    fwCoreServiceClassDefinitionsMacro ( (IAdaptor)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IAdaptor)(::fwServices::IService) );
 
     /// Set the zValue.
     SCENE2D_API void setZValue(float _zValue);
@@ -69,7 +69,7 @@ protected:
 
 
     /// ToDo IM
-    SCENE2D_API virtual void info(std::ostream &_sstream ) ;
+    SCENE2D_API virtual void info(std::ostream &_sstream );
 
     /// Not implemented in IAdaptor but in its subclasses
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
@@ -106,11 +106,13 @@ protected:
 
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from adaptor
     //  coordinates to scene coordinates
-    SCENE2D_API Point2DType mapAdaptorToScene(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis, ::scene2D::data::Axis::sptr _yAxis);
+    SCENE2D_API Point2DType mapAdaptorToScene(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis,
+                                              ::scene2D::data::Axis::sptr _yAxis);
 
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from scene
     //  coordinates to adaptor coordinates
-    SCENE2D_API Point2DType mapSceneToAdaptor(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis, ::scene2D::data::Axis::sptr _yAxis);
+    SCENE2D_API Point2DType mapSceneToAdaptor(Point2DType _xy, ::scene2D::data::Axis::sptr _xAxis,
+                                              ::scene2D::data::Axis::sptr _yAxis);
 
     /// Return the ratio between view's initial size and its current size
     SCENE2D_API ViewSizeRatio getViewSizeRatio();
@@ -150,7 +152,10 @@ protected:
     typedef std::vector< ::scene2D::adaptor::IAdaptor::wptr > ManagedAdaptorVector;
 
     /// Return all managed adaptor
-    SCENE2D_API ManagedAdaptorVector & getRegisteredServices() { return m_managedAdaptors; };
+    SCENE2D_API ManagedAdaptorVector & getRegisteredServices()
+    {
+        return m_managedAdaptors;
+    }
 
     /// Register new adaptor
     SCENE2D_API void registerService( ::scene2D::adaptor::IAdaptor::sptr srv );

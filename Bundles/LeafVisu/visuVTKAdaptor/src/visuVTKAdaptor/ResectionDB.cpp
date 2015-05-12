@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@
 
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ResectionDB, ::fwData::ResectionDB ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ResectionDB, ::fwData::ResectionDB );
 
 namespace visuVTKAdaptor
 {
@@ -87,7 +87,7 @@ void ResectionDB::doUpdate() throw(fwTools::Failed)
     BOOST_FOREACH( ::fwData::Resection::sptr resection, resecDB->getResections() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
-                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > ( resection, "::visuVTKAdaptor::Resection" );
+            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > ( resection, "::visuVTKAdaptor::Resection" );
         SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
@@ -107,7 +107,7 @@ void ResectionDB::doUpdate() throw(fwTools::Failed)
     if(resec)
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
-                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > ( resec, "::visuVTKAdaptor::Resection" );
+            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > ( resec, "::visuVTKAdaptor::Resection" );
         SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
@@ -139,11 +139,11 @@ void ResectionDB::doStop() throw(fwTools::Failed)
 
 void ResectionDB::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    ::fwComEd::ResectionDBMsg::csptr pResectionDBMsg = ::fwComEd::ResectionDBMsg::dynamicConstCast( msg ) ;
+    ::fwComEd::ResectionDBMsg::csptr pResectionDBMsg = ::fwComEd::ResectionDBMsg::dynamicConstCast( msg );
     if ( pResectionDBMsg )
     {
         if ( pResectionDBMsg->hasEvent(::fwComEd::ResectionDBMsg::ADD_SAFE_PART) ||
-                pResectionDBMsg->hasEvent(::fwComEd::ResectionDBMsg::ADD_RESECTION) )
+             pResectionDBMsg->hasEvent(::fwComEd::ResectionDBMsg::ADD_RESECTION) )
         {
             this->doUpdate();
         }

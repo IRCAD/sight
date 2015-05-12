@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMS_BASE_MAP_HPP_
-#define __FWATOMS_BASE_MAP_HPP_
+#ifndef __FWATOMS_MAP_HPP__
+#define __FWATOMS_MAP_HPP__
 
 
 #include <map>
@@ -32,7 +32,7 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Map : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Map)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Map >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Map)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Map >);
 
     typedef std::map<std::string, Base::sptr> MapType;
 
@@ -63,13 +63,15 @@ public:
      * @param key Private construction key
      */
     Map(::fwAtoms::Base::Key key)
-    {}
+    {
+    }
 
     /**
      * @brief   Destructor
      */
     virtual ~Map()
-    {}
+    {
+    }
 
     /**
      * @brief Insert a new value in the map.
@@ -77,49 +79,75 @@ public:
      * @param value the new value
      */
     std::pair<IteratorType, bool> insert(const std::string &key, const Base::sptr &value)
-    { return m_value.insert( ValueType(key, value) ); }
+    {
+        return m_value.insert( ValueType(key, value) );
+    }
 
     /**
      * @brief retrieve size of map
      * @return the map size
      */
-    size_t size() const {return m_value.size();}
+    size_t size() const
+    {
+        return m_value.size();
+    }
 
     /**
      *@brief Provide an iterator on the first element
      *@return An iterator on the first element, end() if map is empty.
      */
-    IteratorType begin(){return m_value.begin();}
+    IteratorType begin()
+    {
+        return m_value.begin();
+    }
 
     /**
      *@brief Provide a const iterator on the first element
      *@return An iterator on the first element, end() if map is empty.
      */
-    ConstIteratorType begin() const{return m_value.begin();}
+    ConstIteratorType begin() const
+    {
+        return m_value.begin();
+    }
 
     /**
      * @brief Return an iterator after the last element in the map
      */
-    IteratorType end(){return m_value.end();}
+    IteratorType end()
+    {
+        return m_value.end();
+    }
 
     /**
      * @brief Return a const iterator after the last element in the map
      */
-    ConstIteratorType end() const{return m_value.end();}
+    ConstIteratorType end() const
+    {
+        return m_value.end();
+    }
 
     //! clear the map
-    void  clear() {m_value.clear();}
+    void  clear()
+    {
+        m_value.clear();
+    }
 
     /**
      * @brief test if the map is empty
      * @return true if empty
      */
-    bool empty() const {return m_value.empty();}
+    bool empty() const
+    {
+        return m_value.empty();
+    }
 
     /**
      * @brief returns atom's map
      */
-    const MapType& getValue() const {return m_value;}
+    const MapType& getValue() const
+    {
+        return m_value;
+    }
 
 
     /**
@@ -128,7 +156,10 @@ public:
      * @return an iterator on value pointed by key if exist, else return
      * Map.end()
      */
-    MapType::const_iterator find(const std::string &key) const {return m_value.find(key);}
+    MapType::const_iterator find(const std::string &key) const
+    {
+        return m_value.find(key);
+    }
 
 
     /**
@@ -137,7 +168,10 @@ public:
      * @return the value associated with the key or an empty base if the key
      *         is not in the map.
      */
-    Base::sptr operator[](const std::string &key){return m_value[key];}
+    Base::sptr operator[](const std::string &key)
+    {
+        return m_value[key];
+    }
 
     /**
      * @brief Returns a clone object
@@ -147,15 +181,18 @@ public:
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const {return ::fwAtoms::Base::MAP;}
+    ::fwAtoms::Base::AtomType type() const
+    {
+        return ::fwAtoms::Base::MAP;
+    }
 
 
 protected:
-     MapType m_value;
+    MapType m_value;
 };
 
 }
 
 
-#endif /* __FWATOMS_BASE_MAP_HPP_ */
+#endif /* __FWATOMS_MAP_HPP__ */
 

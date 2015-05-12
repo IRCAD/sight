@@ -25,16 +25,16 @@ namespace visuVTKAdaptor
 /**
  * @brief Render axes in the generic scene.
  */
-class VISUVTKADAPTOR_CLASS_API Axes: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Axes : public ::fwRenderVTK::IVtkAdaptorService
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Axes)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Axes)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Axes() throw();
     VISUVTKADAPTOR_API virtual ~Axes() throw();
 
-protected :
+protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);

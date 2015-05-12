@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWMEMORY_MEMORYMONITORTOOLS_HPP_
-#define _FWMEMORY_MEMORYMONITORTOOLS_HPP_
+#ifndef __FWMEMORY_TOOLS_MEMORYMONITORTOOLS_HPP__
+#define __FWMEMORY_TOOLS_MEMORYMONITORTOOLS_HPP__
 
 #include <boost/cstdint.hpp>
 
@@ -21,9 +21,9 @@ class FWMEMORY_CLASS_API MemoryMonitorTools
 
 public:
 
-    FWMEMORY_API MemoryMonitorTools() ;
+    FWMEMORY_API MemoryMonitorTools();
 
-    FWMEMORY_API ~MemoryMonitorTools() ;
+    FWMEMORY_API ~MemoryMonitorTools();
 
 
     FWMEMORY_API static ::boost::uint64_t estimateFreeMem();
@@ -51,4 +51,4 @@ public:
 } // namespace tools
 } // namespace fwMemory
 
-#endif // _FWMEMORY_MEMORYMONITORTOOLS_HPP_
+#endif // __FWMEMORY_TOOLS_MEMORYMONITORTOOLS_HPP__

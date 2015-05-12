@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _OPVTKMESH_ACTION_VTKMESHCREATION_HPP_
-#define _OPVTKMESH_ACTION_VTKMESHCREATION_HPP_
+#ifndef __OPVTKMESH_ACTION_VTKMESHCREATION_HPP__
+#define __OPVTKMESH_ACTION_VTKMESHCREATION_HPP__
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -18,18 +18,18 @@ namespace action
 {
 
 /**
-* @brief Create a mesh from an image with VTK
-**/
+ * @brief Create a mesh from an image with VTK
+ **/
 class OPVTKMESH_CLASS_API VTKMeshCreation : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (VTKMeshCreation)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (VTKMeshCreation)(::fwGui::IActionSrv) );
 
-    OPVTKMESH_API VTKMeshCreation() throw() ;
+    OPVTKMESH_API VTKMeshCreation() throw();
 
-    OPVTKMESH_API virtual ~VTKMeshCreation() throw() ;
+    OPVTKMESH_API virtual ~VTKMeshCreation() throw();
 
 protected:
 
@@ -43,9 +43,9 @@ protected:
 
     OPVTKMESH_API void updating() throw ( ::fwTools::Failed );
 
-    OPVTKMESH_API void info ( std::ostream &_sstream ) ;
+    OPVTKMESH_API void info ( std::ostream &_sstream );
 
-private :
+private:
 
     std::string m_imageUID;
     std::string m_meshUID;
@@ -57,4 +57,4 @@ private :
 } // namespace opVTKMesh
 
 
-#endif // _OPVTKMESH_ACTION_VTKMESHCREATION_HPP_
+#endif // __OPVTKMESH_ACTION_VTKMESHCREATION_HPP__

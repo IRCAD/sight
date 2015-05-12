@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIMEASUREMENTQT_EDITOR_NAMESPACE_HPP_
-#define _UIMEASUREMENTQT_EDITOR_NAMESPACE_HPP_
+#ifndef __UIMEASUREMENTQT_EDITOR_NAMESPACE_HPP__
+#define __UIMEASUREMENTQT_EDITOR_NAMESPACE_HPP__
 
 
 namespace uiMeasurement
@@ -26,4 +26,4 @@ namespace editor
 namespace uiMeasurementQt
 {
 }
-#endif /* _UIMEASUREMENTQT_EDITOR_NAMESPACE_HPP_ */
+#endif /* __UIMEASUREMENTQT_EDITOR_NAMESPACE_HPP__ */

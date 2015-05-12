@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@ namespace manager
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SField, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SField, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
@@ -39,7 +39,8 @@ SField::SField() throw() : m_dummyStopMode(false)
 //-----------------------------------------------------------------------------
 
 SField::~SField() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -69,7 +70,8 @@ void SField::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwToo
 //-----------------------------------------------------------------------------
 
 void SField::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -82,7 +84,8 @@ void SField::updating() throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void SField::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -134,7 +137,7 @@ void SField::configuring()  throw ( ::fwTools::Failed )
         std::string mode = modeConfiguration->getAttributeValue("type");
         SLM_ASSERT("Wrong mode type", (mode == "dummy" ) || (mode == "stop" ) || mode=="startAndUpdate");
         m_dummyStopMode = (mode == "dummy" );
-        m_mode = mode;
+        m_mode          = mode;
     }
 
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
@@ -148,10 +151,10 @@ void SField::starting()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Object::sptr object = this->getObject() ;
+    ::fwData::Object::sptr object = this->getObject();
     const ::fwData::Object::FieldMapType& fieldsMap = object->getFields();
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
-    for (iter = m_managerConfiguration->begin() ; iter != m_managerConfiguration->end() ; ++iter)
+    for (iter = m_managerConfiguration->begin(); iter != m_managerConfiguration->end(); ++iter)
     {
         if ((*iter)->getName() == "field")
         {
@@ -190,42 +193,46 @@ void SField::addFields( const ModifiedFieldsContainerType& fields )
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::sptr SField::add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt )
+::fwServices::IService::sptr SField::add( ::fwData::Object::sptr obj, ::fwRuntime::ConfigurationElement::sptr _elt )
 {
-    OSLM_ASSERT("ConfigurationElement node name must be \"service\" not "<<_elt->getName(), _elt->getName() == "service" ) ;
-    SLM_ASSERT("Attribute \"type\" is missing", _elt->hasAttribute("type") ) ;
-    SLM_ASSERT("Attribute \"impl\" is missing", _elt->hasAttribute("impl") ) ;
+    OSLM_ASSERT("ConfigurationElement node name must be \"service\" not "<<_elt->getName(),
+                _elt->getName() == "service" );
+    SLM_ASSERT("Attribute \"type\" is missing", _elt->hasAttribute("type") );
+    SLM_ASSERT("Attribute \"impl\" is missing", _elt->hasAttribute("impl") );
 
-    ::fwServices::IService::sptr service ;
+    ::fwServices::IService::sptr service;
 
-    std::string serviceType = _elt->getExistingAttributeValue("type") ;
+    std::string serviceType        = _elt->getExistingAttributeValue("type");
     std::string implementationType = _elt->getExistingAttributeValue("impl");
 
     // Add service with possible id
     if( _elt->hasAttribute("uid")  )
     {
-        service = ::fwServices::add( obj , serviceType , implementationType , _elt->getExistingAttributeValue("uid") );
+        service = ::fwServices::add( obj, serviceType, implementationType, _elt->getExistingAttributeValue("uid") );
     }
     else
     {
-        service =  ::fwServices::add( obj , serviceType , implementationType )  ;
+        service = ::fwServices::add( obj, serviceType, implementationType );
     }
 
     // Search for configuration : inline or offline
     ::fwRuntime::ConfigurationElement::sptr cfg = _elt;
     if( _elt->hasAttribute("config"))
     {
-        cfg = ::fwRuntime::ConfigurationElement::constCast( ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig( _elt->getExistingAttributeValue("config") , implementationType ) );
+        cfg = ::fwRuntime::ConfigurationElement::constCast(
+            ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig( _elt->
+                                                                                   getExistingAttributeValue("config"),
+                                                                                   implementationType ) );
     }
 
     // Set configuration
-    service->setConfiguration( cfg ) ;
+    service->setConfiguration( cfg );
 
     // Configure
     service->configure();
 
     // Return
-    return service ;
+    return service;
 }
 
 //-----------------------------------------------------------------------------
@@ -234,11 +241,11 @@ void SField::addField( const FieldNameType& fieldName, ::fwData::Object::sptr fi
 {
     if(!m_managerConfiguration->find("field", "id", fieldName).empty())
     {
-        ConfigurationType conf = m_managerConfiguration->find("field", "id", fieldName).at(0);
-        const std::string fieldType   = conf->getAttributeValue("type");
+        ConfigurationType conf      = m_managerConfiguration->find("field", "id", fieldName).at(0);
+        const std::string fieldType = conf->getAttributeValue("type");
 
         OSLM_ASSERT("FieldType "<<fieldType<<" does not match ObjectType in Object "<<field->getClassname(),
-                fieldType == field->getClassname());
+                    fieldType == field->getClassname());
         SubServicesVecType subVecSrv;
         std::vector< ConfigurationType > services = conf->find("service");
         BOOST_FOREACH( ConfigurationType cfg, services)
@@ -246,9 +253,9 @@ void SField::addField( const FieldNameType& fieldName, ::fwData::Object::sptr fi
             ::fwServices::IService::sptr srv = this->add( field, cfg );
             OSLM_ASSERT("Instantiation Service failed on field "<<fieldName, srv);
             srv->configure();
-            SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
-            subSrv->m_config = cfg;
-            subSrv->m_service = srv;
+            SPTR(SubService) subSrv = SPTR(SubService)( new SubService());
+            subSrv->m_config        = cfg;
+            subSrv->m_service       = srv;
 
             // Standard communication management
             if ( cfg->getAttributeValue("autoConnect") == "yes" )
@@ -266,7 +273,8 @@ void SField::addField( const FieldNameType& fieldName, ::fwData::Object::sptr fi
 
             if (!workerKey.empty())
             {
-                ::fwServices::registry::ActiveWorkers::sptr activeWorkers = ::fwServices::registry::ActiveWorkers::getDefault();
+                ::fwServices::registry::ActiveWorkers::sptr activeWorkers =
+                    ::fwServices::registry::ActiveWorkers::getDefault();
                 ::fwThread::Worker::sptr worker;
                 worker = activeWorkers->getWorker(workerKey);
                 if (!worker)
@@ -359,8 +367,8 @@ void SField::removeField( const FieldNameType& fieldName )
 {
     if(!m_managerConfiguration->find("field", "id", fieldName).empty())
     {
-        ConfigurationType conf = m_managerConfiguration->find("field", "id", fieldName).at(0);
-        const std::string fieldType   = conf->getAttributeValue("type");
+        ConfigurationType conf      = m_managerConfiguration->find("field", "id", fieldName).at(0);
+        const std::string fieldType = conf->getAttributeValue("type");
 
         this->removeConnections(fieldName);
         this->disconnectProxies(fieldName);
@@ -411,13 +419,13 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
 {
     SLM_ASSERT( "'fieldName' required attribute missing or empty", !fieldName.empty() );
 
-    ::fwData::Object::sptr object = this->getObject() ;
+    ::fwData::Object::sptr object = this->getObject();
 
     OSLM_ASSERT(fieldName << " not found in object.",
-            object->getFields().find(fieldName) == object->getFields().end());
+                object->getFields().find(fieldName) == object->getFields().end());
 
-    ConfigurationType conf = m_managerConfiguration->find("field", "id", fieldName).at(0);
-    const std::string fieldType    = conf->getAttributeValue("type");
+    ConfigurationType conf      = m_managerConfiguration->find("field", "id", fieldName).at(0);
+    const std::string fieldType = conf->getAttributeValue("type");
     SLM_ASSERT( "'type' required attribute missing or empty", !fieldType.empty() );
 
     // Any subServices have been registered with field.
@@ -434,17 +442,17 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
             ::fwServices::IService::sptr srv = this->add( dummyObj, cfg );
             OSLM_ASSERT("Instantiation Service failed ofieldct "<<fieldName, srv);
             srv->configure();
-            SPTR(SubService) subSrv =  SPTR(SubService)( new SubService());
-            subSrv->m_config = cfg;
-            subSrv->m_service = srv;
-            subSrv->m_dummy = dummyObj;
+            SPTR(SubService) subSrv = SPTR(SubService)( new SubService());
+            subSrv->m_config        = cfg;
+            subSrv->m_service       = srv;
+            subSrv->m_dummy         = dummyObj;
             subVecSrv.push_back(subSrv);
             subSrv->getService()->start();
 
             if ( cfg->getAttributeValue("autoConnect") == "yes" )
             {
                 subSrv->m_hasAutoConnection = true;
-                subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();
+                subSrv->m_connections       = ::fwServices::helper::SigSlotConnection::New();
             }
         }
         m_fieldsSubServices[fieldName] = subVecSrv;

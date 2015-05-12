@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUIQT_EDITOR_DUMMYIEDITOR_HPP_
-#define _GUIQT_EDITOR_DUMMYIEDITOR_HPP_
+#ifndef __GUIQT_EDITOR_DUMMYEDITOR_HPP__
+#define __GUIQT_EDITOR_DUMMYEDITOR_HPP__
 
 #include <QPointer>
 #include <QLabel>
@@ -26,7 +26,7 @@ namespace editor
 /**
  * @brief   Defines the service interface managing the basic editor service for object. Do nothing.
  * @class   DummyEditor
- * 
+ *
 
  * @date    2009.
  *
@@ -35,16 +35,16 @@ namespace editor
 class GUIQT_CLASS_API DummyEditor : public ::gui::editor::IEditor
 {
 
-public :
+public:
 
 
-    fwCoreServiceClassDefinitionsMacro ( (DummyEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DummyEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    GUIQT_API DummyEditor() throw() ;
+    GUIQT_API DummyEditor() throw();
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~DummyEditor() throw() ;
+    GUIQT_API virtual ~DummyEditor() throw();
 
 protected:
 
@@ -54,7 +54,7 @@ protected:
     /**
      * @brief This method launches the IEditor::starting method.
      */
-    GUIQT_API virtual void starting() throw( ::fwTools::Failed ) ;
+    GUIQT_API virtual void starting() throw( ::fwTools::Failed );
 
     /**
      * @brief This method launches the IEditor::stopping method.
@@ -64,7 +64,7 @@ protected:
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
-    GUIQT_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+    GUIQT_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to update services. Do nothing.
@@ -73,7 +73,7 @@ protected:
 
     /**
      * @brief This method is used to configure the class parameters. Do nothing.
-    */
+     */
     GUIQT_API virtual void configuring() throw( ::fwTools::Failed );
 
     /**
@@ -95,6 +95,6 @@ private:
 }
 }
 
-#endif /*_GUIQT_EDITOR_DUMMYIEDITOR_HPP_*/
+#endif /*__GUIQT_EDITOR_DUMMYEDITOR_HPP__*/
 
 

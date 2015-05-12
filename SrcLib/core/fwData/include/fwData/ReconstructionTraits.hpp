@@ -30,7 +30,8 @@ namespace fwData
 class FWDATA_CLASS_API ReconstructionTraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ReconstructionTraits)(::fwData::Object), (()), ::fwData::factory::New< ReconstructionTraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ReconstructionTraits)(::fwData::Object), (()),
+                                            ::fwData::factory::New< ReconstructionTraits >);
     fwCampMakeFriendDataMacro((fwData)(ReconstructionTraits));
 
     /**
@@ -44,7 +45,7 @@ public:
      */
     FWDATA_API virtual ~ReconstructionTraits();
 
-    fwGettersSettersDocMacro(Identifier, identifier, std::string, the ROIs identifier);
+    fwGettersSettersDocMacro(Identifier, identifier, std::string, "the ROIs identifier");
 
     /// Set the reconstruction operator mask node
     FWDATA_API void setMaskOpNode( ::fwData::Node::sptr maskOpNode );

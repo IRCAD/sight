@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@ class TUTO15MULTITHREADCTRL_CLASS_API SShowArray : public ::fwServices::IService
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SShowArray)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SShowArray)(::fwServices::IService) );
 
     TUTO15MULTITHREADCTRL_API SShowArray() throw();
     TUTO15MULTITHREADCTRL_API virtual ~SShowArray() throw();

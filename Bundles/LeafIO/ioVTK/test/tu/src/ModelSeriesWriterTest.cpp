@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -60,11 +60,11 @@ void ModelSeriesWriterTest::tearDown()
 //------------------------------------------------------------------------------
 
 void runModelSeriesSrv(
-        const std::string& impl,
-        const SPTR(::fwRuntime::EConfigurationElement)& cfg,
-        const SPTR(::fwData::Object)& obj)
+    const std::string& impl,
+    const SPTR(::fwRuntime::EConfigurationElement)& cfg,
+    const SPTR(::fwData::Object)& obj)
 {
-   ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create(impl);
+    ::fwServices::IService::sptr srv = ::fwServices::registry::ServiceFactory::getDefault()->create(impl);
 
     CPPUNIT_ASSERT_MESSAGE(std::string("Failed to create service ") + impl, srv);
 
@@ -83,7 +83,7 @@ void runModelSeriesSrv(
 ::fwRuntime::EConfigurationElement::sptr getIOCfgFromFolder(const fs::path& file)
 {
     ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr cfg = ::fwRuntime::EConfigurationElement::New("folder");
+    ::fwRuntime::EConfigurationElement::sptr cfg    = ::fwRuntime::EConfigurationElement::New("folder");
     cfg->setValue(file.string());
     srvCfg->addConfigurationElement(cfg);
 
@@ -112,9 +112,9 @@ size_t recHash(const ::fwData::Reconstruction::sptr &rec)
 {
     ::fwData::Mesh::sptr mesh = rec->getMesh();
 
-    ::fwData::Array::sptr points = mesh->getPointsArray();
-    ::fwData::Array::sptr cellTypes = mesh->getCellTypesArray();
-    ::fwData::Array::sptr cellData = mesh->getCellDataArray();
+    ::fwData::Array::sptr points          = mesh->getPointsArray();
+    ::fwData::Array::sptr cellTypes       = mesh->getCellTypesArray();
+    ::fwData::Array::sptr cellData        = mesh->getCellDataArray();
     ::fwData::Array::sptr cellDataOffsets = mesh->getCellDataOffsetsArray();
 
     std::string buf;
@@ -122,19 +122,19 @@ size_t recHash(const ::fwData::Reconstruction::sptr &rec)
     ::fwMemory::BufferObject::sptr bo;
     ::fwMemory::BufferObject::Lock lock;
 
-    bo = points->getBufferObject();
+    bo   = points->getBufferObject();
     lock = (bo->lock());
     buf.append(static_cast< char * >(lock.getBuffer()), bo->getSize());
 
-    bo = cellTypes->getBufferObject();
+    bo   = cellTypes->getBufferObject();
     lock = (bo->lock());
     buf.append(static_cast< char * >(lock.getBuffer()), bo->getSize());
 
-    bo = cellData->getBufferObject();
+    bo   = cellData->getBufferObject();
     lock = (bo->lock());
     buf.append(static_cast< char * >(lock.getBuffer()), bo->getSize());
 
-    bo = cellDataOffsets->getBufferObject();
+    bo   = cellDataOffsets->getBufferObject();
     lock = (bo->lock());
     buf.append(static_cast< char * >(lock.getBuffer()), bo->getSize());
 
@@ -153,7 +153,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
     if( fs::exists(dir) )
     {
         CPPUNIT_ASSERT_MESSAGE(std::string("Directory ") + dir.string() + " must be empty",
-                fs::is_empty(dir));
+                               fs::is_empty(dir));
     }
     else
     {
@@ -161,9 +161,9 @@ void ModelSeriesWriterTest::testWriteMeshes()
     }
 
     runModelSeriesSrv(
-            "::ioVTK::SModelSeriesWriter",
-            getIOCfgFromFolder(dir),
-            modelSeries);
+        "::ioVTK::SModelSeriesWriter",
+        getIOCfgFromFolder(dir),
+        modelSeries);
 
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
@@ -176,9 +176,9 @@ void ModelSeriesWriterTest::testWriteMeshes()
     CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB().size(), files.size());
 
     runModelSeriesSrv(
-            "::ioVTK::SSeriesDBReader",
-            getIOCfgFromFiles(files),
-            seriesDB);
+        "::ioVTK::SSeriesDBReader",
+        getIOCfgFromFiles(files),
+        seriesDB);
 
     const ::fwMedData::SeriesDB::ContainerType& series = seriesDB->getContainer();
     CPPUNIT_ASSERT_EQUAL((size_t)1, series.size());
@@ -193,8 +193,8 @@ void ModelSeriesWriterTest::testWriteMeshes()
     std::set< size_t > refHashes;
     std::set< size_t > readHashes;
 
-    const RecVecType& refRecs = modelSeries->getReconstructionDB();
-    RecVecType::const_iterator itRef = refRecs.begin();
+    const RecVecType& refRecs         = modelSeries->getReconstructionDB();
+    RecVecType::const_iterator itRef  = refRecs.begin();
     RecVecType::const_iterator itRead = readRecs.begin();
 
     for(; itRef != refRecs.end(); ++itRef, ++itRead)
@@ -219,7 +219,7 @@ void ModelSeriesWriterTest::testWriteReconstructions()
     if( fs::exists(dir) )
     {
         CPPUNIT_ASSERT_MESSAGE(std::string("Directory ") + dir.string() + " must be empty",
-                fs::is_empty(dir));
+                               fs::is_empty(dir));
     }
     else
     {
@@ -227,9 +227,9 @@ void ModelSeriesWriterTest::testWriteReconstructions()
     }
 
     runModelSeriesSrv(
-            "::ioVTK::SModelSeriesObjWriter",
-            getIOCfgFromFolder(dir),
-            modelSeries);
+        "::ioVTK::SModelSeriesObjWriter",
+        getIOCfgFromFolder(dir),
+        modelSeries);
 
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 

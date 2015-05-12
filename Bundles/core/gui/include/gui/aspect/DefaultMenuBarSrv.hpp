@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef GUI_ASPECT_DEFAULTMENUBARSRV_HPP_
-#define GUI_ASPECT_DEFAULTMENUBARSRV_HPP_
+#ifndef __GUI_ASPECT_DEFAULTMENUBARSRV_HPP__
+#define __GUI_ASPECT_DEFAULTMENUBARSRV_HPP__
 
 #include <fwGui/IMenuBarSrv.hpp>
 
@@ -23,9 +23,9 @@ namespace aspect
 class GUI_CLASS_API DefaultMenuBarSrv : public ::fwGui::IMenuBarSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultMenuBarSrv)(::fwGui::IMenuBarSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DefaultMenuBarSrv)(::fwGui::IMenuBarSrv) );
 
     /// Constructor. Do nothing.
     GUI_API DefaultMenuBarSrv() throw();
@@ -33,7 +33,7 @@ public :
     /// Destructor. Do nothing.
     GUI_API virtual ~DefaultMenuBarSrv() throw();
 
-protected :
+protected:
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
@@ -43,7 +43,7 @@ protected :
      * @brief Configuring method allows to configure an application with menu bar.
      * Example of configuration
      * @verbatim
-      <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+       <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
           <gui>
               <layout>
                   <menu name="My Menu"/>
@@ -54,7 +54,7 @@ protected :
               <menu sid="myMenu" start="yes" />
               <menu sid="myMenu2" start="yes" />
           </registry>
-      </service>
+       </service>
        @endverbatim
      *  - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
      *  - \<registry\> \</registry\> : (mandatory) describe the service management.
@@ -69,19 +69,19 @@ protected :
      *
      *  @see ::fwGui::IMenuBarSrv::initialize(), ::fwGui::layoutManager::IMenuBarLayoutManager::initialize()
      */
-    GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
+    GUI_API virtual void configuring() throw( ::fwTools::Failed );
 
     /**
      * @brief Create the menus and start the managed services.
      * @see ::fwGui::IMenuBarSrv::create()
      */
-    GUI_API virtual void starting() throw( ::fwTools::Failed ) ;
+    GUI_API virtual void starting() throw( ::fwTools::Failed );
 
     /**
      * @brief Stop all menu of this menuBar and destroy MenuBar
      * @see ::fwGui::IMenuBarSrv::destroy()
      */
-    GUI_API virtual void stopping() throw( ::fwTools::Failed ) ;
+    GUI_API virtual void stopping() throw( ::fwTools::Failed );
 
     /// Updating service, do nothing.
     GUI_API virtual void updating() throw(::fwTools::Failed);
@@ -95,4 +95,4 @@ protected :
 
 }
 
-#endif // GUI_ASPECT_DEFAULTMENUBARSRV_HPP_
+#endif // __GUI_ASPECT_DEFAULTMENUBARSRV_HPP__

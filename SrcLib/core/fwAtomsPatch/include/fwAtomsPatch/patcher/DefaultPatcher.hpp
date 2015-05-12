@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,7 +42,7 @@ class FWATOMSPATCH_CLASS_API DefaultPatcher : public IPatcher
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro((DefaultPatcher)(::fwAtomsPatch::patcher::IPatcher), (()),
-                ::fwAtomsPatch::patcher::factory::New< DefaultPatcher >);
+                                           ::fwAtomsPatch::patcher::factory::New< DefaultPatcher >);
 
     /// Constructor
     FWATOMSPATCH_API DefaultPatcher(::fwAtomsPatch::patcher::IPatcher::Key key);
@@ -52,9 +52,9 @@ public:
 
     /// Apply the patch to the specified object
     FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr transformObject(::fwAtoms::Object::sptr object,
-            const std::string &context,
-            const std::string &currentVersion,
-            const std::string &targetVersion);
+                                                                     const std::string &context,
+                                                                     const std::string &currentVersion,
+                                                                     const std::string &targetVersion);
 
 protected:
 
@@ -75,11 +75,11 @@ protected:
 
     /// Apply structural patch.
     FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr applyStructuralPatch(::fwAtoms::Object::sptr previous,
-            ::fwAtoms::Object::sptr current);
+                                                                          ::fwAtoms::Object::sptr current);
 
     /// Apply contextual patch.
     FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr applyContextualPatch(::fwAtoms::Object::sptr previous,
-            ::fwAtoms::Object::sptr current);
+                                                                          ::fwAtoms::Object::sptr current);
 
     /// Type of the pass
     enum PassType { Structural, Contextual };

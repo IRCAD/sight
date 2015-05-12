@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ namespace fwAtomsPatch
 {
 
 PatchingManager::PatchingManager(::fwAtoms::Object::sptr object)
-: m_object(object)
+    : m_object(object)
 {
 }
 
@@ -35,7 +35,7 @@ PatchingManager::~PatchingManager()
 
 ::fwAtoms::Object::sptr PatchingManager::transformTo(const std::string& newVersion)
 {
-    const std::string& context = m_object->getMetaInfo("context");
+    const std::string& context        = m_object->getMetaInfo("context");
     const std::string& currentVersion = m_object->getMetaInfo("version_name");
 
     if(currentVersion == newVersion)
@@ -45,29 +45,29 @@ PatchingManager::~PatchingManager()
     }
 
     FW_RAISE_EXCEPTION_IF(
-            ::fwAtomsPatch::exceptions::MissingInformation("Context information is missing."),
-             context.empty());
+        ::fwAtomsPatch::exceptions::MissingInformation("Context information is missing."),
+        context.empty());
 
     FW_RAISE_EXCEPTION_IF(
-            ::fwAtomsPatch::exceptions::MissingInformation("Version information is missing."),
-             currentVersion.empty());
+        ::fwAtomsPatch::exceptions::MissingInformation("Version information is missing."),
+        currentVersion.empty());
 
 
     ::fwAtomsPatch::VersionsGraph::sptr versionsGraph;
     versionsGraph = ::fwAtomsPatch::VersionsManager::getDefault()->getGraph(context);
 
     FW_RAISE_EXCEPTION_IF( ::fwAtomsPatch::exceptions::ImpossibleConversion(
-            "There is no way to go from version '" + currentVersion + "' to version '" +
-            newVersion + "' for context '" + context +"'."), !versionsGraph);
+                               "There is no way to go from version '" + currentVersion + "' to version '" +
+                               newVersion + "' for context '" + context +"'."), !versionsGraph);
 
 
     ::fwAtomsPatch::VersionsGraph::VersionSeriesType series
-             = versionsGraph->shortestPath(currentVersion, newVersion);
+        = versionsGraph->shortestPath(currentVersion, newVersion);
 
     FW_RAISE_EXCEPTION_IF( ::fwAtomsPatch::exceptions::ImpossibleConversion(
-            "There is no way to go from version '" + currentVersion + "' to version '" +
-            newVersion + "' for context '" + context +"'."),
-            series.empty());
+                               "There is no way to go from version '" + currentVersion + "' to version '" +
+                               newVersion + "' for context '" + context +"'."),
+                           series.empty());
 
     ::fwAtomsPatch::VersionsGraph::NodeIDType currentVersionNode = versionsGraph->getNode(currentVersion);
 
@@ -82,11 +82,11 @@ PatchingManager::~PatchingManager()
 
         //Retrieve versions names
         currentName = versionsGraph->getNode(currentVersionNode).getVersionName();
-        targetName = versionsGraph->getNode(targetVersionNode).getVersionName();
+        targetName  = versionsGraph->getNode(targetVersionNode).getVersionName();
 
         //Retrieve link
         const ::fwAtomsPatch::LinkDescriptor& link
-                = versionsGraph->getEdge(currentVersionNode, targetVersionNode);
+            = versionsGraph->getEdge(currentVersionNode, targetVersionNode);
 
         //Retrieve patcher
         patcher = ::fwAtomsPatch::patcher::factory::New(link.getPatcher());

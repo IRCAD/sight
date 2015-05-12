@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@
 
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera, ::fwData::Video ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera, ::fwData::Video );
 
 namespace visuVTKAdaptor
 {
@@ -64,7 +64,9 @@ void Camera::doUpdate() throw(fwTools::Failed)
 {
     ::fwData::Video::sptr video = this->getObject< ::fwData::Video >();
     if (!video->dataAvailable())
+    {
         return;
+    }
 
     if(!bCam_init)
     {
@@ -87,9 +89,9 @@ void Camera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Faile
 {
 
     ::fwComEd::CameraMsg::csptr cameraMsg = ::fwComEd::CameraMsg::dynamicConstCast( msg );
-    ::fwComEd::VideoMsg::csptr videoMsg = ::fwComEd::VideoMsg::dynamicConstCast( msg );
+    ::fwComEd::VideoMsg::csptr videoMsg   = ::fwComEd::VideoMsg::dynamicConstCast( msg );
     if ( ( cameraMsg && cameraMsg->hasEvent( ::fwComEd::CameraMsg::NEW_CAMERA ) )
-            || ( videoMsg && videoMsg->hasEvent(::fwComEd::VideoMsg::VIDEO_IS_REFRESHED) ))
+         || ( videoMsg && videoMsg->hasEvent(::fwComEd::VideoMsg::VIDEO_IS_REFRESHED) ))
     {
         doUpdate();
     }
@@ -101,9 +103,9 @@ void Camera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Faile
 
         vtkMatrix4x4* mat = vtkMatrix4x4::New();
 
-        for(int lt=0; lt<4; lt++)
+        for(int lt = 0; lt<4; lt++)
         {
-            for(int ct=0; ct<4; ct++)
+            for(int ct = 0; ct<4; ct++)
             {
                 mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
             }
@@ -114,7 +116,7 @@ void Camera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Faile
         pos[1] = mat->Element[1][3];
         pos[2] = mat->Element[2][3];
 
-        double p1[]={0.0, 0.0, 100.0, 1.0};
+        double p1[] = {0.0, 0.0, 100.0, 1.0};
         double p2[4];
         mat->MultiplyPoint( p1, p2);
 
@@ -122,11 +124,11 @@ void Camera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Faile
         mat->SetElement(1,3,0);
         mat->SetElement(2,3,0);
 
-        double p3[]={0.0, -1.0, 0.0, 1.0};
+        double p3[] = {0.0, -1.0, 0.0, 1.0};
         double p4[4];
         mat->MultiplyPoint( p3, p4);
 
-        double p5[]={p4[0],p4[1],p4[2]};
+        double p5[] = {p4[0],p4[1],p4[2]};
         camera->SetPosition(pos);
         camera->SetFocalPoint(p2);
         camera->SetViewUp(p5);
@@ -143,7 +145,7 @@ bool Camera::initCameraParameters()
     vtkRenderer* renderer = this->getRenderer();
 
     vtkCamera* camera = renderer->GetActiveCamera();
-    ::fwData::Video::sptr video = this->getObject< ::fwData::Video >();
+    ::fwData::Video::sptr video                      = this->getObject< ::fwData::Video >();
     ::fwData::TransformationMatrix3D::wptr extrinsic = video->getCamera()->getExtrinsicCameraTransformation();
     ::fwData::TransformationMatrix3D::wptr intrinsic = video->getCamera()->getIntrinsicCameraTransformation();
 
@@ -160,7 +162,9 @@ bool Camera::initCameraParameters()
     renderer->GetTiledSizeAndOrigin(&width, &height, &lowerLeftX, &lowerLeftY);
 
     if(width <=  0 || height <= 0)
+    {
         return false;
+    }
 
     camera->SetViewAngle(2.0 * atan( (this->getObject< ::fwData::Video >()->getYSize()/2.0)/fy ) / 3.1415 * 180.0);
 //    camera->SetViewAngle(2.0 * atan( (600.0/2.0)/fy ) / 3.1415 * 180.0);
@@ -168,12 +172,12 @@ bool Camera::initCameraParameters()
 
     /*****************************************************************/
     // Extrinsic matrix
-    vtkMatrix4x4 * mat = vtkMatrix4x4::New();
+    vtkMatrix4x4 * mat  = vtkMatrix4x4::New();
     vtkTransform* trans = vtkTransform::New();
 
-    for(int l=0; l<4; l++)
+    for(int l = 0; l<4; l++)
     {
-        for(int c=0; c <4; c++)
+        for(int c = 0; c <4; c++)
         {
             mat->SetElement(l,c, extrinsic.lock()->getCoefficient(l, c));
         }

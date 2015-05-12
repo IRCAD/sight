@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_ACTION_CONFIGACTIONSRV_HPP_
-#define _GUI_ACTION_CONFIGACTIONSRV_HPP_
+#ifndef __GUI_ACTION_CONFIGACTIONSRV_HPP__
+#define __GUI_ACTION_CONFIGACTIONSRV_HPP__
 
 #include <fwCom/Signal.hpp>
 
@@ -29,7 +29,7 @@ namespace action
 /**
  * @class   ConfigActionSrv
  * @brief   To manage configuration file defines in xml extension.
- * 
+ *
  * @date    2010.
  *
  * This action starts/stops a template configuration given by its identifier in this action configuration.
@@ -62,20 +62,20 @@ namespace action
            </object>
        </config>
    </extension>
-  @endverbatim
+   @endverbatim
  */
 class GUI_CLASS_API ConfigActionSrv : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ConfigActionSrv)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ConfigActionSrv)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API ConfigActionSrv() throw() ;
+    GUI_API ConfigActionSrv() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~ConfigActionSrv() throw() ;
+    GUI_API virtual ~ConfigActionSrv() throw();
 
     /// Set the action service is activated/inactivated.
     GUI_API virtual void setIsActive(bool isActive);
@@ -123,11 +123,11 @@ protected:
            <replace val="VALUE" pattern ="PATTERN_TO_REPLACE_BY_VALUE" />
        </service>
         @endverbatim
-      */
+     */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
     /**
      * @brief Read the configuration and show the parameters view.
      */
@@ -171,6 +171,6 @@ protected:
 } // GUI
 
 
-#endif // _GUI_ACTION_CONFIGACTIONSRV_HPP_
+#endif // __GUI_ACTION_CONFIGACTIONSRV_HPP__
 
 

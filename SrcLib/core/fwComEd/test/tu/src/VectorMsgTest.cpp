@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -84,7 +84,7 @@ void VectorMsgTest::vectorHelperTest()
     ::fwData::Vector::sptr vector = ::fwData::Vector::New();
 
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
-    ::fwServices::IService::sptr srv = srvFactory->create("::fwComEd::ut::SVectorTest");
+    ::fwServices::IService::sptr srv                        = srvFactory->create("::fwComEd::ut::SVectorTest");
     ::fwServices::OSR::registerService(vector, srv);
     ::fwComEd::ut::SVectorTest::sptr testSrv = ::fwComEd::ut::SVectorTest::dynamicCast(srv);
 
@@ -160,7 +160,7 @@ void VectorMsgTest::vectorHelperTest()
         CPPUNIT_ASSERT(std::find(removedObjects->begin(), removedObjects->end(), str2) != removedObjects->end());
     }
 
-    srv->stop().wait();;
+    srv->stop().wait();
     ::fwServices::OSR::unregisterService(srv);
 
     activeWorkers->clearRegistry();

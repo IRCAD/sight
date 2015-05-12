@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,12 +26,14 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 InputDialog::InputDialog(::fwGui::GuiBaseObject::Key key) : m_input("")
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 InputDialog::~InputDialog()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -61,10 +63,11 @@ void InputDialog::setInput(const std::string &text)
 std::string InputDialog::getInput()
 {
     QString title = QObject::tr(m_title.c_str());
-    QString text = QObject::tr(m_message.c_str());
+    QString text  = QObject::tr(m_message.c_str());
 
     bool IsOkClicked;
-    QString outputText = QInputDialog::getText(qApp->activeWindow(), title, text, QLineEdit::Normal,QString::fromStdString(m_input),&IsOkClicked);
+    QString outputText = QInputDialog::getText(
+        qApp->activeWindow(), title, text, QLineEdit::Normal,QString::fromStdString(m_input),&IsOkClicked);
 
     if ( IsOkClicked)
     {

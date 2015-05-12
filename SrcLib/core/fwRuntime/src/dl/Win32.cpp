@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,9 +22,10 @@ namespace dl
 //------------------------------------------------------------------------------
 
 Win32::Win32( const boost::filesystem::path & modulePath ) throw()
-: Native        ( modulePath, ::boost::shared_ptr< INameDecorator >(new Win32NameDecorator()) ),
-  m_handle  ( 0 )
-{}
+    : Native        ( modulePath, ::boost::shared_ptr< INameDecorator >(new Win32NameDecorator()) ),
+      m_handle  ( 0 )
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -64,8 +65,8 @@ void Win32::load() throw(RuntimeException)
         if(m_handle == 0)
         {
             // Retrieves the last error message.
-            DWORD   lastError = GetLastError();
-            char    buffer[1024];
+            DWORD lastError = GetLastError();
+            char buffer[1024];
             FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, 0, lastError, 0, buffer, 1024, 0 );
 
             // Builds the error message and throws the exception.

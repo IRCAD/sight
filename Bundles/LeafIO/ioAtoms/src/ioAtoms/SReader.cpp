@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -49,22 +49,22 @@
 namespace ioAtoms
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioAtoms::SReader , ::fwData::Object );
+fwServicesRegisterMacro( ::io::IReader, ::ioAtoms::SReader, ::fwData::Object );
 
 const SReader::FileExtension2NameType SReader::s_EXTENSIONS
     = ::boost::assign::map_list_of(".xml", "XML")
-        (".xmlz", "Zipped XML")
-        (".json", "JSON")
-        (".jsonz", "Zipped JSON")
-        (".hdf5", "HDF5");
+          (".xmlz", "Zipped XML")
+          (".json", "JSON")
+          (".jsonz", "Zipped JSON")
+          (".hdf5", "HDF5");
 
 //-----------------------------------------------------------------------------
 
 SReader::SReader() :
-        m_useAtomsPatcher(false),
-        m_context ("Undefined"),
-        m_version ("Undefined"),
-        m_filter  ("")
+    m_useAtomsPatcher(false),
+    m_context ("Undefined"),
+    m_version ("Undefined"),
+    m_filter  ("")
 {
     BOOST_FOREACH(SReader::FileExtension2NameType::value_type ext, s_EXTENSIONS)
     {
@@ -75,12 +75,14 @@ SReader::SReader() :
 //-----------------------------------------------------------------------------
 
 void SReader::starting() throw(::fwTools::Failed)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SReader::stopping() throw(::fwTools::Failed)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -90,7 +92,7 @@ void SReader::configuring() throw(::fwTools::Failed)
 
     ::io::IReader::configuring();
 
-    typedef SPTR(::fwRuntime::ConfigurationElement) ConfigurationElement;
+    typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationElement;
     typedef std::vector < ConfigurationElement >    ConfigurationElementContainer;
 
     m_customExts.clear();
@@ -110,7 +112,7 @@ void SReader::configuring() throw(::fwTools::Failed)
             SLM_ASSERT("No extension given for backend '" + backend + "'", !extension.empty());
             SLM_ASSERT("Extension must begin with '.'", extension[0] == '.');
 
-            m_customExts[extension] = backend;
+            m_customExts[extension]       = backend;
             m_allowedExtLabels[extension] = ext->getAttributeValue("label");
         }
     }
@@ -128,7 +130,7 @@ void SReader::configuring() throw(::fwTools::Failed)
             const std::string& ext = extension->getValue();
 
             // The extension must be found either in custom extensions list or in known extensions
-            FileExtension2NameType::const_iterator itKnown = s_EXTENSIONS.find(ext);
+            FileExtension2NameType::const_iterator itKnown  = s_EXTENSIONS.find(ext);
             FileExtension2NameType::const_iterator itCustom = m_customExts.find(ext);
 
             const bool extIsKnown = (itKnown != SReader::s_EXTENSIONS.end() || itCustom != m_customExts.end());
@@ -183,15 +185,15 @@ void SReader::configuring() throw(::fwTools::Failed)
 
         SLM_ASSERT("'Reuse' policy is available only with inject mode",
                    ("Reuse" == m_uuidPolicy && !m_inject.empty()) || "Reuse" != m_uuidPolicy
-                  );
+                   );
     }
 
     ConfigurationElementContainer patcher = m_configuration->find("patcher");
     SLM_ASSERT("The <patcher> element can be set at most once.", patcher.size() <= 1 );
     if (patcher.size() == 1)
     {
-        m_context = patcher.at(0)->getExistingAttributeValue("context");
-        m_version = patcher.at(0)->getExistingAttributeValue("version");
+        m_context         = patcher.at(0)->getExistingAttributeValue("context");
+        m_version         = patcher.at(0)->getExistingAttributeValue("version");
         m_useAtomsPatcher = true;
     }
 
@@ -212,10 +214,12 @@ struct SetDumpPolicy
             if( ::fwMemory::policy::NeverDump::dynamicCast(policy) )
             {
                 ::fwMemory::policy::BarrierDump::sptr newDumpPolicy = ::fwMemory::policy::BarrierDump::New();
-                ::fwMemory::BufferManager::BufferStats stats = manager->getBufferStats().get();
-                size_t aliveMemory = stats.totalManaged - stats.totalDumped;
-                size_t freeMemory = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem() / 2;
-                size_t barrier = std::max( aliveMemory, std::max( freeMemory, static_cast<size_t>(500L * 1024 * 1024) ) );
+                ::fwMemory::BufferManager::BufferStats stats        = manager->getBufferStats().get();
+                size_t aliveMemory                                  = stats.totalManaged - stats.totalDumped;
+                size_t freeMemory                                   =
+                    ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem() / 2;
+                size_t barrier =
+                    std::max( aliveMemory, std::max( freeMemory, static_cast<size_t>(500L * 1024 * 1024) ) );
 
                 newDumpPolicy->setBarrier( barrier );
                 manager->setDumpPolicy( newDumpPolicy );
@@ -259,10 +263,10 @@ void SReader::updating() throw(::fwTools::Failed)
 
         try
         {
-            const ::boost::filesystem::path& filePath = this->getFile();
+            const ::boost::filesystem::path& filePath  = this->getFile();
             const ::boost::filesystem::path folderPath = filePath.parent_path();
-            const ::boost::filesystem::path filename = filePath.filename();
-            std::string extension = ::boost::filesystem::extension(filePath);
+            const ::boost::filesystem::path filename   = filePath.filename();
+            std::string extension                      = ::boost::filesystem::extension(filePath);
 
             FW_RAISE_IF( "Unable to guess file format (missing extension)", extension.empty() );
 
@@ -287,27 +291,27 @@ void SReader::updating() throw(::fwTools::Failed)
 
                 if ( extension == ".json" )
                 {
-                    readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
+                    readArchive     = ::fwZip::ReadDirArchive::New(folderPath.string());
                     archiveRootName = filename;
-                    format = ::fwAtomsBoostIO::JSON;
+                    format          = ::fwAtomsBoostIO::JSON;
                 }
                 else if ( extension == ".jsonz" )
                 {
-                    readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
+                    readArchive     = ::fwZip::ReadZipArchive::New(filePath.string());
                     archiveRootName = "root.json";
-                    format = ::fwAtomsBoostIO::JSON;
+                    format          = ::fwAtomsBoostIO::JSON;
                 }
                 else if ( extension == ".xml" )
                 {
-                    readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
+                    readArchive     = ::fwZip::ReadDirArchive::New(folderPath.string());
                     archiveRootName = filename;
-                    format = ::fwAtomsBoostIO::XML;
+                    format          = ::fwAtomsBoostIO::XML;
                 }
                 else if ( extension == ".xmlz" )
                 {
-                    readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
+                    readArchive     = ::fwZip::ReadZipArchive::New(filePath.string());
                     archiveRootName = "root.xml";
-                    format = ::fwAtomsBoostIO::XML;
+                    format          = ::fwAtomsBoostIO::XML;
                 }
                 else
                 {
@@ -318,13 +322,13 @@ void SReader::updating() throw(::fwTools::Failed)
                 atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive, archiveRootName, format ) );
             }
 
-            FW_RAISE_IF( "Invalid atoms file :'" << filePath << "'", ! atom );
+            FW_RAISE_IF( "Invalid atoms file :'" << filePath << "'", !atom );
 
             /// patch atom
             if ( m_useAtomsPatcher )
             {
                 FW_RAISE_IF( "Unable to load data, found '" << atom->getMetaInfo("context")
-                             << "' context, but '" << m_context << "' was excepted.",
+                                                            << "' context, but '" << m_context << "' was excepted.",
                              atom->getMetaInfo("context") != m_context);
 
                 ::fwAtomsPatch::PatchingManager globalPatcher(atom);
@@ -339,7 +343,7 @@ void SReader::updating() throw(::fwTools::Failed)
             }
 
 
-            ::fwData::Object::sptr newData ;
+            ::fwData::Object::sptr newData;
 
             if("Strict" == m_uuidPolicy)
             {
@@ -354,14 +358,14 @@ void SReader::updating() throw(::fwTools::Failed)
                 newData = ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ChangePolicy());
             }
 
-            FW_RAISE_IF( "Unable to load '" << filePath << "' : invalid data.", ! newData );
+            FW_RAISE_IF( "Unable to load '" << filePath << "' : invalid data.", !newData );
 
             if(m_inject.empty())
             {
                 FW_RAISE_IF( "Unable to load '" << filePath
-                        << "' : trying to load a '" << newData->getClassname()
-                        << "' where a '" << data->getClassname() << "' was expected",
-                        newData->getClassname() != data->getClassname() );
+                                                << "' : trying to load a '" << newData->getClassname()
+                                                << "' where a '" << data->getClassname() << "' was expected",
+                             newData->getClassname() != data->getClassname() );
 
                 data->shallowCopy(newData);
             }
@@ -381,12 +385,12 @@ void SReader::updating() throw(::fwTools::Failed)
         {
             OSLM_ERROR( e.what() );
             ::fwGui::dialog::MessageDialog::showMessageDialog("Atoms reader failed", e.what(),
-                    ::fwGui::dialog::MessageDialog::CRITICAL);
+                                                              ::fwGui::dialog::MessageDialog::CRITICAL);
         }
         catch( ... )
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog("Atoms reader failed", "Aborting operation.",
-                    ::fwGui::dialog::MessageDialog::CRITICAL);
+                                                              ::fwGui::dialog::MessageDialog::CRITICAL);
         }
 
         cursor.setDefaultCursor();
@@ -405,9 +409,9 @@ void SReader::updating() throw(::fwTools::Failed)
 
 void SReader::notificationOfUpdate()
 {
-    ::fwData::Object::sptr object = this->getObject();
+    ::fwData::Object::sptr object     = this->getObject();
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT , object );
+    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT, object );
     ::fwServices::IEditionService::notify( this->getSptr(),  object, msg );
 }
 

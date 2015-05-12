@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,12 +28,14 @@ std::string MeshMsg::CELL_TEXCOORDS_MODIFIED  = "CELL_TEXCOORDS_MODIFIED";
 //-----------------------------------------------------------------------------
 
 FWCOMED_API MeshMsg::MeshMsg(::fwServices::ObjectMsg::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 MeshMsg::~MeshMsg() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

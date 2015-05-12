@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -107,7 +107,7 @@ void PosixMemoryMonitorTools::printSystemMemoryInformation()
     printStatus( allStat );
 
     ::boost::uint64_t computedFree = ( memory.total - allStat.VmRSS ) / oToKMo;
-    ::boost::uint64_t free = memory.free / oToKMo;
+    ::boost::uint64_t free         = memory.free / oToKMo;
     OSLM_INFO(  "(ComputedFree, Free, Diff) - ( "
                 << std::setw(5) << computedFree
                 << std::setw(5) << free
@@ -168,8 +168,10 @@ void PosixMemoryMonitorTools::printMemoryInformation()
     int i, j;
     char buf[end-start];
 
-    for (i=start, j=0; i<end; i++)
+    for (i = start, j = 0; i<end; i++)
+    {
         isdigit(str[i]) && (buf[j++] = str[i]);
+    }
     buf[j] = '\0';
 
     return strtoul(buf, NULL, 0) * 1024;
@@ -197,14 +199,14 @@ void PosixMemoryMonitorTools::get_memory_stats( MemInfo & meminfo )
     meminfo.swapcached = extract_number(buf, 116, 127);
     meminfo.swaptotal = extract_number(buf, 297, 309);
     meminfo.swapfree = extract_number(buf, 322, 335);
-*/
+ */
 
     std::ifstream input ( "/proc/meminfo" );
 
     std::string line;
     if ( input.is_open() )
     {
-        while ( ! input.eof() )
+        while ( !input.eof() )
         {
             getline( input, line );
             analyseMemInfo( line, meminfo );
@@ -345,7 +347,7 @@ void PosixMemoryMonitorTools::getStatusOfPid( int pid, Status & stat)
     std::string line;
     if ( input.is_open() )
     {
-        while ( ! input.eof() )
+        while ( !input.eof() )
         {
             getline( input, line );
             analyseStatusLine(line,stat);
@@ -363,18 +365,18 @@ void PosixMemoryMonitorTools::getAllStatus( Status & allStat )
 
     allStat.VmPeak = 0;
     allStat.VmSize = 0;
-    allStat.VmLck = 0;
-    allStat.VmHWM = 0;
-    allStat.VmRSS = 0;
+    allStat.VmLck  = 0;
+    allStat.VmHWM  = 0;
+    allStat.VmRSS  = 0;
     allStat.VmData = 0;
-    allStat.VmStk = 0;
-    allStat.VmExe = 0;
-    allStat.VmLib = 0;
-    allStat.VmPTE = 0;
+    allStat.VmStk  = 0;
+    allStat.VmExe  = 0;
+    allStat.VmLib  = 0;
+    allStat.VmPTE  = 0;
 
     for(    ::boost::filesystem::directory_iterator it (path);
-    it != ::boost::filesystem::directory_iterator();
-    ++it )
+            it != ::boost::filesystem::directory_iterator();
+            ++it )
     {
 
         if( ::boost::filesystem::is_directory(*it) )
@@ -392,14 +394,14 @@ void PosixMemoryMonitorTools::getAllStatus( Status & allStat )
                 getStatusOfPid( pid, stat);
                 allStat.VmPeak += stat.VmPeak;
                 allStat.VmSize += stat.VmSize;
-                allStat.VmLck += stat.VmLck;
-                allStat.VmHWM += stat.VmHWM;
-                allStat.VmRSS += stat.VmRSS;
+                allStat.VmLck  += stat.VmLck;
+                allStat.VmHWM  += stat.VmHWM;
+                allStat.VmRSS  += stat.VmRSS;
                 allStat.VmData += stat.VmData;
-                allStat.VmStk += stat.VmStk;
-                allStat.VmExe += stat.VmExe;
-                allStat.VmLib += stat.VmLib;
-                allStat.VmPTE += stat.VmPTE;
+                allStat.VmStk  += stat.VmStk;
+                allStat.VmExe  += stat.VmExe;
+                allStat.VmLib  += stat.VmLib;
+                allStat.VmPTE  += stat.VmPTE;
             }
         }
     }
@@ -415,14 +417,14 @@ void PosixMemoryMonitorTools::printAllStatus()
 
     ::boost::uint64_t totalVmPeak = 0;
     ::boost::uint64_t totalVmSize = 0;
-    ::boost::uint64_t totalVmLck = 0;
-    ::boost::uint64_t totalVmHWM = 0;
-    ::boost::uint64_t totalVmRSS = 0;
+    ::boost::uint64_t totalVmLck  = 0;
+    ::boost::uint64_t totalVmHWM  = 0;
+    ::boost::uint64_t totalVmRSS  = 0;
     ::boost::uint64_t totalVmData = 0;
-    ::boost::uint64_t totalVmStk = 0;
-    ::boost::uint64_t totalVmExe = 0;
-    ::boost::uint64_t totalVmLib = 0;
-    ::boost::uint64_t totalVmPTE = 0;
+    ::boost::uint64_t totalVmStk  = 0;
+    ::boost::uint64_t totalVmExe  = 0;
+    ::boost::uint64_t totalVmLib  = 0;
+    ::boost::uint64_t totalVmPTE  = 0;
 
     for(    ::boost::filesystem::directory_iterator it (path);
             it != ::boost::filesystem::directory_iterator();
@@ -444,42 +446,45 @@ void PosixMemoryMonitorTools::printAllStatus()
                 getStatusOfPid( pid, stat);
                 totalVmPeak += stat.VmPeak;
                 totalVmSize += stat.VmSize;
-                totalVmLck += stat.VmLck;
-                totalVmHWM += stat.VmHWM;
-                totalVmRSS += stat.VmRSS;
+                totalVmLck  += stat.VmLck;
+                totalVmHWM  += stat.VmHWM;
+                totalVmRSS  += stat.VmRSS;
                 totalVmData += stat.VmData;
-                totalVmStk += stat.VmStk;
-                totalVmExe += stat.VmExe;
-                totalVmLib += stat.VmLib;
-                totalVmPTE += stat.VmPTE;
+                totalVmStk  += stat.VmStk;
+                totalVmExe  += stat.VmExe;
+                totalVmLib  += stat.VmLib;
+                totalVmPTE  += stat.VmPTE;
             }
         }
     }
     totalVmPeak /= oToMo;
     totalVmSize /= oToMo;
-    totalVmLck /= oToMo;
-    totalVmHWM /= oToMo;
-    totalVmRSS /= oToMo;
+    totalVmLck  /= oToMo;
+    totalVmHWM  /= oToMo;
+    totalVmRSS  /= oToMo;
     totalVmData /= oToMo;
-    totalVmStk /= oToMo;
-    totalVmExe /= oToMo;
-    totalVmLib /= oToMo;
-    totalVmPTE /= oToMo;
+    totalVmStk  /= oToMo;
+    totalVmExe  /= oToMo;
+    totalVmLib  /= oToMo;
+    totalVmPTE  /= oToMo;
 
-    OSLM_DEBUG("( " << totalVmPeak << std::setw(5) << totalVmSize << std::setw(5) << totalVmLck << std::setw(5) << totalVmHWM << std::setw(5) << totalVmRSS << std::setw(5) << totalVmData << std::setw(5) << totalVmStk << std::setw(5) << totalVmExe << std::setw(5) << totalVmLib << std::setw(5) << totalVmPTE << " )");
+    OSLM_DEBUG("( " << totalVmPeak << std::setw(5) << totalVmSize << std::setw(5) << totalVmLck << std::setw(
+                   5) << totalVmHWM << std::setw(5) << totalVmRSS << std::setw(5) << totalVmData << std::setw(
+                   5) << totalVmStk << std::setw(5) << totalVmExe << std::setw(5) << totalVmLib << std::setw(
+                   5) << totalVmPTE << " )");
 
     /*
-    OSLM_DEBUG("totalVmPeak = " << totalVmPeak / oToMo << " Mo" );
-    OSLM_DEBUG("totalVmSize = " << totalVmSize / oToMo << " Mo" );
-    OSLM_DEBUG("totalVmLck = " << totalVmLck / oToMo << " Mo" );
-    OSLM_DEBUG("totalVmHWM = " << totalVmHWM / oToMo << " Mo" );
-    OSLM_DEBUG("totalVmRSS = " << totalVmRSS / oToMo << " Mo" );
-    OSLM_DEBUG("totalVmData = " << totalVmData / oToMo << " Mo" );
-    OSLM_DEBUG("totalVmStk = " << totalVmStk / oToMo << " Mo" );
-    OSLM_DEBUG("totalVmExe = " << totalVmExe / oToMo << " Mo" );
-    OSLM_DEBUG("totalVmLib = " << totalVmLib / oToMo << " Mo" );
-    OSLM_DEBUG("totalVmPTE = " << totalVmPTE / oToMo << " Mo" );
-    */
+       OSLM_DEBUG("totalVmPeak = " << totalVmPeak / oToMo << " Mo" );
+       OSLM_DEBUG("totalVmSize = " << totalVmSize / oToMo << " Mo" );
+       OSLM_DEBUG("totalVmLck = " << totalVmLck / oToMo << " Mo" );
+       OSLM_DEBUG("totalVmHWM = " << totalVmHWM / oToMo << " Mo" );
+       OSLM_DEBUG("totalVmRSS = " << totalVmRSS / oToMo << " Mo" );
+       OSLM_DEBUG("totalVmData = " << totalVmData / oToMo << " Mo" );
+       OSLM_DEBUG("totalVmStk = " << totalVmStk / oToMo << " Mo" );
+       OSLM_DEBUG("totalVmExe = " << totalVmExe / oToMo << " Mo" );
+       OSLM_DEBUG("totalVmLib = " << totalVmLib / oToMo << " Mo" );
+       OSLM_DEBUG("totalVmPTE = " << totalVmPTE / oToMo << " Mo" );
+     */
 }
 
 } // namespace tools

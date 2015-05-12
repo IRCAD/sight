@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,27 +36,28 @@ namespace fwRuntime
 namespace
 {
 
-    /**
-     * @brief   Defines a STL compatible predicate telling if an executable factory
-     *          matches the given type identifier
-     *
-     * 
-     */
-    struct IsOfType
-    {
-        IsOfType( const std::string & type )
+/**
+ * @brief   Defines a STL compatible predicate telling if an executable factory
+ *          matches the given type identifier
+ *
+ *
+ */
+struct IsOfType
+{
+    IsOfType( const std::string & type )
         :   m_type( type )
-        {}
+    {
+    }
 
-        bool operator() ( const SPTR( ExecutableFactory ) factory ) const
-        {
-            return factory->getType() == m_type;
-        }
+    bool operator() ( const SPTR( ExecutableFactory )factory ) const
+    {
+        return factory->getType() == m_type;
+    }
 
     private:
 
         std::string m_type;
-    };
+};
 }
 
 //------------------------------------------------------------------------------
@@ -75,12 +76,12 @@ SPTR( Bundle ) Bundle::getLoadingBundle()
 Bundle::Bundle( const boost::filesystem::path   & location,
                 const std::string               & id,
                 const std::string               & version )
-:   m_location    ( location ),
-    m_identifier  ( id ),
-    m_version     ( version ),
-    m_enable      ( false ),
-    m_started     ( false ),
-    m_initialized ( false )
+    :   m_location    ( location ),
+      m_identifier  ( id ),
+      m_version     ( version ),
+      m_enable      ( false ),
+      m_started     ( false ),
+      m_initialized ( false )
 
 {
     // Post-condition.
@@ -90,17 +91,17 @@ Bundle::Bundle( const boost::filesystem::path   & location,
 //------------------------------------------------------------------------------
 
 Bundle::Bundle(
-            const boost::filesystem::path   & location,
-            const std::string               & id,
-            const std::string               & version,
-            const std::string               & c )
-:   m_location    ( location ),
-    m_identifier  ( id ),
-    m_version     ( version ),
-    m_class       ( c ),
-    m_enable      ( false ),
-    m_started     ( false ),
-    m_initialized ( false )
+    const boost::filesystem::path   & location,
+    const std::string               & id,
+    const std::string               & version,
+    const std::string               & c )
+    :   m_location    ( location ),
+      m_identifier  ( id ),
+      m_version     ( version ),
+      m_class       ( c ),
+      m_enable      ( false ),
+      m_started     ( false ),
+      m_initialized ( false )
 
 {
     // Post-condition.
@@ -109,7 +110,7 @@ Bundle::Bundle(
 
 //------------------------------------------------------------------------------
 
-void Bundle::addExecutableFactory( SPTR( ExecutableFactory ) factory )
+void Bundle::addExecutableFactory( SPTR( ExecutableFactory )factory )
 {
     m_executableFactories.insert( factory );
 }
@@ -132,13 +133,14 @@ Bundle::ExecutableFactoryConstIterator Bundle::executableFactoriesEnd() const
 
 SPTR( ExecutableFactory ) Bundle::findExecutableFactory( const std::string & type ) const
 {
-    ExecutableFactoryConstIterator  found = std::find_if( m_executableFactories.begin(), m_executableFactories.end(), IsOfType(type) );
+    ExecutableFactoryConstIterator found = std::find_if( m_executableFactories.begin(),
+                                                         m_executableFactories.end(), IsOfType(type) );
     return found != m_executableFactories.end() ? *found : SPTR( ExecutableFactory )();
 }
 
 //------------------------------------------------------------------------------
 
-void Bundle::addExtension( SPTR( Extension ) extension )
+void Bundle::addExtension( SPTR( Extension )extension )
 {
     m_extensions.insert( extension );
 }
@@ -165,8 +167,8 @@ bool Bundle::hasExtension(const std::string & identifier) const
 void Bundle::setEnableExtension(const std::string & identifier, const bool enable)
 {
     for( ExtensionContainer::iterator extpt = m_extensions.begin();
-            extpt != m_extensions.end();
-            ++extpt )
+         extpt != m_extensions.end();
+         ++extpt )
     {
 
         if( (*extpt)->getIdentifier() ==  identifier )
@@ -192,7 +194,7 @@ Bundle::ExtensionConstIterator Bundle::extensionsEnd() const
 }
 //------------------------------------------------------------------------------
 
-void Bundle::addExtensionPoint( SPTR( ExtensionPoint ) extensionPoint )
+void Bundle::addExtensionPoint( SPTR( ExtensionPoint )extensionPoint )
 {
     m_extensionPoints.insert( extensionPoint );
 }
@@ -203,7 +205,9 @@ SPTR( ExtensionPoint ) Bundle::findExtensionPoint( const std::string & identifie
 {
     ExtensionPointContainer::const_iterator found;
 
-    found = std::find_if( m_extensionPoints.begin(), m_extensionPoints.end(), IsEnableAndHasIdentifier<ExtensionPoint>(identifier) );
+    found =
+        std::find_if( m_extensionPoints.begin(), m_extensionPoints.end(), IsEnableAndHasIdentifier<ExtensionPoint>(
+                          identifier) );
     return (found != m_extensionPoints.end()) ? (*found) : SPTR(ExtensionPoint)();
 }
 
@@ -257,7 +261,7 @@ Bundle::ExtensionPointConstIterator Bundle::extensionPointsEnd() const
 
 //------------------------------------------------------------------------------
 
-void Bundle::addLibrary( SPTR( dl::Library ) library )
+void Bundle::addLibrary( SPTR( dl::Library )library )
 {
     library->setBundle(this);
     m_libraries.insert(library);
@@ -442,7 +446,7 @@ void Bundle::startPlugin() throw(RuntimeException)
 {
     OSLM_ASSERT("Bundle "<< this->getIdentifier() << " plugin is already started.", !m_started );
     // Retrieves the type of the plugin.
-    const std::string   pluginType( getClass() );
+    const std::string pluginType( getClass() );
 
     // According to the presence of a class or not, build and empty
     // plugin or attempt to instantiate a user defined plugin.
@@ -471,10 +475,12 @@ void Bundle::startPlugin() throw(RuntimeException)
     try
     {
         OSLM_TRACE("Register stopper for " << this->getIdentifier() << " Bundle's plugin.");
-        ::fwRuntime::profile::getCurrentProfile()->add( SPTR(profile::Stopper) (new profile::Stopper(this->getIdentifier())));
+        ::fwRuntime::profile::getCurrentProfile()->add( SPTR(profile::Stopper) (new profile::Stopper(
+                                                                                    this->getIdentifier())));
         m_plugin = plugin;
         m_plugin->start();
-        ::fwRuntime::profile::getCurrentProfile()->add( SPTR(profile::Initializer) (new profile::Initializer(this->getIdentifier())) );
+        ::fwRuntime::profile::getCurrentProfile()->add( SPTR(profile::Initializer) (new profile::Initializer(this->
+                                                                                                             getIdentifier())) );
         m_started = true;
     }
     catch( std::exception & e )
@@ -580,7 +586,7 @@ void Bundle::addParameter( const std::string & identifier, const std::string & v
 
 const std::string Bundle::getParameterValue( const std::string & identifier ) const
 {
-    ParameterContainer::const_iterator  found = m_parameters.find(identifier);
+    ParameterContainer::const_iterator found = m_parameters.find(identifier);
 
     return (found != m_parameters.end()) ? found->second : std::string();
 }
@@ -595,7 +601,8 @@ bool Bundle::hasParameter( const std::string & identifier ) const
 //------------------------------------------------------------------------------
 
 void Bundle::operator= ( const Bundle & )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

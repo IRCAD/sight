@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -55,7 +55,10 @@ public:
     /// Replace attribute message
     FWATOMSPATCH_API void replaceAttribute(const std::string& message);
 
-    static Logger &getLogger() {return s_logger;}
+    static Logger &getLogger()
+    {
+        return s_logger;
+    }
 
     FWATOMSPATCH_API static StreamPtrType getStream();
 

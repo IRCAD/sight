@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,10 +16,10 @@ namespace helper
 //------------------------------------------------------------------------------
 
 void TransferFunction::toVtkLookupTable(
-        ::fwData::TransferFunction::sptr tf,
-         vtkSmartPointer<vtkLookupTable> lt,
-        bool allowTransparency,
-        unsigned int size )
+    ::fwData::TransferFunction::sptr tf,
+    vtkSmartPointer<vtkLookupTable> lt,
+    bool allowTransparency,
+    unsigned int size )
 {
     SLM_WARN_IF( "Sorry, This transfer function conversion not managed clamped TF.", tf->getIsClamped() );
 
@@ -37,7 +37,7 @@ void TransferFunction::toVtkLookupTable(
 
     if ( allowTransparency )
     {
-        for( unsigned int k=0; k<size; ++k )
+        for( unsigned int k = 0; k<size; ++k )
         {
             interpolatedColor = tf->getInterpolatedColor( k*delta + minMax.first );
             lt->SetTableValue(k, interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, interpolatedColor.a);
@@ -45,7 +45,7 @@ void TransferFunction::toVtkLookupTable(
     }
     else
     {
-        for( unsigned int k=0; k<size; ++k )
+        for( unsigned int k = 0; k<size; ++k )
         {
             interpolatedColor = tf->getInterpolatedColor( k*delta + minMax.first );
             lt->SetTableValue(k, interpolatedColor.r, interpolatedColor.g, interpolatedColor.b, 1.0);
@@ -58,10 +58,10 @@ void TransferFunction::toVtkLookupTable(
 //------------------------------------------------------------------------------
 
 void TransferFunction::toBWVtkLookupTable(
-         double rangeMin,
-         double rangeMax,
-         vtkSmartPointer<vtkLookupTable> lt,
-         unsigned int size )
+    double rangeMin,
+    double rangeMax,
+    vtkSmartPointer<vtkLookupTable> lt,
+    unsigned int size )
 {
     SLM_TRACE_FUNC();
 

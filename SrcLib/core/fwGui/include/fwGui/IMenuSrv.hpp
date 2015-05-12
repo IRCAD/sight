@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IMENUSRV_HPP_
-#define _FWGUI_IMENUSRV_HPP_
+#ifndef __FWGUI_IMENUSRV_HPP__
+#define __FWGUI_IMENUSRV_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -20,16 +20,16 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing the menu.
  * @class   IMenuSrv
- * 
+ *
  * @date    2009-2010.
  *
  */
 class FWGUI_CLASS_API IMenuSrv : public ::fwServices::IService
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IMenuSrv)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IMenuSrv)(::fwServices::IService) );
 
     /// Method called when an action service is stopping
     FWGUI_API void actionServiceStopping(std::string actionSrvSID);
@@ -43,11 +43,11 @@ public :
     /// Method called when the action service is executable
     FWGUI_API void actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable);
 
-protected :
+protected:
 
-    FWGUI_API IMenuSrv() ;
+    FWGUI_API IMenuSrv();
 
-    FWGUI_API virtual ~IMenuSrv() ;
+    FWGUI_API virtual ~IMenuSrv();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -104,7 +104,7 @@ private:
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
 
     ::fwGui::layoutManager::IMenuLayoutManager::sptr m_layoutManager;
-    ::fwGui::registrar::MenuRegistrar::sptr    m_registrar;
+    ::fwGui::registrar::MenuRegistrar::sptr m_registrar;
 
     ConfigurationType m_registrarConfig;
     ConfigurationType m_layoutConfig;
@@ -115,6 +115,6 @@ private:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_IMENUSRV_HPP_*/
+#endif /*__FWGUI_IMENUSRV_HPP__*/
 
 

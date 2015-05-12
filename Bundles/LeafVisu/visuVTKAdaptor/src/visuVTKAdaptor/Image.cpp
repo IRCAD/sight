@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@
 #include "visuVTKAdaptor/Image.hpp"
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -48,7 +48,7 @@ Image::Image() throw()
 
     m_imageRegister = NULL;
 
-    m_imagePortId = -1;
+    m_imagePortId    = -1;
     m_allowAlphaInTF = false;
 
     // Manage events
@@ -149,7 +149,9 @@ void Image::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
             this->setVtkPipelineModified();
         }
 
-        if (this->upadteTFObserver(msg, this->getSptr()) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
+        if (this->upadteTFObserver(msg,
+                                   this->getSptr()) ||
+            msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
             this->updateImageTransferFunction(image);
         }
@@ -244,16 +246,17 @@ void Image::updateImageOpacity()
         if(img->getField( "TRANSPARENCY" ) )
         {
             ::fwData::Integer::sptr transparency = img->getField< ::fwData::Integer >( "TRANSPARENCY" );
-            m_imageOpacity = (100 - (*transparency) ) / 100.0 ;
+            m_imageOpacity                       = (100 - (*transparency) ) / 100.0;
         }
         if(img->getField( "VISIBILITY" ) )
         {
             ::fwData::Boolean::sptr visible = img->getField< ::fwData::Boolean >( "VISIBILITY" );
-            m_imageOpacity = (*visible)?m_imageOpacity:0.0;
+            m_imageOpacity                  = (*visible) ? m_imageOpacity : 0.0;
         }
         vtkImageBlend *imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);
         imageBlend->SetOpacity(m_imagePortId, m_imageOpacity);
-        OSLM_TRACE( "vtkImageBlend " << this->m_imageRegisterId << " opacity :" << m_imagePortId << "," << m_imageOpacity );
+        OSLM_TRACE(
+            "vtkImageBlend " << this->m_imageRegisterId << " opacity :" << m_imagePortId << "," << m_imageOpacity );
         this->setVtkPipelineModified();
     }
 }

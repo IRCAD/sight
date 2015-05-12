@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-#ifndef _FWCORE_DEMANGLER_HPP_
-#define _FWCORE_DEMANGLER_HPP_
+#ifndef __FWCORE_DEMANGLER_HPP__
+#define __FWCORE_DEMANGLER_HPP__
 
 #include <string>
 #include <typeinfo>
@@ -16,15 +15,15 @@
 namespace fwCore
 {
 
- /**
-  * @brief typeid, string or object name demangler.
-  *
-  * getClassname() is an alias for getRootedClassname()
-  *
-  * @warning getRootedClassname() use on fundamentals types (int, float, ...)
-  * will give a bad result ( ex: \::int )
-  *
-  */
+/**
+ * @brief typeid, string or object name demangler.
+ *
+ * getClassname() is an alias for getRootedClassname()
+ *
+ * @warning getRootedClassname() use on fundamentals types (int, float, ...)
+ * will give a bad result ( ex: \::int )
+ *
+ */
 class FWCORE_CLASS_API Demangler
 {
 public:
@@ -53,7 +52,9 @@ public:
      *
      * @param s object which type has to be demangled
      */
-    template<typename T> Demangler(T &s): m_name(typeid(s).name()) {};
+    template<typename T> Demangler(T &s) : m_name(typeid(s).name())
+    {
+    }
 
     /**
      * @brief Destructor
@@ -121,10 +122,10 @@ protected:
 
 
 
- /**
-  * @brief Type demangler.
-  * Use Demangler class to get a demangled string for the type T.
-  */
+/**
+ * @brief Type demangler.
+ * Use Demangler class to get a demangled string for the type T.
+ */
 template <class T>
 class TypeDemangler : public Demangler
 {
@@ -137,7 +138,9 @@ public:
      * @brief Constructor
      * @tparam T Type to demangle
      */
-    TypeDemangler<T>()  : Demangler(typeid(T)) {};
+    TypeDemangler()  : Demangler(typeid(T))
+    {
+    }
 
     /**  @} */
 };
@@ -154,20 +157,38 @@ public:
  *
  * @{ */
 template <class T>
-inline std::string getLeafClassname()   { return TypeDemangler<T>().getLeafClassname();   } ;
+inline std::string getLeafClassname()
+{
+    return TypeDemangler<T>().getLeafClassname();
+}
 template <class T>
-inline std::string getFullClassname()   { return TypeDemangler<T>().getFullClassname();   } ;
+inline std::string getFullClassname()
+{
+    return TypeDemangler<T>().getFullClassname();
+}
 template <class T>
-inline std::string getClassname()       { return TypeDemangler<T>().getClassname();       } ;
+inline std::string getClassname()
+{
+    return TypeDemangler<T>().getClassname();
+}
 template <class T>
-inline std::string getRootedClassname() { return TypeDemangler<T>().getRootedClassname(); } ;
+inline std::string getRootedClassname()
+{
+    return TypeDemangler<T>().getRootedClassname();
+}
 
 template <class T>
-inline std::string getFullNamespace()   { return TypeDemangler<T>().getFullNamespace();   } ;
+inline std::string getFullNamespace()
+{
+    return TypeDemangler<T>().getFullNamespace();
+}
 template <class T>
-inline std::string getRootedNamespace() { return TypeDemangler<T>().getRootedNamespace(); } ;
+inline std::string getRootedNamespace()
+{
+    return TypeDemangler<T>().getRootedNamespace();
+}
 /**  @} */
 
 } // namespace fwCore
 
-#endif // _FWCORE_DEMANGLER_HPP_
+#endif // __FWCORE_DEMANGLER_HPP__

@@ -1,17 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_ISERVICE_HXX_
-#define _FWSERVICES_ISERVICE_HXX_
+#ifndef __FWSERVICES_ISERVICE_HXX__
+#define __FWSERVICES_ISERVICE_HXX__
 
 namespace fwServices
 {
 
 template< class DATATYPE >
- SPTR(DATATYPE) IService::getObject()
+SPTR(DATATYPE) IService::getObject()
 {
     OSLM_ASSERT("Expired object in service " << this->getID(), !m_associatedObject.expired() );
     SPTR(DATATYPE) casteDdata = ::boost::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
@@ -22,4 +22,4 @@ template< class DATATYPE >
 
 } // namespace fwServices
 
-#endif // _FWSERVICES_ISERVICE_HXX_
+#endif // __FWSERVICES_ISERVICE_HXX__

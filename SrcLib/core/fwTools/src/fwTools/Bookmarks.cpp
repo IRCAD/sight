@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,12 +21,14 @@ Bookmarks::Dictionary Bookmarks::m_dictionary;
 //-----------------------------------------------------------------------------
 
 Bookmarks::Bookmarks()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 Bookmarks::~Bookmarks()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -60,7 +62,7 @@ void Bookmarks::remove( Bookmarks::BookmarkName _bookmark  )
     {
         bookmark = iter->second.lock();
     }
-    return  bookmark;
+    return bookmark;
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +77,7 @@ std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks( ::fwTools::Object::s
             result.push_back(  elt.first );
         }
     }
-    return  result;
+    return result;
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +89,7 @@ std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks()
     {
         result.push_back( elt.first );
     }
-    return  result;
+    return result;
 }
 
 //-----------------------------------------------------------------------------

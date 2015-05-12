@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,7 @@ fwServicesMessageRegisterMacro( ::fwComEd::CompositeMsg );
 namespace fwComEd
 {
 
-std::string CompositeMsg::ADDED_KEYS = "ADDED_KEYS";
+std::string CompositeMsg::ADDED_KEYS   = "ADDED_KEYS";
 std::string CompositeMsg::REMOVED_KEYS = "REMOVED_KEYS";
 std::string CompositeMsg::CHANGED_KEYS = "CHANGED_KEYS";
 
@@ -36,13 +36,14 @@ CompositeMsg::CompositeMsg(::fwServices::ObjectMsg::Key key)
 //-------------------------------------------------------------------------
 
 CompositeMsg::~CompositeMsg() throw()
-{}
+{
+}
 
 //-------------------------------------------------------------------------
 
 void CompositeMsg::appendAddedKey( std::string _compositeKey, ::fwData::Object::sptr _pNewObject )
 {
-    if( ! this->hasEvent( ADDED_KEYS ) )
+    if( !this->hasEvent( ADDED_KEYS ) )
     {
         this->addEvent( ADDED_KEYS, m_addedKeys );
     }
@@ -63,7 +64,7 @@ void CompositeMsg::appendAddedKey( std::string _compositeKey, ::fwData::Object::
 
 void CompositeMsg::appendRemovedKey( std::string _compositeKey, ::fwData::Object::sptr _pOldObject )
 {
-    if( ! this->hasEvent( REMOVED_KEYS ) )
+    if( !this->hasEvent( REMOVED_KEYS ) )
     {
         this->addEvent( REMOVED_KEYS, m_removedKeys );
     }
@@ -82,14 +83,16 @@ void CompositeMsg::appendRemovedKey( std::string _compositeKey, ::fwData::Object
 
 //-----------------------------------------------------------------------------
 
-void CompositeMsg::appendChangedKey( std::string _compositeKey, ::fwData::Object::sptr _pOldObject, ::fwData::Object::sptr _pNewObject )
+void CompositeMsg::appendChangedKey( std::string _compositeKey, ::fwData::Object::sptr _pOldObject,
+                                     ::fwData::Object::sptr _pNewObject )
 {
-    if( ! this->hasEvent( CHANGED_KEYS ) )
+    if( !this->hasEvent( CHANGED_KEYS ) )
     {
         this->addEvent( CHANGED_KEYS, m_oldChangedKeys );
     }
 
-    SLM_ASSERT("This composite key is already register", m_oldChangedKeys->find(_compositeKey) == m_oldChangedKeys->end() );
+    SLM_ASSERT("This composite key is already register", m_oldChangedKeys->find(
+                   _compositeKey) == m_oldChangedKeys->end() );
 
     m_oldChangedKeys->getContainer()[ _compositeKey ] = _pOldObject;
     m_newChangedKeys->getContainer()[ _compositeKey ] = _pNewObject;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,12 +15,12 @@ boost::filesystem::path getPathDifference( boost::filesystem::path path1, boost:
 {
     using boost::filesystem::path;
     path pathDiff;
-    
+
     // search iterator on path for the first element difference
     std::pair<path::iterator, path::iterator> fstChange;
-    fstChange = std::mismatch(path1.begin(), path1.end(), path2.begin()) ;
+    fstChange = std::mismatch(path1.begin(), path1.end(), path2.begin());
 
-    path::iterator i1 = fstChange.first ;
+    path::iterator i1 = fstChange.first;
     path::iterator i2 = fstChange.second;
 
     // move updir from path1 position : climb to first difference in folder hierarchy
@@ -29,14 +29,14 @@ boost::filesystem::path getPathDifference( boost::filesystem::path path1, boost:
         pathDiff /= "..";
         ++i1;
     }
-    
+
     // mode down_dir to path2
     while (i2 != path2.end() )
     {
         pathDiff /= *i2;
         ++i2;
     }
-    
+
     return pathDiff;
 }
 

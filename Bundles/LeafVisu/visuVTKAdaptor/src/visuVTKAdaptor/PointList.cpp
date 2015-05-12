@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@
 
 #include "visuVTKAdaptor/PointList.hpp"
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList );
 
 namespace visuVTKAdaptor
 {
@@ -45,7 +45,8 @@ PointList::PointList() throw()
 //------------------------------------------------------------------------------
 
 PointList::~PointList() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -126,7 +127,7 @@ void PointList::createServices(WeakPointListType &wPtList)
     {
         SLM_ASSERT("Point Expired", !wpt.expired());
 
-        ::fwData::Point::sptr pt = wpt.lock();
+        ::fwData::Point::sptr pt                        = wpt.lock();
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
             ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
                 ( pt, "::visuVTKAdaptor::Point" );
@@ -173,7 +174,9 @@ PointList::WeakPointListType PointList::getNewPoints()
         {
             isFound = (point.lock() == oldPoint.lock());
             if(isFound)
+            {
                 break;
+            }
         }
         if(!isFound)
         {

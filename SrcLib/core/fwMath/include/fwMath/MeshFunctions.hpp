@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWMATH_MESHFUNCTIONS_HPP_
-#define _FWMATH_MESHFUNCTIONS_HPP_
+#ifndef __FWMATH_MESHFUNCTIONS_HPP__
+#define __FWMATH_MESHFUNCTIONS_HPP__
 
 #include <cmath>
 #include <vector>
@@ -25,7 +25,8 @@ namespace fwMath
 /**
  * @brief
  */
-FWMATH_API bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_vertexIndex, const fwVec3d &_P );
+FWMATH_API bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_vertexIndex,
+                                 const fwVec3d &_P );
 
 /**
  * @brief Compute the intersection between triangle(define by threes vertex vert1, vert2, vert3) and the Oz parallel line and cross by the point P.
@@ -36,12 +37,14 @@ FWMATH_API bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertex
  * "Fast, Minimum Storage Ray/Triangle Intersection", Tomas Muller, Ben Trumbore.
  *
  */
-FWMATH_API bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0, fwVec3d _vert1, fwVec3d _vert2, double &_t, double &_u, double &_v);
+FWMATH_API bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0, fwVec3d _vert1, fwVec3d _vert2,
+                                   double &_t, double &_u, double &_v);
 
 /// test whatever a vertex is duplicated or not
 FWMATH_API bool isBorderlessSurface( const fwVertexIndex &_vertexIndex);
 
-FWMATH_API void findBorderEdges( const fwVertexIndex &_vertexIndex , std::vector< std::vector<  std::pair< int, int  > > > &contours);
+FWMATH_API void findBorderEdges( const fwVertexIndex &_vertexIndex, std::vector< std::vector<  std::pair< int,
+                                                                                                          int  > > > &contours);
 
 /**
  *  @brief Closes the surface if necessary
@@ -70,38 +73,39 @@ std::pair< T, U > makeOrderedPair(const T first, const U second)
 
 //-----------------------------------------------------------------------------
 template <typename T, typename U, typename V>
-bool isBorderlessSurface(T* cellDataBegin, T* cellDataEnd, U* cellDataOffsetsBegin, U* cellDataOffsetsEnd, V* cellTypesBegin)
+bool isBorderlessSurface(T* cellDataBegin, T* cellDataEnd, U* cellDataOffsetsBegin, U* cellDataOffsetsEnd,
+                         V* cellTypesBegin)
 {
     typedef std::pair< T, T >  Edge; // always Edge.first < Edge.second !!
     typedef boost::unordered_map< Edge, int >  EdgeHistogram;
     EdgeHistogram edgesHistogram;
     bool isBorderless = true;
 
-    size_t dataLen = 0;
-    U* iter = cellDataOffsetsBegin;
-    U* iter2 = cellDataOffsetsBegin + 1;
+    size_t dataLen   = 0;
+    U* iter          = cellDataOffsetsBegin;
+    U* iter2         = cellDataOffsetsBegin + 1;
     const U* iterEnd = cellDataOffsetsEnd - 1;
-    V* iterTypes = cellTypesBegin;
+    V* iterTypes     = cellTypesBegin;
 
     dataLen = *iter2 - *iter;
     for (
-            ;
-            iter < iterEnd || ( iter < cellDataOffsetsEnd && (dataLen = (cellDataEnd - cellDataBegin) - *iter) ) ;
-            dataLen = *++iter2 - *++iter, ++iterTypes
+        ;
+        iter < iterEnd || ( iter < cellDataOffsetsEnd && (dataLen = (cellDataEnd - cellDataBegin) - *iter) );
+        dataLen = *++iter2 - *++iter, ++iterTypes
         )
     {
         if(*iterTypes == 0)
         {
             continue;
         }
-        T* iterCell = cellDataBegin + *iter;
-        T* iterCell2 = iterCell + 1;
-        T* beginCell = iterCell;
+        T* iterCell          = cellDataBegin + *iter;
+        T* iterCell2         = iterCell + 1;
+        T* beginCell         = iterCell;
         const T* iterCellEnd = beginCell + dataLen - 1;
         for (
-                ;
-                iterCell < iterCellEnd || ( iterCell < (beginCell + dataLen) && (iterCell2 = beginCell) ) ;
-                ++iterCell, ++iterCell2
+            ;
+            iterCell < iterCellEnd || ( iterCell < (beginCell + dataLen) && (iterCell2 = beginCell) );
+            ++iterCell, ++iterCell2
             )
         {
             ++edgesHistogram[makeOrderedPair(*iterCell, *(iterCell2))];
@@ -122,4 +126,4 @@ bool isBorderlessSurface(T* cellDataBegin, T* cellDataEnd, U* cellDataOffsetsBeg
 
 }
 
-#endif /* _FWMATH_MESHFUNCTIONS_HPP_ */
+#endif /* __FWMATH_MESHFUNCTIONS_HPP__ */

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_IMAGE_HPP_
-#define _VISUVTKADAPTOR_IMAGE_HPP_
+#ifndef __VISUVTKADAPTOR_IMAGE_HPP__
+#define __VISUVTKADAPTOR_IMAGE_HPP__
 
 #include <vtkSmartPointer.h>
 
@@ -31,25 +31,38 @@ namespace visuVTKAdaptor
 {
 
 /**
-* @brief Render an image on the generic scene
-*/
-class VISUVTKADAPTOR_CLASS_API Image: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService
+ * @brief Render an image on the generic scene
+ */
+class VISUVTKADAPTOR_CLASS_API Image : public ::fwComEd::helper::MedicalImageAdaptor,
+                                       public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Image)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Image)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Image() throw();
 
     VISUVTKADAPTOR_API virtual ~Image() throw();
 
-    void setVtkImageRegisterId(std::string id) {m_imageRegisterId = id;};
-    void setVtkImageRegister(vtkObject *obj)   {m_imageRegister = obj;};
-    void setImageOpacity(double opacity)       {m_imageOpacity = opacity;};
-    void setAllowAlphaInTF(bool allow)         {m_allowAlphaInTF = allow;};
+    void setVtkImageRegisterId(std::string id)
+    {
+        m_imageRegisterId = id;
+    }
+    void setVtkImageRegister(vtkObject *obj)
+    {
+        m_imageRegister = obj;
+    }
+    void setImageOpacity(double opacity)
+    {
+        m_imageOpacity = opacity;
+    }
+    void setAllowAlphaInTF(bool allow)
+    {
+        m_allowAlphaInTF = allow;
+    }
 
-protected :
+protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
@@ -71,9 +84,9 @@ protected :
     std::string m_imageRegisterId;
     vtkObject  *m_imageRegister;
 
-    int    m_imagePortId;
+    int m_imagePortId;
     double m_imageOpacity;
-    bool   m_allowAlphaInTF;
+    bool m_allowAlphaInTF;
 
     vtkSmartPointer< fwVtkWindowLevelLookupTable > m_lut;
     vtkImageMapToColors *m_map2colors;
@@ -87,4 +100,4 @@ protected :
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_IMAGE_HPP_
+#endif // __VISUVTKADAPTOR_IMAGE_HPP__

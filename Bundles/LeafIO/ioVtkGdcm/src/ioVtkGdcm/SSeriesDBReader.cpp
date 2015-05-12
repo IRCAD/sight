@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,17 +35,19 @@
 namespace ioVtkGdcm
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioVtkGdcm::SSeriesDBReader , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioVtkGdcm::SSeriesDBReader, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
 SSeriesDBReader::SSeriesDBReader() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SSeriesDBReader::~SSeriesDBReader() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -59,8 +61,8 @@ void SSeriesDBReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr  result;
-    result= ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    ::fwData::location::Folder::sptr result;
+    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
@@ -87,15 +89,15 @@ void SSeriesDBReader::stopping() throw(::fwTools::Failed)
 
 void SSeriesDBReader::info(std::ostream &_sstream )
 {
-    _sstream << "SSeriesDBReader::info" ;
+    _sstream << "SSeriesDBReader::info";
 }
 
 //------------------------------------------------------------------------------
 
 SSeriesDBReader::ExtensionsType SSeriesDBReader::getSupportedExtensions()
 {
-    ExtensionsType extensions ;
-    return extensions ;
+    ExtensionsType extensions;
+    return extensions;
 }
 
 //------------------------------------------------------------------------------
@@ -112,7 +114,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 {
     SLM_TRACE_FUNC();
     ::vtkGdcmIO::SeriesDBReader::sptr reader = ::vtkGdcmIO::SeriesDBReader::New();
-    ::fwMedData::SeriesDB::sptr dummy = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::sptr dummy        = ::fwMedData::SeriesDB::New();
     reader->setObject(dummy);
     reader->setFolder(dicomDir);
 
@@ -120,8 +122,8 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 
     if(::fwGui::isBackendLoaded())
     {
-         progressMeterGUI = fwGui::dialog::ProgressDialog::New();
-         progressMeterGUI->setTitle("Saving series...");
+        progressMeterGUI = fwGui::dialog::ProgressDialog::New();
+        progressMeterGUI->setTitle("Saving series...");
     }
 
     try
@@ -138,12 +140,12 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
     return reader->getConcreteObject();
@@ -167,7 +169,7 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
             // Retrieve dataStruct associated with this service
             ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
-            associatedSeriesDB->shallowCopy( seriesDB ) ;
+            associatedSeriesDB->shallowCopy( seriesDB );
 
             ::fwGui::Cursor cursor;
             cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -177,7 +179,8 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
         else
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Image Reader","This file can not be read. Retry with another file reader.", ::fwGui::dialog::IMessageDialog::WARNING);
+                "Image Reader","This file can not be read. Retry with another file reader.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }
@@ -187,7 +190,7 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
 void SSeriesDBReader::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >() ;
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     ::fwComEd::SeriesDBMsg::sptr msg = ::fwComEd::SeriesDBMsg::New();

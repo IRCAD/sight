@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_PARSER_COMPOSITE_HPP_
-#define _FWCOMED_PARSER_COMPOSITE_HPP_
+#ifndef __FWCOMED_PARSER_COMPOSITE_HPP__
+#define __FWCOMED_PARSER_COMPOSITE_HPP__
 
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
@@ -25,26 +25,30 @@ namespace parser
 /**
  * @brief   Specific service for the construction of a Composite and its associated services from an XML-based description.
  * @class   Composite
- * 
+ *
 
  * @date    2007-2009
  * @see     ::fwServices::IXMLParser
  */
 class FWCOMED_CLASS_API Composite : public ::fwServices::IXMLParser
 {
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Composite)(::fwServices::IXMLParser) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Composite)(::fwServices::IXMLParser) );
 
     /**
      * @brief   Constructor : does nothing.
      */
-    Composite( ) {};
+    Composite( )
+    {
+    }
 
     /**
      * @brief   Destructor : does nothing.
      */
-    virtual ~Composite() {};
+    virtual ~Composite()
+    {
+    }
 
     FWCOMED_API void createConfig( ::fwTools::Object::sptr _obj );
 
@@ -63,9 +67,9 @@ protected:
      *
      * Parse the composite configuration element to configure and add its objects.
      */
-    FWCOMED_API virtual void updating( ) throw(fwTools::Failed) ;
+    FWCOMED_API virtual void updating( ) throw(fwTools::Failed);
 
-private :
+private:
 
     /// To verify some conditions in xml file
     bool refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
@@ -76,4 +80,4 @@ private :
 } //namespace parser
 } //namespace fwcomEd
 
-#endif /* _FWCOMED_PARSER_COMPOSITE_HPP_ */
+#endif /* __FWCOMED_PARSER_COMPOSITE_HPP__ */

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_DATA_COORD_HPP_
-#define _SCENE2D_DATA_COORD_HPP_
+#ifndef __SCENE2D_DATA_COORD_HPP__
+#define __SCENE2D_DATA_COORD_HPP__
 
 #include <fwData/Object.hpp>
 
@@ -18,16 +18,34 @@ namespace data
 
 class SCENE2D_CLASS_API Coord
 {
-public :
+public:
 
-    SCENE2D_API Coord(){m_x=0;m_y=0;}
-    SCENE2D_API Coord( double x , double y ){m_x=x;m_y=y;}
-    SCENE2D_API double getX() const {return m_x;}
-    SCENE2D_API void setX ( double x ){m_x=x;}
-    SCENE2D_API double getY() const {return m_y;}
-    SCENE2D_API void setY ( double y ){m_y=y;}
+    SCENE2D_API Coord()
+    {
+        m_x = 0; m_y = 0;
+    }
+    SCENE2D_API Coord( double x, double y )
+    {
+        m_x = x; m_y = y;
+    }
+    SCENE2D_API double getX() const
+    {
+        return m_x;
+    }
+    SCENE2D_API void setX ( double x )
+    {
+        m_x = x;
+    }
+    SCENE2D_API double getY() const
+    {
+        return m_y;
+    }
+    SCENE2D_API void setY ( double y )
+    {
+        m_y = y;
+    }
 
-private :
+private:
 
     double m_x;
     double m_y;
@@ -37,5 +55,5 @@ private :
 } // namespace scene2D
 
 
-#endif // _SCENE2D_DATA_COORD_HPP_
+#endif // __SCENE2D_DATA_COORD_HPP__
 

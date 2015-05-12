@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_PARSER_GENERICFIELD_HPP_
-#define _FWCOMED_PARSER_GENERICFIELD_HPP_
+#ifndef __FWCOMED_PARSER_GENERICFIELD_HPP__
+#define __FWCOMED_PARSER_GENERICFIELD_HPP__
 
 #include <fwTools/Failed.hpp>
 
@@ -28,15 +28,19 @@ namespace parser
 class FWCOMED_CLASS_API GenericField  : public ::fwServices::IXMLParser
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (GenericField)(::fwServices::IXMLParser) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (GenericField)(::fwServices::IXMLParser) );
 
     /// Constructor : does nothing.
-    GenericField() {};
+    GenericField()
+    {
+    }
 
     /// Destructor : does nothing.
-    virtual ~GenericField() {};
+    virtual ~GenericField()
+    {
+    }
 
     FWCOMED_API void createConfig( ::fwTools::Object::sptr _obj );
 protected:
@@ -47,46 +51,50 @@ protected:
      * Parse the configuration element to configure inputs and outputs and add
      * them in the process object.
      */
-    FWCOMED_API virtual void updating( ) throw(fwTools::Failed) ;
+    FWCOMED_API virtual void updating( ) throw(fwTools::Failed);
 
 };
 
 /**
  * @brief Specialisation of GenericField parser for boolean
  */
-class BooleanParser : public GenericField{
+class BooleanParser : public GenericField
+{
 public:
-    fwCoreServiceClassDefinitionsMacro ( (BooleanParser)(::fwServices::IXMLParser) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (BooleanParser)(::fwServices::IXMLParser) );
 };
 
 
 /**
  * @brief Specialisation of GenericField parser for integer
  */
-class IntegerParser : public GenericField{
+class IntegerParser : public GenericField
+{
 public:
-    fwCoreServiceClassDefinitionsMacro ( (IntegerParser)(::fwServices::IXMLParser) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IntegerParser)(::fwServices::IXMLParser) );
 };
 
 
 /**
  * @brief Specialisation of GenericField parser for float
  */
-class FloatParser : public GenericField{
+class FloatParser : public GenericField
+{
 public:
-        fwCoreServiceClassDefinitionsMacro ( (FloatParser)(::fwServices::IXMLParser) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (FloatParser)(::fwServices::IXMLParser) );
 };
 
 
 /**
  * @brief Specialisation of GenericField parser for string
  */
-class StringParser : public GenericField{
+class StringParser : public GenericField
+{
 public:
-    fwCoreServiceClassDefinitionsMacro ( (StringParser)(::fwServices::IXMLParser) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (StringParser)(::fwServices::IXMLParser) );
 };
 
 } //namespace parser
 } //namespace fwComEd
 
-#endif // _FWCOMED_PARSER_GENERICFIELD_HPP_
+#endif // __FWCOMED_PARSER_GENERICFIELD_HPP__

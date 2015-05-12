@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIVISU_CROSSTYPE_ACTION_HPP_
-#define _UIVISU_CROSSTYPE_ACTION_HPP_
+#ifndef __UIVISU_ACTION_CROSSTYPEACTION_HPP__
+#define __UIVISU_ACTION_CROSSTYPEACTION_HPP__
 
 #include <string>
 #include <map>
@@ -23,21 +23,21 @@ namespace action
 /**
  * @brief   This action allows change the cross type
  * @class   CrossTypeAction
- * 
+ *
  * @date    2010.
  */
 class UIVISU_CLASS_API CrossTypeAction : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (CrossTypeAction)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (CrossTypeAction)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    UIVISU_API CrossTypeAction() throw() ;
+    UIVISU_API CrossTypeAction() throw();
 
     /// Destructor. Do nothing.
-    UIVISU_API virtual ~CrossTypeAction() throw() ;
+    UIVISU_API virtual ~CrossTypeAction() throw();
 
 protected:
 
@@ -61,15 +61,15 @@ protected:
     /**
      * @brief Configure action.
      * @verbatim
-    <service type="::fwGui::IActionSrv" impl="::uiData::action::CrossTypeAction" autoConnect="no">
+       <service type="::fwGui::IActionSrv" impl="::uiData::action::CrossTypeAction" autoConnect="no">
         <crossType>hide</crossType>
-    </service>
-    @endverbatim
+       </service>
+       @endverbatim
      * - \b crossType : must be full, half or hide
      */
     void configuring() throw(fwTools::Failed);
 
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 private:
 
@@ -80,6 +80,6 @@ private:
 } // action
 } // uiVisu
 
-#endif /*_UIVISU_CROSSTYPE_ACTION_HPP_*/
+#endif /*__UIVISU_ACTION_CROSSTYPEACTION_HPP__*/
 
 

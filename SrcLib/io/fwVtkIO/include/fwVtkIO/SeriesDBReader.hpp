@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_SERIESDBREADER_HPP_
-#define _VTKIO_SERIESDBREADER_HPP_
+#ifndef __FWVTKIO_SERIESDBREADER_HPP__
+#define __FWVTKIO_SERIESDBREADER_HPP__
 
 #include <boost/filesystem/path.hpp>
 
@@ -25,22 +25,23 @@ namespace fwVtkIO
 /**
  * @brief   Read a SeriesDB.
  * @class   SeriesDBReader
- * 
+ *
  * @date    2011.
  *
  * Read VTK Mesh or Image files using the VTK lib, convert to ModelSeries or ImageSeries and push to SeriesDB.
  */
 class SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                             public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
-                             public ::fwTools::ProgressAdviser
+                       public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
+                       public ::fwTools::ProgressAdviser
 {
 
-public :
+public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((SeriesDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
+    fwCoreClassDefinitionsWithFactoryMacro((SeriesDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::
+                                                                                                      SeriesDB >),
                                            (()),
                                            ::fwDataIO::reader::factory::New< SeriesDBReader >
-                                          );
+                                           );
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
@@ -53,9 +54,12 @@ public :
     FWVTKIO_API void read();
 
     /// @return ".vtk"
-    FWVTKIO_API  std::string extension();
+    FWVTKIO_API std::string extension();
 
-    void setLazyMode(bool lazyMode) { m_lazyMode = lazyMode; }
+    void setLazyMode(bool lazyMode)
+    {
+        m_lazyMode = lazyMode;
+    }
 
 protected:
     bool m_lazyMode;
@@ -63,4 +67,4 @@ protected:
 
 } // namespace fwVtkIO
 
-#endif // _VTKIO_SERIESDBREADER_HPP_
+#endif // __FWVTKIO_SERIESDBREADER_HPP__

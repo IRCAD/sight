@@ -1,12 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+
+#ifndef __FWITKIO_IMAGEIOFACTORYREGISTRAR_HXX__
+#define __FWITKIO_IMAGEIOFACTORYREGISTRAR_HXX__
+
 #include <itkObjectFactoryBase.h>
-
-
 
 namespace fwItkIO
 {
@@ -33,4 +35,7 @@ public:
  * @brief a macro helper to register an imageIOFactory
  * @note to be declared outside any namespace
  */
-#define REGISTER_IMAGEIOFACTORY( ConcreteImageIOFactory )   static ::fwItkIO::ImageIOFactoryRegistrar< ConcreteImageIOFactory > registrar;
+#define REGISTER_IMAGEIOFACTORY( ConcreteImageIOFactory )   static ::fwItkIO::ImageIOFactoryRegistrar< \
+        ConcreteImageIOFactory > registrar;
+
+#endif //__FWITKIO_IMAGEIOFACTORYREGISTRAR_HXX__

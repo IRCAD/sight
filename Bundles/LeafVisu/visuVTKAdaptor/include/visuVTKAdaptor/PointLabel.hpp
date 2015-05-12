@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_POINTLABEL_HPP_
-#define _VISUVTKADAPTOR_POINTLABEL_HPP_
+#ifndef __VISUVTKADAPTOR_POINTLABEL_HPP__
+#define __VISUVTKADAPTOR_POINTLABEL_HPP__
 
 #include <string>
 
@@ -21,11 +21,11 @@ namespace visuVTKAdaptor
 
 
 
-class VISUVTKADAPTOR_CLASS_API PointLabel: public Text
+class VISUVTKADAPTOR_CLASS_API PointLabel : public Text
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (PointLabel)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PointLabel)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API PointLabel();
 
@@ -47,5 +47,5 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif //  _VISUVTKADAPTOR_POINTLABEL_HPP_
+#endif //  __VISUVTKADAPTOR_POINTLABEL_HPP__
 

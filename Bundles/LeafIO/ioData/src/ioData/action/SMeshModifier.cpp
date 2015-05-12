@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@ namespace ioData
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::ioData::action::SMeshModifier , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::ioData::action::SMeshModifier, ::fwData::Mesh );
 
 //-----------------------------------------------------------------------------
 
@@ -53,15 +53,15 @@ void SMeshModifier::configuring() throw( ::fwTools::Failed )
     SLM_ASSERT( "Sorry, missing attribute functor in <config> xml element.", configElement->hasAttribute("functor") );
     m_functor = configElement->getExistingAttributeValue("functor");
     OSLM_ASSERT("Wrong functor name "<<m_functor << " (required GenTriangle, GenQuad or GenTriangleQuad)",
-                       m_functor == "ShakeMeshPoint"
-                    || m_functor == "ColorizeMeshPoints"
-                    || m_functor == "ColorizeMeshCells"
-                    || m_functor == "ComputePointNormals"
-                    || m_functor == "ComputeCellNormals"
-                    || m_functor == "ShakePointNormals"
-                    || m_functor == "ShakeCellNormals"
-                    || m_functor == "MeshDeformation"
-                    );
+                m_functor == "ShakeMeshPoint"
+                || m_functor == "ColorizeMeshPoints"
+                || m_functor == "ColorizeMeshCells"
+                || m_functor == "ComputePointNormals"
+                || m_functor == "ComputeCellNormals"
+                || m_functor == "ShakePointNormals"
+                || m_functor == "ShakeCellNormals"
+                || m_functor == "MeshDeformation"
+                );
 
 }
 
@@ -147,9 +147,9 @@ void SMeshModifier::updating() throw( ::fwTools::Failed )
         ss << "Warning during generating : " << e.what();
 
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                ss.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            ss.str(),
+            ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
     ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_CAMERAMSG_HPP_
-#define _FWCOMED_CAMERAMSG_HPP_
+#ifndef __FWCOMED_CAMERAMSG_HPP__
+#define __FWCOMED_CAMERAMSG_HPP__
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -17,7 +17,7 @@ namespace fwComEd
 /**
  * @brief   Object message specialized for Camera : store modification information
  * @class   CameraMsg
- * 
+ *
  * @date    2009
  * @see     ::fwServices::ObjectMsg
  */
@@ -25,7 +25,7 @@ class FWCOMED_CLASS_API CameraMsg : public ::fwServices::ObjectMsg
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((CameraMsg)(::fwServices::ObjectMsg), (( )) ,
+    fwCoreClassDefinitionsWithFactoryMacro((CameraMsg)(::fwServices::ObjectMsg), (( )),
                                            ::fwServices::factory::message::New< CameraMsg > );
 
 
@@ -42,8 +42,8 @@ public:
     FWCOMED_API CameraMsg(::fwServices::ObjectMsg::Key key);
 
     /**
-    * @brief    Destuctor : does nothing.
-    */
+     * @brief    Destuctor : does nothing.
+     */
     FWCOMED_API virtual ~CameraMsg() throw();
 
 
@@ -62,7 +62,7 @@ public:
      * @brief   Get the new camera position.
      * @return  An array containing the x,y,z coordinates of the camera
      */
-    FWCOMED_API const double* getPositionCamera( void )const;
+    FWCOMED_API const double* getPositionCamera( void ) const;
     //@}
 
 
@@ -81,7 +81,7 @@ public:
      * @brief   Get the new camera focal.
      * @return  An array containing the focal coordinates.
      */
-    FWCOMED_API const double* getFocalCamera( void )const;
+    FWCOMED_API const double* getFocalCamera( void ) const;
     // @}
 
 
@@ -100,15 +100,15 @@ public:
      * @brief   Get the new camera view up.
      * @return  An array containing the view up coordinates.
      */
-    FWCOMED_API const double* getViewUpCamera( void )const;
+    FWCOMED_API const double* getViewUpCamera( void ) const;
     //@}
 
 
 protected:
 
     /**
-      * @brief used by operator<<(std::ostream & _sstream, IService& _service)
-      */
+     * @brief used by operator<<(std::ostream & _sstream, IService& _service)
+     */
     FWCOMED_API virtual void info(std::ostream &_sstream ) const;
 
 private:
@@ -121,5 +121,5 @@ private:
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_CAMERAMSG_HPP_
+#endif //__FWCOMED_CAMERAMSG_HPP__
 

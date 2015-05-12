@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_SLICEFOLLOWERCAMERA_HPP_
-#define _VISUVTKADAPTOR_SLICEFOLLOWERCAMERA_HPP_
+#ifndef __VISUVTKADAPTOR_SLICEFOLLOWERCAMERA_HPP__
+#define __VISUVTKADAPTOR_SLICEFOLLOWERCAMERA_HPP__
 
 #include <vector>
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
@@ -17,13 +17,14 @@ namespace visuVTKAdaptor
 {
 
 
-    /**
-     * @brief Update the camera according to slice move.
-     */
-class VISUVTKADAPTOR_CLASS_API SliceFollowerCamera: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService
+/**
+ * @brief Update the camera according to slice move.
+ */
+class VISUVTKADAPTOR_CLASS_API SliceFollowerCamera : public ::fwComEd::helper::MedicalImageAdaptor,
+                                                     public ::fwRenderVTK::IVtkAdaptorService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SliceFollowerCamera)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SliceFollowerCamera)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API SliceFollowerCamera() throw();
 
@@ -42,7 +43,7 @@ protected:
 
 
     void initializeCamera();
-    void updateCamera(double distance = -1., double size=-1);
+    void updateCamera(double distance = -1., double size = -1);
 
     vtkCamera* m_camera;
 };
@@ -52,4 +53,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_SLICEFOLLOWERCAMERA_HPP_
+#endif // __VISUVTKADAPTOR_SLICEFOLLOWERCAMERA_HPP__

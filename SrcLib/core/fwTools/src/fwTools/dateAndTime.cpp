@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,9 @@ namespace fwTools
     ::boost::gregorian::date resDate( ::boost::gregorian::from_undelimited_string( "19000101" ) );
     if ( dateStr.size() < 8 )
     {
-        OSLM_WARN("The string length is too short (<8) : " << dateStr << ". The string is initialized with \"19000101\".");
+        OSLM_WARN(
+            "The string length is too short (<8) : " << dateStr <<
+            ". The string is initialized with \"19000101\".");
     }
     else if ( dateStr.size() > 8 )
     {
@@ -38,7 +40,9 @@ namespace fwTools
         }
         else
         {
-            OSLM_WARN("The string not contains 8 numbers : " << dateStr << ". The string is initialized with \"19000101\".");
+            OSLM_WARN(
+                "The string not contains 8 numbers : " << dateStr <<
+                ". The string is initialized with \"19000101\".");
         }
     }
     return resDate;
@@ -56,27 +60,29 @@ namespace fwTools
     time_duration td;
     if ( timeStr.size() < 6 )
     {
-        OSLM_WARN("The string length is too short (<6) : " << timeStr << ".  The string is initialized with \"000000\".");
+        OSLM_WARN("The string length is too short (<6) : " << timeStr <<
+                  ".  The string is initialized with \"000000\".");
         td = hours(0) + minutes(0) + seconds(0);
     }
     else if ( timeStr.size() > 6 )
     {
         OSLM_WARN("The string length is too short (>6) : " << timeStr << ". This string is trunked.");
-        td =  strToBoostTime( timeStr.substr(0,6) );
+        td = strToBoostTime( timeStr.substr(0,6) );
     }
     else
     {
         ::boost::regex isNumber ("[0-9]+");
         if( ::boost::regex_match(timeStr, isNumber) )
         {
-            ::boost::uint16_t  h = ::boost::lexical_cast< ::boost::uint16_t > ( timeStr.substr(0,2) );
-            ::boost::uint16_t  m = ::boost::lexical_cast< ::boost::uint16_t > ( timeStr.substr(2,2) );
-            ::boost::uint16_t  s = ::boost::lexical_cast< ::boost::uint16_t > ( timeStr.substr(4,2) );
-            td = hours(h) + minutes(m) + seconds(s);
+            ::boost::uint16_t h = ::boost::lexical_cast< ::boost::uint16_t > ( timeStr.substr(0,2) );
+            ::boost::uint16_t m = ::boost::lexical_cast< ::boost::uint16_t > ( timeStr.substr(2,2) );
+            ::boost::uint16_t s = ::boost::lexical_cast< ::boost::uint16_t > ( timeStr.substr(4,2) );
+            td                  = hours(h) + minutes(m) + seconds(s);
         }
         else
         {
-            OSLM_WARN("The string not contains 6 numbers : " << timeStr <<". The string is initialized with \"000000\".");
+            OSLM_WARN("The string not contains 6 numbers : " << timeStr <<
+                      ". The string is initialized with \"000000\".");
             td = hours(0) + minutes(0) + seconds(0);
         }
     }

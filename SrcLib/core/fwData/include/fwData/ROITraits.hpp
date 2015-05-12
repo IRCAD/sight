@@ -31,7 +31,7 @@ namespace fwData
 class FWDATA_CLASS_API ROITraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), (()), ::fwData::factory::New< ROITraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ROITraits)(::fwData::Object), (()), ::fwData::factory::New< ROITraits >);
     fwCampMakeFriendDataMacro((fwData)(ROITraits));
 
     /**
@@ -45,9 +45,10 @@ public:
      */
     FWDATA_API virtual ~ROITraits();
 
-    fwGettersSettersDocMacro(Identifier, identifier, std::string, the ROIs identifier);
+    fwGettersSettersDocMacro(Identifier, identifier, std::string, "the ROIs identifier");
 
-    fwGettersSettersDocMacro(EvaluatedExp, evaluatedExp, StructureTraits::ROIExpression, the ROI evaluated expression);
+    fwGettersSettersDocMacro(EvaluatedExp, evaluatedExp, StructureTraits::ROIExpression,
+                             "the ROI evaluated expression");
 
     /// Set the ROI mask node used for ROI
     FWDATA_API void setMaskOpNode( ::fwData::Node::sptr maskOpNode );

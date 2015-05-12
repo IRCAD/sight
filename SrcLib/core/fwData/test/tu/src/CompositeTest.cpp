@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,11 +38,11 @@ void CompositeTest::methode1()
 {
     typedef ::fwData::Composite::value_type pair_type;
     const pair_type PAIRS[] = {
-        std::make_pair( "Composite"    , ::fwData::Composite::New()    ),
-        std::make_pair( "boolean true" , ::fwData::Boolean::New(true)  ),
+        std::make_pair( "Composite", ::fwData::Composite::New()    ),
+        std::make_pair( "boolean true", ::fwData::Boolean::New(true)  ),
         std::make_pair( "boolean false", ::fwData::Boolean::New(false) ),
-        std::make_pair( "float"        , ::fwData::Float::New(3.14f)   ),
-        std::make_pair( "integer"      , ::fwData::Integer::New(404)   )
+        std::make_pair( "float", ::fwData::Float::New(3.14f)   ),
+        std::make_pair( "integer", ::fwData::Integer::New(404)   )
     };
 
     ::fwData::Composite::ContainerType stdmap;
@@ -67,10 +67,10 @@ void CompositeTest::methode1()
     }
 
 
-    CPPUNIT_ASSERT_EQUAL( true ,  ::fwData::Boolean::dynamicCast((*composite)[ "boolean true" ])->value()  ) ;
-    CPPUNIT_ASSERT_EQUAL( false,  ::fwData::Boolean::dynamicCast((*composite)[ "boolean false" ])->value() ) ;
-    CPPUNIT_ASSERT_EQUAL( 3.14f ,   ::fwData::Float::dynamicCast((*composite)[ "float" ])->value()         ) ;
-    CPPUNIT_ASSERT_EQUAL( 404  ,  ::fwData::Integer::dynamicCast((*composite)[ "integer" ])->value()       ) ;
+    CPPUNIT_ASSERT_EQUAL( true,  ::fwData::Boolean::dynamicCast((*composite)[ "boolean true" ])->value()  );
+    CPPUNIT_ASSERT_EQUAL( false,  ::fwData::Boolean::dynamicCast((*composite)[ "boolean false" ])->value() );
+    CPPUNIT_ASSERT_EQUAL( 3.14f,   ::fwData::Float::dynamicCast((*composite)[ "float" ])->value()         );
+    CPPUNIT_ASSERT_EQUAL( 404,  ::fwData::Integer::dynamicCast((*composite)[ "integer" ])->value()       );
 
     //-----------test values
     const std::string STR = "toto";

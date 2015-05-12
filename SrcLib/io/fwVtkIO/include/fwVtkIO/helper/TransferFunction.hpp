@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_HELPER_TRANSFERFUNCTION_HPP_
-#define _VTKIO_HELPER_TRANSFERFUNCTION_HPP_
+#ifndef __FWVTKIO_HELPER_TRANSFERFUNCTION_HPP__
+#define __FWVTKIO_HELPER_TRANSFERFUNCTION_HPP__
 
 #include <vtkSmartPointer.h>
 #include <vtkLogLookupTable.h>
@@ -23,14 +23,14 @@ namespace helper
 /**
  * @brief   Helper to manage vtk data from ::fwData::TransferFunction.
  * @class   TransferFunction
- * 
+ *
  * @date    2012.
  *
  */
 class FWVTKIO_CLASS_API TransferFunction
 {
 
-public :
+public:
 
     /*!
      * @brief Convert a ::fwData::TransferFunction to a vtkLookupTable.
@@ -41,10 +41,10 @@ public :
      * @param[out] lt vtkLookupTable
      */
     FWVTKIO_API static void toVtkLookupTable(
-            ::fwData::TransferFunction::sptr tf,
-             vtkSmartPointer<vtkLookupTable>  lt,
-            bool allowTransparency = false,
-            unsigned int size = 256 );
+        ::fwData::TransferFunction::sptr tf,
+        vtkSmartPointer<vtkLookupTable>  lt,
+        bool allowTransparency = false,
+        unsigned int size = 256 );
 
     /*!
      * @brief Convert the range of an Image or a TransferFunction to a black and white vtkLookupTable.
@@ -56,12 +56,12 @@ public :
      *
      */
     FWVTKIO_API static void toBWVtkLookupTable(   double rangeMin, double rangeMax,
-                                                vtkSmartPointer<vtkLookupTable> lt,
-                                                unsigned int size = 256 );
+                                                  vtkSmartPointer<vtkLookupTable> lt,
+                                                  unsigned int size = 256 );
 
-  };
+};
 
 } // namespace helper
 } // namespace fwVtkIO
 
-#endif // _VTKIO_HELPER_TRANSFERFUNCTION_HPP_
+#endif // __FWVTKIO_HELPER_TRANSFERFUNCTION_HPP__

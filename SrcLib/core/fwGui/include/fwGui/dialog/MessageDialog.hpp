@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_MESSAGEBOX_HPP_
-#define _FWGUI_MESSAGEBOX_HPP_
+#ifndef __FWGUI_DIALOG_MESSAGEDIALOG_HPP__
+#define __FWGUI_DIALOG_MESSAGEDIALOG_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -39,7 +39,8 @@ public:
      * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      * @return Returns the button enum value corresponding to the pressed button
      */
-    FWGUI_API static IMessageDialog::Buttons showMessageDialog(const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
+    FWGUI_API static IMessageDialog::Buttons showMessageDialog(const std::string& title, const std::string& message,
+                                                               ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
 
     /// Constructor. Create the implementation of the specific message box
     FWGUI_API MessageDialog();
@@ -52,7 +53,8 @@ public:
      * @param message Message of the message box
      * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      */
-    FWGUI_API MessageDialog(const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
+    FWGUI_API MessageDialog(const std::string& title, const std::string& message,
+                            ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~MessageDialog();
@@ -84,6 +86,6 @@ protected:
 } //namespace dialog
 } // namespace fwGui
 
-#endif /*_FWGUI_MESSAGEBOX_HPP_*/
+#endif /*__FWGUI_DIALOG_MESSAGEDIALOG_HPP__*/
 
 

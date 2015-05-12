@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,7 +61,7 @@ void generateSIGSEV()
 #ifndef WIN32
 std::string demangle( std::string mangled )
 {
-    char * c_demangled = abi::__cxa_demangle( mangled.c_str() , 0, 0, 0);
+    char * c_demangled = abi::__cxa_demangle( mangled.c_str(), 0, 0, 0);
     if (c_demangled)
     {
         std::string res(c_demangled);
@@ -85,14 +85,15 @@ std::string decode( char *message)
         std::string::size_type plus = msg.find('+');
         res = std::string(message,popen+1) + " ";
         std::string mangled( message, popen+1, plus -popen -1 );
-        res +=  demangle(mangled) + " ";
+        res += demangle(mangled) + " ";
         res += std::string( message + plus, message + strlen(message) );
     }
     return res;
 }
 
 void bt_sighandler(int sig, siginfo_t *info,
-        void *secret) {
+                   void *secret)
+{
 
     void *trace[16];
     char **messages = (char **)NULL;
@@ -121,7 +122,7 @@ void bt_sighandler(int sig, siginfo_t *info,
     messages = backtrace_symbols(trace, trace_size);
     /* skip first stack frame (points here) */
     ss <<  "    [bt] Execution path:" << std::endl;
-    for (i=1; i<trace_size; ++i)
+    for (i = 1; i<trace_size; ++i)
     {
         ss <<  "    [bt] " <<  decode(messages[i]) << std::endl;
     }
@@ -167,7 +168,8 @@ BOOL CALLBACK EnumerateLoadedModules(LPSTR ModuleName, DWORD64 ModuleBase, ULONG
 /**
  * Dumps the backtrace on a stream
  */
-void printDump(std::list<std::string> &loadedModules, std::list<std::string> &callStack, std::list<std::string> &fileStack)
+void printDump(std::list<std::string> &loadedModules, std::list<std::string> &callStack,
+               std::list<std::string> &fileStack)
 {
     std::stringstream stream;
 
@@ -181,7 +183,8 @@ void printDump(std::list<std::string> &loadedModules, std::list<std::string> &ca
     stream << "-----------------------------------------" << std::endl;
     // Dumps the call stack on the stream
     stream << "\nCallStack\n";
-    for(std::list<std::string>::const_iterator it = callStack.begin(), it2 = fileStack.begin(); it != callStack.end() && it2 != fileStack.end(); ++it, ++it2)
+    for(std::list<std::string>::const_iterator it = callStack.begin(), it2 = fileStack.begin();
+        it != callStack.end() && it2 != fileStack.end(); ++it, ++it2)
     {
         stream << "> " << *it << std::endl;
         stream << "   " << *it2 << std::endl;
@@ -195,7 +198,8 @@ void printDump(std::list<std::string> &loadedModules, std::list<std::string> &ca
  * Loads the elements of the call stack in a list
  * @param exceptionInfos are useful information on the exception
  */
-void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE &hProcess, std::list<std::string> &callStack, std::list<std::string> &fileStack)
+void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE &hProcess, std::list<std::string> &callStack,
+                   std::list<std::string> &fileStack)
 {
     STACKFRAME64 tempStackFrame;
     CONTEXT context = *(exceptionInfos->ContextRecord);
@@ -203,31 +207,31 @@ void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE &hProcess, std::li
     DWORD machineType;
 
 #ifdef _M_IX86
-    machineType = IMAGE_FILE_MACHINE_I386;
-    tempStackFrame.AddrPC.Offset       = context.Eip;
-    tempStackFrame.AddrPC.Mode         = AddrModeFlat;
-    tempStackFrame.AddrStack.Offset    = context.Esp;
-    tempStackFrame.AddrStack.Mode      = AddrModeFlat;
-    tempStackFrame.AddrFrame.Offset    = context.Ebp;
-    tempStackFrame.AddrFrame.Mode      = AddrModeFlat;
+    machineType                     = IMAGE_FILE_MACHINE_I386;
+    tempStackFrame.AddrPC.Offset    = context.Eip;
+    tempStackFrame.AddrPC.Mode      = AddrModeFlat;
+    tempStackFrame.AddrStack.Offset = context.Esp;
+    tempStackFrame.AddrStack.Mode   = AddrModeFlat;
+    tempStackFrame.AddrFrame.Offset = context.Ebp;
+    tempStackFrame.AddrFrame.Mode   = AddrModeFlat;
 #elif _M_X64
-    machineType = IMAGE_FILE_MACHINE_AMD64;
-    tempStackFrame.AddrPC.Offset = context.Rip;
-    tempStackFrame.AddrPC.Mode = AddrModeFlat;
+    machineType                     = IMAGE_FILE_MACHINE_AMD64;
+    tempStackFrame.AddrPC.Offset    = context.Rip;
+    tempStackFrame.AddrPC.Mode      = AddrModeFlat;
     tempStackFrame.AddrFrame.Offset = context.Rsp;
-    tempStackFrame.AddrFrame.Mode = AddrModeFlat;
+    tempStackFrame.AddrFrame.Mode   = AddrModeFlat;
     tempStackFrame.AddrStack.Offset = context.Rsp;
-    tempStackFrame.AddrStack.Mode = AddrModeFlat;
+    tempStackFrame.AddrStack.Mode   = AddrModeFlat;
 #elif _M_IA64
-    machineType = IMAGE_FILE_MACHINE_IA64;
-    tempStackFrame.AddrPC.Offset = context.StIIP;
-    tempStackFrame.AddrPC.Mode = AddrModeFlat;
-    tempStackFrame.AddrFrame.Offset = context.IntSp;
-    tempStackFrame.AddrFrame.Mode = AddrModeFlat;
+    machineType                      = IMAGE_FILE_MACHINE_IA64;
+    tempStackFrame.AddrPC.Offset     = context.StIIP;
+    tempStackFrame.AddrPC.Mode       = AddrModeFlat;
+    tempStackFrame.AddrFrame.Offset  = context.IntSp;
+    tempStackFrame.AddrFrame.Mode    = AddrModeFlat;
     tempStackFrame.AddrBStore.Offset = context.RsBSP;
-    tempStackFrame.AddrBStore.Mode = AddrModeFlat;
-    tempStackFrame.AddrStack.Offset = context.IntSp;
-    tempStackFrame.AddrStack.Mode = AddrModeFlat;
+    tempStackFrame.AddrBStore.Mode   = AddrModeFlat;
+    tempStackFrame.AddrStack.Offset  = context.IntSp;
+    tempStackFrame.AddrStack.Mode    = AddrModeFlat;
 #else
 #error "Platform not supported!"
 #endif
@@ -237,26 +241,31 @@ void LoadCallStack(EXCEPTION_POINTERS* exceptionInfos, HANDLE &hProcess, std::li
     PSTR undecoratedName = (PSTR)malloc(sizeof(TCHAR) * nbChar);
 
     pSymbol->SizeOfStruct = sizeof(SYMBOL_INFO);
-    pSymbol->MaxNameLen = nbChar;
+    pSymbol->MaxNameLen   = nbChar;
     DWORD lineDisplacement;
     IMAGEHLP_LINE64 lineInfo = { sizeof(IMAGEHLP_LINE64) };
 
-    while(StackWalk64(machineType, hProcess, GetCurrentThread(), &tempStackFrame, &context, NULL, SymFunctionTableAccess64, SymGetModuleBase64, NULL))
+    while(StackWalk64(machineType, hProcess, GetCurrentThread(), &tempStackFrame, &context, NULL,
+                      SymFunctionTableAccess64, SymGetModuleBase64, NULL))
     {
         // Sanity stack check
         if(tempStackFrame.AddrPC.Offset == 0)
+        {
             break;
+        }
 
         DWORD64 symDisplacement = 0;
         // Try to get the symbol name
         if(SymFromAddr(hProcess, tempStackFrame.AddrPC.Offset, &symDisplacement, pSymbol))
         {
             UnDecorateSymbolName(pSymbol->Name, undecoratedName, MAX_SYM_NAME, UNDNAME_COMPLETE);
-            callStack.push_back(std::string((char*)undecoratedName) + "+" + ::boost::lexical_cast<std::string>(symDisplacement));
+            callStack.push_back(std::string((char*)undecoratedName) + "+" +
+                                ::boost::lexical_cast<std::string>(symDisplacement));
 
             if(SymGetLineFromAddr64(hProcess, tempStackFrame.AddrPC.Offset, &lineDisplacement, &lineInfo))
             {
-                fileStack.push_back(std::string(lineInfo.FileName) + "\tl:" + ::boost::lexical_cast<std::string>(lineInfo.LineNumber));
+                fileStack.push_back(std::string(lineInfo.FileName) + "\tl:" +
+                                    ::boost::lexical_cast<std::string>(lineInfo.LineNumber));
             }
             else
             {

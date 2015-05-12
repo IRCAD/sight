@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include "uiMedDataQt/editor/SSeries.hpp"
 
 #include <fwCom/Signal.hxx>
@@ -37,26 +43,26 @@ namespace uiMedData
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMedData::editor::SSeries , ::fwData::Vector ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SSeries, ::fwData::Vector );
 
-const ::fwCom::Signals::SignalKeyType SSeries::s_EXPORT_SLOT = "export";
+const ::fwCom::Signals::SignalKeyType SSeries::s_EXPORT_SLOT         = "export";
 const ::fwCom::Signals::SignalKeyType SSeries::s_SERIES_EXPORTED_SIG = "seriesExported";
-const ::fwCom::Signals::SignalKeyType SSeries::s_CAN_EXPORT_SIG = "canExport";
+const ::fwCom::Signals::SignalKeyType SSeries::s_CAN_EXPORT_SIG      = "canExport";
 
 //------------------------------------------------------------------------------
 
 SSeries::SSeries()
 {
-    m_slotExport  = ::fwCom::newSlot( &SSeries::onExportClicked, this ) ;
+    m_slotExport = ::fwCom::newSlot( &SSeries::onExportClicked, this );
     ::fwCom::HasSlots::m_slots( s_EXPORT_SLOT, m_slotExport );
 
-    m_sigCanExport = CanExportSignalType::New();
+    m_sigCanExport      = CanExportSignalType::New();
     m_sigSeriesExported = SeriesExportedSignalType::New();
 
     ::fwCom::HasSignals::m_signals
         (s_CAN_EXPORT_SIG, m_sigCanExport)
         (s_SERIES_EXPORTED_SIG, m_sigSeriesExported)
-        ;
+    ;
 
 #ifdef COM_LOG
     m_slotExport->setID(s_EXPORT_SLOT);
@@ -71,7 +77,8 @@ SSeries::SSeries()
 //------------------------------------------------------------------------------
 
 SSeries::~SSeries() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -85,10 +92,10 @@ void SSeries::starting() throw(::fwTools::Failed)
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
-    m_patientEditor = new ::uiMedData::widget::PatientEditor();
-    m_studyEditor = new ::uiMedData::widget::StudyEditor();
+    m_patientEditor   = new ::uiMedData::widget::PatientEditor();
+    m_studyEditor     = new ::uiMedData::widget::StudyEditor();
     m_equipmentEditor = new ::uiMedData::widget::EquipmentEditor();
-    m_seriesEditor = new ::uiMedData::widget::SeriesEditor();
+    m_seriesEditor    = new ::uiMedData::widget::SeriesEditor();
 
 
     QVBoxLayout* studyEquipmentLayout = new QVBoxLayout();
@@ -177,7 +184,7 @@ void SSeries::onExportClicked()
     SLM_ASSERT("Failed to retrieve a ::fwMedData::SeriesDB from object '" << m_seriesDBId << "'", seriesDB);
 
     if(m_patientEditor->isValid() && m_studyEditor->isValid()
-            && m_equipmentEditor->isValid() && m_seriesEditor->isValid())
+       && m_equipmentEditor->isValid() && m_seriesEditor->isValid())
     {
 
         ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
@@ -186,7 +193,7 @@ void SSeries::onExportClicked()
         SLM_ASSERT("Failed to retrieve ::fwMedData::Series from vector", seriesVec);
 
         ::fwMedData::Patient::sptr patient = m_patientEditor->getPatient();
-        ::fwMedData::Study::sptr study = m_studyEditor->getStudy();
+        ::fwMedData::Study::sptr study     = m_studyEditor->getStudy();
 
         // If a new patient is being created but the study edition didn't change a new study instance UID must be set
         if(patient->getPatientId() != seriesVec->getPatient()->getPatientId())
@@ -261,7 +268,7 @@ void SSeries::receiving(::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::F
     ::fwComEd::VectorMsg::csptr vectorMsg = ::fwComEd::VectorMsg::dynamicConstCast(_msg);
 
     if ( vectorMsg && (vectorMsg->hasEvent( ::fwComEd::VectorMsg::ADDED_OBJECTS )
-                      || vectorMsg->hasEvent( ::fwComEd::VectorMsg::REMOVED_OBJECTS ) ))
+                       || vectorMsg->hasEvent( ::fwComEd::VectorMsg::REMOVED_OBJECTS ) ))
     {
         this->updating();
     }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -106,7 +106,7 @@ SeriesDBReader::~SeriesDBReader()
 }
 
 //------------------------------------------------------------------------------
-    template <typename T, typename FILE>
+template <typename T, typename FILE>
 vtkSmartPointer< vtkDataObject  > getObj(FILE &file, SeriesDBReader *progressor)
 {
     vtkSmartPointer< T > reader = vtkSmartPointer< T >::New();
@@ -164,14 +164,21 @@ struct FilteringStream : ::boost::iostreams::filtering_istream
         m_image(source),
         m_bufferObject(source->getDataArray()->getBufferObject()),
         m_lock( m_bufferObject->lock() ),
-        m_bufferStream( ::boost::make_shared<BufferStreamType>(static_cast<char *>(m_lock.getBuffer()), m_bufferObject->getSize()) )
+        m_bufferStream( ::boost::make_shared<BufferStreamType>(static_cast<char *>(m_lock.getBuffer()),
+                                                               m_bufferObject->getSize()) )
     {
         this->push(*m_bufferStream);
     }
 
     ~FilteringStream()
     {
-        try { this->reset(); } catch (...) { }
+        try
+        {
+            this->reset();
+        }
+        catch (...)
+        {
+        }
     }
 
     ::fwData::Image::sptr m_image;
@@ -188,7 +195,8 @@ class ImageStream : public ::fwMemory::stream::in::IFactory
 public:
 
     ImageStream( const ::boost::filesystem::path& path ) :  m_path(path)
-    {}
+    {
+    }
 
 protected:
 
@@ -254,7 +262,7 @@ void updateImageFromVtkInfo(const vtkSmartPointer< vtkInformation > &info, const
 
     vtkInformation *attrInfo = vtkDataObject::GetActiveFieldInformation(info, vtkDataObject::FIELD_ASSOCIATION_POINTS,
                                                                         vtkDataSetAttributes::SCALARS);
-    int type = attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE());
+    int type           = attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE());
     int nbOfComponents = attrInfo->Get(vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
     imgObj->setType( ::fwVtkIO::TypeTranslator::translate( attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE()) ) );
     imgObj->setNumberOfComponents(nbOfComponents);
@@ -274,7 +282,8 @@ void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader > &reader, const 
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
-    buffObj->setIStreamFactory( ::boost::make_shared< ImageStream<vtkStructuredPointsReader> >(file), imgObj->getSizeInBytes());
+    buffObj->setIStreamFactory( ::boost::make_shared< ImageStream<vtkStructuredPointsReader> >(
+                                    file), imgObj->getSizeInBytes());
 }
 
 
@@ -292,7 +301,8 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader > &reader, con
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
-    buffObj->setIStreamFactory( ::boost::make_shared< ImageStream<vtkXMLImageDataReader> >(file), imgObj->getSizeInBytes());
+    buffObj->setIStreamFactory( ::boost::make_shared< ImageStream<vtkXMLImageDataReader> >(
+                                    file), imgObj->getSizeInBytes());
 
 }
 
@@ -329,7 +339,7 @@ void SeriesDBReader::read()
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
     const ::fwData::location::ILocation::VectPathType files = this->getFiles();
-    const std::string instanceUID = ::fwTools::UUID::generateUUID();
+    const std::string instanceUID                           = ::fwTools::UUID::generateUUID();
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recs;
     std::vector< std::string > errorFiles;
@@ -370,8 +380,8 @@ void SeriesDBReader::read()
         if (!img)
         {
             ::fwData::Object::sptr dataObj = getDataObject(obj, file);
-            img = ::fwData::Image::dynamicCast(dataObj);
-            rec = ::fwData::Reconstruction::dynamicCast(dataObj);
+            img                            = ::fwData::Image::dynamicCast(dataObj);
+            rec                            = ::fwData::Reconstruction::dynamicCast(dataObj);
         }
         if(img)
         {
@@ -407,7 +417,7 @@ void SeriesDBReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string  SeriesDBReader::extension()
+std::string SeriesDBReader::extension()
 {
     return ".vtk";
 }

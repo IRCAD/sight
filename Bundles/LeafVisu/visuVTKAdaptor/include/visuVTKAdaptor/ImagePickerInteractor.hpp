@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_IMAGEPICKERINTERACTOR_HPP_
-#define _VISUVTKADAPTOR_IMAGEPICKERINTERACTOR_HPP_
+#ifndef __VISUVTKADAPTOR_IMAGEPICKERINTERACTOR_HPP__
+#define __VISUVTKADAPTOR_IMAGEPICKERINTERACTOR_HPP__
 
 #include <vector>
 
@@ -21,14 +21,15 @@ namespace visuVTKAdaptor
 {
 
 /**
-* @brief Adaptor to manage image picking
-*/
-class VISUVTKADAPTOR_CLASS_API ImagePickerInteractor: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService
+ * @brief Adaptor to manage image picking
+ */
+class VISUVTKADAPTOR_CLASS_API ImagePickerInteractor : public ::fwComEd::helper::MedicalImageAdaptor,
+                                                       public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImagePickerInteractor)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImagePickerInteractor)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API ImagePickerInteractor() throw();
 
@@ -59,4 +60,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_IMAGEPICKERINTERACTOR_HPP_
+#endif // __VISUVTKADAPTOR_IMAGEPICKERINTERACTOR_HPP__

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VTKIO_MODELSERIESOBJWRITER_HPP__
-#define __VTKIO_MODELSERIESOBJWRITER_HPP__
+#ifndef __FWVTKIO_MODELSERIESOBJWRITER_HPP__
+#define __FWVTKIO_MODELSERIESOBJWRITER_HPP__
 
 #include <boost/filesystem/path.hpp>
 
@@ -17,12 +17,12 @@
 
 namespace fwData
 {
-    class Reconstruction;
+class Reconstruction;
 }
 
 namespace fwMedData
 {
-    class ModelSeries;
+class ModelSeries;
 }
 
 namespace fwVtkIO
@@ -39,13 +39,13 @@ class ModelSeriesObjWriter : public ::fwDataIO::writer::GenericObjectWriter< ::f
                              public ::fwTools::ProgressAdviser
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro(
-            (ModelSeriesObjWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >),
-            (()),
-            ::fwDataIO::writer::factory::New< ModelSeriesObjWriter >
-            );
+        (ModelSeriesObjWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >),
+        (()),
+        ::fwDataIO::writer::factory::New< ModelSeriesObjWriter >
+        );
 
     fwCoreAllowSharedFromThis();
 
@@ -67,5 +67,5 @@ public :
 
 } // namespace fwVtkIO
 
-#endif // __VTKIO_MODELSERIESOBJWRITER_HPP__
+#endif // __FWVTKIO_MODELSERIESOBJWRITER_HPP__
 

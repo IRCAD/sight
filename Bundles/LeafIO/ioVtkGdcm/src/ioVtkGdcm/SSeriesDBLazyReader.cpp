@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,17 +34,19 @@
 namespace ioVtkGdcm
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioVtkGdcm::SSeriesDBLazyReader , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioVtkGdcm::SSeriesDBLazyReader, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
 SSeriesDBLazyReader::SSeriesDBLazyReader() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SSeriesDBLazyReader::~SSeriesDBLazyReader() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -58,8 +60,8 @@ void SSeriesDBLazyReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr  result;
-    result= ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    ::fwData::location::Folder::sptr result;
+    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
@@ -86,15 +88,15 @@ void SSeriesDBLazyReader::stopping() throw(::fwTools::Failed)
 
 void SSeriesDBLazyReader::info(std::ostream &_sstream )
 {
-    _sstream << "SSeriesDBLazyReader::info" ;
+    _sstream << "SSeriesDBLazyReader::info";
 }
 
 //------------------------------------------------------------------------------
 
 SSeriesDBLazyReader::ExtensionsType SSeriesDBLazyReader::getSupportedExtensions()
 {
-    ExtensionsType extensions ;
-    return extensions ;
+    ExtensionsType extensions;
+    return extensions;
 }
 
 //------------------------------------------------------------------------------
@@ -111,7 +113,7 @@ std::string SSeriesDBLazyReader::getSelectorDialogTitle()
 {
     SLM_TRACE_FUNC();
     ::vtkGdcmIO::SeriesDBLazyReader::sptr myLoader = ::vtkGdcmIO::SeriesDBLazyReader::New();
-    ::fwMedData::SeriesDB::sptr dummy = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::sptr dummy              = ::fwMedData::SeriesDB::New();
     myLoader->setObject(dummy);
     myLoader->setFolder(dicomDir);
 
@@ -126,12 +128,12 @@ std::string SSeriesDBLazyReader::getSelectorDialogTitle()
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
     return myLoader->getConcreteObject();
@@ -151,7 +153,7 @@ void SSeriesDBLazyReader::updating() throw(::fwTools::Failed)
             // Retrieve dataStruct associated with this service
             ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
-            associatedSeriesDB->shallowCopy( seriesDB ) ;
+            associatedSeriesDB->shallowCopy( seriesDB );
 
             ::fwGui::Cursor cursor;
             cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -161,7 +163,8 @@ void SSeriesDBLazyReader::updating() throw(::fwTools::Failed)
         else
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Image Reader","This file can not be read. Retry with another file reader.", ::fwGui::dialog::IMessageDialog::WARNING);
+                "Image Reader","This file can not be read. Retry with another file reader.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }
@@ -171,7 +174,7 @@ void SSeriesDBLazyReader::updating() throw(::fwTools::Failed)
 void SSeriesDBLazyReader::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >() ;
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     ::fwComEd::SeriesDBMsg::sptr msg = ::fwComEd::SeriesDBMsg::New();

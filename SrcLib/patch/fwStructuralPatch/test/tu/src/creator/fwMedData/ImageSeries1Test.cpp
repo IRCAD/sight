@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,16 +46,16 @@ void ImageSeries1Test::createTest()
 
     CPPUNIT_ASSERT(imageSeriesCreator);
     const std::string& classname = imageSeriesCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::ImageSeries") == classname );
-    const std::string& objectVersion =  imageSeriesCreator->getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == objectVersion );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::ImageSeries") == classname );
+    const std::string& objectVersion = imageSeriesCreator->getObjectVersion();
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
     ::fwAtoms::Object::sptr imageSeries = imageSeriesCreator->create();
 
     const std::string& imageSeriesClassname = ::fwAtomsPatch::helper::getClassname(imageSeries);
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::ImageSeries") == imageSeriesClassname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::ImageSeries") == imageSeriesClassname );
     const std::string& imageSeriesObjectVersion = ::fwAtomsPatch::helper::getVersion(imageSeries);
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == imageSeriesObjectVersion );
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == imageSeriesObjectVersion );
 
     CPPUNIT_ASSERT(imageSeries->getAttribute("image"));
 }
@@ -68,18 +68,19 @@ void ImageSeries1Test::copyTest()
     ImageSeries1 imageSeriesCreator;
 
     const std::string& classname = imageSeriesCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::ImageSeries") == classname );
-    const std::string& objectVersion =  imageSeriesCreator.getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == objectVersion );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::ImageSeries") == classname );
+    const std::string& objectVersion = imageSeriesCreator.getObjectVersion();
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
     ImageSeries1* imageSeriesCreator2 = new ImageSeries1(imageSeriesCreator);
 
     CPPUNIT_ASSERT(imageSeriesCreator2);
     const std::string& classnameImageSeriesCreator2 = imageSeriesCreator2->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::ImageSeries") == classnameImageSeriesCreator2 );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string(
+                               "::fwMedData::ImageSeries") == classnameImageSeriesCreator2 );
 
-    const std::string& objectVersionImageSeriesCreator2 =  imageSeriesCreator2->getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == objectVersionImageSeriesCreator2 );
+    const std::string& objectVersionImageSeriesCreator2 = imageSeriesCreator2->getObjectVersion();
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionImageSeriesCreator2 );
 
     delete(imageSeriesCreator2);
 }

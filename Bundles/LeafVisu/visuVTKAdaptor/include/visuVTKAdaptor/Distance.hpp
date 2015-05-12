@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_DISTANCE_HPP_
-#define _VISUVTKADAPTOR_DISTANCE_HPP_
+#ifndef __VISUVTKADAPTOR_DISTANCE_HPP__
+#define __VISUVTKADAPTOR_DISTANCE_HPP__
 
 #include <vector>
 
@@ -24,12 +24,12 @@ class vtkLineSource;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API Distance: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Distance : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Distance)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Distance)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Distance() throw();
 
@@ -71,4 +71,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_DISTANCE_HPP_
+#endif // __VISUVTKADAPTOR_DISTANCE_HPP__

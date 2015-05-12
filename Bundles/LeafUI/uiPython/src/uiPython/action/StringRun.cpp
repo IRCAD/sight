@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,23 +20,25 @@ namespace uiPython
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiPython::action::StringRun , ::fwData::String ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiPython::action::StringRun, ::fwData::String );
 
 //-----------------------------------------------------------------------------
 
 StringRun::StringRun() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 StringRun::~StringRun() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void StringRun::configuring() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
     this->initialize();
 }
 

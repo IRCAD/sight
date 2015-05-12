@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -68,23 +68,23 @@ void changeUID( const ::fwAtoms::Object::sptr & obj )
         {
             switch ( elem.second->type() )
             {
-            case ::fwAtoms::Base::SEQUENCE :
-            {
-                changeSeqUID( ::fwAtoms::Sequence::dynamicCast( elem.second ) );
-                break;
-            }
-            case ::fwAtoms::Base::MAP :
-            {
-                changeMapUID( ::fwAtoms::Map::dynamicCast( elem.second ) );
-                break;
-            }
-            case ::fwAtoms::Base::OBJECT :
-            {
-                changeUID( ::fwAtoms::Object::dynamicCast( elem.second ) );
-                break;
-            }
-            default :
-                break;
+                case ::fwAtoms::Base::SEQUENCE:
+                {
+                    changeSeqUID( ::fwAtoms::Sequence::dynamicCast( elem.second ) );
+                    break;
+                }
+                case ::fwAtoms::Base::MAP:
+                {
+                    changeMapUID( ::fwAtoms::Map::dynamicCast( elem.second ) );
+                    break;
+                }
+                case ::fwAtoms::Base::OBJECT:
+                {
+                    changeUID( ::fwAtoms::Object::dynamicCast( elem.second ) );
+                    break;
+                }
+                default:
+                    break;
             }
         }
     }
@@ -102,23 +102,23 @@ void changeMapUID( const ::fwAtoms::Map::sptr & map )
         {
             switch ( elem.second->type() )
             {
-            case ::fwAtoms::Base::SEQUENCE :
-            {
-                changeSeqUID( ::fwAtoms::Sequence::dynamicCast( elem.second ) );
-                break;
-            }
-            case ::fwAtoms::Base::MAP :
-            {
-                changeMapUID( ::fwAtoms::Map::dynamicCast( elem.second ) );
-                break;
-            }
-            case ::fwAtoms::Base::OBJECT :
-            {
-                changeUID( ::fwAtoms::Object::dynamicCast( elem.second ) );
-                break;
-            }
-            default :
-                break;
+                case ::fwAtoms::Base::SEQUENCE:
+                {
+                    changeSeqUID( ::fwAtoms::Sequence::dynamicCast( elem.second ) );
+                    break;
+                }
+                case ::fwAtoms::Base::MAP:
+                {
+                    changeMapUID( ::fwAtoms::Map::dynamicCast( elem.second ) );
+                    break;
+                }
+                case ::fwAtoms::Base::OBJECT:
+                {
+                    changeUID( ::fwAtoms::Object::dynamicCast( elem.second ) );
+                    break;
+                }
+                default:
+                    break;
             }
         }
     }
@@ -134,23 +134,23 @@ void changeSeqUID( const ::fwAtoms::Sequence::sptr & seq )
         {
             switch ( elem->type() )
             {
-            case ::fwAtoms::Base::SEQUENCE :
-            {
-                changeSeqUID( ::fwAtoms::Sequence::dynamicCast( elem ) );
-                break;
-            }
-            case ::fwAtoms::Base::MAP :
-            {
-                changeMapUID( ::fwAtoms::Map::dynamicCast( elem ) );
-                break;
-            }
-            case ::fwAtoms::Base::OBJECT :
-            {
-                changeUID( ::fwAtoms::Object::dynamicCast( elem ) );
-                break;
-            }
-            default :
-                break;
+                case ::fwAtoms::Base::SEQUENCE:
+                {
+                    changeSeqUID( ::fwAtoms::Sequence::dynamicCast( elem ) );
+                    break;
+                }
+                case ::fwAtoms::Base::MAP:
+                {
+                    changeMapUID( ::fwAtoms::Map::dynamicCast( elem ) );
+                    break;
+                }
+                case ::fwAtoms::Base::OBJECT:
+                {
+                    changeUID( ::fwAtoms::Object::dynamicCast( elem ) );
+                    break;
+                }
+                default:
+                    break;
             }
         }
     }

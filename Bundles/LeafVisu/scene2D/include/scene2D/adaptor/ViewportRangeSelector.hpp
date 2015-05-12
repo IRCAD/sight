@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_VIEWPORTRANGESELECTOR_HPP_
-#define _SCENE2D_VIEWPORTRANGESELECTOR_HPP_
+#ifndef __SCENE2D_ADAPTOR_VIEWPORTRANGESELECTOR_HPP__
+#define __SCENE2D_ADAPTOR_VIEWPORTRANGESELECTOR_HPP__
 
 #include <scene2D/adaptor/IAdaptor.hpp>
 
@@ -17,13 +17,13 @@ namespace adaptor
 
 /**
  * @brief <p>The viewport range selector adaptor allows to select a delimited range of a viewport.
- * It uses a graphical delimiter (called shutter) that can be moved from both left to right 
+ * It uses a graphical delimiter (called shutter) that can be moved from both left to right
  * and right to left directions (in those cases, shutter's width is changing).</p>
  *
- * <p>Clicking onto the approximative center of the shutter allows the user to change its position, 
+ * <p>Clicking onto the approximative center of the shutter allows the user to change its position,
  * according to mouse's cursor position (width won't change).</p>
  *
- * <p>Clicking onto the approximative left/right (respectively) border of the shutter allows the 
+ * <p>Clicking onto the approximative left/right (respectively) border of the shutter allows the
  * user to change the width of the shutter: the right/left (respectively) border doesn't move
  * during resizing.</p>
  *
@@ -36,7 +36,7 @@ namespace adaptor
        <config xAxis="xAxis" yAxis="yAxis" zValue="5" />
    </adaptor>
    @endverbatim
- * 
+ *
  * \b objectId  :   the viewport object that is updated by this adaptor
  *
  * \b xAxis     : see ::scene2D::adaptor::IAdaptor
@@ -55,7 +55,7 @@ class ViewportRangeSelector : public ::scene2D::adaptor::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ViewportRangeSelector)(::scene2D::adaptor::IAdaptor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ViewportRangeSelector)(::scene2D::adaptor::IAdaptor) );
     ViewportRangeSelector() throw();
     ~ViewportRangeSelector() throw();
 
@@ -72,7 +72,7 @@ protected:
     /// Update the viewport object according to the current state of the shutter (coordinates are
     /// mapped from the scene).
     SCENE2D_API void updateViewportFromShutter( double x, double y, double width, double height );
- 
+
     QGraphicsRectItem* m_shutter;
     bool m_isLeftInteracting;                       // interaction onto shutter's left border
     bool m_isRightInteracting;                      // interaction onto shutter's right border
@@ -82,7 +82,7 @@ protected:
 
     /// A spacing value for an easier picking onto shutter borders
     const int m_clickCatchRange;
-        
+
     /// (This is the only graphic item which has to be added into the scene).
     QGraphicsItemGroup* m_layer;
 
@@ -96,10 +96,10 @@ private:
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's left border
     bool mouseOnShutterLeft( ::scene2D::data::Coord _coord);
-    
+
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's right border
     bool mouseOnShutterRight( ::scene2D::data::Coord _coord);
-    
+
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's middle part
     bool mouseOnShutterMiddle( ::scene2D::data::Coord _coord);
 };
@@ -108,5 +108,5 @@ private:
 }   // namespace adaptor
 }   // namespace scene2D
 
-#endif  // _SCENE2D_VIEWPORTRANGESELECTOR_HPP_
+#endif  // __SCENE2D_ADAPTOR_VIEWPORTRANGESELECTOR_HPP__
 

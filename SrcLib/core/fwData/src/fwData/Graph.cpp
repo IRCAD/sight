@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@ fwDataRegisterMacro( ::fwData::Graph );
 namespace fwData
 {
 
-const bool Graph::UP_STREAM = true;
+const bool Graph::UP_STREAM   = true;
 const bool Graph::DOWN_STREAM = false;
 
 const ::fwCom::Signals::SignalKeyType Graph::s_UPDATED_SIG = "updated";
@@ -49,7 +49,8 @@ Graph::Graph(::fwData::Object::Key key) :
 //------------------------------------------------------------------------------
 
 Graph::~Graph()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -88,7 +89,7 @@ const Graph::NodeContainer &Graph::getCRefNodes() const
 
 bool Graph::haveConnectedEdges(Node::csptr node ) const
 {
-    for ( ConnectionContainer::const_iterator i=m_connections.begin() ; i !=  m_connections.end() ; ++i )
+    for ( ConnectionContainer::const_iterator i = m_connections.begin(); i !=  m_connections.end(); ++i )
     {
         if ( i->second.first == node ||  i->second.second == node)
         {
@@ -101,18 +102,18 @@ bool Graph::haveConnectedEdges(Node::csptr node ) const
 //------------------------------------------------------------------------------
 
 Edge::sptr Graph::makeConnection(
-        Node::csptr nodeSource,
-        std::string nodeSourceOutputPortID,
-        Node::csptr nodeDestination,
-        std::string nodeDestinationInputPortID,
-        std::string EdgeNature )
+    Node::csptr nodeSource,
+    std::string nodeSourceOutputPortID,
+    Node::csptr nodeDestination,
+    std::string nodeDestinationInputPortID,
+    std::string EdgeNature )
 {
     ::fwData::Edge::sptr nEdge = ::fwData::Edge::New();
     nEdge->setIdentifiers( nodeSourceOutputPortID, nodeDestinationInputPortID );
     nEdge->setNature( EdgeNature );
     if ( addEdge( nEdge, nodeSource, nodeDestination ) )
     {
-          return nEdge;// success return new Edge
+        return nEdge;  // success return new Edge
     }
     else
     {
@@ -148,7 +149,7 @@ bool Graph::addEdge(Edge::sptr edge, Node::csptr nodeSource, Node::csptr nodeDes
     }
 
     // test port existance
-    Port::sptr sourceDest= nodeDestination->findPort( edge->getIdentifiers().second , UP_STREAM );
+    Port::sptr sourceDest = nodeDestination->findPort( edge->getIdentifiers().second, UP_STREAM );
     if ( !sourceDest )
     {
         return false; // port doesn't exist
@@ -231,7 +232,8 @@ std::vector< Edge::sptr > Graph::getEdges( const Node::csptr &node, bool upStrea
                                            const std::string &portID
                                            )
 {
-    SLM_ASSERT("Node " + node->getID()  + " not found in graph", m_nodes.find( Node::constCast(node) ) != m_nodes.end());
+    SLM_ASSERT("Node " + node->getID()  + " not found in graph",
+               m_nodes.find( Node::constCast(node) ) != m_nodes.end());
     SLM_ASSERT("Port " + portID  + " not found on node" + node->getID(),
                portID.empty() || node->findPort(portID, upStream));
 
@@ -239,13 +241,13 @@ std::vector< Edge::sptr > Graph::getEdges( const Node::csptr &node, bool upStrea
     result.reserve(4);
 
     ConnectionContainer::const_iterator end = m_connections.end();
-    for ( ConnectionContainer::const_iterator i=m_connections.begin(); i != end; ++i )
+    for ( ConnectionContainer::const_iterator i = m_connections.begin(); i != end; ++i )
     {
-        const Edge::sptr &edge = i->first;
+        const Edge::sptr &edge     = i->first;
         const Node::sptr &nodeFrom = i->second.first;
-        const Node::sptr &nodeTo = i->second.second;
+        const Node::sptr &nodeTo   = i->second.second;
 
-        bool isConnectedEdge = ( upStream ? nodeTo : nodeFrom ) == node ;
+        bool isConnectedEdge = ( upStream ? nodeTo : nodeFrom ) == node;
         if( !isConnectedEdge)
         {
             continue;
@@ -257,7 +259,7 @@ std::vector< Edge::sptr > Graph::getEdges( const Node::csptr &node, bool upStrea
             continue;
         }
 
-        bool isCorrectNature =  nature.empty() || edge->getNature() == nature;
+        bool isCorrectNature = nature.empty() || edge->getNature() == nature;
         if( !isCorrectNature)
         {
             continue;
@@ -273,10 +275,10 @@ std::vector< Edge::sptr > Graph::getEdges( const Node::csptr &node, bool upStrea
 
 std::vector< ::fwData::Node::sptr >
 Graph::getNodes(
-        const ::fwData::Node::csptr &node,
-        bool upStream,
-        const std::string &nature,
-        const std::string &portID )
+    const ::fwData::Node::csptr &node,
+    bool upStream,
+    const std::string &nature,
+    const std::string &portID )
 {
     std::vector< Edge::sptr > edges;
     edges = getEdges( node, upStream, nature, portID);
@@ -330,10 +332,10 @@ void Graph::shallowCopy(const Object::csptr &_source )
 {
     Graph::csptr other = Graph::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_nodes = other->m_nodes;
+    m_nodes       = other->m_nodes;
     m_connections = other->m_connections;
 }
 
@@ -343,8 +345,8 @@ void Graph::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
 {
     Graph::csptr other = Graph::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     std::map< ::fwData::Node::sptr, ::fwData::Node::sptr > correspondenceBetweenNodes;
@@ -354,7 +356,7 @@ void Graph::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
     BOOST_FOREACH(const ::fwData::Node::sptr &node, other->m_nodes)
     {
         ::fwData::Node::sptr newNode = ::fwData::Object::copy(node, cache);
-        bool addOK =this->addNode(newNode);
+        bool addOK = this->addNode(newNode);
         OSLM_ASSERT("Node "<<newNode->getID() <<" can't be added ", addOK );
         FwCoreNotUsedMacro(addOK);
         correspondenceBetweenNodes.insert(std::make_pair(node, newNode));
@@ -364,11 +366,11 @@ void Graph::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
     BOOST_FOREACH(const ConnectionContainerElt &connection, other->m_connections)
     {
         // Edge deep copy .
-        ::fwData::Edge::sptr newEdge = ::fwData::Object::copy(connection.first, cache);
+        ::fwData::Edge::sptr newEdge  = ::fwData::Object::copy(connection.first, cache);
         ::fwData::Node::sptr oldNode1 = (connection.second).first;
         ::fwData::Node::sptr oldNode2 = (connection.second).second;
         if ((correspondenceBetweenNodes.find(Node::constCast(oldNode1))!= correspondenceBetweenNodes.end())
-             && (correspondenceBetweenNodes.find(Node::constCast(oldNode2)) != correspondenceBetweenNodes.end()))
+            && (correspondenceBetweenNodes.find(Node::constCast(oldNode2)) != correspondenceBetweenNodes.end()))
         {
             // Add new Edge
             this->addEdge(newEdge, correspondenceBetweenNodes[oldNode1], correspondenceBetweenNodes[oldNode2]);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,11 +28,11 @@ namespace fwServices
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType IService::s_START_SLOT = "start";
-const ::fwCom::Slots::SlotKeyType IService::s_STOP_SLOT = "stop";
-const ::fwCom::Slots::SlotKeyType IService::s_UPDATE_SLOT = "update";
+const ::fwCom::Slots::SlotKeyType IService::s_START_SLOT   = "start";
+const ::fwCom::Slots::SlotKeyType IService::s_STOP_SLOT    = "stop";
+const ::fwCom::Slots::SlotKeyType IService::s_UPDATE_SLOT  = "update";
 const ::fwCom::Slots::SlotKeyType IService::s_RECEIVE_SLOT = "receive";
-const ::fwCom::Slots::SlotKeyType IService::s_SWAP_SLOT = "swap";
+const ::fwCom::Slots::SlotKeyType IService::s_SWAP_SLOT    = "swap";
 
 //-----------------------------------------------------------------------------
 
@@ -44,19 +44,19 @@ IService::IService() :
 {
     // by default a weak_ptr have a use_count == 0
 
-    m_slotStart    = ::fwCom::newSlot( &IService::start     , this ) ;
-    m_slotStop     = ::fwCom::newSlot( &IService::stop      , this ) ;
-    m_slotUpdate   = ::fwCom::newSlot( &IService::update    , this ) ;
-    m_slotReceive  = ::fwCom::newSlot( &IService::receive   , this ) ;
-    m_slotSwap     = ::fwCom::newSlot( &IService::swap      , this ) ;
+    m_slotStart   = ::fwCom::newSlot( &IService::start, this );
+    m_slotStop    = ::fwCom::newSlot( &IService::stop, this );
+    m_slotUpdate  = ::fwCom::newSlot( &IService::update, this );
+    m_slotReceive = ::fwCom::newSlot( &IService::receive, this );
+    m_slotSwap    = ::fwCom::newSlot( &IService::swap, this );
 
     ::fwCom::HasSlots::m_slots
-                 ( s_START_SLOT   , m_slotStart   )
-                 ( s_STOP_SLOT    , m_slotStop    )
-                 ( s_UPDATE_SLOT  , m_slotUpdate  )
-                 ( s_RECEIVE_SLOT , m_slotReceive )
-                 ( s_SWAP_SLOT    , m_slotSwap    )
-                 ;
+        ( s_START_SLOT, m_slotStart   )
+        ( s_STOP_SLOT, m_slotStop    )
+        ( s_UPDATE_SLOT, m_slotUpdate  )
+        ( s_RECEIVE_SLOT, m_slotReceive )
+        ( s_SWAP_SLOT, m_slotSwap    )
+    ;
 #ifdef COM_LOG
     ::fwCom::HasSlots::m_slots.setID();
     ::fwCom::HasSignals::m_signals.setID();
@@ -68,18 +68,22 @@ IService::IService() :
 //-----------------------------------------------------------------------------
 
 IService::~IService()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void IService::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ::fwData::Object::sptr IService::getObject()
 {
-    SLM_ASSERT("Associated Object of " <<this->getID()<<" ["<<this->getClassname()<<"] is expired", !m_associatedObject.expired() );
+    SLM_ASSERT(
+        "Associated Object of " <<this->getID()<<" ["<<this->getClassname()<<"] is expired",
+        !m_associatedObject.expired() );
     return m_associatedObject.lock();
 }
 
@@ -92,16 +96,16 @@ void displayPt(::boost::property_tree::ptree &pt, std::string indent = "")
     BOOST_FOREACH( ::boost::property_tree::ptree::value_type &v, pt)
     {
         OSLM_ERROR((indent + "  '") << v.first << "':" );
-        displayPt(v.second , indent + "      ");
+        displayPt(v.second, indent + "      ");
 
     }
 }
 
 void IService::setConfiguration(const ::fwRuntime::ConfigurationElement::sptr _cfgElement)
 {
-    SLM_ASSERT( "Invalid ConfigurationElement", _cfgElement ) ;
-    m_configuration = _cfgElement ;
-    m_configurationState = UNCONFIGURED ;
+    SLM_ASSERT( "Invalid ConfigurationElement", _cfgElement );
+    m_configuration      = _cfgElement;
+    m_configurationState = UNCONFIGURED;
 }
 
 //-----------------------------------------------------------------------------
@@ -121,7 +125,7 @@ void IService::setConfiguration( const ConfigType &ptree )
 
 ::fwRuntime::ConfigurationElement::sptr IService::getConfiguration() const
 {
-    return m_configuration ;
+    return m_configuration;
 }
 
 //-----------------------------------------------------------------------------
@@ -149,7 +153,7 @@ void IService::configure()
     //SLM_ASSERT( "Configuration is not correct", this->checkConfiguration() );
     if( m_configurationState == UNCONFIGURED )
     {
-        m_configurationState = CONFIGURING ;
+        m_configurationState = CONFIGURING;
         if( m_globalState == STOPPED )
         {
             this->configuring();
@@ -158,7 +162,7 @@ void IService::configure()
         {
             this->reconfiguring();
         }
-        m_configurationState = CONFIGURED ;
+        m_configurationState = CONFIGURED;
     }
 }
 
@@ -166,7 +170,9 @@ void IService::configure()
 
 void IService::reconfiguring() throw ( ::fwTools::Failed )
 {
-    OSLM_FATAL("If this method (reconfiguring) is called, it must be overrided in the implementation ("<<this->getClassname()<<", "<< this->getID() <<")" );
+    OSLM_FATAL(
+        "If this method (reconfiguring) is called, it must be overrided in the implementation ("<<this->getClassname()<<", "<< this->getID() <<
+        ")" );
 }
 
 //-----------------------------------------------------------------------------
@@ -180,9 +186,9 @@ IService::SharedFutureType IService::start() //throw( ::fwTools::Failed)
         PackagedTaskType task( ::boost::bind(&IService::starting, this) );
         UniqueFutureType ufuture = task.get_future();
 
-        m_globalState = STARTING ;
-        task() ;
-        m_globalState = STARTED ;
+        m_globalState = STARTING;
+        task();
+        m_globalState = STARTED;
 
         if ( ufuture.has_exception() )
         {
@@ -207,9 +213,9 @@ IService::SharedFutureType IService::stop() //throw( ::fwTools::Failed)
         PackagedTaskType task( ::boost::bind(&IService::stopping, this) );
         UniqueFutureType ufuture = task.get_future();
 
-        m_globalState = STOPPING ;
-        task() ;
-        m_globalState = STOPPED ;
+        m_globalState = STOPPING;
+        task();
+        m_globalState = STOPPED;
 
         if ( ufuture.has_exception() )
         {
@@ -229,8 +235,11 @@ void IService::receive( ::fwServices::ObjectMsg::csptr _msg )
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_COM("Receive " << _msg->getLightID() << "::" << _msg->getEventIds()[0] << " ( "<< this->getLightID() <<" )" );
-        OSLM_FATAL_IF("IService::receive : "<<this->getID()<<" is stopped and cannot manages messages.", m_globalState != STARTED);
+        OSLM_COM("Receive " << _msg->getLightID() << "::" << _msg->getEventIds()[0] << " ( "<< this->getLightID() <<
+                 " )" );
+        OSLM_FATAL_IF(
+            "IService::receive : "<<this->getID()<<" is stopped and cannot manages messages.",
+            m_globalState != STARTED);
         this->receiving( _msg );
     }
     else
@@ -245,15 +254,19 @@ IService::SharedFutureType IService::update() //throw( ::fwTools::Failed)
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_ASSERT("INVOKING update WHILE STOPPED ("<<m_globalState<<") on this = " << this->className(), m_globalState == STARTED );
-        OSLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on this = " << this->className(), m_updatingState == NOTUPDATING );
+        OSLM_ASSERT(
+            "INVOKING update WHILE STOPPED ("<<m_globalState<<") on this = " << this->className(),
+            m_globalState == STARTED );
+        OSLM_ASSERT(
+            "INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on this = " << this->className(),
+            m_updatingState == NOTUPDATING );
 
         PackagedTaskType task( ::boost::bind(&IService::updating, this) );
         UniqueFutureType ufuture = task.get_future();
 
-        m_updatingState = UPDATING ;
-        task() ;
-        m_updatingState = NOTUPDATING ;
+        m_updatingState = UPDATING;
+        task();
+        m_updatingState = NOTUPDATING;
 
         if ( ufuture.has_exception() )
         {
@@ -273,15 +286,18 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj ) //throw
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(), m_associatedObject.lock() != _obj );
-        OSLM_FATAL_IF( "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(), m_globalState != STARTED);
+        OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(),
+                    m_associatedObject.lock() != _obj );
+        OSLM_FATAL_IF(
+            "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
+            m_globalState != STARTED);
 
         PackagedTaskType task( ::boost::bind(&IService::swapping, this) );
         UniqueFutureType ufuture = task.get_future();
 
         m_globalState = SWAPPING;
-        ::fwServices::OSR::swapService( _obj , this->getSptr() );
-        task() ;
+        ::fwServices::OSR::swapService( _obj, this->getSptr() );
+        task();
         m_globalState = STARTED;
 
         if ( ufuture.has_exception() )
@@ -307,35 +323,35 @@ void IService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTool
 
 IService::GlobalStatus IService::getStatus() const throw()
 {
-    return m_globalState ;
+    return m_globalState;
 }
 
 //-----------------------------------------------------------------------------
 
 bool IService::isStarted() const throw()
 {
-    return (m_globalState == STARTED) ;
+    return (m_globalState == STARTED);
 }
 
 //-----------------------------------------------------------------------------
 
 bool IService::isStopped() const throw()
 {
-    return (m_globalState == STOPPED) ;
+    return (m_globalState == STOPPED);
 }
 
 //-----------------------------------------------------------------------------
 
 IService::ConfigurationStatus IService::getConfigurationStatus() const throw()
 {
-    return m_configurationState ;
+    return m_configurationState;
 }
 
 //-----------------------------------------------------------------------------
 
 IService::UpdatingStatus IService::getUpdatingStatus() const throw()
 {
-    return m_updatingState ;
+    return m_updatingState;
 }
 
 //-----------------------------------------------------------------------------
@@ -367,7 +383,7 @@ IService::KeyConnectionsType IService::getObjSrvConnections() const
 #ifdef COM_LOG
 void IService::setID( ::fwTools::fwID::IDType newID )
 {
-    if( ! this->hasID() ||
+    if( !this->hasID() ||
         this->getID( ::fwTools::fwID::MUST_EXIST ) != newID )
     {
         this->::fwTools::fwID::setID( newID );
@@ -389,8 +405,8 @@ void IService::setID( ::fwTools::fwID::IDType newID )
  */
 std::ostream & operator<<(std::ostream & _ostream, IService& _service)
 {
-    _service.info( _ostream ) ;
-    return _ostream ;
+    _service.info( _ostream );
+    return _ostream;
 }
 
 

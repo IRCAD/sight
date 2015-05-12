@@ -25,9 +25,9 @@ namespace fwData
 class FWDATA_CLASS_API PointList : public Object
 {
 
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (PointList)(::fwData::Object),
-        (()), ::fwData::factory::New< PointList >) ;
+                                            (()), ::fwData::factory::New< PointList >);
 
     fwCampMakeFriendDataMacro((fwData)(PointList));
 
@@ -50,9 +50,9 @@ public :
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /// Points container
-    fwGettersSettersDocMacro(Points, vPoints, PointListContainer, a container of all points);
+    fwGettersSettersDocMacro(Points, vPoints, PointListContainer, "a container of all points");
 
-protected :
+protected:
 
     //! Points container
     PointListContainer m_vPoints;

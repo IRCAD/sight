@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_PLANE_HPP_
-#define _VISUVTKADAPTOR_PLANE_HPP_
+#ifndef __VISUVTKADAPTOR_PLANE_HPP__
+#define __VISUVTKADAPTOR_PLANE_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 
@@ -23,7 +23,7 @@ class vtkActor;
 
 namespace fwData
 {
-    class Plane;
+class Plane;
 }
 
 namespace visuVTKAdaptor
@@ -31,12 +31,12 @@ namespace visuVTKAdaptor
 
 
 
-class VISUVTKADAPTOR_CLASS_API Plane: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Plane : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Plane)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Plane)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Plane() throw();
 
@@ -71,4 +71,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_PLANE_HPP_
+#endif // __VISUVTKADAPTOR_PLANE_HPP__

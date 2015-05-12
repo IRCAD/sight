@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __MONITORQT_CLASSFACTORYREGISTRYINFO_HPP__
-#define __MONITORQT_CLASSFACTORYREGISTRYINFO_HPP__
+#ifndef __MONITORQT_ACTION_CLASSFACTORYREGISTRYINFO_HPP__
+#define __MONITORQT_ACTION_CLASSFACTORYREGISTRYINFO_HPP__
 
 #include <QApplication>
 #include <QDialog>
@@ -27,15 +27,15 @@ class MONITORQT_CLASS_API ClassFactoryRegistryInfo : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ClassFactoryRegistryInfo)( ::fwGui::IActionSrv ) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ClassFactoryRegistryInfo)( ::fwGui::IActionSrv ) );
 
     /// Does nothing
-    MONITORQT_API ClassFactoryRegistryInfo() throw() ;
+    MONITORQT_API ClassFactoryRegistryInfo() throw();
 
     /// Does nothing
-    MONITORQT_API virtual ~ClassFactoryRegistryInfo() throw() ;
+    MONITORQT_API virtual ~ClassFactoryRegistryInfo() throw();
 
-protected :
+protected:
 
     /// Calls classic IAction methods to configure
     void configuring() throw (::fwTools::Failed);
@@ -62,5 +62,5 @@ private:
 } // namespace action
 } // namespace monitor
 
-#endif // __MONITORQT_CLASSFACTORYREGISTRYINFO_HPP__
+#endif // __MONITORQT_ACTION_CLASSFACTORYREGISTRYINFO_HPP__
 

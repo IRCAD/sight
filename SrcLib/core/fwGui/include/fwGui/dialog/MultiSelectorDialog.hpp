@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_MULTISELECTORDIALOG_HPP_
-#define _FWGUI_MULTISELECTORDIALOG_HPP_
+#ifndef __FWGUI_DIALOG_MULTISELECTORDIALOG_HPP__
+#define __FWGUI_DIALOG_MULTISELECTORDIALOG_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -22,7 +22,7 @@ namespace dialog
  * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro
  * The specific implementation are in fwGuiWX and fwGuiQT libraries
  * @class   MultiSelectorDialog
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -31,7 +31,8 @@ class FWGUI_CLASS_API MultiSelectorDialog : public IMultiSelectorDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MultiSelectorDialog)(::fwGui::dialog::IMultiSelectorDialog), (()), new MultiSelectorDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (MultiSelectorDialog)(::fwGui::dialog::IMultiSelectorDialog), (()),
+                                            new MultiSelectorDialog );
 
     /// will instanciate the concrete implementation
     FWGUI_API MultiSelectorDialog();
@@ -50,7 +51,7 @@ public:
     /// Set the message
     FWGUI_API virtual void setMessage(const std::string &msg);
 
-protected :
+protected:
 
     ::fwGui::dialog::IMultiSelectorDialog::sptr m_implementation;
 
@@ -59,6 +60,6 @@ protected :
 } //namespace dialog
 } // namespace fwGui
 
-#endif /*_FWGUI_MULTISELECTORDIALOG_HPP_*/
+#endif /*__FWGUI_DIALOG_MULTISELECTORDIALOG_HPP__*/
 
 

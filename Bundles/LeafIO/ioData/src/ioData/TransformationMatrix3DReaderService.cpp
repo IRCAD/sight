@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,8 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::io::IReader , ::ioData::TransformationMatrix3DReaderService , ::fwData::TransformationMatrix3D ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioData::TransformationMatrix3DReaderService,
+                         ::fwData::TransformationMatrix3D );
 
 //------------------------------------------------------------------------------
 
@@ -48,17 +49,17 @@ fwServicesRegisterMacro( ::io::IReader , ::ioData::TransformationMatrix3DReaderS
 
 void TransformationMatrix3DReaderService::info(std::ostream &_sstream )
 {
-    this->SuperClass::info( _sstream ) ;
-    _sstream << std::endl << " TransformationMatrix3D object reader" ;
+    this->SuperClass::info( _sstream );
+    _sstream << std::endl << " TransformationMatrix3D object reader";
 }
 
 //-----------------------------------------------------------------------------
 
 std::vector< std::string > TransformationMatrix3DReaderService::getSupportedExtensions()
 {
-    std::vector< std::string > extensions ;
+    std::vector< std::string > extensions;
     extensions.push_back(".trf");
-    return extensions ;
+    return extensions;
 }
 
 //-----------------------------------------------------------------------------
@@ -81,7 +82,7 @@ void TransformationMatrix3DReaderService::configureWithIHM()
     dialogFile.addFilter("TRF files","*.trf");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
-    ::fwData::location::SingleFile::sptr  result;
+    ::fwData::location::SingleFile::sptr result;
     result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
@@ -113,7 +114,8 @@ void TransformationMatrix3DReaderService::updating() throw(::fwTools::Failed)
         ::fwData::TransformationMatrix3D::sptr matrix = this->getObject< ::fwData::TransformationMatrix3D >( );
         SLM_ASSERT("matrix not instanced", matrix);
 
-        ::fwDataIO::reader::TransformationMatrix3DReader::sptr reader = ::fwDataIO::reader::TransformationMatrix3DReader::New();
+        ::fwDataIO::reader::TransformationMatrix3DReader::sptr reader =
+            ::fwDataIO::reader::TransformationMatrix3DReader::New();
         reader->setObject( matrix );
         reader->setFile(this->getFile());
         reader->read();

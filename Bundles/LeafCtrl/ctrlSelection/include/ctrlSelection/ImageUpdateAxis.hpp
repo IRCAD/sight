@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_IMAGEUPDATEAXIS_HPP_
-#define _CTRLSELECTION_IMAGEUPDATEAXIS_HPP_
+#ifndef __CTRLSELECTION_IMAGEUPDATEAXIS_HPP__
+#define __CTRLSELECTION_IMAGEUPDATEAXIS_HPP__
 
 #include <fwServices/IService.hpp>
 #include <fwServices/IController.hpp>
@@ -21,20 +21,20 @@ namespace ctrlSelection
 /**
  * @class  ImageUpdateAxis
  * @brief  This service updates a fwData::Float given in configuration with the image axis.
- * 
+ *
 
  * @date   2011.
  */
 class CTRLSELECTION_CLASS_API ImageUpdateAxis : public ::fwServices::IController
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageUpdateAxis)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageUpdateAxis)(::fwServices::IController) );
 
-    CTRLSELECTION_API ImageUpdateAxis() throw() ;
+    CTRLSELECTION_API ImageUpdateAxis() throw();
 
-    CTRLSELECTION_API virtual ~ImageUpdateAxis() throw() ;
+    CTRLSELECTION_API virtual ~ImageUpdateAxis() throw();
 
 protected:
 
@@ -83,4 +83,4 @@ private:
 
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_IMAGEUPDATEAXIS_HPP_
+#endif // __CTRLSELECTION_IMAGEUPDATEAXIS_HPP__

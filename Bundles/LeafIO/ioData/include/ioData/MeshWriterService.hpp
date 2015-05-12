@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IODATA_MESHWRITERSERVICE_HPP_
-#define _IODATA_MESHWRITERSERVICE_HPP_
+#ifndef __IODATA_MESHWRITERSERVICE_HPP__
+#define __IODATA_MESHWRITERSERVICE_HPP__
 
 #include <io/IWriter.hpp>
 #include <boost/filesystem/path.hpp>
@@ -17,7 +17,7 @@ namespace ioData
 /**
  * @brief   Mesh writer service.
  * @class   MeshWriterService
- * 
+ *
  * @date    2011.
  *
  * Service writing a mesh object.
@@ -34,20 +34,20 @@ class IODATA_CLASS_API MeshWriterService : public ::io::IWriter
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MeshWriterService)(::io::IWriter) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MeshWriterService)(::io::IWriter) );
 
-     /// Super class of writer services
-    typedef ::io::IWriter   SuperClass;
+    /// Super class of writer services
+    typedef ::io::IWriter SuperClass;
 
     /**
      * @brief   Constructor : does nothing
      */
-    IODATA_API MeshWriterService() ;
+    IODATA_API MeshWriterService();
 
     /**
      * @brief   destructor
      */
-    IODATA_API ~MeshWriterService() throw() ;
+    IODATA_API ~MeshWriterService() throw();
 
     /** @name Specified writer service methods ( override from ::io::IWriter )
      * @{
@@ -56,7 +56,7 @@ public:
     /**
      * @brief   returns  (filename) extension
      */
-    IODATA_API virtual std::vector< std::string > getSupportedExtensions() ;
+    IODATA_API virtual std::vector< std::string > getSupportedExtensions();
 
     /**
      * @brief Configure the mesh path.
@@ -81,14 +81,18 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    virtual void starting() throw(::fwTools::Failed){};
+    virtual void starting() throw(::fwTools::Failed)
+    {
+    }
 
     /**
      * @brief Stopping method : default does nothing.
      *
      * The stopping method is empty for this service.
      */
-    virtual void stopping() throw(::fwTools::Failed){};
+    virtual void stopping() throw(::fwTools::Failed)
+    {
+    }
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
@@ -106,7 +110,9 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg)_msg ) throw(::fwTools::Failed)
+    {
+    }
 
 
     /**
@@ -117,11 +123,11 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    IODATA_API virtual void info(std::ostream &_sstream ) ;
+    IODATA_API virtual void info(std::ostream &_sstream );
     /// @}
 
 };
 
 }
 
-#endif /*_IODATA_MESHWRITERSERVICE_HPP_*/
+#endif /*__IODATA_MESHWRITERSERVICE_HPP__*/

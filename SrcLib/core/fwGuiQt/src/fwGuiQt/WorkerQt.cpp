@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ class WorkerQtTask : public QEvent
 public:
     WorkerQtTask( const ::fwThread::Worker::TaskType &handler )
         : QEvent( static_cast< QEvent::Type >(s_WORKER_QT_TASK_EVENT_TYPE) ),
-        m_handler( handler )
+          m_handler( handler )
     {
         SLM_ASSERT( "QApplication should be instantiated", qApp );
     }
@@ -106,19 +106,19 @@ protected:
 struct FWGUIQT_CLASS_API WorkerQtInstanciator
 {
 
-    FWGUIQT_API WorkerQtInstanciator(bool reg = true ) ;
+    FWGUIQT_API WorkerQtInstanciator(bool reg = true );
 
     FWGUIQT_API SPTR(::fwThread::Worker) getWorker();
 
     SPTR(WorkerQt) m_qtWorker;
 
-    FWGUIQT_API static int    s_argc;
+    FWGUIQT_API static int s_argc;
     FWGUIQT_API static char **s_argv;
-    FWGUIQT_API static bool   s_GUIenabled;
+    FWGUIQT_API static bool s_GUIenabled;
 };
 
-int WorkerQtInstanciator::s_argc = 0 ;
-char** WorkerQtInstanciator::s_argv = NULL;
+int WorkerQtInstanciator::s_argc        = 0;
+char** WorkerQtInstanciator::s_argv     = NULL;
 bool WorkerQtInstanciator::s_GUIenabled = true;
 
 FWGUIQT_API WorkerQtInstanciator::WorkerQtInstanciator(bool reg) :
@@ -129,7 +129,7 @@ FWGUIQT_API WorkerQtInstanciator::WorkerQtInstanciator(bool reg) :
     if(reg)
     {
         ::fwServices::registry::ActiveWorkers::getDefault()
-            ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_qtWorker);
+        ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_qtWorker);
     }
 }
 
@@ -276,10 +276,10 @@ WorkerQt::~WorkerQt()
 
 ::fwThread::Worker::FutureType WorkerQt::getFuture()
 {
-    if (! m_future.valid() )
+    if (!m_future.valid() )
     {
         SLM_ASSERT("WorkerQt loop shall be created and ran from main thread ",
-            ! m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
+                   !m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
 
         ::boost::packaged_task< ExitReturnType > task( ::boost::bind(&QApplication::exec) );
 
@@ -346,7 +346,7 @@ void TimerQt::setDuration(TimeDurationType duration)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
     m_timerQt->setInterval( static_cast<int>(
-                                    ::boost::chrono::duration_cast< ::boost::chrono::milliseconds >(duration).count())
+                                ::boost::chrono::duration_cast< ::boost::chrono::milliseconds >(duration).count())
                             );
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,7 +39,8 @@ Object::Object()
 //------------------------------------------------------------------------------
 
 Object::~Object()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -74,8 +75,8 @@ Object::FieldNameVectorType Object::getFieldNames() const
 {
     FieldNameVectorType names;
     std::transform( m_fields.begin(), m_fields.end(),
-            std::back_inserter(names),
-            ::boost::bind(& FieldMapType::value_type::first, _1) );
+                    std::back_inserter(names),
+                    ::boost::bind(&FieldMapType::value_type::first, _1) );
     return names;
 }
 
@@ -197,7 +198,7 @@ void Object::shallowCopy(const ::fwData::Object::csptr &source )
 #ifdef COM_LOG
 void Object::setID( ::fwTools::fwID::IDType newID )
 {
-    if( ! this->hasID() ||
+    if( !this->hasID() ||
         this->getID( ::fwTools::fwID::MUST_EXIST ) != newID )
     {
         this->::fwTools::fwID::setID( newID );

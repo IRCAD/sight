@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_OBJECT_HPP_
-#define _FWDATA_OBJECT_HPP_
+#ifndef __FWDATA_OBJECT_HPP__
+#define __FWDATA_OBJECT_HPP__
 
 #include <boost/unordered_map.hpp>
 #include <string>
@@ -51,7 +51,8 @@ namespace fwData
  * An Object containing a field name "dummy" corresponds to having a labeledObject with label "dummy" and
  * containing a specific Object. When accessing to this object with getField("dummy") we get the specific Object
  */
-class FWDATA_CLASS_API Object  : public ::fwTools::Object, public ::fwTools::DynamicAttributes< ::fwData::Object >,
+class FWDATA_CLASS_API Object  : public ::fwTools::Object,
+                                 public ::fwTools::DynamicAttributes< ::fwData::Object >,
                                  public ::fwCom::HasSignals
 {
 public:
@@ -92,7 +93,8 @@ public:
      * @param[in] defaultValue Default value
      * @return defaultValue if field is not found
      */
-    FWDATA_API ::fwData::Object::sptr getField( const FieldNameType & name, ::fwData::Object::sptr defaultValue = ::fwData::Object::sptr() ) const;
+    FWDATA_API ::fwData::Object::sptr getField( const FieldNameType & name,
+                                                ::fwData::Object::sptr defaultValue = ::fwData::Object::sptr() ) const;
 
     /**
      * @brief Returns a pointer of corresponding field.
@@ -100,7 +102,7 @@ public:
      * @return pointer to corresponding field, nullptr if field is not found.
      */
     template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) getField( const FieldNameType& name ) const;
+    SPTR(DATA_TYPE) getField( const FieldNameType &name ) const;
 
     /**
      * @brief Returns a pointer of corresponding field.
@@ -109,7 +111,7 @@ public:
      * @return pointer to corresponding field, defaultValue if field is not found.
      */
     template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) getField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue ) const;
+    SPTR(DATA_TYPE) getField( const FieldNameType &name, SPTR(DATA_TYPE) defaultValue ) const;
 
     /**
      * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if defaultValue is not null.
@@ -118,7 +120,7 @@ public:
      * @return pointer to corresponding field.
      */
     template< typename DATA_TYPE >
-    SPTR(DATA_TYPE) setDefaultField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue );
+    SPTR(DATA_TYPE) setDefaultField( const FieldNameType &name, SPTR(DATA_TYPE) defaultValue );
 
     /**
      * @brief Returns a pointer of corresponding field (null if non exist).
@@ -153,7 +155,7 @@ public:
      * @brief Removes field with specified name.
      * @param[in] name Field name
      */
-    FWDATA_API void removeField( const FieldNameType & name ) ;
+    FWDATA_API void removeField( const FieldNameType & name );
 
     /**
      * @brief Updates the field map content with fieldMap. Duplicated name will be replaced.
@@ -199,9 +201,11 @@ public:
     //-----------------------------------------------------------------------------
 
     /// Returns the object's mutex.
-    ::fwCore::mt::ReadWriteMutex &getMutex() { return m_mutex; }
+    ::fwCore::mt::ReadWriteMutex &getMutex() {
+        return m_mutex;
+    }
 
-    FWDATA_API virtual ~Object() ;
+    FWDATA_API virtual ~Object();
 
     /// Type of signal m_sigObjectModified
     typedef ::fwCom::Signal< void ( CSPTR( ::fwServices::ObjectMsg ) ) > ObjectModifiedSignalType;
@@ -211,10 +215,10 @@ public:
 
 #ifdef COM_LOG
     /**
-      * @brief Set a newID  for the object, the oldest one is released.
-      * @warning Cannot set a empty ID.
-      * @note This method is thread-safe. This method is used to better trace communication between signals and slots
-      */
+     * @brief Set a newID  for the object, the oldest one is released.
+     * @warning Cannot set a empty ID.
+     * @note This method is thread-safe. This method is used to better trace communication between signals and slots
+     */
     FWDATA_API void setID( ::fwTools::fwID::IDType newID );
 #endif
 
@@ -274,29 +278,29 @@ SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) &source)
 //-----------------------------------------------------------------------------
 
 template< typename DATA_TYPE >
-SPTR(DATA_TYPE) Object::getField( const FieldNameType& name ) const
+SPTR(DATA_TYPE) Object::getField( const FieldNameType &name ) const
 {
     ::fwData::Object::sptr field;
-    field = this->getField( name, field );
-    SPTR(DATA_TYPE) result  = DATA_TYPE::dynamicCast( field );
+    field                  = this->getField( name, field );
+    SPTR(DATA_TYPE) result = DATA_TYPE::dynamicCast( field );
     return result;
 }
 
 //-----------------------------------------------------------------------------
 
 template< typename DATA_TYPE >
-SPTR(DATA_TYPE) Object::getField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue ) const
+SPTR(DATA_TYPE) Object::getField( const FieldNameType &name, SPTR(DATA_TYPE) defaultValue ) const
 {
     ::fwData::Object::sptr field = defaultValue;
-    field = this->getField( name, field );
-    SPTR(DATA_TYPE) result  = DATA_TYPE::dynamicCast( field );
+    field                        = this->getField( name, field );
+    SPTR(DATA_TYPE) result       = DATA_TYPE::dynamicCast( field );
     return result;
 }
 
 //-----------------------------------------------------------------------------
 
 template< typename DATA_TYPE >
-SPTR(DATA_TYPE) Object::setDefaultField( const FieldNameType& name, SPTR(DATA_TYPE) defaultValue )
+SPTR(DATA_TYPE) Object::setDefaultField( const FieldNameType &name, SPTR(DATA_TYPE) defaultValue )
 {
     SPTR(DATA_TYPE) result = getField< DATA_TYPE >(name);
     if( !result && defaultValue)
@@ -309,4 +313,4 @@ SPTR(DATA_TYPE) Object::setDefaultField( const FieldNameType& name, SPTR(DATA_TY
 
 } // namespace fwData
 
-#endif //_FWDATA_OBJECT_HPP_
+#endif //__FWDATA_OBJECT_HPP__

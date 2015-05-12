@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@ namespace fwTools
  * @brief   Class ProgressToLogger is an ProgressAdviser::ProgressHandler, it receive notification from its ProgressAdviser
  * and send the progress to the logging system ( SpyLog )
  * @class   ProgressToLogger
- * 
+ *
  * @date    2007-2009.
  */
 class FWTOOLS_CLASS_API ProgressToLogger  : public ::boost::signals2::trackable // to autoDisconnect if handler is destroyed before the notifier
@@ -30,7 +30,7 @@ public:
      * @param[in] prefix  allow to add a prefix in the formated log message
      * @param[in] postfix  allow to add a postfix in the formated log message
      */
-    FWTOOLS_API ProgressToLogger(std::string prefix, std::string postfix= " %");
+    FWTOOLS_API ProgressToLogger(std::string prefix, std::string postfix = " %");
 
     /// default destructor, do nothing
     FWTOOLS_API virtual ~ProgressToLogger();
@@ -41,7 +41,7 @@ public:
      */
     FWTOOLS_API void operator()(float percent, std::string msg);
 
-protected :
+protected:
 
     std::string m_prefix;
     std::string m_postfix;

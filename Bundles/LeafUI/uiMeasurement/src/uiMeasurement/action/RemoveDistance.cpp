@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,17 +33,19 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::RemoveDistance , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::RemoveDistance, ::fwData::Image );
 
 //------------------------------------------------------------------------------
 
 RemoveDistance::RemoveDistance( ) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 RemoveDistance::~RemoveDistance() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -74,24 +76,27 @@ std::string distanceToStr(double dist)
     {
         std::vector< std::string > selections;
         selections.push_back("ALL");
-        std::map< std::string , ::fwData::PointList::sptr > correspondance;
+        std::map< std::string, ::fwData::PointList::sptr > correspondance;
 
         BOOST_FOREACH(::fwData::Object::sptr obj, *vectDist)
         {
             ::fwData::PointList::sptr pl = ::fwData::PointList::dynamicCast(obj);
 
-            if ( pl->getPoints().size()!=2 ) { continue; } // we skip no paired pointList
-            ::fwData::Point::sptr pt1 =  pl->getPoints().front();
-            ::fwData::Point::sptr pt2 =  pl->getPoints().back();
+            if ( pl->getPoints().size()!=2 )
+            {
+                continue;
+            }                                              // we skip no paired pointList
+            ::fwData::Point::sptr pt1 = pl->getPoints().front();
+            ::fwData::Point::sptr pt2 = pl->getPoints().back();
 
-            double dist=0;
+            double dist  = 0;
             double delta = pt1->getCRefCoord()[0] - pt2->getCRefCoord()[0];
             dist += delta*delta;
             delta = pt1->getCRefCoord()[1] - pt2->getCRefCoord()[1];
             dist += delta*delta;
             delta = pt1->getCRefCoord()[2] - pt2->getCRefCoord()[2];
             dist += delta*delta;
-            dist = sqrt(dist);
+            dist  = sqrt(dist);
 
             selections.push_back( distanceToStr(dist) );
             correspondance[ selections.back() ] = pl;
@@ -103,15 +108,15 @@ std::string distanceToStr(double dist)
             selector->setTitle("Select a distance to remove");
             selector->setSelections(selections);
             std::string selection = selector->show();
-            if( ! selection.empty() )
+            if( !selection.empty() )
             {
                 if (selection=="ALL")
                 {
-                    removeAll=true;
+                    removeAll = true;
                 }
                 else
                 {
-                    removeAll=false;
+                    removeAll    = false;
                     distToRemove = correspondance[selection];
                 }
             }
@@ -190,7 +195,8 @@ void RemoveDistance::starting() throw (::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void RemoveDistance::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

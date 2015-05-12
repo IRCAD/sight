@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIMEDDATAQT_EDITOR_SORGANTRANSFORMATION_HPP__
-#define _UIMEDDATAQT_EDITOR_SORGANTRANSFORMATION_HPP__
+#ifndef __UIMEDDATAQT_EDITOR_SORGANTRANSFORMATION_HPP__
+#define __UIMEDDATAQT_EDITOR_SORGANTRANSFORMATION_HPP__
 
 #include <QPointer>
 #include <QObject>
@@ -34,17 +34,18 @@ namespace editor
 /**
  * @brief Display the organs list and allow an interactive selection to set the corresponding meshes in a composite
  */
-class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject, public ::gui::editor::IEditor
+class UIMEDDATAQT_CLASS_API SOrganTransformation : public QObject,
+                                                   public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 public:
 
     fwCoreServiceClassDefinitionsMacro( (SOrganTransformation)(::gui::editor::IEditor) );
 
     /// constructor
-    UIMEDDATAQT_API              SOrganTransformation() throw();
+    UIMEDDATAQT_API SOrganTransformation() throw();
     /// destructor
-    UIMEDDATAQT_API virtual     ~SOrganTransformation() throw();
+    UIMEDDATAQT_API virtual ~SOrganTransformation() throw();
 
 protected:
 
@@ -85,7 +86,7 @@ private:
     typedef ::std::map< ::std::string, InnerMatMappingType> SaveMappingType;
 
     ReconstructionMapType m_reconstructionMap;
-    ::std::string      m_TMSUid;
+    ::std::string m_TMSUid;
     QPointer< QPushButton > m_saveButton;
     QPointer< QPushButton > m_loadButton;
     QPointer< QPushButton > m_resetButton;
@@ -102,4 +103,4 @@ private:
 } // namespace uiMedData
 
 
-#endif // _UIMEDDATAQT_EDITOR_SORGANTRANSFORMATION_HPP__
+#endif // __UIMEDDATAQT_EDITOR_SORGANTRANSFORMATION_HPP__

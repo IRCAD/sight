@@ -1,35 +1,35 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 /*=========================================================================
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    fw version of vtkCellPicked : same a vtk5.4's cellpicker,
    but inherits from fwVtkPicker.
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- =========================================================================*/
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   =========================================================================*/
 
 
 /*=========================================================================
 
-  Program:   Visualization Toolkit
-  Module:    $RCSfile: fwVtkCellPicker.cxx,v $
+   Program:   Visualization Toolkit
+   Module:    $RCSfile: fwVtkCellPicker.cxx,v $
 
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+   All rights reserved.
+   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notice for more information.
 
-=========================================================================*/
+   =========================================================================*/
 #include <boost/assign.hpp>
 
 #include <vtkGenericCell.h>
@@ -53,8 +53,8 @@ vtkStandardNewMacro(fwVtkCellPicker);
 fwVtkCellPicker::fwVtkCellPicker()
 {
     this->CellId = -1;
-    this->SubId = -1;
-    for (int i=0; i<3; i++)
+    this->SubId  = -1;
+    for (int i = 0; i<3; i++)
     {
         this->PCoords[i] = 0.0;
     }
@@ -71,9 +71,9 @@ fwVtkCellPicker::~fwVtkCellPicker()
 //------------------------------------------------------------------------------
 
 double fwVtkCellPicker::IntersectWithLine(double p1[3], double p2[3], double tol,
-                                       vtkAssemblyPath *path,
-                                       vtkProp3D *prop3D,
-                                       vtkAbstractMapper3D *m)
+                                          vtkAssemblyPath *path,
+                                          vtkProp3D *prop3D,
+                                          vtkAbstractMapper3D *m)
 {
     vtkIdType numCells, cellId, minCellId;
     int i, minSubId, subId;
@@ -83,11 +83,11 @@ double fwVtkCellPicker::IntersectWithLine(double p1[3], double p2[3], double tol
     vtkAbstractVolumeMapper *volumeMapper;
 
     // Get the underlying dataset
-    if ( (mapper=vtkMapper::SafeDownCast(m)) != NULL )
+    if ( (mapper = vtkMapper::SafeDownCast(m)) != NULL )
     {
         input = mapper->GetInput();
     }
-    else if ( (volumeMapper=vtkAbstractVolumeMapper::SafeDownCast(m)) != NULL )
+    else if ( (volumeMapper = vtkAbstractVolumeMapper::SafeDownCast(m)) != NULL )
     {
         input = volumeMapper->GetDataSetInput();
     }
@@ -109,28 +109,28 @@ double fwVtkCellPicker::IntersectWithLine(double p1[3], double p2[3], double tol
     // breaks ties in a reasonable way when cells are the same distance
     // from the eye (like cells lying on a 2D plane).
     //
-    minCellId = -1;
-    minSubId = -1;
+    minCellId  = -1;
+    minSubId   = -1;
     pcoords[0] = pcoords[1] = pcoords[2] = 0;
-    double pDistMin=VTK_DOUBLE_MAX, pDist;
-    for (tMin=VTK_DOUBLE_MAX,cellId=0; cellId<numCells; cellId++)
+    double pDistMin = VTK_DOUBLE_MAX, pDist;
+    for (tMin = VTK_DOUBLE_MAX,cellId = 0; cellId<numCells; cellId++)
     {
         input->GetCell(cellId, this->Cell);
 
         if ( this->Cell->IntersectWithLine(p1, p2, tol, t, x, pcoords, subId)
-                && t <= (tMin+this->Tolerance) )
+             && t <= (tMin+this->Tolerance) )
         {
             pDist = this->Cell->GetParametricDistance(pcoords);
             if ( pDist < pDistMin || (pDist == pDistMin && t < tMin) )
             {
                 minCellId = cellId;
-                minSubId = subId;
-                for (i=0; i<3; i++)
+                minSubId  = subId;
+                for (i = 0; i<3; i++)
                 {
-                    minXYZ[i] = x[i];
+                    minXYZ[i]     = x[i];
                     minPcoords[i] = pcoords[i];
                 }
-                tMin = t;
+                tMin     = t;
                 pDistMin = pDist;
             }//if minimum, maximum
         }//if a close cell
@@ -141,8 +141,8 @@ double fwVtkCellPicker::IntersectWithLine(double p1[3], double p2[3], double tol
     {
         this->MarkPicked(path, prop3D, m, tMin, minXYZ);
         this->CellId = minCellId;
-        this->SubId = minSubId;
-        for (i=0; i<3; i++)
+        this->SubId  = minSubId;
+        for (i = 0; i<3; i++)
         {
             this->PCoords[i] = minPcoords[i];
         }
@@ -156,8 +156,8 @@ double fwVtkCellPicker::IntersectWithLine(double p1[3], double p2[3], double tol
 void fwVtkCellPicker::Initialize()
 {
     this->CellId = (-1);
-    this->SubId = (-1);
-    for (int i=0; i<3; i++)
+    this->SubId  = (-1);
+    for (int i = 0; i<3; i++)
     {
         this->PCoords[i] = 0.0;
     }
@@ -173,7 +173,7 @@ void fwVtkCellPicker::PrintSelf(ostream& os, vtkIndent indent)
     os << indent << "Cell Id: " << this->CellId << "\n";
     os << indent << "SubId: " << this->SubId << "\n";
     os << indent << "PCoords: (" << this->PCoords[0] << ", "
-            << this->PCoords[1] << ", " << this->PCoords[2] << ")\n";
+       << this->PCoords[1] << ", " << this->PCoords[2] << ")\n";
 }
 
 //------------------------------------------------------------------------------

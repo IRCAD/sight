@@ -27,8 +27,8 @@ namespace fwData
 class FWDATA_CLASS_API Tag : public Object
 {
 
-public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object), (()), ::fwData::factory::New< Tag >) ;
+public:
+    fwCoreClassDefinitionsWithFactoryMacro( (Tag)(::fwData::Object), (()), ::fwData::factory::New< Tag >);
 
 
     /**
@@ -42,11 +42,11 @@ public :
 
     fwCampMakeFriendDataMacro((fwData)(Tag));
 
-    fwGettersSettersDocMacro(PointList, pointList, ::fwData::PointList::sptr, the list of points )
+    fwGettersSettersDocMacro(PointList, pointList, ::fwData::PointList::sptr, "the list of points" )
 
-    fwGettersSettersDocMacro(Type, sType, std::string, the type of tag)
+    fwGettersSettersDocMacro(Type, sType, std::string, "the type of tag")
 
-    fwGettersSettersDocMacro(Size, size, double, the size of the tag)
+    fwGettersSettersDocMacro(Size, size, double, "the size of the tag")
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& source );
@@ -54,10 +54,10 @@ public :
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType &cache);
 
-protected :
+protected:
 
     /// list of points
-    ::fwData::PointList::sptr  m_pointList;
+    ::fwData::PointList::sptr m_pointList;
 
     /// type of tag
     std::string m_sType;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -64,7 +64,7 @@ class C;
 
 void UtilTest::convertFunctionTypeTest ()
 {
-    typedef void (C::* CM2C) (int, float) const;
+    typedef void (C::* CM2C)(int, float) const;
     typedef void (C::* CM2) (int, float);
 
     typedef ::boost::function< void (int, float) > BF2;
@@ -84,13 +84,13 @@ void UtilTest::removeLastArgTest ()
 {
     typedef long long F9 (int*, double, float, char, double*, float*, char*, int, const char*);
     typedef long long F8 (int*, double, float, char, double*, float*, char*, int);
-    typedef long long F7 (int*, double, float, char, double*, float*, char*) ;
-    typedef long long F6 (int*, double, float, char, double*, float*) ;
-    typedef long long F5 (int*, double, float, char, double*) ;
-    typedef long long F4 (int*, double, float, char) ;
-    typedef long long F3 (int*, double, float) ;
-    typedef long long F2 (int*, double) ;
-    typedef long long F1 (int*) ;
+    typedef long long F7 (int*, double, float, char, double*, float*, char*);
+    typedef long long F6 (int*, double, float, char, double*, float*);
+    typedef long long F5 (int*, double, float, char, double*);
+    typedef long long F4 (int*, double, float, char);
+    typedef long long F3 (int*, double, float);
+    typedef long long F2 (int*, double);
+    typedef long long F1 (int*);
     typedef long long F0 ();
 
 

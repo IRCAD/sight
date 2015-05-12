@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -65,7 +65,8 @@ public:
     }
 
     virtual ~ObjectTest()
-    {}
+    {
+    }
 
     virtual std::string getName() const
     {
@@ -213,12 +214,13 @@ struct UseFactoryThread
 
     UseFactoryThread( const ThreadSafetyTestFactoryType &factory, std::string objType = "ObjectTest" ) :
         m_factory(factory), m_objectType(objType)
-    {}
+    {
+    }
 
     void run()
     {
         int duration = 20;
-        for (int i=0; i< s_NBOBJECTS; ++i)
+        for (int i = 0; i< s_NBOBJECTS; ++i)
         {
             OSLM_WARN( "building 1 " << m_objectType << "... " );
             m_objects.push_back( m_factory.create(m_objectType, duration) );
@@ -242,14 +244,15 @@ struct PopulateRegistryThread
 
     PopulateRegistryThread( ThreadSafetyTestFactoryType &factory ) :
         m_factory(factory)
-    {}
+    {
+    }
 
     void run()
     {
-        for (int i=0; i< s_NBREGISTRYITEMS; ++i)
+        for (int i = 0; i< s_NBREGISTRYITEMS; ++i)
         {
             std::stringstream ss;
-            ss << "PopulateFactoryThreadObject-" << ::boost::this_thread::get_id() <<"-" << i ;
+            ss << "PopulateFactoryThreadObject-" << ::boost::this_thread::get_id() <<"-" << i;
             std::string name = ss.str();
             OSLM_WARN( "adding " << name << "... " );
             m_factory.addFactory(name, ::boost::factory<ObjectTest::sptr>());
@@ -286,12 +289,12 @@ void FactoryRegistryTest::threadSafetyTest()
         ::boost::thread* t;
 
         uft = ::boost::make_shared<UseFactoryThread>(objectTestFactory);
-        t = new ::boost::thread(::boost::bind(&UseFactoryThread::run, uft) );
+        t   = new ::boost::thread(::boost::bind(&UseFactoryThread::run, uft) );
         tg.add_thread(t);
         objects.push_back(uft);
 
         uft = ::boost::make_shared<UseFactoryThread>(objectTestFactory, "DerivedObjectTest");
-        t = new ::boost::thread(::boost::bind(&UseFactoryThread::run, uft) );
+        t   = new ::boost::thread(::boost::bind(&UseFactoryThread::run, uft) );
         tg.add_thread(t);
         objects.push_back(uft);
     }
@@ -302,7 +305,7 @@ void FactoryRegistryTest::threadSafetyTest()
         ::boost::thread* t;
 
         pft = ::boost::make_shared<PopulateRegistryThread>(::boost::ref(objectTestFactory));
-        t = new ::boost::thread(::boost::bind(&PopulateRegistryThread::run, pft) );
+        t   = new ::boost::thread(::boost::bind(&PopulateRegistryThread::run, pft) );
         tg.add_thread(t);
     }
 
@@ -316,9 +319,9 @@ void FactoryRegistryTest::threadSafetyTest()
 
     CPPUNIT_ASSERT_EQUAL(NB_THREAD * UseFactoryThread::s_NBOBJECTS * 2, ObjectTest::s_counter);
     CPPUNIT_ASSERT_EQUAL(
-                         size_t(NB_THREAD * PopulateRegistryThread::s_NBREGISTRYITEMS + 2),
-                         objectTestFactory.getFactoryKeys().size()
-                         );
+        size_t(NB_THREAD * PopulateRegistryThread::s_NBREGISTRYITEMS + 2),
+        objectTestFactory.getFactoryKeys().size()
+        );
     ObjectTest::s_counter = 0;
 
 }

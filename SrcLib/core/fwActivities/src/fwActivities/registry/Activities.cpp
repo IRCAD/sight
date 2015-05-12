@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2004-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <limits>
 
 #include <boost/foreach.hpp>
@@ -67,8 +73,9 @@ ActivityRequirement::ActivityRequirement(const ConfigType &config) :
         this->maxOccurs = std::numeric_limits<unsigned int>::max();
     }
 
-    OSLM_ASSERT( "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
-                 0 <= minOccurs && minOccurs <= maxOccurs);
+    OSLM_ASSERT(
+        "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
+        0 <= minOccurs && minOccurs <= maxOccurs);
     OSLM_TRACE( "ActivityRequirement : " << name << " : " << type << ", " << minOccurs << "-" << maxOccurs );
 }
 
@@ -143,7 +150,7 @@ bool ActivityInfo::usableWith(DataCountType dataCounts) const
     {
         BOOST_FOREACH( const RequirementsMinMaxCount::value_type &reqCount, m_requirementCount )
         {
-            const MinMaxType &reqMinMax = reqCount.second;
+            const MinMaxType &reqMinMax  = reqCount.second;
             DataCountType::iterator iter = dataCounts.find(reqCount.first);
             if (iter != dataCounts.end())
             {
@@ -192,7 +199,8 @@ Activities::sptr Activities::getDefault()
 //-----------------------------------------------------------------------------
 
 Activities::~Activities()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -215,7 +223,7 @@ void Activities::parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Ex
 
         ::fwCore::mt::WriteLock lock(m_registryMutex);
         SLM_ASSERT("The id " <<  info.id << "(" << info.title << ")"
-                << " already exists in the Activities registry", m_reg.find( info.id ) == m_reg.end());
+                             << " already exists in the Activities registry", m_reg.find( info.id ) == m_reg.end());
         m_reg.insert( Registry::value_type(info.id, info) );
     }
 }
@@ -223,7 +231,8 @@ void Activities::parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Ex
 //-----------------------------------------------------------------------------
 
 Activities::Activities()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -315,7 +324,8 @@ const ActivityInfo Activities::getInfo( const std::string & extensionId ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );
-    SLM_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry", iter != m_reg.end());
+    SLM_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry",
+               iter != m_reg.end());
     return iter->second;
 }
 

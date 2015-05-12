@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMS_BASE_NUMERIC_HXX__
-#define __FWATOMS_BASE_NUMERIC_HXX__
+#ifndef __FWATOMS_NUMERIC_HXX__
+#define __FWATOMS_NUMERIC_HXX__
 
 
 #include <boost/numeric/conversion/cast.hpp>
@@ -28,48 +28,48 @@ namespace fwAtoms
 
 class NumericSetter
 {
-    friend class Numeric;
+friend class Numeric;
 
 
-    template< typename T >
-    static void setValue( Numeric::ValueType &v,
-                          typename ::boost::enable_if_c<
-                         ::boost::is_same<
-                                typename ::boost::remove_reference< typename ::boost::remove_const <T>::type >::type,
-                                std::string
-                            >::value
+template< typename T >
+static void setValue( Numeric::ValueType &v,
+                      typename ::boost::enable_if_c<
+                          ::boost::is_same<
+                              typename ::boost::remove_reference< typename ::boost::remove_const <T>::type >::type,
+                              std::string
+                              >::value
 
                           , T>::type value )
-    {
-        v = Numeric::valueFromString(value);
-    }
+{
+    v = Numeric::valueFromString(value);
+}
 
 
-    template< typename T >
-    static void setValue( Numeric::ValueType &v,
-                          typename ::boost::enable_if_c<
-                         ::boost::mpl::and_< ::boost::is_signed<T>, ::boost::is_integral<T> >::value
+template< typename T >
+static void setValue( Numeric::ValueType &v,
+                      typename ::boost::enable_if_c<
+                          ::boost::mpl::and_< ::boost::is_signed<T>, ::boost::is_integral<T> >::value
                           , T>::type value )
-    {
-        v = static_cast< ::boost::int64_t>(value);
-    }
+{
+    v = static_cast< ::boost::int64_t>(value);
+}
 
 
-    template< typename T >
-    static void setValue( Numeric::ValueType &v,
-                          typename ::boost::enable_if_c<
-                         ::boost::mpl::and_< ::boost::is_unsigned<T>,::boost::is_integral<T> >::value
+template< typename T >
+static void setValue( Numeric::ValueType &v,
+                      typename ::boost::enable_if_c<
+                          ::boost::mpl::and_< ::boost::is_unsigned<T>,::boost::is_integral<T> >::value
                           , T>::type value )
-    {
-        v = static_cast< ::boost::uint64_t>(value);
-    }
+{
+    v = static_cast< ::boost::uint64_t>(value);
+}
 
-    template< typename T >
-    static void setValue( Numeric::ValueType &v,
-                          typename ::boost::enable_if_c< ::boost::is_floating_point<T>::value, T>::type value )
-    {
-        v = value;
-    }
+template< typename T >
+static void setValue( Numeric::ValueType &v,
+                      typename ::boost::enable_if_c< ::boost::is_floating_point<T>::value, T>::type value )
+{
+    v = value;
+}
 
 };
 
@@ -118,5 +118,5 @@ T Numeric::getValue() const
 
 }
 
-#endif
+#endif //__FWATOMS_NUMERIC_HXX__
 

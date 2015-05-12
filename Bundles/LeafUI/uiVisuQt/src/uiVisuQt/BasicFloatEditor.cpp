@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@
 namespace uiVisu
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::BasicFloatEditor , ::fwData::Float ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::BasicFloatEditor, ::fwData::Float );
 
 
 BasicFloatEditor::BasicFloatEditor() throw()
@@ -39,7 +39,8 @@ BasicFloatEditor::BasicFloatEditor() throw()
 //------------------------------------------------------------------------------
 
 BasicFloatEditor::~BasicFloatEditor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -48,13 +49,14 @@ void BasicFloatEditor::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
     ::fwData::Float::sptr floatObj = this->getObject< ::fwData::Float >();
 
-    QHBoxLayout* layout = new QHBoxLayout();
+    QHBoxLayout* layout               = new QHBoxLayout();
     QDoubleValidator* doubleValidator = new QDoubleValidator( m_valueCtrl );
 
     m_valueCtrl = new QLineEdit( container );
@@ -156,8 +158,8 @@ void BasicFloatEditor::onModifyValue(QString value)
     }
     else
     {
-        int pos = 0;
-        QString str = m_valueCtrl->text();
+        int pos      = 0;
+        QString str  = m_valueCtrl->text();
         bool isValid = (m_valueCtrl->validator()->validate(str, pos) == QValidator::Acceptable);
 
         if (isValid)

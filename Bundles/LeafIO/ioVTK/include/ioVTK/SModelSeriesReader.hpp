@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,10 +28,12 @@ namespace ioVTK
 class IOVTK_CLASS_API SModelSeriesReader : public ::io::IReader
 {
 
-public :
-    ~SModelSeriesReader() throw() {}
+public:
+    ~SModelSeriesReader() throw()
+    {
+    }
 
-    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesReader)( ::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesReader)( ::io::IReader) );
 
     /**
      * @brief Configure the mesh path.
@@ -73,7 +75,7 @@ protected:
      * This method is used to give
      * informations about the service.
      */
-    IOVTK_API void info(std::ostream &_sstream ) ;
+    IOVTK_API void info(std::ostream &_sstream );
 
 private:
 

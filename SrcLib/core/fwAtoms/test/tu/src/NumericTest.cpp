@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -103,7 +103,7 @@ void NumericTest::floatingTest()
     double d1 = 0.234;
     double d2 = std::numeric_limits< double >::max();
     double d3 = -42.4;
-    float  f1 = 4327.452359;
+    float f1  = 4327.452359;
 
     numeric = fwAtoms::Numeric::New(d1);
     CPPUNIT_ASSERT_EQUAL(::boost::lexical_cast<std::string>(VariantType(d1)), numeric->getString());
@@ -127,7 +127,7 @@ void NumericTest::floatingTest()
     CPPUNIT_ASSERT_EQUAL(f1, numeric->getValue<float>());
     CPPUNIT_ASSERT_EQUAL((double)f1, numeric->getValue<double>());
     CPPUNIT_ASSERT_THROW( numeric->getValue< char >(), boost::numeric::positive_overflow );
-};
+}
 
 //-----------------------------------------------------------------------------
 
@@ -146,9 +146,9 @@ public:
         fwAtoms::Numeric::sptr numeric = ::fwAtoms::Numeric::New(value);
         CPPUNIT_ASSERT_EQUAL(U(value), numeric->getValue<U>());
         CPPUNIT_ASSERT_EQUAL(
-                             ::boost::lexical_cast<std::string>(fwAtoms::Numeric::ValueType(value)),
-                             numeric->getString()
-                             );
+            ::boost::lexical_cast<std::string>(fwAtoms::Numeric::ValueType(value)),
+            numeric->getString()
+            );
 
         CPPUNIT_ASSERT_EQUAL(typeid(U).name(), numeric->getVariant().type().name());
     }

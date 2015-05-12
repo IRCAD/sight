@@ -25,7 +25,8 @@ namespace fwData
 class FWDATA_CLASS_API String : public GenericField< std::string >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object), ( ((const std::string)("")) ), GenericFieldFactory< String >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwData::Object), ( ((const std::string)("")) ),
+                                            GenericFieldFactory< String >);
     fwCampMakeFriendDataMacro((fwData)(String));
 
     /**

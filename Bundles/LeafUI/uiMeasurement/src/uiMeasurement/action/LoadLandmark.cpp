@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,19 +38,21 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::LoadLandmark , ::fwData::Image) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::LoadLandmark, ::fwData::Image);
 
 
 //------------------------------------------------------------------------------
 
 
 LoadLandmark::LoadLandmark( ) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 LoadLandmark::~LoadLandmark() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -64,13 +66,13 @@ void LoadLandmark::info(std::ostream &_sstream )
 void LoadLandmark::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwData::Image::sptr image =  this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Load landmarks",
-                "Sorry, it is impossible to load image landmarks. There is not loaded image in the software.",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Load landmarks",
+            "Sorry, it is impossible to load image landmarks. There is not loaded image in the software.",
+            ::fwGui::dialog::IMessageDialog::WARNING);
         return;
     }
     static ::boost::filesystem::path _sDefaultPath("");
@@ -80,13 +82,13 @@ void LoadLandmark::updating() throw(::fwTools::Failed)
     dialogFile.addFilter("Landmark file","*.json");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
 
     if( result )
     {
         ::boost::filesystem::path path = result->getPath();
-        _sDefaultPath = path.parent_path();
+        _sDefaultPath                  = path.parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
 
         this->load(path);
@@ -115,7 +117,8 @@ void LoadLandmark::starting() throw (::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void LoadLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -128,20 +131,21 @@ void LoadLandmark::stopping() throw (::fwTools::Failed)
 
 void LoadLandmark::load(const ::boost::filesystem::path& path)
 {
-    ::fwData::Image::sptr image =  this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     //get landmarks
     ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
-    ::fwData::PointList::sptr landmarks =  image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+    ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
+        ::fwComEd::Dictionary::m_imageLandmarksId);
     SLM_ASSERT("landmarks not instanced", landmarks);
 
     ::fwData::PointList::sptr newLandmarks = ::fwData::PointList::New();
-    ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
-    (*replaceMap)["GENERIC_UID"] = ::fwData::String::New(
-            ::fwServices::registry::AppConfig::getUniqueIdentifier("LoadLandmarkApp")
-    );
-    (*replaceMap)["landmark"] = ::fwData::String::New(newLandmarks->getID());
-    (*replaceMap)["file"] = ::fwData::String::New(path.string());
+    ::fwData::Composite::sptr replaceMap   = ::fwData::Composite::New();
+    (*replaceMap)["GENERIC_UID"]           = ::fwData::String::New(
+        ::fwServices::registry::AppConfig::getUniqueIdentifier("LoadLandmarkApp")
+        );
+    (*replaceMap)["landmark"]                       = ::fwData::String::New(newLandmarks->getID());
+    (*replaceMap)["file"]                           = ::fwData::String::New(path.string());
     ::fwRuntime::ConfigurationElement::csptr config =
         ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig("LoadLandmark", replaceMap);
 

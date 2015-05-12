@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,7 +39,7 @@
 namespace uiReconstruction
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiReconstruction::OrganMaterialEditor , ::fwData::Reconstruction ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstruction::OrganMaterialEditor, ::fwData::Reconstruction );
 
 
 OrganMaterialEditor::OrganMaterialEditor() throw()
@@ -50,7 +50,8 @@ OrganMaterialEditor::OrganMaterialEditor() throw()
 //------------------------------------------------------------------------------
 
 OrganMaterialEditor::~OrganMaterialEditor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -58,16 +59,17 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
-    m_colourButton = new QPushButton(tr("Color"), container) ;
+    m_colourButton = new QPushButton(tr("Color"), container);
     m_colourButton->setToolTip(tr("Selected organ's color"));
     m_colourButton->setMinimumSize (m_colourButton->sizeHint());
 
     QLabel* transparencyLabel = new QLabel(tr("Transparency : "), container);
-    m_opacitySlider = new QSlider( Qt::Horizontal, container) ;
+    m_opacitySlider = new QSlider( Qt::Horizontal, container);
     m_opacitySlider->setToolTip(tr("Selected organ's opacity"));
     m_opacitySlider->setRange(0,100);
     m_opacitySlider->setTickInterval(20);
@@ -78,13 +80,13 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
     m_transparencyValue->setMinimumSize (m_transparencyValue->sizeHint());
 
     QVBoxLayout* layout = new QVBoxLayout();
-    layout->addWidget( m_colourButton, 0 ) ;
+    layout->addWidget( m_colourButton, 0 );
 
-    QHBoxLayout* transparencyLayout= new QHBoxLayout( );
-    transparencyLayout->addWidget( transparencyLabel, 0) ;
+    QHBoxLayout* transparencyLayout = new QHBoxLayout( );
+    transparencyLayout->addWidget( transparencyLabel, 0);
     transparencyLayout->addWidget( m_opacitySlider, 1 );
-    transparencyLayout->addWidget( m_transparencyValue, 0) ;
-    layout->addLayout( transparencyLayout, 0) ;
+    transparencyLayout->addWidget( m_transparencyValue, 0);
+    layout->addLayout( transparencyLayout, 0);
 
     container->setLayout( layout );
     container->setEnabled(false);
@@ -149,13 +151,14 @@ void OrganMaterialEditor::onColorButton()
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial() ;
-    int red = material->ambient()->red()*255;
+    ::fwData::Material::sptr material = reconstruction->getMaterial();
+    int red   = material->ambient()->red()*255;
     int green = material->ambient()->green()*255;
-    int blue = material->ambient()->blue()*255;
+    int blue  = material->ambient()->blue()*255;
 
     // Create Color choice dialog.
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -163,9 +166,9 @@ void OrganMaterialEditor::onColorButton()
     QColor color = QColorDialog::getColor(oldColor, container);
     if(color.isValid())
     {
-        material->ambient()->red() = color.redF();
+        material->ambient()->red()   = color.redF();
         material->ambient()->green() = color.greenF();
-        material->ambient()->blue() = color.blueF();
+        material->ambient()->blue()  = color.blueF();
         this->materialNotification();
         refreshMaterial();
     }
@@ -179,8 +182,8 @@ void OrganMaterialEditor::onOpacitySlider(int value )
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial() ;
-    material->ambient()->alpha() = value/100.0;
+    ::fwData::Material::sptr material = reconstruction->getMaterial();
+    material->ambient()->alpha()      = value/100.0;
     std::stringstream ss;
     ss << value << "%";
     m_transparencyValue->setText(QString::fromStdString(ss.str()));
@@ -195,19 +198,20 @@ void OrganMaterialEditor::refreshMaterial( )
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
     container->setEnabled(!reconstruction->getOrganName().empty());
 
-    ::fwData::Material::sptr material = reconstruction->getMaterial() ;
+    ::fwData::Material::sptr material = reconstruction->getMaterial();
     QColor materialColor = QColor (
-                material->ambient()->red()*255,
-                material->ambient()->green()*255,
-                material->ambient()->blue()*255,
-                material->ambient()->alpha()*255
-                );
+        material->ambient()->red()*255,
+        material->ambient()->green()*255,
+        material->ambient()->blue()*255,
+        material->ambient()->alpha()*255
+        );
 
     int iconSize = m_colourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
     QPixmap pix(iconSize, iconSize);
@@ -216,7 +220,7 @@ void OrganMaterialEditor::refreshMaterial( )
     m_colourButton->setIcon(QIcon(pix));
 
     int a = material->ambient()->alpha()*100;
-    m_opacitySlider->setValue( a ) ;
+    m_opacitySlider->setValue( a );
     std::stringstream ss;
     ss << a << "%";
     m_transparencyValue->setText(QString::fromStdString(ss.str()));
@@ -230,7 +234,7 @@ void OrganMaterialEditor::materialNotification( )
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
     ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
-    msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
+    msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
     ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMaterial(), msg);
 }
 

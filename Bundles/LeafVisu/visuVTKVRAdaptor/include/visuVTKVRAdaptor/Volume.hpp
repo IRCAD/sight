@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 
 
-#ifndef _VISUVTKVRADAPTOR_VOLUME_HPP_
-#define _VISUVTKVRADAPTOR_VOLUME_HPP_
+#ifndef __VISUVTKVRADAPTOR_VOLUME_HPP__
+#define __VISUVTKVRADAPTOR_VOLUME_HPP__
 
 #include <fwData/Image.hpp>
 
@@ -31,12 +31,13 @@ class vtkBoxWidget2;
 namespace visuVTKVRAdaptor
 {
 
-class VISUVTKVRADAPTOR_CLASS_API Volume : public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKVRADAPTOR_CLASS_API Volume : public ::fwComEd::helper::MedicalImageAdaptor,
+                                          public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Volume)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Volume)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKVRADAPTOR_API Volume() throw();
 
@@ -46,7 +47,7 @@ public:
 
     VISUVTKVRADAPTOR_API void setVtkClippingPlanes( vtkPlaneCollection *planes );
 
-protected :
+protected:
 
     VISUVTKVRADAPTOR_API void doStart() throw(fwTools::Failed);
 
@@ -60,12 +61,12 @@ protected :
      * @brief Configures the service
      *
      * Configuration example :
-     @verbatim
-     <adaptor id="VolumeScene3D" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
+       @verbatim
+       <adaptor id="VolumeScene3D" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
          <config renderer="default" clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no"/>
-     </adaptor>
-     @endverbatim
-     * 
+       </adaptor>
+       @endverbatim
+     *
      * \b renderer : ID of renderer the adaptor must use
      * \b clippingplanes : id of VTK object for clipping planes
      * \b autoresetcamera : (not mandatory, default is yes) set if the renderer must reset camera when updating image
@@ -110,12 +111,9 @@ protected :
 
 private:
 
-    bool   m_autoResetCamera;
+    bool m_autoResetCamera;
 };
-
-
-
 
 } //namespace visuVTKVRAdaptor
 
-#endif // _VISUVTKVRADAPTOR_NEGATOONESLICE_HPP_
+#endif // __VISUVTKVRADAPTOR_VOLUME_HPP__

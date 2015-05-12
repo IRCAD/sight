@@ -29,7 +29,7 @@ class FWDATA_CLASS_API Node : public ::fwData::Object
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwData::factory::New< Node >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwData::factory::New< Node >);
     fwCampMakeFriendDataMacro((fwData)(Node));
 
     /// Port container
@@ -84,7 +84,7 @@ public:
     /// Updated signal key
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_SIG;
 
-protected :
+protected:
 
     /// node object
     ::fwData::Object::sptr m_object;

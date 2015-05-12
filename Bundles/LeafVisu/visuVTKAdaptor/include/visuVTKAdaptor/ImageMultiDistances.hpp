@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP_
-#define _VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP_
+#ifndef __VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP__
+#define __VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP__
 
 
 #include <fwData/PointList.hpp>
@@ -22,14 +22,14 @@ namespace visuVTKAdaptor
 
 
 /**
-* @brief Adaptor to display distance on an image
-*/
-class VISUVTKADAPTOR_CLASS_API ImageMultiDistances: public ::fwRenderVTK::IVtkAdaptorService
+ * @brief Adaptor to display distance on an image
+ */
+class VISUVTKADAPTOR_CLASS_API ImageMultiDistances : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageMultiDistances)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageMultiDistances)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API ImageMultiDistances() throw();
 
@@ -39,7 +39,7 @@ public:
 
     VISUVTKADAPTOR_API virtual void show(bool showDistances = true);
 
-protected :
+protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
@@ -66,4 +66,4 @@ protected :
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP_
+#endif // __VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP__

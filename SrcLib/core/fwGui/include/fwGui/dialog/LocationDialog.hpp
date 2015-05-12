@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_LOCATIONDIALOG_HPP_
-#define _FWGUI_LOCATIONDIALOG_HPP_
+#ifndef __FWGUI_DIALOG_LOCATIONDIALOG_HPP__
+#define __FWGUI_DIALOG_LOCATIONDIALOG_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -23,7 +23,7 @@ namespace dialog
  * The specific implementation are in fwGuiWX and fwGuiQT libraries.
  *
  * @class   LocationDialog
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -32,7 +32,8 @@ class FWGUI_CLASS_API LocationDialog : public ILocationDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (LocationDialog)(::fwGui::dialog::ILocationDialog), (()), new LocationDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (LocationDialog)(::fwGui::dialog::ILocationDialog), (()),
+                                            new LocationDialog );
 
     /// Will instantiate the concrete implementation
     FWGUI_API LocationDialog();
@@ -74,7 +75,7 @@ public:
     /// Save the specified default location for the dialog in preferences (if available)
     FWGUI_API void saveDefaultLocation(::fwData::location::ILocation::sptr loc);
 
-protected :
+protected:
 
     ::fwGui::dialog::ILocationDialog::sptr m_implementation;
 };
@@ -82,6 +83,6 @@ protected :
 } //namespace dialog
 } // namespace fwGui
 
-#endif /*_FWGUI_LOCATIONDIALOG_HPP_*/
+#endif /*__FWGUI_DIALOG_LOCATIONDIALOG_HPP__*/
 
 

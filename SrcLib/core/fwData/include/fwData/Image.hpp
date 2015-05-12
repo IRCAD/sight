@@ -33,7 +33,7 @@ namespace fwData
 class FWDATA_CLASS_API Image : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwData::factory::New< Image > ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwData::factory::New< Image > );
     fwCoreAllowSharedFromThis();
     fwCampMakeFriendDataMacro((fwData)(Image));
 
@@ -111,7 +111,7 @@ public:
     /**
      * @brief Get/set prefered window width
      */
-    fwDataGetSetMacro(WindowWidth , double);
+    fwDataGetSetMacro(WindowWidth, double);
 
 
     /**
@@ -156,16 +156,16 @@ public:
     FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
                                const ::fwTools::Type &type, size_t numberOfComponents = 1) throw(::fwData::Exception);
     FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents = 1)
-        throw(::fwData::Exception);
+    throw(::fwData::Exception);
     // @}
 
 
-     /// @brief return image size in bytes
+    /// @brief return image size in bytes
     FWDATA_API size_t getSizeInBytes() const;
-     /// @brief return allocated image size in bytes
+    /// @brief return allocated image size in bytes
     size_t getAllocatedSizeInBytes() const;
 
-protected :
+protected:
 
     //! Size of the image (in terms of points)
     SizeType m_size;

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_MESH_HPP_
-#define _VISUVTKADAPTOR_MESH_HPP_
+#ifndef __VISUVTKADAPTOR_MESH_HPP__
+#define __VISUVTKADAPTOR_MESH_HPP__
 
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
@@ -35,16 +35,16 @@ namespace visuVTKAdaptor
 
 class Transform;
 
-class VISUVTKADAPTOR_CLASS_API MeshVtkCommand ;
+class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
 
 /**
  * @brief Display a mesh on the generic scene
  */
-class VISUVTKADAPTOR_CLASS_API Mesh: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Mesh : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Mesh)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Mesh)(::fwRenderVTK::IVtkAdaptorService) );
     /** @} */
 
     VISUVTKADAPTOR_API Mesh() throw();
@@ -84,12 +84,12 @@ public:
 
 protected:
 
-   VISUVTKADAPTOR_API void doStart    () throw(fwTools::Failed);
-   VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
-   VISUVTKADAPTOR_API void doStop     () throw(fwTools::Failed);
-   VISUVTKADAPTOR_API void doSwap   () throw(fwTools::Failed);
-   VISUVTKADAPTOR_API void doUpdate   () throw(fwTools::Failed);
-   VISUVTKADAPTOR_API void doReceive   (::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart    () throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStop     () throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doSwap   () throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doUpdate   () throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doReceive   (::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
 
     vtkActor *newActor();
@@ -110,8 +110,8 @@ protected:
     void createNormalsService();
     void removeNormalsService();
 
-    bool   m_showClippedPart;
-    bool   m_autoResetCamera;
+    bool m_showClippedPart;
+    bool m_autoResetCamera;
 
     vtkPolyData        *m_polyData;
     vtkPolyDataMapper  *m_mapper;
@@ -151,12 +151,15 @@ protected:
     /// Signal to emit when a texture must be applied on a material.
     TextureAppliedSignalType::sptr m_sigTextureApplied;
 
-public :
+public:
 
-   vtkActor * getActor(){ return m_actor; }
+    vtkActor * getActor()
+    {
+        return m_actor;
+    }
 
 };
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_MESH_HPP_
+#endif // __VISUVTKADAPTOR_MESH_HPP__

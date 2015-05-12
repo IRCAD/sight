@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,9 +24,9 @@ struct isMapping
     template <typename U> static camp::detail::TypeYes checkSptr(...);
 
     enum {value = (
-            sizeof(check< T >(0)) == sizeof(camp::detail::TypeYes)
-            && sizeof(checkSptr< T >(0)) == sizeof(camp::detail::TypeYes)
-            )  };
+              sizeof(check< T >(0)) == sizeof(camp::detail::TypeYes)
+              && sizeof(checkSptr< T >(0)) == sizeof(camp::detail::TypeYes)
+              )  };
 };
 
 

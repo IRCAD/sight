@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@
 #include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/data/ViewportMsg.hpp"
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ScaleValues, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ScaleValues, ::fwData::Composite );
 
 
 namespace scene2D
@@ -84,11 +84,11 @@ void ScaleValues::configuring() throw ( ::fwTools::Failed )
 
     // Viewport configuratiion
     SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
-            !m_configuration->getAttributeValue("viewportUID").empty());
+               !m_configuration->getAttributeValue("viewportUID").empty());
 
     if( !m_configuration->getAttributeValue("viewportUID").empty() )
     {
-        m_viewportID =  m_configuration->getAttributeValue("viewportUID");
+        m_viewportID = m_configuration->getAttributeValue("viewportUID");
     }
 
 
@@ -112,7 +112,7 @@ void ScaleValues::configuring() throw ( ::fwTools::Failed )
         !m_align.empty());
 
     SLM_ASSERT("Unsupported value for 'align' attribute.",
-           m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
+               m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -124,9 +124,9 @@ void ScaleValues::buildValues()
 
     m_values.clear();
 
-    double val = this->getStartVal();
-    const int range = (int) ceil(this->getEndVal() - val);
-    const int nbValues = (int)(ceil(range/ m_interval)) + 1 ;
+    double val         = this->getStartVal();
+    const int range    = (int) ceil(this->getEndVal() - val);
+    const int nbValues = (int)(ceil(range/ m_interval)) + 1;
 
     std::string format;
 
@@ -202,7 +202,7 @@ void ScaleValues::doStart() throw ( ::fwTools::Failed )
     m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
 
     m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+        this->slot(::fwServices::IService::s_RECEIVE_SLOT));
 
     this->buildValues();
     this->doUpdate();
@@ -237,14 +237,14 @@ void ScaleValues::doUpdate() throw ( ::fwTools::Failed )
 
 void ScaleValues::rescaleValues()
 {
-    const double viewportX = m_viewport->getX();
-    const double viewportWidth = m_viewport->getWidth();
+    const double viewportX      = m_viewport->getX();
+    const double viewportWidth  = m_viewport->getWidth();
     const double viewportHeight = m_viewport->getHeight();
 
-    const double viewportSizeRatio = viewportHeight / viewportWidth;
+    const double viewportSizeRatio    = viewportHeight / viewportWidth;
     const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
 
-    Scene2DRatio ratio = this->getRatio();  // Total ratio
+    Scene2DRatio ratio        = this->getRatio(); // Total ratio
     double viewportWidthRatio = this->getViewportSizeRatio().first;
 
     double scaleX = m_fontSize;
@@ -266,7 +266,7 @@ void ScaleValues::rescaleValues()
                                            a lack of sufficient width to display all of them */
 
     const int valuesSize = m_values.size();
-    float val = getStartVal();
+    float val            = getStartVal();
 
     if(m_align == "left" || m_align == "right")
     {
@@ -282,7 +282,7 @@ void ScaleValues::rescaleValues()
         }
         else
         {
-            coeff = -1;
+            coeff    = -1;
             textPosX = viewportX + viewportWidth;
         }
 
@@ -291,14 +291,14 @@ void ScaleValues::rescaleValues()
             valueSize = m_values[i]->boundingRect().height();
 
             size = this->mapAdaptorToScene(
-                    std::pair<double, double>(m_values[i]->boundingRect().width(), valueSize),
-                    m_xAxis, m_yAxis);
+                std::pair<double, double>(m_values[i]->boundingRect().width(), valueSize),
+                m_xAxis, m_yAxis);
 
             step = (int)(valueSize / valueSizeRatio) + 1;
 
             if( step > m_step )
             {
-                m_step = step;
+                m_step            = step;
                 suggestResampling = true;
             }
 
@@ -308,8 +308,8 @@ void ScaleValues::rescaleValues()
             m_values[i]->setTransform( transform );
 
             m_values[i]->setPos(
-                    coord.first + coeff * size.first * scaleX,
-                    coord.second - (m_interval - size.second / 2) * scaleY );
+                coord.first + coeff * size.first * scaleX,
+                coord.second - (m_interval - size.second / 2) * scaleY );
         }
 
         m_unit->setTransform( transform );
@@ -317,13 +317,13 @@ void ScaleValues::rescaleValues()
         val = viewportHeight * 0.8;
 
         coord = this->mapAdaptorToScene(
-                std::pair<double, double>(textPosX, val), m_xAxis, m_yAxis);
+            std::pair<double, double>(textPosX, val), m_xAxis, m_yAxis);
 
         coeff = (m_align == "left") ? 1 : -1.5;
 
         m_unit->setPos(
-                coord.first + coeff * 2 * size.first * scaleX,
-                coord.second + size.second * scaleY);
+            coord.first + coeff * 2 * size.first * scaleX,
+            coord.second + size.second * scaleY);
     }
     else    // axis centered on top or bottom
     {
@@ -332,8 +332,8 @@ void ScaleValues::rescaleValues()
         float coeff = 0.5;
 
         double textPosY = (m_align == "bottom")
-            ? m_viewport->getY()
-            : viewportHeight * 0.9;
+                          ? m_viewport->getY()
+                          : viewportHeight * 0.9;
 
         for(int i = 0; i < valuesSize; ++i, val += m_interval)
         {
@@ -347,18 +347,18 @@ void ScaleValues::rescaleValues()
 
             if( step > m_step )
             {
-                m_step = step;
+                m_step            = step;
                 suggestResampling = true;
             }
 
             coord = this->mapAdaptorToScene(std::pair<double, double>(val, textPosY),
-                    m_xAxis, m_yAxis);
+                                            m_xAxis, m_yAxis);
 
             m_values[i]->setTransform( transform );
 
             m_values[i]->setPos(
-                    coord.first - size.first / 2 * scaleX,
-                    coord.second - coeff * size.second / 2 * scaleY );
+                coord.first - size.first / 2 * scaleX,
+                coord.second - coeff * size.second / 2 * scaleY );
         }
 
         m_unit->setTransform( transform );
@@ -366,19 +366,19 @@ void ScaleValues::rescaleValues()
         val = viewportHeight * 0.8;
 
         size = this->mapAdaptorToScene(
-                std::pair<double, double>(m_unit->boundingRect().width(), m_unit->boundingRect().height()),
-                m_xAxis, m_yAxis);
+            std::pair<double, double>(m_unit->boundingRect().width(), m_unit->boundingRect().height()),
+            m_xAxis, m_yAxis);
 
         coord = this->mapAdaptorToScene(
-                std::pair<double, double>(
-                    viewportX + viewportWidth / 2, textPosY),
-                m_xAxis, m_yAxis);
+            std::pair<double, double>(
+                viewportX + viewportWidth / 2, textPosY),
+            m_xAxis, m_yAxis);
 
         coeff = (m_align == "left") ? 1 : -1.5;
 
         m_unit->setPos(
-                coord.first - size.first * scaleX,
-                coord.second - 1.5 * size.second * scaleY);
+            coord.first - size.first * scaleX,
+            coord.second - 1.5 * size.second * scaleY);
     }
 
     if( suggestResampling )
@@ -397,7 +397,7 @@ void ScaleValues::rescaleValues()
 void ScaleValues::showHideScaleValues()
 {
     double value;
-    const int size = (int)m_values.size();
+    const int size        = (int)m_values.size();
     const double startVal = this->getStartVal();
 
     for(int i = 0; i < size; ++i)

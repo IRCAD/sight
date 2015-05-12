@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -55,7 +55,7 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
 }
 
 //------------------------------------------------------------------------------
@@ -77,11 +77,11 @@ void SeriesDBReaderTest::tearDown()
 void SeriesDBReaderTest::testSeriesDBReader()
 {
     const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk";
-    const ::boost::filesystem::path meshFile = ::fwTest::Data::dir() / "fw4spl/mesh/vtk/sphere.vtk";
+    const ::boost::filesystem::path meshFile  = ::fwTest::Data::dir() / "fw4spl/mesh/vtk/sphere.vtk";
 
     ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr file1Cfg = ::fwRuntime::EConfigurationElement::New("file");
-    ::fwRuntime::EConfigurationElement::sptr file2Cfg = ::fwRuntime::EConfigurationElement::New("file");
+    ::fwRuntime::EConfigurationElement::sptr file1Cfg     = ::fwRuntime::EConfigurationElement::New("file");
+    ::fwRuntime::EConfigurationElement::sptr file2Cfg     = ::fwRuntime::EConfigurationElement::New("file");
     file1Cfg->setValue(imageFile.string());
     readerSrvCfg->addConfigurationElement(file1Cfg);
     file2Cfg->setValue(meshFile.string());
@@ -129,10 +129,10 @@ void SeriesDBReaderTest::testSeriesDBReader()
     CPPUNIT_ASSERT_MESSAGE("ModelSeries dynamicCast failed", modelSeries);
 
     // Data read.
-    ::fwData::Image::sptr image = imageSeries->getImage();
+    ::fwData::Image::sptr image              = imageSeries->getImage();
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
-    ::fwData::Image::SpacingType originRead = image->getOrigin();
-    ::fwData::Image::SizeType sizeRead = image->getSize();
+    ::fwData::Image::SpacingType originRead  = image->getOrigin();
+    ::fwData::Image::SizeType sizeRead       = image->getSize();
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -154,8 +154,8 @@ void SeriesDBReaderTest::testSeriesDBReader()
 
     ::fwData::Reconstruction::sptr rec1 = modelSeries->getReconstructionDB()[0];
     ::fwData::Reconstruction::sptr rec2 = modelSeries->getReconstructionDB()[1];
-    ::fwData::Mesh::sptr mesh1 = rec1->getMesh();
-    ::fwData::Mesh::sptr mesh2 = rec2->getMesh();
+    ::fwData::Mesh::sptr mesh1          = rec1->getMesh();
+    ::fwData::Mesh::sptr mesh2          = rec2->getMesh();
 
     CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Id)720, mesh1->getNumberOfCells());
     CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Id)362, mesh1->getNumberOfPoints());
@@ -170,12 +170,12 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk";
 
     ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
-    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
+    ::fwRuntime::EConfigurationElement::sptr fileCfg      = ::fwRuntime::EConfigurationElement::New("file");
     fileCfg->setValue(imageFile.string());
     readerSrvCfg->addConfigurationElement(fileCfg);
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::sptr seriesDB       = ::fwMedData::SeriesDB::New();
     seriesDB->getContainer().push_back(imageSeries);
 
     ::fwServices::IService::sptr srv;

@@ -22,8 +22,8 @@ namespace fwData
  */
 class FWDATA_CLASS_API Spline : public Object
 {
-public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object), (()), ::fwData::factory::New< Spline >) ;
+public:
+    fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object), (()), ::fwData::factory::New< Spline >);
 
     /**
      * @struct point
@@ -41,21 +41,21 @@ public :
 
         point &operator=( const point & _point )
         {
-            this->id = _point.id;
-            this->p[0] = _point.p[0];
-            this->p[1] = _point.p[1];
-            this->p[2] = _point.p[2];
+            this->id        = _point.id;
+            this->p[0]      = _point.p[0];
+            this->p[1]      = _point.p[1];
+            this->p[2]      = _point.p[2];
             this->normal[0] = _point.normal[0];
             this->normal[1] = _point.normal[1];
             this->normal[2] = _point.normal[2];
             this->isVisible = _point.isVisible;
-            c = ::fwData::Object::copy( _point.c );
+            c               = ::fwData::Object::copy( _point.c );
             return(*this);
-        };
+        }
     };
 
     /// 3D %point container
-    typedef std::vector< point > Points ;
+    typedef std::vector< point > Points;
 
     /**
      * @brief Constructor
@@ -66,33 +66,33 @@ public :
     /**
      * @brief destructor
      */
-    FWDATA_API virtual ~Spline() ;
+    FWDATA_API virtual ~Spline();
 
     /**
      * @brief returns editable point container
      */
-    FWDATA_API Points &points() ;
+    FWDATA_API Points &points();
 
-    fwGettersSettersDocMacro(Radius, radius, double, radius value);
+    fwGettersSettersDocMacro(Radius, radius, double, "radius value");
 
-    fwGettersSettersDocMacro(NbSides, nbSides, int, number of slices);
+    fwGettersSettersDocMacro(NbSides, nbSides, int, "number of slices");
 
-    fwGettersSettersDocMacro(IdSpline, idSpline, int, spline identifier);
+    fwGettersSettersDocMacro(IdSpline, idSpline, int, "spline identifier");
 
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-protected :
+protected:
 
     /// Points container
-    Points      m_points ;
-    double      m_radius;
-    int         m_nbSides;
-    int         m_idSpline;
+    Points m_points;
+    double m_radius;
+    int m_nbSides;
+    int m_idSpline;
 
-} ;
+};
 
 } // namespace fwData
 
-#endif // _FWDATA_SPLINE_HPP_
+#endif // __FWDATA_SPLINE_HPP__
 

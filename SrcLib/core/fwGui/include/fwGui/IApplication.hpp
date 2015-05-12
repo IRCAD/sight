@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IAPPLICATION_HPP_
-#define _FWGUI_IAPPLICATION_HPP_
+#ifndef __FWGUI_IAPPLICATION_HPP__
+#define __FWGUI_IAPPLICATION_HPP__
 
 #include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
@@ -16,7 +16,7 @@ namespace fwGui
 /**
  * @brief   Defines the application manipulation API.
  * @class   IApplication
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -34,7 +34,10 @@ public:
     FWGUI_API virtual void exit( int returncode ) = 0;
 
     /// Sets if confirmation is required when exiting application
-    void setConfirm(bool confirm) { m_confirm = confirm; }
+    void setConfirm(bool confirm)
+    {
+        m_confirm = confirm;
+    }
 
     typedef std::string FactoryRegistryKeyType;
     FWGUI_API static const FactoryRegistryKeyType REGISTRY_KEY;
@@ -46,5 +49,5 @@ protected:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_IAPPLICATION_HPP_*/
+#endif /*__FWGUI_IAPPLICATION_HPP__*/
 

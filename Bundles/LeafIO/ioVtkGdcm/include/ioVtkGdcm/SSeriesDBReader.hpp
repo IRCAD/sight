@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,8 +16,8 @@
 
 namespace fwMedData
 {
-    class SeriesDB;
-    class Patient;
+class SeriesDB;
+class Patient;
 }
 
 
@@ -27,11 +27,11 @@ namespace ioVtkGdcm
 class IOVTKGDCM_CLASS_API SSeriesDBReader : public ::io::IReader
 {
 
-public :
-    typedef std::string                  ExtensionType;
+public:
+    typedef std::string ExtensionType;
     typedef std::vector< ExtensionType > ExtensionsType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) );
     /**
      * @brief   constructor
      *
@@ -55,13 +55,15 @@ protected:
     IOVTKGDCM_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg)_msg ) throw(::fwTools::Failed)
+    {
+    }
 
     /// Override
-    IOVTKGDCM_API void info(std::ostream &_sstream ) ;
+    IOVTKGDCM_API void info(std::ostream &_sstream );
 
     /// Override
-    IOVTKGDCM_API virtual ExtensionsType getSupportedExtensions() ;
+    IOVTKGDCM_API virtual ExtensionsType getSupportedExtensions();
 
     /// Override
     IOVTKGDCM_API virtual std::string getSelectorDialogTitle();
@@ -72,7 +74,7 @@ protected:
     /// Return path type managed by the service, here FOLDER
     IOVTKGDCM_API ::io::IOPathType getIOPathType() const;
 
-private :
+private:
 
     void notificationOfDBUpdate();
 

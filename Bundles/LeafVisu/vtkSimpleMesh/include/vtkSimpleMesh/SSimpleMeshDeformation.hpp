@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,28 +24,28 @@ namespace vtkSimpleMesh
 /**
  * @brief   Service used to deform mesh
  * @class   SSimpleMeshDeformation
- * 
+ *
  * @date    2012.
  */
 class VTKSIMPLEMESH_CLASS_API SSimpleMeshDeformation : public ::fwServices::IController
 {
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSimpleMeshDeformation)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSimpleMeshDeformation)(::fwServices::IController) );
 
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_START_DEFORMATION_SLOT;
-    typedef ::fwCom::Slot<void()> StartDeformationSlotType;
+    typedef ::fwCom::Slot<void ()> StartDeformationSlotType;
 
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_STOP_DEFORMATION_SLOT;
-    typedef ::fwCom::Slot<void()> StopDeformationSlotType;
+    typedef ::fwCom::Slot<void ()> StopDeformationSlotType;
 
     /// Constructor
-    VTKSIMPLEMESH_API SSimpleMeshDeformation() throw() ;
+    VTKSIMPLEMESH_API SSimpleMeshDeformation() throw();
 
     /// Destructor
-    VTKSIMPLEMESH_API virtual ~SSimpleMeshDeformation() throw() ;
+    VTKSIMPLEMESH_API virtual ~SSimpleMeshDeformation() throw();
 
-protected :
+protected:
 
     /// Starting method. Initialize timer.
     VTKSIMPLEMESH_API virtual void starting() throw(fwTools::Failed);
@@ -89,9 +89,9 @@ private:
 
     /// Helper to compute mesh deformation
     void computeDeformation(
-            const ::fwData::Mesh::sptr & refMesh,
-            const ::fwData::Mesh::sptr & transformMesh,
-            float deformationPercent );
+        const ::fwData::Mesh::sptr & refMesh,
+        const ::fwData::Mesh::sptr & transformMesh,
+        float deformationPercent );
 
     ::fwThread::Timer::sptr m_timer;
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,13 +28,14 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-Extension::Extension( ::boost::shared_ptr< Bundle > bundle, const std::string & id, const std::string & point, xmlNodePtr xmlNode )
-: BundleElement ( bundle                    ),
-  m_id          ( id                        ),
-  m_point       ( point                     ),
-  m_xmlDoc      ( xmlNewDoc(BAD_CAST "1.0") ),
-  m_xmlNode     ( xmlCopyNode(xmlNode, 1)   ),
-  m_validity    ( UnknownValidity           )
+Extension::Extension( ::boost::shared_ptr< Bundle > bundle, const std::string & id, const std::string & point,
+                      xmlNodePtr xmlNode )
+    : BundleElement ( bundle                    ),
+      m_id          ( id                        ),
+      m_point       ( point                     ),
+      m_xmlDoc      ( xmlNewDoc(BAD_CAST "1.0") ),
+      m_xmlNode     ( xmlCopyNode(xmlNode, 1)   ),
+      m_validity    ( UnknownValidity           )
 {
     xmlDocSetRootElement(m_xmlDoc, m_xmlNode);
 }
@@ -86,7 +87,7 @@ Extension::Validity Extension::validate()
 
     // Retrieves the extension point.
     Runtime * rntm( Runtime::getDefault() );
-     ::boost::shared_ptr< ExtensionPoint >  point( rntm->findExtensionPoint(m_point) );
+    ::boost::shared_ptr< ExtensionPoint >  point( rntm->findExtensionPoint(m_point) );
 
     // Checks that the point exists.
     if( !point )
@@ -107,10 +108,11 @@ Extension::Validity Extension::validate()
     else
     {
         m_validity = Invalid;
-        const std::string   identifier = m_id.empty() ? "anonymous" : m_id;
-        OSLM_ERROR("In bundle " << getBundle()->getIdentifier() << ". " << identifier
-                << ": invalid extension XML element node does not respect schema. Verification error log is : "
-                << std::endl << validator->getErrorLog() );
+        const std::string identifier = m_id.empty() ? "anonymous" : m_id;
+        OSLM_ERROR(
+            "In bundle " << getBundle()->getIdentifier() << ". " << identifier
+                         << ": invalid extension XML element node does not respect schema. Verification error log is : "
+                         << std::endl << validator->getErrorLog() );
     }
 
     return m_validity;
@@ -119,7 +121,8 @@ Extension::Validity Extension::validate()
 //------------------------------------------------------------------------------
 
 void Extension::operator=(const Extension&) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_RECONSTRUCTIONFROMRESECUPDATERSRV_HPP_
-#define _CTRLSELECTION_RECONSTRUCTIONFROMRESECUPDATERSRV_HPP_
+#ifndef __CTRLSELECTION_UPDATER_RECONSTRUCTIONFROMRESECUPDATERSRV_HPP__
+#define __CTRLSELECTION_UPDATER_RECONSTRUCTIONFROMRESECUPDATERSRV_HPP__
 
 #include <fwData/Reconstruction.hpp>
 
@@ -25,15 +25,15 @@ namespace updater
 class CTRLSELECTION_CLASS_API ReconstructionFromResecUpdaterSrv : public ::ctrlSelection::IUpdaterSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ReconstructionFromResecUpdaterSrv)(::ctrlSelection::IUpdaterSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ReconstructionFromResecUpdaterSrv)(::ctrlSelection::IUpdaterSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API ReconstructionFromResecUpdaterSrv() throw() ;
+    CTRLSELECTION_API ReconstructionFromResecUpdaterSrv() throw();
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~ReconstructionFromResecUpdaterSrv() throw() ;
+    CTRLSELECTION_API virtual ~ReconstructionFromResecUpdaterSrv() throw();
 
 protected:
 
@@ -51,7 +51,7 @@ protected:
             <update compositeKey="myReconstruction" onEvent="NEW_RECONSTRUCTION" fromUID="*" actionType="ADD_OR_SWAP"/>
             <update compositeKey="myReconstruction" onEvent="CLEAR" fromUID="myResection" actionType="REMOVE"/>
         </service>
-      @endverbatim
+       @endverbatim
      * The '*' value for "fromUID" means that the message could be received from every objects
      * @see IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
      */
@@ -76,4 +76,4 @@ private:
 } // updater
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_RECONSTRUCTIONFROMRESECUPDATERSRV_HPP_
+#endif // __CTRLSELECTION_UPDATER_RECONSTRUCTIONFROMRESECUPDATERSRV_HPP__

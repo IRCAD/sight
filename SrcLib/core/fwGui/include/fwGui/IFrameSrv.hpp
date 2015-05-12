@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IFRAMESRV_HPP_
-#define _FWGUI_IFRAMESRV_HPP_
+#ifndef __FWGUI_IFRAMESRV_HPP__
+#define __FWGUI_IFRAMESRV_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -23,25 +23,25 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing a frame.
  * @class   IFrameSrv
- * 
+ *
  * @date    2009-2010.
  *
  */
 class FWGUI_CLASS_API IFrameSrv : public ::fwServices::IService
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IFrameSrv)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IFrameSrv)(::fwServices::IService) );
 
     /// Get widget defined for progress bar
     FWGUI_API static ::fwGui::container::fwContainer::sptr getProgressWidget();
 
-protected :
+protected:
 
-    FWGUI_API IFrameSrv() ;
+    FWGUI_API IFrameSrv();
 
-    FWGUI_API virtual ~IFrameSrv() ;
+    FWGUI_API virtual ~IFrameSrv();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     /**
@@ -67,7 +67,7 @@ protected :
                 <view sid="myView" start="yes" />
             </registry>
         </service>
-      @endverbatim
+       @endverbatim
      * - \<window onclose="notify" /\> : defines what to do when the frame is closed
      *   - \b exit (by default) : the application is closed. Use it for the main frame.
      *   - \b notify : notifies service's object with WINDOW_CLOSED event.
@@ -106,9 +106,9 @@ private:
     void initializeToolBarBuilder( ::fwRuntime::ConfigurationElement::sptr toolBarConfig );
 
     ::fwGui::layoutManager::IFrameLayoutManager::sptr m_frameLayoutManager;
-    ::fwGui::registrar::ViewRegistrar::sptr           m_viewRegistrar;
-    ::fwGui::builder::IMenuBarBuilder::sptr           m_menuBarBuilder;
-    ::fwGui::builder::IToolBarBuilder::sptr           m_toolBarBuilder;
+    ::fwGui::registrar::ViewRegistrar::sptr m_viewRegistrar;
+    ::fwGui::builder::IMenuBarBuilder::sptr m_menuBarBuilder;
+    ::fwGui::builder::IToolBarBuilder::sptr m_toolBarBuilder;
 
     ConfigurationType m_registrarConfig;
     ConfigurationType m_frameConfig;
@@ -123,6 +123,6 @@ private:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_IFRAMESRV_HPP_*/
+#endif /*__FWGUI_IFRAMESRV_HPP__*/
 
 

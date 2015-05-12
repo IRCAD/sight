@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_PROBECURSOR_HPP_
-#define _VISUVTKADAPTOR_PROBECURSOR_HPP_
+#ifndef __VISUVTKADAPTOR_PROBECURSOR_HPP__
+#define __VISUVTKADAPTOR_PROBECURSOR_HPP__
 
 #include <fwData/TransferFunction.hpp>
 
@@ -26,13 +26,14 @@ namespace visuVTKAdaptor
 {
 
 /**
-* @brief Cursor management
-*/
-class VISUVTKADAPTOR_CLASS_API ProbeCursor: public  ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService
+ * @brief Cursor management
+ */
+class VISUVTKADAPTOR_CLASS_API ProbeCursor : public  ::fwComEd::helper::MedicalImageAdaptor,
+                                             public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ProbeCursor)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ProbeCursor)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API ProbeCursor() throw();
 
@@ -58,7 +59,7 @@ protected:
     void buildTextActor();
     void buildPolyData();
 
-    void computeCrossExtremity( const int probeSlice[3] , double worldCross[4][3] );
+    void computeCrossExtremity( const int probeSlice[3], double worldCross[4][3] );
 
 
     double m_priority;
@@ -81,4 +82,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_PROBECURSOR_HPP_
+#endif // __VISUVTKADAPTOR_PROBECURSOR_HPP__

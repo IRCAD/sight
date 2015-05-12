@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_ADAPTOR_NEGATO_HPP_
-#define _SCENE2D_ADAPTOR_NEGATO_HPP_
+#ifndef __SCENE2D_ADAPTOR_NEGATO_HPP__
+#define __SCENE2D_ADAPTOR_NEGATO_HPP__
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
@@ -21,12 +21,13 @@ namespace scene2D
 namespace adaptor
 {
 
-class SCENE2D_CLASS_API Negato : public ::fwComEd::helper::MedicalImageAdaptor, public ::scene2D::adaptor::IAdaptor
+class SCENE2D_CLASS_API Negato : public ::fwComEd::helper::MedicalImageAdaptor,
+                                 public ::scene2D::adaptor::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Negato)(::scene2D::adaptor::IAdaptor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Negato)(::scene2D::adaptor::IAdaptor) );
 
     SCENE2D_API Negato() throw();
     SCENE2D_API virtual ~Negato() throw();
@@ -48,9 +49,9 @@ private:
     void changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord );
 
     QRgb getQImageVal(const size_t index, signed short* buffer,
-            const double wlMin, const double wlMax, const double window,
-            const double tfMin, const double tfMax,
-            ::fwData::TransferFunction::sptr tf);
+                      const double wlMin, const double wlMax, const double window,
+                      const double tfMin, const double tfMax,
+                      ::fwData::TransferFunction::sptr tf);
 
     QImage * m_qimg;
     QGraphicsPixmapItem * m_pixmapItem;
@@ -75,5 +76,5 @@ private:
 } // namespace scene2D
 
 
-#endif // _SCENE2D_ADAPTOR_NEGATO_HPP_
+#endif // __SCENE2D_ADAPTOR_NEGATO_HPP__
 

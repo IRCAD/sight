@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,14 +31,19 @@ class TransformCallback : public ::vtkCommand
 {
 public:
 
-    static TransformCallback* New(::visuVTKAdaptor::Transform* adaptor) {
+    static TransformCallback* New(::visuVTKAdaptor::Transform* adaptor)
+    {
         TransformCallback *cb = new TransformCallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
 
-     TransformCallback() : m_adaptor(NULL) {}
-    ~TransformCallback() {}
+    TransformCallback() : m_adaptor(NULL)
+    {
+    }
+    ~TransformCallback()
+    {
+    }
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )
     {
@@ -49,7 +54,8 @@ public:
 };
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform, ::fwData::TransformationMatrix3D ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform,
+                         ::fwData::TransformationMatrix3D );
 
 namespace visuVTKAdaptor
 {
@@ -58,7 +64,7 @@ namespace visuVTKAdaptor
 
 Transform::Transform() throw()
 {
-    m_transform = 0;
+    m_transform        = 0;
     m_transformCommand = TransformCallback::New(this);
     //addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
@@ -67,7 +73,10 @@ Transform::Transform() throw()
 
 Transform::~Transform() throw()
 {
-    if( m_transformCommand ) m_transformCommand->Delete();
+    if( m_transformCommand )
+    {
+        m_transformCommand->Delete();
+    }
     m_transformCommand = 0;
 }
 
@@ -82,14 +91,14 @@ void Transform::configuring() throw(fwTools::Failed)
 
     if ( m_configuration->hasAttribute( "autoRender" ) )
     {
-        const std::string autoRender   = m_configuration->getAttributeValue("autoRender");
-        const bool autoRenderValue = (autoRender == "true");
+        const std::string autoRender = m_configuration->getAttributeValue("autoRender");
+        const bool autoRenderValue   = (autoRender == "true");
         this->setAutoRender(autoRenderValue);
     }
 
     if ( m_configuration->hasAttribute( "parent" ) )
     {
-        m_parentId   = m_configuration->getAttributeValue("parent");
+        m_parentId = m_configuration->getAttributeValue("parent");
 
         if(m_parentId.empty())
         {
@@ -138,9 +147,9 @@ void Transform::updateFromVtk()
 
     {
         ::fwData::mt::ObjectWriteLock lock(trf);
-        for(int lt=0; lt<4; lt++)
+        for(int lt = 0; lt<4; lt++)
         {
-            for(int ct=0; ct<4; ct++)
+            for(int ct = 0; ct<4; ct++)
             {
                 trf->setCoefficient(lt,ct, mat->GetElement(lt,ct));
             }
@@ -148,7 +157,7 @@ void Transform::updateFromVtk()
     }
 
     ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
+    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
     ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
 
     vtkTrf->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
@@ -166,9 +175,9 @@ void Transform::doUpdate() throw(fwTools::Failed)
 
     {
         ::fwData::mt::ObjectReadLock lock(trf);
-        for(int lt=0; lt<4; lt++)
+        for(int lt = 0; lt<4; lt++)
         {
-            for(int ct=0; ct<4; ct++)
+            for(int ct = 0; ct<4; ct++)
             {
                 mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
             }
@@ -240,7 +249,8 @@ void Transform::doStop() throw(fwTools::Failed)
 
 void Transform::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg = ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
+    ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg =
+        ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
     if (transfoMsg && transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED))
     {
 

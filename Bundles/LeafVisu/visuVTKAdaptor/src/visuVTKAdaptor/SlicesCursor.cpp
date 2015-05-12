@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,18 +32,18 @@
 
 #include "visuVTKAdaptor/SlicesCursor.hpp"
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
 
 
 SlicesCursor::SlicesCursor()  throw()
-: m_cursorPolyData( vtkPolyData::New() )
-, m_cursorMapper  ( vtkPolyDataMapper::New() )
-, m_cursorActor(    vtkActor::New() )
-, m_scale(0.5)
-, m_isSelected(false)
+    : m_cursorPolyData( vtkPolyData::New() )
+      , m_cursorMapper  ( vtkPolyDataMapper::New() )
+      , m_cursorActor(    vtkActor::New() )
+      , m_scale(0.5)
+      , m_isSelected(false)
 {
 
     //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ;
@@ -145,25 +145,25 @@ void SlicesCursor::doStop() throw(fwTools::Failed)
 
 void SlicesCursor::buildPolyData()
 {
-    int nbPoints = 8;
+    int nbPoints      = 8;
     vtkPoints* points = vtkPoints::New(VTK_DOUBLE);
     points->SetNumberOfPoints(nbPoints);
     int i;
     for (i = 0; i < nbPoints; i++)
     {
         //points->SetPoint(i, 300*i +0.0, 50*i*i + 0.0 , 0.0);
-        points->SetPoint(i, 0.0, 0.0 , 0.0);
+        points->SetPoint(i, 0.0, 0.0, 0.0);
     }
 
     vtkCellArray *cells = vtkCellArray::New();
     cells->Allocate(cells->EstimateSize(nbPoints,2));
 
     vtkIdType pts[2];
-    for ( int line=0; line<4; ++line)
+    for ( int line = 0; line<4; ++line)
     {
         pts[0] = line; pts[1] = line+4;
         //cells->InsertNextCell(2,pts);
-        vtkLine *lineCell= vtkLine::New();
+        vtkLine *lineCell = vtkLine::New();
         lineCell->GetPointIds()->SetId(0, line );
         lineCell->GetPointIds()->SetId(1, line+ 4 );
         cells->InsertNextCell(lineCell);
@@ -181,7 +181,7 @@ void SlicesCursor::buildPolyData()
 
 void SlicesCursor::barycenter( double ptA[3], double ptB[3], float scale, double result[3] )
 {
-    for (int i=0 ; i<3; ++i )
+    for (int i = 0; i<3; ++i )
     {
         result[i] = scale*ptA[i] + (1-scale)*ptB[i];
     }
@@ -189,17 +189,18 @@ void SlicesCursor::barycenter( double ptA[3], double ptB[3], float scale, double
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _ptP[3], double _scale, double _ptAprime[3], double _ptBprime[3] )
+void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _ptP[3], double _scale,
+                                       double _ptAprime[3], double _ptBprime[3] )
 {
     double ptPBprime[3];
     double norm2PBprime = 0.0;
-    double norm2BP = 0;
-    double norm2AP = 0;
+    double norm2BP      = 0;
+    double norm2AP      = 0;
 
     // Compute AB x scale / 2 = |A'P| x AB = |PB'| x AB
-    for (int i=0 ; i<3; ++i )
+    for (int i = 0; i<3; ++i )
     {
-        ptPBprime[i] = ( _ptB[i] - _ptA[i] ) * (1-_scale)/2.0;
+        ptPBprime[i]  = ( _ptB[i] - _ptA[i] ) * (1-_scale)/2.0;
         norm2PBprime += ptPBprime[i]*ptPBprime[i];
         norm2AP      += (_ptP[i] - _ptA[i])*(_ptP[i] - _ptA[i]);
         norm2BP      += (_ptP[i] - _ptB[i])*(_ptP[i] - _ptB[i]);
@@ -209,7 +210,7 @@ void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _p
     //          BPrime = P + pB' = P + |PB'| x AB
     if ( norm2PBprime > norm2BP )
     {
-        for (int i=0 ; i<3; ++i )
+        for (int i = 0; i<3; ++i )
         {
             _ptAprime[i] = _ptP[i] - ptPBprime[i];
             _ptBprime[i] = _ptB[i];
@@ -217,7 +218,7 @@ void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _p
     }
     else if ( norm2PBprime > norm2AP )
     {
-        for (int i=0 ; i<3; ++i )
+        for (int i = 0; i<3; ++i )
         {
             _ptAprime[i] = _ptA[i];
             _ptBprime[i] = _ptP[i] + ptPBprime[i];
@@ -225,7 +226,7 @@ void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _p
     }
     else
     {
-        for (int i=0 ; i<3; ++i )
+        for (int i = 0; i<3; ++i )
         {
             _ptAprime[i] = _ptP[i] - ptPBprime[i];
             _ptBprime[i] = _ptP[i] + ptPBprime[i];
@@ -237,19 +238,19 @@ void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _p
 
 void SlicesCursor::buildColorAttribute()
 {
-    unsigned char red[3] = {255, 0, 0};
+    unsigned char red[3]   = {255, 0, 0};
     unsigned char green[3] = {0, 255, 0};
-    unsigned char blue[3] = {0, 0, 255};
+    unsigned char blue[3]  = {0, 0, 255};
 
     typedef  unsigned char* RGBColor;
-    typedef std::map< std::string , std::pair< RGBColor , RGBColor> >  DicoType;
-    DicoType                                                         dict;
+    typedef std::map< std::string, std::pair< RGBColor, RGBColor> >  DicoType;
+    DicoType dict;
     dict["colorXAxis"] = std::make_pair(green,red);
     dict["colorYAxis"] = std::make_pair(red, blue);
     dict["colorZAxis"] = std::make_pair(blue, green );
 
 
-    for ( DicoType::iterator i= dict.begin() ; i!= dict.end(); ++ i )
+    for ( DicoType::iterator i = dict.begin(); i!= dict.end(); ++i )
     {
         vtkUnsignedCharArray* colors = vtkUnsignedCharArray::New();
         colors->SetNumberOfComponents(3);
@@ -270,9 +271,9 @@ void SlicesCursor::updateColors()
 {
     switch (m_orientation )
     {
-        case 0 : m_cursorMapper->SelectColorArray("colorXAxis"); break;
-        case 1 : m_cursorMapper->SelectColorArray("colorYAxis"); break;
-        case 2 : m_cursorMapper->SelectColorArray("colorZAxis"); break;
+        case 0: m_cursorMapper->SelectColorArray("colorXAxis"); break;
+        case 1: m_cursorMapper->SelectColorArray("colorYAxis"); break;
+        case 2: m_cursorMapper->SelectColorArray("colorZAxis"); break;
 
     }
     this->setVtkPipelineModified();
@@ -321,25 +322,26 @@ void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
         pos[0] = m_sagittalIndex->value();
 
         double sliceWorld[3];
-        for (int dim=0; dim<3; ++dim )
+        for (int dim = 0; dim<3; ++dim )
         {
             sliceWorld[dim] = pos[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
         }
 
         double cursorPoints[8][3]; // point AB,BC,CD,AD,ABM,BCM,CDM,ADM
 
-        for ( int p=0; p<2; ++p )
+        for ( int p = 0; p<2; ++p )
         {
-            for (int dim=0; dim<3; ++dim )
+            for (int dim = 0; dim<3; ++dim )
             {
                 //cursorPoints[p][dim] =   ((m_orientation==dim   ||   ( (dim != m_orientation) && p )  )?sliceWorld[dim] : 0 );
                 //cursorPoints[p+2][dim] = ((m_orientation==dim   ||   ( (dim != m_orientation) && p )  )?sliceWorld[dim] : (image->getSize()[dim]-1)*image->getSpacing()[dim] );
-                cursorPoints[p][dim] = sliceWorld[dim];
+                cursorPoints[p][dim]   = sliceWorld[dim];
                 cursorPoints[p+2][dim] = sliceWorld[dim];
                 if ( (dim + p + 1)%3 == m_orientation )
                 {
-                    cursorPoints[p][dim] = image->getOrigin().at(dim);
-                    cursorPoints[p+2][dim] =  (image->getSize()[dim]-1)*image->getSpacing()[dim] + image->getOrigin().at(dim);
+                    cursorPoints[p][dim]   = image->getOrigin().at(dim);
+                    cursorPoints[p+2][dim] = (image->getSize()[dim]-1)*image->getSpacing()[dim] + image->getOrigin().at(
+                        dim);
                 }
             }
         }
@@ -353,7 +355,7 @@ void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
 
         vtkPoints* points = m_cursorPolyData->GetPoints();
 
-        for ( int i=0; i < 8; ++i)
+        for ( int i = 0; i < 8; ++i)
         {
             points->SetPoint(i,cursorPoints[i]);
         }
@@ -367,7 +369,7 @@ void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
 
 void SlicesCursor::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    m_isSelected = false;
+    m_isSelected                = false;
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
@@ -397,11 +399,11 @@ void SlicesCursor::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::
         {
 
             ::fwData::Object::csptr cObjInfo = imageMsg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-            ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-            ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+            ::fwData::Object::sptr objInfo   = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+            ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
 
             int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
-            int toSliceType =   ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
+            int toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
 
             if( toSliceType == static_cast<int>(m_orientation) )
             {

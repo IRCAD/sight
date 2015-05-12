@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_UTILS_GENERICEXECUTABLEFACTORYREGISTRAR_HPP_
-#define _FWRUNTIME_UTILS_GENERICEXECUTABLEFACTORYREGISTRAR_HPP_
+#ifndef __FWRUNTIME_UTILS_GENERICEXECUTABLEFACTORYREGISTRAR_HPP__
+#define __FWRUNTIME_UTILS_GENERICEXECUTABLEFACTORYREGISTRAR_HPP__
 
 #include <string>
 
@@ -23,7 +23,7 @@ namespace utils
  * @brief   Defines a generic template executable factory registrar class.
  * @struct  GenericExecutableFactoryRegistrar
  * @date    2004-2009
- * 
+ *
  */
 template< typename E >
 struct GenericExecutableFactoryRegistrar : public ExecutableFactoryRegistrar
@@ -35,8 +35,9 @@ struct GenericExecutableFactoryRegistrar : public ExecutableFactoryRegistrar
      * @brief   Constructor
      */
     GenericExecutableFactoryRegistrar(const std::string& type)
-    : ExecutableFactoryRegistrar( ::boost::shared_ptr< FactoryType >( new FactoryType(type) ) )
-    {}
+        : ExecutableFactoryRegistrar( ::boost::shared_ptr< FactoryType >( new FactoryType(type) ) )
+    {
+    }
 
 };
 
@@ -46,4 +47,4 @@ struct GenericExecutableFactoryRegistrar : public ExecutableFactoryRegistrar
 } // namespace fwRuntime
 
 
-#endif //_FWRUNTIME_UTILS_GENERICEXECUTABLEFACTORYREGISTRAR_HPP_
+#endif //__FWRUNTIME_UTILS_GENERICEXECUTABLEFACTORYREGISTRAR_HPP__

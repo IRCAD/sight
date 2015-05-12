@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,46 +28,50 @@
 #include "visuVTKQt/VtkRenderWindowInteractorManager.hpp"
 
 class DropFilter : public QObject
- {
- public:
-     DropFilter(::fwServices::IService::sptr service): m_service(service){};
- protected:
-     bool eventFilter(QObject *obj, QEvent *event);
+{
+public:
+    DropFilter(::fwServices::IService::sptr service) : m_service(service)
+    {
+    }
+protected:
+    bool eventFilter(QObject *obj, QEvent *event);
 
- private:
-     ::fwServices::IService::wptr m_service;
- };
+private:
+    ::fwServices::IService::wptr m_service;
+};
 
- bool DropFilter::eventFilter(QObject *obj, QEvent *event)
- {
-     if( event->type() == QEvent::DragEnter)
-     {
-         QDragEnterEvent *dragEvent=dynamic_cast< QDragEnterEvent* >(event);
-         if (dragEvent->mimeData()->hasFormat("text/plain"))
-         {
-             QString data = dragEvent->mimeData()->text();
-             dragEvent->acceptProposedAction();
-         }
-     }
-     else if (event->type() == QEvent::Drop )
-     {
-         QDropEvent* dropEvent = dynamic_cast< QDropEvent* >(event);
-         QString data = dropEvent->mimeData()->text();
-         ::fwServices::ObjectMsg::sptr message = ::fwServices::ObjectMsg::New();
-         message->addEvent("DROPPED_UUID", ::fwData::String::New(data.toStdString()));
-         ::fwServices::IService::sptr service = m_service.lock();
-         ::fwServices::IEditionService::notify( service, service->getObject< ::fwData::Object >(), message );
-     } else {
-         // standard event processing
-         return QObject::eventFilter(obj, event);
-     }
-     return true;
- }
+bool DropFilter::eventFilter(QObject *obj, QEvent *event)
+{
+    if( event->type() == QEvent::DragEnter)
+    {
+        QDragEnterEvent *dragEvent = dynamic_cast< QDragEnterEvent* >(event);
+        if (dragEvent->mimeData()->hasFormat("text/plain"))
+        {
+            QString data = dragEvent->mimeData()->text();
+            dragEvent->acceptProposedAction();
+        }
+    }
+    else if (event->type() == QEvent::Drop )
+    {
+        QDropEvent* dropEvent = dynamic_cast< QDropEvent* >(event);
+        QString data          = dropEvent->mimeData()->text();
+        ::fwServices::ObjectMsg::sptr message = ::fwServices::ObjectMsg::New();
+        message->addEvent("DROPPED_UUID", ::fwData::String::New(data.toStdString()));
+        ::fwServices::IService::sptr service = m_service.lock();
+        ::fwServices::IEditionService::notify( service, service->getObject< ::fwData::Object >(), message );
+    }
+    else
+    {
+        // standard event processing
+        return QObject::eventFilter(obj, event);
+    }
+    return true;
+}
 
 //-----------------------------------------------------------------------------
 
- fwRenderVTKRegisterMacro( ::visuVTKQt::VtkRenderWindowInteractorManager,
-                           ::fwRenderVTK::IVtkRenderWindowInteractorManager::REGISTRY_KEY );
+fwRenderVTKRegisterMacro( ::visuVTKQt::VtkRenderWindowInteractorManager,
+                          ::fwRenderVTK::IVtkRenderWindowInteractorManager::REGISTRY_KEY );
 
 //-----------------------------------------------------------------------------
 
@@ -77,22 +81,24 @@ namespace visuVTKQt
 //-----------------------------------------------------------------------------
 
 VtkRenderWindowInteractorManager::VtkRenderWindowInteractorManager(
-        ::fwRenderVTK::IVtkRenderWindowInteractorManager::Key key )
-{}
+    ::fwRenderVTK::IVtkRenderWindowInteractorManager::Key key )
+{
+}
 
 //-----------------------------------------------------------------------------
 
 VtkRenderWindowInteractorManager::~VtkRenderWindowInteractorManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fwContainer::sptr _parent )
 {
-    SLM_ASSERT("Invalid parent.", _parent ) ;
-    m_parentContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
+    SLM_ASSERT("Invalid parent.", _parent );
+    m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
     QWidget* container = m_parentContainer->getQtContainer();
-    SLM_ASSERT("The container is not a qtContainer.", container ) ;
+    SLM_ASSERT("The container is not a qtContainer.", container );
 
     m_qVTKWidget = new QVTKWidget(container);
 

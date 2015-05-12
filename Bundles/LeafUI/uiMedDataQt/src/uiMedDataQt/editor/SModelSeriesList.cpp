@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -119,7 +119,7 @@ public:
 };
 
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMedData::editor::SModelSeriesList , ::fwMedData::ModelSeries) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SModelSeriesList, ::fwMedData::ModelSeries);
 
 SModelSeriesList::SModelSeriesList() throw() : m_tree(new QTreeWidget()), m_enableHideAll(true)
 {
@@ -162,12 +162,12 @@ void SModelSeriesList::starting() throw(::fwTools::Failed)
     container->setLayout( layout );
 
     QObject::connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-            this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
+                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 
     this->updating();
 
     QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem *, int )),
-            this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, int )));
+                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, int )));
 }
 
 //------------------------------------------------------------------------------
@@ -182,9 +182,9 @@ void SModelSeriesList::stopping() throw(::fwTools::Failed)
     }
 
     QObject::disconnect(m_tree, SIGNAL(itemChanged (QTreeWidgetItem * )),
-            this, SLOT(onOrganChoiceVisibility(QTreeWidgetItem *)));
+                        this, SLOT(onOrganChoiceVisibility(QTreeWidgetItem *)));
     QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
-            this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
+                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
 
     this->getContainer()->clean();
@@ -202,7 +202,7 @@ void SModelSeriesList::configuring() throw(fwTools::Failed)
     {
         const std::string& hide = m_configuration->findConfigurationElement("enable_hide_all")->getValue();
         SLM_ASSERT("'enable_hide_all' attribute value must be 'true' or 'false' (found '" + hide + "')",
-                hide == "true" || hide == "false");
+                   hide == "true" || hide == "false");
         m_enableHideAll = (hide == "true");
     }
 
@@ -212,7 +212,7 @@ void SModelSeriesList::configuring() throw(fwTools::Failed)
         ::fwRuntime::ConfigurationElement::Container::const_iterator cIt = columns->begin();
         m_tree->setColumnCount(columns->size());
         QStringList header;
-        for(; cIt != columns->end() ; cIt++)
+        for(; cIt != columns->end(); cIt++)
         {
             ValueView* view;
             ::fwRuntime::ConfigurationElement::AttributePair configView = (*cIt)->getSafeAttributeValue("view");
@@ -237,13 +237,13 @@ void SModelSeriesList::configuring() throw(fwTools::Failed)
 void SModelSeriesList::updating() throw(::fwTools::Failed)
 {
     QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem *, int )),
-            this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, int )));
+                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, int )));
 
     this->updateReconstructions();
     this->refreshVisibility();
 
     QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem *, int )),
-            this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, int )));
+                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, int )));
 
 }
 
@@ -257,7 +257,7 @@ void SModelSeriesList::swapping() throw(::fwTools::Failed)
 
 void SModelSeriesList::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
-    ::fwComEd::ModelSeriesMsg::csptr acquisitionMsg = ::fwComEd::ModelSeriesMsg::dynamicConstCast( msg ) ;
+    ::fwComEd::ModelSeriesMsg::csptr acquisitionMsg = ::fwComEd::ModelSeriesMsg::dynamicConstCast( msg );
     if ( acquisitionMsg )
     {
         if ( acquisitionMsg->hasEvent(::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS) )
@@ -325,7 +325,7 @@ void SModelSeriesList::fillTree()
     }
 
 
-    for(int i=0; i< m_tree->topLevelItemCount(); i++)
+    for(int i = 0; i< m_tree->topLevelItemCount(); i++)
     {
         m_tree->resizeColumnToContents(i);
     }
@@ -354,7 +354,7 @@ void SModelSeriesList::onCurrentItemChanged ( QTreeWidgetItem * current, int col
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem * item , int column)
+void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem * item, int column)
 {
     std::string id = item->data(0, Qt::UserRole).toString().toStdString();
     ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
@@ -367,7 +367,7 @@ void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem * item , int colu
         rec->setIsVisible(item->checkState(0));
 
         ::fwComEd::ReconstructionMsg::sptr msg = ::fwComEd::ReconstructionMsg::New();
-        msg->addEvent( ::fwComEd::ReconstructionMsg::VISIBILITY ) ;
+        msg->addEvent( ::fwComEd::ReconstructionMsg::VISIBILITY );
         ::fwServices::IEditionService::notify(this->getSptr(), rec, msg);
     }
 }
@@ -376,12 +376,12 @@ void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem * item , int colu
 
 void SModelSeriesList::onShowReconstructions(int state )
 {
-     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
-     modelSeries->setField("ShowReconstructions",  ::fwData::Boolean::New(state == Qt::Unchecked) );
+    ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+    modelSeries->setField("ShowReconstructions",  ::fwData::Boolean::New(state == Qt::Unchecked) );
 
-     ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
-     msg->addEvent( ::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS );
-     ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
+    ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
+    msg->addEvent( ::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS );
+    ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
 }
 
 //------------------------------------------------------------------------------
@@ -391,7 +391,7 @@ void SModelSeriesList::refreshVisibility()
     for( int i = 0; i < m_tree->topLevelItemCount(); ++i )
     {
         QTreeWidgetItem *item = m_tree->topLevelItem( i );
-        std::string id = item->data(0, Qt::UserRole).toString().toStdString();
+        std::string id        = item->data(0, Qt::UserRole).toString().toStdString();
         ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
         item->setCheckState(0, rec->getIsVisible() ? Qt::Checked : Qt::Unchecked );
     }

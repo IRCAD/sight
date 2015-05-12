@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -86,7 +86,7 @@ void SeriesDBMsgTest::seriesDBHelperTest()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
-    ::fwServices::IService::sptr srv = srvFactory->create("::fwComEd::ut::SSeriesDBTest");
+    ::fwServices::IService::sptr srv                        = srvFactory->create("::fwComEd::ut::SSeriesDBTest");
     ::fwServices::OSR::registerService(seriesDB, srv);
     ::fwComEd::ut::SSeriesDBTest::sptr testSrv = ::fwComEd::ut::SSeriesDBTest::dynamicCast(srv);
 
@@ -170,7 +170,7 @@ void SeriesDBMsgTest::seriesDBHelperTest()
 
     // Test merge SeriesDB
     {
-        ::fwMedData::ImageSeries::sptr series3 = ::fwMedData::ImageSeries::New();
+        ::fwMedData::ImageSeries::sptr series3    = ::fwMedData::ImageSeries::New();
         ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
         localSeriesDB->getContainer().push_back(series3);
 

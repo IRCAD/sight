@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _OPIMAGEFILTER_PLUGIN_HPP_
-#define _OPIMAGEFILTER_PLUGIN_HPP_
+#ifndef __OPIMAGEFILTER_PLUGIN_HPP__
+#define __OPIMAGEFILTER_PLUGIN_HPP__
 
 
 #include <fwRuntime/Plugin.hpp>
@@ -38,4 +38,4 @@ struct Plugin : public ::fwRuntime::Plugin
 } // namespace opImageFilter
 
 
-#endif //_OPIMAGEFILTER_PLUGIN_HPP_
+#endif //__OPIMAGEFILTER_PLUGIN_HPP__

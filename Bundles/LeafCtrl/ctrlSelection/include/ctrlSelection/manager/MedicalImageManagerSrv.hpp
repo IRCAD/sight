@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_MANAGER_MEDICALIMAGEMANAGERSRV_HPP_
-#define _CTRLSELECTION_MANAGER_MEDICALIMAGEMANAGERSRV_HPP_
+#ifndef __CTRLSELECTION_MANAGER_MEDICALIMAGEMANAGERSRV_HPP__
+#define __CTRLSELECTION_MANAGER_MEDICALIMAGEMANAGERSRV_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -25,15 +25,15 @@ namespace manager
 class CTRLSELECTION_CLASS_API MedicalImageManagerSrv : public ::ctrlSelection::IManagerSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MedicalImageManagerSrv)(::ctrlSelection::IManagerSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MedicalImageManagerSrv)(::ctrlSelection::IManagerSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API MedicalImageManagerSrv() throw() ;
+    CTRLSELECTION_API MedicalImageManagerSrv() throw();
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~MedicalImageManagerSrv() throw() ;
+    CTRLSELECTION_API virtual ~MedicalImageManagerSrv() throw();
 
     /// Implements starting method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
@@ -44,10 +44,10 @@ public :
     /**
      * @brief Configure the service.
      * @verbatim
-     <service uid="medicalImageManager" impl="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+       <service uid="medicalImageManager" impl="::ctrlSelection::manager::MedicalImageManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
          <update imageCompositeKey="image" />
-     </service>
-      @endverbatim
+       </service>
+       @endverbatim
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
@@ -62,7 +62,7 @@ public :
 
     CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
-private :
+private:
 
     /// Converts the images specified by key to medical image (with landmarks, transfer function fields).
     void convertImages( ::fwData::Composite::sptr _composite );
@@ -73,4 +73,4 @@ private :
 } // manager
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_MANAGER_MEDICALIMAGEMANAGERSRV_HPP_
+#endif // __CTRLSELECTION_MANAGER_MEDICALIMAGEMANAGERSRV_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,20 +31,22 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::SAddLabeledPoint , ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::SAddLabeledPoint, ::fwData::PointList );
 
 
 //------------------------------------------------------------------------------
 
 
 SAddLabeledPoint::SAddLabeledPoint( ) throw()
-         : m_count(1)
-{}
+    : m_count(1)
+{
+}
 
 //------------------------------------------------------------------------------
 
 SAddLabeledPoint::~SAddLabeledPoint() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -74,7 +76,7 @@ bool SAddLabeledPoint::defineLabel(std::string &name)
         m_count++;
         res = true;
     }
-    return res ;
+    return res;
 }
 
 
@@ -97,8 +99,8 @@ void SAddLabeledPoint::updating() throw(::fwTools::Failed)
 
         // append to point the label
         ::fwData::String::sptr label = ::fwData::String::New();
-        label->value() = value;
-        newPoint->setField( ::fwComEd::Dictionary::m_labelId , label );
+        label->value()               = value;
+        newPoint->setField( ::fwComEd::Dictionary::m_labelId, label );
 
         // notify
         ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
@@ -124,7 +126,8 @@ void SAddLabeledPoint::starting() throw (::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void SAddLabeledPoint::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

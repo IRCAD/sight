@@ -31,7 +31,8 @@ namespace fwData
 class FWDATA_CLASS_API StructureTraits : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object), (()), ::fwData::factory::New< StructureTraits >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (StructureTraits)(::fwData::Object), (()),
+                                            ::fwData::factory::New< StructureTraits >);
     fwCampMakeFriendDataMacro((fwData)(StructureTraits));
 
     /// Defines structure categories
@@ -73,27 +74,29 @@ public:
     /// Destructor. Does nothing.
     FWDATA_API virtual ~StructureTraits();
 
-    fwGettersSettersDocMacro(Type, type, std::string, the structure type);
+    fwGettersSettersDocMacro(Type, type, std::string, "the structure type");
 
-    fwGettersSettersDocMacro(Categories, categories, CategoryContainer, the structure type);
+    fwGettersSettersDocMacro(Categories, categories, CategoryContainer, "the structure type");
 
-    fwGettersSettersDocMacro(Class, class, StructureClass, the structure class);
+    fwGettersSettersDocMacro(Class, class, StructureClass, "the structure class");
 
-    fwGettersSettersDocMacro(NativeExp, nativeExp, ROIExpression, the native ROI expression);
+    fwGettersSettersDocMacro(NativeExp, nativeExp, ROIExpression, "the native ROI expression");
 
-    fwGettersSettersDocMacro(NativeGeometricExp, nativeGeometricExp, ROIExpression, the native geometric ROI expression);
+    fwGettersSettersDocMacro(NativeGeometricExp, nativeGeometricExp, ROIExpression,
+                             "the native geometric ROI expression");
 
-    fwGettersSettersDocMacro(AttachmentType, attachmentType, std::string, structure attachment type if class is LESION or FUNCTIONAL);
+    fwGettersSettersDocMacro(AttachmentType, attachmentType, std::string,
+                             "structure attachment type if class is LESION or FUNCTIONAL");
 
-    fwGettersSettersDocMacro(Color, color, ::fwData::Color::sptr, structure default color);
+    fwGettersSettersDocMacro(Color, color, ::fwData::Color::sptr, "structure default color");
 
     /// Get Organ dicom Designation.
 
-    fwGettersSettersDocMacro(AnatomicRegion, anatomicRegion, std::string, Dicom anatomic region);
+    fwGettersSettersDocMacro(AnatomicRegion, anatomicRegion, std::string, "Dicom anatomic region");
 
-    fwGettersSettersDocMacro(PropertyCategory, propertyCategory, std::string, Dicom property category);
+    fwGettersSettersDocMacro(PropertyCategory, propertyCategory, std::string, "Dicom property category");
 
-    fwGettersSettersDocMacro(PropertyType, propertyType, std::string, Dicom property type);
+    fwGettersSettersDocMacro(PropertyType, propertyType, std::string, "Dicom property type");
 
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);

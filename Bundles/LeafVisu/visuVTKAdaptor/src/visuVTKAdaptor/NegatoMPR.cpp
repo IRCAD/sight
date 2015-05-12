@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@
 #include "visuVTKAdaptor/NegatoMPR.hpp"
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -34,13 +34,13 @@ namespace visuVTKAdaptor
 //------------------------------------------------------------------------------
 
 NegatoMPR::NegatoMPR() throw() :
-        m_3dModeEnabled ( ::boost::logic::indeterminate ),
-        m_sliceMode(THREE_SLICES),
-        m_backupedSliceMode(THREE_SLICES)
+    m_3dModeEnabled ( ::boost::logic::indeterminate ),
+    m_sliceMode(THREE_SLICES),
+    m_backupedSliceMode(THREE_SLICES)
 {
     m_allowAlphaInTF = false;
     m_interpolation  = true;
-    m_actorOpacity = 1.0;
+    m_actorOpacity   = 1.0;
 
     //addNewHandledEvent("SLICE_MODE");
     //addNewHandledEvent("SCAN_SHOW");
@@ -199,11 +199,11 @@ void NegatoMPR::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::F
     else if (imageMsg && imageMsg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ))
     {
         ::fwData::Object::csptr cObjInfo = imageMsg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-        ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-        ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+        ::fwData::Object::sptr objInfo   = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+        ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
 
         int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
-        int toSliceType =   ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
+        int toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
 
         if( toSliceType == static_cast<int>(m_orientation) )
         {
@@ -229,7 +229,7 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
         std::string value(m_configuration->getAttributeValue("mode"));
         std::transform(value.begin(), value.end(), value.begin(), tolower);
         OSLM_ASSERT("Sorry, bad value "<<value<<" for attribute mode.",
-                value == "3d" || value == "2d");
+                    value == "3d" || value == "2d");
         this->set3dMode(value == "3d");
     }
     if (m_configuration->hasAttribute("slices"))
@@ -253,19 +253,19 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
     }
     if(m_configuration->hasAttribute("sliceIndex"))
     {
-         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
-         if(orientation == "axial" )
-         {
-             m_orientation = Z_AXIS;
-         }
-         else if(orientation == "frontal" )
-         {
-             m_orientation = Y_AXIS;
-         }
-         else if(orientation == "sagittal" )
-         {
-             m_orientation = X_AXIS;
-         }
+        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
+        if(orientation == "axial" )
+        {
+            m_orientation = Z_AXIS;
+        }
+        else if(orientation == "frontal" )
+        {
+            m_orientation = Y_AXIS;
+        }
+        else if(orientation == "sagittal" )
+        {
+            m_orientation = X_AXIS;
+        }
     }
     if(m_configuration->hasAttribute("transform") )
     {
@@ -292,7 +292,7 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void  NegatoMPR::setSliceMode(SliceMode sliceMode)
+void NegatoMPR::setSliceMode(SliceMode sliceMode)
 {
     if(m_sliceMode != sliceMode)
     {
@@ -333,7 +333,7 @@ void NegatoMPR::addAdaptor(std::string adaptor, int axis)
         service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, adaptor );
         SLM_ASSERT("service not instanced", service);
         ::fwComEd::helper::MedicalImageAdaptor::sptr adaptorSrv =
-                ::fwComEd::helper::MedicalImageAdaptor::dynamicCast(service);
+            ::fwComEd::helper::MedicalImageAdaptor::dynamicCast(service);
         SLM_ASSERT("adaptorSrv not instanced", adaptorSrv);
         adaptorSrv->setOrientation((Orientation) axis);
     }

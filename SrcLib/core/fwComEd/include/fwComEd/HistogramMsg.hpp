@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_FLOAT_MSG_HPP_
-#define _FWCOMED_FLOAT_MSG_HPP_
+#ifndef __FWCOMED_HISTOGRAMMSG_HPP__
+#define __FWCOMED_HISTOGRAMMSG_HPP__
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for histogram field.
  * @class   HistogramMsg
- * 
+ *
  * @date    2011.
  * @see     ::fwServices::ObjectMsg
  */
@@ -48,5 +48,5 @@ public:
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_HISTOGRAM_MSG_HPP_
+#endif //__FWCOMED_HISTOGRAMMSG_HPP__
 

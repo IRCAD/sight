@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,12 +18,14 @@ namespace fwGui
 {
 
 IMenuSrv::IMenuSrv() : m_hideActions (false)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 IMenuSrv::~IMenuSrv()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -83,7 +85,8 @@ void IMenuSrv::destroy()
 
 void IMenuSrv::actionServiceStopping(std::string actionSrvSID)
 {
-    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+                                                                               m_layoutManager->getMenuItems());
 
     if (m_hideActions)
     {
@@ -99,7 +102,8 @@ void IMenuSrv::actionServiceStopping(std::string actionSrvSID)
 
 void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
 {
-    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+                                                                               m_layoutManager->getMenuItems());
 
     if (m_hideActions)
     {
@@ -107,8 +111,8 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
     }
     else
     {
-        ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID ) ;
-        ::fwGui::IActionSrv::sptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
+        ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
+        ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
         m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
         m_layoutManager->menuItemSetChecked(menuItem, actionSrv->getIsActive());
     }
@@ -118,7 +122,8 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
 
 void IMenuSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 {
-    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+                                                                               m_layoutManager->getMenuItems());
 
     m_layoutManager->menuItemSetChecked(menuItem, isActive);
 
@@ -128,7 +133,8 @@ void IMenuSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 
 void IMenuSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable)
 {
-    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+                                                                               m_layoutManager->getMenuItems());
 
     m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
 
@@ -139,10 +145,10 @@ void IMenuSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isExecu
 void IMenuSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
-            layoutConfig->getName() == "layout");
+                layoutConfig->getName() == "layout");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
-                                                 ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY);
+        ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY);
     m_layoutManager = ::fwGui::layoutManager::IMenuLayoutManager::dynamicCast(guiObj);
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY,
                 m_layoutManager);

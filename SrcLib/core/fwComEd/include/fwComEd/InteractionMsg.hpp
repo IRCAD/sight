@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for interaction : store modification information
  * @class   InteractionMsg
- * 
+ *
  * @see     ::fwServices::ObjectMsg
  */
 class FWCOMED_CLASS_API InteractionMsg : public ::fwServices::ObjectMsg
@@ -37,27 +37,27 @@ public:
 
     //typedef enum
     //{
-        //KEY_UP    ,
-        //KEY_DOWN  ,
-        //MOUSE_UP  ,
-        //MOUSE_DOWN,
-        //MOUSE_MOVE
+    //KEY_UP    ,
+    //KEY_DOWN  ,
+    //MOUSE_UP  ,
+    //MOUSE_DOWN,
+    //MOUSE_MOVE
     //} EventType;
 
     //typedef enum
     //{
-        //LEFT           = (1 << 0),
-        //MIDDLE         = (1 << 1),
-        //RIGHT          = (1 << 2),
-        //WHEEL_FORWARD  = (1 << 3),
-        //WHEEL_BACKWARD = (1 << 4),
+    //LEFT           = (1 << 0),
+    //MIDDLE         = (1 << 1),
+    //RIGHT          = (1 << 2),
+    //WHEEL_FORWARD  = (1 << 3),
+    //WHEEL_BACKWARD = (1 << 4),
     //} MouseButtons;
 
     typedef enum
     {
-        NONE      = 0,
-        CTRL      = (1 << 0),
-        SHIFT     = (1 << 1),
+        NONE  = 0,
+        CTRL  = (1 << 0),
+        SHIFT = (1 << 1),
         //ALT     = (1 << 2),
         //SUPER     = (1 << 3),
         //APPLE_CMD = (1 << 4),
@@ -104,9 +104,15 @@ public:
     FWCOMED_API bool getModifiersStatus(Modifiers k) const;
 
     /// Get the control status.
-    bool getControlStatus() const {return getModifiersStatus(CTRL);}
+    bool getControlStatus() const
+    {
+        return getModifiersStatus(CTRL);
+    }
     /// Get the shift status.
-    bool getShiftStatus() const {return getModifiersStatus(SHIFT);}
+    bool getShiftStatus() const
+    {
+        return getModifiersStatus(SHIFT);
+    }
 
     /**
      * @brief Set the message event

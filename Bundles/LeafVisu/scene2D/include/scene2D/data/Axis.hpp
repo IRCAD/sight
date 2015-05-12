@@ -24,18 +24,18 @@ class SCENE2D_CLASS_API Axis : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Axis)(::fwData::Object), (()), ::fwData::factory::New< Axis >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Axis)(::fwData::Object), (()), ::fwData::factory::New< Axis >);
 
     typedef enum
-   {
-      LINEAR,
-      LOG
-   }  ScaleType;
+    {
+        LINEAR,
+        LOG
+    }  ScaleType;
 
-   /**
-    * @brief Constructor, set origin to 0, scale to 1 and type to LINEAR.
-    * @param key Private construction key
-    */
+    /**
+     * @brief Constructor, set origin to 0, scale to 1 and type to LINEAR.
+     * @param key Private construction key
+     */
     SCENE2D_API Axis( ::fwData::Object::Key key );
 
     /// Defines shallow copy

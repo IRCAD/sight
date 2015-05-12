@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,12 +26,14 @@ namespace fwGui
 //-----------------------------------------------------------------------------
 
 LineLayoutManager::LineLayoutManager(::fwGui::GuiBaseObject::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 LineLayoutManager::~LineLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -44,7 +46,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    QWidget *qtContainer = m_parentContainer->getQtContainer();
+    QWidget *qtContainer    = m_parentContainer->getQtContainer();
     Orientation orientation = this->getOrientation();
 
     if( orientation == VERTICAL )
@@ -73,7 +75,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
             {
                 QGroupBox *groupbox = new QGroupBox(qtContainer);
                 groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
-                panel = groupbox;
+                panel   = groupbox;
                 border += groupbox->style()->pixelMetric(QStyle::PM_LayoutTopMargin);
             }
             else

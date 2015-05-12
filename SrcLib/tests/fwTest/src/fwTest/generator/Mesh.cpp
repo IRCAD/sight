@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,10 +23,12 @@ namespace fwTest
 namespace generator
 {
 
-struct RandFloat{
+struct RandFloat {
     float operator()()
-    { return ((rand()%101-50.f))/500.f; };
-} ;
+    {
+        return ((rand()%101-50.f))/500.f;
+    }
+};
 
 //------------------------------------------------------------------------------
 
@@ -54,7 +56,7 @@ void Mesh::generateMesh( ::fwData::Mesh::sptr mesh )
 void Mesh::generateTriangleQuadMesh(::fwData::Mesh::sptr mesh)
 {
     size_t nbPointsByEdge = 10;
-    float edgeDim = 100.;
+    float edgeDim         = 100.;
     Mesh::PointsMapType points;
 
     mesh->clear();
@@ -67,7 +69,7 @@ void Mesh::generateTriangleQuadMesh(::fwData::Mesh::sptr mesh)
 void Mesh::generateTriangleMesh(::fwData::Mesh::sptr mesh)
 {
     size_t nbPointsByEdge = 10;
-    float edgeDim = 100.;
+    float edgeDim         = 100.;
     Mesh::PointsMapType points;
 
     mesh->clear();
@@ -79,7 +81,7 @@ void Mesh::generateTriangleMesh(::fwData::Mesh::sptr mesh)
 void Mesh::generateQuadMesh(::fwData::Mesh::sptr mesh)
 {
     size_t nbPointsByEdge = 10;
-    float edgeDim = 100.;
+    float edgeDim         = 100.;
     Mesh::PointsMapType points;
 
     mesh->clear();
@@ -97,9 +99,9 @@ void Mesh::addQuadMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t 
     float step = edgeDim / nbPointsByEdge;
 
     //Face Y = edgeDim
-    for(size_t x=0; x<nbPointsByEdge; x++)
+    for(size_t x = 0; x<nbPointsByEdge; x++)
     {
-        for(size_t z=0; z<nbPointsByEdge; z++)
+        for(size_t z = 0; z<nbPointsByEdge; z++)
         {
             pt1[0] = x*step;
             pt1[1] = edgeDim;
@@ -127,9 +129,9 @@ void Mesh::addQuadMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, size_t 
     }
 
     //Face X = edgeDim
-    for(size_t y=0; y<nbPointsByEdge; y++)
+    for(size_t y = 0; y<nbPointsByEdge; y++)
     {
-        for(size_t z=0; z<nbPointsByEdge; z++)
+        for(size_t z = 0; z<nbPointsByEdge; z++)
         {
             pt1[0] = edgeDim;
             pt1[1] = y*step;
@@ -169,9 +171,9 @@ void Mesh::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, siz
     float step = edgeDim / nbPointsByEdge;
 
     //Face Z = 0
-    for(size_t x=0; x<nbPointsByEdge; x++)
+    for(size_t x = 0; x<nbPointsByEdge; x++)
     {
-        for(size_t y=0; y<nbPointsByEdge; y++)
+        for(size_t y = 0; y<nbPointsByEdge; y++)
         {
             pt1[0] = x*step;
             pt1[1] = y*step;
@@ -200,9 +202,9 @@ void Mesh::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, siz
     }
 
     //Face X = 0
-    for(size_t y=0; y<nbPointsByEdge; y++)
+    for(size_t y = 0; y<nbPointsByEdge; y++)
     {
-        for(size_t z=0; z<nbPointsByEdge; z++)
+        for(size_t z = 0; z<nbPointsByEdge; z++)
         {
             pt1[0] = 0;
             pt1[1] = y*step;
@@ -234,8 +236,8 @@ void Mesh::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, siz
 //------------------------------------------------------------------------------
 
 ::fwData::Mesh::Id Mesh::addPoint(::fwData::Mesh::PointValueType* pt,
-                                           ::fwComEd::helper::Mesh::sptr meshHelper,
-                                           PointsMapType& points)
+                                  ::fwComEd::helper::Mesh::sptr meshHelper,
+                                  PointsMapType& points)
 {
     ::fwDataTools::Point myPoint(pt[0], pt[1], pt[2]);
 
@@ -245,7 +247,7 @@ void Mesh::addTriangleMesh(::fwData::Mesh::sptr mesh, PointsMapType& points, siz
         return it->second;
     }
     ::fwData::Mesh::Id idx = meshHelper->insertNextPoint(pt[0], pt[1], pt[2]);
-    points[myPoint] = idx;
+    points[myPoint]        = idx;
     return idx;
 }
 

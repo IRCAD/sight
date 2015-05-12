@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_DL_INAMEDECORATOR_HPP_
-#define _FWRUNTIME_DL_INAMEDECORATOR_HPP_
+#ifndef __FWRUNTIME_DL_INAMEDECORATOR_HPP__
+#define __FWRUNTIME_DL_INAMEDECORATOR_HPP__
 
 
 #include <string>
@@ -22,7 +22,7 @@ namespace dl
  * @brief   Defines the interface of library name decorators.
  * @struct  INameDecorator
  * @date    2004-2009
- * 
+ *
  */
 struct INameDecorator
 {
@@ -50,4 +50,4 @@ struct INameDecorator
 
 
 
-#endif /*_FWRUNTIME_DL_INAMEDECORATOR_HPP_*/
+#endif /*__FWRUNTIME_DL_INAMEDECORATOR_HPP__*/

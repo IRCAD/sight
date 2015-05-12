@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_LOCATIONDIALOG_HPP_
-#define _FWGUIQT_LOCATIONDIALOG_HPP_
+#ifndef __FWGUIQT_DIALOG_LOCATIONDIALOG_HPP__
+#define __FWGUIQT_DIALOG_LOCATIONDIALOG_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -20,7 +20,7 @@ class QString;
 /**
  * @brief       The namespace fwGuiQt contains classes which provide the implementation of the Gui using Qt library.
  * @namespace   fwGuiQt
- * 
+ *
  * @date        2009-2010.
  *
  */
@@ -31,7 +31,7 @@ namespace dialog
 /**
  * @brief   Defines the generic file/folder dialog for IHM.
  * @class   LocationDialog
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -68,6 +68,6 @@ protected:
 } // namespace dialog
 } // namespace fwGuiQt
 
-#endif /*_FWGUIQT_LOCATIONDIALOG_HPP_*/
+#endif /*__FWGUIQT_DIALOG_LOCATIONDIALOG_HPP__*/
 
 

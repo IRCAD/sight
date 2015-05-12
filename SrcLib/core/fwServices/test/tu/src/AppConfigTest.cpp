@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,9 +42,9 @@ void AppConfigTest::parametersConfigTest()
     const std::string desc("Descritpion");
     ::fwServices::registry::AppInfo::ParamatersType parameters;
 
-    parameters["TEST_IMAGE"] = "";
+    parameters["TEST_IMAGE"]   = "";
     parameters["UID_SERVICE2"] = "myTestService2";
-    parameters["GENERIC_UID"] = "";
+    parameters["GENERIC_UID"]  = "";
 
     ::fwRuntime::ConfigurationElement::csptr config = this->buildParametersConfig();
 
@@ -65,7 +65,7 @@ void AppConfigTest::parametersConfigTest()
     configEltAdaptedConst = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields);
 
     ::fwRuntime::ConfigurationElement::sptr configEltAdapted;
-    configEltAdapted =  ::fwRuntime::ConfigurationElement::constCast(configEltAdaptedConst);
+    configEltAdapted = ::fwRuntime::ConfigurationElement::constCast(configEltAdaptedConst);
 
     std::string uid = configEltAdapted->getAttributeValue("uid");
     CPPUNIT_ASSERT_EQUAL(std::string("objectUUID"), uid );
@@ -87,15 +87,15 @@ void AppConfigTest::concurentAccessToAppConfigTest()
     const unsigned int nbThreads = 20;
     std::vector< SPTR(::fwTest::helper::Thread) > threads;
 
-    for (int i=0 ; i<nbThreads ; ++i)
+    for (int i = 0; i<nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
-                new ::fwTest::helper::Thread(::boost::bind(&AppConfigTest::parametersConfigTest, this)));
+            new ::fwTest::helper::Thread(::boost::bind(&AppConfigTest::parametersConfigTest, this)));
         threads.push_back(thread);
     }
 
-    for (int i=0 ; i<nbThreads ; ++i)
+    for (int i = 0; i<nbThreads; ++i)
     {
         std::stringstream str;
         str << "thread " << i;
@@ -113,35 +113,35 @@ void AppConfigTest::concurentAccessToAppConfigTest()
 ::fwRuntime::ConfigurationElement::sptr AppConfigTest::buildParametersConfig()
 {
     // Configuration on fwTools::Object which uid is objectUUID
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object")) ;
-    cfg->setAttributeValue( "uid" , "${TEST_IMAGE}") ;
-    cfg->setAttributeValue( "type" , "::fwData::Image") ;
+    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
+    cfg->setAttributeValue( "uid", "${TEST_IMAGE}");
+    cfg->setAttributeValue( "type", "::fwData::Image");
 
     // Object's service A
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
-    serviceA->setAttributeValue( "uid" , "${GENERIC_UID}_myTestService1" ) ;
-    serviceA->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    serviceA->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    serviceA->setAttributeValue( "autoConnect" , "no" ) ;
+    serviceA->setAttributeValue( "uid", "${GENERIC_UID}_myTestService1" );
+    serviceA->setAttributeValue( "type", "::fwComEd::ut::TestService" );
+    serviceA->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationImage" );
+    serviceA->setAttributeValue( "autoConnect", "no" );
 
     // Object's service B
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
-    serviceB->setAttributeValue( "uid" , "${UID_SERVICE2}" ) ;
-    serviceB->setAttributeValue( "type" , "::fwComEd::ut::TestService" ) ;
-    serviceB->setAttributeValue( "impl" , "::fwComEd::ut::TestServiceImplementationImage" ) ;
-    serviceB->setAttributeValue( "autoConnect" , "no" ) ;
+    serviceB->setAttributeValue( "uid", "${UID_SERVICE2}" );
+    serviceB->setAttributeValue( "type", "::fwComEd::ut::TestService" );
+    serviceB->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationImage" );
+    serviceB->setAttributeValue( "autoConnect", "no" );
 
     // Start method from object's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
-    startA->setAttributeValue( "uid" , "myTestService1" ) ;
+    startA->setAttributeValue( "uid", "myTestService1" );
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
-    startB->setAttributeValue( "uid" , "myTestService2" ) ;
+    startB->setAttributeValue( "uid", "myTestService2" );
 
     // Update method from object's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
-    updateA->setAttributeValue( "uid" , "myTestService1" ) ;
+    updateA->setAttributeValue( "uid", "myTestService1" );
 
-    return cfg ;
+    return cfg;
 }
 
 //------------------------------------------------------------------------------

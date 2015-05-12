@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,20 +21,22 @@ namespace helper
 
 SeriesDB::SeriesDB( ::fwMedData::SeriesDB::wptr seriesDB )
     :   m_seriesDBMsg ( ::fwComEd::SeriesDBMsg::New() ),
-        m_seriesDB ( seriesDB )
-{}
+      m_seriesDB ( seriesDB )
+{
+}
 
 //-----------------------------------------------------------------------------
 
 SeriesDB::~SeriesDB()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SeriesDB::add( ::fwMedData::Series::sptr newSeries )
 {
     ::fwMedData::SeriesDB::sptr seriesDB = m_seriesDB.lock();
-    OSLM_ASSERT( "The object " << newSeries->getID() << " must not exist in SeriesDB." ,
+    OSLM_ASSERT( "The object " << newSeries->getID() << " must not exist in SeriesDB.",
                  std::find(seriesDB->begin(), seriesDB->end(), newSeries) == seriesDB->end());
 
     // Modify SeriesDB
@@ -51,7 +53,7 @@ void SeriesDB::remove( ::fwMedData::Series::sptr oldSeries )
 {
     ::fwMedData::SeriesDB::sptr seriesDB = m_seriesDB.lock();
     ::fwMedData::SeriesDB::iterator iter = std::find(seriesDB->begin(), seriesDB->end(), oldSeries);
-    OSLM_ASSERT( "The object " << oldSeries->getID() << " must exist in SeriesDB." ,
+    OSLM_ASSERT( "The object " << oldSeries->getID() << " must exist in SeriesDB.",
                  iter != seriesDB->end());
 
     // Modify SeriesDB
@@ -91,7 +93,7 @@ void SeriesDB::notify( ::fwServices::IService::sptr serviceSource, bool notifySo
 {
     if ( !m_seriesDBMsg->getEventIds().empty() )
     {
-        ::fwServices::IEditionService::notify( serviceSource, m_seriesDB.lock(), m_seriesDBMsg , notifySource );
+        ::fwServices::IEditionService::notify( serviceSource, m_seriesDB.lock(), m_seriesDBMsg, notifySource );
     }
     SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
                 m_seriesDBMsg->getEventIds().empty());

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,11 +29,11 @@ namespace gui
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::gui::action::SSignal , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSignal, ::fwData::Object );
 
 
-static const ::fwCom::Signals::SignalKeyType TRIGERRED_SIG = "triggered";
-static const ::fwCom::Signals::SignalKeyType CANCELLED_SIG = "cancelled";
+static const ::fwCom::Signals::SignalKeyType TRIGERRED_SIG   = "triggered";
+static const ::fwCom::Signals::SignalKeyType CANCELLED_SIG   = "cancelled";
 static const ::fwCom::Signals::SignalKeyType SET_OBJECT_SLOT = "setObjects";
 
 //-----------------------------------------------------------------------------
@@ -62,7 +62,8 @@ SSignal::SSignal() throw() :
 //-----------------------------------------------------------------------------
 
 SSignal::~SSignal() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -94,7 +95,7 @@ void SSignal::info(std::ostream &_sstream )
 
 void SSignal::updating() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
     if (this->confirmAction())
     {
         fwServicesNotifyMacro(this->getLightID(), m_sigTriggered, (m_objects));
@@ -117,7 +118,7 @@ void SSignal::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools:
 
 void SSignal::configuring() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
     this->initialize();
 }
 

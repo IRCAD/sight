@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,7 @@
  * @file fwGui/layoutManager/IMenuBarLayoutManager.cpp
  * @brief This file defines the implementation of the base class for managing a menubar.
  *
- * 
+ *
  * @date 2009-2010
  */
 
@@ -26,12 +26,14 @@ const IMenuBarLayoutManager::RegistryKeyType IMenuBarLayoutManager::REGISTRY_KEY
 //-----------------------------------------------------------------------------
 
 IMenuBarLayoutManager::IMenuBarLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 IMenuBarLayoutManager::~IMenuBarLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -48,7 +50,7 @@ void IMenuBarLayoutManager::initialize( ConfigurationType configuration)
         SLM_ASSERT("missing <name> attribute", menu->hasAttribute("name"));
         if( menu->hasAttribute("name") )
         {
-            std::string name = menu->getExistingAttributeValue("name") ;
+            std::string name = menu->getExistingAttributeValue("name");
             m_menuNames.push_back(name);
         }
     }

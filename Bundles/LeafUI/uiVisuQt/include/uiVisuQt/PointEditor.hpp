@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIVISUQT_POINT_EDITOR_HPP
-#define _UIVISUQT_POINT_EDITOR_HPP
+#ifndef __UIVISUQT_POINTEDITOR_HPP__
+#define __UIVISUQT_POINTEDITOR_HPP__
 
 
 #include <QObject>
@@ -26,22 +26,23 @@ namespace uiVisu
 /**
  * @brief   PointEditor service allows to display point information.
  * @class   PointEditor
- * 
+ *
  * @date    2010.
  */
-class UIVISUQT_CLASS_API PointEditor : public QObject, public ::gui::editor::IEditor
+class UIVISUQT_CLASS_API PointEditor : public QObject,
+                                       public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PointEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PointEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIVISUQT_API PointEditor() throw() ;
+    UIVISUQT_API PointEditor() throw();
 
     /// Destructor. Do nothing.
-    UIVISUQT_API virtual ~PointEditor() throw() ;
+    UIVISUQT_API virtual ~PointEditor() throw();
 
 protected:
 
@@ -64,7 +65,7 @@ protected:
     void configuring() throw( ::fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 
 private:
@@ -77,4 +78,4 @@ private:
 
 } // uiData
 
-#endif /*_UIVISUQT_POINT_EDITOR_HPP_*/
+#endif /*__UIVISUQT_POINTEDITOR_HPP___*/

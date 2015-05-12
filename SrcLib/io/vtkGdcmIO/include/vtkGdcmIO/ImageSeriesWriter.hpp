@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,16 +26,17 @@ namespace vtkGdcmIO
  * @class ImageSeriesWriter
  */
 class ImageSeriesWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ImageSeries >,
-                             public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
-                             public ::fwTools::ProgressAdviser
+                          public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
+                          public ::fwTools::ProgressAdviser
 {
 
-public :
+public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((ImageSeriesWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ImageSeries>),
+    fwCoreClassDefinitionsWithFactoryMacro((ImageSeriesWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::
+                                                                                                         ImageSeries>),
                                            (()),
                                            ::fwDataIO::writer::factory::New< ImageSeriesWriter >
-                                          );
+                                           );
     fwCoreAllowSharedFromThis();
 
     /// Constructor. Does nothing

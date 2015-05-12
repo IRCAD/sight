@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -152,7 +152,7 @@ void BufferObjectTest::allocateTest()
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
     const size_t SMALLER_REALLOC_SIZE = 1024;
-    const size_t BIGGER_REALLOC_SIZE = SIZE+1024;
+    const size_t BIGGER_REALLOC_SIZE  = SIZE+1024;
 
     bo->reallocate(SMALLER_REALLOC_SIZE);
     CPPUNIT_ASSERT( !bo->isEmpty() );
@@ -201,9 +201,9 @@ void stressLock(::fwMemory::BufferObject::sptr bo, int nbLocks, int nbTest)
 {
     std::vector< ::fwMemory::BufferObject::Lock > m_locks;
 
-    for( int t = 0; t < nbTest ; ++t)
+    for( int t = 0; t < nbTest; ++t)
     {
-        for( int i = 0; i < nbLocks ; ++i)
+        for( int i = 0; i < nbLocks; ++i)
         {
             m_locks.push_back(bo->lock());
         }

@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-#ifndef __FWCOM_EXCEPTION_NOWORKDER_HPP__
-#define __FWCOM_EXCEPTION_NOWORKDER_HPP__
+#ifndef __FWCOM_EXCEPTION_NOWORKER_HPP__
+#define __FWCOM_EXCEPTION_NOWORKER_HPP__
 
 #include <fwCore/Exception.hpp>
 
@@ -18,7 +18,7 @@ namespace exception
 /// No worker exception.
 struct NoWorker : ::fwCore::Exception
 {
-    FWCOM_API NoWorker ( const std::string &err ) ;
+    FWCOM_API NoWorker ( const std::string &err );
 };
 
 } // namespace exception
@@ -26,7 +26,7 @@ struct NoWorker : ::fwCore::Exception
 
 } // namespace fwCom
 
-#endif /* __FWCOM_EXCEPTION_NOWORKDER_HPP__ */
+#endif /* __FWCOM_EXCEPTION_NOWORKER_HPP__ */
 
 
 

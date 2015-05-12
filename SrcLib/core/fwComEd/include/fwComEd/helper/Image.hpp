@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_IMAGE_HPP_
-#define _FWCOMED_IMAGE_HPP_
+#ifndef __FWCOMED_HELPER_IMAGE_HPP__
+#define __FWCOMED_HELPER_IMAGE_HPP__
 
 #include <fwData/Image.hpp>
 
@@ -23,13 +23,13 @@ namespace helper
  * @brief   Defines an helper to modify an ::fwData::Image by adding few medical fields
  * and create in parallel the message to announce these modifications.
  * @struct  Image
- * 
+ *
  * @date    2007-20012.
  */
 class FWCOMED_CLASS_API Image
 {
 
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro((Image), (((::fwData::Image::sptr))), new Image );
 
     typedef ::fwData::Image::SizeType SizeType;
@@ -58,7 +58,8 @@ public :
      * If the image has not transfer functions, the pool is
      * created and a grey level transfer function is added.
      */
-    FWCOMED_API bool createTransferFunctionPool(::fwServices::IService::sptr serviceSource = ::fwServices::IService::sptr() );
+    FWCOMED_API bool createTransferFunctionPool(
+        ::fwServices::IService::sptr serviceSource = ::fwServices::IService::sptr() );
 
     /**
      * @brief Create slice index if indexes are not present, NOT GENERATE MESSAGE.
@@ -82,7 +83,7 @@ public :
 
     FWCOMED_API void* getPixelBuffer( IndexType index );
 
-    FWCOMED_API void setPixelBuffer( IndexType index , Image::BufferType * pixBuf);
+    FWCOMED_API void setPixelBuffer( IndexType index, Image::BufferType * pixBuf);
 
     FWCOMED_API const std::string getPixelAsString(SizeType::value_type x,
                                                    SizeType::value_type y,
@@ -92,7 +93,7 @@ public :
     /// Returns a copy of current lock on image
     FWCOMED_API ::fwMemory::BufferObject::Lock getLock() const;
 
-private :
+private:
 
     ::fwComEd::ImageMsg::sptr m_imageMsg;
 
@@ -105,5 +106,5 @@ private :
 } // fwComEd
 
 
-#endif // _FWCOMED_IMAGE_HPP_
+#endif // __FWCOMED_HELPER_IMAGE_HPP__
 

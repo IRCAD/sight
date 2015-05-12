@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOVTK_IMAGEWRITERSERVICE_HPP_
-#define _IOVTK_IMAGEWRITERSERVICE_HPP_
+#ifndef __IOVTK_IMAGEWRITERSERVICE_HPP__
+#define __IOVTK_IMAGEWRITERSERVICE_HPP__
 
 #include <string>
 #include <boost/filesystem/path.hpp>
@@ -17,7 +17,7 @@
 
 namespace fwData
 {
-    class Image;
+class Image;
 }
 
 
@@ -36,10 +36,12 @@ namespace ioVTK
 class IOVTK_CLASS_API ImageWriterService : public ::io::IWriter
 {
 
-public :
-    ~ImageWriterService() throw() {}
+public:
+    ~ImageWriterService() throw()
+    {
+    }
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageWriterService)( ::io::IWriter) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageWriterService)( ::io::IWriter) );
 
     /**
      * @brief Configure the image path.
@@ -50,14 +52,14 @@ public :
     IOVTK_API virtual void configureWithIHM();
 
     /**
-    * @brief Save a VTK image.
-    * @param[in] imgFile ::boost::filesystem::path.
-    * @param[out] image ::boost::shared_ptr< ::fwData::Image >.
-    * @return bool.
-    *
-    * This method is used to save an image using the file path.
-    * Returns \b true if the image saving is a success and \b false if it fails
-    */
+     * @brief Save a VTK image.
+     * @param[in] imgFile ::boost::filesystem::path.
+     * @param[out] image ::boost::shared_ptr< ::fwData::Image >.
+     * @return bool.
+     *
+     * This method is used to save an image using the file path.
+     * Returns \b true if the image saving is a success and \b false if it fails
+     */
     IOVTK_API static bool saveImage( const ::boost::filesystem::path& imgFile, const SPTR(::fwData::Image)& image );
 
 
@@ -66,10 +68,10 @@ protected:
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 
     /**
-    * @brief Starting method.
-    *
-    * This method is used to initialize the service.
-    */
+     * @brief Starting method.
+     *
+     * This method is used to initialize the service.
+     */
     IOVTK_API virtual void starting() throw(::fwTools::Failed);
 
     /**
@@ -94,7 +96,9 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg)_msg ) throw(::fwTools::Failed)
+    {
+    }
 
     /**
      * @brief Info method.
@@ -102,22 +106,22 @@ protected:
      * This method is used to give
      * informations about the service.
      */
-    IOVTK_API void info(std::ostream &_sstream ) ;
+    IOVTK_API void info(std::ostream &_sstream );
 
-private :
+private:
     /**
-    * @brief the m_bServiceIsConfigured value is \b true
-    * if the image path is known.
-    */
+     * @brief the m_bServiceIsConfigured value is \b true
+     * if the image path is known.
+     */
     bool m_bServiceIsConfigured;
 
     /**
-    * @brief Image path.
-    */
+     * @brief Image path.
+     */
     ::boost::filesystem::path m_fsImgPath;
 
 };
 
 } // namespace ioVTK
 
-#endif //_IOVTK_IMAGEWRITERSERVICE_HPP_
+#endif //__IOVTK_IMAGEWRITERSERVICE_HPP__

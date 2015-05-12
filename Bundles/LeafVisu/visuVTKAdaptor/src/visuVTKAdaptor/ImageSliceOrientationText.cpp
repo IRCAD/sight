@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSliceOrientationText,
-                         ::fwData::Object ) ;
+                         ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
@@ -36,7 +36,7 @@ public:
 
     void configure(TextActorPtr& actor, TextMapperPtr& mapper)
     {
-        actor = TextActorPtr::New();
+        actor  = TextActorPtr::New();
         mapper = TextMapperPtr::New();
 
         mapper->GetTextProperty()->SetFontFamilyToCourier(); // Fixed-width font
@@ -96,12 +96,12 @@ public:
             ::boost::algorithm::split( locations, str, ::boost::algorithm::is_any_of(",") );
             SLM_ASSERT("Six location should be given, got : " << locations.size() << ":" << str, locations.size());
 
-            m_rightStr     = (locations.size()>0) ? locations[0] : "" ;
-            m_leftStr      = (locations.size()>1) ? locations[1] : "" ;
-            m_anteriorStr  = (locations.size()>2) ? locations[2] : "" ;
-            m_porteriorStr = (locations.size()>3) ? locations[3] : "" ;
-            m_superiorStr  = (locations.size()>4) ? locations[4] : "" ;
-            m_inferiorStr  = (locations.size()>5) ? locations[5] : "" ;
+            m_rightStr     = (locations.size()>0) ? locations[0] : "";
+            m_leftStr      = (locations.size()>1) ? locations[1] : "";
+            m_anteriorStr  = (locations.size()>2) ? locations[2] : "";
+            m_porteriorStr = (locations.size()>3) ? locations[3] : "";
+            m_superiorStr  = (locations.size()>4) ? locations[4] : "";
+            m_inferiorStr  = (locations.size()>5) ? locations[5] : "";
         }
 
     }
@@ -110,30 +110,30 @@ public:
     {
         switch (orientation)
         {
-        case ::fwComEd::helper::MedicalImageAdaptor::X_AXIS: // Sagittal
-            m_rightMapper ->SetInput(m_anteriorStr.c_str());
-            m_leftMapper  ->SetInput(m_porteriorStr.c_str());
-            m_topMapper   ->SetInput(m_superiorStr.c_str());
-            m_bottomMapper->SetInput(m_inferiorStr.c_str());
-            break;
-        case ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS: // Frontal
-            m_rightMapper ->SetInput(m_leftStr.c_str());
-            m_leftMapper  ->SetInput(m_rightStr.c_str());
-            m_topMapper   ->SetInput(m_superiorStr.c_str());
-            m_bottomMapper->SetInput(m_inferiorStr.c_str());
-            break;
-        case ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS: // Axial
-            m_rightMapper ->SetInput(m_leftStr.c_str());
-            m_leftMapper  ->SetInput(m_rightStr.c_str());
-            m_topMapper   ->SetInput(m_anteriorStr.c_str());
-            m_bottomMapper->SetInput(m_porteriorStr.c_str());
-            break;
-        default:
-            m_rightMapper ->SetInput("");
-            m_leftMapper  ->SetInput("");
-            m_topMapper   ->SetInput("");
-            m_bottomMapper->SetInput("");
-            SLM_ASSERT("bad orientation : " << orientation, 0);
+            case ::fwComEd::helper::MedicalImageAdaptor::X_AXIS: // Sagittal
+                m_rightMapper->SetInput(m_anteriorStr.c_str());
+                m_leftMapper->SetInput(m_porteriorStr.c_str());
+                m_topMapper->SetInput(m_superiorStr.c_str());
+                m_bottomMapper->SetInput(m_inferiorStr.c_str());
+                break;
+            case ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS: // Frontal
+                m_rightMapper->SetInput(m_leftStr.c_str());
+                m_leftMapper->SetInput(m_rightStr.c_str());
+                m_topMapper->SetInput(m_superiorStr.c_str());
+                m_bottomMapper->SetInput(m_inferiorStr.c_str());
+                break;
+            case ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS: // Axial
+                m_rightMapper->SetInput(m_leftStr.c_str());
+                m_leftMapper->SetInput(m_rightStr.c_str());
+                m_topMapper->SetInput(m_anteriorStr.c_str());
+                m_bottomMapper->SetInput(m_porteriorStr.c_str());
+                break;
+            default:
+                m_rightMapper->SetInput("");
+                m_leftMapper->SetInput("");
+                m_topMapper->SetInput("");
+                m_bottomMapper->SetInput("");
+                SLM_ASSERT("bad orientation : " << orientation, 0);
         }
     }
 
@@ -232,8 +232,8 @@ void ImageSliceOrientationText::doReceive(::fwServices::ObjectMsg::csptr msg) th
     if ( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ))
     {
         ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-        ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-        ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+        ::fwData::Object::sptr objInfo   = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+        ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
 
         int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
         int toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
@@ -248,8 +248,8 @@ void ImageSliceOrientationText::doReceive(::fwServices::ObjectMsg::csptr msg) th
         }
     }
     else if (msg->hasEvent(::fwComEd::ImageMsg::BUFFER)
-              || msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE)
-              ||msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
+             || msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE)
+             ||msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
     {
         this->doStop();
         this->doStart();

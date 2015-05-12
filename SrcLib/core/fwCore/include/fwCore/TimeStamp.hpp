@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWCORE_TIMESTAMP_HPP
-#define __FWCORE_TIMESTAMP_HPP
+#ifndef __FWCORE_TIMESTAMP_HPP__
+#define __FWCORE_TIMESTAMP_HPP__
 
 #include "fwCore/base.hpp"
 #include "fwCore/HiResClock.hpp"
@@ -21,7 +21,7 @@ class FWCORE_CLASS_API TimeStamp : public BaseObject
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (TimeStamp)(BaseObject), (()), new TimeStamp) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TimeStamp)(BaseObject), (()), new TimeStamp);
 
     /**
      * @brief Type used in logical typestamp.
@@ -38,7 +38,7 @@ public:
     {
         this->m_modifiedTime = 0;
         this->m_lifePeriod   = 0;
-    };
+    }
 
     /**  @} */
 
@@ -55,7 +55,7 @@ public:
     FWCORE_API TimeStampType getTimeStamp() const
     {
         return this->m_modifiedTime;
-    };
+    }
 
 
 
@@ -67,7 +67,7 @@ public:
     FWCORE_API bool operator>(const TimeStamp& ts) const
     {
         return ( this->m_modifiedTime > ts.m_modifiedTime );
-    };
+    }
 
     /**
      * @brief Lesser than operator for TimeStamp.
@@ -77,7 +77,7 @@ public:
     FWCORE_API bool operator<(const TimeStamp& ts) const
     {
         return ( this->m_modifiedTime < ts.m_modifiedTime );
-    };
+    }
 
     /**
      * @brief Cast operator for TimeStamp.
@@ -85,7 +85,7 @@ public:
     FWCORE_API operator TimeStampType() const
     {
         return this->m_modifiedTime;
-    };
+    }
 
 
     /**
@@ -96,7 +96,7 @@ public:
     FWCORE_API void setLifePeriod(TimeStampType period)
     {
         m_lifePeriod = period;
-    };
+    }
 
     /**
      * @brief Getter for the life period
@@ -106,7 +106,7 @@ public:
     FWCORE_API TimeStampType getLifePeriod() const
     {
         return m_lifePeriod;
-    };
+    }
 
 
     /**
@@ -137,4 +137,4 @@ private:
 
 } //namespace fwCore
 
-#endif // __FWCORE_TIMESTAMP_HPP
+#endif // __FWCORE_TIMESTAMP_HPP__

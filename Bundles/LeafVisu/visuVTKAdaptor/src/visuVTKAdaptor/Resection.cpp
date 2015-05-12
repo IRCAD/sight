@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@
 #include "visuVTKAdaptor/Resection.hpp"
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Resection, ::fwData::Resection ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Resection, ::fwData::Resection );
 
 namespace visuVTKAdaptor
 {
@@ -25,8 +25,8 @@ namespace visuVTKAdaptor
 
 Resection::Resection() throw()
 {
-    m_clippingPlanes = "";
-    m_sharpEdgeAngle = 50;
+    m_clippingPlanes  = "";
+    m_sharpEdgeAngle  = 50;
     m_autoResetCamera = true;
     //addNewHandledEvent( ::fwComEd::ResectionMsg::VISIBILITY );
     //addNewHandledEvent( ::fwComEd::ResectionMsg::MODIFIED );
@@ -102,8 +102,8 @@ void Resection::doUpdate() throw(fwTools::Failed)
         for (iterRes = vReconst.begin(); iterRes != vReconst.end(); ++iterRes)
         {
             ::fwRenderVTK::IVtkAdaptorService::sptr service =
-                    ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-            ( *iterRes, "::visuVTKAdaptor::Reconstruction" );
+                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+                    ( *iterRes, "::visuVTKAdaptor::Reconstruction" );
             SLM_ASSERT("service not instanced", service);
 
             service->setTransformId( this->getTransformId() );
@@ -111,7 +111,8 @@ void Resection::doUpdate() throw(fwTools::Failed)
             service->setPickerId( this->getPickerId() );
             service->setRenderService(this->getRenderService());
             service->setAutoRender( this->getAutoRender() );
-            ::visuVTKAdaptor::Reconstruction::sptr reconstAdaptor = ::visuVTKAdaptor::Reconstruction::dynamicCast(service);
+            ::visuVTKAdaptor::Reconstruction::sptr reconstAdaptor = ::visuVTKAdaptor::Reconstruction::dynamicCast(
+                service);
             if(!resectionIsValid)
             {
                 reconstAdaptor->setClippingPlanes( m_clippingPlanes );
@@ -144,7 +145,7 @@ void Resection::doStop() throw(fwTools::Failed)
 
 void Resection::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    ::fwComEd::ResectionMsg::csptr pResectionMsg = ::fwComEd::ResectionMsg::dynamicConstCast( msg ) ;
+    ::fwComEd::ResectionMsg::csptr pResectionMsg = ::fwComEd::ResectionMsg::dynamicConstCast( msg );
     if ( pResectionMsg)
     {
         if ( pResectionMsg->hasEvent(::fwComEd::ResectionMsg::VISIBILITY) )

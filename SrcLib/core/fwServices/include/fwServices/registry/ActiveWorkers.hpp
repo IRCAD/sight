@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,18 +21,18 @@ namespace registry
 /**
  * @class ActiveWorkers
  * @brief This class to register active worker in the system, creates a default worker
- * 
+ *
  * @date 2012.
  */
 class FWSERVICES_CLASS_API ActiveWorkers : public ::fwCore::BaseObject
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro(
-            (ActiveWorkers)(::fwCore::BaseObject),
-            (()),
-            ::boost::make_shared< ActiveWorkers >);
+        (ActiveWorkers)(::fwCore::BaseObject),
+        (()),
+        ::boost::make_shared< ActiveWorkers >);
 
     typedef std::string WorkerKeyType;
 
@@ -74,7 +74,7 @@ public :
     /// Returns an instance of ActiveWorkers.
     FWSERVICES_API static ActiveWorkers::sptr getDefault();
 
-protected :
+protected:
 
     /// Association key <=> worker
     WorkerMapType m_workers;

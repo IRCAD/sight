@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_METAIMAGEREADER_HPP_
-#define _VTKIO_METAIMAGEREADER_HPP_
+#ifndef __FWVTKIO_METAIMAGEREADER_HPP__
+#define __FWVTKIO_METAIMAGEREADER_HPP__
 
 #include <boost/filesystem/path.hpp>
 
@@ -22,22 +22,23 @@ namespace fwVtkIO
 /**
  * @brief   Read a MetaImage.
  * @class   MetaImageReader
- * 
+ *
  * @date    2011.
  *
  * Read a MetaImage using the VTK lib
  */
 class MetaImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
-                             public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
-                             public ::fwTools::ProgressAdviser
+                        public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
+                        public ::fwTools::ProgressAdviser
 {
 
-public :
+public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((MetaImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
-                                           (()),
-                                           ::fwDataIO::reader::factory::New< MetaImageReader >
-                                          );
+    fwCoreClassDefinitionsWithFactoryMacro(
+        (MetaImageReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >),
+        (()),
+        ::fwDataIO::reader::factory::New< MetaImageReader >
+        );
 
     fwCoreAllowSharedFromThis();
 
@@ -51,9 +52,9 @@ public :
     FWVTKIO_API void read();
 
     /// @return ".mhd"
-    FWVTKIO_API  std::string extension();
+    FWVTKIO_API std::string extension();
 };
 
 } // namespace fwVtkIO
 
-#endif // _VTKIO_METAIMAGEREADER_HPP_
+#endif // __FWVTKIO_METAIMAGEREADER_HPP__

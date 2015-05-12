@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,13 +38,14 @@ WriteDirArchive::WriteDirArchive( const ::boost::filesystem::path &archive ) :
 //-----------------------------------------------------------------------------
 
 WriteDirArchive::~WriteDirArchive()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 SPTR(std::ostream) WriteDirArchive::createFile(const ::boost::filesystem::path &path)
 {
-    const ::boost::filesystem::path file = m_archive / path;
+    const ::boost::filesystem::path file       = m_archive / path;
     const ::boost::filesystem::path parentFile = file.parent_path();
     if(!::boost::filesystem::exists(parentFile))
     {
@@ -61,7 +62,7 @@ SPTR(std::ostream) WriteDirArchive::createFile(const ::boost::filesystem::path &
 void WriteDirArchive::putFile(const ::boost::filesystem::path &sourceFile, const ::boost::filesystem::path &path)
 {
     const ::boost::filesystem::path fileDest = m_archive / path;
-    if (! ::boost::filesystem::exists(fileDest))
+    if (!::boost::filesystem::exists(fileDest))
     {
         const ::boost::filesystem::path parentFile = fileDest.parent_path();
         if(!::boost::filesystem::exists(parentFile))
@@ -75,10 +76,10 @@ void WriteDirArchive::putFile(const ::boost::filesystem::path &sourceFile, const
             // Use std stream instead of boost:::filesystem::copy_file
             // because fwZip is build using std=c++11 and using copy_file also requires boost built
             // with std=c++11 (for now in c++0x).
-            std::string strSource =  sourceFile.string();
-            std::string strDest = fileDest.string();
-            std::ifstream  src(strSource.c_str(), std::ios::binary);
-            std::ofstream  dst(strDest.c_str(),   std::ios::binary);
+            std::string strSource = sourceFile.string();
+            std::string strDest   = fileDest.string();
+            std::ifstream src(strSource.c_str(), std::ios::binary);
+            std::ofstream dst(strDest.c_str(),   std::ios::binary);
 
             dst << src.rdbuf();
 

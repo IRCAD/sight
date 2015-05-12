@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,17 +22,20 @@ namespace updater
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv,
+                         ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
 DataInfoFromMsgUpdaterSrv::DataInfoFromMsgUpdaterSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 DataInfoFromMsgUpdaterSrv::~DataInfoFromMsgUpdaterSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -43,10 +46,10 @@ void DataInfoFromMsgUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg )
             it != m_managedEvents.end();
             ++it )
     {
-        std::string event         = it->get<0>();
-        std::string uuid          = it->get<1>();
-        std::string compositeKey  = it->get<2>();
-        ctrlSelection::IUpdaterSrv::ActionType action        = it->get<3>();
+        std::string event                             = it->get<0>();
+        std::string uuid                              = it->get<1>();
+        std::string compositeKey                      = it->get<2>();
+        ctrlSelection::IUpdaterSrv::ActionType action = it->get<3>();
 
         //  test if message correspond to a defined event
         if( _msg->hasEvent( event ) )
@@ -57,13 +60,14 @@ void DataInfoFromMsgUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg )
             // Test if we manage this event from this object message uid
             if( obj->getID() == uuid || uuid == "*")
             {
-                ::fwData::Object::sptr dataInfo = ::boost::const_pointer_cast< ::fwData::Object >(_msg->getDataInfo(  event ));
-                SLM_ASSERT("no dataInfo set!!!" ,  dataInfo
-                        ||  action== ctrlSelection::IUpdaterSrv::REMOVE
-                        ||  action== ctrlSelection::IUpdaterSrv::REMOVE_IF_PRESENT
-                );
+                ::fwData::Object::sptr dataInfo =
+                    ::boost::const_pointer_cast< ::fwData::Object >(_msg->getDataInfo(  event ));
+                SLM_ASSERT("no dataInfo set!!!",  dataInfo
+                           ||  action== ctrlSelection::IUpdaterSrv::REMOVE
+                           ||  action== ctrlSelection::IUpdaterSrv::REMOVE_IF_PRESENT
+                           );
                 // Udpate the composite object referenced by the composite key
-                this->updateComposite(composite, dataInfo , compositeKey , action );
+                this->updateComposite(composite, dataInfo, compositeKey, action );
             }
         }
     }
@@ -79,7 +83,8 @@ void DataInfoFromMsgUpdaterSrv::starting()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void DataInfoFromMsgUpdaterSrv::stopping()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -92,17 +97,20 @@ void DataInfoFromMsgUpdaterSrv::configuring()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void DataInfoFromMsgUpdaterSrv::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void DataInfoFromMsgUpdaterSrv::updating() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void DataInfoFromMsgUpdaterSrv::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

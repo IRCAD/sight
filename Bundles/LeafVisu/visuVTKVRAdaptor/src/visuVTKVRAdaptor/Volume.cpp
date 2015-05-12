@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,14 +36,14 @@ VTK_MODULE_INIT(vtkRenderingVolumeOpenGL);
 #include "visuVTKVRAdaptor/Volume.hpp"
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKVRAdaptor::Volume, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKVRAdaptor::Volume, ::fwData::Image );
 
 namespace visuVTKVRAdaptor
 {
 
-class vtkBoxRepresentationHack: public vtkBoxRepresentation
+class vtkBoxRepresentationHack : public vtkBoxRepresentation
 {
-    // Hack to disable box rotation, since SetRotationEnable is ineffective...
+// Hack to disable box rotation, since SetRotationEnable is ineffective...
 public:
 
     static vtkBoxRepresentationHack *New();
@@ -65,14 +65,17 @@ vtkStandardNewMacro(vtkBoxRepresentationHack);
 class AbortCallback : public vtkCommand
 {
 
-public :
+public:
     //--------------------------------------------------------------------------
     static AbortCallback *New()
-    { return new AbortCallback(); }
+    {
+        return new AbortCallback();
+    }
 
     //--------------------------------------------------------------------------
     AbortCallback( )
-    { }
+    {
+    }
 
     //--------------------------------------------------------------------------
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
@@ -94,7 +97,7 @@ public :
 class CroppingCallback : public vtkCommand
 {
 
-public :
+public:
     //--------------------------------------------------------------------------
     static CroppingCallback *New(vtkAbstractMapper *mapper)
     {
@@ -106,7 +109,8 @@ public :
 
     //--------------------------------------------------------------------------
     CroppingCallback( ) : mapper(NULL)
-    { }
+    {
+    }
 
     //--------------------------------------------------------------------------
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
@@ -126,22 +130,22 @@ private:
 Volume::Volume() throw() :
     ::fwComEd::helper::MedicalImageAdaptor(),
     ::fwRenderVTK::IVtkAdaptorService(),
-     m_bClippingBoxIsActivate(false),
-     m_autoResetCamera(true),
-     m_croppingBoxDefaultState(true)
+    m_bClippingBoxIsActivate(false),
+    m_autoResetCamera(true),
+    m_croppingBoxDefaultState(true)
 
 {
     m_clippingPlanesId = "";
     m_clippingPlanes   = 0;
 
-    m_volume = vtkVolume::New();
+    m_volume         = vtkVolume::New();
     m_volumeProperty = vtkVolumeProperty::New();
-    m_volumeMapper = vtkSmartVolumeMapper::New();
+    m_volumeMapper   = vtkSmartVolumeMapper::New();
 
-    m_abortCommand    = AbortCallback::New();
+    m_abortCommand = AbortCallback::New();
 
     m_opacityTransferFunction = vtkPiecewiseFunction::New();
-    m_colorTransferFunction = vtkColorTransferFunction::New();
+    m_colorTransferFunction   = vtkColorTransferFunction::New();
 
     m_boxWidget = vtkBoxWidget2::New();
     m_boxWidget->KeyPressActivationOff();
@@ -267,7 +271,9 @@ void Volume::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Fail
             this->doUpdate();
         }
 
-        if (this->upadteTFObserver(msg, this->getSptr()) || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
+        if (this->upadteTFObserver(msg,
+                                   this->getSptr()) ||
+            msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
         {
             this->updateVolumeTransferFunction(image);
         }
@@ -279,7 +285,7 @@ void Volume::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Fail
 
         if ( msg->hasEvent( "SHOWHIDE_BOX_WIDGET" ) )
         {
-            m_bClippingBoxIsActivate = ! m_bClippingBoxIsActivate;
+            m_bClippingBoxIsActivate = !m_bClippingBoxIsActivate;
             this->activateBoxClipping( m_bClippingBoxIsActivate );
         }
 
@@ -362,7 +368,7 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
     m_colorTransferFunction->RemoveAllPoints();
     m_opacityTransferFunction->RemoveAllPoints();
 
-    ::fwData::TransferFunction::TFValueVectorType values = pTF->getScaledValues();
+    ::fwData::TransferFunction::TFValueVectorType values              = pTF->getScaledValues();
     ::fwData::TransferFunction::TFValueVectorType::iterator valueIter = values.begin();
     if(pTF->getInterpolationMode() == ::fwData::TransferFunction::NEAREST)
     {
@@ -373,7 +379,7 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
         {
             const ::fwData::TransferFunction::TFValueType &value = *valueIter;
             ::fwData::TransferFunction::TFValueType valuePrevious = *valueIter;
-            ::fwData::TransferFunction::TFValueType valueNext = *valueIter;
+            ::fwData::TransferFunction::TFValueType valueNext     = *valueIter;
             if(valueIter != values.begin())
             {
                 valuePrevious = *(valueIter - 1);
@@ -385,24 +391,25 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
 
             const ::fwData::TransferFunction::TFColor &color = tfPoint.second;
 
-            m_colorTransferFunction->AddRGBPoint(valuePrevious + (value - valuePrevious) / 2. , color.r, color.g, color.b );
+            m_colorTransferFunction->AddRGBPoint(valuePrevious + (value - valuePrevious) / 2., color.r, color.g,
+                                                 color.b );
             m_colorTransferFunction->AddRGBPoint(value + (valueNext - value) / 2., color.r, color.g, color.b );
 
-            m_opacityTransferFunction->AddPoint(valuePrevious + (value -valuePrevious) / 2. , color.a );
+            m_opacityTransferFunction->AddPoint(valuePrevious + (value -valuePrevious) / 2., color.a );
             m_opacityTransferFunction->AddPoint(value + (valueNext - value) / 2., color.a );
 
             ++valueIter;
-         }
+        }
     }
     else
     {
         BOOST_FOREACH(const ::fwData::TransferFunction::TFDataType::value_type &tfPoint, pTF->getTFData())
         {
             const ::fwData::TransferFunction::TFValueType &value = *(valueIter++);
-            const ::fwData::TransferFunction::TFColor &color = tfPoint.second;
+            const ::fwData::TransferFunction::TFColor &color     = tfPoint.second;
 
-            m_colorTransferFunction->AddRGBPoint( value , color.r, color.g, color.b );
-            m_opacityTransferFunction->AddPoint(  value , color.a );
+            m_colorTransferFunction->AddRGBPoint( value, color.r, color.g, color.b );
+            m_opacityTransferFunction->AddPoint(  value, color.a );
         }
     }
 

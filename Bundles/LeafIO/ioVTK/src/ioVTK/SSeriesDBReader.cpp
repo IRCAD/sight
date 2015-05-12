@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioVTK::SSeriesDBReader , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioVTK::SSeriesDBReader, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -59,7 +59,7 @@ void SSeriesDBReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::MultiFiles::sptr  result;
+    ::fwData::location::MultiFiles::sptr result;
     result = ::fwData::location::MultiFiles::dynamicCast( dialogFile.show() );
     if (result)
     {
@@ -119,18 +119,18 @@ void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPat
         ss << "Warning during loading : " << e.what();
 
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                ss.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            ss.str(),
+            ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                "Warning during loading.",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            "Warning during loading.",
+            ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -141,7 +141,7 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >() ;
+        ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
         SLM_ASSERT("SeriesDB not instanced", seriesDB);
 
         ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();

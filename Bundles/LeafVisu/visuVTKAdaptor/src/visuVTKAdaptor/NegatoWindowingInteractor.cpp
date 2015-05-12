@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,8 @@
 #include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
 #include <fwServices/IEditionService.hpp>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor,
+                         ::fwData::Image );
 
 
 #define START_WINDOWING_EVENT vtkCommand::RightButtonPressEvent
@@ -43,12 +44,14 @@ class NegatoWindowingCallback : public vtkCommand
 {
 public:
     static NegatoWindowingCallback *New()
-    { return new NegatoWindowingCallback(); }
+    {
+        return new NegatoWindowingCallback();
+    }
 
     NegatoWindowingCallback() : m_picker(NULL), m_x(0), m_y(0), m_mouseMoveObserved(false)
     {
-        m_windowStep = 1. ;
-        m_levelStep  = 1. ;
+        m_windowStep = 1.;
+        m_levelStep  = 1.;
         this->PassiveObserverOff();
     }
 
@@ -73,7 +76,7 @@ public:
                 display[1] = m_y;
                 display[2] = 0;
 
-                if ( m_picker->Pick( display , m_adaptor->getRenderer() ) )
+                if ( m_picker->Pick( display, m_adaptor->getRenderer() ) )
                 {
                     assert(!m_mouseMoveObserved);
                     m_adaptor->startWindowing();
@@ -104,8 +107,8 @@ public:
                 int x,y;
                 m_adaptor->getInteractor()->GetEventPosition(x,y);
 
-                double dx = m_windowStep * ( x - m_x ) ;
-                double dy = m_levelStep  * ( m_y - y ) ;
+                double dx = m_windowStep * ( x - m_x );
+                double dy = m_levelStep  * ( m_y - y );
 
                 m_adaptor->updateWindowing(dx, dy);
                 m_adaptor->update();
@@ -114,7 +117,7 @@ public:
         else if (m_adaptor->getInteractor()->GetShiftKey())
         {
             vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
-            char *keySym = rwi->GetKeySym();
+            char *keySym                   = rwi->GetKeySym();
             if(keySym != NULL)
             {
                 if (std::string(keySym) == "R")
@@ -135,7 +138,7 @@ public:
         m_picker = picker;
     }
 
-protected :
+protected:
     NegatoWindowingInteractor::sptr m_adaptor;
     vtkAbstractPropPicker *m_picker;
 
@@ -191,7 +194,7 @@ void NegatoWindowingInteractor::doStart() throw(fwTools::Failed)
 
     this->getInteractor()->AddObserver(START_WINDOWING_EVENT, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(STOP_WINDOWING_EVENT, m_vtkObserver, m_priority);
-    this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent  , m_vtkObserver, m_priority);
+    this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent, m_vtkObserver, m_priority);
 
     this->doUpdate();
 }
@@ -217,9 +220,9 @@ void NegatoWindowingInteractor::doSwap() throw(fwTools::Failed)
 
 void NegatoWindowingInteractor::doStop() throw(fwTools::Failed)
 {
-    this->getInteractor()->RemoveObservers(START_WINDOWING_EVENT  , m_vtkObserver);
+    this->getInteractor()->RemoveObservers(START_WINDOWING_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_WINDOWING_EVENT, m_vtkObserver);
-    this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent  , m_vtkObserver);
+    this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent, m_vtkObserver);
     m_vtkObserver->Delete();
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
@@ -248,14 +251,15 @@ void NegatoWindowingInteractor::startWindowing( )
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->doUpdate();
 
-    m_initialLevel = this->getLevel();
+    m_initialLevel  = this->getLevel();
     m_initialWindow = this->getWindow();
 }
 
 //------------------------------------------------------------------------------
 
 void NegatoWindowingInteractor::stopWindowing( )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

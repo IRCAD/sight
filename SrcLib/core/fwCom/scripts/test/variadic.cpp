@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2004-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 //  SLM_LOG
 #include <memory>
 #include <functional>
@@ -30,10 +36,10 @@
 
 template <typename F> struct convert_function_types;
 
-template <typename R, typename C, typename ...Args >
-struct convert_function_types< R (C::*) ( Args... )  >
+template <typename R, typename C, typename ... Args >
+struct convert_function_types< R (C::*)( Args ... )  >
 {
-    typedef R type( Args... ) ;
+    typedef R type ( Args ... );
 };
 
 template <typename F>
@@ -52,13 +58,13 @@ struct convert_function_types
 
 
 template < typename F, typename enable = void >
-struct function_types ;
+struct function_types;
 
 template < typename F>
 struct function_types <F, typename boost::enable_if<typename boost::is_function< F >::type >::type >
 {
     typedef  F FunctionType;
-    enum { arity = boost::function_types::function_arity< FunctionType >::value } ;
+    enum { arity = boost::function_types::function_arity< FunctionType >::value };
     typedef typename boost::function_types::result_type<FunctionType>::type result_type;
     template < int ARG_NUMBER, bool check = false >
     struct arg
@@ -79,7 +85,9 @@ struct Slot
     struct bad_call { };
     struct bad_run { };
 
-    virtual ~Slot(){};
+    virtual ~Slot()
+    {
+    }
 
     template< typename A1, typename A2, typename A3 > void run(A1 a1, A2 a2, A3 a3);
     template< typename A1, typename A2 > void run(A1 a1, A2 a2);
@@ -92,15 +100,15 @@ struct Slot
     template< typename R > R call();
 
 
-protected:
-    template < typename F >
-    std::string getTypeName()
-    {
-        std::string signature = std::string("type(") + typeid(F).name() + ")";
-        return signature;
-    }
+    protected:
+        template < typename F >
+        std::string getTypeName()
+        {
+            std::string signature = std::string("type(") + typeid(F).name() + ")";
+            return signature;
+        }
 
-    std::string m_signature;
+        std::string m_signature;
 
 };
 
@@ -113,9 +121,9 @@ struct slot_args : Slot
 
 
 template< typename R, typename ... A >
-struct slot_result : slot_args<A...>
+struct slot_result : slot_args<A ...>
 {
-    virtual R call(A...) = 0;
+    virtual R call(A ...) = 0;
 };
 
 
@@ -124,30 +132,37 @@ struct slot_result : slot_args<A...>
 template< typename F > struct SlotFunction;
 
 
-template<typename R, typename ...A >
-struct SlotFunction< boost::function< R ( A... ) > > : SlotFunction< R ( A... ) >
+template<typename R, typename ... A >
+struct SlotFunction< boost::function< R ( A ... ) > > : SlotFunction< R ( A ... ) >
 {
-    typedef R FunctorType ( A... ) ;
+    typedef R FunctorType ( A ... );
 
     template< typename FUNCTOR > SlotFunction( FUNCTOR f ) : m_func(f)
-    { }
+    {
+    }
 
 
-    virtual void run(A...a) {        m_func(a...); };
-    virtual R   call(A...a) { return m_func(a...); };
-protected:
-    boost::function< FunctorType > m_func;
+    virtual void run(A ... a)
+    {
+        m_func(a ...);
+    }
+    virtual R   call(A ... a)
+    {
+        return m_func(a ...);
+    }
+    protected:
+        boost::function< FunctorType > m_func;
 };
 
 
 
-template<typename R, typename ...A >
-struct SlotFunction< R ( A... ) > : slot_result< R, A... >
+template<typename R, typename ... A >
+struct SlotFunction< R ( A ... ) > : slot_result< R, A ... >
 {
     SlotFunction()
     {
         // this-> needed by gcc 4.2
-        this->Slot::m_signature = Slot::getTypeName< R ( A... ) >();
+        this->Slot::m_signature = Slot::getTypeName< R ( A ... ) >();
     }
 
 };
@@ -168,7 +183,8 @@ template< typename A1, typename A2, typename A3 > void Slot::run(A1 a1, A2 a2, A
     }
     else
     {
-        std::cerr << "failed to run : " << m_signature << " with " << Slot::getTypeName< void(A1, A2, A3) >()  << std::endl;
+        std::cerr << "failed to run : " << m_signature << " with " <<
+            Slot::getTypeName< void(A1, A2, A3) >()  << std::endl;
         this->run(a1,a2);
     }
 }
@@ -228,7 +244,8 @@ template< typename R, typename A1, typename A2, typename A3 > R Slot::call(A1 a1
     }
     else
     {
-        std::cerr << "failed to call : " << m_signature << " with " << Slot::getTypeName< void(A1, A2, A3) >()  << std::endl;
+        std::cerr << "failed to call : " << m_signature << " with " <<
+            Slot::getTypeName< void(A1, A2, A3) >()  << std::endl;
         return this->call<R>(a1,a2);
     }
 }
@@ -242,7 +259,8 @@ template< typename R, typename A1, typename A2 > R Slot::call(A1 a1, A2 a2)
     }
     else
     {
-        std::cerr << "failed to call : " << m_signature << " with " << Slot::getTypeName< void(A1, A2) >()  << std::endl;
+        std::cerr << "failed to call : " << m_signature << " with " <<
+            Slot::getTypeName< void(A1, A2) >()  << std::endl;
         return this->call<R>(a1);
     }
 }
@@ -285,7 +303,9 @@ public:
     typedef boost::shared_ptr< Slot > SlotPtr;
     typedef std::map< SlotKeyType, SlotPtr > SlotMap;
 
-    Slots(){}
+    Slots()
+    {
+    }
     Slots( const SlotKeyType &key, SlotPtr slot )
     {
         (*this)(key, slot);
@@ -346,9 +366,9 @@ struct is_shared_ptr< boost::shared_ptr< T > >
 
 void WorkerThread( boost::asio::io_service & io_service )
 {
-std::cout << "Thread " << boost::this_thread::get_id() <<" Start\n";
-io_service.run();
-std::cout << "Thread " << boost::this_thread::get_id() <<" Finish\n";
+    std::cout << "Thread " << boost::this_thread::get_id() <<" Start\n";
+    io_service.run();
+    std::cout << "Thread " << boost::this_thread::get_id() <<" Finish\n";
 }
 
 
@@ -404,13 +424,20 @@ Worker::~Worker()
 template <typename R>
 struct TaskHandler
 {
-    TaskHandler(boost::packaged_task<R>& task) : m_Task(boost::move(task)) {}
-    TaskHandler(const TaskHandler& that) : m_Task(boost::move(that.m_Task)) {}
+    TaskHandler(boost::packaged_task<R>& task) : m_Task(boost::move(task))
+    {
+    }
+    TaskHandler(const TaskHandler& that) : m_Task(boost::move(that.m_Task))
+    {
+    }
 
-    void operator ()() { this->m_Task(); }
+    void operator ()()
+    {
+        this->m_Task();
+    }
 
-private:
-    mutable boost::packaged_task<R> m_Task;
+    private:
+        mutable boost::packaged_task<R> m_Task;
 };
 
 
@@ -426,55 +453,103 @@ inline boost::function< void() > moveTaskIntoFunction(boost::packaged_task<R>& t
 
 class Method
 {
-public :
+public:
 
 
-    Method(Slots::SlotPtr slot) : m_slot(slot) {}
+    Method(Slots::SlotPtr slot) : m_slot(slot)
+    {
+    }
 
-    Slots::SlotPtr operator=(Slots::SlotPtr slot) { m_slot = slot ; return slot;}
-    Method& operator=(const Method &other) { m_slot = other.m_slot ; return *this;}
+    Slots::SlotPtr operator=(Slots::SlotPtr slot)
+    {
+        m_slot = slot; return slot;
+    }
+    Method& operator=(const Method &other)
+    {
+        m_slot = other.m_slot; return *this;
+    }
     // template < typename SLOTPTR >
     // Method( const SLOTPTR &slot, typename boost::enable_if_c< is_shared_ptr< SLOTPTR >::value >::type*x=0 )  : m_slot(slot) {}
 
     template<typename F>
-    Method( F f, typename boost::enable_if_c< function_types< typename boost::remove_pointer<F>::type >::arity == 0 >::type*x=0  ) { setSlot(f); }
-    template<typename F>
-    Method( F f, typename boost::enable_if_c< function_types< typename boost::remove_pointer<F>::type >::arity == 1 >::type*x=0  ) { setSlot(f,_1); }
-    template<typename F>
-    Method( F f, typename boost::enable_if_c< function_types< typename boost::remove_pointer<F>::type >::arity == 2 >::type*x=0  ) { setSlot(f,_1,_2); }
-    template<typename F>
-    Method( F f, typename boost::enable_if_c< function_types< typename boost::remove_pointer<F>::type >::arity == 3 >::type*x=0  ) { setSlot(f,_1,_2,_3); }
-
-    template<typename F, typename O >
-    Method( F f, O *o, typename boost::enable_if_c< function_types< typename convert_function_types< F >::type >::arity == 0 >::type*x=0 ) { setSlot(f,o); }
-    template<typename F, typename O >
-    Method( F f, O *o, typename boost::enable_if_c< function_types< typename convert_function_types< F >::type >::arity == 1 >::type*x=0 ) { setSlot(f,o,_1); }
-    template<typename F, typename O >
-    Method( F f, O *o, typename boost::enable_if_c< function_types< typename convert_function_types< F >::type >::arity == 2 >::type*x=0 ) { setSlot(f,o,_1,_2); }
-    template<typename F, typename O >
-    Method( F f, O *o, typename boost::enable_if_c< function_types< typename convert_function_types< F >::type >::arity == 3 >::type*x=0 ) { setSlot(f,o,_1,_2,_3); }
-
-    template <typename ...A>
-    void operator()( A... args  )
+    Method( F f,
+            typename boost::enable_if_c< function_types< typename boost::remove_pointer<F>::type >::arity ==
+                                         0 >::type*x = 0  )
     {
-        m_slot->run( args... );
+        setSlot(f);
     }
-    template <typename ...A>
-    void run( A... args  )
+    template<typename F>
+    Method( F f,
+            typename boost::enable_if_c< function_types< typename boost::remove_pointer<F>::type >::arity ==
+                                         1 >::type*x = 0  )
     {
-        m_slot->run( args... );
+        setSlot(f,_1);
     }
-    template <typename R, typename ...A>
-    R call( A... args  )
+    template<typename F>
+    Method( F f,
+            typename boost::enable_if_c< function_types< typename boost::remove_pointer<F>::type >::arity ==
+                                         2 >::type*x = 0  )
     {
-        return m_slot->call<R>( args... );
+        setSlot(f,_1,_2);
+    }
+    template<typename F>
+    Method( F f,
+            typename boost::enable_if_c< function_types< typename boost::remove_pointer<F>::type >::arity ==
+                                         3 >::type*x = 0  )
+    {
+        setSlot(f,_1,_2,_3);
     }
 
-
-    template< typename ...A >
-    ::boost::shared_future< void > asyncRun( Worker &worker, A... args )
+    template<typename F, typename O >
+    Method( F f, O *o,
+            typename boost::enable_if_c< function_types< typename convert_function_types< F >::type >::arity ==
+                                         0 >::type*x = 0 )
     {
-        ::boost::packaged_task<void> task(  this->bindRun< A... >( args... ) );
+        setSlot(f,o);
+    }
+    template<typename F, typename O >
+    Method( F f, O *o,
+            typename boost::enable_if_c< function_types< typename convert_function_types< F >::type >::arity ==
+                                         1 >::type*x = 0 )
+    {
+        setSlot(f,o,_1);
+    }
+    template<typename F, typename O >
+    Method( F f, O *o,
+            typename boost::enable_if_c< function_types< typename convert_function_types< F >::type >::arity ==
+                                         2 >::type*x = 0 )
+    {
+        setSlot(f,o,_1,_2);
+    }
+    template<typename F, typename O >
+    Method( F f, O *o,
+            typename boost::enable_if_c< function_types< typename convert_function_types< F >::type >::arity ==
+                                         3 >::type*x = 0 )
+    {
+        setSlot(f,o,_1,_2,_3);
+    }
+
+    template <typename ... A>
+    void operator()( A ... args  )
+    {
+        m_slot->run( args ... );
+    }
+    template <typename ... A>
+    void run( A ... args  )
+    {
+        m_slot->run( args ... );
+    }
+    template <typename R, typename ... A>
+    R call( A ... args  )
+    {
+        return m_slot->call<R>( args ... );
+    }
+
+
+    template< typename ... A >
+    ::boost::shared_future< void > asyncRun( Worker &worker, A ... args )
+    {
+        ::boost::packaged_task<void> task(  this->bindRun< A ... >( args ... ) );
         ::boost::future< void > ufuture = task.get_future();
 
         boost::function< void () > f = moveTaskIntoFunction(task);
@@ -485,10 +560,10 @@ public :
     }
 
 
-    template< typename R, typename ...A >
-    ::boost::shared_future< R > asyncCall( Worker &worker, A... args )
+    template< typename R, typename ... A >
+    ::boost::shared_future< R > asyncCall( Worker &worker, A ... args )
     {
-        ::boost::packaged_task<R> task( this->bindCall< R, A... >( args... ) );
+        ::boost::packaged_task<R> task( this->bindCall< R, A ... >( args ... ) );
         ::boost::future< R > ufuture = task.get_future();
 
         boost::function< void() > f = moveTaskIntoFunction(task);
@@ -500,28 +575,31 @@ public :
 
 
 
-    Slots::SlotPtr slot(){return m_slot;};
-
-
-    template <typename ...A>
-    boost::function< void() > bindRun( A... args  )
+    Slots::SlotPtr slot()
     {
-        return boost::bind( ( void (Method::*)(A...) ) &Method::run< A... >, this, args... );
+        return m_slot;
     }
 
-    template <typename R, typename ...A>
-    boost::function< R() > bindCall( A... args  )
+
+    template <typename ... A>
+    boost::function< void() > bindRun( A ... args  )
     {
-        return boost::bind( ( R (Method::*)(A...) ) &Method::call<R, A...>, this, args... );
+        return boost::bind( ( void (Method::*)(A ...) ) &Method::run< A ... >, this, args ... );
+    }
+
+    template <typename R, typename ... A>
+    boost::function< R() > bindCall( A ... args  )
+    {
+        return boost::bind( ( R (Method::*)(A ...) ) &Method::call<R, A ...>, this, args ... );
     }
 
 
 protected:
-    template<typename F, typename ...Bindings> void setSlot(F f, Bindings ...bindings)
+    template<typename F, typename ... Bindings> void setSlot(F f, Bindings ... bindings)
     {
         typedef ::boost::function< typename convert_function_types< F >::type > FunctionType;
         FunctionType func;
-        func = boost::bind(f, bindings...) ;
+        func   = boost::bind(f, bindings ...);
         m_slot = boost::make_shared< SlotFunction< FunctionType > > ( func );
     }
 
@@ -536,14 +614,17 @@ protected:
 //-----------------------------------------------------------------------------
 
 
-struct Event{};
-struct KeyEvent:Event{};
+struct Event {};
+struct KeyEvent : Event {};
 
 struct has_slots
 {
-    Slots::SlotPtr slot( Slots::SlotKeyType key ){ return m_slots(key);};
-protected:
-    Slots m_slots;
+    Slots::SlotPtr slot( Slots::SlotKeyType key )
+    {
+        return m_slots(key);
+    }
+    protected:
+        Slots m_slots;
 };
 
 //-----------------------------------------------------------------------------
@@ -555,15 +636,21 @@ public:
     A()
     {
         has_slots::m_slots
-            ( "start"      , Method(&A::start      , this).slot() )
-            ( "update"     , Method(&A::update     , this).slot() )
-            ( "onEvent"    , Method(&A::onEvent    , this).slot() )
-            ( "onKeyPress" , Method(&A::onKeyPress , this).slot() )
-            ;
+            ( "start", Method(&A::start, this).slot() )
+            ( "update", Method(&A::update, this).slot() )
+            ( "onEvent", Method(&A::onEvent, this).slot() )
+            ( "onKeyPress", Method(&A::onKeyPress, this).slot() )
+        ;
 
     }
-    void start(){ std::cout<<"A::start"<<std::endl; }
-    void update(){ std::cout<<"A::update"<<std::endl; }
+    void start()
+    {
+        std::cout<<"A::start"<<std::endl;
+    }
+    void update()
+    {
+        std::cout<<"A::update"<<std::endl;
+    }
     void onEvent( Event *e )
     {
         std::cout<<"A::onEvent "<< e <<std::endl;
@@ -572,7 +659,10 @@ public:
     {
         std::cout<<"A::onKeyPress " << e <<std::endl;
     }
-    void print( std::string msg ){ std::cout << "A::print " <<msg<<std::endl; }
+    void print( std::string msg )
+    {
+        std::cout << "A::print " <<msg<<std::endl;
+    }
 
 };
 
@@ -585,12 +675,18 @@ public:
     {
         has_slots::m_slots
             ( "invoke", Method(&B::invoke, this).slot() )
-            ;
+        ;
 
     }
-    void invoke() { std::cout<<"B::invoke"<<std::endl; }
+    void invoke()
+    {
+        std::cout<<"B::invoke"<<std::endl;
+    }
 
-    void print( std::string str ) { std::cout<< str <<std::endl; }
+    void print( std::string str )
+    {
+        std::cout<< str <<std::endl;
+    }
 };
 
 //-----------------------------------------------------------------------------
@@ -705,9 +801,9 @@ int main(int argc, char* argv[])
         Slots slots;
         slots
             ( "sum_slot", Method( &sum ).slot() )
-            ;
+        ;
 
-        Method call ( slots("sum_slot") ) ;
+        Method call ( slots("sum_slot") );
 
         cout << "sum_slot: " << call.call<int>(44,66) << endl;
     }
@@ -727,17 +823,17 @@ int main(int argc, char* argv[])
     cout << "============ signals ============" << endl;
     // signal
     {
-          boost::signals2::signal<void (Event*)> sig;
+        boost::signals2::signal<void (Event*)> sig;
 
-          Method call1 ( &A::start, a );
-          Method call2 ( &B::invoke, &b );
-          Method call3 ( &A::onEvent, a );
+        Method call1 ( &A::start, a );
+        Method call2 ( &B::invoke, &b );
+        Method call3 ( &A::onEvent, a );
 
-          sig.connect(boost::ref(call1));
-          sig.connect(boost::ref(call2));
-          sig.connect(boost::ref(call3));
+        sig.connect(boost::ref(call1));
+        sig.connect(boost::ref(call2));
+        sig.connect(boost::ref(call3));
 
-          sig( &e );
+        sig( &e );
     }
 
 
@@ -812,37 +908,37 @@ int main(int argc, char* argv[])
 }
 
 /* Output :
-============ v2 ============
-A::start
-A::start
-B::invoke
-B::invoke
-B::invoke
-B::invoke
-A::onEvent 0x7fff5fbff500
-A::onEvent 0x7fff5fbff4f8
-sum: 12
-A::onKeyPress 0x7fff5fbff4f8
-============ v3 ============
-A::start
-A::start
-B::invoke
-B::invoke
-A::onEvent 0x7fff5fbff500
-A::onEvent 0x7fff5fbff4f8
-A::onKeyPress 0x7fff5fbff4f8
-A::onKeyPress 0x7fff5fbff4f8
-sum_slot: 110
-============ slot ============
-A::start
-A::onEvent 0x7fff5fbff500
-A::onKeyPress 0x7fff5fbff4f8
-B::invoke
-============ signals ============
-A::start
-B::invoke
-A::onEvent 0x7fff5fbff500
+   ============ v2 ============
+   A::start
+   A::start
+   B::invoke
+   B::invoke
+   B::invoke
+   B::invoke
+   A::onEvent 0x7fff5fbff500
+   A::onEvent 0x7fff5fbff4f8
+   sum: 12
+   A::onKeyPress 0x7fff5fbff4f8
+   ============ v3 ============
+   A::start
+   A::start
+   B::invoke
+   B::invoke
+   A::onEvent 0x7fff5fbff500
+   A::onEvent 0x7fff5fbff4f8
+   A::onKeyPress 0x7fff5fbff4f8
+   A::onKeyPress 0x7fff5fbff4f8
+   sum_slot: 110
+   ============ slot ============
+   A::start
+   A::onEvent 0x7fff5fbff500
+   A::onKeyPress 0x7fff5fbff4f8
+   B::invoke
+   ============ signals ============
+   A::start
+   B::invoke
+   A::onEvent 0x7fff5fbff500
 
-*/
+ */
 
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_LOCATION_MULTIFILES_HPP_
-#define _FWDATA_LOCATION_MULTIFILES_HPP_
+#ifndef __FWDATA_LOCATION_MULTIFILES_HPP__
+#define __FWDATA_LOCATION_MULTIFILES_HPP__
 
 #include <vector>
 #include <boost/filesystem/path.hpp>
@@ -24,7 +24,7 @@ namespace location
 class FWDATA_CLASS_API MultiFiles  : public ILocation
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (MultiFiles)(ILocation), (()),  ::fwData::factory::New< MultiFiles > ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (MultiFiles)(ILocation), (()),  ::fwData::factory::New< MultiFiles > );
 
     /// Constructor
     FWDATA_API MultiFiles( ::fwData::Object::Key key );
@@ -41,7 +41,7 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-protected :
+protected:
 
     /// file system paths
     VectPathType m_paths;
@@ -78,13 +78,13 @@ struct enableMultiFiles
         return getLocation<MultiFiles>(m_rw)->getPaths();
     }
 
-private :
-    /// Not implemented must use constructor with one parameter
-    enableMultiFiles();
-    RW *m_rw;
+    private:
+        /// Not implemented must use constructor with one parameter
+        enableMultiFiles();
+        RW *m_rw;
 };
 
 }
 }
 
-#endif /* _FWDATA_LOCATION_MULTIFILES_HPP_ */
+#endif /* __FWDATA_LOCATION_MULTIFILES_HPP__ */

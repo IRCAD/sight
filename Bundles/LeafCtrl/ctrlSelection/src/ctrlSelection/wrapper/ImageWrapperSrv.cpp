@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@
 #include <fwServices/IEditionService.hpp>
 
 
-fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::ImageWrapperSrv, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::ImageWrapperSrv, ::fwData::Image );
 
 namespace ctrlSelection
 {
@@ -38,7 +38,8 @@ ImageWrapperSrv::ImageWrapperSrv() throw()
 //-----------------------------------------------------------------------------
 
 ImageWrapperSrv::~ImageWrapperSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -50,8 +51,8 @@ void ImageWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw 
     {
         assert( message->getDataInfo( ::fwServices:: ObjectMsg::UPDATED_OBJECT   ) == this->getObject() );
         fwComEd::ImageMsg::sptr msg = fwComEd::ImageMsg::New();
-        msg->addEvent( fwComEd::ImageMsg::NEW_IMAGE , this->getObject() );
-        msg->addEvent( fwComEd::ImageMsg::BUFFER , this->getObject() );
+        msg->addEvent( fwComEd::ImageMsg::NEW_IMAGE, this->getObject() );
+        msg->addEvent( fwComEd::ImageMsg::BUFFER, this->getObject() );
         ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
     }
     //TODO other event

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,17 +35,19 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioITK::SImageSeriesWriter , ::fwMedData::ImageSeries ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioITK::SImageSeriesWriter, ::fwMedData::ImageSeries );
 
 //------------------------------------------------------------------------------
 
 SImageSeriesWriter::SImageSeriesWriter() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SImageSeriesWriter::~SImageSeriesWriter() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -67,8 +69,8 @@ void SImageSeriesWriter::configureWithIHM()
     dialogFile.addFilter("Inrimage","*.inr.gz");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();

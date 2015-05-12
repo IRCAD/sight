@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,8 +30,8 @@ IStructuralCreator::~IStructuralCreator()
 
 IStructuralCreator::IStructuralCreator( const IStructuralCreator &cpy )
 {
-    m_classname =  cpy.getObjectClassname();
-    m_version = cpy.getObjectVersion();
+    m_classname = cpy.getObjectClassname();
+    m_version   = cpy.getObjectVersion();
 }
 
 // ----------------------------------------------------------------------------

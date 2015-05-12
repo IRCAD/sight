@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_MSGFORWARDERSRV_HPP_
-#define _CTRLSELECTION_MSGFORWARDERSRV_HPP_
+#ifndef __CTRLSELECTION_WRAPPER_MSGFORWARDERSRV_HPP__
+#define __CTRLSELECTION_WRAPPER_MSGFORWARDERSRV_HPP__
 
 #include <boost/tuple/tuple.hpp>
 
@@ -23,20 +23,20 @@ namespace wrapper
 /**
  * @class  MsgForwarderSrv
  * @brief  This service forwards an event from specific object to object specified with key in in composite.
- * 
+ *
 
  * @date   2011.
  */
 class CTRLSELECTION_CLASS_API MsgForwarderSrv : public ::ctrlSelection::IWrapperSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MsgForwarderSrv)(::ctrlSelection::IWrapperSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MsgForwarderSrv)(::ctrlSelection::IWrapperSrv) );
 
-    CTRLSELECTION_API MsgForwarderSrv() throw() ;
+    CTRLSELECTION_API MsgForwarderSrv() throw();
 
-    CTRLSELECTION_API virtual ~MsgForwarderSrv() throw() ;
+    CTRLSELECTION_API virtual ~MsgForwarderSrv() throw();
 
 protected:
 
@@ -74,7 +74,7 @@ protected:
 
     CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
-private :
+private:
 
     typedef ::boost::tuple< std::string, std::string, std::string, std::string > EventType;
     typedef std::vector < EventType > ManagedEventsType;
@@ -86,4 +86,4 @@ private :
 } // wrapper
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_MSGFORWARDERSRV_HPP_
+#endif // __CTRLSELECTION_WRAPPER_MSGFORWARDERSRV_HPP__

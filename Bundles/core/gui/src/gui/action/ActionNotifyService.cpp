@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ActionNotifyService , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ActionNotifyService, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
@@ -38,7 +38,8 @@ ActionNotifyService::ActionNotifyService() throw()
 //-----------------------------------------------------------------------------
 
 ActionNotifyService::~ActionNotifyService() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -66,7 +67,8 @@ void ActionNotifyService::stopping() throw(::fwTools::Failed)
 //-----------------------------------------------------------------------------
 
 void ActionNotifyService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

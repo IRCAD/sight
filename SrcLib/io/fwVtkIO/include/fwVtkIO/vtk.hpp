@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_VTK_HPP_
-#define _VTKIO_VTK_HPP_
+#ifndef __FWVTKIO_VTK_HPP__
+#define __FWVTKIO_VTK_HPP__
 
 #include <boost/shared_ptr.hpp>
 
@@ -25,7 +25,7 @@ class vtkLookupTable;
 /**
  * @brief   Namespace fwVtkIO.
  * @namespace   fwVtkIO
- * 
+ *
  * @date    2009.
  *
  *  The namespace fwVtkIO contains reader, writer and helper using the VTK lib for output and input actions between data and the frameWork
@@ -66,7 +66,7 @@ FWVTKIO_API int getVtkScalarType(::fwData::Image::sptr image);
  * allocate a new vtkImage from a ::fwData::Image, vtkImage doesn't manage its buffer (the buffer is not copied)
  *
  */
-FWVTKIO_API void toVTKImage( ::fwData::Image::sptr _data ,  vtkImageData *dst);
+FWVTKIO_API void toVTKImage( ::fwData::Image::sptr _data,  vtkImageData *dst);
 
 /*!
  * @brief Convert a vtkImageData* to a ::fwData::Image::sptr.
@@ -103,8 +103,8 @@ FWVTKIO_API vtkMatrix4x4 *  toVTKMatrix(  ::fwData::TransformationMatrix3D::sptr
  *
  * Returns \b true if the conversion is a success and \b false if it fails
  */
-FWVTKIO_API  bool fromVTKMatrix( vtkMatrix4x4* _matrix,  ::fwData::TransformationMatrix3D::sptr _transfoMatrix);
+FWVTKIO_API bool fromVTKMatrix( vtkMatrix4x4* _matrix,  ::fwData::TransformationMatrix3D::sptr _transfoMatrix);
 
 }
 
-#endif // _VTKIO_VTK_HPP_
+#endif // __FWVTKIO_VTK_HPP__

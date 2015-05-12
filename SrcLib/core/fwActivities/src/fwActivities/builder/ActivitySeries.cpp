@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,19 +33,21 @@ fwActivitiesBuilderRegisterMacro(::fwActivities::builder::ActivitySeries, "::fwA
 //-----------------------------------------------------------------------------
 
 ActivitySeries::ActivitySeries(::fwActivities::IBuilder::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ActivitySeries::~ActivitySeries()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ::fwData::Composite::sptr vectorToComposite(::fwData::Vector::sptr vector,
                                             const ::fwActivities::registry::ActivityRequirement &req)
 {
-    namespace ActReg = ::fwActivities::registry;
+    namespace ActReg                    = ::fwActivities::registry;
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
 
     OSLM_ASSERT("Each possible items in requirement need to have a matching key", req.keys.size() >= req.maxOccurs );
@@ -71,8 +73,8 @@ ActivitySeries::~ActivitySeries()
 //-----------------------------------------------------------------------------
 
 ::fwMedData::ActivitySeries::sptr ActivitySeries::buildData(
-        const ::fwActivities::registry::ActivityInfo& activityInfo,
-        ::fwData::Vector::sptr currentSelection ) const
+    const ::fwActivities::registry::ActivityInfo& activityInfo,
+    ::fwData::Vector::sptr currentSelection ) const
 {
     ::fwMedData::ActivitySeries::sptr actSeries = ::fwMedData::ActivitySeries::New();
 

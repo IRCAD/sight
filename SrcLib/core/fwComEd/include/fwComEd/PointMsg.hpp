@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_POINTMSG_HPP_
-#define _FWCOMED_POINTMSG_HPP_
+#ifndef __FWCOMED_POINTMSG_HPP__
+#define __FWCOMED_POINTMSG_HPP__
 
 #include <fwServices/ObjectMsg.hpp>
 
@@ -18,7 +18,7 @@ namespace fwComEd
 /**
  * @brief   Object message specialized for Point : store modification information
  * @class   PointMsg
- * 
+ *
  * @date    2009
  * @see     ::fwServices::ObjectMsg
  */
@@ -28,7 +28,7 @@ class FWCOMED_CLASS_API PointMsg : public ::fwServices::ObjectMsg
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro((PointMsg)(::fwServices::ObjectMsg), ( () ),
-                                            ::fwServices::factory::message::New< PointMsg > );
+                                           ::fwServices::factory::message::New< PointMsg > );
 
     /**
      * @name Event identifier
@@ -47,13 +47,13 @@ public:
     FWCOMED_API PointMsg(::fwServices::ObjectMsg::Key key);
 
     /**
-      * @brief  Destuctor : does nothing.
-      */
+     * @brief  Destuctor : does nothing.
+     */
     FWCOMED_API virtual ~PointMsg() throw();
 
 };
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_POINTMSG_HPP_
+#endif //__FWCOMED_POINTMSG_HPP__
 

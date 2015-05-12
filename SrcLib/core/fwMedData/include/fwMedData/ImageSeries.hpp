@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,7 @@ fwCampAutoDeclareDataMacro((fwMedData)(ImageSeries), FWMEDDATA_API);
 
 namespace fwData
 {
-    class Image;
+class Image;
 }
 
 namespace fwMedData
@@ -33,7 +33,8 @@ class FWMEDDATA_CLASS_API ImageSeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ImageSeries)(::fwData::Object), (()), ::fwData::factory::New< ImageSeries >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ImageSeries)(::fwData::Object), (()),
+                                            ::fwData::factory::New< ImageSeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(ImageSeries));
 

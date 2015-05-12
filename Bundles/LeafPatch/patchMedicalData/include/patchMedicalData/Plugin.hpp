@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _PATCHMEDICALDATA_PLUGIN_HPP_
-#define _PATCHMEDICALDATA_PLUGIN_HPP_
+#ifndef __PATCHMEDICALDATA_PLUGIN_HPP__
+#define __PATCHMEDICALDATA_PLUGIN_HPP__
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -36,4 +36,4 @@ struct PATCHMEDICALDATA_CLASS_API Plugin : public ::fwRuntime::Plugin
 
 } // namespace patchMedicalData
 
-#endif //_PATCHMEDICALDATA_PLUGIN_HPP_
+#endif //__PATCHMEDICALDATA_PLUGIN_HPP__

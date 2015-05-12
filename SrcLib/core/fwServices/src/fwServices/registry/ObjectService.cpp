@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -76,7 +76,7 @@ std::string getRegistryInformation()
 
 //------------------------------------------------------------------------------
 
-bool has( ::fwData::Object::sptr obj , const std::string &srvType)
+bool has( ::fwData::Object::sptr obj, const std::string &srvType)
 {
     return ::fwServices::OSR::get()->has(obj, srvType);
 }
@@ -114,7 +114,7 @@ void unregisterService(  ::fwServices::IService::sptr service )
 namespace registry
 {
 
-void  ObjectService::registerService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service)
+void ObjectService::registerService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service)
 {
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
     this->internalRegisterService(object, service);
@@ -122,17 +122,17 @@ void  ObjectService::registerService( ::fwData::Object::sptr object, ::fwService
 
 //------------------------------------------------------------------------------
 
-void  ObjectService::internalRegisterService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service)
+void ObjectService::internalRegisterService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service)
 {
     OSLM_ASSERT("Sorry, this service "<< service->getClassname()
-            << " is not valid for object " << object->getClassname(),
-            ServiceFactory::getDefault()->checkServiceValidity(object->getClassname(), service->getClassname())
-    );
+                                      << " is not valid for object " << object->getClassname(),
+                ServiceFactory::getDefault()->checkServiceValidity(object->getClassname(), service->getClassname())
+                );
 
     OSLM_ASSERT("Service "<< service->getID()<<" already registered",
-            m_container.right.find(service) == m_container.right.end());
-    OSLM_ASSERT("Service "<< service->getID()<<" has already a valid associated object" ,
-            service->m_associatedObject.expired() || object != service->m_associatedObject.lock());
+                m_container.right.find(service) == m_container.right.end());
+    OSLM_ASSERT("Service "<< service->getID()<<" has already a valid associated object",
+                service->m_associatedObject.expired() || object != service->m_associatedObject.lock());
 
     service->m_associatedObject = object;
     m_container.insert( ServiceContainerType::value_type( object->getOSRKey()->getLogicStamp(), service ) );
@@ -147,7 +147,7 @@ void ObjectService::swapService( ::fwData::Object::sptr objDst, ::fwServices::IS
                 m_container.left.find(service->getObject()->getOSRKey()->getLogicStamp()) != m_container.left.end());
 
     OSLM_ASSERT("Service "<< service->getID()<<" is not registered in OSR",
-                    m_container.right.find(service) != m_container.right.end());
+                m_container.right.find(service) != m_container.right.end());
 
     m_container.right.erase(service);
     this->internalRegisterService(objDst, service);
@@ -171,7 +171,7 @@ void ObjectService::removeFromContainer( ::fwServices::IService::sptr service )
     SLM_TRACE_FUNC();
     ::fwCore::mt::WriteLock lock(m_containerMutex);
     OSLM_ASSERT("Unknown service "<<service->getID()<<" in OSR",
-            m_container.right.find(service) != m_container.right.end());
+                m_container.right.find(service) != m_container.right.end());
     m_container.right.erase(service);
 }
 
@@ -186,7 +186,7 @@ ObjectService::ObjectVectorType ObjectService::getObjects() const
     {
         if ( std::find(objects.begin(), objects.end(), elt.first->getObject()) == objects.end() )
         {
-            objects.push_back( elt.first->getObject() ) ;
+            objects.push_back( elt.first->getObject() );
         }
     }
     SLM_WARN_IF( "No object registered for the requested type of service", objects.empty() );
@@ -207,13 +207,13 @@ std::string ObjectService::getRegistryInformation() const
 
         if ( previousKey != key )
         {
-            info    << "Object ( key = "<<key<<" ) has "
-                    << m_container.left.count(key) <<" services." << std::endl;
+            info << "Object ( key = "<<key<<" ) has "
+                 << m_container.left.count(key) <<" services." << std::endl;
             previousKey = key;
         }
         ::fwServices::IService::sptr service = objSrvMap.second;
         info << "    srv : uid = "<< service->getID() <<" , classname = "<< service->getClassname()
-                         <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
+             <<" , service is stopped = "<< ( service->isStopped() ? "yes" : "no" ) << std::endl;
     }
     return info.str();
 }
@@ -224,17 +224,17 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
                                                              const std::string & serviceType ) const
 {
     ServiceVectorType allServices = this->getServices(obj);
-    ServiceVectorType services ;
+    ServiceVectorType services;
 
     // Search should be optimized
     BOOST_FOREACH(::fwServices::IService::sptr srv, allServices)
     {
         if( srv->isA(serviceType) )
         {
-            services.push_back( srv ) ;
+            services.push_back( srv );
         }
     }
-    return services ;
+    return services;
 }
 
 //------------------------------------------------------------------------------
@@ -249,7 +249,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( const std::string &
         ::fwServices::IService::sptr service = elt.first;
         if ( service->isA(serviceType) )
         {
-            services.push_back( service ) ;
+            services.push_back( service );
         }
     }
     SLM_DEBUG_IF("No service registered", services.empty());
@@ -268,9 +268,9 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
         ::fwCore::LogicStamp::LogicStampType key = obj->getOSRKey()->getLogicStamp();
         ServiceContainerType::left_map::const_iterator firstElement = m_container.left.find(key);
         ServiceContainerType::left_map::const_iterator lastElement  = m_container.left.upper_bound(key);
-        for (iter = firstElement ; iter != lastElement ; ++iter)
+        for (iter = firstElement; iter != lastElement; ++iter)
         {
-            services.push_back( iter->second ) ;
+            services.push_back( iter->second );
         }
     }
     return services;
@@ -278,7 +278,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
 
 //------------------------------------------------------------------------------
 
-bool ObjectService::has( ::fwData::Object::sptr obj , const std::string & srvType) const
+bool ObjectService::has( ::fwData::Object::sptr obj, const std::string & srvType) const
 {
     bool hasServices = false;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
@@ -287,8 +287,8 @@ bool ObjectService::has( ::fwData::Object::sptr obj , const std::string & srvTyp
         ServiceContainerType::left_map::const_iterator iter;
         ::fwCore::LogicStamp::LogicStampType key = obj->getOSRKey()->getLogicStamp();
         ServiceContainerType::left_map::const_iterator firstElement = m_container.left.find(key);
-        ServiceContainerType::left_map::const_iterator lastElement = m_container.left.upper_bound(key);
-        for (iter = firstElement ; iter != lastElement ; ++iter)
+        ServiceContainerType::left_map::const_iterator lastElement  = m_container.left.upper_bound(key);
+        for (iter = firstElement; iter != lastElement; ++iter)
         {
             if( iter->second->isA(srvType))
             {
@@ -297,7 +297,7 @@ bool ObjectService::has( ::fwData::Object::sptr obj , const std::string & srvTyp
             }
         }
     }
-    return hasServices ;
+    return hasServices;
 }
 
 //------------------------------------------------------------------------------

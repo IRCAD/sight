@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_PROFILE_PROFILE_HPP_
-#define _FWRUNTIME_PROFILE_PROFILE_HPP_
+#ifndef __FWRUNTIME_PROFILE_PROFILE_HPP__
+#define __FWRUNTIME_PROFILE_PROFILE_HPP__
 
 #include <vector>
 
@@ -48,7 +48,7 @@ public:
     typedef std::vector< std::string >  ParamsContainer;
     typedef ::boost::function< int () > RunCallbackType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject), (()), new Profile) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject), (()), new Profile);
 
     /**
      * @brief   Constructor : does nothing.
@@ -116,46 +116,71 @@ public:
     /**
      * @brief   Return profile name.
      */
-    std::string getName() { return m_sName; }
+    std::string getName()
+    {
+        return m_sName;
+    }
 
     /**
      * @brief       Set profile name.
      *
      * @param[in]   _sName  profile name
      */
-    void setName(std::string _sName) { m_sName = _sName; }
+    void setName(std::string _sName)
+    {
+        m_sName = _sName;
+    }
 
     /// Get profile m_filePath
-    ::boost::filesystem::path getFilePath() {return  m_filePath; } const
+    ::boost::filesystem::path getFilePath()
+    {
+        return m_filePath;
+    }
+    const
 
     /// Set profile m_filePath
-    void setFilePath( const ::boost::filesystem::path& _filePath) { m_filePath = _filePath; }
+    void setFilePath( const ::boost::filesystem::path& _filePath)
+    {
+        m_filePath = _filePath;
+    }
 
     /**
      * @brief   Return profile version.
      */
-    std::string getVersion() { return m_sVersion; }
+    std::string getVersion()
+    {
+        return m_sVersion;
+    }
 
     /**
      * @brief       Set profile version.
      *
      * @param[in]   _sVersion   profile version
      */
-    void setVersion(std::string _sVersion) { m_sVersion = _sVersion; }
+    void setVersion(std::string _sVersion)
+    {
+        m_sVersion = _sVersion;
+    }
 
 
 
     /**
      * @brief   Return profile CheckSingleInstance.
      */
-    bool getCheckSingleInstance() { return m_checkSingleInstance; }
+    bool getCheckSingleInstance()
+    {
+        return m_checkSingleInstance;
+    }
 
     /**
      * @brief       Set profile CheckSingleInstance.
      *
      * @param[in]   _checkSingleInstance    profile CheckSingleInstance
      */
-    void setCheckSingleInstance(bool _checkSingleInstance) { m_checkSingleInstance = _checkSingleInstance; }
+    void setCheckSingleInstance(bool _checkSingleInstance)
+    {
+        m_checkSingleInstance = _checkSingleInstance;
+    }
 
     FWRUNTIME_API ParamsContainer getParams();
 
@@ -184,20 +209,20 @@ private:
     typedef std::vector< SPTR(Initializer) >   InitializerContainer;
     typedef std::vector< SPTR(Uninitializer) > UninitializerContainer;
 
-    ActivaterContainer        m_activaters;     ///< all managed activators
-    StarterContainer          m_starters;       ///< all managed starters
-    StopperContainer          m_stoppers;       ///< all managed stoppers
-    InitializerContainer      m_initializers;   ///< all managed initializers
-    UninitializerContainer    m_uninitializers; ///< all managed uninitializers
+    ActivaterContainer m_activaters;            ///< all managed activators
+    StarterContainer m_starters;                ///< all managed starters
+    StopperContainer m_stoppers;                ///< all managed stoppers
+    InitializerContainer m_initializers;        ///< all managed initializers
+    UninitializerContainer m_uninitializers;    ///< all managed uninitializers
 
-    std::string         m_sName;            ///< name profile
-    std::string         m_sVersion;         ///< profile app version
+    std::string m_sName;                    ///< name profile
+    std::string m_sVersion;                 ///< profile app version
     ::boost::filesystem::path m_filePath;   ///< xml parsed file used to generate profile
 
-    bool                m_checkSingleInstance;
+    bool m_checkSingleInstance;
 
-    ParamsContainer     m_params;
-    int                 m_argc;
+    ParamsContainer m_params;
+    int m_argc;
     char              **m_argv;
 
     RunCallbackType m_run;
@@ -223,4 +248,4 @@ FWRUNTIME_API Profile::sptr getCurrentProfile();
 
 
 
-#endif /*_FWRUNTIME_PROFILE_PROFILE_HPP_*/
+#endif /*__FWRUNTIME_PROFILE_PROFILE_HPP__*/

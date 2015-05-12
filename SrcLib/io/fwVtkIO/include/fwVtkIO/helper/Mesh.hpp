@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_HELPER_MESH_HPP_
-#define _VTKIO_HELPER_MESH_HPP_
+#ifndef __FWVTKIO_HELPER_MESH_HPP__
+#define __FWVTKIO_HELPER_MESH_HPP__
 
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
@@ -30,7 +30,7 @@ namespace helper
 class FWVTKIO_CLASS_API Mesh
 {
 
-public :
+public:
 
     /*!
      * @brief Convert a vtkPolyData to a ::fwData::Mesh::sptr.
@@ -61,7 +61,8 @@ public :
      * vertex of the polydata, cells will not be updated.
      * Returns the updated vtkPolyPata
      */
-    FWVTKIO_API static vtkSmartPointer<vtkPolyData>  updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc );
+    FWVTKIO_API static vtkSmartPointer<vtkPolyData>  updatePolyDataPoints(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                                                          ::fwData::Mesh::sptr meshSrc );
 
     /*!
      * @brief Update a vtkPolyData with point color of fwData::Mesh
@@ -72,7 +73,8 @@ public :
      *
      * Returns the updated vtkPolyPata
      */
-    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
+    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataPointColor(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                                                             ::fwData::Mesh::sptr meshSrc);
 
     /*!
      * @brief Update a vtkPolyData with cell color of fwData::Mesh
@@ -83,7 +85,8 @@ public :
      *
      * Returns the updated vtkPolyPata
      */
-    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc );
+    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellColor(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                                                            ::fwData::Mesh::sptr meshSrc );
 
     /*!
      * @brief Update a vtkPolyData with point normals of fwData::Mesh
@@ -94,7 +97,8 @@ public :
      *
      * Returns the updated vtkPolyPata
      */
-    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
+    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataPointNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                                                               ::fwData::Mesh::sptr meshSrc);
 
     /*!
      * @brief Update a vtkPolyData with cell normals of fwData::Mesh
@@ -105,7 +109,8 @@ public :
      *
      * Returns the updated vtkPolyPata
      */
-    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
+    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellNormals(vtkSmartPointer<vtkPolyData> polyDataDst,
+                                                                              ::fwData::Mesh::sptr meshSrc);
 
     /*!
      * @brief Update a vtkPolyData with point texCoords of fwData::Mesh
@@ -114,7 +119,8 @@ public :
      * @param[in]  meshSrc ::fwData::Mesh::sptr
      * @return the updated vtkPolyPata
      */
-    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataPointTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
+    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataPointTexCoords(
+        vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
 
     /*!
      * @brief Update a vtkPolyData with cell texCoords of fwData::Mesh
@@ -123,7 +129,8 @@ public :
      * @param[in]  meshSrc ::fwData::Mesh::sptr
      * @return the updated vtkPolyPata
      */
-    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellTexCoords(vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
+    FWVTKIO_API static vtkSmartPointer<vtkPolyData> updatePolyDataCellTexCoords(
+        vtkSmartPointer<vtkPolyData> polyDataDst, ::fwData::Mesh::sptr meshSrc);
 
     /*!
      * @brief Compute the volume of the mesh using MassProperties vtk class
@@ -136,4 +143,4 @@ public :
 } // namespace helper
 } // namespace fwVtkIO
 
-#endif // _VTKIO_HELPER_MESH_HPP_
+#endif // __FWVTKIO_HELPER_MESH_HPP__

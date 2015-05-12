@@ -29,7 +29,8 @@ class Mesh;
 class FWDATA_CLASS_API Reconstruction : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()), ::fwData::factory::New< Reconstruction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Reconstruction)(::fwData::Object), (()),
+                                            ::fwData::factory::New< Reconstruction >);
 
     fwCoreAllowSharedFromThis()
 
@@ -54,11 +55,11 @@ public:
     FWDATA_API static const double s_NO_COMPUTED_MASK_VOLUME;
 
     // Generator result---------------------------------------------------------
-    fwGettersSettersDocMacro(IsVisible, bIsVisible, bool, the visibility of the reconstruction (true if visible));
+    fwGettersSettersDocMacro(IsVisible, bIsVisible, bool, "the visibility of the reconstruction (true if visible)");
 
-    fwGettersSettersDocMacro(OrganName, sOrganName, std::string, organ name);
+    fwGettersSettersDocMacro(OrganName, sOrganName, std::string, "organ name");
 
-    fwGettersSettersDocMacro(StructureType, sStructureType, std::string, structure type);
+    fwGettersSettersDocMacro(StructureType, sStructureType, std::string, "structure type");
 
     /**
      * @brief Get/Set the image associated with the acquisition
@@ -80,7 +81,7 @@ public:
      */
     fwDataGetSetMacro(ComputedMaskVolume, double);
 
-protected :
+protected:
 
     //! true if this reconstruction is visible
     bool m_bIsVisible;

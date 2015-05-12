@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UITF_TRANSFERFUNCTIONEDITOR_HPP_
-#define _UITF_TRANSFERFUNCTIONEDITOR_HPP_
+#ifndef __UITF_TRANSFERFUNCTIONEDITOR_HPP__
+#define __UITF_TRANSFERFUNCTIONEDITOR_HPP__
 
 #include <QObject>
 
@@ -26,16 +26,17 @@ namespace uiTF
 /**
  * @brief   TransferFunctionEditor service.
  * @class   TransferFunctionEditor
- * 
+ *
  * @date    2011.
  */
-class UITF_CLASS_API TransferFunctionEditor : public QObject, public ::gui::editor::IEditor
+class UITF_CLASS_API TransferFunctionEditor : public QObject,
+                                              public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (TransferFunctionEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TransferFunctionEditor)(::gui::editor::IEditor) );
 
     /// Basic constructor, do nothing.
     UITF_API TransferFunctionEditor();
@@ -46,18 +47,18 @@ public:
 protected:
 
     /**
-    * @brief Configuring the transfer function editor.
-    *
-    * Example of configuration
-    * @verbatim
-    <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes" >
+     * @brief Configuring the transfer function editor.
+     *
+     * Example of configuration
+     * @verbatim
+       <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes" >
         <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-    </service>
-    @endverbatim
-    * - \<image id="myImage" /\> : Set the link between the service and the associated image.
-    *
-    * \b id : mandatory (no default value) : set the id of the associated image.
-    */
+       </service>
+       @endverbatim
+     * - \<image id="myImage" /\> : Set the link between the service and the associated image.
+     *
+     * \b id : mandatory (no default value) : set the id of the associated image.
+     */
     UITF_API virtual void configuring() throw( ::fwTools::Failed );
 
     /// Start the TransferFunctionEditor, create Container, place in Buttons, ComboBox, Layout, and connect them.
@@ -122,4 +123,4 @@ private:
 };
 
 }
-#endif
+#endif //__UITF_TRANSFERFUNCTIONEDITOR_HPP__

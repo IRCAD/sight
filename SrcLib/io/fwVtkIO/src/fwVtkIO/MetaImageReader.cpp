@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 MetaImageReader::MetaImageReader(::fwDataIO::reader::IObjectReader::Key key)
-: ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
+    : ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -55,7 +55,7 @@ void MetaImageReader::read()
     reader->PropagateUpdateExtent();
 
     vtkDataObject *obj = reader->GetOutput();
-    vtkImageData* img = vtkImageData::SafeDownCast(obj);
+    vtkImageData* img  = vtkImageData::SafeDownCast(obj);
     FW_RAISE_IF("MetaImageReader cannot read mhd image file :"<<this->getFile().string(), !img);
     try
     {
@@ -69,9 +69,9 @@ void MetaImageReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string  MetaImageReader::extension()
+std::string MetaImageReader::extension()
 {
-   return ".mhd";
+    return ".mhd";
 }
 
 } // namespace fwVtkIO

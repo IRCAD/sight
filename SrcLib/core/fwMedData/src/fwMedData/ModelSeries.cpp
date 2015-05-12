@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,14 +17,15 @@ fwDataRegisterMacro( ::fwMedData::ModelSeries );
 namespace fwMedData
 {
 
-ModelSeries::ModelSeries(::fwData::Object::Key key): Series(key)
+ModelSeries::ModelSeries(::fwData::Object::Key key) : Series(key)
 {
 }
 
 //------------------------------------------------------------------------------
 
 ModelSeries::~ModelSeries()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -32,8 +33,8 @@ void ModelSeries::shallowCopy(const ::fwData::Object::csptr &_source)
 {
     ModelSeries::csptr other = ModelSeries::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
 
     this->::fwMedData::Series::shallowCopy(_source);
 
@@ -46,8 +47,8 @@ void ModelSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCop
 {
     ModelSeries::csptr other = ModelSeries::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
 
     this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 

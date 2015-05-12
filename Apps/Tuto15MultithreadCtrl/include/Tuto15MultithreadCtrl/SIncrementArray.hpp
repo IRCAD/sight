@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,14 +21,14 @@ class TUTO15MULTITHREADCTRL_CLASS_API SIncrementArray : public ::fwServices::ISe
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SIncrementArray)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SIncrementArray)(::fwServices::IService) );
 
     TUTO15MULTITHREADCTRL_API SIncrementArray() throw();
     TUTO15MULTITHREADCTRL_API virtual ~SIncrementArray() throw();
 
     void setPeriod( unsigned int period )
     {
-        m_periodInMillisec = period ;
+        m_periodInMillisec = period;
     }
 
 protected:

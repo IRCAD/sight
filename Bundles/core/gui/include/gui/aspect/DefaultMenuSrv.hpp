@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef GUI_ASPECT_DEFAULTMENUSRV_HPP_
-#define GUI_ASPECT_DEFAULTMENUSRV_HPP_
+#ifndef __GUI_ASPECT_DEFAULTMENUSRV_HPP__
+#define __GUI_ASPECT_DEFAULTMENUSRV_HPP__
 
 #include <fwGui/IMenuSrv.hpp>
 
@@ -23,9 +23,9 @@ namespace aspect
 class GUI_CLASS_API DefaultMenuSrv : public ::fwGui::IMenuSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultMenuSrv)(::fwGui::IMenuSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DefaultMenuSrv)(::fwGui::IMenuSrv) );
 
     /// Constructor. Do nothing.
     GUI_API DefaultMenuSrv() throw();
@@ -33,7 +33,7 @@ public :
     /// Destructor. Do nothing.
     GUI_API virtual ~DefaultMenuSrv() throw();
 
-protected :
+protected:
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
@@ -44,7 +44,7 @@ protected :
 
      * Example of configuration
      * @verbatim
-      <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+       <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
           <gui>
               <layout>
                   <menu name="My Menu"/>
@@ -55,7 +55,7 @@ protected :
               <menu sid="myMenu" start="yes" />
               <menu sid="myMenu2" start="yes" />
           </registry>
-      </service>
+       </service>
        @endverbatim
      *  - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
      *    - <separator /> : allows to put a separator in the menu
@@ -69,19 +69,19 @@ protected :
      *
      *  @see ::fwGui::IMenuBarSrv::initialize(), ::fwGui::layoutManager::IMenuLayoutManager::initialize()
      */
-    GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
+    GUI_API virtual void configuring() throw( ::fwTools::Failed );
 
     /**
      * @brief Create the menu items and start the managed services.
      * @see ::fwGui::IMenuSrv::create()
      */
-    GUI_API virtual void starting() throw( ::fwTools::Failed ) ;
+    GUI_API virtual void starting() throw( ::fwTools::Failed );
 
     /**
      * @brief Stop all actions and separator of this menu and remove menu to menuBar
      * @see ::fwGui::IMenuSrv::destroy()
      */
-    GUI_API virtual void stopping() throw( ::fwTools::Failed ) ;
+    GUI_API virtual void stopping() throw( ::fwTools::Failed );
 
     /// Updating service, do nothing.
     GUI_API virtual void updating() throw(::fwTools::Failed);
@@ -96,4 +96,4 @@ protected :
 
 }
 
-#endif // GUI_ASPECT_DEFAULTMENUSRV_HPP_
+#endif // __GUI_ASPECT_DEFAULTMENUSRV_HPP__

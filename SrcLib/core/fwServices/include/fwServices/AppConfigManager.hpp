@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_CONFIGTEMPLATEMANAGER_HPP_
-#define _FWSERVICES_CONFIGTEMPLATEMANAGER_HPP_
+#ifndef __FWSERVICES_APPCONFIGMANAGER_HPP__
+#define __FWSERVICES_APPCONFIGMANAGER_HPP__
 
 #include <vector>
 #include <string>
@@ -28,7 +28,7 @@ namespace fwServices
  * @class   AppConfigManager
  * @brief   This class provides an API to manage config template.
  *
- * 
+ *
  * @date    2007-2009.
  */
 class FWSERVICES_CLASS_API AppConfigManager : public ::fwTools::Object
@@ -57,10 +57,22 @@ public:
     FWSERVICES_API virtual ~AppConfigManager();
 
     /// Return state
-    bool isCreated() { return m_state == STATE_CREATED; }
-    bool isStarted() { return m_state == STATE_STARTED; }
-    bool isStopped() { return m_state == STATE_STOPPED; }
-    bool isDestroyed() { return m_state == STATE_DESTROYED; }
+    bool isCreated()
+    {
+        return m_state == STATE_CREATED;
+    }
+    bool isStarted()
+    {
+        return m_state == STATE_STARTED;
+    }
+    bool isStopped()
+    {
+        return m_state == STATE_STOPPED;
+    }
+    bool isDestroyed()
+    {
+        return m_state == STATE_DESTROYED;
+    }
 
     /// Set config param
     void setConfig(::fwRuntime::ConfigurationElement::csptr cfgElem)
@@ -112,10 +124,12 @@ protected:
         ProxyEltVectType m_signals;
 
         ProxyConnections(const std::string& channel) : m_channel(channel)
-        {}
+        {
+        }
 
         ~ProxyConnections()
-        {}
+        {
+        }
 
         void addSlotConnection(UIDType uid, KeyType key)
         {
@@ -140,29 +154,29 @@ protected:
     helper::SigSlotConnection::sptr m_connections;
 
     FWSERVICES_API ::fwData::Object::sptr getNewObject(
-            ConfigAttribute type,
-            const std::string& uid,
-            ConfigAttribute id=ConfigAttribute("", false));
+        ConfigAttribute type,
+        const std::string& uid,
+        ConfigAttribute id = ConfigAttribute("", false));
 
     FWSERVICES_API ::fwData::Object::sptr getNewObject(
-            ConfigAttribute type,
-            ConfigAttribute uid=ConfigAttribute("", false),
-            ConfigAttribute id=ConfigAttribute("", false));
+        ConfigAttribute type,
+        ConfigAttribute uid = ConfigAttribute("", false),
+        ConfigAttribute id = ConfigAttribute("", false));
 
     FWSERVICES_API ::fwData::Object::sptr getRefObject(
-            ConfigAttribute type,
-            const std::string& uid,
-            ConfigAttribute id=ConfigAttribute("", false));
+        ConfigAttribute type,
+        const std::string& uid,
+        ConfigAttribute id = ConfigAttribute("", false));
 
     FWSERVICES_API ::fwServices::IService::sptr getNewService(
-            ConfigAttribute type,
-            ConfigAttribute uid,
-            ConfigAttribute implType);
+        ConfigAttribute type,
+        ConfigAttribute uid,
+        ConfigAttribute implType);
 
     FWSERVICES_API void autoSigSlotConnection(
-            ::fwData::Object::sptr obj,
-            ::fwServices::IService::sptr srv,
-            ConfigAttribute priority);
+        ::fwData::Object::sptr obj,
+        ::fwServices::IService::sptr srv,
+        ConfigAttribute priority);
 
     FWSERVICES_API void startConnections();
     FWSERVICES_API void stopConnections();
@@ -188,4 +202,4 @@ protected:
 
 #include "fwServices/AppConfigManager.hxx"
 
-#endif // _FWSERVICES_CONFIGTEMPLATEMANAGER_HPP_
+#endif // __FWSERVICES_APPCONFIGMANAGER_HPP__

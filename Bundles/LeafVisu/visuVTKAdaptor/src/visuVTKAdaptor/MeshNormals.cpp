@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@
 
 #include "visuVTKAdaptor/MeshNormals.hpp"
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshNormals, ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshNormals, ::fwData::Mesh );
 
 
 namespace visuVTKAdaptor
@@ -32,9 +32,9 @@ namespace visuVTKAdaptor
 
 std::map< std::string, MeshNormals::NormalRepresentation >
 MeshNormals::m_normalRepresentationConversion
-        = ::boost::assign::map_list_of(std::string("POINT"), POINT_NORMAL)
-                                      (std::string("CELL"), CELL_NORMAL)
-                                      (std::string("NONE"), NONE);
+    = ::boost::assign::map_list_of(std::string("POINT"), POINT_NORMAL)
+          (std::string("CELL"), CELL_NORMAL)
+          (std::string("NONE"), NONE);
 
 
 
@@ -75,7 +75,7 @@ void MeshNormals::configuring() throw( ::fwTools::Failed)
     {
         std::string normal = m_configuration->getExistingAttributeValue("normal");
         SLM_ASSERT("Wrong normal representation '"<<normal << "' (required POINT, CELL or NONE)",
-                m_normalRepresentationConversion.find(normal) != m_normalRepresentationConversion.end());
+                   m_normalRepresentationConversion.find(normal) != m_normalRepresentationConversion.end());
 
         m_normalRepresentation = m_normalRepresentationConversion[normal];
     }
@@ -194,7 +194,7 @@ void MeshNormals::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTool
 {
     SLM_TRACE_FUNC();
     ::fwComEd::MeshMsg::csptr meshMsg = ::fwComEd::MeshMsg::dynamicConstCast(msg);
-    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwData::Mesh::sptr mesh         = this->getObject < ::fwData::Mesh >();
 
     if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::NEW_MESH))
     {

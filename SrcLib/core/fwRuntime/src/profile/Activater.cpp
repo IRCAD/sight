@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,9 +30,10 @@ namespace profile
 //------------------------------------------------------------------------------
 
 Activater::Activater( const std::string & identifier, const std::string & version )
-:   m_identifier( identifier ),
-    m_version( version )
-{}
+    :   m_identifier( identifier ),
+      m_version( version )
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -66,16 +67,16 @@ void Activater::apply()
 
     // Managment of parameter configuration
     for( ParameterContainer::const_iterator i = m_parameters.begin();
-            i != m_parameters.end();
-            ++i )
+         i != m_parameters.end();
+         ++i )
     {
         bundle->addParameter( i->first, i->second );
     }
 
     // Disable extension point for this bundle
     for( DisableExtensionPointContainer::const_iterator id = m_disableExtensionPoints.begin();
-            id != m_disableExtensionPoints.end();
-            ++id )
+         id != m_disableExtensionPoints.end();
+         ++id )
     {
         if( bundle->hasExtensionPoint(*id) )
         {
@@ -83,14 +84,16 @@ void Activater::apply()
         }
         else
         {
-            OSLM_ERROR("Unable to disable Extension Point " << *id << " defined in the Bundle " << m_identifier << ". Not found.");
+            OSLM_ERROR(
+                "Unable to disable Extension Point " << *id << " defined in the Bundle " << m_identifier <<
+                ". Not found.");
         }
     }
 
     // Disable extension for this bundle
     for( DisableExtensionContainer::const_iterator id = m_disableExtensions.begin();
-            id != m_disableExtensions.end();
-            ++id )
+         id != m_disableExtensions.end();
+         ++id )
     {
         if( bundle->hasExtension(*id) )
         {
@@ -98,7 +101,9 @@ void Activater::apply()
         }
         else
         {
-            OSLM_ERROR("Unable to disable Extension " << *id << " defined in the Bundle " << m_identifier << ". Not found.");
+            OSLM_ERROR(
+                "Unable to disable Extension " << *id << " defined in the Bundle " << m_identifier <<
+                ". Not found.");
         }
     }
 }

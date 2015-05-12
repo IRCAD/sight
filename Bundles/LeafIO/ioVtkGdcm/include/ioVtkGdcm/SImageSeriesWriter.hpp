@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@
 
 namespace fwMedData
 {
-    class ImageSeries;
+class ImageSeries;
 }
 
 
@@ -30,8 +30,8 @@ namespace ioVtkGdcm
 class IOVTKGDCM_CLASS_API SImageSeriesWriter : public ::io::IWriter
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (SImageSeriesWriter)( ::io::IWriter) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (SImageSeriesWriter)( ::io::IWriter) );
 
     /**
      * @brief   constructor
@@ -61,7 +61,7 @@ protected:
     /// Return path type managed by the service, here FOLDER
     IOVTKGDCM_API ::io::IOPathType getIOPathType() const;
 
-private :
+private:
 
     void saveImageSeries( const ::boost::filesystem::path folder, SPTR(::fwMedData::ImageSeries) series );
 };

@@ -24,7 +24,8 @@ namespace fwData
 class FWDATA_CLASS_API Boolean : public GenericField< bool >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwData::Object),( ((const bool)(false)) ), GenericFieldFactory< Boolean >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwData::Object),( ((const bool)(false)) ),
+                                            GenericFieldFactory< Boolean >);
     fwCampMakeFriendDataMacro((fwData)(Boolean));
 
     /**

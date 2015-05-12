@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,7 +61,7 @@ void Text::configuring() throw(fwTools::Failed)
     if(!text.empty() && text[0] == '@')
     {
         OSLM_ASSERT("You shall set text attribute or <text> tag, not both", m_configuration->find("text").empty());
-        ::fwData::Object::sptr obj = this->getObject();
+        ::fwData::Object::sptr obj             = this->getObject();
         ::fwData::GenericFieldBase::sptr field = ::fwDataCamp::getObject< ::fwData::GenericFieldBase >(obj, text);
         SLM_ASSERT("Seshat path can't be cast to generic field", field);
         if(field)
@@ -115,7 +115,8 @@ void Text::configuring() throw(fwTools::Failed)
         {
             ::fwData::Color::sptr color = ::fwData::Color::New();
             color->setRGBA(colorText);
-            m_mapper->GetTextProperty()->SetColor(color->getRefRGBA()[0], color->getRefRGBA()[1], color->getRefRGBA()[2]);
+            m_mapper->GetTextProperty()->SetColor(color->getRefRGBA()[0], color->getRefRGBA()[1],
+                                                  color->getRefRGBA()[2]);
         }
         else
         {

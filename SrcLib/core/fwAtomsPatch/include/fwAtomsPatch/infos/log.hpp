@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,25 +13,25 @@
 # ifdef _DEBUG
 /** Info message macros for patch log. */
 #  define fwAtomsPatchInfoLogMacro(message) \
-        ::fwAtomsPatch::infos::Logger::getLogger().info(message)
+    ::fwAtomsPatch::infos::Logger::getLogger().info(message)
 /** Error message macros for patch log. */
 #  define fwAtomsPatchErrorLogMacro(message) \
-        ::fwAtomsPatch::infos::Logger::getLogger().error(message)
+    ::fwAtomsPatch::infos::Logger::getLogger().error(message)
 /** Bad cast message macros for patch log. */
 #  define fwAtomsPatchBadCastLogMacro(message) \
-        ::fwAtomsPatch::infos::Logger::getLogger().badCast(message)
+    ::fwAtomsPatch::infos::Logger::getLogger().badCast(message)
 /** Out of range message macros for patch log. */
 #  define fwAtomsPatchOutOfRangeLogMacro(message) \
-        ::fwAtomsPatch::infos::Logger::getLogger().outOfRange(message)
+    ::fwAtomsPatch::infos::Logger::getLogger().outOfRange(message)
 /** Add attribute message macros for patch log. */
 #  define fwAtomsPatchAddAttributeLogMacro(message) \
-        ::fwAtomsPatch::infos::Logger::getLogger().addAttribute(message)
+    ::fwAtomsPatch::infos::Logger::getLogger().addAttribute(message)
 /** Erase attribute message macros for patch log. */
 #  define fwAtomsPatchEraseAttributeLogMacro(message) \
-        ::fwAtomsPatch::infos::Logger::getLogger().eraseAttribute(message)
+    ::fwAtomsPatch::infos::Logger::getLogger().eraseAttribute(message)
 /** Replace attribute message macros for patch log. */
 #  define fwAtomsPatchReplaceAttributeLogMacro(message) \
-        ::fwAtomsPatch::infos::Logger::getLogger().replaceAttribute(message)
+    ::fwAtomsPatch::infos::Logger::getLogger().replaceAttribute(message)
 # else
 /** Info message macros for patch log. */
 #  define fwAtomsPatchInfoLogMacro(message) // nothing

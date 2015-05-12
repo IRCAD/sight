@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_ACTION_NOTHINGACTION_HPP_
-#define _GUI_ACTION_NOTHINGACTION_HPP_
+#ifndef __GUI_ACTION_NOTHINGACTIONSRV_HPP__
+#define __GUI_ACTION_NOTHINGACTIONSRV_HPP__
 
 
 #include <fwServices/IService.hpp>
@@ -26,19 +26,19 @@ namespace action
 class GUI_CLASS_API NothingActionSrv : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NothingActionSrv)(::fwGui::IActionSrv) ) ;
-
-    /**
-    * @brief Constructor. Do nothing.
-    */
-    GUI_API NothingActionSrv() throw() ;
+    fwCoreServiceClassDefinitionsMacro ( (NothingActionSrv)(::fwGui::IActionSrv) );
 
     /**
-    * @brief Destructor. Do nothing.
-    */
-    GUI_API virtual ~NothingActionSrv() throw() ;
+     * @brief Constructor. Do nothing.
+     */
+    GUI_API NothingActionSrv() throw();
+
+    /**
+     * @brief Destructor. Do nothing.
+     */
+    GUI_API virtual ~NothingActionSrv() throw();
 
 protected:
 
@@ -49,7 +49,7 @@ protected:
     /**
      * @brief This method is used to configure the action.
      */
-    GUI_API virtual void configuring() throw( ::fwTools::Failed ) ;
+    GUI_API virtual void configuring() throw( ::fwTools::Failed );
 
     GUI_API virtual void starting() throw(::fwTools::Failed);
 
@@ -68,7 +68,7 @@ protected:
     /**
      * @brief This method gives information about the class.
      */
-    GUI_API virtual void info(std::ostream &_sstream ) ;
+    GUI_API virtual void info(std::ostream &_sstream );
 
     ///@}
 
@@ -79,4 +79,4 @@ protected:
 } // namespace gui
 
 
-#endif /*_GUI_ACTION_NOTHINGACTION_HPP_*/
+#endif /*__GUI_ACTION_NOTHINGACTIONSRV_HPP__*/

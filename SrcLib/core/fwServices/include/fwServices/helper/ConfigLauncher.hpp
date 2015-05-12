@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2004-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_HELPER_CONFIGLAUNCHER_HPP_
-#define _FWSERVICES_HELPER_CONFIGLAUNCHER_HPP_
+#ifndef __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
+#define __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
 
 #include <fwTools/Failed.hpp>
 
@@ -34,7 +35,7 @@ namespace helper
 class FWSERVICES_CLASS_API ConfigLauncher : public ::fwCore::BaseObject
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (ConfigLauncher)(::fwCore::BaseObject),
                                             (()),
@@ -106,6 +107,6 @@ private:
 } // fwServices
 
 
-#endif // _FWSERVICES_HELPER_CONFIGLAUNCHER_HPP_
+#endif // __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
 
 

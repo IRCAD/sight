@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_CONFIGURATIONELEMENT_HPP
-#define _FWRUNTIME_CONFIGURATIONELEMENT_HPP
+#ifndef __FWRUNTIME_CONFIGURATIONELEMENT_HPP__
+#define __FWRUNTIME_CONFIGURATIONELEMENT_HPP__
 
 #include <map>
 #include <string>
@@ -21,13 +21,13 @@
 
 namespace fwRuntime
 {
-    struct Bundle;
-    struct Executable;
+struct Bundle;
+struct Executable;
 
-    namespace io
-    {
-        struct BundleDescriptorReader;
-    }
+namespace io
+{
+struct BundleDescriptorReader;
+}
 }
 
 
@@ -40,16 +40,18 @@ namespace fwRuntime
  * @brief   Defines the configuration element class.
  * @struct  ConfigurationElement
  * @date    2004-2009
- * 
+ *
 
  */
 struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementContainer,
-                                public boost::enable_shared_from_this< ConfigurationElement >
+                                                    public boost::enable_shared_from_this< ConfigurationElement >
 {
 
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 
-    fwCoreClassDefinitionsWithFactoryMacro((ConfigurationElement), ((( const ::boost::shared_ptr< Bundle > ))(( const std::string ))), new ConfigurationElement);
+    fwCoreClassDefinitionsWithFactoryMacro((ConfigurationElement),
+                                           ((( const ::boost::shared_ptr< Bundle > ))(
+                                                ( const std::string ))), new ConfigurationElement);
 
     /**
      * @brief   Defines the attribute pair type.
@@ -62,7 +64,9 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      */
     struct NoSuchAttribute : public ::fwCore::Exception
     {
-        NoSuchAttribute(const std::string &attr) : ::fwCore::Exception(std::string("No such attribute: ") + attr) {}
+        NoSuchAttribute(const std::string &attr) : ::fwCore::Exception(std::string("No such attribute: ") + attr)
+        {
+        }
     };
 
 
@@ -150,12 +154,13 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
     /**
      * @brief   Return the map with attributes
      */
-    FWRUNTIME_API const std::map<std::string, std::string> getAttributes() const throw() ;
+    FWRUNTIME_API const std::map<std::string, std::string> getAttributes() const throw();
 
     /**
      * @brief   Print contents
      */
-    FWRUNTIME_API friend std::ostream & operator<<(std::ostream & _sstream, ConfigurationElement& _configurationElement) ;
+    FWRUNTIME_API friend std::ostream & operator<<(std::ostream & _sstream,
+                                                   ConfigurationElement& _configurationElement);
 
     /**
      * @brief       Find recursively all the corresponding configuration elements.
@@ -168,87 +173,87 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      * @param[in]   depth           depth of the recursion
      */
     FWRUNTIME_API std::vector < ConfigurationElement::sptr > find(
-            std::string name = "",
-            std::string attribute = "",
-            std::string attributeValue = "",
-            int depth = 1
-            );
+        std::string name = "",
+        std::string attribute = "",
+        std::string attributeValue = "",
+        int depth = 1
+        );
 
     /**
      * @brief       Used only because this class inherit from enable_shared_from_this
      */
     FWRUNTIME_API virtual ~ConfigurationElement();
 
-protected:
+    protected:
 
-    /**
-     * @brief       Constructor.
-     *
-     * @param[in]   bundle  a shared pointer to the bundle to the configuration element is attached to
-     * @param[in]   name    a string containing the configuration element name
-     *
-     * @todo        test parameters validity
-     */
-    FWRUNTIME_API ConfigurationElement(const ::boost::shared_ptr<Bundle> bundle, const std::string& name);
-
-
-    /**
-     * @brief       Sets an attribute with the specified name and value.
-     *
-     * Setting a value for an existing attribute will override the old value.
-     *
-     * @param[in]   name    a string containing the attribute name
-     * @param[in]   value   a string containing the attribute value
-     */
-    FWRUNTIME_API void setAttributeValue(const std::string& name, const std::string& value) throw();
-
-    /**
-     * @brief       Sets the value of the configuration element it-self.
-     *
-     * @param[in]   value   a string containing the new configuration element value
-     */
-    FWRUNTIME_API void setValue(const std::string& value) throw();
+        /**
+         * @brief       Constructor.
+         *
+         * @param[in]   bundle  a shared pointer to the bundle to the configuration element is attached to
+         * @param[in]   name    a string containing the configuration element name
+         *
+         * @todo        test parameters validity
+         */
+        FWRUNTIME_API ConfigurationElement(const ::boost::shared_ptr<Bundle> bundle, const std::string& name);
 
 
-private:
+        /**
+         * @brief       Sets an attribute with the specified name and value.
+         *
+         * Setting a value for an existing attribute will override the old value.
+         *
+         * @param[in]   name    a string containing the attribute name
+         * @param[in]   value   a string containing the attribute value
+         */
+        FWRUNTIME_API void setAttributeValue(const std::string& name, const std::string& value) throw();
 
-    /**
-     * @brief   Defines the attributes container type.
-     */
-    typedef std::map<std::string, std::string> AttributeContainer;
-
-
-    /**
-     * @brief   A pointer to the bundle the configuration element is attached to.
-     */
-    const ::boost::shared_ptr<Bundle> m_bundle;
-
-    /**
-     * @brief   A string containing the configuration element name.
-     */
-    const std::string m_name;
-
-    /**
-     * @brief   A string containing the configuration element value.
-     */
-    std::string m_value;
-
-    /**
-     * @brief   All attributes of the configuration element.
-     */
-    AttributeContainer m_attributes;
+        /**
+         * @brief       Sets the value of the configuration element it-self.
+         *
+         * @param[in]   value   a string containing the new configuration element value
+         */
+        FWRUNTIME_API void setValue(const std::string& value) throw();
 
 
-    /**
-     * @brief   Assignemet operator.
-     *
-     * @remark  Assignement is forbidden for this class.
-     */
-    void operator=(const ConfigurationElement&) throw();
+    private:
+
+        /**
+         * @brief   Defines the attributes container type.
+         */
+        typedef std::map<std::string, std::string> AttributeContainer;
+
+
+        /**
+         * @brief   A pointer to the bundle the configuration element is attached to.
+         */
+        const ::boost::shared_ptr<Bundle> m_bundle;
+
+        /**
+         * @brief   A string containing the configuration element name.
+         */
+        const std::string m_name;
+
+        /**
+         * @brief   A string containing the configuration element value.
+         */
+        std::string m_value;
+
+        /**
+         * @brief   All attributes of the configuration element.
+         */
+        AttributeContainer m_attributes;
+
+
+        /**
+         * @brief   Assignemet operator.
+         *
+         * @remark  Assignement is forbidden for this class.
+         */
+        void operator=(const ConfigurationElement&) throw();
 };
 
 
 } // namespace fwRuntime
 
 
-#endif // #define  _FWRUNTIME_CONFIGURATIONELEMENT_HPP
+#endif // __FWRUNTIME_CONFIGURATIONELEMENT_HPP__

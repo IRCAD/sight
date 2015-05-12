@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIO_ACTION_SSERIESDBMERGER_HPP_
-#define _UIIO_ACTION_SSERIESDBMERGER_HPP_
+#ifndef __UIIO_ACTION_SSERIESDBMERGER_HPP__
+#define __UIIO_ACTION_SSERIESDBMERGER_HPP__
 
 #include <fwMedData/SeriesDB.hpp>
 
@@ -48,16 +48,16 @@ namespace action
 class UIIO_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBMerger)( ::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBMerger)( ::fwGui::IActionSrv) );
 
-    UIIO_API SSeriesDBMerger() throw() ;
+    UIIO_API SSeriesDBMerger() throw();
 
-    UIIO_API virtual ~SSeriesDBMerger() throw() ;
+    UIIO_API virtual ~SSeriesDBMerger() throw();
 
 protected:
 
     /// Configure action. Retrieves the IOSelector config
-    void configuring() throw( ::fwTools::Failed ) ;
+    void configuring() throw( ::fwTools::Failed );
 
     /// Start action.
     void starting() throw (::fwTools::Failed);
@@ -66,11 +66,11 @@ protected:
     void updating() throw (::fwTools::Failed);
 
     /// Does nothing
-    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed);
 
     /// Stop action.
     void stopping() throw (::fwTools::Failed);
-    void info(std::ostream &_sstream ) ;
+    void info(std::ostream &_sstream );
 
 private:
     std::string m_ioSelectorSrvConfig;
@@ -80,4 +80,4 @@ private:
 } // namespace action
 } // namespace uiIO
 
-#endif // _UIIO_ACTION_SSERIESDBMERGER_HPP_
+#endif // __UIIO_ACTION_SSERIESDBMERGER_HPP__

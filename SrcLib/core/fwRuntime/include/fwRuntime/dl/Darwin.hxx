@@ -1,8 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWRUNTIME_DL_DARWIN_HXX__
+#define __FWRUNTIME_DL_DARWIN_HXX__
 
 #if defined(__MACOSX__) && !defined(FWRUNTIME_API)
 
@@ -12,8 +15,8 @@
 //          SystemOverview/Frameworks/Dynamic_Shared_Libraries.html
 
 extern "C" {
-    void __initialize_Cplusplus(void);
-    void DylibInit(void);
+void __initialize_Cplusplus(void);
+void DylibInit(void);
 };
 
 void DylibInit()
@@ -28,4 +31,6 @@ void DylibInit()
 
 }
 
-#endif
+#endif //defined(__MACOSX__) && !defined(FWRUNTIME_API)
+
+#endif // __FWRUNTIME_DL_DARWIN_HXX__

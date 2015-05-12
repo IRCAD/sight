@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_CONTAINER_QTCONTAINER_HPP_
-#define _FWGUIQT_CONTAINER_QTCONTAINER_HPP_
+#ifndef __FWGUIQT_CONTAINER_QTCONTAINER_HPP__
+#define __FWGUIQT_CONTAINER_QTCONTAINER_HPP__
 
 #include <QPointer>
 
@@ -30,7 +30,7 @@ namespace container
 /**
  * @brief   Defines the QWidget container for IHM.
  * @class   QtContainer
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -43,9 +43,9 @@ public:
                                             (()),
                                             ::fwGui::factory::New< QtContainer > );
 
-    FWGUIQT_API QtContainer(::fwGui::GuiBaseObject::Key key) throw() ;
+    FWGUIQT_API QtContainer(::fwGui::GuiBaseObject::Key key) throw();
 
-    FWGUIQT_API virtual ~QtContainer() throw() ;
+    FWGUIQT_API virtual ~QtContainer() throw();
 
 
     FWGUIQT_API virtual void clean();
@@ -57,7 +57,7 @@ public:
 
     FWGUIQT_API virtual void setVisible(bool isVisible);
 
-private :
+private:
 
     QPointer<QWidget> m_container;
 };
@@ -65,6 +65,6 @@ private :
 } // namespace container
 } // namespace fwGuiQt
 
-#endif /*_FWGUIQT_CONTAINER_QTCONTAINER_HPP_*/
+#endif /*__FWGUIQT_CONTAINER_QTCONTAINER_HPP__*/
 
 

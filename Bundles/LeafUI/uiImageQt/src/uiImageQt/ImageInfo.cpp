@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@
 namespace uiImage
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ImageInfo , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ImageInfo, ::fwData::Image );
 
 
 ImageInfo::ImageInfo() throw()
@@ -43,7 +43,8 @@ ImageInfo::ImageInfo() throw()
 //------------------------------------------------------------------------------
 
 ImageInfo::~ImageInfo() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -53,7 +54,8 @@ void ImageInfo::starting() throw(::fwTools::Failed)
     this->::fwGui::IGuiContainerSrv::create();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -90,7 +92,8 @@ void ImageInfo::configuring() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void ImageInfo::updating() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -119,10 +122,10 @@ void ImageInfo::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools
             SLM_ASSERT("Sorry, the object is null", point);
             if(point)
             {
-                fwVec3d  pointCoord = point->getCoord();
+                fwVec3d pointCoord = point->getCoord();
                 ::fwComEd::helper::Image imageHelper(image);
 
-                std::string intensity = imageHelper.getPixelAsString(pointCoord[0], pointCoord[1], pointCoord[2] );;
+                std::string intensity = imageHelper.getPixelAsString(pointCoord[0], pointCoord[1], pointCoord[2] );
                 m_valueText->setText(QString::fromStdString(intensity));
             }
         }

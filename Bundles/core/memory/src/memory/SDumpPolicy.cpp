@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,10 +26,12 @@ namespace memory
 fwServicesRegisterMacro( ::fwServices::IController, ::memory::SDumpPolicy, ::fwData::Object );
 
 SDumpPolicy::SDumpPolicy()
-{}
+{
+}
 
 SDumpPolicy::~SDumpPolicy()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -40,7 +42,7 @@ void SDumpPolicy::configuring() throw ( ::fwTools::Failed )
 
     if (!config.empty())
     {
-        std::vector < ConfigurationType > policy = config.at(0)->find("policy");
+        std::vector < ConfigurationType > policy        = config.at(0)->find("policy");
         std::vector < ConfigurationType > paramsElement = config.at(0)->find("params");
 
         m_policyParams.clear();
@@ -81,9 +83,9 @@ void SDumpPolicy::starting() throw ( ::fwTools::Failed )
             {
                 success = policy->setParam(param.first, param.second);
                 OSLM_ERROR_IF( "[" << m_policy << "] Unable to set '"
-                               << param.first << "' parameter to " << param.second,
+                                   << param.first << "' parameter to " << param.second,
                                !success);
-                OSLM_INFO_IF("Set '" << param.first << "' policy parameter to " << param.second , success);
+                OSLM_INFO_IF("Set '" << param.first << "' policy parameter to " << param.second, success);
             }
             ::fwCore::mt::WriteLock lock( manager->getMutex() );
             manager->setDumpPolicy(policy);
@@ -96,13 +98,16 @@ void SDumpPolicy::starting() throw ( ::fwTools::Failed )
 //------------------------------------------------------------------------------
 
 void SDumpPolicy::stopping() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 void SDumpPolicy::updating() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 void SDumpPolicy::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

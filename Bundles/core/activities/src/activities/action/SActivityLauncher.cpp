@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -60,18 +60,18 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SActivityLau
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_SERIES_SLOT = "launchSeries";
+const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_SERIES_SLOT        = "launchSeries";
 const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
 //------------------------------------------------------------------------------
 
-SActivityLauncher::SActivityLauncher() throw():
+SActivityLauncher::SActivityLauncher() throw() :
     m_mode("message")
 {
     m_sigActivityLaunched = ActivityLaunchedSignalType::New();
     m_signals( s_ACTIVITY_LAUNCHED_SIG,  m_sigActivityLaunched);
 
-    m_slotLaunchSeries = ::fwCom::newSlot( &SActivityLauncher::launchSeries, this ) ;
+    m_slotLaunchSeries = ::fwCom::newSlot( &SActivityLauncher::launchSeries, this );
 
     ::fwCom::HasSlots::m_slots( s_LAUNCH_SERIES_SLOT, m_slotLaunchSeries );
 
@@ -85,7 +85,8 @@ SActivityLauncher::SActivityLauncher() throw():
 //------------------------------------------------------------------------------
 
 SActivityLauncher::~SActivityLauncher() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -114,10 +115,10 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
     if(this->getConfigTree().get_child("service").count("config") > 0)
     {
         SLM_ASSERT("Sorry you must have one (and only one) <config/> element.",
-                this->getConfigTree().get_child("service").count("config") == 1 );
+                   this->getConfigTree().get_child("service").count("config") == 1 );
 
         const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
-        const ::fwServices::IService::ConfigType &config = srvconfig.get_child("config");
+        const ::fwServices::IService::ConfigType &config   = srvconfig.get_child("config");
 
         m_mode = config.get_optional<std::string>("mode").get_value_or("message");
         SLM_ASSERT("SActivityLauncher mode must be 'immediate' or 'message'",
@@ -140,7 +141,8 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
             OSLM_ASSERT("At most 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
             const std::string mode = configFilter.get< std::string >("mode");
-            OSLM_ASSERT("'" << mode << "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.", mode == "include" || mode == "exclude");
+            OSLM_ASSERT("'" << mode << "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
+                        mode == "include" || mode == "exclude");
             m_filterMode = mode;
 
             BOOST_FOREACH( const ConfigType::value_type &v, configFilter.equal_range("id") )
@@ -157,13 +159,13 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
             BOOST_FOREACH( const ConfigType::value_type &v, configQuickLaunch.equal_range("association") )
             {
                 const ::fwServices::IService::ConfigType &association = v.second;
-                const ::fwServices::IService::ConfigType xmlattr = association.get_child("<xmlattr>");
+                const ::fwServices::IService::ConfigType xmlattr      = association.get_child("<xmlattr>");
 
                 SLM_FATAL_IF( "Sorry, attribute \"type\" is missing", xmlattr.count("type") != 1 );
                 SLM_FATAL_IF( "Sorry, attribute \"id\" is missing", xmlattr.count("id") != 1 );
 
                 std::string type = xmlattr.get<std::string>("type");
-                std::string id = xmlattr.get<std::string>("id");
+                std::string id   = xmlattr.get<std::string>("id");
 
                 m_quickLaunch[type] = id;
             }
@@ -213,7 +215,7 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
         selectionList->selectionModel()->select( index, QItemSelectionModel::Select );
     }
 
-    QPushButton* okButton = new QPushButton("Ok");
+    QPushButton* okButton     = new QPushButton("Ok");
     QPushButton* cancelButton = new QPushButton("Cancel");
 
     QHBoxLayout *hLayout = new QHBoxLayout();
@@ -233,8 +235,8 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
     if(dialog->exec())
     {
         QModelIndex currentIndex = selectionList->selectionModel()->currentIndex();
-        QStandardItem *item = model->itemFromIndex( currentIndex );
-        QVariant var = item->data();
+        QStandardItem *item      = model->itemFromIndex( currentIndex );
+        QVariant var             = item->data();
         info = var.value< ::fwActivities::registry::ActivityInfo >();
     }
 
@@ -285,7 +287,7 @@ void SActivityLauncher::updating() throw(::fwTools::Failed)
         ActivityInfoContainer infos = ::fwActivities::registry::Activities::getDefault()->getInfos(selection);
         infos = this->getEnabledActivities(infos);
 
-        if ( ! infos.empty())
+        if ( !infos.empty())
         {
             ::fwActivities::registry::ActivityInfo info;
             if((m_keys.size() == 1 && m_filterMode == "include") || (infos.size() == 1))
@@ -329,7 +331,8 @@ void SActivityLauncher::updateState()
     if(selection->size() == 1 && ::fwMedData::ActivitySeries::dynamicCast((*selection)[0]))
     {
         ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast((*selection)[0]);
-        isExecutable = ::fwActivities::registry::Activities::getDefault()->hasInfo(as->getActivityConfigId());
+        isExecutable                         = ::fwActivities::registry::Activities::getDefault()->hasInfo(
+            as->getActivityConfigId());
     }
     else
     {
@@ -356,11 +359,13 @@ void SActivityLauncher::updateState()
 //------------------------------------------------------------------------------
 
 void SActivityLauncher::info( std::ostream &_sstream )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityInfo & info, const ::fwData::Vector::sptr& selection)
+void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityInfo & info,
+                                      const ::fwData::Vector::sptr& selection)
 {
     ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
     ::fwActivities::IBuilder::sptr builder;
@@ -370,7 +375,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
     ::fwMedData::ActivitySeries::sptr actSeries;
     actSeries = builder->buildData(info, selection);
 
-    if( ! actSeries )
+    if( !actSeries )
     {
         OSLM_INFO("Activity <" << info.builderImpl << ">launch aborted");
         return;
@@ -386,7 +391,8 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
     else
     {
         ::fwGui::LockAction lock(this->getSptr());
-        ::fwData::String::csptr msgData = ::fwData::String::dynamicConstCast(msg->getDataInfo("NEW_CONFIGURATION_HELPER"));
+        ::fwData::String::csptr msgData = ::fwData::String::dynamicConstCast(msg->getDataInfo(
+                                                                                 "NEW_CONFIGURATION_HELPER"));
         const std::string viewConfigFieldID = "VIEWCONFIGID";
         const std::string fieldID           = "APPCONFIG";
 
@@ -418,7 +424,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
         OSLM_ASSERT(validatorImpl << " instantiation failed", validator);
 
         ::fwActivities::IValidator::ValidationType valid = validator->validate(info, selection);
-        validation.first &= valid.first;
+        validation.first                                &= valid.first;
         if(!valid.first)
         {
             validation.second += "\n" + valid.second;
@@ -428,10 +434,10 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     if(!validation.first)
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Activity can not be launched",
-                    "The activity " + info.title + " can't be launched. Reason : " + validation.second,
-                    ::fwGui::dialog::MessageDialog::WARNING
-                    );
+            "Activity can not be launched",
+            "The activity " + info.title + " can't be launched. Reason : " + validation.second,
+            ::fwGui::dialog::MessageDialog::WARNING
+            );
     }
     else
     {
@@ -495,10 +501,10 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
         {
             std::string activityId = m_quickLaunch[ series->getClassname() ];
             SLM_ASSERT("Activity information not found for" + activityId,
-                    ::fwActivities::registry::Activities::getDefault()->hasInfo(activityId) );
+                       ::fwActivities::registry::Activities::getDefault()->hasInfo(activityId) );
             this->sendConfig( ::fwActivities::registry::Activities::getDefault()->getInfo(activityId) );
         }
-        else if ( ! infos.empty() )
+        else if ( !infos.empty() )
         {
             this->sendConfig( infos.front() );
         }

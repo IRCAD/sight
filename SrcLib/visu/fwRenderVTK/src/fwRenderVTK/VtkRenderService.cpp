@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,7 +47,7 @@ VTK_MODULE_INIT(vtkRenderingFreeTypeOpenGL);
 #include "fwRenderVTK/VtkRenderService.hpp"
 
 
-fwServicesRegisterMacro( ::fwRender::IRender , ::fwRenderVTK::VtkRenderService , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::VtkRenderService, ::fwData::Composite );
 
 using namespace fwServices;
 
@@ -60,7 +60,7 @@ const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT = "render";
 //-----------------------------------------------------------------------------
 
 VtkRenderService::VtkRenderService() throw() :
-     m_pendingRenderRequest(false), m_autoRender(true)
+    m_pendingRenderRequest(false), m_autoRender(true)
 {
     m_slotRender = ::fwCom::newSlot( &VtkRenderService::render, this);
     m_slotRender->setWorker(m_associatedWorker);
@@ -73,7 +73,8 @@ VtkRenderService::VtkRenderService() throw() :
 //-----------------------------------------------------------------------------
 
 VtkRenderService::~VtkRenderService() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -81,7 +82,7 @@ void VtkRenderService::configureRenderer( ConfigurationType conf )
 {
     assert(conf->getName() == "renderer");
 
-    std::string id = conf->getAttributeValue("id");
+    std::string id         = conf->getAttributeValue("id");
     std::string background = conf->getAttributeValue("background");
 
     if(m_renderers.count(id) == 0)
@@ -122,7 +123,7 @@ void VtkRenderService::configurePicker( ConfigurationType conf )
 {
     assert(conf->getName() == "picker");
 
-    std::string id = conf->getAttributeValue("id");
+    std::string id       = conf->getAttributeValue("id");
     std::string vtkclass = conf->getAttributeValue("vtkclass");
 
     if (vtkclass.empty())
@@ -132,7 +133,7 @@ void VtkRenderService::configurePicker( ConfigurationType conf )
 
     if(m_pickers.count(id) == 0)
     {
-        m_pickers[id] =  vtkAbstractPropPicker::SafeDownCast(vtkInstantiator::CreateInstance(vtkclass.c_str()));
+        m_pickers[id] = vtkAbstractPropPicker::SafeDownCast(vtkInstantiator::CreateInstance(vtkclass.c_str()));
         OSLM_ASSERT("'" << vtkclass.c_str() << "' instantiation failled.",m_pickers[id]);
         m_pickers[id]->InitializePickList();
         m_pickers[id]->PickFromListOn();
@@ -149,7 +150,7 @@ void VtkRenderService::configurePicker( ConfigurationType conf )
 void VtkRenderService::configureObject( ConfigurationType conf )
 {
     assert(conf->getName() == "adaptor");
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
     const std::string id            = conf->getAttributeValue("id");
     const std::string objectId      = conf->getAttributeValue("objectId");
@@ -157,14 +158,14 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     const std::string uid           = conf->getAttributeValue("uid");
     const std::string compositeName = "self";
 
-    SLM_ASSERT( "'id' required attribute missing or empty"      , !id.empty() );
+    SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
-    SLM_ASSERT( "'adaptor' required attribute missing or empty" , !adaptor.empty() );
+    SLM_ASSERT( "'adaptor' required attribute missing or empty", !adaptor.empty() );
 
     const unsigned int compositeObjectCount = composite->getContainer().count(objectId);
 
     OSLM_TRACE_IF(objectId << " not found in composite. If it exist, associated Adaptor will be destroyed",
-                  ! (compositeObjectCount == 1 || objectId == compositeName) );
+                  !(compositeObjectCount == 1 || objectId == compositeName) );
 
 
     ::fwData::Object::sptr object;
@@ -181,15 +182,15 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     {
         OSLM_TRACE ("Adding service : IVtkAdaptorService " << adaptor << " on "<< objectId );
         SceneAdaptor adaptee;
-        adaptee.m_config = * (conf->begin());
+        adaptee.m_config = *(conf->begin());
         if (!uid.empty())
         {
             OSLM_TRACE("VtkRenderService::configureObject : uid = " << uid);
-            adaptee.m_service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( object , adaptor, uid);
+            adaptee.m_service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( object, adaptor, uid);
         }
         else
         {
-            adaptee.m_service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( object , adaptor);
+            adaptee.m_service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( object, adaptor);
         }
 
         assert(adaptee.m_config->getName() == "config");
@@ -212,7 +213,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     {
         SceneAdaptor &adaptee = m_sceneAdaptors[id];
         SLM_ASSERT("Adaptor service expired !", adaptee.getService() );
-        OSLM_ASSERT( adaptee.getService()->getID() <<  " is not started " ,adaptee.getService()->isStarted());
+        OSLM_ASSERT( adaptee.getService()->getID() <<  " is not started ",adaptee.getService()->isStarted());
         if (object)
         {
             OSLM_TRACE ("Swapping IVtkAdaptorService " << adaptor << " on "<< objectId );
@@ -223,8 +224,8 @@ void VtkRenderService::configureObject( ConfigurationType conf )
             else
             {
                 OSLM_WARN(adaptor << "'s object already is '"
-                        << adaptee.getService()->getObject()->getID()
-                        << "', no need to swap");
+                                  << adaptee.getService()->getObject()->getID()
+                                  << "', no need to swap");
             }
         }
         else
@@ -237,7 +238,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     }
     else
     {
-            OSLM_TRACE ( "'"<< objectId << "' inexistent, passing by '" << adaptor << "'");
+        OSLM_TRACE ( "'"<< objectId << "' inexistent, passing by '" << adaptor << "'");
     }
 }
 
@@ -247,7 +248,7 @@ void VtkRenderService::configureVtkObject( ConfigurationType conf )
 {
     assert(conf->getName() == "vtkObject");
 
-    std::string id = conf->getAttributeValue("id");
+    std::string id       = conf->getAttributeValue("id");
     std::string vtkClass = conf->getAttributeValue("class");
     assert( !id.empty() );
     assert( !vtkClass.empty() );
@@ -272,7 +273,8 @@ void VtkRenderService::configureVtkObject( ConfigurationType conf )
 
 vtkTransform * VtkRenderService::createVtkTransform( ConfigurationType conf )
 {
-    SLM_ASSERT("vtkObject must be contain just only one sub xml element called vtkTransform.", conf->size() == 1 && ( *conf->begin() )->getName() == "vtkTransform");
+    SLM_ASSERT("vtkObject must be contain just only one sub xml element called vtkTransform.",
+               conf->size() == 1 && ( *conf->begin() )->getName() == "vtkTransform");
 
     ConfigurationType vtkTransformXmlElem = *conf->begin();
 
@@ -343,7 +345,7 @@ void VtkRenderService::starting() throw(fwTools::Failed)
 
     // Instantiate vtk object, class...
     ::fwRuntime::ConfigurationElementContainer::Iterator iter;
-    for (iter = m_sceneConfiguration->begin() ; iter != m_sceneConfiguration->end() ; ++iter)
+    for (iter = m_sceneConfiguration->begin(); iter != m_sceneConfiguration->end(); ++iter)
     {
         if ((*iter)->getName() == "renderer")
         {
@@ -377,9 +379,9 @@ void VtkRenderService::starting() throw(fwTools::Failed)
         vtkRenderer *renderer = (*iter).second;
         m_interactorManager->getInteractor()->GetRenderWindow()->AddRenderer(renderer);
     }
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >() ;
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    SceneAdaptorsMapType::iterator adaptorIter ;
+    SceneAdaptorsMapType::iterator adaptorIter;
     for ( adaptorIter = m_sceneAdaptors.begin();
           adaptorIter != m_sceneAdaptors.end();
           ++adaptorIter)
@@ -397,7 +399,7 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
 
     m_connections->disconnect();
 
-    SceneAdaptorsMapType::iterator adaptorIter ;
+    SceneAdaptorsMapType::iterator adaptorIter;
 
     for ( adaptorIter = m_sceneAdaptors.begin();
           adaptorIter != m_sceneAdaptors.end();
@@ -456,7 +458,8 @@ void VtkRenderService::receiving( ::fwServices::ObjectMsg::csptr message ) throw
 //-----------------------------------------------------------------------------
 
 void VtkRenderService::updating() throw(fwTools::Failed)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -470,7 +473,7 @@ void VtkRenderService::render()
 
 bool VtkRenderService::isShownOnScreen()
 {
-   return this->getContainer()->isShownOnScreen();
+    return this->getContainer()->isShownOnScreen();
 }
 
 //-----------------------------------------------------------------------------
@@ -525,7 +528,7 @@ void VtkRenderService::stopContext()
 
 vtkRenderer * VtkRenderService::getRenderer(RendererIdType rendererId)
 {
-    OSLM_ASSERT("Renderer not found : '" << rendererId << "'" , m_renderers.count(rendererId) == 1);
+    OSLM_ASSERT("Renderer not found : '" << rendererId << "'", m_renderers.count(rendererId) == 1);
 
     return m_renderers[rendererId];
 }
@@ -535,7 +538,7 @@ vtkRenderer * VtkRenderService::getRenderer(RendererIdType rendererId)
 vtkAbstractPropPicker * VtkRenderService::getPicker(PickerIdType pickerId)
 {
     OSLM_ASSERT("Picker '" << pickerId << "' not found",
-            pickerId.empty() ||  ( !pickerId.empty() && m_pickers.count(pickerId) == 1));
+                pickerId.empty() ||  ( !pickerId.empty() && m_pickers.count(pickerId) == 1));
 
     if ( pickerId.empty() )
     {
@@ -549,7 +552,7 @@ vtkAbstractPropPicker * VtkRenderService::getPicker(PickerIdType pickerId)
 vtkObject * VtkRenderService::getVtkObject(const VtkObjectIdType& objectId)
 {
     OSLM_WARN_IF("vtkObject '" << objectId << "' not found",
-            !(objectId.empty() ||  ( !objectId.empty() && m_vtkObjects.count(objectId) == 1)));
+                 !(objectId.empty() ||  ( !objectId.empty() && m_vtkObjects.count(objectId) == 1)));
 
     if ( objectId.empty() || m_vtkObjects.count(objectId) == 0)
     {

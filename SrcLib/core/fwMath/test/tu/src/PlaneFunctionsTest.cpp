@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -69,8 +69,8 @@ void PlaneFunctionsTest::checkIntersect()
 {
     const bool INTERSECT = true;
 
-    fwVec3d  point;
-    fwLine  line;
+    fwVec3d point;
+    fwLine line;
     const fwVec3d linePos = {{1.0, 2.0, 4.0}};
 //  const fwVec3d lineDirection = {{1.0, 0.0, 0.0}};  // ==> pas d'intercestion
 //  const fwVec3d lineDirection = {{3.0, 0.0, 4.0}};  // ==> intercestion
@@ -83,7 +83,7 @@ void PlaneFunctionsTest::checkIntersect()
     const fwVec3d planPt3 = {{0.0, 2.0, 0.0}};
     fwPlane plane;
     ::fwMath::setValues(plane, planPt1, planPt2, planPt3);
-    bool intersect =  ::fwMath::intersect( plane, line,  point);
+    bool intersect = ::fwMath::intersect( plane, line,  point);
 
     CPPUNIT_ASSERT_EQUAL(point[0], 1.0);
     CPPUNIT_ASSERT_EQUAL(point[1], 2.0);
@@ -118,7 +118,7 @@ void PlaneFunctionsTest::checkIntersect_fwMath_SoLib( )
 
     // New version
     // fwVec3d  point;
-    fwLine  line;
+    fwLine line;
     const fwVec3d linePos = {{LineP1_X, LineP1_Y, LineP1_Z}};
 //  const fwVec3d lineDirection = {{1.0, 0.0, 0.0}};  // ==> pas d'intercestion
 //  const fwVec3d lineDirection = {{3.0, 0.0, 4.0}};  // ==> intercestion

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_IMAGE3DCURSOR_HPP_
-#define _VISUVTKADAPTOR_IMAGE3DCURSOR_HPP_
+#ifndef __VISUVTKADAPTOR_IMAGE3DCURSOR_HPP__
+#define __VISUVTKADAPTOR_IMAGE3DCURSOR_HPP__
 
 #include <vtkSmartPointer.h>
 
@@ -25,13 +25,14 @@ namespace visuVTKAdaptor
 {
 
 /**
-* @brief Add a 3D spatial marker represented by a sphere
-*/
-class VISUVTKADAPTOR_CLASS_API Image3DCursor: public  ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService
+ * @brief Add a 3D spatial marker represented by a sphere
+ */
+class VISUVTKADAPTOR_CLASS_API Image3DCursor : public  ::fwComEd::helper::MedicalImageAdaptor,
+                                               public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Image3DCursor)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Image3DCursor)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Image3DCursor() throw();
 
@@ -69,4 +70,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_IMAGE3DCURSOR_HPP_
+#endif // __VISUVTKADAPTOR_IMAGE3DCURSOR_HPP__

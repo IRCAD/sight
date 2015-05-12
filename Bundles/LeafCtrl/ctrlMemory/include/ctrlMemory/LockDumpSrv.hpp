@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@
 
 namespace fwServices
 {
-    class ObjectMsg;
+class ObjectMsg;
 }
 
 namespace ctrlMemory
@@ -28,15 +28,15 @@ namespace ctrlMemory
 class CTRLMEMORY_CLASS_API LockDumpSrv : public ::fwServices::IController
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (LockDumpSrv)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (LockDumpSrv)(::fwServices::IController) );
 
     /// Constructor. Does nothing
-    CTRLMEMORY_API LockDumpSrv() throw() ;
+    CTRLMEMORY_API LockDumpSrv() throw();
 
     /// Destructor. Does nothing
-    CTRLMEMORY_API virtual ~LockDumpSrv() throw() ;
+    CTRLMEMORY_API virtual ~LockDumpSrv() throw();
 
 protected:
 
@@ -61,7 +61,7 @@ protected:
     /// Does nothing
     CTRLMEMORY_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw ( ::fwTools::Failed );
 
-private :
+private:
 
     ::fwData::ObjectLock m_objLock;
 

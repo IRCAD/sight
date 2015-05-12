@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATATOOLS_THREAD_REGIONTHREADER_HPP_
-#define _FWDATATOOLS_THREAD_REGIONTHREADER_HPP_
+#ifndef __FWDATATOOLS_THREAD_REGIONTHREADER_HPP__
+#define __FWDATATOOLS_THREAD_REGIONTHREADER_HPP__
 
 #include <algorithm>
 #include <cstddef>
@@ -30,25 +30,29 @@ public:
 
     RegionThreader()
         : m_nbThread( (::boost::thread::hardware_concurrency() > 1) ? ::boost::thread::hardware_concurrency() : 1 )
-    {}
+    {
+    }
 
     RegionThreader(size_t nbThread, bool capped = true)
-        : m_nbThread( std::min( capped ? ::boost::thread::hardware_concurrency() : std::numeric_limits<size_t>::max() , (nbThread > 1) ? nbThread : 1) )
-    {}
+        : m_nbThread( std::min( capped ? ::boost::thread::hardware_concurrency() : std::numeric_limits<size_t>::max(),
+                                (nbThread > 1) ? nbThread : 1) )
+    {
+    }
 
     template<typename T> void operator()(T func, const size_t dataSize)
     {
         std::vector< ::boost::thread* > threads;
 
-        const size_t step = (dataSize / m_nbThread) + 1;
+        const size_t step  = (dataSize / m_nbThread) + 1;
         size_t regionBegin = 0;
-        size_t threadId = 0;
+        size_t threadId    = 0;
 
         if (m_nbThread > 1)
         {
             for (; regionBegin < dataSize; regionBegin += step, ++threadId)
             {
-                threads.push_back(new ::boost::thread(func, regionBegin, std::min( dataSize,  regionBegin + step), threadId ));
+                threads.push_back(new ::boost::thread(func, regionBegin, std::min( dataSize,  regionBegin + step),
+                                                      threadId ));
             }
 
             BOOST_FOREACH( ::boost::thread *thread, threads)
@@ -64,7 +68,10 @@ public:
         }
     }
 
-    size_t numberOfThread() { return m_nbThread; };
+    size_t numberOfThread()
+    {
+        return m_nbThread;
+    }
 
 protected:
 
@@ -76,5 +83,5 @@ protected:
 }   // namespace fwDataTools
 
 
-#endif //_FWDATATOOLS_THREAD_REGIONTHREADER_HPP_
+#endif //__FWDATATOOLS_THREAD_REGIONTHREADER_HPP__
 

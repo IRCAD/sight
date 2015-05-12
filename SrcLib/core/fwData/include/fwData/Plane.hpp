@@ -16,6 +16,7 @@
 #include "fwData/Point.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(Plane), FWDATA_API);
+
 namespace fwData
 {
 /**
@@ -25,9 +26,9 @@ namespace fwData
 class FWDATA_CLASS_API Plane : public Object
 {
 
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object),
-        (()), ::fwData::factory::New< Plane >) ;
+                                            (()), ::fwData::factory::New< Plane >);
 
     fwCampMakeFriendDataMacro((fwData)(Plane));
 
@@ -54,13 +55,17 @@ public :
      *
      * Compare plane normal and distance from origin
      */
-    FWDATA_API bool operator==( const Plane & _plane ) ;
+    FWDATA_API bool operator==( const Plane & _plane );
 
     /// get the plane coordinate
-    fwPlane getPlane() const {return m_plane;};
+    fwPlane getPlane() const
+    {
+        return m_plane;
+    }
 
     /// Re-initialize the plane with 3 points
-    FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
+    FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2,
+                             ::fwData::Point::sptr _point3);
 
     /// Compute plane normal and distance from points coordinates
     FWDATA_API void computePlaneFromPoints();
@@ -68,9 +73,10 @@ public :
     /// Points container
     fwGettersSettersDocMacro(Points, vPoints, PointContainer, a container of all points);
 
-    fwGettersSettersDocMacro(IsIntersection, isIntersection, bool, flag if the plane is an intersection one (else an union one));
+    fwGettersSettersDocMacro(IsIntersection, isIntersection, bool,
+                             "flag if the plane is an intersection one (else an union one)");
 
-protected :
+protected:
 
     fwPlane m_plane;
     //! Points container
@@ -83,5 +89,5 @@ protected :
 
 } // end namespace fwData
 
-#endif // __FWDATA_PLANE_HPP__
+#endif //__FWDATA_PLANE_HPP__
 

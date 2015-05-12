@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,17 +26,19 @@ namespace gui
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::gui::action::SSlotCaller , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSlotCaller, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
 SSlotCaller::SSlotCaller() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 SSlotCaller::~SSlotCaller() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -66,7 +68,7 @@ void SSlotCaller::info(std::ostream &_sstream )
 
 void SSlotCaller::updating() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
 
     BOOST_FOREACH(SlotInfoType info, m_slotInfos)
     {
@@ -75,7 +77,7 @@ void SSlotCaller::updating() throw( ::fwTools::Failed )
 
         if (::fwTools::fwID::exist(HasSlotId))
         {
-            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(HasSlotId);
+            ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(HasSlotId);
             ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
             SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
@@ -97,7 +99,7 @@ void SSlotCaller::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTo
 
 void SSlotCaller::configuring() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
     this->initialize();
 
     ConfigurationType cfg = m_configuration->findConfigurationElement("slots");

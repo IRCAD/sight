@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IMENUBARSRV_HPP_
-#define _FWGUI_IMENUBARSRV_HPP_
+#ifndef __FWGUI_IMENUBARSRV_HPP__
+#define __FWGUI_IMENUBARSRV_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -21,16 +21,16 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing the menu bar.
  * @class   IMenuBarSrv
- * 
+ *
  * @date    2009-2010.
  *
  */
 class FWGUI_CLASS_API IMenuBarSrv : public ::fwServices::IService
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IMenuBarSrv)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IMenuBarSrv)(::fwServices::IService) );
 
     /// Method called when a menu service is stopping
     FWGUI_API void menuServiceStopping(std::string menuSrvSID);
@@ -38,11 +38,11 @@ public :
     /// Method called when a menu service is starting
     FWGUI_API void menuServiceStarting(std::string menuSrvSID);
 
-protected :
+protected:
 
-    FWGUI_API IMenuBarSrv() ;
+    FWGUI_API IMenuBarSrv();
 
-    FWGUI_API virtual ~IMenuBarSrv() ;
+    FWGUI_API virtual ~IMenuBarSrv();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -51,7 +51,7 @@ protected :
      *
      * Example of configuration
      * @verbatim
-      <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+       <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
           <gui>
               <layout>
                   <menu name="My Menu"/>
@@ -62,7 +62,7 @@ protected :
               <menu sid="myMenu" start="yes" />
               <menu sid="myMenu2" start="yes" />
           </registry>
-      </service>
+       </service>
        @endverbatim
      *  - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
      *  - \<registry\> \</registry\> : (mandatory) describe the service management.
@@ -88,7 +88,7 @@ private:
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
 
     ::fwGui::layoutManager::IMenuBarLayoutManager::sptr m_layoutManager;
-    ::fwGui::registrar::MenuBarRegistrar::sptr    m_registrar;
+    ::fwGui::registrar::MenuBarRegistrar::sptr m_registrar;
 
     ConfigurationType m_registrarConfig;
     ConfigurationType m_layoutConfig;
@@ -99,6 +99,6 @@ private:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_IMENUBARSRV_HPP_*/
+#endif /*__FWGUI_IMENUBARSRV_HPP__*/
 
 

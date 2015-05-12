@@ -1,4 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2004-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,17 +22,19 @@ namespace helper
 {
 
 //------------------------------------------------------------------------------
-const std::string ConfigLauncher::s_SELF_KEY = "self";
+const std::string ConfigLauncher::s_SELF_KEY        = "self";
 const std::string ConfigLauncher::s_GENERIC_UID_KEY = "GENERIC_UID";
 //------------------------------------------------------------------------------
 
 ConfigLauncher::ConfigLauncher() : m_configIsRunning(false)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 ConfigLauncher::~ConfigLauncher()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -40,9 +43,9 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
     if(config.get_child("service").count("config") > 0)
     {
         SLM_ASSERT("Sorry you must have one (and only one) <config/> element.",
-                config.get_child("service").count("config") == 1 );
+                   config.get_child("service").count("config") == 1 );
         const ::fwServices::IService::ConfigType srvconfig = config.get_child("service");
-        const ::fwServices::IService::ConfigType &config = srvconfig.get_child("config");
+        const ::fwServices::IService::ConfigType &config   = srvconfig.get_child("config");
 
         if(config.count("appConfig") == 1 )
         {
@@ -100,7 +103,7 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv)
 
     // Init manager
     ::fwRuntime::ConfigurationElement::csptr config =
-            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_appConfig.id, replaceMap );
+        ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_appConfig.id, replaceMap );
     m_appConfigManager = ::fwServices::AppConfigManager::New();
     m_appConfigManager->setConfig( config );
 
@@ -134,7 +137,7 @@ void ConfigLauncher::stopConfig()
 void ConfigLauncher::connectToConfigRoot(::fwServices::IService::sptr srv)
 {
     ::fwData::Object::sptr root = m_appConfigManager->getConfigRoot();
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
+    m_connections               = ::fwServices::helper::SigSlotConnection::New();
     m_connections->connect( root, srv->getSptr(), srv->getObjSrvConnections() );
 }
 

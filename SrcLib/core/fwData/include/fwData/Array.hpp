@@ -31,9 +31,9 @@ namespace fwData
  */
 class FWDATA_CLASS_API Array : public ::fwData::Object
 {
-public :
+public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Array)(::fwData::Object), (()), ::fwData::factory::New< Array >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Array)(::fwData::Object), (()), ::fwData::factory::New< Array >);
 
     fwCampMakeFriendDataMacro((fwData)(Array));
 
@@ -91,11 +91,14 @@ public :
      *
      * @throw ::fwData::Exception
      */
-    FWDATA_API virtual size_t resize(const ::fwTools::Type &type, const SizeType &size, size_t nbOfComponents, bool reallocate = false) throw(::fwData::Exception);
+    FWDATA_API virtual size_t resize(const ::fwTools::Type &type, const SizeType &size, size_t nbOfComponents,
+                                     bool reallocate = false) throw(::fwData::Exception);
 
     /// Aliases to the resize method
-    FWDATA_API virtual size_t resize(const std::string &type, const SizeType &size, size_t nbOfComponents, bool reallocate = false) throw(::fwData::Exception);
-    FWDATA_API virtual size_t resize(const SizeType &size, size_t nbOfComponents, bool reallocate = false) throw(::fwData::Exception);
+    FWDATA_API virtual size_t resize(const std::string &type, const SizeType &size, size_t nbOfComponents,
+                                     bool reallocate = false) throw(::fwData::Exception);
+    FWDATA_API virtual size_t resize(const SizeType &size, size_t nbOfComponents,
+                                     bool reallocate = false) throw(::fwData::Exception);
     FWDATA_API virtual size_t resize(const SizeType &size, bool reallocate = false) throw(::fwData::Exception);
 
     /**
@@ -210,7 +213,8 @@ public :
      *
      * @return buffer offset
      */
-    FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
+    FWDATA_API size_t getBufferOffset( const ::fwData::Array::IndexType &id, size_t component,
+                                       size_t sizeOfType ) const;
 
     /**
      * @brief Compute strides for given parameters

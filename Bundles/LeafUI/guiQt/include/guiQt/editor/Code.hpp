@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUIQT_EDITOR_CODE_HPP_
-#define _GUIQT_EDITOR_CODE_HPP_
+#ifndef __GUIQT_EDITOR_CODE_HPP__
+#define __GUIQT_EDITOR_CODE_HPP__
 
 #include <QPointer>
 #include <QObject>
@@ -28,21 +28,22 @@ namespace editor
 /**
  * @class   Code
  * @brief   Code Editor working on a ::fwData::String
- * 
+ *
  * @date    2010.
  */
-class GUIQT_CLASS_API Code : public QObject,public ::gui::editor::IEditor
+class GUIQT_CLASS_API Code : public QObject,
+                             public ::gui::editor::IEditor
 {
-    Q_OBJECT
-public :
+Q_OBJECT
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Code)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Code)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    GUIQT_API Code() throw() ;
+    GUIQT_API Code() throw();
 
     /// Destructor. Do nothing.
-    GUIQT_API virtual ~Code() throw() ;
+    GUIQT_API virtual ~Code() throw();
 
 protected:
 
@@ -66,7 +67,7 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 protected:
     static const std::string PYTHON;
@@ -81,7 +82,7 @@ protected Q_SLOTS:
     void onModifyValue();
 
 private:
-    std::string                    m_language;
+    std::string m_language;
     QPointer< QTextEdit >          m_valueCtrl;
     QPointer< QSyntaxHighlighter > m_highlighter;
 };
@@ -90,6 +91,6 @@ private:
 
 } // namespace guiQt
 
-#endif /*_GUIQT_EDITOR_CODE_HPP_*/
+#endif /*__GUIQT_EDITOR_CODE_HPP__*/
 
 

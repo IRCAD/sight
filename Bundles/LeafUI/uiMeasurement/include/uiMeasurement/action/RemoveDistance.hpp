@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIMEASUREMENT_ACTION_REMOVEDISTANCE_HPP_
-#define _UIMEASUREMENT_ACTION_REMOVEDISTANCE_HPP_
+#ifndef __UIMEASUREMENT_ACTION_REMOVEDISTANCE_HPP__
+#define __UIMEASUREMENT_ACTION_REMOVEDISTANCE_HPP__
 
 #include <fwData/Image.hpp>
 
@@ -23,17 +23,17 @@ namespace action
 /**
  * @brief   This action removes distances.
  * @class   RemoveDistance
- * 
+ *
  * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API RemoveDistance : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (RemoveDistance)( ::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (RemoveDistance)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API RemoveDistance() throw() ;
+    UIMEASUREMENT_API RemoveDistance() throw();
 
-    UIMEASUREMENT_API virtual ~RemoveDistance() throw() ;
+    UIMEASUREMENT_API virtual ~RemoveDistance() throw();
 
 protected:
 
@@ -43,11 +43,11 @@ protected:
 
     void updating() throw (::fwTools::Failed);
 
-    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
+    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed);
 
     void stopping() throw (::fwTools::Failed);
 
-    UIMEASUREMENT_API void info(std::ostream &_sstream ) ;
+    UIMEASUREMENT_API void info(std::ostream &_sstream );
 
 private:
     void notifyNewDistance(::fwData::Image::sptr image, ::fwData::Object::sptr backup);
@@ -59,4 +59,4 @@ private:
 
 } // namespace uiMeasurement
 
-#endif // _UIMEASUREMENT_ACTION_REMOVEDISTANCE_HPP_
+#endif // __UIMEASUREMENT_ACTION_REMOVEDISTANCE_HPP__

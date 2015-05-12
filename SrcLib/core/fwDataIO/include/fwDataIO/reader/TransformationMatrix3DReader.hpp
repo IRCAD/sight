@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef  _DATAIO_READER_TRANSFORMATIONMATRIXREADER3D_HPP_
-#define  _DATAIO_READER_TRANSFORMATIONMATRIXREADER3D_HPP_
+#ifndef  __FWDATAIO_READER_TRANSFORMATIONMATRIX3DREADER_HPP__
+#define  __FWDATAIO_READER_TRANSFORMATIONMATRIX3DREADER_HPP__
 
 #include <boost/shared_ptr.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -14,14 +14,16 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
 
-namespace fwDataIO {
+namespace fwDataIO
+{
 
-namespace reader {
+namespace reader
+{
 
 /**
  * @brief   Reader for transformation of 3D Matrix. Read file format .trf
  * @class   TransformationMatrix3DReader
- * 
+ *
  * @date    2009
  *
  * Ircad reader to read a ::fwData::TransformationMatrix3D on filesystem which the file format
@@ -34,7 +36,8 @@ class FWDATAIO_CLASS_API TransformationMatrix3DReader :
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((TransformationMatrix3DReader)(GenericObjectReader< ::fwData::TransformationMatrix3D >),
+    fwCoreClassDefinitionsWithFactoryMacro((TransformationMatrix3DReader)(GenericObjectReader< ::fwData::
+                                                                                               TransformationMatrix3D >),
                                            (()),
                                            ::fwDataIO::reader::factory::New< TransformationMatrix3DReader >
                                            );
@@ -57,4 +60,4 @@ public:
 
 }
 
-#endif /*  _DATAIO_READER_TRANSFORMATIONMATRIXREADER3D_HPP_ */
+#endif /*  __FWDATAIO_READER_TRANSFORMATIONMATRIX3DREADER_HPP__ */

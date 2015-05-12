@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,24 +16,26 @@ namespace fwComEd
 {
 
 std::string TransferFunctionMsg::MODIFIED_POINTS = "MODIFIED_POINTS";
-std::string TransferFunctionMsg::WINDOWING = "WINDOWING";
+std::string TransferFunctionMsg::WINDOWING       = "WINDOWING";
 
 //-----------------------------------------------------------------------------
 
 TransferFunctionMsg::TransferFunctionMsg(::fwServices::ObjectMsg::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 TransferFunctionMsg::~TransferFunctionMsg() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void TransferFunctionMsg::setWindowLevel( double window, double level )
 {
     this->addEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
-    m_level = level;
+    m_level  = level;
     m_window = window;
 }
 

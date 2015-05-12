@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_ADAPTOR_SCALEVALUES_HPP_
-#define _SCENE2D_ADAPTOR_SCALEVALUES_HPP_
+#ifndef __SCENE2D_ADAPTOR_SCALEVALUES_HPP__
+#define __SCENE2D_ADAPTOR_SCALEVALUES_HPP__
 
 #include <scene2D/adaptor/IAdaptor.hpp>
 
@@ -20,7 +20,7 @@ class SCENE2D_CLASS_API ScaleValues : public ::scene2D::adaptor::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ScaleValues)(::scene2D::adaptor::IAdaptor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ScaleValues)(::scene2D::adaptor::IAdaptor) );
 
     /// Constructor, set the x and y spacing to 10
     SCENE2D_API ScaleValues() throw();
@@ -30,48 +30,48 @@ public:
 
 protected:
     /**
-    * @brief Configuring the ScaleValues adaptor.
-    *
-    * Example of configuration
-    * @verbatim
-    <adaptor id="scaleValues" class="::scene2D::adaptor::ScaleValues" objectId="self">
-        <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1" 
+     * @brief Configuring the ScaleValues adaptor.
+     *
+     * Example of configuration
+     * @verbatim
+       <adaptor id="scaleValues" class="::scene2D::adaptor::ScaleValues" objectId="self">
+        <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
-    </adaptor>
-    @endverbatim
-    * - \<config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
-    *   color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/\> : Set the config.
-    *
-    * \b xMin : mandatory : Set the minimum X value to display.
-    *
-    * \b xMax : mandatory : Set the maximum X value to display.
-    *
-    * \b yMin : mandatory : Set the minimum Y value to display.
-    *
-    * \b yMax : mandatory : Set the maximum Y value to display.
-    *
-    * \b xInterval : no mandatory (default value : 10) : Set the interval between 2 consecutive values on the X axis.
-    *
-    * \b yInterval : no mandatory (default value : 10) : Set the interval between 2 consecutive values on the Y axis.
-    *
-    * \b color : no mandatory (default value : white) : Set the foreground color of the values.
-    *
-    * \b xAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : 
-    * Set the X axis of this adaptor.
-    *
-    * \b yAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : 
-    * Set the Y axis of this adaptor.
-    *
-    * \b zValue : no mandatory (default value : 0) : Set the zValue of this adaptor
-    * (the higher the zValue, the higher the layer is).
-    *
-    * \b viewportUID : mandatory : a viewport that help us to manage the scaling of the graphic object
-    *
-    * \b showXScale : no mandatory : tells if the scale on the X axis has to be shown (value: "true" or "false")
-    *
-    * \b showYScale : no mandatory : tells if the scale on the Y axis has to be shown (value: "true" or "false")
-    *
-    */
+       </adaptor>
+       @endverbatim
+     * - \<config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
+     *   color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/\> : Set the config.
+     *
+     * \b xMin : mandatory : Set the minimum X value to display.
+     *
+     * \b xMax : mandatory : Set the maximum X value to display.
+     *
+     * \b yMin : mandatory : Set the minimum Y value to display.
+     *
+     * \b yMax : mandatory : Set the maximum Y value to display.
+     *
+     * \b xInterval : no mandatory (default value : 10) : Set the interval between 2 consecutive values on the X axis.
+     *
+     * \b yInterval : no mandatory (default value : 10) : Set the interval between 2 consecutive values on the Y axis.
+     *
+     * \b color : no mandatory (default value : white) : Set the foreground color of the values.
+     *
+     * \b xAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) :
+     * Set the X axis of this adaptor.
+     *
+     * \b yAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) :
+     * Set the Y axis of this adaptor.
+     *
+     * \b zValue : no mandatory (default value : 0) : Set the zValue of this adaptor
+     * (the higher the zValue, the higher the layer is).
+     *
+     * \b viewportUID : mandatory : a viewport that help us to manage the scaling of the graphic object
+     *
+     * \b showXScale : no mandatory : tells if the scale on the X axis has to be shown (value: "true" or "false")
+     *
+     * \b showYScale : no mandatory : tells if the scale on the Y axis has to be shown (value: "true" or "false")
+     *
+     */
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
 
     /// Initialize the layer, set the pen style to DashLine and call the draw() function.
@@ -165,4 +165,4 @@ private:
 } // namespace scene2D
 
 
-#endif // _SCENE2D_ADAPTOR_GRID2D_HPP_
+#endif // __SCENE2D_ADAPTOR_SCALEVALUES_HPP__

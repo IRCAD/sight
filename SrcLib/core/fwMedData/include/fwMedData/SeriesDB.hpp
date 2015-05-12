@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,7 @@ class FWMEDDATA_CLASS_API SeriesDB : public ::fwData::Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (SeriesDB)(::fwData::Object), (()), ::fwData::factory::New< SeriesDB >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (SeriesDB)(::fwData::Object), (()), ::fwData::factory::New< SeriesDB >);
 
     fwCampMakeFriendDataMacro((fwMedData)(SeriesDB));
 
@@ -56,27 +56,75 @@ public:
     typedef ContainerType::size_type size_type;
 
 
-    IteratorType begin() { return m_attrContainer.begin(); }
-    IteratorType end()   { return m_attrContainer.end(); }
-    ConstIteratorType begin() const { return m_attrContainer.begin(); }
-    ConstIteratorType end()   const { return m_attrContainer.end(); }
+    IteratorType begin()
+    {
+        return m_attrContainer.begin();
+    }
+    IteratorType end()
+    {
+        return m_attrContainer.end();
+    }
+    ConstIteratorType begin() const
+    {
+        return m_attrContainer.begin();
+    }
+    ConstIteratorType end()   const
+    {
+        return m_attrContainer.end();
+    }
 
-    ReverseIteratorType rbegin() { return m_attrContainer.rbegin(); }
-    ReverseIteratorType rend()   { return m_attrContainer.rend(); }
-    ConstReverseIteratorType rbegin() const { return m_attrContainer.rbegin(); }
-    ConstReverseIteratorType rend()   const { return m_attrContainer.rend(); }
+    ReverseIteratorType rbegin()
+    {
+        return m_attrContainer.rbegin();
+    }
+    ReverseIteratorType rend()
+    {
+        return m_attrContainer.rend();
+    }
+    ConstReverseIteratorType rbegin() const
+    {
+        return m_attrContainer.rbegin();
+    }
+    ConstReverseIteratorType rend()   const
+    {
+        return m_attrContainer.rend();
+    }
 
-    bool empty() const { return m_attrContainer.empty(); }
-    SizeType size() const { return m_attrContainer.size(); }
+    bool empty() const
+    {
+        return m_attrContainer.empty();
+    }
+    SizeType size() const
+    {
+        return m_attrContainer.size();
+    }
 
-    ValueType front(){ return m_attrContainer.front(); }
-    ValueType back(){ return m_attrContainer.back(); }
+    ValueType front()
+    {
+        return m_attrContainer.front();
+    }
+    ValueType back()
+    {
+        return m_attrContainer.back();
+    }
 
-    ReferenceType operator[] ( size_type n ) {return this->m_attrContainer[n];}
-    ConstReferenceType operator[] ( size_type n ) const {return this->m_attrContainer[n];}
+    ReferenceType operator[] ( size_type n )
+    {
+        return this->m_attrContainer[n];
+    }
+    ConstReferenceType operator[] ( size_type n ) const
+    {
+        return this->m_attrContainer[n];
+    }
 
-    ReferenceType at ( SizeType n ) {return m_attrContainer.at(n);}
-    ConstReferenceType at ( SizeType n ) const {return m_attrContainer.at(n);}
+    ReferenceType at ( SizeType n )
+    {
+        return m_attrContainer.at(n);
+    }
+    ConstReferenceType at ( SizeType n ) const
+    {
+        return m_attrContainer.at(n);
+    }
     /// @}
 
 
@@ -103,7 +151,10 @@ public:
     /**
      * @brief Series container
      * @{ */
-    ContainerType &getContainer(){ return m_attrContainer; };
+    ContainerType &getContainer()
+    {
+        return m_attrContainer;
+    }
     fwDataGetSetCRefMacro(Container, ContainerType);
     /**  @} */
 

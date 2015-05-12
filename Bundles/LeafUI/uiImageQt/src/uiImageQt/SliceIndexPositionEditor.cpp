@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@
 namespace uiImage
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::SliceIndexPositionEditor , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::SliceIndexPositionEditor, ::fwData::Image );
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
@@ -59,7 +59,8 @@ SliceIndexPositionEditor::SliceIndexPositionEditor() throw()
 //------------------------------------------------------------------------------
 
 SliceIndexPositionEditor::~SliceIndexPositionEditor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -67,7 +68,8 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 {
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget * const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -117,10 +119,11 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 
     if( this->m_configuration->size() > 0 )
     {
-        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
-        SLM_ASSERT("Sorry, only one xml element \"sliceIndex\" is accepted.", this->m_configuration->size() == 1 && (*iter)->getName() == "sliceIndex" );
-        SLM_ASSERT("Sorry, xml element \"sliceIndex\" is empty.", ! (*iter)->getValue().empty() );
-        std::string  orientation = (*iter)->getValue();
+        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
+        SLM_ASSERT("Sorry, only one xml element \"sliceIndex\" is accepted.",
+                   this->m_configuration->size() == 1 && (*iter)->getName() == "sliceIndex" );
+        SLM_ASSERT("Sorry, xml element \"sliceIndex\" is empty.", !(*iter)->getValue().empty() );
+        std::string orientation = (*iter)->getValue();
         ::boost::algorithm::trim(orientation);
         ::boost::algorithm::to_lower(orientation);
 
@@ -176,19 +179,21 @@ void SliceIndexPositionEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) 
         {
             imageMessage->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
             ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-            image->setField( fwComEd::Dictionary::m_axialSliceIndexId  , m_axialIndex);
-            image->setField( fwComEd::Dictionary::m_frontalSliceIndexId , m_frontalIndex);
+            image->setField( fwComEd::Dictionary::m_axialSliceIndexId, m_axialIndex);
+            image->setField( fwComEd::Dictionary::m_frontalSliceIndexId, m_frontalIndex);
             image->setField( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
             this->updateSliceIndex();
         }
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )
         {
             ::fwData::Object::csptr cObjInfo = imageMessage->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-            ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-            ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+            ::fwData::Object::sptr objInfo   = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+            ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
 
-            ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] );
-            ::fwData::Integer::sptr toSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] );
+            ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast(
+                info->getContainer()["fromSliceType"] );
+            ::fwData::Integer::sptr toSliceType =
+                ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] );
 
             if( toSliceType->value() == static_cast< int > ( m_orientation ) )
             {
@@ -206,7 +211,8 @@ void SliceIndexPositionEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) 
 //------------------------------------------------------------------------------
 
 void SliceIndexPositionEditor::info( std::ostream &_sstream )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -265,24 +271,24 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
 {
     Orientation type = static_cast< Orientation >( _type );
     OSLM_ASSERT("Bad slice type "<<type, type == X_AXIS ||
-            type == Y_AXIS ||
-            type == Z_AXIS );
+                type == Y_AXIS ||
+                type == Z_AXIS );
 
     // Change data info
-    ::fwData::Composite::sptr info = ::fwData::Composite::New();
+    ::fwData::Composite::sptr info        = ::fwData::Composite::New();
     ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::New();
-    ::fwData::Integer::sptr toSliceType = ::fwData::Integer::New();
-    fromSliceType->value() = static_cast< int > ( m_orientation ) ;
-    toSliceType->value() = static_cast< int > ( type ) ;
+    ::fwData::Integer::sptr toSliceType   = ::fwData::Integer::New();
+    fromSliceType->value()                = static_cast< int > ( m_orientation );
+    toSliceType->value()                  = static_cast< int > ( type );
     info->getContainer()["fromSliceType"] = fromSliceType;
-    info->getContainer()["toSliceType"] = toSliceType;
+    info->getContainer()["toSliceType"]   = toSliceType;
 
     // Change slice type
     m_orientation = type;
 
     // Fire the message
     ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE, info ) ;
+    msg->addEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE, info );
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     ::fwServices::IEditionService::notify(this->getSptr(),  image, msg);
     this->updateSliceIndex();

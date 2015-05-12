@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,17 +22,17 @@ template <typename F>
 struct convert_function_type;
 
 /// Convert class member method type to equivalent function type.
-template <typename R, typename C, typename ...Args >
-struct convert_function_type< R (C::*) ( Args... )  >
+template <typename R, typename C, typename ... Args >
+struct convert_function_type< R (C::*)( Args ... )  >
 {
-    typedef R type( Args... ) ;
+    typedef R type ( Args ... );
 };
 
 /// Convert class const member method type to equivalent function type.
-template <typename R, typename C, typename ...Args >
-struct convert_function_type< R (C::*) ( Args... ) const  >
+template <typename R, typename C, typename ... Args >
+struct convert_function_type< R (C::*)( Args ... ) const  >
 {
-    typedef R type( Args... ) ;
+    typedef R type ( Args ... );
 };
 
 /// Extract function type from a boost function.

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,28 +18,32 @@ namespace fwRuntime
 
 std::ostream & operator<<(std::ostream & _sstream, ConfigurationElement& _configurationElement)
 {
-    _sstream << "Configuration element " << _configurationElement.getName() << " value = " << _configurationElement.getValue() << std::endl;
-    for(ConfigurationElement::AttributeContainer::iterator iter = _configurationElement.m_attributes.begin() ; iter != _configurationElement.m_attributes.end() ; ++iter )
+    _sstream << "Configuration element " << _configurationElement.getName() << " value = " <<
+        _configurationElement.getValue() << std::endl;
+    for(ConfigurationElement::AttributeContainer::iterator iter = _configurationElement.m_attributes.begin();
+        iter != _configurationElement.m_attributes.end(); ++iter )
     {
         _sstream << "Id = " << iter->first << " with value " << iter->second << std::endl;
     }
     _sstream << "Subelement : " << std::endl;
-    for(ConfigurationElementContainer::Container::iterator iter = _configurationElement.begin() ; iter != _configurationElement.end() ; ++iter )
+    for(ConfigurationElementContainer::Container::iterator iter = _configurationElement.begin();
+        iter != _configurationElement.end(); ++iter )
     {
 
         _sstream << std::endl << *(*iter) << std::endl;
     }
 
-    return _sstream ;
+    return _sstream;
 }
 
 //------------------------------------------------------------------------------
 
 ConfigurationElement::ConfigurationElement( const ::boost::shared_ptr< Bundle > bundle, const std::string & name )
-:   m_bundle( bundle    ),
-    m_name  ( name      ),
-    m_value ( std::string("") )
-{}
+    :   m_bundle( bundle    ),
+      m_name  ( name      ),
+      m_value ( std::string("") )
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -63,14 +67,15 @@ const std::string ConfigurationElement::getExistingAttributeValue(const std::str
     AttributeContainer::const_iterator foundPos = m_attributes.find(name);
     if(foundPos == m_attributes.end())
     {
-         FW_RAISE_EXCEPTION(NoSuchAttribute(name));
+        FW_RAISE_EXCEPTION(NoSuchAttribute(name));
     }
     return foundPos->second;
 }
 
 //------------------------------------------------------------------------------
 
-const ConfigurationElement::AttributePair ConfigurationElement::getSafeAttributeValue(const std::string& name) const throw()
+const ConfigurationElement::AttributePair ConfigurationElement::getSafeAttributeValue(const std::string& name) const
+throw()
 {
     AttributeContainer::const_iterator foundPos = m_attributes.find(name);
     if(foundPos == m_attributes.end())
@@ -129,23 +134,26 @@ void ConfigurationElement::setValue(const std::string& value) throw()
 //------------------------------------------------------------------------------
 
 void ConfigurationElement::operator=(const ConfigurationElement&) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 std::vector < ConfigurationElement::sptr > ConfigurationElement::find(
-            std::string name,
-            std::string attribute,
-            std::string attributeValue,
-            int depth
-            )
+    std::string name,
+    std::string attribute,
+    std::string attributeValue,
+    int depth
+    )
 {
     typedef std::vector < ConfigurationElement::sptr > ConfVector;
     ConfVector result;
 
-    bool nameOk = (name.empty() || this->getName() == name);
-    bool attributeOk = (attribute.empty() || this->hasAttribute(attribute));
-    bool attributeValueOk = (attributeValue.empty() || (this->hasAttribute(attribute) && this->getAttributeValue(attribute) == attributeValue));
+    bool nameOk           = (name.empty() || this->getName() == name);
+    bool attributeOk      = (attribute.empty() || this->hasAttribute(attribute));
+    bool attributeValueOk =
+        (attributeValue.empty() ||
+         (this->hasAttribute(attribute) && this->getAttributeValue(attribute) == attributeValue));
     if (nameOk && attributeOk && attributeValueOk)
     {
         result.push_back(this->shared_from_this());
@@ -167,7 +175,9 @@ std::vector < ConfigurationElement::sptr > ConfigurationElement::find(
 
 //-----------------------------------------------------------------------------
 
-ConfigurationElement::~ConfigurationElement() {}
+ConfigurationElement::~ConfigurationElement()
+{
+}
 
 //-----------------------------------------------------------------------------
 

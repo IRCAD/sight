@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWZIP_WRITEARCHIVE_HPP__
-#define __FWZIP_WRITEARCHIVE_HPP__
+#ifndef __FWZIP_IWRITEARCHIVE_HPP__
+#define __FWZIP_IWRITEARCHIVE_HPP__
 
 #include <ostream>
 #include <boost/filesystem/path.hpp>
@@ -26,7 +26,9 @@ public:
 
     fwCoreNonInstanciableClassDefinitionsMacro((IWriteArchive));
 
-    virtual ~IWriteArchive(){};
+    virtual ~IWriteArchive()
+    {
+    }
 
     /**
      * @brief Creates a new file entry in archive and returns output stream for this file.
@@ -57,5 +59,5 @@ public:
 }
 
 
-#endif /* __FWZIP_WRITEARCHIVE_HPP__ */
+#endif /* __FWZIP_IWRITEARCHIVE_HPP__ */
 

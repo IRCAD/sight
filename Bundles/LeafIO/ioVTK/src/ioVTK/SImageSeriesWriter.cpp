@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,7 +40,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::SImageSeriesWriter , ::fwMedData::ImageSeries ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SImageSeriesWriter, ::fwMedData::ImageSeries );
 
 //------------------------------------------------------------------------------
 
@@ -64,8 +64,8 @@ void SImageSeriesWriter::configureWithIHM()
     dialogFile.addFilter("MetaImage","*.mhd");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
@@ -109,7 +109,7 @@ void SImageSeriesWriter::updating() throw(::fwTools::Failed)
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ImageSeries::sptr imageSeries = this->getObject< ::fwMedData::ImageSeries >() ;
+        ::fwMedData::ImageSeries::sptr imageSeries = this->getObject< ::fwMedData::ImageSeries >();
         SLM_ASSERT("ImageSeries is not instanced", imageSeries);
         SLM_ASSERT("Image from ImageSeries is not instanced", imageSeries->getImage());
 

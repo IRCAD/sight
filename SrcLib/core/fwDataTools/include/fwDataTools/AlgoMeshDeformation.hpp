@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATATOOLS_ALGOMESHDEFORMATION_HPP_
-#define _FWDATATOOLS_ALGOMESHDEFORMATION_HPP_
+#ifndef __FWDATATOOLS_ALGOMESHDEFORMATION_HPP__
+#define __FWDATATOOLS_ALGOMESHDEFORMATION_HPP__
 
 #include <fwTools/Failed.hpp>
 
@@ -39,8 +39,8 @@ public:
      * @brief Initialize algorithm's parameters.
      */
     FWDATATOOLS_API void setParam( ::fwData::Mesh::sptr _mesh,
-            const unsigned int _step,
-            const unsigned int _amplitude);
+                                   const unsigned int _step,
+                                   const unsigned int _amplitude);
 
     /**
      * @brief Initialize the simulated acquisition.
@@ -53,9 +53,9 @@ public:
     FWDATATOOLS_API void computeSimu();
 
     /// Compute deformation or init algo if necessary
-    FWDATATOOLS_API  void computeDeformation( ::fwData::Mesh::sptr _mesh,
-            const unsigned int _nbStep,
-            const unsigned int _amplitude );
+    FWDATATOOLS_API void computeDeformation( ::fwData::Mesh::sptr _mesh,
+                                             const unsigned int _nbStep,
+                                             const unsigned int _amplitude );
 
 private:
 
@@ -84,5 +84,5 @@ private:
 
 }   // namespace fwDataTools
 
-#endif  // _FWDATATOOLS_ALGOMESHDEFORMATION_HPP_
+#endif  // __FWDATATOOLS_ALGOMESHDEFORMATION_HPP__
 

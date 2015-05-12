@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,17 +22,19 @@ namespace monitor
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::monitor::action::SDumpAll , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::SDumpAll, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
 SDumpAll::SDumpAll( ) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SDumpAll::~SDumpAll() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -62,9 +64,9 @@ void SDumpAll::updating( ) throw(::fwTools::Failed)
     std::stringstream stream;
     stream << nbBuffDumped << " buffer dumped (" << nbBuffDumped <<"/"<<buffInfoMap.size()<<").";
     ::fwGui::dialog::MessageDialog::showMessageDialog(
-                        "Dump all",
-                        stream.str(),
-                        ::fwGui::dialog::IMessageDialog::INFO);
+        "Dump all",
+        stream.str(),
+        ::fwGui::dialog::IMessageDialog::INFO);
 }
 
 //------------------------------------------------------------------------------

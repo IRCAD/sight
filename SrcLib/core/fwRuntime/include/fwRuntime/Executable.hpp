@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_EXECUTABLE_HPP_
-#define _FWRUNTIME_EXECUTABLE_HPP_
+#ifndef __FWRUNTIME_EXECUTABLE_HPP__
+#define __FWRUNTIME_EXECUTABLE_HPP__
 
 #include <boost/shared_ptr.hpp>
 
@@ -28,7 +28,7 @@ namespace fwRuntime
  * classes being exported by bundles.
  *
  * @date    2004-2009
- * 
+ *
  */
 struct FWRUNTIME_CLASS_API Executable : public IExecutable
 {
@@ -49,28 +49,29 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
 
     FWRUNTIME_API virtual ::boost::shared_ptr<Bundle> getBundle() const throw();
 
-    FWRUNTIME_API virtual void setInitializationData( const ::boost::shared_ptr< ConfigurationElement > configuration ) throw();
+    FWRUNTIME_API virtual void setInitializationData( const ::boost::shared_ptr< ConfigurationElement > configuration )
+    throw();
 
     /// @}
 
 
-protected:
+    protected:
 
-    // Overrides
-    FWRUNTIME_API virtual void setBundle( ::boost::shared_ptr< Bundle > bundle );
+        // Overrides
+        FWRUNTIME_API virtual void setBundle( ::boost::shared_ptr< Bundle > bundle );
 
 
-private:
+    private:
 
-    /**
-     * @brief   a pointer to the bundle that owns the executable instance
-     */
-     ::boost::shared_ptr< Bundle > m_bundle;
+        /**
+         * @brief   a pointer to the bundle that owns the executable instance
+         */
+        ::boost::shared_ptr< Bundle > m_bundle;
 
-    /**
-     * @brief   the initialization data of the executable instance
-     */
-     ::boost::shared_ptr< ConfigurationElement > m_initializationData;
+        /**
+         * @brief   the initialization data of the executable instance
+         */
+        ::boost::shared_ptr< ConfigurationElement > m_initializationData;
 
 };
 
@@ -80,4 +81,4 @@ private:
 
 
 
-#endif //_FWRUNTIME_EXECUTABLE_HPP_
+#endif //__FWRUNTIME_EXECUTABLE_HPP__

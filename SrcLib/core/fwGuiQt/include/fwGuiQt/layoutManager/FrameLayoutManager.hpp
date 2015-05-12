@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_LAYOUTMANAGER_FRAMELAYOUTMANAGER_HPP_
-#define _FWGUIQT_LAYOUTMANAGER_FRAMELAYOUTMANAGER_HPP_
+#ifndef __FWGUIQT_LAYOUTMANAGER_FRAMELAYOUTMANAGER_HPP__
+#define __FWGUIQT_LAYOUTMANAGER_FRAMELAYOUTMANAGER_HPP__
 
 #include <QPointer>
 #include <QObject>
@@ -28,13 +28,14 @@ namespace fwGui
 /**
  * @brief   Defines the frame manager.
  * @class   FrameLayoutManager
- * 
+ *
  * @date    2009-2010.
  *
  */
-class FWGUIQT_CLASS_API FrameLayoutManager : public QObject, public ::fwGui::layoutManager::IFrameLayoutManager
+class FWGUIQT_CLASS_API FrameLayoutManager : public QObject,
+                                             public ::fwGui::layoutManager::IFrameLayoutManager
 {
-    Q_OBJECT
+Q_OBJECT
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (FrameLayoutManager)(::fwGui::layoutManager::IFrameLayoutManager),
@@ -69,6 +70,6 @@ private:
 
 } // namespace fwGui
 
-#endif /*_FWGUIQT_LAYOUTMANAGER_FRAMELAYOUTMANAGER_HPP_*/
+#endif /*__FWGUIQT_LAYOUTMANAGER_FRAMELAYOUTMANAGER_HPP__*/
 
 

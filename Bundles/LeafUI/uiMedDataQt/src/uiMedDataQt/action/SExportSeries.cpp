@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,7 +29,7 @@ namespace action
 {
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMedData::action::SExportSeries , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedData::action::SExportSeries, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -110,7 +110,7 @@ void SExportSeries::stopping() throw(::fwTools::Failed)
 void SExportSeries::updating() throw(::fwTools::Failed)
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    ::fwMedData::Series::sptr series = this->getSeries();
+    ::fwMedData::Series::sptr series     = this->getSeries();
 
     std::string description = series->getDescription();
 
@@ -132,7 +132,7 @@ void SExportSeries::updating() throw(::fwTools::Failed)
     }
 
     description = ::fwGui::dialog::InputDialog::showInputDialog(
-            "Export activity", "Enter the series description", description);
+        "Export activity", "Enter the series description", description);
 
     if(!description.empty())
     {
@@ -173,7 +173,7 @@ void SExportSeries::configuring() throw(::fwTools::Failed)
 {
     SLM_ASSERT("Object " << m_seriesId << " doesn't exist", ::fwTools::fwID::exist(m_seriesId));
 
-    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_seriesId);
+    ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(m_seriesId);
     ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
     SLM_ASSERT("Object " << m_seriesId << " is not a '::fwMedData::Series'", series);
 

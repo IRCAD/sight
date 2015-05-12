@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,17 +32,19 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioITK::InrImageWriterService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioITK::InrImageWriterService, ::fwData::Image );
 
 //------------------------------------------------------------------------------
 
 InrImageWriterService::InrImageWriterService() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 InrImageWriterService::~InrImageWriterService() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -64,8 +66,8 @@ void InrImageWriterService::configureWithIHM()
     dialogFile.addFilter("Inrimage","*.inr.gz");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
@@ -119,16 +121,16 @@ void InrImageWriterService::saveImage( const ::boost::filesystem::path &inrFile,
     catch (const std::exception & e)
     {
         std::stringstream ss;
-               ss << "Warning during saving : " << e.what();
-               ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                                  ss.str(),
-                                                                  ::fwGui::dialog::IMessageDialog::WARNING);
+        ss << "Warning during saving : " << e.what();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
+                                                          ss.str(),
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                    "Warning during saving",
-                                    ::fwGui::dialog::IMessageDialog::WARNING);
+                                                          "Warning during saving",
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _OPVTKMESH_SVTKMESHER_HPP_
-#define _OPVTKMESH_SVTKMESHER_HPP_
+#ifndef __OPVTKMESH_SVTKMESHER_HPP__
+#define __OPVTKMESH_SVTKMESHER_HPP__
 
 #include <string>
 
@@ -16,18 +16,18 @@ namespace opVTKMesh
 {
 
 /**
-* @brief Service  to generate mesh with VTK
-*/
+ * @brief Service  to generate mesh with VTK
+ */
 class OPVTKMESH_CLASS_API SVTKMesher : public ::opVTKMesh::IMesher
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SVTKMesher)(::opVTKMesh::IMesher) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SVTKMesher)(::opVTKMesh::IMesher) );
 
-    OPVTKMESH_API SVTKMesher() throw() ;
+    OPVTKMESH_API SVTKMesher() throw();
 
-    OPVTKMESH_API virtual ~SVTKMesher() throw() ;
+    OPVTKMESH_API virtual ~SVTKMesher() throw();
 
 protected:
 
@@ -55,9 +55,9 @@ protected:
 
     OPVTKMESH_API virtual void updating() throw ( ::fwTools::Failed );
 
-    OPVTKMESH_API virtual  void info ( std::ostream &_sstream ) ;
+    OPVTKMESH_API virtual void info ( std::ostream &_sstream );
 
-private :
+private:
 
     unsigned int m_reduction;
     std::string m_imageKey;
@@ -68,4 +68,4 @@ private :
 } // namespace opVTKMesh
 
 
-#endif // _OPVTKMESH_SVTKMESHER_HPP_
+#endif // __OPVTKMESH_SVTKMESHER_HPP__

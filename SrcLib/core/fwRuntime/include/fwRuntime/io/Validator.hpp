@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_IO_VALIDATOR_HPP_
-#define _FWRUNTIME_IO_VALIDATOR_HPP_
+#ifndef __FWRUNTIME_IO_VALIDATOR_HPP__
+#define __FWRUNTIME_IO_VALIDATOR_HPP__
 
 #include <string>
 #include <sstream>
@@ -33,7 +33,7 @@ namespace io
  * It seems that this class use a static ivar to save schemaValidationContext. If your call a instance of an visitor this ivar should not be
  * directly well positionned. So the recommandation is to construct Validator-Use it-destry it and never store him
  * @date    2007-2009
- * 
+ *
  */
 struct Validator
 {
@@ -108,22 +108,22 @@ struct Validator
     FWRUNTIME_API std::string getXsdContent();
 
 
-private:
+    private:
 
-    void initializeContext();
+        void initializeContext();
 
-    std::string             m_xsd_content ;
-    std::ostringstream      m_errorLog;
+        std::string m_xsd_content;
+        std::ostringstream m_errorLog;
 
-    typedef ::boost::shared_ptr< xmlSchemaParserCtxt > SchemaParserCtxtSptr;
-    typedef ::boost::shared_ptr< xmlSchema > SchemaSptr;
-    typedef ::boost::shared_ptr< xmlSchemaValidCtxt > SchemaValidCtxtSptr;
+        typedef ::boost::shared_ptr< xmlSchemaParserCtxt > SchemaParserCtxtSptr;
+        typedef ::boost::shared_ptr< xmlSchema > SchemaSptr;
+        typedef ::boost::shared_ptr< xmlSchemaValidCtxt > SchemaValidCtxtSptr;
 
-    SchemaParserCtxtSptr  m_schemaParserContext;
-    SchemaSptr            m_schema;
-    SchemaValidCtxtSptr   m_schemaValidContext;
+        SchemaParserCtxtSptr m_schemaParserContext;
+        SchemaSptr m_schema;
+        SchemaValidCtxtSptr m_schemaValidContext;
 
-    static void ErrorHandler( void * userData, xmlErrorPtr error );
+        static void ErrorHandler( void * userData, xmlErrorPtr error );
 
 };
 
@@ -135,4 +135,4 @@ private:
 
 
 
-#endif /*_FWRUNTIME_IO_VALIDATOR_HPP_*/
+#endif /*__FWRUNTIME_IO_VALIDATOR_HPP__*/

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,13 +22,16 @@ namespace container
 //-----------------------------------------------------------------------------
 
 QtContainer::QtContainer(::fwGui::GuiBaseObject::Key key) throw() : m_container(0)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 QtContainer::~QtContainer() throw()
 {
-   SLM_ASSERT( "Error during destruction : The qt container included in this class is still allocated, please call destroyContainer() before.", m_container == 0 );
+    SLM_ASSERT(
+        "Error during destruction : The qt container included in this class is still allocated, please call destroyContainer() before.",
+        m_container == 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -83,7 +86,7 @@ bool QtContainer::isShownOnScreen()
 void QtContainer::setVisible(bool isVisible)
 {
     SLM_ASSERT("Sorry, QtContainer not yet initialized, cleaning impossible", m_container);
-    QWidget* parent = m_container->parentWidget();
+    QWidget* parent   = m_container->parentWidget();
     QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
     if(dock)
     {

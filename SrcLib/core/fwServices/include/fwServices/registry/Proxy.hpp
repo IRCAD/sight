@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ namespace registry
 /**
  * @class Proxy
  * @brief This class defines a proxy for signal/slot connections.
- * 
+ *
  * @date 2012.
  *
  * @note All the signals registered in a Proxy's channel are connected to all slots registered in the same channel.
@@ -35,7 +35,7 @@ namespace registry
 class FWSERVICES_CLASS_API Proxy : public ::fwCore::BaseObject
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro((Proxy)(::fwCore::BaseObject), (()), ::boost::make_shared< Proxy >);
 
@@ -78,7 +78,7 @@ public :
     /// Unregisters the slot. Disconnects it from the signals in channel
     FWSERVICES_API void disconnect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot);
 
-protected :
+protected:
 
     /// Association channels, SigSlot
     ChannelMapType m_channels;

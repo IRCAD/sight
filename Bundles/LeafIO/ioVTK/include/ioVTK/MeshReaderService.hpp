@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOVTK_MESHREADERSERVICE_HPP_
-#define _IOVTK_MESHREADERSERVICE_HPP_
+#ifndef __IOVTK_MESHREADERSERVICE_HPP__
+#define __IOVTK_MESHREADERSERVICE_HPP__
 
 #include <string>
 #include <boost/filesystem/path.hpp>
@@ -34,17 +34,19 @@ namespace ioVTK
 class IOVTK_CLASS_API MeshReaderService : public ::io::IReader
 {
 
-public :
-    ~MeshReaderService() throw() {}
+public:
+    ~MeshReaderService() throw()
+    {
+    }
 
-    fwCoreServiceClassDefinitionsMacro ( (MeshReaderService)( ::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MeshReaderService)( ::io::IReader) );
 
     /**
-    * @brief Configure the image path.
-    *
-    * This method is used to find
-    * the file path  using a file selector.
-    */
+     * @brief Configure the image path.
+     *
+     * This method is used to find
+     * the file path  using a file selector.
+     */
     IOVTK_API virtual void configureWithIHM();
 
 
@@ -53,25 +55,25 @@ protected:
     IOVTK_API virtual ::io::IOPathType getIOPathType() const;
 
     /**
-    * @brief Starting method.
-    *
-    * This method is used to initialize the service.
-    */
+     * @brief Starting method.
+     *
+     * This method is used to initialize the service.
+     */
     IOVTK_API virtual void starting() throw(::fwTools::Failed);
 
     /**
-    * @brief Stopping method.
-    *
-    * The stopping method is empty for this service.
-    */
+     * @brief Stopping method.
+     *
+     * The stopping method is empty for this service.
+     */
     IOVTK_API virtual void stopping() throw(::fwTools::Failed);
 
     /**
-    * @brief Updating method.
-    *
-    * This method is used to update the service.
-    * The image is read.
-    */
+     * @brief Updating method.
+     *
+     * This method is used to update the service.
+     * The image is read.
+     */
     IOVTK_API void updating() throw(::fwTools::Failed);
 
     /**
@@ -81,27 +83,29 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
+    void receiving( CSPTR(::fwServices::ObjectMsg)_msg ) throw(::fwTools::Failed)
+    {
+    }
 
     /**
-    * @brief Info method.
-    *
-    * This method is used to give
-    * informations about the service.
-    */
-    IOVTK_API void info(std::ostream &_sstream ) ;
+     * @brief Info method.
+     *
+     * This method is used to give
+     * informations about the service.
+     */
+    IOVTK_API void info(std::ostream &_sstream );
 
 
-private :
+private:
 
     /**
-    * @brief Load a VTK mesh.
-    * @param[in] _vtkFile ::boost::filesystem::path.
-    * @param[out] _pMesh ::boost::shared_ptr< ::fwData::Mesh >.
-    * @return bool.
-    *
-    * This method is used to load a mesh using the file path.
-    */
+     * @brief Load a VTK mesh.
+     * @param[in] _vtkFile ::boost::filesystem::path.
+     * @param[out] _pMesh ::boost::shared_ptr< ::fwData::Mesh >.
+     * @return bool.
+     *
+     * This method is used to load a mesh using the file path.
+     */
     void loadMesh( const ::boost::filesystem::path _vtkFile, ::fwData::Mesh::sptr _pMesh );
 
     /**
@@ -113,18 +117,18 @@ private :
     void notificationOfUpdate();
 
     /**
-    * @brief the m_bServiceIsConfigured value is \b true
-    * if the mesh path is known.
-    */
+     * @brief the m_bServiceIsConfigured value is \b true
+     * if the mesh path is known.
+     */
     bool m_bServiceIsConfigured;
 
     /**
-    * @brief Mesh path.
-    */
+     * @brief Mesh path.
+     */
     ::boost::filesystem::path m_fsMeshPath;
 
 };
 
 } // namespace ioVTK
 
-#endif //_IOVTK_MESHREADERSERVICE_HPP_
+#endif //__IOVTK_MESHREADERSERVICE_HPP__

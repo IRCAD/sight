@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@ namespace helper
 /**
  * @brief   Helper to manage a thread. The thread launches a function and catches its exception.
  * @class   Thread
- * 
+ *
  * @date    2012.
  *
  * @note    It is used for unit test.
@@ -57,17 +57,23 @@ public:
     FWTEST_API bool timedJoin(int time, bool raise = true);
 
     /// Return the exception raised in function launched by thread
-    CPPUNIT_NS::Exception getException() {return m_exception;}
+    CPPUNIT_NS::Exception getException()
+    {
+        return m_exception;
+    }
 
     /// Return true if function launched by thread raised exception
-    bool hasFailed() {return m_hasFailed;}
+    bool hasFailed()
+    {
+        return m_hasFailed;
+    }
 
     /**
      * @brief If any, throws the exception raised by the thread function.
      */
     void throwException();
 
-private :
+private:
 
     /// Method launched by thread : call run(f) surrounded by try/catch
     void run(FunctionType f);

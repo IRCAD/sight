@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_DL_DARWIN_HPP
-#define _FWRUNTIME_DL_DARWIN_HPP
+#ifndef __FWRUNTIME_DL_DARWIN_HPP__
+#define __FWRUNTIME_DL_DARWIN_HPP__
 
 
 #ifdef __MACOSX__
@@ -28,7 +28,7 @@ namespace dl
  * @struct  Darwin
  * @date    2004-2009
  *
- * 
+ *
  */
 struct Darwin : public Native
 {
@@ -75,28 +75,28 @@ struct Darwin : public Native
     void unload() throw(RuntimeException);
 
 
-protected:
+    protected:
 
-    /**
-     * @brief   Retrieves the native module file prefix.
-     *
-     * @return  a string containing the native module file prefix
-     */
-    const std::string getNativeFilePrefix() const throw();
+        /**
+         * @brief   Retrieves the native module file prefix.
+         *
+         * @return  a string containing the native module file prefix
+         */
+        const std::string getNativeFilePrefix() const throw();
 
-    /**
-     * @brief   Retrieves the native module file suffix.
-     *
-     * @return  a string containing the native module file suffix
-     */
-    const std::string getNativeFileSuffix() const throw();
+        /**
+         * @brief   Retrieves the native module file suffix.
+         *
+         * @return  a string containing the native module file suffix
+         */
+        const std::string getNativeFileSuffix() const throw();
 
-private:
+    private:
 
-    /**
-     * @brief   The handle of the loaded module.
-     */
-    void *m_handle;
+        /**
+         * @brief   The handle of the loaded module.
+         */
+        void *m_handle;
 
 };
 
@@ -107,4 +107,4 @@ private:
 
 #endif // #ifdef __MACOSX__
 
-#endif // _FWRUNTIME_DL_DARWIN_HPP
+#endif // __FWRUNTIME_DL_DARWIN_HPP__

@@ -27,7 +27,7 @@ class FWDATA_CLASS_API Material : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::factory::New< Material >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Material)(::fwData::Object), (()), ::fwData::factory::New< Material >);
     fwCampMakeFriendDataMacro((fwData)(Material));
 
 
@@ -47,8 +47,8 @@ public:
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
     /**
-    * @brief returns editable ambient color
-    */
+     * @brief returns editable ambient color
+     */
     FWDATA_API Color::sptr ambient() const;
 
     /**
@@ -59,8 +59,8 @@ public:
     FWDATA_API void setAmbient(Color::sptr ambient);
 
     /**
-    * @brief returns editable diffuse color
-    */
+     * @brief returns editable diffuse color
+     */
     FWDATA_API Color::sptr diffuse() const;
 
     /**
@@ -71,8 +71,8 @@ public:
     FWDATA_API void setDiffuse(Color::sptr diffuse);
 
     /**
-    * @brief returns editable diffuse texture
-    */
+     * @brief returns editable diffuse texture
+     */
     FWDATA_API Image::sptr getDiffuseTexture() const;
 
     /**
@@ -131,13 +131,14 @@ public:
         REPEAT,
     } WrappingType;
 
-    fwGettersSettersDocMacro(ShadingMode, shadingMode, SHADING_MODE, the shading models(flat, gouraud, phong).);
-    fwGettersSettersDocMacro(RepresentationMode, representationMode, REPRESENTATION_MODE, the representation models(edge, point, wireframe, surface).);
-    fwGettersSettersDocMacro(OptionsMode, optionsMode, OPTIONS_MODE, the option representation (Standard, normals).);
-    fwGettersSettersDocMacro(DiffuseTextureFiltering, diffuseTextureFiltering, FilteringType, the texture filtering.);
-    fwGettersSettersDocMacro(DiffuseTextureWrapping, diffuseTextureWrapping, WrappingType, the texture wrapping.);
+    fwGettersSettersDocMacro(ShadingMode, shadingMode, SHADING_MODE, "the shading models(flat, gouraud, phong).");
+    fwGettersSettersDocMacro(RepresentationMode, representationMode, REPRESENTATION_MODE,
+                             "the representation models(edge, point, wireframe, surface).");
+    fwGettersSettersDocMacro(OptionsMode, optionsMode, OPTIONS_MODE, "the option representation (Standard, normals).");
+    fwGettersSettersDocMacro(DiffuseTextureFiltering, diffuseTextureFiltering, FilteringType, "the texture filtering.");
+    fwGettersSettersDocMacro(DiffuseTextureWrapping, diffuseTextureWrapping, WrappingType, "the texture wrapping.");
 
-protected :
+protected:
 
     /// Shading mode (flat, Gouraud, Phong)
     SHADING_MODE m_shadingMode;

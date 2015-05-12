@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIMAGEQT_IMAGEINFO_HPP
-#define _UIIMAGEQT_IMAGEINFO_HPP
+#ifndef __UIIMAGEQT_IMAGEINFO_HPP__
+#define __UIIMAGEQT_IMAGEINFO_HPP__
 
 
 #include <QObject>
@@ -26,20 +26,21 @@ namespace uiImage
 /**
  * @brief   ImageInfo service allows to display image pixel information.
  * @class   ImageInfo
- * 
+ *
  * @date    2010.
  */
-class UIIMAGEQT_CLASS_API ImageInfo : public QObject, public ::gui::editor::IEditor
+class UIIMAGEQT_CLASS_API ImageInfo : public QObject,
+                                      public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageInfo)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageInfo)(::gui::editor::IEditor) );
 
-    UIIMAGEQT_API ImageInfo() throw() ;
+    UIIMAGEQT_API ImageInfo() throw();
 
-    UIIMAGEQT_API virtual ~ImageInfo() throw() ;
+    UIIMAGEQT_API virtual ~ImageInfo() throw();
 
 protected:
 
@@ -58,7 +59,7 @@ protected:
 
     virtual void configuring() throw( ::fwTools::Failed);
 
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 
 private:
@@ -69,4 +70,4 @@ private:
 
 } // uiImage
 
-#endif /*_UIIMAGEQT_IMAGEINFO_HPP*/
+#endif /*__UIIMAGEQT_IMAGEINFO_HPP__*/

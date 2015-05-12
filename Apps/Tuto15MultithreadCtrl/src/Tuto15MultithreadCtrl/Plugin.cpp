@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,8 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 //-----------------------------------------------------------------------------
 
 Plugin::~Plugin() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -105,8 +106,9 @@ int Plugin::run() throw()
     ::fwData::Object::ObjectModifiedSignalType::sptr sig
         = array->signal< ::fwData::Object::ObjectModifiedSignalType>( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
-    ::fwCom::Connection showConnection = sig->connect(srvShow->slot( ::fwServices::IService::s_RECEIVE_SLOT) );
-    ::fwCom::Connection incrementConnection = sig->connect(srvIncrement->slot( ::fwServices::IService::s_RECEIVE_SLOT) );
+    ::fwCom::Connection showConnection      = sig->connect(srvShow->slot( ::fwServices::IService::s_RECEIVE_SLOT) );
+    ::fwCom::Connection incrementConnection =
+        sig->connect(srvIncrement->slot( ::fwServices::IService::s_RECEIVE_SLOT) );
 
 
     srvRead->start().wait();
@@ -115,12 +117,12 @@ int Plugin::run() throw()
 
     srvRead->update().wait();
 
-    unsigned long long count = 1<<30 ;
-    double d = 4<<2;
+    unsigned long long count = 1<<30;
+    double d                 = 4<<2;
 
     OSLM_INFO("Computing " << count << " square roots.");
 
-    for (unsigned long long i = 0; i < count ; ++i)
+    for (unsigned long long i = 0; i < count; ++i)
     {
         d = std::sqrt(d);
     }

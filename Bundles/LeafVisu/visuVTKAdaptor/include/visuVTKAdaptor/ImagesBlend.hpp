@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_IMAGESBLEND_HPP_
-#define _VISUVTKADAPTOR_IMAGESBLEND_HPP_
+#ifndef __VISUVTKADAPTOR_IMAGESBLEND_HPP__
+#define __VISUVTKADAPTOR_IMAGESBLEND_HPP__
 
 #include <fwServices/helper/SigSlotConnection.hpp>
 
@@ -31,31 +31,35 @@ namespace visuVTKAdaptor
 /**
  * @brief Manage blend for image given in configuration.
  */
-class VISUVTKADAPTOR_CLASS_API ImagesBlend: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API ImagesBlend : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImagesBlend)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImagesBlend)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API ImagesBlend() throw();
 
     VISUVTKADAPTOR_API virtual ~ImagesBlend() throw();
 
-    void setVtkImageRegisterId(std::string id) {m_imageRegisterId = id;};
+    void setVtkImageRegisterId(std::string id)
+    {
+        m_imageRegisterId = id;
+    }
 
-protected :
+protected:
 
     class ImageInfo
     {
 
     public:
-        ImageInfo():
+        ImageInfo() :
             m_useTFAlfa(false),
             m_imageOpacity(1.0)
-        {}
+        {
+        }
 
-        bool   m_useTFAlfa;
+        bool m_useTFAlfa;
         double m_imageOpacity;
         std::string m_tfSelectionFwID;
         std::string m_selectedTFKey;
@@ -96,4 +100,4 @@ protected :
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_IMAGESBLEND_HPP_
+#endif // __VISUVTKADAPTOR_IMAGESBLEND_HPP__

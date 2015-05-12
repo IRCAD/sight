@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,13 +24,13 @@ namespace helper
 /**
  * @brief   Defines an helper to modify an ::fwData::Vector and create in parallel the message to announce this modification.
  * @class  Vector
- * 
+ *
  * @date    2007-20013.
  */
 class FWCOMED_CLASS_API Vector
 {
 
-public :
+public:
 
     /// Constructor. Initialize parameters.
     FWCOMED_API Vector( ::fwData::Vector::wptr vector );
@@ -62,9 +62,9 @@ public :
     FWCOMED_API void clear();
 
     /// Send the message of modification
-    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource, bool notifySource=false );
+    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource, bool notifySource = false );
 
-private :
+private:
 
     ::fwComEd::VectorMsg::sptr m_vectorMsg;
     ::fwData::Vector::wptr m_vector;

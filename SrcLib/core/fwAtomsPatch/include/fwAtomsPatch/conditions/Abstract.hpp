@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMSPATCH_CONDITION_ABSTRACT_HPP__
-#define __FWATOMSPATCH_CONDITION_ABSTRACT_HPP__
+#ifndef __FWATOMSPATCH_CONDITIONS_ABSTRACT_HPP__
+#define __FWATOMSPATCH_CONDITIONS_ABSTRACT_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -38,7 +38,9 @@ public:
     FWATOMSPATCH_API virtual bool test(::fwAtoms::Base::sptr old);
 
 protected:
-    Abstract() {};
+    Abstract()
+    {
+    }
     Abstract(::fwAtoms::Base::sptr defaultValue);
 
     ::fwAtoms::Base::sptr m_defaultValue;
@@ -50,4 +52,4 @@ protected:
 
 } // namespace fwAtomsPatch
 
-#endif /* __FWATOMSPATCH_CONDITION_ABSTRACT_HPP__ */
+#endif /* __FWATOMSPATCH_CONDITIONS_ABSTRACT_HPP__ */

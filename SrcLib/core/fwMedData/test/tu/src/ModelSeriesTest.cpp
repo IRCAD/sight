@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -78,7 +78,7 @@ void ModelSeriesTest::deepCopyTest()
     CPPUNIT_ASSERT(m_series);
 
     ::fwData::Reconstruction::sptr rec1 = ::fwData::Reconstruction::New();
-    ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    ::fwData::Mesh::sptr mesh1          = ::fwData::Mesh::New();
     ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
 
     rec1->setMesh(mesh1);
@@ -103,7 +103,7 @@ void ModelSeriesTest::shallowCopyTest()
     CPPUNIT_ASSERT(m_series);
 
     ::fwData::Reconstruction::sptr rec1 = ::fwData::Reconstruction::New();
-    ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+    ::fwData::Mesh::sptr mesh1          = ::fwData::Mesh::New();
     ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
     rec1->setMesh(mesh1);
     ModelSeries::ReconstructionVectorType recs;

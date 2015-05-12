@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioVTK::MeshReaderService , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioVTK::MeshReaderService, ::fwData::Mesh );
 
 //------------------------------------------------------------------------------
 
@@ -58,8 +58,8 @@ void MeshReaderService::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
@@ -117,18 +117,18 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
         ss << "Warning during loading : " << e.what();
 
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                ss.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            ss.str(),
+            ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         std::stringstream ss;
         ss << "Warning during loading. ";
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                "Warning during loading.",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            "Warning during loading.",
+            ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -141,7 +141,7 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >() ;
+        ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();
         SLM_ASSERT("pMesh not instanced", pMesh);
 
         ::fwGui::Cursor cursor;
@@ -162,8 +162,8 @@ void MeshReaderService::notificationOfUpdate()
     ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();
     SLM_ASSERT("pMesh not instanced", pMesh);
 
-    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();;
-    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH ) ;
+    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
+    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
     ::fwServices::IEditionService::notify(this->getSptr(), pMesh, msg);
 }
 

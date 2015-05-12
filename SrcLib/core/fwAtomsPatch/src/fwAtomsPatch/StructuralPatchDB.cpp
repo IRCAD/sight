@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@ void StructuralPatchDB::registerPatch(::fwAtomsPatch::IStructuralPatch::sptr pat
 {
     VersionIDType source = std::make_pair(patch->getOriginClassname(), patch->getOriginVersion());
     VersionIDType target = std::make_pair(patch->getTargetClassname(), patch->getTargetVersion());
-    PatchKeyType key = std::make_pair(source, target);
+    PatchKeyType key     = std::make_pair(source, target);
     ::fwCore::mt::WriteLock lock(m_mutex);
     m_patches[key] = patch;
 }
@@ -25,13 +25,13 @@ void StructuralPatchDB::registerPatch(::fwAtomsPatch::IStructuralPatch::sptr pat
 // ----------------------------------------------------------------------------
 
 ::fwAtomsPatch::IStructuralPatch::sptr StructuralPatchDB::getPatch(const std::string& originClassname,
-    const std::string& originVersion,
-    const std::string& targetClassname,
-    const std::string& targetVersion) const
+                                                                   const std::string& originVersion,
+                                                                   const std::string& targetClassname,
+                                                                   const std::string& targetVersion) const
 {
     const VersionIDType source = std::make_pair(originClassname, originVersion);
     const VersionIDType target = std::make_pair(targetClassname, targetVersion);
-    const PatchKeyType key = std::make_pair(source, target);
+    const PatchKeyType key     = std::make_pair(source, target);
 
     ::fwCore::mt::ReadLock lock(m_mutex);
     PatchesType::const_iterator it = m_patches.find(key);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,13 +28,16 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-ArrayReader::ArrayReader(::fwDataIO::reader::IObjectReader::Key key) : ::fwData::location::enableSingleFile< IObjectReader >(this)
-{}
+ArrayReader::ArrayReader(::fwDataIO::reader::IObjectReader::Key key) : ::fwData::location::enableSingleFile<
+                                                                           IObjectReader >(this)
+{
+}
 
 //------------------------------------------------------------------------------
 
 ArrayReader::~ArrayReader()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -47,7 +50,7 @@ void ArrayReader::read()
     ::fwComEd::helper::Array arrayHelper(array);
 
     size_t arraySizeInBytes = array->resize(array->getSize());
-    char* buff = arrayHelper.begin();
+    char* buff              = arrayHelper.begin();
 
     std::ifstream fs(file.string().c_str(), std::ios::in|std::ios::binary|std::ios::ate);
 
@@ -57,7 +60,7 @@ void ArrayReader::read()
     fs.seekg(0, std::ios::beg);
 
     FW_RAISE_IF(file << ": Bad file size, expected: " << arraySizeInBytes << ", was: " << fileSize,
-            arraySizeInBytes - fileSize != 0);
+                arraySizeInBytes - fileSize != 0);
 
     fs.read(buff, arraySizeInBytes);
 
@@ -66,7 +69,7 @@ void ArrayReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string  ArrayReader::extension()
+std::string ArrayReader::extension()
 {
     return (".raw");
 }

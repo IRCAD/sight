@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@ fwMemoryPolicyRegisterMacro(::fwMemory::policy::AlwaysDump);
 //------------------------------------------------------------------------------
 
 void AlwaysDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType size )
+                                    BufferInfo::SizeType size )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -33,7 +33,7 @@ void AlwaysDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager:
 //------------------------------------------------------------------------------
 
 void AlwaysDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType size )
+                             BufferInfo::SizeType size )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -44,7 +44,7 @@ void AlwaysDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstB
 //------------------------------------------------------------------------------
 
 void AlwaysDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType newSize )
+                                    BufferInfo::SizeType newSize )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -109,7 +109,7 @@ size_t AlwaysDump::dump()
         BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, bufferInfos)
         {
             const ::fwMemory::BufferInfo &info = elt.second;
-            if( ! ( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
+            if( !( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
             {
                 if( manager->dumpBuffer(elt.first).get() )
                 {

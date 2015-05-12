@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_FWRUNTIME_HPP
-#define _FWRUNTIME_FWRUNTIME_HPP
+#ifndef __FWRUNTIME_RUNTIME_HPP__
+#define __FWRUNTIME_RUNTIME_HPP__
 
 #include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
@@ -18,13 +18,13 @@
 
 namespace fwRuntime
 {
-    struct Bundle;
-    struct ConfigurationElement;
-    struct Extension;
-    struct ExtensionPoint;
-    struct IExecutable;
-    struct ExecutableFactory;
-    struct IPlugin;
+struct Bundle;
+struct ConfigurationElement;
+struct Extension;
+struct ExtensionPoint;
+struct IExecutable;
+struct ExecutableFactory;
+struct IPlugin;
 }
 
 namespace fwRuntime
@@ -34,7 +34,7 @@ namespace fwRuntime
  * @brief   Defines the runtime class.
  * @struct  Runtime
  * @date    2004-2009
- * 
+ *
  */
 struct Runtime
 {
@@ -43,10 +43,10 @@ struct Runtime
      */
     //@{
     typedef std::set< ::boost::shared_ptr<Bundle> >     BundleContainer;    ///< Defines the bundle container type.
-    typedef BundleContainer::iterator                   BundleIterator;     ///< Defines the bundle container iterator type.
+    typedef BundleContainer::iterator BundleIterator;                       ///< Defines the bundle container iterator type.
 
     typedef std::set< ::boost::shared_ptr<Extension> >  ExtensionContainer; ///< Defines the extension container type.
-    typedef ExtensionContainer::iterator                ExtensionIterator;  ///< Defines the extension container type.
+    typedef ExtensionContainer::iterator ExtensionIterator;                 ///< Defines the extension container type.
     //@}
 
 
@@ -112,7 +112,8 @@ struct Runtime
      *
      * @return      a shared pointer to the found bundle or null if none
      */
-    FWRUNTIME_API ::boost::shared_ptr< Bundle > findBundle( const std::string & identifier, const Version & version = Version() ) const;
+    FWRUNTIME_API ::boost::shared_ptr< Bundle > findBundle( const std::string & identifier,
+                                                            const Version & version = Version() ) const;
 
     //@}
 
@@ -165,7 +166,9 @@ struct Runtime
      *
      * @return  a pointer to the created executable instance
      */
-    FWRUNTIME_API IExecutable * createExecutableInstance( const std::string & type, ::boost::shared_ptr< ConfigurationElement > configurationElement ) throw( RuntimeException );
+    FWRUNTIME_API IExecutable * createExecutableInstance( const std::string & type,
+                                                          ::boost::shared_ptr< ConfigurationElement > configurationElement )
+    throw( RuntimeException );
 
     /**
      * @brief       Retrieves the executable factory for the given identifier.
@@ -262,29 +265,29 @@ struct Runtime
     FWRUNTIME_API ::boost::shared_ptr< ExtensionPoint > findExtensionPoint( const std::string & identifier ) const;
     //@}
 
-private:
+    private:
 
-    typedef std::set< ::boost::shared_ptr< ExecutableFactory > > ExecutableFactoryContainer;    ///< Defines the executable factory container type.
-    typedef std::set< ::boost::shared_ptr<ExtensionPoint> > ExtensionPointContainer;            ///< Defines the extension point container type.
-    typedef std::vector< ::boost::shared_ptr<IPlugin> > PluginContainer;                        ///< Defines the plugin container type.
+        typedef std::set< ::boost::shared_ptr< ExecutableFactory > > ExecutableFactoryContainer; ///< Defines the executable factory container type.
+        typedef std::set< ::boost::shared_ptr<ExtensionPoint> > ExtensionPointContainer;        ///< Defines the extension point container type.
+        typedef std::vector< ::boost::shared_ptr<IPlugin> > PluginContainer;                    ///< Defines the plugin container type.
 
-    static ::boost::shared_ptr<Runtime> m_instance; ///< The runtime instance.
+        static ::boost::shared_ptr<Runtime> m_instance; ///< The runtime instance.
 
-    ExecutableFactoryContainer                  m_executableFactories;  ///< Contains all executable factories.
-    ExtensionContainer                          m_extensions;           ///< Contains all registered extensions.
-    ExtensionPointContainer                     m_extensionPoints;      ///< Contains all registered extension points.
-    BundleContainer                             m_bundles;              ///< Contains all bundles.
-    PluginContainer                             m_plugins;              ///< Contains all plugins.
+        ExecutableFactoryContainer m_executableFactories;               ///< Contains all executable factories.
+        ExtensionContainer m_extensions;                                ///< Contains all registered extensions.
+        ExtensionPointContainer m_extensionPoints;                      ///< Contains all registered extension points.
+        BundleContainer m_bundles;                                      ///< Contains all bundles.
+        PluginContainer m_plugins;                                      ///< Contains all plugins.
 
 
-    /**
-     * @brief   Constructor.
-     */
-    Runtime();
+        /**
+         * @brief   Constructor.
+         */
+        Runtime();
 };
 
 
 } // namespace fwRuntime
 
 
-#endif // #define _FWRUNTIME_FWRUNTIME_HPP
+#endif //__FWRUNTIME_RUNTIME_HPP__

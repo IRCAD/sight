@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,8 @@
 fwCampImplementMacro((fwMemory)(BufferObject))
 {
     builder.tag("buffer")
-           .function("classname", &::fwMemory::BufferObject::className)
-           .function("is_a", (bool (::fwMemory::BufferObject::*)(const std::string &) const) &::fwMemory::BufferObject::isA);
+    .function("classname", &::fwMemory::BufferObject::className)
+    .function("is_a", (bool (::fwMemory::BufferObject::*)(const std::string &) const) &::fwMemory::BufferObject::isA);
 }
 
 namespace fwMemory
@@ -18,7 +18,7 @@ namespace fwMemory
 
 
 
-BufferObject::BufferObject():
+BufferObject::BufferObject() :
     m_buffer(0),
     m_size(0),
     m_bufferManager(::fwMemory::BufferManager::getDefault()),
@@ -42,7 +42,7 @@ void BufferObject::allocate(SizeType size, const ::fwMemory::BufferAllocationPol
 {
     m_bufferManager->allocateBuffer(&m_buffer, size, policy).get();
     m_allocPolicy = policy;
-    m_size = size;
+    m_size        = size;
 }
 
 //------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ void BufferObject::destroy()
 {
     m_bufferManager->destroyBuffer(&m_buffer).get();
     m_allocPolicy = ::fwMemory::BufferNoAllocPolicy::New();
-    m_size = 0;
+    m_size        = 0;
 }
 
 //------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ void BufferObject::setBuffer(::fwMemory::BufferManager::BufferType buffer, SizeT
 {
     m_bufferManager->setBuffer(&m_buffer, buffer, size, policy).get();
     m_allocPolicy = policy;
-    m_size   = size;
+    m_size        = size;
 }
 
 //------------------------------------------------------------------------------
@@ -107,13 +107,13 @@ BufferManager::StreamInfo BufferObject::getStreamInfo() const
 //------------------------------------------------------------------------------
 
 void BufferObject::setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory) &factory,
-                        SizeType size,
-                        const ::boost::filesystem::path &sourceFile,
-                        ::fwMemory::FileFormatType format,
-                        const ::fwMemory::BufferAllocationPolicy::sptr &policy
-                        )
+                                     SizeType size,
+                                     const ::boost::filesystem::path &sourceFile,
+                                     ::fwMemory::FileFormatType format,
+                                     const ::fwMemory::BufferAllocationPolicy::sptr &policy
+                                     )
 {
-    m_size = size;
+    m_size        = size;
     m_allocPolicy = policy;
     m_bufferManager->setIStreamFactory(&m_buffer, factory, size, sourceFile, format, policy).get();
 }

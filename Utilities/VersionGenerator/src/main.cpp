@@ -1,9 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
- 
+
 #include <stdlib.h>
 #include <string>
 #include <iostream>
@@ -20,15 +20,15 @@
  *********************
  * Allows to generate a file with .versions extesion
  * This file contains the listof the data and theirs version.
- * HELP  : VersionGenerator.exe --help 
+ * HELP  : VersionGenerator.exe --help
  * USE :   VersionGenerator.exe \<options\>
  * Allowed options:
  *   -h [ --help ]           produce help message
  *   -o [ --output ] arg     set the output file
  *   -f [ --context ] arg     set context name. It will be register in the generated file.
- *   -v [ --version ] arg    set version name. It will be register in the generated file. 
+ *   -v [ --version ] arg    set version name. It will be register in the generated file.
  */
- 
+
 int main(int argc, char** argv)
 {
     // Declare the supported options.
@@ -45,7 +45,8 @@ int main(int argc, char** argv)
     ::boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
     ::boost::program_options::notify(vm);
 
-    if (vm.count("help")) {
+    if (vm.count("help"))
+    {
         std::cout << desc << "\n";
         return EXIT_SUCCESS;
     }
@@ -65,10 +66,10 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    // Generate the result 
+    // Generate the result
     ::boost::filesystem::path versionFile(vm["output"].as< std::string >());
     ::fwAtomsPatch::VersionsManager::generateNewFile(versionFile, vm["context"].as< std::string >(),
-            vm["version"].as< std::string >());
+                                                     vm["version"].as< std::string >());
 
     return EXIT_SUCCESS;
 }

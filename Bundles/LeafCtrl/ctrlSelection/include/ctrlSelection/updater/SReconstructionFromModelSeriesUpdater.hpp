@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __CTRLSELECTION_SRECONSTRUCTIONFROMMODELSERIESUPDATER_HPP__
-#define __CTRLSELECTION_SRECONSTRUCTIONFROMMODELSERIESUPDATER_HPP__
+#ifndef __CTRLSELECTION_UPDATER_SRECONSTRUCTIONFROMMODELSERIESUPDATER_HPP__
+#define __CTRLSELECTION_UPDATER_SRECONSTRUCTIONFROMMODELSERIESUPDATER_HPP__
 
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
 
 namespace fwData
 {
-    class Reconstruction;
+class Reconstruction;
 }
 
 namespace ctrlSelection
@@ -27,15 +27,15 @@ namespace updater
 class CTRLSELECTION_CLASS_API SReconstructionFromModelSeriesUpdater : public ::ctrlSelection::IUpdaterSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SReconstructionFromModelSeriesUpdater)(::ctrlSelection::IUpdaterSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SReconstructionFromModelSeriesUpdater)(::ctrlSelection::IUpdaterSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API SReconstructionFromModelSeriesUpdater() throw() ;
+    CTRLSELECTION_API SReconstructionFromModelSeriesUpdater() throw();
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~SReconstructionFromModelSeriesUpdater() throw() ;
+    CTRLSELECTION_API virtual ~SReconstructionFromModelSeriesUpdater() throw();
 
 protected:
 
@@ -53,7 +53,7 @@ protected:
             <update compositeKey="reconstructionKey" onEvent="NEW_RECONSTRUCTION" fromUID="*" actionType="ADD_OR_SWAP"/>
             <update compositeKey="reconstructionKey" onEvent="CLEAR" fromUID="modelSeries" actionType="REMOVE"/>
         </service>
-      @endverbatim
+       @endverbatim
      * The '*' value for "fromUID" mean that the message could be received from every objects
      * @see IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr configuration);
      */
@@ -82,5 +82,5 @@ private:
 } // namespace updater
 } // namespace ctrlSelection
 
-#endif // __CTRLSELECTION_SRECONSTRUCTIONFROMMODELSERIESUPDATER_HPP__
+#endif // __CTRLSELECTION_UPDATER_SRECONSTRUCTIONFROMMODELSERIESUPDATER_HPP__
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_MEDICALIMAGEADAPTOR_HPP_
-#define _FWCOMED_MEDICALIMAGEADAPTOR_HPP_
+#ifndef __FWCOMED_HELPER_MEDICALIMAGEADAPTOR_HPP__
+#define __FWCOMED_HELPER_MEDICALIMAGEADAPTOR_HPP__
 
 #include <vector>
 
@@ -43,11 +43,12 @@ public:
 
 
     /// Image orientation
-    typedef enum {
+    typedef enum
+    {
         X_AXIS = 0,
         Y_AXIS,
         Z_AXIS
-    } Orientation ;
+    } Orientation;
 
     /// Destructor. Do nothing.
     FWCOMED_API virtual ~MedicalImageAdaptor();
@@ -56,7 +57,10 @@ public:
     FWCOMED_API virtual void setOrientation( Orientation orientation );
 
     /// Return the image orientation.
-    Orientation getOrientation(){ return m_orientation; }
+    Orientation getOrientation()
+    {
+        return m_orientation;
+    }
 
 
 
@@ -250,7 +254,7 @@ protected:
     // Helper to send a windowing notification in the current tf
     FWCOMED_API ::fwComEd::TransferFunctionMsg::sptr notifyTFWindowing( ::fwServices::IService::sptr srv );
 
-private :
+private:
 
     ::fwCom::Connection m_tfSelectionConnection;
     ::fwCom::Connection m_tfConnection;
@@ -266,12 +270,13 @@ private :
 
 };
 
-struct Image0 {} ;
-struct Image1 {} ;
+struct Image0 {};
+struct Image1 {};
 
 template < typename IMAGEID >
 class FWCOMED_CLASS_API MedicalImageAdaptorTpl : public MedicalImageAdaptor
-{};
+{
+};
 
 typedef MedicalImageAdaptorTpl<Image0> MedicalImageAdaptorImg0;
 typedef MedicalImageAdaptorTpl<Image1> MedicalImageAdaptorImg1;
@@ -281,7 +286,7 @@ typedef MedicalImageAdaptorTpl<Image1> MedicalImageAdaptorImg1;
 template< typename FLOAT_ARRAY_3 >
 void MedicalImageAdaptor::getImageSpacing(FLOAT_ARRAY_3 spacing)
 {
-    ::fwData::Image::sptr image = this->getImage();;
+    ::fwData::Image::sptr image = this->getImage();
 
     const ::fwData::Image::SpacingType imSpacing = image->getSpacing();
     std::copy(imSpacing.begin(), imSpacing.end(), spacing);
@@ -306,9 +311,11 @@ void MedicalImageAdaptor::worldToSliceIndex(const WORLD world, INT_INDEX index )
     this->getImageSpacing(spacing);
     double origin[3];
     this->getImageOrigin(origin);
-    for ( int i=0 ; i<3 ; ++i )
+    for ( int i = 0; i<3; ++i )
     {
-        index[i] = static_cast< int >( ( (world[i] - origin[i])/spacing[i] ) + ( ( (world[i] - origin[i])/spacing[i] ) >= 0 ? 0.5 : -0.5 ) );
+        index[i] =
+            static_cast< int >( ( (world[i] - origin[i])/spacing[i] ) +
+                                ( ( (world[i] - origin[i])/spacing[i] ) >= 0 ? 0.5 : -0.5 ) );
     }
 }
 
@@ -341,5 +348,5 @@ void MedicalImageAdaptor::worldToImageSliceIndex(const WORLD world, INT_INDEX in
 
 } //namespace fwComEd
 
-#endif // _FWCOMED_MEDICALIMAGEADAPTOR_HPP_
+#endif // __FWCOMED_HELPER_MEDICALIMAGEADAPTOR_HPP__
 

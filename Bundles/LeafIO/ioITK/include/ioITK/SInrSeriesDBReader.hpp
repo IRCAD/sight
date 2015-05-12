@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,8 +37,8 @@ namespace ioITK
 class IOITK_CLASS_API SInrSeriesDBReader : public ::io::IReader
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (SInrSeriesDBReader)( ::io::IReader) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (SInrSeriesDBReader)( ::io::IReader) );
 
     IOITK_API SInrSeriesDBReader() throw();
 
@@ -47,13 +47,17 @@ public :
 protected:
 
     /// Does nothing.
-    virtual void starting() throw(::fwTools::Failed){};
+    virtual void starting() throw(::fwTools::Failed)
+    {
+    }
 
     /// Does nothing.
-    virtual void stopping() throw(::fwTools::Failed){};
+    virtual void stopping() throw(::fwTools::Failed)
+    {
+    }
 
     /// Reads inr files specified by user (configure or configureWithIHM) and pushes them into SeriesDB.
-    IOITK_API virtual void updating() throw(::fwTools::Failed) ;
+    IOITK_API virtual void updating() throw(::fwTools::Failed);
 
     /**
      * @brief Configure the inr files path.
@@ -65,10 +69,10 @@ protected:
     /// Returns managed file type, here FILES
     IOITK_API ::io::IOPathType getIOPathType() const;
 
-private :
+private:
 
     /// Initializes Series with dummy values and Study with specified instanceUID.
-    void  initSeries(SPTR(::fwMedData::Series) series, const std::string& instanceUID);
+    void initSeries(SPTR(::fwMedData::Series) series, const std::string& instanceUID);
 
     /// Reads specified inr file in image.
     bool createImage( const ::boost::filesystem::path inrFile, SPTR(::fwData::Image) image );

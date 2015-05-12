@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,7 +41,9 @@ public:
     NumericSimplePropertyVisitor( const ::fwAtoms::Numeric::sptr & typedAtom,
                                   ::camp::UserObject & campDataObj,
                                   const camp::SimpleProperty& property ) :
-        m_typedAtom(typedAtom), m_campDataObj(campDataObj), m_property(property) {}
+        m_typedAtom(typedAtom), m_campDataObj(campDataObj), m_property(property)
+    {
+    }
 
     void operator()( ::boost::blank & ) const
     {
@@ -75,7 +77,9 @@ public:
                                  ::camp::UserObject & campDataObj,
                                  const camp::ArrayProperty& property,
                                  unsigned int index ) :
-                 m_typedAtom(typedAtom), m_campDataObj(campDataObj), m_property(property), m_index(index) {}
+        m_typedAtom(typedAtom), m_campDataObj(campDataObj), m_property(property), m_index(index)
+    {
+    }
 
     void operator()( ::boost::blank & ) const
     {
@@ -129,7 +133,9 @@ public:
                                ::camp::UserObject & campDataObj,
                                const camp::MapProperty& property,
                                const std::string & key ) :
-        m_typedAtom(typedAtom), m_campDataObj(campDataObj), m_property(property), m_key(key) {}
+        m_typedAtom(typedAtom), m_campDataObj(campDataObj), m_property(property), m_key(key)
+    {
+    }
 
     void operator()( ::boost::blank & ) const
     {
@@ -151,19 +157,22 @@ public:
 //-----------------------------------------------------------------------------
 
 AtomToDataMappingVisitor::AtomToDataMappingVisitor(
-        ::fwData::Object::sptr dataObj,
-         ::fwAtoms::Object::sptr atomObj,
-          AtomVisitor::DataCacheType & cache,
-          const AtomVisitor::IReadPolicy &uuidPolicy)
- : m_dataObj(dataObj),
-   m_campDataObj( m_dataObj.get() ),
-   m_atomObj(atomObj),
-   m_cache(cache),
-   m_uuidPolicy(uuidPolicy)
-{}
+    ::fwData::Object::sptr dataObj,
+    ::fwAtoms::Object::sptr atomObj,
+    AtomVisitor::DataCacheType & cache,
+    const AtomVisitor::IReadPolicy &uuidPolicy)
+    : m_dataObj(dataObj),
+      m_campDataObj( m_dataObj.get() ),
+      m_atomObj(atomObj),
+      m_cache(cache),
+      m_uuidPolicy(uuidPolicy)
+{
+}
 
 
-AtomToDataMappingVisitor::~AtomToDataMappingVisitor(){}
+AtomToDataMappingVisitor::~AtomToDataMappingVisitor()
+{
+}
 
 
 void AtomToDataMappingVisitor::visit(const camp::SimpleProperty& property)
@@ -173,22 +182,22 @@ void AtomToDataMappingVisitor::visit(const camp::SimpleProperty& property)
 
     std::stringstream msg;
     msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
-    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), ! atom );
+    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
 
     switch( atom->type() )
     {
-    case ::fwAtoms::Base::NUMERIC :
-    {
-        ::fwAtoms::Numeric::sptr typedAtom = ::fwAtoms::Numeric::dynamicCast( atom );
-        ::boost::apply_visitor( NumericSimplePropertyVisitor(typedAtom,m_campDataObj,property),
-                                typedAtom->getVariant() );
-        break;
-    }
-    default:
-    {
-        property.set( m_campDataObj, atom->getString() );
-        break;
-    }
+        case ::fwAtoms::Base::NUMERIC:
+        {
+            ::fwAtoms::Numeric::sptr typedAtom = ::fwAtoms::Numeric::dynamicCast( atom );
+            ::boost::apply_visitor( NumericSimplePropertyVisitor(typedAtom,m_campDataObj,property),
+                                    typedAtom->getVariant() );
+            break;
+        }
+        default:
+        {
+            property.set( m_campDataObj, atom->getString() );
+            break;
+        }
     }
 
 }
@@ -201,7 +210,7 @@ void AtomToDataMappingVisitor::visit(const camp::EnumProperty& property)
 
     std::stringstream msg;
     msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
-    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), ! atom );
+    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
 
     property.set( m_campDataObj, atom->getString() );
 }
@@ -215,52 +224,52 @@ void AtomToDataMappingVisitor::visit(const camp::UserProperty& property)
     {
         switch( atom->type() )
         {
-        case ::fwAtoms::Base::BLOB :
-        {
-            ::fwAtoms::Blob::sptr blobAtom = ::fwAtoms::Blob::dynamicCast(atom);
-            ::fwMemory::BufferObject::sptr buffer;
-            buffer = ::camp_ext::ValueMapper< ::fwAtoms::Blob::sptr >::to(blobAtom);
-            FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
-                    "A blob cannot contain a null buffer pointer"),
-                    ! buffer );
-            property.set( m_campDataObj, ::camp::UserObject(buffer) );
-            break;
-        }
-        case ::fwAtoms::Base::OBJECT :
-        {
-            ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(atom);
-            ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy );
-            property.set( m_campDataObj, objectData );
-            break;
-        }
-        default :
-        {
-            std::stringstream msg;
-            msg << "Attribute of type '";
-            switch( atom->type() )
+            case ::fwAtoms::Base::BLOB:
             {
-            case ::fwAtoms::Base::BOOLEAN :
-                msg << "BOOLEAN";
-                break;
-            case ::fwAtoms::Base::STRING :
-                msg << "STRING";
-                break;
-            case ::fwAtoms::Base::NUMERIC :
-                msg << "NUMERIC";
-                break;
-            case ::fwAtoms::Base::MAP :
-                msg << "MAP";
-                break;
-            case ::fwAtoms::Base::SEQUENCE :
-                msg << "SEQUENCE";
-                break;
-            default:
+                ::fwAtoms::Blob::sptr blobAtom = ::fwAtoms::Blob::dynamicCast(atom);
+                ::fwMemory::BufferObject::sptr buffer;
+                buffer = ::camp_ext::ValueMapper< ::fwAtoms::Blob::sptr >::to(blobAtom);
+                FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
+                                           "A blob cannot contain a null buffer pointer"),
+                                       !buffer );
+                property.set( m_campDataObj, ::camp::UserObject(buffer) );
                 break;
             }
-            msg <<"', are not supported in the data conversion process.";
-            FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
-            break;
-        }
+            case ::fwAtoms::Base::OBJECT:
+            {
+                ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(atom);
+                ::fwData::Object::sptr objectData  = ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy );
+                property.set( m_campDataObj, objectData );
+                break;
+            }
+            default:
+            {
+                std::stringstream msg;
+                msg << "Attribute of type '";
+                switch( atom->type() )
+                {
+                    case ::fwAtoms::Base::BOOLEAN:
+                        msg << "BOOLEAN";
+                        break;
+                    case ::fwAtoms::Base::STRING:
+                        msg << "STRING";
+                        break;
+                    case ::fwAtoms::Base::NUMERIC:
+                        msg << "NUMERIC";
+                        break;
+                    case ::fwAtoms::Base::MAP:
+                        msg << "MAP";
+                        break;
+                    case ::fwAtoms::Base::SEQUENCE:
+                        msg << "SEQUENCE";
+                        break;
+                    default:
+                        break;
+                }
+                msg <<"', are not supported in the data conversion process.";
+                FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
+                break;
+            }
         }
     }
 }
@@ -273,7 +282,7 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
 
     std::stringstream msg;
     msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
-    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), ! atom );
+    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
 
     ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast(atom);
     unsigned int index = 0;
@@ -298,66 +307,67 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
         {
             switch( elemAtom->type() )
             {
-            case ::fwAtoms::Base::BOOLEAN :
-            case ::fwAtoms::Base::STRING :
-            {
-                std::string value = elemAtom->getString();
+                case ::fwAtoms::Base::BOOLEAN:
+                case ::fwAtoms::Base::STRING:
+                {
+                    std::string value = elemAtom->getString();
 
-                if( property.dynamic() )
-                {
-                    property.insert( m_campDataObj, index, value );
+                    if( property.dynamic() )
+                    {
+                        property.insert( m_campDataObj, index, value );
+                    }
+                    else
+                    {
+                        property.set( m_campDataObj, index, value );
+                    }
+                    break;
                 }
-                else
+                case ::fwAtoms::Base::NUMERIC:
                 {
-                    property.set( m_campDataObj, index, value );
+                    ::fwAtoms::Numeric::sptr typedAtom = ::fwAtoms::Numeric::dynamicCast( elemAtom );
+                    ::boost::apply_visitor( NumericArrayPropertyVisitor(typedAtom,m_campDataObj,property,index),
+                                            typedAtom->getVariant() );
+                    break;
                 }
-                break;
-            }
-            case ::fwAtoms::Base::NUMERIC :
-            {
-                ::fwAtoms::Numeric::sptr typedAtom = ::fwAtoms::Numeric::dynamicCast( elemAtom );
-                ::boost::apply_visitor( NumericArrayPropertyVisitor(typedAtom,m_campDataObj,property,index),
-                                        typedAtom->getVariant() );
-                break;
-            }
 
-            case ::fwAtoms::Base::OBJECT :
-            {
-                ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom);
-                ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy);
+                case ::fwAtoms::Base::OBJECT:
+                {
+                    ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom);
+                    ::fwData::Object::sptr objectData  =
+                        ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy);
 
-                if( property.dynamic() )
-                {
-                    property.insert( m_campDataObj, index, objectData );
+                    if( property.dynamic() )
+                    {
+                        property.insert( m_campDataObj, index, objectData );
+                    }
+                    else
+                    {
+                        property.set( m_campDataObj, index, objectData );
+                    }
+                    break;
                 }
-                else
-                {
-                    property.set( m_campDataObj, index, objectData );
-                }
-                break;
-            }
-            default :
-            {
-                std::stringstream msg;
-                msg << "fwAtoms::Sequence elements of type '";
-                switch( elemAtom->type() )
-                {
-                case ::fwAtoms::Base::BLOB :
-                    msg << "BLOB";
-                    break;
-                case ::fwAtoms::Base::MAP :
-                    msg << "MAP";
-                    break;
-                case ::fwAtoms::Base::SEQUENCE :
-                    msg << "SEQUENCE";
-                    break;
                 default:
+                {
+                    std::stringstream msg;
+                    msg << "fwAtoms::Sequence elements of type '";
+                    switch( elemAtom->type() )
+                    {
+                        case ::fwAtoms::Base::BLOB:
+                            msg << "BLOB";
+                            break;
+                        case ::fwAtoms::Base::MAP:
+                            msg << "MAP";
+                            break;
+                        case ::fwAtoms::Base::SEQUENCE:
+                            msg << "SEQUENCE";
+                            break;
+                        default:
+                            break;
+                    }
+                    msg <<"', are not supported in the data conversion process.";
+                    FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
                     break;
                 }
-                msg <<"', are not supported in the data conversion process.";
-                FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
-                break;
-            }
             }
         }
         ++index;
@@ -372,7 +382,7 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
 
     std::stringstream msg;
     msg << "Atom attribute is not well formed. Attribute '" << name << "' missing for data conversion";
-    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), ! atom );
+    FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged( msg.str() ), !atom );
 
     ::fwAtoms::Map::sptr mapAtom = ::fwAtoms::Map::dynamicCast(atom);
 
@@ -390,49 +400,50 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
         {
             switch( elemAtom.second->type() )
             {
-            case ::fwAtoms::Base::BOOLEAN :
-            case ::fwAtoms::Base::STRING :
-            {
-                std::string value = elemAtom.second->getString();
-                property.set( m_campDataObj, elemAtom.first, value );
-                break;
-            }
-            case ::fwAtoms::Base::NUMERIC :
-            {
-                ::fwAtoms::Numeric::sptr typedAtom = ::fwAtoms::Numeric::dynamicCast( elemAtom.second );
-                ::boost::apply_visitor( NumericMapPropertyVisitor(typedAtom,m_campDataObj,property,elemAtom.first),
-                                        typedAtom->getVariant() );
-                break;
-            }
-            case ::fwAtoms::Base::OBJECT :
-            {
-                ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom.second);
-                ::fwData::Object::sptr objectData = ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy);
-                property.set( m_campDataObj, elemAtom.first, objectData );
-                break;
-            }
-            default :
-            {
-                std::stringstream msg;
-                msg << "fwAtoms::Map value elements of type '";
-                switch( elemAtom.second->type() )
+                case ::fwAtoms::Base::BOOLEAN:
+                case ::fwAtoms::Base::STRING:
                 {
-                case ::fwAtoms::Base::BLOB :
-                    msg << "BLOB";
-                    break;
-                case ::fwAtoms::Base::MAP :
-                    msg << "MAP";
-                    break;
-                case ::fwAtoms::Base::SEQUENCE :
-                    msg << "SEQUENCE";
-                    break;
-                default:
+                    std::string value = elemAtom.second->getString();
+                    property.set( m_campDataObj, elemAtom.first, value );
                     break;
                 }
-                msg <<"', are not supported in the data conversion process.";
-                FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
-                break;
-            }
+                case ::fwAtoms::Base::NUMERIC:
+                {
+                    ::fwAtoms::Numeric::sptr typedAtom = ::fwAtoms::Numeric::dynamicCast( elemAtom.second );
+                    ::boost::apply_visitor( NumericMapPropertyVisitor(typedAtom,m_campDataObj,property,elemAtom.first),
+                                            typedAtom->getVariant() );
+                    break;
+                }
+                case ::fwAtoms::Base::OBJECT:
+                {
+                    ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast(elemAtom.second);
+                    ::fwData::Object::sptr objectData  =
+                        ::fwAtomConversion::convert( objectAtom, m_cache, m_uuidPolicy);
+                    property.set( m_campDataObj, elemAtom.first, objectData );
+                    break;
+                }
+                default:
+                {
+                    std::stringstream msg;
+                    msg << "fwAtoms::Map value elements of type '";
+                    switch( elemAtom.second->type() )
+                    {
+                        case ::fwAtoms::Base::BLOB:
+                            msg << "BLOB";
+                            break;
+                        case ::fwAtoms::Base::MAP:
+                            msg << "MAP";
+                            break;
+                        case ::fwAtoms::Base::SEQUENCE:
+                            msg << "SEQUENCE";
+                            break;
+                        default:
+                            break;
+                    }
+                    msg <<"', are not supported in the data conversion process.";
+                    FW_RAISE_EXCEPTION( exception::ConversionNotManaged(msg.str()) );
+                    break;
+                }
             }
         }
     }

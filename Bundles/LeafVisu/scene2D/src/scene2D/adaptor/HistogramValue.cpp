@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ namespace adaptor
 {
 
 HistogramValue::HistogramValue() throw()
-: m_color(Qt::white), m_isInteracting(false), m_fontSize(8)
+    : m_color(Qt::white), m_isInteracting(false), m_fontSize(8)
 {
 //    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
@@ -58,14 +58,15 @@ void HistogramValue::configuring() throw( ::fwTools::Failed)
     }
 
     SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
-            !m_configuration->getAttributeValue("viewportUID").empty());
+               !m_configuration->getAttributeValue("viewportUID").empty());
 
     if( !m_configuration->getAttributeValue("viewportUID").empty() )
     {
-        m_viewportID =  m_configuration->getAttributeValue("viewportUID");
+        m_viewportID = m_configuration->getAttributeValue("viewportUID");
     }
 
-    SLM_ASSERT("'histogramPointUID' attribute is missing.", !m_configuration->getAttributeValue("histogramPointUID").empty());
+    SLM_ASSERT("'histogramPointUID' attribute is missing.", !m_configuration->getAttributeValue(
+                   "histogramPointUID").empty());
     m_histogramPointUID = m_configuration->getAttributeValue("histogramPointUID");
 }
 
@@ -98,7 +99,7 @@ void HistogramValue::doStart() throw( ::fwTools::Failed)
     m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
 
     m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+        this->slot(::fwServices::IService::s_RECEIVE_SLOT));
 
     // Add the layer containing grid's lines to the scene
     this->getScene2DRender()->getScene()->addItem(m_layer);
@@ -119,31 +120,31 @@ void HistogramValue::doUpdate() throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
+    ::fwData::Histogram::sptr histogram           = this->getObject< ::fwData::Histogram>();
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
-    const float histogramMinValue = histogram->getMinValue();
+    const float histogramMinValue  = histogram->getMinValue();
     const float histogramBinsWidth = histogram->getBinsWidth();
 
     // Event coordinates in scene
     ::scene2D::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
 
     int histIndex = (int) sceneCoord.getX();
-    int index = (histIndex - histogramMinValue) / histogramBinsWidth;
+    int index     = (histIndex - histogramMinValue) / histogramBinsWidth;
 
     if(index >= 0 && index < (int)values.size() && m_isInteracting) // avoid std out_of_range on Windows
     {
         ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
         const double viewportHeight = viewport->getHeight();
-        const double viewportWidth = viewport->getWidth();
+        const double viewportWidth  = viewport->getWidth();
 
-        const double viewportSizeRatio = viewportHeight / viewportWidth;
+        const double viewportSizeRatio    = viewportHeight / viewportWidth;
         const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
 
-        Scene2DRatio ratio = this->getRatio();  // Total ratio
+        Scene2DRatio ratio        = this->getRatio(); // Total ratio
         double viewportWidthRatio = this->getViewportSizeRatio().first;
 
-        double diameterH  = m_fontSize;
-        double diameterV  = m_fontSize * viewportSizeRatio;
+        double diameterH = m_fontSize;
+        double diameterV = m_fontSize * viewportSizeRatio;
 
         diameterV /= viewportWidthRatio;
         diameterV *= viewInitialSizeRatio;
@@ -181,7 +182,7 @@ void HistogramValue::doUpdate() throw( ::fwTools::Failed)
 void HistogramValue::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwComEd::HistogramMsg::csptr histoMsg = ::fwComEd::HistogramMsg::dynamicConstCast(_msg);
+    ::fwComEd::HistogramMsg::csptr histoMsg         = ::fwComEd::HistogramMsg::dynamicConstCast(_msg);
     ::scene2D::data::ViewportMsg::csptr viewportMsg = ::scene2D::data::ViewportMsg::dynamicConstCast(_msg);
 
     if (histoMsg && histoMsg->hasEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED))

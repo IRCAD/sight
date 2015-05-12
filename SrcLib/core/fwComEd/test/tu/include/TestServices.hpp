@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_TU_TESTSERVICES_HPP_
-#define _FWCOMED_TU_TESTSERVICES_HPP_
+#ifndef __FWCOMED_UT_TESTSERVICES_HPP__
+#define __FWCOMED_UT_TESTSERVICES_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -29,33 +29,59 @@ namespace ut
  */
 class TestService : public ::fwServices::IService
 {
-public :
-    fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) );
     TestService() throw()
-    :   m_isUpdated(false),
-        m_isUpdatedMessage(false)
-        {}
+        :   m_isUpdated(false),
+          m_isUpdatedMessage(false)
+    {
+    }
 
-    virtual ~TestService() throw() {}
+    virtual ~TestService() throw()
+    {
+    }
 
     /// return true if the service is updated with updating() method
-    bool getIsUpdated() { return m_isUpdated; }
+    bool getIsUpdated()
+    {
+        return m_isUpdated;
+    }
 
     /// return true if the service is updated with updating(msg) method
-    bool getIsUpdatedMessage() { return m_isUpdatedMessage; }
+    bool getIsUpdatedMessage()
+    {
+        return m_isUpdatedMessage;
+    }
 
     /// return the message receiving in updating(msg) method
-    ::fwServices::ObjectMsg::sptr getMessage() { return m_compoMsg; }
+    ::fwServices::ObjectMsg::sptr getMessage()
+    {
+        return m_compoMsg;
+    }
 
-    const std::string & getMessageEvent(){return m_messageEvent;}
+    const std::string & getMessageEvent()
+    {
+        return m_messageEvent;
+    }
 
 
 protected:
-    virtual void configuring() throw( ::fwTools::Failed ) {}
-    virtual void starting() throw(::fwTools::Failed) {}
-    virtual void stopping() throw(::fwTools::Failed) {}
-    virtual void updating() throw(::fwTools::Failed) {}
-    virtual void info( std::ostream &_sstream ) {_sstream << "TestService" ;}
+    virtual void configuring() throw( ::fwTools::Failed )
+    {
+    }
+    virtual void starting() throw(::fwTools::Failed)
+    {
+    }
+    virtual void stopping() throw(::fwTools::Failed)
+    {
+    }
+    virtual void updating() throw(::fwTools::Failed)
+    {
+    }
+    virtual void info( std::ostream &_sstream )
+    {
+        _sstream << "TestService";
+    }
 
     bool m_isUpdated;
     bool m_isUpdatedMessage;
@@ -69,17 +95,29 @@ protected:
 class TestServiceImplementationComposite : public TestService
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationComposite)(::fwComEd::ut::TestService) ) ;
-    TestServiceImplementationComposite() throw() {};
-    virtual ~TestServiceImplementationComposite() throw() {};
+public:
+    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationComposite)(::fwComEd::ut::TestService) );
+    TestServiceImplementationComposite() throw()
+    {
+    }
+    virtual ~TestServiceImplementationComposite() throw()
+    {
+    }
 
-    virtual void configuring() throw( ::fwTools::Failed ) {};
-    virtual void starting() throw(::fwTools::Failed) {};
-    virtual void stopping() throw(::fwTools::Failed) {
+    virtual void configuring() throw( ::fwTools::Failed )
+    {
+    }
+    virtual void starting() throw(::fwTools::Failed)
+    {
+    }
+    virtual void stopping() throw(::fwTools::Failed)
+    {
         SLM_TRACE_FUNC();
-    };
-    virtual void updating() throw(::fwTools::Failed) { m_isUpdated = true; };
+    }
+    virtual void updating() throw(::fwTools::Failed)
+    {
+        m_isUpdated = true;
+    }
     virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
     {
         ::fwComEd::CompositeMsg::csptr compositeMessage = ::fwComEd::CompositeMsg::dynamicConstCast( _msg );
@@ -101,9 +139,9 @@ public :
             }
 
             m_isUpdatedMessage = true;
-            m_compoMsg = ::boost::const_pointer_cast< ::fwServices::ObjectMsg >( _msg ) ;
+            m_compoMsg         = ::boost::const_pointer_cast< ::fwServices::ObjectMsg >( _msg );
         }
-    };
+    }
 };
 
 /**
@@ -112,15 +150,28 @@ public :
 class TestServiceImplementationImage : public TestService
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationImage)(::fwComEd::ut::TestService) ) ;
-    TestServiceImplementationImage() throw() {};
-    virtual ~TestServiceImplementationImage() throw() {};
+public:
+    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationImage)(::fwComEd::ut::TestService) );
+    TestServiceImplementationImage() throw()
+    {
+    }
+    virtual ~TestServiceImplementationImage() throw()
+    {
+    }
 
-    virtual void configuring() throw( ::fwTools::Failed ) {};
-    virtual void starting() throw(::fwTools::Failed) {};
-    virtual void stopping() throw(::fwTools::Failed) {};
-    virtual void updating() throw(::fwTools::Failed) { m_isUpdated = true; };
+    virtual void configuring() throw( ::fwTools::Failed )
+    {
+    }
+    virtual void starting() throw(::fwTools::Failed)
+    {
+    }
+    virtual void stopping() throw(::fwTools::Failed)
+    {
+    }
+    virtual void updating() throw(::fwTools::Failed)
+    {
+        m_isUpdated = true;
+    }
     virtual void receiving( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
     {
         ::fwComEd::ImageMsg::csptr imageMessage = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
@@ -128,9 +179,9 @@ public :
         {
             // if receiving a imageMsg : tag service is updated
             m_isUpdatedMessage = true;
-            m_compoMsg = ::boost::const_pointer_cast< ::fwServices::ObjectMsg >( _msg ) ;
+            m_compoMsg         = ::boost::const_pointer_cast< ::fwServices::ObjectMsg >( _msg );
         }
-    };
+    }
 };
 
 
@@ -141,14 +192,16 @@ class SSeriesDBTest : public ::fwComEd::ut::TestService
 {
 
 public:
-    virtual ~SSeriesDBTest() throw() {};
+    virtual ~SSeriesDBTest() throw()
+    {
+    }
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBTest)(::fwComEd::ut::TestService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBTest)(::fwComEd::ut::TestService) );
 
     virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
     {
-        m_isUpdated = true;
-        m_seriesDBMsg = ::fwComEd::SeriesDBMsg::dynamicConstCast( _msg ) ;
+        m_isUpdated   = true;
+        m_seriesDBMsg = ::fwComEd::SeriesDBMsg::dynamicConstCast( _msg );
     }
 
     ::fwComEd::SeriesDBMsg::csptr m_seriesDBMsg;
@@ -158,14 +211,16 @@ class SVectorTest : public ::fwComEd::ut::TestService
 {
 
 public:
-    virtual ~SVectorTest() throw() {};
+    virtual ~SVectorTest() throw()
+    {
+    }
 
-    fwCoreServiceClassDefinitionsMacro ( (SVectorTest)(::fwComEd::ut::TestService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SVectorTest)(::fwComEd::ut::TestService) );
 
     virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
     {
         m_isUpdated = true;
-        m_vectMsg = ::fwComEd::VectorMsg::dynamicConstCast( _msg ) ;
+        m_vectMsg   = ::fwComEd::VectorMsg::dynamicConstCast( _msg );
     }
 
     ::fwComEd::VectorMsg::csptr m_vectMsg;
@@ -176,4 +231,4 @@ public:
 } //namespace ut
 } //namespace fwComEd
 
-#endif // _FWCOMED_TU_TESTSERVICES_HPP_
+#endif // __FWCOMED_UT_TESTSERVICES_HPP__

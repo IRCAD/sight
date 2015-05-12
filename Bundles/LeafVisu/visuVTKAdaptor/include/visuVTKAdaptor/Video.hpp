@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_VIDEO_HPP_
-#define _VISUVTKADAPTOR_VIDEO_HPP_
+#ifndef __VISUVTKADAPTOR_VIDEO_HPP__
+#define __VISUVTKADAPTOR_VIDEO_HPP__
 
 #include <vector>
 
@@ -23,11 +23,12 @@ namespace visuVTKAdaptor
 {
 
 
-class VISUVTKADAPTOR_CLASS_API Video: public ::fwRenderVTK::IVtkAdaptorService, protected MeshFactory
+class VISUVTKADAPTOR_CLASS_API Video : public ::fwRenderVTK::IVtkAdaptorService,
+                                       protected MeshFactory
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Video)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Video)(::fwRenderVTK::IVtkAdaptorService) );
 
     Video() throw();
     virtual ~Video() throw();
@@ -47,7 +48,7 @@ private:
 
     vtkImageData* m_imageData;
     vtkUnsignedCharArray* m_array;
-    vtkTexture* m_texture ;
+    vtkTexture* m_texture;
 
     bool bText_init;
 //  enum ARL_VIDEO_FLIP { VIDEO_FLIP_VERTICAL, VIDEO_FLIP_HORIZONTAL, VIDEO_FLIP_RADIAL, VIDEO_NBFLIP };
@@ -59,4 +60,4 @@ private:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_VIDEO_HPP_
+#endif // __VISUVTKADAPTOR_VIDEO_HPP__

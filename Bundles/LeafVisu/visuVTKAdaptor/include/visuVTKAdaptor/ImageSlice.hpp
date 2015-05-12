@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_IMAGESLICE_HPP_
-#define _VISUVTKADAPTOR_IMAGESLICE_HPP_
+#ifndef __VISUVTKADAPTOR_IMAGESLICE_HPP__
+#define __VISUVTKADAPTOR_IMAGESLICE_HPP__
 
 #include <fwCom/Connection.hpp>
 
@@ -29,30 +29,52 @@ namespace visuVTKAdaptor
 {
 
 /**
-* @brief Adaptor to display only one slice of an image
-*/
-class VISUVTKADAPTOR_CLASS_API ImageSlice: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService
+ * @brief Adaptor to display only one slice of an image
+ */
+class VISUVTKADAPTOR_CLASS_API ImageSlice : public ::fwComEd::helper::MedicalImageAdaptor,
+                                            public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageSlice)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageSlice)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API ImageSlice() throw();
 
     VISUVTKADAPTOR_API virtual ~ImageSlice() throw();
 
-    void setCtrlImageId(std::string id)      {m_ctrlImageId = id;};
-    void setCtrlImage(::fwData::Image::sptr image)      {m_ctrlImage = image;};
-    void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
-    void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
-    void setInterpolation(bool interpolation){m_interpolation = interpolation;};
+    void setCtrlImageId(std::string id)
+    {
+        m_ctrlImageId = id;
+    }
+    void setCtrlImage(::fwData::Image::sptr image)
+    {
+        m_ctrlImage = image;
+    }
+    void setVtkImageSourceId(std::string id)
+    {
+        m_imageSourceId = id;
+    }
+    void setVtkImageSource(vtkObject *obj)
+    {
+        m_imageSource = obj;
+    }
+    void setInterpolation(bool interpolation)
+    {
+        m_interpolation = interpolation;
+    }
 
-    void setActorOpacity(double actorOpacity) {m_actorOpacity = actorOpacity;};
+    void setActorOpacity(double actorOpacity)
+    {
+        m_actorOpacity = actorOpacity;
+    }
 
-    void setUseImageTF(bool use)               {m_useImageTF = use;};
+    void setUseImageTF(bool use)
+    {
+        m_useImageTF = use;
+    }
 
-protected :
+protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
@@ -119,4 +141,4 @@ protected :
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_IMAGESLICE_HPP_
+#endif // __VISUVTKADAPTOR_IMAGESLICE_HPP__

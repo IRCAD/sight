@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,17 +24,20 @@ namespace updater
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::SReconstructionFromModelSeriesUpdater, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::ctrlSelection::IUpdaterSrv, ::ctrlSelection::updater::SReconstructionFromModelSeriesUpdater,
+                         ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
 SReconstructionFromModelSeriesUpdater::SReconstructionFromModelSeriesUpdater() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 SReconstructionFromModelSeriesUpdater::~SReconstructionFromModelSeriesUpdater() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -69,18 +72,21 @@ void SReconstructionFromModelSeriesUpdater::receiving( ::fwServices::ObjectMsg::
 
 //-----------------------------------------------------------------------------
 
-::fwData::Reconstruction::sptr SReconstructionFromModelSeriesUpdater::getReconstruction(::fwServices::ObjectMsg::csptr msg)
+::fwData::Reconstruction::sptr SReconstructionFromModelSeriesUpdater::getReconstruction(
+    ::fwServices::ObjectMsg::csptr msg)
 {
     ::fwData::Reconstruction::sptr reconst;
     ::fwComEd::ModelSeriesMsg::csptr pModelSeriesMsg = ::fwComEd::ModelSeriesMsg::dynamicConstCast( msg );
     SLM_FATAL_IF("Received message isn't a ModelSeriesMsg", !pModelSeriesMsg);
 
-    SLM_ASSERT("Sorry, there's not NEW_RECONSTRUCTION_SELECTED in ModelSeriesMsg", pModelSeriesMsg->hasEvent( ::fwComEd::ModelSeriesMsg::NEW_RECONSTRUCTION_SELECTED ));
-    ::fwData::Object::csptr dataInfo = pModelSeriesMsg->getDataInfo(::fwComEd::ModelSeriesMsg::NEW_RECONSTRUCTION_SELECTED);
+    SLM_ASSERT("Sorry, there's not NEW_RECONSTRUCTION_SELECTED in ModelSeriesMsg",
+               pModelSeriesMsg->hasEvent( ::fwComEd::ModelSeriesMsg::NEW_RECONSTRUCTION_SELECTED ));
+    ::fwData::Object::csptr dataInfo = pModelSeriesMsg->getDataInfo(
+        ::fwComEd::ModelSeriesMsg::NEW_RECONSTRUCTION_SELECTED);
     SLM_ASSERT("Sorry, there is no dataInfo", dataInfo);
-    ::fwData::String::csptr reconstructionSelectedUID = ::fwData::String::dynamicConstCast( dataInfo ) ;
+    ::fwData::String::csptr reconstructionSelectedUID = ::fwData::String::dynamicConstCast( dataInfo );
     SLM_ASSERT("Sorry,  there is no reconstruction selected", reconstructionSelectedUID);
-    reconst =  ::fwData::Reconstruction::dynamicCast( ::fwTools::fwID::getObject(reconstructionSelectedUID->value() ));
+    reconst = ::fwData::Reconstruction::dynamicCast( ::fwTools::fwID::getObject(reconstructionSelectedUID->value() ));
 
     return reconst;
 }
@@ -95,7 +101,8 @@ void SReconstructionFromModelSeriesUpdater::starting()  throw ( ::fwTools::Faile
 //-----------------------------------------------------------------------------
 
 void SReconstructionFromModelSeriesUpdater::stopping()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -108,17 +115,20 @@ void SReconstructionFromModelSeriesUpdater::configuring()  throw ( ::fwTools::Fa
 //-----------------------------------------------------------------------------
 
 void SReconstructionFromModelSeriesUpdater::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SReconstructionFromModelSeriesUpdater::updating() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SReconstructionFromModelSeriesUpdater::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

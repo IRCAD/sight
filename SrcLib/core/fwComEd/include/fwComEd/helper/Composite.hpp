@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_HELPER_COMPOSITE_HPP_
-#define _FWCOMED_HELPER_COMPOSITE_HPP_
+#ifndef __FWCOMED_HELPER_COMPOSITE_HPP__
+#define __FWCOMED_HELPER_COMPOSITE_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -23,13 +23,13 @@ namespace helper
 /**
  * @brief   Defines an helper to modify an ::fwData::Composite and create in parallel the message to announce this modification.
  * @struct  Composite
- * 
+ *
  * @date    2007-2009.
  */
 class FWCOMED_CLASS_API Composite
 {
 
-public :
+public:
 
     /// Constructor. Initialize parameters.
     FWCOMED_API Composite( ::fwData::Composite::wptr _composite );
@@ -75,9 +75,9 @@ public :
      * @param _serviceSource service used to send the message
      * @param _allowLoops if true, the _serviceSource will receive the message
      */
-    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource, bool _allowLoops=true );
+    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource, bool _allowLoops = true );
 
-private :
+private:
 
     ::fwComEd::CompositeMsg::sptr m_compositeMsg;
     ::fwData::Composite::wptr m_composite;
@@ -86,4 +86,4 @@ private :
 } // namespace helper
 } // namespace fwComEd
 
-#endif // _FWCOMED_HELPER_COMPOSITE_HPP_
+#endif // __FWCOMED_HELPER_COMPOSITE_HPP__

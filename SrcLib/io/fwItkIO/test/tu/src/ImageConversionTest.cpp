@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,7 +46,7 @@ void ImageConversionTest::testConversion()
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
-    typedef itk::Image< ::boost::int16_t , 3 > ImageType;
+    typedef itk::Image< ::boost::int16_t, 3 > ImageType;
     ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
@@ -102,15 +102,15 @@ void ImageConversionTest::testConversion2D()
     spacing[0] = (rand()%200 +1) / 100.;
     spacing[1] = (rand()%200 +1) / 100.;
     std::vector<double> origin(dim);
-    origin[0] = (rand()%200 - 100) / 3.;
-    origin[1] = (rand()%200 - 100) / 3.;
+    origin[0]            = (rand()%200 - 100) / 3.;
+    origin[1]            = (rand()%200 - 100) / 3.;
     ::fwTools::Type type = ::fwTools::Type::create< ::boost::int16_t >();
 
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type);
     ::fwData::Array::sptr array = image->getDataArray();
     ::fwTest::generator::Image::randomizeArray(array);
 
-    typedef itk::Image< ::boost::int16_t , 2 > ImageType;
+    typedef itk::Image< ::boost::int16_t, 2 > ImageType;
 
     ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 

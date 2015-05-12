@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,12 +34,12 @@ namespace fwZip
 
 zipFile openWriteZipArchive( const ::boost::filesystem::path &archive )
 {
-    int append = (::boost::filesystem::exists(archive)) ? APPEND_STATUS_ADDINZIP : APPEND_STATUS_CREATE;
+    int append  = (::boost::filesystem::exists(archive)) ? APPEND_STATUS_ADDINZIP : APPEND_STATUS_CREATE;
     zipFile zip = zipOpen(archive.string().c_str(), append);
 
     FW_RAISE_EXCEPTION_IF(
-                ::fwZip::exception::Write("Archive '" + archive.string() + "' cannot be opened."),
-                 zip == NULL);
+        ::fwZip::exception::Write("Archive '" + archive.string() + "' cannot be opened."),
+        zip == NULL);
 
     return zip;
 }
@@ -54,7 +54,7 @@ zipFile openWriteZipArchive( const ::boost::filesystem::path &archive )
 std::streamsize openFile(zipFile zipDescriptor, const ::boost::filesystem::path &path)
 {
     const std::string extension = path.extension().string();
-    int compressLevel = Z_DEFAULT_COMPRESSION;
+    int compressLevel           = Z_DEFAULT_COMPRESSION;
     if(extension == ".raw")
     {
         compressLevel = Z_BEST_SPEED;
@@ -69,7 +69,7 @@ std::streamsize openFile(zipFile zipDescriptor, const ::boost::filesystem::path 
 
     ::boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
     std::tm ptm = ::boost::posix_time::to_tm(now);
-    zfi.dosDate = 0;
+    zfi.dosDate          = 0;
     zfi.tmz_date.tm_year = ptm.tm_year;
     zfi.tmz_date.tm_mon  = ptm.tm_mon;
     zfi.tmz_date.tm_mday = ptm.tm_mday;
@@ -78,15 +78,15 @@ std::streamsize openFile(zipFile zipDescriptor, const ::boost::filesystem::path 
     zfi.tmz_date.tm_sec  = ptm.tm_sec;
 
     std::streamsize nRet = zipOpenNewFileInZip(zipDescriptor,
-            path.generic_string().c_str(),
-            &zfi,
-            NULL,
-            0,
-            NULL,
-            0,
-            NULL,
-            Z_DEFLATED,
-            compressLevel);
+                                               path.generic_string().c_str(),
+                                               &zfi,
+                                               NULL,
+                                               0,
+                                               NULL,
+                                               0,
+                                               NULL,
+                                               Z_DEFLATED,
+                                               compressLevel);
 
     return nRet;
 }
@@ -97,30 +97,33 @@ class ZipSink
 {
 public:
     typedef char char_type;
-    typedef ::boost::iostreams::sink_tag  category;
+    typedef ::boost::iostreams::sink_tag category;
 
     ZipSink( const ::boost::filesystem::path &archive, const ::boost::filesystem::path &path,
              const std::string comment ) :
         m_zipDescriptor(
-                openWriteZipArchive(archive),
-                [comment](zipFile zipDescriptor){ zipClose(zipDescriptor, comment.c_str()); }),
+            openWriteZipArchive(archive),
+            [comment](zipFile zipDescriptor)
+        {
+            zipClose(zipDescriptor, comment.c_str());
+        }),
         m_archive(archive),
         m_path(path)
     {
         std::streamsize nRet = openFile(m_zipDescriptor.get(), m_path);
         FW_RAISE_EXCEPTION_IF(
-                              ::fwZip::exception::Write("Cannot open file '" + path.string() +
-                                                       "' in archive '"+ archive.string() + "'."),
-                              nRet != Z_OK);
+            ::fwZip::exception::Write("Cannot open file '" + path.string() +
+                                      "' in archive '"+ archive.string() + "'."),
+            nRet != Z_OK);
     }
 
     std::streamsize write(const char* s, std::streamsize n)
     {
         std::streamsize nRet = zipWriteInFileInZip(m_zipDescriptor.get(), s, static_cast< unsigned int >(n));
         FW_RAISE_EXCEPTION_IF(
-                        ::fwZip::exception::Write("Error occurred while writing archive '" + m_archive.string()
-                                                     + ":" + m_path.string() + "'."),
-                         nRet < 0);
+            ::fwZip::exception::Write("Error occurred while writing archive '" + m_archive.string()
+                                      + ":" + m_path.string() + "'."),
+            nRet < 0);
         return n;
     }
 
@@ -135,19 +138,22 @@ protected:
 WriteZipArchive::WriteZipArchive( const ::boost::filesystem::path &archive ) :
     m_archive(archive),
     m_comment("")
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 WriteZipArchive::WriteZipArchive( const ::boost::filesystem::path &archive, const std::string& comment ) :
     m_archive(archive),
     m_comment(comment)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 WriteZipArchive::~WriteZipArchive()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -164,7 +170,7 @@ void WriteZipArchive::putFile(const ::boost::filesystem::path &sourceFile, const
 {
     std::ifstream is(sourceFile.string().c_str(), std::ios::binary);
     FW_RAISE_EXCEPTION_IF(::fwZip::exception::Write("Source file '" + sourceFile.string() + "' cannot be opened."),
-                         !is.good());
+                          !is.good());
 
     {
         SPTR(std::ostream) os = this->createFile(path);
@@ -177,7 +183,7 @@ void WriteZipArchive::putFile(const ::boost::filesystem::path &sourceFile, const
 
 bool WriteZipArchive::createDir(const ::boost::filesystem::path &path)
 {
-    zipFile zipDescriptor = openWriteZipArchive(m_archive);
+    zipFile zipDescriptor      = openWriteZipArchive(m_archive);
     const std::streamsize nRet = openFile(zipDescriptor, path);
 
     zipCloseFileInZip(zipDescriptor);

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_ITOOLBARSRV_HPP_
-#define _FWGUI_ITOOLBARSRV_HPP_
+#ifndef __FWGUI_ITOOLBARSRV_HPP__
+#define __FWGUI_ITOOLBARSRV_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -20,16 +20,16 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing the toolBar.
  * @class   IToolBarSrv
- * 
+ *
  * @date    2009-2010.
  *
  */
 class FWGUI_CLASS_API IToolBarSrv : public ::fwServices::IService
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IToolBarSrv)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IToolBarSrv)(::fwServices::IService) );
 
     /// Method called when an action service is stopping
     FWGUI_API void actionServiceStopping(std::string actionSrvSID);
@@ -43,11 +43,11 @@ public :
     /// Method called when the action service is executable
     FWGUI_API void actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable);
 
-protected :
+protected:
 
-    FWGUI_API IToolBarSrv() ;
+    FWGUI_API IToolBarSrv();
 
-    FWGUI_API virtual ~IToolBarSrv() ;
+    FWGUI_API virtual ~IToolBarSrv();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -106,7 +106,7 @@ private:
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
 
     ::fwGui::layoutManager::IToolBarLayoutManager::sptr m_layoutManager;
-    ::fwGui::registrar::ToolBarRegistrar::sptr    m_registrar;
+    ::fwGui::registrar::ToolBarRegistrar::sptr m_registrar;
 
     ConfigurationType m_registrarConfig;
     ConfigurationType m_layoutConfig;
@@ -117,6 +117,6 @@ private:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_ITOOLBARSRV_HPP_*/
+#endif /*__FWGUI_ITOOLBARSRV_HPP__*/
 
 

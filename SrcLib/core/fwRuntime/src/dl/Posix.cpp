@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,13 +20,15 @@ namespace dl
 
 
 Posix::Posix( const boost::filesystem::path & modulePath ) throw()
-: Native        ( modulePath, ::boost::shared_ptr< INameDecorator >(new PosixNameDecorator()) ),
-  m_handle  ( 0 )
-{}
+    : Native        ( modulePath, ::boost::shared_ptr< INameDecorator >(new PosixNameDecorator()) ),
+      m_handle  ( 0 )
+{
+}
 
 
 Posix::~Posix() throw()
-{}
+{
+}
 
 
 bool Posix::isLoaded() const throw()

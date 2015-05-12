@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef VTKCOMPOSITEMESH_RENDERER_SERVICE_HPP_
-#define VTKCOMPOSITEMESH_RENDERER_SERVICE_HPP_
+#ifndef __VTKCOMPOSITEMESH_RENDERERSERVICE_HPP__
+#define __VTKCOMPOSITEMESH_RENDERERSERVICE_HPP__
 
 #include <boost/shared_array.hpp>
 
@@ -32,7 +32,7 @@ namespace vtkCompositeMesh
 /**
  * @brief   Renderer service.
  * @class   RendererService
- * 
+ *
  * @date    2009.
  *
  * Service rendering ::fwData::Mesh contained in a ::fwData::Composite using VTK.
@@ -42,28 +42,28 @@ namespace vtkCompositeMesh
  */
 class VTKCOMPOSITEMESH_CLASS_API RendererService : public ::fwRender::IRender
 {
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender) );
 
     typedef ::boost::shared_array< double > SharedArray;
 
     VTKCOMPOSITEMESH_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
-    typedef ::fwCom::Slot<void(SharedArray, SharedArray, SharedArray)> UpdateCamPositionSlotType;
+    typedef ::fwCom::Slot<void (SharedArray, SharedArray, SharedArray)> UpdateCamPositionSlotType;
 
     VTKCOMPOSITEMESH_API static const ::fwCom::Signals::SignalKeyType s_CAM_UPDATED_SIG;
     typedef ::fwCom::Signal< void (SharedArray, SharedArray, SharedArray) > CamUpdatedSignalType;
 
 
     /**
-    * @brief    Constructor
-    */
-    VTKCOMPOSITEMESH_API RendererService() throw() ;
+     * @brief    Constructor
+     */
+    VTKCOMPOSITEMESH_API RendererService() throw();
 
     /**
-    * @brief    Destructor
-    */
-    VTKCOMPOSITEMESH_API virtual ~RendererService() throw() ;
+     * @brief    Destructor
+     */
+    VTKCOMPOSITEMESH_API virtual ~RendererService() throw();
 
     /// This method is used to notify that the VTK camera position is updated.
     void notifyCamPositionUpdated();
@@ -73,56 +73,56 @@ public :
                                                         SharedArray focalValue,
                                                         SharedArray viewUpValue);
 
-protected :
+protected:
 
     /**
-    * @brief Starting method.
-    *
-    * This method is used to initialize the service.
-    * Initialize VTK renderer and create qt containers
-    */
+     * @brief Starting method.
+     *
+     * This method is used to initialize the service.
+     * Initialize VTK renderer and create qt containers
+     */
     VTKCOMPOSITEMESH_API virtual void starting() throw(fwTools::Failed);
 
 
     /**
-    * @brief Configuring method.
-    *
-    * XML configuration sample:
-    * @verbatim
-    <service impl="::vtkCompositeMesh::RendererService" type="::fwRender::IRender" autoConnect="yes" />
-    @endverbatim
-    * This method is used to configure the service. Initialize qt container.
-    */
+     * @brief Configuring method.
+     *
+     * XML configuration sample:
+     * @verbatim
+       <service impl="::vtkCompositeMesh::RendererService" type="::fwRender::IRender" autoConnect="yes" />
+       @endverbatim
+     * This method is used to configure the service. Initialize qt container.
+     */
     VTKCOMPOSITEMESH_API virtual void configuring() throw(::fwTools::Failed);
 
 
     /**
-    * @brief Stopping method.
-    *
-    * Destroy VTK renderer and containers
-    */
+     * @brief Stopping method.
+     *
+     * Destroy VTK renderer and containers
+     */
     VTKCOMPOSITEMESH_API virtual void stopping() throw(fwTools::Failed);
 
     /**
-    * @brief Updating method.
-    *
-    * This method is used to update the service.
-    * Make a render if necessary
-    */
+     * @brief Updating method.
+     *
+     * This method is used to update the service.
+     * Make a render if necessary
+     */
     VTKCOMPOSITEMESH_API virtual void updating() throw(fwTools::Failed);
 
     /**
-    * @brief Receiving method (react on data modifications).
-    * @param[in] _msg ::fwServices::ObjectMsg::csptr.
-    *
-    * This method is used to update the vtk pipeline when the mesh is modified.
-    */
+     * @brief Receiving method (react on data modifications).
+     * @param[in] _msg ::fwServices::ObjectMsg::csptr.
+     *
+     * This method is used to update the vtk pipeline when the mesh is modified.
+     */
     VTKCOMPOSITEMESH_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// @brief vtk renderer
-    vtkRenderer * m_render ;
+    vtkRenderer * m_render;
 
-private :
+private:
 
     /// @brief VTK Interactor window manager
     ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
@@ -142,9 +142,9 @@ private :
     vtkPolyDataNormals* m_normals;
 
     /**
-    * @brief the m_bPipelineIsInit value is \b true
-    * if the pipeline is initialized.
-    */
+     * @brief the m_bPipelineIsInit value is \b true
+     * if the pipeline is initialized.
+     */
     bool m_bPipelineIsInit;
 
     vtkCommand* m_loc;
@@ -160,4 +160,4 @@ private :
 
 }
 
-#endif /* VTKCOMPOSITEMESH_RENDERER_SERVICE_HPP_ */
+#endif /* __VTKCOMPOSITEMESH_RENDERERSERVICE_HPP__ */

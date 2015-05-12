@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCORE_LOG_SPYLOGGER_HPP_
-#define _FWCORE_LOG_SPYLOGGER_HPP_
+#ifndef __FWCORE_LOG_SPYLOGGER_HPP__
+#define __FWCORE_LOG_SPYLOGGER_HPP__
 
 #include <iostream>
 #include <string>
@@ -23,12 +23,12 @@ namespace log
 /**
  * @brief   Implements the SpyLogger.
  *
- * 
+ *
  */
 class SpyLogger : public ::fwCore::BaseObject
 {
 
-public :
+public:
 
     enum LevelType
     {
@@ -64,9 +64,12 @@ public :
 
     FWCORE_API void log(const std::string & mes, const char * file = 0, int line = -1);
 
-    static SpyLogger &getSpyLogger() {return s_spyLogger;}
+    static SpyLogger &getSpyLogger()
+    {
+        return s_spyLogger;
+    }
 
-protected :
+protected:
 
 
     FWCORE_API SpyLogger ();
@@ -78,4 +81,4 @@ protected :
 } // namespace log
 } // namespace fwCore
 
-#endif // _FWCORE_LOG_SPYLOGGER_HPP_
+#endif // __FWCORE_LOG_SPYLOGGER_HPP__

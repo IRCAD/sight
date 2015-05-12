@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,17 +24,19 @@ namespace uiIO
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiIO::action::SSeriesDBMerger , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SSeriesDBMerger, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
 SSeriesDBMerger::SSeriesDBMerger( ) throw() : m_ioSelectorSrvConfig ("IOSelectorServiceConfigVRRenderReader")
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SSeriesDBMerger::~SSeriesDBMerger() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -54,8 +56,8 @@ void SSeriesDBMerger::configuring() throw( ::fwTools::Failed )
     if(!vectConfig.empty())
     {
         ConfigurationType selectorConfig = vectConfig.at(0);
-        SLM_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name")) ;
-        m_ioSelectorSrvConfig = selectorConfig->getAttributeValue("name") ;
+        SLM_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
+        m_ioSelectorSrvConfig = selectorConfig->getAttributeValue("name");
     }
 }
 
@@ -75,19 +77,19 @@ void SSeriesDBMerger::updating( ) throw(::fwTools::Failed)
 
     // Get the config
     ::fwRuntime::ConfigurationElement::csptr ioCfg;
-    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig ,
+    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
                                                                                   "::uiIO::editor::IOSelectorService");
     SLM_ASSERT("Sorry, there is not service configuration "
                << m_ioSelectorSrvConfig
-               << " for ::uiIO::editor::IOSelectorService", ioCfg) ;
+               << " for ::uiIO::editor::IOSelectorService", ioCfg);
 
     // Init and execute the service
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add(localSeriesDB,
                                       "::gui::editor::IDialogEditor",
                                       "::uiIO::editor::IOSelectorService");
-    ioSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) ) ;
-    ioSelectorSrv->configure() ;
+    ioSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) );
+    ioSelectorSrv->configure();
     ioSelectorSrv->start();
     ioSelectorSrv->update();
     ioSelectorSrv->stop();
@@ -108,7 +110,8 @@ void SSeriesDBMerger::starting() throw (::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void SSeriesDBMerger::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

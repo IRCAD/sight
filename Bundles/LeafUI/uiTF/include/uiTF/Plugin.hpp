@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UITF_PLUGIN_HPP_
-#define _UITF_PLUGIN_HPP_
+#ifndef __UITF_PLUGIN_HPP__
+#define __UITF_PLUGIN_HPP__
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -14,7 +14,7 @@
 namespace uiTF
 {
 /**
- * 
+ *
  * @date    2009-2010.
  */
 class UITF_CLASS_API Plugin : public ::fwRuntime::Plugin
@@ -25,7 +25,7 @@ public:
     /**
      * @brief   destructor
      */
- UITF_API ~Plugin() throw();
+    UITF_API ~Plugin() throw();
 
     // Overrides
     UITF_API void start() throw(::fwRuntime::RuntimeException);
@@ -37,4 +37,4 @@ public:
 
 } // namespace uiTF
 
-#endif //_P_
+#endif //__UITF_PLUGIN_HPP__

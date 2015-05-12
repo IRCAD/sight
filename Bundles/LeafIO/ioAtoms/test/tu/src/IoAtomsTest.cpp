@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include <boost/filesystem/operations.hpp>
 
 #include <fwTools/System.hpp>
@@ -65,7 +71,7 @@ void write(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const SPTR(T)
     ::fwServices::IService::sptr writerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( writer );
     CPPUNIT_ASSERT(writerSrv);
 
-    ::fwServices::OSR::registerService( obj , writerSrv );
+    ::fwServices::OSR::registerService( obj, writerSrv );
     writerSrv->setConfiguration(srvCfg);
     writerSrv->configure();
     writerSrv->start();
@@ -79,11 +85,11 @@ template <typename T>
 SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::string &reader)
 {
 
-    typename T::sptr readObj = T::New();
+    typename T::sptr readObj               = T::New();
     ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( reader );
     CPPUNIT_ASSERT(readerSrv);
 
-    ::fwServices::OSR::registerService( readObj , readerSrv );
+    ::fwServices::OSR::registerService( readObj, readerSrv );
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
     readerSrv->start();
@@ -103,29 +109,29 @@ void writeReadFile(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const
 
     SPTR(T) readObj = read<T>(srvCfg, reader);
 
-        // Compare
+    // Compare
     using namespace ::fwDataCamp::visitor;
     CompareObjects visitor;
 
     visitor.compare(readObj, obj);
     compareLog(visitor);
 
-    CPPUNIT_ASSERT_MESSAGE("Objects not equal" , visitor.getDifferences()->empty() );
+    CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
 }
 
 //------------------------------------------------------------------------------
 
 void atomTest(const ::boost::filesystem::path & filePath)
 {
-    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
     fileCfg->setValue(filePath.string());
     srvCfg->addConfigurationElement(fileCfg);
 
-    ::fwMedData::SeriesDB::sptr seriesDB = ::fwTest::generator::SeriesDB::createSeriesDB(2,2,2);
-    ::fwData::Composite::sptr workspace = ::fwData::Composite::New();
+    ::fwMedData::SeriesDB::sptr seriesDB      = ::fwTest::generator::SeriesDB::createSeriesDB(2,2,2);
+    ::fwData::Composite::sptr workspace       = ::fwData::Composite::New();
     workspace->getContainer()["processingDB"] = ::fwData::Composite::New();
-    workspace->getContainer()["planningDB"] = ::fwData::Composite::New();
+    workspace->getContainer()["planningDB"]   = ::fwData::Composite::New();
 
     ::boost::filesystem::create_directories( filePath.parent_path() );
     writeReadFile< ::fwData::Composite>( srvCfg, workspace, "::ioAtoms::SWriter",  "::ioAtoms::SReader" );
@@ -140,7 +146,7 @@ void atomTest(const ::boost::filesystem::path & filePath)
         ::fwDataCamp::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects not equal" , visitor.getDifferences()->empty() );
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
     }
 
 
@@ -156,7 +162,7 @@ void atomTest(const ::boost::filesystem::path & filePath)
         ::fwDataCamp::visitor::CompareObjects visitor;
         visitor.compare(readSeriesDB, seriesDB);
         compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects not equal" , visitor.getDifferences()->empty() );
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
     }
 
 
@@ -185,7 +191,7 @@ void atomTest(const ::boost::filesystem::path & filePath)
         ::fwDataCamp::visitor::CompareObjects visitor;
         visitor.compare(workspace, composite);
         compareLog(visitor);
-        CPPUNIT_ASSERT_MESSAGE("Objects should  be different" , !visitor.getDifferences()->empty() );
+        CPPUNIT_ASSERT_MESSAGE("Objects should  be different", !visitor.getDifferences()->empty() );
         CPPUNIT_ASSERT(composite->find("seriesDB") != composite->end());
 
         {
@@ -195,7 +201,7 @@ void atomTest(const ::boost::filesystem::path & filePath)
             ::fwDataCamp::visitor::CompareObjects visitor;
             visitor.compare(seriesDB, newSeriesDB);
             compareLog(visitor);
-            CPPUNIT_ASSERT_MESSAGE("Objects not equal" , visitor.getDifferences()->empty() );
+            CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
         }
     }
 }

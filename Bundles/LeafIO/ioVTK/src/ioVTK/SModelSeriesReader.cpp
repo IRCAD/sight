@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,7 +41,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioVTK::SModelSeriesReader , ::fwMedData::ModelSeries ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioVTK::SModelSeriesReader, ::fwMedData::ModelSeries );
 
 //------------------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ void SModelSeriesReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::MultiFiles::sptr  result;
+    ::fwData::location::MultiFiles::sptr result;
     result = ::fwData::location::MultiFiles::dynamicCast( dialogFile.show() );
     if (result)
     {
@@ -110,7 +110,7 @@ void SModelSeriesReader::updating() throw(::fwTools::Failed)
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >() ;
+        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -131,7 +131,7 @@ void SModelSeriesReader::updating() throw(::fwTools::Failed)
         modelSeries->setReconstructionDB(recDB);
 
         ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
-        msg->addEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION ) ;
+        msg->addEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION );
         ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
     }
 }
@@ -157,16 +157,16 @@ void SModelSeriesReader::loadMesh( const ::boost::filesystem::path file, ::fwDat
         std::stringstream stream;
         stream << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                stream.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            stream.str(),
+            ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                "Warning during loading.",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            "Warning during loading.",
+            ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 

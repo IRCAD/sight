@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,8 +27,8 @@ namespace V2
 
 patcherRegisterMacro(::fwMDSemanticPatch::V1::V2::MedicalWorkspacePatcher, "MedicalWorkspacePatcher");
 
-MedicalWorkspacePatcher::MedicalWorkspacePatcher(::fwAtomsPatch::patcher::IPatcher::Key key):
-        ::fwAtomsPatch::patcher::DefaultPatcher(key)
+MedicalWorkspacePatcher::MedicalWorkspacePatcher(::fwAtomsPatch::patcher::IPatcher::Key key) :
+    ::fwAtomsPatch::patcher::DefaultPatcher(key)
 {
 }
 
@@ -41,9 +41,9 @@ MedicalWorkspacePatcher::~MedicalWorkspacePatcher()
 // ----------------------------------------------------------------------------
 
 ::fwAtoms::Object::sptr MedicalWorkspacePatcher::transformObject(::fwAtoms::Object::sptr object,
-            const std::string &context,
-            const std::string &currentVersion,
-            const std::string &targetVersion)
+                                                                 const std::string &context,
+                                                                 const std::string &currentVersion,
+                                                                 const std::string &targetVersion)
 {
     this->addCompositeTypes(object);
     return ::fwAtomsPatch::patcher::DefaultPatcher::transformObject(object,context,currentVersion, targetVersion);

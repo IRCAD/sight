@@ -1,6 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- *
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,7 +19,7 @@
 #include "scene2D/processing/SComputeHistogram.hpp"
 #include "scene2D/processing/ComputeHistogramFunctor.hxx"
 
-fwServicesRegisterMacro( ::fwServices::IController , ::scene2D::processing::SComputeHistogram, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwServices::IController, ::scene2D::processing::SComputeHistogram, ::fwData::Image );
 
 namespace scene2D
 {
@@ -67,7 +66,7 @@ void SComputeHistogram::starting() throw ( ::fwTools::Failed )
 
 void SComputeHistogram::updating() throw ( ::fwTools::Failed )
 {
-    ::fwData::Image::sptr image =  this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwData::mt::ObjectReadLock imgLock(image);
 
@@ -78,12 +77,12 @@ void SComputeHistogram::updating() throw ( ::fwTools::Failed )
         ::fwData::mt::ObjectWriteLock lock(histogram);
 
         ComputeHistogramFunctor::Parameter param;
-        param.image = image;
+        param.image     = image;
         param.histogram = histogram;
         param.binsWidth = m_binsWidth;
 
         ::fwTools::DynamicType type = image->getPixelType();
-        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , ComputeHistogramFunctor >::invoke( type , param );
+        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ComputeHistogramFunctor >::invoke( type, param );
 
         ::fwComEd::HistogramMsg::sptr msg = ::fwComEd::HistogramMsg::New();
         msg->addEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED);
@@ -95,9 +94,9 @@ void SComputeHistogram::updating() throw ( ::fwTools::Failed )
 
 void SComputeHistogram::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
-     if(_msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE) ||
-        _msg->hasEvent(::fwComEd::ImageMsg::BUFFER) ||
-        _msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
+    if(_msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE) ||
+       _msg->hasEvent(::fwComEd::ImageMsg::BUFFER) ||
+       _msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
     {
         this->updating();
     }
@@ -122,7 +121,7 @@ void SComputeHistogram::stopping() throw ( ::fwTools::Failed )
 {
     SLM_ASSERT("Object " << m_histogramId << " doesn't exist", ::fwTools::fwID::exist(m_histogramId));
 
-    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_histogramId);
+    ::fwTools::Object::sptr obj         = ::fwTools::fwID::getObject(m_histogramId);
     ::fwData::Histogram::sptr histogram = ::fwData::Histogram::dynamicCast(obj);
     SLM_ASSERT("Object " << m_histogramId << " is not a '::fwData::Histogram'", histogram);
 

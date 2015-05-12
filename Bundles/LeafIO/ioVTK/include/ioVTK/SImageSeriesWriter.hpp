@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@
 
 namespace fwData
 {
-    class Image;
+class Image;
 }
 
 
@@ -33,10 +33,12 @@ namespace ioVTK
 class IOVTK_CLASS_API SImageSeriesWriter : public ::io::IWriter
 {
 
-public :
-    ~SImageSeriesWriter() throw() {}
+public:
+    ~SImageSeriesWriter() throw()
+    {
+    }
 
-    fwCoreServiceClassDefinitionsMacro ( (SImageSeriesWriter)( ::io::IWriter) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SImageSeriesWriter)( ::io::IWriter) );
 
     /**
      * @brief Configure the image path.
@@ -76,17 +78,19 @@ protected:
      *
      * @param[in] _msg information message for modification
      */
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed) {};
+    void receiving( CSPTR(::fwServices::ObjectMsg)_msg ) throw(::fwTools::Failed)
+    {
+    }
 
     /**
      * @brief Info method.
      *
      * This method is used to give informations about the service.
      */
-    IOVTK_API void info(std::ostream &_sstream ) ;
+    IOVTK_API void info(std::ostream &_sstream );
 
 
-private :
+private:
 
     /**
      * @brief the m_bServiceIsConfigured value is \b true

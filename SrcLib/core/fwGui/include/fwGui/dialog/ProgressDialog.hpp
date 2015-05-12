@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_ProgressDialog_HPP_
-#define _FWGUI_ProgressDialog_HPP_
+#ifndef __FWGUI_DIALOG_PROGRESSDIALOG_HPP__
+#define __FWGUI_DIALOG_PROGRESSDIALOG_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -21,7 +21,7 @@ namespace dialog
  * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
  * The specific implementation are in fwGuiWX and fwGuiQT libraries
  * @class   ProgressDialog
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -30,10 +30,11 @@ class FWGUI_CLASS_API ProgressDialog : public IProgressDialog
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ProgressDialog)(::fwGui::dialog::IProgressDialog), (()), new ProgressDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (ProgressDialog)(::fwGui::dialog::IProgressDialog), (()),
+                                            new ProgressDialog );
 
     /// will instanciate the concrete implementation
-    FWGUI_API ProgressDialog( const std::string &title = std::string() ,  const std::string &msg = std::string() );
+    FWGUI_API ProgressDialog( const std::string &title = std::string(),  const std::string &msg = std::string() );
 
     ///set the title for the dialog
     FWGUI_API void setTitle(const std::string &title);
@@ -49,7 +50,7 @@ public:
 
     FWGUI_API void hideCancelButton();
 
-protected :
+protected:
 
     FWGUI_API void cancelPressed();
 
@@ -60,6 +61,6 @@ protected :
 } //namespace dialog
 } // namespace fwGui
 
-#endif /*_FWGUI_ProgressDialog_HPP_*/
+#endif /*__FWGUI_DIALOG_PROGRESSDIALOG_HPP__*/
 
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWTOOLS_TYPE_HPP_
-#define _FWTOOLS_TYPE_HPP_
+#ifndef __FWTOOLS_TYPE_HPP__
+#define __FWTOOLS_TYPE_HPP__
 
 #include <limits>
 #include <map>
@@ -30,7 +30,7 @@ namespace fwTools
 /**
  * @brief   Class describing an elementary C++ type aka unsigned char, signed char, .... int, float, double
  * @class   Type
- * 
+ *
  * @date    2007-2009.
  *
  **/
@@ -41,7 +41,9 @@ public:
     struct FWTOOLS_CLASS_API ToolBase
     {
         FWTOOLS_API ToolBase();
-        FWTOOLS_API virtual ~ToolBase(){};
+        FWTOOLS_API virtual ~ToolBase()
+        {
+        }
         FWTOOLS_API ToolBase(const std::type_info &typeinfo);
         FWTOOLS_API virtual std::string toString( ::boost::any value ) const;
         FWTOOLS_API virtual std::string toString( const void * ) const;
@@ -53,7 +55,9 @@ public:
     struct  Tool : public ToolBase
     {
         Tool();
-        virtual ~Tool(){};
+        virtual ~Tool()
+        {
+        }
         virtual std::string toString( ::boost::any value ) const;
         virtual std::string toString( const void * ) const;
     };
@@ -127,7 +131,7 @@ public:
 
     FWTOOLS_API static Type create(std::string name);
 
-protected :
+protected:
 
     std::string m_name;
     unsigned char m_sizeof;
@@ -142,7 +146,7 @@ protected :
 
     FWTOOLS_API static const TypeMapType s_TYPEMAP;
 
-public :
+public:
 
     FWTOOLS_API static const Type s_UNSPECIFIED_TYPE;
 
@@ -174,18 +178,18 @@ public :
     FWTOOLS_API static const std::string s_FLOAT_TYPENAME;
     FWTOOLS_API static const std::string s_DOUBLE_TYPENAME;
 
-    typedef ::boost::int8_t   Int8Type;
-    typedef ::boost::int16_t  Int16Type;
-    typedef ::boost::int32_t  Int32Type;
-    typedef ::boost::int64_t  Int64Type;
+    typedef ::boost::int8_t Int8Type;
+    typedef ::boost::int16_t Int16Type;
+    typedef ::boost::int32_t Int32Type;
+    typedef ::boost::int64_t Int64Type;
 
-    typedef ::boost::uint8_t  UInt8Type;
+    typedef ::boost::uint8_t UInt8Type;
     typedef ::boost::uint16_t UInt16Type;
     typedef ::boost::uint32_t UInt32Type;
     typedef ::boost::uint64_t UInt64Type;
 
-    typedef float             FloatType;
-    typedef double            DoubleType;
+    typedef float FloatType;
+    typedef double DoubleType;
 
 
 };
@@ -210,7 +214,8 @@ std::string Type::Tool<T>::toString(const void *value) const
 
 template< typename T >
 Type::Tool<T>::Tool() : Type::ToolBase(typeid(T))
-{}
+{
+}
 
 
 //-----------------------------------------------------------------------------
@@ -238,8 +243,8 @@ void Type::setType()
 {
     m_name = Type::traitsToString< sizeof(T), ::boost::is_signed<T>::value, ::boost::is_integral<T>::value >();
 
-    m_sizeof = sizeof(T);
-    m_isSigned = ::boost::is_signed<T>::value;
+    m_sizeof           = sizeof(T);
+    m_isSigned         = ::boost::is_signed<T>::value;
     m_isFixedPrecision = ::boost::is_integral<T>::value;
 
     m_tool = SPTR(ToolBase)(new Type::Tool<T>());
@@ -288,8 +293,8 @@ template <int SIZEOF, bool SIGNED, bool ISINTEGRAL>
 const std::string &Type::traitsToString()
 {
     OSLM_ERROR("unknown " << (SIGNED ? "signed" : "unsigned")
-              << " " << (ISINTEGRAL ? "integral" : "floating")
-              << " type with size : " << SIZEOF);
+                          << " " << (ISINTEGRAL ? "integral" : "floating")
+                          << " type with size : " << SIZEOF);
     return Type::s_UNSPECIFIED_TYPENAME;
 }
 
@@ -299,9 +304,9 @@ template <typename T>
 const std::pair<T,T> Type::minMax() const
 {
     return std::pair<T,T>(
-            boost::any_cast< T >(m_min),
-            boost::any_cast< T >(m_max)
-            );
+        boost::any_cast< T >(m_min),
+        boost::any_cast< T >(m_max)
+        );
 }
 
 
@@ -324,9 +329,9 @@ template<> FWTOOLS_API const std::string &Type::traitsToString< 8, false, false 
 
 namespace std
 {
-    FWTOOLS_API std::ostream& operator<< (std::ostream& os, const ::fwTools::Type& type);
+FWTOOLS_API std::ostream& operator<< (std::ostream& os, const ::fwTools::Type& type);
 } // namespace std
 
 
-#endif /*_FWTOOLS_TYPE_H_*/
+#endif /*__FWTOOLS_TYPE_HPP__*/
 

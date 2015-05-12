@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,8 +28,8 @@ V1ToFwMedDataPatientV1::V1ToFwMedDataPatientV1() : ::fwAtomsPatch::IStructuralPa
 {
     m_originClassname = "::fwData::Patient";
     m_targetClassname = "::fwMedData::Patient";
-    m_originVersion = "1";
-    m_targetVersion = "1";
+    m_originVersion   = "1";
+    m_targetVersion   = "1";
 }
 
 // ----------------------------------------------------------------------------
@@ -41,15 +41,15 @@ V1ToFwMedDataPatientV1::~V1ToFwMedDataPatientV1()
 // ----------------------------------------------------------------------------
 
 V1ToFwMedDataPatientV1::V1ToFwMedDataPatientV1(
-        const V1ToFwMedDataPatientV1 &cpy ) : ::fwAtomsPatch::IStructuralPatch(cpy)
+    const V1ToFwMedDataPatientV1 &cpy ) : ::fwAtomsPatch::IStructuralPatch(cpy)
 {
 }
 
 // ----------------------------------------------------------------------------
 
 void V1ToFwMedDataPatientV1::apply(const ::fwAtoms::Object::sptr& previous,
-        const ::fwAtoms::Object::sptr& current,
-        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
+                                   const ::fwAtoms::Object::sptr& current,
+                                   ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     IStructuralPatch::apply(previous, current, newVersions);
 
@@ -76,18 +76,18 @@ void V1ToFwMedDataPatientV1::apply(const ::fwAtoms::Object::sptr& previous,
     }
 
     std::string newName = previous->getAttribute("name")->getString()
-            + nameSeperation
-            + previous->getAttribute("firstname")->getString();
+                          + nameSeperation
+                          + previous->getAttribute("firstname")->getString();
     helper.replaceAttribute( "name", ::fwAtoms::String::New(newName) );
 
     // Update Birthdate
     ::boost::posix_time::ptime bithdate =
-            ::boost::posix_time::time_from_string(previous->getAttribute("birthdate")->getString());
+        ::boost::posix_time::time_from_string(previous->getAttribute("birthdate")->getString());
     helper.replaceAttribute("birth_date", ::fwAtoms::String::New(::fwTools::getDate(bithdate)));
 
     // Update Sex
     helper.replaceAttribute("sex", ::fwAtoms::String::New(
-            !(previous->getAttribute("is_male")->getString().compare("true"))?"M":"F"));
+                                !(previous->getAttribute("is_male")->getString().compare("true")) ? "M" : "F"));
 }
 
 } // namespace Patient

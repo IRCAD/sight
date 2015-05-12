@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,17 +20,19 @@ namespace monitor
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::monitor::action::MemoryInfo , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryInfo, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
 MemoryInfo::MemoryInfo( ) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 MemoryInfo::~MemoryInfo() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -38,20 +40,20 @@ MemoryInfo::~MemoryInfo() throw()
 void MemoryInfo::updating( ) throw(::fwTools::Failed)
 {
     // Memory information
-    ::boost::uint64_t mo = 1024*1024;
-    ::boost::uint64_t totalSystemMemory     = ::fwMemory::tools::MemoryMonitorTools::getTotalSystemMemory();
-    ::boost::uint64_t freeSystemMemory      = ::fwMemory::tools::MemoryMonitorTools::getFreeSystemMemory();
-    ::boost::uint64_t usedProcessMemory     = ::fwMemory::tools::MemoryMonitorTools::getUsedProcessMemory();
-    ::boost::uint64_t estimateFreeMem       = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem();
+    ::boost::uint64_t mo                = 1024*1024;
+    ::boost::uint64_t totalSystemMemory = ::fwMemory::tools::MemoryMonitorTools::getTotalSystemMemory();
+    ::boost::uint64_t freeSystemMemory  = ::fwMemory::tools::MemoryMonitorTools::getFreeSystemMemory();
+    ::boost::uint64_t usedProcessMemory = ::fwMemory::tools::MemoryMonitorTools::getUsedProcessMemory();
+    ::boost::uint64_t estimateFreeMem   = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem();
 
     ::fwMemory::BufferManager::SizeType managedBufferSize = 0;
-    ::fwMemory::BufferManager::SizeType dumpedBufferSize = 0;
-    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
+    ::fwMemory::BufferManager::SizeType dumpedBufferSize  = 0;
+    ::fwMemory::BufferManager::sptr manager               = ::fwMemory::BufferManager::getDefault();
     if( manager )
     {
         ::fwMemory::BufferManager::BufferStats stats = manager->getBufferStats().get();
-        managedBufferSize = stats.totalManaged;
-        dumpedBufferSize  = stats.totalDumped;
+        managedBufferSize                            = stats.totalManaged;
+        dumpedBufferSize                             = stats.totalDumped;
     }
     std::stringstream stream;
     stream << "Total system memory = "  << totalSystemMemory/mo << " Mo" << std::endl;
@@ -63,9 +65,9 @@ void MemoryInfo::updating( ) throw(::fwTools::Failed)
 
     // Information message box
     ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "MemoryInfo",
-            stream.str(),
-            ::fwGui::dialog::IMessageDialog::INFO);
+        "MemoryInfo",
+        stream.str(),
+        ::fwGui::dialog::IMessageDialog::INFO);
 }
 
 //------------------------------------------------------------------------------

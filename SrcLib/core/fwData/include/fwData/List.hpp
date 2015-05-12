@@ -29,7 +29,7 @@ class FWDATA_CLASS_API List : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::factory::New< List >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::factory::New< List >);
 
 
     fwCampMakeFriendDataMacro((fwData)(List));
@@ -65,28 +65,73 @@ public:
 
     typedef List Container;
 
-    IteratorType begin() { return m_attrContainer.begin(); }
-    IteratorType end()   { return m_attrContainer.end(); }
-    ConstIteratorType begin() const { return m_attrContainer.begin(); }
-    ConstIteratorType end()   const { return m_attrContainer.end(); }
+    IteratorType begin()
+    {
+        return m_attrContainer.begin();
+    }
+    IteratorType end()
+    {
+        return m_attrContainer.end();
+    }
+    ConstIteratorType begin() const
+    {
+        return m_attrContainer.begin();
+    }
+    ConstIteratorType end()   const
+    {
+        return m_attrContainer.end();
+    }
 
-    ReverseIteratorType rbegin() { return m_attrContainer.rbegin(); }
-    ReverseIteratorType rend()   { return m_attrContainer.rend(); }
-    ConstReverseIteratorType rbegin() const { return m_attrContainer.rbegin(); }
-    ConstReverseIteratorType rend()   const { return m_attrContainer.rend(); }
+    ReverseIteratorType rbegin()
+    {
+        return m_attrContainer.rbegin();
+    }
+    ReverseIteratorType rend()
+    {
+        return m_attrContainer.rend();
+    }
+    ConstReverseIteratorType rbegin() const
+    {
+        return m_attrContainer.rbegin();
+    }
+    ConstReverseIteratorType rend()   const
+    {
+        return m_attrContainer.rend();
+    }
 
-    bool empty() const { return m_attrContainer.empty(); }
-    SizeType size() const { return m_attrContainer.size(); }
+    bool empty() const
+    {
+        return m_attrContainer.empty();
+    }
+    SizeType size() const
+    {
+        return m_attrContainer.size();
+    }
 
-    ReferenceType front(){ return m_attrContainer.front(); }
-    ReferenceType back(){ return m_attrContainer.back(); }
-    ConstReferenceType front() const{ return m_attrContainer.front(); }
-    ConstReferenceType back() const{ return m_attrContainer.back(); }
+    ReferenceType front()
+    {
+        return m_attrContainer.front();
+    }
+    ReferenceType back()
+    {
+        return m_attrContainer.back();
+    }
+    ConstReferenceType front() const
+    {
+        return m_attrContainer.front();
+    }
+    ConstReferenceType back() const
+    {
+        return m_attrContainer.back();
+    }
     /// @}
 
     /// @brief get/set the list of ::fwData::Object
     /// @{
-    ContainerType &getContainer(){ return m_attrContainer; };
+    ContainerType &getContainer()
+    {
+        return m_attrContainer;
+    }
     fwDataGetSetCRefMacro(Container, ContainerType);
     /// @}
 

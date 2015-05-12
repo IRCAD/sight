@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,9 +24,9 @@ class FWSTRUCTURALPATCH_CLASS_API V1ToFwMedDataImageSeriesV1 : public ::fwAtomsP
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro(
-            (V1ToFwMedDataImageSeriesV1)(::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1),
-            (()),
-            new V1ToFwMedDataImageSeriesV1);
+        (V1ToFwMedDataImageSeriesV1)(::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1),
+        (()),
+        new V1ToFwMedDataImageSeriesV1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API V1ToFwMedDataImageSeriesV1();
@@ -44,9 +44,9 @@ public:
      * 'patient', 'equipment', 'performing_physicians_name', 'time' and 'date'.
      */
     FWSTRUCTURALPATCH_API virtual void apply(
-            const ::fwAtoms::Object::sptr& previous,
-            const ::fwAtoms::Object::sptr& current,
-            ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
+        const ::fwAtoms::Object::sptr& previous,
+        const ::fwAtoms::Object::sptr& current,
+        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
 
 };
 

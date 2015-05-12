@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -55,8 +55,8 @@ void AtomTest::mapTest()
 
     CPPUNIT_ASSERT_THROW(map->getString(), ::fwAtoms::Exception);
 
-    ::fwAtoms::Blob::sptr blob = ::fwAtoms::Blob::New();
-    ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::New();
+    ::fwAtoms::Blob::sptr blob    = ::fwAtoms::Blob::New();
+    ::fwAtoms::Object::sptr obj   = ::fwAtoms::Object::New();
     ::fwAtoms::Sequence::sptr seq = ::fwAtoms::Sequence::New();
     map->insert("blob", blob);
     map->insert("object", obj);
@@ -82,8 +82,8 @@ void AtomTest::objectTest()
 
     CPPUNIT_ASSERT_THROW(obj->getString(), ::fwAtoms::Exception);
 
-    ::fwAtoms::Map::sptr map = ::fwAtoms::Map::New();
-    ::fwAtoms::Blob::sptr blob = ::fwAtoms::Blob::New();
+    ::fwAtoms::Map::sptr map      = ::fwAtoms::Map::New();
+    ::fwAtoms::Blob::sptr blob    = ::fwAtoms::Blob::New();
     ::fwAtoms::Sequence::sptr seq = ::fwAtoms::Sequence::New();
 
     obj->setAttribute("blob", blob);
@@ -160,7 +160,7 @@ void AtomTest::sequenceTest()
     CPPUNIT_ASSERT_EQUAL( size_t(4), clone->size() );
 
 
-    ::fwAtoms::Sequence::ConstIteratorType iterSeq = seq->begin();
+    ::fwAtoms::Sequence::ConstIteratorType iterSeq   = seq->begin();
     ::fwAtoms::Sequence::ConstIteratorType iterClone = clone->begin();
 
     CPPUNIT_ASSERT_EQUAL( (*(iterClone++))->type(), (*(iterSeq++))->type() );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,25 +48,25 @@ void SignalTest::tearDown()
 void SignalTest::buildTest ()
 {
     {
-        typedef void Signature();
+        typedef void Signature ();
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
         CPPUNIT_ASSERT( sig );
     }
 
     {
-        typedef void Signature(int);
+        typedef void Signature (int);
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
         CPPUNIT_ASSERT( sig );
     }
 
     {
-        typedef void Signature(char, float);
+        typedef void Signature (char, float);
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
         CPPUNIT_ASSERT( sig );
     }
 
     {
-        typedef void Signature(short, double, std::string);
+        typedef void Signature (short, double, std::string);
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
         CPPUNIT_ASSERT( sig );
     }
@@ -82,23 +82,33 @@ struct SignalTestClass
         m_method1(false),
         m_method2(false),
         m_method3(false)
-    {}
+    {
+    }
 
-    void method0(){ m_method0 = true; }
+    void method0()
+    {
+        m_method0 = true;
+    }
 
-    void method00(){ m_method00 = true; }
+    void method00()
+    {
+        m_method00 = true;
+    }
 
-    float method1(float f){
+    float method1(float f)
+    {
         m_method1 = true;
         return 2*f;
     }
 
-    float method2(float f, int i){
+    float method2(float f, int i)
+    {
         m_method2 = true;
         return 2*f;
     }
 
-    float method3(float f, double d, std::string s){
+    float method3(float f, double d, std::string s)
+    {
         m_method3 = true;
         return 2*f;
     }
@@ -129,7 +139,7 @@ void SignalTest::connectTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature();
+        typedef void Signature ();
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
         connection = sig->connect(slot0);
@@ -140,7 +150,7 @@ void SignalTest::connectTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float);
+        typedef void Signature (float);
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
         connection = sig->connect(slot1);
@@ -151,7 +161,7 @@ void SignalTest::connectTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, int);
+        typedef void Signature (float, int);
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
         connection = sig->connect(slot2);
@@ -162,7 +172,7 @@ void SignalTest::connectTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, double, std::string);
+        typedef void Signature (float, double, std::string);
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
         connection = sig->connect(slot3);
@@ -174,7 +184,7 @@ void SignalTest::connectTest()
 
     // Disconnect
     {
-        typedef void Signature();
+        typedef void Signature ();
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
         connection = sig->connect(slot0);
@@ -186,7 +196,7 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature();
+        typedef void Signature ();
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
         sig->connect(slot0);
@@ -202,7 +212,7 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature();
+        typedef void Signature ();
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
         connection = sig->connect(slot0);
@@ -214,13 +224,13 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature();
+        typedef void Signature ();
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
         ::fwCom::Slot< void() >::sptr slot
             = ::fwCom::newSlot(&SignalTestClass::method0, &testObject);
 
-        connection = sig->connect(slot0);
+        connection                      = sig->connect(slot0);
         ::fwCom::Connection connection2 = sig->connect(slot);
 
         CPPUNIT_ASSERT(!connection.expired());
@@ -233,7 +243,7 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature(std::string);
+        typedef void Signature (std::string);
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
         CPPUNIT_ASSERT_THROW( sig->connect(slot1), fwCom::exception::BadSlot);
@@ -242,7 +252,7 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature(std::string);
+        typedef void Signature (std::string);
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
 
@@ -261,7 +271,7 @@ void SignalTest::connectTest()
     }
 
     {
-        typedef void Signature();
+        typedef void Signature ();
         ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
 
         sig->connect(slot0);
@@ -280,7 +290,7 @@ void SignalTest::emitTest()
     ::fwCom::Connection connection;
 
     {
-        typedef void Signature();
+        typedef void Signature ();
         SignalTestClass testObject;
 
         ::fwCom::Slot< Signature >::sptr slot
@@ -299,7 +309,7 @@ void SignalTest::emitTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float);
+        typedef void Signature (float);
         SignalTestClass testObject;
 
         ::fwCom::Slot< float(float) >::sptr slot
@@ -319,7 +329,7 @@ void SignalTest::emitTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, int);
+        typedef void Signature (float, int);
         SignalTestClass testObject;
 
         ::fwCom::Slot< float(float, int) >::sptr slot
@@ -339,7 +349,7 @@ void SignalTest::emitTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, double, std::string);
+        typedef void Signature (float, double, std::string);
         SignalTestClass testObject;
 
         ::fwCom::Slot< float(float, double, std::string) >::sptr slot
@@ -363,7 +373,7 @@ void SignalTest::emitTest()
 
 void SignalTest::autoSlotDisconnectTest()
 {
-    typedef void Signature(float);
+    typedef void Signature (float);
     SignalTestClass testObject;
 
     ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
@@ -405,7 +415,7 @@ void SignalTest::autoSlotDisconnectTest()
 
 void SignalTest::argumentLossTest()
 {
-    typedef void Signature(float, double, std::string);
+    typedef void Signature (float, double, std::string);
     SignalTestClass testObject;
 
     ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
@@ -442,7 +452,7 @@ void SignalTest::argumentLossTest()
 
 void SignalTest::asyncArgumentLossTest()
 {
-    typedef void Signature(float, double, std::string);
+    typedef void Signature (float, double, std::string);
     SignalTestClass testObject;
 
     ::fwCom::Signal< Signature >::sptr sig = ::fwCom::Signal< Signature >::New();
@@ -485,7 +495,7 @@ void SignalTest::asyncArgumentLossTest()
 
 void SignalTest::blockTest()
 {
-    typedef void Signature(float, double, std::string);
+    typedef void Signature (float, double, std::string);
     SignalTestClass testObject;
 
     ::fwCom::Connection connection;
@@ -562,7 +572,7 @@ void SignalTest::asyncEmitTest()
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
 
     {
-        typedef void Signature();
+        typedef void Signature ();
         SignalTestClass testObject;
 
         ::fwCom::Slot< Signature >::sptr slot
@@ -584,7 +594,7 @@ void SignalTest::asyncEmitTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float);
+        typedef void Signature (float);
         SignalTestClass testObject;
 
         ::fwCom::Slot< float(float) >::sptr slot
@@ -607,7 +617,7 @@ void SignalTest::asyncEmitTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, int);
+        typedef void Signature (float, int);
         SignalTestClass testObject;
 
         ::fwCom::Slot< float(float, int) >::sptr slot
@@ -630,7 +640,7 @@ void SignalTest::asyncEmitTest()
     CPPUNIT_ASSERT(connection.expired());
 
     {
-        typedef void Signature(float, double, std::string);
+        typedef void Signature (float, double, std::string);
         SignalTestClass testObject;
 
         ::fwCom::Slot< float(float, double, std::string) >::sptr slot

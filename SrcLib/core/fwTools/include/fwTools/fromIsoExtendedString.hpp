@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,7 +46,7 @@ FWTOOLS_API std::string toIsoExtendedString(boost::posix_time::ptime ptime);
  * @param[in]   dateAndTime time in the boost format
  * @return      Time in the format YYYY-MM-DD (example : 2007-02-25 )
  */
-FWTOOLS_API std::string getDateInXsdFormat( const boost::posix_time::ptime & dateAndTime ) ;
+FWTOOLS_API std::string getDateInXsdFormat( const boost::posix_time::ptime & dateAndTime );
 
 ///@}
 

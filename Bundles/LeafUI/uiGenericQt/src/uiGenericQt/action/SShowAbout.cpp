@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,21 +30,23 @@ namespace uiGeneric
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiGeneric::action::SShowAbout , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGeneric::action::SShowAbout, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
-SShowAbout::SShowAbout( ) throw():
+SShowAbout::SShowAbout( ) throw() :
     m_bServiceIsConfigured(false),
     m_fsAboutPath(""),
     m_title("About"),
     m_size(500, 300)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SShowAbout::~SShowAbout() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -59,17 +61,17 @@ void SShowAbout::configuring() throw(::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::initialize();
 
-    typedef SPTR(::fwRuntime::ConfigurationElement) ConfigurationElement;
+    typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationElement;
 
     ConfigurationElement cfgFilename = m_configuration->findConfigurationElement("filename");
-    ConfigurationElement cfgTitle = m_configuration->findConfigurationElement("title");
-    ConfigurationElement cfgSize = m_configuration->findConfigurationElement("size");
+    ConfigurationElement cfgTitle    = m_configuration->findConfigurationElement("title");
+    ConfigurationElement cfgSize     = m_configuration->findConfigurationElement("size");
 
     if(cfgFilename)
     {
         const std::string& filename = cfgFilename->getExistingAttributeValue("id");
 
-        m_fsAboutPath = ::boost::filesystem::path(filename);
+        m_fsAboutPath          = ::boost::filesystem::path(filename);
         m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsAboutPath);
         SLM_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);
         SLM_TRACE("Filename found '" + filename + "'");
@@ -107,7 +109,7 @@ void SShowAbout::updating( ) throw(::fwTools::Failed)
     QWebView* htmlView = new QWebView(dialog);
     htmlView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     htmlView->load( url );
-    QObject::connect( htmlView, SIGNAL(linkClicked(const QUrl&)),this, SLOT(onUrlClicked(const QUrl&)));
+    QObject::connect( htmlView, SIGNAL(linkClicked(const QUrl &)),this, SLOT(onUrlClicked(const QUrl &)));
 #else
     QTextBrowser * htmlView = new QTextBrowser(dialog);
     htmlView->setSource(url);
@@ -115,7 +117,7 @@ void SShowAbout::updating( ) throw(::fwTools::Failed)
     htmlView->setMinimumSize(m_size);
 #endif
     QPushButton* okButton = new QPushButton(QObject::tr("Ok"));
-    QHBoxLayout *hLayout = new QHBoxLayout();
+    QHBoxLayout *hLayout  = new QHBoxLayout();
     hLayout->addStretch();
     hLayout->addWidget(okButton);
     hLayout->setContentsMargins(5, 5, 5, 5);
@@ -148,7 +150,8 @@ void SShowAbout::starting() throw (::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void SShowAbout::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

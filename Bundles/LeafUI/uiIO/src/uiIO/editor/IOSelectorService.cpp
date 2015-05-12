@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,7 +39,7 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IDialogEditor , ::uiIO::editor::IOSelectorService , ::fwData::Object );
+fwServicesRegisterMacro( ::gui::editor::IDialogEditor, ::uiIO::editor::IOSelectorService, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -70,47 +70,51 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
     //  <selection mode="include" />
     //  <addSelection service="::ioAtoms::SWriter" />
 
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
-    for( ; iter != this->m_configuration->end() ; ++iter )
+    ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
+    for(; iter != this->m_configuration->end(); ++iter )
     {
-        OSLM_INFO( "IOSelectorService "  << (*iter)->getName());
+        OSLM_INFO( "IOSelectorService " << (*iter)->getName());
 
         if( (*iter)->getName() == "selection" )
         {
-            SLM_ASSERT( "Sorry, xml elemenet <selection> must have attribute 'mode'.", (*iter)->hasAttribute("mode")) ;
-            std::string mode = (*iter)->getExistingAttributeValue("mode") ;
+            SLM_ASSERT( "Sorry, xml elemenet <selection> must have attribute 'mode'.", (*iter)->hasAttribute("mode"));
+            std::string mode = (*iter)->getExistingAttributeValue("mode");
             m_servicesAreExcluded = ( mode == "exclude" );
-            SLM_ASSERT( "Sorry, xml attribut <mode> must be 'exclude' or 'include'.", mode == "exclude" || mode == "include" );
+            SLM_ASSERT( "Sorry, xml attribut <mode> must be 'exclude' or 'include'.",
+                        mode == "exclude" || mode == "include" );
             OSLM_DEBUG( "mode => " << mode );
         }
 
         if( (*iter)->getName() == "addSelection" )
         {
-            if( ! vectorIsAlreadyCleared )
+            if( !vectorIsAlreadyCleared )
             {
                 vectorIsAlreadyCleared = true;
                 m_selectedServices.clear();
             }
-            SLM_ASSERT( "Sorry, xml elemenet <addSelection> must have attribute 'service'.", (*iter)->hasAttribute("service")) ;
-            m_selectedServices.push_back( (*iter)->getExistingAttributeValue("service") ) ;
+            SLM_ASSERT( "Sorry, xml elemenet <addSelection> must have attribute 'service'.",
+                        (*iter)->hasAttribute("service"));
+            m_selectedServices.push_back( (*iter)->getExistingAttributeValue("service") );
             OSLM_DEBUG( "add selection => " << (*iter)->getExistingAttributeValue("service") );
         }
 
         if( (*iter)->getName() == "type" )
         {
-            SLM_ASSERT( "Sorry, xml elemenet <type> must have attribute 'mode'.", (*iter)->hasAttribute("mode")) ;
-            std::string mode = (*iter)->getExistingAttributeValue("mode") ;
-            SLM_ASSERT( "Sorry, xml attribut <mode> must be 'writer' or 'reader'.",  mode == "writer" || mode == "reader" );
+            SLM_ASSERT( "Sorry, xml elemenet <type> must have attribute 'mode'.", (*iter)->hasAttribute("mode"));
+            std::string mode = (*iter)->getExistingAttributeValue("mode");
+            SLM_ASSERT( "Sorry, xml attribut <mode> must be 'writer' or 'reader'.",
+                        mode == "writer" || mode == "reader" );
             m_mode = ( mode == "writer" ) ? WRITER_MODE : READER_MODE;
             OSLM_DEBUG( "mode => " << mode );
         }
 
         if( (*iter)->getName() == "config" )
         {
-            SLM_ASSERT( "Sorry, xml elemenet <config> must have attribute 'id'.", (*iter)->hasAttribute("id")) ;
-            SLM_ASSERT( "Sorry, xml elemenet <config> must have attribute 'service'.", (*iter)->hasAttribute("service")) ;
-            std::string configId = (*iter)->getExistingAttributeValue("id") ;
-            std::string configSrv = (*iter)->getExistingAttributeValue("service") ;
+            SLM_ASSERT( "Sorry, xml elemenet <config> must have attribute 'id'.", (*iter)->hasAttribute("id"));
+            SLM_ASSERT( "Sorry, xml elemenet <config> must have attribute 'service'.",
+                        (*iter)->hasAttribute("service"));
+            std::string configId  = (*iter)->getExistingAttributeValue("id");
+            std::string configSrv = (*iter)->getExistingAttributeValue("service");
             m_serviceToConfig[ configSrv ] = configId;
         }
 
@@ -150,11 +154,15 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
     std::vector< std::string > availableExtensionsId;
     if ( m_mode == READER_MODE )
     {
-        availableExtensionsId = ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(this->getObject()->getClassname(),"::io::IReader") ;
+        availableExtensionsId =
+            ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
+                this->getObject()->getClassname(),"::io::IReader");
     }
     else // m_mode == WRITER_MODE
     {
-        availableExtensionsId = ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(this->getObject()->getClassname(),"::io::IWriter") ;
+        availableExtensionsId =
+            ::fwServices::registry::ServiceFactory::getDefault()->getImplementationIdFromObjectAndType(
+                this->getObject()->getClassname(),"::io::IWriter");
     }
 
     // Filter available extensions and replace id by service description
@@ -163,16 +171,19 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
 
     BOOST_FOREACH( const std::string &serviceId, availableExtensionsId )
     {
-        bool serviceIsSelectedByUser = std::find( m_selectedServices.begin(), m_selectedServices.end(), serviceId ) != m_selectedServices.end();
+        bool serviceIsSelectedByUser =
+            std::find( m_selectedServices.begin(), m_selectedServices.end(),
+                       serviceId ) != m_selectedServices.end();
 
         // Test if the service is considered here as available by users, if yes push in availableExtensionsSelector
         // excluded mode => add services that are not selected by users
         // included mode => add services selected by users
-        if( (m_servicesAreExcluded && ! serviceIsSelectedByUser) ||
-            (! m_servicesAreExcluded && serviceIsSelectedByUser) )
+        if( (m_servicesAreExcluded && !serviceIsSelectedByUser) ||
+            (!m_servicesAreExcluded && serviceIsSelectedByUser) )
         {
             // Add this service
-            std::string infoUser = ::fwServices::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
+            std::string infoUser =
+                ::fwServices::registry::ServiceFactory::getDefault()->getServiceDescription(serviceId);
 
             std::map< std::string, std::string >::const_iterator iter = m_serviceToConfig.find( serviceId );
             if ( iter != m_serviceToConfig.end() )
@@ -197,9 +208,9 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
     std::sort( availableExtensionsSelector.begin(), availableExtensionsSelector.end() );
 
     // Test if we have an extension
-    if ( ! availableExtensionsMap.empty() )
+    if ( !availableExtensionsMap.empty() )
     {
-        std::string extensionId = availableExtensionsMap[0].first ;
+        std::string extensionId           = availableExtensionsMap[0].first;
         bool extensionSelectionIsCanceled = false;
 
         // Selection of extension when availableExtensions.size() > 1
@@ -226,7 +237,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 {
                     if (pair.second == selection )
                     {
-                        extensionId = pair.first ;
+                        extensionId      = pair.first;
                         extensionIdFound = true;
                     }
                 }
@@ -238,7 +249,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             }
         }
 
-        if ( ! extensionSelectionIsCanceled )
+        if ( !extensionSelectionIsCanceled )
         {
 
             // Get Config
@@ -247,8 +258,11 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             if ( m_serviceToConfig.find( extensionId ) != m_serviceToConfig.end() )
             {
                 hasConfigForService = true;
-                srvCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(  m_serviceToConfig[extensionId] , extensionId ) ;
-                SLM_ASSERT("Sorry, there is not service configuration of type ::fwServices::registry::ServiceConfig found", srvCfg ) ;
+                srvCfg              = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
+                    m_serviceToConfig[extensionId], extensionId );
+                SLM_ASSERT(
+                    "Sorry, there is not service configuration of type ::fwServices::registry::ServiceConfig found",
+                    srvCfg );
             }
 
             // Configure and start service
@@ -261,7 +275,8 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 }
                 else
                 {
-                    ::fwServices::registry::ServiceFactory::sptr services = ::fwServices::registry::ServiceFactory::getDefault();
+                    ::fwServices::registry::ServiceFactory::sptr services =
+                        ::fwServices::registry::ServiceFactory::getDefault();
                     std::string objType = services->getObjectImplementation(extensionId);
                     if(!objType.compare("::fwData::Object"))
                     {
@@ -269,7 +284,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                     }
                     else
                     {
-                        object = ::fwData::factory::New(objType);
+                        object                              = ::fwData::factory::New(objType);
                         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite>();
                         ::fwComEd::helper::Composite helper(composite);
                         helper.add(m_inject, object);
@@ -278,7 +293,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                     }
                 }
 
-                ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( object , extensionId ) ;
+                ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( object, extensionId );
                 if ( hasConfigForService )
                 {
                     reader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
@@ -297,7 +312,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             }
             else
             {
-                ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( this->getObject() , extensionId ) ;
+                ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( this->getObject(), extensionId );
                 if ( hasConfigForService )
                 {
                     writer->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );

@@ -25,7 +25,7 @@ namespace fwData
 class FWDATA_CLASS_API Edge : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Edge)(::fwData::Object), (()), ::fwData::factory::New< Edge >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Edge)(::fwData::Object), (()), ::fwData::factory::New< Edge >);
     fwCampMakeFriendDataMacro((fwData)(Edge));
 
     FWDATA_API static std::string NATURE_FLOW;
@@ -76,7 +76,7 @@ public:
     /// @brief Get edge nature ("FLOW" , "FWDATA")
     FWDATA_API const std::string &getNature() const;
 
-protected :
+protected:
 
     std::string m_fromPortIdentifier; // "ID_SIZEX" , ...
     std::string m_toPortIdentifier; // "ID_SIZEX" , ...

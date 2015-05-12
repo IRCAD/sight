@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_
-#define _GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_
+#ifndef __GUI_ACTION_ACTIONNOTIFYSERVICE_HPP__
+#define __GUI_ACTION_ACTIONNOTIFYSERVICE_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -23,31 +23,31 @@ namespace action
 class GUI_CLASS_API ActionNotifyService : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ActionNotifyService)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ActionNotifyService)(::fwGui::IActionSrv) );
 
     /**
-    * @brief Constructor. Do nothing.
-    */
+     * @brief Constructor. Do nothing.
+     */
     GUI_API ActionNotifyService() throw();
 
     /**
-    * @brief Destructor. Do nothing.
-    */
+     * @brief Destructor. Do nothing.
+     */
     GUI_API virtual ~ActionNotifyService() throw();
 
 protected:
 
-    GUI_API virtual void info(std::ostream &_sstream ) ;
+    GUI_API virtual void info(std::ostream &_sstream );
 
     GUI_API void starting() throw(::fwTools::Failed);
 
     GUI_API void stopping() throw(::fwTools::Failed);
 
-    GUI_API void updating()throw (fwTools::Failed);
+    GUI_API void updating() throw (fwTools::Failed);
 
-    GUI_API void receiving(::fwServices::ObjectMsg::csptr _msg )throw (::fwTools::Failed);
+    GUI_API void receiving(::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed);
 
     /**
      * @brief Configure the message to send.
@@ -70,7 +70,7 @@ protected:
     /// Notify message vector
     typedef std::vector < MsgEventType > MsgVectType;
 
-    MsgVectType  m_vectMsg;
+    MsgVectType m_vectMsg;
 };
 
 
@@ -78,4 +78,4 @@ protected:
 } // namespace gui
 
 
-#endif // _GUI_ACTION_ACTIONNOTIFYSERVICE_HPP_
+#endif // __GUI_ACTION_ACTIONNOTIFYSERVICE_HPP__

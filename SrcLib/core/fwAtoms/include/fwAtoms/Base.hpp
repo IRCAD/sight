@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMS_BASE_BASE_HPP__
-#define __FWATOMS_BASE_BASE_HPP__
+#ifndef __FWATOMS_BASE_HPP__
+#define __FWATOMS_BASE_HPP__
 
 
 #include <string>
@@ -47,7 +47,8 @@ public:
         }
     };
 
-    typedef enum {
+    typedef enum
+    {
         BOOLEAN = 1,
         NUMERIC,
         STRING,
@@ -60,7 +61,9 @@ public:
     fwCoreNonInstanciableClassDefinitionsMacro( (Base)(::fwCore::BaseObject) );
     fwCoreAllowSharedFromThis();
 
-    virtual ~Base(){};
+    virtual ~Base()
+    {
+    }
 
     /**
      * @brief Returns a clone object
@@ -71,49 +74,73 @@ public:
      *@brief Test if the current base is a value or not (Value = {string;numeric;boolean})
      *@return the test result
      */
-    bool isValue() const {return (type() == BOOLEAN) || (type() == NUMERIC) || (type() == STRING);};
+    bool isValue() const
+    {
+        return (type() == BOOLEAN) || (type() == NUMERIC) || (type() == STRING);
+    }
 
     /**
      *@brief Test if the current base is a boolean
      *@return the test result
      */
-    bool isBoolean() const {return (type() == BOOLEAN);};
+    bool isBoolean() const
+    {
+        return (type() == BOOLEAN);
+    }
 
     /**
      *@brief Test if the current base is a Numeric (real or integer)
      *@return the test result
      */
-    bool isNumeric() const {return (type() == NUMERIC);};
+    bool isNumeric() const
+    {
+        return (type() == NUMERIC);
+    }
 
     /**
      *@brief Test if the current base is a string
      *@return the test result
      */
-    bool isString() const {return (type() == STRING);};
+    bool isString() const
+    {
+        return (type() == STRING);
+    }
 
     /**
      *@brief Test if the current base is a sequence
      *@return the test result
      */
-    bool isSequence() const {return (type() == SEQUENCE);};
+    bool isSequence() const
+    {
+        return (type() == SEQUENCE);
+    }
 
     /**
      *@brief Test if the current base is a mapping
      *@return the test result
      */
-    bool isMapping() const {return (type() == MAP);};
+    bool isMapping() const
+    {
+        return (type() == MAP);
+    }
 
     /**
      *@brief Test if the current base is a blob (a object with a buffer)
      *@return the test result
      */
-    bool isBlob() const {return (type() == BLOB);};
+    bool isBlob() const
+    {
+        return (type() == BLOB);
+    }
 
     /**
      *@brief Test if the current base is an object (representation of fwData)
      *@return the test result
      */
-    bool isObject() const {return (type() == OBJECT);};
+    bool isObject() const
+    {
+        return (type() == OBJECT);
+    }
 
     /**
      * @brief Return the string representation of a value.
@@ -126,15 +153,17 @@ public:
      */
     virtual AtomType type() const = 0;
 
-protected :
+protected:
     /**
      * @brief Constructor
      */
-    Base(){};
+    Base()
+    {
+    }
 
 };
 
 }
 
-#endif /* __FWATOMS_BASE_BASE_HPP__ */
+#endif /* __FWATOMS_BASE_HPP__ */
 

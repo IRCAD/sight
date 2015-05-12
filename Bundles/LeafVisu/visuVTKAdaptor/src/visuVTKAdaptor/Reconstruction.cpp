@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,7 +37,8 @@
 
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Reconstruction, ::fwData::Reconstruction ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Reconstruction,
+                         ::fwData::Reconstruction );
 
 namespace visuVTKAdaptor
 {
@@ -47,8 +48,8 @@ namespace visuVTKAdaptor
 Reconstruction::Reconstruction() throw()
 {
     m_clippingPlanesId = "";
-    m_sharpEdgeAngle = 180;
-    m_autoResetCamera = true;
+    m_sharpEdgeAngle   = 180;
+    m_autoResetCamera  = true;
     //addNewHandledEvent( ::fwComEd::ReconstructionMsg::MESH );
     //addNewHandledEvent( ::fwComEd::ReconstructionMsg::VISIBILITY );
 }
@@ -56,7 +57,8 @@ Reconstruction::Reconstruction() throw()
 //------------------------------------------------------------------------------
 
 Reconstruction::~Reconstruction() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -65,9 +67,9 @@ void Reconstruction::configuring() throw(fwTools::Failed)
     SLM_TRACE_FUNC();
 
     assert(m_configuration->getName() == "config");
-    this->setPickerId   ( m_configuration->getAttributeValue( "picker"    ) ) ;
-    this->setRenderId   ( m_configuration->getAttributeValue( "renderer"  ) ) ;
-    this->setTransformId( m_configuration->getAttributeValue( "transform" ) ) ;
+    this->setPickerId   ( m_configuration->getAttributeValue( "picker"    ) );
+    this->setRenderId   ( m_configuration->getAttributeValue( "renderer"  ) );
+    this->setTransformId( m_configuration->getAttributeValue( "transform" ) );
 
     if (m_configuration->hasAttribute("autoresetcamera") )
     {
@@ -99,8 +101,8 @@ void Reconstruction::createMeshService()
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr meshService;
         meshService = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
-                mesh,
-                "::visuVTKAdaptor::Mesh" );
+            mesh,
+            "::visuVTKAdaptor::Mesh" );
         SLM_ASSERT("meshService not instanced", meshService);
         ::visuVTKAdaptor::Mesh::sptr meshAdaptor
             = Mesh::dynamicCast(meshService);
@@ -146,7 +148,7 @@ void Reconstruction::doUpdate() throw(fwTools::Failed)
         ::fwRenderVTK::IVtkAdaptorService::sptr meshService = m_meshService.lock();
 
         ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
-        ::visuVTKAdaptor::Mesh::sptr meshAdaptor = Mesh::dynamicCast(meshService);
+        ::visuVTKAdaptor::Mesh::sptr meshAdaptor      = Mesh::dynamicCast(meshService);
         //meshAdaptor->setSharpEdgeAngle( m_sharpEdgeAngle );
 
         meshAdaptor->setMaterial     ( reconstruction->getMaterial()       );
@@ -198,7 +200,7 @@ void Reconstruction::doStop() throw(fwTools::Failed)
 
     //if (this->getPicker())
     //{
-        //this->removeFromPicker(this->getActor());
+    //this->removeFromPicker(this->getActor());
     //}
 
     this->unregisterServices();

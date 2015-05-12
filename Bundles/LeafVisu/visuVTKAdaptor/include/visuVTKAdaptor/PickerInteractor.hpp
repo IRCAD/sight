@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_PICKERINTERACTOR_HPP_
-#define _VISUVTKADAPTOR_PICKERINTERACTOR_HPP_
+#ifndef __VISUVTKADAPTOR_PICKERINTERACTOR_HPP__
+#define __VISUVTKADAPTOR_PICKERINTERACTOR_HPP__
 
 #include <vector>
 
@@ -19,12 +19,12 @@ class vtkCommand;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API PickerInteractor: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API PickerInteractor : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PickerInteractor)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PickerInteractor)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API PickerInteractor() throw();
 
@@ -39,7 +39,9 @@ protected:
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed){};
+    void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+    {
+    }
 
     VISUVTKADAPTOR_API void notifyEvent(::fwComEd::InteractionMsg::sptr msg);
 
@@ -55,4 +57,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_PICKERINTERACTOR_HPP_
+#endif // __VISUVTKADAPTOR_PICKERINTERACTOR_HPP__

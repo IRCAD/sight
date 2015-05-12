@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ void ObjectServiceTest::swapTest()
     const std::string srvImplementation("::fwServices::ut::TestServiceImplementation");
 
     ::fwData::Integer::sptr objSrv1 = ::fwData::Integer::New();
-    ::fwData::Float::sptr objSrv2 = ::fwData::Float::New();
+    ::fwData::Float::sptr objSrv2   = ::fwData::Float::New();
 
     ::fwServices::IService::sptr service;
     service = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImplementation );
@@ -96,10 +96,10 @@ void ObjectServiceTest::registerTest()
     CPPUNIT_ASSERT(osr.has(obj, srvType) );
 
     typedef ::fwServices::registry::ObjectService::ServiceVectorType ServiceVectorType;
-    ServiceVectorType servicesByType = osr.getServices( srvType );
+    ServiceVectorType servicesByType       = osr.getServices( srvType );
     ServiceVectorType servicesByObjAndType = osr.getServices( obj, srvType );
     typedef std::vector< ::fwServices::ut::TestService::sptr > TestServiceVectorType;
-    TestServiceVectorType servicesByTemplateType = osr.getServices< ::fwServices::ut::TestService >( );
+    TestServiceVectorType servicesByTemplateType       = osr.getServices< ::fwServices::ut::TestService >( );
     TestServiceVectorType servicesByTemplateTypeAndObj = osr.getServices< ::fwServices::ut::TestService >( obj );
 
 

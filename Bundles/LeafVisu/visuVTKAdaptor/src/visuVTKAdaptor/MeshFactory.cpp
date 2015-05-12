@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,9 +26,9 @@ namespace visuVTKAdaptor
 
 MeshFactory::MeshFactory()
 {
-    m_clippingPlanes = 0;
-    m_actor = vtkActor::New();
-    m_normals = vtkPolyDataNormals::New();
+    m_clippingPlanes      = 0;
+    m_actor               = vtkActor::New();
+    m_normals             = vtkPolyDataNormals::New();
     m_normalsFeatureAngle = 180;
 }
 
@@ -63,8 +63,8 @@ void MeshFactory::updateMaterial( ::fwData::Material::sptr material )
         vtkProperty *property = m_actor->GetProperty();
 
         property->SetColor( color->red(),
-                color->green(),
-                color->blue());
+                            color->green(),
+                            color->blue());
 
         //3DVSP like rendering
         property->SetSpecularColor(1.,1.,1.);

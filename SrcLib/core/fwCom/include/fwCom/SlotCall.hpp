@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,30 +23,32 @@ struct SlotCall;
  * @tparam R Slot's return type.
  * @tparam A Slot's arguments types.
  */
-template< typename R, typename ...A >
-struct SlotCall< R (A...) > : SlotRun< void ( A... ) >
+template< typename R, typename ... A >
+struct SlotCall< R (A ...) > : SlotRun< void ( A ... ) >
 {
     /**
      * @name Typedefs
      * @{ */
-    typedef R SignatureType(A...);
+    typedef R SignatureType (A ...);
     typedef SlotCall< SignatureType > SelfType;
-    typedef SPTR( SelfType ) sptr;
-    typedef WPTR( SelfType ) wptr;
+    typedef SPTR ( SelfType ) sptr;
+    typedef WPTR ( SelfType ) wptr;
     typedef ::boost::shared_future< R > SharedFutureType;
     /**  @} */
 
 
-    SlotCall() :  SlotRun< void ( A... ) >()
-    {}
+    SlotCall() :  SlotRun< void ( A ... ) >()
+    {
+    }
 
     virtual ~SlotCall()
-    {}
+    {
+    }
 
     /**
      * @brief Call the Slot with the given parameters.
      */
-    virtual R call(A...) const = 0;
+    virtual R call(A ...) const = 0;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
@@ -58,7 +60,7 @@ struct SlotCall< R (A...) > : SlotRun< void ( A... ) >
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SharedFutureType asyncCall( const SPTR(::fwThread::Worker) &worker, A... args ) const;
+    virtual SharedFutureType asyncCall( const SPTR(::fwThread::Worker) &worker, A ... args ) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
@@ -68,19 +70,19 @@ struct SlotCall< R (A...) > : SlotRun< void ( A... ) >
      * @return a shared_future object associated with Slot's call result.
      * @throws NoWorker if slot has no worker set.
      */
-    virtual SharedFutureType asyncCall( A... args ) const;
+    virtual SharedFutureType asyncCall( A ... args ) const;
 
-protected:
+    protected:
 
-    template< typename WEAKCALL >
-    static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+        template< typename WEAKCALL >
+        static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
 
-    /**
-     * @brief Binds the given parameters to the call method within a R() function.
-     *
-     * @return a R() function.
-     */
-    virtual ::boost::function< R() > bindCall( A...args  ) const;
+        /**
+         * @brief Binds the given parameters to the call method within a R() function.
+         *
+         * @return a R() function.
+         */
+        virtual ::boost::function< R() > bindCall( A ... args  ) const;
 };
 
 

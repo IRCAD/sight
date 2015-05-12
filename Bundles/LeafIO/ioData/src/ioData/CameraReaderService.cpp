@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,7 @@
 
 #include "ioData/CameraReaderService.hpp"
 
-fwServicesRegisterMacro( ::io::IReader , ::ioData::CameraReaderService , ::fwData::Camera ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioData::CameraReaderService, ::fwData::Camera );
 
 namespace ioData
 {
@@ -28,17 +28,17 @@ namespace ioData
 
 void CameraReaderService::info(std::ostream &_sstream )
 {
-    this->SuperClass::info( _sstream ) ;
-    _sstream << std::endl << " camera calibration file reader" ;
+    this->SuperClass::info( _sstream );
+    _sstream << std::endl << " camera calibration file reader";
 }
 
 //-----------------------------------------------------------------------------
 
 std::vector< std::string > CameraReaderService::getSupportedExtensions()
 {
-    std::vector< std::string > extensions ;
+    std::vector< std::string > extensions;
     extensions.push_back(".cal");
-    return extensions ;
+    return extensions;
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ void CameraReaderService::updating() throw(::fwTools::Failed)
 
         // Notify reading
         ::fwComEd::CameraMsg::sptr msg = ::fwComEd::CameraMsg::New();
-        msg->addEvent( ::fwComEd::CameraMsg::NEW_CAMERA ) ;
+        msg->addEvent( ::fwComEd::CameraMsg::NEW_CAMERA );
 
         ::fwServices::IEditionService::notify(this->getSptr(), cam, msg);
     }
@@ -78,13 +78,15 @@ bool CameraReaderService::loadCalibration( const std::string &fileName, ::fwData
     std::ifstream f;
     f.open (fileName.c_str(), std::fstream::in);
     if (!f.is_open())
+    {
         return false;
+    }
     double M[5];
     unsigned int i, j;
     ::fwData::TransformationMatrix3D::sptr m_extrinsicMatrix = ::fwData::TransformationMatrix3D::New();
-    for( i=0 ; i<4 ; ++i )
+    for( i = 0; i<4; ++i )
     {
-        for( j=0; j<4; ++j )
+        for( j = 0; j<4; ++j )
         {
             f>>M[j];
             m_extrinsicMatrix->setCoefficient(i,j,M[j]);
@@ -92,7 +94,7 @@ bool CameraReaderService::loadCalibration( const std::string &fileName, ::fwData
     }
     cam->setExtrinsicCameraTransformation(m_extrinsicMatrix);
     // alpha values : Focale en X ; Focale en Y
-    for( i=0; i<5; ++i )
+    for( i = 0; i<5; ++i )
     {
         f>>M[i];
     }
@@ -103,16 +105,16 @@ bool CameraReaderService::loadCalibration( const std::string &fileName, ::fwData
     cam->setCx(M[2]); // u0
     cam->setCy(M[3]); // v0
     /*
-    //TODO
-    // ajouter coeff de distortion et skew � ::fwData::Video
-    cam->setAlphaC(M[4]); // skew (Orthogonalit� de la plaque CCD)
-    // Radial 1er ordre ; 2�me ordre ; Tangentiel 1er ordre ; 2�me ordre ; Radial 3�me ordre
-    for( i=0 ; i<5 ; ++i )
-    {
+       //TODO
+       // ajouter coeff de distortion et skew � ::fwData::Video
+       cam->setAlphaC(M[4]); // skew (Orthogonalit� de la plaque CCD)
+       // Radial 1er ordre ; 2�me ordre ; Tangentiel 1er ordre ; 2�me ordre ; Radial 3�me ordre
+       for( i=0 ; i<5 ; ++i )
+       {
         f>>M[i];
         setkc(i,M[i]);
-    }
-    */
+       }
+     */
     f.close();
 
     return true;

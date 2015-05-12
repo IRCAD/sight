@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,19 +31,21 @@ namespace uiGeneric
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiGeneric::action::ShowAcknowledgments , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiGeneric::action::ShowAcknowledgments, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
-ShowAcknowledgments::ShowAcknowledgments( ) throw():
-m_bServiceIsConfigured(false),
-m_fsAckPath("")
-{}
+ShowAcknowledgments::ShowAcknowledgments( ) throw() :
+    m_bServiceIsConfigured(false),
+    m_fsAckPath("")
+{
+}
 
 //------------------------------------------------------------------------------
 
 ShowAcknowledgments::~ShowAcknowledgments() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -58,11 +60,11 @@ void ShowAcknowledgments::configuring() throw(::fwTools::Failed)
     this->::fwGui::IActionSrv::initialize();
     if( m_configuration->findConfigurationElement("filename") )
     {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id") ;
-        m_fsAckPath = ::boost::filesystem::path( filename ) ;
+        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id");
+        m_fsAckPath            = ::boost::filesystem::path( filename );
         m_bServiceIsConfigured = ::boost::filesystem::exists(m_fsAckPath);
         OSLM_WARN_IF("Acknowledgments file " <<filename<< " doesn't exist", !m_bServiceIsConfigured);
-        OSLM_TRACE("Filename found " << filename ) ;
+        OSLM_TRACE("Filename found " << filename );
     }
 }
 
@@ -79,7 +81,7 @@ void ShowAcknowledgments::updating( ) throw(::fwTools::Failed)
     QWebView* htmlView = new QWebView(dialog);
     htmlView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     htmlView->load( url );
-    QObject::connect( htmlView, SIGNAL(linkClicked(const QUrl&)),this, SLOT(onUrlClicked(const QUrl&)));
+    QObject::connect( htmlView, SIGNAL(linkClicked(const QUrl &)),this, SLOT(onUrlClicked(const QUrl &)));
 #else
     QTextBrowser * htmlView = new QTextBrowser (dialog);
     htmlView->setSource(url);
@@ -87,7 +89,7 @@ void ShowAcknowledgments::updating( ) throw(::fwTools::Failed)
     htmlView->setMinimumSize(500, 400);
 #endif
     QPushButton* okButton = new QPushButton(QObject::tr("Ok"));
-    QHBoxLayout *hLayout = new QHBoxLayout();
+    QHBoxLayout *hLayout  = new QHBoxLayout();
     hLayout->addStretch();
     hLayout->addWidget(okButton);
     hLayout->setContentsMargins(5,5,5,5);
@@ -118,7 +120,8 @@ void ShowAcknowledgments::starting() throw (::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void ShowAcknowledgments::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

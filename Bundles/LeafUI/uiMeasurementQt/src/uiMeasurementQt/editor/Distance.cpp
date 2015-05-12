@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ namespace uiMeasurement
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMeasurement::editor::Distance , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurement::editor::Distance, ::fwData::Image );
 
 
 Distance::Distance() throw()
@@ -49,7 +49,8 @@ Distance::Distance() throw()
 //------------------------------------------------------------------------------
 
 Distance::~Distance() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -58,7 +59,8 @@ void Distance::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -68,10 +70,10 @@ void Distance::starting() throw(::fwTools::Failed)
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));
 
-    m_distButton = new QPushButton( imageDist, tr(""), container) ;
+    m_distButton = new QPushButton( imageDist, tr(""), container);
     m_distButton->setToolTip(tr("Distance"));
 
-    QVBoxLayout* layout  = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget( m_distButton, 1 );
     layout->setContentsMargins(0, 0, 0, 0);
     QObject::connect(m_distButton, SIGNAL(clicked()), this, SLOT(onDistanceButton()));

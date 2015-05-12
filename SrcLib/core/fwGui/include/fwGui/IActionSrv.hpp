@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IACTIONSRV_HPP_
-#define _FWGUI_IACTIONSRV_HPP_
+#ifndef __FWGUI_IACTIONSRV_HPP__
+#define __FWGUI_IACTIONSRV_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -26,9 +26,9 @@ namespace fwGui
 class FWGUI_CLASS_API IActionSrv : public ::fwServices::IService
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IActionSrv)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IActionSrv)(::fwServices::IService) );
     fwCoreAllowSharedFromThis();
 
     /// Method called when the action service is stopping
@@ -44,7 +44,10 @@ public :
     FWGUI_API bool getIsActive();
 
     /// Return true if action 'check' feedback is inverted.
-    bool getActiveStateValue(){ return m_activeStateValue; };
+    bool getActiveStateValue()
+    {
+        return m_activeStateValue;
+    }
 
     /// Set the action service executable or not.
     FWGUI_API void setIsExecutable(bool isExecutable);
@@ -62,11 +65,11 @@ public :
      */
     FWGUI_API bool confirmAction();
 
-protected :
+protected:
 
-    FWGUI_API IActionSrv() ;
+    FWGUI_API IActionSrv();
 
-    FWGUI_API virtual ~IActionSrv() ;
+    FWGUI_API virtual ~IActionSrv();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -97,7 +100,7 @@ protected :
 
 private:
 
-    ::fwGui::registrar::ActionRegistrar::sptr    m_registrar;
+    ::fwGui::registrar::ActionRegistrar::sptr m_registrar;
 
     /// Value for which the action will be considered 'active'
     bool m_activeStateValue;
@@ -129,6 +132,6 @@ private:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_IACTIONSRV_HPP_*/
+#endif /*__FWGUI_IACTIONSRV_HPP__*/
 
 

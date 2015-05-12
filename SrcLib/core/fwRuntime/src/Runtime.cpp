@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,17 +38,18 @@ template< typename T >
 struct IsEnableAndHasType
 {
     IsEnableAndHasType( const std::string & type )
-    :   m_type( type )
-    {}
+        :   m_type( type )
+    {
+    }
 
     bool operator() ( const ::boost::shared_ptr< T > p ) const
     {
         return p->getType() == m_type && p->isEnable();
     }
 
-private:
+    private:
 
-    std::string m_type;
+        std::string m_type;
 };
 }
 
@@ -59,12 +60,14 @@ private:
 //------------------------------------------------------------------------------
 
 Runtime::Runtime()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 Runtime::~Runtime()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -72,8 +75,10 @@ void Runtime::addBundle( ::boost::shared_ptr< Bundle > bundle ) throw(RuntimeExc
 {
     m_bundles.insert( bundle );
     std::for_each( bundle->extensionsBegin(), bundle->extensionsEnd(), ::boost::bind(&Runtime::addExtension, this, _1));
-    std::for_each( bundle->extensionPointsBegin(), bundle->extensionPointsEnd(), ::boost::bind(&Runtime::addExtensionPoint, this, _1));
-    std::for_each( bundle->executableFactoriesBegin(), bundle->executableFactoriesEnd(), ::boost::bind(&Runtime::addExecutableFactory, this, _1));
+    std::for_each( bundle->extensionPointsBegin(), bundle->extensionPointsEnd(),
+                   ::boost::bind(&Runtime::addExtensionPoint, this, _1));
+    std::for_each( bundle->executableFactoriesBegin(), bundle->executableFactoriesEnd(),
+                   ::boost::bind(&Runtime::addExecutableFactory, this, _1));
 }
 
 //------------------------------------------------------------------------------
@@ -122,7 +127,7 @@ Runtime::BundleIterator Runtime::bundlesEnd()
 void Runtime::addExecutableFactory( ::boost::shared_ptr< ExecutableFactory > factory ) throw(RuntimeException)
 {
     // Ensures no registered factory has the same identifier.
-    const std::string   type( factory->getType() );
+    const std::string type( factory->getType() );
     if( this->findExecutableFactory(type) != 0 )
     {
         throw RuntimeException(type + ": type already used by an executable factory.");
@@ -146,8 +151,10 @@ void Runtime::unregisterExecutableFactory( ::boost::shared_ptr< ExecutableFactor
 
 ::boost::shared_ptr< ExecutableFactory > Runtime::findExecutableFactory( const std::string & type ) const
 {
-    ExecutableFactoryContainer::const_iterator  found;
-    found = std::find_if( m_executableFactories.begin(), m_executableFactories.end(), IsEnableAndHasType<ExecutableFactory>(type) );
+    ExecutableFactoryContainer::const_iterator found;
+    found =
+        std::find_if( m_executableFactories.begin(), m_executableFactories.end(),
+                      IsEnableAndHasType<ExecutableFactory>(type) );
     return ( found == m_executableFactories.end() ) ? ::boost::shared_ptr< ExecutableFactory >() : *found;
 }
 
@@ -172,7 +179,7 @@ void Runtime::unregisterExtension( ::boost::shared_ptr<Extension> extension)
     // Asserts no registered extension has the same identifier.
     const std::string identifier(extension->getIdentifier());
     OSLM_WARN_IF("Extension " << identifier << " not found.",
-            !identifier.empty() && this->findExtension(identifier) == 0 );
+                 !identifier.empty() && this->findExtension(identifier) == 0 );
     // Removes the extension.
     m_extensions.erase( extension );
 }
@@ -212,7 +219,7 @@ void Runtime::unregisterExtensionPoint( ::boost::shared_ptr<ExtensionPoint> poin
     // Asserts no registered extension point has the same identifier.
     const std::string identifier(point->getIdentifier());
     OSLM_WARN_IF("ExtensionPoint " << identifier << " not found.",
-            this->findExtensionPoint(identifier) == 0);
+                 this->findExtensionPoint(identifier) == 0);
     // Removes the extension.
     m_extensionPoints.erase(point);
 }
@@ -248,7 +255,7 @@ Runtime * Runtime::getDefault()
 
 ::boost::shared_ptr<Extension> Runtime::findExtension( const std::string & identifier ) const
 {
-    ExtensionContainer::const_iterator  found;
+    ExtensionContainer::const_iterator found;
     found = std::find_if( m_extensions.begin(), m_extensions.end(), IsEnableAndHasIdentifier<Extension>(identifier) );
     return (found != m_extensions.end()) ? (*found) : ::boost::shared_ptr<Extension>();
 }
@@ -258,7 +265,9 @@ Runtime * Runtime::getDefault()
 ::boost::shared_ptr<ExtensionPoint> Runtime::findExtensionPoint( const std::string & identifier ) const
 {
     ExtensionPointContainer::const_iterator found;
-    found = std::find_if( m_extensionPoints.begin(), m_extensionPoints.end(), IsEnableAndHasIdentifier<ExtensionPoint>(identifier) );
+    found =
+        std::find_if( m_extensionPoints.begin(), m_extensionPoints.end(), IsEnableAndHasIdentifier<ExtensionPoint>(
+                          identifier) );
     return (found != m_extensionPoints.end()) ? (*found) : ::boost::shared_ptr<ExtensionPoint>();
 }
 
@@ -285,7 +294,9 @@ IExecutable * Runtime::createExecutableInstance( const std::string & type ) thro
 
 //------------------------------------------------------------------------------
 
-IExecutable * Runtime::createExecutableInstance( const std::string & type, ConfigurationElement::sptr configurationElement ) throw( RuntimeException )
+IExecutable * Runtime::createExecutableInstance( const std::string & type,
+                                                 ConfigurationElement::sptr configurationElement ) throw(
+    RuntimeException )
 {
     ::boost::shared_ptr< ExecutableFactory > factory;
 

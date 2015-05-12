@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@
 #include "visuVTKAdaptor/PlaneInteractor.hpp"
 #include <fwServices/IEditionService.hpp>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
@@ -34,13 +34,17 @@ class PlaneInteractorCallback : public vtkCommand
 {
 public:
     static PlaneInteractorCallback *New()
-    { return new PlaneInteractorCallback(); }
+    {
+        return new PlaneInteractorCallback();
+    }
 
     PlaneInteractorCallback()
-    {}
+    {
+    }
 
     ~PlaneInteractorCallback()
-    {}
+    {
+    }
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
     {
@@ -78,7 +82,7 @@ public:
         m_adaptor = adaptor;
     }
 
-protected :
+protected:
     PlaneInteractor::sptr m_adaptor;
 
 };
@@ -87,7 +91,7 @@ protected :
 
 PlaneInteractor::PlaneInteractor() throw()
 {
-    m_priority = 1;
+    m_priority    = 1;
     m_vtkObserver = NULL;
     //handlingEventOff();
 }
@@ -95,7 +99,8 @@ PlaneInteractor::PlaneInteractor() throw()
 //------------------------------------------------------------------------------
 
 PlaneInteractor::~PlaneInteractor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -120,7 +125,7 @@ void PlaneInteractor::doStart() throw(fwTools::Failed)
 
         m_vtkObserver = observer;
 
-        this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent  , m_vtkObserver, m_priority);
+        this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent, m_vtkObserver, m_priority);
         this->getInteractor()->AddObserver(vtkCommand::KeyReleaseEvent, m_vtkObserver, m_priority);
         this->getInteractor()->AddObserver(vtkCommand::MouseWheelForwardEvent, m_vtkObserver, m_priority);
         this->getInteractor()->AddObserver(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver, m_priority);
@@ -148,7 +153,7 @@ void PlaneInteractor::doStop() throw(fwTools::Failed)
 {
     if(m_vtkObserver)
     {
-        this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent  , m_vtkObserver);
+        this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent, m_vtkObserver);
         this->getInteractor()->RemoveObservers(vtkCommand::KeyReleaseEvent, m_vtkObserver);
         this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent, m_vtkObserver);
         this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver);
@@ -160,7 +165,8 @@ void PlaneInteractor::doStop() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void PlaneInteractor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

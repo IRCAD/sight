@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,23 +32,24 @@ std::string InteractionMsg::MOUSE_MOVE               = "MOUSE_MOVE";
 //-----------------------------------------------------------------------------
 
 InteractionMsg::InteractionMsg(::fwServices::ObjectMsg::Key key) :
-        m_eventPoint(::fwData::Point::New()),
-        m_modifiersStatus(NONE),
-        m_eventTimestamp(0.)
+    m_eventPoint(::fwData::Point::New()),
+    m_modifiersStatus(NONE),
+    m_eventTimestamp(0.)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 InteractionMsg::~InteractionMsg() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void InteractionMsg::setEvent(std::string event)
 {
     SLM_ASSERT("InteractionMsg cannot handle several events in the same message",
-            m_eventId2DataInfo.size()==0 );
+               m_eventId2DataInfo.size()==0 );
     addEvent(event);
 }
 
@@ -62,7 +63,8 @@ void InteractionMsg::setModifiersStatus(Modifiers k, bool state)
     }
     else
     {
-        m_modifiersStatus = static_cast<unsigned char>( m_modifiersStatus & (std::numeric_limits<unsigned char>::max() - k));
+        m_modifiersStatus =
+            static_cast<unsigned char>( m_modifiersStatus & (std::numeric_limits<unsigned char>::max() - k));
     }
 }
 
@@ -86,9 +88,9 @@ void InteractionMsg::setEventPoint(::fwData::Point::csptr point)
 void InteractionMsg::setEventPoint(PointCoordType x, PointCoordType y, PointCoordType z)
 {
     ::fwData::Point::PointCoordArrayType &coords = m_eventPoint->getRefCoord();
-    coords[0] = x;
-    coords[1] = y;
-    coords[2] = z;
+    coords[0]                                    = x;
+    coords[1]                                    = y;
+    coords[2]                                    = z;
 }
 
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@
 #include "visuVTKAdaptor/NegatoOneSlice.hpp"
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoOneSlice, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoOneSlice, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -36,10 +36,10 @@ namespace visuVTKAdaptor
 NegatoOneSlice::NegatoOneSlice() throw()
 {
     SLM_TRACE_FUNC();
-    m_allowAlphaInTF = false;
-    m_interpolation  = true;
+    m_allowAlphaInTF    = false;
+    m_interpolation     = true;
     m_manageImageSource = false;
-    m_actorOpacity = 1.0;
+    m_actorOpacity      = 1.0;
 
     m_imageSource = NULL;
 
@@ -71,7 +71,7 @@ vtkObject* NegatoOneSlice::getImageSource()
         }
         else
         {
-            m_imageSource = vtkImageMapToColors::New();
+            m_imageSource       = vtkImageMapToColors::New();
             m_manageImageSource = true;
         }
     }
@@ -106,9 +106,9 @@ void NegatoOneSlice::cleanImageSource()
         sceneComposite = this->getRenderService()->getObject< ::fwData::Composite >();
 
         imageSliceAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
-                sceneComposite,
-                "::visuVTKAdaptor::ImageSlice"
-                );
+            sceneComposite,
+            "::visuVTKAdaptor::ImageSlice"
+            );
         imageSliceAdaptor->setRenderService(this->getRenderService());
         imageSliceAdaptor->setRenderId( this->getRenderId() );
         imageSliceAdaptor->setPickerId( this->getPickerId() );
@@ -123,7 +123,7 @@ void NegatoOneSlice::cleanImageSource()
         ISA->setInterpolation(m_interpolation);
         ISA->setActorOpacity(m_actorOpacity);
 
-       ::fwComEd::helper::MedicalImageAdaptor::dynamicCast(ISA)->setOrientation((Orientation) m_orientation);
+        ::fwComEd::helper::MedicalImageAdaptor::dynamicCast(ISA)->setOrientation((Orientation) m_orientation);
 
         m_imageSliceAdaptor = imageSliceAdaptor;
         this->registerService(imageSliceAdaptor);
@@ -144,11 +144,11 @@ void NegatoOneSlice::cleanImageSource()
     {
         OSLM_TRACE(this->getID() << ": Create Image Adaptor Service");
         ::fwData::Image::sptr image;
-        image = this->getObject< ::fwData::Image >();
+        image        = this->getObject< ::fwData::Image >();
         imageAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
-                image,
-                "::visuVTKAdaptor::Image"
-                );
+            image,
+            "::visuVTKAdaptor::Image"
+            );
         imageAdaptor->setRenderService(this->getRenderService());
         imageAdaptor->setRenderId( this->getRenderId() );
         imageAdaptor->setPickerId( this->getPickerId() );
@@ -179,7 +179,7 @@ void NegatoOneSlice::cleanImageSource()
 void NegatoOneSlice::doStart() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if (! vtkImageBlend::SafeDownCast(this->getImageSource()))
+    if (!vtkImageBlend::SafeDownCast(this->getImageSource()))
     {
         this->getImageAdaptor()->start();
     }
@@ -211,7 +211,7 @@ void NegatoOneSlice::doSwap() throw(fwTools::Failed)
 void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if (! vtkImageBlend::SafeDownCast(this->getImageSource()))
+    if (!vtkImageBlend::SafeDownCast(this->getImageSource()))
     {
         this->getImageAdaptor()->update();
     }
@@ -227,11 +227,11 @@ void NegatoOneSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwToo
     if ( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ))
     {
         ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-        ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-        ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+        ::fwData::Object::sptr objInfo   = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+        ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
 
         int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
-        int toSliceType =   ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
+        int toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
 
         if( toSliceType == static_cast<int>(m_orientation) )
         {
@@ -243,8 +243,8 @@ void NegatoOneSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwToo
         }
     }
     else if (msg->hasEvent(::fwComEd::ImageMsg::BUFFER)
-              || msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE)
-              ||msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
+             || msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE)
+             ||msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
     {
         this->doStop();
         this->doStart();
@@ -263,19 +263,19 @@ void NegatoOneSlice::configuring() throw(fwTools::Failed)
     this->setPickerId( m_configuration->getAttributeValue("picker") );
     if(m_configuration->hasAttribute("sliceIndex"))
     {
-         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
-         if(orientation == "axial" )
-         {
-             m_orientation = Z_AXIS;
-         }
-         else if(orientation == "frontal" )
-         {
-             m_orientation = Y_AXIS;
-         }
-         else if(orientation == "sagittal" )
-         {
-             m_orientation = X_AXIS;
-         }
+        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
+        if(orientation == "axial" )
+        {
+            m_orientation = Z_AXIS;
+        }
+        else if(orientation == "frontal" )
+        {
+            m_orientation = Y_AXIS;
+        }
+        else if(orientation == "sagittal" )
+        {
+            m_orientation = X_AXIS;
+        }
     }
     if(m_configuration->hasAttribute("transform") )
     {

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIMAGEQT_WINDOWLEVEL_HPP_
-#define _UIIMAGEQT_WINDOWLEVEL_HPP_
+#ifndef __UIIMAGEQT_WINDOWLEVEL_HPP__
+#define __UIIMAGEQT_WINDOWLEVEL_HPP__
 
 #include <QObject>
 #include <QPointer>
@@ -35,26 +35,28 @@ namespace uiImage
 /**
  * @brief   WindowLevel service allows to change the min / max value of windowing.
  * @class   WindowLevel
- * 
+ *
  * @date    2010-2011.
  *
  * This is represented by
  *  - two sliders to modify the min, max value of windowing
  */
-class UIIMAGEQT_CLASS_API WindowLevel : public QObject, public ::fwComEd::helper::MedicalImageAdaptor, public ::gui::editor::IEditor
+class UIIMAGEQT_CLASS_API WindowLevel : public QObject,
+                                        public ::fwComEd::helper::MedicalImageAdaptor,
+                                        public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
 
-    fwCoreServiceClassDefinitionsMacro ( (WindowLevel)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (WindowLevel)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIIMAGEQT_API WindowLevel() throw() ;
+    UIIMAGEQT_API WindowLevel() throw();
 
     /// Destructor. Do nothing.
-    UIIMAGEQT_API virtual ~WindowLevel() throw() ;
+    UIIMAGEQT_API virtual ~WindowLevel() throw();
 
     UIIMAGEQT_API void notifyWindowLevelCallback();
 
@@ -97,7 +99,7 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    UIIMAGEQT_API virtual void info( std::ostream &_sstream ) ;
+    UIIMAGEQT_API virtual void info( std::ostream &_sstream );
 
     virtual void setEnabled(bool enable);
 
@@ -165,6 +167,6 @@ private:
 
 } // uiImage
 
-#endif /*_UIIMAGEQT_WINDOWLEVEL_HPP_*/
+#endif /*__UIIMAGEQT_WINDOWLEVEL_HPP__*/
 
 

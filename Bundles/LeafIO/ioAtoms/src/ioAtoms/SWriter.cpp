@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,15 +42,15 @@ namespace ioAtoms
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioAtoms::SWriter , ::fwData::Object );
+fwServicesRegisterMacro( ::io::IWriter, ::ioAtoms::SWriter, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
 SWriter::SWriter() :
-        m_useAtomsPatcher(false),
-        m_exportedVersion ("Undefined"),
-        m_context ("Undefined"),
-        m_version ("Undefined")
+    m_useAtomsPatcher(false),
+    m_exportedVersion ("Undefined"),
+    m_context ("Undefined"),
+    m_version ("Undefined")
 {
     BOOST_FOREACH(SReader::FileExtension2NameType::value_type ext, SReader::s_EXTENSIONS)
     {
@@ -61,12 +61,14 @@ SWriter::SWriter() :
 //-----------------------------------------------------------------------------
 
 void SWriter::starting() throw(::fwTools::Failed)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SWriter::stopping() throw(::fwTools::Failed)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -74,7 +76,7 @@ void SWriter::configuring() throw(::fwTools::Failed)
 {
     ::io::IWriter::configuring();
 
-    typedef SPTR(::fwRuntime::ConfigurationElement) ConfigurationElement;
+    typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationElement;
     typedef std::vector < ConfigurationElement >    ConfigurationElementContainer;
 
     m_customExts.clear();
@@ -86,7 +88,7 @@ void SWriter::configuring() throw(::fwTools::Failed)
         const std::string& backend = archive->getAttributeValue("backend");
         SLM_ASSERT("No backend attribute given in archive tag", backend != "");
         SLM_ASSERT("Unsupported backend '" + backend + "'",
-                SReader::s_EXTENSIONS.find("." + backend) != SReader::s_EXTENSIONS.end());
+                   SReader::s_EXTENSIONS.find("." + backend) != SReader::s_EXTENSIONS.end());
 
         ConfigurationElementContainer exts = archive->find("extension");
         BOOST_FOREACH(ConfigurationElement ext, exts)
@@ -95,7 +97,7 @@ void SWriter::configuring() throw(::fwTools::Failed)
             SLM_ASSERT("No extension given for backend '" + backend + "'", !extension.empty());
             SLM_ASSERT("Extension must begin with '.'", extension[0] == '.');
 
-            m_customExts[extension] = backend;
+            m_customExts[extension]       = backend;
             m_allowedExtLabels[extension] = ext->getAttributeValue("label");
         }
     }
@@ -113,7 +115,7 @@ void SWriter::configuring() throw(::fwTools::Failed)
             const std::string& ext = extension->getValue();
 
             // The extension must be found either in custom extensions list or in known extensions
-            FileExtension2NameType::const_iterator itKnown = SReader::s_EXTENSIONS.find(ext);
+            FileExtension2NameType::const_iterator itKnown  = SReader::s_EXTENSIONS.find(ext);
             FileExtension2NameType::const_iterator itCustom = m_customExts.find(ext);
 
             const bool extIsKnown = (itKnown != SReader::s_EXTENSIONS.end() || itCustom != m_customExts.end());
@@ -146,8 +148,8 @@ void SWriter::configuring() throw(::fwTools::Failed)
     SLM_ASSERT("The <patcher> element can be set at most once.", patcher.size() <= 1 );
     if (patcher.size() == 1)
     {
-        m_context = patcher.at(0)->getExistingAttributeValue("context");
-        m_version = patcher.at(0)->getExistingAttributeValue("version");
+        m_context         = patcher.at(0)->getExistingAttributeValue("context");
+        m_version         = patcher.at(0)->getExistingAttributeValue("version");
         m_exportedVersion = m_version;
         m_useAtomsPatcher = true;
     }
@@ -180,11 +182,11 @@ bool SWriter::versionSelection()
 
             dialogVersion.setSelections(versions);
             std::string result = dialogVersion.show();
-            if ( ! result.empty() )
+            if ( !result.empty() )
             {
                 m_exportedVersion = result;
             }
-            return ! result.empty();
+            return !result.empty();
         }
     }
     else
@@ -221,8 +223,8 @@ void SWriter::updating() throw(::fwTools::Failed)
 
 
             const ::boost::filesystem::path folderPath = filePath.parent_path();
-            const ::boost::filesystem::path filename = filePath.filename();
-            std::string extension = ::boost::filesystem::extension(filePath);
+            const ::boost::filesystem::path filename   = filePath.filename();
+            std::string extension                      = ::boost::filesystem::extension(filePath);
 
             FW_RAISE_IF( "Extension is empty", extension.empty() );
 
@@ -242,7 +244,7 @@ void SWriter::updating() throw(::fwTools::Failed)
             }
 
             FW_RAISE_IF("The file extension '" << extension << "' is not managed",
-                    m_allowedExts.find(extension) == m_allowedExts.end());
+                        m_allowedExts.find(extension) == m_allowedExts.end());
 
             if(m_customExts.find(extension) != m_customExts.end())
             {
@@ -261,9 +263,9 @@ void SWriter::updating() throw(::fwTools::Failed)
                 ::boost::filesystem::path archiveRootName;
                 if ( extension == ".json" )
                 {
-                    writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
+                    writeArchive    = ::fwZip::WriteDirArchive::New(folderPath.string());
                     archiveRootName = filename;
-                    format = ::fwAtomsBoostIO::JSON;
+                    format          = ::fwAtomsBoostIO::JSON;
                 }
                 else if ( extension == ".jsonz" )
                 {
@@ -271,15 +273,15 @@ void SWriter::updating() throw(::fwTools::Failed)
                     {
                         ::boost::filesystem::remove( filePath );
                     }
-                    writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
+                    writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
                     archiveRootName = "root.json";
-                    format = ::fwAtomsBoostIO::JSON;
+                    format          = ::fwAtomsBoostIO::JSON;
                 }
                 else if ( extension == ".xml" )
                 {
-                    writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
+                    writeArchive    = ::fwZip::WriteDirArchive::New(folderPath.string());
                     archiveRootName = filename;
-                    format = ::fwAtomsBoostIO::XML;
+                    format          = ::fwAtomsBoostIO::XML;
                 }
                 else if ( extension == ".xmlz" )
                 {
@@ -287,9 +289,9 @@ void SWriter::updating() throw(::fwTools::Failed)
                     {
                         ::boost::filesystem::remove( filePath );
                     }
-                    writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
+                    writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
                     archiveRootName = "root.xml";
-                    format = ::fwAtomsBoostIO::XML;
+                    format          = ::fwAtomsBoostIO::XML;
                 }
                 else
                 {
@@ -309,14 +311,14 @@ void SWriter::updating() throw(::fwTools::Failed)
         {
             OSLM_ERROR( e.what() );
             ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                    e.what(),
-                    ::fwGui::dialog::MessageDialog::CRITICAL);
+                                                              e.what(),
+                                                              ::fwGui::dialog::MessageDialog::CRITICAL);
         }
         catch( ... )
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                    "Writing process aborted",
-                    ::fwGui::dialog::MessageDialog::CRITICAL);
+                                                              "Writing process aborted",
+                                                              ::fwGui::dialog::MessageDialog::CRITICAL);
         }
         cursor.setDefaultCursor();
     }
@@ -335,7 +337,7 @@ void SWriter::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
 
-    if( ! m_useAtomsPatcher || versionSelection() )
+    if( !m_useAtomsPatcher || versionSelection() )
     {
         ::fwGui::dialog::LocationDialog dialogFile;
         dialogFile.setTitle("Enter file name");

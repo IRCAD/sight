@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,8 @@ Color::Color ( ::fwData::Object::Key key )
 }
 
 //------------------------------------------------------------------------------
-Color::sptr Color::ColorFactory(Color::ColorType red, Color::ColorType green, Color::ColorType blue, Color::ColorType alpha)
+Color::sptr Color::ColorFactory(Color::ColorType red, Color::ColorType green, Color::ColorType blue,
+                                Color::ColorType alpha)
 {
     Color::sptr color = ::fwData::Color::New();
     color->m_vRGBA[0] = red;
@@ -49,8 +50,8 @@ void Color::shallowCopy(const Object::csptr &_source )
 {
     Color::csptr other = Color::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
     m_vRGBA = other->m_vRGBA;
 }
@@ -61,8 +62,8 @@ void Color::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
 {
     Color::csptr other = Color::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
     m_vRGBA = other->m_vRGBA;
 }
@@ -79,18 +80,18 @@ void Color::setRGBA( const ColorType red, const ColorType green, const ColorType
 
 //------------------------------------------------------------------------------
 
-void Color::setRGBA( std::string  hexaColor )
+void Color::setRGBA( std::string hexaColor )
 {
     OSLM_ASSERT(
-            "Color string should start with '#' and followed by 6 ou 8 "
-            "hexadecimal digits. Given color : " << hexaColor ,
-            hexaColor[0] == '#'
-                && ( hexaColor.length() == 7 || hexaColor.length() == 9)
-            );
+        "Color string should start with '#' and followed by 6 ou 8 "
+        "hexadecimal digits. Given color : " << hexaColor,
+        hexaColor[0] == '#'
+        && ( hexaColor.length() == 7 || hexaColor.length() == 9)
+        );
 
-    std::string redString = hexaColor.substr(1, 2);
+    std::string redString   = hexaColor.substr(1, 2);
     std::string greenString = hexaColor.substr(3, 2);
-    std::string blueString = hexaColor.substr(5, 2);
+    std::string blueString  = hexaColor.substr(5, 2);
     int r,g,b, a = 255;
 
     std::istringstream iss;

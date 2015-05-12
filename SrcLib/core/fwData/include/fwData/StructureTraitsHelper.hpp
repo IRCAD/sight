@@ -22,7 +22,7 @@ namespace fwData
 class FWDATA_CLASS_API StructureTraitsHelper
 {
 
-public :
+public:
 
     typedef ::boost::bimaps::bimap< ::fwData::StructureTraits::StructureClass, std::string > ClassTranslatorType;
     /// Map to translate structure class (string vs enum)

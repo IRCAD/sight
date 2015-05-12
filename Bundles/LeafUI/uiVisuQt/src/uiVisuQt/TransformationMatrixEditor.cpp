@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,8 @@
 namespace uiVisu
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiVisu::TransformationMatrixEditor , ::fwData::TransformationMatrix3D ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::TransformationMatrixEditor,
+                         ::fwData::TransformationMatrix3D );
 
 
 TransformationMatrixEditor::TransformationMatrixEditor() throw()
@@ -38,7 +39,8 @@ TransformationMatrixEditor::TransformationMatrixEditor() throw()
 //------------------------------------------------------------------------------
 
 TransformationMatrixEditor::~TransformationMatrixEditor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -48,7 +50,8 @@ void TransformationMatrixEditor::starting() throw(::fwTools::Failed)
 
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -97,7 +100,8 @@ void TransformationMatrixEditor::updating() throw(::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void TransformationMatrixEditor::swapping() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -126,13 +130,17 @@ void TransformationMatrixEditor::onSliderChange( int angle  )
     double cosAngle = cos(angleRad);
     double sinAngle = sin(angleRad);
 
-    tm3D->setCoefficient(0,0, cosAngle); tm3D->setCoefficient(0,1, -sinAngle); tm3D->setCoefficient(0,2, 0); tm3D->setCoefficient(0,3, 0);
-    tm3D->setCoefficient(1,0, sinAngle); tm3D->setCoefficient(1,1, cosAngle);  tm3D->setCoefficient(1,2, 0); tm3D->setCoefficient(1,2, 0);
-    tm3D->setCoefficient(2,0, 0);        tm3D->setCoefficient(2,1, 0);         tm3D->setCoefficient(2,2, 1); tm3D->setCoefficient(2,3, 0);
-    tm3D->setCoefficient(3,0, 0);        tm3D->setCoefficient(3,1, 0);         tm3D->setCoefficient(3,2, 0); tm3D->setCoefficient(3,3, 1);
+    tm3D->setCoefficient(0,0, cosAngle); tm3D->setCoefficient(0,1, -sinAngle); tm3D->setCoefficient(0,2, 0);
+    tm3D->setCoefficient(0,3, 0);
+    tm3D->setCoefficient(1,0, sinAngle); tm3D->setCoefficient(1,1, cosAngle);  tm3D->setCoefficient(1,2, 0);
+    tm3D->setCoefficient(1,2, 0);
+    tm3D->setCoefficient(2,0, 0);        tm3D->setCoefficient(2,1, 0);         tm3D->setCoefficient(2,2, 1);
+    tm3D->setCoefficient(2,3, 0);
+    tm3D->setCoefficient(3,0, 0);        tm3D->setCoefficient(3,1, 0);         tm3D->setCoefficient(3,2, 0);
+    tm3D->setCoefficient(3,3, 1);
 
     ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
+    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
     ::fwServices::IEditionService::notify(this->getSptr(), tm3D, msg);
 }
 

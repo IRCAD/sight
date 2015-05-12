@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,10 +13,12 @@ namespace dialog
 {
 //-----------------------------------------------------------------------------
 
-PulseProgressDialog::PulseProgressDialog( const std::string &title, ::fwGui::dialog::IPulseProgressDialog::Stuff stuff, const std::string &msg, ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
+PulseProgressDialog::PulseProgressDialog( const std::string &title, ::fwGui::dialog::IPulseProgressDialog::Stuff stuff,
+                                          const std::string &msg,
+                                          ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
 {
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IPulseProgressDialog::REGISTRY_KEY);
-    m_implementation = ::fwGui::dialog::IPulseProgressDialog::dynamicCast(guiObj);
+    m_implementation                    = ::fwGui::dialog::IPulseProgressDialog::dynamicCast(guiObj);
     if (m_implementation)
     {
         m_implementation->setStuff(stuff);

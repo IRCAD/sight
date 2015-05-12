@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_IMAGEMSG_HPP_
-#define _FWCOMED_IMAGEMSG_HPP_
+#ifndef __FWCOMED_IMAGEMSG_HPP__
+#define __FWCOMED_IMAGEMSG_HPP__
 
 #include <fwData/Object.hpp>
 #include <fwData/Integer.hpp>
@@ -21,7 +21,7 @@ namespace fwComEd
 /**
  * @brief   Object event message specialized for image : store modification information
  * @class   ImageMsg
- * 
+ *
  * @date    2007-2009.
  * @see     ::fwServices::ObjectMsg
  */
@@ -75,7 +75,8 @@ public:
      * @param[in] s : sagittal position
      * @param[in] _pDataInfo : message data info (optional)
      */
-    FWCOMED_API void setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s, ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
+    FWCOMED_API void setSliceIndex(::fwData::Integer::sptr a, ::fwData::Integer::sptr f, ::fwData::Integer::sptr s,
+                                   ::fwData::Object::sptr _pDataInfo = ::fwData::Object::sptr() );
 
     /**
      * @brief Get the slice index position.
@@ -84,7 +85,8 @@ public:
      * @param[out] f : frontal position
      * @param[out] s : sagittal position
      */
-    FWCOMED_API void getSliceIndex(::fwData::Integer::sptr &a, ::fwData::Integer::sptr &f, ::fwData::Integer::sptr &s ) const;
+    FWCOMED_API void getSliceIndex(::fwData::Integer::sptr &a, ::fwData::Integer::sptr &f,
+                                   ::fwData::Integer::sptr &s ) const;
 
     /**
      * @brief Get the window min and max.
@@ -119,5 +121,5 @@ protected:
 
 } // namespace fwComEd
 
-#endif //_FWCOMED_IMAGEMSG_HPP_
+#endif //__FWCOMED_IMAGEMSG_HPP__
 

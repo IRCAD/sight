@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@
 #include <boost/foreach.hpp>
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Texture, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Texture, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -47,7 +47,7 @@ Texture::Texture() throw() :
     m_filtering("linear"),
     m_wrapping("repeat")
 {
-    m_slotApplyTexture      = ::fwCom::newSlot( &Texture::applyTexture, this );
+    m_slotApplyTexture = ::fwCom::newSlot( &Texture::applyTexture, this );
     ::fwCom::HasSlots::m_slots( s_APPLY_TEXTURE_SLOT, m_slotApplyTexture);
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 
@@ -71,7 +71,7 @@ void Texture::configuring() throw(fwTools::Failed)
     if ( m_configuration->hasAttribute( "autoRender" ) )
     {
         const std::string autoRender = m_configuration->getAttributeValue("autoRender");
-        const bool autoRenderValue = (autoRender == "true");
+        const bool autoRenderValue   = (autoRender == "true");
         this->setAutoRender(autoRenderValue);
     }
 
@@ -121,9 +121,9 @@ void Texture::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fail
 {
     ::fwComEd::ImageMsg::csptr textureMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
     if (textureMsg && (
-                textureMsg->hasEvent( ::fwComEd::ImageMsg::MODIFIED) ||
-                textureMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) ||
-                textureMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ) )
+            textureMsg->hasEvent( ::fwComEd::ImageMsg::MODIFIED) ||
+            textureMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) ||
+            textureMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ) )
     {
         doUpdate();
     }
@@ -131,7 +131,7 @@ void Texture::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Fail
 
 //------------------------------------------------------------------------------
 
-void Texture::applyTexture( SPTR(::fwData::Material) _material )
+void Texture::applyTexture( SPTR(::fwData::Material)_material )
 {
     if(m_materialSet.count(_material) == 0)
     {
@@ -148,7 +148,7 @@ void Texture::applyTexture( SPTR(::fwData::Material) _material )
     _material->setDiffuseTexture(image);
 
     ::fwData::Material::FilteringType filtering = ::fwData::Material::LINEAR;
-    ::fwData::Material::WrappingType wrapping = ::fwData::Material::REPEAT;
+    ::fwData::Material::WrappingType wrapping   = ::fwData::Material::REPEAT;
 
     if(m_filtering == "nearest")
     {

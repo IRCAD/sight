@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,38 +26,40 @@ namespace fwData
 Acquisition::Acquisition() : ::fwAtomsPatch::ISemanticPatch()
 {
     m_originClassname = "::fwData::Acquisition";
-    m_originVersion = "1";
+    m_originVersion   = "1";
     this->addContext("MedicalData", "V1", "V2");
 }
 
 // ----------------------------------------------------------------------------
 
 Acquisition::~Acquisition()
-{}
+{
+}
 
 // ----------------------------------------------------------------------------
 
 Acquisition::Acquisition( const Acquisition &cpy ) : ::fwAtomsPatch::ISemanticPatch(cpy)
-{}
+{
+}
 
 // ----------------------------------------------------------------------------
 
 void Acquisition::apply(
-        const ::fwAtoms::Object::sptr& previous,
-        const ::fwAtoms::Object::sptr& current,
-        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
+    const ::fwAtoms::Object::sptr& previous,
+    const ::fwAtoms::Object::sptr& current,
+    ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     ISemanticPatch::apply(previous, current, newVersions);
     ::fwAtomsPatch::helper::cleanFields( current );
 
     ::fwAtoms::Object::sptr image = current->getAttribute< ::fwAtoms::Object >("image");
-    ::fwAtoms::Map::sptr fields = image->getAttribute< ::fwAtoms::Map >("fields");
+    ::fwAtoms::Map::sptr fields   = image->getAttribute< ::fwAtoms::Map >("fields");
 
     ::fwAtoms::Map::ConstIteratorType it = fields->find("m_commentId");
     ::fwAtomsPatch::helper::Object helper(current);
     if ( it != fields->end() )
     {
-        ::fwAtoms::Object::sptr value =  ::fwAtoms::Object::dynamicCast( it->second );
+        ::fwAtoms::Object::sptr value = ::fwAtoms::Object::dynamicCast( it->second );
         helper.replaceAttribute("description", ::fwAtoms::String::New(value->getAttribute("value")->getString()));
     }
 

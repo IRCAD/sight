@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_FRAME_DEFAULT_FRAME_HPP_
-#define _GUI_FRAME_DEFAULT_FRAME_HPP_
+#ifndef __GUI_FRAME_DEFAULTFRAME_HPP__
+#define __GUI_FRAME_DEFAULTFRAME_HPP__
 
 #include <fwTools/Failed.hpp>
 #include <fwGui/IFrameSrv.hpp>
@@ -24,17 +24,17 @@ namespace frame
 class GUI_CLASS_API DefaultFrame : public ::fwGui::IFrameSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultFrame)(::fwGui::IFrameSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DefaultFrame)(::fwGui::IFrameSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API DefaultFrame() throw() ;
+    GUI_API DefaultFrame() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~DefaultFrame() throw() ;
+    GUI_API virtual ~DefaultFrame() throw();
 
-protected :
+protected:
 
     /** @name Service methods ( override from ::fwServices::IService )
      * @{
@@ -61,17 +61,17 @@ protected :
     /**
      * @brief This method is used to update services on notification. Do nothing.
      */
-    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) ;
+    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    GUI_API virtual void updating() throw(::fwTools::Failed) ;
+    GUI_API virtual void updating() throw(::fwTools::Failed);
 
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream &_sstream ) ;
+    GUI_API virtual void info(std::ostream &_sstream );
     ///@}
 
 };
@@ -81,4 +81,4 @@ protected :
 } // namespace gui
 
 
-#endif /*_GUI_FRAME_DEFAULT_FRAME_HPP_*/
+#endif /*__GUI_FRAME_DEFAULTFRAME_HPP__*/

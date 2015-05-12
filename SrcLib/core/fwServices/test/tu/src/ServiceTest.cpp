@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -56,7 +56,8 @@ void ServiceTest::testServiceCreation()
     ::fwServices::IService::sptr service;
 
     // Test if the object support the service
-    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(), "::fwServices::ut::TestService") );
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
+                                                                                  "::fwServices::ut::TestService") );
 
     // Test adding service
     ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation");
@@ -80,7 +81,8 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
     ::fwServices::ut::TestService::sptr service;
 
     // Test if the object support the service
-    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(), "::fwServices::ut::TestService") );
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
+                                                                                  "::fwServices::ut::TestService") );
 
     // Test adding service
     ::fwServices::add< ::fwServices::ut::TestService >(obj, "::fwServices::ut::TestServiceImplementation");
@@ -100,20 +102,22 @@ void ServiceTest::testServiceCreationWithTemplateMethods()
 
 void ServiceTest::testServiceCreationWithUUID()
 {
-    const std::string myUUID = "myUUID";
+    const std::string myUUID  = "myUUID";
     const std::string myUUID2 = "myUUID2";
     const std::string myUUID3 = "myUUID3";
-    size_t nbServices = 0;
+    size_t nbServices         = 0;
 
     ::fwData::Integer::sptr obj = ::fwData::Integer::New();
     ::fwServices::IService::sptr service;
     ::fwServices::IService::sptr service2;
 
     // Test if the object support the service
-    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(), "::fwServices::ut::TestService") );
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
+                                                                                  "::fwServices::ut::TestService") );
 
     // Test adding service
-    service = ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation", myUUID);
+    service = ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation",
+                                myUUID);
     ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation", myUUID2);
     nbServices = 2;
     CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") );
@@ -125,7 +129,7 @@ void ServiceTest::testServiceCreationWithUUID()
     CPPUNIT_ASSERT(service);
     CPPUNIT_ASSERT(service2);
     CPPUNIT_ASSERT_EQUAL(obj, service2->getObject< ::fwData::Integer >());
-    CPPUNIT_ASSERT_EQUAL(myUUID2, service2 ->getID());
+    CPPUNIT_ASSERT_EQUAL(myUUID2, service2->getID());
     CPPUNIT_ASSERT( !::fwTools::fwID::exist(myUUID3) );
     CPPUNIT_ASSERT_EQUAL( nbServices, ::fwServices::OSR::getServices(obj, "::fwServices::ut::TestService").size() );
 
@@ -146,7 +150,8 @@ void ServiceTest::testStartStopUpdate()
     ::fwServices::ut::TestService::sptr service;
 
     // Add service
-    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(), "::fwServices::ut::TestService") );
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
+                                                                                  "::fwServices::ut::TestService") );
     ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation", myUUID);
     CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") );
 
@@ -181,7 +186,7 @@ void ServiceTest::testCommunication()
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
-    const std::string EVENT = "EVENT";
+    const std::string EVENT        = "EVENT";
     const std::string service1UUID = "service1UUID";
     const std::string service2UUID = "service2UUID";
 
@@ -190,13 +195,16 @@ void ServiceTest::testCommunication()
     ::fwServices::ut::TestService::sptr service2;
 
     // Add services
-    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(), "::fwServices::ut::TestService") );
-    ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation", service1UUID);
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
+                                                                                  "::fwServices::ut::TestService") );
+    ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation",
+                      service1UUID);
     CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") );
     service1 = ::fwServices::ut::TestService::dynamicCast( ::fwServices::get(service1UUID) );
     CPPUNIT_ASSERT(service1);
 
-    ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation", service2UUID);
+    ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation",
+                      service2UUID);
     service2 = ::fwServices::ut::TestService::dynamicCast( ::fwServices::get(service2UUID) );
     CPPUNIT_ASSERT(service2);
 
@@ -237,13 +245,13 @@ void ServiceTest::testCommunication()
 
 ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > ServiceTest::buildServiceConfig()
 {
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("service")) ;
-    cfg->setAttributeValue( "uid" , "myTestService" ) ;
-    cfg->setAttributeValue( "type" , "::fwServices::ut::TestService" ) ;
-    cfg->setAttributeValue( "impl" , "::fwServices::ut::TestServiceImplementation" ) ;
-    cfg->setAttributeValue( "autoConnect" , "no" ) ;
+    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("service"));
+    cfg->setAttributeValue( "uid", "myTestService" );
+    cfg->setAttributeValue( "type", "::fwServices::ut::TestService" );
+    cfg->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementation" );
+    cfg->setAttributeValue( "autoConnect", "no" );
 
-    return cfg ;
+    return cfg;
 }
 
 //------------------------------------------------------------------------------
@@ -251,41 +259,41 @@ void ServiceTest::testCommunication()
 ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > ServiceTest::buildObjectConfig()
 {
     // Configuration on fwTools::Object which uid is objectUUID
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object")) ;
-    cfg->setAttributeValue( "uid" , "objectUUID") ;
-    cfg->setAttributeValue( "type" , "::fwData::Composite") ;
+    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
+    cfg->setAttributeValue( "uid", "objectUUID");
+    cfg->setAttributeValue( "type", "::fwData::Composite");
 
     // Object's service A
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
-    serviceA->setAttributeValue( "uid" , "myTestService1" ) ;
-    serviceA->setAttributeValue( "type" , "::fwServices::ut::TestService" ) ;
-    serviceA->setAttributeValue( "impl" , "::fwServices::ut::TestServiceImplementation" ) ;
-    serviceA->setAttributeValue( "autoConnect" , "no" ) ;
+    serviceA->setAttributeValue( "uid", "myTestService1" );
+    serviceA->setAttributeValue( "type", "::fwServices::ut::TestService" );
+    serviceA->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementation" );
+    serviceA->setAttributeValue( "autoConnect", "no" );
 
     // Object's service B
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
-    serviceB->setAttributeValue( "uid" , "myTestService2" ) ;
-    serviceB->setAttributeValue( "type" , "::fwServices::ut::TestService" ) ;
-    serviceB->setAttributeValue( "impl" , "::fwServices::ut::TestServiceImplementation" ) ;
-    serviceB->setAttributeValue( "autoConnect" , "no" ) ;
+    serviceB->setAttributeValue( "uid", "myTestService2" );
+    serviceB->setAttributeValue( "type", "::fwServices::ut::TestService" );
+    serviceB->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementation" );
+    serviceB->setAttributeValue( "autoConnect", "no" );
 
     // Start method from object's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
-    startA->setAttributeValue( "uid" , "myTestService1" ) ;
+    startA->setAttributeValue( "uid", "myTestService1" );
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
-    startB->setAttributeValue( "uid" , "myTestService2" ) ;
+    startB->setAttributeValue( "uid", "myTestService2" );
 
     // Update method from object's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
-    updateA->setAttributeValue( "uid" , "myTestService1" ) ;
+    updateA->setAttributeValue( "uid", "myTestService1" );
 
     // Stop method from object's services
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > stopA = cfg->addConfigurationElement("stop");
-    stopA->setAttributeValue( "uid" , "myTestService1" ) ;
+    stopA->setAttributeValue( "uid", "myTestService1" );
     ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > stopB = cfg->addConfigurationElement("stop");
-    stopB->setAttributeValue( "uid" , "myTestService2" ) ;
+    stopB->setAttributeValue( "uid", "myTestService2" );
 
-    return cfg ;
+    return cfg;
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@ namespace fwThread
  *
  * Timer's function must be set before starting the timer.
  *
- * 
+ *
  * @date   2012.
  */
 class FWTHREAD_CLASS_API Timer : public ::fwCore::BaseObject
@@ -36,7 +36,7 @@ public:
      * @name Typedefs
      * @{ */
     typedef ::boost::shared_ptr< Timer >        sptr;
-    typedef ::boost::function< void() >         FunctionType;
+    typedef ::boost::function< void () >         FunctionType;
     typedef ::boost::chrono::duration<double>   TimeDurationType;
     /**  @} */
 
@@ -48,7 +48,9 @@ public:
     FWTHREAD_API virtual void start() = 0;
 
     /// Stops the timer and cancel all pending operations.
-    FWTHREAD_API virtual void stop(){};
+    FWTHREAD_API virtual void stop()
+    {
+    }
 
     /// Sets time duration.
     FWTHREAD_API virtual void setDuration(TimeDurationType duration) = 0;
@@ -86,10 +88,12 @@ protected:
     Timer& operator=( const Timer& );
 
     /// This method is triggered when Timer's function is changed.
-    FWTHREAD_API virtual void updatedFunction(){};
+    FWTHREAD_API virtual void updatedFunction()
+    {
+    }
 
     /// Function object to execute each time the timer expires.
-    FunctionType      m_function;
+    FunctionType m_function;
 
     mutable ::fwCore::mt::Mutex m_mutex;
 };

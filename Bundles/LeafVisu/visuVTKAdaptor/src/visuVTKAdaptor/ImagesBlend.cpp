@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,7 @@
 #include "visuVTKAdaptor/ImagesBlend.hpp"
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
@@ -108,13 +108,13 @@ void ImagesBlend::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools:
     SLM_TRACE_FUNC();
 
     ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
-    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
+    ::fwComEd::ImageMsg::csptr imageMsg         = ::fwComEd::ImageMsg::dynamicConstCast(msg);
 
     if (compositeMsg)
     {
         if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS)
-                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS)
-                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
+            || compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS)
+            || compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
         {
             this->doUpdate();
         }
@@ -126,7 +126,7 @@ void ImagesBlend::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools:
 
         if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
         {
-            if (! ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
+            if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
                 || m_registeredImages.find(image->getID()) == m_registeredImages.end())
             {
                 this->doUpdate();
@@ -200,33 +200,40 @@ bool ImagesBlend::checkImageInformations()
             {
                 if (size.empty() && spacing.empty() && origin.empty())
                 {
-                    size = img->getSize();
+                    size    = img->getSize();
                     spacing = img->getSpacing();
-                    origin = img->getOrigin();
+                    origin  = img->getOrigin();
                 }
                 else
                 {
                     if (  size != img->getSize() ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(spacing, img->getSpacing()) ||
+                          !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(spacing,
+                                                                                            img->getSpacing()) ||
                           !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(origin, img->getOrigin()) )
                     {
                         OSLM_ERROR("imgA size : " << size[0] << " / " << size[1] << " / "<< size[2] );
                         OSLM_ERROR("imgA spacing : " << spacing[0] << " / " << spacing[1] << " / "<< spacing[2] );
                         OSLM_ERROR("imgA origin : " << origin[0] << " / " << origin[1] << " / "<< origin[2] );
 
-                        OSLM_ERROR("imgB size : " << img->getSize()[0] << " / " << img->getSize()[1] << " / "<< img->getSize()[2] );
-                        OSLM_ERROR("imgB spacing : " << img->getSpacing()[0] << " / " << img->getSpacing()[1] << " / "<< img->getSpacing()[2] );
-                        OSLM_ERROR("imgB origin : " << img->getOrigin()[0] << " / " << img->getOrigin()[1] << " / "<< img->getOrigin()[2] );
+                        OSLM_ERROR(
+                            "imgB size : " << img->getSize()[0] << " / " << img->getSize()[1] << " / "<<
+                            img->getSize()[2] );
+                        OSLM_ERROR(
+                            "imgB spacing : " << img->getSpacing()[0] << " / " << img->getSpacing()[1] << " / "<<
+                            img->getSpacing()[2] );
+                        OSLM_ERROR(
+                            "imgB origin : " << img->getOrigin()[0] << " / " << img->getOrigin()[1] << " / "<<
+                            img->getOrigin()[2] );
 
                         haveSameInfo = false;
                         std::string errorMsg = "Warning : images in blend have not the same";
-                        errorMsg += (size != img->getSize())?" size":"";
-                        errorMsg += (spacing != img->getSpacing())?" spacing":"";
-                        errorMsg += (origin != img->getOrigin())?" origin":"";
+                        errorMsg += (size != img->getSize()) ? " size" : "";
+                        errorMsg += (spacing != img->getSpacing()) ? " spacing" : "";
+                        errorMsg += (origin != img->getOrigin()) ? " origin" : "";
                         errorMsg += ".\n Background image size, spacing and origin are use.";
                         ::fwGui::dialog::MessageDialog::showMessageDialog("Images blending",
-                                errorMsg,
-                                ::fwGui::dialog::MessageDialog::WARNING);
+                                                                          errorMsg,
+                                                                          ::fwGui::dialog::MessageDialog::WARNING);
                         break;
                     }
                 }

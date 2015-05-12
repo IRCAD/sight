@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -77,7 +77,7 @@ void SeriesTest::attrInstanceUIDTest()
         ::fwMedData::Series::sptr series = *iter;
         series->setInstanceUID( instanceUID );
 
-        CPPUNIT_ASSERT_EQUAL( instanceUID , series->getInstanceUID() );
+        CPPUNIT_ASSERT_EQUAL( instanceUID, series->getInstanceUID() );
     }
 }
 
@@ -92,7 +92,7 @@ void SeriesTest::attrModalityTest()
         ::fwMedData::Series::sptr series = *iter;
         series->setModality( modality );
 
-        CPPUNIT_ASSERT_EQUAL( modality , series->getModality() );
+        CPPUNIT_ASSERT_EQUAL( modality, series->getModality() );
     }
 }
 
@@ -107,7 +107,7 @@ void SeriesTest::attrDateTest()
         ::fwMedData::Series::sptr series = *iter;
         series->setDate( date );
 
-        CPPUNIT_ASSERT_EQUAL( date , series->getDate() );
+        CPPUNIT_ASSERT_EQUAL( date, series->getDate() );
     }
 }
 
@@ -122,7 +122,7 @@ void SeriesTest::attrTimeTest()
         ::fwMedData::Series::sptr series = *iter;
         series->setTime( time );
 
-        CPPUNIT_ASSERT_EQUAL( time , series->getTime() );
+        CPPUNIT_ASSERT_EQUAL( time, series->getTime() );
     }
 }
 
@@ -156,7 +156,7 @@ void SeriesTest::attrDescriptionTest()
         ::fwMedData::Series::sptr series = *iter;
         series->setDescription( description );
 
-        CPPUNIT_ASSERT_EQUAL( description , series->getDescription() );
+        CPPUNIT_ASSERT_EQUAL( description, series->getDescription() );
     }
 }
 

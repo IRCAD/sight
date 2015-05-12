@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef VTKSIMPLENEGATO_RENDERER_SERVICE_HPP_
-#define VTKSIMPLENEGATO_RENDERER_SERVICE_HPP_
+#ifndef __VTKSIMPLENEGATO_RENDERERSERVICE_HPP__
+#define __VTKSIMPLENEGATO_RENDERERSERVICE_HPP__
 
 
 #include  <vtkRenderer.h>
@@ -22,93 +22,93 @@ namespace vtkSimpleNegato
 {
 
 /**
-* @brief    Renderer service.
-* @class    RendererService
-* 
-* @date 2009.
-*
-* Service rendering a ::fwData::Image using VTK.
-*
-* Service registered details : \n
-* fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleNegato::RendererService , ::fwData::Image)
-*/
+ * @brief    Renderer service.
+ * @class    RendererService
+ *
+ * @date 2009.
+ *
+ * Service rendering a ::fwData::Image using VTK.
+ *
+ * Service registered details : \n
+ * fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleNegato::RendererService , ::fwData::Image)
+ */
 class VTKSIMPLENEGATO_CLASS_API RendererService : public fwRender::IRender
 {
-public :
+public:
     fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender) );
 
     /**
-    * @brief    Constructor
-    */
-    VTKSIMPLENEGATO_API RendererService() throw() ;
+     * @brief    Constructor
+     */
+    VTKSIMPLENEGATO_API RendererService() throw();
 
     /**
-    * @brief    Destructor
-    */
-    VTKSIMPLENEGATO_API virtual ~RendererService() throw() ;
+     * @brief    Destructor
+     */
+    VTKSIMPLENEGATO_API virtual ~RendererService() throw();
 
 
-protected :
+protected:
 
     /**
-    * @brief Starting method.
-    *
-    * This method is used to initialize the service.
-    * Initialize VTK renderer and gui containers
-    */
+     * @brief Starting method.
+     *
+     * This method is used to initialize the service.
+     * Initialize VTK renderer and gui containers
+     */
     VTKSIMPLENEGATO_API virtual void starting() throw(fwTools::Failed);
 
     /**
-    * @brief Stopping method.
-    *
-    * Destroy VTK renderer and gui containers
-    */
+     * @brief Stopping method.
+     *
+     * Destroy VTK renderer and gui containers
+     */
     VTKSIMPLENEGATO_API virtual void stopping() throw(fwTools::Failed);
 
     /**
-    * @brief Updating method.
-    *
-    * This method is used to update the service.
-    * Make a render if necessary
-    */
+     * @brief Updating method.
+     *
+     * This method is used to update the service.
+     * Make a render if necessary
+     */
     VTKSIMPLENEGATO_API virtual void updating() throw(fwTools::Failed);
 
     /**
-    * @brief Configuring method.
-    *
-    * This method is used to configure the service.
-    */
+     * @brief Configuring method.
+     *
+     * This method is used to configure the service.
+     */
     VTKSIMPLENEGATO_API virtual void configuring() throw(::fwTools::Failed);
 
     /**
-    * @brief Receiving method (react on data modifications).
-    * @param[in] _msg ::fwServices::ObjectMsg::csptr
-    *
-    * This method is used to update the service.
-    */
+     * @brief Receiving method (react on data modifications).
+     * @param[in] _msg ::fwServices::ObjectMsg::csptr
+     *
+     * This method is used to update the service.
+     */
     VTKSIMPLENEGATO_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// @brief vtk renderer
-    vtkRenderer * m_render ;
+    vtkRenderer * m_render;
 
-private :
+private:
 
     /// @brief VTK Interactor window manager
     ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
 
     /**
-    * @brief VTK pipeline initialization method.
-    *
-    * This method is used to initialize the VTK pipeline.
-    */
+     * @brief VTK pipeline initialization method.
+     *
+     * This method is used to initialize the VTK pipeline.
+     */
     void initVTKPipeline();
 
     void refresh();
     /**
-    * @brief VTK pipeline updating method.
-    *
-    * This method is used to update the VTK pipeline.
-    */
+     * @brief VTK pipeline updating method.
+     *
+     * This method is used to update the VTK pipeline.
+     */
     void updateVTKPipeline();
 
     /// @brief image wireframe outline.
@@ -124,13 +124,13 @@ private :
     vtkImagePlaneWidget* m_negatoFrontal;
 
     /**
-    * @brief the m_bPipelineIsInit value is \b true
-    * if the pipeline is initialized.
-    */
+     * @brief the m_bPipelineIsInit value is \b true
+     * if the pipeline is initialized.
+     */
     bool m_bPipelineIsInit;
 };
 
 }
 
 
-#endif /* VTKSIMPLENEGATO_RENDERER_SERVICE_HPP_ */
+#endif /* __VTKSIMPLENEGATO_RENDERERSERVICE_HPP__ */

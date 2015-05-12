@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_EXECUTABLEFACTORYREGISTRAR_HPP_
-#define _FWRUNTIME_EXECUTABLEFACTORYREGISTRAR_HPP_
+#ifndef __FWRUNTIME_EXECUTABLEFACTORYREGISTRAR_HPP__
+#define __FWRUNTIME_EXECUTABLEFACTORYREGISTRAR_HPP__
 
 #include <boost/shared_ptr.hpp>
 
@@ -32,7 +32,7 @@ struct ExecutableFactory;
  * That's why this class is design to be instanciated as static object.
  *
  * @date    2004-2009
- * 
+ *
  */
 struct ExecutableFactoryRegistrar
 {
@@ -52,4 +52,4 @@ struct ExecutableFactoryRegistrar
 
 
 
-#endif //_FWRUNTIME_EXECUTABLEFACTORYREGISTRAR_HPP_
+#endif //__FWRUNTIME_EXECUTABLEFACTORYREGISTRAR_HPP__

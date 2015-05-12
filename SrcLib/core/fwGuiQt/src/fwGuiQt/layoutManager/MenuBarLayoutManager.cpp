@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,12 +27,14 @@ namespace layoutManager
 //-----------------------------------------------------------------------------
 
 MenuBarLayoutManager::MenuBarLayoutManager(::fwGui::GuiBaseObject::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 MenuBarLayoutManager::~MenuBarLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -68,7 +70,8 @@ void MenuBarLayoutManager::destroyLayout()
 
 void MenuBarLayoutManager::menuIsVisible(::fwGui::container::fwMenu::sptr fwMenu, bool isVisible)
 {
-    ::fwGuiQt::container::QtMenuContainer::sptr menuContainer = ::fwGuiQt::container::QtMenuContainer::dynamicCast(fwMenu);
+    ::fwGuiQt::container::QtMenuContainer::sptr menuContainer = ::fwGuiQt::container::QtMenuContainer::dynamicCast(
+        fwMenu);
     QMenu *menu = menuContainer->getQtMenu();
     menu->setVisible(isVisible);
 }
@@ -77,7 +80,8 @@ void MenuBarLayoutManager::menuIsVisible(::fwGui::container::fwMenu::sptr fwMenu
 
 void MenuBarLayoutManager::menuIsEnabled(::fwGui::container::fwMenu::sptr fwMenu, bool isEnabled)
 {
-    ::fwGuiQt::container::QtMenuContainer::sptr menuContainer = ::fwGuiQt::container::QtMenuContainer::dynamicCast(fwMenu);
+    ::fwGuiQt::container::QtMenuContainer::sptr menuContainer = ::fwGuiQt::container::QtMenuContainer::dynamicCast(
+        fwMenu);
     QMenu *menu = menuContainer->getQtMenu();
     menu->setEnabled(isEnabled);
 }

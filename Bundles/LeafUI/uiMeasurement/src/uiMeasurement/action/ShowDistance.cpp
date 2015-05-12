@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::ShowDistance , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowDistance, ::fwData::Image );
 
 
 //------------------------------------------------------------------------------
@@ -46,7 +46,8 @@ ShowDistance::ShowDistance( ) throw()
 //------------------------------------------------------------------------------
 
 ShowDistance::~ShowDistance() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -68,7 +69,8 @@ void ShowDistance::updating() throw(::fwTools::Failed)
     }
     else
     {
-        ::fwData::Boolean::sptr showDistances = image->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
+        ::fwData::Boolean::sptr showDistances = image->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(
+                                                                                         true));
         bool isShown = showDistances->value();
 
         bool toShow = !isShown;
@@ -87,8 +89,9 @@ void ShowDistance::updating() throw(::fwTools::Failed)
 
 void ShowDistance::swapping() throw(::fwTools::Failed)
 {
-    ::fwData::Image::csptr img = this->getObject< ::fwData::Image >();
-    ::fwData::Boolean::sptr showDistances = img->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
+    ::fwData::Image::csptr img            = this->getObject< ::fwData::Image >();
+    ::fwData::Boolean::sptr showDistances =
+        img->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
 
     this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
 }
@@ -98,11 +101,12 @@ void ShowDistance::swapping() throw(::fwTools::Failed)
 void ShowDistance::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwComEd::ImageMsg::csptr imgMsg =  ::fwComEd::ImageMsg::dynamicConstCast( msg );
+    ::fwComEd::ImageMsg::csptr imgMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
     if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DISTANCE ) )
     {
-        ::fwData::Image::csptr img = this->getObject< ::fwData::Image >();
-        ::fwData::Boolean::sptr showDistances = img->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
+        ::fwData::Image::csptr img            = this->getObject< ::fwData::Image >();
+        ::fwData::Boolean::sptr showDistances = img->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(
+                                                                                       true));
 
         this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
     }

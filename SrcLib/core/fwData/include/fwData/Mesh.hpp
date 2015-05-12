@@ -77,7 +77,7 @@ class FWDATA_CLASS_API Mesh : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::factory::New< Mesh >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::factory::New< Mesh >);
 
 
     fwCampMakeFriendDataMacro((fwData)(Mesh));
@@ -87,7 +87,8 @@ public:
     typedef boost::uint64_t Id;
 
 
-    typedef enum {
+    typedef enum
+    {
         NO_CELL = 0,
         POINT,
         EDGE,
@@ -97,29 +98,30 @@ public:
         TETRA
     } CellTypesEnum;
 
-    typedef enum {
-        RGB = 3,
+    typedef enum
+    {
+        RGB  = 3,
         RGBA = 4
     } ColorArrayTypes;
 
-    typedef float          PointValueType;
+    typedef float PointValueType;
     typedef boost::uint8_t ColorValueType;
-    typedef float          NormalValueType;
-    typedef float          TexCoordValueType;
-    typedef Id             CellValueType;
-    typedef Id             CellDataOffsetType;
+    typedef float NormalValueType;
+    typedef float TexCoordValueType;
+    typedef Id CellValueType;
+    typedef Id CellDataOffsetType;
     typedef boost::uint8_t CellTypes;
 
-    typedef boost::multi_array_ref<PointValueType    , 2> PointsMultiArrayType;
-    typedef boost::multi_array_ref<CellTypes         , 1> CellTypesMultiArrayType;
-    typedef boost::multi_array_ref<CellValueType     , 1> CellDataMultiArrayType;
+    typedef boost::multi_array_ref<PointValueType, 2> PointsMultiArrayType;
+    typedef boost::multi_array_ref<CellTypes, 1> CellTypesMultiArrayType;
+    typedef boost::multi_array_ref<CellValueType, 1> CellDataMultiArrayType;
     typedef boost::multi_array_ref<CellDataOffsetType, 1> CellDataOffsetsMultiArrayType;
-    typedef boost::multi_array_ref<ColorValueType    , 2> PointColorsMultiArrayType;
-    typedef boost::multi_array_ref<ColorValueType    , 2> CellColorsMultiArrayType;
-    typedef boost::multi_array_ref<NormalValueType   , 2> PointNormalsMultiArrayType;
-    typedef boost::multi_array_ref<NormalValueType   , 2> CellNormalsMultiArrayType;
-    typedef boost::multi_array_ref<TexCoordValueType , 2> PointTexCoordsMultiArrayType;
-    typedef boost::multi_array_ref<TexCoordValueType , 2> CellTexCoordsMultiArrayType;
+    typedef boost::multi_array_ref<ColorValueType, 2> PointColorsMultiArrayType;
+    typedef boost::multi_array_ref<ColorValueType, 2> CellColorsMultiArrayType;
+    typedef boost::multi_array_ref<NormalValueType, 2> PointNormalsMultiArrayType;
+    typedef boost::multi_array_ref<NormalValueType, 2> CellNormalsMultiArrayType;
+    typedef boost::multi_array_ref<TexCoordValueType, 2> PointTexCoordsMultiArrayType;
+    typedef boost::multi_array_ref<TexCoordValueType, 2> CellTexCoordsMultiArrayType;
 
 
     /**
@@ -129,7 +131,7 @@ public:
     FWDATA_API Mesh(::fwData::Object::Key key);
 
     /// Destructor
-    FWDATA_API virtual ~Mesh() ;
+    FWDATA_API virtual ~Mesh();
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& _source );
@@ -153,7 +155,7 @@ public:
      * @throw ::fwData::Exception
      */
     FWDATA_API size_t allocate(size_t nbPts, size_t nbCells, size_t nbCellsData = 0)
-        throw(::fwData::Exception);
+    throw(::fwData::Exception);
 
     /// Allocates normals array according to the number of points of the mesh.
     FWDATA_API size_t allocatePointNormals() throw(::fwData::Exception);

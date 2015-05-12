@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,7 +29,7 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::MeshWriterService, ::fwData::Mesh );
 
 //------------------------------------------------------------------------------
 
@@ -51,8 +51,8 @@ void MeshWriterService::configureWithIHM()
     dialogFile.addFilter("Vtk","*.vtk");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
@@ -110,16 +110,16 @@ void MeshWriterService::saveMesh(const ::boost::filesystem::path& meshFile, cons
         ss << "Warning during saving : " << e.what();
 
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                ss.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            ss.str(),
+            ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                "Warning during saving",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            "Warning during saving",
+            ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -132,7 +132,7 @@ void MeshWriterService::updating() throw(::fwTools::Failed)
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >() ;
+        ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();
         SLM_ASSERT("pMesh not instanced", pMesh);
 
         ::fwGui::Cursor cursor;

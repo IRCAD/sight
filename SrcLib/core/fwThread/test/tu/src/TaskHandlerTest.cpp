@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -56,11 +56,11 @@ void TaskHandlerTest::basicTest()
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
 
     ::boost::packaged_task<int> task( ::boost::bind( &copy, 5) );
-    ::boost::future< int > future = task.get_future();
+    ::boost::future< int > future  = task.get_future();
     ::boost::function< void () > f = moveTaskIntoFunction(task);
 
     ::boost::packaged_task<int> task2( ::boost::bind( &copy, 8) );
-    ::boost::future< int > future2 = task2.get_future();
+    ::boost::future< int > future2  = task2.get_future();
     ::boost::function< void () > f2 = moveTaskIntoFunction(task2);
 
     worker->post(f);
@@ -83,11 +83,11 @@ void TaskHandlerTest::basicTest()
 
 
     ::boost::packaged_task<int> task3( ::boost::bind( &copy, 5) );
-    ::boost::future< int > future3 = task3.get_future();
+    ::boost::future< int > future3  = task3.get_future();
     ::boost::function< void () > f3 = moveTaskIntoFunction(task3);
 
     ::boost::packaged_task<int> task4( ::boost::bind( &copy, 8) );
-    ::boost::future< int > future4 = task4.get_future();
+    ::boost::future< int > future4  = task4.get_future();
     ::boost::function< void () > f4 = moveTaskIntoFunction(task4);
 
     worker->post(f3);

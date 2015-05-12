@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_ACTION_QUITACTION_HPP_
-#define _GUI_ACTION_QUITACTION_HPP_
+#ifndef __GUI_ACTION_QUITACTION_HPP__
+#define __GUI_ACTION_QUITACTION_HPP__
 
 
 #include <fwServices/IService.hpp>
@@ -26,19 +26,19 @@ namespace action
 class GUI_CLASS_API QuitAction : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-     fwCoreServiceClassDefinitionsMacro ( (QuitAction)(::fwGui::IActionSrv) ) ;
-
-    /**
-    * @brief Constructor. Do nothing.
-    */
-    GUI_API QuitAction() throw() ;
+    fwCoreServiceClassDefinitionsMacro ( (QuitAction)(::fwGui::IActionSrv) );
 
     /**
-    * @brief Destructor. Do nothing.
-    */
-    GUI_API virtual ~QuitAction() throw() ;
+     * @brief Constructor. Do nothing.
+     */
+    GUI_API QuitAction() throw();
+
+    /**
+     * @brief Destructor. Do nothing.
+     */
+    GUI_API virtual ~QuitAction() throw();
 
 protected:
 
@@ -64,7 +64,7 @@ protected:
     /*
      * @brief This method gives information about the class.
      */
-    GUI_API virtual void info(std::ostream &_sstream ) ;
+    GUI_API virtual void info(std::ostream &_sstream );
 
 };
 
@@ -73,4 +73,4 @@ protected:
 } // namespace gui
 
 
-#endif /*_GUI_ACTION_QUITACTION_HPP_*/
+#endif /*__GUI_ACTION_QUITACTION_HPP__*/

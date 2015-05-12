@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_HELPER_FIELD_HPP_
-#define _FWCOMED_HELPER_FIELD_HPP_
+#ifndef __FWCOMED_HELPER_FIELD_HPP__
+#define __FWCOMED_HELPER_FIELD_HPP__
 
 #include <fwServices/IService.hpp>
 #include <fwServices/ObjectMsg.hpp>
@@ -22,13 +22,13 @@ namespace helper
 
 /**
  * @brief   Defines an helper to modify field on a ::fwData::Object and create a message notifying this modification.
- * 
+ *
  * @date    2007-2009.
  */
 class FWCOMED_CLASS_API Field
 {
 
-public :
+public:
 
     /// Constructor. Initialize parameters.
     FWCOMED_API Field( ::fwData::Object::sptr object );
@@ -70,9 +70,9 @@ public :
 
 protected:
     FWCOMED_API void buildMessage(
-            const ::fwData::Object::FieldMapType &oldFields,
-            const ::fwData::Object::FieldMapType &newFields
-            );
+        const ::fwData::Object::FieldMapType &oldFields,
+        const ::fwData::Object::FieldMapType &newFields
+        );
 
     ::fwServices::ObjectMsg::sptr m_objectMsg;
 
@@ -86,7 +86,7 @@ inline SPTR(DATA_TYPE) Field::setDefaultField(const fwData::Object::FieldNameTyp
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     ::fwData::Object::sptr object = m_object.lock();
-    ::fwData::Object::sptr field = object->getField(name);
+    ::fwData::Object::sptr field  = object->getField(name);
     if (!field)
     {
         m_objectMsg->appendAddedField(name, defaultValue);
@@ -97,4 +97,4 @@ inline SPTR(DATA_TYPE) Field::setDefaultField(const fwData::Object::FieldNameTyp
 } // namespace helper
 } // namespace fwComEd
 
-#endif // _FWCOMED_HELPER_FIELD_HPP_
+#endif // __FWCOMED_HELPER_FIELD_HPP__

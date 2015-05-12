@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,12 +35,14 @@ MedicalImageAdaptor::MedicalImageAdaptor()
     : m_orientation(Z_AXIS),
       m_tfSelectionFwID(""),
       m_selectedTFKey("")
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 MedicalImageAdaptor::~MedicalImageAdaptor()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -56,7 +58,7 @@ void MedicalImageAdaptor::getImageSpacing(double spacing[3])
 
 void MedicalImageAdaptor::getImageOrigin(double origin[3])
 {
-    ::fwData::Image::sptr image = this->getImage();;
+    ::fwData::Image::sptr image = this->getImage();
 
     std::copy(image->getOrigin().begin(), image->getOrigin().end(), origin);
 }
@@ -75,7 +77,7 @@ void MedicalImageAdaptor::getImageDataSize(int size[3])
 
 void MedicalImageAdaptor::getImageSize(double size[3])
 {
-    ::fwData::Image::sptr image = this->getImage();;
+    ::fwData::Image::sptr image = this->getImage();
     double spacing[3];
 
     const ::fwData::Image::SizeType& imSize = image->getSize();
@@ -91,7 +93,7 @@ void MedicalImageAdaptor::getImageSize(double size[3])
 
 void MedicalImageAdaptor::getCurrentSliceCenter(double center[3])
 {
-    ::fwData::Image::sptr image = this->getImage();;
+    ::fwData::Image::sptr image = this->getImage();
     double imageSize[3];
     this->getImageSize(imageSize);
     double origin[3];
@@ -126,34 +128,34 @@ void MedicalImageAdaptor::setOrientation( MedicalImageAdaptor::Orientation orien
 void MedicalImageAdaptor::setOrientation( int orientation )
 {
     OSLM_ASSERT("orientation value must be  0,1 or 2 (value = " << orientation << ")",
-            orientation == 0 || orientation == 1 || orientation == 2);
+                orientation == 0 || orientation == 1 || orientation == 2);
     this->setOrientation(static_cast< ::fwComEd::helper::MedicalImageAdaptor::Orientation >(orientation));
 }
 
 //------------------------------------------------------------------------------
 
-static const int indexZ[12] = { 0,2,4, 1,2,4,  1,3,4 ,0,3,4 };
-static const int indexY[12] = { 0,2,4, 1,2,4,  1,2,5 ,0,2,5 };
-static const int indexX[12] = { 0,2,4, 0,2,5,  0,3,5 ,0,3,4 };
+static const int indexZ[12]   = { 0,2,4, 1,2,4,  1,3,4,0,3,4 };
+static const int indexY[12]   = { 0,2,4, 1,2,4,  1,2,5,0,2,5 };
+static const int indexX[12]   = { 0,2,4, 0,2,5,  0,3,5,0,3,4 };
 static const int *indexSet[3] = { indexX, indexY, indexZ  };
-void MedicalImageAdaptor::getPlane( double points[4][3] , int sliceNumber)
+void MedicalImageAdaptor::getPlane( double points[4][3], int sliceNumber)
 {
-    ::fwData::Image::sptr image = this->getImage();;
+    ::fwData::Image::sptr image = this->getImage();
     double extent[6];
-    for (char i=0;  i<3; ++i )
+    for (char i = 0; i<3; ++i )
     {
-        extent[2*i]   =  0;
+        extent[2*i]   = 0;
         extent[2*i+1] = image->getSize()[i]*image->getSpacing()[i];
     }
-    extent[2*m_orientation] = sliceNumber*image->getSpacing()[m_orientation];
+    extent[2*m_orientation]   = sliceNumber*image->getSpacing()[m_orientation];
     extent[2*m_orientation+1] = sliceNumber*image->getSpacing()[m_orientation];
 
     const int *extentIndex = indexSet[ m_orientation ];
-    for (int p=0; p<4 ; ++p)
+    for (int p = 0; p<4; ++p)
     {
-        for (int i=0; i<3 ; ++i)
+        for (int i = 0; i<3; ++i)
         {
-            points[p][i]= extent[ *(extentIndex++) ];
+            points[p][i] = extent[ *(extentIndex++) ];
         }
     }
 }
@@ -166,7 +168,7 @@ void MedicalImageAdaptor::sliceIndexToWorld(const int index[3], double world[3] 
     this->getImageSpacing(spacing);
     double origin[3];
     this->getImageOrigin(origin);
-    for ( int i=0 ; i<3 ; ++i )
+    for ( int i = 0; i<3; ++i )
     {
         world[i] = static_cast<int>( (index[i]*spacing[i]) + 0.5*spacing[i] + origin[i] );
     }
@@ -180,10 +182,12 @@ void MedicalImageAdaptor::worldToSliceIndex(const double world[3], int index[3] 
     this->getImageSpacing(spacing);
     double origin[3];
     this->getImageOrigin(origin);
-    for ( int i=0 ; i<3 ; ++i )
+    for ( int i = 0; i<3; ++i )
     {
         // nearest integer
-        index[i] = static_cast<int>( ( (world[i]-origin[i])/spacing[i] ) + ( ( (world[i]-origin[i])/spacing[i] ) >= 0 ? 0.5 : -0.5 ) );
+        index[i] =
+            static_cast<int>( ( (world[i]-origin[i])/spacing[i] ) +
+                              ( ( (world[i]-origin[i])/spacing[i] ) >= 0 ? 0.5 : -0.5 ) );
     }
 }
 
@@ -225,20 +229,20 @@ void MedicalImageAdaptor::getSliceIndex(::fwData::Integer::sptr index[3])
 bool MedicalImageAdaptor::setSliceIndex(const int index[3])
 {
     bool isModified = false;
-    ::fwData::Image::sptr image = this->getImage();;
+    ::fwData::Image::sptr image = this->getImage();
 
     ::fwData::Integer::sptr sliceIndex[3];
 
     this->getSliceIndex(sliceIndex);
 
     if(    index[0] != sliceIndex[0]->value()
-        || index[1] != sliceIndex[1]->value()
-        || index[2] != sliceIndex[2]->value() )
+           || index[1] != sliceIndex[1]->value()
+           || index[2] != sliceIndex[2]->value() )
     {
         sliceIndex[0]->value() = index[0];
         sliceIndex[1]->value() = index[1];
         sliceIndex[2]->value() = index[2];
-        isModified = true;
+        isModified             = true;
     }
     return isModified;
 }
@@ -247,9 +251,9 @@ bool MedicalImageAdaptor::setSliceIndex(const int index[3])
 
 void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image )
 {
-    m_weakImage = image;
-    m_axialIndex    = image->setDefaultField(::fwComEd::Dictionary::m_axialSliceIndexId   , ::fwData::Integer::New(0));
-    m_frontalIndex  = image->setDefaultField(::fwComEd::Dictionary::m_frontalSliceIndexId , ::fwData::Integer::New(0));
+    m_weakImage     = image;
+    m_axialIndex    = image->setDefaultField(::fwComEd::Dictionary::m_axialSliceIndexId, ::fwData::Integer::New(0));
+    m_frontalIndex  = image->setDefaultField(::fwComEd::Dictionary::m_frontalSliceIndexId, ::fwData::Integer::New(0));
     m_sagittalIndex = image->setDefaultField(::fwComEd::Dictionary::m_sagittalSliceIndexId, ::fwData::Integer::New(0));
 }
 
@@ -257,13 +261,14 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image )
 
 void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image, ::fwServices::IService::sptr srv )
 {
-    if ( ! m_tfSelectionFwID.empty() )
+    if ( !m_tfSelectionFwID.empty() )
     {
         if ( m_tfSelection.expired() )
         {
-            ::fwData::Composite::sptr tfSelection = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
+            ::fwData::Composite::sptr tfSelection =
+                ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
             OSLM_ASSERT( "Sorry, object with fwID " << m_tfSelectionFwID << " doesn't exist.", tfSelection );
-            OSLM_ASSERT( "Sorry, selectedTFKey must be defined, check your configuration.", ! m_selectedTFKey.empty() );
+            OSLM_ASSERT( "Sorry, selectedTFKey must be defined, check your configuration.", !m_selectedTFKey.empty() );
             if ( tfSelection->find( m_selectedTFKey ) == tfSelection->end() )
             {
                 ::fwData::TransferFunction::sptr tfGreyLevel = ::fwData::TransferFunction::createDefaultTF();
@@ -302,7 +307,7 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image, :
             tfSelection = image->getField< ::fwData::Composite >(poolFieldName);
 
             m_selectedTFKey = defaultTFName;
-            m_tfSelection = tfSelection;
+            m_tfSelection   = tfSelection;
         }
     }
 }
@@ -336,7 +341,7 @@ void MedicalImageAdaptor::setTFParameters( ::fwData::Composite::sptr tfPool, std
     if (!tfSelectionId.empty())
     {
         m_selectedTFKey = tfSelectionId;
-        m_tfSelection = tfPool;
+        m_tfSelection   = tfPool;
     }
 }
 
@@ -372,17 +377,17 @@ const std::string & MedicalImageAdaptor::getSelectedTFKey() const
 
 void MedicalImageAdaptor::parseTFConfig( ::fwRuntime::ConfigurationElement::sptr configuration )
 {
-   SLM_ASSERT("Sorry, analyzed configuration is not conformed.", configuration->getName() == "config");
-   if ( configuration->hasAttribute("selectedTFKey") )
-   {
-       m_selectedTFKey = configuration->getAttributeValue("selectedTFKey");
-       SLM_FATAL_IF("'selectedTFKey' must not be empty", m_selectedTFKey.empty());
-   }
-   if ( configuration->hasAttribute("tfSelectionFwID") )
-   {
-       m_tfSelectionFwID = configuration->getAttributeValue("tfSelectionFwID");
-       SLM_FATAL_IF("'tfSelectionFwID' must not be empty", m_tfSelectionFwID.empty());
-   }
+    SLM_ASSERT("Sorry, analyzed configuration is not conformed.", configuration->getName() == "config");
+    if ( configuration->hasAttribute("selectedTFKey") )
+    {
+        m_selectedTFKey = configuration->getAttributeValue("selectedTFKey");
+        SLM_FATAL_IF("'selectedTFKey' must not be empty", m_selectedTFKey.empty());
+    }
+    if ( configuration->hasAttribute("tfSelectionFwID") )
+    {
+        m_tfSelectionFwID = configuration->getAttributeValue("tfSelectionFwID");
+        SLM_FATAL_IF("'tfSelectionFwID' must not be empty", m_tfSelectionFwID.empty());
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -437,10 +442,10 @@ void MedicalImageAdaptor::installTFObserver( ::fwServices::IService::sptr srv )
     SLM_ASSERT( "TF connections already exist", m_tfSelectionConnection.expired() && m_tfConnection.expired());
 
     m_tfSelectionConnection = this->getTransferFunctionSelection()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->
-                                connect(srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
+                              connect(srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
 
     m_tfConnection = this->getTransferFunction()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                             srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
+        srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
 }
 
 //------------------------------------------------------------------------------
@@ -461,7 +466,7 @@ bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg, :
     {
         if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
         {
-            ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
+            ::fwData::Composite::sptr fields   = compositeMsg->getAddedKeys();
             ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
             if( iter != fields->end())
             {
@@ -471,15 +476,15 @@ bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg, :
                 }
 
                 m_tfConnection = this->getTransferFunction()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                        srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
+                    srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
                 needUpdate = true;
             }
         }
 
         if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
         {
-            SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfConnection.expired() );
-            ::fwData::Composite::sptr fields = compositeMsg->getRemovedKeys();
+            SLM_ASSERT( "Sorry, TF observer must exist", !m_tfConnection.expired() );
+            ::fwData::Composite::sptr fields   = compositeMsg->getRemovedKeys();
             ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
             if( iter != fields->end())
             {
@@ -490,14 +495,14 @@ bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg, :
 
         if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
         {
-            SLM_ASSERT( "Sorry, TF observer must exist", ! m_tfConnection.expired() );
-            ::fwData::Composite::sptr fields = compositeMsg->getNewChangedKeys();
+            SLM_ASSERT( "Sorry, TF observer must exist", !m_tfConnection.expired() );
+            ::fwData::Composite::sptr fields   = compositeMsg->getNewChangedKeys();
             ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
             if( iter != fields->end())
             {
                 m_tfConnection.disconnect();
                 m_tfConnection = this->getTransferFunction()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                                        srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
+                    srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
                 needUpdate = true;
             }
         }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ namespace fwRenderVTK
 IVtkAdaptorService::IVtkAdaptorService() throw()
     : m_comChannelPriority(0.5),
       m_vtkPipelineModified(true),
-      m_rendererId ("default") ,
+      m_rendererId ("default"),
       m_pickerId   (""), // by default no Picker
       m_transformId   (""), // by default no Transform
       m_propCollection ( vtkPropCollection::New() ),
@@ -44,8 +44,8 @@ IVtkAdaptorService::~IVtkAdaptorService() throw()
 
 void IVtkAdaptorService::info(std::ostream &_sstream )
 {
-    _sstream << "IVtkAdaptorService : " ;
-    this->SuperClass::info( _sstream ) ;
+    _sstream << "IVtkAdaptorService : ";
+    this->SuperClass::info( _sstream );
 }
 
 void IVtkAdaptorService::starting() throw(fwTools::Failed)
@@ -100,16 +100,16 @@ void IVtkAdaptorService::setRenderService( VtkRenderService::sptr service)
 {
     /// Preconditions
     SLM_ASSERT("service not instanced", service);
-    assert( this->isStopped() ) ;
+    assert( this->isStopped() );
 
-    m_renderService = service ;
+    m_renderService = service;
 }
 
 //------------------------------------------------------------------------------
 
 void IVtkAdaptorService::setRenderId(VtkRenderService::RendererIdType newID)
 {
-    m_rendererId =  newID;
+    m_rendererId = newID;
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +143,7 @@ VtkRenderService::RendererIdType IVtkAdaptorService::getRenderId()
 
 //------------------------------------------------------------------------------
 
-VtkRenderService::sptr  IVtkAdaptorService:: getRenderService()
+VtkRenderService::sptr IVtkAdaptorService:: getRenderService()
 {
     return m_renderService.lock();
 }
@@ -159,7 +159,7 @@ vtkRenderer* IVtkAdaptorService::getRenderer()
 
 void IVtkAdaptorService::setPickerId(VtkRenderService::PickerIdType newID)
 {
-    m_pickerId =  newID;
+    m_pickerId = newID;
 }
 
 //------------------------------------------------------------------------------
@@ -184,7 +184,7 @@ vtkAbstractPropPicker * IVtkAdaptorService::getPicker(std::string pickerId)
 
 void IVtkAdaptorService::setTransformId(VtkRenderService::VtkObjectIdType newID)
 {
-    m_transformId =  newID;
+    m_transformId = newID;
 }
 
 //------------------------------------------------------------------------------
@@ -239,7 +239,10 @@ vtkRenderWindowInteractor* IVtkAdaptorService::getInteractor()
                 if(!service.expired())
                 {
                     res = service.lock()->getAssociatedObject(prop, depth - 1 );
-                    if (res) break;
+                    if (res)
+                    {
+                        break;
+                    }
                 }
             }
             obj = ( res && depth == 0 ) ? this->getObject() : res;
@@ -252,7 +255,7 @@ vtkRenderWindowInteractor* IVtkAdaptorService::getInteractor()
 
 void IVtkAdaptorService::registerService( ::fwRenderVTK::IVtkAdaptorService::sptr service)
 {
-        m_subServices.push_back(service);
+    m_subServices.push_back(service);
 }
 
 //------------------------------------------------------------------------------
@@ -260,9 +263,9 @@ void IVtkAdaptorService::registerService( ::fwRenderVTK::IVtkAdaptorService::spt
 void IVtkAdaptorService::unregisterServices()
 {
     BOOST_FOREACH(
-            ServiceVector::value_type service,
-            m_subServices
-            )
+        ServiceVector::value_type service,
+        m_subServices
+        )
     {
         if(!service.expired())
         {
@@ -340,7 +343,7 @@ void IVtkAdaptorService::addToRenderer(vtkProp *prop)
 
 void IVtkAdaptorService::addToPicker(vtkProp *prop, std::string pickerId)
 {
-    OSLM_ASSERT("Picker '"<< pickerId << "' undefined." , this->getPicker(pickerId));
+    OSLM_ASSERT("Picker '"<< pickerId << "' undefined.", this->getPicker(pickerId));
     this->getPicker(pickerId)->AddPickList(prop);
     this->setVtkPipelineModified();
 }
@@ -349,7 +352,7 @@ void IVtkAdaptorService::addToPicker(vtkProp *prop, std::string pickerId)
 
 void IVtkAdaptorService::removeFromPicker(vtkProp *prop, std::string pickerId)
 {
-    OSLM_ASSERT("Picker '"<< pickerId << "' undefined." , this->getPicker(pickerId));
+    OSLM_ASSERT("Picker '"<< pickerId << "' undefined.", this->getPicker(pickerId));
     this->getPicker(pickerId)->DeletePickList(prop);
     this->setVtkPipelineModified();
 }

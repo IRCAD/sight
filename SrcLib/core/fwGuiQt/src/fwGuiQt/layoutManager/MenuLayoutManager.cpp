@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,12 +33,14 @@ namespace layoutManager
 //-----------------------------------------------------------------------------
 
 MenuLayoutManager::MenuLayoutManager(::fwGui::GuiBaseObject::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 MenuLayoutManager::~MenuLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -141,7 +143,8 @@ void MenuLayoutManager::destroyLayout()
 
 void MenuLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
-    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer =
+        ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
     action->setVisible(isVisible);
 }
@@ -150,7 +153,8 @@ void MenuLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr 
 
 void MenuLayoutManager::menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isEnabled)
 {
-    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer =
+        ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
     action->setEnabled(isEnabled);
 }
@@ -159,7 +163,8 @@ void MenuLayoutManager::menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr 
 
 void MenuLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isChecked)
 {
-    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer =
+        ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
     action->setChecked(isChecked);
 }

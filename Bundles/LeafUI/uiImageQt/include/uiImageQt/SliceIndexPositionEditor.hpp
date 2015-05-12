@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP_
-#define _UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP_
+#ifndef __UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP__
+#define __UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP__
 
 #include <fwTools/Failed.hpp>
 #include <gui/editor/IEditor.hpp>
@@ -21,31 +21,32 @@ namespace uiImage
 /**
  * @brief   SliceIndexPositionEditor service allows to change the slice index of an image.
  * @class   SliceIndexPositionEditor
- * 
+ *
  * @date    2010.
  *
  * This is represented by
  *  - a slider to select the slice index
  *  - a choice list to select the slice orientation (axial, frontal, sagittal)
  */
-class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::gui::editor::IEditor, public ::fwComEd::helper::MedicalImageAdaptor
+class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::gui::editor::IEditor,
+                                                     public ::fwComEd::helper::MedicalImageAdaptor
 {
 
-public :
+public:
 
 
-    fwCoreServiceClassDefinitionsMacro ( (SliceIndexPositionEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SliceIndexPositionEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIIMAGEQT_API SliceIndexPositionEditor() throw() ;
+    UIIMAGEQT_API SliceIndexPositionEditor() throw();
 
     /// Destructor. Do nothing.
-    UIIMAGEQT_API virtual ~SliceIndexPositionEditor() throw() ;
+    UIIMAGEQT_API virtual ~SliceIndexPositionEditor() throw();
 
 protected:
 
     /// @brief The slice type: axial, frontal, sagittal.
-    using ::fwComEd::helper::MedicalImageAdaptor::Orientation ;
+    using ::fwComEd::helper::MedicalImageAdaptor::Orientation;
 
     /**
      * @brief Install the layout.
@@ -71,16 +72,16 @@ protected:
      *
      * Example of configuration
      * @verbatim
-     <service uid="slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
+       <service uid="slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
         <sliceIndex>axial</sliceIndex>
-     </service>
+       </service>
        @endverbatim
        \b sliceIndex must be "axial", "frontal" or "sagittal".
      */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    UIIMAGEQT_API virtual void info( std::ostream &_sstream ) ;
+    UIIMAGEQT_API virtual void info( std::ostream &_sstream );
 
     /// Update the editor slider from the image slice index.
     UIIMAGEQT_API void updateSliceIndex();
@@ -105,6 +106,6 @@ private:
 
 } // uiImage
 
-#endif /*_UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP_*/
+#endif /*__UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP__*/
 
 

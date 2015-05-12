@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,9 +39,9 @@ const std::string MsgHelper::getAssociatedMsgType( ::fwData::Object::csptr _obj)
     // TODO: improve association system
     std::string objMsgType = "::fwComEd::" + objType + "Msg";
     // check if instantiation of msgType is possible, standard Factory stop application if type is unknown
-    ::fwServices::ObjectMsg::sptr objMsg = ::fwServices::factory::message::New( objMsgType ) ;
+    ::fwServices::ObjectMsg::sptr objMsg = ::fwServices::factory::message::New( objMsgType );
     OSLM_WARN_IF("No specific ObjectMsg type found for Object "<<objType
-            << " type "<<objMsgType<<" is unknown.", !objMsg);
+                                                               << " type "<<objMsgType<<" is unknown.", !objMsg);
     if(objMsg)
     {
         // Instantiation of msgType is possible

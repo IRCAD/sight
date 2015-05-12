@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWACTIVITIES_BUILDER_ACTIVITYSERIES_HPP_
-#define _FWACTIVITIES_BUILDER_ACTIVITYSERIES_HPP_
+#ifndef __FWACTIVITIES_BUILDER_ACTIVITYSERIES_HPP__
+#define __FWACTIVITIES_BUILDER_ACTIVITYSERIES_HPP__
 
 #include <fwCore/base.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -48,13 +48,13 @@ public:
      * @return ActivitySeries or null
      */
     FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
-            const ::fwActivities::registry::ActivityInfo& activityInfo,
-            SPTR(::fwData::Vector) currentSelection ) const;
+        const ::fwActivities::registry::ActivityInfo& activityInfo,
+        SPTR(::fwData::Vector) currentSelection ) const;
 };
 
 } // namespace builder
 } // namespace fwActivities
 
-#endif /*_FWACTIVITIES_BUILDER_ACTIVITYSERIES_HPP_*/
+#endif /*__FWACTIVITIES_BUILDER_ACTIVITYSERIES_HPP__*/
 
 

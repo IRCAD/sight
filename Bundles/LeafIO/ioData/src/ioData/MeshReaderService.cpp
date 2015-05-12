@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,7 +29,7 @@
 
 #include "ioData/MeshReaderService.hpp"
 
-fwServicesRegisterMacro( ::io::IReader , ::ioData::MeshReaderService , ::fwData::Mesh ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioData::MeshReaderService, ::fwData::Mesh );
 
 namespace ioData
 {
@@ -38,17 +38,17 @@ namespace ioData
 
 void MeshReaderService::info(std::ostream &_sstream )
 {
-    this->SuperClass::info( _sstream ) ;
-    _sstream << std::endl << "Trian file reader" ;
+    this->SuperClass::info( _sstream );
+    _sstream << std::endl << "Trian file reader";
 }
 
 //-----------------------------------------------------------------------------
 
 std::vector< std::string > MeshReaderService::getSupportedExtensions()
 {
-    std::vector< std::string > extensions ;
+    std::vector< std::string > extensions;
     extensions.push_back(".trian");
-    return extensions ;
+    return extensions;
 }
 
 //------------------------------------------------------------------------------
@@ -71,8 +71,8 @@ void MeshReaderService::configureWithIHM()
     dialogFile.addFilter("Trian file","*.trian");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
@@ -115,16 +115,16 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
             ss << "Warning during loading : " << e.what();
 
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Warning",
-                    ss.str(),
-                    ::fwGui::dialog::IMessageDialog::WARNING);
+                "Warning",
+                ss.str(),
+                ::fwGui::dialog::IMessageDialog::WARNING);
         }
         catch( ... )
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Warning",
-                    "Warning during loading.",
-                    ::fwGui::dialog::IMessageDialog::WARNING);
+                "Warning",
+                "Warning during loading.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }

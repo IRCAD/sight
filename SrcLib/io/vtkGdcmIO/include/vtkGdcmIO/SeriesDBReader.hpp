@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,18 +29,18 @@ namespace vtkGdcmIO
  * @brief Reads DICOM data from a directory path in order to create a SeriesDB object.
  */
 class SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                             public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader > ,
-                             public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader > ,
-                             public ::fwTools::ProgressAdviser
+                       public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
+                       public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
+                       public ::fwTools::ProgressAdviser
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro(
-                    (SeriesDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
-                    (()),
-                    ::fwDataIO::reader::factory::New< SeriesDBReader >
-                    );
+        (SeriesDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
+        (()),
+        ::fwDataIO::reader::factory::New< SeriesDBReader >
+        );
     fwCoreAllowSharedFromThis();
 
     VTKGDCMIO_API SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key);
@@ -52,7 +52,7 @@ public :
      */
     VTKGDCMIO_API void read();
 
-private :
+private:
 
     /**
      * @brief Creates a SeriesDB from the data contained in the given directory path.

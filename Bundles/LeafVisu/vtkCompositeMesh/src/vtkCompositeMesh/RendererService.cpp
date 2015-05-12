@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,7 +40,7 @@
 #include <vtkTransform.h>
 
 
-fwServicesRegisterMacro( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRender::IRender, ::vtkCompositeMesh::RendererService, ::fwData::Composite );
 
 
 
@@ -48,7 +48,7 @@ namespace vtkCompositeMesh
 {
 
 const ::fwCom::Slots::SlotKeyType RendererService::s_UPDATE_CAM_POSITION_SLOT = "updateCamPosition";
-const ::fwCom::Signals::SignalKeyType RendererService::s_CAM_UPDATED_SIG = "camUpdated";
+const ::fwCom::Signals::SignalKeyType RendererService::s_CAM_UPDATED_SIG      = "camUpdated";
 
 class vtkLocalCommand : public vtkCommand
 {
@@ -56,7 +56,7 @@ public:
 
     vtkLocalCommand(::vtkCompositeMesh::RendererService* _service)
     {
-        m_service = _service;
+        m_service              = _service;
         this->m_isMousePressed = false;
     }
     void Execute(vtkObject* _caller, unsigned long _event, void* _obj)
@@ -70,7 +70,7 @@ public:
             this->m_isMousePressed = false;
         }
         else if ( (_event == vtkCommand::ModifiedEvent && this->m_isMousePressed)
-                || _event == vtkCommand::MouseWheelBackwardEvent || _event == vtkCommand::MouseWheelForwardEvent)
+                  || _event == vtkCommand::MouseWheelBackwardEvent || _event == vtkCommand::MouseWheelForwardEvent)
         {
             m_service->notifyCamPositionUpdated();
             ::fwThread::Worker::sptr worker = m_service->getWorker();
@@ -83,12 +83,12 @@ private:
 };
 
 RendererService::RendererService() throw()
-                                    : m_render( 0 ), m_bPipelineIsInit(false)
+    : m_render( 0 ), m_bPipelineIsInit(false)
 {
 //    this->IService::addNewHandledEvent( ::fwComEd::MeshMsg::NEW_MESH );
 //    this->IService::addNewHandledEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
 
-    m_slotUpdateCamPosition = ::fwCom::newSlot( &RendererService::updateCamPosition, this ) ;
+    m_slotUpdateCamPosition = ::fwCom::newSlot( &RendererService::updateCamPosition, this );
     ::fwCom::HasSlots::m_slots( s_UPDATE_CAM_POSITION_SLOT, m_slotUpdateCamPosition );
 
     m_sigCamUpdated = CamUpdatedSignalType::New();
@@ -99,14 +99,15 @@ RendererService::RendererService() throw()
     ::fwCom::HasSignals::m_signals( s_CAM_UPDATED_SIG,  m_sigCamUpdated);
 
     this->setWorker( ::fwServices::registry::ActiveWorkers::getDefault()->
-                                 getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
+                     getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
 
 }
 
 //-----------------------------------------------------------------------------
 
 RendererService::~RendererService() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -135,7 +136,10 @@ void RendererService::configuring() throw(::fwTools::Failed)
 
 void RendererService::stopping() throw(fwTools::Failed)
 {
-    if( m_render == 0 ) return;
+    if( m_render == 0 )
+    {
+        return;
+    }
 
     assert( m_interactorManager->getInteractor() );
     m_interactorManager->getInteractor()->RemoveObserver(m_loc);
@@ -213,7 +217,7 @@ void RendererService::createAndAddActorToRender()
     OSLM_INFO( "VTK Pipeline ready TO UPDATE" << '\n' << "Object received:" << myComposite->getLeafClassname());
 
     // elementnumber increases for each mesh found:
-    unsigned int elementNumber=0;
+    unsigned int elementNumber = 0;
 
     //Loop through the composite objects, if it's a mesh, then render it:
     for(::fwData::Composite::ContainerType::const_iterator it = myComposite->begin(); it != myComposite->end(); ++it)
@@ -222,7 +226,7 @@ void RendererService::createAndAddActorToRender()
         OSLM_INFO("ObjectPointer: " << it->second);
         OSLM_INFO("ObjectType: " << it->second->getClassname () << '\n');
 
-        ::fwData::Mesh::sptr myMesh =::fwData::Mesh::dynamicCast (it->second);
+        ::fwData::Mesh::sptr myMesh = ::fwData::Mesh::dynamicCast (it->second);
 
         // If it's a mesh, then put it in the pipeline:
         if( myMesh )
@@ -236,7 +240,7 @@ void RendererService::createAndAddActorToRender()
             m_normals->SetInputData(vtk_polyData);
             mapper->SetInputConnection(m_normals->GetOutputPort());
 
-            vtkActor* actor =  vtkActor::New();
+            vtkActor* actor = vtkActor::New();
             actor->SetMapper( mapper);
 
             // Add the actors
@@ -264,7 +268,8 @@ void RendererService::createAndAddActorToRender()
             {
                 // Material exists
                 ::fwData::Material::sptr matObjPtr = myMesh->getField< ::fwData::Material >( "MaterialMesh" );
-                actor->GetProperty()->SetColor (matObjPtr->ambient()->red(), matObjPtr->ambient()->green(), matObjPtr->ambient()->blue());
+                actor->GetProperty()->SetColor (matObjPtr->ambient()->red(),
+                                                matObjPtr->ambient()->green(), matObjPtr->ambient()->blue());
             }
             mapper->Delete();
             elementNumber++;
@@ -296,8 +301,8 @@ void RendererService::notifyCamPositionUpdated()
     vtkCamera* camera = m_render->GetActiveCamera();
 
     SharedArray position = SharedArray(new double[3]);
-    SharedArray focal = SharedArray(new double[3]);
-    SharedArray viewUp = SharedArray(new double[3]);
+    SharedArray focal    = SharedArray(new double[3]);
+    SharedArray viewUp   = SharedArray(new double[3]);
 
     std::copy(camera->GetPosition(), camera->GetPosition()+3, position.get());
     std::copy(camera->GetFocalPoint(), camera->GetFocalPoint()+3, focal.get());

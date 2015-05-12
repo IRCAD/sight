@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,8 @@ ConfigActionSrvWithKey::ConfigActionSrvWithKey() throw()
 //------------------------------------------------------------------------------
 
 ConfigActionSrvWithKey::~ConfigActionSrvWithKey() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -45,7 +46,7 @@ void ConfigActionSrvWithKey::starting() throw(::fwTools::Failed)
 
     bool executable = true;
 
-    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Object::sptr obj          = this->getObject();
     ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );
     if( composite )
     {
@@ -97,7 +98,7 @@ void ConfigActionSrvWithKey::configuring() throw(fwTools::Failed)
             SLM_ASSERT("<key> tag must have one attribut val.", keyItem->hasAttribute("id"));
             adaptor = keyItem->getAttributeValue("id");
             SLM_ASSERT("<key> tag must have one attribut pattern.", keyItem->hasAttribute("pattern"));
-            pattern = keyItem->getAttributeValue("pattern");
+            pattern                = keyItem->getAttributeValue("pattern");
             m_keyAdaptors[pattern] = adaptor;
         }
     }
@@ -118,7 +119,7 @@ void ConfigActionSrvWithKey::receiving( ::fwServices::ObjectMsg::csptr _msg ) th
 
     bool executable = true;
 
-    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Object::sptr obj          = this->getObject();
     ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );
     if( composite )
     {
@@ -166,7 +167,7 @@ void ConfigActionSrvWithKey::startConfig()
     std::map< std::string, std::string > finalMap;
     finalMap = m_fieldAdaptors;
 
-    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Object::sptr obj          = this->getObject();
     ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );
     if( composite )
     {
@@ -201,7 +202,7 @@ void ConfigActionSrvWithKey::startConfig()
 
     // Init manager
     ::fwRuntime::ConfigurationElement::csptr config =
-            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_viewConfigId, finalMap );
+        ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_viewConfigId, finalMap );
     m_configTemplateManager = ::fwServices::AppConfigManager::New();
     m_configTemplateManager->setConfig( config );
 

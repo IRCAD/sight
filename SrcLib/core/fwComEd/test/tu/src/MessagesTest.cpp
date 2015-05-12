@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -59,7 +59,7 @@ void MessagesTest::testImageMsg()
     const std::string MYMODIF2 = ::fwComEd::ImageMsg::SLICE_INDEX;
 
     ::fwData::Integer::sptr intField = ::fwData::Integer::New(23);
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwData::Image::sptr image      = ::fwData::Image::New();
 
     // create message
     ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
@@ -71,7 +71,7 @@ void MessagesTest::testImageMsg()
     CPPUNIT_ASSERT(imageMsg->hasEvent(MYMODIF2));
 
     // check data info
-    ::fwData::Object::sptr obj = ::fwData::Object::constCast(imageMsg->getDataInfo(MYMODIF2));
+    ::fwData::Object::sptr obj        = ::fwData::Object::constCast(imageMsg->getDataInfo(MYMODIF2));
     ::fwData::Integer::sptr intField2 = ::fwData::Integer::dynamicCast(obj);
     CPPUNIT_ASSERT(intField2);
     CPPUNIT_ASSERT_EQUAL(intField, intField2);
@@ -81,7 +81,7 @@ void MessagesTest::testImageMsg()
 
 void MessagesTest::messageCreationTest()
 {
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwData::Image::sptr image       = ::fwData::Image::New();
     ::fwServices::ObjectMsg::sptr msg = ::fwComEd::helper::MsgHelper::createAssociatedMsg(image);
     CPPUNIT_ASSERT(msg);
     CPPUNIT_ASSERT(::fwComEd::ImageMsg::dynamicCast(msg));

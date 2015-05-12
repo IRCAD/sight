@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@
 
 #include "ioTuto/ExternalDataReaderService.hpp"
 
-fwServicesRegisterMacro( ::io::IReader , ::ioTuto::ExternalDataReaderService , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioTuto::ExternalDataReaderService, ::fwData::Composite );
 
 namespace ioTuto
 {
@@ -33,29 +33,31 @@ namespace ioTuto
 //-----------------------------------------------------------------------------
 
 ExternalDataReaderService::ExternalDataReaderService()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void ExternalDataReaderService::info(std::ostream &_sstream )
 {
-    this->::io::IReader::info( _sstream ) ;
-    _sstream << std::endl << " External data file reader" ;
+    this->::io::IReader::info( _sstream );
+    _sstream << std::endl << " External data file reader";
 }
 
 //-----------------------------------------------------------------------------
 
 std::vector< std::string > ExternalDataReaderService::getSupportedExtensions()
 {
-    std::vector< std::string > extensions ;
+    std::vector< std::string > extensions;
     extensions.push_back(".us");
-    return extensions ;
+    return extensions;
 }
 
 //-----------------------------------------------------------------------------
 
 ExternalDataReaderService::~ExternalDataReaderService() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -63,7 +65,7 @@ void ExternalDataReaderService::configuring( ) throw(::fwTools::Failed)
 {
     if( m_configuration->findConfigurationElement("filename") )
     {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getValue() ;
+        std::string filename = m_configuration->findConfigurationElement("filename")->getValue();
         OSLM_INFO( "ExternalDataReaderService::configure filename: " << filename );
         this->setFile(filename);
     }
@@ -82,8 +84,8 @@ void ExternalDataReaderService::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath();
@@ -116,7 +118,7 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
             {
                 OSLM_ERROR( "External data file loading error for " << this->getFile());
                 std::string str = "Unable to open ";
-                str+= this->getFile().string();
+                str += this->getFile().string();
                 throw std::ios_base::failure(str);
             }
             file >> imageName;

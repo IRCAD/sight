@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@
 namespace uiImage
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ImageTransparency , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ImageTransparency, ::fwData::Image );
 
 
 ImageTransparency::ImageTransparency() throw()
@@ -45,7 +45,8 @@ ImageTransparency::ImageTransparency() throw()
 //------------------------------------------------------------------------------
 
 ImageTransparency::~ImageTransparency() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -55,7 +56,8 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
     this->::fwGui::IGuiContainerSrv::create();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -70,7 +72,7 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
     m_valueSlider->setMinimumWidth(100);
 
     m_valueCheckBox = new QCheckBox( QObject::tr("visible"), container);
-    m_action = new QAction(container);
+    m_action        = new QAction(container);
     m_action->setCheckable(true);
     if (!m_shortcut.empty())
     {

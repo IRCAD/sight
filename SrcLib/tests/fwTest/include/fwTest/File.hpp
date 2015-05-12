@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWTEST__FILE_HPP__
-#define __FWTEST__FILE_HPP__
+#ifndef __FWTEST_FILE_HPP__
+#define __FWTEST_FILE_HPP__
 
 #include <boost/filesystem/path.hpp>
 
@@ -18,10 +18,11 @@ namespace fwTest
 class FWTEST_CLASS_API File
 {
 public:
-    FWTEST_API static bool contentEquals(const ::boost::filesystem::path &lfile, const ::boost::filesystem::path &rfile);
+    FWTEST_API static bool contentEquals(const ::boost::filesystem::path &lfile,
+                                         const ::boost::filesystem::path &rfile);
 
 };
 
 } // namespace fwTest
 
-#endif // __FWTEST__FILE_HPP__
+#endif // __FWTEST_FILE_HPP__

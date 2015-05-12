@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_DL_NATIVE_HPP
-#define _FWRUNTIME_DL_NATIVE_HPP
+#ifndef __FWRUNTIME_DL_NATIVE_HPP__
+#define __FWRUNTIME_DL_NATIVE_HPP__
 
 #include <boost/filesystem/path.hpp>
 #include <boost/shared_ptr.hpp>
@@ -34,7 +34,7 @@ struct INameDecorator;
  * @brief   Defines the abstract class for native module implementors.
  * @struct  Native
  * @date    2004-2009
- * 
+ *
  */
 struct Native
 {
@@ -47,7 +47,8 @@ struct Native
      * @param[in]   modulePath      a path to the module to manage
      * @param[in]   nameDecorator   a shared pointer to a name decorator to use to retrieve the native file name
      */
-    Native( const boost::filesystem::path & modulePath, const ::boost::shared_ptr< INameDecorator > nameDecorator ) throw();
+    Native( const boost::filesystem::path & modulePath,
+            const ::boost::shared_ptr< INameDecorator > nameDecorator ) throw();
 
     /**
      * @brief   Destructor : does nothing.
@@ -109,30 +110,30 @@ struct Native
     void setBundle( const ::fwRuntime::Bundle * bundle ) throw();
 
 
-private:
+    private:
 
-    /**
-     * @brief   The path to the module to load.
-     */
-    const boost::filesystem::path       m_modulePath;
+        /**
+         * @brief   The path to the module to load.
+         */
+        const boost::filesystem::path m_modulePath;
 
-    /**
-     * @brief   a name decorator to use to retrieve the native path
-     */
-    const ::boost::shared_ptr< INameDecorator > m_nameDecorator;
+        /**
+         * @brief   a name decorator to use to retrieve the native path
+         */
+        const ::boost::shared_ptr< INameDecorator > m_nameDecorator;
 
-    /**
-     * @brief   A pointer to the bundle the library is attached to.
-     */
-    const Bundle                            * m_bundle;
+        /**
+         * @brief   A pointer to the bundle the library is attached to.
+         */
+        const Bundle                            * m_bundle;
 
 
-    /**
-     * @brief   Assignment operator.
-     *
-     * @remark  Assignment is forbidden for this class.
-     */
-    void operator=( const Native & ) throw();
+        /**
+         * @brief   Assignment operator.
+         *
+         * @remark  Assignment is forbidden for this class.
+         */
+        void operator=( const Native & ) throw();
 
 };
 
@@ -143,4 +144,4 @@ private:
 } // namespace fwRuntime
 
 
-#endif // #define _FWRUNTIME_DL_NATIVE_HPP
+#endif // __FWRUNTIME_DL_NATIVE_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,14 +39,14 @@
 
 #include "vtkSimpleMesh/RendererService.hpp"
 
-fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::Mesh );
+fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleMesh::RendererService, ::fwData::Mesh );
 
 
 namespace vtkSimpleMesh
 {
 
 const ::fwCom::Slots::SlotKeyType RendererService::s_UPDATE_CAM_POSITION_SLOT = "updateCamPosition";
-const ::fwCom::Signals::SignalKeyType RendererService::s_CAM_UPDATED_SIG = "camUpdated";
+const ::fwCom::Signals::SignalKeyType RendererService::s_CAM_UPDATED_SIG      = "camUpdated";
 
 class vtkLocalCommand : public vtkCommand
 {
@@ -54,7 +54,7 @@ public:
 
     vtkLocalCommand(::vtkSimpleMesh::RendererService* _service)
     {
-        m_service = _service;
+        m_service              = _service;
         this->m_isMousePressed = false;
     }
     void Execute(vtkObject* _caller, unsigned long _event, void* _obj)
@@ -68,7 +68,7 @@ public:
             this->m_isMousePressed = false;
         }
         else if ( (_event == vtkCommand::ModifiedEvent && this->m_isMousePressed)
-                || _event == vtkCommand::MouseWheelBackwardEvent || _event == vtkCommand::MouseWheelForwardEvent)
+                  || _event == vtkCommand::MouseWheelBackwardEvent || _event == vtkCommand::MouseWheelForwardEvent)
         {
             m_service->notifyCamPositionUpdated();
             ::fwThread::Worker::sptr worker = m_service->getWorker();
@@ -81,13 +81,13 @@ private:
 };
 
 RendererService::RendererService() throw()
-: m_render( 0 ), m_bPipelineIsInit(false)
+    : m_render( 0 ), m_bPipelineIsInit(false)
 {
     //this->addNewHandledEvent( ::fwComEd::MeshMsg::NEW_MESH );
     //this->addNewHandledEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
 
 
-    m_slotUpdateCamPosition   = ::fwCom::newSlot( &RendererService::updateCamPosition, this ) ;
+    m_slotUpdateCamPosition = ::fwCom::newSlot( &RendererService::updateCamPosition, this );
     ::fwCom::HasSlots::m_slots( s_UPDATE_CAM_POSITION_SLOT, m_slotUpdateCamPosition );
 
     m_sigCamUpdated = CamUpdatedSignalType::New();
@@ -98,7 +98,7 @@ RendererService::RendererService() throw()
     ::fwCom::HasSignals::m_signals( s_CAM_UPDATED_SIG,  m_sigCamUpdated);
 
     this->setWorker( ::fwServices::registry::ActiveWorkers::getDefault()->
-                                 getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
+                     getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
 }
 
 //-----------------------------------------------------------------------------
@@ -147,7 +147,10 @@ void RendererService::configuring() throw(::fwTools::Failed)
 
 void RendererService::stopping() throw(fwTools::Failed)
 {
-    if( m_render == 0 ) return;
+    if( m_render == 0 )
+    {
+        return;
+    }
 
     m_interactorManager->getInteractor()->RemoveObserver(m_loc);
 
@@ -182,7 +185,7 @@ void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwT
         }
         else
         {
-            m_vtkPolyData = vtkSmartPointer<vtkPolyData>::New();
+            m_vtkPolyData             = vtkSmartPointer<vtkPolyData>::New();
             ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
             {
                 ::fwData::mt::ObjectReadLock lock(mesh);
@@ -214,7 +217,7 @@ void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwT
 void RendererService::initVTKPipeline()
 {
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
-    m_vtkPolyData = vtkSmartPointer<vtkPolyData>::New();
+    m_vtkPolyData             = vtkSmartPointer<vtkPolyData>::New();
 
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
@@ -224,7 +227,7 @@ void RendererService::initVTKPipeline()
     m_mapper = vtkPolyDataMapper::New();
     m_mapper->SetInputData(m_vtkPolyData);
 
-    vtkActor* actor =  vtkActor::New();
+    vtkActor* actor = vtkActor::New();
     actor->SetMapper(m_mapper);
 
     // Add the actors
@@ -268,8 +271,8 @@ void RendererService::notifyCamPositionUpdated()
     vtkCamera* camera = m_render->GetActiveCamera();
 
     SharedArray position = SharedArray(new double[3]);
-    SharedArray focal = SharedArray(new double[3]);
-    SharedArray viewUp = SharedArray(new double[3]);
+    SharedArray focal    = SharedArray(new double[3]);
+    SharedArray viewUp   = SharedArray(new double[3]);
 
     std::copy(camera->GetPosition(), camera->GetPosition()+3, position.get());
     std::copy(camera->GetFocalPoint(), camera->GetFocalPoint()+3, focal.get());

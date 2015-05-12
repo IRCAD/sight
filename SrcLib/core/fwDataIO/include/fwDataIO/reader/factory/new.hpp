@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,10 +36,12 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
  */
 class Key
 {
-    template<typename CLASSNAME>
-    friend SPTR( CLASSNAME ) fwDataIO::reader::factory::New();
+template<typename CLASSNAME>
+friend SPTR( CLASSNAME ) fwDataIO::reader::factory::New();
 
-    Key(){};
+Key()
+{
+}
 };
 
 
