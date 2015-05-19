@@ -59,7 +59,6 @@ protected:
     VISUVIDEOANDROID_API virtual void configuring() throw( ::fwTools::Failed );
     VISUVIDEOANDROID_API virtual void starting() throw(::fwTools::Failed);
     VISUVIDEOANDROID_API virtual void stopping() throw(::fwTools::Failed);
-    VISUVIDEOANDROID_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     VISUVIDEOANDROID_API virtual void updating() throw(::fwTools::Failed);
     VISUVIDEOANDROID_API virtual void info(std::ostream &_sstream );
 

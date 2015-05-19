@@ -8,6 +8,7 @@
 
 #include <fwCom/Slots.hxx>
 #include <fwCom/Signal.hxx>
+
 #include <fwTools/fwID.hpp>
 
 #include <fwServices/Base.hpp>
@@ -116,13 +117,6 @@ void SAndroidCamera::stopping() throw(::fwTools::Failed)
 //-----------------------------------------------------------------------------
 
 void SAndroidCamera::info(std::ostream &_sstream )
-{
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------
-
-void SAndroidCamera::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
