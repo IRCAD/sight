@@ -1,0 +1,11 @@
+<plugin id="preferences" class="preferences::Plugin">
+
+    <library name="preferences"/>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::preferences::IPreferencesService</type>
+        <service>::preferences::SPreferences</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+</plugin>

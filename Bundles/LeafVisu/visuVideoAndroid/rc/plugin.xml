@@ -1,0 +1,10 @@
+  <plugin id="visuVideoAndroid" class="::visuVideoAndroid::Plugin" version="0.1">
+    <library name="visuVideoAndroid" />
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IService</type>
+        <service>::visuVideoAndroid::camera::SAndroidCamera</service>
+        <object>::extData::FrameTL</object>
+    </extension>
+
+</plugin>
