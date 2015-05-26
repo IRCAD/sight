@@ -1,0 +1,39 @@
+<plugin id="videoQt" class="videoQt::Plugin" >
+    
+    <library name="videoQt" />
+
+    <requirement id="visu" />
+       
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::videoQt::action::SVideoConfiguration</service>
+        <object>::fwData::Object</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::videoQt::SFrameGrabber</service>
+        <object>::extData::FrameTL</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::videoQt::SFrameRecorder</service>
+        <object>::extData::FrameTL</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::videoQt::editor::SCamera</service>
+        <object>::arData::Camera</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::videoQt::editor::SSlider</service>
+        <object>::fwData::Object</object>
+    </extension>    
+</plugin>
+
+
+

@@ -1,0 +1,25 @@
+<plugin id="uiTools" class="::uiTools::Plugin" >
+ 
+ <library name="uiTools" />
+ 
+    <requirement id="gui" />
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiTools::action::STimestampSlotCaller</service>
+        <object>::fwData::Object</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiTools::editor::SStatus</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiTools::editor::SShowVectorSize</service>
+        <object>::fwData::Vector</object>
+    </extension>
+    
+</plugin>

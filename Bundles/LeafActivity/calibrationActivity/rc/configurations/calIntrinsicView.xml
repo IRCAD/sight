@@ -1,0 +1,212 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>calIntrinsicView</id>
+    <type>parameters</type>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="GENERIC_UID" />
+        <param name="cameraUid" />
+        <param name="calibrationInfoUid" />
+        <param name="chessboardWidth" />
+        <param name="chessboardHeight" />
+        <param name="chessboardProxy" />        
+    </parameters>
+    <config>
+
+        <object type="::fwData::Composite">
+            <service uid="${GENERIC_UID}_intrinsicCameraView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                        <view align="bottom" caption="Calibration"/>
+                        <view align="bottom" caption="Information"/>
+                    </layout>
+                </gui>
+                <registry>
+                    <parent wid="${WID_PARENT}" />
+                    <view wid="${GENERIC_UID}_cameraView" />
+                    <view sid="${GENERIC_UID}_CalibrationInfoView" start="yes" />
+                    <view sid="${GENERIC_UID}_cameraInfo" start="yes" />
+                </registry>
+            </service>
+            
+            <service uid="${GENERIC_UID}_CalibrationInfoView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                    </layout>
+                    <toolBar align="left">
+                        <toolBitmapSize height="24" width="24" />
+                    </toolBar>
+                </gui>
+                <registry>
+                    <toolBar sid="${GENERIC_UID}_intrinsicCamera" start="yes" />
+                    <view sid="${GENERIC_UID}_CalibrationInfoEditor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_intrinsicCamera" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <editor />
+                        <menuItem name="Add" icon="Bundles/media_0-1/icons/Import.svg" />
+                        <menuItem name="Remove" icon="Bundles/arMedia_0-1/icons/remove.svg" />
+                        <menuItem name="Reset" icon="Bundles/arMedia_0-1/icons/reset.svg" />
+                        <menuItem name="Calibrate with openCV" icon="Bundles/arMedia_0-1/icons/CheckButton.svg" />
+                        <menuItem name="Draw" icon="Bundles/mediaExt_0-1/icons/Preview.svg" />
+                        <menuItem name="Edit" icon="Bundles/arMedia_0-1/icons/configuration.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="${GENERIC_UID}_Status" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionAdd" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionRemove" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionReset" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionGoOpenCV" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionDisplayImage" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionEdition" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_ActionAdd" impl="::uiTools::action::STimestampSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_ChessboardDetector/detectPoints</slot>
+                </slots>
+            </service>
+
+            <service uid="${GENERIC_UID}_ActionReset" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_CalibrationInfoEditor/reset</slot>
+                </slots>
+            </service>
+
+            <service uid="${GENERIC_UID}_ActionRemove" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_CalibrationInfoEditor/remove</slot>
+                </slots>
+            </service>
+
+            <service uid="${GENERIC_UID}_ActionEdition" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_intrinsicEdition/update</slot>
+                </slots>
+            </service>
+
+            <service uid="${GENERIC_UID}_ActionGoOpenCV" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_OpenCVIntrinsicCal/update</slot>
+                    <slot>${GENERIC_UID}_Status/changeToOrange</slot>
+                </slots>
+            </service>
+
+            <service uid="${GENERIC_UID}_ActionDisplayImage" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_CalibrationInfoEditor/getSelection</slot>
+                </slots>
+            </service>
+            
+            <service uid="${GENERIC_UID}_cameraLauncher" impl="::fwServices::SConfigController" autoConnect="no">
+                <config>
+                    <appConfig id="calCameraView">
+                        <parameters>
+                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_cameraView" />
+                            <parameter replace="cameraUid" by="${cameraUid}" />
+                            <parameter replace="timeLineUid" by="${GENERIC_UID}_FrameTL" />
+                        </parameters>
+                    </appConfig>
+                </config>
+            </service>
+
+            <service uid="${GENERIC_UID}_Status" impl="::uiTools::editor::SStatus" type="::gui::editor::IEditor" autoConnect="no">
+                <green>Point are visible</green>
+                <orange>Calibration in progress</orange>
+                <red>Points are NOT visible</red>
+            </service>
+
+            <service uid="${GENERIC_UID}_ChessboardDetector" impl="::videoCalibration::SChessBoardDetector" type="::fwServices::IController" autoConnect="no"  worker="intr_chess_checker">
+                <calibration timeline="timeline" calInfo="calInfo" />
+                <board width="${chessboardWidth}" height="${chessboardHeight}" />
+            </service>
+
+            <service uid="${GENERIC_UID}_CheckChessboard" impl="::videoCalibration::SCheckChessBoard" type="::fwServices::IController" autoConnect="no" worker="intr_chess_checker">
+                <calibration timeline="timeline" />
+                <board width="${chessboardWidth}" height="${chessboardHeight}" />
+            </service>
+
+            <service uid="${GENERIC_UID}_DisplayCalibrationInfo" impl="::uiCalibration::SDisplayCalibrationInfo" type="::fwServices::IController" autoConnect="no">
+                <CalInfo1>calInfo</CalInfo1>
+            </service>
+
+            <service uid="${GENERIC_UID}_CalibrationInfoEditor" impl="::uiCalibration::SCalibrationInfoEditor" type="::gui::editor::IEditor" autoConnect="yes">
+                <CalInfo1>calInfo</CalInfo1>
+            </service>
+
+            <item key="calInfo">
+                <object uid="${calibrationInfoUid}" type="::arData::CalibrationInfo" src="ref" />
+            </item>
+
+            <item key="timeline">
+                <object uid="${GENERIC_UID}_FrameTL" type="::extData::FrameTL" />
+            </item>
+
+            <item key="camera">
+                <object uid="${cameraUid}" type="::arData::Camera" src="ref">
+                    <service uid="${GENERIC_UID}_IntrinsicCal" impl="::videoCalibration::SIntrinsic" worker="intr_chess_checker">
+                        <calibrationInfoID>${calibrationInfoUid}</calibrationInfoID>
+                        <board width="${chessboardWidth}" height="${chessboardHeight}" />
+                    </service>
+
+                    <service uid="${GENERIC_UID}_OpenCVIntrinsicCal" impl="::videoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
+                        <calibrationInfoID>${calibrationInfoUid}</calibrationInfoID>
+                        <board width="${chessboardWidth}" height="${chessboardHeight}" />
+                    </service>
+                    
+                    <service uid="${GENERIC_UID}_cameraInfo" type="::gui::editor::IEditor" impl="::uiCalibration::SCameraInformationEditor" autoConnect="yes" />
+                    <service uid="${GENERIC_UID}_intrinsicEdition" type="::fwServices::IService" impl="::uiCalibration::SIntrinsicEdition" autoConnect="yes" />
+                </object>
+            </item>
+
+            <connect>
+                <signal>${GENERIC_UID}_FrameTL/objectPushed</signal>
+                <slot>${GENERIC_UID}_CheckChessboard/detectPoints</slot>
+            </connect>
+
+            <connect>
+                <signal>${GENERIC_UID}_CheckChessboard/chessboardDetected</signal>
+                <slot>${GENERIC_UID}_Status/changeToGreen</slot>
+            </connect>
+
+            <connect>
+                <signal>${GENERIC_UID}_CheckChessboard/chessboardNotDetected</signal>
+                <slot>${GENERIC_UID}_Status/changeToRed</slot>
+            </connect>
+
+            <connect>
+                <signal>${calibrationInfoUid}/getRecord</signal>
+                <slot>${GENERIC_UID}_DisplayCalibrationInfo/displayImage</slot>
+            </connect>
+
+            <proxy channel="${GENERIC_UID}_intrinsicProxy">
+                <signal>${calibrationInfoUid}/addedRecord</signal>
+                <signal>${calibrationInfoUid}/removedRecord</signal>
+                <signal>${calibrationInfoUid}/resetRecord</signal>
+                <slot>${GENERIC_UID}_CalibrationInfoEditor/update</slot>
+            </proxy>
+
+            <proxy channel="${chessboardProxy}">
+                 <slot>${GENERIC_UID}_OpenCVIntrinsicCal/updateChessboardSize</slot>
+                 <slot>${GENERIC_UID}_ChessboardDetector/updateChessboardSize</slot>
+                 <slot>${GENERIC_UID}_CheckChessboard/updateChessboardSize</slot>
+            </proxy>
+            
+
+            <start uid="${GENERIC_UID}_intrinsicCameraView" />
+            <start uid="${GENERIC_UID}_IntrinsicCal" />
+            <start uid="${GENERIC_UID}_OpenCVIntrinsicCal" />
+            <start uid="${GENERIC_UID}_ChessboardDetector" />
+            <start uid="${GENERIC_UID}_CheckChessboard" />
+            <start uid="${GENERIC_UID}_DisplayCalibrationInfo" />
+            <start uid="${GENERIC_UID}_cameraLauncher" />
+            <start uid="${GENERIC_UID}_intrinsicEdition" />
+        </object>
+    </config>
+</extension>
