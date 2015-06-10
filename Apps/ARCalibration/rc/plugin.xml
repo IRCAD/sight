@@ -11,6 +11,41 @@
         </parameters>
     </extension>
 
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ExportSelection</id>
+        <type>parameters</type>
+        <parameters>
+            <param name="selection" />
+        </parameters>
+        <config>
+            <object uid="${selection}" src="ref">
+                <service uid="export_selection" impl="::uiIO::editor::IOSelectorService" autoConnect="yes">
+                    <type mode="writer" />
+                     <selection mode="include" /> 
+                     <addSelection service="::ioAtoms::SWriter" /> 
+                     <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
+                 </service>
+                <start uid="export_selection" />
+                <update uid="export_selection" />
+            </object>
+        </config>
+    </extension>
+    
+    <extension implements="::fwActivities::registry::Activities">
+        <id>CameraSeriesExport</id>
+        <title>CameraSeries Export</title>
+        <desc>CameraSeries Export</desc>
+        <icon>NONE</icon>
+        <requirements>
+            <requirement name="series" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="ExportSelection">
+            <parameters>
+                <parameter replace="selection" by="@values.series" />
+            </parameters>
+        </appConfig>
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>SDBOpenIOSelectorConfig</id>

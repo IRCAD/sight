@@ -33,11 +33,13 @@
                         <menuItem name="Launch activity" icon="Bundles/media_0-1/icons/Launch_activity.svg" />
                         <separator />
                         <menuItem name="Calibration activity" icon="Bundles/arMedia_0-1/icons/calibrationActivity.svg" />
+                        <menuItem name="Export CameraSeries calibration" icon="Bundles/media_0-1/icons/Export.svg" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="${GENERIC_UID}_action_newActivity" start="yes" />
                     <menuItem sid="${GENERIC_UID}_action_calibrationActivity" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_exportCameraActivity" start="yes" />
                 </registry>
             </service>
 
@@ -76,7 +78,19 @@
                             </filter>
                         </config>
                     </service>
-
+                    <service uid="${GENERIC_UID}_action_exportCameraActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <mode>immediate</mode>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>CameraSeriesExport</id>
+                            </filter>
+                        </config>
+                    </service>
                 </object>
             </item>
 

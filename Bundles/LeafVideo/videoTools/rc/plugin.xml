@@ -26,6 +26,11 @@
         <object>::fwData::Composite</object>
     </extension>
 
-    
-</plugin>
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::arServices::IOperator</type>
+        <service>::videoTools::SFrameResizer</service>
+        <object>::fwData::Composite</object>
+        <desc>service description</desc>
+    </extension>
 
+</plugin>
