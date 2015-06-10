@@ -13,6 +13,7 @@ set( DEPENDENCIES
         arData
         extData
         fwCom
+        arServices
 )
 set( REQUIREMENTS  )
 
