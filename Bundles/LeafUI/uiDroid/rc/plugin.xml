@@ -1,0 +1,16 @@
+<plugin id="uiDroid" class="::uiDroid::Plugin" version="0.1">
+    <library name="uiDroid" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IService</type>
+        <service>::uiDroid::SSlider</service>
+        <object>::fwData::Object</object>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IService</type>
+        <service>::uiDroid::SButton</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+</plugin>

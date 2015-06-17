@@ -1,0 +1,37 @@
+
+<plugin id="SimpleDroid" version="0.1" >
+    
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>SimpleDroidConfig</id>
+        <type>parameters</type>
+        <config>
+            <object type="::fwData::Mesh">
+            
+                <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="renderingMesh" autoConnect="yes"/>
+                <service uid="meshReader" impl="::ioVTK::MeshReaderService" type="::io::IReader" autoConnect="yes">
+                    <file>/data/data/com.fw4spl.SimpleDroid/Bundles/SimpleDroid_0-1/cube.vtk</file>
+                </service>
+                
+                <service uid="opacitySlider" impl="::uiDroid::SSlider" type="::fwServices::IService" autoConnect="yes">
+                    <max>100</max>
+                    <value>50</value>
+                </service>
+                
+                <service uid="testButton" impl="::uiDroid::SButton" type="::fwServices::IService" autoConnect="yes">
+                    <label>test</label>
+                </service>
+
+                <start uid="renderingMesh" />
+                <start uid="meshReader" />
+                <start uid="opacitySlider" />
+                <start uid="testButton" />
+                
+                <update uid="renderingMesh" />
+                <update uid="meshReader" />
+                <update uid="opacitySlider" />
+                <update uid="testButton" />
+
+            </object>
+        </config>
+    </extension> 
+</plugin>
