@@ -7,8 +7,8 @@
         <config>
             <object type="::fwData::Mesh">
             
-                <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="renderingMesh" autoConnect="no"/>
-                <service uid="meshReader" impl="::ioVTK::MeshReaderService" type="::io::IReader" autoConnect="no">
+                <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="renderingMesh" autoConnect="yes"/>
+                <service uid="meshReader" impl="::ioVTK::MeshReaderService" type="::io::IReader" autoConnect="yes">
                     <file>/data/data/com.fw4spl.SimpleDroid/Bundles/SimpleDroid_0-1/cube.vtk</file>
                 </service>
                 
