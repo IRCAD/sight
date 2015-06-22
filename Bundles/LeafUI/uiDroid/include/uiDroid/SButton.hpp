@@ -89,6 +89,7 @@ private:
     LoadClikedSignalType::sptr m_sigLoadCliked; ///< signal button clicked.
     ShowHideClikedSignalType::sptr m_sigShowHideCliked; ///< signal button clicked.
     std::string m_label; ///< button label.
+    bool m_visible;
 
     ::arGuiDroid::ViewManager* m_manager; ///< Android view manager.
 

@@ -24,13 +24,14 @@
                     <scene autoRender="true">
                        <renderer id="default" layer="0" background="#000000"/>
 
-                       <!-- <adaptor id="interactorStyle" class="::visuVTKDroidAdaptor::InteractorStyle" objectId="self">
-                          <config renderer="default" style="FixedInteractorStyle" />
-                      </adaptor> -->
-
-                         <adaptor id="meshAdaptor" class="::visuVTKDroidAdaptor::SMesh" objectId="meshKey">
+                         <adaptor id="meshAdaptor" uid="meshAdaptorUid" class="::visuVTKDroidAdaptor::SMesh" objectId="meshKey">
                             <config renderer="default" picker="" />
                         </adaptor>
+                        
+                        <connect>
+                            <signal>testButton/showHideclicked</signal>
+                            <slot>meshAdaptorUid/updateVisibility</slot>
+                        </connect>
 
                     </scene>
                 </service>
@@ -53,18 +54,11 @@
                     <slot>meshReader/update</slot>
                 </connect>
 
-                <!-- <connect>
-                    <signal>testButton/clicked</signal>
-                    <slot>meshUid/updateVisibility</slot>
-                </connect> -->
-
                 <start uid="renderingMesh" />
                 <start uid="meshReader" />
                 <start uid="testButton" />
-                <!-- <start uid="visibilityButton" /> -->
                 
                 <update uid="renderingMesh" />
-                <!-- <update uid="meshReader" /> -->
 
             </object>
         </config>

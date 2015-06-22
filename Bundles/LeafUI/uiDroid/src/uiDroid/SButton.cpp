@@ -32,7 +32,8 @@ fwServicesRegisterMacro( ::fwServices::IService, ::uiDroid::SButton, ::fwData::O
 
 //------------------------------------------------------------------------------
 
-SButton::SButton() throw()
+SButton::SButton() throw() :
+    m_visible(true)
 {
     m_sigLoadCliked     = LoadClikedSignalType::New();
     m_sigShowHideCliked = ShowHideClikedSignalType::New();
@@ -61,17 +62,14 @@ void SButton::configuring() throw (fwTools::Failed)
 void SButton::starting() throw (fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    //
-    // m_manager = new ::arGuiDroid::ViewManager();
-    // m_manager->createButton(m_label);
 
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
 
     android_app* app = profile->getApp();
 
-    const int32_t LEFT_MARGIN = 20;
+    const int32_t MARGIN = 40;
 
-    // Using jui_helper, a support library, to create and bind game management UIs
+    // Using ndkGUi, a support library, to create and bind game management UIs
     int32_t win_width  = ANativeWindow_getWidth(app->window);
     int32_t win_height = ANativeWindow_getHeight(app->window);
 
@@ -87,13 +85,10 @@ void SButton::starting() throw (fwTools::Failed)
         win_height = tmp;
     }
 
-    int32_t button_raw_width = win_width / 4;  // we have 4 buttons
-    int32_t button_height    = win_height / 4;
+    int32_t button_raw_width = win_width / 8;  // we have 2 buttons
+    int32_t button_height    = win_height / 8;
     int cur_idx              = 0;
 
-    // Create 4 buttons to control nearby sign-in
-    // The sequence is dictated by enum BUTTON_INDEX,
-    // it MUST match the button titles array defined here
     const char *titles[UI_BUTTON_COUNT]                                     = {"load", "show/hide"};
     std::function<void(ndkGui::JUIView *, const int32_t)> button_handlers[] =
     {
@@ -116,16 +111,17 @@ void SButton::starting() throw (fwTools::Failed)
     for (cur_idx = 0; cur_idx < UI_BUTTON_COUNT; cur_idx++)
     {
         ndkGui::JUIButton *button = new ndkGui::JUIButton(titles[cur_idx]);
-        button->AddRule(ndkGui::LAYOUT_PARAMETER_CENTER_VERTICAL,
+        button->AddRule(ndkGui::LAYOUT_PARAMETER_ALIGN_LEFT,
                         ndkGui::LAYOUT_PARAMETER_TRUE);
         button->AddRule(ndkGui::LAYOUT_PARAMETER_ALIGN_PARENT_LEFT,
                         ndkGui::LAYOUT_PARAMETER_TRUE);
-        button->SetAttribute("MinimumWidth", button_raw_width - LEFT_MARGIN);
+        button->AddRule(ndkGui::LAYOUT_ORIENTATION_VERTICAL,
+                        ndkGui::LAYOUT_PARAMETER_TRUE);
+        button->SetAttribute("MinimumWidth", button_raw_width - MARGIN);
         button->SetAttribute("MinimumHeight", button_height);
-        button->SetMargins(LEFT_MARGIN + cur_idx * button_raw_width, 0, 0, 0);
+        button->SetMargins(MARGIN, MARGIN + cur_idx * button_height, MARGIN, MARGIN);
         button->SetCallback(button_handlers[cur_idx]);
         ndkGui::JUIWindow::GetInstance()->AddView(button);
-//      ui_buttons_[cur_idx] = button;
     }
 }
 
@@ -153,6 +149,7 @@ void SButton::onLoadButtonClicked()
 
 void SButton::onShowHideButtonClicked()
 {
-    m_sigLoadCliked->asyncEmit();
+    m_visible = !m_visible;
+    m_sigShowHideCliked->asyncEmit(m_visible);
 }
 } // namespace uiDroid
