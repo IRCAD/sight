@@ -16,22 +16,23 @@ namespace arGuiDroid
 
 //-----------------------------------------------------------------------------
 
-static ViewManager* current_manager = NULL;
+//static ViewManager* current_manager = NULL;
 
 
-//-----------------------------------------------------------------------------
+////------------------------------------------------------------------------------
+//static void sliderValueChanged( JNIEnv* env, jobject thiz, int id,int value )
+//{
+//    OSLM_INFO("C++ sliderValueChanged = id '%d', value = '%d'",id, value);
 
-static void notifyFrameFetched(JNIEnv *env, jobject thiz, int id, jbyteArray data)
-{
-
-}
+//    m_sigValueChanged->asyncEmit( value );
+//}
 
 //-----------------------------------------------------------------------------
 
 ViewManager::ViewManager()
 {
     SLM_TRACE_FUNC();
-    current_manager = this;
+//    current_manager = this;
 
     std::string androidApkPackage(ANDROID_APK_PACKAGE);
     androidApkPackage += "/ViewManager";
@@ -40,13 +41,12 @@ ViewManager::ViewManager()
     JNIHelper* helper = JNIHelper::getInstance();
     helper->init(profile->getApp()->activity,androidApkPackage);
 
-
 //    JNINativeMethod methods[] =
 //    {
-//        {"notifyFrameFetched", "(I[B)V", reinterpret_cast<void *>(notifyFrameFetched)}
+//        {"sliderValueChanged", "(I)V", reinterpret_cast<void *>(sliderValueChanged)}
+//        {"buttonClicked", "(I)V", reinterpret_cast<void *>(....)}
 //    };
 //    helper->registerNatives(methods, 1);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -64,7 +64,6 @@ void ViewManager::createSlider(int max)
 
     JNIHelper* helper = JNIHelper::getInstance();
     helper->callMethodInt("createSlider",max);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +74,6 @@ void ViewManager::createButton(std::string label)
 
     JNIHelper* helper = JNIHelper::getInstance();
     helper->callMethodString("createButton",label);
-
 }
 
 //-----------------------------------------------------------------------------
