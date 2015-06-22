@@ -5,31 +5,66 @@
         <id>SimpleDroidConfig</id>
         <type>parameters</type>
         <config>
-            <object type="::fwData::Mesh">
-            
-                <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="renderingMesh" autoConnect="yes"/>
-                <service uid="meshReader" impl="::ioVTK::MeshReaderService" type="::io::IReader" autoConnect="yes">
-                    <file>/data/data/com.fw4spl.SimpleDroid/Bundles/SimpleDroid_0-1/cube.vtk</file>
+
+            <object type="::fwData::Composite">
+                <!-- <service uid="guiManagerUID" impl="::uiDroid::GuiManager" type="::fwServices::IService" autoConnect="no">
+                    <gui>
+                        <layout align="right|bottom" orientation="horizontal">
+                            <widget sid="readerButton" type="button" label="show/hide"/>
+                            <widget sid="visibilityButton" type="button" label="show/hide"/>
+                        </layout>
+                    </gui>
                 </service>
-                
-                <service uid="opacitySlider" impl="::uiDroid::SSlider" type="::fwServices::IService" autoConnect="no">
-                    <max>100</max>
-                    <value>50</value>
+
+                <service uid="readerButton" impl="::uiDroid::SButton" type="::fwServices::IService" autoConnect="no" />
+
+                <service uid="visibilityButton" impl="::uiDroid::SButton" type="::fwServices::IService" autoConnect="no" /> -->
+
+                <service uid="renderingMesh" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <scene autoRender="true">
+                       <renderer id="default" layer="0" background="#000000"/>
+
+                       <!-- <adaptor id="interactorStyle" class="::visuVTKDroidAdaptor::InteractorStyle" objectId="self">
+                          <config renderer="default" style="FixedInteractorStyle" />
+                      </adaptor> -->
+
+                         <adaptor id="meshAdaptor" class="::visuVTKDroidAdaptor::SMesh" objectId="meshKey">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+
+                    </scene>
                 </service>
                 
                 <service uid="testButton" impl="::uiDroid::SButton" type="::fwServices::IService" autoConnect="no">
                     <label>test</label>
                 </service>
 
+                <item key="meshKey">
+                    <object uid="meshUid" type="::fwData::Mesh">
+                        <service uid="meshReader" impl="::ioVTK::MeshReaderService" type="::io::IReader" autoConnect="no">
+                            <file>/data/data/com.fw4spl.SimpleDroid/Bundles/SimpleDroid_0-1/cube.vtk</file>
+                        </service>
+
+                    </object>
+                </item>
+
+                <connect>
+                    <signal>testButton/loadClicked</signal>
+                    <slot>meshReader/update</slot>
+                </connect>
+
+                <!-- <connect>
+                    <signal>testButton/clicked</signal>
+                    <slot>meshUid/updateVisibility</slot>
+                </connect> -->
+
                 <start uid="renderingMesh" />
                 <start uid="meshReader" />
-                <start uid="opacitySlider" />
                 <start uid="testButton" />
+                <!-- <start uid="visibilityButton" /> -->
                 
                 <update uid="renderingMesh" />
-                <update uid="meshReader" />
-                <update uid="opacitySlider" />
-                <update uid="testButton" />
+                <!-- <update uid="meshReader" /> -->
 
             </object>
         </config>

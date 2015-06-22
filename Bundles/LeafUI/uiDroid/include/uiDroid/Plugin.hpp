@@ -22,9 +22,7 @@ struct Plugin : public ::fwRuntime::Plugin
     }
 
     // Overrides
-    void start() throw(::fwRuntime::RuntimeException)
-    {
-    }
+    void start() throw(::fwRuntime::RuntimeException);
 
     // Overrides
     void stop() throw()

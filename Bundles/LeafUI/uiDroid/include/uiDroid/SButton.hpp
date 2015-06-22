@@ -37,10 +37,12 @@ public:
      * @name Signals API
      * @{
      */
-    typedef ::fwCom::Signal< void () > ClickedSignalType;
+    typedef ::fwCom::Signal< void () > LoadClikedSignalType;
+    typedef ::fwCom::Signal< void (bool) > ShowHideClikedSignalType;
 
     /// Key in m_signals map of signal m_sigClicked
-    UIDROID_API static const ::fwCom::Signals::SignalKeyType s_CLICKED_SIG;
+    UIDROID_API static const ::fwCom::Signals::SignalKeyType s_LOAD_CLICKED_SIG;
+    UIDROID_API static const ::fwCom::Signals::SignalKeyType s_SHOW_HIDE_CLICKED_SIG;
 
     ///@}
 
@@ -76,11 +78,16 @@ public:
 protected:
 
     ///
-    void onClicked();
+//    void onClicked();
+    void onLoadButtonClicked();
+    void onShowHideButtonClicked();
+
+    static const int UI_BUTTON_COUNT = 2;
 
 private:
 
-    ClickedSignalType::sptr m_sigClicked; ///< signal button clicked.
+    LoadClikedSignalType::sptr m_sigLoadCliked; ///< signal button clicked.
+    ShowHideClikedSignalType::sptr m_sigShowHideCliked; ///< signal button clicked.
     std::string m_label; ///< button label.
 
     ::arGuiDroid::ViewManager* m_manager; ///< Android view manager.

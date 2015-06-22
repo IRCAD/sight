@@ -10,6 +10,7 @@ set( REQUIREMENTS
     launcher
     visu
     visuVTKAndroid
+    visuVTKDroidAdaptor
     vtkSimpleMesh
     uiDroid
     arGuiDroid
