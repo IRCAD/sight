@@ -210,7 +210,7 @@ public:
 protected:
 
 
-    /// intrinsic parameters
+    /// intrinsic parameters [fx, fy, cx, cy, width, height]
     IntrinsecType m_intrinsic;
 
     /// Image distortion coefficients (radial and tangential distortions, [k1, k2, p1, p2, k3])

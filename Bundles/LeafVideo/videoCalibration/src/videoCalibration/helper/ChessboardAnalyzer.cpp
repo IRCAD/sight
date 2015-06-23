@@ -39,8 +39,8 @@ SPTR(::fwData::PointList) ChessboardAnalyzer::detectChessboard(SPTR(::fwData::Im
 
     if (cv::findChessboardCorners(grayImg, boardSize, corners, flags))
     {
-        cv::cornerSubPix(grayImg, corners, cv::Size(11, 11), cv::Size(-1, -1),
-                         cv::TermCriteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 30, 0.05));
+        cv::TermCriteria term(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 30, 0.1);
+        cv::cornerSubPix(grayImg, corners, cv::Size(5, 5), cv::Size(-1, -1), term);
 
         pointlist                                       = ::fwData::PointList::New();
         ::fwData::PointList::PointListContainer &points = pointlist->getRefPoints();
