@@ -1,4 +1,4 @@
-<plugin id="guiDroid" class="::guiDroid::Plugin" >
+<plugin id="guiDroid" class="::guiDroid::Plugin" version="0.1">
     
     <library name="guiDroid" />
 
@@ -9,7 +9,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IService</type>
         <service>::guiDroid::SManager</service>
-        <object>::fwData::Composite</object>
+        <object>::fwData::Object</object>
         <desc>service description</desc>
     </extension>
 

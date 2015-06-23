@@ -11,8 +11,61 @@
 
 #include <fwServices/IService.hpp>
 
+#include <JUIView.h>
+
 namespace guiDroid
 {
+
+struct WidgetConfig
+{
+    enum Type
+    {
+        TYPE_BUTTON = 0,
+        TYPE_TEXTVIEW,
+        TYPE_COUNT
+    };
+
+    WidgetConfig() :
+        m_label(""),
+        m_textSize(10.f),
+        m_margins(
+        {
+            40,40,40,40
+        }),
+        m_width(0),
+        m_height(0),
+        m_type(TYPE_COUNT)
+    {
+
+    }
+
+    std::string m_label;                         ///< button label.
+    std::pair<std::string,std::string>  m_slotPair;
+
+    float m_textSize;
+
+    int m_margins[4];
+    int m_width;
+    int m_height;
+
+    Type m_type;
+    ndkGui::LayoutParameterType m_vAlign;
+    ndkGui::LayoutParameterType m_hAlign;
+
+};
+
+struct WidgetData
+{
+
+    WidgetData() :
+        m_state(true)
+    {
+
+    }
+    ::fwCom::SlotBase::sptr m_slot;
+    bool m_state;
+    WidgetConfig m_config;
+};
 
 /**
  * @brief   Description of the class.
@@ -37,12 +90,16 @@ protected:
      * @brief method description:
      * @verbatim
         <service uid="SManagerInstance" impl="::guiDroid::SManager" type="::fwServices::IService">
-            <gui>
-                <layout align="right|bottom" orientation="horizontal">
-                    <widget sid="buttonUid" type="button" label="doSomething"/>
-                </layout>
-            </gui>
-        </service>
+        <gui>
+             <widget sid="readerButton" type="button" label="load" align="top|left" >
+                <width>100</width>
+                <height>50</height>
+                <margins>40,40,40,40</margins>
+                <slot>meshReader/update</slot>
+            </widget>
+
+        </gui>
+        </service>]
        @endverbatim
      * - \b layout : layout definition and attributes.
      * - \b widget : widget definition and attributes.
@@ -58,6 +115,9 @@ protected:
     /// FILL ME.
     GUIDROID_API virtual void updating() throw ( ::fwTools::Failed );
 
+private:
+
+    std::vector< WidgetData* > m_widgets;
 };
 
 } // guiDroid

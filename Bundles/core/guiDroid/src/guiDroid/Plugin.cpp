@@ -6,8 +6,18 @@
 
 #include "guiDroid/Plugin.hpp"
 
+#include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwServices/macros.hpp>
+
+#include <JNIHelper.h>
+#include <JUIWindow.h>
+
+// Class name of helper function
+#define HELPER_CLASS_NAME "com.sample.helper.NDKHelper"
+// Class name of JUIhelper function
+#define JUIHELPER_CLASS_NAME "com.sample.helper.JUIHelper"
+
 
 namespace guiDroid
 {
@@ -24,6 +34,15 @@ Plugin::~Plugin() throw()
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
+    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+
+    ANativeActivity* activity = profile->getApp()->activity;
+
+    // The jni initialization
+    ndkGui::JNIHelper::Init(activity, HELPER_CLASS_NAME);
+
+    // The window initialization
+    ndkGui::JUIWindow::Init(activity, JUIHELPER_CLASS_NAME);
 }
 
 //-----------------------------------------------------------------------------
@@ -33,3 +52,4 @@ void Plugin::stop() throw()
 }
 
 } // namespace guiDroid
+
