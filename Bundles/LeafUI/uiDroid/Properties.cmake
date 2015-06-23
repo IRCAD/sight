@@ -12,4 +12,5 @@ set( DEPENDENCIES
         arGuiDroid
 )
 set( REQUIREMENTS  )
+set( PLATFORM DROID )
 

@@ -37,13 +37,6 @@ public:
      * @name Signals API
      * @{
      */
-    typedef ::fwCom::Signal< void () > LoadClikedSignalType;
-    typedef ::fwCom::Signal< void (bool) > ShowHideClikedSignalType;
-
-    /// Key in m_signals map of signal m_sigClicked
-    UIDROID_API static const ::fwCom::Signals::SignalKeyType s_LOAD_CLICKED_SIG;
-    UIDROID_API static const ::fwCom::Signals::SignalKeyType s_SHOW_HIDE_CLICKED_SIG;
-
     ///@}
 
     /**
@@ -78,20 +71,17 @@ public:
 protected:
 
     ///
-//    void onClicked();
-    void onLoadButtonClicked();
-    void onShowHideButtonClicked();
+    void onClicked();
 
     static const int UI_BUTTON_COUNT = 2;
 
 private:
 
-    LoadClikedSignalType::sptr m_sigLoadCliked; ///< signal button clicked.
-    ShowHideClikedSignalType::sptr m_sigShowHideCliked; ///< signal button clicked.
     std::string m_label; ///< button label.
-    bool m_visible;
+    bool m_boolState;
 
-    ::arGuiDroid::ViewManager* m_manager; ///< Android view manager.
+    std::pair<std::string,std::string>  m_slotPair;
+    ::fwCom::SlotBase::sptr m_slot;
 
 };
 } // namespace uiDroid

@@ -6,9 +6,10 @@
 
 #include "uiDroid/SButton.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwRuntime/profile/Profile.hpp>
 
@@ -23,22 +24,13 @@ namespace uiDroid
 
 //------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SButton::s_LOAD_CLICKED_SIG      = "loadClicked";
-const ::fwCom::Signals::SignalKeyType SButton::s_SHOW_HIDE_CLICKED_SIG = "showHideclicked";
-
-//------------------------------------------------------------------------
-
 fwServicesRegisterMacro( ::fwServices::IService, ::uiDroid::SButton, ::fwData::Object);
 
 //------------------------------------------------------------------------------
 
 SButton::SButton() throw() :
-    m_visible(true)
+    m_boolState(true)
 {
-    m_sigLoadCliked     = LoadClikedSignalType::New();
-    m_sigShowHideCliked = ShowHideClikedSignalType::New();
-    m_signals( s_LOAD_CLICKED_SIG,  m_sigLoadCliked);
-    m_signals( s_SHOW_HIDE_CLICKED_SIG,  m_sigShowHideCliked);
 }
 
 //------------------------------------------------------------------------------
@@ -56,6 +48,24 @@ void SButton::configuring() throw (fwTools::Failed)
     ::fwRuntime::ConfigurationElement::sptr cfg;
     cfg     = m_configuration->findConfigurationElement("label");
     m_label = cfg->getValue();
+
+
+    ::fwRuntime::ConfigurationElement::sptr slotCfg = m_configuration->findConfigurationElement("slot");
+
+    std::string src, uid, key;
+
+    src = slotCfg->getValue();
+    size_t pos = src.find("/");
+    if( std::string::npos != pos)
+    {
+        uid.assign(src, 0,pos);
+        key.assign(src,pos +1,src.size() - pos);
+
+        SLM_ASSERT("Missing hasSlotsId attribute", !uid.empty());
+        SLM_ASSERT("Missing slotKey attribute", !key.empty());
+
+        m_slotPair = std::make_pair(uid, key);
+    }
 }
 //------------------------------------------------------------------------------
 
@@ -87,42 +97,44 @@ void SButton::starting() throw (fwTools::Failed)
 
     int32_t button_raw_width = win_width / 8;  // we have 2 buttons
     int32_t button_height    = win_height / 8;
-    int cur_idx              = 0;
+    static int cur_idx       = 0;
 
-    const char *titles[UI_BUTTON_COUNT]                                     = {"load", "show/hide"};
-    std::function<void(ndkGui::JUIView *, const int32_t)> button_handlers[] =
-    {
+
+    ndkGui::JUIButton *button = new ndkGui::JUIButton(m_label.c_str());
+    button->AddRule(ndkGui::LAYOUT_PARAMETER_ALIGN_PARENT_LEFT,
+                    ndkGui::LAYOUT_PARAMETER_TRUE);
+    button->AddRule(ndkGui::LAYOUT_PARAMETER_ALIGN_PARENT_TOP,
+                    ndkGui::LAYOUT_PARAMETER_TRUE);
+    button->SetAttribute("MinimumWidth", button_raw_width - MARGIN);
+    button->SetAttribute("MinimumHeight", button_height);
+    button->SetMargins(MARGIN, MARGIN + cur_idx * button_height, MARGIN, MARGIN);
+
+
+    std::string HasSlotId = m_slotPair.first;
+    ::fwCom::Slots::SlotKeyType slotKey = m_slotPair.second;
+
+    SLM_ASSERT(" the slot  "<<HasSlotId<<" not found",::fwTools::fwID::exist(HasSlotId));
+    ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(HasSlotId);
+    ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+    SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
+
+    m_slot = hasSlots->slot(slotKey);
+
+    std::function<void(ndkGui::JUIView *, const int32_t)> button_handlers =
         [this](ndkGui::JUIView *button, const int32_t msg)
         {
             if (msg == ndkGui::JUICALLBACK_BUTTON_UP)
             {
-                onLoadButtonClicked();
-            }
-        },
-        [this](ndkGui::JUIView *button, const int32_t msg)
-        {
-            if (msg == ndkGui::JUICALLBACK_BUTTON_UP)
-            {
-                onShowHideButtonClicked();
-            }
-        },
-    };
 
-    for (cur_idx = 0; cur_idx < UI_BUTTON_COUNT; cur_idx++)
-    {
-        ndkGui::JUIButton *button = new ndkGui::JUIButton(titles[cur_idx]);
-        button->AddRule(ndkGui::LAYOUT_PARAMETER_ALIGN_LEFT,
-                        ndkGui::LAYOUT_PARAMETER_TRUE);
-        button->AddRule(ndkGui::LAYOUT_PARAMETER_ALIGN_PARENT_LEFT,
-                        ndkGui::LAYOUT_PARAMETER_TRUE);
-        button->AddRule(ndkGui::LAYOUT_ORIENTATION_VERTICAL,
-                        ndkGui::LAYOUT_PARAMETER_TRUE);
-        button->SetAttribute("MinimumWidth", button_raw_width - MARGIN);
-        button->SetAttribute("MinimumHeight", button_height);
-        button->SetMargins(MARGIN, MARGIN + cur_idx * button_height, MARGIN, MARGIN);
-        button->SetCallback(button_handlers[cur_idx]);
-        ndkGui::JUIWindow::GetInstance()->AddView(button);
-    }
+                onClicked();
+            }
+        };
+
+    button->SetCallback(button_handlers);
+
+    ndkGui::JUIWindow::GetInstance()->AddView(button);
+    cur_idx++;
+
 }
 
 //------------------------------------------------------------------------------
@@ -139,17 +151,11 @@ void SButton::updating() throw (fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SButton::onLoadButtonClicked()
+void SButton::onClicked()
 {
-
-    m_sigLoadCliked->asyncEmit();
+    m_boolState = !m_boolState;
+    m_slot->asyncRun(m_boolState); // defautl param is allowed
 }
 
-//------------------------------------------------------------------------------
-
-void SButton::onShowHideButtonClicked()
-{
-    m_visible = !m_visible;
-    m_sigShowHideCliked->asyncEmit(m_visible);
-}
 } // namespace uiDroid
+
