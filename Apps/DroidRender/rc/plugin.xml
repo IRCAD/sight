@@ -1,0 +1,96 @@
+
+<plugin id="DroidRender" version="0.1" >
+    
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>DroidRenderConfig</id>
+        <type>parameters</type>
+        <config>
+
+            <object type="::fwData::Composite">
+                <service uid="guiManagerUID" impl="::guiDroid::SManager" type="::fwServices::IService" autoConnect="no">
+                    <gui>
+                        <widget type="button" label="load" align="top|left" >
+                            <width>200</width>
+                            <height>150</height>
+                            <margins>40,40,40,40</margins>
+                            <slot>loaderUid/update</slot>
+                        </widget>
+                        <widget type="button" label="show/hide" align="top|left">
+                            <width>200</width>
+                            <height>150</height>
+                            <margins>40,180,40,40</margins>
+                            <slot>meshAdaptorUid/updateVisibility</slot>
+                        </widget>
+                        <widget type="textview" label="NDK GUI test" align="top|center">
+                            <margins>40,40,40,40</margins>
+                            <textSize>50</textSize>
+                        </widget>
+                    </gui>
+                </service>
+
+                <service uid="renderingMesh" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <scene autoRender="true">
+                       <renderer id="default" layer="0" background="#000000"/>
+
+                         <!-- <adaptor id="meshAdaptor" uid="meshAdaptorUid" class="::visuVTKDroidAdaptor::SMesh" objectId="meshKey"> -->
+                             <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesKey"/>
+ 
+                            <config renderer="default" picker="" />
+                        </adaptor>
+
+                    </scene>
+                </service>
+                
+                <service uid="extractObject" type="::ctrlCamp::ICamp" impl="::ctrlCamp::SExtractObj" autoConnect="no">
+                    <extract from="@values.seriesDB.values.1" to="modelSeriesKey" /> 
+                </service>
+                
+                <item key="modelSeriesKey">
+                    <object uid="modelSeriesUid" type="::fwMedData::ModelSeries"/>
+                </item>
+
+                <item key="seriesDB" >
+                    <object uid="seriesDB" type="::fwMedData::SeriesDB">
+                        <service uid="loaderUid" type="::io::IReader" impl="::ioAtoms::SReader" autoConnect="no">
+                            <file>data/data/com.fw4spl.SimpleDroid/Bundles/SimpleDroid_0-1/data/Patient.jsonz</file>
+                            <!-- <inject>ReadData</inject> -->
+                            <uuidPolicy>Strict</uuidPolicy>
+                            <patcher context="MedicalData" version="V07ALA" /> 
+
+                            <archive backend="jsonz">
+                                <extension>.jsonz</extension>
+                            </archive>
+
+                            <extensions>
+                                <extension>.jsonz</extension>
+                            </extensions>
+
+                        </service>
+                    </object>
+                </item>
+                
+                <item key="meshKey">
+                    <object uid="meshUid" type="::fwData::Mesh">
+                        <service uid="meshReader" impl="::ioVTK::MeshReaderService" type="::io::IReader" autoConnect="no">
+                            <file>/data/data/com.fw4spl.SimpleDroid/Bundles/SimpleDroid_0-1/cube.vtk</file>
+                        </service>
+
+                    </object>
+                </item>
+                
+                <connect>
+                    <signal>seriesDB/modified</signal>
+                    <slot>extractObject/update</slot>
+                </connect>
+
+                <start uid="renderingMesh" />
+                <start uid="loaderUid" />
+                <start uid="guiManagerUID" />
+                 <start uid="extractObject" />
+                
+                <update uid="renderingMesh" />
+
+            </object>
+        </config>
+    </extension> 
+</plugin>
