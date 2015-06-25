@@ -2,6 +2,7 @@
 set( NAME DroidRender )
 set( VERSION 0.1 )
 set( TYPE APP )
+set( PLATFORM DROID)
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     appXml
@@ -9,18 +10,15 @@ set( REQUIREMENTS
     dataReg
     launcher
     visu
+    visuVTK
     visuVTKAndroid
-    visuVTKDroidAdaptor
     visuVTKAdaptor
-    vtkSimpleMesh
     guiDroid
-    arGuiDroid
     io
-    ioAtoms
     ioVTK
-    fwMedData
+    ioAtoms
     ctrlCamp
+    gui
 )
-set( PLATFORM DROID)
 
 bundle_param(appXml PARAM_LIST config PARAM_VALUES DroidRenderConfig)
