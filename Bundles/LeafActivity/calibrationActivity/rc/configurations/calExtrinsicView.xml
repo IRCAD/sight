@@ -186,7 +186,7 @@
             </service>
                         
             <service uid="${GENERIC_UID}_camera1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
-                <scene autoRender="false">
+                <scene renderMode="timer">
                     <renderer id="default" background="0.0" />
                     <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="frame1">
                         <config renderer="default" />
@@ -198,7 +198,7 @@
             </service>
             
             <service uid="${GENERIC_UID}_camera2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
-                <scene autoRender="false">
+                <scene renderMode="timer">
                     <renderer id="default" background="0.0" />
                     <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="frame2">
                         <config renderer="default" />

@@ -79,7 +79,7 @@
             </service>
 
             <service uid="${GENERIC_UID}_camera" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
-                <scene autoRender="false">
+                <scene renderMode="timer">
                     <renderer id="default" background="0.0" />
                     <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="frame">
                         <config renderer="default" />
