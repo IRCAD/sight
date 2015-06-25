@@ -9,13 +9,35 @@
             <object type="::fwData::Composite">
                <service uid="guiManagerUID" impl="::guiDroid::SManager" type="::fwServices::IService" autoConnect="no">
                     <gui>
-                        <widget type="button" label="load" align="top|left" >
+                        <widget type="button" label="Load" align="top|left" >
                             <width>200</width>
                             <height>150</height>
                             <margins>40,40,40,40</margins>
+                            <textSize>10</textSize>
                             <slot>loaderUid/update</slot>
                         </widget>
-                        <widget type="textview" label="ModelSeries GUI test" align="top|center">
+                        <widget type="button" label="Axial" align="top|left" >
+                            <width>200</width>
+                            <height>150</height>
+                            <margins>40,240,40,40</margins>
+                            <textSize>10</textSize>
+                            <slot>medicalCamAdaptorUID/setAxial</slot>
+                        </widget>
+                        <widget type="button" label="Sagittal" align="top|left" >
+                            <width>200</width>
+                            <height>150</height>
+                            <margins>40,395,40,40</margins>
+                            <textSize>10</textSize>
+                            <slot>medicalCamAdaptorUID/setSagittal</slot>
+                        </widget>
+                        <widget type="button" label="Frontal" align="top|left" >
+                            <width>200</width>
+                            <height>150</height>
+                            <margins>40,550,40,40</margins>
+                            <textSize>10</textSize>
+                            <slot>medicalCamAdaptorUID/setFrontal</slot>
+                        </widget>
+                        <widget type="textview" label="GUI test" align="top|center">
                             <margins>40,40,40,40</margins>
                             <textSize>50</textSize>
                         </widget>
@@ -27,7 +49,11 @@
                         <renderer id="default" layer="0" background="#000000" />
 
                         <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesKey">
-                            <config renderer="default" picker="" transform="transformModel" autoresetcamera="yes"/>
+                            <config renderer="default" picker="" autoresetcamera="yes"/>
+                        </adaptor>
+                        
+                        <adaptor id="medicalCamAdaptor" uid="medicalCamAdaptorUID" class="::visuVTKAdaptor::Medical3DCamera" objectId="self">
+                                <config renderer="default"/>
                         </adaptor>
                     </scene>
                 </service>
@@ -44,9 +70,7 @@
                     <object uid="seriesDB" type="::fwMedData::SeriesDB">
                         <service uid="loaderUid" type="::io::IReader" impl="::ioAtoms::SReader" autoConnect="no">
                             <file>/data/data/com.fw4spl.DroidRender/Bundles/DroidRender_0-1/data/Patient.jsonz</file>
-                            <uuidPolicy>Strict</uuidPolicy>
                             <patcher context="MedicalData" version="V07ALA" />
-
                             <archive backend="jsonz">
                                 <extension>.jsonz</extension>
                             </archive>
