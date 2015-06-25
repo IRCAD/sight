@@ -38,9 +38,11 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
     ANativeActivity* activity = profile->getApp()->activity;
 
+    SLM_INFO(" Initialize JNIHelper");
     // The jni initialization
     ndkGui::JNIHelper::Init(activity, HELPER_CLASS_NAME);
 
+    SLM_INFO(" Initialize JUIHelper");
     // The window initialization
     ndkGui::JUIWindow::Init(activity, JUIHELPER_CLASS_NAME);
 }
