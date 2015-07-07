@@ -117,12 +117,6 @@ private:
     QPointer<QLabel> m_currentPosition;
     QPointer<QLabel> m_totalDuration;
 
-    /// Slot to change the position of the slider
-    ChangePositionSlotType::sptr m_slotChangePosition;
-
-    /// Slot to change the duration of the slider
-    ChangeDurationSlotType::sptr m_slotChangeDuration;
-
     /// Is the slider pressed ?
     bool m_sliderPressed;
 };

@@ -36,7 +36,6 @@
 #include <QLabel>
 #include <QPushButton>
 
-
 namespace videoQt
 {
 namespace editor
@@ -46,8 +45,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::videoQt::editor::SCamera, ::a
 
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() throw() :
-    m_bVideoSupport(false)
+SCamera::SCamera() throw() : m_bVideoSupport(false)
 {
 }
 
