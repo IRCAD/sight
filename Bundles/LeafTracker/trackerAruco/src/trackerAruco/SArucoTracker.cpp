@@ -24,7 +24,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
 
 //-----------------------------------------------------------------------------
@@ -473,14 +473,7 @@ void SArucoTracker::setSpeed(unsigned int value)
 
 void SArucoTracker::displayTags(bool b)
 {
-    if(b)
-    {
-        m_debugMarkers = true;
-    }
-    else
-    {
-        m_debugMarkers = false;
-    }
+    m_debugMarkers = b;
 }
 } // namespace trackerAruco
 

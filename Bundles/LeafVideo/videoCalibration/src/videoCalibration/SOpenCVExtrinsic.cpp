@@ -27,8 +27,8 @@
 #include <arData/Camera.hpp>
 #include <arData/CalibrationInfo.hpp>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/calib3d/calib3d.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/calib3d.hpp>
 
 fwServicesRegisterMacro(::videoCalibration::ICalibration, ::videoCalibration::SOpenCVExtrinsic, ::arData::CameraSeries);
 
@@ -231,8 +231,9 @@ void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
                                            cameraMatrix2, distortionCoefficients2,
                                            imgsize, rotationMatrix, translationVector, essentialMatrix,
                                            fundamentalMatrix,
-                                           ::cv::TermCriteria(CV_TERMCRIT_ITER+CV_TERMCRIT_EPS, 100, 1e-5),
-                                           CV_CALIB_FIX_INTRINSIC);
+                                           CV_CALIB_FIX_INTRINSIC,
+                                           ::cv::TermCriteria(::cv::TermCriteria::MAX_ITER + ::cv::TermCriteria::EPS,
+                                                              100, 1e-5));
 
         OSLM_DEBUG("Calibration error :" << err);
 

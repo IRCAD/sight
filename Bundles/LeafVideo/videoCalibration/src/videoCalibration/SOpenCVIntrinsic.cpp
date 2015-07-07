@@ -25,8 +25,8 @@
 #include <arData/Camera.hpp>
 #include <arData/CalibrationInfo.hpp>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/calib3d/calib3d.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/calib3d.hpp>
 
 fwServicesRegisterMacro(::videoCalibration::ICalibration, ::videoCalibration::SOpenCVIntrinsic, ::arData::Camera);
 
