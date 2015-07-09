@@ -91,16 +91,12 @@
 
 
 
-            <service uid="breathingTracker" impl="::trackerAruco::SArucoTracker" autoConnect="no" worker="tracking">
+            <service uid="tracker" impl="::trackerAruco::SArucoTracker" autoConnect="no" worker="tracking">
                 <config>
                     <timelineVideo>frameTL</timelineVideo>
                     <camera>camera</camera>
                     <track>
-                        <marker id="0,1,2,3,4,5,6" timeline="wireTL" />
-                        <marker id="7,8" timeline="patientTL" />
-                        <marker id="100,101,102" timeline="tableTL" />
-                        <marker id="103" timeline="probeTL" />
-                        <marker id="104, 105" timeline="needleTL" />
+                        <marker id="0,1,2,3,4,5,6,7,8,42,100,101,102,103,104,105" timeline="tagTL" />
                     </track>
                     <threshold>
                         <method>ADPT_THRES</method>
@@ -116,7 +112,7 @@
                 <frames>
                     <frame from="frameTL" to="image" />
                 </frames>
-                <framerate>20</framerate>
+                <framerate>30</framerate>
             </service>
 
             <item key="camera">
@@ -136,24 +132,8 @@
                 </object>
             </item>
 
-            <item key="wireTL">
-                <object uid="wireTLUid" type="::arData::MarkerTL" />
-            </item>
-
-            <item key="patientTL">
-                <object uid="patientTLUid" type="::arData::MarkerTL" />
-            </item>
-
-            <item key="tableTL">
-                <object uid="tableTLUid" type="::arData::MarkerTL" />
-            </item>
-
-            <item key="probeTL">
-                <object uid="probeTLUid" type="::arData::MarkerTL" />
-            </item>
-
-            <item key="needleTL">
-                <object uid="needleTLUid" type="::arData::MarkerTL" />
+            <item key="tagTL">
+                <object uid="tagTLUid" type="::arData::MarkerTL" />
             </item>
             
             <item key="image">
@@ -167,49 +147,48 @@
 
             <connect>
                 <signal>trackingEditor/methodChanged</signal>
-                <slot>breathingTracker/changeMethod</slot>
+                <slot>tracker/changeMethod</slot>
             </connect>
 
             <connect>
                 <signal>trackingEditor/cornerMethodChanged</signal>
-                <slot>breathingTracker/changeCornerRefinement</slot>
+                <slot>tracker/changeCornerRefinement</slot>
             </connect>
 
             <connect>
                 <signal>trackingEditor/constantChanged</signal>
-                <slot>breathingTracker/changeConstant</slot>
+                <slot>tracker/changeConstant</slot>
             </connect>
 
             <connect>
                 <signal>trackingEditor/blockSizeChanged</signal>
-                <slot>breathingTracker/changeBlockSize</slot>
+                <slot>tracker/changeBlockSize</slot>
             </connect>
 
             <connect>
                 <signal>trackingEditor/borderWidthChanged</signal>
-                <slot>breathingTracker/changeBorderWidth</slot>
+                <slot>tracker/changeBorderWidth</slot>
             </connect>
 
             <connect>
                 <signal>trackingEditor/patternWidthChanged</signal>
-                <slot>breathingTracker/changePatternWidth</slot>
+                <slot>tracker/changePatternWidth</slot>
             </connect>
 
             <connect>
                 <signal>trackingEditor/speedChanged</signal>
-                <slot>breathingTracker/changeSpeed</slot>
+                <slot>tracker/changeSpeed</slot>
             </connect>
 
             <connect>
                 <signal>trackingEditor/tagsDisplayed</signal>
-                <slot>breathingTracker/displayTags</slot>
+                <slot>tracker/displayTags</slot>
             </connect>
 
             <start uid="MyIHM" />
             <start uid="frameGrabber" />
             <start uid="synchronizer" />
-            <start uid="breathingTracker" />
-
+            <start uid="tracker" />
 
         </object>
         </config>
