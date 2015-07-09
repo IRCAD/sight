@@ -11,7 +11,6 @@ set( DEPENDENCIES
     fwMath
     fwMedData
     fwTools
-    fwMedData
 )
 set( REQUIREMENTS  )
 
