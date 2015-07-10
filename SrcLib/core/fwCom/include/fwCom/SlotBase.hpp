@@ -29,6 +29,12 @@ fwCorePredeclare( (fwThread)(Worker) );
 namespace fwCom
 {
 
+namespace util
+{
+template< typename T, typename R >
+struct WeakCall;
+}
+
 template< typename F >
 struct SlotRun;
 
@@ -191,6 +197,10 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
 
         template < typename F >
         friend struct Signal;
+
+        template< typename T, typename R >
+        friend struct util::WeakCall;
+
         /**  @} */
 
 

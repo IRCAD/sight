@@ -52,7 +52,7 @@ typename SlotCall< R (A ...) >::SharedFutureType SlotCall< R (A ...) >::asyncCal
     return postWeakCall(
         worker,
         ::fwCom::util::weakcall(
-            this->shared_from_this(),
+            ::boost::dynamic_pointer_cast< const SlotBase >(this->shared_from_this()),
             this->bindCall( args ... )
             )
         );
@@ -73,9 +73,9 @@ typename SlotCall< R (A ...) >::SharedFutureType SlotCall< R (A ...) >::asyncCal
     return postWeakCall(
         this->m_worker,
         ::fwCom::util::weakcall(
-            this->shared_from_this(),
+            ::boost::dynamic_pointer_cast< const SlotBase >(this->shared_from_this()),
             this->bindCall( args ... ),
-            this->m_workerMutex
+            this->m_worker
             )
         );
 }

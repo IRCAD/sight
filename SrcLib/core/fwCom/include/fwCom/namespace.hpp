@@ -130,6 +130,14 @@ namespace util
  *     future.wait(); //ensures slotStart is finished before continuing
  *     int result = future.get();
  *
+ * @subsubsection SlotAsync WeakCalls
+ *
+ * Slots asynchronous execution has been made 'weak'. That does mean that when an
+ * async call/run is pending in a worker queue:
+ * - if the slot is detroyed before the execution of this call, the call will be canceled.
+ * - if the slot's worker is changed before the execution of this call, the
+ *   call will be canceled.
+ *
  *
  * @section Signals Signals
  *
@@ -242,4 +250,3 @@ namespace util
 } // namespace fwCom
 
 #endif /* __FWCOM_NAMESPACE_HPP__ */
-

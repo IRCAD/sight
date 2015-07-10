@@ -333,7 +333,7 @@ void SlotTest::exceptionTest ()
 
 struct B
 {
-    B() : m_threadId()
+    B() : m_threadId(), m_firstRun(true)
     {
     }
 
@@ -342,11 +342,14 @@ struct B
         ::fwCore::mt::WriteLock lock(m_mutex);
         ::boost::thread::id oldId = m_threadId;
         m_threadId = ::boost::this_thread::get_id();
+        m_firstRun = false;
 
         ::boost::this_thread::sleep_for( ::boost::chrono::seconds(nbSeconds));
 
         return oldId;
     }
+
+    bool m_firstRun;
 
     ::boost::thread::id m_threadId;
 
@@ -356,6 +359,42 @@ struct B
 
 void SlotTest::workerSwapTest()
 {
+
+    // Tests if weak call gets interrupted when slot worker is changed while
+    // calls are pending.
+    bool exceptionThrown = false;
+    while(!exceptionThrown)
+    {
+        typedef ::boost::thread::id Signature (const unsigned int);
+
+        B b;
+
+        ::fwThread::Worker::sptr w1 = ::fwThread::Worker::New();
+        ::fwThread::Worker::sptr w2 = ::fwThread::Worker::New();
+
+        ::fwCom::Slot< Signature >::sptr m0 = ::fwCom::newSlot( &B::waitSeconds, &b );
+
+        CPPUNIT_ASSERT(b.m_threadId == ::boost::thread::id());
+
+        m0->setWorker(w1);
+        ::fwCom::Slot< Signature >::VoidSharedFutureType future1 = m0->asyncRun(1);
+        m0->setWorker(w2);
+
+        {
+            ::fwCore::mt::ReadLock lock(b.m_mutex);
+            if(b.m_threadId == ::boost::thread::id())
+            {
+                exceptionThrown = true;
+                CPPUNIT_ASSERT_THROW( future1.get(), fwCom::exception::WorkerChanged );
+            }
+            else
+            {
+                CPPUNIT_ASSERT(b.m_threadId == w1->getThreadId());
+            }
+        }
+    }
+
+    //Tests weakcalls to hold slot worker while running weakcall (asyncRun test)
     {
         typedef ::boost::thread::id Signature (const unsigned int);
 
@@ -371,6 +410,11 @@ void SlotTest::workerSwapTest()
         m0->setWorker(w1);
         ::fwCom::Slot< Signature >::VoidSharedFutureType future1 = m0->asyncRun(1);
 
+        // wait until we entered in slot's function
+        while(b.m_firstRun)
+        {
+        }
+
         m0->setWorker(w2);
         future1.wait();
         CPPUNIT_ASSERT(b.m_threadId == w1->getThreadId());
@@ -382,7 +426,7 @@ void SlotTest::workerSwapTest()
         CPPUNIT_ASSERT(b.m_threadId == w2->getThreadId());
     }
 
-
+    //Tests weakcalls to hold slot worker while running weakcall (asyncCall test)
     {
         typedef ::boost::thread::id Signature (const unsigned int);
 
@@ -397,6 +441,11 @@ void SlotTest::workerSwapTest()
 
         m0->setWorker(w1);
         ::fwCom::Slot< Signature >::SharedFutureType future1 = m0->asyncCall(1);
+
+        // wait until we entered in slot's function
+        while(b.m_firstRun)
+        {
+        }
 
         m0->setWorker(w2);
         future1.wait();
