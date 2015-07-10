@@ -139,84 +139,91 @@ void SFrameGrabber::startCamera()
 
     ::arData::Camera::sptr camera = this->getCamera();
 
-    std::string cameraID = camera->getCameraID();
-
-    if(cameraID == "file")
+    switch(camera->getCameraSource())
     {
-        /// Path of the video file stored in the camera description
-        ::boost::filesystem::path videoPath(camera->getDescription());
-        ::boost::filesystem::path videoDir(helper::getVideoDir());
-
-        // For compatibility with old calibration with absolute path
-        if (!videoPath.is_absolute())
+        case ::arData::Camera::FILE:
         {
-            videoPath = videoDir / videoPath;
+            /// Path of the video file stored in the camera description
+            ::boost::filesystem::path videoPath(camera->getVideoFile());
+            ::boost::filesystem::path videoDir(helper::getVideoDir());
+
+            // For compatibility with old calibration with absolute path
+            if (!videoPath.is_absolute())
+            {
+                videoPath = videoDir / videoPath;
+            }
+
+            QString url = QString::fromStdString(videoPath.string());
+
+            m_playlist = new QMediaPlaylist();
+            QUrl videoUrl = QUrl::fromLocalFile(url);
+            m_playlist->addMedia(videoUrl);
+
+            if(m_loopVideo)
+            {
+                m_playlist->setPlaybackMode( QMediaPlaylist::CurrentItemInLoop);
+            }
+            m_playlist->setCurrentIndex(0);
+
+            m_mediaPlayer->setPlaylist( m_playlist );
+            m_mediaPlayer->setVideoOutput(m_videoSurface);
+
+            QObject::connect(m_mediaPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
+            QObject::connect(m_mediaPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
+
+            m_mediaPlayer->play();
+            break;
         }
-
-        QString url = QString::fromStdString(videoPath.string());
-
-        m_playlist = new QMediaPlaylist();
-        QUrl videoUrl = QUrl::fromLocalFile(url);
-        m_playlist->addMedia(videoUrl);
-
-        if(m_loopVideo)
+        case ::arData::Camera::STREAM:
         {
-            m_playlist->setPlaybackMode( QMediaPlaylist::CurrentItemInLoop);
+            /// Path of the video file stored in the camera description
+            std::string videoPath = camera->getStreamUrl();
+
+            QString url = QString::fromStdString(videoPath);
+
+            m_playlist = new QMediaPlaylist();
+            QUrl videoUrl(url);
+            m_playlist->addMedia(videoUrl);
+
+            m_playlist->setCurrentIndex(0);
+
+            m_mediaPlayer->setPlaylist( m_playlist );
+            m_mediaPlayer->setVideoOutput(m_videoSurface);
+
+            m_mediaPlayer->play();
+            break;
         }
-        m_playlist->setCurrentIndex(0);
-
-        m_mediaPlayer->setPlaylist( m_playlist );
-        m_mediaPlayer->setVideoOutput(m_videoSurface);
-
-        QObject::connect(m_mediaPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
-        QObject::connect(m_mediaPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
-
-        m_mediaPlayer->play();
-    }
-    else if(cameraID == "stream")
-    {
-        /// Path of the video file stored in the camera description
-        std::string videoPath = camera->getDescription();
-
-        QString url = QString::fromStdString(videoPath);
-
-        m_playlist = new QMediaPlaylist();
-        QUrl videoUrl(url);
-        m_playlist->addMedia(videoUrl);
-
-        m_playlist->setCurrentIndex(0);
-
-        m_mediaPlayer->setPlaylist( m_playlist );
-        m_mediaPlayer->setVideoOutput(m_videoSurface);
-
-        m_mediaPlayer->play();
-    }
-    else
-    {
-        if(!cameraID.empty())
+        case ::arData::Camera::DEVICE:
         {
+            std::string cameraID = camera->getCameraID();
             m_camera = new QCamera(QByteArray(cameraID.c_str(), static_cast<int>(cameraID.size())));
-        }
-        else
-        {
-            SLM_WARN("NO camera defined (used default camera)");
-            m_camera = new QCamera();
-        }
+            QCameraViewfinderSettings viewfinderSettings;
+            viewfinderSettings.setResolution(camera->getWidth(), camera->getHeight());
+            viewfinderSettings.setMaximumFrameRate(camera->getMaximumFrameRate());
+            m_camera->load();
+            m_camera->setViewfinderSettings(viewfinderSettings);
 
-        if(m_camera->error() != QCamera::NoError)
-        {
-            ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Camera error",
-                "Camera not available, please choose another device.",
-                ::fwGui::dialog::IMessageDialog::WARNING);
-            m_camera->deleteLater();
-            m_camera.clear();
-            return;
+            if(m_camera->error() != QCamera::NoError)
+            {
+                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Camera error",
+                    "Camera not available, please choose another device.",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+                m_camera->deleteLater();
+                m_camera.clear();
+                return;
+            }
+            this->setMirror(false, true);
+            m_camera->setViewfinder(m_videoSurface);
+            m_camera->setCaptureMode(QCamera::CaptureStillImage);
+            m_camera->start();
+            break;
         }
-        this->setMirror(false, true);
-        m_camera->setViewfinder(m_videoSurface);
-        m_camera->setCaptureMode(QCamera::CaptureStillImage);
-        m_camera->start();
+        case ::arData::Camera::UNKNOWN:
+        {
+            SLM_ERROR("No camera source defined.");
+            break;
+        }
     }
 }
 
