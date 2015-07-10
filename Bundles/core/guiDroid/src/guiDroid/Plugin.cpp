@@ -14,9 +14,9 @@
 #include <JUIWindow.h>
 
 // Class name of helper function
-#define HELPER_CLASS_NAME "com.sample.helper.NDKHelper"
+#define HELPER_CLASS_NAME "com.ndkgui.helper.NDKHelper"
 // Class name of JUIhelper function
-#define JUIHELPER_CLASS_NAME "com.sample.helper.JUIHelper"
+#define JUIHELPER_CLASS_NAME "com.ndkgui.helper.JUIHelper"
 
 
 namespace guiDroid
@@ -38,7 +38,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
     ANativeActivity* activity = profile->getApp()->activity;
 
-    SLM_INFO(" Initialize JNIHelper");
+    SLM_INFO(" Initialize NDKHelper");
     // The jni initialization
     ndkGui::JNIHelper::Init(activity, HELPER_CLASS_NAME);
 
