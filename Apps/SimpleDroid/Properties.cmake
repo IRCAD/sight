@@ -13,7 +13,6 @@ set( REQUIREMENTS
     visuVTKDroidAdaptor
     vtkSimpleMesh
     guiDroid
-    arGuiDroid
     io
     ioVTK
 )

@@ -7,8 +7,6 @@
 #ifndef __UIDROID_SBUTTON_HPP__
 #define __UIDROID_SBUTTON_HPP__
 
-#include <arGuiDroid/ViewManager.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 

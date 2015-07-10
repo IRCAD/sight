@@ -9,7 +9,6 @@ set( DEPENDENCIES
         fwRuntime
         fwTools
         fwServices
-        arGuiDroid
 )
 set( REQUIREMENTS  )
 set( PLATFORM DROID )
