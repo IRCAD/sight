@@ -46,7 +46,10 @@ void InteractorStyle3DForNegato::OnChar()
             this->FindPokedRenderer(rwi->GetEventPosition()[0],
                                     rwi->GetEventPosition()[1]);
             this->CurrentRenderer->ResetCamera();
-            rwi->Render();
+            if (this->getAutoRender())
+            {
+                rwi->Render();
+            }
             break;
         case 'f':
         case 'F':
@@ -298,7 +301,11 @@ void InteractorStyle3DForNegato::Pan()
     {
         this->CurrentRenderer->UpdateLightsGeometryToFollowCamera();
     }
-    rwi->Render();
+
+    if (this->getAutoRender())
+    {
+        rwi->Render();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -348,7 +355,10 @@ void InteractorStyle3DForNegato::Dolly(double factor)
         this->CurrentRenderer->UpdateLightsGeometryToFollowCamera();
     }
 
-    this->Interactor->Render();
+    if (this->getAutoRender())
+    {
+        this->Interactor->Render();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -381,7 +391,10 @@ void InteractorStyle3DForNegato::Rotate()
         this->CurrentRenderer->UpdateLightsGeometryToFollowCamera();
     }
 
-    rwi->Render();
+    if (this->getAutoRender())
+    {
+        rwi->Render();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -404,5 +417,8 @@ void InteractorStyle3DForNegato::Spin()
     camera->Roll( newAngle - oldAngle );
     camera->OrthogonalizeViewUp();
 
-    rwi->Render();
+    if (this->getAutoRender())
+    {
+        rwi->Render();
+    }
 }

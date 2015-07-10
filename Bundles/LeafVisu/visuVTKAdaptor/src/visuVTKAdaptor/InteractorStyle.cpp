@@ -8,6 +8,7 @@
 
 #include <fwData/Object.hpp>
 
+#include <fwRenderVTK/IInteractorStyle.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
@@ -63,6 +64,7 @@ void InteractorStyle::doStart() throw(fwTools::Failed)
         << m_configuredStyle <<
         "' has been given.", interactor);
     this->setInteractorStyle(interactor);
+
 }
 
 //------------------------------------------------------------------------------
@@ -101,7 +103,15 @@ void InteractorStyle::setInteractorStyle(vtkInteractorStyle *interactor)
         m_interactorStyle = NULL;
     }
 
+    ::fwRenderVTK::IInteractorStyle* fwInteractor = dynamic_cast< ::fwRenderVTK::IInteractorStyle* >(interactor);
+    if(fwInteractor)
+    {
+        fwInteractor->setAutoRender(this->getAutoRender());
+    }
+
     m_interactorStyle = interactor;
+
+
     this->getInteractor()->SetInteractorStyle(NULL);
     this->getInteractor()->SetInteractorStyle(m_interactorStyle);
     this->setVtkPipelineModified();

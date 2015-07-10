@@ -45,6 +45,7 @@ VTK_MODULE_INIT(vtkRenderingFreeTypeOpenGL);
 
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
 #include "fwRenderVTK/VtkRenderService.hpp"
+#include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
 
 
 fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::VtkRenderService, ::fwData::Composite );
@@ -60,7 +61,8 @@ const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT = "render";
 //-----------------------------------------------------------------------------
 
 VtkRenderService::VtkRenderService() throw() :
-    m_pendingRenderRequest(false), m_autoRender(true)
+    m_pendingRenderRequest(false),
+    m_renderMode(RenderMode::AUTO)
 {
     m_slotRender = ::fwCom::newSlot( &VtkRenderService::render, this);
     m_slotRender->setWorker(m_associatedWorker);
@@ -197,7 +199,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
         assert(adaptee.getService());
 
         adaptee.getService()->setConfiguration(adaptee.m_config);
-        adaptee.getService()->setAutoRender(m_autoRender);
+        adaptee.getService()->setAutoRender(m_renderMode == RenderMode::AUTO);
         adaptee.getService()->configure();
         adaptee.getService()->setRenderService(VtkRenderService::dynamicCast(this->shared_from_this()));
         adaptee.getService()->setName(id);
@@ -273,8 +275,8 @@ void VtkRenderService::configureVtkObject( ConfigurationType conf )
 
 vtkTransform * VtkRenderService::createVtkTransform( ConfigurationType conf )
 {
-    SLM_ASSERT("vtkObject must be contain just only one sub xml element called vtkTransform.",
-               conf->size() == 1 && ( *conf->begin() )->getName() == "vtkTransform");
+    SLM_ASSERT("vtkObject must be contain just only one sub xml element called vtkTransform.", conf->size() == 1 &&
+               ( *conf->begin() )->getName() == "vtkTransform");
 
     ConfigurationType vtkTransformXmlElem = *conf->begin();
 
@@ -326,12 +328,44 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
     this->initialize();
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = m_configuration->find("scene");
-    //assert(m_configuration->getName() == "scene");
-    assert(!vectConfig.empty());
+    SLM_ASSERT("Missing 'scene' configuration.",!vectConfig.empty());
     m_sceneConfiguration = vectConfig.at(0);
 
-    std::string autoRender = m_sceneConfiguration->getAttributeValue("autoRender");
-    m_autoRender = (autoRender.empty() || autoRender == "true");
+    std::string renderMode = m_sceneConfiguration->getAttributeValue("renderMode");
+    if (renderMode == "auto")
+    {
+        m_renderMode = RenderMode::AUTO;
+    }
+    else if (renderMode == "timer")
+    {
+        m_renderMode = RenderMode::TIMER;
+    }
+    else if (renderMode == "none")
+    {
+        m_renderMode = RenderMode::NONE;
+    }
+    else
+    {
+        SLM_WARN_IF("renderMode '" + renderMode + " is unknown, setting renderMode to 'auto'.", !renderMode.empty());
+    }
+
+    /// Target frame rate (default 30Hz)
+    unsigned int targetFrameRate = 30;
+    ::fwRuntime::ConfigurationElement::sptr fpsConfig = m_configuration->findConfigurationElement("fps");
+    if(fpsConfig)
+    {
+        targetFrameRate = ::boost::lexical_cast< unsigned int >(fpsConfig->getValue());
+    }
+
+    if(m_renderMode == RenderMode::TIMER)
+    {
+        unsigned int timeStep = static_cast<unsigned int>( 1000.f / targetFrameRate );
+        m_timer = m_associatedWorker->createTimer();
+
+        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(timeStep);
+        m_timer->setFunction( ::boost::bind( &VtkRenderService::updateTimer, this)  );
+        m_timer->setDuration(duration);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -389,6 +423,11 @@ void VtkRenderService::starting() throw(fwTools::Failed)
         adaptorIter->second.getService()->start();
         assert(adaptorIter->second.getService()->isStarted());
     }
+
+    if(m_timer)
+    {
+        m_timer->start();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -398,6 +437,11 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
     SLM_TRACE_FUNC();
 
     m_connections->disconnect();
+
+    if(m_timer)
+    {
+        m_timer->stop();
+    }
 
     SceneAdaptorsMapType::iterator adaptorIter;
 
@@ -478,6 +522,17 @@ bool VtkRenderService::isShownOnScreen()
 
 //-----------------------------------------------------------------------------
 
+void VtkRenderService::updateTimer()
+{
+    if ( !this->getPendingRenderRequest())
+    {
+        this->setPendingRenderRequest(true);
+        this->slot(VtkRenderService::s_RENDER_SLOT)->asyncRun();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void VtkRenderService::startContext()
 {
     m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
@@ -496,7 +551,10 @@ void VtkRenderService::startContext()
 //    m_interactor->GetRenderWindow()->LineSmoothingOn();
 //    m_interactor->GetRenderWindow()->PolygonSmoothingOn();
 //    m_interactor->Register(NULL);
-//    m_interactor->SetInteractorStyle( vtkInteractorStyleTrackballCamera::New() );
+    InteractorStyle3DForNegato* interactor = InteractorStyle3DForNegato::New();
+    SLM_ASSERT("Can't instantiate interactor", interactor);
+    interactor->setAutoRender(m_renderMode == RenderMode::AUTO);
+    m_interactorManager->getInteractor()->SetInteractorStyle( interactor );
 
 //    m_interactorManager->getInteractor()->SetRenderModeToDirect();
     //m_interactor->SetRenderModeToFrameRated();
@@ -594,6 +652,3 @@ vtkTransform * VtkRenderService::getOrAddVtkTransform( const VtkObjectIdType& _i
 //-----------------------------------------------------------------------------
 
 } //namespace fwRenderVTK
-
-
-

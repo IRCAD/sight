@@ -11,11 +11,13 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 
 #include "fwRenderVTK/config.hpp"
+#include "fwRenderVTK/IInteractorStyle.hpp"
 
 
 class Renderer;
 
-class FWRENDERVTK_CLASS_API InteractorStyle3DForNegato : public vtkInteractorStyleTrackballCamera
+class FWRENDERVTK_CLASS_API InteractorStyle3DForNegato : public vtkInteractorStyleTrackballCamera,
+                                                         public ::fwRenderVTK::IInteractorStyle
 {
 
 public:

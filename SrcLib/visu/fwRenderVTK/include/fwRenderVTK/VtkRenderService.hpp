@@ -7,6 +7,7 @@
 #ifndef __FWRENDERVTK_VTKRENDERSERVICE_HPP__
 #define __FWRENDERVTK_VTKRENDERSERVICE_HPP__
 
+#include <fwThread/Timer.hpp>
 
 #include <map>
 
@@ -21,6 +22,7 @@
 #include "fwRenderVTK/config.hpp"
 #include "fwRenderVTK/IVtkRenderWindowInteractorManager.hpp"
 
+#include <fwThread/Timer.hpp>
 
 class vtkRenderWindow;
 class vtkRenderer;
@@ -103,7 +105,7 @@ protected:
      * @brief configures the adaptor
      * @verbatim
        <service uid="generiSceneUID" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender">
-        <scene autoRender="false">
+        <scene renderMode="auto|timer|none">
             <renderer id="background" layer="0" background="0.0" />
             <vtkObject id="transform" class="vtkTransform" />
             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
@@ -121,12 +123,14 @@ protected:
                 <slot>serviceUid/updateTM</slot>
             </connect>
         </scene>
+        <fps>30</fps>
        </service>
        @endverbatim
      * With :
-     *  - \b autoRender (optional, "true" by default): this attribute is forwarded to all adaptors. For each adaptor,
-     *    if autoRender=true,  the scene is automatically rendered after doStart, doUpdate, doSwap, doReceive and
-     *    doStop and m_vtkPipelineModified=true.
+     *  - \b renderMode (optional, "auto" by default): this attribute is forwarded to all adaptors. For each adaptor,
+     *    if renderMode="auto",  the scene is automatically rendered after doStart, doUpdate, doSwap, doStop
+     *    and m_vtkPipelineModified=true. If renderMode="timer" the scene is rendered at N frame per seconds (N is
+     *    defined by fps tag). If renderMode="none" you should call 'render' slot to call reder the scene.
      *  - \b renderer
      *     - \b id (mandatory): the identifier of the renderer
      *     - \b layer (optional): defines the layer of the vtkRenderer. This is only used if there are layered renderers.
@@ -164,6 +168,9 @@ protected:
     RenderSlotType::sptr m_slotRender;
 
 private:
+
+    /// Slot called when on each timer update
+    void updateTimer();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     ConfigurationType m_sceneConfiguration;
@@ -206,7 +213,19 @@ private:
 
     bool m_pendingRenderRequest;
 
-    bool m_autoRender;
+    enum class RenderMode
+    {
+        NONE,
+        AUTO,
+        TIMER
+    };
+
+    /// Does the scene update automatically when something changes ?
+    /// Otherwise it is updated periodically (default 30Hz)
+    RenderMode m_renderMode;
+
+    /// Timer used for the update
+    ::fwThread::Timer::sptr m_timer;
 
     void startContext();
     void stopContext();

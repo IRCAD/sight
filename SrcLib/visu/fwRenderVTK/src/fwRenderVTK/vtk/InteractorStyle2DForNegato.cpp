@@ -43,7 +43,11 @@ void InteractorStyle2DForNegato::OnChar()
             this->FindPokedRenderer(rwi->GetEventPosition()[0],
                                     rwi->GetEventPosition()[1]);
             this->CurrentRenderer->ResetCamera();
-            rwi->Render();
+
+            if (this->getAutoRender())
+            {
+                rwi->Render();
+            }
             break;
     }
 }
@@ -223,7 +227,11 @@ void InteractorStyle2DForNegato::Pan()
     {
         this->CurrentRenderer->UpdateLightsGeometryToFollowCamera();
     }
-    rwi->Render();
+
+    if (this->getAutoRender())
+    {
+        rwi->Render();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -273,5 +281,8 @@ void InteractorStyle2DForNegato::Dolly(double factor)
         this->CurrentRenderer->UpdateLightsGeometryToFollowCamera();
     }
 
-    this->Interactor->Render();
+    if (this->getAutoRender())
+    {
+        this->Interactor->Render();
+    }
 }
