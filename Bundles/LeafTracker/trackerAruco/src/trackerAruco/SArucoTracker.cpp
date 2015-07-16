@@ -258,6 +258,7 @@ void SArucoTracker::detectMarker(::fwCore::HiResClock::HiResClockType timestamp)
             m_arUcoTracker->setThresholdMethod(m_thresholdMethod);
             m_arUcoTracker->setThresholdParams(m_blockSize, m_constant);
             m_arUcoTracker->setCornerRefinementMethod(::aruco::MarkerDetector::NONE);
+            m_arUcoTracker->setBorderDistance(0.01f);
 
             ::arData::Camera::sptr arCam = comp->at< ::arData::Camera >(m_cameraKey);
             ::cv::Mat cameraMatrix       = ::cv::Mat::eye(3, 3, CV_64F);
