@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@ namespace helper
 
 
 void Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, ::fwDicomIOFilter::IFilter::sptr filter,
-        bool forcedApply)
+                         bool forcedApply)
 {
     DicomSeriesContainerType result;
 
@@ -33,7 +33,7 @@ void Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, ::fwDic
         else
         {
             ::fwDicomIOFilter::composite::IComposite::sptr composite =
-                    ::fwDicomIOFilter::composite::IComposite::dynamicCast(filter);
+                ::fwDicomIOFilter::composite::IComposite::dynamicCast(filter);
             tempo = composite->forcedApply(dicomSeries);
         }
         result.reserve(result.size() + tempo.size());

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::containsLandmarks(SPTR(::fwMedData::SeriesDB) seriesDB)
+bool Fiducial::containsLandmarks(SPTR(::fwMedData::SeriesDB)seriesDB)
 {
     // Let's find if a series contains distances
     BOOST_FOREACH(const ::fwMedData::Series::sptr& series, seriesDB->getContainer())
@@ -34,7 +34,7 @@ bool Fiducial::containsLandmarks(SPTR(::fwMedData::SeriesDB) seriesDB)
             if(image)
             {
                 ::fwData::PointList::sptr pointList =
-                        image->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
+                    image->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
                 if(pointList && !pointList->getCRefPoints().empty())
                 {
                     return true;
@@ -48,7 +48,7 @@ bool Fiducial::containsLandmarks(SPTR(::fwMedData::SeriesDB) seriesDB)
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::containsDistances(SPTR(::fwMedData::SeriesDB) seriesDB)
+bool Fiducial::containsDistances(SPTR(::fwMedData::SeriesDB)seriesDB)
 {
     // Let's find if a series contains distances
     BOOST_FOREACH(const ::fwMedData::Series::sptr& series, seriesDB->getContainer())
@@ -60,7 +60,7 @@ bool Fiducial::containsDistances(SPTR(::fwMedData::SeriesDB) seriesDB)
             if(image)
             {
                 ::fwData::Vector::sptr distanceVector =
-                        image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+                    image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
                 if(distanceVector && !distanceVector->empty())
                 {
                     return true;
@@ -74,7 +74,7 @@ bool Fiducial::containsDistances(SPTR(::fwMedData::SeriesDB) seriesDB)
 
 //------------------------------------------------------------------------------
 
-bool Fiducial::contains3DDistances(SPTR(::fwMedData::SeriesDB) seriesDB)
+bool Fiducial::contains3DDistances(SPTR(::fwMedData::SeriesDB)seriesDB)
 {
     // Let's find if a series contains distances
     BOOST_FOREACH(const ::fwMedData::Series::sptr& series, seriesDB->getContainer())
@@ -86,7 +86,7 @@ bool Fiducial::contains3DDistances(SPTR(::fwMedData::SeriesDB) seriesDB)
             if(image)
             {
                 ::fwData::Vector::sptr distanceVector =
-                        image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+                    image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
                 if(distanceVector && !distanceVector->empty())
                 {
                     BOOST_FOREACH(const ::fwData::Object::sptr& object, distanceVector->getContainer())
@@ -96,8 +96,10 @@ bool Fiducial::contains3DDistances(SPTR(::fwMedData::SeriesDB) seriesDB)
                         {
                             const ::fwData::Point::sptr point1 = *pointList->getCRefPoints().begin();
                             const ::fwData::Point::sptr point2 = *(++pointList->getCRefPoints().begin());
-                            int frameNumber1 = ::gdcmIO::helper::DicomData::convertPointToFrameNumber(image, point1);
-                            int frameNumber2 = ::gdcmIO::helper::DicomData::convertPointToFrameNumber(image, point2);
+                            int frameNumber1                   = ::gdcmIO::helper::DicomData::convertPointToFrameNumber(
+                                image, point1);
+                            int frameNumber2 = ::gdcmIO::helper::DicomData::convertPointToFrameNumber(
+                                image, point2);
                             if(frameNumber1 != frameNumber2)
                             {
                                 return true;

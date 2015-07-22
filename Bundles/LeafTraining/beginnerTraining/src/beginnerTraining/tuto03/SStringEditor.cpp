@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,8 @@ SStringEditor::SStringEditor()
 }
 
 SStringEditor::~SStringEditor() throw()
-{}
+{
+}
 
 void SStringEditor::configuring() throw ( ::fwTools::Failed )
 {
@@ -49,7 +50,8 @@ void SStringEditor::starting() throw ( ::fwTools::Failed )
     this->create(); // start with this inherited function
 
     // Retrieve Qt container
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -123,7 +125,7 @@ void SStringEditor::notifyMessage()
 
     // Creation of an object message to say that data is modified
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT ) ;
+    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
 
     // Notifies message to all service listeners
     ::fwServices::IEditionService::notify( this->getSptr(), associatedObj, msg );

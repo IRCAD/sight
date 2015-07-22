@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,18 +30,18 @@ fwServicesRegisterMacro(::fwServices::IController,::ctrlComputeCPR::SComputeCPR2
 namespace ctrlComputeCPR
 {
 
-const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_HEIGHT_SLOT = "changeHeight";
+const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_HEIGHT_SLOT  = "changeHeight";
 const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_SPACING_SLOT = "changeSpacing";
-const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_ANGLE_SLOT = "changeAngle";
-const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_SELECT_POINT_SLOT = "selectPoint";
+const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_ANGLE_SLOT   = "changeAngle";
+const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_SELECT_POINT_SLOT   = "selectPoint";
 
 //----------------------------------------------------------------------------------------------------------------
 
 SComputeCPR2D::SComputeCPR2D() throw ()
     : m_nbSplinePoints(0),
-    m_angle(0),
-    m_height(50.0),
-    m_selectedPointIndex(0)
+      m_angle(0),
+      m_height(50.0),
+      m_selectedPointIndex(0)
 {
     m_slotChangeHeight = ::fwCom::newSlot(&SComputeCPR2D::setHeight, this);
     ::fwCom::HasSlots::m_slots(s_CHANGE_HEIGHT_SLOT, m_slotChangeHeight);
@@ -52,18 +52,19 @@ SComputeCPR2D::SComputeCPR2D() throw ()
     m_slotChangeAngle = ::fwCom::newSlot(&SComputeCPR2D::setNormalRotation, this);
     ::fwCom::HasSlots::m_slots(s_CHANGE_ANGLE_SLOT, m_slotChangeAngle);
 
-     m_slotSelectPoint = ::fwCom::newSlot(&SComputeCPR2D::fillVisualizePointList, this);
-     ::fwCom::HasSlots::m_slots(s_SELECT_POINT_SLOT, m_slotSelectPoint);
+    m_slotSelectPoint = ::fwCom::newSlot(&SComputeCPR2D::fillVisualizePointList, this);
+    ::fwCom::HasSlots::m_slots(s_SELECT_POINT_SLOT, m_slotSelectPoint);
 
-     // Set default worker to new slots
-     this->setWorker( ::fwServices::registry::ActiveWorkers::getDefault()->
-               getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
+    // Set default worker to new slots
+    this->setWorker( ::fwServices::registry::ActiveWorkers::getDefault()->
+                     getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
 }
 
 //----------------------------------------------------------------------------------------------------------------
 
 SComputeCPR2D::~SComputeCPR2D() throw ()
-{}
+{
+}
 
 //----------------------------------------------------------------------------------------------------------------
 
@@ -112,15 +113,16 @@ void SComputeCPR2D::configuring() throw (fwTools::Failed)
     const std::vector<ConfigurationType>& visuPointsConfig = m_configuration->find("visuPoints");
     if (!visuPointsConfig.empty())
     {
-       SLM_ASSERT("UID attribute is missing", visuPointsConfig.at(0)->hasAttribute("uid"));
-       m_visuPointsUID = (visuPointsConfig.at(0)->getAttributeValue("uid"));
+        SLM_ASSERT("UID attribute is missing", visuPointsConfig.at(0)->hasAttribute("uid"));
+        m_visuPointsUID = (visuPointsConfig.at(0)->getAttributeValue("uid"));
     }
 }
 
 //----------------------------------------------------------------------------------------------------------------
 
 void SComputeCPR2D::updating() throw (::fwTools::Failed)
-{}
+{
+}
 
 //----------------------------------------------------------------------------------------------------------------
 
@@ -230,8 +232,8 @@ void SComputeCPR2D::setHeight(double height)
 
     if(m_nbSplinePoints > 2 && m_selectedPointIndex > 0)
     {
-         this->computeCPRImage();
-         this->fillVisualizePointList(m_selectedPointIndex);
+        this->computeCPRImage();
+        this->fillVisualizePointList(m_selectedPointIndex);
     }
 }
 
@@ -243,7 +245,7 @@ void SComputeCPR2D::setSpacing(double spacing)
 
     if(m_nbSplinePoints > 2)
     {
-         this->computeCPRImage();
+        this->computeCPRImage();
     }
 }
 
@@ -255,7 +257,7 @@ void SComputeCPR2D::setNormalRotation(double angle)
 
     if(m_nbSplinePoints > 2)
     {
-         this->computeCPRImage();
+        this->computeCPRImage();
     }
 }
 
@@ -314,16 +316,16 @@ void SComputeCPR2D::fillVisualizePointList(int selectedPointIndex)
 //----------------------------------------------------------------------------------------------------------------
 
 void SComputeCPR2D::addPointToVisualizePointList(
-        const ::fwData::PointList::sptr& pointList,
-        const int indexSelectedPoint,
-        const ::fwData::PointList::sptr& visualizePointList)
+    const ::fwData::PointList::sptr& pointList,
+    const int indexSelectedPoint,
+    const ::fwData::PointList::sptr& visualizePointList)
 {
     OSLM_ASSERT("Point of index '" << indexSelectedPoint << "' not found in point list of size '"
-            << pointList->getRefPoints().size() << "'",
-            indexSelectedPoint >= 0 && indexSelectedPoint < pointList->getRefPoints().size());
+                                   << pointList->getRefPoints().size() << "'",
+                indexSelectedPoint >= 0 && indexSelectedPoint < pointList->getRefPoints().size());
 
     // Initialize the points
-    ::fwData::Point::sptr srcPoint = pointList->getRefPoints()[indexSelectedPoint];
+    ::fwData::Point::sptr srcPoint  = pointList->getRefPoints()[indexSelectedPoint];
     ::fwData::Point::sptr destPoint = ::fwData::Point::New();
 
     // Point label
@@ -331,9 +333,9 @@ void SComputeCPR2D::addPointToVisualizePointList(
     destPoint->setField(::fwComEd::Dictionary::m_labelId, text);
 
     // Compute destPoint coordinates
-    double yCoord = floor(m_height/m_spacing) + 1;
+    double yCoord   = floor(m_height/m_spacing) + 1;
     double position = 0;
-    fwVec3d vec0 = destPoint->getCoord();
+    fwVec3d vec0    = destPoint->getCoord();
 
     ::cpr::computePositionOfPointOnSpline(pointList, indexSelectedPoint, position);
 

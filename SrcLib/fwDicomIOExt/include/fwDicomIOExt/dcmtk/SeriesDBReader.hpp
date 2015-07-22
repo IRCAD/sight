@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,18 +39,19 @@ namespace dcmtk
  * @brief Reads DICOM data from a directory path in order to create a SeriesDB object.
  */
 class FWDICOMIOEXT_CLASS_API SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                             public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader > ,
-                             public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader > ,
-                             public ::fwTools::ProgressAdviser
+                                              public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
+                                              public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::
+                                                                                           IObjectReader >,
+                                              public ::fwTools::ProgressAdviser
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro(
-                    (SeriesDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
-                    (()),
-                    ::fwDataIO::reader::factory::New< SeriesDBReader >
-                    );
+        (SeriesDBReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
+        (()),
+        ::fwDataIO::reader::factory::New< SeriesDBReader >
+        );
     fwCoreAllowSharedFromThis();
 
 
@@ -73,7 +74,7 @@ public :
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
     FWDICOMIOEXT_API void readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB,
-            ::fwServices::IService::sptr notifier=::fwServices::IService::sptr());
+                                                ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
 
     /// Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
     FWDICOMIOEXT_API void readDicomSeries();
@@ -85,11 +86,11 @@ public :
     FWDICOMIOEXT_API DicomSeriesContainerType &getDicomSeries();
 
     fwGettersSettersDocMacro(DicomdirActivated, isDicomdirActivated, bool,
-            Set whether the reader must use the dicomdir file or not);
+                             Set whether the reader must use the dicomdir file or not);
     fwGettersSettersDocMacro(DicomFilterType, dicomFilterType, std::string,
-            Dicom filter type that must be applied prior the reading process);
+                             Dicom filter type that must be applied prior the reading process);
 
-private :
+private:
 
     /// Return filenames that must be read
     FilenameContainerType getFilenames();
@@ -133,7 +134,7 @@ private :
      * @param[in] notifier Service used to notify the modification
      */
     void convertDicomSeries(SPTR(::fwDicomData::DicomSeries) dicomSeries,
-            ::fwServices::IService::sptr notifier=::fwServices::IService::sptr());
+                            ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
 
     ///Patient Map
     PatientMapType m_patientMap;

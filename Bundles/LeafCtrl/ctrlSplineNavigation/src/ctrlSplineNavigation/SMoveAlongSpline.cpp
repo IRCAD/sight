@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,19 +31,19 @@
 
 namespace ctrlSplineNavigation
 {
-const ::fwCom::Signals::SignalKeyType SMoveAlongSpline::s_POINT_CHANGED_SIG = "PointChanged";
-const ::fwCom::Signals::SignalKeyType SMoveAlongSpline::s_LENGTH_CHANGED_SIG = "SplineLengthChanged";
-const ::fwCom::Slots::SlotKeyType SMoveAlongSpline::s_CHANGE_SLIDER_VALUE_SLOT = "changeSliderValue";
+const ::fwCom::Signals::SignalKeyType SMoveAlongSpline::s_POINT_CHANGED_SIG      = "PointChanged";
+const ::fwCom::Signals::SignalKeyType SMoveAlongSpline::s_LENGTH_CHANGED_SIG     = "SplineLengthChanged";
+const ::fwCom::Slots::SlotKeyType SMoveAlongSpline::s_CHANGE_SLIDER_VALUE_SLOT   = "changeSliderValue";
 const ::fwCom::Slots::SlotKeyType SMoveAlongSpline::s_CHANGE_SELECTED_POINT_SLOT = "changeSelectedPoint";
-const ::fwCom::Slots::SlotKeyType SMoveAlongSpline::s_CHANGE_ANGLE_SLOT = "changeAngle";
+const ::fwCom::Slots::SlotKeyType SMoveAlongSpline::s_CHANGE_ANGLE_SLOT          = "changeAngle";
 
 //-------------------------------------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSplineNavigation::SMoveAlongSpline, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSplineNavigation::SMoveAlongSpline, ::fwData::PointList );
 
 //-------------------------------------------------------------------------------------------------------------
 
-SMoveAlongSpline::SMoveAlongSpline() throw():
+SMoveAlongSpline::SMoveAlongSpline() throw() :
     m_currentSliderPosition(0.0), m_previousSliderPosition(0.0), m_nbSplinePoints(0), m_splineLength(0.0), m_angle(0)
 {
     // Create a parametric Spline object
@@ -53,7 +53,7 @@ SMoveAlongSpline::SMoveAlongSpline() throw():
     m_vtkPoints = vtkSmartPointer<vtkPoints>::New();
 
     // Init signals
-    m_sigPointChanged = PointChangedSignalType::New();
+    m_sigPointChanged        = PointChangedSignalType::New();
     m_sigSplineLengthChanged = SplineLengthChangedSignalType::New();
 
     // Register
@@ -72,31 +72,33 @@ SMoveAlongSpline::SMoveAlongSpline() throw():
     m_slotChangeSelectedPoint = ::fwCom::newSlot(&SMoveAlongSpline::moveToSelectedPoint,this);
     ::fwCom::HasSlots::m_slots(s_CHANGE_SELECTED_POINT_SLOT, m_slotChangeSelectedPoint);
 
-    m_slotChangeAngle = ::fwCom::newSlot( &SMoveAlongSpline::setCameraRotation, this ) ;
-          ::fwCom::HasSlots::m_slots(s_CHANGE_ANGLE_SLOT, m_slotChangeAngle);
+    m_slotChangeAngle = ::fwCom::newSlot( &SMoveAlongSpline::setCameraRotation, this );
+    ::fwCom::HasSlots::m_slots(s_CHANGE_ANGLE_SLOT, m_slotChangeAngle);
 
     // Set default worker to new slot
     this->setWorker(::fwServices::registry::ActiveWorkers::getDefault()->
-            getWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
+                    getWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
 
 }
 
 //-------------------------------------------------------------------------------------------------------------
 
 SMoveAlongSpline::~SMoveAlongSpline() throw()
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 
 void SMoveAlongSpline::configuring()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 
 void SMoveAlongSpline::starting()  throw ( ::fwTools::Failed )
 {
     ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-    m_nbSplinePoints = pointList->getRefPoints().size();
+    m_nbSplinePoints                    = pointList->getRefPoints().size();
     if (m_nbSplinePoints == 0)
     {
         return;
@@ -115,12 +117,14 @@ void SMoveAlongSpline::starting()  throw ( ::fwTools::Failed )
 //-------------------------------------------------------------------------------------------------------------
 
 void SMoveAlongSpline::stopping()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 
 void SMoveAlongSpline::updating() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 
@@ -192,8 +196,8 @@ void SMoveAlongSpline::moveToPoint (double sliderPosition)
         if( m_previousSliderPosition<=m_currentSliderPosition)
         {
             for (double position = m_previousSliderPosition;
-                    position < m_currentSliderPosition;
-                    position = position + 1.0 / (m_splineLength))
+                 position < m_currentSliderPosition;
+                 position = position + 1.0 / (m_splineLength))
             {
                 this->computeTransformationMatrix(position);
             }
@@ -203,8 +207,8 @@ void SMoveAlongSpline::moveToPoint (double sliderPosition)
         else
         {
             for (double position = m_previousSliderPosition;
-                    position > m_currentSliderPosition;
-                    position = position - 1.0 / (m_splineLength))
+                 position > m_currentSliderPosition;
+                 position = position - 1.0 / (m_splineLength))
             {
                 this->computeTransformationMatrix(position);
             }
@@ -217,7 +221,7 @@ void SMoveAlongSpline::moveToPoint (double sliderPosition)
     {
         // Send the destination matrix to SJumpToPoint
         ::fwData::TransformationMatrix3D::sptr destMatrix =
-                            ::fwData::TransformationMatrix3D::sptr(::fwData::TransformationMatrix3D::New());
+            ::fwData::TransformationMatrix3D::sptr(::fwData::TransformationMatrix3D::New());
         for (int lt = 0; lt < 4; lt++)
         {
             for (int ct = 0; ct < 3; ct++)
@@ -245,7 +249,7 @@ void SMoveAlongSpline::computeTransformationMatrix (double position)
 {
     vtkSmartPointer<vtkMath> math = vtkSmartPointer<vtkMath>::New();
     ::fwData::TransformationMatrix3D::sptr destMatrix =
-               ::fwData::TransformationMatrix3D::sptr(::fwData::TransformationMatrix3D::New());
+        ::fwData::TransformationMatrix3D::sptr(::fwData::TransformationMatrix3D::New());
     double u[3], Pt[3], Ptnext[3], Du[3], x[3], y[3], z[3];
 
     if(position < 1)
@@ -324,7 +328,7 @@ void SMoveAlongSpline::computeTransformationMatrix (double position)
 void SMoveAlongSpline::moveToSelectedPoint (::fwData::Point::sptr point)
 {
     ::fwData::TransformationMatrix3D::sptr destMatrix =
-            ::fwData::TransformationMatrix3D::sptr(::fwData::TransformationMatrix3D::New());
+        ::fwData::TransformationMatrix3D::sptr(::fwData::TransformationMatrix3D::New());
 
 
     // Rotation is set to identity
@@ -363,7 +367,7 @@ void SMoveAlongSpline::moveToSelectedPoint (::fwData::Point::sptr point)
 
 void SMoveAlongSpline::setCameraRotation (double angle)
 {
-    m_angle = angle;
+    m_angle                             = angle;
     ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
     ::navigation::initializeVectors(pointList,m_parametricSpline,&m_previousyVector[0],m_angle);
 }

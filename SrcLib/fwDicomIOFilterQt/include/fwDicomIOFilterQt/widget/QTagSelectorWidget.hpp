@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,11 +29,11 @@ namespace widget
  */
 class QTagSelectorWidget : public QWidget
 {
-    Q_OBJECT;
+Q_OBJECT;
 
 public:
     /// Constructor
-    QTagSelectorWidget(QWidget* parent=0);
+    QTagSelectorWidget(QWidget* parent = 0);
 
     /// Destructor
     ~QTagSelectorWidget();
@@ -46,7 +46,7 @@ public:
 
 protected Q_SLOTS:
     /// Update tag name when selected tag changes
-    void updateTagName(int value =0);
+    void updateTagName(int value = 0);
 
 protected:
     /// Group spin box

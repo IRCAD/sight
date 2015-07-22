@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -55,7 +55,8 @@ public:
      * @param[in] normalCoord Normal coordinates
      */
     GDCMIO_API ::fwData::Mesh::sptr convertToData(const float *coord, const unsigned long coordSize,
-            const uint32_t *index, const unsigned long indexSize, const float * normalCoord);
+                                                  const uint32_t *index, const unsigned long indexSize,
+                                                  const float * normalCoord);
 
     /// Return point coordinates
     GDCMIO_API const ::boost::shared_ptr< float > getPointCoordData() const;

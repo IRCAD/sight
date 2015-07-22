@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@ namespace fwDicomIOFilter
 namespace custom
 {
 
-const std::string NoFilter::s_FILTER_NAME = "No filter";
+const std::string NoFilter::s_FILTER_NAME        = "No filter";
 const std::string NoFilter::s_FILTER_DESCRIPTION = "No filter.";
 
 //-----------------------------------------------------------------------------
@@ -48,7 +48,7 @@ std::string NoFilter::getDescription() const
 //-----------------------------------------------------------------------------
 
 NoFilter::DicomSeriesContainerType NoFilter::apply(
-        ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
     result.push_back(series);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,10 +20,10 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Equipment::Equipment(SPTR(::gdcm::Writer) writer,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwMedData::Equipment::sptr equipment):
-        ::gdcmIO::writer::ie::InformationEntity< ::fwMedData::Equipment >(writer, instance, equipment)
+Equipment::Equipment(SPTR(::gdcm::Writer)writer,
+                     SPTR(::gdcmIO::container::DicomInstance)instance,
+                     ::fwMedData::Equipment::sptr equipment) :
+    ::gdcmIO::writer::ie::InformationEntity< ::fwMedData::Equipment >(writer, instance, equipment)
 {
 }
 
@@ -60,7 +60,7 @@ void Equipment::writeGeneralEquipmentModule()
     // Software Versions - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
     ::gdcm::Attribute< 0x0018, 0x1020 > attribute;
     attribute.SetNumberOfValues(1);
-    attribute.SetValue((profile)?(profile->getName()+" "+profile->getVersion()):"Unknown");
+    attribute.SetValue((profile) ? (profile->getName()+" "+profile->getVersion()) : "Unknown");
     dataset.Insert(attribute.GetAsDataElement());
 }
 

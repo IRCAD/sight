@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,9 +21,9 @@ namespace fwDicomIOFilter
 namespace splitter
 {
 
-const std::string TagValueSplitter::s_FILTER_NAME = "Tag value splitter";
+const std::string TagValueSplitter::s_FILTER_NAME        = "Tag value splitter";
 const std::string TagValueSplitter::s_FILTER_DESCRIPTION =
-        "Split instances according to a tag value.";
+    "Split instances according to a tag value.";
 
 //-----------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ bool TagValueSplitter::isConfigurationRequired()
 //-----------------------------------------------------------------------------
 
 TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
-        ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     if(m_tag == DCM_UndefinedTagKey)
     {
@@ -83,7 +83,8 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     DcmDataset* dataset;
     OFString data;
 
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file, series->getLocalDicomPaths())
+    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file,
+                  series->getLocalDicomPaths())
     {
         const std::string& filename = file.second.string();
         status = fileFormat.loadFile(filename.c_str());

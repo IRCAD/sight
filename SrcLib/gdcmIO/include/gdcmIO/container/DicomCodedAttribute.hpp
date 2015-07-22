@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,8 +27,8 @@ class GDCMIO_CLASS_API DicomCodedAttribute
 {
 public:
     /// Constructor
-    GDCMIO_API DicomCodedAttribute(const std::string& codeValue = "", const std::string& codingSchemeDesignator= "",
-            const std::string& codeMeaning = "", const std::string& codingSchemeVersion = "");
+    GDCMIO_API DicomCodedAttribute(const std::string& codeValue = "", const std::string& codingSchemeDesignator = "",
+                                   const std::string& codeMeaning = "", const std::string& codingSchemeVersion = "");
 
     /// Return true if the attribute is empty
     GDCMIO_API bool isEmpty() const;
@@ -47,9 +47,11 @@ public:
     }
 
     GDCMIO_API fwGettersSettersDocMacro(CodeValue, codeValue, std::string, Retrieve code value);
-    GDCMIO_API fwGettersSettersDocMacro(CodingSchemeDesignator, codingSchemeDesignator, std::string, Retrieve coding scheme designator);
+    GDCMIO_API fwGettersSettersDocMacro(CodingSchemeDesignator, codingSchemeDesignator, std::string,
+                                        Retrieve coding scheme designator);
     GDCMIO_API fwGettersSettersDocMacro(CodeMeaning, codeMeaning, std::string, Retrieve code meaning);
-    GDCMIO_API fwGettersSettersDocMacro(CodingSchemeVersion, codingSchemeVersion, std::string, Retrieve coding scheme version);
+    GDCMIO_API fwGettersSettersDocMacro(CodingSchemeVersion, codingSchemeVersion, std::string,
+                                        Retrieve coding scheme version);
 protected:
     /// Code Value (see : Tag(0008,0100) )
     std::string m_codeValue;

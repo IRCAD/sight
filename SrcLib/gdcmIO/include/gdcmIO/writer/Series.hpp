@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,20 +31,20 @@ namespace writer
  * It defines needs of data storage and delegates writing to appropriate tools.
  * It manages all related data of one patient.
  */
-class GDCMIO_CLASS_API Series: public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Series >,
-        public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
-        public ::fwTools::ProgressAdviser
+class GDCMIO_CLASS_API Series : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Series >,
+                                public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
+                                public ::fwTools::ProgressAdviser
 {
 
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (Series)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::Series >),
-            (()), ::fwDataIO::writer::factory::New< Series >);
+                                            (()), ::fwDataIO::writer::factory::New< Series >);
 
     typedef enum
     {
-        SPATIAL_FIDUCIALS = 1,  /*! Export Fiducials using SpatialFiducialsIOD */
-        COMPREHENSIVE_SR = 2,   /*! Export Fiducials using ComprehensiveSRIOD */
+        SPATIAL_FIDUCIALS   = 1, /*! Export Fiducials using SpatialFiducialsIOD */
+        COMPREHENSIVE_SR    = 2, /*! Export Fiducials using ComprehensiveSRIOD */
         COMPREHENSIVE_3D_SR = 3 /*! Export Fiducials using Comprehensive3DSRIOD */
     } FiducialsExportMode;
 
@@ -70,7 +70,8 @@ public:
      */
     GDCMIO_API std::string extension();
 
-    GDCMIO_API fwGettersSettersDocMacro(FiducialsExportMode, fiducialsExportMode, FiducialsExportMode, Fiducials Export Mode);
+    GDCMIO_API fwGettersSettersDocMacro(FiducialsExportMode, fiducialsExportMode, FiducialsExportMode,
+                                        Fiducials Export Mode);
 
 private:
 

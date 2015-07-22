@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,9 +44,9 @@ void MatrixTest::conversionVectorMatrixTest()
     vnl_matrix_fixed<double, 4, 4> vnlMatrix;
     ::arlCore::convertRotationTranslationToMatrix(input, vnlMatrix);
 
-    for(int j=0; j<4; ++j)
+    for(int j = 0; j<4; ++j)
     {
-        for(int i=0; i<4; ++i)
+        for(int i = 0; i<4; ++i)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL(vnlMatrix[i][j], matrix[i][j], 1e-5);
         }

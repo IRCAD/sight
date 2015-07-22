@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -94,7 +94,7 @@ void WriterReaderTest::writeReadImageSeriesTest()
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // load ImageSeries
-    ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::sptr sdb         = ::fwMedData::SeriesDB::New();
     ::gdcmIO::reader::SeriesDB::sptr reader = ::gdcmIO::reader::SeriesDB::New();
     reader->setObject(sdb);
     reader->setFolder(PATH);
@@ -106,9 +106,9 @@ void WriterReaderTest::writeReadImageSeriesTest()
     // check series
     CPPUNIT_ASSERT_EQUAL(size_t(1), sdb->getContainer().size());
 
-    ::fwMedData::Series::sptr series = sdb->getContainer().front();
+    ::fwMedData::Series::sptr series         = sdb->getContainer().front();
     ::fwMedData::ImageSeries::sptr imgseries = ::fwMedData::ImageSeries::dynamicCast(series);
-    ::fwData::Image::sptr image = imgseries->getImage();
+    ::fwData::Image::sptr image              = imgseries->getImage();
     roundSpacing(image);
 
     // FIXME : GDCM reader trim string values so this test cannot pass.
@@ -132,7 +132,7 @@ void WriterReaderTest::writeReadSeriesDBTest()
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // load ImageSeries
-    ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::sptr sdb         = ::fwMedData::SeriesDB::New();
     ::gdcmIO::reader::SeriesDB::sptr reader = ::gdcmIO::reader::SeriesDB::New();
     reader->setObject(sdb);
     reader->setFolder(PATH);
@@ -150,8 +150,8 @@ void WriterReaderTest::writeReadSeriesDBTest()
 ::fwMedData::SeriesDB::sptr WriterReaderTest::createSeriesDB()
 {
     //create SeriesDB
-    ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
-    ::fwMedData::ImageSeries::sptr imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();
+    ::fwMedData::SeriesDB::sptr sdb            = ::fwMedData::SeriesDB::New();
+    ::fwMedData::ImageSeries::sptr imgSeries   = ::fwTest::generator::SeriesDB::createImageSeries();
     ::fwMedData::ModelSeries::sptr modelSeries = ::fwTest::generator::SeriesDB::createModelSeries(1);
 
     sdb->getContainer().push_back(imgSeries);
@@ -162,38 +162,38 @@ void WriterReaderTest::writeReadSeriesDBTest()
     // Add landmarks
     ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
     ::fwData::PointList::sptr landmarks =
-            image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+        image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
     ::fwData::Image::SpacingType spacing = image->getSpacing();
-    ::fwData::Image::OriginType origin = image->getOrigin();
-    ::fwData::Point::sptr point = ::fwData::Point::New(2.6f + static_cast<float>(origin[0]),
-                                                       1.2f + static_cast<float>(origin[1]),
-                                                       4.5f + static_cast<float>(origin[2]));
-    point->setField( ::fwComEd::Dictionary::m_labelId , ::fwData::String::New("Label1") );
+    ::fwData::Image::OriginType origin   = image->getOrigin();
+    ::fwData::Point::sptr point          = ::fwData::Point::New(2.6f + static_cast<float>(origin[0]),
+                                                                1.2f + static_cast<float>(origin[1]),
+                                                                4.5f + static_cast<float>(origin[2]));
+    point->setField( ::fwComEd::Dictionary::m_labelId, ::fwData::String::New("Label1") );
     landmarks->getRefPoints().push_back(point);
     ::fwData::Point::sptr point2 = ::fwData::Point::New(1.2f + static_cast<float>(origin[0]),
                                                         2.4f + static_cast<float>(origin[1]),
                                                         0.3f + static_cast<float>(origin[2]));
-    point2->setField( ::fwComEd::Dictionary::m_labelId , ::fwData::String::New("Label2") );
+    point2->setField( ::fwComEd::Dictionary::m_labelId, ::fwData::String::New("Label2") );
     landmarks->getRefPoints().push_back(point2);
     ::fwData::Image::SizeType size = image->getSize();
-    ::fwData::Point::sptr point3 = ::fwData::Point::New(1.2f + static_cast<float>(origin[0]),
-                                                        2.4f + static_cast<float>(origin[1]),
-                                                        static_cast<float>((size[2]-1) * spacing[2] + origin[2]));
-    point3->setField( ::fwComEd::Dictionary::m_labelId , ::fwData::String::New("toto") );
+    ::fwData::Point::sptr point3   = ::fwData::Point::New(1.2f + static_cast<float>(origin[0]),
+                                                          2.4f + static_cast<float>(origin[1]),
+                                                          static_cast<float>((size[2]-1) * spacing[2] + origin[2]));
+    point3->setField( ::fwComEd::Dictionary::m_labelId, ::fwData::String::New("toto") );
     landmarks->getRefPoints().push_back(point3);
 
     // Add distance
     ::fwData::PointList::sptr pl = ::fwData::PointList::New();
-    ::fwData::Point::sptr pt1 = ::fwData::Point::New(0., 0., 0.);
-    ::fwData::Point::sptr pt2 = ::fwData::Point::New(static_cast<float>((size[0]-1) * spacing[0]),
-                                                     static_cast<float>((size[1]-1) * spacing[1]),
-                                                     static_cast<float>((size[2]-1) * spacing[2]));
+    ::fwData::Point::sptr pt1    = ::fwData::Point::New(0., 0., 0.);
+    ::fwData::Point::sptr pt2    = ::fwData::Point::New(static_cast<float>((size[0]-1) * spacing[0]),
+                                                        static_cast<float>((size[1]-1) * spacing[1]),
+                                                        static_cast<float>((size[2]-1) * spacing[2]));
     pl->getRefPoints().push_back( pt1 );
     pl->getRefPoints().push_back( pt2 );
 
     ::fwData::Vector::sptr vectDist;
     vectDist = image->setDefaultField< ::fwData::Vector >(
-            ::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
+        ::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
     vectDist->getContainer().push_back(pl);
 
     image->setField("ShowLandmarks", ::fwData::Boolean::New(true));
@@ -201,14 +201,14 @@ void WriterReaderTest::writeReadSeriesDBTest()
 
     // Update Reconstruction
     ::fwData::Reconstruction::sptr rec = modelSeries->getReconstructionDB().front();
-    ::fwData::Mesh::sptr mesh = rec->getMesh();
+    ::fwData::Mesh::sptr mesh          = rec->getMesh();
     mesh->setPointColorsArray(::fwData::Array::sptr());
     mesh->setCellColorsArray(::fwData::Array::sptr());
     mesh->setCellNormalsArray(::fwData::Array::sptr());
 
     // gdcm only manage ambient color in reconstruction
     ::fwData::Material::sptr material = ::fwData::Material::New();
-    ::fwData::Color::sptr color = ::fwTest::generator::Object::randomizeColor();
+    ::fwData::Color::sptr color       = ::fwTest::generator::Object::randomizeColor();
     material->setAmbient(color);
     rec->setMaterial(material);
     rec->setImage(::fwData::Image::sptr()); // not managed

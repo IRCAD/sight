@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IONETWORK__OBJECTUPDATENOTIFIER_HPP__
-#define __IONETWORK__OBJECTUPDATENOTIFIER_HPP__
+#ifndef __IONETWORK_OBJECTUPDATENOTIFIER_HPP__
+#define __IONETWORK_OBJECTUPDATENOTIFIER_HPP__
 
 #include <map>
 #include <vector>
@@ -48,4 +48,4 @@ private:
 };
 }//namespace ioNetwork
 
-#endif //__IONETWORK__OBJECTUPDATENOTIFIER_HPP__
+#endif //__IONETWORK_OBJECTUPDATENOTIFIER_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,7 +61,7 @@ public:
         if (dataset.FindDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag()))
         {
             const ::gdcm::DataElement &dataElement =
-                    dataset.GetDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag());
+                dataset.GetDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag());
 
             if (!dataElement.IsEmpty()) // Can be type 2
             {
@@ -163,7 +163,7 @@ public:
      * @param[in] dataset Data set
      */
     GDCMIO_API static void setSQ(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence, const ::gdcm::Tag &tag,
-            ::gdcm::DataSet &dataset);
+                                 ::gdcm::DataSet &dataset);
 
     /**
      * @brief Set and insert a sequence of items with a tag in the data set specified.
@@ -174,7 +174,7 @@ public:
      */
     template< uint16_t GROUP, uint16_t ELEMENT >
     GDCMIO_TEMPLATE_API static void setSQ(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
-            ::gdcm::DataSet &dataset)
+                                          ::gdcm::DataSet &dataset)
     {
         // Create the sequence of items
         ::gdcm::DataElement dataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag());
@@ -197,7 +197,7 @@ public:
      */
     template< uint16_t GROUP, uint16_t ELEMENT >
     GDCMIO_TEMPLATE_API static void insertSQ(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
-            ::gdcm::DataSet &dataset)
+                                             ::gdcm::DataSet &dataset)
     {
         // Set or add the SQ
         if (!dataset.FindDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag()))
@@ -208,7 +208,7 @@ public:
         {
             // Get old SQ
             const ::gdcm::DataElement &dataElement =
-                    dataset.GetDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag());
+                dataset.GetDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag());
             ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > oldSequence = dataElement.GetValueAsSQ();
 
             // Add items of the new SQ to the old SQ
@@ -259,7 +259,7 @@ public:
      * @return The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
     GDCMIO_API static const ::gdcm::PhotometricInterpretation getPhotometricInterpretation(
-            const ::fwData::Image &image);
+        const ::fwData::Image &image);
 
     /**
      * @brief Convert a surface representation mode (FW4SPL) into recommended presentation type (DICOM).
@@ -268,7 +268,7 @@ public:
      * @return Corresponding recommended presentation type.
      */
     GDCMIO_API static ::gdcm::Surface::VIEWType convertToPresentationType(
-            ::fwData::Material::REPRESENTATION_MODE representationMode);
+        ::fwData::Material::REPRESENTATION_MODE representationMode);
 
     /**
      * @brief Convert a surface recommended presentation type (DICOM) into representation mode (FW4SPL).
@@ -276,7 +276,7 @@ public:
      * @return Corresponding representation mode
      */
     GDCMIO_API static ::fwData::Material::REPRESENTATION_MODE convertToRepresentationMode(
-            ::gdcm::Surface::VIEWType presentationType);
+        ::gdcm::Surface::VIEWType presentationType);
 
     /**
      * @brief Convert a representation mode into a DICOM form (eg : SURFACE, POINTS, WIREFRAME).
@@ -284,7 +284,7 @@ public:
      * @param[in] representationMode Reconstruction's material representation mode (eg : SURFACE, POINT, ...).
      */
     GDCMIO_API static const char* convertToPresentationTypeString(
-            ::fwData::Material::REPRESENTATION_MODE representationMode);
+        ::fwData::Material::REPRESENTATION_MODE representationMode);
 
     /***
      * @brief Convert a 3D point to the closest frame number index
@@ -292,7 +292,7 @@ public:
      * @param[in] point 3D point
      */
     GDCMIO_API static int convertPointToFrameNumber(
-            const ::fwData::Image::csptr& image, const ::fwData::Point::sptr& point) throw(::gdcmIO::exception::Failed);
+        const ::fwData::Image::csptr& image, const ::fwData::Point::sptr& point) throw(::gdcmIO::exception::Failed);
 
     /***
      * @brief Convert a frame number to a Z coordinate
@@ -300,7 +300,7 @@ public:
      * @param[in] frameNumber Frame number
      */
     GDCMIO_API static float convertFrameNumberToZCoordinate(
-            const ::fwData::Image::csptr& image, int frameNumber) throw(::gdcmIO::exception::Failed);
+        const ::fwData::Image::csptr& image, int frameNumber) throw(::gdcmIO::exception::Failed);
 };
 
 } // namespace helper

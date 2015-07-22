@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,8 @@ ClientQt::ClientQt() : Client()
 //-----------------------------------------------------------------------------
 
 ClientQt::~ClientQt()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -34,14 +35,14 @@ std::string ClientQt::post(Request::sptr request, const std::string& content)
 
     this->computeHeaders(qtRequest, request->getHeaders());
 
-    QString byteArray = QString::fromStdString(content);
+    QString byteArray     = QString::fromStdString(content);
     QNetworkReply *replay = m_networkManager->post(qtRequest, byteArray.toUtf8());
     QEventLoop loop;
     QObject::connect(replay, SIGNAL(finished()), &loop, SLOT(quit()));
     QObject::connect(replay, SIGNAL(error(QNetworkReply::NetworkError)),
                      this, SLOT(processError(QNetworkReply::NetworkError)));
     loop.exec();
-    const QByteArray& answer =replay->readAll();
+    const QByteArray& answer = replay->readAll();
 
     return answer.data();
 }
@@ -62,7 +63,7 @@ std::string ClientQt::get(Request::sptr request)
                      this, SLOT(processError(QNetworkReply::NetworkError)));
     loop.exec();
 
-    const QByteArray& answer =replay->readAll();
+    const QByteArray& answer = replay->readAll();
     return answer.data();
 }
 
@@ -71,23 +72,23 @@ std::string ClientQt::get(Request::sptr request)
 void ClientQt::processError(QNetworkReply::NetworkError errorCode)
 {
     QMetaObject metaObject = QNetworkReply::staticMetaObject;
-    QMetaEnum metaEnum = metaObject.enumerator(metaObject.indexOfEnumerator("NetworkError"));
-    const char* desc = metaEnum.valueToKey(errorCode);
+    QMetaEnum metaEnum     = metaObject.enumerator(metaObject.indexOfEnumerator("NetworkError"));
+    const char* desc       = metaEnum.valueToKey(errorCode);
 
     switch(errorCode)
     {
-    case QNetworkReply::ConnectionRefusedError:
-        throw ::fwNetwork::exceptions::ConnectionRefused(desc);
-        break;
-    case QNetworkReply::HostNotFoundError:
-        throw ::fwNetwork::exceptions::HostNotFound(desc);
-        break;
-    case QNetworkReply::ContentNotFoundError:
+        case QNetworkReply::ConnectionRefusedError:
+            throw ::fwNetwork::exceptions::ConnectionRefused(desc);
+            break;
+        case QNetworkReply::HostNotFoundError:
+            throw ::fwNetwork::exceptions::HostNotFound(desc);
+            break;
+        case QNetworkReply::ContentNotFoundError:
             throw ::fwNetwork::exceptions::ContentNotFound(desc);
             break;
-    default:
-        throw ::fwNetwork::exceptions::Base(desc);
-        break;
+        default:
+            throw ::fwNetwork::exceptions::Base(desc);
+            break;
     }
 }
 
@@ -120,12 +121,12 @@ std::string ClientQt::put(Request::sptr request, const std::string& content)
 
     this->computeHeaders(qtRequest, request->getHeaders());
 
-    QString byteArray = QString::fromStdString(content);
+    QString byteArray     = QString::fromStdString(content);
     QNetworkReply *replay = m_networkManager->put(qtRequest, byteArray.toUtf8());
     QEventLoop loop;
     QObject::connect(replay, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
-    const QByteArray& answer =replay->readAll();
+    const QByteArray& answer = replay->readAll();
     return answer.data();
 }
 
@@ -138,7 +139,7 @@ void ClientQt::putAsync(Request::sptr request, const std::string& content)
 
     this->computeHeaders(qtRequest, request->getHeaders());
 
-    QString byteArray = QString::fromStdString(content);
+    QString byteArray     = QString::fromStdString(content);
     QNetworkReply *replay = m_networkManager->put(qtRequest, byteArray.toUtf8());
 
     QObject::connect(replay, SIGNAL(finished()), this, SLOT(onPutAsyncFinished()));

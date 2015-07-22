@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,35 +8,35 @@
 
 #include <arlcore/PlaneSystem.h>
 
-arlCore::Tag::Tag( arlCore::PlaneSystem &universe, const std::string &name ):
-Particle( universe, name ),
-Parameters("Tag"),
-m_geometry( PointList::New() ),
-m_measures( PointList::New() ),
-m_measuresPlane( 0 ),
-m_registrationType( ARLCORE_TAG_REGISTRATION_UNKNOWN ),
-m_registrationMaxError(-1.0),
-m_persistence(-1)
+arlCore::Tag::Tag( arlCore::PlaneSystem &universe, const std::string &name ) :
+    Particle( universe, name ),
+    Parameters("Tag"),
+    m_geometry( PointList::New() ),
+    m_measures( PointList::New() ),
+    m_measuresPlane( 0 ),
+    m_registrationType( ARLCORE_TAG_REGISTRATION_UNKNOWN ),
+    m_registrationMaxError(-1.0),
+    m_persistence(-1)
 {
     init();
 }
 
-arlCore::Tag::Tag( PlaneSystem &universe, PointList::csptr pl ):
+arlCore::Tag::Tag( PlaneSystem &universe, PointList::csptr pl ) :
 //VAG Object(arlCore::ARLCORE_CLASS_TAG, "Points cloud"),
-Particle( universe, "Points cloud" ),
-Parameters("Tag"),
-m_geometry( PointList::New() ),
-m_measures( PointList::New() ),
-m_measuresPlane( 0 ),
-m_registrationType( ARLCORE_TAG_REGISTRATION_3D3D ),
-m_registrationMaxError(-1.0),
-m_persistence(-1)
+    Particle( universe, "Points cloud" ),
+    Parameters("Tag"),
+    m_geometry( PointList::New() ),
+    m_measures( PointList::New() ),
+    m_measuresPlane( 0 ),
+    m_registrationType( ARLCORE_TAG_REGISTRATION_3D3D ),
+    m_registrationMaxError(-1.0),
+    m_persistence(-1)
 {
     init();
     arlCore::Point::sptr p0 = arlCore::Point::New(0.0, 0.0, 0.0);
     p0->setVisible(false);
     unsigned int i;
-    for(i=0 ; i<pl->size() ; ++i)
+    for(i = 0; i<pl->size(); ++i)
     {
         m_geometry->push_back( (*pl)[i] );
         m_measures->push_back(p0);
@@ -66,7 +66,8 @@ bool arlCore::Tag::init( void )
 }
 
 arlCore::Tag::~Tag( void )
-{}
+{
+}
 
 std::string arlCore::Tag::getString( void ) const
 {
@@ -74,8 +75,13 @@ std::string arlCore::Tag::getString( void ) const
     //VAG FIXMEs<<this->Object::getString();
     //VAG FIXMEs<<this->Particle::getString();
     if(m_registrationMaxError<0)
+    {
         s<<"No registration max error\n";
-    else s<<"Registration max error = "<<m_registrationMaxError<<"\n";
+    }
+    else
+    {
+        s<<"Registration max error = "<<m_registrationMaxError<<"\n";
+    }
     s<<"Measures plane "<<m_measuresPlane<<"\n";
     return s.str();
 }
@@ -90,7 +96,7 @@ unsigned int arlCore::Tag::getNbPoints() const
     return m_geometry->size();
 }
 
-arlCore::PointList::csptr  arlCore::Tag::getGeometry() const
+arlCore::PointList::csptr arlCore::Tag::getGeometry() const
 {
     return m_geometry;
 }
@@ -100,7 +106,7 @@ arlCore::PointList::sptr arlCore::Tag::getGeometry()
     return m_geometry;
 }
 
-arlCore::PointList::csptr  arlCore::Tag::getMeasures() const
+arlCore::PointList::csptr arlCore::Tag::getMeasures() const
 {
     return m_measures;
 }
@@ -122,16 +128,17 @@ double arlCore::Tag::getRegistrationMaxError( void )
 
 void arlCore::Tag::setRegistrationMaxError( double error )
 {
-    m_registrationMaxError=error;
+    m_registrationMaxError = error;
 }
 
 void arlCore::Tag::reset( void )
 {
-    m_measuresPlane=0;
+    m_measuresPlane = 0;
     m_measures->clear();
 }
 
-bool arlCore::Tag::setRegistration( unsigned int plane, arlCore::vnl_rigid_matrix &T, long int date, long int time, bool reset )
+bool arlCore::Tag::setRegistration( unsigned int plane, arlCore::vnl_rigid_matrix &T, long int date, long int time,
+                                    bool reset )
 {
     //VAG FIXME setTime(date,time);
     //std::vector<double> errors;
@@ -145,9 +152,12 @@ bool arlCore::Tag::setRegistration( unsigned int plane, arlCore::vnl_rigid_matri
         //VAG FIXME  log(ARLCORE_LOG_WARNING);
         return false;
     }
-    if(reset) this->reset();
+    if(reset)
+    {
+        this->reset();
+    }
     unsigned int i;
-    for( i=0 ; i<m_geometry->size() ; ++i )
+    for( i = 0; i<m_geometry->size(); ++i )
     {
         if(i>=m_measures->size())
         {
@@ -162,6 +172,9 @@ bool arlCore::Tag::setRegistration( unsigned int plane, arlCore::vnl_rigid_matri
         }
     }
     bool b = getPlaneSystem().setTrf( getPlane(), plane, T, date,time );
-    if(b) m_measuresPlane=plane;
+    if(b)
+    {
+        m_measuresPlane = plane;
+    }
     return b;
 }

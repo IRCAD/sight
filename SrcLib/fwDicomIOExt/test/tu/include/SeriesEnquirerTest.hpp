@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDICOMIOEXT_TEST_TU_SERIESENQUIRERTEST_HPP__
-#define __FWDICOMIOEXT_TEST_TU_SERIESENQUIRERTEST_HPP__
+#ifndef __FWDICOMIOEXT_UT_SERIESENQUIRERTEST_HPP__
+#define __FWDICOMIOEXT_UT_SERIESENQUIRERTEST_HPP__
 
 #include <boost/filesystem.hpp>
 
@@ -21,13 +21,13 @@ namespace ut
 
 class SeriesEnquirerTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( SeriesEnquirerTest );
-    CPPUNIT_TEST( initializeConnection );
-    CPPUNIT_TEST( pullSeriesUsingMoveRetrieveMethod );
-    CPPUNIT_TEST( pullSeriesUsingGetRetrieveMethod );
-    CPPUNIT_TEST( pullInstanceUsingMoveRetrieveMethod );
-    CPPUNIT_TEST( pullInstanceUsingGetRetrieveMethod );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( SeriesEnquirerTest );
+CPPUNIT_TEST( initializeConnection );
+CPPUNIT_TEST( pullSeriesUsingMoveRetrieveMethod );
+CPPUNIT_TEST( pullSeriesUsingGetRetrieveMethod );
+CPPUNIT_TEST( pullInstanceUsingMoveRetrieveMethod );
+CPPUNIT_TEST( pullInstanceUsingGetRetrieveMethod );
+CPPUNIT_TEST_SUITE_END();
 
 public:
 
@@ -53,5 +53,5 @@ protected:
 } // namespace ut
 } // namespace fwDicomIOExt
 
-#endif // __FWDICOMIOEXT_TEST_TU_SERIESENQUIRERTEST_HPP__
+#endif // __FWDICOMIOEXT_UT_SERIESENQUIRERTEST_HPP__
 

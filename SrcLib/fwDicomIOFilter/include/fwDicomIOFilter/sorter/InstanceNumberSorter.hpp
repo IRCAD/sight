@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@ class FWDICOMIOFILTER_CLASS_API InstanceNumberSorter : public ::fwDicomIOFilter:
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (InstanceNumberSorter)(::fwDicomIOFilter::sorter::TagValueSorter),
-            (()), ::fwDicomIOFilter::factory::New< InstanceNumberSorter > );
+                                            (()), ::fwDicomIOFilter::factory::New< InstanceNumberSorter > );
 
     /// Constructor
     FWDICOMIOFILTER_API InstanceNumberSorter(::fwDicomIOFilter::IFilter::Key key);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,24 +24,26 @@ namespace tuto04
 //-----------------------------------------------------------------------------
 
 // Declare a new service of type IReader for read an Image
-fwServicesRegisterMacro( ::io::IReader , ::devForum::tuto04::ImageReaderService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IReader, ::devForum::tuto04::ImageReaderService, ::fwData::Image );
 
 //-----------------------------------------------------------------------------
 
 ImageReaderService::ImageReaderService() throw()
     : ::devForum::tuto03::ImageReaderService()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ImageReaderService::~ImageReaderService() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void ImageReaderService::configureWithIHM()
 {
-    m_fsImgPath="";
+    m_fsImgPath = "";
     SLM_TRACE_FUNC();
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -51,8 +53,8 @@ void ImageReaderService::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         m_fsImgPath = result->getPath();

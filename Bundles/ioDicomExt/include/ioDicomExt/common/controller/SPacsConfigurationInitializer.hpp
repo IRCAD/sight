@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,11 +28,11 @@ namespace controller
  * @class   SPacsConfigurationInitializer
  * @date    2013.
  */
-class IODICOMEXT_CLASS_API SPacsConfigurationInitializer :public ::fwServices::IController
+class IODICOMEXT_CLASS_API SPacsConfigurationInitializer : public ::fwServices::IController
 {
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SPacsConfigurationInitializer)( ::fwServices::IController ) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SPacsConfigurationInitializer)( ::fwServices::IController ) );
 
     /**
      * @brief Constructor
@@ -47,11 +47,11 @@ public :
 protected:
 
     /**
-    * @brief Configuring method. This method is used to configure the service.
-    *
-    * XML configuration sample:
-     @verbatim
-     <service uid="pacsConfigurationInitializer" impl="::ioDicomExt::common::controller::SPacsConfigurationInitializer"
+     * @brief Configuring method. This method is used to configure the service.
+     *
+     * XML configuration sample:
+       @verbatim
+       <service uid="pacsConfigurationInitializer" impl="::ioDicomExt::common::controller::SPacsConfigurationInitializer"
          autoConnect="yes">
          <config
              localApplicationTitle="VRRender"
@@ -61,9 +61,9 @@ protected:
              moveApplicationTitle="MoveApplicationTitle"
              moveApplicationPort="11110"
              retrieveMethod="GET" />
-     </service>
-    @endverbatim
-    */
+       </service>
+       @endverbatim
+     */
     IODICOMEXT_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -79,9 +79,9 @@ protected:
     IODICOMEXT_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Override
-    IODICOMEXT_API void info(std::ostream &_sstream ) ;
+    IODICOMEXT_API void info(std::ostream &_sstream );
 
-protected :
+protected:
     /// Local application title
     std::string m_localApplicationTitle;
 

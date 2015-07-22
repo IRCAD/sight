@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,20 +16,20 @@ namespace helper
 {
 
 Image::Image(
-            unsigned short samplesPerPixel,
-            unsigned short bitsAllocated,
-            unsigned short bitsStored,
-            unsigned short highBit,
-            unsigned short pixelRepresentation,
-            double rescaleSlope,
-            double rescaleIntercept):
-                    m_samplesPerPixel(samplesPerPixel),
-                    m_bitsAllocated(bitsAllocated),
-                    m_bitsStored(bitsStored),
-                    m_highBit(highBit),
-                    m_pixelRepresentation(pixelRepresentation),
-                    m_rescaleSlope(rescaleSlope),
-                    m_rescaleIntercept(rescaleIntercept)
+    unsigned short samplesPerPixel,
+    unsigned short bitsAllocated,
+    unsigned short bitsStored,
+    unsigned short highBit,
+    unsigned short pixelRepresentation,
+    double rescaleSlope,
+    double rescaleIntercept) :
+    m_samplesPerPixel(samplesPerPixel),
+    m_bitsAllocated(bitsAllocated),
+    m_bitsStored(bitsStored),
+    m_highBit(highBit),
+    m_pixelRepresentation(pixelRepresentation),
+    m_rescaleSlope(rescaleSlope),
+    m_rescaleIntercept(rescaleIntercept)
 {
 }
 

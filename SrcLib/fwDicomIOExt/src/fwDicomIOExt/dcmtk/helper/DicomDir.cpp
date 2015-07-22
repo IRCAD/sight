@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,11 +40,11 @@ bool DicomDir::readDicomDir(const ::boost::filesystem::path &root, std::vector<s
     if(::boost::filesystem::exists(dicomDirPath) && !::boost::filesystem::is_directory(dicomDirPath))
     {
         DcmDicomDir dicomDir(dicomDirPath.string().c_str());
-        DcmDirectoryRecord * rootRecord = &(dicomDir.getRootRecord());
+        DcmDirectoryRecord * rootRecord    = &(dicomDir.getRootRecord());
         DcmDirectoryRecord * patientRecord = NULL;
-        DcmDirectoryRecord * studyRecord = NULL;
-        DcmDirectoryRecord * seriesRecord = NULL;
-        DcmDirectoryRecord * fileRecord = NULL;
+        DcmDirectoryRecord * studyRecord   = NULL;
+        DcmDirectoryRecord * seriesRecord  = NULL;
+        DcmDirectoryRecord * fileRecord    = NULL;
         OFString tmpString;
 
         //Root level
@@ -123,14 +123,14 @@ std::string DicomDir::createRegex(std::string filename)
 // ----------------------------------------------------------------------------
 
 ::boost::filesystem::path DicomDir::getRealFilename(
-            const ::boost::filesystem::path &root, const std::string &filename)
+    const ::boost::filesystem::path &root, const std::string &filename)
 {
     ::boost::filesystem::path result = root;
     std::vector<std::string> elements;
     ::boost::split(elements, filename, ::boost::is_any_of("/\\"));
 
     //For every part of the path (going through the hierarchy)
-    for(std::vector<std::string>::iterator it = elements.begin(); it != elements.end();++it)
+    for(std::vector<std::string>::iterator it = elements.begin(); it != elements.end(); ++it)
     {
         std::string current = *it;
         ::boost::regex regex(DicomDir::createRegex(current));
@@ -146,15 +146,15 @@ std::string DicomDir::createRegex(std::string filename)
             if (::boost::regex_match(child, regex))
             {
                 FW_RAISE_IF("There is more than one file matching the uppercase filename stored "
-                        "in the dicom instance: \""+filename+"\"", matchFound);
+                            "in the dicom instance: \""+filename+"\"", matchFound);
                 matchFound = true;
-                result /= child;
+                result    /= child;
             }
 
         }
 
         FW_RAISE_IF("There is no file matching the uppercase filename stored in the dicom instance: \""+filename+"\"",
-                                !matchFound);
+                    !matchFound);
     }
 
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,8 @@ namespace dcmtk
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::ioDicomExt::dcmtk::action::SDicomSeriesConverter , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::ioDicomExt::dcmtk::action::SDicomSeriesConverter,
+                         ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -40,7 +41,7 @@ SDicomSeriesConverter::~SDicomSeriesConverter() throw()
 
 void SDicomSeriesConverter::info(std::ostream &_sstream )
 {
-    _sstream << "SDicomSeriesConverter::info" ;
+    _sstream << "SDicomSeriesConverter::info";
 }
 
 //------------------------------------------------------------------------------
@@ -75,7 +76,7 @@ void SDicomSeriesConverter::configuring() throw(::fwTools::Failed)
     // Destination Series DB ID
     ::boost::tie(success, m_destinationSeriesDBID) = config->getSafeAttributeValue("destinationSeriesDBID");
     SLM_ASSERT("It should be a \"destinationSeriesDBID\" attribute in the "
-            "::ioDicomExt::dcmtk::action::SDicomSeriesConverter config element.", success);
+               "::ioDicomExt::dcmtk::action::SDicomSeriesConverter config element.", success);
 
 
 }

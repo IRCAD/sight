@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,9 @@ class Float3TL : public GenericTL< float[3] >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Float3TL)(::extData::TimeLine),(()), ::fwData::factory::New< Float3TL >)
-    Float3TL( ::fwData::Object::Key key ) : GenericTL< float[3] >(key) {}
+    Float3TL( ::fwData::Object::Key key ) : GenericTL< float[3] >(key)
+    {
+    }
 };
 fwDataRegisterMacro( ::extData::Float3TL )
 
@@ -39,7 +41,9 @@ class Float4TL : public GenericTL< float4 >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Float4TL)(::extData::TimeLine),(()), ::fwData::factory::New< Float4TL >)
-    Float4TL( ::fwData::Object::Key key ) : GenericTL< float4 >(key) {}
+    Float4TL( ::fwData::Object::Key key ) : GenericTL< float4 >(key)
+    {
+    }
 };
 fwDataRegisterMacro( ::extData::Float4TL )
 
@@ -58,7 +62,9 @@ class TestClassTL : public GenericTL< TestContained >
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (TestClassTL)(::extData::TimeLine),(()),
                                             ::fwData::factory::New< TestClassTL >)
-    TestClassTL( ::fwData::Object::Key key ) : GenericTL< TestContained >(key) {}
+    TestClassTL( ::fwData::Object::Key key ) : GenericTL< TestContained >(key)
+    {
+    }
 };
 fwDataRegisterMacro( ::extData::TestClassTL )
 

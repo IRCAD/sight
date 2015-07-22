@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,10 +26,10 @@ namespace ie
 //------------------------------------------------------------------------------
 
 Series::Series(::fwDicomData::DicomSeries::sptr dicomSeries,
-        SPTR(::gdcm::Reader) reader,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwMedData::Series::sptr series):
-        ::gdcmIO::reader::ie::InformationEntity< ::fwMedData::Series >(dicomSeries, reader, instance, series)
+               SPTR(::gdcm::Reader)reader,
+               SPTR(::gdcmIO::container::DicomInstance)instance,
+               ::fwMedData::Series::sptr series) :
+    ::gdcmIO::reader::ie::InformationEntity< ::fwMedData::Series >(dicomSeries, reader, instance, series)
 {
 }
 
@@ -70,7 +70,8 @@ void Series::readGeneralSeriesModule()
     // NOTE: Not used in FW4SPL
 
     // Performing physicians name - Type 3
-    const std::string& performingPhysicianNamesStr = ::gdcmIO::helper::DicomData::getTrimmedTagValue< 0x0008, 0x1050 >(dataset);
+    const std::string& performingPhysicianNamesStr = ::gdcmIO::helper::DicomData::getTrimmedTagValue< 0x0008, 0x1050 >(
+        dataset);
     ::fwMedData::DicomValuesType performingPhysicianNames;
     ::boost::split( performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
     m_object->setPerformingPhysiciansName(performingPhysicianNames);

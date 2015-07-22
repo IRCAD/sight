@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,12 +28,12 @@
 
 namespace fwServices
 {
-    class ObjectMsg;
+class ObjectMsg;
 }
 
 namespace fwData
 {
-    class PointList;
+class PointList;
 }
 
 namespace ctrlComputeCPR
@@ -46,15 +46,15 @@ namespace ctrlComputeCPR
 class CTRLCOMPUTECPR_CLASS_API SComputeCPR2D : public ::fwServices::IController
 {
 
-public :
+public:
 
     fwCoreServiceClassDefinitionsMacro ( (SComputeCPR2D)(::fwServices::IController) );
 
     /// Constructor.
-    CTRLCOMPUTECPR_API SComputeCPR2D() throw() ;
+    CTRLCOMPUTECPR_API SComputeCPR2D() throw();
 
     /// Destructor.
-    CTRLCOMPUTECPR_API virtual ~SComputeCPR2D() throw() ;
+    CTRLCOMPUTECPR_API virtual ~SComputeCPR2D() throw();
 
     /**
      * @name Slot keys.
@@ -71,7 +71,7 @@ public :
     typedef ::fwCom::Slot <void (double)> ChangeHeightSlotType;
     typedef ::fwCom::Slot <void (double)> ChangeSpacingSlotType;
     typedef ::fwCom::Slot <void (double)> ChangeAngleSlotType;
-    typedef ::fwCom::Slot <void(int)>     SelectPointSlotType;
+    typedef ::fwCom::Slot <void (int)>     SelectPointSlotType;
     /**  @} */
 
 protected:
@@ -95,13 +95,13 @@ protected:
     /**
      * @brief Overrides IService::configuring().
      * Configuration example :
-     @verbatim
-     <config>
+       @verbatim
+       <config>
         <splinePoints uid="..." />  <!-- ::fwData::PointList containing spline points            -->
         <sourceImage uid="..." />   <!-- source image (::fwData::Image)                          -->
         <visuPoints uid="..." />    <!-- ::fwData::PointList containing spline points to display -->
-     </config>
-     @endverbatim
+       </config>
+       @endverbatim
      *
      * @throw fwTools::Failed
      */
@@ -146,9 +146,9 @@ protected:
      * @param ::fwData::PointList target point list
      */
     void addPointToVisualizePointList(
-            const SPTR(::fwData::PointList)& pointList,
-            const int indexSelectedPoint, 
-            const SPTR(::fwData::PointList)& visualizePointList);
+        const SPTR(::fwData::PointList)& pointList,
+        const int indexSelectedPoint,
+        const SPTR(::fwData::PointList)& visualizePointList);
 
     /// Clears the visualization point list.
     void clearVisualizePointList();

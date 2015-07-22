@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,10 +61,10 @@ ImageStorageReader::~ImageStorageReader()
     DicomImage dicomImage(firstInstance.c_str());
 
     FW_RAISE_IF("Unable to read the file: \""+firstInstance+"\"", status.bad() || (
-            dicomImage.getStatus() != EIS_Normal
-            && dicomImage.getStatus() != EIS_MissingAttribute
-            && dicomImage.getStatus() != EIS_NotSupportedValue
-            ));
+                    dicomImage.getStatus() != EIS_Normal
+                    && dicomImage.getStatus() != EIS_MissingAttribute
+                    && dicomImage.getStatus() != EIS_NotSupportedValue
+                    ));
     dataset = fileFormat.getDataset();
 
     // Decompress data set if compressed
@@ -112,7 +112,7 @@ ImageStorageReader::~ImageStorageReader()
     if(depth == 1)
     {
         //If there is only one file, we check how many frames it contains.
-        depth = (depth==0)?1:depth;
+        depth = (depth==0) ? 1 : depth;
         if(depth > 1)
         {
             FW_RAISE ( "Reading a file containing multiple frames is not yet supported by this reader.");
@@ -163,16 +163,16 @@ ImageStorageReader::~ImageStorageReader()
     //Rescale Slope
     double rescaleSlope;
     double rescaleIntercept;
-    status = dataset->findAndGetFloat64(DCM_RescaleSlope,rescaleSlope);
-    rescaleSlope = (status.bad())?1:rescaleSlope;
-    status = dataset->findAndGetFloat64(DCM_RescaleIntercept,rescaleIntercept);
-    rescaleIntercept = (status.bad())?0:rescaleIntercept;
+    status           = dataset->findAndGetFloat64(DCM_RescaleSlope,rescaleSlope);
+    rescaleSlope     = (status.bad()) ? 1 : rescaleSlope;
+    status           = dataset->findAndGetFloat64(DCM_RescaleIntercept,rescaleIntercept);
+    rescaleIntercept = (status.bad()) ? 0 : rescaleIntercept;
 
     //Type
-    unsigned short samplesPerPixel = 1;
-    unsigned short bitsAllocated = 8;
-    unsigned short bitsStored = 8;
-    unsigned short highBit = 7;
+    unsigned short samplesPerPixel     = 1;
+    unsigned short bitsAllocated       = 8;
+    unsigned short bitsStored          = 8;
+    unsigned short highBit             = 7;
     unsigned short pixelRepresentation = 0;
 
     dataset->findAndGetUint16(DCM_SamplesPerPixel,samplesPerPixel);
@@ -187,12 +187,12 @@ ImageStorageReader::~ImageStorageReader()
         unsigned short colorBitsAllocated = 0;
         dataset->findAndGetUint16(DCM_RedPaletteColorLookupTableDescriptor, colorBitsAllocated, 2);
         bitsStored = bitsAllocated = colorBitsAllocated;
-        highBit = colorBitsAllocated-1;
+        highBit    = colorBitsAllocated-1;
     }
 
     //Find image type
     ::fwDicomIOExt::dcmtk::helper::Image imageHelper(
-            samplesPerPixel,bitsAllocated,bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
+        samplesPerPixel,bitsAllocated,bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
     ::fwTools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
 
     //Set image type
@@ -208,7 +208,7 @@ ImageStorageReader::~ImageStorageReader()
         if(photometricInterpretation != "PALETTE COLOR" && pixelPresentation != "COLOR")
         {
             this->directRead(image, instances, rows, columns, depth, rescaleSlope, rescaleIntercept,
-                    pixelRepresentation, imageType);
+                             pixelRepresentation, imageType);
         }
         //RGB lookup read
         else
@@ -226,7 +226,7 @@ ImageStorageReader::~ImageStorageReader()
         if(photometricInterpretation != "PALETTE COLOR" && pixelPresentation != "COLOR")
         {
             this->lazyRead(image, series, rows, columns, depth, rescaleSlope, rescaleIntercept, pixelRepresentation,
-                    imageType);
+                           imageType);
         }
         //RGB lookup read
         else
@@ -244,8 +244,9 @@ ImageStorageReader::~ImageStorageReader()
 //-----------------------------------------------------------------------------
 
 void ImageStorageReader::directRead(::fwData::Image::sptr image, DicomPathContainerType instances,
-            unsigned short rows, unsigned short columns, int depth, double rescaleSlope, double rescaleIntercept,
-            unsigned short pixelRepresentation, ::fwTools::Type imageType)
+                                    unsigned short rows, unsigned short columns, int depth, double rescaleSlope,
+                                    double rescaleIntercept,
+                                    unsigned short pixelRepresentation, ::fwTools::Type imageType)
 {
     //Allocate image
     image->allocate();
@@ -254,14 +255,16 @@ void ImageStorageReader::directRead(::fwData::Image::sptr image, DicomPathContai
 
     //Fill image
     ::fwDicomIOExt::dcmtk::reader::main::ImageReader::fillImageBuffer(rows, columns, depth, instances,
-            arrayHelper.getBuffer(), rescaleSlope, rescaleIntercept, pixelRepresentation, imageType);
+                                                                      arrayHelper.getBuffer(), rescaleSlope, rescaleIntercept, pixelRepresentation,
+                                                                      imageType);
 }
 
 //-----------------------------------------------------------------------------
 
 void ImageStorageReader::directRGBLookupRead(::fwData::Image::sptr image, DcmDataset& dataset,
-        DicomPathContainerType instances, unsigned short rows, unsigned short columns, int depth,
-        unsigned short bitsAllocated)
+                                             DicomPathContainerType instances, unsigned short rows,
+                                             unsigned short columns, int depth,
+                                             unsigned short bitsAllocated)
 {
     //Allocate image
     image->allocate();
@@ -285,12 +288,20 @@ void ImageStorageReader::directRGBLookupRead(::fwData::Image::sptr image, DcmDat
         if(pixelValueBitsAllocated == 16)
         {
             ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupReader::fillImageBuffer<Uint16, Uint16>(rows,
-                    columns, depth, instances, arrayHelper.getBuffer(), redLookup, greenLookup, blueLookup);
+                                                                                                            columns,
+                                                                                                            depth,
+                                                                                                            instances,
+                                                                                                            arrayHelper.getBuffer(), redLookup, greenLookup,
+                                                                                                            blueLookup);
         }
         else
         {
             ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupReader::fillImageBuffer<Uint16, Uint8>(rows,
-                    columns, depth, instances, arrayHelper.getBuffer(), redLookup, greenLookup, blueLookup);
+                                                                                                           columns,
+                                                                                                           depth,
+                                                                                                           instances,
+                                                                                                           arrayHelper.getBuffer(), redLookup, greenLookup,
+                                                                                                           blueLookup);
         }
 
     }
@@ -308,12 +319,20 @@ void ImageStorageReader::directRGBLookupRead(::fwData::Image::sptr image, DcmDat
         if(pixelValueBitsAllocated == 16)
         {
             ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupReader::fillImageBuffer<Uint8, Uint16>(rows,
-                    columns, depth, instances, arrayHelper.getBuffer(), redLookup, greenLookup, blueLookup);
+                                                                                                           columns,
+                                                                                                           depth,
+                                                                                                           instances,
+                                                                                                           arrayHelper.getBuffer(), redLookup, greenLookup,
+                                                                                                           blueLookup);
         }
         else
         {
             ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupReader::fillImageBuffer<Uint8, Uint8>(rows,
-                    columns, depth, instances, arrayHelper.getBuffer(), redLookup, greenLookup, blueLookup);
+                                                                                                          columns,
+                                                                                                          depth,
+                                                                                                          instances,
+                                                                                                          arrayHelper.getBuffer(), redLookup, greenLookup,
+                                                                                                          blueLookup);
         }
     }
 
@@ -322,53 +341,55 @@ void ImageStorageReader::directRGBLookupRead(::fwData::Image::sptr image, DcmDat
 //-----------------------------------------------------------------------------
 
 void ImageStorageReader::lazyRead(::fwData::Image::sptr image, ::fwDicomData::DicomSeries::sptr series,
-            unsigned short rows, unsigned short columns, int depth, double rescaleSlope, double rescaleIntercept,
-            unsigned short pixelRepresentation, ::fwTools::Type imageType)
+                                  unsigned short rows, unsigned short columns, int depth, double rescaleSlope,
+                                  double rescaleIntercept,
+                                  unsigned short pixelRepresentation, ::fwTools::Type imageType)
 {
     // Create information object
     ::fwDicomIOExt::dcmtk::reader::main::ImageLazyInformation::sptr dcmInfo =
-            ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::main::ImageLazyInformation >();
-    dcmInfo->m_dicomSeries = series;
-    dcmInfo->m_rows = rows;
-    dcmInfo->m_columns = columns;
-    dcmInfo->m_depth = depth;
-    dcmInfo->m_rescaleSlope = rescaleSlope;
-    dcmInfo->m_rescaleIntercept = rescaleIntercept;
+        ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::main::ImageLazyInformation >();
+    dcmInfo->m_dicomSeries         = series;
+    dcmInfo->m_rows                = rows;
+    dcmInfo->m_columns             = columns;
+    dcmInfo->m_depth               = depth;
+    dcmInfo->m_rescaleSlope        = rescaleSlope;
+    dcmInfo->m_rescaleIntercept    = rescaleIntercept;
     dcmInfo->m_pixelRepresentation = pixelRepresentation;
-    dcmInfo->m_imageType = imageType;
+    dcmInfo->m_imageType           = imageType;
 
     // Create streamer
     ::fwMemory::BufferObject::sptr buffObj = image->getDataArray()->getBufferObject();
     buffObj->setIStreamFactory(
-            ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::main::ImageLazyStream >( dcmInfo ),
-             image->getSizeInBytes() );
+        ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::main::ImageLazyStream >( dcmInfo ),
+        image->getSizeInBytes() );
 }
 
 //-----------------------------------------------------------------------------
 
 void ImageStorageReader::lazyRGBLookupRead(::fwData::Image::sptr image, ::fwDicomData::DicomSeries::sptr series,
-        DcmDataset& dataset, DicomPathContainerType instances, unsigned short rows, unsigned short columns, int depth,
-        unsigned short bitsAllocated, ::fwTools::Type imageType)
+                                           DcmDataset& dataset, DicomPathContainerType instances, unsigned short rows,
+                                           unsigned short columns, int depth,
+                                           unsigned short bitsAllocated, ::fwTools::Type imageType)
 {
     unsigned short pixelValueBitsAllocated = 8;
     dataset.findAndGetUint16(DCM_BitsAllocated,pixelValueBitsAllocated);
 
     // Create information object
     ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyInformation::sptr dcmInfo =
-            ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyInformation >();
-    dcmInfo->m_dicomSeries = series;
-    dcmInfo->m_rows = rows;
-    dcmInfo->m_columns = columns;
-    dcmInfo->m_depth = depth;
-    dcmInfo->m_bitsAllocated = bitsAllocated;
+        ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyInformation >();
+    dcmInfo->m_dicomSeries             = series;
+    dcmInfo->m_rows                    = rows;
+    dcmInfo->m_columns                 = columns;
+    dcmInfo->m_depth                   = depth;
+    dcmInfo->m_bitsAllocated           = bitsAllocated;
     dcmInfo->m_pixelValueBitsAllocated = pixelValueBitsAllocated;
-    dcmInfo->m_imageType = imageType;
+    dcmInfo->m_imageType               = imageType;
 
     // Create streamer
     ::fwMemory::BufferObject::sptr buffObj = image->getDataArray()->getBufferObject();
     buffObj->setIStreamFactory(
-            ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyStream >( dcmInfo ),
-             image->getSizeInBytes() );
+        ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyStream >( dcmInfo ),
+        image->getSizeInBytes() );
 
 }
 

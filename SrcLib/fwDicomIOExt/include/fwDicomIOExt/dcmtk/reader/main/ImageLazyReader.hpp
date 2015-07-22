@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,8 +48,9 @@ public:
      * @param[in] imageType Type of the image used to create the buffer
      */
     FWDICOMIOEXT_API static void* createInstanceBuffer(unsigned int rows, unsigned int columns,
-            const ::boost::filesystem::path& instance, double rescaleSlope, double rescaleIntercept,
-             unsigned short pixelRepresentation, ::fwTools::Type imageType)
+                                                       const ::boost::filesystem::path& instance, double rescaleSlope,
+                                                       double rescaleIntercept,
+                                                       unsigned short pixelRepresentation, ::fwTools::Type imageType)
     {
         if (pixelRepresentation == 0)
         {
@@ -57,13 +58,13 @@ public:
             if(imageType.sizeOf() == 1)
             {
                 return ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< Uint8 >(
-                        rows, columns, instance, rescaleSlope, rescaleIntercept, imageType);
+                    rows, columns, instance, rescaleSlope, rescaleIntercept, imageType);
             }
             // Use unsigned short
             else
             {
                 return ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< Uint16 >(
-                        rows, columns, instance, rescaleSlope, rescaleIntercept, imageType);
+                    rows, columns, instance, rescaleSlope, rescaleIntercept, imageType);
             }
         }
         else
@@ -72,13 +73,13 @@ public:
             if(imageType.sizeOf() == 1)
             {
                 return ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< Sint8 >(
-                        rows, columns, instance, rescaleSlope, rescaleIntercept, imageType);
+                    rows, columns, instance, rescaleSlope, rescaleIntercept, imageType);
             }
             // Use signed short
             else
             {
                 return ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< Sint16 >(
-                        rows, columns, instance, rescaleSlope, rescaleIntercept, imageType);
+                    rows, columns, instance, rescaleSlope, rescaleIntercept, imageType);
             }
         }
     }
@@ -98,61 +99,78 @@ protected:
      */
     template< typename T >
     FWDICOMIOEXT_API static void* createInstanceBuffer(unsigned int rows, unsigned int columns,
-            const ::boost::filesystem::path& instance, double rescaleSlope, double rescaleIntercept,
-            ::fwTools::Type imageType)
+                                                       const ::boost::filesystem::path& instance, double rescaleSlope,
+                                                       double rescaleIntercept,
+                                                       ::fwTools::Type imageType)
     {
         void* tempoBuffer;
 
         //Copy the temporary buffer to the final buffer
         if (imageType == ::fwTools::Type::s_INT8)
         {
-            tempoBuffer = ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::int8_t >(
+            tempoBuffer =
+                ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T,
+                                                                                            ::boost::int8_t >(
                     rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_INT16)
         {
-            tempoBuffer = ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::int16_t >(
+            tempoBuffer =
+                ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T,
+                                                                                            ::boost::int16_t >(
                     rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_INT32)
         {
-            tempoBuffer = ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::int32_t >(
+            tempoBuffer =
+                ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T,
+                                                                                            ::boost::int32_t >(
                     rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_INT64)
         {
-            tempoBuffer = ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::int64_t >(
+            tempoBuffer =
+                ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T,
+                                                                                            ::boost::int64_t >(
                     rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT8)
         {
-            tempoBuffer = ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::uint8_t >(
+            tempoBuffer =
+                ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T,
+                                                                                            ::boost::uint8_t >(
                     rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT16)
         {
-            tempoBuffer = ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::uint16_t >(
+            tempoBuffer =
+                ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T,
+                                                                                            ::boost::uint16_t >(
                     rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT32)
         {
-            tempoBuffer = ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::uint32_t >(
+            tempoBuffer =
+                ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T,
+                                                                                            ::boost::uint32_t >(
                     rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_UINT64)
         {
-            tempoBuffer = ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T, ::boost::uint64_t >(
+            tempoBuffer =
+                ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T,
+                                                                                            ::boost::uint64_t >(
                     rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_FLOAT)
         {
             tempoBuffer = ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T, float >(
-                    rows, columns, instance, rescaleSlope, rescaleIntercept);
+                rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
         else if (imageType == ::fwTools::Type::s_DOUBLE)
         {
             tempoBuffer = ::fwDicomIOExt::dcmtk::reader::main::ImageLazyReader::createInstanceBuffer< T, double >(
-                    rows, columns, instance, rescaleSlope, rescaleIntercept);
+                rows, columns, instance, rescaleSlope, rescaleIntercept);
         }
 
         return tempoBuffer;
@@ -171,7 +189,8 @@ protected:
      */
     template< typename T, typename U >
     FWDICOMIOEXT_API static U* createInstanceBuffer(unsigned int rows, unsigned int columns,
-            const ::boost::filesystem::path& instance, double rescaleSlope, double rescaleIntercept)
+                                                    const ::boost::filesystem::path& instance, double rescaleSlope,
+                                                    double rescaleIntercept)
     {
         DcmFileFormat fileFormat;
         OFCondition status;
@@ -206,7 +225,7 @@ protected:
                 {
                     unsigned int position = y + (x * rows);
                     T value;
-                    value = (pixelData)?pixelData[position]:0;
+                    value                 = (pixelData) ? pixelData[position] : 0;
                     tempoBuffer[position] = (U)(rescaleSlope * value + rescaleIntercept);
                 }
             }
@@ -223,7 +242,7 @@ protected:
                 {
                     unsigned int position = y + (x * rows);
                     T value;
-                    value = (pixelData)?pixelData[position]:0;
+                    value                 = (pixelData) ? pixelData[position] : 0;
                     tempoBuffer[position] = (U)(rescaleSlope * value + rescaleIntercept);
                 }
             }

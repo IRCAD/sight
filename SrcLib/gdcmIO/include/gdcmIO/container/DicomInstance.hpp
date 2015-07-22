@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,13 +50,13 @@ public:
      * @param[in] series Series from which the instance is created
      * @param[in] isMultiFiles Set whether the instance must be split in several files or not
      */
-    GDCMIO_API DicomInstance(SPTR(::fwMedData::Series) series, bool isMultiFiles);
+    GDCMIO_API DicomInstance(SPTR(::fwMedData::Series)series, bool isMultiFiles);
 
     /**
      * @brief Constructor
      * @param[in] dicomSeries DicomSeries from which the instance is created
      */
-    GDCMIO_API DicomInstance(SPTR(::fwDicomData::DicomSeries) dicomSeries);
+    GDCMIO_API DicomInstance(SPTR(::fwDicomData::DicomSeries)dicomSeries);
 
     /// Copy constructor
     GDCMIO_API DicomInstance(const DicomInstance & dicomInstance);
@@ -73,7 +73,7 @@ public:
     GDCMIO_API fwGettersSettersDocMacro(StudyInstanceUID, studyInstanceUID, std::string, Study Instance UID);
 
     GDCMIO_API fwGettersSettersDocMacro(SOPInstanceUIDContainer, SOPInstanceUIDContainer, SOPInstanceUIDContainerType,
-            SOP Instance UID container);
+                                        SOP Instance UID container);
 
 protected:
     /**
@@ -108,7 +108,7 @@ private:
 };
 
 }
- //namespace container
+//namespace container
 }//namespace gdcmIO
 
 #endif /* __GDCMIO_CONTAINER_DICOMINSTANCE_HPP__ */

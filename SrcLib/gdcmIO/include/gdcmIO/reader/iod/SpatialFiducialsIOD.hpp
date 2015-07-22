@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@ namespace iod
  */
 class GDCMIO_CLASS_API SpatialFiducialsIOD : public ::gdcmIO::reader::iod::InformationObjectDefinition
 {
-public :
+public:
 
     /**
      * @brief Constructor
@@ -30,7 +30,7 @@ public :
      * @param[in] instance Instance
      */
     GDCMIO_API SpatialFiducialsIOD(::fwDicomData::DicomSeries::sptr dicomSeries,
-            SPTR(::gdcmIO::container::DicomInstance) instance);
+                                   SPTR(::gdcmIO::container::DicomInstance)instance);
 
 
     /// Destructor

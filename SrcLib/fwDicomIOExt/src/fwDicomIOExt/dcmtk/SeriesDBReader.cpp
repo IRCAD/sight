@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,7 +43,7 @@ namespace dcmtk
 SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
     ::fwData::location::enableFolder< IObjectReader >(this),
     ::fwData::location::enableMultiFiles< IObjectReader >(this),
-     m_isDicomdirActivated(false)
+    m_isDicomdirActivated(false)
 {
     SLM_TRACE_FUNC();
 
@@ -71,7 +71,8 @@ SeriesDBReader::FilenameContainerType SeriesDBReader::getFilenames()
     {
         // Try to read dicomdir file
         if(!m_isDicomdirActivated || (m_isDicomdirActivated &&
-                !::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(), filenames)))
+                                      !::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(),
+                                                                                             filenames)))
         {
             // Recursively search for dicom files
             ::fwDicomIOExt::dcmtk::helper::DicomSearch::searchRecursively(this->getFolder(), filenames);
@@ -117,7 +118,7 @@ void SeriesDBReader::read()
 //------------------------------------------------------------------------------
 
 void SeriesDBReader::readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB,
-        ::fwServices::IService::sptr notifier)
+                                           ::fwServices::IService::sptr notifier)
 {
     // Read series
     BOOST_FOREACH(::fwMedData::Series::sptr series, dicomSeriesDB->getContainer())
@@ -191,8 +192,8 @@ void SeriesDBReader::addSeries(const std::vector< std::string > &filenames)
         DcmDataset* dataset = fileFormat.getDataset();
 
         // Create data objects from first instance
-        ::fwMedData::Patient::sptr patient = this->createPatient(dataset);
-        ::fwMedData::Study::sptr study = this->createStudy(dataset);
+        ::fwMedData::Patient::sptr patient     = this->createPatient(dataset);
+        ::fwMedData::Study::sptr study         = this->createStudy(dataset);
         ::fwMedData::Equipment::sptr equipment = this->createEquipment(dataset);
 
         // Fill series
@@ -218,7 +219,7 @@ void SeriesDBReader::addSeries(const std::vector< std::string > &filenames)
     // Check if the patient already exists
     if(m_patientMap.find(patientID) == m_patientMap.end())
     {
-        result = ::fwMedData::Patient::New();
+        result                  = ::fwMedData::Patient::New();
         m_patientMap[patientID] = result;
 
         //Patient ID
@@ -259,7 +260,7 @@ void SeriesDBReader::addSeries(const std::vector< std::string > &filenames)
     // Check if the study already exists
     if(m_studyMap.find(studyID) == m_studyMap.end())
     {
-        result = ::fwMedData::Study::New();
+        result              = ::fwMedData::Study::New();
         m_studyMap[studyID] = result;
 
         //Study ID
@@ -308,7 +309,7 @@ void SeriesDBReader::addSeries(const std::vector< std::string > &filenames)
     // Check if the equipment already exists
     if(m_equipmentMap.find(institutionName) == m_equipmentMap.end())
     {
-        result = ::fwMedData::Equipment::New();
+        result                          = ::fwMedData::Equipment::New();
         m_equipmentMap[institutionName] = result;
 
         //Institution Name
@@ -373,7 +374,7 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
 
         //Performing Physicians Name
         std::vector<std::string> performingPhysiciansName;
-        for(int i=0; dataset->findAndGetOFString(DCM_PerformingPhysicianName,data, i).good(); ++i)
+        for(int i = 0; dataset->findAndGetOFString(DCM_PerformingPhysicianName,data, i).good(); ++i)
         {
             performingPhysiciansName.push_back(data.c_str());
         }
@@ -394,8 +395,8 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
 
 //------------------------------------------------------------------------------
 
-void SeriesDBReader::convertDicomSeries(SPTR(::fwDicomData::DicomSeries) dicomSeries,
-        ::fwServices::IService::sptr notifier)
+void SeriesDBReader::convertDicomSeries(SPTR(::fwDicomData::DicomSeries)dicomSeries,
+                                        ::fwServices::IService::sptr notifier)
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
     ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
@@ -403,12 +404,12 @@ void SeriesDBReader::convertDicomSeries(SPTR(::fwDicomData::DicomSeries) dicomSe
 
     ::fwDicomData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();
     FW_RAISE_IF("The series contains several SOPClassUIDs. Try to apply a filter in order to split the series.",
-            sopClassUIDContainer.size() != 1);
+                sopClassUIDContainer.size() != 1);
     std::string sopClassUID = dcmFindNameOfUID(sopClassUIDContainer.begin()->c_str());
 
     // CT Image Storage
     if(sopClassUID == "CTImageStorage" || sopClassUID == "MRImageStorage" ||
-            sopClassUID == "SecondaryCaptureImageStorage")
+       sopClassUID == "SecondaryCaptureImageStorage")
     {
         ::fwDicomIOExt::dcmtk::reader::ImageStorageReader reader;
         result = reader.read(dicomSeries);

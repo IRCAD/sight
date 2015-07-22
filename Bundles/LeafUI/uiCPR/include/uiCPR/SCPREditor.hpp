@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,11 +33,12 @@ namespace uiCPR
  * @brief Creates a GUI to set parameters for a curved planar reformation (CPR).
  * @class SCPREditor
  */
-class UICPR_CLASS_API SCPREditor : public QObject, public ::gui::editor::IEditor
+class UICPR_CLASS_API SCPREditor : public QObject,
+                                   public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
     fwCoreServiceClassDefinitionsMacro((SCPREditor)(::gui::editor::IEditor));
 
@@ -59,9 +60,9 @@ public :
     /**
      * @name Signal types.
      * @{ */
-    typedef ::fwCom::Signal < void(double) > HeightChangedSignalType;
-    typedef ::fwCom::Signal < void(double) > SpacingChangedSignalType;
-    typedef ::fwCom::Signal < void(double) > SliderProgressedSignalType;
+    typedef ::fwCom::Signal < void (double) > HeightChangedSignalType;
+    typedef ::fwCom::Signal < void (double) > SpacingChangedSignalType;
+    typedef ::fwCom::Signal < void (double) > SliderProgressedSignalType;
     /**  @} */
 
 protected:
@@ -79,11 +80,11 @@ protected:
     /**
      * @brief Overrides IService::configuring().
      * Configuration example :
-     @verbatim
-     <config>
+       @verbatim
+       <config>
         <sourceImage uid="..." />   <!-- UID of source image (::fwData::Image)  -->
-     </config>
-     @endverbatim
+       </config>
+       @endverbatim
      *
      * @throw fwTools::Failed
      */
@@ -110,7 +111,7 @@ protected Q_SLOTS:
     void onChangeSpacingValue (double newSpacing);
 
     /// Triggered when the "Compute" button is clicked.
-    void onClickComputeSlotType(); 
+    void onClickComputeSlotType();
 
 private:
 

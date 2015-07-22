@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,14 +11,15 @@
 #include <arlcore/Misc.h>
 #include <arlcore/Optimization.h>
 
-arlCore::FieldCorrector::FieldCorrector( void ):
-m_degree( 0 ),
-m_correction( false )
-{}
+arlCore::FieldCorrector::FieldCorrector( void ) :
+    m_degree( 0 ),
+    m_correction( false )
+{
+}
 
-arlCore::FieldCorrector::FieldCorrector( unsigned int degree ):
-m_degree( degree ),
-m_correction( false )
+arlCore::FieldCorrector::FieldCorrector( unsigned int degree ) :
+    m_degree( degree ),
+    m_correction( false )
 {
     const unsigned int NbEquations = 3;
     m_parameters.set_size(nbPolynomialParameters(degree, NbEquations));
@@ -37,12 +38,13 @@ bool arlCore::FieldCorrector::activCorrection( bool b )
 }
 
 arlCore::FieldCorrector::~FieldCorrector( void )
-{}
+{
+}
 
 bool arlCore::FieldCorrector::copy( const FieldCorrector& O )
 {
     m_parameters = O.m_parameters;
-    m_degree = O.m_degree;
+    m_degree     = O.m_degree;
     m_correction = O.m_correction;
     return true;
 }
@@ -60,7 +62,10 @@ std::string arlCore::FieldCorrector::getString( void ) const
 
 bool arlCore::FieldCorrector::setDegree( unsigned int degree )
 {
-    if(degree<1) return false;
+    if(degree<1)
+    {
+        return false;
+    }
     const unsigned int NbEquations = 3;
     m_degree = degree;
     m_parameters.set_size(nbPolynomialParameters(m_degree, NbEquations));
@@ -83,12 +88,15 @@ bool arlCore::FieldCorrector::setParameters( const vnl_vector<double> &parameter
     if(parameters.size()!=getNbParameters())
     {
         const unsigned int NbEquations = 3;
-        unsigned int degree = 1;
+        unsigned int degree            = 1;
         while(nbPolynomialParameters(degree, NbEquations)!=parameters.size() && degree<10)
         {
             ++degree;
         }
-        if(nbPolynomialParameters(degree, NbEquations)!=parameters.size()) return false;
+        if(nbPolynomialParameters(degree, NbEquations)!=parameters.size())
+        {
+            return false;
+        }
         setDegree(degree);
     }
     m_parameters = parameters;
@@ -100,12 +108,17 @@ bool arlCore::FieldCorrector::load( const std::string &fileName )
     unsigned int i;
     std::fstream f;
     f.open (fileName.c_str(), std::fstream::in);
-    if(!f.is_open()) return false;
+    if(!f.is_open())
+    {
+        return false;
+    }
     unsigned int nbParameters;
     f>>nbParameters;
     vnl_vector<double> parameters(nbParameters);
-    for( i=0 ; i<nbParameters ; ++i )
+    for( i = 0; i<nbParameters; ++i )
+    {
         f>>parameters[i];
+    }
     f.close();
     return setParameters(parameters);
 }
@@ -114,9 +127,12 @@ bool arlCore::FieldCorrector::correct( Point::csptr P1, Point::sptr P2 ) const
 {   // P1=distorted P2=undistorded
     assert(P1->size()==3 && P2->size()==3);
     const unsigned int NbEquations = 3;
-    const bool Verbose = false;
+    const bool Verbose             = false;
     P2->copy(P1);
-    if(!m_correction || P1->size()!=3 || P2->size()!=3) return false;
+    if(!m_correction || P1->size()!=3 || P2->size()!=3)
+    {
+        return false;
+    }
     vnl_vector<double> coordinates(NbEquations), distorsion;
     coordinates[0] = P1->x();
     coordinates[1] = P1->y();
@@ -127,7 +143,10 @@ bool arlCore::FieldCorrector::correct( Point::csptr P1, Point::sptr P2 ) const
         P2->x(coordinates[0]-distorsion[0]);
         P2->y(coordinates[1]-distorsion[1]);
         P2->z(coordinates[2]-distorsion[2]);
-        if(Verbose) std::cout<<"Distorsion correction : "<<distorsion<<"\n";
+        if(Verbose)
+        {
+            std::cout<<"Distorsion correction : "<<distorsion<<"\n";
+        }
     }
     return b;
 }
@@ -135,9 +154,12 @@ bool arlCore::FieldCorrector::correct( Point::csptr P1, Point::sptr P2 ) const
 bool arlCore::FieldCorrector::correct( const vnl_rigid_matrix &T1, vnl_rigid_matrix &T2 ) const
 {   // T1=distorded T2=undistorded
     const unsigned int NbEquations = 3;
-    const bool Verbose = true;
+    const bool Verbose             = true;
     T2.copy(T1);
-    if(!m_correction) return false;
+    if(!m_correction)
+    {
+        return false;
+    }
     vnl_vector<double> coordinates(NbEquations), distorsion;
     coordinates[0] = T1.getX();
     coordinates[1] = T1.getY();
@@ -146,7 +168,10 @@ bool arlCore::FieldCorrector::correct( const vnl_rigid_matrix &T1, vnl_rigid_mat
     if(b)
     {
         T2.setTranslation(coordinates[0]-distorsion[0], coordinates[1]-distorsion[1], coordinates[2]-distorsion[2]);
-        if(Verbose) std::cout<<"Distorsion correction : "<<distorsion<<"\n";
+        if(Verbose)
+        {
+            std::cout<<"Distorsion correction : "<<distorsion<<"\n";
+        }
     }
     return b;
 }
@@ -154,14 +179,21 @@ bool arlCore::FieldCorrector::correct( const vnl_rigid_matrix &T1, vnl_rigid_mat
 bool arlCore::FieldCorrector::correct( vnl_rigid_matrix &T ) const
 {
     vnl_rigid_matrix T0;
-    if(!correct(T, T0)) return false;
+    if(!correct(T, T0))
+    {
+        return false;
+    }
     T.copy(T0);
     return true;
 }
 
-bool arlCore::fieldCalibration( PointList::csptr real, PointList::csptr distorded, unsigned int degree, vnl_vector<double> &parameters, double &RMS )
+bool arlCore::fieldCalibration( PointList::csptr real, PointList::csptr distorded, unsigned int degree,
+                                vnl_vector<double> &parameters, double &RMS )
 {
-    if(degree<1) return false;
+    if(degree<1)
+    {
+        return false;
+    }
     Polynomial_cost_function pcf( real, distorded, degree );
     vnl_powell op(&pcf);
     parameters.set_size(pcf.getNbParameters());

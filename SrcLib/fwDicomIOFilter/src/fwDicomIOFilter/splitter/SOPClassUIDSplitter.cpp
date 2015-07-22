@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,14 +22,14 @@ namespace fwDicomIOFilter
 namespace splitter
 {
 
-const std::string SOPClassUIDSplitter::s_FILTER_NAME = "SOPClassUID splitter";
+const std::string SOPClassUIDSplitter::s_FILTER_NAME        = "SOPClassUID splitter";
 const std::string SOPClassUIDSplitter::s_FILTER_DESCRIPTION =
-        "Split instances according to <i>SOPClassUID</i> tag.";
+    "Split instances according to <i>SOPClassUID</i> tag.";
 
 //-----------------------------------------------------------------------------
 
 SOPClassUIDSplitter::SOPClassUIDSplitter(::fwDicomIOFilter::IFilter::Key key) :
-        ::fwDicomIOFilter::splitter::TagValueSplitter(key)
+    ::fwDicomIOFilter::splitter::TagValueSplitter(key)
 {
     this->setTag(DCM_SOPClassUID);
 }
@@ -64,7 +64,7 @@ bool SOPClassUIDSplitter::isConfigurationRequired()
 //-----------------------------------------------------------------------------
 
 SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
-        ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result = ::fwDicomIOFilter::splitter::TagValueSplitter::apply(series);
 
@@ -83,7 +83,7 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
 
         // Read SOPClassUID
         dataset = fileFormat.getDataset();
-        status = dataset->findAndGetOFString(DCM_SOPClassUID,data);
+        status  = dataset->findAndGetOFString(DCM_SOPClassUID,data);
         FW_RAISE_IF("Unable to read tags: \""+filename+"\"", status.bad());
 
         ::fwDicomData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer;

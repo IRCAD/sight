@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,7 +44,7 @@ QTagSelectorWidget::QTagSelectorWidget(QWidget* parent) : QWidget(parent)
     bottomLayout->setContentsMargins(QMargins(0,0,0,0));
 
     // Spin box
-    m_groupSpinBox = new ::fwDicomIOFilterQt::widget::QHexSpinBox();
+    m_groupSpinBox   = new ::fwDicomIOFilterQt::widget::QHexSpinBox();
     m_elementSpinBox = new ::fwDicomIOFilterQt::widget::QHexSpinBox();
 
     bottomLayout->addWidget(new QLabel("<b>Group :</b>"));

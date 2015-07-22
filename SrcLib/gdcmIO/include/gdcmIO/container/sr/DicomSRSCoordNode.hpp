@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GDCMIO_CONTAINER_DICOMSRSCOORDNODE_HPP__
-#define __GDCMIO_CONTAINER_DICOMSRSCOORDNODE_HPP__
+#ifndef __GDCMIO_CONTAINER_SR_DICOMSRSCOORDNODE_HPP__
+#define __GDCMIO_CONTAINER_SR_DICOMSRSCOORDNODE_HPP__
 
 #include <string>
 #include <vector>
@@ -38,7 +38,7 @@ public:
 
     /// Constructor
     GDCMIO_API DicomSRSCoordNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship,
-            const std::string& graphicType, GraphicDataContainerType graphicDataContainer);
+                                 const std::string& graphicType, GraphicDataContainerType graphicDataContainer);
 
     /// Destructor
     GDCMIO_API virtual ~DicomSRSCoordNode();
@@ -50,7 +50,8 @@ public:
     GDCMIO_API virtual void write(::gdcm::DataSet &dataset) const;
 
     GDCMIO_API fwGettersSettersDocMacro(GraphicType, graphicType, std::string, Graphic type);
-    GDCMIO_API fwGettersSettersDocMacro(GraphicDataContainer, graphicDataContainer, GraphicDataContainerType, Graphic data container);
+    GDCMIO_API fwGettersSettersDocMacro(GraphicDataContainer, graphicDataContainer, GraphicDataContainerType,
+                                        Graphic data container);
 
 protected:
 
@@ -68,4 +69,4 @@ protected:
 } //namespace container
 } //namespace gdcmIO
 
-#endif /* __GDCMIO_CONTAINER_DICOMSRSCOORDNODE_HPP__ */
+#endif /* __GDCMIO_CONTAINER_SR_DICOMSRSCOORDNODE_HPP__ */

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@
 arlCore::PointList::PointList( unsigned int dim, const std::string &name )
 //VAG Object(ARLCORE_CLASS_POINTLIST)
 {
-    m_dimension=dim;
+    m_dimension = dim;
 //    m_pointList.reserve(dim);
 //    for (unsigned int i=0; i< dim; ++i )
 //    {
@@ -43,28 +43,48 @@ arlCore::PointList::PointList( const arlCore::PointList& p )
 arlCore::PointList::PointList( const std::vector< arlCore::Point::csptr > &p )
 //VAG Object(ARLCORE_CLASS_POINTLIST)
 {
-    if(p.size()==0) m_dimension=3;
+    if(p.size()==0)
+    {
+        m_dimension = 3;
+    }
     else
     {
-        m_dimension=p[0]->size();
+        m_dimension = p[0]->size();
         unsigned int i;
-        for( i=0 ; i<p.size() ; ++i )
+        for( i = 0; i<p.size(); ++i )
+        {
             if(p[i]!=0)
-                if(p[i]->size()==m_dimension) m_pointList.push_back(Point::New((p[i])));
+            {
+                if(p[i]->size()==m_dimension)
+                {
+                    m_pointList.push_back(Point::New((p[i])));
+                }
+            }
+        }
     }
 }
 
 arlCore::PointList::PointList( const std::vector< arlCore::Point::csptr > &p, double scalarMin, double scalarMax )
 //VAG Object(ARLCORE_CLASS_POINTLIST)
 {
-    if(p.size()==0) m_dimension=3;
+    if(p.size()==0)
+    {
+        m_dimension = 3;
+    }
     else
     {
-        m_dimension=p[0]->size();
+        m_dimension = p[0]->size();
         unsigned int i;
-        for( i=0 ; i<p.size() ; ++i )
+        for( i = 0; i<p.size(); ++i )
+        {
             if(p[i]!=0)
-                if(p[i]->size()==m_dimension && p[i]->getScalar()>=scalarMin && p[i]->getScalar()<=scalarMax) m_pointList.push_back(Point::New((p[i])));
+            {
+                if(p[i]->size()==m_dimension && p[i]->getScalar()>=scalarMin && p[i]->getScalar()<=scalarMax)
+                {
+                    m_pointList.push_back(Point::New((p[i])));
+                }
+            }
+        }
     }
 }
 
@@ -91,16 +111,24 @@ arlCore::PointList& arlCore::PointList::operator=( const PointList& p )
 
 void arlCore::PointList::copy( const PointList& p )
 {
-    if(this==&p) return;
+    if(this==&p)
+    {
+        return;
+    }
 //VAG    arlCore::Object *a=this;
 //VAG    const arlCore::Object *b=&p;
 //VAG    *a = *b;
     clear();
     unsigned int i;
-    while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
-    m_dimension=p.m_dimension;
-    for( i=0 ; i<p.size() ; ++i )
+    while(!lockWriteMutex())
+    {
+        std::cerr<<"PointList write locked\n";
+    }
+    m_dimension = p.m_dimension;
+    for( i = 0; i<p.size(); ++i )
+    {
         m_pointList.push_back( Point::New(p.m_pointList[i]) );
+    }
     unlockWriteMutex();
 }
 
@@ -114,8 +142,10 @@ std::string arlCore::PointList::getString( void ) const
     std::stringstream s;
     s<<"List of "<<(unsigned int)m_pointList.size()<<" points with dimension "<<getDimension()<<"\n";
     unsigned int i;
-    for( i=0 ; i<m_pointList.size() ; ++i )
+    for( i = 0; i<m_pointList.size(); ++i )
+    {
         s<<m_pointList[i]->getString();
+    }
     return s.str();
 }
 
@@ -126,8 +156,14 @@ unsigned int arlCore::PointList::getDimension( void ) const
 
 bool arlCore::PointList::setDimension( unsigned int dim )
 {
-    if(size()!=0) return false;
-    while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
+    if(size()!=0)
+    {
+        return false;
+    }
+    while(!lockWriteMutex())
+    {
+        std::cerr<<"PointList write locked\n";
+    }
     m_dimension = dim;
     unlockWriteMutex();
     return true;
@@ -135,11 +171,19 @@ bool arlCore::PointList::setDimension( unsigned int dim )
 
 unsigned int arlCore::PointList::addGaussianNoise( double gaussianNoise )
 {
-    if(gaussianNoise<=0.0 || m_pointList.size()==0) return 0;
+    if(gaussianNoise<=0.0 || m_pointList.size()==0)
+    {
+        return 0;
+    }
     unsigned int i;
-    while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
-    for( i=0 ; i<m_pointList.size() ; ++i )
-            m_pointList[i]->addGaussianNoise(gaussianNoise);
+    while(!lockWriteMutex())
+    {
+        std::cerr<<"PointList write locked\n";
+    }
+    for( i = 0; i<m_pointList.size(); ++i )
+    {
+        m_pointList[i]->addGaussianNoise(gaussianNoise);
+    }
     unlockWriteMutex();
     return i;
 }
@@ -148,8 +192,8 @@ unsigned int arlCore::PointList::fill( const std::vector< arlCore::vnl_rigid_mat
 {
     unsigned int i;
     clear();
-    Point::sptr pt= Point::New();
-    for( i=0 ; i<list.size() ; ++i )
+    Point::sptr pt = Point::New();
+    for( i = 0; i<list.size(); ++i )
     {
         pt->fill(0.0);
         list[i].trf( pt );
@@ -178,41 +222,59 @@ unsigned int internStatistic( const T &list, unsigned int dimension, arlCore::Po
     unsigned int i, j, k;
     arlCore::Point::sptr mean = arlCore::Point::New(dimension);
     mean->fill(0.0);
-    if(list.size()==0) return 0;
-    for( i=0 ; i<list.size() ; ++i )
-        for( j=0 ; j<dimension ; ++j )
+    if(list.size()==0)
+    {
+        return 0;
+    }
+    for( i = 0; i<list.size(); ++i )
+    {
+        for( j = 0; j<dimension; ++j )
+        {
             if(list[i]->size()>j)
+            {
                 mean->set(j, (*mean)[j] + list[i]->get(j));
+            }
+        }
+    }
     mean->mult(1.0/(double)list.size());
-    vnl_matrix<double> &covMatrix=mean->getCovMatrix();
+    vnl_matrix<double> &covMatrix = mean->getCovMatrix();
     covMatrix.fill(0.0);
     //TODO some explanation on the formula are mandatory
-    for( i=0 ; i<list.size() ; ++i )
-        for( j=0 ; j<dimension ; ++j )
-            for( k=0 ; k<dimension ; ++k )
+    for( i = 0; i<list.size(); ++i )
+    {
+        for( j = 0; j<dimension; ++j )
+        {
+            for( k = 0; k<dimension; ++k )
+            {
                 if(list[i]->size()>j && list[i]->size()>k)
+                {
                     covMatrix[j][k] += (list[i]->get(j)- (*mean)[j])*(list[i]->get(k)-(*mean)[k]);
+                }
+            }
+        }
+    }
     covMatrix /= list.size();
     pt->copy(mean);
     return (unsigned int)list.size();
 }
 
-unsigned int arlCore::statistic( const std::vector< Point::csptr > &list, unsigned int dimension, Point::sptr  pt )
+unsigned int arlCore::statistic( const std::vector< Point::csptr > &list, unsigned int dimension, Point::sptr pt )
 {
     return internStatistic(list, dimension, pt);
 }
 
-unsigned int arlCore::statistic( const std::vector< Point::sptr > &list, unsigned int dimension, Point::sptr  pt )
+unsigned int arlCore::statistic( const std::vector< Point::sptr > &list, unsigned int dimension, Point::sptr pt )
 {
     return internStatistic(list, dimension, pt);
 }
 
-unsigned int arlCore::PointList::statistic( Point::sptr  pt ) const
+unsigned int arlCore::PointList::statistic( Point::sptr pt ) const
 {
     assert(getDimension()>0);
     return internStatistic(m_pointList, getDimension(), pt);
 }
-unsigned int arlCore::PointList::plane( vgl_homg_plane_3d< double >& homgPlane, double &rms, double &min, double &max, double scalar, double outliers ) const
+unsigned int arlCore::PointList::plane( vgl_homg_plane_3d< double >& homgPlane, double &rms, double &min, double &max,
+                                        double scalar, double outliers ) const
 {
     vgl_plane_3d<double> vglPlane;
     unsigned int n = plane( vglPlane, rms, min, max, scalar, outliers );
@@ -226,12 +288,19 @@ bool sortPoints(const PlaneDistance& left, const PlaneDistance& right)
     return left.second > right.second;
 }
 
-unsigned int arlCore::PointList::plane( vgl_plane_3d< double >& plane, double &rms, double &min, double &max, double scalar, double outliers ) const
+unsigned int arlCore::PointList::plane( vgl_plane_3d< double >& plane, double &rms, double &min, double &max,
+                                        double scalar, double outliers ) const
 {
-    if(outliers>1.0) outliers = 1.0;
+    if(outliers>1.0)
+    {
+        outliers = 1.0;
+    }
     // TODO Use #include <vgl_fit_plane_3d.h>
-    rms=-1, min=-1, max=-1;
-    if(m_dimension!=3) return 0;
+    rms = -1, min = -1, max = -1;
+    if(m_dimension!=3)
+    {
+        return 0;
+    }
     vgl_point_3d< double > pt[3];
     unsigned int i, j;
 //  for( i=0 ; i<3 ; ++i )
@@ -240,10 +309,11 @@ unsigned int arlCore::PointList::plane( vgl_plane_3d< double >& plane, double &r
     pt[1].set(0.0,0.0,0.0);
     pt[2].set(0.0,0.0,0.0);
     OptimisePlane meanPlane;
-    double n[3]={0.0,0.0,0.0};
-    for( i=0 ; i<size() ; ++i )
+    double n[3] = {0.0,0.0,0.0};
+    for( i = 0; i<size(); ++i )
     {
         if(m_pointList[i]!=0)
+        {
             if(scalar==0 || scalar==m_pointList[i]->getScalar())
             {
                 vgl_point_3d< double > vglPt(m_pointList[i]->x(),m_pointList[i]->y(),m_pointList[i]->z());
@@ -251,59 +321,87 @@ unsigned int arlCore::PointList::plane( vgl_plane_3d< double >& plane, double &r
                 if(i<size()/3)
                 {
                     n[0]++;
-                    pt[0].set(pt[0].x()+m_pointList[i]->x(), pt[0].y()+m_pointList[i]->y() , pt[0].z()+m_pointList[i]->z() );
+                    pt[0].set(pt[0].x()+m_pointList[i]->x(), pt[0].y()+m_pointList[i]->y(),
+                              pt[0].z()+m_pointList[i]->z() );
                 }
                 if(i>=size()/3 && i<size()/3*2)
                 {
                     n[1]++;
-                    pt[1].set(pt[1].x()+m_pointList[i]->x(), pt[1].y()+m_pointList[i]->y() , pt[1].z()+m_pointList[i]->z() );
+                    pt[1].set(pt[1].x()+m_pointList[i]->x(), pt[1].y()+m_pointList[i]->y(),
+                              pt[1].z()+m_pointList[i]->z() );
                 }
                 if(i>=size()/3*2)
                 {
                     n[2]++;
-                    pt[2].set(pt[2].x()+m_pointList[i]->x(), pt[2].y()+m_pointList[i]->y() , pt[2].z()+m_pointList[i]->z() );
+                    pt[2].set(pt[2].x()+m_pointList[i]->x(), pt[2].y()+m_pointList[i]->y(),
+                              pt[2].z()+m_pointList[i]->z() );
                 }
             }
+        }
     }
-    if(meanPlane.size()<3) return 0;
-    for( i=0 ; i<3 ; ++i )
-        if(n[i]!=0) pt[i].set(pt[i].x()/n[i] , pt[i].y()/n[i] , pt[i].z()/n[i] );
+    if(meanPlane.size()<3)
+    {
+        return 0;
+    }
+    for( i = 0; i<3; ++i )
+    {
+        if(n[i]!=0)
+        {
+            pt[i].set(pt[i].x()/n[i], pt[i].y()/n[i], pt[i].z()/n[i] );
+        }
+    }
 //  meanPlane.getPoint(0,pt[0]);
 //  meanPlane.getPoint(unsigned int(meanPlane.size()/2),pt[1]);
 //  meanPlane.getPoint(meanPlane.size()-1,pt[2]);
     plane = vgl_plane_3d< double >(pt[0],pt[1],pt[2]);
-    if(meanPlane.size()==3) rms=0.0, min=0.0, max=0.0;
+    if(meanPlane.size()==3)
+    {
+        rms = 0.0, min = 0.0, max = 0.0;
+    }
     else
     {
         std::vector<PlaneDistance> distances;
         vnl_vector<double> planSolution(4);
-        planSolution(0)=plane.a();
-        planSolution(1)=plane.b();
-        planSolution(2)=plane.c();
-        planSolution(3)=plane.d();
-        for( i=0 ; i<2 ; ++i )
+        planSolution(0) = plane.a();
+        planSolution(1) = plane.b();
+        planSolution(2) = plane.c();
+        planSolution(3) = plane.d();
+        for( i = 0; i<2; ++i )
         {   //Erase outliers in the second iteration
             if(i==1)
             {
                 unsigned int n = distances.size()*outliers;
-                if(distances.size()-n < 3) n = distances.size()-3;
-                for( j=0 ; j<n ; ++j )
+                if(distances.size()-n < 3)
+                {
+                    n = distances.size()-3;
+                }
+                for( j = 0; j<n; ++j )
+                {
                     meanPlane.delPoint(distances[j].first);
+                }
             }
             vnl_powell computeMeanPlane(&meanPlane);
             computeMeanPlane.minimize(planSolution);
             plane.set(planSolution(0),planSolution(1),planSolution(2),planSolution(3));
-            rms=sqrt(computeMeanPlane.get_end_error()/meanPlane.size());
+            rms = sqrt(computeMeanPlane.get_end_error()/meanPlane.size());
             const std::vector< vgl_point_3d< double >* > &points = meanPlane.getPoints();
             distances.resize(points.size());
-            for( j=0 ; j<points.size() ; j++ )
+            for( j = 0; j<points.size(); j++ )
+            {
                 if(points[j]!=0)
                 {
-                    distances[j].first = j;
+                    distances[j].first  = j;
                     distances[j].second = vgl_distance(plane, *(points[j]));
-                    if(min<0 || distances[j].second<min) min=distances[j].second;
-                    if(max<0 || distances[j].second>max) max=distances[j].second;
+                    if(min<0 || distances[j].second<min)
+                    {
+                        min = distances[j].second;
+                    }
+                    if(max<0 || distances[j].second>max)
+                    {
+                        max = distances[j].second;
+                    }
                 }
+            }
             std::sort(distances.begin(), distances.end(), sortPoints);
         }
     }
@@ -311,7 +409,7 @@ unsigned int arlCore::PointList::plane( vgl_plane_3d< double >& plane, double &r
 }
 
 /*double arlCore::PointList::pivot( arlCore::Point::sptr center, double &error ) const
-{
+   {
     unsigned int i;
     const unsigned int Dim = getDimension();
     center.init(Dim);
@@ -324,7 +422,7 @@ unsigned int arlCore::PointList::plane( vgl_plane_3d< double >& plane, double &r
         center.set(i, solution[i]);
     error = sqrt(computePivot.get_end_error()/size());
     return pivot.getScalar();
-}*/
+   }*/
 
 ///////////////////////////////////////////////////////////////////////////////////////
 //
@@ -359,9 +457,11 @@ unsigned int arlCore::PointList::plane( vgl_plane_3d< double >& plane, double &r
 // It corresponds to the standard deviation of the distance to the sphere
 // log[2] = maximum distance of the point cloud to the estimated sphere
 ////////////////////////////////////////////////////////////////////////////////////////
-bool arlCore::PointList::sphereCenterEstimation( arlCore::Point::sptr  centerEstimation, double &radius, arlCore::ARLCORE_SCE methode, std::vector<double> &optimiser_parameter, std::vector<double> &log) const
+bool arlCore::PointList::sphereCenterEstimation( arlCore::Point::sptr centerEstimation, double &radius,
+                                                 arlCore::ARLCORE_SCE methode, std::vector<double> &optimiser_parameter,
+                                                 std::vector<double> &log) const
 {
-    const bool Verbose = false;
+    const bool Verbose      = false;
     const unsigned int Size = size();
     if (size() < 4)
     {
@@ -374,16 +474,17 @@ bool arlCore::PointList::sphereCenterEstimation( arlCore::Point::sptr  centerEst
         vnl_matrix_fixed <double,1,4> xyz1(0.0), vector_sum(0.0), defg(0.0);
         vnl_vector<double> radius_error( Size ), std_distance( Size );
         unsigned int i;
-        for( i=0 ; i<Size ; ++i )
+        for( i = 0; i<Size; ++i )
         {
             xyz1.put( 0, 0, get(i)->x() );
             xyz1.put( 0, 1, (*this)[i]->y() );
             xyz1.put( 0, 2, (*this)[i]->z() );
             xyz1.put( 0, 3, 1.0 );
             matrix_sum = matrix_sum.as_matrix() + xyz1.as_matrix().transpose() * xyz1;
-            vector_sum = vector_sum.as_matrix() + (xyz1(0,0)*xyz1(0,0) + xyz1(0,1)*xyz1(0,1) + xyz1(0,2)*xyz1(0,2))*xyz1.as_matrix();
+            vector_sum = vector_sum.as_matrix() +
+                         (xyz1(0,0)*xyz1(0,0) + xyz1(0,1)*xyz1(0,1) + xyz1(0,2)*xyz1(0,2))*xyz1.as_matrix();
         }
-        defg = - vector_sum.as_matrix() * vnl_matrix_inverse<double> (matrix_sum.as_matrix());
+        defg = -vector_sum.as_matrix() * vnl_matrix_inverse<double> (matrix_sum.as_matrix());
         double a = -1*defg(0,0)/2;
         double b = -1*defg(0,1)/2;
         double c = -1*defg(0,2)/2;
@@ -391,14 +492,19 @@ bool arlCore::PointList::sphereCenterEstimation( arlCore::Point::sptr  centerEst
         centerEstimation->set( 0, a );
         centerEstimation->set( 1, b );
         centerEstimation->set( 2, c );
-        for( i=0 ; i<Size ; ++i )
+        for( i = 0; i<Size; ++i )
         {
             radius_error[i] = fabs( get(i)->distance(centerEstimation) - radius );
-            if(Verbose) std::cerr<<"radius_error[i] = " <<radius_error[i]<<std::endl;
+            if(Verbose)
+            {
+                std::cerr<<"radius_error[i] = " <<radius_error[i]<<std::endl;
+            }
         }
         const double Mean = radius_error.mean();
-        for( i=0 ; i<Size ; ++i )
+        for( i = 0; i<Size; ++i )
+        {
             std_distance.put(i, radius_error[i] -  Mean );
+        }
         log.clear();
         log.push_back( radius_error.rms() );
         centerEstimation->setError(log.back());
@@ -414,40 +520,53 @@ bool arlCore::PointList::sphereCenterEstimation( arlCore::Point::sptr  centerEst
         std::vector<double> dk;
         vnl_matrix_fixed<double,1,3> vector_sum(0.0), center, tmp;
         unsigned int i, j;
-        for( i=0 ; i<Size ; ++i )
-            for( j=0 ; j<Size ; ++j )
-                    if(j!=i)
-                    {
-                        tmp.put(0, 0, get(i)->x() - get(j)->x());
-                        tmp.put(0, 1, get(i)->y() - get(j)->y());
-                        tmp.put(0, 2, get(i)->z() - get(j)->z());
-                        normal_vec.push_back(tmp);
-                        dk.push_back( -1*(get(i)->x()*get(i)->x() + get(i)->y()*get(i)->y() + get(i)->z()*get(i)->z()
-                        - get(j)->x()*get(j)->x() - get(j)->y()*get(j)->y() - get(j)->z()*get(j)->z() ) /2 );
-                    }
-        if(Verbose) std::cerr<< "normal_vec size = " << (unsigned int)normal_vec.size()<<std::endl;
-        for( i=0 ; i<normal_vec.size() ; ++i )
+        for( i = 0; i<Size; ++i )
         {
-            matrix_sum =  matrix_sum + (normal_vec[i].as_matrix().transpose() * normal_vec[i])/( normal_vec[i](0,0)* normal_vec[i](0,0)
-            + normal_vec[i](0,1)* normal_vec[i](0,1) + normal_vec[i](0,2)* normal_vec[i](0,2) );
-
-            vector_sum = vector_sum + dk[i]/( normal_vec[i](0,0)* normal_vec[i](0,0) + normal_vec[i](0,1)* normal_vec[i](0,1)
-            + normal_vec[i](0,2)* normal_vec[i](0,2) ) * normal_vec[i];
+            for( j = 0; j<Size; ++j )
+            {
+                if(j!=i)
+                {
+                    tmp.put(0, 0, get(i)->x() - get(j)->x());
+                    tmp.put(0, 1, get(i)->y() - get(j)->y());
+                    tmp.put(0, 2, get(i)->z() - get(j)->z());
+                    normal_vec.push_back(tmp);
+                    dk.push_back( -1*(get(i)->x()*get(i)->x() + get(i)->y()*get(i)->y() + get(i)->z()*get(i)->z()
+                                      - get(j)->x()*get(j)->x() - get(j)->y()*get(j)->y() - get(j)->z()*get(j)->z() ) /
+                                  2 );
+                }
+            }
         }
-        center =  vector_sum.as_matrix() * vnl_matrix_inverse<double> (matrix_sum.as_matrix()) *(-1);
+        if(Verbose)
+        {
+            std::cerr<< "normal_vec size = " << (unsigned int)normal_vec.size()<<std::endl;
+        }
+        for( i = 0; i<normal_vec.size(); ++i )
+        {
+            matrix_sum = matrix_sum + (normal_vec[i].as_matrix().transpose() * normal_vec[i])/
+                         ( normal_vec[i](0,0)* normal_vec[i](0,0)
+                           + normal_vec[i](0,
+                                           1)* normal_vec[i](0,1) + normal_vec[i](0,2)* normal_vec[i](0,2) );
+
+            vector_sum = vector_sum + dk[i]/
+                         ( normal_vec[i](0,0)* normal_vec[i](0,0) + normal_vec[i](0,1)* normal_vec[i](0,1)
+                           + normal_vec[i](0,2)* normal_vec[i](0,2) ) * normal_vec[i];
+        }
+        center = vector_sum.as_matrix() * vnl_matrix_inverse<double> (matrix_sum.as_matrix()) *(-1);
         radius = 0;
         centerEstimation->set(0, center(0,0) );
         centerEstimation->set(1, center(0,1) );
         centerEstimation->set(2, center(0,2) );
         for( i = 0; i<Size; ++i)
+        {
             radius += centerEstimation->distance( get(i) );
+        }
         radius /= (double)Size;
-        for( i=0 ; i<Size ; ++i )
+        for( i = 0; i<Size; ++i )
         {
             radius_error[i] = fabs(centerEstimation->distance( get(i) ) - radius);
             //std::cerr<< "radius_error[i] = " <<radius_error[i]<<std::endl;
         }
-        for( i=0 ; i<Size ; ++i )
+        for( i = 0; i<Size; ++i )
         {
             std_distance[i] = radius_error.get(i)-radius_error.mean();
         }
@@ -468,12 +587,16 @@ bool arlCore::PointList::sphereCenterEstimation( arlCore::Point::sptr  centerEst
         solution.fill(0.0); // Initialisation
         std::vector<double> tmpLog;
         sphereCenterEstimation( centerEstimation, radius, ARLCORE_SCE_ANALYTIC, optimiser_parameter, tmpLog );
-        for( i=0 ; i<Dim ; ++i )
+        for( i = 0; i<Dim; ++i )
+        {
             solution[i] = (*centerEstimation)[i];
+        }
         vnl_powell computePivot(&pivot);
         computePivot.minimize(solution);
-        for( i=0 ; i<Dim ; ++i )
+        for( i = 0; i<Dim; ++i )
+        {
             centerEstimation->set(i, solution[i]);
+        }
         double error = sqrt(computePivot.get_end_error()/Size);
         radius = pivot.getRadius();
         log.clear();
@@ -487,17 +610,17 @@ bool arlCore::PointList::sphereCenterEstimation( arlCore::Point::sptr  centerEst
         //the sphere center
         vnl_vector<double>radius_error( Size ), std_distance( Size );
         arlCore::PointList::sptr trian1, trian2, fourPoints;
-        trian1 =  arlCore::PointList::New();
-        trian2 =  arlCore::PointList::New();
-        fourPoints =  arlCore::PointList::New();
+        trian1     = arlCore::PointList::New();
+        trian2     = arlCore::PointList::New();
+        fourPoints = arlCore::PointList::New();
 
         arlCore::Point::sptr line_center1, line_center2, line1_another_point, line2_another_point;
-        line_center1 =  arlCore::Point::New();
-        line_center2 =  arlCore::Point::New();
-        line1_another_point =  arlCore::Point::New();
-        line2_another_point =  arlCore::Point::New();
+        line_center1        = arlCore::Point::New();
+        line_center2        = arlCore::Point::New();
+        line1_another_point = arlCore::Point::New();
+        line2_another_point = arlCore::Point::New();
         vgl_plane_3d< double > plane1, plane2;
-        for(int i=0; i<3;++i)
+        for(int i = 0; i<3; ++i)
         {
             trian1->push_back( get(i) );
             trian2->push_back( get(i+1) );
@@ -514,19 +637,21 @@ bool arlCore::PointList::sphereCenterEstimation( arlCore::Point::sptr  centerEst
         fourPoints->push_back(line1_another_point);
         fourPoints->push_back(line_center2);
         fourPoints->push_back(line2_another_point);
-        double line_error=0;
+        double line_error = 0;
         fourPoints->twoLinesClosestPoint( centerEstimation, line_error);
 //      std::cerr<< "line_error = "<< line_error<<std::endl;
         radius = 0;
         for( int i = 0; i<Size; ++i)
+        {
             radius += centerEstimation->distance(get(i));
+        }
         radius /= (double)Size;
-        for( int i=0 ; i<Size ; ++i )
+        for( int i = 0; i<Size; ++i )
         {
             radius_error[i] = fabs(centerEstimation->distance( get(i) ) - radius);
             //std::cerr<< "radius_error[i] = " <<radius_error[i]<<std::endl;
         }
-        for( int i=0 ; i<Size ; ++i )
+        for( int i = 0; i<Size; ++i )
         {
             std_distance[i] = radius_error.get(i)-radius_error.mean();
         }
@@ -540,7 +665,8 @@ bool arlCore::PointList::sphereCenterEstimation( arlCore::Point::sptr  centerEst
     return false;
 }
 
-bool arlCore::PointList::triangleCircumcircleOrthoLine(Point::sptr centerEstimation, vgl_plane_3d< double > &trian_plane) const
+bool arlCore::PointList::triangleCircumcircleOrthoLine(Point::sptr centerEstimation,
+                                                       vgl_plane_3d< double > &trian_plane) const
 {
     if (this->size() < 3)
     {
@@ -549,8 +675,10 @@ bool arlCore::PointList::triangleCircumcircleOrthoLine(Point::sptr centerEstimat
     }
     else
     {
-        vgl_vector_3d< double > AB(this->get(0)->x() - this->get(1)->x(), this->get(0)->y() - this->get(1)->y(), this->get(0)->z() - this->get(1)->z());
-        vgl_vector_3d< double > AC(this->get(0)->x() - this->get(2)->x(), this->get(0)->y() - this->get(2)->y(), this->get(0)->z() - this->get(2)->z());
+        vgl_vector_3d< double > AB(this->get(0)->x() - this->get(1)->x(), this->get(0)->y() - this->get(
+                                       1)->y(), this->get(0)->z() - this->get(1)->z());
+        vgl_vector_3d< double > AC(this->get(0)->x() - this->get(2)->x(), this->get(0)->y() - this->get(
+                                       2)->y(), this->get(0)->z() - this->get(2)->z());
 
         vgl_point_3d< double > A(this->get(0)->x(), this->get(0)->y(), this->get(0)->z());
         vgl_point_3d< double > B(this->get(1)->x(), this->get(1)->y(), this->get(1)->z());
@@ -577,27 +705,31 @@ bool arlCore::PointList::twoLinesClosestPoint(Point::sptr closestPoint, double &
     //p2 = pointlist[1]
     //p3 = pointlist[2]
     //p4 = pointlist[3]
-    arlCore::Point::sptr pa =  arlCore::Point::New();
-    arlCore::Point::sptr pb =  arlCore::Point::New();
-    arlCore::Point::sptr p1 =  arlCore::Point::New( get(0) );
-    arlCore::Point::sptr p2 =  arlCore::Point::New( get(1) );
-    arlCore::Point::sptr p3 =  arlCore::Point::New( get(2) );
-    arlCore::Point::sptr p4 =  arlCore::Point::New( get(3) );
+    arlCore::Point::sptr pa = arlCore::Point::New();
+    arlCore::Point::sptr pb = arlCore::Point::New();
+    arlCore::Point::sptr p1 = arlCore::Point::New( get(0) );
+    arlCore::Point::sptr p2 = arlCore::Point::New( get(1) );
+    arlCore::Point::sptr p3 = arlCore::Point::New( get(2) );
+    arlCore::Point::sptr p4 = arlCore::Point::New( get(3) );
 
-    arlCore::Point::sptr p13 =  arlCore::Point::New();
-    arlCore::Point::sptr p43 =  arlCore::Point::New();
-    arlCore::Point::sptr p21 =  arlCore::Point::New();
+    arlCore::Point::sptr p13 = arlCore::Point::New();
+    arlCore::Point::sptr p43 = arlCore::Point::New();
+    arlCore::Point::sptr p21 = arlCore::Point::New();
 
     double d1343,d4321,d1321,d4343,d2121;
-    double numer,denom, eps=1e-12;
+    double numer,denom, eps = 1e-12;
     p13->set(0, p1->x() - p3->x() );    p13->set(1, p1->y() - p3->y() );    p13->set(2, p1->z() - p3->z() );
     p43->set(0, p4->x() - p3->x() );    p43->set(1, p4->y() - p3->y() );    p43->set(2, p4->z() - p3->z() );
     if (fabs(p43->x())  < eps && fabs(p43->y())  < eps && fabs(p43->z())  < eps)
+    {
         return(false);
+    }
 
     p21->set(0, p2->x() - p1->x() );    p21->set(1, p2->y() - p1->y() );    p21->set(2, p2->z() - p1->z() );
     if (fabs(p21->x())  < eps && fabs(p21->y())  < eps && fabs(p21->z())  < eps)
-       return(false);
+    {
+        return(false);
+    }
 
     d1343 = p13->x() * p43->x() + p13->y() * p43->y() + p13->z() * p43->z();
     d4321 = p43->x() * p21->x() + p43->y() * p21->y() + p43->z() * p21->z();
@@ -607,7 +739,9 @@ bool arlCore::PointList::twoLinesClosestPoint(Point::sptr closestPoint, double &
 
     denom = d2121 * d4343 - d4321 * d4321;
     if (fabs(denom) < eps)
+    {
         return(false);
+    }
     numer = d1343 * d4321 - d1321 * d4343;
 
     double mua = numer / denom;
@@ -627,45 +761,54 @@ bool arlCore::PointList::twoLinesClosestPoint(Point::sptr closestPoint, double &
     return true;
 }
 
-unsigned int arlCore::PointList::shapeRandom( unsigned int nbPoints, ARLCORE_SHAPE type, Point::csptr centre, const double size, const double angle)
+unsigned int arlCore::PointList::shapeRandom( unsigned int nbPoints, ARLCORE_SHAPE type, Point::csptr centre,
+                                              const double size, const double angle)
 {
     m_pointList.clear();
-    if(type<=ARLCORE_SHAPE_UNKNOWN ||type>=ARLCORE_SHAPE_NBSHAPES) return 0;
+    if(type<=ARLCORE_SHAPE_UNKNOWN ||type>=ARLCORE_SHAPE_NBSHAPES)
+    {
+        return 0;
+    }
     unsigned int i, j;
     if(type==ARLCORE_SHAPE_CHESSBOARD)
     {   // nbPoints = Number of points by side of the square
-        if(centre->size()<2) return 0; // Point dimension at least = 2
-        const double Step = size/(double)(nbPoints-1);
+        if(centre->size()<2)
+        {
+            return 0;                  // Point dimension at least = 2
+        }
+        const double Step                 = size/(double)(nbPoints-1);
         arlCore::Point::sptr currentPoint = arlCore::Point::New(centre);
         // firstPoint is the Upper left coin
         const double Xorg = centre->x()-size/2.0;
         const double Yorg = centre->y()-size/2.0;
-        for( i=0 ; i<nbPoints ; ++i )
-            for( j=0 ; j<nbPoints ; ++j )
+        for( i = 0; i<nbPoints; ++i )
+        {
+            for( j = 0; j<nbPoints; ++j )
             {
                 currentPoint->x(Xorg + (double)i*Step);
                 currentPoint->y(Yorg + (double)j*Step);
                 push_back(currentPoint);
             }
+        }
         return nbPoints*nbPoints;
     }
     switch(type)
     {
-    case ARLCORE_SHAPE_CUBE: setName("Random points in a cube");break;
-    case ARLCORE_SHAPE_SPHERE: setName("Random points in a sphere");break;
-    case ARLCORE_SHAPE_SPHERE_CAP: setName("Random points on a sphere cap");break;
-    case ARLCORE_SHAPE_DISC: setName("Random points on a disc");break;
-    case ARLCORE_SHAPE_PLAINSQUARE: setName("Random points on a plain square");break;
-    case ARLCORE_SHAPE_CIRCLE: setName("Random points on a circle");break;
-    case ARLCORE_SHAPE_EDGESQUARE: setName("Random points on a edge square");break;
-    case ARLCORE_SHAPE_SOLIDANGLE: setName("Random points in a solid angle");break;
-    case ARLCORE_SHAPE_SOLIDANGLE_SURFACE: setName("Random points on a solid angle surface");break;
-    default: break;
+        case ARLCORE_SHAPE_CUBE: setName("Random points in a cube"); break;
+        case ARLCORE_SHAPE_SPHERE: setName("Random points in a sphere"); break;
+        case ARLCORE_SHAPE_SPHERE_CAP: setName("Random points on a sphere cap"); break;
+        case ARLCORE_SHAPE_DISC: setName("Random points on a disc"); break;
+        case ARLCORE_SHAPE_PLAINSQUARE: setName("Random points on a plain square"); break;
+        case ARLCORE_SHAPE_CIRCLE: setName("Random points on a circle"); break;
+        case ARLCORE_SHAPE_EDGESQUARE: setName("Random points on a edge square"); break;
+        case ARLCORE_SHAPE_SOLIDANGLE: setName("Random points in a solid angle"); break;
+        case ARLCORE_SHAPE_SOLIDANGLE_SURFACE: setName("Random points on a solid angle surface"); break;
+        default: break;
     }
-    m_dimension=3;
-    for( i=0 ; i<nbPoints ; ++i )
+    m_dimension = 3;
+    for( i = 0; i<nbPoints; ++i )
     {
-        arlCore::Point::sptr tmp=arlCore::Point::New(centre);
+        arlCore::Point::sptr tmp = arlCore::Point::New(centre);
         tmp->shapeRandom(type, size, angle);
         push_back(tmp);
     }
@@ -678,10 +821,15 @@ unsigned int arlCore::PointList::randomList( PointList::csptr A, unsigned int n 
     std::vector<unsigned int> v;
     clear();
     arlRandom::randomIndex( A->size(), v, n );
-    while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
+    while(!lockWriteMutex())
+    {
+        std::cerr<<"PointList write locked\n";
+    }
     PointList::sptr Anc = PointList::constCast(A);
-    for( i=0 ; i<n ; ++i )
-        m_pointList.push_back( Point::New( (*Anc)[i]) ) ;
+    for( i = 0; i<n; ++i )
+    {
+        m_pointList.push_back( Point::New( (*Anc)[i]) );
+    }
     unlockWriteMutex();
     return n;
 }
@@ -689,14 +837,20 @@ unsigned int arlCore::PointList::randomList( PointList::csptr A, unsigned int n 
 bool arlCore::PointList::plot( const std::string &options ) const
 {
     const bool JustVisible = false;
-    const bool Overwrite = true;
+    const bool Overwrite   = true;
     save("000000.dat", ARLCORE_POINT_SAVE_GNUPLOT, JustVisible, Overwrite);
     std::fstream file;
     file.open (TMP_FILE, std::fstream::out);
-    if(!file.is_open()) return false;
+    if(!file.is_open())
+    {
+        return false;
+    }
     file<<"set title '"<<getName()<<"'\n";
     file<<options<<"\n";
-    if(getDimension()==3) file<<"s";
+    if(getDimension()==3)
+    {
+        file<<"s";
+    }
     file<<"plot ";
     file<<"\"000000.dat\"\n";
     file<<"pause -1 \"Hit return to continue\"\n";
@@ -714,20 +868,23 @@ bool arlCore::PointList::SLplot( void ) const
     vgl_plane_3d< double > p;
     unsigned int n;
     const bool JustVisible = false;
-    const bool Overwrite = true;
+    const bool Overwrite   = true;
     save("c:/000000.dat", ARLCORE_POINT_SAVE_GNUPLOT, JustVisible, Overwrite);
-    for( i=-30 ; i<30 ; ++i)
+    for( i = -30; i<30; ++i)
     {
         if(i!=0)
         {
-            n=this->plane( p, rms, min, max, i);
+            n = this->plane( p, rms, min, max, i);
             if(n>3)
             {
                 std::fstream file;
                 file.open ("c:/000000.dem", std::fstream::out);
                 file<<"set title 'Nuage de points & plans mdians\n";
                 file<<"splot ";
-                if(!file.is_open()) return false;
+                if(!file.is_open())
+                {
+                    return false;
+                }
                 file<<"("<<p.a()<<"*x+("<<p.b()<<")*y+("<<p.d()<<"))/(-("<<p.c()<<")),";
                 file<<"\"c:/000000.dat\"\n";
                 file<<"pause -1 \"Hit return to continue\"\n";
@@ -741,26 +898,38 @@ bool arlCore::PointList::SLplot( void ) const
 }
 
 template <typename T>
-bool internSave( const T &pl, const std::string &fileName, const std::string &name, arlCore::ARLCORE_POINT_SAVE_TYPE type,  bool justVisible, bool overwrite )
+bool internSave( const T &pl, const std::string &fileName, const std::string &name,
+                 arlCore::ARLCORE_POINT_SAVE_TYPE type,  bool justVisible, bool overwrite )
 {
-    if(pl.size()==0) return false;
+    if(pl.size()==0)
+    {
+        return false;
+    }
     const unsigned int Dim = pl[0]->size();
     unsigned int i, n;
 #ifdef _DEBUG
     // List shoud contains points with the same dimension
-    for( i=0 ; i<pl.size() ; ++i )
+    for( i = 0; i<pl.size(); ++i )
     {
         if(pl[i]!=0)
+        {
             if(pl[i]->isOK())
             {
                 assert(pl[i]->size()==Dim);
             }
+        }
     }
 #endif // _DEBUG
     std::fstream file;
-    if(arlFile::fileExist(fileName) && !overwrite) return false;
+    if(arlFile::fileExist(fileName) && !overwrite)
+    {
+        return false;
+    }
     file.open(fileName.c_str(), std::fstream::out);
-    if(!file.is_open()) return false;
+    if(!file.is_open())
+    {
+        return false;
+    }
     if(type==arlCore::ARLCORE_POINT_SAVE_FULL || type==arlCore::ARLCORE_POINT_SAVE_LIGHT)
     {
         file<<"FileType PointList\n";
@@ -768,7 +937,9 @@ bool internSave( const T &pl, const std::string &fileName, const std::string &na
         file<<"Dimension "<<Dim<<"\n";
     }
     if(type==arlCore::ARLCORE_POINT_SAVE_GNUPLOT)
+    {
         file<<"#ARL points list for GNUPLOT\n";
+    }
     if(type==arlCore::ARLCORE_POINT_SAVE_VTK)
     {
         file<<"# vtk DataFile Version 3.1\n";
@@ -777,27 +948,36 @@ bool internSave( const T &pl, const std::string &fileName, const std::string &na
         file<<"DATASET UNSTRUCTURED_GRID\n\n";
         file<<"POINTS "<<(unsigned int)pl.size()<<" double\n";
     }
-    for( i=0, n=0 ; i<pl.size() ; ++i )
+    for( i = 0, n = 0; i<pl.size(); ++i )
+    {
         if(pl[i]!=0)
+        {
             if(pl[i]->isOK())
+            {
                 if(!justVisible || pl[i]->isVisible())
                 {
                     pl[i]->save(file, n, type);
                     ++n;
                 }
+            }
+        }
+    }
     if(type==arlCore::ARLCORE_POINT_SAVE_VTK)
     {
         file<<"\nCELLS 1 "<<(unsigned int)pl.size()+1<<"\n";
         file<<(unsigned int)pl.size()<<"\t";
-        for( i=0 ; i<pl.size() ; ++i )
+        for( i = 0; i<pl.size(); ++i )
+        {
             file<<i<<" ";
+        }
         file<<"\n\nCELL_TYPES 1\n2\n";
     }
     file.close();
     return true;
 }
 
-bool arlCore::PointList::save( const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type,  bool justVisible, bool overwrite ) const
+bool arlCore::PointList::save( const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type,  bool justVisible,
+                               bool overwrite ) const
 {
     bool b = internSave( m_pointList, fileName, getName(), type, justVisible, overwrite );
     if( b && type==arlCore::ARLCORE_POINT_SAVE_VTK )
@@ -805,34 +985,64 @@ bool arlCore::PointList::save( const std::string &fileName, ARLCORE_POINT_SAVE_T
         unsigned int i;
         std::fstream file;
         file.open(fileName.c_str(), std::fstream::out | std::fstream::app);
-        if(!file.is_open()) return b;
+        if(!file.is_open())
+        {
+            return b;
+        }
         file<<"\nPOINT_DATA "<<size();
         file<<"\n\nSCALARS error double 1\nLOOKUP_TABLE default\n";
-        for( i=0 ; i<size() ; ++i )
+        for( i = 0; i<size(); ++i )
+        {
             if(m_pointList[i]!=0)
+            {
                 if(m_pointList[i]->isOK())
+                {
                     file<<m_pointList[i]->getError()<<" ";
+                }
+            }
+        }
         file<<"\nSCALARS scalar double 1\nLOOKUP_TABLE default\n";
-        for( i=0 ; i<size() ; ++i )
+        for( i = 0; i<size(); ++i )
+        {
             if(m_pointList[i]!=0)
+            {
                 if(m_pointList[i]->isOK())
+                {
                     file<<m_pointList[i]->getScalar()<<" ";
+                }
+            }
+        }
         file<<"\n\nSCALARS visible char 1\nLOOKUP_TABLE default\n";
-        for( i=0 ; i<size() ; ++i )
+        for( i = 0; i<size(); ++i )
+        {
             if(m_pointList[i]!=0)
+            {
                 if(m_pointList[i]->isOK())
                 {
                     if(m_pointList[i]->isVisible())
+                    {
                         file<<"1 ";
-                    else file<<"0 ";
+                    }
+                    else
+                    {
+                        file<<"0 ";
+                    }
                 }
+            }
+        }
         if(getDimension()==3)
         {
             file<<"\n\nTENSORS covariance double\n";
-            for( i=0 ; i<size() ; ++i )
+            for( i = 0; i<size(); ++i )
+            {
                 if(m_pointList[i]!=0)
+                {
                     if(m_pointList[i]->isOK())
+                    {
                         file<<m_pointList[i]->getCovMatrix()<<"\n";
+                    }
+                }
+            }
         }
         file.close();
     }
@@ -842,9 +1052,12 @@ unsigned int addPoints( arlCore::PointList::sptr ptsList, double step )
 {
     return 0;
     // Reechantillonne le triangle form� par les 3 derniers points
-    unsigned int n=0;
+    unsigned int n          = 0;
     const unsigned int Size = ptsList->size();
-    if(Size<3) return n;
+    if(Size<3)
+    {
+        return n;
+    }
     arlCore::Point::csptr A = (*ptsList)[Size-1];
     arlCore::Point::csptr B = (*ptsList)[Size-2];
     arlCore::Point::csptr C = (*ptsList)[Size-3];
@@ -856,7 +1069,10 @@ unsigned int addPoints( arlCore::PointList::sptr ptsList, double step )
 
 bool arlCore::PointList::load( const std::string &fileName, double step )
 {
-    if(fileName=="") return false;
+    if(fileName=="")
+    {
+        return false;
+    }
     std::ifstream file;
     file.open (fileName.c_str(), std::fstream::in);
     if(!file.is_open())
@@ -867,8 +1083,8 @@ bool arlCore::PointList::load( const std::string &fileName, double step )
     std::string extractFolder, extractFile, ext;
     arlString::splitFilename( fileName, extractFolder, extractFile, ext );
     const bool Trian = (ext=="trian");
-    const bool Raw = (ext=="raw");
-    unsigned int i=0, n=0;
+    const bool Raw   = (ext=="raw");
+    unsigned int i   = 0, n = 0;
     int no;
     std::string token,text;
     double version;
@@ -879,8 +1095,11 @@ bool arlCore::PointList::load( const std::string &fileName, double step )
         unsigned int nbPts;
         double x,y,z;
         file>>nbPts;
-        while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
-        for( ; i<nbPts ; ++i )
+        while(!lockWriteMutex())
+        {
+            std::cerr<<"PointList write locked\n";
+        }
+        for(; i<nbPts; ++i )
         {
             file>>x>>y>>z;
             Point::sptr p = Point::New();
@@ -889,7 +1108,12 @@ bool arlCore::PointList::load( const std::string &fileName, double step )
             p->z(z);
             m_pointList.push_back( p );
             if(step>0)
-                if((i+1)%3==0) addPoints( getSptr() , step);
+            {
+                if((i+1)%3==0)
+                {
+                    addPoints( getSptr(), step);
+                }
+            }
         }
         unlockWriteMutex();
         file.close();
@@ -899,7 +1123,10 @@ bool arlCore::PointList::load( const std::string &fileName, double step )
     {
         m_dimension = 3;
         double x,y,z;
-        while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
+        while(!lockWriteMutex())
+        {
+            std::cerr<<"PointList write locked\n";
+        }
         while(!file.eof())
         {
             file>>x>>y>>z;
@@ -909,14 +1136,22 @@ bool arlCore::PointList::load( const std::string &fileName, double step )
             p->z(z);
             m_pointList.push_back( p );
             if(step>0)
-                if((i+1)%3==0) addPoints( getSptr(), step);
+            {
+                if((i+1)%3==0)
+                {
+                    addPoints( getSptr(), step);
+                }
+            }
             ++i;
         }
         unlockWriteMutex();
         file.close();
         return true;
     }
-    while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
+    while(!lockWriteMutex())
+    {
+        std::cerr<<"PointList write locked\n";
+    }
     do
     {   // Reading header
         file>>token;
@@ -928,39 +1163,60 @@ bool arlCore::PointList::load( const std::string &fileName, double step )
                 unlockWriteMutex();
                 return false;
             }
-            n=(n|1);
+            n = (n|1);
         }
-        if(token=="Version") {file>>version; n=(n|2);}
-        if(token=="Dimension") {file>>m_dimension; n=(n|4);}
+        if(token=="Version")
+        {
+            file>>version; n = (n|2);
+        }
+        if(token=="Dimension")
+        {
+            file>>m_dimension; n = (n|4);
+        }
         if(file.eof())
         {
             std::cerr<<"PointList Loading Header error : "<<fileName<<"\n";
             unlockWriteMutex();
             return false;
         }
-    } while(n!=7);
+    }
+    while(n!=7);
     unlockWriteMutex();
     bool b;
     do
     {
         Point::sptr p = Point::New();
-        b=p->load(file,no,m_dimension);
+        b = p->load(file,no,m_dimension);
         if(b)
         {
-            if(no<0) push_back(p);
+            if(no<0)
+            {
+                push_back(p);
+            }
             else
             {
-                while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
+                while(!lockWriteMutex())
+                {
+                    std::cerr<<"PointList write locked\n";
+                }
                 assert(no>=0);
-                for( i=size() ; i<=(unsigned int)no ; ++i )
+                for( i = size(); i<=(unsigned int)no; ++i )
+                {
                     m_pointList.push_back( arlCore::Point::sptr() );
+                }
                 if( !m_pointList[no] )
-                    m_pointList[no]= p;
-                else m_pointList[no]->pond(p);
+                {
+                    m_pointList[no] = p;
+                }
+                else
+                {
+                    m_pointList[no]->pond(p);
+                }
                 unlockWriteMutex();
             }
         }
-    }while(b);
+    }
+    while(b);
     file.close();
     return true;
 }
@@ -977,43 +1233,74 @@ arlCore::Point::csptr arlCore::PointList::operator[]( unsigned int i ) const
 
 arlCore::Point::sptr arlCore::PointList::get( unsigned int i )
 {   // FIXME Problem de validite de l'objet retourne
-    if(i<0 || i>=size()) return arlCore::Point::sptr();
-    else return m_pointList[i];
+    if(i<0 || i>=size())
+    {
+        return arlCore::Point::sptr();
+    }
+    else
+    {
+        return m_pointList[i];
+    }
 }
 
 arlCore::Point::csptr arlCore::PointList::get( unsigned int i ) const
 {
-    if(i<0 || i>=size()) return arlCore::Point::sptr();
+    if(i<0 || i>=size())
+    {
+        return arlCore::Point::sptr();
+    }
     arlCore::Point::csptr P = m_pointList[i];
     return P;
 }
 
 arlCore::Point::sptr arlCore::PointList::back( void )
 {   // FIXME Problem de validite de l'objet retourne
-    if(size()<1) return arlCore::Point::sptr();
+    if(size()<1)
+    {
+        return arlCore::Point::sptr();
+    }
     return get(size()-1);
 }
 
 arlCore::Point::csptr arlCore::PointList::back( void ) const
 {   // FIXME Problem de validite de l'objet retourne
-    if(size()<1) return arlCore::Point::sptr();
-    else return get(size()-1);
+    if(size()<1)
+    {
+        return arlCore::Point::sptr();
+    }
+    else
+    {
+        return get(size()-1);
+    }
 }
 
 unsigned int arlCore::PointList::push_back(PointList::csptr p )
 {
-    unsigned int i,n=0;
-    for( i=0 ; i< p->size() ; ++i )
-        if(push_back(( (*p)[i]))) ++n;
+    unsigned int i,n = 0;
+    for( i = 0; i< p->size(); ++i )
+    {
+        if(push_back(( (*p)[i])))
+        {
+            ++n;
+        }
+    }
     return n;
 }
 
 bool arlCore::PointList::push_back( Point::csptr p )
 {
     if(m_dimension!=p->size())
-        if(size()!=0) return false;
+    {
+        if(size()!=0)
+        {
+            return false;
+        }
+    }
     setDimension(p->size());
-    while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
+    while(!lockWriteMutex())
+    {
+        std::cerr<<"PointList write locked\n";
+    }
     m_pointList.push_back( Point::constCast(p) );
     unlockWriteMutex();
     return true;
@@ -1022,9 +1309,17 @@ bool arlCore::PointList::push_back( Point::csptr p )
 bool arlCore::PointList::push_back( double x, double y )
 {
     if(m_dimension!=2)
-        if(size()!=0) return false;
+    {
+        if(size()!=0)
+        {
+            return false;
+        }
+    }
     setDimension(2);
-    while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
+    while(!lockWriteMutex())
+    {
+        std::cerr<<"PointList write locked\n";
+    }
     arlCore::Point::sptr newPt = arlCore::Point::New();
     newPt->init(2);
     newPt->x(x); newPt->y(y);
@@ -1036,11 +1331,19 @@ bool arlCore::PointList::push_back( double x, double y )
 bool arlCore::PointList::push_back( double x, double y, double z )
 {
     if(m_dimension!=3)
-        if(size()!=0) return false;
+    {
+        if(size()!=0)
+        {
+            return false;
+        }
+    }
     setDimension(3);
-    while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
+    while(!lockWriteMutex())
+    {
+        std::cerr<<"PointList write locked\n";
+    }
     arlCore::Point::sptr newPt = arlCore::Point::New();
-    newPt->x(x); newPt->y(y);newPt->z(z);
+    newPt->x(x); newPt->y(y); newPt->z(z);
     m_pointList.push_back( newPt );
     unlockWriteMutex();
     return true;
@@ -1048,15 +1351,24 @@ bool arlCore::PointList::push_back( double x, double y, double z )
 
 void arlCore::PointList::pop_back( void )
 {
-    if(m_pointList.size()<1) return;
-    while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
+    if(m_pointList.size()<1)
+    {
+        return;
+    }
+    while(!lockWriteMutex())
+    {
+        std::cerr<<"PointList write locked\n";
+    }
     m_pointList.pop_back();
     unlockWriteMutex();
 }
 
 void arlCore::PointList::clear( void )
 {
-    while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
+    while(!lockWriteMutex())
+    {
+        std::cerr<<"PointList write locked\n";
+    }
     m_pointList.clear();
     unlockWriteMutex();
 }
@@ -1068,40 +1380,65 @@ unsigned int arlCore::PointList::size( void ) const
 
 unsigned int arlCore::PointList::visibleSize( void ) const
 {
-    unsigned int i, n=0;
-    for( i=0 ; i<m_pointList.size() ; ++i )
+    unsigned int i, n = 0;
+    for( i = 0; i<m_pointList.size(); ++i )
+    {
         if(m_pointList[i])
-            if(m_pointList[i]->isVisible()) ++n;
+        {
+            if(m_pointList[i]->isVisible())
+            {
+                ++n;
+            }
+        }
+    }
     return n;
 }
 
-bool arlCore::PointList::properties( arlCore::Point::sptr gravity, arlCore::Point::sptr boundingBox1, arlCore::Point::sptr boundingBox2,
-                        double &minScalar, double &maxScalar, double &std ) const
+bool arlCore::PointList::properties( arlCore::Point::sptr gravity, arlCore::Point::sptr boundingBox1,
+                                     arlCore::Point::sptr boundingBox2,
+                                     double &minScalar, double &maxScalar, double &std ) const
 
 {
-    if(size()<1) return false;
+    if(size()<1)
+    {
+        return false;
+    }
     unsigned int i, j;
     gravity->set(m_pointList[0]);
     boundingBox1->init( getDimension() );
     boundingBox2->init( getDimension() );
     boundingBox1->set(m_pointList[0]);
     boundingBox2->set(m_pointList[0]);
-    minScalar=m_pointList[0]->getScalar();
-    maxScalar=m_pointList[0]->getScalar();
-    for( i=1 ; i<size() ; ++i )
+    minScalar = m_pointList[0]->getScalar();
+    maxScalar = m_pointList[0]->getScalar();
+    for( i = 1; i<size(); ++i )
     {
-        if(m_pointList[0]->getScalar()>maxScalar) maxScalar=m_pointList[0]->getScalar();
-        if(m_pointList[0]->getScalar()<minScalar) minScalar=m_pointList[0]->getScalar();
-        gravity->pond( m_pointList[i] );
-        for( j=0 ; j<m_dimension ; ++j )
+        if(m_pointList[0]->getScalar()>maxScalar)
         {
-            if(m_pointList[i]->get(j)< (*boundingBox1)[j]) boundingBox1->set(j,m_pointList[i]->get(j));
-            if(m_pointList[i]->get(j)> (*boundingBox2)[j]) boundingBox2->set(j,m_pointList[i]->get(j));
+            maxScalar = m_pointList[0]->getScalar();
+        }
+        if(m_pointList[0]->getScalar()<minScalar)
+        {
+            minScalar = m_pointList[0]->getScalar();
+        }
+        gravity->pond( m_pointList[i] );
+        for( j = 0; j<m_dimension; ++j )
+        {
+            if(m_pointList[i]->get(j)< (*boundingBox1)[j])
+            {
+                boundingBox1->set(j,m_pointList[i]->get(j));
+            }
+            if(m_pointList[i]->get(j)> (*boundingBox2)[j])
+            {
+                boundingBox2->set(j,m_pointList[i]->get(j));
+            }
         }
     }
     vnl_vector<double> sub(size());
-    for( i=0 ; i<size() ; ++i )
+    for( i = 0; i<size(); ++i )
+    {
         sub(i) = m_pointList[i]->distance(gravity);
+    }
     std = sub.rms();
     return true;
 }
@@ -1109,48 +1446,67 @@ bool arlCore::PointList::properties( arlCore::Point::sptr gravity, arlCore::Poin
 #ifdef ANN
 unsigned int arlCore::PointList::generateANN( ANNpointArray& annArray ) const
 {
-    unsigned int i,j,n=0;
+    unsigned int i,j,n = 0;
     annDeallocPts( annArray );
-    annArray=annAllocPts(size(), getDimension());
-    for( i=0 ; i<size() ; ++i )
+    annArray = annAllocPts(size(), getDimension());
+    for( i = 0; i<size(); ++i )
+    {
         if(m_pointList[i]!=0)
         {
             ++n;
-            for( j=0 ; j<getDimension() ; ++j )
-                annArray[i][j]=m_pointList[i]->get(j);
+            for( j = 0; j<getDimension(); ++j )
+            {
+                annArray[i][j] = m_pointList[i]->get(j);
+            }
         }
+    }
     return n;
 }
 #endif // ANN
 
 template <typename T>
-unsigned int internFindNearPoint( const T &from, arlCore::Point::csptr pt, std::vector< unsigned int > &pos, double &distMin, double scalar)
+unsigned int internFindNearPoint( const T &from, arlCore::Point::csptr pt, std::vector< unsigned int > &pos,
+                                  double &distMin, double scalar)
 {
     pos.clear();
-    if(from.size()==0) return 0;
-    unsigned int i=0;
-    distMin = arlCore::distance( from[i] ,pt);
-    if(distMin<=scalar) pos.push_back(i);
-    for( i=1 ; i<from.size() ; ++i )
+    if(from.size()==0)
     {
-        double d = arlCore::distance( from[i] ,pt);
-        if(d<=scalar) pos.push_back(i);
-        if(d<distMin) distMin=d;
+        return 0;
+    }
+    unsigned int i = 0;
+    distMin = arlCore::distance( from[i],pt);
+    if(distMin<=scalar)
+    {
+        pos.push_back(i);
+    }
+    for( i = 1; i<from.size(); ++i )
+    {
+        double d = arlCore::distance( from[i],pt);
+        if(d<=scalar)
+        {
+            pos.push_back(i);
+        }
+        if(d<distMin)
+        {
+            distMin = d;
+        }
     }
     return (unsigned int)pos.size();
 }
 
-unsigned int arlCore::findNearPoint( const std::vector<arlCore::Point::csptr> &from, Point::csptr pt, std::vector< unsigned int > &pos, double &distMin, double scalar)
+unsigned int arlCore::findNearPoint( const std::vector<arlCore::Point::csptr> &from, Point::csptr pt,
+                                     std::vector< unsigned int > &pos, double &distMin, double scalar)
 {
     return internFindNearPoint(from, pt, pos, distMin, scalar);
 }
 /*
-unsigned int arlCore::findNearPoint( const std::vector<arlCore::Point::sptr> &from, Point::csptr pt, std::vector< unsigned int > &pos, double &distMin, double scalar)
-{
+   unsigned int arlCore::findNearPoint( const std::vector<arlCore::Point::sptr> &from, Point::csptr pt, std::vector< unsigned int > &pos, double &distMin, double scalar)
+   {
     return internFindNearPoint(from, pt, pos, distMin, scalar);
-}*/
+   }*/
 
-unsigned int arlCore::PointList::findNearPoint(Point::csptr pt, std::vector< unsigned int > &pos, double &distMin, double scalar) const
+unsigned int arlCore::PointList::findNearPoint(Point::csptr pt, std::vector< unsigned int > &pos, double &distMin,
+                                               double scalar) const
 {
     return internFindNearPoint(m_pointList, pt, pos, distMin, scalar);
 }
@@ -1158,69 +1514,82 @@ unsigned int arlCore::PointList::findNearPoint(Point::csptr pt, std::vector< uns
 bool arlCore::PointList::collapse( double g )
 {
     Point::sptr gravity, boundingBox1, boundingBox2;
-    gravity = Point::New();
+    gravity      = Point::New();
     boundingBox1 = Point::New();
     boundingBox2 = Point::New();
     double minScalar, maxScalar, std;
     unsigned int i,j;
     properties( gravity, boundingBox1, boundingBox2, minScalar, maxScalar, std );
     vnl_vector<double> vector(gravity->size());
-    while(!lockWriteMutex()) std::cerr<<"PointList write locked\n";
-    for( i=0 ; i<size() ; ++i )
+    while(!lockWriteMutex())
+    {
+        std::cerr<<"PointList write locked\n";
+    }
+    for( i = 0; i<size(); ++i )
     {
         vector = gravity->getCoordinates()-m_pointList[i]->getCoordinates();
         vector.normalize();
-        for( j=0 ; j<m_pointList[i]->size() ; ++j )
+        for( j = 0; j<m_pointList[i]->size(); ++j )
+        {
             m_pointList[i]->set(j,g*vector[j]+m_pointList[i]->get(j));
+        }
 
     }
     unlockWriteMutex();
     return true;
 }
 
-unsigned int arlCore::PointList::tagCalibration( const std::vector<arlCore::PointList::sptr > &tagList, double delta, unsigned int nbMaxIterations, double &xLength, double &yLength )
+unsigned int arlCore::PointList::tagCalibration( const std::vector<arlCore::PointList::sptr > &tagList, double delta,
+                                                 unsigned int nbMaxIterations, double &xLength, double &yLength )
 {   // TODO Code cleaning & code optimization
     xLength = 0.0, yLength = 0.0;
     assert(tagList.size()>0);
-    if(tagList.size()<1) return 0;
+    if(tagList.size()<1)
+    {
+        return 0;
+    }
     *this = *(tagList[0]);
-    if(tagList.size()==1) return 1;
-    unsigned int i, j, nbIterations=0;
-    double criterion=0;
+    if(tagList.size()==1)
+    {
+        return 1;
+    }
+    unsigned int i, j, nbIterations = 0;
+    double criterion = 0;
     arlCore::vnl_rigid_matrix T;
-    arlCore::PointList::sptr modelRegistration = arlCore::PointList::New() ;
+    arlCore::PointList::sptr modelRegistration = arlCore::PointList::New();
     std::vector< arlCore::PointList::sptr > regPL;
     vnl_vector<double> mean1, mean2;
     mean1.set_size(this->size());
     mean2.set_size(tagList.size());
     mean2.fill(0.0);
     mean1.fill(0.0);
-    do{
+    do
+    {
         ++nbIterations;
-        criterion=0;
-        for( i=0 ; i<tagList.size() ; ++i )
+        criterion = 0;
+        for( i = 0; i<tagList.size(); ++i )
         {
             modelRegistration->clear();
-            T.register3D3D(tagList[i], getSptr() , false);
+            T.register3D3D(tagList[i], getSptr(), false);
             T.trf(tagList[i], modelRegistration);
             arlCore::Point::sptr ref = arlCore::Point::New();
-            for( j=0 ; j<modelRegistration->size() ; ++j )
+            for( j = 0; j<modelRegistration->size(); ++j )
             {
                 ref->x( get(j)->x() ); ref->y( get(j)->y() ); ref->y( get(j)->y() );
                 mean1[j] = (*modelRegistration)[j]->distance( ref );
             }
             const double M = mean1.mean();
             criterion += abs((M - mean2[i]));
-            mean2[i] = M;
+            mean2[i]   = M;
             regPL.push_back(modelRegistration);
         }
         this->clear();
-        for( i=0 ; i<regPL[0]->size() ; ++i )
+        for( i = 0; i<regPL[0]->size(); ++i )
         {
             arlCore::PointList temp;
             arlCore::Point::sptr moyenne;
-            arlCore::Point::sptr tmpPt =  arlCore::Point::New();
-            for( j=0 ; j<regPL.size() ; ++j )
+            arlCore::Point::sptr tmpPt = arlCore::Point::New();
+            for( j = 0; j<regPL.size(); ++j )
             {
                 tmpPt->x( regPL[j]->operator[](i)->x() );
                 //temp.push_back(arlCore::Point(regPL[j][i]->x(),regPL[j][i]->y(),regPL[j][i]->z()));
@@ -1228,13 +1597,14 @@ unsigned int arlCore::PointList::tagCalibration( const std::vector<arlCore::Poin
             temp.statistic(moyenne);
             this->push_back(moyenne);
         }
-    }while(criterion>delta && nbIterations<nbMaxIterations);
+    }
+    while(criterion>delta && nbIterations<nbMaxIterations);
     if(this->size()>2)
     {   // Frame choice
-        const unsigned int OrgPoint=3, XaxisPoint=2, YaxisPoint=0; // TODO Choisir d'autres reperes
+        const unsigned int OrgPoint = 3, XaxisPoint = 2, YaxisPoint = 0; // TODO Choisir d'autres reperes
         arlCore::PointList::sptr modelAxis, unitAxis;
         modelAxis = arlCore::PointList::New();
-        unitAxis = arlCore::PointList::New();
+        unitAxis  = arlCore::PointList::New();
         modelAxis->push_back( arlCore::Point::New( get(OrgPoint)->x(),get(OrgPoint)->y(),get(OrgPoint)->z()) );
         modelAxis->push_back( arlCore::Point::New( get(XaxisPoint)->x(),get(XaxisPoint)->y(),get(XaxisPoint)->z()) );
         xLength = get(OrgPoint)->distance(  get(XaxisPoint) );
@@ -1261,12 +1631,15 @@ unsigned int arlCore::PointList::tagCalibration( const std::vector<arlCore::Poin
 double smallerRatio( double gaussianError, const vnl_vector<double> &V )
 {   // Elements de V croissant. Ratio = Grand/Petit
     assert(V.size()>1);
-    double ratio, min=DBL_MAX;
+    double ratio, min = DBL_MAX;
     unsigned int i;//,j;
-    for( i=0 ; i<V.size()-1 ; ++i )
+    for( i = 0; i<V.size()-1; ++i )
     {
         ratio = (V[i+1]-gaussianError)/(V[i]+gaussianError);
-        if(ratio<min) min=ratio;
+        if(ratio<min)
+        {
+            min = ratio;
+        }
     }
 /*  {
         std::cout<<V<<" ";
@@ -1280,29 +1653,50 @@ double smallerRatio( double gaussianError, const vnl_vector<double> &V )
     return min;
 }
 
-bool shapesProperties( double gaussianError, const std::vector<vnl_vector<double> > &shapes, vnl_vector<double> &ratiosMin, vnl_vector<double> &perimeters )
+bool shapesProperties( double gaussianError, const std::vector<vnl_vector<double> > &shapes,
+                       vnl_vector<double> &ratiosMin, vnl_vector<double> &perimeters )
 {
     const bool Verbose = false;
-    if(shapes.size()<1) return false;
+    if(shapes.size()<1)
+    {
+        return false;
+    }
     unsigned int i;
 //  std::vector< vnl_vector<unsigned int> >index;
-    if(Verbose) std::cerr<<"Nb de "<<shapes[0].size()<<"-formes : "<<(unsigned int)shapes.size()<<"\n";
+    if(Verbose)
+    {
+        std::cerr<<"Nb de "<<shapes[0].size()<<"-formes : "<<(unsigned int)shapes.size()<<"\n";
+    }
     ratiosMin.set_size((unsigned int)shapes.size());
     perimeters.set_size((unsigned int)shapes.size());
-    for( i=0 ; i<(unsigned int)shapes.size() ; ++i )
+    for( i = 0; i<(unsigned int)shapes.size(); ++i )
     {
-        ratiosMin[i] = smallerRatio(gaussianError, shapes[i]);
+        ratiosMin[i]  = smallerRatio(gaussianError, shapes[i]);
         perimeters[i] = shapes[i].sum();
 //      std::cout<<"Shape "<<i<<" : Perimeter="<<perimeters[i]<<" - ratioMin="<<ratiosMin[i]<<"\n";
     }
-    if(Verbose) std::cerr<<"Smaller Ratio : Min="<<ratiosMin.min_value()<<" Max="<<ratiosMin.max_value()<<" Mean="<<ratiosMin.mean()<<"\n";
-    if(Verbose) std::cerr<<"Perimeters : Min="<<perimeters.min_value()<<" Max="<<perimeters.max_value()<<" Mean="<<perimeters.mean()<<"\n";
+    if(Verbose)
+    {
+        std::cerr<<"Smaller Ratio : Min="<<ratiosMin.min_value()<<" Max="<<ratiosMin.max_value()<<" Mean="<<
+            ratiosMin.mean()<<"\n";
+    }
+    if(Verbose)
+    {
+        std::cerr<<"Perimeters : Min="<<perimeters.min_value()<<" Max="<<perimeters.max_value()<<" Mean="<<
+            perimeters.mean()<<"\n";
+    }
     return true;
 }
 
-double shapesMatching( double gaussianError, const std::vector<vnl_vector<double> >& V1, const std::vector<vnl_vector<double> >& V2, std::vector<std::pair<double, vnl_vector_fixed<unsigned int,2> > > &matching)
+double shapesMatching( double gaussianError, const std::vector<vnl_vector<double> >& V1,
+                       const std::vector<vnl_vector<double> >& V2, std::vector<std::pair<double,
+                                                                                         vnl_vector_fixed<unsigned int,
+                                                                                                          2> > > &matching)
 {
-    if(V1.size()<=0 || V2.size()<=0) return 0.0;
+    if(V1.size()<=0 || V2.size()<=0)
+    {
+        return 0.0;
+    }
     unsigned int ShapeDim = V2[0].size();
     vnl_vector<double> ratiosMin;
     vnl_vector<double> perimeters;
@@ -1313,9 +1707,10 @@ double shapesMatching( double gaussianError, const std::vector<vnl_vector<double
 //  if(DiscrSommetMin<DiscrSommetTol) DiscrSommetMin=DiscrSommetTol;
     const unsigned int size = V1[0].size();
     unsigned int i,j;
-    double realMax=-1;
-    for( i=0 ; i<V1.size() ; ++i )
-        for( j=0 ; j<V2.size() ; ++j )
+    double realMax = -1;
+    for( i = 0; i<V1.size(); ++i )
+    {
+        for( j = 0; j<V2.size(); ++j )
         {
             assert(V1[i].size()==size && V2[j].size()==size);
             //if(smallerRatio(V1[i])>=DiscrSommetMin && smallerRatio(V2[j])>=DiscrSommetMin)
@@ -1323,29 +1718,43 @@ double shapesMatching( double gaussianError, const std::vector<vnl_vector<double
             {
                 vnl_vector_fixed<unsigned int,2> index(i,j);
                 double similarite = (V1[i]-V2[j]).rms();
-            //  if(similarite<3) std::cout<<similarite<<"\n";
-                if(similarite>realMax) realMax=similarite;
-                if(similarite<=gaussianError*2*ShapeDim) matching.push_back(std::make_pair(similarite,index));
+                //  if(similarite<3) std::cout<<similarite<<"\n";
+                if(similarite>realMax)
+                {
+                    realMax = similarite;
+                }
+                if(similarite<=gaussianError*2*ShapeDim)
+                {
+                    matching.push_back(std::make_pair(similarite,index));
+                }
             }
         }
+    }
 //  std::cout<<"Shape matching Real Max : "<<realMax<<" shapematching size="<<matching.size()<<"\n";
     return realMax;
 }
 
-unsigned int generateTrianglesList( /*unsigned int shapeSize, */double decimage, arlCore::PointList::csptr points, std::vector<vnl_vector<double> > &shapes,  std::vector< vnl_vector<unsigned int> > &index )
+unsigned int generateTrianglesList( /*unsigned int shapeSize, */ double decimage, arlCore::PointList::csptr points,
+                                                                 std::vector<vnl_vector<double> > &shapes,
+                                                                 std::vector< vnl_vector<unsigned int> > &index )
 {
-    const bool Verbose = false;
+    const bool Verbose           = false;
     const unsigned int ShapeSize = 3;
-    unsigned int step = (unsigned int)(1.0/decimage);
-    if(step<1) step=1;
+    unsigned int step            = (unsigned int)(1.0/decimage);
+    if(step<1)
+    {
+        step = 1;
+    }
     const bool ImpossiblePath = true;
-    unsigned int i,j,k/*,l*/;
+    unsigned int i,j,k /*,l*/;
     vnl_vector<unsigned int> ix(ShapeSize);
     vnl_vector<double> sh(ShapeSize);
 //  std::vector<std::pair<double,unsigned int> > V0(ShapeSize);
-    for( i=0 ; i<points->size() ; i+=step )
-        for( j=i+1 ; j<points->size() ; j+=step )
-            for( k=j+1 ; k< points->size() ; k+=step )
+    for( i = 0; i<points->size(); i += step )
+    {
+        for( j = i+1; j<points->size(); j += step )
+        {
+            for( k = j+1; k< points->size(); k += step )
             {   // Ordonnancement des distances
                 const double d0 = arlCore::distance((*points)[i],(*points)[j] );
                 const double d1 = arlCore::distance((*points)[j],(*points)[k] );
@@ -1359,34 +1768,61 @@ unsigned int generateTrianglesList( /*unsigned int shapeSize, */double decimage,
                     sh[l]=V0[l].first;
                     ix(l)=V0[l].second;
                 }*/
-                if( d0<=d1 && d1<=d2 ) {sh[0]=d0,sh[1]=d1,sh[2]=d2,ix[0]=i,ix[1]=j,ix[2]=k;}
-                else if( d0<=d2 && d2<=d1 ) {sh[0]=d0,sh[1]=d2,sh[2]=d1,ix[0]=j,ix[1]=i,ix[2]=k;}
-                    else if( d1<=d0 && d0<=d2 ) {sh[0]=d1,sh[1]=d0,sh[2]=d2,ix[0]=k,ix[1]=j,ix[2]=i;}
-                        else if( d1<=d2 && d2<=d0 ) {sh[0]=d1,sh[1]=d2,sh[2]=d0,ix[0]=j,ix[1]=k,ix[2]=i;}
-                            else if( d2<=d0 && d0<=d1 ) {sh[0]=d2,sh[1]=d0,sh[2]=d1,ix[0]=k,ix[1]=i,ix[2]=j;}
-                                else if( d2<=d1 && d1<=d0 ) {sh[0]=d2,sh[1]=d1,sh[2]=d0,ix[0]=i,ix[1]=k,ix[2]=j;}
-                                    else assert(ImpossiblePath);
+                if( d0<=d1 && d1<=d2 )
+                {
+                    sh[0] = d0,sh[1] = d1,sh[2] = d2,ix[0] = i,ix[1] = j,ix[2] = k;
+                }
+                else if( d0<=d2 && d2<=d1 )
+                {
+                    sh[0] = d0,sh[1] = d2,sh[2] = d1,ix[0] = j,ix[1] = i,ix[2] = k;
+                }
+                else if( d1<=d0 && d0<=d2 )
+                {
+                    sh[0] = d1,sh[1] = d0,sh[2] = d2,ix[0] = k,ix[1] = j,ix[2] = i;
+                }
+                else if( d1<=d2 && d2<=d0 )
+                {
+                    sh[0] = d1,sh[1] = d2,sh[2] = d0,ix[0] = j,ix[1] = k,ix[2] = i;
+                }
+                else if( d2<=d0 && d0<=d1 )
+                {
+                    sh[0] = d2,sh[1] = d0,sh[2] = d1,ix[0] = k,ix[1] = i,ix[2] = j;
+                }
+                else if( d2<=d1 && d1<=d0 )
+                {
+                    sh[0] = d2,sh[1] = d1,sh[2] = d0,ix[0] = i,ix[1] = k,ix[2] = j;
+                }
+                else
+                {
+                    assert(ImpossiblePath);
+                }
                 shapes.push_back(sh);
                 index.push_back(ix);
             }
+        }
+    }
     if(Verbose)
     {   // Affichage de la liste de points, de segments et d'index
-        for( i=0 ; i<points->size() ; ++i )
+        for( i = 0; i<points->size(); ++i )
+        {
             std::cout<<i<<" : "<< (*points)[i]->getString()<<"\n";
-        for( i=0 ; i<shapes.size() ; ++i )
+        }
+        for( i = 0; i<shapes.size(); ++i )
+        {
             std::cout<<i<<" : "<<shapes[i]<<" Index : "<<index[i]<<"\n";
+        }
     }
     return (unsigned int)shapes.size();
 }
 
 unsigned int arlCore::matching3D3D( PointList::csptr a, PointList::csptr b, double gaussianError, double decimage,
-                                    PointList::sptr  Va, PointList::sptr  Vb )
+                                    PointList::sptr Va, PointList::sptr Vb )
 {   // b = T*a ; A=echantillon mesure ; B=modele reel
-    const bool Verbose = false;
+    const bool Verbose          = false;
     const unsigned int ShapeDim = 3; // Triangle = 3 cotes
-    const double ProbaMin=10e-1;//10e-6;
-    const double NumericNoise=1e-13;
-    const double SimilariteMax=gaussianError*ShapeDim+NumericNoise; // mm
+    const double ProbaMin       = 10e-1;//10e-6;
+    const double NumericNoise   = 1e-13;
+    const double SimilariteMax  = gaussianError*ShapeDim+NumericNoise; // mm
 
     Va->clear(); Vb->clear();
     assert(a->getDimension()==b->getDimension());
@@ -1394,39 +1830,66 @@ unsigned int arlCore::matching3D3D( PointList::csptr a, PointList::csptr b, doub
     unsigned int i,j;
     std::vector<vnl_vector<double> > V1, V2;
     std::vector< vnl_vector<unsigned int> >index1, index2;
-    generateTrianglesList( /*ShapeDim, */decimage, a, V1, index1 );
-    generateTrianglesList( /*ShapeDim, */decimage, b, V2, index2 );
+    generateTrianglesList( /*ShapeDim, */ decimage, a, V1, index1 );
+    generateTrianglesList( /*ShapeDim, */ decimage, b, V2, index2 );
 
     std::vector<std::pair<double, vnl_vector_fixed<unsigned int,2> > > matching;
     double simMax = shapesMatching( gaussianError, V1, V2, matching);
-    if(simMax<0) return 0;
+    if(simMax<0)
+    {
+        return 0;
+    }
     // Tableau des probabilits d'appariement
     vnl_matrix<double> matchingProb(a->size(),b->size());
     matchingProb.fill(1.0);
     double prob;
-    for( i=0 ; i<matching.size() ; ++i )
+    for( i = 0; i<matching.size(); ++i )
+    {
         if(matching[i].first<SimilariteMax)
         {
-            if(simMax==0) prob = 1.0; else prob = matching[i].first/simMax;
+            if(simMax==0)
+            {
+                prob = 1.0;
+            }
+            else
+            {
+                prob = matching[i].first/simMax;
+            }
             const unsigned int shape1Index = matching[i].second(0);
             const unsigned int shape2Index = matching[i].second(1);
-            for( j=0 ; j<ShapeDim ; ++j )
+            for( j = 0; j<ShapeDim; ++j )
+            {
                 matchingProb(index1[shape1Index](j),index2[shape2Index](j)) *= prob;
+            }
         }
-    if(Verbose) std::cout<<matchingProb<<"\n";
-    for( i=0 ; i<a->size() ; ++i )
+    }
+    if(Verbose)
     {
-        unsigned int indexMinR=0, indexMinC;
-        double pMin = 1.0;
-        vnl_vector<double> row=matchingProb.get_row(i);
-        for( j=0 ; j<row.size() ; ++j )
-            if(row(j)<pMin){pMin=row(j);indexMinR=j;}
+        std::cout<<matchingProb<<"\n";
+    }
+    for( i = 0; i<a->size(); ++i )
+    {
+        unsigned int indexMinR = 0, indexMinC;
+        double pMin            = 1.0;
+        vnl_vector<double> row = matchingProb.get_row(i);
+        for( j = 0; j<row.size(); ++j )
+        {
+            if(row(j)<pMin)
+            {
+                pMin = row(j); indexMinR = j;
+            }
+        }
         if(pMin<ProbaMin)
         {
-            vnl_vector<double> column=matchingProb.get_column(indexMinR);
-            pMin=1.0;indexMinC=0;
-            for( j=0 ; j<column.size() ; ++j )
-                if(column(j)<pMin){pMin=column(j);indexMinC=j;}
+            vnl_vector<double> column = matchingProb.get_column(indexMinR);
+            pMin = 1.0; indexMinC = 0;
+            for( j = 0; j<column.size(); ++j )
+            {
+                if(column(j)<pMin)
+                {
+                    pMin = column(j); indexMinC = j;
+                }
+            }
             if(indexMinC==i) // Est-ce bijectif ?
             {
                 Va->push_back( (*a)[i]);
@@ -1435,28 +1898,46 @@ unsigned int arlCore::matching3D3D( PointList::csptr a, PointList::csptr b, doub
         }
     }
     assert(Va->size()==Vb->size());
-    if(Verbose) std::cout<<"Matching 3D3D Nb matching : "<<(unsigned int)Va->size()<<"\n";
+    if(Verbose)
+    {
+        std::cout<<"Matching 3D3D Nb matching : "<<(unsigned int)Va->size()<<"\n";
+    }
     return (unsigned int)Va->size();
 }
 
 bool arlCore::distance( PointList::csptr p1, PointList::csptr p2, std::vector<double> &distances )
 {
-    if(p1->getDimension()!=p2->getDimension()) return false;
-    unsigned int i, size=p1->size();
-    if(p2->size()<size) size=p2->size();
-    for( i=0 ; i<size ; ++i )
+    if(p1->getDimension()!=p2->getDimension())
+    {
+        return false;
+    }
+    unsigned int i, size = p1->size();
+    if(p2->size()<size)
+    {
+        size = p2->size();
+    }
+    for( i = 0; i<size; ++i )
+    {
         if( (*p1)[i] && (*p2)[i] )
+        {
             distances.push_back( (*p1)[i]->distance( (*p2)[i]));
-        else distances.push_back(-1);
+        }
+        else
+        {
+            distances.push_back(-1);
+        }
+    }
     return true;
 }
 
-bool arlCore::save( const  std::vector< Point::sptr  >&pl, const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type, bool justVisible, bool overwrite )
+bool arlCore::save( const std::vector< Point::sptr  >&pl, const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type,
+                    bool justVisible, bool overwrite )
 {
     return internSave( pl, fileName, std::string(""), type, justVisible, overwrite );
 }
 
-bool arlCore::save( const  std::vector< Point::csptr  >&pl, const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type, bool justVisible, bool overwrite )
+bool arlCore::save( const std::vector< Point::csptr  >&pl, const std::string &fileName, ARLCORE_POINT_SAVE_TYPE type,
+                    bool justVisible, bool overwrite )
 {
     return internSave( pl, fileName, std::string(""), type, justVisible, overwrite );
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -60,7 +60,7 @@ throw(::gdcmIO::exception::Failed)
 
     // Create instance
     SPTR(::gdcmIO::container::DicomInstance) instance =
-            ::boost::make_shared< ::gdcmIO::container::DicomInstance >(dicomSeries);
+        ::boost::make_shared< ::gdcmIO::container::DicomInstance >(dicomSeries);
 
     // Create result
     ::fwMedData::Series::sptr result;
@@ -73,11 +73,11 @@ throw(::gdcmIO::exception::Failed)
 
         // If the DicomSeries contains an image (ImageSeries)
         if (::gdcm::MediaStorage::IsImage(::gdcm::MediaStorage::GetMSType(sopClassUID.c_str())) &&
-                ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) != ::gdcm::MediaStorage::SpacialFiducialsStorage)
+            ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) != ::gdcm::MediaStorage::SpacialFiducialsStorage)
         {
             // Read the image
             ::fwMedData::ImageSeries::sptr imageSeries =
-                    ::fwDicomIOExt::dcmtk::helper::Series::convertToImageSeries(dicomSeries);
+                ::fwDicomIOExt::dcmtk::helper::Series::convertToImageSeries(dicomSeries);
             ::fwData::Image::sptr image = ::fwData::Image::New();
             imageSeries->setImage(image);
 
@@ -101,10 +101,10 @@ throw(::gdcmIO::exception::Failed)
 
         // Get the RT file names (ModelSeries)
         else if (::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) ==
-                ::gdcm::MediaStorage::SurfaceSegmentationStorage)
+                 ::gdcm::MediaStorage::SurfaceSegmentationStorage)
         {
             ::fwMedData::ModelSeries::sptr modelSeries =
-                    ::fwDicomIOExt::dcmtk::helper::Series::convertToModelSeries(dicomSeries);
+                ::fwDicomIOExt::dcmtk::helper::Series::convertToModelSeries(dicomSeries);
 
             // Create IOD Reader
             ::gdcmIO::reader::iod::SurfaceSegmentationIOD iod(dicomSeries, instance);
@@ -128,12 +128,12 @@ throw(::gdcmIO::exception::Failed)
         {
             // Retrieve referenced image instance
             SPTR(::gdcmIO::container::DicomInstance) imageInstance =
-                    this->getSpatialFiducialsReferencedSeriesInstance(dicomSeries);
+                this->getSpatialFiducialsReferencedSeriesInstance(dicomSeries);
 
             if(imageInstance)
             {
                 ::fwMedData::ImageSeries::sptr imageSeries =
-                        ::fwMedData::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
+                    ::fwMedData::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
 
                 // Create IOD Reader
                 ::gdcmIO::reader::iod::SpatialFiducialsIOD iod(dicomSeries, instance);
@@ -155,15 +155,15 @@ throw(::gdcmIO::exception::Failed)
         }
         // If the DicomSeries contains a SR
         else if (::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
-                ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
+                 ::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
                  sopClassUID == "1.2.840.10008.5.1.4.1.1.88.34") // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(sopClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
         {
             // Retrieve referenced image instance
             SPTR(::gdcmIO::container::DicomInstance) imageInstance =
-                    this->getStructuredReportReferencedSeriesInstance(dicomSeries);
+                this->getStructuredReportReferencedSeriesInstance(dicomSeries);
 
             ::fwMedData::ImageSeries::sptr imageSeries =
-                    ::fwMedData::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
+                ::fwMedData::ImageSeries::dynamicCast(m_seriesContainerMap[imageInstance]);
 
             if(imageInstance && imageSeries)
             {
@@ -201,7 +201,7 @@ throw(::gdcmIO::exception::Failed)
 //------------------------------------------------------------------------------
 
 SPTR(::gdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferencedSeriesInstance(
-        ::fwDicomData::DicomSeries::sptr dicomSeries)
+    ::fwDicomData::DicomSeries::sptr dicomSeries)
 {
     SPTR(::gdcmIO::container::DicomInstance) result;
 
@@ -225,16 +225,16 @@ SPTR(::gdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferencedSe
         {
             // Get the content sequence
             ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence =
-                    datasetRoot.GetDataElement(::gdcm::Tag(0x0008, 0x1115)).GetValueAsSQ();
+                datasetRoot.GetDataElement(::gdcm::Tag(0x0008, 0x1115)).GetValueAsSQ();
 
             if(sequence->GetNumberOfItems() > 0)
             {
-                ::gdcm::Item referencedSeriesItem = sequence->GetItem(1);
+                ::gdcm::Item referencedSeriesItem            = sequence->GetItem(1);
                 ::gdcm::DataSet &referencedSeriesItemDataset = referencedSeriesItem.GetNestedDataSet();
 
                 // Series Instance UID - Type 1
                 seriesInstanceUID =
-                        ::gdcmIO::helper::DicomData::getTrimmedTagValue< 0x0020, 0x000E >(referencedSeriesItemDataset);
+                    ::gdcmIO::helper::DicomData::getTrimmedTagValue< 0x0020, 0x000E >(referencedSeriesItemDataset);
             }
         }
     }
@@ -257,7 +257,7 @@ SPTR(::gdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferencedSe
 //------------------------------------------------------------------------------
 
 SPTR(::gdcmIO::container::DicomInstance) Series::getStructuredReportReferencedSeriesInstance(
-        ::fwDicomData::DicomSeries::sptr dicomSeries)
+    ::fwDicomData::DicomSeries::sptr dicomSeries)
 {
 
     SPTR(::gdcmIO::container::DicomInstance) result;
@@ -283,24 +283,25 @@ SPTR(::gdcmIO::container::DicomInstance) Series::getStructuredReportReferencedSe
         {
             // Get the content sequence
             ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence =
-                    datasetRoot.GetDataElement(::gdcm::Tag(0x0040, 0xa385)).GetValueAsSQ();
+                datasetRoot.GetDataElement(::gdcm::Tag(0x0040, 0xa385)).GetValueAsSQ();
 
             if(sequence->GetNumberOfItems() > 0)
             {
-                ::gdcm::Item studyItem = sequence->GetItem(1);
+                ::gdcm::Item studyItem            = sequence->GetItem(1);
                 ::gdcm::DataSet &studyItemDataset = studyItem.GetNestedDataSet();
 
                 if(studyItemDataset.FindDataElement(::gdcm::Tag(0x0008, 0x1115)))
                 {
                     // Get the series sequence
                     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > seriesSequence =
-                            studyItemDataset.GetDataElement(::gdcm::Tag(0x0008, 0x1115)).GetValueAsSQ();
+                        studyItemDataset.GetDataElement(::gdcm::Tag(0x0008, 0x1115)).GetValueAsSQ();
 
                     if(seriesSequence->GetNumberOfItems() > 0)
                     {
-                        ::gdcm::Item seriesItem = seriesSequence->GetItem(1);
+                        ::gdcm::Item seriesItem            = seriesSequence->GetItem(1);
                         ::gdcm::DataSet &seriesItemDataset = seriesItem.GetNestedDataSet();
-                        seriesInstanceUID = ::gdcmIO::helper::DicomData::getTrimmedTagValue< 0x0020, 0x000E >(seriesItemDataset);
+                        seriesInstanceUID                  =
+                            ::gdcmIO::helper::DicomData::getTrimmedTagValue< 0x0020, 0x000E >(seriesItemDataset);
                     }
                 }
 

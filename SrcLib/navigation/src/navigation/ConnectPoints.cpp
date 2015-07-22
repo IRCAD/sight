@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,8 @@ namespace navigation
 {
 
 ConnectPoints::ConnectPoints()
-{}
+{
+}
 
 ConnectPoints::~ConnectPoints()
 {
@@ -27,10 +28,10 @@ ConnectPoints::~ConnectPoints()
 }
 
 void ConnectPoints::connectPointToService(
-        const ::fwCom::HasSignals::sptr& hasSignals,
-        const ::fwCom::Signals::SignalKeyType& signalKey,
-        const ::fwCom::HasSlots::sptr& hasSlots,
-        const ::fwCom::Slots::SlotKeyType& slotKey )
+    const ::fwCom::HasSignals::sptr& hasSignals,
+    const ::fwCom::Signals::SignalKeyType& signalKey,
+    const ::fwCom::HasSlots::sptr& hasSlots,
+    const ::fwCom::Slots::SlotKeyType& slotKey )
 {
     ::fwCom::Connection connection;
 
@@ -48,9 +49,9 @@ void ConnectPoints::disconnectPointToService(const ::fwCom::HasSignals::sptr& ha
 }
 
 void ConnectPoints::connectAllSplinePoints(
-        const ::fwData::PointList::sptr& pointList,
-        const ::fwCom::HasSlots::sptr& hasSlots,
-        const ::fwCom::Slots::SlotKeyType& slotKey )
+    const ::fwData::PointList::sptr& pointList,
+    const ::fwCom::HasSlots::sptr& hasSlots,
+    const ::fwCom::Slots::SlotKeyType& slotKey )
 {
     BOOST_FOREACH(::fwData::Point::sptr point, pointList->getRefPoints())
     {

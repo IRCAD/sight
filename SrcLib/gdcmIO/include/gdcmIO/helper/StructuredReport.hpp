@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,7 +39,8 @@ public:
      * @param[in] root Root node
      * @param[in] out Destination stream
      */
-    GDCMIO_API static void dumpSR(const SPTR(::gdcmIO::container::sr::DicomSRNode)& root, std::ostream& out = std::cout);
+    GDCMIO_API static void dumpSR(const SPTR(::gdcmIO::container::sr::DicomSRNode)& root,
+                                  std::ostream& out = std::cout);
 
 protected:
 
@@ -63,7 +64,8 @@ protected:
      * @param[in] out Destination stream
      * @param[in] index Node index
      */
-    GDCMIO_API static void dumpSRNode(const SPTR(::gdcmIO::container::sr::DicomSRNode)& node, std::ostream& out, int& index);
+    GDCMIO_API static void dumpSRNode(const SPTR(::gdcmIO::container::sr::DicomSRNode)& node, std::ostream& out,
+                                      int& index);
 
     /**
      * @brief Read content of a code sequence (eg : Concept Name Code Sequence, ...)
@@ -84,7 +86,7 @@ protected:
         }
 
         ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence =
-                dataset.GetDataElement(::gdcm::Tag(GROUP,ELEMENT)).GetValueAsSQ();
+            dataset.GetDataElement(::gdcm::Tag(GROUP,ELEMENT)).GetValueAsSQ();
         if (sequence->GetNumberOfItems() == 0)  // One Item shall be permitted
         {
             // Return empty coded attributes

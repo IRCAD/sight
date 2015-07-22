@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,11 +34,11 @@ namespace controller
  * @class   SSeriesPuller
  * @date    2013.
  */
-class IODICOMEXT_CLASS_API SSeriesPuller :public ::fwServices::IController
+class IODICOMEXT_CLASS_API SSeriesPuller : public ::fwServices::IController
 {
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesPuller)( ::fwServices::IController ) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSeriesPuller)( ::fwServices::IController ) );
 
     typedef ::fwMedData::SeriesDB::ContainerType DicomSeriesContainerType;
     typedef std::vector< std::string > InstanceUIDContainerType;
@@ -46,10 +46,10 @@ public :
     typedef std::map < std::string, WPTR(::fwDicomData::DicomSeries) > DicomSeriesMapType;
 
     IODICOMEXT_API static const ::fwCom::Slots::SlotKeyType s_READ_SLOT;
-    typedef ::fwCom::Slot<void(DicomSeriesContainerType)> ReadDicomSlotType;
+    typedef ::fwCom::Slot<void (DicomSeriesContainerType)> ReadDicomSlotType;
 
     IODICOMEXT_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_SLOT;
-    typedef ::fwCom::Slot<void(const std::string&)> DisplayMessageSlotType;
+    typedef ::fwCom::Slot<void (const std::string&)> DisplayMessageSlotType;
 
     /// Type of signal m_sigProgressBar
     typedef ::fwCom::Signal< void ( ::ioDicomExt::common::data::ProgressMsg::sptr ) > ProgressBarSignalType;
@@ -73,14 +73,14 @@ protected:
      * @brief Configuring method. This method is used to configure the service.
      *
      * XML configuration sample:
-     @verbatim
-     <service uid="pullSeriesController" impl="::ioDicomExt::dcmtk::controller::SSeriesPuller">
+       @verbatim
+       <service uid="pullSeriesController" impl="::ioDicomExt::dcmtk::controller::SSeriesPuller">
          <config pacsConfigurationUID="pacsConfiguration"
          dicomReader="::ioVtkGdcm::SSeriesDBReader"
          destinationSeriesDBUID="localSeriesDB" />
-     </service>
-     @endverbatim
-    */
+       </service>
+       @endverbatim
+     */
     IODICOMEXT_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -96,9 +96,9 @@ protected:
     IODICOMEXT_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Override
-    IODICOMEXT_API void info(std::ostream &_sstream ) ;
+    IODICOMEXT_API void info(std::ostream &_sstream );
 
-protected :
+protected:
 
     /// Pull Series
     IODICOMEXT_API void pullSeries();
@@ -122,7 +122,7 @@ protected :
      * @param[in] filePath File path
      */
     IODICOMEXT_API void storeInstanceCallback(const std::string& seriesInstanceUID, unsigned int instanceNumber,
-            const  std::string& filePath);
+                                              const std::string& filePath);
 
     /**
      * @brief Process callback
@@ -138,7 +138,7 @@ protected :
      * @param[in] percentage Percentage of the progress bar
      */
     IODICOMEXT_API void notifyProgressBar(const std::string &actionId, const std::string &msg = "",
-            float percentage = 0) const;
+                                          float percentage = 0) const;
 
     /// Slot to call readLocalSeries method
     ReadDicomSlotType::sptr m_slotReadLocalSeries;
@@ -147,10 +147,12 @@ protected :
     DisplayMessageSlotType::sptr m_slotDisplayMessage;
 
     /// Slot to call storeInstanceCallback method using C-MOVE Requests
-    ::fwDicomIOExt::dcmtk::SeriesRetriever::StoreInstanceCallbackSlotType::sptr m_slotStoreInstanceCallbackUsingMoveRequests;
+    ::fwDicomIOExt::dcmtk::SeriesRetriever::StoreInstanceCallbackSlotType::sptr
+    m_slotStoreInstanceCallbackUsingMoveRequests;
 
     /// Slot to call storeInstanceCallback method using C-GET Requests
-    ::fwDicomIOExt::dcmtk::SeriesEnquirer::StoreInstanceCallbackSlotType::sptr m_slotStoreInstanceCallbackUsingGetRequests;
+    ::fwDicomIOExt::dcmtk::SeriesEnquirer::StoreInstanceCallbackSlotType::sptr
+    m_slotStoreInstanceCallbackUsingGetRequests;
 
     /// Slot to call progressCallback method
     ::fwDicomIOExt::dcmtk::SeriesEnquirer::ProgressCallbackSlotType::sptr m_slotProgressCallback;

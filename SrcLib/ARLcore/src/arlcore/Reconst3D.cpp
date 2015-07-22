@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,23 +24,31 @@
 
 using namespace std;
 
-bool reconstruction3D( const vector<arlCore::Point::csptr> &points2D, const vector<const arlCore::Camera*> &cameras, arlCore::Point::sptr point3D, arlCore::ARLCORE_RECONSTRUCTION3D methode, vector<double> &log, const bool pixelFrame );
+bool reconstruction3D( const vector<arlCore::Point::csptr> &points2D, const vector<const arlCore::Camera*> &cameras,
+                       arlCore::Point::sptr point3D, arlCore::ARLCORE_RECONSTRUCTION3D methode, vector<double> &log,
+                       const bool pixelFrame );
 
 /**
  * @brief 3D reconstruction of a point that is seen by several cameras
  */
-bool arlCore::reconst3D(const std::vector<arlCore::Point::csptr>&list2D, const std::vector<arlCore::Camera> &cameras, arlCore::Point::sptr point3D,
-            arlCore::ARLCORE_RECONSTRUCTION3D methode, unsigned int &plane, std::vector<double> &log, double errorMax, bool propagateCov, const bool pixelFrame)
+bool arlCore::reconst3D(const std::vector<arlCore::Point::csptr>&list2D, const std::vector<arlCore::Camera> &cameras,
+                        arlCore::Point::sptr point3D,
+                        arlCore::ARLCORE_RECONSTRUCTION3D methode, unsigned int &plane, std::vector<double> &log,
+                        double errorMax, bool propagateCov, const bool pixelFrame)
 {
     std::vector<const arlCore::Camera*> cams;
     unsigned int i;
-    for( i=0 ; i<cameras.size() ; ++i )
+    for( i = 0; i<cameras.size(); ++i )
+    {
         cams.push_back(&cameras[i]);
+    }
     return reconst3D( list2D, cams, point3D, methode, plane, log, errorMax, propagateCov, pixelFrame);
 }
 
-bool arlCore::reconst3D( const std::vector<arlCore::Point::csptr>&list2D, const std::vector<const arlCore::Camera*> &camsList, arlCore::Point::sptr point3D,
-            arlCore::ARLCORE_RECONSTRUCTION3D methode, unsigned int &plane, std::vector<double> &log, double errorMax, bool propagateCov, const bool pixelFrame)
+bool arlCore::reconst3D( const std::vector<arlCore::Point::csptr>&list2D,
+                         const std::vector<const arlCore::Camera*> &camsList, arlCore::Point::sptr point3D,
+                         arlCore::ARLCORE_RECONSTRUCTION3D methode, unsigned int &plane, std::vector<double> &log,
+                         double errorMax, bool propagateCov, const bool pixelFrame)
 {
     assert(point3D->size()==3);
     assert(camsList.size()>1);
@@ -48,25 +56,30 @@ bool arlCore::reconst3D( const std::vector<arlCore::Point::csptr>&list2D, const 
     arlCore::Point::sptr p3D = arlCore::Point::New(3);
     //FIXME : Adapt code with mobile cameras : Set calibration parameters in the same plane
     if(reconstruction3D(list2D, camsList, p3D, methode, log, pixelFrame))
+    {
         if(errorMax<0 || errorMax>=log[0])
         {
             point3D->set(p3D);
             point3D->setVisible(true);
             point3D->setColour(1,2,3);
             point3D->setError(p3D->getError());
-            if(propagateCov) propagateCovarianceToReconst3D(list2D, camsList, point3D, methode, log, pixelFrame);
+            if(propagateCov)
+            {
+                propagateCovarianceToReconst3D(list2D, camsList, point3D, methode, log, pixelFrame);
+            }
             else
             {
                 arlCore::vnl_covariance_matrix &cov = point3D->getCovMatrix();
                 cov = p3D->getCovMatrix();
             }
-    /*      unsigned int i;
-            std::cout<<"RECONST3D ERROR ("<<methode<<") : ";
-            for( i=0 ; i<log.size() ; ++i )
-                std::cout<<log[i];
-            std::cout<<"\n";*/
+            /*      unsigned int i;
+                    std::cout<<"RECONST3D ERROR ("<<methode<<") : ";
+                    for( i=0 ; i<log.size() ; ++i )
+                        std::cout<<log[i];
+                    std::cout<<"\n";*/
             return true;
         }
+    }
     point3D->setError(-1.0);
     return false;
 }
@@ -84,42 +97,47 @@ bool arlCore::reconst3D( const std::vector<arlCore::Point::csptr>&list2D, const 
  * param[in] : methode = trinagulation method choice (Horaud or Lines)
  *
  */
-bool simpleRecons3D( arlCore::Point::sptr point3D, const vnl_vector_fixed<double,3>& focalPt2D1, const vnl_vector_fixed<double,3>& focalPt2D2,
-                    vnl_matrix_fixed<double,4,4>& PassageMatrix, arlCore::ARLCORE_RECONSTRUCTION3D methode, double &error )
+bool simpleRecons3D( arlCore::Point::sptr point3D, const vnl_vector_fixed<double,3>& focalPt2D1,
+                     const vnl_vector_fixed<double,3>& focalPt2D2,
+                     vnl_matrix_fixed<double,4,4>& PassageMatrix, arlCore::ARLCORE_RECONSTRUCTION3D methode,
+                     double &error )
 {
     switch(methode)
     {
-        case arlCore::ARLCORE_R3D_HORAUD_APPROX :
-        case arlCore::ARLCORE_R3D_HORAUD_PERFECT :
+        case arlCore::ARLCORE_R3D_HORAUD_APPROX:
+        case arlCore::ARLCORE_R3D_HORAUD_PERFECT:
         {// METHODE ANALYTIQUE DE HORAUD (la plus simple et la plus rapide)
-            const double &x  = focalPt2D1(0);
-            const double &y  = focalPt2D1(1);
-            const double &x_ = focalPt2D2(0);
-            const double &bx = PassageMatrix(0,3);
-            const double &bz = PassageMatrix(2,3);
+            const double &x   = focalPt2D1(0);
+            const double &y   = focalPt2D1(1);
+            const double &x_  = focalPt2D2(0);
+            const double &bx  = PassageMatrix(0,3);
+            const double &bz  = PassageMatrix(2,3);
             long double alpha = x*PassageMatrix(0,0) + y*PassageMatrix(0,1) + PassageMatrix(0,2);
             long double beta  = x*PassageMatrix(2,0) + y*PassageMatrix(2,1) + PassageMatrix(2,2);
             assert(beta*x_-alpha!=0);
-            if(beta*x_-alpha==0) return false;
+            if(beta*x_-alpha==0)
+            {
+                return false;
+            }
             long double z = (bx - bz*x_) /(beta*x_ -alpha);
             //FIXME : Instabilit� num�rique quand (beta*x_-alpha) tend vers 0
             //Probl�me constat� � partir de 0.1
-            error=fabs(beta*x_-alpha)/z; // FIXME error grand quand le denominateur tend vers 0
+            error = fabs(beta*x_-alpha)/z; // FIXME error grand quand le denominateur tend vers 0
             point3D->x(x*z);
             point3D->y(y*z);
             point3D->z(z);
             point3D->setError(error);
             return true;
         }
-        case arlCore::ARLCORE_R3D_TWO_LINES_PERFECT :
-        case arlCore::ARLCORE_R3D_TWO_LINES_APPROX :
+        case arlCore::ARLCORE_R3D_TWO_LINES_PERFECT:
+        case arlCore::ARLCORE_R3D_TWO_LINES_APPROX:
         {// METHODE ANALYTIQUE DU MILIEU DES DEUX DROITES (tres rapide)
             vnl_vector_fixed<double,3> I, J, v, n1, n2, m1C1, m2C2, C1C2;
             vnl_vector_fixed<double,4> var, C2, m2;
             vnl_matrix_fixed<double,4,4> P;
             double num, denom, landa1, landa2;
             unsigned int i;
-            P =  vnl_matrix_inverse<double>(PassageMatrix.as_matrix() );
+            P = vnl_matrix_inverse<double>(PassageMatrix.as_matrix() );
             var.put(0, 0.0); var.put(1, 0.0); var.put(2, 0.0); var.put(3, 1.0);
             C2 = P.as_matrix() * var.as_vector();
             // C2 est exprimee dans le repere liée à la caméra 1
@@ -134,29 +152,32 @@ bool simpleRecons3D( arlCore::Point::sptr point3D, const vnl_vector_fixed<double
             m2C2.put(0, var(0)); m2C2.put(1, var(1)); m2C2.put(2, var(2));
             C1C2.put(0, C2(0)); C1C2.put(1, C2(1)); C1C2.put(2, C2(2));
             // Determination du premier point I sur la droite de reprojection
-            v = vnl_cross_3d(m1C1.as_vector() , m2C2.as_vector() );
-            n1= vnl_cross_3d(v.as_vector(), m1C1.as_vector() );
-            double dot1=0, dot2=0;
-            for(i=0;i<3;++i)
+            v  = vnl_cross_3d(m1C1.as_vector(), m2C2.as_vector() );
+            n1 = vnl_cross_3d(v.as_vector(), m1C1.as_vector() );
+            double dot1 = 0, dot2 = 0;
+            for(i = 0; i<3; ++i)
             {
-                dot1 +=  C1C2(i) * n1(i);
-                dot2 +=  m2C2(i) * n1(i);
+                dot1 += C1C2(i) * n1(i);
+                dot2 += m2C2(i) * n1(i);
             }
             num   = -1*dot1;
             denom = -1*dot2;
             assert(denom!=0);
-            if(denom==0) return false;
+            if(denom==0)
+            {
+                return false;
+            }
             landa1 = num/denom;
             I.put(0, C2(0) - landa1* m2C2(0) );
             I.put(1, C2(1) - landa1* m2C2(1) );
             I.put(2, C2(2) - landa1* m2C2(2) );
             // Determination du deuxieme point J sur la droite de reprojection
-            n2 = vnl_cross_3d(v, m2C2);
-            dot1 = dot2 =0;
-            for(i=0;i<3;++i)
+            n2   = vnl_cross_3d(v, m2C2);
+            dot1 = dot2 = 0;
+            for(i = 0; i<3; ++i)
             {
-                dot1 +=  C1C2(i) * n2(i);
-                dot2 +=  m1C1(i) * n2(i);
+                dot1 += C1C2(i) * n2(i);
+                dot2 += m1C1(i) * n2(i);
             }
             num   = dot1;
             denom = -1*dot2;
@@ -179,18 +200,26 @@ bool simpleRecons3D( arlCore::Point::sptr point3D, const vnl_vector_fixed<double
             point3D->setError(error);
             return true;
         }
-    default: break;
+        default: break;
     }
     return false;
 }
 
-bool reconsReproj(const vector<arlCore::Point::csptr> &points2D, const vector<const arlCore::Camera*> &cameras, arlCore::Point::sptr point3D, arlCore::ARLCORE_RECONSTRUCTION3D methode, vector<double> &log);
+bool reconsReproj(const vector<arlCore::Point::csptr> &points2D, const vector<const arlCore::Camera*> &cameras,
+                  arlCore::Point::sptr point3D, arlCore::ARLCORE_RECONSTRUCTION3D methode, vector<double> &log);
 bool reconstruction3D( const vector<arlCore::Point::csptr> &points2D, const vector<const arlCore::Camera*> &cameras,
-        arlCore::Point::sptr point3D, arlCore::ARLCORE_RECONSTRUCTION3D methode, vector<double> &log, const bool pixelFrame )
+                       arlCore::Point::sptr point3D, arlCore::ARLCORE_RECONSTRUCTION3D methode, vector<double> &log,
+                       const bool pixelFrame )
 {
     log.clear();
-    if( points2D.size() != cameras.size() ) return false;
-    if( cameras.size() < 2 ) return false;
+    if( points2D.size() != cameras.size() )
+    {
+        return false;
+    }
+    if( cameras.size() < 2 )
+    {
+        return false;
+    }
 //  for(i=0; i< points2D.size(); ++i)
 //    if(points2D[i]->size() != 2)
 //      cerr <<"Pb : tous les points video n'ont pas la bonne dimension i.e. 2" << endl;
@@ -201,72 +230,84 @@ bool reconstruction3D( const vector<arlCore::Point::csptr> &points2D, const vect
     double error;
     switch(methode)
     {
-    case arlCore::ARLCORE_R3D_REPROJECTION_OPTIMIZATION :
-    case arlCore::ARLCORE_R3D_REPROJECTION_OPTIMIZATION_UNCERTAINTY :
-        assert(pixelFrame); // FIXME
-        return reconsReproj(points2D, cameras, point3D, methode, log);
-    case arlCore::ARLCORE_R3D_HORAUD_APPROX :
-    case arlCore::ARLCORE_R3D_TWO_LINES_APPROX :
-    case arlCore::ARLCORE_R3D_HORAUD_PERFECT :
-    case arlCore::ARLCORE_R3D_TWO_LINES_PERFECT :
-    {
-        bool perfect = (methode==arlCore::ARLCORE_R3D_HORAUD_PERFECT || methode==arlCore::ARLCORE_R3D_TWO_LINES_PERFECT);
-        focalPts2D.resize(2);
-        for( i=0 ; i<focalPts2D.size() ; ++i )
-            if(pixelFrame)
-            {
-                assert(points2D[i]->size()==2);
-                cameras[i]->pixelPlaneToUnitFocalPlane(  points2D[i] , focalPts2D[i], perfect );
-            }
-            else
-            {
-                focalPts2D[i].put(0,points2D[i]->x());
-                focalPts2D[i].put(1,points2D[i]->y());
-                focalPts2D[i].put(2,1.0);
-            }
-        vnl_matrix_fixed<double,4,4> PM1_2 = cameras[1]->getExtrinsic() * cameras[0]->getInvExtrinsic();
-        simpleRecons3D ( point3D, focalPts2D[0], focalPts2D[1], PM1_2, methode, error);
-        cameras[0]->getInvExtrinsic().trf(point3D);
-        log.push_back(error); // 1/denom pour Horaud ou la distance entre les 2 droites
-        return true;
-    }
-    case arlCore::ARLCORE_R3D_MULTI_LINES_APPROX :
-    case arlCore::ARLCORE_R3D_MULTI_LINES_PERFECT :
-    {
-        std::vector< vgl_line_3d_2_points <double> >lines;
-        vgl_line_3d_2_points <double>line;
-        focalPts2D.resize(points2D.size());
-        for( i=0 ; i<focalPts2D.size() ; ++i )
+        case arlCore::ARLCORE_R3D_REPROJECTION_OPTIMIZATION:
+        case arlCore::ARLCORE_R3D_REPROJECTION_OPTIMIZATION_UNCERTAINTY:
+            assert(pixelFrame); // FIXME
+            return reconsReproj(points2D, cameras, point3D, methode, log);
+        case arlCore::ARLCORE_R3D_HORAUD_APPROX:
+        case arlCore::ARLCORE_R3D_TWO_LINES_APPROX:
+        case arlCore::ARLCORE_R3D_HORAUD_PERFECT:
+        case arlCore::ARLCORE_R3D_TWO_LINES_PERFECT:
         {
-            if(pixelFrame)
+            bool perfect =
+                (methode==arlCore::ARLCORE_R3D_HORAUD_PERFECT || methode==arlCore::ARLCORE_R3D_TWO_LINES_PERFECT);
+            focalPts2D.resize(2);
+            for( i = 0; i<focalPts2D.size(); ++i )
             {
-                assert(points2D[i]->size()==2);
-                cameras[i]->pixelPlaneToUnitFocalPlane( points2D[i] , focalPts2D[i], methode==arlCore::ARLCORE_R3D_MULTI_LINES_PERFECT );
+                if(pixelFrame)
+                {
+                    assert(points2D[i]->size()==2);
+                    cameras[i]->pixelPlaneToUnitFocalPlane(  points2D[i], focalPts2D[i], perfect );
+                }
+                else
+                {
+                    focalPts2D[i].put(0,points2D[i]->x());
+                    focalPts2D[i].put(1,points2D[i]->y());
+                    focalPts2D[i].put(2,1.0);
+                }
             }
-            else
+            vnl_matrix_fixed<double,4,4> PM1_2 = cameras[1]->getExtrinsic() * cameras[0]->getInvExtrinsic();
+            simpleRecons3D ( point3D, focalPts2D[0], focalPts2D[1], PM1_2, methode, error);
+            cameras[0]->getInvExtrinsic().trf(point3D);
+            log.push_back(error); // 1/denom pour Horaud ou la distance entre les 2 droites
+            return true;
+        }
+        case arlCore::ARLCORE_R3D_MULTI_LINES_APPROX:
+        case arlCore::ARLCORE_R3D_MULTI_LINES_PERFECT:
+        {
+            std::vector< vgl_line_3d_2_points <double> >lines;
+            vgl_line_3d_2_points <double>line;
+            focalPts2D.resize(points2D.size());
+            for( i = 0; i<focalPts2D.size(); ++i )
             {
-                focalPts2D[i].put(0,points2D[i]->x());
-                focalPts2D[i].put(1,points2D[i]->y());
-                focalPts2D[i].put(2,1.0);
+                if(pixelFrame)
+                {
+                    assert(points2D[i]->size()==2);
+                    cameras[i]->pixelPlaneToUnitFocalPlane( points2D[i], focalPts2D[i],
+                                                            methode==arlCore::ARLCORE_R3D_MULTI_LINES_PERFECT );
+                }
+                else
+                {
+                    focalPts2D[i].put(0,points2D[i]->x());
+                    focalPts2D[i].put(1,points2D[i]->y());
+                    focalPts2D[i].put(2,1.0);
+                }
+                if(cameras[i]->projectiveLine(focalPts2D[i], line))
+                {
+                    lines.push_back(line);
+                }
+            } // Initialisation
+            vnl_matrix_fixed<double,4,4> PM1_2 = cameras[1]->getExtrinsic() * cameras[0]->getInvExtrinsic();
+            if(!simpleRecons3D ( point3D, focalPts2D[0], focalPts2D[1], PM1_2, arlCore::ARLCORE_R3D_TWO_LINES_APPROX,
+                                 error))
+            {
+                return false;
             }
-            if(cameras[i]->projectiveLine(focalPts2D[i], line))
-                lines.push_back(line);
-        } // Initialisation
-        vnl_matrix_fixed<double,4,4> PM1_2 = cameras[1]->getExtrinsic() * cameras[0]->getInvExtrinsic();
-        if(!simpleRecons3D ( point3D, focalPts2D[0], focalPts2D[1], PM1_2, arlCore::ARLCORE_R3D_TWO_LINES_APPROX, error)) return false;;
-        cameras[0]->getInvExtrinsic().trf(point3D);
-        vnl_vector<double> point3DSolution = point3D->getCoordinates();
-        arlCore::OptimiseLineIntersection reconstruction(lines);
-        vnl_powell compute_reconstruction(&reconstruction);
-        compute_reconstruction.minimize(point3DSolution);
-        for( i=0; i< 3 ; ++i )
-            point3D->set(i,point3DSolution(i));
-        log.push_back(compute_reconstruction.get_end_error() / points2D.size()); // Distance moyenne aux droites
-        point3D->setError(log.back());
-        log.push_back(compute_reconstruction.get_start_error() / points2D.size());
-    return true;
-    }
-    default: break;
+            cameras[0]->getInvExtrinsic().trf(point3D);
+            vnl_vector<double> point3DSolution = point3D->getCoordinates();
+            arlCore::OptimiseLineIntersection reconstruction(lines);
+            vnl_powell compute_reconstruction(&reconstruction);
+            compute_reconstruction.minimize(point3DSolution);
+            for( i = 0; i< 3; ++i )
+            {
+                point3D->set(i,point3DSolution(i));
+            }
+            log.push_back(compute_reconstruction.get_end_error() / points2D.size()); // Distance moyenne aux droites
+            point3D->setError(log.back());
+            log.push_back(compute_reconstruction.get_start_error() / points2D.size());
+            return true;
+        }
+        default: break;
     }
     return false;
 }
@@ -283,16 +324,24 @@ bool reconstruction3D( const vector<arlCore::Point::csptr> &points2D, const vect
  * TODO This function works if the 3D model is planar (because of the initialization) !
  * TODO We have to retrieve this constraint
  */
-bool arlCore::monoViewPointRegistration3D2D( const arlCore::Camera &cam , const std::vector<arlCore::Point::csptr > &points2D,
-        PointList::csptr model3D, arlCore::vnl_rigid_matrix &T, arlCore::ARLCORE_PROJECTIVE_REGISTRATION method,
-        const std::vector<double> &optimiserParameters , std::vector<double> &log, bool verbose )
+bool arlCore::monoViewPointRegistration3D2D( const arlCore::Camera &cam,
+                                             const std::vector<arlCore::Point::csptr > &points2D,
+                                             PointList::csptr model3D, arlCore::vnl_rigid_matrix &T,
+                                             arlCore::ARLCORE_PROJECTIVE_REGISTRATION method,
+                                             const std::vector<double> &optimiserParameters, std::vector<double> &log,
+                                             bool verbose )
 {
-    return monoViewPointRegistration3D2D( cam, points2D, model3D->getList(), T, method, optimiserParameters , log, verbose );
+    return monoViewPointRegistration3D2D( cam, points2D,
+                                          model3D->getList(), T, method, optimiserParameters, log, verbose );
 }
 
-bool arlCore::monoViewPointRegistration3D2D( const arlCore::Camera &cam , const std::vector<arlCore::Point::csptr > &points2D,
-        const std::vector< arlCore::Point::sptr > &model3D, arlCore::vnl_rigid_matrix &T, arlCore::ARLCORE_PROJECTIVE_REGISTRATION method,
-        const std::vector<double> &optimiserParameters , std::vector<double> &log, bool verbose )
+bool arlCore::monoViewPointRegistration3D2D( const arlCore::Camera &cam,
+                                             const std::vector<arlCore::Point::csptr > &points2D,
+                                             const std::vector< arlCore::Point::sptr > &model3D,
+                                             arlCore::vnl_rigid_matrix &T,
+                                             arlCore::ARLCORE_PROJECTIVE_REGISTRATION method,
+                                             const std::vector<double> &optimiserParameters, std::vector<double> &log,
+                                             bool verbose )
 {
     const bool Refinement = method!=arlCore::ARLCORE_PR_UNKNOWN;
     assert(model3D.size()>=points2D.size());
@@ -300,13 +349,17 @@ bool arlCore::monoViewPointRegistration3D2D( const arlCore::Camera &cam , const 
     unsigned int i;
     std::vector<arlCore::Point::csptr> p2D;
     std::vector<arlCore::Point::csptr> p3D;
-    for( i=0 ; i<points2D.size() ; ++i )
+    for( i = 0; i<points2D.size(); ++i )
+    {
         if(points2D[i])
+        {
             if(points2D[i]->isVisible())
             {
                 p2D.push_back(points2D[i]);
                 p3D.push_back(model3D[i]);
             }
+        }
+    }
 //  std::vector<double> optimiserParameters, log;
     // TODO : Injecter une tolerance dans multiViewPointRegistration3D2D et sortir si elle n'est pas respectée : tol
 //  tol=0; // FIXME
@@ -365,66 +418,110 @@ bool arlCore::monoViewPointRegistration3D2D( const arlCore::Camera &cam , const 
  * The detailed formula of each criterion is given in Optimization.h
  *
  */
-bool  arlCore::multiViewPointRegistration3D2D( const vector<arlCore::Camera> &cameras, const vector< vector< arlCore::Point::csptr > > &points2D, PointList::csptr model3D, arlCore::vnl_rigid_matrix &T, arlCore::ARLCORE_PROJECTIVE_REGISTRATION methode, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
+bool arlCore::multiViewPointRegistration3D2D( const vector<arlCore::Camera> &cameras,
+                                              const vector< vector< arlCore::Point::csptr > > &points2D,
+                                              PointList::csptr model3D, arlCore::vnl_rigid_matrix &T,
+                                              arlCore::ARLCORE_PROJECTIVE_REGISTRATION methode,
+                                              const vector<double> &optimiserParameters, vector<double> &log,
+                                              bool verbose)
 {
     unsigned int i;
     std::vector<const arlCore::Camera*> cams;
-    for( i=0 ; i<cameras.size() ; ++i )
+    for( i = 0; i<cameras.size(); ++i )
+    {
         cams.push_back(&cameras[i]);
+    }
     return multiViewPointRegistration3D2D( cams, points2D, model3D, T, methode, optimiserParameters, log, verbose);
 }
 
-bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camera*> &cameras, const vector< vector< arlCore::Point::csptr > > &points2D, PointList::csptr model3D, arlCore::vnl_rigid_matrix &T, arlCore::ARLCORE_PROJECTIVE_REGISTRATION methode, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
+bool arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camera*> &cameras,
+                                              const vector< vector< arlCore::Point::csptr > > &points2D,
+                                              PointList::csptr model3D, arlCore::vnl_rigid_matrix &T,
+                                              arlCore::ARLCORE_PROJECTIVE_REGISTRATION methode,
+                                              const vector<double> &optimiserParameters, vector<double> &log,
+                                              bool verbose)
 {
-    return multiViewPointRegistration3D2D( cameras, points2D, model3D->getListCopy(), T, methode, optimiserParameters, log, verbose); //VAG PERFORMANCE !!!
+    return multiViewPointRegistration3D2D( cameras, points2D,
+                                           model3D->getListCopy(), T, methode, optimiserParameters, log, verbose);                    //VAG PERFORMANCE !!!
 }
 
-bool  arlCore::multiViewPointRegistration3D2D( const vector<arlCore::Camera> &cameras, const vector< vector< arlCore::Point::csptr > > &points2D, const std::vector< arlCore::Point::csptr > &model3D, arlCore::vnl_rigid_matrix &T, arlCore::ARLCORE_PROJECTIVE_REGISTRATION methode, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
+bool arlCore::multiViewPointRegistration3D2D( const vector<arlCore::Camera> &cameras,
+                                              const vector< vector< arlCore::Point::csptr > > &points2D,
+                                              const std::vector< arlCore::Point::csptr > &model3D,
+                                              arlCore::vnl_rigid_matrix &T,
+                                              arlCore::ARLCORE_PROJECTIVE_REGISTRATION methode,
+                                              const vector<double> &optimiserParameters, vector<double> &log,
+                                              bool verbose)
 {
     unsigned int i;
     std::vector<const arlCore::Camera*> cams;
-    for( i=0 ; i<cameras.size() ; ++i )
+    for( i = 0; i<cameras.size(); ++i )
+    {
         cams.push_back(&cameras[i]);
+    }
     return multiViewPointRegistration3D2D( cams, points2D, model3D, T, methode, optimiserParameters, log, verbose);
 }
 
-bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camera*> &cameras, const vector< vector< arlCore::Point::csptr > > &points2D, const std::vector< arlCore::Point::csptr > &model3D, arlCore::vnl_rigid_matrix &T, arlCore::ARLCORE_PROJECTIVE_REGISTRATION methode, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
+bool arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camera*> &cameras,
+                                              const vector< vector< arlCore::Point::csptr > > &points2D,
+                                              const std::vector< arlCore::Point::csptr > &model3D,
+                                              arlCore::vnl_rigid_matrix &T,
+                                              arlCore::ARLCORE_PROJECTIVE_REGISTRATION methode,
+                                              const vector<double> &optimiserParameters, vector<double> &log,
+                                              bool verbose)
 {
     //if(cameras.size()<2) return false;
     const unsigned int Nb2DPointsMin = 3;
-    const double EPPCfTolerance = 1e-6;
-    const double EPPCxTolerance = 1e-6;
-    const unsigned int Model3DSize = (unsigned int)model3D.size();
-    bool b = false;
+    const double EPPCfTolerance      = 1e-6;
+    const double EPPCxTolerance      = 1e-6;
+    const unsigned int Model3DSize   = (unsigned int)model3D.size();
+    bool b                           = false;
     log.clear();
     unsigned int i,j;
     double RMS = -1.0;
     vnl_vector< double > init(6);
     double nbVisiblePoints = 0.0;
-    for( i=0 ; i<cameras.size() ; ++i )
+    for( i = 0; i<cameras.size(); ++i )
     {
         assert(cameras[i]);
-        if(!cameras[i]->isIntrinsicCalibrated()) return b;
+        if(!cameras[i]->isIntrinsicCalibrated())
+        {
+            return b;
+        }
 //      assert(Model3DSize==points2D[i].size());
-        if(Model3DSize!=points2D[i].size()) return b;
-        for( j=0 ; j<points2D[i].size() ; ++j )
+        if(Model3DSize!=points2D[i].size())
+        {
+            return b;
+        }
+        for( j = 0; j<points2D[i].size(); ++j )
+        {
             if( points2D[i][j]!=0 )
+            {
                 if(points2D[i][j]->isVisible())
+                {
                     ++nbVisiblePoints;
+                }
+            }
+        }
     }
-    if(nbVisiblePoints<Nb2DPointsMin) return b;
+    if(nbVisiblePoints<Nb2DPointsMin)
+    {
+        return b;
+    }
     if(methode==arlCore::ARLCORE_PR_EPPC)
     {
-        const double RMSTrsf = 1e-4;
+        const double RMSTrsf               = 1e-4;
         const unsigned int nbIterationsMax = 10;
         vnl_vector< double > init_pts3D(3*Model3DSize), init_pts3D_precedent(3*Model3DSize), init_precedent(6);
         init = arlCore::vnl_rigid_vector (T);
         std::vector< vnl_vector_fixed<double,4> > estime3D(Model3DSize);
-        for( i=0 ; i<Model3DSize ; ++i ) // TODO : Factoriser dans toute la fonction (attention OSPPC)
+        for( i = 0; i<Model3DSize; ++i ) // TODO : Factoriser dans toute la fonction (attention OSPPC)
         {
             estime3D[i] = vnl_vector_fixed<double,4>((*model3D[i])[0], (*model3D[i])[1], (*model3D[i])[2], 1.0);
-            for( j=0 ; j<3 ; ++j )
+            for( j = 0; j<3; ++j )
+            {
                 init_pts3D[3*i+j] = (*model3D[i])[j];
+            }
         }
         arlCore::ISPPC_cost_function ISPPC(cameras,estime3D,points2D, true);
         vnl_powell computeISPPC(&ISPPC);
@@ -435,89 +532,111 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         computeEPPC.set_x_tolerance(EPPCxTolerance);
         computeISPPC.set_f_tolerance(EPPCfTolerance);
         computeISPPC.set_x_tolerance(EPPCxTolerance);
-        unsigned int nbIterations=0;
+        unsigned int nbIterations = 0;
         log.resize(5);
         do
         {
-            T=arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init));
+            T = arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init));
 //          std::cerr<<"ITERATION POW EPPC : "<<nbIterations<<std::endl;
 //          std::cerr<<"transfo ="<<std::endl<<T<<std::endl;
 //          std::cerr<<"erreur debut = "<<computeISPPC.get_start_error()<<std::endl;
 //          std::cerr<<"erreur fin = "<<computeISPPC.get_end_error()<<std::endl;
             //Estimation des points 3D parfaits avec T(k+1)
             computeEPPC.minimize(init_pts3D);
-            if(nbIterations==0) log[1]=sqrt(computeEPPC.get_start_error()/nbVisiblePoints);
+            if(nbIterations==0)
+            {
+                log[1] = sqrt(computeEPPC.get_start_error()/nbVisiblePoints);
+            }
             init_precedent = init;
-            for(i=0; i<Model3DSize; ++i)
-                for( j=0 ; j<3 ; ++j )
+            for(i = 0; i<Model3DSize; ++i)
+            {
+                for( j = 0; j<3; ++j )
+                {
                     estime3D[i].put(j, init_pts3D[3*i+j]);
+                }
+            }
             computeISPPC.minimize(init);
             ++nbIterations;
-        }while( (init-init_precedent).rms()>RMSTrsf && nbIterations<nbIterationsMax );
-        RMS = sqrt(computeEPPC.get_end_error()/nbVisiblePoints);
+        }
+        while( (init-init_precedent).rms()>RMSTrsf && nbIterations<nbIterationsMax );
+        RMS    = sqrt(computeEPPC.get_end_error()/nbVisiblePoints);
         log[0] = RMS;
         // FIXME Ponderer les erreurs suivantes
         log[2] = EPPC.get2Derror();
         log[3] = EPPC.get3Derror();
         log[4] = RMSTrsf;
-        b= true;
+        b      = true;
     }
     if(methode==arlCore::ARLCORE_PR_EPPC_LM)
     {
-        const double RMSTrsf = 1e-4;
+        const double RMSTrsf               = 1e-4;
         const unsigned int nbIterationsMax = 10;
         vnl_vector< double > init_pts3D(3*Model3DSize), init_pts3D_precedent(3*Model3DSize), init_precedent(6);
         init = arlCore::vnl_rigid_vector (T);
         std::vector< vnl_vector_fixed<double,4> > estime3D(Model3DSize);
-        for( i=0 ; i<Model3DSize ; ++i )
+        for( i = 0; i<Model3DSize; ++i )
         {
             estime3D[i] = vnl_vector_fixed<double,4>((*model3D[i])[0], (*model3D[i])[1], (*model3D[i])[2], 1.0);
-            for( j=0 ; j<3 ; ++j )
+            for( j = 0; j<3; ++j )
+            {
                 init_pts3D[3*i+j] = (*model3D[i])[j];
+            }
         }
-        arlCore::ISPPC_LS_cost_function ISPPC(cameras,estime3D,points2D, 6, nbVisiblePoints, vnl_least_squares_function::use_gradient, true);
+        arlCore::ISPPC_LS_cost_function ISPPC(cameras,estime3D,points2D, 6, nbVisiblePoints,
+                                              vnl_least_squares_function::use_gradient, true);
         vnl_levenberg_marquardt computeISPPC(ISPPC);
         computeISPPC.minimize_using_gradient(init);
-        arlCore::EPPC_LS_cost_function EPPC(cameras,model3D,points2D,T, 3*Model3DSize, nbVisiblePoints+Model3DSize, vnl_least_squares_function::use_gradient);
+        arlCore::EPPC_LS_cost_function EPPC(cameras,model3D,points2D,T, 3*Model3DSize, nbVisiblePoints+Model3DSize,
+                                            vnl_least_squares_function::use_gradient);
         vnl_levenberg_marquardt computeEPPC(EPPC);
         computeEPPC.set_f_tolerance(EPPCfTolerance);
         computeEPPC.set_x_tolerance(EPPCxTolerance);
-        unsigned int nbIterations=0;
+        unsigned int nbIterations = 0;
         log.resize(5);
         do
         {
             //std::cerr<<"ITERATION LM EPPC : "<<nbIterations<<std::endl;
-            T=arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init));
+            T = arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init));
             //Estimation des points 3D parfaits avec T(k+1)
             computeEPPC.minimize_using_gradient(init_pts3D);
-            if(nbIterations==0) log[1]=sqrt(computeEPPC.get_start_error()/nbVisiblePoints);
+            if(nbIterations==0)
+            {
+                log[1] = sqrt(computeEPPC.get_start_error()/nbVisiblePoints);
+            }
             init_precedent = init;
-            for(i=0; i<Model3DSize; ++i)
-                for( j=0 ; j<3 ; ++j )
+            for(i = 0; i<Model3DSize; ++i)
+            {
+                for( j = 0; j<3; ++j )
+                {
                     estime3D[i].put(j, init_pts3D[3*i+j]);
+                }
+            }
             computeISPPC.minimize_using_gradient(init);
             ++nbIterations;
-        }while( (init-init_precedent).rms()>RMSTrsf && nbIterations<nbIterationsMax );
-        RMS = computeEPPC.get_end_error();
+        }
+        while( (init-init_precedent).rms()>RMSTrsf && nbIterations<nbIterationsMax );
+        RMS    = computeEPPC.get_end_error();
         log[0] = RMS;
         // FIXME Ponderer les erreurs suivantes
         log[2] = EPPC.get2Derror();
         log[3] = EPPC.get3Derror();
         log[4] = RMSTrsf;
-        b= true;
+        b      = true;
     }
     if(methode==arlCore::ARLCORE_PR_EPPC_CG)
     {
-        const double RMSTrsf = 1e-4;
+        const double RMSTrsf               = 1e-4;
         const unsigned int nbIterationsMax = 5;
         vnl_vector< double > init_pts3D(3*Model3DSize), init_pts3D_precedent(3*Model3DSize), init_precedent(6);
         init = arlCore::vnl_rigid_vector (T);
         std::vector< vnl_vector_fixed<double,4> > estime3D(Model3DSize);
-        for( i=0 ; i<Model3DSize ; ++i )
+        for( i = 0; i<Model3DSize; ++i )
         {
             estime3D[i] = vnl_vector_fixed<double,4>((*model3D[i])[0], (*model3D[i])[1], (*model3D[i])[2], 1.0);
-            for( j=0 ; j<3 ; ++j )
+            for( j = 0; j<3; ++j )
+            {
                 init_pts3D[3*i+j] = (*model3D[i])[j];
+            }
         }
         arlCore::ISPPC_cost_function ISPPC(cameras,estime3D,points2D);
         vnl_conjugate_gradient computeISPPC(ISPPC);
@@ -526,32 +645,39 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         vnl_conjugate_gradient computeEPPC(EPPC);
         computeEPPC.set_f_tolerance(EPPCfTolerance);
         computeEPPC.set_x_tolerance(EPPCxTolerance);
-        unsigned int nbIterations=0;
+        unsigned int nbIterations = 0;
         do
         {
-            T=arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init));
+            T = arlCore::vnl_rigid_matrix (arlCore::vnl_rigid_vector(init));
             //Estimation des points 3D parfaits avec T(k+1)
             computeEPPC.minimize(init_pts3D);
             init_precedent = init;
-            for( i=0 ; i<Model3DSize ; ++i )
-                for( j=0 ; j<3 ; ++j )
+            for( i = 0; i<Model3DSize; ++i )
+            {
+                for( j = 0; j<3; ++j )
+                {
                     estime3D[i].put(j, init_pts3D[3*i+j]);
+                }
+            }
             computeISPPC.minimize(init);
             ++nbIterations;
-        }while( (init-init_precedent).rms()>RMSTrsf && nbIterations<nbIterationsMax );
+        }
+        while( (init-init_precedent).rms()>RMSTrsf && nbIterations<nbIterationsMax );
         RMS = computeEPPC.get_end_error();
         log.push_back(RMS);
         log.push_back(sqrt(computeEPPC.get_start_error()/nbVisiblePoints));
         // FIXME Ponderer les erreurs suivantes
         log.push_back(EPPC.get2Derror());
         log.push_back(EPPC.get3Derror());
-        b= true;
+        b = true;
     }
     if(methode==arlCore::ARLCORE_PR_ISPPC)
     {
         std::vector< vnl_vector_fixed<double,4> > estime3D(Model3DSize);
-        for( i=0 ; i<Model3DSize ; ++i )
+        for( i = 0; i<Model3DSize; ++i )
+        {
             estime3D[i] = vnl_vector_fixed<double,4>((*model3D[i])[0], (*model3D[i])[1], (*model3D[i])[2], 1.0);
+        }
         arlCore::vnl_rigid_vector vec(T);
         arlCore::ISPPC_cost_function ISPPC(cameras,estime3D,points2D, false);
         init = vec;
@@ -561,16 +687,19 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         log.push_back(RMS);
         log.push_back(sqrt(computeISPPC.get_start_error()/nbVisiblePoints));
         vec = init;
-        T = arlCore::vnl_rigid_matrix(vec);
-        b= true;
+        T   = arlCore::vnl_rigid_matrix(vec);
+        b   = true;
     }
     if(methode==arlCore::ARLCORE_PR_ISPPC_LM)
     {
         std::vector< vnl_vector_fixed<double,4> > estime3D(Model3DSize);
-        for( i=0 ; i<Model3DSize ; ++i )
+        for( i = 0; i<Model3DSize; ++i )
+        {
             estime3D[i] = vnl_vector_fixed<double,4>((*model3D[i])[0], (*model3D[i])[1], (*model3D[i])[2], 1.0);
+        }
         arlCore::vnl_rigid_vector vec(T);
-        arlCore::ISPPC_LS_cost_function ISPPC(cameras,estime3D,points2D, 6, nbVisiblePoints, vnl_least_squares_function::use_gradient, false);
+        arlCore::ISPPC_LS_cost_function ISPPC(cameras,estime3D,points2D, 6, nbVisiblePoints,
+                                              vnl_least_squares_function::use_gradient, false);
         init = vec;
         vnl_levenberg_marquardt computeISPPC(ISPPC);
         computeISPPC.minimize_using_gradient(init);
@@ -578,14 +707,16 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         log.push_back(RMS);
         log.push_back(sqrt(computeISPPC.get_start_error()/nbVisiblePoints));
         vec = init;
-        T = arlCore::vnl_rigid_matrix(vec);
-        b= true;
+        T   = arlCore::vnl_rigid_matrix(vec);
+        b   = true;
     }
     if(methode==arlCore::ARLCORE_PR_ISPPC_ANISOTROP)
     {
         std::vector< vnl_vector_fixed<double,4> > estime3D(Model3DSize);
-        for( i=0 ; i<Model3DSize ; ++i )
+        for( i = 0; i<Model3DSize; ++i )
+        {
             estime3D[i] = vnl_vector_fixed<double,4>((*model3D[i])[0], (*model3D[i])[1], (*model3D[i])[2], 1.0);
+        }
         arlCore::vnl_rigid_vector vec(T);
         arlCore::ISPPC_cost_function ISPPC(cameras,estime3D,points2D, true);
         init = vec;
@@ -595,16 +726,19 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         log.push_back(RMS);
         log.push_back(sqrt(computeISPPC.get_start_error()/nbVisiblePoints));
         vec = init;
-        T = arlCore::vnl_rigid_matrix(vec);
-        b= true;
+        T   = arlCore::vnl_rigid_matrix(vec);
+        b   = true;
     }
     if(methode==arlCore::ARLCORE_PR_ISPPC_ANISOTROP_LM)
     {
         std::vector< vnl_vector_fixed<double,4> > estime3D(Model3DSize);
-        for( i=0 ; i<Model3DSize ; ++i )
+        for( i = 0; i<Model3DSize; ++i )
+        {
             estime3D[i] = vnl_vector_fixed<double,4>((*model3D[i])[0], (*model3D[i])[1], (*model3D[i])[2], 1.0);
+        }
         arlCore::vnl_rigid_vector vec(T);
-        arlCore::ISPPC_LS_cost_function ISPPC(cameras,estime3D,points2D, 6, nbVisiblePoints, vnl_least_squares_function::use_gradient, true);
+        arlCore::ISPPC_LS_cost_function ISPPC(cameras,estime3D,points2D, 6, nbVisiblePoints,
+                                              vnl_least_squares_function::use_gradient, true);
         init = vec;
         vnl_levenberg_marquardt computeISPPC(ISPPC);
         computeISPPC.minimize_using_gradient(init);
@@ -612,14 +746,16 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         log.push_back(RMS);
         log.push_back(sqrt(computeISPPC.get_start_error()/nbVisiblePoints));
         vec = init;
-        T = arlCore::vnl_rigid_matrix(vec);
-        b= true;
+        T   = arlCore::vnl_rigid_matrix(vec);
+        b   = true;
     }
     if(methode==arlCore::ARLCORE_PR_ISPPC_CG)
     {
         std::vector< vnl_vector_fixed<double,4> > estime3D(Model3DSize);
-        for( i=0 ; i<Model3DSize ; ++i )
+        for( i = 0; i<Model3DSize; ++i )
+        {
             estime3D[i] = vnl_vector_fixed<double,4>((*model3D[i])[0], (*model3D[i])[1], (*model3D[i])[2], 1.0);
+        }
         arlCore::vnl_rigid_vector vec(T);
         arlCore::ISPPC_cost_function ISPPC(cameras,estime3D,points2D);
         init = vec;
@@ -629,8 +765,8 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         log.push_back(RMS);
         log.push_back(sqrt(computeISPPC.get_start_error()/nbVisiblePoints));
         vec = init;
-        T = arlCore::vnl_rigid_matrix(vec);
-        b= true;
+        T   = arlCore::vnl_rigid_matrix(vec);
+        b   = true;
     }
 
     if(methode==arlCore::ARLCORE_PR_OSPPC)
@@ -644,13 +780,14 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         log.push_back(RMS);
         log.push_back(sqrt(computeOSPPC.get_start_error()/nbVisiblePoints));
         vec = init;
-        T = arlCore::vnl_rigid_matrix(vec);
-        b= true;
+        T   = arlCore::vnl_rigid_matrix(vec);
+        b   = true;
     }
     if(methode==arlCore::ARLCORE_PR_OSPPC_LM)
     {
         arlCore::vnl_rigid_vector vec(T);
-        arlCore::OSPPC_LS_cost_function OSPPC(cameras,model3D,points2D, 6, nbVisiblePoints, vnl_least_squares_function::use_gradient);
+        arlCore::OSPPC_LS_cost_function OSPPC(cameras,model3D,points2D, 6, nbVisiblePoints,
+                                              vnl_least_squares_function::use_gradient);
         init = vec;
         vnl_levenberg_marquardt computeOSPPC(OSPPC);
         computeOSPPC.minimize_using_gradient(init);
@@ -658,8 +795,8 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         log.push_back(RMS);
         log.push_back(sqrt(computeOSPPC.get_start_error()/nbVisiblePoints));
         vec = init;
-        T = arlCore::vnl_rigid_matrix(vec);
-        b= true;
+        T   = arlCore::vnl_rigid_matrix(vec);
+        b   = true;
     }
     if(methode==arlCore::ARLCORE_PR_OSPPC_CG)
     {
@@ -672,8 +809,8 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
         log.push_back(RMS);
         log.push_back(sqrt(computeOSPPC.get_start_error()/nbVisiblePoints));
         vec = init;
-        T = arlCore::vnl_rigid_matrix(vec);
-        b= true;
+        T   = arlCore::vnl_rigid_matrix(vec);
+        b   = true;
     }
     T.setRMS(RMS);
     T.setStdDev(0.0);
@@ -731,55 +868,74 @@ bool  arlCore::multiViewPointRegistration3D2D( const vector<const arlCore::Camer
  *  change our results...
  * ******************************************************************************************/
 template <typename Type>
-bool internPlanarHomographyUnknownIntrinsic( const Type &points2D, const Type &model3D, vnl_matrix_fixed<double,3,3> &H, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
+bool internPlanarHomographyUnknownIntrinsic( const Type &points2D, const Type &model3D, vnl_matrix_fixed<double,3,3> &H,
+                                             const vector<double> &optimiserParameters, vector<double> &log,
+                                             bool verbose)
 {
-    bool normalize =false;
-    bool error_log=false;
+    bool normalize = false;
+    bool error_log = false;
     //ATTENTION : Points2D and  model3D doivent �tre parfaitement appareill�s :
     // Tailles identiques, pas de pointeur null
-    if(points2D.size()<4) return false;
+    if(points2D.size()<4)
+    {
+        return false;
+    }
     assert(points2D.size()==model3D.size());
-    unsigned int i, size=(unsigned int)model3D.size();
+    unsigned int i, size = (unsigned int)model3D.size();
     vnl_matrix<double> P(3,3);
     vnl_matrix_fixed<double,4,4> T_tmp;
     vnl_matrix<double> a_matrix(size*2, 9);
     if(optimiserParameters.size() > 0)
+    {
         if(optimiserParameters[0] == 1)
+        {
             error_log = true;
+        }
+    }
     if(optimiserParameters.size() > 1)
+    {
         if(optimiserParameters[1] == 1)
+        {
             normalize = true;
+        }
+    }
     // PRENORMALISATION DES DONNEES cf "In defence of the 8 points algorithm" et "Pose reconstruction with
     // uncalibrated CT imaging device"
-    double meanX_model3D=0, meanY_model3D=0, scale_model3D=0;
-    double meanX_points2D=0, meanY_points2D=0, scale_points2D=0;
+    double meanX_model3D  = 0, meanY_model3D = 0, scale_model3D = 0;
+    double meanX_points2D = 0, meanY_points2D = 0, scale_points2D = 0;
     vnl_matrix_fixed<double,3,3> norm_mat_model3D, norm_mat_points2D;
     if(normalize)
     {
-        for( i=0 ; i<size ; ++i )// calcul des moyennes et des ecart-types
+        for( i = 0; i<size; ++i )// calcul des moyennes et des ecart-types
         {
-            meanX_model3D += model3D[i]->x();
-            meanY_model3D += model3D[i]->y();
+            meanX_model3D  += model3D[i]->x();
+            meanY_model3D  += model3D[i]->y();
             meanX_points2D += points2D[i]->x();
             meanY_points2D += points2D[i]->y();
         }
-        meanX_model3D /= size; meanY_model3D /= size;  meanX_points2D/=size ;  meanY_points2D/=size ;
-        for( i=0 ; i<size ; ++i )
+        meanX_model3D /= size; meanY_model3D /= size;  meanX_points2D /= size;  meanY_points2D /= size;
+        for( i = 0; i<size; ++i )
         {
-            scale_model3D += sqrt( (model3D[i]->x() - meanX_model3D)*(model3D[i]->x() - meanX_model3D) + (model3D[i]->y() - meanY_model3D)*(model3D[i]->y() - meanY_model3D));
-            scale_points2D += sqrt( (points2D[i]->x() - meanX_points2D)*(points2D[i]->x() - meanX_points2D) + (points2D[i]->y() - meanY_points2D)*(points2D[i]->y() - meanY_points2D));
+            scale_model3D +=
+                sqrt(
+                    (model3D[i]->x() - meanX_model3D)*(model3D[i]->x() - meanX_model3D) +
+                    (model3D[i]->y() - meanY_model3D)*
+                    (model3D[i]->y() - meanY_model3D));
+            scale_points2D +=
+                sqrt( (points2D[i]->x() - meanX_points2D)*(points2D[i]->x() - meanX_points2D) +
+                      (points2D[i]->y() - meanY_points2D)*(points2D[i]->y() - meanY_points2D));
         }
-        scale_model3D /= (size * 1.414213562373);//1.41421356237310 = sqrt(2)
+        scale_model3D  /= (size * 1.414213562373);//1.41421356237310 = sqrt(2)
         scale_points2D /= (size * 1.414213562373);
         norm_mat_model3D.set_identity();   norm_mat_points2D.set_identity();
-        norm_mat_model3D(0,0) = norm_mat_model3D(1,1) = 1/scale_model3D;
+        norm_mat_model3D(0,0)  = norm_mat_model3D(1,1) = 1/scale_model3D;
         norm_mat_points2D(0,0) = norm_mat_points2D(1,1) = 1/scale_points2D;
-        norm_mat_model3D(0,2) = -meanX_model3D/scale_model3D;
-        norm_mat_model3D(1,2) = -meanY_model3D/scale_model3D;
+        norm_mat_model3D(0,2)  = -meanX_model3D/scale_model3D;
+        norm_mat_model3D(1,2)  = -meanY_model3D/scale_model3D;
         norm_mat_points2D(0,2) = -meanX_points2D/scale_points2D;
         norm_mat_points2D(1,2) = -meanY_points2D/scale_points2D;
     }
-    for( i=0 ; i<size ; ++i )
+    for( i = 0; i<size; ++i )
     {
         if(normalize)
         {
@@ -809,7 +965,7 @@ bool internPlanarHomographyUnknownIntrinsic( const Type &points2D, const Type &m
             a_matrix.put(i,8, (-1)*points2D[i]->x());
         }
     }
-    for( i=size ; i<2*size ; ++i )
+    for( i = size; i<2*size; ++i )
     {
         a_matrix.put(i,0, 0.0);
         a_matrix.put(i,1, 0.0);
@@ -853,20 +1009,24 @@ bool internPlanarHomographyUnknownIntrinsic( const Type &points2D, const Type &m
     //cerr << "Vecteur propre associe a valeur singuliere minimale " << endl << svd.nullvector() << endl;
     P.set(svd.nullvector().data_block());
 //  cerr << "Matrice P estimee " << endl << P << endl;
-    if(normalize){
+    if(normalize)
+    {
         vnl_matrix<double> tmp = vnl_matrix_inverse<double>(norm_mat_points2D);
         P = tmp * P * norm_mat_model3D;
     }
-    P/=P.get_column(0).two_norm();//TODO cette normalisation est-elle necessaire ?
+    P /= P.get_column(0).two_norm();//TODO cette normalisation est-elle necessaire ?
     // on teste si l'homographie estimee recale l'objet derriere la camera ou pas
     // si c'est le cas alors on multiplie P par -1;
     //cerr << "Matrice P estimee apres normalisation" << endl << P << endl;
     vnl_vector_fixed<double,3> var_3D, test;
-    var_3D(0) = model3D[0]->x() ;
+    var_3D(0) = model3D[0]->x();
     var_3D(1) = model3D[0]->y();
     var_3D(2) = 1.0;
-    test = P * var_3D;
-    if(test[2] < 0.0) P*=-1.0;
+    test      = P * var_3D;
+    if(test[2] < 0.0)
+    {
+        P *= -1.0;
+    }
     //cerr << "Matrice P estimee " << endl << P << endl;
     //cerr << "norme colonne 1=" <<P.get_column(0).two_norm() << endl;
     //cerr << "norme colonne 2=" <<P.get_column(1).two_norm() << endl;
@@ -880,12 +1040,12 @@ bool internPlanarHomographyUnknownIntrinsic( const Type &points2D, const Type &m
     {
         double erreur_reprojection = 0;
         log.clear();
-        for( i=0 ; i<size ; ++i )
+        for( i = 0; i<size; ++i )
         {
             arlCore::Point::sptr tmp2D = arlCore::Point::New(2);
             vnl_vector_fixed<double,3> model3D_tmp, tmp3D;
 
-            model3D_tmp.put(0,model3D[i]->x());model3D_tmp.put(1,model3D[i]->y());model3D_tmp.put(2,1.0);
+            model3D_tmp.put(0,model3D[i]->x()); model3D_tmp.put(1,model3D[i]->y()); model3D_tmp.put(2,1.0);
             //std::cerr<<"model3D_tmp =" <<model3D_tmp<<std::endl;
             tmp3D = H * model3D_tmp.as_vector();
             tmp2D->set(0, tmp3D(0)/tmp3D(2));
@@ -900,12 +1060,19 @@ bool internPlanarHomographyUnknownIntrinsic( const Type &points2D, const Type &m
     return true;
 }
 
-bool arlCore::planarHomographyUnknownIntrinsic( const vector<arlCore::Point::sptr> &points2D, const vector< arlCore::Point::sptr > &model3D, vnl_matrix_fixed<double,3,3> &H, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
+bool arlCore::planarHomographyUnknownIntrinsic( const vector<arlCore::Point::sptr> &points2D,
+                                                const vector< arlCore::Point::sptr > &model3D, vnl_matrix_fixed<double,
+                                                                                                                3,3> &H,
+                                                const vector<double> &optimiserParameters, vector<double> &log,
+                                                bool verbose)
 {
     return internPlanarHomographyUnknownIntrinsic( points2D, model3D, H, optimiserParameters, log, verbose);
 }
 
-bool arlCore::planarHomographyUnknownIntrinsic( arlCore::PointList::csptr points2D, arlCore::PointList::csptr model3D, vnl_matrix_fixed<double,3,3> &H, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
+bool arlCore::planarHomographyUnknownIntrinsic( arlCore::PointList::csptr points2D, arlCore::PointList::csptr model3D,
+                                                vnl_matrix_fixed<double,3,3> &H,
+                                                const vector<double> &optimiserParameters, vector<double> &log,
+                                                bool verbose)
 {
     return internPlanarHomographyUnknownIntrinsic( *points2D, *model3D, H, optimiserParameters, log, verbose);
 }
@@ -955,60 +1122,83 @@ bool arlCore::planarHomographyUnknownIntrinsic( arlCore::PointList::csptr points
  *
  */
 template <typename Type>
-bool internPlanarHomographyRegistration_3D_2D( const arlCore::Camera &camera, const vector<arlCore::Point::csptr> &points2D, const Type &model3D, arlCore::vnl_rigid_matrix &T, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
+bool internPlanarHomographyRegistration_3D_2D( const arlCore::Camera &camera,
+                                               const vector<arlCore::Point::csptr> &points2D, const Type &model3D,
+                                               arlCore::vnl_rigid_matrix &T, const vector<double> &optimiserParameters,
+                                               vector<double> &log, bool verbose)
 {
     //return true;
-    if(!camera.isIntrinsicCalibrated()) return false;
+    if(!camera.isIntrinsicCalibrated())
+    {
+        return false;
+    }
     //ATTENTION : Points2D and  model3D doivent être parfaitement appareillés :
     // Tailles identiques, pas de pointeur null
-    bool normalize =true;
-    bool error_log=false;
-    if(points2D.size()<4) return false;
+    bool normalize = true;
+    bool error_log = false;
+    if(points2D.size()<4)
+    {
+        return false;
+    }
     assert(points2D.size()==model3D.size());
-    unsigned int i, size=(unsigned int)model3D.size();
+    unsigned int i, size = (unsigned int)model3D.size();
     std::vector<vnl_vector_fixed<double,3> > focalPoints(size);
     vnl_matrix_fixed<double,3,3> P, mat_tmp;
     arlCore::vnl_rigid_matrix T_tmp;
     vnl_matrix<double> a_matrix(size*2, 9);
     if(optimiserParameters.size() > 0)
+    {
         if(optimiserParameters[0] == 1)
+        {
             error_log = true;
+        }
+    }
     if(optimiserParameters.size() > 1)
+    {
         if(optimiserParameters[1] == 1)
+        {
             normalize = true;
+        }
+    }
     // PRENORMALISATION DES DONNEES cf "In defence of the 8 points algorithm" et "Pose reconstruction with
     // uncalibrated CT imaging device"
-    double meanX_model3D=0, meanY_model3D=0, scale_model3D=0;
-    double meanX_points2D=0, meanY_points2D=0, scale_points2D=0;
+    double meanX_model3D  = 0, meanY_model3D = 0, scale_model3D = 0;
+    double meanX_points2D = 0, meanY_points2D = 0, scale_points2D = 0;
     vnl_matrix_fixed<double,3,3> norm_mat_model3D, norm_mat_points2D;
     if(normalize)
     {
-        for( i=0 ; i<size ; ++i )// calcul des moyennes et des ecart-types
+        for( i = 0; i<size; ++i )// calcul des moyennes et des ecart-types
         {
             assert(model3D[i]);
             assert(points2D[i]);
-            meanX_model3D += model3D[i]->x();
-            meanY_model3D += model3D[i]->y();
+            meanX_model3D  += model3D[i]->x();
+            meanY_model3D  += model3D[i]->y();
             meanX_points2D += points2D[i]->x();
             meanY_points2D += points2D[i]->y();
         }
-        meanX_model3D /= size; meanY_model3D /= size;  meanX_points2D/=size ;  meanY_points2D/=size ;
-        for( i=0 ; i<size ; ++i )
+        meanX_model3D /= size; meanY_model3D /= size;  meanX_points2D /= size;  meanY_points2D /= size;
+        for( i = 0; i<size; ++i )
         {
-            scale_model3D += sqrt( (model3D[i]->x() - meanX_model3D)*(model3D[i]->x() - meanX_model3D) + (model3D[i]->y() - meanY_model3D)*(model3D[i]->y() - meanY_model3D));
-            scale_points2D += sqrt( (points2D[i]->x() - meanX_points2D)*(points2D[i]->x() - meanX_points2D) + (points2D[i]->y() - meanY_points2D)*(points2D[i]->y() - meanY_points2D));
+            scale_model3D +=
+                sqrt(
+                    (model3D[i]->x() - meanX_model3D)*(model3D[i]->x() - meanX_model3D) +
+                    (model3D[i]->y() - meanY_model3D)*
+                    (model3D[i]->y() - meanY_model3D));
+            scale_points2D +=
+                sqrt( (points2D[i]->x() - meanX_points2D)*(points2D[i]->x() - meanX_points2D) +
+                      (points2D[i]->y() - meanY_points2D)*(points2D[i]->y() - meanY_points2D));
         }
-        scale_model3D /= (size * 1.414213562373);//1.41421356237310 = sqrt(2)
+        scale_model3D  /= (size * 1.414213562373);//1.41421356237310 = sqrt(2)
         scale_points2D /= (size * 1.414213562373);
         norm_mat_model3D.set_identity();   norm_mat_points2D.set_identity();
-        norm_mat_model3D(0,0) = norm_mat_model3D(1,1) = 1/scale_model3D;
+        norm_mat_model3D(0,0)  = norm_mat_model3D(1,1) = 1/scale_model3D;
         norm_mat_points2D(0,0) = norm_mat_points2D(1,1) = 1/scale_points2D;
-        norm_mat_model3D(0,2) = -meanX_model3D/scale_model3D;
-        norm_mat_model3D(1,2) = -meanY_model3D/scale_model3D;
+        norm_mat_model3D(0,2)  = -meanX_model3D/scale_model3D;
+        norm_mat_model3D(1,2)  = -meanY_model3D/scale_model3D;
         norm_mat_points2D(0,2) = -meanX_points2D/scale_points2D;
         norm_mat_points2D(1,2) = -meanY_points2D/scale_points2D;
     }
-    for( i=0 ; i<size ; ++i )
+    for( i = 0; i<size; ++i )
     {
         assert(points2D[i]);
         assert(model3D[i]);
@@ -1041,7 +1231,7 @@ bool internPlanarHomographyRegistration_3D_2D( const arlCore::Camera &camera, co
             a_matrix.put(i,8, (-1)*focalPoints[i](0));
         }
     }
-    for( i=size ; i<2*size ; ++i )
+    for( i = size; i<2*size; ++i )
     {
         assert(model3D[i-size]);
         a_matrix.put(i,0, 0.0);
@@ -1086,19 +1276,23 @@ bool internPlanarHomographyRegistration_3D_2D( const arlCore::Camera &camera, co
     //cerr << "svd(a_matrix) U =" <<endl << svd.U() <<endl;cerr << "svd(a_matrix) V =" <<endl << svd.V() <<endl;cerr << "svd(a_matrix) W =" <<endl << svd.W() <<endl;
     //cerr << "Vecteur propre associe a valeur singuliere minimale " << endl << svd.nullvector() << endl;
     P.set(svd.nullvector().data_block());
-    if(normalize){
+    if(normalize)
+    {
         vnl_matrix<double> tmp = vnl_matrix_inverse<double>(norm_mat_points2D);
         P = tmp * P.as_matrix() * norm_mat_model3D;
     }
-    P/=P.get_column(0).two_norm();
+    P /= P.get_column(0).two_norm();
     // on teste si l'homographie estimee recale l'objet derriere la camera ou pas
     // si c'est le cas alors on multiplie P par -1;
     vnl_vector_fixed<double,3> var_3D, test;
-    var_3D(0) = model3D[0]->x() ;
+    var_3D(0) = model3D[0]->x();
     var_3D(1) = model3D[0]->y();
     var_3D(2) = 1.0;
-    test = P * var_3D;
-    if(test[2] < 0.0) P*=-1.0;
+    test      = P * var_3D;
+    if(test[2] < 0.0)
+    {
+        P *= -1.0;
+    }
     //cerr << "Matrice P estimee " << endl << P << endl;
     //cerr << "norme colonne 1=" <<P.get_column(0).two_norm() << endl;
     //cerr << "norme colonne 2=" <<P.get_column(1).two_norm() << endl;
@@ -1114,18 +1308,20 @@ bool internPlanarHomographyRegistration_3D_2D( const arlCore::Camera &camera, co
     rot_mat.closest_rotation();
     T_tmp.set_identity();
     T_tmp.setRotation(rot_mat);
-    for( i=0 ; i<3 ; ++i )
+    for( i = 0; i<3; ++i )
+    {
         T_tmp.put(i,3, P(i,2));
+    }
     T = camera.getInvExtrinsic() * T_tmp.as_matrix();
     if(error_log)
     {
         double erreur_reprojection = 0;
         log.clear();
-        for( i=0 ; i<size ; ++i )
+        for( i = 0; i<size; ++i )
         {
             arlCore::Point::sptr tmp3D = arlCore::Point::New(3);
             arlCore::Point::sptr tmp2D = arlCore::Point::New(2);
-            T.trf( model3D[i] , tmp3D );
+            T.trf( model3D[i], tmp3D );
             camera.project3DPoint( tmp3D, tmp2D );
             erreur_reprojection += points2D[i]->distance(tmp2D);
         }
@@ -1135,15 +1331,20 @@ bool internPlanarHomographyRegistration_3D_2D( const arlCore::Camera &camera, co
     return true;
 }
 
-bool arlCore::planarHomographyRegistration_3D_2D( const arlCore::Camera &camera, const vector<arlCore::Point::csptr> &points2D, const std::vector< arlCore::Point::csptr > &model3D, arlCore::vnl_rigid_matrix &T, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
+bool arlCore::planarHomographyRegistration_3D_2D( const arlCore::Camera &camera,
+                                                  const vector<arlCore::Point::csptr> &points2D,
+                                                  const std::vector< arlCore::Point::csptr > &model3D,
+                                                  arlCore::vnl_rigid_matrix &T,
+                                                  const vector<double> &optimiserParameters, vector<double> &log,
+                                                  bool verbose)
 {
     return internPlanarHomographyRegistration_3D_2D( camera, points2D, model3D, T, optimiserParameters, log, verbose);
 }
 /*
-bool arlCore::planarHomographyRegistration_3D_2D( const arlCore::Camera &camera, const vector<arlCore::Point::sptr> &points2D, PointList::csptr model3D, arlCore::vnl_rigid_matrix &T, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
-{
+   bool arlCore::planarHomographyRegistration_3D_2D( const arlCore::Camera &camera, const vector<arlCore::Point::sptr> &points2D, PointList::csptr model3D, arlCore::vnl_rigid_matrix &T, const vector<double> &optimiserParameters, vector<double> &log, bool verbose)
+   {
     return internPlanarHomographyRegistration_3D_2D( camera, points2D, model3D, T, optimiserParameters, log, verbose);
-}*/
+   }*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 // en entree :
@@ -1159,10 +1360,11 @@ bool arlCore::planarHomographyRegistration_3D_2D( const arlCore::Camera &camera,
 // covariance sur les points 2D. Initialisation avec two_lines_approx
 // En principe, methode la plus lente
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-bool reconsReproj(const vector<arlCore::Point::csptr> &points2D, const vector<const arlCore::Camera*> &cameras, arlCore::Point::sptr point3D, arlCore::ARLCORE_RECONSTRUCTION3D methode, vector<double> &log)
+bool reconsReproj(const vector<arlCore::Point::csptr> &points2D, const vector<const arlCore::Camera*> &cameras,
+                  arlCore::Point::sptr point3D, arlCore::ARLCORE_RECONSTRUCTION3D methode, vector<double> &log)
 {
     unsigned int i;
-    bool b=false;
+    bool b = false;
     vector<double> log_tmp;
     reconstruction3D(points2D, cameras, point3D, arlCore::ARLCORE_R3D_TWO_LINES_APPROX, log_tmp, true);
     vnl_vector<double> point3DSolution = point3D->getCoordinates();
@@ -1174,7 +1376,7 @@ bool reconsReproj(const vector<arlCore::Point::csptr> &points2D, const vector<co
         compute_reconstruction.minimize(point3DSolution);
         log.push_back(compute_reconstruction.get_end_error() / points2D.size());
         log.push_back(compute_reconstruction.get_start_error() / points2D.size() );
-        b=true;
+        b = true;
     }
     // Methode iterative de reprojection optimale avec correction de la distorsion
     // et prise en compte de la covariance
@@ -1185,10 +1387,15 @@ bool reconsReproj(const vector<arlCore::Point::csptr> &points2D, const vector<co
         compute_reconstruction.minimize(point3DSolution);
         log.push_back(compute_reconstruction.get_end_error() / points2D.size() );
         log.push_back(compute_reconstruction.get_start_error() / points2D.size() );
-        b=true;
+        b = true;
     }
-    for( i=0 ; i<3 ; ++i )
+    for( i = 0; i<3; ++i )
+    {
         point3D->set(i,point3DSolution(i));
-    if(log.size()>0) point3D->setError(log[0]);
+    }
+    if(log.size()>0)
+    {
+        point3D->setError(log[0]);
+    }
     return b;
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,16 +18,16 @@
 #include <arlcore/Misc.h>
 #include <arlcore/PointsList.h>
 
-arlCore::Point::Point( unsigned int dim, ARLCORE_POINT_TYPE type, long int date, long int time ):
-m_type(type),
-m_confidence(0),
-m_visibility(true),
-m_status(ARLCORE_POINT_STATUS_UNKNOWN),
-m_scalar(-1.0),
-m_isColored(false),
-m_colour(0,0,0),
-m_ponderation(1.0),
-m_error(-1.0)
+arlCore::Point::Point( unsigned int dim, ARLCORE_POINT_TYPE type, long int date, long int time ) :
+    m_type(type),
+    m_confidence(0),
+    m_visibility(true),
+    m_status(ARLCORE_POINT_STATUS_UNKNOWN),
+    m_scalar(-1.0),
+    m_isColored(false),
+    m_colour(0,0,0),
+    m_ponderation(1.0),
+    m_error(-1.0)
 {
     unsigned int i;
     setOK(true);
@@ -35,22 +35,24 @@ m_error(-1.0)
     m_coordinates.set_size(dim);
     m_coordinates.fill(0.0);
     m_stat.resize(size());
-    for( i=0 ; i<size() ; ++i )
+    for( i = 0; i<size(); ++i )
+    {
         m_stat[i].fill(0.0);
+    }
     initUncertainty();
 }
 
-arlCore::Point::Point( double x, double y, ARLCORE_POINT_TYPE type, long int date, long int time ):
+arlCore::Point::Point( double x, double y, ARLCORE_POINT_TYPE type, long int date, long int time ) :
 //VAG Object(ARLCORE_CLASS_POINT),
-m_type(type),
-m_confidence(0),
-m_visibility(true),
-m_status(ARLCORE_POINT_STATUS_UNKNOWN),
-m_scalar(-1.0),
-m_isColored(false),
-m_colour(0,0,0),
-m_ponderation(1.0),
-m_error(-1.0)
+    m_type(type),
+    m_confidence(0),
+    m_visibility(true),
+    m_status(ARLCORE_POINT_STATUS_UNKNOWN),
+    m_scalar(-1.0),
+    m_isColored(false),
+    m_colour(0,0,0),
+    m_ponderation(1.0),
+    m_error(-1.0)
 {
     unsigned int i;
     //VAG  setTime(date,time);
@@ -58,23 +60,25 @@ m_error(-1.0)
     m_coordinates.put(0,x);
     m_coordinates.put(1,y);
     m_stat.resize(size());
-    for( i=0 ; i<size() ; ++i )
+    for( i = 0; i<size(); ++i )
+    {
         m_stat[i].fill(0.0);
+    }
     initUncertainty();
     setOK(true);
 }
 
-arlCore::Point::Point( double x, double y, double z, ARLCORE_POINT_TYPE type, long int date, long int time ):
+arlCore::Point::Point( double x, double y, double z, ARLCORE_POINT_TYPE type, long int date, long int time ) :
 //Object(ARLCORE_CLASS_POINT),
-m_type(type),
-m_confidence(0),
-m_visibility(true),
-m_status(ARLCORE_POINT_STATUS_UNKNOWN),
-m_scalar(-1.0),
-m_isColored(false),
-m_colour(0,0,0),
-m_ponderation(1.0),
-m_error(-1.0)
+    m_type(type),
+    m_confidence(0),
+    m_visibility(true),
+    m_status(ARLCORE_POINT_STATUS_UNKNOWN),
+    m_scalar(-1.0),
+    m_isColored(false),
+    m_colour(0,0,0),
+    m_ponderation(1.0),
+    m_error(-1.0)
 {
     unsigned int i;
     //VAG setTime(date,time);
@@ -83,8 +87,10 @@ m_error(-1.0)
     m_coordinates.put(1,y);
     m_coordinates.put(2,z);
     m_stat.resize(size());
-    for( i=0 ; i<size() ; ++i )
+    for( i = 0; i<size(); ++i )
+    {
         m_stat[i].fill(0.0);
+    }
     initUncertainty();
     setOK(true);
 }
@@ -93,28 +99,30 @@ void arlCore::Point::init( unsigned int dim )
 {
     unsigned int i;
     //VAG setTime(date,time);
-    m_type=ARLCORE_POINT_TYPE_UNKNOWN;
-    m_confidence=0;
-    m_visibility=true;
-    m_status=ARLCORE_POINT_STATUS_UNKNOWN;
-    m_isColored=false;
+    m_type       = ARLCORE_POINT_TYPE_UNKNOWN;
+    m_confidence = 0;
+    m_visibility = true;
+    m_status     = ARLCORE_POINT_STATUS_UNKNOWN;
+    m_isColored  = false;
     m_colour.setColour(0,0,0);
-    m_scalar=-1.0;
+    m_scalar = -1.0;
     m_coordinates.set_size(dim);
     m_coordinates.fill(0.0);
     m_covMatrix.set_size(dim,dim);
     m_covMatrix.fill(0.0);
-    m_ponderation=1.0;
+    m_ponderation = 1.0;
     m_stat.resize(size());
-    for( i=0 ; i<size() ; ++i )
+    for( i = 0; i<size(); ++i )
+    {
         m_stat[i].fill(0.0);
-    m_error=-1.0;
+    }
+    m_error = -1.0;
 }
 
 
 arlCore::Point::sptr arlCore::Point::PointFactory( int dim )
 {
-    arlCore::Point::sptr point =::arlCore::Point::sptr( new Point( dim ) );
+    arlCore::Point::sptr point = ::arlCore::Point::sptr( new Point( dim ) );
     return point;
 }
 
@@ -142,52 +150,60 @@ arlCore::Point::sptr arlCore::Point::PointFactory( double x, double y, double z 
     return point;
 }
 
-arlCore::Point::Point( arlCore::Point::csptr  p )
+arlCore::Point::Point( arlCore::Point::csptr p )
 // :VAG Object(ARLCORE_CLASS_POINT)
 {
     copy(p);
 }
 
-arlCore::Point& arlCore::Point::operator=(arlCore::Point::csptr  p)
+arlCore::Point& arlCore::Point::operator=(arlCore::Point::csptr p)
 {
     copy(p);
     return *this;
 }
 
-void arlCore::Point::copy(arlCore::Point::csptr  p)
+void arlCore::Point::copy(arlCore::Point::csptr p)
 {
-    if( this== p.get() ) return;
+    if( this== p.get() )
+    {
+        return;
+    }
     //VAG arlCore::Object *a=this;
     //VAG const arlCore::Object *b=&p;
     //VAG *a = *b;
     //VAGFIXME : copy helper of fwtools::Object:...Copy ?
-    unsigned int i,j,dim=p->size();
-    m_type = p->m_type;
-    m_confidence = p->m_confidence;
-    m_visibility = p->m_visibility;
-    m_status = p->m_status;
-    m_isColored = p->m_isColored;
-    m_colour = p->m_colour;
-    m_scalar = p->m_scalar;
+    unsigned int i,j,dim = p->size();
+    m_type        = p->m_type;
+    m_confidence  = p->m_confidence;
+    m_visibility  = p->m_visibility;
+    m_status      = p->m_status;
+    m_isColored   = p->m_isColored;
+    m_colour      = p->m_colour;
+    m_scalar      = p->m_scalar;
     m_ponderation = p->m_ponderation;
-    m_stat = p->m_stat;
-    m_error = p->m_error;
+    m_stat        = p->m_stat;
+    m_error       = p->m_error;
     m_coordinates.set_size(dim);
     m_stat.resize(size());
-    for( i=0 ; i<size() ; ++i )
+    for( i = 0; i<size(); ++i )
     {
         m_coordinates.put(i,p->m_coordinates.get(i));
         m_stat[i].fill(0.0);
     }
     m_covMatrix.set_size(dim,dim);
-    for( i=0 ; i<size() ; ++i)
-        for( j=0 ; j<size() ; ++j)
+    for( i = 0; i<size(); ++i)
+    {
+        for( j = 0; j<size(); ++j)
+        {
             m_covMatrix.put(i,j,p->m_covMatrix.get(i,j));
+        }
+    }
     return;
 }
 
 arlCore::Point::~Point( void )
-{}
+{
+}
 
 
 bool arlCore::Point::setOK( bool b )
@@ -213,37 +229,54 @@ std::string arlCore::Point::getString( void ) const
     std::string t;
     switch(m_type)
     {
-    case ARLCORE_POINT_TYPE_UNKNOWN : t="UNKNOWN";break;
-    case ARLCORE_POINT_TYPE_ARTK : t="ARTK";break;
-    case ARLCORE_POINT_TYPE_MRO : t="MRO";break;
-    case ARLCORE_POINT_TYPE_CHESS : t="CHESS";break;
-    case ARLCORE_POINT_TYPE_ROI : t="ROI";break;
-    case ARLCORE_POINT_TYPE_CLOUD : t="CLOUD";break;
-    case ARLCORE_POINT_TYPE_TIP : t="TIP";break;
-    case ARLCORE_POINT_TYPE_LINE : t="LINE";break;
-    case ARLCORE_POINT_TYPE_SIFT : t="SIFT";break;
-    default: break;
+        case ARLCORE_POINT_TYPE_UNKNOWN: t = "UNKNOWN"; break;
+        case ARLCORE_POINT_TYPE_ARTK: t    = "ARTK"; break;
+        case ARLCORE_POINT_TYPE_MRO: t     = "MRO"; break;
+        case ARLCORE_POINT_TYPE_CHESS: t   = "CHESS"; break;
+        case ARLCORE_POINT_TYPE_ROI: t     = "ROI"; break;
+        case ARLCORE_POINT_TYPE_CLOUD: t   = "CLOUD"; break;
+        case ARLCORE_POINT_TYPE_TIP: t     = "TIP"; break;
+        case ARLCORE_POINT_TYPE_LINE: t    = "LINE"; break;
+        case ARLCORE_POINT_TYPE_SIFT: t    = "SIFT"; break;
+        default: break;
     }
     unsigned int i;
     std::stringstream s;
     s<<std::fixed<<std::setprecision(2);
-    for( i=0 ; i<size() ; ++i )
+    for( i = 0; i<size(); ++i )
+    {
         s<<get(i)<<" ";
-    if(m_visibility) s<<"Visible";
-    else s<<"Unvisible";
+    }
+    if(m_visibility)
+    {
+        s<<"Visible";
+    }
+    else
+    {
+        s<<"Unvisible";
+    }
     s<<" "<<t<<" Conf.="<<m_confidence;
-    if(m_isColored) s<<" colour("<<m_colour.getString()<<")";
-    else s<<" No colour";
-    if(m_scalar>0) s<<" scalar="<<m_scalar<<"mm";
+    if(m_isColored)
+    {
+        s<<" colour("<<m_colour.getString()<<")";
+    }
+    else
+    {
+        s<<" No colour";
+    }
+    if(m_scalar>0)
+    {
+        s<<" scalar="<<m_scalar<<"mm";
+    }
     switch(m_status)
     {
-    case ARLCORE_POINT_STATUS_UNKNOWN : s<<" (Unknown)";break;
-    case ARLCORE_POINT_STATUS_DETECTED : s<<" (Detected)";break;
-    case ARLCORE_POINT_STATUS_SUBPIXEL : s<<" (Subpixel)";break;
-    case ARLCORE_POINT_STATUS_ESTIMATE : s<<" (Estimate)";break;
-    case ARLCORE_POINT_STATUS_CLOUD : s<<" (Cloud)";break;
-    case ARLCORE_POINT_REPROJECTION : s<<" (Reproj)";break;
-    default: break;
+        case ARLCORE_POINT_STATUS_UNKNOWN: s<<" (Unknown)"; break;
+        case ARLCORE_POINT_STATUS_DETECTED: s<<" (Detected)"; break;
+        case ARLCORE_POINT_STATUS_SUBPIXEL: s<<" (Subpixel)"; break;
+        case ARLCORE_POINT_STATUS_ESTIMATE: s<<" (Estimate)"; break;
+        case ARLCORE_POINT_STATUS_CLOUD: s<<" (Cloud)"; break;
+        case ARLCORE_POINT_REPROJECTION: s<<" (Reproj)"; break;
+        default: break;
     }
     s<<" Error="<<m_error<<"\n";
     //TODO Display m_covMatrix
@@ -252,32 +285,45 @@ std::string arlCore::Point::getString( void ) const
 
 bool arlCore::Point::save( const std::string &fileName, bool overwrite ) const
 {
-    if(!isOK()) return false;
+    if(!isOK())
+    {
+        return false;
+    }
     std::fstream f;
-    if(arlFile::fileExist(fileName) && !overwrite) return false;
+    if(arlFile::fileExist(fileName) && !overwrite)
+    {
+        return false;
+    }
     f.open(fileName.c_str(), std::fstream::out);
-    if(f.is_open()) f<<"Dimension "<<size()<<"\n";
-    bool b=save(f);
+    if(f.is_open())
+    {
+        f<<"Dimension "<<size()<<"\n";
+    }
+    bool b = save(f);
     f.close();
     f.flush();
     return b;
 }
 
-bool arlCore::Point::save( std::fstream &f, unsigned int cam, SPTR(void) tag, int fringe ) const
+bool arlCore::Point::save( std::fstream &f, unsigned int cam, SPTR(void)tag, int fringe ) const
 {
     f<<"Dimension "<<size()<<"\n";
-    return save( f, true, cam, tag, fringe, 0 , ARLCORE_POINT_SAVE_FULL );
+    return save( f, true, cam, tag, fringe, 0, ARLCORE_POINT_SAVE_FULL );
 }
 
 bool arlCore::Point::save( std::fstream &f, unsigned int no, ARLCORE_POINT_SAVE_TYPE type ) const
 {
-    return save( f, false, 0, SPTR(void)(), 0 , no, type );
+    return save( f, false, 0, SPTR(void)(), 0, no, type );
 }
 
-bool arlCore::Point::save( std::fstream &f, bool ctf, unsigned int cam,  SPTR(void) tag, int fringe, unsigned no, ARLCORE_POINT_SAVE_TYPE type ) const
+bool arlCore::Point::save( std::fstream &f, bool ctf, unsigned int cam,  SPTR(void)tag, int fringe, unsigned no,
+                           ARLCORE_POINT_SAVE_TYPE type ) const
 {
-    if(!f.is_open()) return false;
-    unsigned int i,j,dim=size();
+    if(!f.is_open())
+    {
+        return false;
+    }
+    unsigned int i,j,dim = size();
     if(type==ARLCORE_POINT_SAVE_FULL)
     {
         if(ctf)
@@ -286,7 +332,10 @@ bool arlCore::Point::save( std::fstream &f, bool ctf, unsigned int cam,  SPTR(vo
             f<<"\nTag "<<tag;
             f<<"\nFringe "<<fringe;
         }
-        else f<<"Numero "<<no<<"";
+        else
+        {
+            f<<"Numero "<<no<<"";
+        }
         f<<"\nVisibility "<<m_visibility;
         //f<<"Status "<<""; //TODO
         f<<"\nScalar "<<m_scalar;
@@ -299,28 +348,52 @@ bool arlCore::Point::save( std::fstream &f, bool ctf, unsigned int cam,  SPTR(vo
             f<<"\nColour "<<R<<" "<<G<<" "<<B;
         }
         f<<"\nCoordinates\n";
-        for( i=0 ; i<dim ; ++i )
-            f<<get(i)<<"\t";
-        f<<"\nUncertainty\n";
-        for( i=0 ; i<dim ; ++i )
+        for( i = 0; i<dim; ++i )
         {
-            for( j=0 ; j<dim ; ++j )
+            f<<get(i)<<"\t";
+        }
+        f<<"\nUncertainty\n";
+        for( i = 0; i<dim; ++i )
+        {
+            for( j = 0; j<dim; ++j )
+            {
                 f<<m_covMatrix.get(i,j)<<"\t";
+            }
             f<<"\n";
         }
         f<<"End\n";
-    }else
+    }
+    else
     {
         if(type==ARLCORE_POINT_SAVE_FULL ||type==ARLCORE_POINT_SAVE_LIGHT)
+        {
             f<<"Numero "<<no<<" Coordinates ";
+        }
         if(type==ARLCORE_POINT_SAVE_VTK)
-            for( i=0 ; i<3 ; ++i )
-                if(i<dim) f<<get(i)<<" "; else f<<"0.0 ";
+        {
+            for( i = 0; i<3; ++i )
+            {
+                if(i<dim)
+                {
+                    f<<get(i)<<" ";
+                }
+                else
+                {
+                    f<<"0.0 ";
+                }
+            }
+        }
         else
-            for( i=0 ; i<dim ; ++i )
+        {
+            for( i = 0; i<dim; ++i )
+            {
                 f<<get(i)<<" ";
+            }
+        }
         if(type==ARLCORE_POINT_SAVE_FULL ||type==ARLCORE_POINT_SAVE_LIGHT)
+        {
             f<<"End";
+        }
         f<<"\n";
     }
     f.flush();
@@ -329,11 +402,14 @@ bool arlCore::Point::save( std::fstream &f, bool ctf, unsigned int cam,  SPTR(vo
 
 bool arlCore::Point::load( const std::string &fileName )
 {
-    if(fileName=="") return false;
+    if(fileName=="")
+    {
+        return false;
+    }
     std::ifstream f;
     f.open (fileName.c_str(), std::fstream::in);
     int no;
-    bool b=load(f,no);
+    bool b = load(f,no);
     f.close();
     return b;
 }
@@ -346,36 +422,63 @@ bool arlCore::Point::load( std::ifstream &f, int &no, unsigned int dim )
     return load( f, cam, tag, fringe, no, dim );
 }
 
-bool arlCore::Point::load( std::ifstream &f, unsigned int &cam, SPTR(void) tag, int &fringe )
+bool arlCore::Point::load( std::ifstream &f, unsigned int &cam, SPTR(void)tag, int &fringe )
 {
     int no;
     return load( f, cam, tag, fringe, no );
 }
 
-bool arlCore::Point::load( std::ifstream &f, unsigned int &cam, SPTR(void) tag, int &fringe, int &no, unsigned int dim )
+bool arlCore::Point::load( std::ifstream &f, unsigned int &cam, SPTR(void)tag, int &fringe, int &no, unsigned int dim )
 {
     setOK(false);
-    if(!f.is_open()) return false;
+    if(!f.is_open())
+    {
+        return false;
+    }
     init(dim);
-    no=-1;
+    no = -1;
     unsigned int i,j;
     std::string token,text;
     double val; //,version;
-    bool b=false;
+    bool b = false;
     do
     {
         f>>token;
         //if(token=="Version") f>>version;
-        if(token=="Visibility") f>>m_visibility;
+        if(token=="Visibility")
+        {
+            f>>m_visibility;
+        }
         //if(token=="Status") f>>""; //TODO
-        if(token=="Radius") f>>m_scalar; // Deprecated
-        if(token=="Scalar") f>>m_scalar;
-        if(token=="Confidence") f>>m_confidence;
-        if(token=="Error") f>>m_error;
-        if(token=="Numero") f>>no;
-        if(token=="Camera") f>>cam;
+        if(token=="Radius")
+        {
+            f>>m_scalar;                 // Deprecated
+        }
+        if(token=="Scalar")
+        {
+            f>>m_scalar;
+        }
+        if(token=="Confidence")
+        {
+            f>>m_confidence;
+        }
+        if(token=="Error")
+        {
+            f>>m_error;
+        }
+        if(token=="Numero")
+        {
+            f>>no;
+        }
+        if(token=="Camera")
+        {
+            f>>cam;
+        }
         assert(false); // if(token=="Tag") f>> tag.get(); VAG serialisation of a pointer addr !!!!
-        if(token=="Fringe") f>>fringe;
+        if(token=="Fringe")
+        {
+            f>>fringe;
+        }
         if(token=="Name")
         {
             f>>text;
@@ -383,14 +486,19 @@ bool arlCore::Point::load( std::ifstream &f, unsigned int &cam, SPTR(void) tag, 
         }
         if(token=="Dimension")
         {
-            if(dim>0) f>>i;
+            if(dim>0)
+            {
+                f>>i;
+            }
             else
             {
                 f>>dim;
                 m_coordinates.set_size(dim);
                 m_stat.resize(size());
-                for( i=0 ; i<size() ; ++i )
+                for( i = 0; i<size(); ++i )
+                {
                     m_stat[i].fill(0.0);
+                }
                 m_coordinates.fill(0.0);
                 m_covMatrix.set_size(dim,dim);
                 m_covMatrix.fill(0.0);
@@ -401,27 +509,30 @@ bool arlCore::Point::load( std::ifstream &f, unsigned int &cam, SPTR(void) tag, 
             unsigned int R,G,B;
             f>>R>>G>>B;
             m_colour.setColour(R,G,B);
-            m_isColored=true;
+            m_isColored = true;
         }
         if(token=="Coordinates" && dim>0)
         {
-            for( i=0 ; i<dim ; ++i )
+            for( i = 0; i<dim; ++i )
             {
                 f>>val;
                 m_coordinates.put(i,val);
             }
-            b=true;
+            b = true;
         }
         if(token=="Uncertainty" && dim>0)
         {
-            for( i=0 ; i<dim ; ++i )
-                for( j=0 ; j<dim ; ++j )
+            for( i = 0; i<dim; ++i )
+            {
+                for( j = 0; j<dim; ++j )
                 {
                     f>>val;
                     m_covMatrix.put(i,j,val);
                 }
+            }
         }
-    }while(!f.eof() && token!="End");
+    }
+    while(!f.eof() && token!="End");
     setOK(b);
     return b;
 }
@@ -464,7 +575,7 @@ bool arlCore::Point::setVisible(bool b)
 {
     if(m_visibility!=b)
     {
-        m_visibility=b;
+        m_visibility = b;
     }
     return m_visibility;
 }
@@ -478,21 +589,21 @@ bool arlCore::Point::setStatus(ARLCORE_POINT_STATUS status)
 {
     if(m_status!=status)
     {
-        m_status=status;
+        m_status = status;
     }
     return true;
 }
 
 bool arlCore::Point::setColour(unsigned int R, unsigned int G, unsigned int B)
 {
-    m_isColored=true;
+    m_isColored = true;
     m_colour.setColour(R,G,B);
     return true;
 }
 
 bool arlCore::Point::setColour(const Colour &c)
 {
-    m_isColored=true;
+    m_isColored = true;
     m_colour.setColour(c);
     return true;
 }
@@ -524,38 +635,56 @@ bool arlCore::Point::initUncertainty( void )
 double arlCore::Point::operator[]( unsigned int i ) const
 {
     assert(i<size());
-    if(i<size()) return get(i);
-    else return 0.0;
+    if(i<size())
+    {
+        return get(i);
+    }
+    else
+    {
+        return 0.0;
+    }
 }
 
 /*double& arlCore::Point::operator []( unsigned int i )
-{
+   {
     if(i<size()) return m_coordinates[i]*m_ponderation;
     else throw(-1);
-}*/
+   }*/
 
 double arlCore::Point::get( unsigned int i ) const
 {
     assert(i<size());
-    if(i<size()) return m_coordinates.get(i)*m_ponderation;
-    else return 0.0;
+    if(i<size())
+    {
+        return m_coordinates.get(i)*m_ponderation;
+    }
+    else
+    {
+        return 0.0;
+    }
 }
 
 bool arlCore::Point::set( unsigned int i, double a )
 {
     assert(i<size());
-    if(i>=size()) return false;
+    if(i>=size())
+    {
+        return false;
+    }
     m_coordinates.put(i,a/m_ponderation); // FIXME
     return true;
 }
 
-bool arlCore::Point::set( arlCore::Point::csptr  p )
+bool arlCore::Point::set( arlCore::Point::csptr p )
 {
     assert(p->size()==size());
-    if(p->size()!=size()) return false;
+    if(p->size()!=size())
+    {
+        return false;
+    }
     unsigned int i;
-    m_ponderation=1.0;
-    for( i=0 ; i<size() ; ++i )
+    m_ponderation = 1.0;
+    for( i = 0; i<size(); ++i )
     {
         m_coordinates.put(i,p->get(i));
         m_stat[i].fill(0.0);
@@ -569,16 +698,21 @@ void arlCore::Point::fill( double a )
     m_coordinates.fill(a);
 //  for( i=0 ; i<m_coordinates.size() ; ++i )
 //      m_coordinates.put(i,a);
-    m_ponderation=1.0;
-    for( i=0 ; i<size() ; ++i )
+    m_ponderation = 1.0;
+    for( i = 0; i<size(); ++i )
+    {
         m_stat[i].fill(0.0);
+    }
 }
 
-bool arlCore::Point::pond( arlCore::Point::csptr  p )
+bool arlCore::Point::pond( arlCore::Point::csptr p )
 {
-    if(p->size()!=size()) return false;
+    if(p->size()!=size())
+    {
+        return false;
+    }
     unsigned int i;
-    for( i=0 ; i<size() ; ++i )
+    for( i = 0; i<size(); ++i )
     {
         m_coordinates.put(i,m_coordinates.get(i)+p->get(i));
         arlCore::addValue(m_stat[i], p->get(i));
@@ -592,12 +726,15 @@ const std::vector< vnl_vector_fixed<double,5> >& arlCore::Point::getStatistic( v
     return m_stat;
 }
 
-bool arlCore::Point::add( arlCore::Point::csptr  p )
+bool arlCore::Point::add( arlCore::Point::csptr p )
 {
     assert(p->size()==size());
-    if(p->size()!=size()) return false;
+    if(p->size()!=size())
+    {
+        return false;
+    }
     unsigned int i;
-    for( i=0 ; i<size() ; ++i )
+    for( i = 0; i<size(); ++i )
     {
         m_coordinates.put(i,get(i)+p->get(i));
         m_stat[i].fill(0.0);
@@ -646,8 +783,8 @@ void arlCore::Point::normalize( void )
 {
     unsigned int i;
     Point::sptr Origin = Point::New(size());
-    const double Norm = distance(Origin);
-    for( i=0 ; i<size() ; ++i )
+    const double Norm  = distance(Origin);
+    for( i = 0; i<size(); ++i )
     {
         m_coordinates.put(i,get(i)/Norm);
         m_stat[i].fill(0.0);
@@ -669,7 +806,7 @@ bool arlCore::Point::setType( ARLCORE_POINT_TYPE type )
 {
     if(type<ARLCORE_POINT_NBTYPES)
     {
-        m_type=type;
+        m_type = type;
     }
     return (type<ARLCORE_POINT_NBTYPES);
 }
@@ -681,12 +818,15 @@ double arlCore::Point::getScalar( void ) const
 
 void arlCore::Point::setScalar( double scalar )
 {
-    m_scalar=scalar;
+    m_scalar = scalar;
 }
 
 bool arlCore::Point::addGaussianNoise( const unsigned int index, const double std )
 {
-    if(index>=size()) return false;
+    if(index>=size())
+    {
+        return false;
+    }
     set(index, get(index) + arlRandom::Random::gaussianRnd(std));
     return true;
 }
@@ -694,8 +834,10 @@ bool arlCore::Point::addGaussianNoise( const unsigned int index, const double st
 bool arlCore::Point::addGaussianNoise( const double std )
 {
     unsigned int i;
-    for( i=0 ; i<size() ; ++i )
+    for( i = 0; i<size(); ++i )
+    {
         set(i, get(i) + arlRandom::Random::gaussianRnd(std));
+    }
     return true;
 }
 
@@ -704,15 +846,15 @@ void arlCore::Point::addUniformNoise( const unsigned int index, const double ran
     set(index, get(index)+arlRandom::Random::uniformDoubleRnd(-range, range));
 }
 /*
-void arlCore::Point::cubicRandom( const double side )
-{
+   void arlCore::Point::cubicRandom( const double side )
+   {
     unsigned int i;
     for( i=0 ; i<size() ; ++i )
         set(i, get(i)+arlRandom::Random::uniformDoubleRnd(-side/2,side/2));
-}
+   }
 
-void arlCore::Point::sphericRandom( const double radius )
-{
+   void arlCore::Point::sphericRandom( const double radius )
+   {
     unsigned int i;
     vnl_vector<double> vec(size());
     do
@@ -722,7 +864,7 @@ void arlCore::Point::sphericRandom( const double radius )
     }while(vec.two_norm()>1.0);
     for( i=0 ; i<size() ; ++i )
         set(i, get(i)+vec[i]*radius);
-}*/
+   }*/
 
 bool arlCore::Point::shapeRandom( arlCore::ARLCORE_SHAPE type, const double size, const double angle )
 {
@@ -732,114 +874,161 @@ bool arlCore::Point::shapeRandom( arlCore::ARLCORE_SHAPE type, const double size
     double a, theta, phi, fi_max;
     switch(type)
     {
-    case arlCore::ARLCORE_SHAPE_CUBE : // Size is the side of cube
-        for( i=0 ; i<Dim ; ++i )
-            set(i, get(i)+arlRandom::Random::uniformDoubleRnd(-size/2,size/2));
-        return true;
-    case arlCore::ARLCORE_SHAPE_SPHERE : // Size is the diameter
-        if(this->size()!=Dim) return false;
-        do
-        {
-            for ( i=0 ; i<Dim ; i++)
-                vec[i] = arlRandom::Random::uniformDoubleRnd(-1.0,1.0);
-        }while(vec.two_norm()>1.0);
-        for( i=0 ; i<Dim ; ++i )
-            set(i, get(i)+vec[i]*size/2);
-        return true;
-    case arlCore::ARLCORE_SHAPE_SPHERESURFACE :
-        if(this->size()!=Dim) return false;
-        theta = arlRandom::Random::uniformDoubleRnd(0,2*vnl_math::pi);
-        phi   = arlRandom::Random::uniformDoubleRnd(0, vnl_math::pi);
-        set(0, get(0) + size/2*sin(phi)*cos(theta) );
-        set(1, get(1) + size/2*sin(phi)*sin(theta) );
-        set(2, get(2) + size/2*cos(phi));
-        return true;
-    case arlCore::ARLCORE_SHAPE_SPHERE_CAP :
-        if(this->size()!=Dim) return false;
-        fi_max = acos(1-angle/2/vnl_math::pi);
-        theta = arlRandom::Random::uniformDoubleRnd(0,2*vnl_math::pi);
-        do
-        {
-            phi = arlRandom::Random::uniformDoubleRnd( 0, vnl_math::pi );
-        }while( phi > fi_max );
-        set(0, get(0) + size/2*sin(phi)*cos(theta) );
-        set(1, get(1) + size/2*sin(phi)*sin(theta) );
-        set(2, get(2) + size/2*cos(phi));
-        return true;
-    case arlCore::ARLCORE_SHAPE_DISC :
-        vec[Dim-1]=0.0;
-        do //le point tire appartient au plan xOy i.e. point.z() = 0.O
-        { //on ne boucle pas sur la derniere coordonnee
-            for ( i=0 ; i<Dim-1 ; i++)
-                vec[i] = arlRandom::Random::uniformDoubleRnd(-1.0,1.0);
-        }while(vec.two_norm()>1.0);
-        for( i=0 ; i<Dim ; ++i )
-            set(i, get(i)+vec[i]*size/2);
-        return true;
-    case arlCore::ARLCORE_SHAPE_PLAINSQUARE :
-        for( i=0 ; i<Dim-1 ; ++i )
-            set(i, get(i)+arlRandom::Random::uniformDoubleRnd(-size/2,size/2));
-        set(i, get(i) );
-        return true;
-    case arlCore::ARLCORE_SHAPE_CIRCLE :
-        if( Dim!=3 ) return false;
-        a = arlRandom::Random::uniformDoubleRnd(-vnl_math::pi,vnl_math::pi);
-        set(0, get(0) + cos(a)*size/2 );
-        set(1, get(1) + sin(a)*size/2 );
-        set(2, get(2));
-        return true;
-    case arlCore::ARLCORE_SHAPE_EDGESQUARE :
-        if( Dim!=3 ) return false;
-        for ( i=0 ; i<Dim ; i++)
-            vec[i] = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
-        if(vec[1]<0.0) a=-1; else a=1;
-        if(vec[2] < 0.0)
-        {
-            set(0, get(0) + a*size/2 );
-            set(1, get(1) + vec[0] );
-        }
-        else
-        {
-            set(0, get(0) + vec[0] );
-            set(1, get(1) + a*size/2 );
-        }
-        set(2, get(2));
-        return true;
-    case arlCore::ARLCORE_SHAPE_SOLIDANGLE :
-        if( Dim!=3 ) return false;
-        double x,y,z,r;
-        double phi_max;
-        phi_max = acos(1.0-angle/2.0/vnl_math::pi);
-        do
-        {
-            x = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
-            y = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
-            z = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
-            r = sqrt(x*x + y*y + z*z);
-            phi = acos(z/r);
-        }while( r>size/2 || phi > phi_max );
-        set(0, get(0) + x);
-        set(1, get(1) + y);
-        set(2, get(2) + z);
-        return true;
-    case arlCore::ARLCORE_SHAPE_SOLIDANGLE_SURFACE :
-        if( Dim!=3 ) return false;
-        fi_max = acos(1.0-angle/2.0/vnl_math::pi);
-        double xx,yy,zz,rr,fi;
-        do
-        {
-            xx = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
-            yy = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
-            zz = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
+        case arlCore::ARLCORE_SHAPE_CUBE: // Size is the side of cube
+            for( i = 0; i<Dim; ++i )
+            {
+                set(i, get(i)+arlRandom::Random::uniformDoubleRnd(-size/2,size/2));
+            }
+            return true;
+        case arlCore::ARLCORE_SHAPE_SPHERE: // Size is the diameter
+            if(this->size()!=Dim)
+            {
+                return false;
+            }
+            do
+            {
+                for ( i = 0; i<Dim; i++)
+                {
+                    vec[i] = arlRandom::Random::uniformDoubleRnd(-1.0,1.0);
+                }
+            }
+            while(vec.two_norm()>1.0);
+            for( i = 0; i<Dim; ++i )
+            {
+                set(i, get(i)+vec[i]*size/2);
+            }
+            return true;
+        case arlCore::ARLCORE_SHAPE_SPHERESURFACE:
+            if(this->size()!=Dim)
+            {
+                return false;
+            }
+            theta = arlRandom::Random::uniformDoubleRnd(0,2*vnl_math::pi);
+            phi   = arlRandom::Random::uniformDoubleRnd(0, vnl_math::pi);
+            set(0, get(0) + size/2*sin(phi)*cos(theta) );
+            set(1, get(1) + size/2*sin(phi)*sin(theta) );
+            set(2, get(2) + size/2*cos(phi));
+            return true;
+        case arlCore::ARLCORE_SHAPE_SPHERE_CAP:
+            if(this->size()!=Dim)
+            {
+                return false;
+            }
+            fi_max = acos(1-angle/2/vnl_math::pi);
+            theta  = arlRandom::Random::uniformDoubleRnd(0,2*vnl_math::pi);
+            do
+            {
+                phi = arlRandom::Random::uniformDoubleRnd( 0, vnl_math::pi );
+            }
+            while( phi > fi_max );
+            set(0, get(0) + size/2*sin(phi)*cos(theta) );
+            set(1, get(1) + size/2*sin(phi)*sin(theta) );
+            set(2, get(2) + size/2*cos(phi));
+            return true;
+        case arlCore::ARLCORE_SHAPE_DISC:
+            vec[Dim-1] = 0.0;
+            do //le point tire appartient au plan xOy i.e. point.z() = 0.O
+            { //on ne boucle pas sur la derniere coordonnee
+                for ( i = 0; i<Dim-1; i++)
+                {
+                    vec[i] = arlRandom::Random::uniformDoubleRnd(-1.0,1.0);
+                }
+            }
+            while(vec.two_norm()>1.0);
+            for( i = 0; i<Dim; ++i )
+            {
+                set(i, get(i)+vec[i]*size/2);
+            }
+            return true;
+        case arlCore::ARLCORE_SHAPE_PLAINSQUARE:
+            for( i = 0; i<Dim-1; ++i )
+            {
+                set(i, get(i)+arlRandom::Random::uniformDoubleRnd(-size/2,size/2));
+            }
+            set(i, get(i) );
+            return true;
+        case arlCore::ARLCORE_SHAPE_CIRCLE:
+            if( Dim!=3 )
+            {
+                return false;
+            }
+            a = arlRandom::Random::uniformDoubleRnd(-vnl_math::pi,vnl_math::pi);
+            set(0, get(0) + cos(a)*size/2 );
+            set(1, get(1) + sin(a)*size/2 );
+            set(2, get(2));
+            return true;
+        case arlCore::ARLCORE_SHAPE_EDGESQUARE:
+            if( Dim!=3 )
+            {
+                return false;
+            }
+            for ( i = 0; i<Dim; i++)
+            {
+                vec[i] = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
+            }
+            if(vec[1]<0.0)
+            {
+                a = -1;
+            }
+            else
+            {
+                a = 1;
+            }
+            if(vec[2] < 0.0)
+            {
+                set(0, get(0) + a*size/2 );
+                set(1, get(1) + vec[0] );
+            }
+            else
+            {
+                set(0, get(0) + vec[0] );
+                set(1, get(1) + a*size/2 );
+            }
+            set(2, get(2));
+            return true;
+        case arlCore::ARLCORE_SHAPE_SOLIDANGLE:
+            if( Dim!=3 )
+            {
+                return false;
+            }
+            double x,y,z,r;
+            double phi_max;
+            phi_max = acos(1.0-angle/2.0/vnl_math::pi);
+            do
+            {
+                x   = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
+                y   = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
+                z   = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
+                r   = sqrt(x*x + y*y + z*z);
+                phi = acos(z/r);
+            }
+            while( r>size/2 || phi > phi_max );
+            set(0, get(0) + x);
+            set(1, get(1) + y);
+            set(2, get(2) + z);
+            return true;
+        case arlCore::ARLCORE_SHAPE_SOLIDANGLE_SURFACE:
+            if( Dim!=3 )
+            {
+                return false;
+            }
+            fi_max = acos(1.0-angle/2.0/vnl_math::pi);
+            double xx,yy,zz,rr,fi;
+            do
+            {
+                xx = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
+                yy = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
+                zz = arlRandom::Random::uniformDoubleRnd(-size/2,size/2);
 
-            rr = sqrt(xx*xx + yy*yy + zz*zz);
-            fi = acos(zz/rr);
-        }while( rr>size/2 || fi > fi_max || fi < (fi_max - 0.01 ) );
-        set(0, get(0) + xx);
-        set(1, get(1) + yy);
-        set(2, get(2) + zz);
-        return true;
-    default: break;
+                rr = sqrt(xx*xx + yy*yy + zz*zz);
+                fi = acos(zz/rr);
+            }
+            while( rr>size/2 || fi > fi_max || fi < (fi_max - 0.01 ) );
+            set(0, get(0) + xx);
+            set(1, get(1) + yy);
+            set(2, get(2) + zz);
+            return true;
+        default: break;
     }
     return false;
 }
@@ -851,11 +1040,16 @@ double arlCore::Point::distance(arlCore::Point::csptr pt) const
 
 double arlCore::Point::distance2(arlCore::Point::csptr pt) const
 {
-    unsigned int i,dim=size();
-    if(dim<pt->size()) dim=pt->size();
+    unsigned int i,dim = size();
+    if(dim<pt->size())
+    {
+        dim = pt->size();
+    }
     double dist = 0;
-    for(i=0 ; i<dim ; ++i)
+    for(i = 0; i<dim; ++i)
+    {
         dist += ((*this)[i]-(*pt)[i])*((*this)[i]-(*pt)[i]);
+    }
     assert(dist>=0);
     return (dist);
 }
@@ -870,21 +1064,28 @@ bool arlCore::Point::cross_3D(arlCore::Point::csptr vec1, arlCore::Point::csptr 
 {
     unsigned int i,j;
     assert(this->size()==3 && vec1->size()==3 && vec2->size()==3);
-    vnl_vector_fixed<double,3> vnl_vec1((*vec1)[0], (*vec1)[1],(*vec1)[2]), vnl_vec2((*vec2)[0], (*vec2)[1],(*vec2)[2]), cross_prod;
+    vnl_vector_fixed<double,3> vnl_vec1((*vec1)[0], (*vec1)[1],(*vec1)[2]), vnl_vec2((*vec2)[0], (*vec2)[1],(*vec2)[2]),
+    cross_prod;
     vnl_matrix_fixed<double,3,3> Sx, Sy, res;
     cross_prod = vnl_cross_3d(vnl_vec1, vnl_vec2);
-    for(i=0;i<3;i++)
+    for(i = 0; i<3; i++)
+    {
         this->set(i,cross_prod(i));
-    Sx = vnl_cross_product_matrix(vnl_vec1);
-    Sy = vnl_cross_product_matrix(vnl_vec2);
+    }
+    Sx  = vnl_cross_product_matrix(vnl_vec1);
+    Sy  = vnl_cross_product_matrix(vnl_vec2);
     res = Sy * vec1->getCovMatrix() * vnl_transpose(Sy) + Sx * vec2->getCovMatrix() * vnl_transpose(Sx);
-    for(i=0;i<3;i++)
-        for(j=0;j<3;j++)
+    for(i = 0; i<3; i++)
+    {
+        for(j = 0; j<3; j++)
+        {
             m_covMatrix.put(i, j, res(i,j) );
+        }
+    }
     return true;
 }
 
-bool arlCore::Point::dotProduct(arlCore::Point::csptr  vec1, arlCore::Point::csptr  vec2)
+bool arlCore::Point::dotProduct(arlCore::Point::csptr vec1, arlCore::Point::csptr vec2)
 {
     assert(this->size()==1);
     assert(vec1->size()== vec2->size());
@@ -892,55 +1093,71 @@ bool arlCore::Point::dotProduct(arlCore::Point::csptr  vec1, arlCore::Point::csp
     vnl_matrix<double> res(1,1);
     double dot = 0;
     unsigned int i;
-    for( i=0 ; i<vec1->size( ); i++ )
+    for( i = 0; i<vec1->size( ); i++ )
     {
-        dot+=(*vec1)[i]*(*vec2)[i];
+        dot           += (*vec1)[i]*(*vec2)[i];
         vnl_vec1[i][0] = (*vec1)[i];
         vnl_vec2[i][0] = (*vec2)[i];
     }
     this->set(0, dot);
-    res  = vnl_transpose(vnl_vec2) * vec1->getCovMatrix() * vnl_vec2
-         + vnl_transpose(vnl_vec1) * vec2->getCovMatrix() * vnl_vec1;
+    res = vnl_transpose(vnl_vec2) * vec1->getCovMatrix() * vnl_vec2
+          + vnl_transpose(vnl_vec1) * vec2->getCovMatrix() * vnl_vec1;
     m_covMatrix.put(0, 0, res(0,0));
     return true;
 }
 
-bool arlCore::Point::divide(arlCore::Point::csptr  var1, arlCore::Point::csptr  var2)
+bool arlCore::Point::divide(arlCore::Point::csptr var1, arlCore::Point::csptr var2)
 {
     assert(this->size()==1 && var1->size() ==1 && var2->size() ==1);
     vnl_matrix<double> res(1,1);
     //res = [1/y -x/y^2] * [sigma_x^2        0 ] * [  1/y ] = sigma_x^2 / y^2 + x^2/y^4 *sigma_y^2
     //                     [0         sigma_y^2]   [-x/y^2]
-    res  = var1->getCovMatrix() / ((*var2)[0] * (*var2)[0]) +  var2->getCovMatrix()*((*var1)[0] * (*var1)[0])/((*var2)[0] * (*var2)[0]* (*var2)[0]* (*var2)[0]);
+    res = var1->getCovMatrix() / ((*var2)[0] * (*var2)[0]) +  var2->getCovMatrix()*((*var1)[0] * (*var1)[0])/
+          ((*var2)[0] * (*var2)[0]* (*var2)[0]* (*var2)[0]);
     m_covMatrix.put(0, 0, res(0,0));
     this->set(0, (*var1)[0]/(*var2)[0]);
     return true;
 }
 
-bool arlCore::Point::multiply(arlCore::Point::csptr  scalar, arlCore::Point::csptr  vec)
+bool arlCore::Point::multiply(arlCore::Point::csptr scalar, arlCore::Point::csptr vec)
 {
     assert( this->size()== vec->size() );
     assert( scalar->size()==1 );
-    vnl_matrix<double> res(vec->size(),vec->size()), jacobien(vec->size(),vec->size()+1), sigma(vec->size()+1,vec->size()+1);
+    vnl_matrix<double> res(vec->size(),vec->size()), jacobien(vec->size(),vec->size()+1), sigma(vec->size()+1,
+                                                                                                vec->size()+1);
     unsigned int i,j;
-    for( i=0 ; i<vec->size() ; ++i )
+    for( i = 0; i<vec->size(); ++i )
+    {
         this->set(i, (*scalar)[0] * (*vec)[i]);
+    }
     sigma.fill(0);
     sigma[0][0] = scalar->getCovMatrix()[0][0];
-    for( i=1 ; i<vec->size()+1 ; ++i )
-        for( j=1 ; j<vec->size()+1 ; ++j )
-        sigma[i][j] =  vec->getCovMatrix()[i-1][j-1];
+    for( i = 1; i<vec->size()+1; ++i )
+    {
+        for( j = 1; j<vec->size()+1; ++j )
+        {
+            sigma[i][j] = vec->getCovMatrix()[i-1][j-1];
+        }
+    }
     //std::cerr<< "MATRIX\n"<<sigma;
     jacobien.fill(0);
-    for( i=0 ; i<vec->size() ; ++i )
+    for( i = 0; i<vec->size(); ++i )
+    {
         jacobien[i][0] = (*vec)[i];
-    for( i=0 ; i<vec->size() ; ++i )
+    }
+    for( i = 0; i<vec->size(); ++i )
+    {
         jacobien[i][i+1] = (*scalar)[0];
+    }
     //std::cerr<< "jacobien\n"<<jacobien;
     res = jacobien * sigma * vnl_transpose(jacobien);
-    for( i=0 ; i<vec->size() ; ++i )
-        for( j=0 ; j<vec->size() ; ++j )
+    for( i = 0; i<vec->size(); ++i )
+    {
+        for( j = 0; j<vec->size(); ++j )
+        {
             m_covMatrix.put(i, j, res(i,j));
+        }
+    }
     return true;
 }
 
@@ -956,7 +1173,7 @@ double arlCore::Point::getError( void ) const
 
 // FONCTIONS DIVERSES : A TRIER
 /*unsigned int arlCore::load(PointsCont &list, const char *fileName, arlCore::Point::ARLCORE_POINT_TYPE type, long int date)
-{
+   {
     unsigned int i, j, nbPoints = 0, serie=0, dim=0;
     int n;
     double a;
@@ -988,8 +1205,8 @@ double arlCore::Point::getError( void ) const
         pFile.close();
     }
     return nbPoints;
-}
-*/
+   }
+ */
 double arlCore::distance( arlCore::Point::csptr pt1, arlCore::Point::csptr pt2)
 {
     return pt1->distance(pt2);
@@ -1000,19 +1217,26 @@ double arlCore::surface( const std::vector< arlCore::Point::csptr >& ptList )
     //TODO : The next calculus is incorrect
     // It's the sum of distances between all points
     unsigned int i,j;
-    double s=0;
-    for( i=0 ; i<ptList.size() ; ++i )
-        for( j=i+1 ; j<ptList.size() ; ++j )
+    double s = 0;
+    for( i = 0; i<ptList.size(); ++i )
+    {
+        for( j = i+1; j<ptList.size(); ++j )
+        {
             if(ptList[i]!=0 && ptList[j]!=0)
-                s+=ptList[i]->distance( ptList[j] );
+            {
+                s += ptList[i]->distance( ptList[j] );
+            }
+        }
+    }
     return s;
 }
 
-unsigned int arlCore::closestY( const std::vector< arlCore::Point::csptr >&l, double y, unsigned int i1, unsigned int i2, int indexInit )
+unsigned int arlCore::closestY( const std::vector< arlCore::Point::csptr >&l, double y, unsigned int i1,
+                                unsigned int i2, int indexInit )
 {   // Si l est tri� par y croissant
     const bool Verbose = false;
 /*#ifdef _DEBUG
-//  arlCore::save(l,"c:/ccc.txt",arlCore::ARLCORE_POINT_SAVE_GNUPLOT);
+   //  arlCore::save(l,"c:/ccc.txt",arlCore::ARLCORE_POINT_SAVE_GNUPLOT);
     const bool lPasTrieCroissant = false;
     const bool y_de_l_pas_continue_dans_Z = false;
     unsigned int i;
@@ -1025,39 +1249,82 @@ unsigned int arlCore::closestY( const std::vector< arlCore::Point::csptr >&l, do
         if(i>0 && l[i]->y()!=y0+1)
         {
             std::cout<<"Discontinuite de l : "<<y0<<" - "<<l[i]->y()<<"\n";
-//          assert( y_de_l_pas_continue_dans_Z );
+   //          assert( y_de_l_pas_continue_dans_Z );
         }
         y0 = l[i]->y();
     }
-#endif // _DEBUG*/
+ #endif // _DEBUG*/
     assert(l.size()>0);
-    if(Verbose) std::cout<<"Nb Points : "<<l.size();
-    unsigned int index[2],centre,intervalle,iterations=0,r;
-    index[0]=i1;
-    if(i2<=i1) index[1]=l.size()-1;
-    else index[1]=i2;
-    if(y<=l[index[0]]->y()) return index[0];
-    if(y>=l[index[1]]->y()) return index[1];
+    if(Verbose)
+    {
+        std::cout<<"Nb Points : "<<l.size();
+    }
+    unsigned int index[2],centre,intervalle,iterations = 0,r;
+    index[0] = i1;
+    if(i2<=i1)
+    {
+        index[1] = l.size()-1;
+    }
+    else
+    {
+        index[1] = i2;
+    }
+    if(y<=l[index[0]]->y())
+    {
+        return index[0];
+    }
+    if(y>=l[index[1]]->y())
+    {
+        return index[1];
+    }
     //if(index[1]>=l.size()) index[1]=l.size()-1;
-    intervalle=index[1]-index[0];
+    intervalle = index[1]-index[0];
     while(intervalle>1)
     {
-        centre=index[0]+intervalle/2;
-        if(l[centre]->y()==y) return centre;
-        if(l[centre]->y()<y) index[0]=centre;
-        else index[1]=centre;
-        intervalle=index[1]-index[0];
+        centre = index[0]+intervalle/2;
+        if(l[centre]->y()==y)
+        {
+            return centre;
+        }
+        if(l[centre]->y()<y)
+        {
+            index[0] = centre;
+        }
+        else
+        {
+            index[1] = centre;
+        }
+        intervalle = index[1]-index[0];
         ++iterations;
     }
-    if(Verbose) std::cout<<" - ClosestY Nb iterations : "<<iterations<<"\n";
-    if(y-l[index[0]]->y()>l[index[1]]->y()-y) r=index[1];
-    else r=index[0];
+    if(Verbose)
+    {
+        std::cout<<" - ClosestY Nb iterations : "<<iterations<<"\n";
+    }
+    if(y-l[index[0]]->y()>l[index[1]]->y()-y)
+    {
+        r = index[1];
+    }
+    else
+    {
+        r = index[0];
+    }
 #ifdef _DEBUG
     // Verification du bornage du resultat
     if(y<l[r]->y())
-        if(r>0) assert(l[r-1]->y()<y);
+    {
+        if(r>0)
+        {
+            assert(l[r-1]->y()<y);
+        }
+    }
     if(y>l[r]->y())
-        if(r<l.size()-1) assert(l[r+1]->y()>y);
+    {
+        if(r<l.size()-1)
+        {
+            assert(l[r+1]->y()>y);
+        }
+    }
 #endif // _DEBUG
     return r;
 }

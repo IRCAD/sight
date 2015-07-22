@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _OPSOFA_SOFATRIANSRV_HPP_
-#define _OPSOFA_SOFATRIANSRV_HPP_
+#ifndef __OPSOFA_SOFATRIANSRV_HPP__
+#define __OPSOFA_SOFATRIANSRV_HPP__
 
 #include <fwGui/IActionSrv.hpp>
 #include "config.hpp"
@@ -21,11 +21,11 @@ namespace opSofa
 class SofaTrianSrv : public ::fwGui::IActionSrv
 {
 
-public :
+public:
     fwCoreServiceClassDefinitionsMacro ( (SofaTrianSrv)(::fwGui::IActionSrv) );
 
-    SofaTrianSrv() throw() ;
-    virtual ~SofaTrianSrv() throw() ;
+    SofaTrianSrv() throw();
+    virtual ~SofaTrianSrv() throw();
 
 protected:
 
@@ -35,7 +35,7 @@ protected:
     void updating() throw ( ::fwTools::Failed );
     void receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
 
-private :
+private:
 
     /**
      * @brief Triangular mesh identifier
@@ -53,4 +53,4 @@ private :
 } // namespace opSofa
 
 
-#endif // _OPSOFA_SOFATRIANSRV_HPP_
+#endif // __OPSOFA_SOFATRIANSRV_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ namespace tuto04
 //-----------------------------------------------------------------------------
 
 // Declare a new service of type IReader for read an Image
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::devForum::tuto04::ImageReaderActionService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::devForum::tuto04::ImageReaderActionService, ::fwData::Image );
 
 //-----------------------------------------------------------------------------
 
@@ -31,7 +31,8 @@ ImageReaderActionService::ImageReaderActionService() throw()
 //-----------------------------------------------------------------------------
 
 ImageReaderActionService::~ImageReaderActionService() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -89,7 +90,8 @@ void ImageReaderActionService::updating() throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void ImageReaderActionService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

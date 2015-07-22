@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,30 +10,32 @@
 #include <arlcore/MatrixR.h>
 #include <arlcore/Misc.h>
 
-arlCore::vnl_rigid_vector::vnl_rigid_vector( void ):
-vnl_vector_fixed<double,6>()
-{}
+arlCore::vnl_rigid_vector::vnl_rigid_vector( void ) :
+    vnl_vector_fixed<double,6>()
+{
+}
 
-arlCore::vnl_rigid_vector::vnl_rigid_vector( const vnl_rigid_vector& rv ):
-vnl_vector_fixed<double,6>()
+arlCore::vnl_rigid_vector::vnl_rigid_vector( const vnl_rigid_vector& rv ) :
+    vnl_vector_fixed<double,6>()
 {
     copy_in(rv);
 }
 
-arlCore::vnl_rigid_vector::vnl_rigid_vector( const vnl_vector<double>& v ):
-vnl_vector_fixed<double,6>()
+arlCore::vnl_rigid_vector::vnl_rigid_vector( const vnl_vector<double>& v ) :
+    vnl_vector_fixed<double,6>()
 {
     copy_in(v);
 }
 
-arlCore::vnl_rigid_vector::vnl_rigid_vector( const vnl_rigid_matrix& rm ):
-vnl_vector_fixed<double,6>()
+arlCore::vnl_rigid_vector::vnl_rigid_vector( const vnl_rigid_matrix& rm ) :
+    vnl_vector_fixed<double,6>()
 {
     copy_in(rm);
 }
 
 arlCore::vnl_rigid_vector::~vnl_rigid_vector( void )
-{}
+{
+}
 
 arlCore::vnl_rigid_vector& arlCore::vnl_rigid_vector::operator=( const vnl_vector<double>& v )
 {
@@ -55,10 +57,15 @@ arlCore::vnl_rigid_vector& arlCore::vnl_rigid_vector::operator=( const vnl_rigid
 
 void arlCore::vnl_rigid_vector::copy_in( const vnl_rigid_vector& rv )
 {
-    if(this==&rv) return;
+    if(this==&rv)
+    {
+        return;
+    }
     unsigned int i;
-    for( i=0 ; i<6 ; ++i )
+    for( i = 0; i<6; ++i )
+    {
         put(i,rv(i));
+    }
 }
 
 void arlCore::vnl_rigid_vector::copy_in( const vnl_rigid_matrix& rm )
@@ -67,27 +74,41 @@ void arlCore::vnl_rigid_vector::copy_in( const vnl_rigid_matrix& rm )
     vnl_rotation3d_vector rotationV( rotationM );
     vnl_vector_fixed<double,3> translation = rm.getTranslation();
     unsigned int i;
-    for( i=0 ; i<3 ; ++i )
+    for( i = 0; i<3; ++i )
+    {
         put(i,rotationV.get(i));
-    for( i=0 ; i<3 ; ++i )
+    }
+    for( i = 0; i<3; ++i )
+    {
         put(i+3,translation.get(i));
+    }
 }
 
 void arlCore::vnl_rigid_vector::copy_in( const vnl_vector<double>& v )
 {
     assert(v.size()==6);
     unsigned int i;
-    for( i=0 ; i<6 ; ++i )
-        if(i<v.size()) put(i,v.get(i));
-        else put(i,0.0);
+    for( i = 0; i<6; ++i )
+    {
+        if(i<v.size())
+        {
+            put(i,v.get(i));
+        }
+        else
+        {
+            put(i,0.0);
+        }
+    }
 }
 
 arlCore::vnl_rotation3d_vector arlCore::vnl_rigid_vector::getRotation3dVector( void ) const
 {
     vnl_rotation3d_vector rv;
     unsigned int i;
-    for( i=0 ; i<3 ; ++i )
+    for( i = 0; i<3; ++i )
+    {
         rv.put(i,get(i));
+    }
     return rv;
 }
 
@@ -95,14 +116,18 @@ vnl_vector_fixed<double,3> arlCore::vnl_rigid_vector::getTranslation( void ) con
 {
     vnl_vector_fixed<double,3> translation;
     unsigned int i;
-    for( i=0 ; i<3 ; ++i )
+    for( i = 0; i<3; ++i )
+    {
         translation.put(i,get(i+3));
+    }
     return translation;
 }
 
 void arlCore::vnl_rigid_vector::addGaussianNoise( double std )
 {
     unsigned int i;
-    for( i=0 ; i<6 ; ++i )
+    for( i = 0; i<6; ++i )
+    {
         (*this)[i] += arlRandom::Random::gaussianRnd(std);
+    }
 }

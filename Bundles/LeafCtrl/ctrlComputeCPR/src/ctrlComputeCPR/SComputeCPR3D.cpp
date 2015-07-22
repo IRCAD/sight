@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,9 +29,9 @@ fwServicesRegisterMacro(::fwServices::IController,::ctrlComputeCPR::SComputeCPR3
 namespace ctrlComputeCPR
 {
 
-const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_HEIGHT_SLOT = "changeHeight";
+const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_HEIGHT_SLOT  = "changeHeight";
 const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_SPACING_SLOT = "changeSpacing";
-const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_ANGLE_SLOT = "changeAngle";
+const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_ANGLE_SLOT   = "changeAngle";
 
 //----------------------------------------------------------------------------------------------------------
 
@@ -49,13 +49,14 @@ SComputeCPR3D::SComputeCPR3D() throw ()
 
     // Set default worker to new slots
     this->setWorker(::fwServices::registry::ActiveWorkers::getDefault()->getWorker(
-                    ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
+                        ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
 }
 
 //----------------------------------------------------------------------------------------------------------
 
 SComputeCPR3D::~SComputeCPR3D() throw ()
-{}
+{
+}
 
 //----------------------------------------------------------------------------------------------------------
 
@@ -110,14 +111,15 @@ void SComputeCPR3D::configuring() throw (fwTools::Failed)
     if (!sourceImageConfig.empty())
     {
         SLM_ASSERT("UID attribute is missing", sourceImageConfig.at(0)->hasAttribute("uid"));
-        m_sourceImageUID =(sourceImageConfig.at(0)->getAttributeValue("uid"));
+        m_sourceImageUID = (sourceImageConfig.at(0)->getAttributeValue("uid"));
     }
 }
 
 //----------------------------------------------------------------------------------------------------------
 
 void SComputeCPR3D::updating() throw (::fwTools::Failed)
-{}
+{
+}
 
 //----------------------------------------------------------------------------------------------------------
 

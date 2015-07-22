@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -53,7 +53,7 @@ void Socket::sendObject(::fwData::Object::sptr data) throw (::fwCore::Exception)
     (*igtlMsg)->Pack();
 
     ::zmq::message_t zmqMsg((*igtlMsg)->GetPackPointer(), (*igtlMsg)->GetPackSize(),
-                          Socket::deleteMessage, igtlMsg);
+                            Socket::deleteMessage, igtlMsg);
 
     m_socket->send(zmqMsg);
 }

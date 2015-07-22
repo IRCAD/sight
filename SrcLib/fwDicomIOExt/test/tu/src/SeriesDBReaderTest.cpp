@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -82,7 +82,7 @@ std::string getValue(const ::boost::property_tree::ptree& node, const std::strin
 void SeriesDBReaderTest::readSeriesDBTest()
 {
     const ::boost::filesystem::path dicomPath = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB";
-    const ::boost::filesystem::path metaPath = dicomPath / "META";
+    const ::boost::filesystem::path metaPath  = dicomPath / "META";
 
     // Create a map to store Dicom files and meta
     typedef std::vector< std::string > DicomVectorType;
@@ -95,7 +95,7 @@ void SeriesDBReaderTest::readSeriesDBTest()
     {
         // Read Series
         ::fwDicomIOExt::dcmtk::SeriesDBReader::sptr myLoader = ::fwDicomIOExt::dcmtk::SeriesDBReader::New();
-        ::fwMedData::SeriesDB::sptr dummy = ::fwMedData::SeriesDB::New();
+        ::fwMedData::SeriesDB::sptr dummy                    = ::fwMedData::SeriesDB::New();
         myLoader->setObject(dummy);
         myLoader->setFolder(dicomPath / *it);
         myLoader->read();
@@ -105,9 +105,9 @@ void SeriesDBReaderTest::readSeriesDBTest()
             ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(*sIt);
 
             // Parse META File
-            const std::string metaName = *it + "/" + series->getInstanceUID() + ".json";
+            const std::string metaName               = *it + "/" + series->getInstanceUID() + ".json";
             const ::boost::filesystem::path metaFile = metaPath / metaName;
-            const std::string mf = metaFile.string();
+            const std::string mf                     = metaFile.string();
             ::boost::property_tree::ptree root;
             ::boost::property_tree::json_parser::read_json(mf, root);
 
@@ -121,7 +121,7 @@ void SeriesDBReaderTest::readSeriesDBTest()
             ::fwMedData::DicomValuesType performingPhysiciansName = series->getPerformingPhysiciansName();
             std::string performingPhysiciansNameStr = "";
             for(::fwMedData::DicomValuesType::iterator i = performingPhysiciansName.begin();
-                    i != performingPhysiciansName.end(); ++i)
+                i != performingPhysiciansName.end(); ++i)
             {
                 performingPhysiciansNameStr += *i;
                 if((i+1) != performingPhysiciansName.end())
@@ -159,8 +159,10 @@ void SeriesDBReaderTest::readSeriesDBTest()
             std::vector< std::string > spacingValues;
             const std::string spacingXY = getValue(root, "PixelSpacing", mf);
             ::boost::split(spacingValues, spacingXY, boost::is_any_of("\\"));
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(spacingValues[0]), image->getSpacing()[0], 0.0001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(spacingValues[1]), image->getSpacing()[1], 0.0001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(spacingValues[0]),
+                                         image->getSpacing()[0], 0.0001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(spacingValues[1]),
+                                         image->getSpacing()[1], 0.0001);
 
             // SliceThickness - This value is recomputed using the SliceThicknessModifier filter.
 //            std::string spacingZ = getValue(root, "SliceThickness", mf);
@@ -171,15 +173,18 @@ void SeriesDBReaderTest::readSeriesDBTest()
             ::boost::algorithm::replace_all(origin, " ", "");
             std::vector< std::string > originValues;
             ::boost::split(originValues, origin, boost::is_any_of("\\"));
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(originValues[0]), image->getOrigin()[0], 0.0001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(originValues[1]), image->getOrigin()[1], 0.0001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(originValues[2]), image->getOrigin()[2], 0.0001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(originValues[0]), image->getOrigin()[0],
+                                         0.0001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(originValues[1]), image->getOrigin()[1],
+                                         0.0001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(originValues[2]), image->getOrigin()[2],
+                                         0.0001);
 
             // Size
             CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(getValue(root, "Rows", mf)),
-                    image->getSize()[0], 0.0001);
+                                         image->getSize()[0], 0.0001);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(getValue(root, "Columns", mf)),
-                            image->getSize()[1], 0.0001);
+                                         image->getSize()[1], 0.0001);
             //TODO: CTR Find a way to test depth size.
 
             // Window Center
@@ -189,7 +194,7 @@ void SeriesDBReaderTest::readSeriesDBTest()
                 std::vector< std::string > windowCenterValues;
                 ::boost::split(windowCenterValues, windowCenter, boost::is_any_of("\\"));
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(windowCenterValues[0]),
-                                image->getWindowCenter(), 0.0001);
+                                             image->getWindowCenter(), 0.0001);
             }
             else
             {
@@ -203,7 +208,7 @@ void SeriesDBReaderTest::readSeriesDBTest()
                 std::vector< std::string > windowWidthValues;
                 ::boost::split(windowWidthValues, windowWidth, boost::is_any_of("\\"));
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(::boost::lexical_cast< double >(windowWidthValues[0]),
-                                image->getWindowWidth(), 0.0001);
+                                             image->getWindowWidth(), 0.0001);
             }
             else
             {
@@ -212,7 +217,7 @@ void SeriesDBReaderTest::readSeriesDBTest()
 
             // Number of components
             const std::string photometricInterpretation = getValue(root, "PhotometricInterpretation", mf);
-            unsigned int nbComponents = 0;
+            unsigned int nbComponents                   = 0;
             if(photometricInterpretation == "MONOCHROME2")
             {
                 nbComponents = 1;
@@ -259,15 +264,15 @@ void SeriesDBReaderTest::lazyReadSeriesDBTest()
 //    CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesACHGenou( series ) );
 
 #if (SPYLOG_LEVEL >= 4 ) // Log level info
-        ::fwCore::HiResTimer timer;
-        timer.start();
+    ::fwCore::HiResTimer timer;
+    timer.start();
 #endif
 
     ::fwComEd::helper::Image locker ( series->getImage() );
 
 #if (SPYLOG_LEVEL >= 4 )
-        timer.stop();
-        OSLM_INFO( "Time in to read data : " << timer.getElapsedTimeInMilliSec() );
+    timer.stop();
+    OSLM_INFO( "Time in to read data : " << timer.getElapsedTimeInMilliSec() );
 #endif
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,8 +36,8 @@ namespace iod
 
 //------------------------------------------------------------------------------
 
-CTMRImageIOD::CTMRImageIOD(SPTR(::gdcmIO::container::DicomInstance) instance, ::boost::filesystem::path folderPath):
-        ::gdcmIO::writer::iod::InformationObjectDefinition(instance, folderPath)
+CTMRImageIOD::CTMRImageIOD(SPTR(::gdcmIO::container::DicomInstance)instance, ::boost::filesystem::path folderPath) :
+    ::gdcmIO::writer::iod::InformationObjectDefinition(instance, folderPath)
 {
 }
 
@@ -118,7 +118,7 @@ void CTMRImageIOD::write(::fwMedData::Series::sptr series)
     const ::gdcm::DataSet datasetCopy = writer->GetFile().GetDataSet();
 
     // Compute number of frames
-    unsigned int nbFrames = (m_instance->getIsMultiFiles())?(image->getSize()[2]):1;
+    unsigned int nbFrames = (m_instance->getIsMultiFiles()) ? (image->getSize()[2]) : 1;
 
     // Write specific tags according to frame number
     for(unsigned int i = 0; i < nbFrames; ++i)

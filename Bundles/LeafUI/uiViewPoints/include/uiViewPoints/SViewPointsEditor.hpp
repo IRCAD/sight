@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ class QObject;
 
 namespace fwData
 {
-    class TransformationMatrix3D;
+class TransformationMatrix3D;
 }
 
 namespace uiViewPoints
@@ -37,13 +37,14 @@ namespace uiViewPoints
  * @brief SViewPointsEditor is the editor of view points activity.
  * @class SViewPointsEditor
  */
-class  UIVIEWPOINTS_CLASS_API SViewPointsEditor : public QObject, public ::gui::editor::IEditor
+class UIVIEWPOINTS_CLASS_API SViewPointsEditor : public QObject,
+                                                 public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SViewPointsEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SViewPointsEditor)(::gui::editor::IEditor) );
 
     /// Constructor.
     UIVIEWPOINTS_API SViewPointsEditor() throw();
@@ -55,7 +56,7 @@ public:
      * @name Signal type and key.
      * @{ */
     UIVIEWPOINTS_API static const ::fwCom::Signals::SignalKeyType s_DIRECT_TARGET_CHANGED_SIG;
-    typedef ::fwCom::Signal< void(SPTR(::fwData::TransformationMatrix3D)) > DirectTargetChangedSignalType;
+    typedef ::fwCom::Signal< void (SPTR(::fwData::TransformationMatrix3D)) > DirectTargetChangedSignalType;
     /**  @} */
 
     UIVIEWPOINTS_API static const std::string s_FIELD_NAME;
@@ -74,11 +75,11 @@ protected:
     /**
      * @brief Overrides IService::configuring().
      * Configuration example :
-     @verbatim
-     <config>
+       @verbatim
+       <config>
         <transform uid="..." /> <!-- ::fwData::TransformationMatrix3D to update with selected ::fwData::Point -->
-     </config>
-     @endverbatim
+       </config>
+       @endverbatim
      *
      * @throw fwTools::Failed
      */

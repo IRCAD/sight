@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,15 +34,16 @@ namespace reader
  * @brief   This class adds patient(s) from DICOM file(s) to fwData::SeriesDB.
  */
 class GDCMIO_CLASS_API SeriesDB : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                                                 public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader > ,
-                                                 public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader > ,
-                                                 public ::fwTools::ProgressAdviser
+                                  public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
+                                  public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
+                                  public ::fwTools::ProgressAdviser
 {
 
-public :
+public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (SeriesDB)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB > ),
-            (()), ::fwDataIO::reader::factory::New< SeriesDB >);
+    fwCoreClassDefinitionsWithFactoryMacro(
+        (SeriesDB)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB > ),
+        (()), ::fwDataIO::reader::factory::New< SeriesDB >);
 
     typedef std::map< std::string, SPTR(::fwMedData::Patient) > PatientMapType;
     typedef std::map< std::string, SPTR(::fwMedData::Study) > StudyMapType;
@@ -65,7 +66,7 @@ public :
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
     GDCMIO_API void readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB,
-            ::fwServices::IService::sptr notifier=::fwServices::IService::sptr());
+                                          ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
 
     /**
      * @brief Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
@@ -79,11 +80,11 @@ public :
     GDCMIO_API DicomSeriesContainerType &getDicomSeries();
 
     fwGettersSettersDocMacro(DicomdirActivated, isDicomdirActivated, bool,
-            Set whether the reader must use the dicomdir file or not);
+                             Set whether the reader must use the dicomdir file or not);
     fwGettersSettersDocMacro(DicomFilterType, dicomFilterType, std::string,
-            Dicom filter type that must be applied prior to the reading process);
+                             Dicom filter type that must be applied prior to the reading process);
 
-private :
+private:
 
     /// Return filenames that must be read
     FilenameContainerType getFilenames();
@@ -126,7 +127,7 @@ private :
      * @brief Convert DicomSeries to Image or Model Series
      * @param[in] dicomSeries Dicom Series that must be converted
      */
-    void convertDicomSeries(::fwServices::IService::sptr notifier=::fwServices::IService::sptr());
+    void convertDicomSeries(::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
 
     /**
      * @brief Function used to sort DicomSeries
@@ -141,7 +142,8 @@ private :
      * @param[in] filename Filename from which the information must be read
      * @param[in] tag Tag that must be read
      */
-    static std::string getStringValue(const ::gdcm::Scanner& scanner, const std::string& filename, const gdcm::Tag& tag);
+    static std::string getStringValue(const ::gdcm::Scanner& scanner, const std::string& filename,
+                                      const gdcm::Tag& tag);
 
     ///Patient Map
     PatientMapType m_patientMap;

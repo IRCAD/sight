@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GDCMIO_TEST_TU_WRITERREADERTEST_HPP_
-#define _GDCMIO_TEST_TU_WRITERREADERTEST_HPP_
+#ifndef __GDCMIO_UT_WRITERREADERTEST_HPP__
+#define __GDCMIO_UT_WRITERREADERTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <fwServices/macros.hpp>
@@ -18,11 +18,11 @@ namespace ut
 
 class WriterReaderTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( WriterReaderTest );
-    CPPUNIT_TEST( writeReadImageSeriesTest );
-    //FIXME: This test create wrong (random) Dicom Images that may cause the test to crash.
+CPPUNIT_TEST_SUITE( WriterReaderTest );
+CPPUNIT_TEST( writeReadImageSeriesTest );
+//FIXME: This test create wrong (random) Dicom Images that may cause the test to crash.
 //    CPPUNIT_TEST( writeReadSeriesDBTest );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -46,4 +46,4 @@ private:
 } // namespace ut
 } // namespace gdcmIO
 
-#endif // _GDCMIO_TEST_TU_WRITERREADERTEST_HPP_
+#endif // __GDCMIO_UT_WRITERREADERTEST_HPP__

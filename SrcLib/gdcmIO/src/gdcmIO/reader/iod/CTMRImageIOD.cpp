@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,8 +27,8 @@ namespace iod
 //------------------------------------------------------------------------------
 
 CTMRImageIOD::CTMRImageIOD(::fwDicomData::DicomSeries::sptr dicomSeries,
-        SPTR(::gdcmIO::container::DicomInstance) instance) :
-        ::gdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance)
+                           SPTR(::gdcmIO::container::DicomInstance)instance) :
+    ::gdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance)
 {
 }
 
@@ -58,7 +58,7 @@ void CTMRImageIOD::read(::fwMedData::Series::sptr series) throw(::gdcmIO::except
     reader->SetFileName( filename.c_str() );
     bool success = reader->Read();
     FW_RAISE_EXCEPTION_IF(::gdcmIO::exception::Failed("Unable to read the DICOM instance using the GDCM Image Reader."),
-            !success);
+                          !success);
 
     // Create Information Entity helpers
     ::gdcmIO::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient());

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWNETWORK_HTPP_CLIENT_HPP__
-#define __FWNETWORK_HTPP_CLIENT_HPP__
+#ifndef __FWNETWORK_HTTP_CLIENT_HPP__
+#define __FWNETWORK_HTTP_CLIENT_HPP__
 
 #include "fwNetwork/config.hpp"
 #include "fwNetwork/http/Request.hpp"
@@ -14,9 +14,11 @@
 #include "fwNetwork/exceptions/HostNotFound.hpp"
 #include "fwNetwork/exceptions/ContentNotFound.hpp"
 
-namespace fwNetwork {
+namespace fwNetwork
+{
 
-namespace http {
+namespace http
+{
 
 
 /**
@@ -26,7 +28,9 @@ namespace http {
 class FWNETWORK_CLASS_API Client
 {
 public:
-    virtual ~Client() {};
+    virtual ~Client()
+    {
+    }
 
     /**
      * @brief Get http request
@@ -73,5 +77,5 @@ public:
 
 }  // namespace fwNetwork
 
-#endif //__FWNETWORK_HTPP_CLIENT_HPP__
+#endif //__FWNETWORK_HTTP_CLIENT_HPP__
 

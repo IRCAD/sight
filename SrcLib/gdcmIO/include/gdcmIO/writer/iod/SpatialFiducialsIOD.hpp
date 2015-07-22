@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GDCMIO_WRITER_SOP_SPATIALFIDUCIALSIOD_HPP__
-#define __GDCMIO_WRITER_SOP_SPATIALFIDUCIALSIOD_HPP__
+#ifndef __GDCMIO_WRITER_IOD_SPATIALFIDUCIALSIOD_HPP__
+#define __GDCMIO_WRITER_IOD_SPATIALFIDUCIALSIOD_HPP__
 
 #include "gdcmIO/container/DicomInstance.hpp"
 #include "gdcmIO/writer/iod/InformationObjectDefinition.hpp"
@@ -30,8 +30,8 @@ public:
      * @brief Constructor
      * @param[in] instance DICOM instance used to share information between modules
      */
-    GDCMIO_API SpatialFiducialsIOD(SPTR(::gdcmIO::container::DicomInstance) instance,
-            ::boost::filesystem::path folderPath);
+    GDCMIO_API SpatialFiducialsIOD(SPTR(::gdcmIO::container::DicomInstance)instance,
+                                   ::boost::filesystem::path folderPath);
 
     /// Destructor
     GDCMIO_API virtual ~SpatialFiducialsIOD();
@@ -45,4 +45,4 @@ public:
 } // namespace writer
 } // namespace gdcmIO
 
-#endif // __GDCMIO_WRITER_SOP_SPATIALFIDUCIALSIOD_HPP__
+#endif // __GDCMIO_WRITER_IOD_SPATIALFIDUCIALSIOD_HPP__

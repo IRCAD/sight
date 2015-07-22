@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODICOMEXT_DCMTK_EDITOR_SSLICEINDEXIODICOMEXTPULLEREDITOR_HPP__
-#define __IODICOMEXT_DCMTK_EDITOR_SSLICEINDEXIODICOMEXTPULLEREDITOR_HPP__
+#ifndef __IODICOMEXT_DCMTK_EDITOR_SSLICEINDEXDICOMPULLEREDITOR_HPP__
+#define __IODICOMEXT_DCMTK_EDITOR_SSLICEINDEXDICOMPULLEREDITOR_HPP__
 
 #include <boost/filesystem/path.hpp>
 #include <boost/asio/io_service.hpp>
@@ -47,23 +47,24 @@ namespace editor
 
 /**
  * @brief   This editor service is used to select a slice index and pull the image from the pacs if it is not
-*           available on the local computer.
+ *           available on the local computer.
  * @class   SSliceIndexDicomPullerEditor
  * @date    2013.
  */
-class IODICOMEXT_CLASS_API SSliceIndexDicomPullerEditor : public QObject, public ::gui::editor::IEditor
+class IODICOMEXT_CLASS_API SSliceIndexDicomPullerEditor : public QObject,
+                                                          public ::gui::editor::IEditor
 {
 Q_OBJECT;
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSliceIndexDicomPullerEditor)( ::gui::editor::IEditor ) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSliceIndexDicomPullerEditor)( ::gui::editor::IEditor ) );
 
     IODICOMEXT_API static const ::fwCom::Slots::SlotKeyType s_READ_IMAGE_SLOT;
-    typedef ::fwCom::Slot<void(unsigned int)> ReadImageSlotType;
+    typedef ::fwCom::Slot<void (unsigned int)> ReadImageSlotType;
 
     IODICOMEXT_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_MESSAGE_SLOT;
-    typedef ::fwCom::Slot<void(const std::string&)> DisplayMessageSlotType;
+    typedef ::fwCom::Slot<void (const std::string&)> DisplayMessageSlotType;
 
     /**
      * @brief Constructor
@@ -88,14 +89,14 @@ protected:
      * @brief Configuring method. This method is used to configure the service.
      *
      * XML configuration sample:
-     @verbatim
-     <service uid="sliderIndexDicomPullerEditor" type="::gui::editor::IEditor"
+       @verbatim
+       <service uid="sliderIndexDicomPullerEditor" type="::gui::editor::IEditor"
          impl="::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor" autoConnect="yes">
          <config compositeUID="previewComposite" imageKey="image" dicomReader="::ioVtkGdcm::SSeriesDBReader"
             pacsConfigurationUID="pacsConfiguration" delay="500" />
-     </service>
-     @endverbatim
-    */
+       </service>
+       @endverbatim
+     */
     IODICOMEXT_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -111,7 +112,7 @@ protected:
     IODICOMEXT_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Override
-    IODICOMEXT_API void info(std::ostream &_sstream ) ;
+    IODICOMEXT_API void info(std::ostream &_sstream );
 
     /// Function called when a new slice must be displayed
     IODICOMEXT_API void triggerNewSlice(const boost::system::error_code& e);
@@ -141,7 +142,7 @@ protected:
      * @param[in] filePath File path
      */
     IODICOMEXT_API void storeInstanceCallback(
-            const std::string& seriesInstanceUID, unsigned int instanceNumber, const std::string& filePath);
+        const std::string& seriesInstanceUID, unsigned int instanceNumber, const std::string& filePath);
 
     /// Slot to call readLocalSeries method
     ReadImageSlotType::sptr m_slotReadImage;
@@ -216,4 +217,4 @@ protected:
 } // namespace dcmtk
 } // namespace ioDicomExt
 
-#endif // __IODICOMEXT_DCMTK_EDITOR_SSLICEINDEXIODICOMEXTPULLEREDITOR_HPP__
+#endif // __IODICOMEXT_DCMTK_EDITOR_SSLICEINDEXDICOMPULLEREDITOR_HPP__

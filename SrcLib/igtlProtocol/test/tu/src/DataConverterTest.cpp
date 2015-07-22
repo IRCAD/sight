@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -81,8 +81,8 @@ void DataConverterTest::meshConverterTest()
     ::fwComEd::helper::Mesh mesh2Helper(mesh2);
 
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh2->getNumberOfPoints());
-    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells() , mesh2->getNumberOfCells());
-    CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize()  , mesh2->getCellDataSize());
+    CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh2->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(mesh->getCellDataSize(), mesh2->getCellDataSize());
 
     CPPUNIT_ASSERT(mesh->getPointsArray()->getSize()          == mesh2->getPointsArray()->getSize());
     CPPUNIT_ASSERT(mesh->getCellTypesArray()->getSize()       == mesh2->getCellTypesArray()->getSize());
@@ -95,36 +95,36 @@ void DataConverterTest::meshConverterTest()
     CPPUNIT_ASSERT(mesh->getPointNormalsArray()->getSize()    == mesh2->getPointNormalsArray()->getSize());
     CPPUNIT_ASSERT(mesh->getCellNormalsArray()->getSize()     == mesh2->getCellNormalsArray()->getSize());
 
-    ::fwData::Mesh::PointsMultiArrayType meshPointArray = meshHelper.getPoints();
+    ::fwData::Mesh::PointsMultiArrayType meshPointArray  = meshHelper.getPoints();
     ::fwData::Mesh::PointsMultiArrayType mesh2PointArray = mesh2Helper.getPoints();
 
-    ::fwData::Mesh::CellTypesMultiArrayType meshCellArray = meshHelper.getCellTypes();
+    ::fwData::Mesh::CellTypesMultiArrayType meshCellArray  = meshHelper.getCellTypes();
     ::fwData::Mesh::CellTypesMultiArrayType mesh2CellArray = meshHelper.getCellTypes();
 
 
-    ::fwData::Mesh::PointColorsMultiArrayType meshPointColorArray = meshHelper.getPointColors();
+    ::fwData::Mesh::PointColorsMultiArrayType meshPointColorArray  = meshHelper.getPointColors();
     ::fwData::Mesh::PointColorsMultiArrayType mesh2PointColorArray = mesh2Helper.getPointColors();
 
-    ::fwData::Mesh::PointNormalsMultiArrayType meshPointNormalsArray = meshHelper.getPointNormals();
+    ::fwData::Mesh::PointNormalsMultiArrayType meshPointNormalsArray  = meshHelper.getPointNormals();
     ::fwData::Mesh::PointNormalsMultiArrayType mesh2PointNormalsArray = mesh2Helper.getPointNormals();
 
-    ::fwData::Mesh::CellColorsMultiArrayType meshCellColorArray = meshHelper.getCellColors();
+    ::fwData::Mesh::CellColorsMultiArrayType meshCellColorArray  = meshHelper.getCellColors();
     ::fwData::Mesh::CellColorsMultiArrayType mesh2CellColorArray = mesh2Helper.getCellColors();
 
-    ::fwData::Mesh::CellNormalsMultiArrayType meshCellNormalsArray = meshHelper.getCellNormals();
+    ::fwData::Mesh::CellNormalsMultiArrayType meshCellNormalsArray  = meshHelper.getCellNormals();
     ::fwData::Mesh::CellNormalsMultiArrayType mesh2CellNormalsArray = mesh2Helper.getCellNormals();
 
 
-    for (unsigned int i=0 ; i< mesh->getNumberOfPoints() ; i++)
+    for (unsigned int i = 0; i< mesh->getNumberOfPoints(); i++)
     {
-        for (unsigned int j=0 ; j < 3 ; j++)
+        for (unsigned int j = 0; j < 3; j++)
         {
             CPPUNIT_ASSERT_EQUAL(meshPointArray[i][j], mesh2PointArray[i][j]);
 
         }
     }
 
-    for (unsigned int i=0 ; i< mesh->getNumberOfCells() ; i++)
+    for (unsigned int i = 0; i< mesh->getNumberOfCells(); i++)
     {
         CPPUNIT_ASSERT_EQUAL(meshCellArray[i], mesh2CellArray[i]);
     }
@@ -137,7 +137,7 @@ void DataConverterTest::meshConverterTest()
 void DataConverterTest::imageConverterTest()
 {
     DataConverter::sptr converter = DataConverter::getInstance();
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwData::Image::sptr image  = ::fwData::Image::New();
     ::fwData::Image::sptr image2 = ::fwData::Image::New();
     ::fwData::Object::sptr obj;
     ::fwTools::Type type = ::fwTools::Type::create< ::boost::int32_t >();
@@ -257,7 +257,7 @@ void DataConverterTest::pointListConverterTest()
 
 void DataConverterTest::stringConverterTest()
 {
-    std::string const &sample = "Hello world";
+    std::string const &sample     = "Hello world";
     DataConverter::sptr converter = DataConverter::getInstance();
     ::fwData::String::sptr str;
     ::igtl::StringMessage::Pointer strMsg;

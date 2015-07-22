@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,17 +25,17 @@ class SofaThread;
 
 namespace fwData
 {
-    class Mesh;
+class Mesh;
 }
 
 namespace fwMedData
 {
-    class ModelSeries;
+class ModelSeries;
 }
 
 namespace fwServices
 {
-    class IService;
+class IService;
 }
 
 /**
@@ -117,11 +117,11 @@ public:
     void reset();
 
     /**
-    * @brief Shake organ
-    *
-    * @param idMesh : id organ
-    * @param value : value of force
-    */
+     * @brief Shake organ
+     *
+     * @param idMesh : id organ
+     * @param value : value of force
+     */
     void shakeMesh(std::string idMesh, int value);
     void moveMesh(std::string, int, int, int, float, float, float);
 

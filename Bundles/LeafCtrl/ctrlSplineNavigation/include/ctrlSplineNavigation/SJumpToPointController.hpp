@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,20 +29,20 @@ namespace ctrlSplineNavigation
 class CTRLSPLINENAVIGATION_CLASS_API SJumpToPointController : public ::fwServices::IController
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SJumpToPointController)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SJumpToPointController)(::fwServices::IController) );
 
     /// Constructor.
-    CTRLSPLINENAVIGATION_API SJumpToPointController() throw() ;
+    CTRLSPLINENAVIGATION_API SJumpToPointController() throw();
 
     /// Destructor.
-    CTRLSPLINENAVIGATION_API virtual ~SJumpToPointController() throw() ;
+    CTRLSPLINENAVIGATION_API virtual ~SJumpToPointController() throw();
 
     /**
      * @name Slots.
      * @{ */
-    typedef ::fwCom::Slot< void(::fwData::TransformationMatrix3D::sptr) > ChangeDirectTargetSlotType;
+    typedef ::fwCom::Slot< void (::fwData::TransformationMatrix3D::sptr) > ChangeDirectTargetSlotType;
     CTRLSPLINENAVIGATION_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_DIRECT_TARGET_SLOT;
     /**  @} */
 
@@ -66,11 +66,11 @@ protected:
 
 private:
 
-     /// Slot triggered when the target destination changes.
+    /// Slot triggered when the target destination changes.
     ChangeDirectTargetSlotType::sptr m_slotChangeDirectTarget;
 
-     /// Destination matrix for fly mode
-     ::fwData::TransformationMatrix3D::sptr m_destMatrix;
+    /// Destination matrix for fly mode
+    ::fwData::TransformationMatrix3D::sptr m_destMatrix;
 
 };
 

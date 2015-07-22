@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GDCMIO_CONTAINER_DICOMSRNODE_HPP__
-#define __GDCMIO_CONTAINER_DICOMSRNODE_HPP__
+#ifndef __GDCMIO_CONTAINER_SR_DICOMSRNODE_HPP__
+#define __GDCMIO_CONTAINER_SR_DICOMSRNODE_HPP__
 
 #include <string>
 #include <vector>
@@ -63,7 +63,7 @@ protected:
 
     /// Constructor
     DicomSRNode(const DicomCodedAttribute& codedAttribute, const std::string& type,
-            const std::string& relationship = "");
+                const std::string& relationship = "");
 
     /// Destructor
     virtual ~DicomSRNode();
@@ -77,7 +77,7 @@ protected:
      * @param[in] codedAttribute Coded attribute to write
      */
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > createConceptNameCodeSequence(
-            ::gdcm::DataSet &dataset, const DicomCodedAttribute& codedAttribute) const;
+        ::gdcm::DataSet &dataset, const DicomCodedAttribute& codedAttribute) const;
 
     /**
      * @brief Write a content sequence
@@ -103,4 +103,4 @@ protected:
 } //namespace container
 } //namespace gdcmIO
 
-#endif /* __GDCMIO_CONTAINER_DICOMSRNODE_HPP__ */
+#endif /* __GDCMIO_CONTAINER_SR_DICOMSRNODE_HPP__ */

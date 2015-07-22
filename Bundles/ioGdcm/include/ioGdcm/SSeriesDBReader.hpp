@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOGDCM_SSERIESDBREADER_HPP_
-#define _IOGDCM_SSERIESDBREADER_HPP_
+#ifndef __IOGDCM_SSERIESDBREADER_HPP__
+#define __IOGDCM_SSERIESDBREADER_HPP__
 
 #include <vector>
 #include <string>
@@ -18,7 +18,7 @@
 
 namespace fwMedData
 {
-    class SeriesDB;
+class SeriesDB;
 }
 
 namespace ioGdcm
@@ -27,8 +27,8 @@ namespace ioGdcm
 class IOGDCM_CLASS_API SSeriesDBReader : public ::io::IReader
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) );
 
     /**
      * @brief   constructor
@@ -63,7 +63,7 @@ protected:
                 <addSelection filter="::fwDicomIOFilter::custom::NoFilter" />
             </config>
         </extension>
-    @endverbatim
+       @endverbatim
      */
     IOGDCM_API virtual void configuring() throw (fwTools::Failed);
 
@@ -77,10 +77,12 @@ protected:
     IOGDCM_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg)_msg ) throw(::fwTools::Failed)
+    {
+    }
 
     /// Override
-    IOGDCM_API void info(std::ostream &_sstream ) ;
+    IOGDCM_API void info(std::ostream &_sstream );
 
     /// Override
     IOGDCM_API virtual std::string getSelectorDialogTitle();
@@ -91,7 +93,7 @@ protected:
     /// Return managed file type, here FOLDER
     IOGDCM_API ::io::IOPathType getIOPathType() const;
 
-private :
+private:
 
     /**
      * @brief Create a seriesDB and fill it using the data of the DICOM files
@@ -109,4 +111,4 @@ private :
 
 } // namespace ioGdcm
 
-#endif //_IOGDCM_SSERIESDBREADER_HPP_
+#endif //__IOGDCM_SSERIESDBREADER_HPP__

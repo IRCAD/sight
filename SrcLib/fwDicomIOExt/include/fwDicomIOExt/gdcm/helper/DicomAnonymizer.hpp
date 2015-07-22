@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,16 +48,17 @@ public:
     FWDICOMIOEXT_API virtual ~DicomAnonymizer();
 
     /// Map used to maintain UID consistency
-    typedef std::map< std::string , std::string > UIDMap;
+    typedef std::map< std::string, std::string > UIDMap;
 
     /// Map used to store exception value
-    typedef std::map< ::gdcm::Tag , std::string > ExceptionTagMap;
+    typedef std::map< ::gdcm::Tag, std::string > ExceptionTagMap;
 
     /// Anonymize a folder containing Dicom files
     FWDICOMIOEXT_API void anonymize(const ::boost::filesystem::path &dirPath);
 
     /// Anonymize a folder containing Dicom files and write them in a zip file
-    FWDICOMIOEXT_API void anonymizeAndZip(const ::boost::filesystem::path &dirPath, ::fwZip::IWriteArchive::sptr archive);
+    FWDICOMIOEXT_API void anonymizeAndZip(const ::boost::filesystem::path &dirPath,
+                                          ::fwZip::IWriteArchive::sptr archive);
 
     /// Add an exceptional value for a tag
     FWDICOMIOEXT_API void addExceptionTag(uint16_t group, uint16_t element, const std::string &value);

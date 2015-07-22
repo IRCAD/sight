@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,28 +38,28 @@ double getImageMaxSpacing(const SPTR(::fwData::Image)& imageSource)
 double getImageMaxSize(const SPTR(::fwData::Image)& imageSource)
 {
     const std::vector< double > mmSizes = ::boost::assign::list_of
-        (imageSource->getSize()[0] * imageSource->getSpacing()[0])
-        (imageSource->getSize()[1] * imageSource->getSpacing()[1])
-        (imageSource->getSize()[2] * imageSource->getSpacing()[2]);
+                                              (imageSource->getSize()[0] * imageSource->getSpacing()[0])
+                                              (imageSource->getSize()[1] * imageSource->getSpacing()[1])
+                                              (imageSource->getSize()[2] * imageSource->getSpacing()[2]);
 
     return *std::max_element(mmSizes.begin(), mmSizes.end());
 }
 
 void fillPointGrid(
-        double &spacing,
-        double & height,
-        const SPTR(::fwData::PointList)& pointList,
-        std::vector<double>& pointGrid,
-        unsigned int& nbCol,
-        unsigned int& nbRow,
-        const double angle)
+    double &spacing,
+    double & height,
+    const SPTR(::fwData::PointList)& pointList,
+    std::vector<double>& pointGrid,
+    unsigned int& nbCol,
+    unsigned int& nbRow,
+    const double angle)
 {
-    double splineLength = 0.0;
-    double previousy[3] = {0, 0, 0};
+    double splineLength                                      = 0.0;
+    double previousy[3]                                      = {0, 0, 0};
     vtkSmartPointer < vtkParametricSpline > parametricSpline = vtkSmartPointer < vtkParametricSpline >::New();
 
-    vtkSmartPointer < vtkPoints > points = vtkSmartPointer < vtkPoints > ::New();
-    vtkSmartPointer < vtkPolyData > polyLine = vtkSmartPointer < vtkPolyData > ::New();
+    vtkSmartPointer < vtkPoints > points          = vtkSmartPointer < vtkPoints > ::New();
+    vtkSmartPointer < vtkPolyData > polyLine      = vtkSmartPointer < vtkPolyData > ::New();
     vtkSmartPointer < vtkPolyData > splineNormals = vtkSmartPointer < vtkPolyData > ::New();
 
     // Computes spline from point list
@@ -95,17 +95,17 @@ void fillPointGrid(
 }
 
 void computePositionOfPointOnSpline(
-        const SPTR(::fwData::PointList)& pointList,
-        const int indexPoint,
-        double& position)
+    const SPTR(::fwData::PointList)& pointList,
+    const int indexPoint,
+    double& position)
 {
     position = 0;
     double splineLength = 0, error = 0;
     double u[3], du[3], pt[3], ptFirst[3], ptNext[3], splineTangent[3], findPoint[3], diff[3];
 
-    vtkSmartPointer<vtkMath> math = vtkSmartPointer<vtkMath>::New();
+    vtkSmartPointer<vtkMath> math                           = vtkSmartPointer<vtkMath>::New();
     vtkSmartPointer< vtkParametricSpline > parametricSpline = vtkSmartPointer < vtkParametricSpline > ::New();
-    vtkSmartPointer< vtkPoints > points = vtkSmartPointer < vtkPoints > ::New();
+    vtkSmartPointer< vtkPoints > points                     = vtkSmartPointer < vtkPoints > ::New();
 
     // Computes spline
     ::navigation::updateSpline(pointList, points, parametricSpline, splineLength);
@@ -141,7 +141,7 @@ void computePositionOfPointOnSpline(
 
         if(math->Norm(diff) < error)
         {
-            error = math->Norm(diff);
+            error    = math->Norm(diff);
             position = v;
         }
     }
@@ -150,9 +150,9 @@ void computePositionOfPointOnSpline(
 }
 
 bool computeImageIndexFromSpacePosition(
-        const SPTR(::fwData::Image)& imageSource,
-        const double* spacePosition,
-        unsigned int* indexPosition)
+    const SPTR(::fwData::Image)& imageSource,
+    const double* spacePosition,
+    unsigned int* indexPosition)
 {
     double imagePosition [3];
     bool isPointInTheImage = true;

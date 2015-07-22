@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,7 @@ namespace container
 //------------------------------------------------------------------------------
 
 DicomSurface::DicomSurface() :
-        m_pointCoordSize(0), m_pointIndexSize(0)
+    m_pointCoordSize(0), m_pointIndexSize(0)
 {
     SLM_TRACE_FUNC();
 }
@@ -122,7 +122,7 @@ void DicomSurface::setFromData(fwData::Reconstruction::csptr reconstruction)
     // Get mesh
     ::fwData::Mesh::sptr mesh = reconstruction->getMesh();
     FW_RAISE_EXCEPTION_IF(::gdcmIO::exception::Failed("Can't save this mesh. It must contain only triangles !"),
-            !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
+                          !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
 
     ::fwData::Array::sptr pointArray = mesh->getPointsArray();
     ::fwComEd::helper::Array pointArrayHelper(pointArray);
@@ -142,7 +142,7 @@ void DicomSurface::setFromData(fwData::Reconstruction::csptr reconstruction)
     m_normalCoordSize = 0;
 
     // Traverse Mesh components
-    float* pointCoordData = m_pointCoordData.get();
+    float* pointCoordData    = m_pointCoordData.get();
     uint32_t* pointIndexList = m_pointIndexList.get();
 
     memcpy(pointCoordData, points, pointArray->getSizeInBytes());
@@ -195,16 +195,16 @@ void DicomSurface::convertToData(fwData::Reconstruction::sptr reconstruction)
 
     // Initialize members
     const unsigned long sizePoints = m_pointCoordSize / 3;
-    const unsigned long sizeCells = m_pointIndexSize / 3;
+    const unsigned long sizeCells  = m_pointIndexSize / 3;
     mesh->setNumberOfPoints(sizePoints);
     mesh->setNumberOfCells(sizeCells);
     mesh->setCellDataSize(sizeCells * 3);
     mesh->adjustAllocatedMemory();
 
-    ::fwData::Array::sptr pointArray = mesh->getPointsArray();
-    ::fwData::Array::sptr cellData = mesh->getCellDataArray();
+    ::fwData::Array::sptr pointArray      = mesh->getPointsArray();
+    ::fwData::Array::sptr cellData        = mesh->getCellDataArray();
     ::fwData::Array::sptr cellDataOffsets = mesh->getCellDataOffsetsArray();
-    ::fwData::Array::sptr cellTypes = mesh->getCellTypesArray();
+    ::fwData::Array::sptr cellTypes       = mesh->getCellTypesArray();
 
     ::fwComEd::helper::Array pointArrayHelper(pointArray);
     ::fwComEd::helper::Array cellDataHelper(cellData);
@@ -212,10 +212,10 @@ void DicomSurface::convertToData(fwData::Reconstruction::sptr reconstruction)
     ::fwComEd::helper::Array cellTypesHelper(cellTypes);
 
     ::fwData::Mesh::PointValueType* points = pointArrayHelper.begin< ::fwData::Mesh::PointValueType >();
-    ::fwData::Mesh::CellValueType* cells = cellDataHelper.begin< ::fwData::Mesh::CellValueType >();
+    ::fwData::Mesh::CellValueType* cells   = cellDataHelper.begin< ::fwData::Mesh::CellValueType >();
 
     // Traverse DicomSurface components
-    const float* pointCoordData = m_pointCoordData.get();
+    const float* pointCoordData    = m_pointCoordData.get();
     const uint32_t* pointIndexList = m_pointIndexList.get();
 
     memcpy(points, pointCoordData, pointArray->getSizeInBytes());
@@ -228,12 +228,12 @@ void DicomSurface::convertToData(fwData::Reconstruction::sptr reconstruction)
     }
 
     std::fill(cellTypesHelper.begin< ::fwData::Mesh::CellTypes >(), cellTypesHelper.end< ::fwData::Mesh::CellTypes >(),
-            static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE));
+              static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE));
 
     cell_data_offset_generator cellDataOffsetGenerator;
 
     std::generate(cellDataOffsetsHelper.begin< ::fwData::Mesh::CellDataOffsetType >(),
-            cellDataOffsetsHelper.end< ::fwData::Mesh::CellDataOffsetType >(), cellDataOffsetGenerator);
+                  cellDataOffsetsHelper.end< ::fwData::Mesh::CellDataOffsetType >(), cellDataOffsetGenerator);
 
     if (m_normalCoordSize > 0)
     {
@@ -253,22 +253,23 @@ void DicomSurface::convertToData(fwData::Reconstruction::sptr reconstruction)
 //------------------------------------------------------------------------------
 
 ::fwData::Mesh::sptr DicomSurface::convertToData(const float* coord, const unsigned long coordSize,
-        const uint32_t* index, const unsigned long indexSize, const float* normalCoord)
+                                                 const uint32_t* index, const unsigned long indexSize,
+                                                 const float* normalCoord)
 {
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
     // Initialize members
     const unsigned long sizePoints = coordSize / 3;
-    const unsigned long sizeCells = indexSize / 3;
+    const unsigned long sizeCells  = indexSize / 3;
     mesh->setNumberOfPoints(sizePoints);
     mesh->setNumberOfCells(sizeCells);
     mesh->setCellDataSize(sizeCells * 3);
     mesh->adjustAllocatedMemory();
 
-    ::fwData::Array::sptr pointArray = mesh->getPointsArray();
-    ::fwData::Array::sptr cellData = mesh->getCellDataArray();
+    ::fwData::Array::sptr pointArray      = mesh->getPointsArray();
+    ::fwData::Array::sptr cellData        = mesh->getCellDataArray();
     ::fwData::Array::sptr cellDataOffsets = mesh->getCellDataOffsetsArray();
-    ::fwData::Array::sptr cellTypes = mesh->getCellTypesArray();
+    ::fwData::Array::sptr cellTypes       = mesh->getCellTypesArray();
 
     ::fwComEd::helper::Array pointArrayHelper(pointArray);
     ::fwComEd::helper::Array cellDataHelper(cellData);
@@ -276,7 +277,7 @@ void DicomSurface::convertToData(fwData::Reconstruction::sptr reconstruction)
     ::fwComEd::helper::Array cellTypesHelper(cellTypes);
 
     ::fwData::Mesh::PointValueType* points = pointArrayHelper.begin< ::fwData::Mesh::PointValueType >();
-    ::fwData::Mesh::CellValueType* cells = cellDataHelper.begin< ::fwData::Mesh::CellValueType >();
+    ::fwData::Mesh::CellValueType* cells   = cellDataHelper.begin< ::fwData::Mesh::CellValueType >();
 
     memcpy(points, coord, pointArray->getSizeInBytes());
 
@@ -288,12 +289,12 @@ void DicomSurface::convertToData(fwData::Reconstruction::sptr reconstruction)
     }
 
     std::fill(cellTypesHelper.begin< ::fwData::Mesh::CellTypes >(), cellTypesHelper.end< ::fwData::Mesh::CellTypes >(),
-            static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE));
+              static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE));
 
     cell_data_offset_generator cellDataOffsetGenerator;
 
     std::generate(cellDataOffsetsHelper.begin< ::fwData::Mesh::CellDataOffsetType >(),
-            cellDataOffsetsHelper.end< ::fwData::Mesh::CellDataOffsetType >(), cellDataOffsetGenerator);
+                  cellDataOffsetsHelper.end< ::fwData::Mesh::CellDataOffsetType >(), cellDataOffsetGenerator);
 
     if (normalCoord)
     {

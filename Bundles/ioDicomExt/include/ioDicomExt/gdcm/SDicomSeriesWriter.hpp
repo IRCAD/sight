@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@
 
 namespace fwDicomData
 {
-    class DicomSeries;
+class DicomSeries;
 }
 
 
@@ -34,8 +34,8 @@ namespace gdcm
 class IODICOMEXT_CLASS_API SDicomSeriesWriter : public ::io::IWriter
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesWriter)( ::io::IWriter) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesWriter)( ::io::IWriter) );
 
     /**
      * @brief   constructor
@@ -65,7 +65,7 @@ protected:
     /// Return path type managed by the service, here FOLDER
     IODICOMEXT_API ::io::IOPathType getIOPathType() const;
 
-private :
+private:
     /// Save the selected Dicom series
     void saveDicomSeries( const ::boost::filesystem::path folder, SPTR(::fwDicomData::DicomSeries) series ) const;
 };

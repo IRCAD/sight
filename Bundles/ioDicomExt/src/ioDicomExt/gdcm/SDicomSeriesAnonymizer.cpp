@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,23 +33,25 @@ namespace ioDicomExt
 namespace gdcm
 {
 
-fwServicesRegisterMacro( ::fwServices::IController , ::ioDicomExt::gdcm::SDicomSeriesAnonymizer , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwServices::IController, ::ioDicomExt::gdcm::SDicomSeriesAnonymizer, ::fwData::Composite );
 
 //------------------------------------------------------------------------------
 
 SDicomSeriesAnonymizer::SDicomSeriesAnonymizer() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SDicomSeriesAnonymizer::~SDicomSeriesAnonymizer() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void SDicomSeriesAnonymizer::info(std::ostream &_sstream )
 {
-    _sstream << "SDicomSeriesAnonymizer::info" ;
+    _sstream << "SDicomSeriesAnonymizer::info";
 }
 
 //------------------------------------------------------------------------------
@@ -79,7 +81,7 @@ void SDicomSeriesAnonymizer::configuring() throw(::fwTools::Failed)
     /// SeriesDB UID
     ::boost::tie(success, m_seriesDBUID) = config->getSafeAttributeValue("seriesDBUID");
     SLM_ASSERT("It should be a \"seriesDBUID\" tag in the "
-            "::ioDicomExt::SDicomSeriesAnonymizer config element.", success);
+               "::ioDicomExt::SDicomSeriesAnonymizer config element.", success);
 }
 
 //------------------------------------------------------------------------------
@@ -119,13 +121,13 @@ void SDicomSeriesAnonymizer::anonymize()
     ::fwComEd::helper::SeriesDB sDBhelper(m_seriesDB);
 
     ::fwDicomIOExt::gdcm::helper::DicomSeriesAnonymizer::sptr anonymizer =
-                ::fwDicomIOExt::gdcm::helper::DicomSeriesAnonymizer::New();
+        ::fwDicomIOExt::gdcm::helper::DicomSeriesAnonymizer::New();
     ::fwGui::dialog::ProgressDialog progressMeterGUI("Anonymization ");
     anonymizer->addHandler( progressMeterGUI );
 
     BOOST_FOREACH(::fwData::Composite::ContainerType::value_type value, composite->getContainer())
     {
-        ::fwDicomData::DicomSeries::sptr dicomSeries = ::fwDicomData::DicomSeries::dynamicCast(value.second);
+        ::fwDicomData::DicomSeries::sptr dicomSeries           = ::fwDicomData::DicomSeries::dynamicCast(value.second);
         ::fwDicomData::DicomSeries::sptr anonymizedDicomSeries = ::fwDicomData::DicomSeries::New();
         anonymizer->anonymize(dicomSeries, anonymizedDicomSeries);
         sDBhelper.add(anonymizedDicomSeries);

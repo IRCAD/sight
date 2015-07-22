@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,20 +39,20 @@ namespace dcmtk
 namespace controller
 {
 
-fwServicesRegisterMacro( ::fwServices::IController , ::ioDicomExt::dcmtk::controller::SSeriesPuller , ::fwData::Vector ) ;
+fwServicesRegisterMacro( ::fwServices::IController, ::ioDicomExt::dcmtk::controller::SSeriesPuller, ::fwData::Vector );
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SSeriesPuller::s_READ_SLOT = "readDicom";
+const ::fwCom::Slots::SlotKeyType SSeriesPuller::s_READ_SLOT    = "readDicom";
 const ::fwCom::Slots::SlotKeyType SSeriesPuller::s_DISPLAY_SLOT = "displayMessage";
 
 const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_PROGRESSED_SIG = "progressed";
 
-SSeriesPuller::SSeriesPuller() throw():
-        m_isPulling(false),
-        m_progressbarId("pullDicomProgressBar"),
-        m_seriesCount(0),
-        m_seriesIndex(0)
+SSeriesPuller::SSeriesPuller() throw() :
+    m_isPulling(false),
+    m_progressbarId("pullDicomProgressBar"),
+    m_seriesCount(0),
+    m_seriesIndex(0)
 {
 
     m_slotReadLocalSeries = ::fwCom::newSlot(&SSeriesPuller::readLocalSeries, this);
@@ -63,11 +63,11 @@ SSeriesPuller::SSeriesPuller() throw():
 
     m_slotStoreInstanceCallbackUsingMoveRequests = ::fwCom::newSlot(&SSeriesPuller::storeInstanceCallback, this);
     ::fwCom::HasSlots::m_slots(::fwDicomIOExt::dcmtk::SeriesRetriever::s_STORE_INSTANCE_CALLBACK_SLOT,
-            m_slotStoreInstanceCallbackUsingMoveRequests);
+                               m_slotStoreInstanceCallbackUsingMoveRequests);
 
     m_slotStoreInstanceCallbackUsingGetRequests = ::fwCom::newSlot(&SSeriesPuller::storeInstanceCallback, this);
     ::fwCom::HasSlots::m_slots(::fwDicomIOExt::dcmtk::SeriesEnquirer::s_STORE_INSTANCE_CALLBACK_SLOT,
-            m_slotStoreInstanceCallbackUsingGetRequests);
+                               m_slotStoreInstanceCallbackUsingGetRequests);
 
     m_slotProgressCallback = ::fwCom::newSlot(&SSeriesPuller::progressCallback, this);
     ::fwCom::HasSlots::m_slots(::fwDicomIOExt::dcmtk::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT, m_slotProgressCallback);
@@ -76,15 +76,17 @@ SSeriesPuller::SSeriesPuller() throw():
     m_signals( s_PROGRESSED_SIG, m_sigProgressBar);
 
 #ifdef COM_LOG
-   m_slotReadLocalSeries->setID( s_READ_SLOT );
-   m_slotDisplayMessage->setID( s_DISPLAY_SLOT );
-   m_slotStoreInstanceCallbackUsingMoveRequests->setID( ::fwDicomIOExt::dcmtk::SeriesRetriever::s_STORE_INSTANCE_CALLBACK_SLOT );
-   m_slotStoreInstanceCallbackUsingGetRequests->setID( ::fwDicomIOExt::dcmtk::SeriesEnquirer::s_STORE_INSTANCE_CALLBACK_SLOT );
-   m_slotProgressCallback->setID( ::fwDicomIOExt::dcmtk::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT );
-   ::fwCom::HasSignals::m_signals.setID();
+    m_slotReadLocalSeries->setID( s_READ_SLOT );
+    m_slotDisplayMessage->setID( s_DISPLAY_SLOT );
+    m_slotStoreInstanceCallbackUsingMoveRequests->setID(
+        ::fwDicomIOExt::dcmtk::SeriesRetriever::s_STORE_INSTANCE_CALLBACK_SLOT );
+    m_slotStoreInstanceCallbackUsingGetRequests->setID(
+        ::fwDicomIOExt::dcmtk::SeriesEnquirer::s_STORE_INSTANCE_CALLBACK_SLOT );
+    m_slotProgressCallback->setID( ::fwDicomIOExt::dcmtk::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT );
+    ::fwCom::HasSignals::m_signals.setID();
 #endif
 
-   ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 
 }
 //------------------------------------------------------------------------------
@@ -97,7 +99,7 @@ SSeriesPuller::~SSeriesPuller() throw()
 
 void SSeriesPuller::info(std::ostream &_sstream )
 {
-    _sstream << "SSeriesPuller::info" ;
+    _sstream << "SSeriesPuller::info";
 }
 
 //------------------------------------------------------------------------------
@@ -118,9 +120,11 @@ void SSeriesPuller::starting() throw(::fwTools::Failed)
 
     // Create reader
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
-    m_dicomReader = ::io::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
-    SLM_ASSERT("Unable to create a reader of type: \"" + m_dicomReaderType + "\" in ::ioDicomExt::dcmtk::controller::SSeriesPuller.",
-    m_dicomReader);
+    m_dicomReader                                           =
+        ::io::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
+    SLM_ASSERT(
+        "Unable to create a reader of type: \"" + m_dicomReaderType + "\" in ::ioDicomExt::dcmtk::controller::SSeriesPuller.",
+        m_dicomReader);
     ::fwServices::OSR::registerService(m_tempSeriesDB, m_dicomReader);
     m_dicomReader->configure();
     m_dicomReader->start();
@@ -129,7 +133,8 @@ void SSeriesPuller::starting() throw(::fwTools::Failed)
     m_pullSeriesWorker = ::fwThread::Worker::New();
 
     // Get pacs configuration
-    m_pacsConfiguration = ::fwDicomIOExt::data::PacsConfiguration::dynamicCast(::fwTools::fwID::getObject(m_pacsConfigurationUID));
+    m_pacsConfiguration =
+        ::fwDicomIOExt::data::PacsConfiguration::dynamicCast(::fwTools::fwID::getObject(m_pacsConfigurationUID));
     SLM_ASSERT("The pacs configuration object should not be null.", m_pacsConfiguration);
 
 }
@@ -162,15 +167,20 @@ void SSeriesPuller::configuring() throw(::fwTools::Failed)
 
     // Pacs Configuration UID
     ::boost::tie(success, m_pacsConfigurationUID) = config->getSafeAttributeValue("pacsConfigurationUID");
-    SLM_ASSERT("It should be a \"pacsConfigurationUID\" tag in the ::ioDicomExt::dcmtk::editor::SQueryEditor config element.", success);
+    SLM_ASSERT(
+        "It should be a \"pacsConfigurationUID\" tag in the ::ioDicomExt::dcmtk::editor::SQueryEditor config element.",
+        success);
 
     // IODICOMEXT Reader
     ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" in the ::ioDicomExt::dcmtk::controller::SSeriesPuller config element.", success);
+    SLM_ASSERT("It should be a \"dicomReader\" in the ::ioDicomExt::dcmtk::controller::SSeriesPuller config element.",
+               success);
 
     // Destination Series DB ID
     ::boost::tie(success, m_destinationSeriesDBUID) = config->getSafeAttributeValue("destinationSeriesDBUID");
-    SLM_ASSERT("It should be a \"destinationSeriesDBUID\" in the ::ioDicomExt::dcmtk::controller::SSeriesPuller config element.", success);
+    SLM_ASSERT(
+        "It should be a \"destinationSeriesDBUID\" in the ::ioDicomExt::dcmtk::controller::SSeriesPuller config element.",
+        success);
 
 }
 
@@ -195,7 +205,7 @@ void SSeriesPuller::updating() throw(::fwTools::Failed)
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Pulling Series");
         messageBox.setMessage( "The service is already pulling data. Please wait until the pulling is done "
-                "before sending a new pull request." );
+                               "before sending a new pull request." );
         messageBox.setIcon(::fwGui::dialog::IMessageDialog::INFO);
         messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         ::fwGui::dialog::IMessageDialog::Buttons answer = messageBox.show();
@@ -245,7 +255,9 @@ void SSeriesPuller::pullSeries()
             ::fwDicomData::DicomSeries::sptr series = ::fwDicomData::DicomSeries::dynamicCast(*it);
 
             // Check if the series must be pulled
-            if(series && std::find(m_localSeries.begin(), m_localSeries.end(), series->getInstanceUID()) == m_localSeries.end())
+            if(series &&
+               std::find(m_localSeries.begin(), m_localSeries.end(),
+                         series->getInstanceUID()) == m_localSeries.end())
             {
                 // Add series in the pulling series map
                 m_pullingDicomSeriesMap[series->getInstanceUID()] = series;
@@ -268,31 +280,33 @@ void SSeriesPuller::pullSeries()
         if(!pullSeriesVector.empty())
         {
             m_seriesEnquirer->initialize(
-                    m_pacsConfiguration->getLocalApplicationTitle(),
-                    m_pacsConfiguration->getPacsHostName(),
-                    m_pacsConfiguration->getPacsApplicationPort(),
-                    m_pacsConfiguration->getPacsApplicationTitle(),
-                    m_pacsConfiguration->getMoveApplicationTitle(),
-                    m_slotStoreInstanceCallbackUsingGetRequests,
-                    m_slotProgressCallback);
+                m_pacsConfiguration->getLocalApplicationTitle(),
+                m_pacsConfiguration->getPacsHostName(),
+                m_pacsConfiguration->getPacsApplicationPort(),
+                m_pacsConfiguration->getPacsApplicationTitle(),
+                m_pacsConfiguration->getMoveApplicationTitle(),
+                m_slotStoreInstanceCallbackUsingGetRequests,
+                m_slotProgressCallback);
 
             // Use C-GET Requests
             if(m_pacsConfiguration->getRetrieveMethod() == ::fwDicomIOExt::data::PacsConfiguration::GET_RETRIEVE_METHOD)
             {
                 // Pull Selected Series
                 m_seriesEnquirer->connect();
-                m_seriesEnquirer->pullSeriesUsingGetRetrieveMethod(::fwDicomIOExt::dcmtk::helper::Series::toSeriesInstanceUIDContainer(pullSeriesVector));
+                m_seriesEnquirer->pullSeriesUsingGetRetrieveMethod(::fwDicomIOExt::dcmtk::helper::Series::toSeriesInstanceUIDContainer(
+                                                                       pullSeriesVector));
                 m_seriesEnquirer->disconnect();
             }
             // Use C-MOVE Requests
             else
             {
-                ::fwDicomIOExt::dcmtk::SeriesRetriever::sptr seriesRetriever = ::fwDicomIOExt::dcmtk::SeriesRetriever::New();
+                ::fwDicomIOExt::dcmtk::SeriesRetriever::sptr seriesRetriever =
+                    ::fwDicomIOExt::dcmtk::SeriesRetriever::New();
                 seriesRetriever->initialize(
-                        m_pacsConfiguration->getMoveApplicationTitle(),
-                        m_pacsConfiguration->getMoveApplicationPort(),
-                        1,
-                        m_slotStoreInstanceCallbackUsingMoveRequests);
+                    m_pacsConfiguration->getMoveApplicationTitle(),
+                    m_pacsConfiguration->getMoveApplicationPort(),
+                    1,
+                    m_slotStoreInstanceCallbackUsingMoveRequests);
 
                 // Start Series Retriever
                 ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
@@ -300,7 +314,8 @@ void SSeriesPuller::pullSeries()
 
                 // Pull Selected Series
                 m_seriesEnquirer->connect();
-                m_seriesEnquirer->pullSeriesUsingMoveRetrieveMethod(::fwDicomIOExt::dcmtk::helper::Series::toSeriesInstanceUIDContainer(pullSeriesVector));
+                m_seriesEnquirer->pullSeriesUsingMoveRetrieveMethod(::fwDicomIOExt::dcmtk::helper::Series::toSeriesInstanceUIDContainer(
+                                                                        pullSeriesVector));
                 m_seriesEnquirer->disconnect();
 
                 worker.reset();
@@ -327,9 +342,9 @@ void SSeriesPuller::pullSeries()
     {
         ::std::stringstream ss;
         ss << "Unable to connect to the pacs. Please check your configuration: \n"
-                << "Pacs host name: " << m_pacsConfiguration->getPacsHostName() << "\n"
-                << "Pacs application title: " << m_pacsConfiguration->getPacsApplicationTitle() << "\n"
-                << "Pacs port: " << m_pacsConfiguration->getPacsApplicationPort() << "\n";
+           << "Pacs host name: " << m_pacsConfiguration->getPacsHostName() << "\n"
+           << "Pacs application title: " << m_pacsConfiguration->getPacsApplicationTitle() << "\n"
+           << "Pacs port: " << m_pacsConfiguration->getPacsApplicationPort() << "\n";
         m_slotDisplayMessage->asyncRun(ss.str());
         SLM_WARN(exception.what());
         //Notify Progress Dialog
@@ -344,7 +359,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 {
     // Read only series that are not in the SeriesDB
     InstanceUIDContainerType alreadyLoadedSeries =
-            ::fwDicomIOExt::dcmtk::helper::Series::toSeriesInstanceUIDContainer(m_destinationSeriesDB->getContainer());
+        ::fwDicomIOExt::dcmtk::helper::Series::toSeriesInstanceUIDContainer(m_destinationSeriesDB->getContainer());
 
     // Create temporary series helper
     ::fwComEd::helper::SeriesDB tempSDBhelper(m_tempSeriesDB);
@@ -363,7 +378,8 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
         }
 
         // Check if the series is loaded
-        if(::std::find(alreadyLoadedSeries.begin(), alreadyLoadedSeries.end(), selectedSeriesUID) == alreadyLoadedSeries.end())
+        if(::std::find(alreadyLoadedSeries.begin(), alreadyLoadedSeries.end(),
+                       selectedSeriesUID) == alreadyLoadedSeries.end())
         {
             // Clear temporary series
             tempSDBhelper.clear();
@@ -388,7 +404,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
 //------------------------------------------------------------------------------
 
 void SSeriesPuller::storeInstanceCallback(const ::std::string& seriesInstanceUID, unsigned int instanceNumber,
-        const ::std::string& filePath)
+                                          const ::std::string& filePath)
 {
     //Add path in the Dicom series
     if(!m_pullingDicomSeriesMap[seriesInstanceUID].expired())
@@ -425,8 +441,8 @@ void SSeriesPuller::progressCallback(float percentage, bool error)
         m_isPulling = false;
         ::std::stringstream ss;
         ss << "Unable to store files in the client. Please check your configuration and the pacs configuration:\n"
-                << "Destination application title: " << m_pacsConfiguration->getMoveApplicationTitle() << "\n"
-                << "Destination port: " << m_pacsConfiguration->getMoveApplicationPort();
+           << "Destination application title: " << m_pacsConfiguration->getMoveApplicationTitle() << "\n"
+           << "Destination port: " << m_pacsConfiguration->getMoveApplicationPort();
         m_slotDisplayMessage->asyncRun(ss.str());
 
         //Notify Progress Dialog

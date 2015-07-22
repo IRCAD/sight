@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,17 +41,19 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioGdcm::SSeriesDBReader , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioGdcm::SSeriesDBReader, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
 SSeriesDBReader::SSeriesDBReader() throw() : m_filterSelectorSrvConfig(""), m_filterType("")
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SSeriesDBReader::~SSeriesDBReader() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -72,11 +74,11 @@ void SSeriesDBReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr  result;
+    ::fwData::location::Folder::sptr result;
     result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
-        _sDefaultPath  = result->getFolder();
+        _sDefaultPath = result->getFolder();
         this->setFolder( _sDefaultPath );
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     }
@@ -91,20 +93,20 @@ void SSeriesDBReader::configureWithIHM()
         // Get the config
         ::fwRuntime::ConfigurationElement::csptr filterSelectorConfig;
         filterSelectorConfig = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
-                m_filterSelectorSrvConfig , "::ioDicomExt::dcmtk::editor::SFilterSelectorDialog");
+            m_filterSelectorSrvConfig, "::ioDicomExt::dcmtk::editor::SFilterSelectorDialog");
 
         SLM_ASSERT("Sorry, there is no service configuration "
-                       << m_filterSelectorSrvConfig
-                       << " for ::ioDicomExt::dcmtk::editor::SFilterSelectorDialog", filterSelectorConfig);
+                   << m_filterSelectorSrvConfig
+                   << " for ::ioDicomExt::dcmtk::editor::SFilterSelectorDialog", filterSelectorConfig);
 
         // Init and execute the service
         ::fwServices::IService::sptr filterSelectorSrv;
         ::fwData::String::sptr key = ::fwData::String::New();
-        filterSelectorSrv = ::fwServices::add(key,
-                                          "::gui::editor::IDialogEditor",
-                                          "::ioDicomExt::dcmtk::editor::SFilterSelectorDialog");
-        filterSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(filterSelectorConfig) ) ;
-        filterSelectorSrv->configure() ;
+        filterSelectorSrv          = ::fwServices::add(key,
+                                                       "::gui::editor::IDialogEditor",
+                                                       "::ioDicomExt::dcmtk::editor::SFilterSelectorDialog");
+        filterSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(filterSelectorConfig) );
+        filterSelectorSrv->configure();
         filterSelectorSrv->start();
         filterSelectorSrv->update();
         filterSelectorSrv->stop();
@@ -123,7 +125,7 @@ void SSeriesDBReader::configuring() throw (fwTools::Failed)
 
     // Use filter selector
     ::fwRuntime::ConfigurationElement::sptr selectorConfig =
-            m_configuration->findConfigurationElement("FilterSelectorSrvConfig");
+        m_configuration->findConfigurationElement("FilterSelectorSrvConfig");
     if(selectorConfig)
     {
         SLM_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
@@ -156,7 +158,7 @@ void SSeriesDBReader::stopping() throw(::fwTools::Failed)
 
 void SSeriesDBReader::info(std::ostream &_sstream )
 {
-    _sstream << "SSeriesDBReader::info" ;
+    _sstream << "SSeriesDBReader::info";
 }
 
 //------------------------------------------------------------------------------
@@ -172,7 +174,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
 {
     SLM_TRACE_FUNC();
     ::gdcmIO::reader::SeriesDB::sptr reader = ::gdcmIO::reader::SeriesDB::New();
-    ::fwMedData::SeriesDB::sptr dummy = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::sptr dummy       = ::fwMedData::SeriesDB::New();
 
     reader->setObject(dummy);
     reader->setFolder(dicomFile);
@@ -187,12 +189,12 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
     return reader->getConcreteObject();
@@ -227,8 +229,8 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
         else
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Image Reader","This file can not be read. Retry with another file reader.",
-                    ::fwGui::dialog::IMessageDialog::WARNING);
+                "Image Reader","This file can not be read. Retry with another file reader.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }

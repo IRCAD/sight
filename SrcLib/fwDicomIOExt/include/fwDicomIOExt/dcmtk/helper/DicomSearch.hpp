@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@ public:
      * @param[out] dicomFiles Dicom files
      */
     FWDICOMIOEXT_API static void searchRecursively(const ::boost::filesystem::path &dirPath,
-            std::vector<std::string>& dicomFiles);
+                                                   std::vector<std::string>& dicomFiles);
 
     /**
      * @brief Check if the file extension matches one of the forbidden extension.
@@ -41,7 +41,7 @@ public:
      * @param[in] extensions Extensions to check
      */
     FWDICOMIOEXT_API static bool checkFilenameExtension(const std::string &filename,
-            std::vector<std::string> *extensions);
+                                                        std::vector<std::string> *extensions);
 };
 
 } //dcmtk

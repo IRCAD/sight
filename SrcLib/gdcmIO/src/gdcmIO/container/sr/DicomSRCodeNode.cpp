@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,8 +22,8 @@ namespace sr
 //------------------------------------------------------------------------------
 
 DicomSRCodeNode::DicomSRCodeNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship
-        , const DicomCodedAttribute& codedEntry) :
-        ::gdcmIO::container::sr::DicomSRNode(codedAttribute, "CODE", relationship), m_codedEntry(codedEntry)
+                                 , const DicomCodedAttribute& codedEntry) :
+    ::gdcmIO::container::sr::DicomSRNode(codedAttribute, "CODE", relationship), m_codedEntry(codedEntry)
 {
 }
 
@@ -41,7 +41,7 @@ void DicomSRCodeNode::write(::gdcm::DataSet &dataset) const
 
     // Concept Code Sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
-            this->createConceptNameCodeSequence(dataset, m_codedEntry);
+        this->createConceptNameCodeSequence(dataset, m_codedEntry);
     ::gdcmIO::helper::DicomData::insertSQ< 0x0040, 0xa168 >(codeSequence, dataset);
 }
 

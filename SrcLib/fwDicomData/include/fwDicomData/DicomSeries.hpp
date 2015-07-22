@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ fwCampAutoDeclareDataMacro((fwDicomData)(DicomSeries), FWDICOMDATA_API);
 
 namespace fwData
 {
-    class Array;
+class Array;
 }
 
 namespace fwDicomData
@@ -37,7 +37,8 @@ class FWDICOMDATA_CLASS_API DicomSeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (DicomSeries)(::fwData::Object), (()), ::fwData::factory::New< DicomSeries >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (DicomSeries)(::fwData::Object), (()),
+                                            ::fwData::factory::New< DicomSeries >);
 
     fwCampMakeFriendDataMacro((fwDicomData)(DicomSeries));
 
@@ -101,8 +102,8 @@ public:
      */
     typedef enum
     {
-        NONE = 1,       /*! The DICOM files are not available on the local machine but may be available on the pacs. */
-        PATHS  = 2,     /*! The paths to the DICOM files are saved in this DicomSeries. */
+        NONE     = 1,   /*! The DICOM files are not available on the local machine but may be available on the pacs. */
+        PATHS    = 2,   /*! The paths to the DICOM files are saved in this DicomSeries. */
         BINARIES = 3    /*! The binaries of the DICOM files are saved in this DicomSeries. */
     } DICOM_AVAILABILITY;
 

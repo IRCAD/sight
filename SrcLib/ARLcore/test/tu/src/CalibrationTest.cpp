@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,14 +30,14 @@ void CalibrationTest::tearDown()
 
 void CalibrationTest::initIntrinsicCalibrationTest()
 {
-    CPPUNIT_ASSERT_EQUAL(true  , arlCore::testInitExtrinsicCalibration( 100, 1e-6 ) );
+    CPPUNIT_ASSERT_EQUAL(true, arlCore::testInitExtrinsicCalibration( 100, 1e-6 ) );
 }
 
 
 
 void CalibrationTest::initExtrinsicCalibrationTest()
 {
-    CPPUNIT_ASSERT_EQUAL(true  ,  arlCore::testInitIntrinsicCalibration( 100, 1e-5 ) );
+    CPPUNIT_ASSERT_EQUAL(true,  arlCore::testInitIntrinsicCalibration( 100, 1e-5 ) );
 }
 
 
@@ -46,14 +46,14 @@ void CalibrationTest::initExtrinsicCalibrationTest()
 
 void CalibrationTest::intrinsicCalibrationTest()
 {
-    CPPUNIT_ASSERT_EQUAL(true  ,  arlCore::testIntrinsicCalibration( 8, 1e-3 ) );
+    CPPUNIT_ASSERT_EQUAL(true,  arlCore::testIntrinsicCalibration( 8, 1e-3 ) );
 }
 
 
 
 void CalibrationTest::extrinsicCalibrationTest()
 {
-    CPPUNIT_ASSERT_EQUAL(true  ,  arlCore::testExtrinsicCalibration( 10, 1e-6 ) );
+    CPPUNIT_ASSERT_EQUAL(true,  arlCore::testExtrinsicCalibration( 10, 1e-6 ) );
 }
 
 

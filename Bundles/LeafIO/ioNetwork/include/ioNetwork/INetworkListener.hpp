@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IONETWORK__INETWORKLISTENER_HPP__
-#define __IONETWORK__INETWORKLISTENER_HPP__
+#ifndef __IONETWORK_INETWORKLISTENER_HPP__
+#define __IONETWORK_INETWORKLISTENER_HPP__
 
 #include "ioNetwork/ObjectUpdateNotifier.hpp"
 #include "ioNetwork/config.hpp"
@@ -126,5 +126,5 @@ protected:
 
 } // namespace ioNetwork
 
-#endif /*__IOONETWORK__INETWORKLISTENER_HPP__*/
+#endif /*__IONETWORK_INETWORKLISTENER_HPP__*/
 

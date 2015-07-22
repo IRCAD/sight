@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,29 +14,29 @@
 #include <arlcore/Misc.h>
 
 unsigned int arlCore::Object::m_counter[arlCore::ARLCORE_CLASS_NBTYPES];
-arlCore::ARLCORE_LOG_VERBOSE arlCore::Object::m_staticVerboseLevel=arlCore::ARLCORE_LOG_VERBOSE_NBTYPES;
+arlCore::ARLCORE_LOG_VERBOSE arlCore::Object::m_staticVerboseLevel = arlCore::ARLCORE_LOG_VERBOSE_NBTYPES;
 
-arlCore::Object::Object( ARLCORE_CLASS c, const std::string &name ):
-m_date( 0 ),
-m_time( 0 ),
-m_class( c ),
-m_name(name),
-m_ok( false ),
-m_verboseLevel( ARLCORE_LOG_MUTE ),
-m_writeMutex( false ),
-m_readMutex( 0 ),
-m_updateIndex( FIRSTUPDATEINDEX )
+arlCore::Object::Object( ARLCORE_CLASS c, const std::string &name ) :
+    m_date( 0 ),
+    m_time( 0 ),
+    m_class( c ),
+    m_name(name),
+    m_ok( false ),
+    m_verboseLevel( ARLCORE_LOG_MUTE ),
+    m_writeMutex( false ),
+    m_readMutex( 0 ),
+    m_updateIndex( FIRSTUPDATEINDEX )
 {
-    m_no=++m_counter[m_class];
+    m_no = ++m_counter[m_class];
 }
 
-arlCore::Object::Object( const Object& o ):
-m_verboseLevel( ARLCORE_LOG_MUTE ),
-m_writeMutex( false ),
-m_readMutex( 0 )
+arlCore::Object::Object( const Object& o ) :
+    m_verboseLevel( ARLCORE_LOG_MUTE ),
+    m_writeMutex( false ),
+    m_readMutex( 0 )
 {
     copy(o);
-    m_no=++m_counter[m_class];
+    m_no = ++m_counter[m_class];
 }
 
 arlCore::Object& arlCore::Object::operator=( const Object& o )
@@ -49,13 +49,13 @@ void arlCore::Object::copy( const Object& o )
 {
     if(this!=&o)
     {
-        m_verboseLevel=o.m_verboseLevel;
-        m_date=o.m_date;
-        m_time=o.m_time;
-        m_class=o.m_class;
-        m_name=o.m_name;
-        m_ok=o.m_ok;
-        m_updateIndex+=o.m_updateIndex;
+        m_verboseLevel = o.m_verboseLevel;
+        m_date         = o.m_date;
+        m_time         = o.m_time;
+        m_class        = o.m_class;
+        m_name         = o.m_name;
+        m_ok           = o.m_ok;
+        m_updateIndex += o.m_updateIndex;
     }
 }
 
@@ -79,15 +79,27 @@ bool arlCore::Object::print( void ) const
 
 std::string arlCore::Object::getString( void ) const
 {
-    std::string c="UNKNOWN";
+    std::string c = "UNKNOWN";
     if(m_class<ARLCORE_CLASS_NBTYPES)
-        c=ARLCORE_CLASS_NAMES[m_class];
+    {
+        c = ARLCORE_CLASS_NAMES[m_class];
+    }
     std::stringstream s;
     s<<"_______________________________________________________________________________\n";
     s<<"\""<<m_name<<"\" "<<c<<" class (#"<<m_no<<" / "<<m_counter[m_class]<<" object";
-    if(m_counter[m_class]>1) s<<"s";
+    if(m_counter[m_class]>1)
+    {
+        s<<"s";
+    }
     s<<")";
-    if(m_ok) s<<"\nOK"; else s<<"\nKO";
+    if(m_ok)
+    {
+        s<<"\nOK";
+    }
+    else
+    {
+        s<<"\nKO";
+    }
     s<<" - Timestamp : "<<m_date<<"-"<<m_time<<" ("<<this<<")";
 //  s<<" - Timestamp : "<<m_time<<" ("<<this<<")";
     s<<"\nVerbose level : "<<m_verboseLevel;
@@ -104,7 +116,10 @@ bool arlCore::Object::load( const std::string &fileName )
 
 bool arlCore::Object::save( const std::string &fileName, bool overwrite ) const
 {
-    if(arlFile::fileExist(fileName) && !overwrite) return false;
+    if(arlFile::fileExist(fileName) && !overwrite)
+    {
+        return false;
+    }
     return false;
 }
 
@@ -162,7 +177,7 @@ unsigned int arlCore::Object::getNo( void ) const
 
 
 
-std::string arlCore::Object::getFileName( void )const
+std::string arlCore::Object::getFileName( void ) const
 {
     std::stringstream s;
     s<<"c:/"<<m_class<<"-"<<getNo();
@@ -259,11 +274,15 @@ double arlCore::Object::getLap( void )
 {   // Return lap in seconds
     double b = (double)m_lapTime;
     startLap();
-    double sec=0; //m_lapDate-a;
+    double sec = 0; //m_lapDate-a;
     if(b>m_lapTime)
-        sec+=1.0-(b+(double)m_lapTime)/1000000.0; // FIXME
+    {
+        sec += 1.0-(b+(double)m_lapTime)/1000000.0; // FIXME
+    }
     else
-        sec+=((double)m_lapTime-b)/((double)CLK_TCK*10); // FIXME
+    {
+        sec += ((double)m_lapTime-b)/((double)CLK_TCK*10); // FIXME
+    }
     update(); //?
     return sec;
 }
@@ -285,8 +304,11 @@ bool arlCore::Object::isEquivalent( const long int &date, const long int &time )
 
 bool arlCore::Object::lockWriteMutex( void )
 {
-    if(isWriteLocked()) return false;
-    m_writeMutex=true;
+    if(isWriteLocked())
+    {
+        return false;
+    }
+    m_writeMutex = true;
     return true;
 }
 
@@ -299,14 +321,20 @@ bool arlCore::Object::unlockWriteMutex( void )
 
 unsigned int arlCore::Object::lockReadMutex( void )
 {
-    if(m_writeMutex) return false;
+    if(m_writeMutex)
+    {
+        return false;
+    }
     ++m_readMutex;
     return m_readMutex;
 }
 
 unsigned int arlCore::Object::unlockReadMutex( void )
 {
-    if(m_readMutex>0) m_readMutex--;
+    if(m_readMutex>0)
+    {
+        m_readMutex--;
+    }
     return m_readMutex;
 }
 
@@ -365,18 +393,34 @@ void arlCore::Object::log( ARLCORE_LOG_SERIOUSNESS level, const char* text ) con
 {
     ARLCORE_LOG_VERBOSE verboseLevel;
     if(m_staticVerboseLevel<ARLCORE_LOG_VERBOSE_NBTYPES)
-        verboseLevel=m_staticVerboseLevel;
-    else verboseLevel=m_verboseLevel;
+    {
+        verboseLevel = m_staticVerboseLevel;
+    }
+    else
+    {
+        verboseLevel = m_verboseLevel;
+    }
 
-    if(verboseLevel<=(ARLCORE_LOG_VERBOSE)level) return;
+    if(verboseLevel<=(ARLCORE_LOG_VERBOSE)level)
+    {
+        return;
+    }
     if(level==ARLCORE_LOG_ERROR)
+    {
         std::cout<<"<ERROR>";
+    }
     if(level==ARLCORE_LOG_WARNING)
+    {
         std::cout<<"<WARNING>";
+    }
     if(level==ARLCORE_LOG_INFO_LEVEL2)
+    {
         std::cout<<"<INFO2>";
+    }
     if(level==ARLCORE_LOG_INFO_LEVEL1)
+    {
         std::cout<<"<INFO1>";
+    }
     std::cout<<"["<<ARLCORE_CLASS_NAMES[m_class]<<"]";
     std::cout<<"["<<this<<"] ";
     std::cout<<text<<"\n";

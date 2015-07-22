@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,29 +37,29 @@
 #include <arlcore/Misc.h>
 #include <arlcore/File.h>
 
-arlCore::Camera::Camera( PlaneSystem &universe ):
+arlCore::Camera::Camera( PlaneSystem &universe ) :
 //VAG Object(ARLCORE_CLASS_CAMERA),
-Particle( universe )
+    Particle( universe )
 {
-    m_cameraGUID.Low=0;
-    m_cameraGUID.High=0;
+    m_cameraGUID.Low  = 0;
+    m_cameraGUID.High = 0;
     init();
     universe.setPlaneName(getPlane(), universe.Object::getName());
 }
 
-arlCore::Camera::Camera( PlaneSystem &universe, const uint32HL &GUID ):
+arlCore::Camera::Camera( PlaneSystem &universe, const uint32HL &GUID ) :
 //VAG Object(ARLCORE_CLASS_CAMERA),
-Particle( universe )
+    Particle( universe )
 {
-    m_cameraGUID.Low = GUID.Low;
+    m_cameraGUID.Low  = GUID.Low;
     m_cameraGUID.High = GUID.High;
     init();
     universe.setPlaneName(getPlane(),  universe.Object::getName());
 }
 
-arlCore::Camera::Camera( const arlCore::Camera& c ):
+arlCore::Camera::Camera( const arlCore::Camera& c ) :
 //VAG Object( ARLCORE_CLASS_CAMERA, c.Object::getName() ),
-Particle( c.getPlaneSystem(), c.Particle::getName() )
+    Particle( c.getPlaneSystem(), c.Particle::getName() )
 {
     copy(c);
     setName( c.Object::getName() );
@@ -73,22 +73,25 @@ arlCore::Camera& arlCore::Camera::operator=(const arlCore::Camera& c)
 
 void arlCore::Camera::copy(const Camera& c)
 {
-    if(this==&c) return;
+    if(this==&c)
+    {
+        return;
+    }
     this->Object::copy(c);
-    m_cameraGUID = c.m_cameraGUID;
-    m_noCalibration = c.m_noCalibration;
-    m_extrinsic = c.m_extrinsic;
-    m_intrinsicMatrix = c.m_intrinsicMatrix;
-    m_distortionCoeffs = c.m_distortionCoeffs;
-    m_alphaC = c.m_alphaC;
-    m_Qint = c.m_Qint;
-    m_Qext = c.m_Qext;
-    m_Cint = c.m_Cint;
-    m_Cext = c.m_Cext;
-    m_Bint = c.m_Bint;
-    m_Bext = c.m_Bext;
-    m_invExtrinsic = c.m_invExtrinsic;
-    m_invIntrinsicMatrix = c.m_invIntrinsicMatrix;
+    m_cameraGUID                    = c.m_cameraGUID;
+    m_noCalibration                 = c.m_noCalibration;
+    m_extrinsic                     = c.m_extrinsic;
+    m_intrinsicMatrix               = c.m_intrinsicMatrix;
+    m_distortionCoeffs              = c.m_distortionCoeffs;
+    m_alphaC                        = c.m_alphaC;
+    m_Qint                          = c.m_Qint;
+    m_Qext                          = c.m_Qext;
+    m_Cint                          = c.m_Cint;
+    m_Cext                          = c.m_Cext;
+    m_Bint                          = c.m_Bint;
+    m_Bext                          = c.m_Bext;
+    m_invExtrinsic                  = c.m_invExtrinsic;
+    m_invIntrinsicMatrix            = c.m_invIntrinsicMatrix;
     m_opticalCenterInExtrinsicFrame = c.m_opticalCenterInExtrinsicFrame;
     getPlaneSystem().setPlaneName(getPlane(), Object::getName());
     Object::update();
@@ -99,7 +102,7 @@ void arlCore::Camera::init( void )
 {
     m_extrinsic.setIdentity();
     m_invExtrinsic.setIdentity();
-    m_noCalibration=0;
+    m_noCalibration = 0;
     m_Bint.fill(0.0); // FIXME Never changed, Never used
     m_Bext.fill(0.0);
     m_Cint.fill(0.0); // FIXME Never changed, Never used
@@ -110,7 +113,7 @@ void arlCore::Camera::init( void )
     m_intrinsicMatrix.set_identity();
     m_invIntrinsicMatrix.set_identity();
     m_opticalCenterInExtrinsicFrame.fill(0.0);
-    m_alphaC=0;
+    m_alphaC = 0;
     m_distortionCoeffs.fill(0.0);
     m_log << "CamRef " << m_cameraGUID.High << "-" << m_cameraGUID.Low;
     setName(m_log.str());
@@ -119,7 +122,8 @@ void arlCore::Camera::init( void )
 }
 
 arlCore::Camera::~Camera( )
-{}
+{
+}
 
 std::string arlCore::Camera::getString( void ) const
 {
@@ -144,7 +148,8 @@ long int arlCore::Camera::getCalibrationID( void ) const
     return m_noCalibration;
 }
 
-bool arlCore::Camera::loadParameters( const std::string &fileName, long int date, unsigned int width, unsigned int height )
+bool arlCore::Camera::loadParameters( const std::string &fileName, long int date, unsigned int width,
+                                      unsigned int height )
 {
     std::string folder, file, ext;
     arlString::splitFilename( fileName, folder, file, ext );
@@ -153,11 +158,11 @@ bool arlCore::Camera::loadParameters( const std::string &fileName, long int date
     if(Version>0.0)
     {
         std::string token, filename, lastName;
-        unsigned int numero=0, xSize, ySize, year, month, day, hour, minute, second;
+        unsigned int numero = 0, xSize, ySize, year, month, day, hour, minute, second;
         uint32HL GUID;
         double rms;
         bool sharedPlane = false;
-        time_t lastTime = 0;
+        time_t lastTime  = 0;
         while(config.getToken(token))
         {
             if(token=="GUID")
@@ -177,18 +182,29 @@ bool arlCore::Camera::loadParameters( const std::string &fileName, long int date
                 config.get(day);
             }
             if(token=="SharedPlaneWithPreviousCamera")
+            {
                 sharedPlane = true;
+            }
             if(token=="Time")
             {
                 config.get(hour);
                 config.get(minute);
                 config.get(second);
             }
-            if(token=="RMS") config.get(rms);
-            if(token=="Filename") config.getString(filename);
+            if(token=="RMS")
+            {
+                config.get(rms);
+            }
+            if(token=="Filename")
+            {
+                config.getString(filename);
+            }
             if(token=="End")
             {
-                if(!sharedPlane) ++numero;
+                if(!sharedPlane)
+                {
+                    ++numero;
+                }
                 long int tps;
                 struct tm t;
                 t.tm_year = year - 1900; // years since 1900
@@ -203,33 +219,45 @@ bool arlCore::Camera::loadParameters( const std::string &fileName, long int date
                 t.tm_yday = 0; // days since January 1 - [0,365]
                 //The Daylight Saving Time flag (tm_isdst) is greater than zero if Daylight Saving Time is in effect,
                 //zero if Daylight Saving Time is not in effect, and less than zero if the information is not available
-                t.tm_isdst= 0; // daylight savings time flag
-                tps = (long int)mktime(&t);
+                t.tm_isdst = 0; // daylight savings time flag
+                tps        = (long int)mktime(&t);
                 //std::cout<<No<<":"<<tps<<" "<<Y<<" "<<M<<" "<<D<<" "<<H<<" "<<Mn<<" "<<S<<"\n";
                 // difftime(date2, date1) => If date1 avant date2 return +sec else -sec
                 if(m_cameraGUID.Low==GUID.Low && m_cameraGUID.High==GUID.High
-                    && tps<date && tps>=lastTime && xSize==width && ySize==height)
+                   && tps<date && tps>=lastTime && xSize==width && ySize==height)
                 {
                     lastTime = tps;
-                    if(folder=="") lastName = filename;
-                    else lastName = folder+"/"+filename;
+                    if(folder=="")
+                    {
+                        lastName = filename;
+                    }
+                    else
+                    {
+                        lastName = folder+"/"+filename;
+                    }
                     m_noCalibration = numero;
                 }
                 sharedPlane = false;
             }
         }
         config.close();
-        if(lastTime!=0) return load(lastName);
-        std::cerr<<"Camera parameters of "<<m_cameraGUID.High<<"-"<<m_cameraGUID.Low<<" ("<<width<<","<<height<<") not found\n";
+        if(lastTime!=0)
+        {
+            return load(lastName);
+        }
+        std::cerr<<"Camera parameters of "<<m_cameraGUID.High<<"-"<<m_cameraGUID.Low<<" ("<<width<<","<<height<<
+            ") not found\n";
         return false;
-    }else
+    }
+    else
     {
         config.close();
         return loadOldParameters(fileName, date, width, height);
     }
 }
 
-bool arlCore::Camera::loadOldParameters( const std::string &fileName, long int date, unsigned int width, unsigned int height )
+bool arlCore::Camera::loadOldParameters( const std::string &fileName, long int date, unsigned int width,
+                                         unsigned int height )
 {
     const unsigned int NBPARAMS = 13;
     if(strcmp(fileName.c_str(),"")==0)
@@ -246,22 +274,28 @@ bool arlCore::Camera::loadOldParameters( const std::string &fileName, long int d
     }
     std::string path;
     unsigned int pos = (unsigned int)fileName.find_last_of ("/");
-    if(pos!=std::string::npos) path = fileName.substr (0,pos+1);
-    else path="";
-    int n=NBPARAMS, Y, M, D, H, S, Mn, WH, HT;
+    if(pos!=std::string::npos)
+    {
+        path = fileName.substr (0,pos+1);
+    }
+    else
+    {
+        path = "";
+    }
+    int n = NBPARAMS, Y, M, D, H, S, Mn, WH, HT;
     float RMS;
     long unsigned int No;
     uint32HL GUID;
     char name[500];
     std::string lastName;
-    long int tps, lastTime=0;
+    long int tps, lastTime = 0;
     struct tm t;
     //Header : Numero is the same if 2 calibrations is calculated in the same 3D plane
     fscanf(file, " Numero | High ID Low   |  Dim  |    Acquisition    |   RMS  |      Filename\n");
     while(!feof(file) &&  n==NBPARAMS)
     {
-        n=fscanf(file, "%ld %d %d %d %d %d %d %d %d %d %d %f %s\n",
-                 &No, &GUID.High, &GUID.Low, &WH, &HT, &Y, &M, &D, &H, &Mn, &S, &RMS, name );
+        n = fscanf(file, "%ld %d %d %d %d %d %d %d %d %d %d %f %s\n",
+                   &No, &GUID.High, &GUID.Low, &WH, &HT, &Y, &M, &D, &H, &Mn, &S, &RMS, name );
         if(n==NBPARAMS)
         {
             t.tm_year = Y - 1900; // years since 1900
@@ -272,23 +306,28 @@ bool arlCore::Camera::loadOldParameters( const std::string &fileName, long int d
             t.tm_sec  = S; // seconds after the minute - [0,59]
             // FIXME Arbitrairement mis a zero pour que le resultat soit repetable
             // Est-ce pour autant correct ?
-            t.tm_wday = 0; // days since Sunday - [0,6]
-            t.tm_yday = 0; // days since January 1 - [0,365]
-            t.tm_isdst= 0; // daylight savings time flag
-            tps = (long int)mktime(&t);
+            t.tm_wday  = 0; // days since Sunday - [0,6]
+            t.tm_yday  = 0; // days since January 1 - [0,365]
+            t.tm_isdst = 0; // daylight savings time flag
+            tps        = (long int)mktime(&t);
             //std::cout<<No<<":"<<tps<<" "<<Y<<" "<<M<<" "<<D<<" "<<H<<" "<<Mn<<" "<<S<<"\n";
-            if(m_cameraGUID.Low==GUID.Low && m_cameraGUID.High==GUID.High && tps<date && tps>=lastTime && WH==width && HT==height)
+            if(m_cameraGUID.Low==GUID.Low && m_cameraGUID.High==GUID.High && tps<date && tps>=lastTime && WH==width &&
+               HT==height)
             {
-                lastTime = tps;
-                lastName = path+name;
+                lastTime        = tps;
+                lastName        = path+name;
                 m_noCalibration = No;
             }
         }
     }
     fclose(file);
     // TODO Si fichier non trouve, chercher le suivant ?
-    if(lastTime!=0) return load(lastName);
-    std::cerr<<"Camera parameters of "<<m_cameraGUID.Low<<"-"<<m_cameraGUID.High<<" ("<<width<<","<<height<<") not found\n";
+    if(lastTime!=0)
+    {
+        return load(lastName);
+    }
+    std::cerr<<"Camera parameters of "<<m_cameraGUID.Low<<"-"<<m_cameraGUID.High<<" ("<<width<<","<<height<<
+        ") not found\n";
     return false;
 }
 
@@ -296,19 +335,26 @@ bool arlCore::Camera::load( const std::string &fileName )
 {
     std::ifstream f;
     f.open (fileName.c_str(), std::fstream::in);
-    if(!f.is_open()) return false;
+    if(!f.is_open())
+    {
+        return false;
+    }
     double M[5];
     unsigned int i, j;
     setOK(false);
-    for( i=0 ; i<4 ; ++i )
-        for( j=0; j<4; ++j )
+    for( i = 0; i<4; ++i )
+    {
+        for( j = 0; j<4; ++j )
         {
             f>>M[j];
-            m_extrinsic[i][j]=M[j];
+            m_extrinsic[i][j] = M[j];
         }
+    }
     // alpha values : Focale en X ; Focale en Y
-    for( i=0; i<5; ++i )
+    for( i = 0; i<5; ++i )
+    {
         f>>M[i];
+    }
     setfx(M[0]); // AlphaU
     setfy(M[1]); // AlphaV
     // Principal point : Position du centre optique u0 ; v0
@@ -316,7 +362,7 @@ bool arlCore::Camera::load( const std::string &fileName )
     setcy(M[3]); // v0
     setAlphaC(M[4]); // skew (Orthogonalité de la plaque CCD)
     // Radial 1er ordre ; 2ème ordre ; Tangentiel 1er ordre ; 2ème ordre ; Radial 3ème ordre
-    for( i=0 ; i<5 ; ++i )
+    for( i = 0; i<5; ++i )
     {
         f>>M[i];
         setkc(i,M[i]);
@@ -325,7 +371,7 @@ bool arlCore::Camera::load( const std::string &fileName )
     setOK(true);
     m_log<<fileName<<" loaded";
     log(ARLCORE_LOG_INFO_LEVEL2);
-    int fringe=0;
+    int fringe = 0;
     std::string token;
     while(!f.eof())
     {
@@ -333,8 +379,10 @@ bool arlCore::Camera::load( const std::string &fileName )
         if(token=="Fringe")
         {
             f>>fringe;
-            for( i=0 ; i<5 ; ++i )
+            for( i = 0; i<5; ++i )
+            {
                 f>>M[i];
+            }
             vgl_plane_3d< double >p(M[0], M[1], M[2], M[3]);
         }
     }
@@ -344,14 +392,22 @@ bool arlCore::Camera::load( const std::string &fileName )
 
 bool arlCore::Camera::save( const std::string &fileName, bool overwrite ) const
 {
-    if(strcmp(fileName.c_str(),"")==0) return false;
-    if(arlFile::fileExist(fileName) && !overwrite) return false;
+    if(strcmp(fileName.c_str(),"")==0)
+    {
+        return false;
+    }
+    if(arlFile::fileExist(fileName) && !overwrite)
+    {
+        return false;
+    }
     FILE *file = fopen( fileName.c_str(), "w" );
     unsigned int i, j;
-    for( i=0 ; i<4 ; ++i )
+    for( i = 0; i<4; ++i )
     {
-        for( j=0; j<4; ++j )
+        for( j = 0; j<4; ++j )
+        {
             fprintf(file, " %lf", m_extrinsic[i][j]);
+        }
         fprintf(file, "\n");
     }
     // alpha values : Focale en X ; Focale en Y
@@ -361,8 +417,10 @@ bool arlCore::Camera::save( const std::string &fileName, bool overwrite ) const
     // alphaC=skew (Orthogonalité de la plaque CCD)
     fprintf( file, "%lf\n",getAlphaC() );
     // Radial 1er ordre ; 2ème ordre ; Tangentiel 1er ordre ; 2ème ordre ; Radial 3ème ordre
-    for( i=0 ; i<5 ; ++i )
+    for( i = 0; i<5; ++i )
+    {
         fprintf( file, "%lf ", m_distortionCoeffs[i] );
+    }
     fprintf( file, "0.0\n" );
 
     fclose( file );
@@ -403,21 +461,57 @@ const vnl_vector<double> arlCore::Camera::getIntrinsicVector( void ) const
 unsigned int arlCore::Camera::setIntrinsic( const vnl_vector<double> &p )
 {
     unsigned int size = p.size();
-    if(size>0) setfx(p[0]);
-    if(size>1) setfy(p(1));
-    if(size>2) setcx(p(2));
-    if(size>3) setcy(p(3));
-    if(size>4) setkc(0,p(4));
-    if(size>5) setkc(1,p(5));
-    if(size>6) setkc(2,p(6));
-    if(size>7) setkc(3,p(7));
-    if(size>8) setkc(4,p(8));
-    if(size>9) setAlphaC(p(9));
-    if(size>9) return 10;
-    else return size;
+    if(size>0)
+    {
+        setfx(p[0]);
+    }
+    if(size>1)
+    {
+        setfy(p(1));
+    }
+    if(size>2)
+    {
+        setcx(p(2));
+    }
+    if(size>3)
+    {
+        setcy(p(3));
+    }
+    if(size>4)
+    {
+        setkc(0,p(4));
+    }
+    if(size>5)
+    {
+        setkc(1,p(5));
+    }
+    if(size>6)
+    {
+        setkc(2,p(6));
+    }
+    if(size>7)
+    {
+        setkc(3,p(7));
+    }
+    if(size>8)
+    {
+        setkc(4,p(8));
+    }
+    if(size>9)
+    {
+        setAlphaC(p(9));
+    }
+    if(size>9)
+    {
+        return 10;
+    }
+    else
+    {
+        return size;
+    }
 }
 
-const vnl_vector_fixed<double,5>& arlCore::Camera::getDistortion ( void )const
+const vnl_vector_fixed<double,5>& arlCore::Camera::getDistortion ( void ) const
 {
     return m_distortionCoeffs;
 }
@@ -439,7 +533,7 @@ double arlCore::Camera::getcx() const
 
 void arlCore::Camera::setcx( double a)
 {
-    m_intrinsicMatrix(0,2)=a;
+    m_intrinsicMatrix(0,2) = a;
     m_Qint.put(0,2,getcx());
     m_invIntrinsicMatrix = vnl_matrix_inverse<double>(m_intrinsicMatrix.as_matrix());
 }
@@ -451,7 +545,7 @@ double arlCore::Camera::getcy() const
 
 void arlCore::Camera::setcy( double a)
 {
-    m_intrinsicMatrix(1,2)=a;
+    m_intrinsicMatrix(1,2) = a;
     m_Qint.put(1,2,getcy());
     m_invIntrinsicMatrix = vnl_matrix_inverse<double>(m_intrinsicMatrix.as_matrix());
 }
@@ -463,7 +557,7 @@ double arlCore::Camera::getfx() const
 
 void arlCore::Camera::setfx( double a)
 {
-    m_intrinsicMatrix(0,0)=a;
+    m_intrinsicMatrix(0,0) = a;
     m_Qint.put(0,0,getfx());
     m_invIntrinsicMatrix = vnl_matrix_inverse<double>(m_intrinsicMatrix.as_matrix());
 }
@@ -475,7 +569,7 @@ double arlCore::Camera::getfy() const
 
 void arlCore::Camera::setfy( double a)
 {
-    m_intrinsicMatrix(1,1)=a;
+    m_intrinsicMatrix(1,1) = a;
     m_Qint.put(1,1,getfy());
     m_invIntrinsicMatrix = vnl_matrix_inverse<double>(m_intrinsicMatrix.as_matrix());
 }
@@ -487,19 +581,27 @@ double arlCore::Camera::getAlphaC() const
 
 void arlCore::Camera::setAlphaC( double a)
 {
-    m_alphaC=a;
+    m_alphaC = a;
 }
 
 double arlCore::Camera::getkc(unsigned int i) const
 {
     if(i<5)
+    {
         return m_distortionCoeffs.get(i);
-    else return 0.0;
+    }
+    else
+    {
+        return 0.0;
+    }
 }
 
 bool arlCore::Camera::setkc(unsigned int i, double a)
 {
-    if(i>=5) return false;
+    if(i>=5)
+    {
+        return false;
+    }
     m_distortionCoeffs.put(i,a);
     return true;
 }
@@ -529,9 +631,13 @@ void arlCore::Camera::extCompute(void)
     m_Cext.put(1,P.get(2,1));
     m_Cext.put(2,P.get(2,2));
 
-    for( i=0 ; i<2 ; ++i ) // FIXME See definition : Qext<2,3>
-        for( j=0 ; j<2 ; ++j )
+    for( i = 0; i<2; ++i ) // FIXME See definition : Qext<2,3>
+    {
+        for( j = 0; j<2; ++j )
+        {
             m_Qext.put(i,j,P.get(i,j));
+        }
+    }
 }
 
 const vnl_matrix_fixed<double,2,3>& arlCore::Camera::getQint( void ) const
@@ -577,9 +683,10 @@ unsigned int arlCore::Camera::project3DPoint(PointList::csptr list3D, PointList:
     list2D->clear();
     list2D->setDimension(2);
     Point::sptr point2D = Point::New(2);
-    unsigned int i, n=0;
-    for( i=0 ; i<list3D->size() ; ++i )
-        if(project3DPoint( (*list3D)[i] , point2D, focalPlane ) )
+    unsigned int i, n = 0;
+    for( i = 0; i<list3D->size(); ++i )
+    {
+        if(project3DPoint( (*list3D)[i], point2D, focalPlane ) )
         {
             list2D->push_back(point2D);
             ++n;
@@ -589,31 +696,44 @@ unsigned int arlCore::Camera::project3DPoint(PointList::csptr list3D, PointList:
             //std::cout<<"ERROR dans project3DPoint(PointList::csptr list3D, PointList& list2D, bool focalPlane)"<<std::endl;
             //std::cerr<<"project3DPoint ERROR on "<<i<<"th point\n";
         }
+    }
     return n;
 }
 
-bool arlCore::Camera::project3DPoint(Point::csptr  pt3D, Point::sptr pt2D, bool focalPlane) const
+bool arlCore::Camera::project3DPoint(Point::csptr pt3D, Point::sptr pt2D, bool focalPlane) const
 {
     assert(pt3D->size()==3 && pt2D->size()==2);
-    if(pt3D->size()<3 || pt2D->size()<2) return false;
+    if(pt3D->size()<3 || pt2D->size()<2)
+    {
+        return false;
+    }
     unsigned int i;
     vnl_vector_fixed<double,4> point3D;
-    for( i=0 ; i<3 ; ++i )
-        point3D(i)=(*pt3D)[i];
-    point3D(3)=1.0;
+    for( i = 0; i<3; ++i )
+    {
+        point3D(i) = (*pt3D)[i];
+    }
+    point3D(3) = 1.0;
     vnl_vector_fixed<double,2> point2D;
     if(project3DPoint (point3D, point2D, focalPlane))
     {
-        for( i=0 ; i<2 ; ++i )
+        for( i = 0; i<2; ++i )
+        {
             pt2D->set(i,point2D(i));
+        }
         return true;
-    }else return false;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 // Projection d'un point 3D sur le plan image (focalPlane=true) ou le plan pixel (focalPlane=false)
 // en fonction de la matrice de projection et des parametres de distortion de la camera
 // Les notations sont celles de la matlab camera calibration toolbox
-bool arlCore::Camera::project3DPoint(const vnl_vector_fixed<double,4> &point3D, vnl_vector_fixed<double,2> &pt2D, bool focalPlane) const
+bool arlCore::Camera::project3DPoint(const vnl_vector_fixed<double,4> &point3D, vnl_vector_fixed<double,2> &pt2D,
+                                     bool focalPlane) const
 {
     double xn_x, xn_y, xd_x, xd_y, r2, r4, r6;
     double radial_disto, tang_disto_x, tang_disto_y;
@@ -633,7 +753,8 @@ bool arlCore::Camera::project3DPoint(const vnl_vector_fixed<double,4> &point3D, 
         assert(point3DRepCam.get(2)!=0); // Le point est dans le plan parallèle à la focale passant par le centre optique
         xn_x = point3DRepCam.get(0)/point3DRepCam.get(2);
         xn_y = point3DRepCam.get(1)/point3DRepCam.get(2);
-    }else
+    }
+    else
     {
         assert(point3D(2)==1.0); // Le point n'est pas dans le plan de la focale
         xn_x = point3D(0);
@@ -657,19 +778,24 @@ bool arlCore::Camera::project3DPoint(const vnl_vector_fixed<double,4> &point3D, 
     return true;
 }
 
-bool arlCore::Camera::undistort2DPoint(Point::csptr  p2D, Point::sptr p2D_undistorted) const
+bool arlCore::Camera::undistort2DPoint(Point::csptr p2D, Point::sptr p2D_undistorted) const
 {
-    const double pixSquareMax = 1e-50;
+    const double pixSquareMax        = 1e-50;
     const unsigned int IterationsMax = 50;
-    if(!p2D->isVisible() || p2D->size()<2) return false;
-    double pinit[3]={p2D->x(),p2D->y(),1.0};
+    if(!p2D->isVisible() || p2D->size()<2)
+    {
+        return false;
+    }
+    double pinit[3] = {p2D->x(),p2D->y(),1.0};
     vnl_vector<double> points2DH(3,3,pinit),points2DH_undistorted(3);
-    unsigned int i, nbIterations=0;
+    unsigned int i, nbIterations = 0;
     double xn_x, xn_y, xd_x, xd_y;
     double radial_disto, tang_disto_x, tang_disto_y;
     double r2, r4, r6, kc[5];
-    for( i=0 ; i<5 ; ++i )
+    for( i = 0; i<5; ++i )
+    {
         kc[i] = getkc(i);
+    }
     vnl_vector_fixed<double,3> result = getInvIntrinsicMatrix() * points2DH;
     xn_x = result(0);
     xn_y = result(1);
@@ -678,12 +804,12 @@ bool arlCore::Camera::undistort2DPoint(Point::csptr  p2D, Point::sptr p2D_undist
     if(true)
     {   // on calcule en avance r² = x²+y²
         double tmp_x = xn_x, tmp_y = xn_y;
-        r2 = xn_x * xn_x + xn_y * xn_y;
-        r4 = r2*r2;
-        r6 = r4*r2;
+        r2   = xn_x * xn_x + xn_y * xn_y;
+        r4   = r2*r2;
+        r6   = r4*r2;
         xd_x = xn_x;
         xd_y = xn_y;
-        i=0;
+        i    = 0;
         do
         {
             ++nbIterations;
@@ -697,10 +823,12 @@ bool arlCore::Camera::undistort2DPoint(Point::csptr  p2D, Point::sptr p2D_undist
             //         [ xd_y ]   (                                         )  [ xn_y ]   [ tang_disto_y ]
             xn_x = (xd_x - tang_disto_x)/radial_disto;
             xn_y = (xd_y - tang_disto_y)/radial_disto;
-            r2 = xn_x * xn_x + xn_y * xn_y;
-            r4 = r2*r2;
-            r6 = r4*r2;
-        }while( (tmp_x-xn_x)*(tmp_x-xn_x)*getfx()*getfx() + (tmp_y-xn_y)*(tmp_y-xn_y)*getfy()*getfy() > pixSquareMax && nbIterations<IterationsMax );
+            r2   = xn_x * xn_x + xn_y * xn_y;
+            r4   = r2*r2;
+            r6   = r4*r2;
+        }
+        while( (tmp_x-xn_x)*(tmp_x-xn_x)*getfx()*getfx() + (tmp_y-xn_y)*(tmp_y-xn_y)*getfy()*getfy() > pixSquareMax &&
+               nbIterations<IterationsMax );
         points2DH_undistorted.put(0, xn_x);
         points2DH_undistorted.put(1, xn_y);
         points2DH_undistorted.put(2, 1.0);
@@ -711,18 +839,24 @@ bool arlCore::Camera::undistort2DPoint(Point::csptr  p2D, Point::sptr p2D_undist
     return true;
 }
 
-bool arlCore::Camera::projectiveLine( const vnl_vector_fixed<double,3> &focalPt2D, vgl_line_3d_2_points <double> &line ) const
+bool arlCore::Camera::projectiveLine( const vnl_vector_fixed<double,3> &focalPt2D,
+                                      vgl_line_3d_2_points <double> &line ) const
 {
     unsigned int i;
     vnl_vector_fixed<double,4> m, m_cam, c_cam, C(0.0, 0.0, 0.0, 1.0);
-    for( i=0 ; i<3 ; ++i )
+    for( i = 0; i<3; ++i )
+    {
         m[i] = focalPt2D[i];
-    m[3] = 1.0;
+    }
+    m[3]  = 1.0;
     m_cam = getInvExtrinsic() * m;
     c_cam = getInvExtrinsic() * C;
     vgl_point_3d <double> m_cam_vgl(m_cam[0],m_cam[1],m_cam[2]);
     vgl_point_3d <double> c_cam_vgl(c_cam[0],c_cam[1],c_cam[2]);
-    if(m_cam_vgl==c_cam_vgl) return false;
+    if(m_cam_vgl==c_cam_vgl)
+    {
+        return false;
+    }
     vgl_line_3d_2_points <double> line1(m_cam_vgl, c_cam_vgl);
     line = line1;
     return true;
@@ -735,9 +869,9 @@ bool arlCore::Camera::unitFocalPlaneToPixelPlane( const vgl_point_2d<double>&p1,
     xn_x = p1.x();
     xn_y = p1.y();
     // on calcule en avance r² = x²+y²
-    r2 = xn_x*xn_x + xn_y*xn_y;
-    r4 = r2*r2;
-    r6 = r4*r2;
+    r2           = xn_x*xn_x + xn_y*xn_y;
+    r4           = r2*r2;
+    r6           = r4*r2;
     radial_disto = 1 + getkc(0) * r2 + getkc(1) * r4 + getkc(4) * r6;
     tang_disto_x = 2 * getkc(2) * xn_x * xn_y + getkc(3) * (r2 + 2 * xn_x * xn_x);
     tang_disto_y = 2 * getkc(3) * xn_x * xn_y + getkc(2) * (r2 + 2 * xn_y * xn_y);
@@ -746,8 +880,8 @@ bool arlCore::Camera::unitFocalPlaneToPixelPlane( const vgl_point_2d<double>&p1,
     xd_x = radial_disto * xn_x + tang_disto_x;
     xd_y = radial_disto * xn_y + tang_disto_y;
     // application de la matrice intrinsèque
-    p2.x()=getfx() * (xd_x + getAlphaC() * xd_y) + getcx();
-    p2.y()=getfy() * xd_y + getcy();
+    p2.x() = getfx() * (xd_x + getAlphaC() * xd_y) + getcx();
+    p2.y() = getfy() * xd_y + getcy();
     return true;
 }
 
@@ -755,13 +889,19 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p2D, Point::sptr 
 {
     assert(p2D->size()==2);
     assert(p3D->size()==3);
-    const double pixSquareMax = 1e-50;
+    const double pixSquareMax        = 1e-50;
     const unsigned int IterationsMax = 50;
-    if(!p2D->isVisible() || p2D->size()<2) return false;
-    const double tol=1e-12;
+    if(!p2D->isVisible() || p2D->size()<2)
+    {
+        return false;
+    }
+    const double tol = 1e-12;
     p3D->fill(0.0);
-    if(p3D->size()>2) p3D->set(2, 1.0);
-    double pinit[3]={p2D->x(),p2D->y(),1.0};
+    if(p3D->size()>2)
+    {
+        p3D->set(2, 1.0);
+    }
+    double pinit[3] = {p2D->x(),p2D->y(),1.0};
     vnl_vector<double> points2DH(3,3,pinit);
     unsigned int i;
     vnl_matrix_fixed<double,3,3> Intrinseq, var;
@@ -774,8 +914,10 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p2D, Point::sptr 
     vnl_matrix< unsigned int > power1(10,2), power2(10,2);
     vcl_vector< vnl_vector< double > * > roots;
     vcl_vector<vnl_real_npolynomial*> PolyToSolve;
-    for( i=0 ; i<5 ; ++i )
+    for( i = 0; i<5; ++i )
+    {
         kc[i] = getkc(i);
+    }
     vnl_vector_fixed<double,3> result = getInvIntrinsicMatrix() * points2DH;
     xn_x = result(0);
     xn_y = result(1);
@@ -784,12 +926,12 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p2D, Point::sptr 
     if(!perfectDisto)
     {   // on calcule en avance r� = x�+y�
         double tmp_x = xn_x, tmp_y = xn_y;
-        r2 = xn_x * xn_x + xn_y * xn_y;
-        r4 = r2*r2;
-        r6 = r4*r2;
+        r2   = xn_x * xn_x + xn_y * xn_y;
+        r4   = r2*r2;
+        r6   = r4*r2;
         xd_x = xn_x;
         xd_y = xn_y;
-        i=0;
+        i    = 0;
         do
         {
             i++;
@@ -803,10 +945,12 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p2D, Point::sptr 
             //         [ xd_y ]   (                                         )  [ xn_y ]   [ tang_disto_y ]
             xn_x = (xd_x - tang_disto_x)/radial_disto;
             xn_y = (xd_y - tang_disto_y)/radial_disto;
-            r2 = xn_x * xn_x + xn_y * xn_y;
-            r4 = r2*r2;
-            r6 = r4*r2;
-        }while( (tmp_x-xn_x)*(tmp_x-xn_x)*getfx()*getfx() + (tmp_y-xn_y)*(tmp_y-xn_y)*getfy()*getfy() > pixSquareMax && i<IterationsMax );
+            r2   = xn_x * xn_x + xn_y * xn_y;
+            r4   = r2*r2;
+            r6   = r4*r2;
+        }
+        while( (tmp_x-xn_x)*(tmp_x-xn_x)*getfx()*getfx() + (tmp_y-xn_y)*(tmp_y-xn_y)*getfy()*getfy() > pixSquareMax &&
+               i<IterationsMax );
         //cerr<< "NOMBRE D'ITERATIONS : " << i << endl;
         p3D->set(0, xn_x);
         p3D->set(1, xn_y);
@@ -817,37 +961,37 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p2D, Point::sptr 
     // yd = y + k[0]. y^3+ k[0].x^2.y +k[1]y^5 +2k[1]y^3x^2 +k[1]x^4.y +2.k[3]x.y +3k[2]y^2 +k[2]x^2
     if(perfectDisto)
     {
-        coef1.put(0 , 1.0);
-        coef1.put(1 , kc[0]);
-        coef1.put(2 , kc[0]);
-        coef1.put(3 , kc[1]);
-        coef1.put(4 , 2*kc[1]);
-        coef1.put(5 , kc[1]);
-        coef1.put(6 , 2*kc[2]);
-        coef1.put(7 , 3*kc[3]);
-        coef1.put(8 , kc[3]);
-        coef1.put(9 , -1.0 * xn_x);
-        coef2.put(0 , 1.0);
-        coef2.put(1 , kc[0]);
-        coef2.put(2 , kc[0]);
-        coef2.put(3 , kc[1]);
-        coef2.put(4 , 2*kc[1]);
-        coef2.put(5 , kc[1]);
-        coef2.put(6 , 2*kc[3]);
-        coef2.put(7 , 3*kc[2]);
-        coef2.put(8 , kc[2]);
-        coef2.put(9 , -1.0 * xn_y);
-        power1.put(0,0,1);power1.put(0,1,0);
-        power1.put(1,0,3);power1.put(1,1,0);
-        power1.put(2,0,1);power1.put(2,1,2);
-        power1.put(3,0,5);power1.put(3,1,0);
-        power1.put(4,0,3);power1.put(4,1,2);
-        power1.put(5,0,1);power1.put(5,1,4);
-        power1.put(6,0,1);power1.put(6,1,1);
-        power1.put(7,0,2);power1.put(7,1,0);
-        power1.put(8,0,0);power1.put(8,1,2);
-        power1.put(9,0,0);power1.put(9,1,0);
-        for( i=0 ; i<10 ; ++i )
+        coef1.put(0, 1.0);
+        coef1.put(1, kc[0]);
+        coef1.put(2, kc[0]);
+        coef1.put(3, kc[1]);
+        coef1.put(4, 2*kc[1]);
+        coef1.put(5, kc[1]);
+        coef1.put(6, 2*kc[2]);
+        coef1.put(7, 3*kc[3]);
+        coef1.put(8, kc[3]);
+        coef1.put(9, -1.0 * xn_x);
+        coef2.put(0, 1.0);
+        coef2.put(1, kc[0]);
+        coef2.put(2, kc[0]);
+        coef2.put(3, kc[1]);
+        coef2.put(4, 2*kc[1]);
+        coef2.put(5, kc[1]);
+        coef2.put(6, 2*kc[3]);
+        coef2.put(7, 3*kc[2]);
+        coef2.put(8, kc[2]);
+        coef2.put(9, -1.0 * xn_y);
+        power1.put(0,0,1); power1.put(0,1,0);
+        power1.put(1,0,3); power1.put(1,1,0);
+        power1.put(2,0,1); power1.put(2,1,2);
+        power1.put(3,0,5); power1.put(3,1,0);
+        power1.put(4,0,3); power1.put(4,1,2);
+        power1.put(5,0,1); power1.put(5,1,4);
+        power1.put(6,0,1); power1.put(6,1,1);
+        power1.put(7,0,2); power1.put(7,1,0);
+        power1.put(8,0,0); power1.put(8,1,2);
+        power1.put(9,0,0); power1.put(9,1,0);
+        for( i = 0; i<10; ++i )
         {
             power2.put(i, 0, power1(i,1));
             power2.put(i, 1, power1(i,0));
@@ -862,27 +1006,34 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p2D, Point::sptr 
         {   // Pas de racines : FIXME
             p3D->set(0, roots[0]->get(0));
             p3D->set(1, roots[0]->get(1));
-        }else std::cerr<<"Camera::pixelPlaneToUnitFocalPlane : No root\n";
+        }
+        else
+        {
+            std::cerr<<"Camera::pixelPlaneToUnitFocalPlane : No root\n";
+        }
         PolyToSolve.clear();
         roots.clear();
     }
     return true;
 }
 
-bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p, vnl_vector_fixed<double,3>& r, bool perfectDisto ) const
+bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p, vnl_vector_fixed<double,3>& r,
+                                                  bool perfectDisto ) const
 {
     unsigned int i;
     Point::sptr p2 = Point::New(3);
-    bool b=pixelPlaneToUnitFocalPlane(p, p2, perfectDisto);
-    for( i=0 ; i<3 ; ++i )
+    bool b         = pixelPlaneToUnitFocalPlane(p, p2, perfectDisto);
+    for( i = 0; i<3; ++i )
+    {
         r.put(i, (*p2)[i]);
+    }
     return b;
 }
 
 bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p, vgl_point_3d<double>& r, bool perfectDisto ) const
 {
     Point::sptr p2 = Point::New(3);
-    bool b=pixelPlaneToUnitFocalPlane(p, p2, perfectDisto);
+    bool b         = pixelPlaneToUnitFocalPlane(p, p2, perfectDisto);
     r.set(p2->x(), p2->y(), p2->z());
     return b;
 }
@@ -890,17 +1041,20 @@ bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p, vgl_point_3d<d
 bool arlCore::Camera::pixelPlaneToUnitFocalPlane( Point::csptr p, vgl_point_2d<double>& r, bool perfectDisto ) const
 {
     Point::sptr p2 = Point::New(3);
-    bool b=pixelPlaneToUnitFocalPlane(p, p2, perfectDisto);
+    bool b         = pixelPlaneToUnitFocalPlane(p, p2, perfectDisto);
     r.set(p2->x(), p2->y());
     return b;
 }
 
-bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const vgl_point_2d<double>& p, vgl_point_3d<double>& r, bool perfectDisto ) const
+bool arlCore::Camera::pixelPlaneToUnitFocalPlane( const vgl_point_2d<double>& p, vgl_point_3d<double>& r,
+                                                  bool perfectDisto ) const
 {
     return pixelPlaneToUnitFocalPlane(Point::New( p.x(), p.y() ), r, perfectDisto);
 }
 
-bool arlCore::Camera::focalFrameToExtrinsicFrame( const vnl_vector_fixed< double, 3 >& uff, vnl_vector_fixed< double, 3 >& ef ) const
+bool arlCore::Camera::focalFrameToExtrinsicFrame( const vnl_vector_fixed< double, 3 >& uff, vnl_vector_fixed< double,
+                                                                                                              3 >& ef )
+const
 {
     vnl_vector<double> point3DRepCam(4), point3D_H(4);
     point3D_H.put(0,uff(0));
@@ -909,8 +1063,10 @@ bool arlCore::Camera::focalFrameToExtrinsicFrame( const vnl_vector_fixed< double
     point3D_H.put(3,1.0);
     point3DRepCam = getInvExtrinsic() * point3D_H;
     unsigned int i;
-    for( i=0 ; i<3 ; ++i )
+    for( i = 0; i<3; ++i )
+    {
         ef.put(i, point3DRepCam(i));
+    }
     return true;
 }
 
@@ -927,7 +1083,8 @@ bool arlCore::Camera::focalFrameToExtrinsicFrame( const vgl_point_3d< double >& 
 }
 
 
-bool arlCore::Camera::focalToPixelLine( double a, double b, double c, arlCore::Point::sptr pt1, arlCore::Point::sptr pt2 ) const
+bool arlCore::Camera::focalToPixelLine( double a, double b, double c, arlCore::Point::sptr pt1,
+                                        arlCore::Point::sptr pt2 ) const
 {
     // FIXME : Cas gal actuel : Droite relativement horizontale : Intersection avec les bords gauche et droit de la ROI
     // Traiter les autres cas : Intersection avec les bords haut et bas, pour les 2 points
@@ -944,31 +1101,51 @@ bool arlCore::Camera::focalToPixelLine( double a, double b, double c, arlCore::P
     return true;
 }
 
-bool arlCore::Camera::focalToPixelLine( double a, double b, double c, arlCore::Point::csptr pixOrg, arlCore::Point::csptr pixDst, PointList::sptr pl, unsigned int nbSegments ) const
+bool arlCore::Camera::focalToPixelLine( double a, double b, double c, arlCore::Point::csptr pixOrg,
+                                        arlCore::Point::csptr pixDst, PointList::sptr pl,
+                                        unsigned int nbSegments ) const
 {
     const bool PerfectDisto = true;
-    unsigned int i, n=nbSegments;
+    unsigned int i, n = nbSegments;
     pl->clear();
     vgl_point_2d<double> focOrg, focDst, pixCur;
-    if(!pixelPlaneToUnitFocalPlane( pixOrg, focOrg, PerfectDisto )) return false;
-    if(!pixelPlaneToUnitFocalPlane( pixDst, focDst, PerfectDisto )) return false;
+    if(!pixelPlaneToUnitFocalPlane( pixOrg, focOrg, PerfectDisto ))
+    {
+        return false;
+    }
+    if(!pixelPlaneToUnitFocalPlane( pixDst, focDst, PerfectDisto ))
+    {
+        return false;
+    }
     vnl_vector_fixed<double,2> AB( focDst.y()-focOrg.x(), focDst.y()-focOrg.y() );
     if(n<1)
     {
         const double DeltaX = fabs(pixDst->x()-pixOrg->x());
         const double DeltaY = fabs(pixDst->y()-pixOrg->y());
-        if(DeltaX>DeltaY) n = (unsigned int)DeltaX;
-        else n = (unsigned int)DeltaY;
-        if( n<1 ) return false;
+        if(DeltaX>DeltaY)
+        {
+            n = (unsigned int)DeltaX;
+        }
+        else
+        {
+            n = (unsigned int)DeltaY;
+        }
+        if( n<1 )
+        {
+            return false;
+        }
     }
-    const double Step = ((double)AB.two_norm()) / (double)n;
-    double next = Step;
+    const double Step                  = ((double)AB.two_norm()) / (double)n;
+    double next                        = Step;
     const vnl_vector_fixed<double,2> N = AB.normalize();
     pl->push_back(pixOrg);
-    for( i=0 ; i<n-1 ; ++i, next+=Step )
+    for( i = 0; i<n-1; ++i, next += Step )
     {
         vgl_point_2d<double> focCur( focOrg.x()+next*N[0], focOrg.y()+next*N[1] );
-        if(!unitFocalPlaneToPixelPlane( focCur, pixCur )) return false;
+        if(!unitFocalPlaneToPixelPlane( focCur, pixCur ))
+        {
+            return false;
+        }
         pl->push_back( Point::New(pixCur.x(), pixCur.y()) );
     }
     pl->push_back(pixDst);
@@ -977,14 +1154,17 @@ bool arlCore::Camera::focalToPixelLine( double a, double b, double c, arlCore::P
 
 bool arlCore::Camera::pixelToFocalLine( const vgl_line_2d<double> &line2D, vgl_line_3d_2_points<double> &line3D ) const
 {
-    const bool PerfectDisto = true;
+    const bool PerfectDisto         = true;
     const vgl_vector_2d<double> Dir = line2D.direction();
     const vgl_homg_line_2d<double> HLine(line2D);
     const vgl_homg_point_2d<double> Center( getcx(), getcy() );
     const vgl_homg_point_2d<double> Central2DHPoint = vgl_homg_operators_2d<double>::closest_point( HLine, Center );
     const vgl_point_2d<double> Central2DPoint( Central2DHPoint );
     vgl_point_3d<double> central3DPoint;
-    if(!pixelPlaneToUnitFocalPlane( Central2DPoint, central3DPoint, PerfectDisto )) return false;
+    if(!pixelPlaneToUnitFocalPlane( Central2DPoint, central3DPoint, PerfectDisto ))
+    {
+        return false;
+    }
     assert(central3DPoint.z()==1.0);
     vgl_point_3d<double> second3DPoint(central3DPoint);
     second3DPoint.set(second3DPoint.x()+Dir.x(), second3DPoint.y()+Dir.y(), 1.0);
@@ -992,19 +1172,24 @@ bool arlCore::Camera::pixelToFocalLine( const vgl_line_2d<double> &line2D, vgl_l
     return false;
 }
 
-bool arlCore::getEpipolar( arlCore::Point::csptr p, const vnl_matrix_fixed<double,4,4> &PM, double &a, double &b, double &c)
+bool arlCore::getEpipolar( arlCore::Point::csptr p, const vnl_matrix_fixed<double,4,4> &PM, double &a, double &b,
+                           double &c)
 {
-    if(p->size()<2) return false;
+    if(p->size()<2)
+    {
+        return false;
+    }
     vnl_vector_fixed<double,3> v(p->x(),p->y(),1.0);
     return getEpipolar( v, PM, a, b, c );
 }
 
-bool arlCore::getEpipolar(const vnl_vector_fixed<double,3> &point, const vnl_matrix_fixed<double,4,4> &PM, double &a, double &b, double &c)
+bool arlCore::getEpipolar(const vnl_vector_fixed<double,3> &point, const vnl_matrix_fixed<double,4,4> &PM, double &a,
+                          double &b, double &c)
 {   // PM=cams[1]->getExtrinsic()).as_matrix()*vnl_matrix_inverse<double>(cams[0]->getExtrinsic());
     // Calcul la droite épipolaire dans la camera 1 du point de la caméra 0
     // cf livre horaud p192 - La droite se situe dans le plan focal (x,y,1.0)
-    const double x = point(0);
-    const double y = point(1);
+    const double x  = point(0);
+    const double y  = point(1);
     const double a1 = (PM(1,3)*PM(2,0) - PM(2,3)*PM(1,0));
     const double a2 = (PM(1,3)*PM(2,1) - PM(2,3)*PM(1,1));
     const double a3 = (PM(1,3)*PM(2,2) - PM(2,3)*PM(1,2));
@@ -1022,12 +1207,16 @@ bool arlCore::getEpipolar(const vnl_vector_fixed<double,3> &point, const vnl_mat
 
 bool arlCore::getEpipolar( arlCore::Point::csptr p, const vnl_matrix_fixed<double,4,4> &PM, vgl_line_2d< double > &d)
 {
-    if(p->size()<2) return false;
+    if(p->size()<2)
+    {
+        return false;
+    }
     vnl_vector_fixed<double,3> v(p->x(),p->y(),1.0);
     return getEpipolar( v, PM, d );
 }
 
-bool arlCore::getEpipolar(const vnl_vector_fixed<double,3> &point, const vnl_matrix_fixed<double,4,4> &PM, vgl_line_2d< double > &d)
+bool arlCore::getEpipolar(const vnl_vector_fixed<double,3> &point, const vnl_matrix_fixed<double,4,4> &PM,
+                          vgl_line_2d< double > &d)
 {
     double a, b, c;
     arlCore::getEpipolar(point, PM, a, b, c);
@@ -1043,7 +1232,7 @@ bool arlCore::getEpipolar(const vnl_vector_fixed<double,3> &point, const vnl_mat
         vglPts2D[1].set((-b*100-c)/a, +100);
     }
     vgl_line_2d< double > d1(vglPts2D[0],vglPts2D[1]);
-    d=d1;
+    d = d1;
     return true;
 }
 
@@ -1062,28 +1251,31 @@ bool arlCore::getEpipolar(const vnl_vector_fixed<double,3> &point, const vnl_mat
 // On a donc definit un repere lie au centre optique. Reste a calculer la transformation
 // rigide entre ce repere et le repere monde. Pour cela, on effectue un recalage 3D3D
 // entre deux reperes. Simpliste !
-bool arlCore::Camera::syntheticCamera( Point::csptr center, Point::csptr viewPoint, const std::vector< double > & intrinsicParams)
+bool arlCore::Camera::syntheticCamera( Point::csptr center, Point::csptr viewPoint,
+                                       const std::vector< double > & intrinsicParams)
 {
     setOK(false);
     assert(intrinsicParams.size()==10);
-    arlCore::Point::sptr  XaxisPoint = arlCore::Point::New(3);
-    arlCore::Point::sptr  ZaxisPoint = arlCore::Point::New(3);
-    arlCore::Point::sptr O_monde = arlCore::Point::New(0,0,0);
-    arlCore::Point::sptr Ox_monde = arlCore::Point::New(1,0,0);
-    arlCore::Point::sptr Oz_monde = arlCore::Point::New(0,0,1);
+    arlCore::Point::sptr XaxisPoint = arlCore::Point::New(3);
+    arlCore::Point::sptr ZaxisPoint = arlCore::Point::New(3);
+    arlCore::Point::sptr O_monde    = arlCore::Point::New(0,0,0);
+    arlCore::Point::sptr Ox_monde   = arlCore::Point::New(1,0,0);
+    arlCore::Point::sptr Oz_monde   = arlCore::Point::New(0,0,1);
 
-    arlCore::PointList::sptr points_source  = arlCore::PointList::New();
-    arlCore::PointList::sptr points_cible   = arlCore::PointList::New();
+    arlCore::PointList::sptr points_source = arlCore::PointList::New();
+    arlCore::PointList::sptr points_cible  = arlCore::PointList::New();
     vnl_vector_fixed<double,3> vecteur_normal, vecteur_Ox_camera;
-    double d=0, test_egalite;
+    double d = 0, test_egalite;
     unsigned int i;
     test_egalite = (center->x()-viewPoint->x())*(center->x()-viewPoint->x())
-                 + (center->y()-viewPoint->y())*(center->y()-viewPoint->y())
-                 + (center->z()-viewPoint->z())*(center->z()-viewPoint->z());
+                   + (center->y()-viewPoint->y())*(center->y()-viewPoint->y())
+                   + (center->z()-viewPoint->z())*(center->z()-viewPoint->z());
     if( test_egalite < 1e-4 ) //TODO si c des mm alors on devrait mettre 1 mm
+    {
         return false;
+    }
     // a<=>vecteur_normal[0], b<=>vecteur_normal[1] et c<=>vecteur_normal[2]
-    for( i=0 ; i<3 ; ++i )
+    for( i = 0; i<3; ++i )
     {
         vecteur_normal.put(i,(*center)[i] - (*viewPoint)[i]);
         d += -vecteur_normal[i]*(*viewPoint)[i];
@@ -1092,19 +1284,27 @@ bool arlCore::Camera::syntheticCamera( Point::csptr center, Point::csptr viewPoi
     //std::cerr << "d = " <<  d << std::endl;
     XaxisPoint->fill(1.0);
     if( vecteur_normal[0] != 0 )
+    {
         XaxisPoint->set(0, (-d-vecteur_normal[1]-vecteur_normal[2])/ vecteur_normal[0]);
+    }
     else // Le vecteur normal est parallele au plan yOz du repere monde
-        if( vecteur_normal[1] != 0 )
-            XaxisPoint->set(1,(-d-vecteur_normal[2])/vecteur_normal[1]);
-        else // Le vecteur normal est parallele a l'axe Oz du repere monde
-            XaxisPoint->set(2,-d/vecteur_normal[2]);
+    if( vecteur_normal[1] != 0 )
+    {
+        XaxisPoint->set(1,(-d-vecteur_normal[2])/vecteur_normal[1]);
+    }
+    else     // Le vecteur normal est parallele a l'axe Oz du repere monde
+    {
+        XaxisPoint->set(2,-d/vecteur_normal[2]);
+    }
     // Creation du vecteur Ox dans repere optique
-    for( i=0 ; i<3 ; ++i )
+    for( i = 0; i<3; ++i )
+    {
         vecteur_Ox_camera.put(i, (*XaxisPoint)[i]-(*viewPoint)[i]);
+    }
     vecteur_Ox_camera.normalize();
     vecteur_normal.normalize();
     //std::cerr << "vecteur_Ox_camera normalise = " <<  vecteur_Ox_camera << std::endl;
-    for( i=0 ; i<3 ; ++i )
+    for( i = 0; i<3; ++i )
     {
         XaxisPoint->set(i, (*viewPoint)[i]+vecteur_Ox_camera[i]);
         // Calcul du point sur l'axe z du repere optique eloigne de 1 unite du centre optique
@@ -1130,8 +1330,10 @@ bool arlCore::Camera::syntheticCamera( Point::csptr center, Point::csptr viewPoi
     setfy(intrinsicParams[1]);
     setcx(intrinsicParams[2]);
     setcy(intrinsicParams[3]);
-    for( i=0 ; i<5 ; ++i )
+    for( i = 0; i<5; ++i )
+    {
         setkc(i,intrinsicParams[4+i]);
+    }
     setAlphaC(intrinsicParams[9]);
     return setOK(true);
 }

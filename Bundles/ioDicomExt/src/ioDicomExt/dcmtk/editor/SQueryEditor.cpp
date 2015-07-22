@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,7 @@ namespace dcmtk
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::ioDicomExt::dcmtk::editor::SQueryEditor , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::ioDicomExt::dcmtk::editor::SQueryEditor, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ SQueryEditor::~SQueryEditor() throw()
 
 void SQueryEditor::info(std::ostream &_sstream )
 {
-    _sstream << "SQueryEditor::info" ;
+    _sstream << "SQueryEditor::info";
 }
 
 //------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void SQueryEditor::starting() throw(::fwTools::Failed)
     QGridLayout* layout = new QGridLayout();
     container->setLayout(layout);
 
-    m_patientNameLineEdit = new QLineEdit();
+    m_patientNameLineEdit    = new QLineEdit();
     m_patientNameQueryButton = new QPushButton("Send");
     layout->addWidget(new QLabel("Patient name:"),0, 0);
     layout->addWidget(m_patientNameLineEdit,0, 1);
@@ -97,7 +97,8 @@ void SQueryEditor::starting() throw(::fwTools::Failed)
     m_seriesEnquirer = ::fwDicomIOExt::dcmtk::SeriesEnquirer::New();
 
     // Get pacs configuration
-    m_pacsConfiguration = ::fwDicomIOExt::data::PacsConfiguration::dynamicCast(::fwTools::fwID::getObject(m_pacsConfigurationUID));
+    m_pacsConfiguration =
+        ::fwDicomIOExt::data::PacsConfiguration::dynamicCast(::fwTools::fwID::getObject(m_pacsConfigurationUID));
     SLM_ASSERT("The pacs configuration object sould not be null.", m_pacsConfiguration);
 }
 
@@ -132,7 +133,9 @@ void SQueryEditor::configuring() throw(::fwTools::Failed)
 
     // Pacs Configuration UID
     ::boost::tie(success, m_pacsConfigurationUID) = config->getSafeAttributeValue("pacsConfigurationUID");
-    SLM_ASSERT("It should be a \"pacsConfigurationUID\" tag in the ::ioDicomExt::dcmtk::editor::SQueryEditor config element.", success);
+    SLM_ASSERT(
+        "It should be a \"pacsConfigurationUID\" tag in the ::ioDicomExt::dcmtk::editor::SQueryEditor config element.",
+        success);
 
 }
 
@@ -157,16 +160,16 @@ void SQueryEditor::queryPatientName()
     try
     {
         m_seriesEnquirer->initialize(
-                m_pacsConfiguration->getLocalApplicationTitle(),
-                m_pacsConfiguration->getPacsHostName(),
-                m_pacsConfiguration->getPacsApplicationPort(),
-                m_pacsConfiguration->getPacsApplicationTitle());
+            m_pacsConfiguration->getLocalApplicationTitle(),
+            m_pacsConfiguration->getPacsHostName(),
+            m_pacsConfiguration->getPacsApplicationPort(),
+            m_pacsConfiguration->getPacsApplicationTitle());
         m_seriesEnquirer->connect();
         OFList< QRResponse* > responses;
         responses = m_seriesEnquirer->findSeriesByPatientName(m_patientNameLineEdit->text().toStdString());
 
         ::fwMedData::SeriesDB::ContainerType series =
-                ::fwDicomIOExt::dcmtk::helper::Series::toFwMedData(responses);
+            ::fwDicomIOExt::dcmtk::helper::Series::toFwMedData(responses);
 
         ::fwDicomIOExt::dcmtk::helper::Series::releaseResponses(responses);
         m_seriesEnquirer->disconnect();
@@ -187,18 +190,18 @@ void SQueryEditor::queryStudyDate()
     try
     {
         m_seriesEnquirer->initialize(
-                m_pacsConfiguration->getLocalApplicationTitle(),
-                m_pacsConfiguration->getPacsHostName(),
-                m_pacsConfiguration->getPacsApplicationPort(),
-                m_pacsConfiguration->getPacsApplicationTitle());
+            m_pacsConfiguration->getLocalApplicationTitle(),
+            m_pacsConfiguration->getPacsHostName(),
+            m_pacsConfiguration->getPacsApplicationPort(),
+            m_pacsConfiguration->getPacsApplicationTitle());
         m_seriesEnquirer->connect();
         OFList< QRResponse* > responses;
         responses = m_seriesEnquirer->findSeriesByDate(
-                m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString(),
-                m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString());
+            m_beginStudyDateEdit->date().toString("yyyyMMdd").toStdString(),
+            m_endStudyDateEdit->date().toString("yyyyMMdd").toStdString());
 
         ::fwMedData::SeriesDB::ContainerType series =
-                ::fwDicomIOExt::dcmtk::helper::Series::toFwMedData(responses);
+            ::fwDicomIOExt::dcmtk::helper::Series::toFwMedData(responses);
 
         ::fwDicomIOExt::dcmtk::helper::Series::releaseResponses(responses);
         m_seriesEnquirer->disconnect();
@@ -239,9 +242,9 @@ void SQueryEditor::displayErrorMessage(const std::string& message) const
 {
     std::stringstream ss;
     ss << "Unable to connect to the pacs. Please check your configuration: \n"
-            << "Pacs host name: " << m_pacsConfiguration->getPacsHostName() << "\n"
-            << "Pacs application title: " << m_pacsConfiguration->getPacsApplicationTitle() << "\n"
-            << "Pacs port: " << m_pacsConfiguration->getPacsApplicationPort() << "\n";
+       << "Pacs host name: " << m_pacsConfiguration->getPacsHostName() << "\n"
+       << "Pacs application title: " << m_pacsConfiguration->getPacsApplicationTitle() << "\n"
+       << "Pacs port: " << m_pacsConfiguration->getPacsApplicationPort() << "\n";
 
     SLM_WARN("Error: " + message);
     ::fwGui::dialog::MessageDialog messageBox;

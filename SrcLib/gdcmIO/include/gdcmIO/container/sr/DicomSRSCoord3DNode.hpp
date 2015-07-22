@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GDCMIO_CONTAINER_DICOMSRSCOORD3DNODE_HPP__
-#define __GDCMIO_CONTAINER_DICOMSRSCOORD3DNODE_HPP__
+#ifndef __GDCMIO_CONTAINER_SR_DICOMSRSCOORD3DNODE_HPP__
+#define __GDCMIO_CONTAINER_SR_DICOMSRSCOORD3DNODE_HPP__
 
 #include <string>
 #include <vector>
@@ -38,8 +38,8 @@ public:
 
     /// Constructor
     GDCMIO_API DicomSRSCoord3DNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship,
-            const std::string& graphicType, GraphicDataContainerType graphicDataContainer,
-            const std::string& frameOfReferenceUID);
+                                   const std::string& graphicType, GraphicDataContainerType graphicDataContainer,
+                                   const std::string& frameOfReferenceUID);
 
     /// Destructor
     GDCMIO_API virtual ~DicomSRSCoord3DNode();
@@ -52,7 +52,8 @@ public:
 
     GDCMIO_API fwGettersSettersDocMacro(FrameOfReferenceUID, frameOfReferenceUID, std::string, Frame of reference UID);
     GDCMIO_API fwGettersSettersDocMacro(GraphicType, graphicType, std::string, Graphic type);
-    GDCMIO_API fwGettersSettersDocMacro(GraphicDataContainer, graphicDataContainer, GraphicDataContainerType, Graphic data container);
+    GDCMIO_API fwGettersSettersDocMacro(GraphicDataContainer, graphicDataContainer, GraphicDataContainerType,
+                                        Graphic data container);
 
 protected:
 
@@ -73,4 +74,4 @@ protected:
 } //namespace container
 } //namespace gdcmIO
 
-#endif /* __GDCMIO_CONTAINER_DICOMSRSCOORD3DNODE_HPP__ */
+#endif /* __GDCMIO_CONTAINER_SR_DICOMSRSCOORD3DNODE_HPP__ */

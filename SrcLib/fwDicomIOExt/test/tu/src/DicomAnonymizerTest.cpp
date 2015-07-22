@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -73,7 +73,7 @@ void DicomAnonymizerTest::anonymizeDicomFolderTest()
     CPPUNIT_ASSERT_NO_THROW(anonymizer.anonymize(path));
 
     // Load ImageSeries
-    ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::sptr sdb          = ::fwMedData::SeriesDB::New();
     ::vtkGdcmIO::SeriesDBReader::sptr reader = ::vtkGdcmIO::SeriesDBReader::New();
     reader->setObject(sdb);
     reader->setFolder(path);
@@ -83,7 +83,7 @@ void DicomAnonymizerTest::anonymizeDicomFolderTest()
     CPPUNIT_ASSERT_EQUAL(size_t(1), sdb->getContainer().size());
 
     ::fwMedData::ImageSeries::sptr anonymizedSeries =
-            ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer().front());
+        ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer().front());
 
     CPPUNIT_ASSERT(anonymizedSeries);
 
@@ -100,7 +100,8 @@ void DicomAnonymizerTest::anonymizeDicomFolderTest()
     CPPUNIT_ASSERT_EQUAL(std::string("O "), anonymizedSeries->getPatient()->getSex());
     CPPUNIT_ASSERT_EQUAL(std::string("19700101"), anonymizedSeries->getStudy()->getDate());
     CPPUNIT_ASSERT_EQUAL(std::string("000000.000000 "), anonymizedSeries->getStudy()->getTime());
-    CPPUNIT_ASSERT_EQUAL(std::string("ANONYMIZED^ANONYMIZED "), anonymizedSeries->getStudy()->getReferringPhysicianName());
+    CPPUNIT_ASSERT_EQUAL(std::string("ANONYMIZED^ANONYMIZED "),
+                         anonymizedSeries->getStudy()->getReferringPhysicianName());
     CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getStudy()->getDescription());
     CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getStudy()->getPatientAge());
     CPPUNIT_ASSERT(imgSeries->getInstanceUID() != anonymizedSeries->getInstanceUID());

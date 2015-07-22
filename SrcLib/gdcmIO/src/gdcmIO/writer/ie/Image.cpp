@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,10 +22,10 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Image::Image(SPTR(::gdcm::Writer) writer,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwData::Image::sptr image):
-        ::gdcmIO::writer::ie::InformationEntity< ::fwData::Image >(writer, instance, image)
+Image::Image(SPTR(::gdcm::Writer)writer,
+             SPTR(::gdcmIO::container::DicomInstance)instance,
+             ::fwData::Image::sptr image) :
+    ::gdcmIO::writer::ie::InformationEntity< ::fwData::Image >(writer, instance, image)
 {
 }
 
@@ -63,11 +63,11 @@ void Image::writeImagePlaneModule()
 
     // Retrieve GDCM image
     SPTR(::gdcm::ImageWriter) imageWriter = ::boost::static_pointer_cast< ::gdcm::ImageWriter >(m_writer);
-    ::gdcm::Image &gdcmImage = imageWriter->GetImage();
+    ::gdcm::Image &gdcmImage              = imageWriter->GetImage();
 
     // Pixel Spacing - Type 1
     // WARNING : some DICOM image have not any spacing (NOT SUPPORTED BY FW4SPL), but stuff like "Pixel Aspect Ratio"
-    const unsigned int dimension = m_object->getNumberOfDimensions();
+    const unsigned int dimension         = m_object->getNumberOfDimensions();
     const std::vector< double > &spacing = m_object->getSpacing();
     for (unsigned int i = 0; i < dimension; ++i)
     {
@@ -90,10 +90,10 @@ void Image::writeImagePlaneModuleSpecificTags(unsigned int instanceNumber)
 {
     // Retrieve GDCM image
     SPTR(::gdcm::ImageWriter) imageWriter = ::boost::static_pointer_cast< ::gdcm::ImageWriter >(m_writer);
-    ::gdcm::Image &gdcmImage = imageWriter->GetImage();
+    ::gdcm::Image &gdcmImage              = imageWriter->GetImage();
 
     // Image Position (Patient) - Type 1
-    const std::vector< double > &origin = m_object->getOrigin();
+    const std::vector< double > &origin  = m_object->getOrigin();
     const std::vector< double > &spacing = m_object->getSpacing();
     gdcmImage.SetOrigin(0, origin[0]);
     gdcmImage.SetOrigin(1, origin[1]);
@@ -109,7 +109,7 @@ void Image::writeImagePixelModule()
 
     // Retrieve GDCM image
     ::gdcm::ImageWriter *imageWriter = ::boost::static_pointer_cast< ::gdcm::ImageWriter >(m_writer).get();
-    ::gdcm::Image &gdcmImage = imageWriter->GetImage();
+    ::gdcm::Image &gdcmImage         = imageWriter->GetImage();
 
     // Image's photometric interpretation - Type 1
     ::gdcm::PhotometricInterpretation photoInter = ::gdcmIO::helper::DicomData::getPhotometricInterpretation(*m_object);
@@ -122,7 +122,7 @@ void Image::writeImagePixelModule()
     OSLM_TRACE("Image's pixel type : " << pixelFormat);
 
     //Image's number of dimension
-    unsigned int dimension = (unsigned int) (m_instance->getIsMultiFiles())?2:m_object->getNumberOfDimensions();
+    unsigned int dimension = (unsigned int) (m_instance->getIsMultiFiles()) ? 2 : m_object->getNumberOfDimensions();
     gdcmImage.SetNumberOfDimensions(dimension);
     OSLM_TRACE("Image's number of dimensions : " << dimension);
 
@@ -147,12 +147,12 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
 
     // Retrieve GDCM image
     ::gdcm::ImageWriter *imageWriter = ::boost::static_pointer_cast< ::gdcm::ImageWriter >(m_writer).get();
-    ::gdcm::Image &gdcmImage = imageWriter->GetImage();
+    ::gdcm::Image &gdcmImage         = imageWriter->GetImage();
 
     // Compute buffer size
     const ::fwData::Image::SizeType &size = m_object->getSize();
-    unsigned int bufferLength = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
-    bufferLength = (!m_instance->getIsMultiFiles())?(bufferLength*size[2]):bufferLength;
+    unsigned int bufferLength             = size[0] * size[1] * gdcmImage.GetPixelFormat().GetPixelSize();
+    bufferLength = (!m_instance->getIsMultiFiles()) ? (bufferLength*size[2]) : bufferLength;
 
     // Retrieve image buffer
     ::fwComEd::helper::Image imageHelper(m_object);
@@ -172,7 +172,7 @@ void Image::writeVOILUTModule()
     ::gdcm::DataSet &dataset = m_writer->GetFile().GetDataSet();
 
     const double windowCenter = m_object->getWindowCenter();
-    const double windowWidth = m_object->getWindowWidth();
+    const double windowWidth  = m_object->getWindowWidth();
     if(windowCenter || windowWidth)
     {
         // Image's windows center
@@ -246,7 +246,8 @@ void Image::writeMRImageModule()
 
     // Scanning Sequence - Type 1 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > scanningSequence = "SE";
-    ::gdcmIO::helper::DicomData::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0020 >(&scanningSequence, 1, dataset);
+    ::gdcmIO::helper::DicomData::setTagValues< ::gdcm::String< 92, 16 >, 0x0018, 0x0020 >(&scanningSequence, 1,
+                                                                                          dataset);
 
     // Sequence Variant - Type 1 - FIXME: Fake Value
     const ::gdcm::String< 92, 16 > sequenceVariant = "NONE";

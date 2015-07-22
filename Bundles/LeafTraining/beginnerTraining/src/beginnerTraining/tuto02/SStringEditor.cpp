@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,10 +29,12 @@ namespace tuto02
 {
 
 SStringEditor::SStringEditor()
-{}
+{
+}
 
 SStringEditor::~SStringEditor() throw()
-{}
+{
+}
 
 void SStringEditor::configuring() throw ( ::fwTools::Failed )
 {
@@ -46,7 +48,8 @@ void SStringEditor::starting() throw ( ::fwTools::Failed )
     this->create(); // start with this inherited function
 
     // Retrieve Qt container
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -79,7 +82,8 @@ void SStringEditor::updating() throw ( ::fwTools::Failed )
 }
 
 void SStringEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{}
+{
+}
 
 void SStringEditor::swapping() throw ( ::fwTools::Failed )
 {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,9 +32,9 @@ public:
      * @param[in] instance DICOM instance used to share information between modules
      * @param[in] series Series data
      */
-    GDCMIO_API SpatialFiducials(SPTR(::gdcm::Writer) writer,
-            SPTR(::gdcmIO::container::DicomInstance) instance,
-            ::fwData::Image::sptr series);
+    GDCMIO_API SpatialFiducials(SPTR(::gdcm::Writer)writer,
+                                SPTR(::gdcmIO::container::DicomInstance)instance,
+                                ::fwData::Image::sptr series);
 
     /// Destructor
     GDCMIO_API virtual ~SpatialFiducials();
@@ -52,9 +52,9 @@ public:
     GDCMIO_API virtual void writeCommonInstanceReferenceModule();
 
     /**
-    * @brief Write SOP Common Module tags
-    * @see PS 3.3 C.12.1
-    */
+     * @brief Write SOP Common Module tags
+     * @see PS 3.3 C.12.1
+     */
     GDCMIO_API virtual void writeSOPCommonModule();
 
 protected:
@@ -75,7 +75,9 @@ protected:
      * @param[in] referencedImageSequence Destination sequence
      */
     void addReferencedImage(int frameNumber,
-            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(::gdcmIO::exception::Failed);
+                            ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(::gdcmIO::
+                                                                                                           exception::
+                                                                                                           Failed);
 };
 
 } // namespace ie

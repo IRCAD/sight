@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@ namespace helper
 const unsigned int DicomAnonymizer::s_NUMBER_OF_TAGS = 243;
 
 DicomAnonymizer::DicomAnonymizer() :
-        m_publicDictionary(::gdcm::Global::GetInstance().GetDicts().GetPublicDict())
+    m_publicDictionary(::gdcm::Global::GetInstance().GetDicts().GetPublicDict())
 {
 }
 
@@ -48,7 +48,7 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
 {
     // Create temporary directory
     ::boost::filesystem::path tmpPath = ::fwTools::System::getTemporaryFolder("DicomAnonymizer");
-    tmpPath /= "tmp";
+    tmpPath                          /= "tmp";
 
     ::boost::system::error_code ec;
     ::boost::filesystem::rename(dirPath, tmpPath, ec);
@@ -62,7 +62,7 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
 
     // Reset progress
     m_totalNumberOfTags = s_NUMBER_OF_TAGS * dicomFiles.size();
-    m_tagIndex = 0;
+    m_tagIndex          = 0;
     std::string oldSOPInstanceUID;
 
     unsigned int fileIndex = 0;
@@ -85,7 +85,7 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
             ::gdcm::Tag tag;
             ::gdcm::DataElement dataElement;
             ::gdcm::File &datasetFile = reader.GetFile();
-            ::gdcm::DataSet &dataset = datasetFile.GetDataSet();
+            ::gdcm::DataSet &dataset  = datasetFile.GetDataSet();
 
             // Save old SOP instance uid to find the new one in the map
             oldSOPInstanceUID = m_stringFilter.ToString(::gdcm::Tag(0x0008,0x0018));
@@ -136,13 +136,13 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
 
             // Curve Data (0x50xx,0xxxxx)
             dataElement = dataset.FindNextDataElement(::gdcm::Tag(0x5000,0x0));
-            tag = dataElement.GetTag();
+            tag         = dataElement.GetTag();
             while (((tag.GetGroup() >> 8) & 0xff)  == 0x50 )
             {
                 --m_tagIndex;   //Do not increase progress bar as we do not know how much tags meet the criteria
                 this->processTag(tag, "X");    //Curve Data
                 dataElement = dataset.FindNextDataElement(::gdcm::Tag(tag.GetGroup(), tag.GetElement()+1));
-                tag = dataElement.GetTag();
+                tag         = dataElement.GetTag();
             }
 
             this->processTag(::gdcm::Tag(0x0008,0x0025), "X");        //Curve Date
@@ -221,7 +221,7 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
 
             // Overlay Comments (0x60xx,0x4000)
             dataElement = dataset.FindNextDataElement(::gdcm::Tag(0x6000,0x4000));
-            tag = dataElement.GetTag();
+            tag         = dataElement.GetTag();
             while (((tag.GetGroup() >> 8) & 0xff)  == 0x60 )
             {
                 if(tag.GetElement() == 0x4000)
@@ -230,12 +230,12 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
                     this->processTag(tag, "X");
                 }
                 dataElement = dataset.FindNextDataElement(::gdcm::Tag(tag.GetGroup()+1, 0x4000));
-                tag = dataElement.GetTag();
+                tag         = dataElement.GetTag();
             }
 
             // Overlay Data (0x60xx,0x3000)
             dataElement = dataset.FindNextDataElement(::gdcm::Tag(0x6000,0x3000));
-            tag = dataElement.GetTag();
+            tag         = dataElement.GetTag();
             while (((tag.GetGroup() >> 8) & 0xff)  == 0x60 )
             {
                 if(tag.GetElement() == 0x3000)
@@ -244,7 +244,7 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
                     this->processTag(tag, "X");
                 }
                 dataElement = dataset.FindNextDataElement(::gdcm::Tag(tag.GetGroup()+1, 0x3000));
-                tag = dataElement.GetTag();
+                tag         = dataElement.GetTag();
             }
 
             this->processTag(::gdcm::Tag(0x0008,0x0024), "X");        //Overlay Date
@@ -422,7 +422,7 @@ void DicomAnonymizer::anonymizeAndZip(const ::boost::filesystem::path &dirPath, 
     std::vector<std::string> dicomFiles;
     ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(dirPath, dicomFiles);
 
-    const int bufferSize=8192;
+    const int bufferSize = 8192;
     char bufferIn[bufferSize];
     char bufferOut[bufferSize];
 
@@ -453,7 +453,7 @@ void DicomAnonymizer::processTag(const ::gdcm::Tag& tag, const std::string &acti
 {
     OSLM_TRACE("Anonymizing tag: (" << std::hex << tag.GetGroup() << "," << std::hex << tag.GetElement() << ")");
 
-    const ::gdcm::DataSet& dataSet = m_anonymizer.GetFile().GetDataSet();
+    const ::gdcm::DataSet& dataSet        = m_anonymizer.GetFile().GetDataSet();
     const ::gdcm::DataElement dataElement = dataSet.GetDataElement(tag);
 
     //Exception
@@ -569,7 +569,8 @@ void DicomAnonymizer::applyActionCodeK(const ::gdcm::Tag& tag)
 
 void DicomAnonymizer::applyActionCodeC(const ::gdcm::Tag& tag)
 {
-    SLM_FATAL("Basic profile \"C\" is not supported yet : Only basic profile is supported by the current implementation.");
+    SLM_FATAL(
+        "Basic profile \"C\" is not supported yet : Only basic profile is supported by the current implementation.");
 }
 
 //------------------------------------------------------------------------------
@@ -600,154 +601,154 @@ void DicomAnonymizer::generateDummyValue(const ::gdcm::Tag& tag)
 
     switch (m_publicDictionary.GetDictEntry(tag).GetVR())
     {
-    case ::gdcm::VR::AE:
-    {
-        m_anonymizer.Replace(tag, "ANONYMIZED");
-        break;
-    }
-    case ::gdcm::VR::AS:
-    {
-        m_anonymizer.Replace(tag, "000Y");
-        break;
-    }
-    case ::gdcm::VR::AT:
-    {
-        m_anonymizer.Replace(tag, "00H,00H,00H,00H");
-        break;
-    }
-    case ::gdcm::VR::CS:
-    {
-        //Patient’s Sex
-        if(tag == ::gdcm::Tag(0x0010,0x0040))
-        {
-            m_anonymizer.Replace(tag, "O");
-        }
-        else
+        case ::gdcm::VR::AE:
         {
             m_anonymizer.Replace(tag, "ANONYMIZED");
+            break;
         }
-        break;
-    }
-    case ::gdcm::VR::DA:
-    {
-        m_anonymizer.Replace(tag, "19700101");
-        break;
-    }
-    case ::gdcm::VR::DS:
-    {
-        m_anonymizer.Replace(tag, "0");
-        break;
-    }
-    case ::gdcm::VR::DT:
-    {
-        m_anonymizer.Replace(tag, "19700101000000.000000");
-        break;
-    }
-    case ::gdcm::VR::FD:
-    {
-        m_anonymizer.Replace(tag, "0");
-        break;
-    }
-    case ::gdcm::VR::FL:
-    {
-        m_anonymizer.Replace(tag, "0");
-        break;
-    }
-    case ::gdcm::VR::IS:
-    {
-        m_anonymizer.Replace(tag, "0");
-        break;
-    }
-    case ::gdcm::VR::LO:
-    {
-        m_anonymizer.Replace(tag, "ANONYMIZED");
-        break;
-    }
-    case ::gdcm::VR::LT:
-    {
-        m_anonymizer.Replace(tag, "ANONYMIZED");
-        break;
-    }
-    case ::gdcm::VR::OB:
-    {
-        m_anonymizer.Replace(tag, "00H00H");
-        break;
-    }
-    case ::gdcm::VR::OF:
-    {
-        m_anonymizer.Replace(tag, "0");
-        break;
-    }
-    case ::gdcm::VR::OW:
-    {
-        m_anonymizer.Replace(tag, "0");
-        break;
-    }
-    case ::gdcm::VR::PN:
-    {
-        m_anonymizer.Replace(tag, "ANONYMIZED^ANONYMIZED");
-        break;
-    }
-    case ::gdcm::VR::SH:
-    {
-        m_anonymizer.Replace(tag, "ANONYMIZED");
-        break;
-    }
-    case ::gdcm::VR::SL:
-    {
-        m_anonymizer.Replace(tag, "0");
-        break;
-    }
-    case ::gdcm::VR::SQ:
-    {
-        m_anonymizer.Empty(tag);
-        break;
-    }
-    case ::gdcm::VR::SS:
-    {
-        m_anonymizer.Replace(tag, "0");
-        break;
-    }
-    case ::gdcm::VR::ST:
-    {
-        m_anonymizer.Replace(tag, "ANONYMIZED");
-        break;
-    }
-    case ::gdcm::VR::TM:
-    {
-        m_anonymizer.Replace(tag, "000000.000000");
-        break;
-    }
-    case ::gdcm::VR::UI:
-    {
-        m_anonymizer.Replace(tag, "ANONYMIZED");
-        break;
-    }
-    case ::gdcm::VR::UL:
-    {
-        m_anonymizer.Replace(tag, "0");
-        break;
-    }
-    case ::gdcm::VR::UN:
-    {
-        m_anonymizer.Replace(tag, "ANONYMIZED");
-        break;
-    }
-    case ::gdcm::VR::US:
-    {
-        m_anonymizer.Replace(tag, "0");
-        break;
-    }
-    case ::gdcm::VR::UT:
-    {
-        m_anonymizer.Replace(tag, "ANONYMIZED");
-        break;
-    }
-    default:
-    {
-        SLM_FATAL("Unknown value representation.");
-        break;
-    }
+        case ::gdcm::VR::AS:
+        {
+            m_anonymizer.Replace(tag, "000Y");
+            break;
+        }
+        case ::gdcm::VR::AT:
+        {
+            m_anonymizer.Replace(tag, "00H,00H,00H,00H");
+            break;
+        }
+        case ::gdcm::VR::CS:
+        {
+            //Patient’s Sex
+            if(tag == ::gdcm::Tag(0x0010,0x0040))
+            {
+                m_anonymizer.Replace(tag, "O");
+            }
+            else
+            {
+                m_anonymizer.Replace(tag, "ANONYMIZED");
+            }
+            break;
+        }
+        case ::gdcm::VR::DA:
+        {
+            m_anonymizer.Replace(tag, "19700101");
+            break;
+        }
+        case ::gdcm::VR::DS:
+        {
+            m_anonymizer.Replace(tag, "0");
+            break;
+        }
+        case ::gdcm::VR::DT:
+        {
+            m_anonymizer.Replace(tag, "19700101000000.000000");
+            break;
+        }
+        case ::gdcm::VR::FD:
+        {
+            m_anonymizer.Replace(tag, "0");
+            break;
+        }
+        case ::gdcm::VR::FL:
+        {
+            m_anonymizer.Replace(tag, "0");
+            break;
+        }
+        case ::gdcm::VR::IS:
+        {
+            m_anonymizer.Replace(tag, "0");
+            break;
+        }
+        case ::gdcm::VR::LO:
+        {
+            m_anonymizer.Replace(tag, "ANONYMIZED");
+            break;
+        }
+        case ::gdcm::VR::LT:
+        {
+            m_anonymizer.Replace(tag, "ANONYMIZED");
+            break;
+        }
+        case ::gdcm::VR::OB:
+        {
+            m_anonymizer.Replace(tag, "00H00H");
+            break;
+        }
+        case ::gdcm::VR::OF:
+        {
+            m_anonymizer.Replace(tag, "0");
+            break;
+        }
+        case ::gdcm::VR::OW:
+        {
+            m_anonymizer.Replace(tag, "0");
+            break;
+        }
+        case ::gdcm::VR::PN:
+        {
+            m_anonymizer.Replace(tag, "ANONYMIZED^ANONYMIZED");
+            break;
+        }
+        case ::gdcm::VR::SH:
+        {
+            m_anonymizer.Replace(tag, "ANONYMIZED");
+            break;
+        }
+        case ::gdcm::VR::SL:
+        {
+            m_anonymizer.Replace(tag, "0");
+            break;
+        }
+        case ::gdcm::VR::SQ:
+        {
+            m_anonymizer.Empty(tag);
+            break;
+        }
+        case ::gdcm::VR::SS:
+        {
+            m_anonymizer.Replace(tag, "0");
+            break;
+        }
+        case ::gdcm::VR::ST:
+        {
+            m_anonymizer.Replace(tag, "ANONYMIZED");
+            break;
+        }
+        case ::gdcm::VR::TM:
+        {
+            m_anonymizer.Replace(tag, "000000.000000");
+            break;
+        }
+        case ::gdcm::VR::UI:
+        {
+            m_anonymizer.Replace(tag, "ANONYMIZED");
+            break;
+        }
+        case ::gdcm::VR::UL:
+        {
+            m_anonymizer.Replace(tag, "0");
+            break;
+        }
+        case ::gdcm::VR::UN:
+        {
+            m_anonymizer.Replace(tag, "ANONYMIZED");
+            break;
+        }
+        case ::gdcm::VR::US:
+        {
+            m_anonymizer.Replace(tag, "0");
+            break;
+        }
+        case ::gdcm::VR::UT:
+        {
+            m_anonymizer.Replace(tag, "ANONYMIZED");
+            break;
+        }
+        default:
+        {
+            SLM_FATAL("Unknown value representation.");
+            break;
+        }
     }
 }
 
@@ -757,7 +758,8 @@ void DicomAnonymizer::copyDirectory(::boost::filesystem::path input, ::boost::fi
 {
     ::boost::system::error_code ec;
     ::boost::filesystem::copy_directory(input, output, ec);
-    FW_RAISE_IF("copy_directory " << input.string() << " " << output.string() << " error : " << ec.message(), ec.value());
+    FW_RAISE_IF("copy_directory " << input.string() << " " << output.string() << " error : " << ec.message(),
+                ec.value());
 
     ::boost::filesystem::directory_iterator it(input);
     ::boost::filesystem::directory_iterator end;
@@ -774,7 +776,9 @@ void DicomAnonymizer::copyDirectory(::boost::filesystem::path input, ::boost::fi
         else
         {
             ::boost::filesystem::copy(*it, dest, ec);
-            FW_RAISE_IF("copy_directory " << it->path().string() << " " << dest.string() << " error : " << ec.message(), ec.value());
+            FW_RAISE_IF(
+                "copy_directory " << it->path().string() << " " << dest.string() << " error : " << ec.message(),
+                ec.value());
         }
 
         ::boost::filesystem::permissions(dest, ::boost::filesystem::owner_all, ec);

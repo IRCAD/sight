@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,9 +37,9 @@ public:
      * @param[in] object FW4SPL data object
      */
     GDCMIO_API TemplateID(
-            SPTR(::gdcm::Writer) writer,
-            SPTR(::gdcmIO::container::DicomInstance) instance,
-            SPTR(DATATYPE) object);
+        SPTR(::gdcm::Writer)writer,
+        SPTR(::gdcmIO::container::DicomInstance)instance,
+        SPTR(DATATYPE)object);
 
     /// Destructor
     GDCMIO_API virtual ~TemplateID();
@@ -59,9 +59,9 @@ protected:
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-TemplateID<DATATYPE>::TemplateID(SPTR(::gdcm::Writer) writer,
-        SPTR(::gdcmIO::container::DicomInstance) instance, SPTR(DATATYPE) object):
-        m_writer(writer), m_instance(instance), m_object(object)
+TemplateID<DATATYPE>::TemplateID(SPTR(::gdcm::Writer)writer,
+                                 SPTR(::gdcmIO::container::DicomInstance)instance, SPTR(DATATYPE)object) :
+    m_writer(writer), m_instance(instance), m_object(object)
 {
     SLM_ASSERT("Writer should not be null.", writer);
     SLM_ASSERT("Instance should not be null.", instance);

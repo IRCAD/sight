@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -82,8 +82,8 @@ std::streamsize MemoryArchiveSource::read(char *s, std::streamsize n)
 //-----------------------------------------------------------------------------
 
 MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size) :
-     m_SIZE(size),
-     m_BUFFER(buffer)
+    m_SIZE(size),
+    m_BUFFER(buffer)
 
 {
     SPTR(::boost::iostreams::stream<MemoryArchiveSource>) is;

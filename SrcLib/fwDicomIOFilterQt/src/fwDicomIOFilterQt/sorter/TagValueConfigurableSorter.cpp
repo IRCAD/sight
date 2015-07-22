@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,14 +25,14 @@ namespace fwDicomIOFilterQt
 namespace sorter
 {
 
-const std::string TagValueConfigurableSorter::s_FILTER_NAME = "Tag value configurable sorter";
+const std::string TagValueConfigurableSorter::s_FILTER_NAME        = "Tag value configurable sorter";
 const std::string TagValueConfigurableSorter::s_FILTER_DESCRIPTION =
-        "Sort instances using a tag value.";
+    "Sort instances using a tag value.";
 
 //-----------------------------------------------------------------------------
 
 TagValueConfigurableSorter::TagValueConfigurableSorter(::fwDicomIOFilter::IFilter::Key key) :
-        ::fwDicomIOFilter::sorter::TagValueSorter(key)
+    ::fwDicomIOFilter::sorter::TagValueSorter(key)
 {
 }
 
@@ -54,7 +54,7 @@ std::string TagValueConfigurableSorter::getName() const
 std::string TagValueConfigurableSorter::getDescription() const
 {
 
-    return TagValueConfigurableSorter::s_FILTER_DESCRIPTION ;
+    return TagValueConfigurableSorter::s_FILTER_DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------
@@ -83,14 +83,14 @@ void TagValueConfigurableSorter::configureWithGUI()
 
     // Create tag selectors
     ::fwDicomIOFilterQt::widget::QTagSelectorWidget* tagSelector =
-            new ::fwDicomIOFilterQt::widget::QTagSelectorWidget();
+        new ::fwDicomIOFilterQt::widget::QTagSelectorWidget();
     tagSelector->setTagValue(m_tag);
     mainLayout->addWidget(tagSelector);
 
     // Create buttons
     QDialogButtonBox* buttonBox = new QDialogButtonBox(dialog);
     mainLayout->addWidget(buttonBox);
-    QPushButton* okButton = buttonBox->addButton(QDialogButtonBox::Ok);
+    QPushButton* okButton     = buttonBox->addButton(QDialogButtonBox::Ok);
     QPushButton* cancelButton = buttonBox->addButton(QDialogButtonBox::Cancel);
 
     QObject::connect(okButton, SIGNAL(clicked(void)), dialog, SLOT(accept(void)));

@@ -1,17 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <arlcore/CameraList.h>
 
-arlCore::CameraList::CameraList( PlaneSystem &universe ):
-Particle( universe, "Camera list" )
-{}
+arlCore::CameraList::CameraList( PlaneSystem &universe ) :
+    Particle( universe, "Camera list" )
+{
+}
 
 arlCore::CameraList::~CameraList( void )
-{}
+{
+}
 
 void arlCore::CameraList::push_back( const uint32HL &GUID, unsigned int width, unsigned int heigth )
 {
@@ -57,13 +59,19 @@ const std::vector<arlCore::Camera>& arlCore::CameraList::getList( void ) const
 
 unsigned int arlCore::CameraList::calibrate( const std::string &calibFile, long int date )
 {
-    if(calibFile=="") return 0;
-    const unsigned int NbCameras = this->size();
-    unsigned int i, n=0;
-    std::vector<long int>calibrationNo( NbCameras );
-    for( i=0 ; i<NbCameras ; ++i )
+    if(calibFile=="")
     {
-        if((*this)[i].loadParameters( calibFile, date, m_widths[i], m_heigths[i] )) ++n;
+        return 0;
+    }
+    const unsigned int NbCameras = this->size();
+    unsigned int i, n = 0;
+    std::vector<long int>calibrationNo( NbCameras );
+    for( i = 0; i<NbCameras; ++i )
+    {
+        if((*this)[i].loadParameters( calibFile, date, m_widths[i], m_heigths[i] ))
+        {
+            ++n;
+        }
         calibrationNo[i] = (*this)[i].getCalibrationID();
         if( i==0 || ( calibrationNo[0]>0 && calibrationNo[i]>0 && calibrationNo[i]==calibrationNo[0] ))
         {   // CommonPlane on first camera

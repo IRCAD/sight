@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,15 +27,16 @@ namespace fwDicomIOFilterQt
 namespace splitter
 {
 
-const std::string TagValueInstanceRemoveConfigurableSplitter::s_FILTER_NAME = "Tag value instance remove configurable splitter";
+const std::string TagValueInstanceRemoveConfigurableSplitter::s_FILTER_NAME =
+    "Tag value instance remove configurable splitter";
 const std::string TagValueInstanceRemoveConfigurableSplitter::s_FILTER_DESCRIPTION =
-        "Remove instances if a tag has a certain value.";
+    "Remove instances if a tag has a certain value.";
 
 //-----------------------------------------------------------------------------
 
 TagValueInstanceRemoveConfigurableSplitter::TagValueInstanceRemoveConfigurableSplitter(
-        ::fwDicomIOFilter::IFilter::Key key) :
-        ::fwDicomIOFilter::splitter::TagValueInstanceRemoveSplitter(key)
+    ::fwDicomIOFilter::IFilter::Key key) :
+    ::fwDicomIOFilter::splitter::TagValueInstanceRemoveSplitter(key)
 {
 }
 
@@ -57,7 +58,7 @@ std::string TagValueInstanceRemoveConfigurableSplitter::getName() const
 std::string TagValueInstanceRemoveConfigurableSplitter::getDescription() const
 {
 
-    return TagValueInstanceRemoveConfigurableSplitter::s_FILTER_DESCRIPTION ;
+    return TagValueInstanceRemoveConfigurableSplitter::s_FILTER_DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------
@@ -86,7 +87,7 @@ void TagValueInstanceRemoveConfigurableSplitter::configureWithGUI()
 
     // Create tag selectors
     ::fwDicomIOFilterQt::widget::QTagSelectorWidget* tagSelector =
-            new ::fwDicomIOFilterQt::widget::QTagSelectorWidget();
+        new ::fwDicomIOFilterQt::widget::QTagSelectorWidget();
     tagSelector->setTagValue(m_tag);
     mainLayout->addWidget(tagSelector);
 
@@ -103,7 +104,7 @@ void TagValueInstanceRemoveConfigurableSplitter::configureWithGUI()
     // Create buttons
     QDialogButtonBox* buttonBox = new QDialogButtonBox(dialog);
     mainLayout->addWidget(buttonBox);
-    QPushButton* okButton = buttonBox->addButton(QDialogButtonBox::Ok);
+    QPushButton* okButton     = buttonBox->addButton(QDialogButtonBox::Ok);
     QPushButton* cancelButton = buttonBox->addButton(QDialogButtonBox::Cancel);
 
     QObject::connect(okButton, SIGNAL(clicked(void)), dialog, SLOT(accept(void)));
@@ -113,7 +114,7 @@ void TagValueInstanceRemoveConfigurableSplitter::configureWithGUI()
     int result = dialog->exec();
     if(result == QDialog::Accepted)
     {
-        m_tag = tagSelector->getTag();
+        m_tag      = tagSelector->getTag();
         m_tagValue = tagValuelineEdit->text().toStdString();
     }
 }

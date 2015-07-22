@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,15 +29,15 @@ namespace ctrlSplineNavigation
 class CTRLSPLINENAVIGATION_CLASS_API SMoveAlongSpline : public ::fwServices::IController
 {
 
-public :
+public:
 
     fwCoreServiceClassDefinitionsMacro((SMoveAlongSpline)(::fwServices::IController));
 
     /**
      * @name Constructor/Destructor
      * @{ */
-    CTRLSPLINENAVIGATION_API SMoveAlongSpline() throw() ;
-    CTRLSPLINENAVIGATION_API virtual ~SMoveAlongSpline() throw() ;
+    CTRLSPLINENAVIGATION_API SMoveAlongSpline() throw();
+    CTRLSPLINENAVIGATION_API virtual ~SMoveAlongSpline() throw();
     /**  @} */
 
     /**
@@ -51,7 +51,7 @@ public :
      * @name Signal types.
      * @{ */
     typedef ::fwCom::Signal< void (::fwData::TransformationMatrix3D::sptr ) > PointChangedSignalType;
-    typedef ::fwCom::Signal<void(double)> SplineLengthChangedSignalType;
+    typedef ::fwCom::Signal<void (double)> SplineLengthChangedSignalType;
     /**  @} */
 
     /**
@@ -67,7 +67,7 @@ public :
      * @{ */
     typedef ::fwCom::Slot< void (double) > ChangeSliderValueSlotType;
     typedef ::fwCom::Slot< void (::fwData::Point::sptr) > ChangeSelectedPointSlotType;
-    typedef ::fwCom::Slot<void(double)> ChangeAngleSlotType;
+    typedef ::fwCom::Slot<void (double)> ChangeAngleSlotType;
     /**  @} */
 
 protected:

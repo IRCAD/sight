@@ -1,8 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
-* FW4SPL - Copyright (C) IRCAD, 2009-2013.
-* Distributed under the terms of the GNU Lesser General Public License (LGPL) as
-* published by the Free Software Foundation.
-* ****** END LICENSE BLOCK ****** */
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #ifndef __IOMIDAS_EXPORTDIALOG_HPP__
 #define __IOMIDAS_EXPORTDIALOG_HPP__
@@ -25,12 +25,12 @@ class QProgressBar;
 
 namespace fwMedData
 {
-    class ModelSeries;
+class ModelSeries;
 }
 
 namespace midasIO
 {
-    class IResponseHandler;
+class IResponseHandler;
 }
 
 namespace ioMidas
@@ -45,7 +45,7 @@ namespace ioMidas
  */
 class IOMIDAS_CLASS_API ExportDialog : public QDialog
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     /**
@@ -54,8 +54,8 @@ public:
      * @param acq acquisition to export
      */
     IOMIDAS_API ExportDialog(
-            const SPTR(::midasIO::IConfiguration)& config,
-            const SPTR(::fwMedData::ModelSeries)& modelSeries);
+        const SPTR(::midasIO::IConfiguration)& config,
+        const SPTR(::fwMedData::ModelSeries)& modelSeries);
 
     /// Destructor
     IOMIDAS_API ~ExportDialog();

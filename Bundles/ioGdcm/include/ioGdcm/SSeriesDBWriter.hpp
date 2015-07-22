@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@
 
 namespace fwMedData
 {
-    class SeriesDB;
+class SeriesDB;
 }
 
 namespace ioGdcm
@@ -30,8 +30,8 @@ namespace ioGdcm
 class IOGDCM_CLASS_API SSeriesDBWriter : public ::io::IWriter
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBWriter)( ::io::IWriter) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBWriter)( ::io::IWriter) );
 
     /**
      * @brief Constructor
@@ -60,7 +60,7 @@ protected:
     /// Return path type managed by the service, here FOLDER
     IOGDCM_API ::io::IOPathType getIOPathType() const;
 
-private :
+private:
 
     /**
      * @brief Write a SeriesDB to a folder in DICOM format

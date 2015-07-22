@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@ class FWDICOMIOFILTERQT_CLASS_API TagValueConfigurableSorter : public ::fwDicomI
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (TagValueConfigurableSorter)(::fwDicomIOFilter::sorter::TagValueSorter),
-            (()), ::fwDicomIOFilter::factory::New< TagValueConfigurableSorter > );
+                                            (()), ::fwDicomIOFilter::factory::New< TagValueConfigurableSorter > );
 
     /// Constructor
     FWDICOMIOFILTERQT_API TagValueConfigurableSorter(::fwDicomIOFilter::IFilter::Key key);

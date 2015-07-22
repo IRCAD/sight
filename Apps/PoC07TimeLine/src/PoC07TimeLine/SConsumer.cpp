@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -78,7 +78,7 @@ void SConsumer::updating() throw( ::fwTools::Failed )
         const ::PoC07TimeLine::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (timer): CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
-        " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
+            " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
     }
 }
 
@@ -129,7 +129,7 @@ void SConsumer::consume(fwCore::HiResClock::HiResClockType timestamp)
         const ::PoC07TimeLine::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (slot) : CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
-        " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
+            " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
     }
 }
 

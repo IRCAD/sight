@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,10 +33,10 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] equipment Equipment data
      */
-    GDCMIO_API Equipment(SPTR(::fwDicomData::DicomSeries) dicomSeries,
-            SPTR(::gdcm::Reader) reader,
-            SPTR(::gdcmIO::container::DicomInstance) instance,
-            ::fwMedData::Equipment::sptr equipment);
+    GDCMIO_API Equipment(SPTR(::fwDicomData::DicomSeries)dicomSeries,
+                         SPTR(::gdcm::Reader)reader,
+                         SPTR(::gdcmIO::container::DicomInstance)instance,
+                         ::fwMedData::Equipment::sptr equipment);
 
     /// Destructor
     GDCMIO_API virtual ~Equipment();

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GDCMIO_CONTAINER_DICOMSRTEXTNODE_HPP__
-#define __GDCMIO_CONTAINER_DICOMSRTEXTNODE_HPP__
+#ifndef __GDCMIO_CONTAINER_SR_DICOMSRTEXTNODE_HPP__
+#define __GDCMIO_CONTAINER_SR_DICOMSRTEXTNODE_HPP__
 
 #include <string>
 #include <vector>
@@ -36,7 +36,7 @@ public:
 
     /// Constructor
     GDCMIO_API DicomSRTextNode(const DicomCodedAttribute& codedAttribute,
-            const std::string& relationship, const std::string textValue);
+                               const std::string& relationship, const std::string textValue);
 
     /// Destructor
     GDCMIO_API virtual ~DicomSRTextNode();
@@ -62,4 +62,4 @@ protected:
 } //namespace container
 } //namespace gdcmIO
 
-#endif /* __GDCMIO_CONTAINER_DICOMSRTEXTNODE_HPP__ */
+#endif /* __GDCMIO_CONTAINER_SR_DICOMSRTEXTNODE_HPP__ */

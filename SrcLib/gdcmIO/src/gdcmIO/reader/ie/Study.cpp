@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,10 +20,10 @@ namespace ie
 //------------------------------------------------------------------------------
 
 Study::Study(::fwDicomData::DicomSeries::sptr dicomSeries,
-        SPTR(::gdcm::Reader) reader,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwMedData::Study::sptr study):
-        ::gdcmIO::reader::ie::InformationEntity< ::fwMedData::Study >(dicomSeries, reader, instance, study)
+             SPTR(::gdcm::Reader)reader,
+             SPTR(::gdcmIO::container::DicomInstance)instance,
+             ::fwMedData::Study::sptr study) :
+    ::gdcmIO::reader::ie::InformationEntity< ::fwMedData::Study >(dicomSeries, reader, instance, study)
 {
 }
 
@@ -63,7 +63,8 @@ void Study::readGeneralStudyModule()
     // NOTE: Not used in FW4SPL
 
     // Study's referring physician name
-    const std::string& referringPhysicianName = ::gdcmIO::helper::DicomData::getTrimmedTagValue< 0x0008, 0x0090 >(dataset);
+    const std::string& referringPhysicianName = ::gdcmIO::helper::DicomData::getTrimmedTagValue< 0x0008, 0x0090 >(
+        dataset);
     m_object->setReferringPhysicianName(referringPhysicianName);
 }
 

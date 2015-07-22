@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IODICOMEXT_DCMTK_EDITOR_SFILTERSELECTORSERVICE_HPP__
-#define __IODICOMEXT_DCMTK_EDITOR_SFILTERSELECTORSERVICE_HPP__
+#ifndef __IODICOMEXT_DCMTK_EDITOR_SFILTERSELECTORDIALOG_HPP__
+#define __IODICOMEXT_DCMTK_EDITOR_SFILTERSELECTORDIALOG_HPP__
 
 #include <gui/editor/IDialogEditor.hpp>
 
@@ -29,9 +29,9 @@ namespace editor
 class IODICOMEXT_CLASS_API SFilterSelectorDialog : public ::gui::editor::IDialogEditor
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SFilterSelectorDialog)( ::gui::editor::IDialogEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SFilterSelectorDialog)( ::gui::editor::IDialogEditor) );
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
@@ -41,15 +41,15 @@ public :
     IODICOMEXT_API SFilterSelectorDialog();
 
     /// Destructor. Do nothing.
-    IODICOMEXT_API virtual ~SFilterSelectorDialog() throw() ;
+    IODICOMEXT_API virtual ~SFilterSelectorDialog() throw();
 
 protected:
 
     ///Starts the service. Do nothing.
-    IODICOMEXT_API void starting() throw( ::fwTools::Failed ) ;
+    IODICOMEXT_API void starting() throw( ::fwTools::Failed );
 
     /// Stops the service. Do nothing.
-    IODICOMEXT_API void stopping() throw( ::fwTools::Failed ) ;
+    IODICOMEXT_API void stopping() throw( ::fwTools::Failed );
 
     /**
      * @brief   This method initializes class member parameters from configuration elements.
@@ -70,28 +70,28 @@ protected:
      *      - \b mode (mandatory) : must be include (to add the selection to selector list ) or exclude (to exclude the selection of the selector list).
      *  - \b addSelection
      *      - \b filter (mandatory) : Name of the filter to include/exclude to the choice list of the selector.
-    **/
-    IODICOMEXT_API void configuring() throw( ::fwTools::Failed ) ;
+     **/
+    IODICOMEXT_API void configuring() throw( ::fwTools::Failed );
 
     /// Create a dialog box to provide the user different available filters for the FilterSelector associated objects. Then, the selected filter is applied.
-    IODICOMEXT_API void updating() throw( ::fwTools::Failed ) ;
+    IODICOMEXT_API void updating() throw( ::fwTools::Failed );
 
     /// SLM_FATAL require an implementation gui::editor::IEditor::updating(msg)
     IODICOMEXT_API void receiving( ::fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed );
 
     /// Gives the name of the class. Do nothing.
-    IODICOMEXT_API void info( std::ostream &_sstream ) ;
+    IODICOMEXT_API void info( std::ostream &_sstream );
 
-private :
+private:
 
     /// Configure if selected filters are included or excluded.
     bool m_filtersAreExcluded;
 
     /**
-    * @brief List of filters to be included or excluded.
-    *
-    * @see SFilterSelectorDialog::m_filtersAreExcluded.
-    */
+     * @brief List of filters to be included or excluded.
+     *
+     * @see SFilterSelectorDialog::m_filtersAreExcluded.
+     */
     std::vector< std::string > m_selectedFilters;
 };
 
@@ -99,5 +99,5 @@ private :
 } // namespace dcmtk
 } // namespace ioDicomExt
 
-#endif // __IODICOMEXT_DCMTK_EDITOR_SFILTERSELECTORSERVICE_HPP__
+#endif // __IODICOMEXT_DCMTK_EDITOR_SFILTERSELECTORDIALOG_HPP__
 

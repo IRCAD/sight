@@ -1,20 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWNETWORK_HTPP_REQUEST_HPP__
-#define __FWNETWORK_HTPP_REQUEST_HPP__
+#ifndef __FWNETWORK_HTTP_REQUEST_HPP__
+#define __FWNETWORK_HTTP_REQUEST_HPP__
 
 #include <map>
 #include <fwCore/base.hpp>
 
 #include "fwNetwork/config.hpp"
 
-namespace fwNetwork {
+namespace fwNetwork
+{
 
-namespace http {
+namespace http
+{
 
 
 /**
@@ -42,7 +44,9 @@ public:
      */
     FWNETWORK_API Request(const std::string& url);
 
-    virtual ~Request(){};
+    virtual ~Request()
+    {
+    }
     /**  @} */
 
     /**
@@ -90,6 +94,6 @@ private:
 
 }
 
-  // namespace fwNetwork
+// namespace fwNetwork
 
-#endif //__FWNETWORK_HTPP_REQUEST_HPP__
+#endif //__FWNETWORK_HTTP_REQUEST_HPP__

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDICOMIOFILTER_DCMTK_FILTER_IFILTER_HPP__
-#define __FWDICOMIOFILTER_DCMTK_FILTER_IFILTER_HPP__
+#ifndef __FWDICOMIOFILTER_IFILTER_HPP__
+#define __FWDICOMIOFILTER_IFILTER_HPP__
 
 #include <fwDicomData/DicomSeries.hpp>
 #include <fwTools/Object.hpp>
@@ -56,11 +56,11 @@ public:
      */
     typedef enum
     {
-        MODIFIER = 0,   /*! Modifier */
-        SORTER  = 1,    /*! Sorter */
-        SPLITTER = 2,   /*! Splitter */
+        MODIFIER  = 0,  /*! Modifier */
+        SORTER    = 1,  /*! Sorter */
+        SPLITTER  = 2,  /*! Splitter */
         COMPOSITE = 3,  /*! Composite */
-        CUSTOM = 4,     /*! Custom */
+        CUSTOM    = 4,  /*! Custom */
     } FilterType;
 
     /// Destructor
@@ -71,16 +71,16 @@ public:
      * @return Returns one or more Dicom Instance Group
      */
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(::fwDicomData::DicomSeries::sptr series) const
-            throw(::fwDicomIOFilter::exceptions::FilterFailure) =0;
+    throw(::fwDicomIOFilter::exceptions::FilterFailure) = 0;
 
     /// Return the name of the filter
-    FWDICOMIOFILTER_API virtual std::string getName() const =0;
+    FWDICOMIOFILTER_API virtual std::string getName() const = 0;
 
     /// Return the description of the filter
-    FWDICOMIOFILTER_API virtual std::string getDescription() const =0;
+    FWDICOMIOFILTER_API virtual std::string getDescription() const = 0;
 
     /// Return filter type
-    FWDICOMIOFILTER_API virtual FilterType getFilterType() const =0;
+    FWDICOMIOFILTER_API virtual FilterType getFilterType() const = 0;
 
     /// Return true if a configuration is required
     FWDICOMIOFILTER_API virtual bool isConfigurationRequired();
@@ -101,4 +101,4 @@ protected:
 } // namespace fwDicomIOFilter
 
 
-#endif /* __FWDICOMIOFILTER_DCMTK_FILTER_IFILTER_HPP__ */
+#endif /* __FWDICOMIOFILTER_IFILTER_HPP__ */

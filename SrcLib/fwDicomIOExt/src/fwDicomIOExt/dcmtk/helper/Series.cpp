@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -53,9 +53,9 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList< QRResponse* > responses
 
             // Create series
             ::fwDicomData::DicomSeries::sptr series = ::fwDicomData::DicomSeries::New();
-            ::fwMedData::Patient::sptr patient = ::fwMedData::Patient::New();
-            ::fwMedData::Study::sptr study = ::fwMedData::Study::New();
-            ::fwMedData::Equipment::sptr equipment = ::fwMedData::Equipment::New();
+            ::fwMedData::Patient::sptr patient      = ::fwMedData::Patient::New();
+            ::fwMedData::Study::sptr study          = ::fwMedData::Study::New();
+            ::fwMedData::Equipment::sptr equipment  = ::fwMedData::Equipment::New();
 
             // Set informations to series
             series->setPatient(patient);
@@ -187,7 +187,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList< QRResp
             else
             {
                 const std::string msg = "There is no \"SeriersInstanceUID\" tag in the selected series :"
-                        + std::string(result.text());
+                                        + std::string(result.text());
                 throw ::fwDicomIOExt::exceptions::TagMissing(msg);
             }
         }

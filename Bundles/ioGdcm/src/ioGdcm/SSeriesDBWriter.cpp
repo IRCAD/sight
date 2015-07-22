@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,18 +36,20 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioGdcm::SSeriesDBWriter, ::fwData::Vector ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioGdcm::SSeriesDBWriter, ::fwData::Vector );
 
 //------------------------------------------------------------------------------
 
 SSeriesDBWriter::SSeriesDBWriter() throw() :
-        m_fiducialsExportMode(::gdcmIO::writer::Series::COMPREHENSIVE_3D_SR)
-{}
+    m_fiducialsExportMode(::gdcmIO::writer::Series::COMPREHENSIVE_3D_SR)
+{
+}
 
 //------------------------------------------------------------------------------
 
 SSeriesDBWriter::~SSeriesDBWriter() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -61,8 +63,8 @@ void SSeriesDBWriter::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr  result;
-    result= ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    ::fwData::location::Folder::sptr result;
+    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
     if (result && this->selectFiducialsExportMode())
     {
         _sDefaultPath = result->getFolder();
@@ -78,12 +80,14 @@ void SSeriesDBWriter::configureWithIHM()
 //------------------------------------------------------------------------------
 
 void SSeriesDBWriter::starting() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBWriter::stopping() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -96,7 +100,7 @@ void SSeriesDBWriter::updating() throw(::fwTools::Failed)
         {
             ::fwGui::dialog::MessageDialog dialog;
             dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
-                    "\nDo you want to continue ?");
+                              "\nDo you want to continue ?");
             dialog.setTitle("Folder not empty.");
             dialog.setIcon(::fwGui::dialog::MessageDialog::QUESTION);
             dialog.addButton( ::fwGui::dialog::MessageDialog::YES_NO );
@@ -152,12 +156,12 @@ void SSeriesDBWriter::saveSeriesDB( const ::boost::filesystem::path folder, ::fw
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 
@@ -186,14 +190,14 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
         seriesDBHelper.add(series);
     }
 
-    const bool containsLandmarks = ::gdcmIO::helper::Fiducial::containsLandmarks(seriesDB);
-    const bool containsDistances = ::gdcmIO::helper::Fiducial::containsDistances(seriesDB);
+    const bool containsLandmarks   = ::gdcmIO::helper::Fiducial::containsLandmarks(seriesDB);
+    const bool containsDistances   = ::gdcmIO::helper::Fiducial::containsDistances(seriesDB);
     const bool contains3DDistances = ::gdcmIO::helper::Fiducial::contains3DDistances(seriesDB);
 
     if(containsLandmarks || containsDistances)
     {
-        static const std::string fiducialIOD = "Spatial Fiducials";
-        static const std::string comprehensiveSRIOD = "Comprehensive SR";
+        static const std::string fiducialIOD          = "Spatial Fiducials";
+        static const std::string comprehensiveSRIOD   = "Comprehensive SR";
         static const std::string comprehensive3DSRIOD = "Comprehensive 3D SR";
 
         std::vector< std::string > exportModes;
@@ -212,7 +216,7 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
 
         selector->setTitle("Fiducials export mode");
         selector->setSelections(exportModes);
-        const std::string mode = selector->show();
+        const std::string mode             = selector->show();
         const bool modeSelectionIsCanceled = mode.empty();
 
         if(mode == fiducialIOD)

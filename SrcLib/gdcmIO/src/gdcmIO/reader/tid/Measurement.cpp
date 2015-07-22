@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,11 +28,11 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-Measurement::Measurement(SPTR(::fwDicomData::DicomSeries) dicomSeries,
-        SPTR(::gdcm::Reader) reader,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwData::Image::sptr image):
-        ::gdcmIO::reader::tid::TemplateID< ::fwData::Image >(dicomSeries, reader, instance, image)
+Measurement::Measurement(SPTR(::fwDicomData::DicomSeries)dicomSeries,
+                         SPTR(::gdcm::Reader)reader,
+                         SPTR(::gdcmIO::container::DicomInstance)instance,
+                         ::fwData::Image::sptr image) :
+    ::gdcmIO::reader::tid::TemplateID< ::fwData::Image >(dicomSeries, reader, instance, image)
 {
 }
 
@@ -44,34 +44,35 @@ Measurement::~Measurement()
 
 //------------------------------------------------------------------------------
 
-void Measurement::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode) node)
+void Measurement::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
 {
     if(node->getCodedAttribute() == ::gdcmIO::container::DicomCodedAttribute("121206", "DCM", "Distance") &&
-            !node->getCRefSubNodeContainer().empty())
+       !node->getCRefSubNodeContainer().empty())
     {
         BOOST_FOREACH(const SPTR(::gdcmIO::container::sr::DicomSRNode)& subNode, node->getCRefSubNodeContainer())
         {
             if(subNode->getType() == "SCOORD")
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
-                        ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoordNode >(subNode);
+                    ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoordNode >(subNode);
                 if(scoordNode && scoordNode->getCRefGraphicType() == "POLYLINE")
                 {
                     // Retrieve coordinates
                     ::gdcmIO::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
-                            scoordNode->getGraphicDataContainer();
+                        scoordNode->getGraphicDataContainer();
 
                     if(!scoordNode->getCRefSubNodeContainer().empty())
                     {
                         SPTR(::gdcmIO::container::sr::DicomSRImageNode) imageNode =
-                                ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRImageNode >(
-                                        *scoordNode->getCRefSubNodeContainer().begin());
+                            ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRImageNode >(
+                                *scoordNode->getCRefSubNodeContainer().begin());
                         if(imageNode)
                         {
                             const int frameNumber = imageNode->getCRefFrameNumber();
-                            float zCoordinate = ::gdcmIO::helper::DicomData::convertFrameNumberToZCoordinate(m_object, frameNumber);
+                            float zCoordinate     = ::gdcmIO::helper::DicomData::convertFrameNumberToZCoordinate(
+                                m_object, frameNumber);
                             this->addDistance(::fwData::Point::New(coordinates[0], coordinates[1], zCoordinate),
-                                    ::fwData::Point::New(coordinates[2], coordinates[3], zCoordinate));
+                                              ::fwData::Point::New(coordinates[2], coordinates[3], zCoordinate));
                         }
                     }
                 }
@@ -80,14 +81,14 @@ void Measurement::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode) node)
             else if(subNode->getType() == "SCOORD3D")
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoord3DNode =
-                        ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(subNode);
+                    ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(subNode);
                 if(scoord3DNode && scoord3DNode->getCRefGraphicType() == "POLYLINE")
                 {
                     // Retrieve coordinates
                     ::gdcmIO::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
-                            scoord3DNode->getGraphicDataContainer();
+                        scoord3DNode->getGraphicDataContainer();
                     this->addDistance(::fwData::Point::New(coordinates[0], coordinates[1], coordinates[2]),
-                            ::fwData::Point::New(coordinates[3], coordinates[4], coordinates[5]));
+                                      ::fwData::Point::New(coordinates[3], coordinates[4], coordinates[5]));
                 }
             }
         }
@@ -96,10 +97,10 @@ void Measurement::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode) node)
 
 //------------------------------------------------------------------------------
 
-void Measurement::addDistance(SPTR(::fwData::Point) point1, SPTR(::fwData::Point) point2)
+void Measurement::addDistance(SPTR(::fwData::Point)point1, SPTR(::fwData::Point)point2)
 {
     ::fwData::Vector::sptr distanceVector =
-            m_object->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+        m_object->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
 
     if(!distanceVector)
     {

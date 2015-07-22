@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,13 +21,14 @@ namespace fwDicomIOExt
 namespace dcmtk
 {
 
-const ::fwCom::Slots::SlotKeyType SeriesRetriever::s_STORE_INSTANCE_CALLBACK_SLOT = "storeInstanceCallbackFromMoveRetrieveMethod";
+const ::fwCom::Slots::SlotKeyType SeriesRetriever::s_STORE_INSTANCE_CALLBACK_SLOT =
+    "storeInstanceCallbackFromMoveRetrieveMethod";
 
 // ----------------------------------------------------------------------------
 
 SeriesRetriever::SeriesRetriever() :
-        m_path(""),
-        m_storeInstanceCallback(StoreInstanceCallbackSlotType::sptr())
+    m_path(""),
+    m_storeInstanceCallback(StoreInstanceCallbackSlotType::sptr())
 {
 }
 
@@ -40,8 +41,8 @@ SeriesRetriever::~SeriesRetriever()
 // ----------------------------------------------------------------------------
 
 void SeriesRetriever::initialize(const std::string& applicationTitle,
-        unsigned int applicationport, int timeout,
-        StoreInstanceCallbackSlotType::sptr storeCallback)
+                                 unsigned int applicationport, int timeout,
+                                 StoreInstanceCallbackSlotType::sptr storeCallback)
 {
     //Callback
     m_storeInstanceCallback = storeCallback;
@@ -90,7 +91,7 @@ bool SeriesRetriever::start()
 // ----------------------------------------------------------------------------
 
 OFCondition SeriesRetriever::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
-            const DcmPresentationContextInfo &presContextInfo)
+                                                   const DcmPresentationContextInfo &presContextInfo)
 {
     OFCondition cond;
 
@@ -111,7 +112,7 @@ OFCondition SeriesRetriever::handleIncomingCommand(T_DIMSE_Message *incomingMsg,
 // ----------------------------------------------------------------------------
 
 OFCondition SeriesRetriever::handleSTORERequest(T_DIMSE_Message *incomingMsg,
-            T_ASC_PresentationContextID presID)
+                                                T_ASC_PresentationContextID presID)
 {
     OFCondition cond;
 
@@ -161,7 +162,7 @@ OFCondition SeriesRetriever::handleSTORERequest(T_DIMSE_Message *incomingMsg,
             // Send a store response
             T_DIMSE_C_StoreRSP rsp;
             rsp.DimseStatus = STATUS_Success;
-            cond = this->sendSTOREResponse(presID, incomingMsg->msg.CStoreRQ, rsp, NULL);
+            cond            = this->sendSTOREResponse(presID, incomingMsg->msg.CStoreRQ, rsp, NULL);
 
             // Dump outgoing message
             SLM_TRACE("Sending C-STORE Response");

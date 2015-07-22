@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,11 +19,11 @@ namespace registry
 
 #define MidasIOConfigurationRegisterMacro( classname, objectKey )                                  \
     static ::midasIO::IConfiguration::Registrar< classname >                  \
-    BOOST_PP_CAT(s__factory__record__object__, __LINE__) ( objectKey ) ;
+    BOOST_PP_CAT(s__factory__record__object__, __LINE__) ( objectKey );
 
 #define responseHandlerRegisterMacro( classname, objectKey )                                  \
     static ::midasIO::IResponseHandler::Registrar< classname >                  \
-    BOOST_PP_CAT(s__factory__record__object__, __LINE__) ( objectKey ) ;
+    BOOST_PP_CAT(s__factory__record__object__, __LINE__) ( objectKey );
 
 
 } // namespace registry

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,7 @@
 
 namespace fwData
 {
-    class PointList;
+class PointList;
 }
 
 namespace gdcmIO
@@ -39,9 +39,9 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] image Image data
      */
-    GDCMIO_API Measurement(SPTR(::gdcm::Writer) writer,
-            SPTR(::gdcmIO::container::DicomInstance) instance,
-            ::fwData::Image::sptr image);
+    GDCMIO_API Measurement(SPTR(::gdcm::Writer)writer,
+                           SPTR(::gdcmIO::container::DicomInstance)instance,
+                           ::fwData::Image::sptr image);
 
     /// Destructor
     GDCMIO_API virtual ~Measurement();
@@ -64,7 +64,7 @@ protected:
      * @param[in] useSCoord3D True if we must use 3D coordinates
      */
     void createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode) parent,
-            const SPTR(::fwData::PointList)& pointList, unsigned int id, bool useSCoord3D);
+                           const SPTR(::fwData::PointList)& pointList, unsigned int id, bool useSCoord3D);
 
 
 };

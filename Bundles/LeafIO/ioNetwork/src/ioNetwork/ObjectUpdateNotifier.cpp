@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,8 +28,8 @@ namespace ioNetwork
 //-----------------------------------------------------------------------------
 
 const ObjectUpdateNotifier::EventMsgRegistryType
-      ObjectUpdateNotifier::s_EVENT_MSG_REGISTRY =
-        ::boost::assign::map_list_of
+ObjectUpdateNotifier::s_EVENT_MSG_REGISTRY =
+    ::boost::assign::map_list_of
         (::fwComEd::TransformationMatrix3DMsg::classname(),::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED)
         (::fwComEd::ImageMsg::classname(),::fwComEd::ImageMsg::NEW_IMAGE)
         (::fwComEd::MeshMsg::classname(),::fwComEd::MeshMsg::NEW_MESH);

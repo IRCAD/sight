@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@
 
 fwServicesRegisterMacro(::gui::editor::IEditor, ::uiNavigation::SNavigationEditor, ::fwData::Object);
 
-namespace uiNavigation 
+namespace uiNavigation
 {
 
 const ::fwCom::Signals::SignalKeyType SNavigationEditor::s_SLIDER_PROGRESSED_SIG = "sliderProgressed";
@@ -53,7 +53,8 @@ SNavigationEditor::SNavigationEditor() throw()
 //-------------------------------------------------------------------------------------------------------------
 
 SNavigationEditor::~SNavigationEditor() throw ()
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 
@@ -63,14 +64,14 @@ void SNavigationEditor::starting() throw(::fwTools::Failed)
     this->create();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
-            ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
+        ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* container = qtContainer->getQtContainer();
     SLM_ASSERT("Container not instanced", container);
 
     // Buttons
     m_playButton = new QPushButton(QObject::tr("Play"),container);
 
-    m_pauseButton= new QPushButton(QObject::tr("Pause"),container);
+    m_pauseButton = new QPushButton(QObject::tr("Pause"),container);
     m_pauseButton->setEnabled(false);
 
     m_resetButton = new QPushButton(QObject::tr("Reset"), container);
@@ -106,7 +107,7 @@ void SNavigationEditor::starting() throw(::fwTools::Failed)
     // Timer
     SLM_ASSERT("No valid worker for fly mode", m_associatedWorker);
     ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(m_timerDuration);
-    m_timer = m_associatedWorker->createTimer();
+    m_timer                                      = m_associatedWorker->createTimer();
     m_timer->setFunction(::boost::bind(&SNavigationEditor::callBackTimer, this));
     m_timer->setDuration(duration);
 }
@@ -168,12 +169,14 @@ void SNavigationEditor::configuring() throw(fwTools::Failed)
 //-------------------------------------------------------------------------------------------------------------
 
 void SNavigationEditor::updating() throw(::fwTools::Failed)
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 
 void SNavigationEditor::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 

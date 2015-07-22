@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,11 +22,11 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Document::Document(SPTR(::fwDicomData::DicomSeries) dicomSeries,
-        SPTR(::gdcm::Reader) reader,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwData::Image::sptr image):
-        ::gdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image)
+Document::Document(SPTR(::fwDicomData::DicomSeries)dicomSeries,
+                   SPTR(::gdcm::Reader)reader,
+                   SPTR(::gdcmIO::container::DicomInstance)instance,
+                   ::fwData::Image::sptr image) :
+    ::gdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image)
 {
 }
 
@@ -45,7 +45,7 @@ void Document::readSR() throw (::gdcmIO::exception::Failed)
 
     // Create SR from Dataset
     SPTR(::gdcmIO::container::sr::DicomSRContainerNode) rootContainerNode =
-            ::gdcmIO::helper::StructuredReport::readSR(datasetRoot);
+        ::gdcmIO::helper::StructuredReport::readSR(datasetRoot);
 
     if(rootContainerNode)
     {

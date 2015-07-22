@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef __CPR_COMPUTECPRFUNCTOR_HXX__
 #define __CPR_COMPUTECPRFUNCTOR_HXX__
 
@@ -16,23 +22,23 @@ namespace cpr
 /// This method fills the color grid for the mesh.
 template<typename IMAGE_TYPE>
 void fillColorGrid(
-        const std::vector<double> & pointGrid,
-        unsigned int nbCol,
-        unsigned int nbRow,
-        ::fwData::Image::sptr imageSource,
-        std::vector<IMAGE_TYPE> & colorGrid)
+    const std::vector<double> & pointGrid,
+    unsigned int nbCol,
+    unsigned int nbRow,
+    ::fwData::Image::sptr imageSource,
+    std::vector<IMAGE_TYPE> & colorGrid)
 {
     ::fwComEd::helper::Image helperImage (imageSource);
     // Allocate
-    double* point = new double [3];
-    unsigned int* IndexPosition=new unsigned int[3];
+    double* point               = new double [3];
+    unsigned int* IndexPosition = new unsigned int[3];
     bool isPointInImage;
     unsigned int nbPoints = nbCol*nbRow;
     colorGrid.reserve(nbPoints);
     colorGrid.resize(nbPoints);
     for (unsigned int i = 0; i < nbCol; i++)
     {
-        for (unsigned int j = 0 ; j < nbRow ; j++)
+        for (unsigned int j = 0; j < nbRow; j++)
         {
             unsigned int indexPoint = i + j * nbCol;
             point[0] = pointGrid[indexPoint*3];
@@ -40,12 +46,12 @@ void fillColorGrid(
             point[2] = pointGrid[indexPoint*3 + 2];
             // Compute nearest index image if the point is int the image
             isPointInImage = ::cpr::computeImageIndexFromSpacePosition
-                (imageSource, &point[0], &IndexPosition[0]);
+                                 (imageSource, &point[0], &IndexPosition[0]);
             // Compute color
             if(isPointInImage)
             {
-                void * buff = helperImage.getPixelBuffer( IndexPosition[0], IndexPosition[1], IndexPosition[2]);
-                IMAGE_TYPE hu = * ( static_cast<IMAGE_TYPE *>( buff ) );
+                void * buff   = helperImage.getPixelBuffer( IndexPosition[0], IndexPosition[1], IndexPosition[2]);
+                IMAGE_TYPE hu = *( static_cast<IMAGE_TYPE *>( buff ) );
                 colorGrid[indexPoint] = hu;
             }
             else
@@ -64,8 +70,8 @@ void computeGreyLevelFromHounsfield( IMAGE_TYPE hounsfield, ::fwData::Mesh::Colo
 {
     double min[3] = {0,0,0};
     double max[3] = {255,255,255};
-    double minFt = 0;
-    double maxFt = 300;
+    double minFt  = 0;
+    double maxFt  = 300;
     if (hounsfield < minFt)
     {
         std::copy(min, min + 3, color);
@@ -85,16 +91,16 @@ void computeGreyLevelFromHounsfield( IMAGE_TYPE hounsfield, ::fwData::Mesh::Colo
 // Fill Mesh
 template<typename IMAGE_TYPE>
 void fillMesh(
-        const std::vector<double> & pointGrid,
-        std::vector< IMAGE_TYPE > & colorGrid,
-        unsigned int nbCol,
-        unsigned int nbRow,
-        ::fwData::Image::sptr image,
-        ::fwData::Mesh::sptr mesh )
+    const std::vector<double> & pointGrid,
+    std::vector< IMAGE_TYPE > & colorGrid,
+    unsigned int nbCol,
+    unsigned int nbRow,
+    ::fwData::Image::sptr image,
+    ::fwData::Mesh::sptr mesh )
 {
     fillColorGrid(pointGrid, nbCol, nbRow, image, colorGrid);
     unsigned int nbPoints = nbCol * nbRow;
-    unsigned int nbCells = (nbCol - 1) * (nbRow - 1);
+    unsigned int nbCells  = (nbCol - 1) * (nbRow - 1);
     ::fwData::Mesh::ColorValueType color[3];
     mesh->setNumberOfPoints(nbPoints);
     mesh->setNumberOfCells(nbCells);
@@ -102,14 +108,14 @@ void fillMesh(
     mesh->allocate(nbPoints, nbCells, nbCells * 4);
     mesh->allocatePointColors(::fwData::Mesh::RGB);
     ::fwComEd::helper::Mesh helperMesh(mesh);
-    ::fwData::Mesh::PointsMultiArrayType points = helperMesh.getPoints();
-    ::fwData::Mesh::CellTypesMultiArrayType cellTypes = helperMesh.getCellTypes();
-    ::fwData::Mesh::CellDataMultiArrayType cellData = helperMesh.getCellData();
+    ::fwData::Mesh::PointsMultiArrayType points                   = helperMesh.getPoints();
+    ::fwData::Mesh::CellTypesMultiArrayType cellTypes             = helperMesh.getCellTypes();
+    ::fwData::Mesh::CellDataMultiArrayType cellData               = helperMesh.getCellData();
     ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = helperMesh.getCellDataOffsets();
-    ::fwData::Mesh::PointColorsMultiArrayType pointColors = helperMesh.getPointColors();
+    ::fwData::Mesh::PointColorsMultiArrayType pointColors         = helperMesh.getPointColors();
     for (unsigned int k = 0; k < nbCells; k++)
     {
-        cellTypes[k] = ::fwData::Mesh::QUAD;
+        cellTypes[k]       = ::fwData::Mesh::QUAD;
         cellDataOffsets[k] = k * 4;
     }
     for (unsigned int i = 0; i < nbCol; i++)
@@ -134,18 +140,18 @@ void fillMesh(
         for (unsigned int j = 0; j < nbRow - 1; j++)
         {
             unsigned int indexPoint = i + j * nbCol;
-            cellData[indexCell] = indexPoint;
+            cellData[indexCell]     = indexPoint;
             cellData[indexCell + 1] = indexPoint + 1;
             cellData[indexCell + 2] = indexPoint + nbCol + 1;
             cellData[indexCell + 3] = indexPoint + nbCol;
-            indexCell += 4;
+            indexCell              += 4;
         }
     }
 }
 /// Fill Image
 template<typename IMAGE_TYPE>
 void fillImage(const std::vector< IMAGE_TYPE > & colorGrid,
-        unsigned int nbCol, unsigned int nbRow, double spacing, ::fwData::Image::sptr image )
+               unsigned int nbCol, unsigned int nbRow, double spacing, ::fwData::Image::sptr image )
 {
     // Initialize the image
     image->setType(::fwTools::Type::create< IMAGE_TYPE>());//("int16")
@@ -173,7 +179,7 @@ void fillImage(const std::vector< IMAGE_TYPE > & colorGrid,
     ::fwData::Array::sptr array = image->getDataArray();
     OSLM_DEBUG(" arraySize " << array->getNumberOfElements());
     ::fwComEd::helper::Array arrayHelper(array);
-    IMAGE_TYPE* iter = arrayHelper.begin<IMAGE_TYPE>();
+    IMAGE_TYPE* iter   = arrayHelper.begin<IMAGE_TYPE>();
     IMAGE_TYPE* itrEnd = arrayHelper.end<IMAGE_TYPE>();
     // Fill image aray with the color grid values
     int count = 0;

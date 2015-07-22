@@ -1,8 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
-* FW4SPL - Copyright (C) IRCAD, 2009-2013.
-* Distributed under the terms of the GNU Lesser General Public License (LGPL) as
-* published by the Free Software Foundation.
-* ****** END LICENSE BLOCK ****** */
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/base.hpp>
 
@@ -19,17 +19,19 @@
 namespace ioMidas
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioMidas::SModelSeriesWriter , ::fwMedData::ModelSeries );
+fwServicesRegisterMacro( ::io::IWriter, ::ioMidas::SModelSeriesWriter, ::fwMedData::ModelSeries );
 
 //------------------------------------------------------------------------------
 
 SModelSeriesWriter::SModelSeriesWriter() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SModelSeriesWriter::~SModelSeriesWriter() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -38,7 +40,7 @@ void SModelSeriesWriter::configuring() throw(::fwTools::Failed)
     ::io::IWriter::configuring();
 
 
-    typedef SPTR(::fwRuntime::ConfigurationElement) ConfigurationElement;
+    typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationElement;
     typedef std::vector < ConfigurationElement >    ConfigurationElementContainer;
 
     ConfigurationElementContainer version = m_configuration->find("serverVersion");
@@ -133,12 +135,14 @@ void SModelSeriesWriter::configureWithIHM()
 //------------------------------------------------------------------------------
 
 void SModelSeriesWriter::starting() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void SModelSeriesWriter::stopping() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -158,8 +162,8 @@ void SModelSeriesWriter::info(std::ostream &_sstream )
 
 std::vector< std::string > SModelSeriesWriter::getSupportedExtensions()
 {
-    std::vector< std::string > extensions ;
-    return extensions ;
+    std::vector< std::string > extensions;
+    return extensions;
 }
 
 //------------------------------------------------------------------------------
@@ -172,7 +176,8 @@ std::string SModelSeriesWriter::getSelectorDialogTitle()
 //------------------------------------------------------------------------------
 
 void SModelSeriesWriter::updating() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

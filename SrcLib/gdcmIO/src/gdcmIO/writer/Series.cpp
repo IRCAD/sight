@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,8 +31,8 @@ namespace writer
 //------------------------------------------------------------------------------
 
 Series::Series(::fwDataIO::writer::IObjectWriter::Key key) :
-        ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
-         m_fiducialsExportMode(SPATIAL_FIDUCIALS)
+    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+    m_fiducialsExportMode(SPATIAL_FIDUCIALS)
 {
 }
 
@@ -54,13 +54,13 @@ void Series::write() throw (::gdcmIO::exception::Failed)
 
     // Initialization shared object
     SPTR(::gdcmIO::container::DicomInstance) instance =
-            ::boost::make_shared< ::gdcmIO::container::DicomInstance >(series, multiFiles);
+        ::boost::make_shared< ::gdcmIO::container::DicomInstance >(series, multiFiles);
 
     // Retrieve series SOPClassUID
     const std::string& sopClassUID = instance->getCRefSOPClassUID();
 
     if(sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::CTImageStorage) ||
-            sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
+       sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
     {
         ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
         SLM_ASSERT("::fwMedData::ImageSeries not instanced", imageSeries);
@@ -72,9 +72,9 @@ void Series::write() throw (::gdcmIO::exception::Failed)
         imageIOD.write(series);
 
         ::fwData::PointList::sptr landmarks =
-                image->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
+            image->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
         ::fwData::Vector::sptr distances =
-                image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+            image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
         if((landmarks && !landmarks->getCRefPoints().empty()) || (distances && !distances->empty()))
         {
             // Write Landmarks and Distances
@@ -86,7 +86,7 @@ void Series::write() throw (::gdcmIO::exception::Failed)
             else
             {
                 ::gdcmIO::writer::iod::ComprehensiveSRIOD documentIOD(instance, this->getFolder(),
-                        m_fiducialsExportMode == COMPREHENSIVE_3D_SR);
+                                                                      m_fiducialsExportMode == COMPREHENSIVE_3D_SR);
                 documentIOD.write(series);
             }
         }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,18 +27,20 @@ namespace tuto03
 //-----------------------------------------------------------------------------
 
 // Declare a new service of type IReader for read an Image
-fwServicesRegisterMacro( ::io::IReader , ::devForum::tuto03::ImageReaderService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IReader, ::devForum::tuto03::ImageReaderService, ::fwData::Image );
 
 //-----------------------------------------------------------------------------
 
 ImageReaderService::ImageReaderService() throw()
     : ::devForum::tuto02::ImageReaderService()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ImageReaderService::~ImageReaderService() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -61,7 +63,7 @@ void ImageReaderService::notifyMessage()
 
     // Creation of an image message to say that image is an new image
     ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
+    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
 
     // Notifies message to all service listeners
     ::fwServices::IEditionService::notify( this->getSptr(), associatedImage, msg );

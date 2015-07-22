@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,8 +21,8 @@ namespace sr
 //------------------------------------------------------------------------------
 
 DicomSRNode::DicomSRNode(const DicomCodedAttribute& codedAttribute, const std::string& type,
-        const std::string& relationship) :
-        m_codedAttribute(codedAttribute), m_type(type), m_relationship(relationship)
+                         const std::string& relationship) :
+    m_codedAttribute(codedAttribute), m_type(type), m_relationship(relationship)
 {
 }
 
@@ -56,7 +56,7 @@ void DicomSRNode::write(::gdcm::DataSet &dataset) const
     if(!m_codedAttribute.getCodeValue().empty() && !m_codedAttribute.getCodingSchemeDesignator().empty())
     {
         ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
-                this->createConceptNameCodeSequence(dataset, m_codedAttribute);
+            this->createConceptNameCodeSequence(dataset, m_codedAttribute);
         ::gdcmIO::helper::DicomData::insertSQ<0x0040, 0xa043>(codeSequence, dataset);
 
     }
@@ -71,7 +71,7 @@ void DicomSRNode::write(::gdcm::DataSet &dataset) const
 //------------------------------------------------------------------------------
 
 ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > DicomSRNode::createConceptNameCodeSequence(
-        ::gdcm::DataSet &dataset, const DicomCodedAttribute& codedAttribute) const
+    ::gdcm::DataSet &dataset, const DicomCodedAttribute& codedAttribute) const
 {
     // Write code sequence
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence = new ::gdcm::SequenceOfItems();

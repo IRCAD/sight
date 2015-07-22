@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,8 +30,8 @@ namespace writer
 //------------------------------------------------------------------------------
 
 SeriesDB::SeriesDB(::fwDataIO::writer::IObjectWriter::Key key) :
-        ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
-         m_fiducialsExportMode(::gdcmIO::writer::Series::SPATIAL_FIDUCIALS)
+    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+    m_fiducialsExportMode(::gdcmIO::writer::Series::SPATIAL_FIDUCIALS)
 {
 }
 
@@ -69,7 +69,7 @@ void SeriesDB::write()
 
         // Forward event progress to its parents
         ::fwTools::ProgressAdviser::ProgessHandler handler =
-        ::boost::bind( &Series::notifyProgress, this, ::boost::lambda::_1, ::boost::lambda::_2);
+            ::boost::bind( &Series::notifyProgress, this, ::boost::lambda::_1, ::boost::lambda::_2);
         writer->addHandler(handler);
 
         // Write a series
@@ -86,7 +86,7 @@ std::string SeriesDB::extension()
 
 //------------------------------------------------------------------------------
 
-bool SeriesDB::seriesComparator(SPTR(::fwMedData::Series) a, SPTR(::fwMedData::Series) b)
+bool SeriesDB::seriesComparator(SPTR(::fwMedData::Series)a, SPTR(::fwMedData::Series)b)
 {
     ::fwMedData::ModelSeries::sptr ma = ::fwMedData::ModelSeries::dynamicCast(a);
     ::fwMedData::ModelSeries::sptr mb = ::fwMedData::ModelSeries::dynamicCast(b);

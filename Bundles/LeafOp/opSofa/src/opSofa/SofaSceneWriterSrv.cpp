@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,9 +47,9 @@ fwServicesRegisterMacro( ::io::IWriter, ::opSofa::SofaSceneWriterSrv, ::fwMedDat
  */
 SofaSceneWriterSrv::SofaSceneWriterSrv() throw()
 {
-    writeTrian = false;
+    writeTrian      = false;
     m_sceneTemplate = "";
-    m_useTempPath = false;
+    m_useTempPath   = false;
 }
 
 /**
@@ -67,7 +67,8 @@ void SofaSceneWriterSrv::configuring() throw ( ::fwTools::Failed )
     if(m_configuration->findConfigurationElement("writeTrian"))
     {
         std::string write = m_configuration->findConfigurationElement("writeTrian")->getValue();
-        if (write == "yes") {
+        if (write == "yes")
+        {
             writeTrian = true;
         }
     }
@@ -79,7 +80,8 @@ void SofaSceneWriterSrv::configuring() throw ( ::fwTools::Failed )
 
     if(m_configuration->findConfigurationElement("useTempPath"))
     {
-        if (m_configuration->findConfigurationElement("useTempPath")->getValue() == "yes") {
+        if (m_configuration->findConfigurationElement("useTempPath")->getValue() == "yes")
+        {
             m_useTempPath = true;
         }
     }
@@ -106,16 +108,24 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
 {
     // Ask folder destination
     QString folder;
-    if (m_useTempPath) {
+    if (m_useTempPath)
+    {
         folder = QDir::tempPath() + QDir::separator().toAscii() + "opsofascene";
         QDir dir;
         dir.mkdir(folder);
-    } else if (writeTrian) {
+    }
+    else if (writeTrian)
+    {
         folder = QFileDialog::getExistingDirectory(0, "Choose a folder to write file scene");
-    } else {
+    }
+    else
+    {
         folder = QFileDialog::getSaveFileName(0, "Write file scn", QString(), "Scene (*.scn)");
     }
-    if (folder == "") return;
+    if (folder == "")
+    {
+        return;
+    }
 
     ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
     SLM_ASSERT("Invalid object", ms);
@@ -123,14 +133,17 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     // Get templates
     QString templateFile;
     QString nodeTemplateFile;
-    if (m_sceneTemplate != "") {
+    if (m_sceneTemplate != "")
+    {
         QFile file("./Bundles/opSofa_0-1/" + QString(m_sceneTemplate.c_str()));
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         templateFile = file.readAll();
         QFile file2("./Bundles/opSofa_0-1/node" + QString(m_sceneTemplate.c_str()));
         file2.open(QIODevice::ReadOnly | QIODevice::Text);
         nodeTemplateFile = file2.readAll();
-    } else {
+    }
+    else
+    {
         QFile file("./Bundles/opSofa_0-1/template.xml");
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         templateFile = file.readAll();
@@ -140,7 +153,8 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     }
 
     // copy tools
-    if (writeTrian && m_sceneTemplate != "") {
+    if (writeTrian && m_sceneTemplate != "")
+    {
         QFile file("./Bundles/opSofa_0-1/cam.trian");
         file.copy(folder + "/cam.trian");
         QFile file2("./Bundles/opSofa_0-1/mors2.trian");
@@ -156,7 +170,7 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
         // Get info organ
         QString organName = QString(rec->getOrganName().c_str());
         bool organVisible = rec->getIsVisible();
-        QString organUid = QString(rec->getID().c_str());
+        QString organUid  = QString(rec->getID().c_str());
         ::boost::filesystem::path filename = "";
 
         if (organVisible && organName != "mors2" && organName != "cam")
@@ -167,7 +181,7 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
                 ::fwData::Mesh::sptr mesh = rec->getMesh();
                 std::stringstream meshPath;
                 meshPath << folder.toStdString() << QDir::separator().toAscii() << organName.toStdString() << ".trian";
-                filename = ::boost::filesystem::path(meshPath.str());
+                filename                                    = ::boost::filesystem::path(meshPath.str());
                 ::fwDataIO::writer::MeshWriter::sptr writer = ::fwDataIO::writer::MeshWriter::New();
                 writer->setObject(mesh);
                 writer->setFile(filename);
@@ -190,10 +204,13 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
 
     // Save file scn
     std::string scnFile;
-    if (writeTrian) {
-        scnFile =  folder.toStdString() + QDir::separator().toAscii()  + "sofa.scn";
-    } else {
-        scnFile =  folder.toStdString();
+    if (writeTrian)
+    {
+        scnFile = folder.toStdString() + QDir::separator().toAscii()  + "sofa.scn";
+    }
+    else
+    {
+        scnFile = folder.toStdString();
     }
     std::ofstream fileout (scnFile.c_str(), std::ios::out);
     fileout << templateFile.toStdString();
@@ -201,17 +218,22 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
 
     // Ask launch animation
     int answer;
-    if (m_useTempPath) {
+    if (m_useTempPath)
+    {
         answer = QMessageBox::Yes;
-    } else {
-        answer = QMessageBox::question(0, "Write successful !", "Do you want to launch animation ?", QMessageBox::Yes | QMessageBox::No);
+    }
+    else
+    {
+        answer = QMessageBox::question(0, "Write successful !", "Do you want to launch animation ?",
+                                       QMessageBox::Yes | QMessageBox::No);
     }
 
     // If answer is yes
-    if (answer == QMessageBox::Yes) {
+    if (answer == QMessageBox::Yes)
+    {
         // Notification
         ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-        ::fwData::String::sptr data = ::fwData::String::New(scnFile);
+        ::fwData::String::sptr data       = ::fwData::String::New(scnFile);
         msg->addEvent( "NEW_SOFA_SCENE", data );
         ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
     }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@ class QListWidgetItem;
 
 namespace fwData
 {
-    class PointList;
+class PointList;
 }
 
 namespace uiSpline
@@ -46,25 +46,26 @@ namespace uiSpline
  * @brief Lists spline points.
  * @class SSplinePointsEditor
  */
-class UISPLINE_CLASS_API SSplinePointsEditor : public QObject, public ::gui::editor::IEditor
+class UISPLINE_CLASS_API SSplinePointsEditor : public QObject,
+                                               public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSplinePointsEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSplinePointsEditor)(::gui::editor::IEditor) );
 
     /// Constructor.
-    UISPLINE_API SSplinePointsEditor () throw() ;
+    UISPLINE_API SSplinePointsEditor () throw();
 
     /// Destructor.
-    UISPLINE_API virtual ~SSplinePointsEditor () throw() ;
+    UISPLINE_API virtual ~SSplinePointsEditor () throw();
 
     /**
      * @name Signal types.
      * @{ */
-    typedef ::fwCom::Signal< void(::fwData::Point::sptr) > PointSelectedSignalType;
-    typedef ::fwCom::Signal< void(int) > IndexPointSelectedSignalType;
+    typedef ::fwCom::Signal< void (::fwData::Point::sptr) > PointSelectedSignalType;
+    typedef ::fwCom::Signal< void (int) > IndexPointSelectedSignalType;
     /**  @} */
 
     /**
@@ -91,11 +92,11 @@ protected:
     /**
      * @brief Overrides IService::configuring().
      * Configuration example :
-     @verbatim
-     <config>
+       @verbatim
+       <config>
         <points uid="..." /> <!-- ::fwData::PointList containing spline points to display -->
-     </config>
-     @endverbatim
+       </config>
+       @endverbatim
      *
      * @throw fwTools::Failed
      */
@@ -132,7 +133,7 @@ protected:
      * @name Slot type and key.
      * @{ */
     UISPLINE_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_POINTLIST_SLOT;
-    typedef ::fwCom::Slot<void()> UpdatePointListSlotType;
+    typedef ::fwCom::Slot<void ()> UpdatePointListSlotType;
     /**  @} */
 
 protected Q_SLOTS:
@@ -175,7 +176,7 @@ private:
     /// Button to remove all points.
     QPointer< QPushButton > m_removeAllPointsButton;
 
-    /// Helper to connect 
+    /// Helper to connect
     ::navigation::ConnectPoints::sptr m_connectObj;
 
     /// Slot called to update the point list of view points.

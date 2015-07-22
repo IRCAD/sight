@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@
 namespace igtlProtocol
 {
 ///converterRegisterMacro need to be called by every converter
-#define converterRegisterMacro( ClassName )\
+#define converterRegisterMacro( ClassName ) \
     static ::igtlProtocol::DataConverter::Registrar< ClassName > BOOST_PP_CAT( s__factory__record__, __LINE__);
 
 /**

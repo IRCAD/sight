@@ -1,8 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
-* FW4SPL - Copyright (C) IRCAD, 2009-2013.
-* Distributed under the terms of the GNU Lesser General Public License (LGPL) as
-* published by the Free Software Foundation.
-* ****** END LICENSE BLOCK ****** */
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #ifndef __IOMIDAS_FOLDERDIALOG_HPP__
 #define __IOMIDAS_FOLDERDIALOG_HPP__
@@ -29,26 +29,34 @@ namespace ioMidas
  */
 class IOMIDAS_CLASS_API FolderDialog : public QDialog
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     /**
      * @name Constructor/Destructor.
      * @{ */
     IOMIDAS_API FolderDialog();
-    ~FolderDialog() {}
+    ~FolderDialog()
+    {
+    }
     /**  @} */
 
     /// Returns folder name built with this dialog.
-    std::string getMidasFolderName() const { return m_midasFolderName; }
+    std::string getMidasFolderName() const
+    {
+        return m_midasFolderName;
+    }
 
     /// Sets separator shown between folder ID and extra information field.
-    void setSeparator(const std::string& sep) { m_separator = sep; }
+    void setSeparator(const std::string& sep)
+    {
+        m_separator = sep;
+    }
 
     /// Sets default folder ID.
     IOMIDAS_API void setFolderId(const std::string& folderId);
 
-private :
+private:
     /**
      * @brief Sets label value showing final folder name according to m_txtFolderID and m_txtExtraInformation.
      */
@@ -63,7 +71,7 @@ private Q_SLOTS:
     void onExtraInformationChanged(const QString &txt);
     /**  @} */
 
-private :
+private:
 
     /**
      * @name Widgets to edit and show Midas folder name.

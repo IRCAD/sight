@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,8 +54,9 @@ protected:
      * @param[in] imageType Image Type
      */
     FWDICOMIOEXT_API void directRead(::fwData::Image::sptr image, DicomPathContainerType instances,
-            unsigned short rows, unsigned short columns, int depth, double rescaleSlope, double rescaleIntercept,
-            unsigned short pixelRepresentation, ::fwTools::Type imageType);
+                                     unsigned short rows, unsigned short columns, int depth, double rescaleSlope,
+                                     double rescaleIntercept,
+                                     unsigned short pixelRepresentation, ::fwTools::Type imageType);
 
     /**
      * @brief Read an image using direct mode and perform a RGB lookup
@@ -68,8 +69,9 @@ protected:
      * @param[in] bitsAllocated Number of bits allocated
      */
     FWDICOMIOEXT_API void directRGBLookupRead(::fwData::Image::sptr image, DcmDataset& dataset,
-            DicomPathContainerType instances, unsigned short rows, unsigned short columns, int depth,
-            unsigned short bitsAllocated);
+                                              DicomPathContainerType instances, unsigned short rows,
+                                              unsigned short columns, int depth,
+                                              unsigned short bitsAllocated);
 
     /**
      * @brief Read an image using lazy mode
@@ -84,8 +86,9 @@ protected:
      * @param[in] imageType Image Type
      */
     FWDICOMIOEXT_API void lazyRead(::fwData::Image::sptr image, ::fwDicomData::DicomSeries::sptr series,
-            unsigned short rows, unsigned short columns, int depth, double rescaleSlope, double rescaleIntercept,
-            unsigned short pixelRepresentation, ::fwTools::Type imageType);
+                                   unsigned short rows, unsigned short columns, int depth, double rescaleSlope,
+                                   double rescaleIntercept,
+                                   unsigned short pixelRepresentation, ::fwTools::Type imageType);
 
     /**
      * @brief Read an image using lazy mode and perform a RGB lookup
@@ -100,8 +103,9 @@ protected:
      * @param[in] imageType Image type
      */
     FWDICOMIOEXT_API void lazyRGBLookupRead(::fwData::Image::sptr image, ::fwDicomData::DicomSeries::sptr series,
-            DcmDataset& dataset, DicomPathContainerType instances, unsigned short rows, unsigned short columns,
-            int depth, unsigned short bitsAllocated, ::fwTools::Type imageType);
+                                            DcmDataset& dataset, DicomPathContainerType instances, unsigned short rows,
+                                            unsigned short columns,
+                                            int depth, unsigned short bitsAllocated, ::fwTools::Type imageType);
 
 
 

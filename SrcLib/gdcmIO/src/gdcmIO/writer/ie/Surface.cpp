@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,16 +36,16 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Surface::Surface(SPTR(::gdcm::Writer) writer,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        SPTR(::gdcmIO::container::DicomInstance) imageInstance,
-        ::fwMedData::ModelSeries::sptr series):
-        ::gdcmIO::writer::ie::InformationEntity< ::fwMedData::ModelSeries >(writer, instance, series),
-         m_imageInstance(imageInstance)
+Surface::Surface(SPTR(::gdcm::Writer)writer,
+                 SPTR(::gdcmIO::container::DicomInstance)instance,
+                 SPTR(::gdcmIO::container::DicomInstance)imageInstance,
+                 ::fwMedData::ModelSeries::sptr series) :
+    ::gdcmIO::writer::ie::InformationEntity< ::fwMedData::ModelSeries >(writer, instance, series),
+    m_imageInstance(imageInstance)
 {
     SLM_ASSERT("Image instance should not be null.", imageInstance);
     SLM_ASSERT("Image instance SOPInstanceUID container should not be empty.",
-            !imageInstance->getCRefSOPInstanceUIDContainer().empty());
+               !imageInstance->getCRefSOPInstanceUIDContainer().empty());
 
     // Create dictionary
     m_structureDictionary = ::fwData::StructureTraitsDictionary::New();
@@ -90,11 +90,11 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
     ::boost::posix_time::ptime ptime = boost::posix_time::second_clock::local_time();
 
     // Content Date - Type 1 - FIXME: Keep series date ?
-    std::string date = m_object->getDate().empty()?::fwTools::getDate(ptime):m_object->getDate();
+    std::string date = m_object->getDate().empty() ? ::fwTools::getDate(ptime) : m_object->getDate();
     ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0023 >(date, dataset);
 
     // Content Time - Type 1 - FIXME: Keep series time ?
-    std::string time =  m_object->getTime().empty()?::fwTools::getTime(ptime):m_object->getTime();
+    std::string time = m_object->getTime().empty() ? ::fwTools::getTime(ptime) : m_object->getTime();
     ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0033 >(time, dataset);
 
     // Identification of the segment
@@ -117,11 +117,11 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
     }
 
     ::fwData::StructureTraitsDictionary::StructureTypeNameContainer segmentLabelContainer =
-            m_structureDictionary->getStructureTypeNames();
+        m_structureDictionary->getStructureTypeNames();
 
     ::fwData::StructureTraits::sptr structure;
     if (std::find(segmentLabelContainer.begin(), segmentLabelContainer.end(), segmentLabel) !=
-            segmentLabelContainer.end())
+        segmentLabelContainer.end())
     {
         structure = m_structureDictionary->getStructure(segmentLabel);
     }
@@ -133,13 +133,13 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
 
     // Identify the segmentation from its name
     const ::gdcmIO::container::DicomCodedAttribute *anatomicRegion =
-            ::gdcmIO::helper::DictionarySegment::guessAnatRegionFromLabel(structure->getAnatomicRegion());
+        ::gdcmIO::helper::DictionarySegment::guessAnatRegionFromLabel(structure->getAnatomicRegion());
 
     const ::gdcmIO::container::DicomCodedAttribute *propertyCategory =
-            ::gdcmIO::helper::DictionarySegment::guessPropCategoryFromLabel(structure->getPropertyCategory());
+        ::gdcmIO::helper::DictionarySegment::guessPropCategoryFromLabel(structure->getPropertyCategory());
 
     const ::gdcmIO::container::DicomCodedAttribute *propertyType =
-            ::gdcmIO::helper::DictionarySegment::guessPropTypeFromLabel(structure->getPropertyType());
+        ::gdcmIO::helper::DictionarySegment::guessPropTypeFromLabel(structure->getPropertyType());
 
 
     // Add segmentation to GDCM Surface Writer
@@ -175,7 +175,8 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
     {
         // Anatomic Region Sequence (0x0008,0x2218) - Type 1
         ::gdcm::SegmentHelper::BasicCodedEntry anatomicRegionEntry(anatomicRegion->getCodeValue().c_str(),
-                anatomicRegion->getCodingSchemeDesignator().c_str(), anatomicRegion->getCodeMeaning().c_str());
+                                                                   anatomicRegion->getCodingSchemeDesignator().c_str(),
+                                                                   anatomicRegion->getCodeMeaning().c_str());
         segment->SetAnatomicRegion(anatomicRegionEntry);
     }
 
@@ -185,7 +186,8 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
         // Segmented Property Category Code Sequence (0x0062,0x0003) - Type 1
         // See: PS.3.3 Table 8.8-1 and Context ID is 7150
         ::gdcm::SegmentHelper::BasicCodedEntry propertyCategoryEntry(propertyCategory->getCodeValue().c_str(),
-                propertyCategory->getCodingSchemeDesignator().c_str(), propertyCategory->getCodeMeaning().c_str());
+                                                                     propertyCategory->getCodingSchemeDesignator().c_str(),
+                                                                     propertyCategory->getCodeMeaning().c_str());
         segment->SetPropertyCategory(propertyCategoryEntry);
     }
 
@@ -195,7 +197,8 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
         // Segmented Property Type Code Sequence (0x0062,0x000F) - Type 1
         // See: PS.3.3 Table 8.8-1 and PS 3.16 Context ID 7151
         ::gdcm::SegmentHelper::BasicCodedEntry propertyTypeEntry(propertyType->getCodeValue().c_str(),
-                propertyType->getCodingSchemeDesignator().c_str(), propertyType->getCodeMeaning().c_str());
+                                                                 propertyType->getCodingSchemeDesignator().c_str(),
+                                                                 propertyType->getCodeMeaning().c_str());
         segment->SetPropertyType(propertyTypeEntry);
     }
 
@@ -217,7 +220,7 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
         // WARNING : index+1 == segmentNumber == surfaceNumber because currently, reconstruction just contains one surface.*
         // Referenced Surface Number - Type 1
         ::gdcmIO::helper::DicomData::setTagValue< uint16_t, 0x0066, 0x002C >(segmentationNumber + 1,
-                referencedSurfaceDataset);
+                                                                             referencedSurfaceDataset);
 
         // Create Segment Surface Source Instance Sequence
         // Reference the image of the fwMedData::ImageSeries
@@ -225,9 +228,9 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
         surfaceSourceInstanceSequence->SetLengthToUndefined();
 
         // Include ‘Image SOP Instance Reference Macro’ Table C.10-3
-        const std::string &referencedSOPClassUID = m_imageInstance->getSOPClassUID();
+        const std::string &referencedSOPClassUID                            = m_imageInstance->getSOPClassUID();
         const std::vector< std::string >& referencedSOPInstanceUIDContainer =
-                m_imageInstance->getCRefSOPInstanceUIDContainer();
+            m_imageInstance->getCRefSOPInstanceUIDContainer();
 
         BOOST_FOREACH(const std::string& sopInstanceUID, referencedSOPInstanceUIDContainer)
         {
@@ -246,7 +249,8 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
         }
 
         // Segment Surface Source Instance Sequence - Type 1C
-        ::gdcmIO::helper::DicomData::insertSQ< 0x0066, 0x002E >(surfaceSourceInstanceSequence, referencedSurfaceDataset);
+        ::gdcmIO::helper::DicomData::insertSQ< 0x0066, 0x002E >(surfaceSourceInstanceSequence,
+                                                                referencedSurfaceDataset);
 
         referencedSurfaceSequence->AddItem(referencedSurfaceItem);
 
@@ -285,7 +289,7 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
 
     // Set DicomSurface data - NOTE: must be called before points and primitives writing
     SPTR(::gdcmIO::container::DicomSurface) surfaceContainer =
-            ::boost::make_shared< ::gdcmIO::container::DicomSurface >();
+        ::boost::make_shared< ::gdcmIO::container::DicomSurface >();
     surfaceContainer->setFromData(reconstruction);
 
     // Create Surface Sequence
@@ -328,13 +332,13 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
 
         // Recommended Presentation Type (0x0066,0x000D)
         surface->SetRecommendedPresentationType(
-                ::gdcmIO::helper::DicomData::convertToPresentationType(material->getRepresentationMode()));
+            ::gdcmIO::helper::DicomData::convertToPresentationType(material->getRepresentationMode()));
         OSLM_TRACE( "Recommended Presentation Type : " <<
-                ::gdcmIO::helper::DicomData::convertToPresentationTypeString(material->getRepresentationMode()));
+                    ::gdcmIO::helper::DicomData::convertToPresentationTypeString(material->getRepresentationMode()));
 
         // Finite Volume (0x0066,0x000E) - Type 1
         ::fwComEd::helper::Mesh helperMesh(reconstruction->getMesh());
-        surface->SetFiniteVolume(helperMesh.isClosed()?(::gdcm::Surface::YES):(::gdcm::Surface::NO));
+        surface->SetFiniteVolume(helperMesh.isClosed() ? (::gdcm::Surface::YES): (::gdcm::Surface::NO));
 
         // Manifold (0x0066,0x0010) - Type 1
         surface->SetManifold(::gdcm::Surface::NO);
@@ -356,9 +360,9 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
             ::gdcm::DataElement &pointCoordData = surface->GetPointCoordinatesData();
             const float *pointCoordinatesData = surfaceContainer->getPointCoordData().get();
             pointCoordData.SetByteValue((char*) pointCoordinatesData,
-                    3 * surfaceContainer->getPointCoordSize() * sizeof(*pointCoordinatesData));
+                                        3 * surfaceContainer->getPointCoordSize() * sizeof(*pointCoordinatesData));
             OSLM_TRACE("Point Coordinates Data buffer size : " << 3 * surfaceContainer->getPointCoordSize()
-                    * sizeof(*pointCoordinatesData));
+                       * sizeof(*pointCoordinatesData));
 
             pointsSequence->AddItem(pointsItem);
 
@@ -385,9 +389,9 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
             ::gdcm::DataElement &normalCoordData = surface->GetVectorCoordinateData();
             const float * normalCoordinatesData = surfaceContainer->getNormalCoordData().get();
             normalCoordData.SetByteValue((char*) normalCoordinatesData,
-                    3 * surfaceContainer->getNormalCoordSize() * sizeof(*normalCoordinatesData));
+                                         3 * surfaceContainer->getNormalCoordSize() * sizeof(*normalCoordinatesData));
             OSLM_TRACE("Point Coordinates Data buffer size : " << 3 * surfaceContainer->getNormalCoordSize() *
-                    sizeof(*normalCoordinatesData));
+                       sizeof(*normalCoordinatesData));
 
             normalSequence->AddItem(normalsItem);
         }
@@ -406,7 +410,7 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
             ::gdcm::DataElement &pointIndexData = primitive->GetPrimitiveData();
             pointIndexData.SetVL(sizeof(uint32_t));
             const uint32_t *pointIndexListData = surfaceContainer->getPointIndexList().get();
-            unsigned long indexCount = 3 * surfaceContainer->getPointIndexSize();
+            unsigned long indexCount           = 3 * surfaceContainer->getPointIndexSize();
             pointIndexData.SetByteValue((char*) pointIndexListData, indexCount * sizeof(uint32_t));
             OSLM_TRACE("Point Index List buffer size : " << indexCount * sizeof(uint32_t));
 
@@ -427,9 +431,9 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
     {
         //See: PS.3.3 Table 8.8-1 and PS 3.16 Context ID 7162
         ::gdcm::SegmentHelper::BasicCodedEntry algoFamily;
-        algoFamily.CV = "1231009";
+        algoFamily.CV  = "1231009";
         algoFamily.CSD = "DCM";
-        algoFamily.CM = "Manual Processing";
+        algoFamily.CM  = "Manual Processing";
         // Algorithm Family Code Sequence (0x0066,0x002F) - Type 1
         surface->SetAlgorithmFamily(algoFamily);
     }
@@ -438,11 +442,11 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
 
     // Algorithm Version (0x0066,0x0031) - Type 1
-    std::string algorithVersion = (profile)?(profile->getName()+" "+profile->getVersion()):"Unknown";
+    std::string algorithVersion = (profile) ? (profile->getName()+" "+profile->getVersion()) : "Unknown";
     surface->SetAlgorithmVersion(algorithVersion.c_str());
 
     // Algorithm Name (0x0066,0x0036) - Type 1
-    std::string algorithName = (profile)?(profile->getName()):"Unknown";
+    std::string algorithName = (profile) ? (profile->getName()) : "Unknown";
     surface->SetAlgorithmName(algorithName.c_str());
 
 }

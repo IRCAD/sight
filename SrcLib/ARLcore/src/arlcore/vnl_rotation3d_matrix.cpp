@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,9 +17,10 @@
 #include <arlcore/vnl_rotation3d_vector.h>
 #include <arlcore/Optimization.h>
 
-arlCore::vnl_rotation3d_matrix::vnl_rotation3d_matrix( void ):
-vnl_matrix_fixed<double,3,3>()
-{}
+arlCore::vnl_rotation3d_matrix::vnl_rotation3d_matrix( void ) :
+    vnl_matrix_fixed<double,3,3>()
+{
+}
 
 arlCore::vnl_rotation3d_matrix::vnl_rotation3d_matrix( const vnl_rotation3d_vector& rv )
 {
@@ -40,7 +41,8 @@ arlCore::vnl_rotation3d_matrix::vnl_rotation3d_matrix( double phi, double theta,
 }
 
 arlCore::vnl_rotation3d_matrix::~vnl_rotation3d_matrix( void )
-{}
+{
+}
 
 arlCore::vnl_rotation3d_matrix& arlCore::vnl_rotation3d_matrix::operator=( const vnl_rotation3d_vector& rv )
 {
@@ -63,17 +65,27 @@ bool arlCore::vnl_rotation3d_matrix::is_rotation( void ) const
 {
     vnl_matrix_fixed<double,3,3> test_Identity;
     test_Identity = (*this) * this->transpose(); //on verifie d'abord pour le produit
-    if( test_Identity.is_identity(1e-8) || fabs(vnl_det( *this ) -1) < 1e-6  ) return true;
-    else return false;
+    if( test_Identity.is_identity(1e-8) || fabs(vnl_det( *this ) -1) < 1e-6  )
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 vnl_matrix<double> arlCore::vnl_rotation3d_matrix::as_matrix( void )
 {
     vnl_matrix<double> tmp(3,3);
     unsigned int i, j;
-    for(i=0; i<3; i++)
-        for(j=0; j<3; j++)
-             tmp(i,j) = (*this)(i,j);
+    for(i = 0; i<3; i++)
+    {
+        for(j = 0; j<3; j++)
+        {
+            tmp(i,j) = (*this)(i,j);
+        }
+    }
     return tmp;
 }
 
@@ -89,63 +101,78 @@ bool arlCore::vnl_rotation3d_matrix::closest_rotation( void )
 //  V.transpose();
     tmp2 = svd_T_matrix.U() * V.transpose();
 //  this->Mul(U,V);  // R = U.Vtrp
-  double det = vnl_det( tmp2 );
-  // If s = det(U.Vtrp) id not +1 or -1 : error
+    double det = vnl_det( tmp2 );
+    // If s = det(U.Vtrp) id not +1 or -1 : error
 //  if( det_test >  small_val )
 //      {
 //      std::cout << "det = " << svd_T_matrix.determinant_magnitude() << "      |det|-1 = " << det_test << std::endl;
 //      std::cout << "IsValid : non unit determinant" <<std::endl;
-        //throw RotMat3D::ErrNonRotMat("LSQRot : non unit determinant");
+    //throw RotMat3D::ErrNonRotMat("LSQRot : non unit determinant");
 //      }
-  // If s = -1, we should multiply by s = -1 both the smallest
-  // singular value of diag and the corresponding ligne in R
+// If s = -1, we should multiply by s = -1 both the smallest
+// singular value of diag and the corresponding ligne in R
     if(det < 0.0)
-        {
-    // find smallest singular value
-    //    s = w(0);
-    //    Index i_dmax = 0;
-    //    for(i=1;i<dim;i++)
-    //      if( w(i) < s ) {
-    //        s = w(i);
-    //        i_dmax = i;
-    //      }
+    {
+        // find smallest singular value
+        //    s = w(0);
+        //    Index i_dmax = 0;
+        //    for(i=1;i<dim;i++)
+        //      if( w(i) < s ) {
+        //        s = w(i);
+        //        i_dmax = i;
+        //      }
 
-    // in vxl : singular value are ranked from the largest to the smallest in svd_T_matrix.W()
-    // Multiply the sing. val and the corresponding row in V by -1
+        // in vxl : singular value are ranked from the largest to the smallest in svd_T_matrix.W()
+        // Multiply the sing. val and the corresponding row in V by -1
 //    w(i_dmax) *= -1.0;
-        for(i=0;i<dim;i++)
+        for(i = 0; i<dim; i++)
+        {
             V(i,2) *= -1.0;
+        }
         // and recompute the rotation
         //this->Mul( U, V);  // R = U.Vtrp
         tmp2 = svd_T_matrix.U() * V.transpose();
     }
-    for(i=0; i<3; i++)
-        for(j=0; j<3; j++)
-             (*this)(i,j) = tmp2(i,j);
-  // Grep for the number of singular (0) values
-  {
-    // Find the max : dans la vxl smw = svd.W(3,3)
-    double smax = svd_T_matrix.W(0,0);
+    for(i = 0; i<3; i++)
+    {
+        for(j = 0; j<3; j++)
+        {
+            (*this)(i,j) = tmp2(i,j);
+        }
+    }
+    // Grep for the number of singular (0) values
+    {
+        // Find the max : dans la vxl smw = svd.W(3,3)
+        double smax = svd_T_matrix.W(0,0);
 //    for(i=0;i<dim;i++)
 //      if(w(i)>smax) smax = w(i);
-    // counting small singular values
-    int num = 0;
-    if( svd_T_matrix.W(0,0) < small_val )
-      num = dim;
-    else
-      for(i=0;i<dim;i++)
-        if( ( (double) svd_T_matrix.W(i,i)/100. + smax) == ((double) smax)) num++;
+        // counting small singular values
+        int num = 0;
+        if( svd_T_matrix.W(0,0) < small_val )
+        {
+            num = dim;
+        }
+        else
+        {
+            for(i = 0; i<dim; i++)
+            {
+                if( ( (double) svd_T_matrix.W(i,i)/100. + smax) == ((double) smax))
+                {
+                    num++;
+                }
+            }
+        }
 //    if( num > 1)
 //      std::cout << "*** WARNING: Matrix has " << num << " null singular values" << std::endl;
-  }
+    }
 /* TODO Using residue
-  // compute the residue
-  {
+   // compute the residue
+   {
     double residue =0.0;
     for(i=0;i<dim;i++)
       residue += svd_T_matrix.W(i,i);
     return residue;
-  }*/
+   }*/
     return true;
 }
 
@@ -174,7 +201,9 @@ double arlCore::vnl_rotation3d_matrix::sq_rieman_dist ( const vnl_rotation3d_mat
 //          fprintf(stderr," tmp %f %f %f \n",  tmp(i,0), tmp(i,1), tmp(i,2));
     double theta = 0.0;
     if( fabs ( ( vnl_trace(tmp) - 1.0 )/2.0 ) <= 1.0)
+    {
         theta = acos( ( vnl_trace(tmp) - 1.0 )/2.0 );
+    }
 //  else
 //  {
 //      if(Verbose) fprintf(stderr,"ATTENTION : dans sq_rieman_dist l'angle entre deux matrices de rotation est tellement proche de 0, qu'une erreur d'arrondi est peut-etre survenue (lié à la fonction acos qui n'est défini que dans [-1,1]). Par défaut, toute valeur en dehors de cet intervalle est fixé à 1\n");
@@ -207,7 +236,7 @@ double arlCore::vnl_rotation3d_matrix::average_rotation3d (const std::vector<vnl
     average_dist.set_matrix_list(rotation_list);
     vnl_powell compute_average(&average_dist);
     vnl_vector<double> vrot_solution(3);
-    vrot_solution(0)  = 0.0;  vrot_solution(1)  = 0.0;  vrot_solution(2)  = 0.0;
+    vrot_solution(0) = 0.0;  vrot_solution(1) = 0.0;  vrot_solution(2) = 0.0;
     compute_average.minimize(vrot_solution);
 
     std::cerr<<"Vecteur rotation moyen = "<<vrot_solution<<std::endl;
@@ -226,34 +255,42 @@ void arlCore::vnl_rotation3d_matrix::copy_in( const vnl_rotation3d_vector& rv )
     double c, s, theta, k1, k2, theta2, aux;
     unsigned int i, j;
     theta2 = rv[0] * rv[0] + rv[1] * rv[1] + rv[2] * rv[2];
-    theta = sqrt(theta2);
+    theta  = sqrt(theta2);
     if(theta > 1e-2 )
     {
-        c = cos(theta);
-        s = sin(theta);
+        c  = cos(theta);
+        s  = sin(theta);
         k1 = s / theta;
         k2 = (1 - c) / theta2;
     }
     else
     {   // Lim. Dev around theta = 0
         k2 = 1.0/2.0 - theta2/24.0;
-        c = 1.0 - theta2*k2;
+        c  = 1.0 - theta2*k2;
         k1 = 1.0 - theta2/6;
     }   // I + M*Mt
-    for ( i=0 ; i<3 ; ++i )
-        for ( j=0 ; j<=i ; ++j )
+    for ( i = 0; i<3; ++i )
+    {
+        for ( j = 0; j<=i; ++j )
         {
             (*this)[i][j] = k2 * rv[i] * rv[j];
-            if(i != j) (*this)[j][i] = (*this)[i][j];
-            else (*this)[i][i] += c;
+            if(i != j)
+            {
+                (*this)[j][i] = (*this)[i][j];
+            }
+            else
+            {
+                (*this)[i][i] += c;
+            }
         }
-    aux = k1 * rv[2];
+    }
+    aux            = k1 * rv[2];
     (*this)[0][1] -= aux;
     (*this)[1][0] += aux;
-    aux = k1 * rv[1];
+    aux            = k1 * rv[1];
     (*this)[0][2] += aux;
     (*this)[2][0] -= aux;
-    aux = k1 * rv[0];
+    aux            = k1 * rv[0];
     (*this)[1][2] -= aux;
     (*this)[2][1] += aux;
 }
@@ -261,7 +298,11 @@ void arlCore::vnl_rotation3d_matrix::copy_in( const vnl_rotation3d_vector& rv )
 void arlCore::vnl_rotation3d_matrix::copy_in( const vnl_matrix_fixed<double,3,3>& mat )
 {
     unsigned int i, j;
-    for(i=0;i<3;i++)
-        for(j=0;j<3;j++)
+    for(i = 0; i<3; i++)
+    {
+        for(j = 0; j<3; j++)
+        {
             put(i,j, mat(i,j));
+        }
+    }
 }

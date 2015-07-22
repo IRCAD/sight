@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -121,7 +121,7 @@ void SStringReader::notifyMessage()
 
     // Creation of an object message to say that data is modified
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT ) ;
+    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
 
     // Notifies message to all service listeners
     ::fwServices::IEditionService::notify( this->getSptr(), associatedObj, msg );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,10 +30,10 @@ bool filesStillExist( const ::fwDicomData::DicomSeries::sptr dicomSeries )
 
     for(::fwDicomData::DicomSeries::DicomPathContainerType::const_iterator itPath =
             dicomSeries->getLocalDicomPaths().begin();
-            allFilesExists && ( itPath != dicomSeries->getLocalDicomPaths().end() );
-            ++itPath )
+        allFilesExists && ( itPath != dicomSeries->getLocalDicomPaths().end() );
+        ++itPath )
     {
-        filePath = itPath->second;
+        filePath        = itPath->second;
         allFilesExists &= ::boost::filesystem::exists(filePath);
     }
     return allFilesExists;
@@ -45,12 +45,12 @@ ImageRGBLookupLazySource::ImageRGBLookupLazySource( ImageRGBLookupLazyInformatio
     m_dcmInfo ( dcmInfo )
 {
     SLM_ASSERT( "ImageRGBLookupLazySource needs at least one dicom file to read an image.",
-            !dcmInfo->m_dicomSeries->getLocalDicomPaths().empty());
+                !dcmInfo->m_dicomSeries->getLocalDicomPaths().empty());
 
-    m_frameSize = m_dcmInfo->m_rows*m_dcmInfo->m_columns*m_dcmInfo->m_imageType.sizeOf()*3;
-    m_currentFrame = 0;
+    m_frameSize       = m_dcmInfo->m_rows*m_dcmInfo->m_columns*m_dcmInfo->m_imageType.sizeOf()*3;
+    m_currentFrame    = 0;
     m_currentPosition = 0;
-    m_currentPath = m_dcmInfo->m_dicomSeries->getLocalDicomPaths().begin();
+    m_currentPath     = m_dcmInfo->m_dicomSeries->getLocalDicomPaths().begin();
 
     // Read instance
     DcmFileFormat fileFormat;
@@ -71,9 +71,9 @@ ImageRGBLookupLazySource::ImageRGBLookupLazySource( ImageRGBLookupLazyInformatio
         dataset->findAndGetUint16Array(DCM_RedPaletteColorLookupTableData, redLookup);
         dataset->findAndGetUint16Array(DCM_GreenPaletteColorLookupTableData, greenLookup);
         dataset->findAndGetUint16Array(DCM_BluePaletteColorLookupTableData, blueLookup);
-        m_redLookup = (void*) redLookup;
+        m_redLookup   = (void*) redLookup;
         m_greenLookup = (void*) greenLookup;
-        m_blueLookup = (void*) blueLookup;
+        m_blueLookup  = (void*) blueLookup;
     }
     else
     {
@@ -84,22 +84,28 @@ ImageRGBLookupLazySource::ImageRGBLookupLazySource( ImageRGBLookupLazyInformatio
         dataset->findAndGetUint8Array(DCM_RedPaletteColorLookupTableData, redLookup);
         dataset->findAndGetUint8Array(DCM_GreenPaletteColorLookupTableData, greenLookup);
         dataset->findAndGetUint8Array(DCM_BluePaletteColorLookupTableData, blueLookup);
-        m_redLookup = (void*) redLookup;
+        m_redLookup   = (void*) redLookup;
         m_greenLookup = (void*) greenLookup;
-        m_blueLookup = (void*) blueLookup;
+        m_blueLookup  = (void*) blueLookup;
     }
 
     if(m_dcmInfo->m_bitsAllocated == 16)
     {
-        m_frame = static_cast<char*>(::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyReader::createInstanceBuffer(
-                m_dcmInfo->m_rows, m_dcmInfo->m_columns, m_currentPath->second, (Uint16*)m_redLookup,
-                (Uint16*)m_greenLookup, (Uint16*)m_blueLookup, m_dcmInfo->m_pixelValueBitsAllocated));
+        m_frame =
+            static_cast<char*>(::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyReader::createInstanceBuffer(
+                                   m_dcmInfo->m_rows, m_dcmInfo->m_columns, m_currentPath->second,
+                                   (Uint16*)m_redLookup,
+                                   (Uint16*)m_greenLookup, (Uint16*)m_blueLookup,
+                                   m_dcmInfo->m_pixelValueBitsAllocated));
     }
     else
     {
-        m_frame = static_cast<char*>(::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyReader::createInstanceBuffer(
-                m_dcmInfo->m_rows, m_dcmInfo->m_columns, m_currentPath->second, (Uint8*)m_redLookup,
-                (Uint8*)m_greenLookup, (Uint8*)m_blueLookup, m_dcmInfo->m_pixelValueBitsAllocated));
+        m_frame =
+            static_cast<char*>(::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyReader::createInstanceBuffer(
+                                   m_dcmInfo->m_rows, m_dcmInfo->m_columns, m_currentPath->second,
+                                   (Uint8*)m_redLookup,
+                                   (Uint8*)m_greenLookup, (Uint8*)m_blueLookup,
+                                   m_dcmInfo->m_pixelValueBitsAllocated));
     }
 }
 
@@ -114,7 +120,7 @@ std::streamsize ImageRGBLookupLazySource::read(char* stream, std::streamsize siz
     {
         bool exist = filesStillExist(m_dcmInfo->m_dicomSeries);
         OSLM_ERROR_IF( "Error while reading dicom files : " <<
-                m_dcmInfo->m_dicomSeries->getLocalDicomPaths().begin()->second.string() << " ...", !exist );
+                       m_dcmInfo->m_dicomSeries->getLocalDicomPaths().begin()->second.string() << " ...", !exist );
     }
 
     // Load new frame
@@ -122,7 +128,7 @@ std::streamsize ImageRGBLookupLazySource::read(char* stream, std::streamsize siz
     {
         // Copy remaining bytes
         const size_t remainingBytes = m_frameSize - m_currentPosition;
-        const size_t extraBytes = size - remainingBytes;
+        const size_t extraBytes     = size - remainingBytes;
 
         if(remainingBytes > 0)
         {
@@ -144,20 +150,28 @@ std::streamsize ImageRGBLookupLazySource::read(char* stream, std::streamsize siz
             {
                 if(m_dcmInfo->m_bitsAllocated == 16)
                 {
-                    m_frame = static_cast<char*>(::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyReader::createInstanceBuffer(
-                            m_dcmInfo->m_rows, m_dcmInfo->m_columns, m_currentPath->second, (Uint16*)m_redLookup,
-                            (Uint16*)m_greenLookup, (Uint16*)m_blueLookup, m_dcmInfo->m_pixelValueBitsAllocated));
+                    m_frame =
+                        static_cast<char*>(::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyReader::
+                                           createInstanceBuffer(
+                                               m_dcmInfo->m_rows, m_dcmInfo->m_columns, m_currentPath->second,
+                                               (Uint16*)m_redLookup,
+                                               (Uint16*)m_greenLookup, (Uint16*)m_blueLookup,
+                                               m_dcmInfo->m_pixelValueBitsAllocated));
                 }
                 else
                 {
-                    m_frame = static_cast<char*>(::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyReader::createInstanceBuffer(
-                            m_dcmInfo->m_rows, m_dcmInfo->m_columns, m_currentPath->second, (Uint8*)m_redLookup,
-                            (Uint8*)m_greenLookup, (Uint8*)m_blueLookup, m_dcmInfo->m_pixelValueBitsAllocated));
+                    m_frame =
+                        static_cast<char*>(::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyReader::
+                                           createInstanceBuffer(
+                                               m_dcmInfo->m_rows, m_dcmInfo->m_columns, m_currentPath->second,
+                                               (Uint8*)m_redLookup,
+                                               (Uint8*)m_greenLookup, (Uint8*)m_blueLookup,
+                                               m_dcmInfo->m_pixelValueBitsAllocated));
                 }
 
                 std::copy( m_frame + m_currentPosition, m_frame + m_currentPosition + extraBytes, stream);
-                m_currentPosition+= extraBytes;
-                result = remainingBytes + extraBytes;
+                m_currentPosition += extraBytes;
+                result             = remainingBytes + extraBytes;
             }
         }
         else
@@ -171,10 +185,10 @@ std::streamsize ImageRGBLookupLazySource::read(char* stream, std::streamsize siz
     {
         std::copy( m_frame + m_currentPosition, m_frame + m_currentPosition + size, stream);
         m_currentPosition += size;
-        result = size;
+        result             = size;
 
         if(m_currentPath->second == m_dcmInfo->m_dicomSeries->getLocalDicomPaths().rbegin()->second &&
-                m_currentPosition == m_frameSize)
+           m_currentPosition == m_frameSize)
         {
             SLM_TRACE("Reading process over.");
             delete m_frame;
@@ -189,15 +203,16 @@ std::streamsize ImageRGBLookupLazySource::read(char* stream, std::streamsize siz
 //------------------------------------------------------------------------------
 
 ImageRGBLookupLazyStream::ImageRGBLookupLazyStream( ImageRGBLookupLazyInformation::sptr dcmInfo ) :
-        m_dcmInfo ( dcmInfo )
-{}
+    m_dcmInfo ( dcmInfo )
+{
+}
 
 //------------------------------------------------------------------------------
 
 SPTR(std::istream) ImageRGBLookupLazyStream::get()
 {
     SPTR(::boost::iostreams::stream<ImageRGBLookupLazySource>) is
-            = ::boost::make_shared< ::boost::iostreams::stream<ImageRGBLookupLazySource> >( m_dcmInfo );
+        = ::boost::make_shared< ::boost::iostreams::stream<ImageRGBLookupLazySource> >( m_dcmInfo );
     return is;
 }
 

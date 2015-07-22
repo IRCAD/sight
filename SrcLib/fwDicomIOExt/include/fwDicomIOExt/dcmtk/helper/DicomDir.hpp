@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ class FWDICOMIOEXT_CLASS_API DicomDir
 public:
     /// Find Dicom instances in a DicomDir file.
     FWDICOMIOEXT_API static bool readDicomDir(const ::boost::filesystem::path &root,
-            std::vector<std::string>& dicomFiles);
+                                              std::vector<std::string>& dicomFiles);
 
 private:
     /// Create a regex used to find the correct case of a filename as Dicom only store uppercase paths.
@@ -36,7 +36,7 @@ private:
 
     /// Return the filename with the correct case.
     FWDICOMIOEXT_API static ::boost::filesystem::path getRealFilename(
-            const ::boost::filesystem::path &root, const std::string &filename);
+        const ::boost::filesystem::path &root, const std::string &filename);
 
 };
 

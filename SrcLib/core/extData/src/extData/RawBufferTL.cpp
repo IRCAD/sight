@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -94,11 +94,11 @@ SPTR(::extData::timeline::Object) RawBufferTL::createObject(::fwCore::HiResClock
 SPTR(::extData::timeline::RawBuffer) RawBufferTL::createBuffer(::fwCore::HiResClock::HiResClockType timestamp)
 {
     return ::boost::make_shared< ::extData::timeline::RawBuffer >(
-               timestamp,
-               (::extData::timeline::Buffer::BufferDataType) m_pool->malloc(),
-               m_pool->get_requested_size(),
-               ::boost::bind( &::boost::pool<>::free, m_pool, _1)
-               );
+        timestamp,
+        (::extData::timeline::Buffer::BufferDataType) m_pool->malloc(),
+        m_pool->get_requested_size(),
+        ::boost::bind( &::boost::pool<>::free, m_pool, _1)
+        );
 }
 
 //------------------------------------------------------------------------------

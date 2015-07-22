@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,7 +54,7 @@ void SeriesEnquirerTest::initializeConnection()
     // Connect to the pacs
     m_seriesEnquirer->connect();
     CPPUNIT_ASSERT_MESSAGE("The retriever should be connected to the pacs.",
-                m_seriesEnquirer->isConnectedToPacs());
+                           m_seriesEnquirer->isConnectedToPacs());
 
     // Try to send a C-ECHO request to the server
     bool ping = m_seriesEnquirer->pingPacs();
@@ -63,7 +63,7 @@ void SeriesEnquirerTest::initializeConnection()
     // Disconnect from the pacs
     m_seriesEnquirer->disconnect();
     CPPUNIT_ASSERT_MESSAGE("The retriever shouldn't be connected to the pacs.",
-                !m_seriesEnquirer->isConnectedToPacs());
+                           !m_seriesEnquirer->isConnectedToPacs());
 }
 
 //------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ void SeriesEnquirerTest::pullSeriesUsingMoveRetrieveMethod()
     // Try to pull series from the pacs
     responses = m_seriesEnquirer->findSeriesByPatientName("BOUABIDA");
     m_seriesEnquirer->pullSeriesUsingMoveRetrieveMethod(
-            ::fwDicomIOExt::dcmtk::helper::Series::toSeriesInstanceUIDContainer(responses));
+        ::fwDicomIOExt::dcmtk::helper::Series::toSeriesInstanceUIDContainer(responses));
     ::fwDicomIOExt::dcmtk::helper::Series::releaseResponses(responses);
 
     // Disconnect from the pacs
@@ -113,7 +113,7 @@ void SeriesEnquirerTest::pullSeriesUsingGetRetrieveMethod()
     OFList< QRResponse* > responses;
     responses = m_seriesEnquirer->findSeriesByPatientName("BOUABIDA");
     m_seriesEnquirer->pullSeriesUsingGetRetrieveMethod(
-            ::fwDicomIOExt::dcmtk::helper::Series::toSeriesInstanceUIDContainer(responses));
+        ::fwDicomIOExt::dcmtk::helper::Series::toSeriesInstanceUIDContainer(responses));
     ::fwDicomIOExt::dcmtk::helper::Series::releaseResponses(responses);
 
     // Disconnect from the pacs
@@ -138,11 +138,11 @@ void SeriesEnquirerTest::pullInstanceUsingMoveRetrieveMethod()
 
     // Try to pull instance from the pacs
     std::string sopInstanceUID = m_seriesEnquirer->findSOPInstanceUID(
-            "1.3.46.670589.33.1.1136976332028318543.28411712901005333956", 5);
+        "1.3.46.670589.33.1.1136976332028318543.28411712901005333956", 5);
     CPPUNIT_ASSERT_MESSAGE("Wrong SOP Instance UID.",
-            sopInstanceUID == "1.3.46.670589.33.1.16471645312175912258.25955668801046348746");
+                           sopInstanceUID == "1.3.46.670589.33.1.16471645312175912258.25955668801046348746");
     m_seriesEnquirer->pullInstanceUsingMoveRetrieveMethod(
-            "1.3.46.670589.33.1.1136976332028318543.28411712901005333956", sopInstanceUID);
+        "1.3.46.670589.33.1.1136976332028318543.28411712901005333956", sopInstanceUID);
 
     // Disconnect from the pacs
     m_seriesEnquirer->disconnect();
@@ -161,11 +161,11 @@ void SeriesEnquirerTest::pullInstanceUsingGetRetrieveMethod()
 
     // Try to pull instance from the pacs
     std::string sopInstanceUID = m_seriesEnquirer->findSOPInstanceUID(
-            "1.3.46.670589.33.1.1136976332028318543.28411712901005333956", 5);
+        "1.3.46.670589.33.1.1136976332028318543.28411712901005333956", 5);
     CPPUNIT_ASSERT_MESSAGE("Wrong SOP Instance UID.",
-            sopInstanceUID == "1.3.46.670589.33.1.16471645312175912258.25955668801046348746");
+                           sopInstanceUID == "1.3.46.670589.33.1.16471645312175912258.25955668801046348746");
     m_seriesEnquirer->pullInstanceUsingGetRetrieveMethod(
-            "1.3.46.670589.33.1.1136976332028318543.28411712901005333956", sopInstanceUID);
+        "1.3.46.670589.33.1.1136976332028318543.28411712901005333956", sopInstanceUID);
 
     // Disconnect from the pacs
     m_seriesEnquirer->disconnect();

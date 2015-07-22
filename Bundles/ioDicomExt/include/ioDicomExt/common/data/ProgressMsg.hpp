@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,9 +28,9 @@ namespace data
  */
 class IODICOMEXT_CLASS_API ProgressMsg : public ::fwServices::ObjectMsg
 {
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (ProgressMsg)(::fwServices::ObjectMsg), (()),
-            ::fwServices::factory::message::New< ProgressMsg >);
+                                            ::fwServices::factory::message::New< ProgressMsg >);
 
     /// Event identifier used to inform that the progress bar must be started.
     IODICOMEXT_API static const std::string s_START_PROGRESS_BAR;

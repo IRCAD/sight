@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,17 +37,19 @@ namespace ioDicomExt
 namespace dcmtk
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioDicomExt::dcmtk::SDicomSeriesDBReader , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioDicomExt::dcmtk::SDicomSeriesDBReader, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
 SDicomSeriesDBReader::SDicomSeriesDBReader() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SDicomSeriesDBReader::~SDicomSeriesDBReader() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -61,8 +63,8 @@ void SDicomSeriesDBReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr  result;
-    result= ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    ::fwData::location::Folder::sptr result;
+    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
@@ -89,7 +91,7 @@ void SDicomSeriesDBReader::stopping() throw(::fwTools::Failed)
 
 void SDicomSeriesDBReader::info(std::ostream &_sstream )
 {
-    _sstream << "SDicomSeriesDBReader::info" ;
+    _sstream << "SDicomSeriesDBReader::info";
 }
 
 //------------------------------------------------------------------------------
@@ -106,7 +108,7 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 {
     SLM_TRACE_FUNC();
     ::fwDicomIOExt::dcmtk::SeriesDBReader::sptr myLoader = ::fwDicomIOExt::dcmtk::SeriesDBReader::New();
-    ::fwMedData::SeriesDB::sptr dummy = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::sptr dummy                    = ::fwMedData::SeriesDB::New();
     myLoader->setObject(dummy);
     myLoader->setFolder(dicomDir);
 
@@ -115,7 +117,7 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Dicomdir file");
         messageBox.setMessage( "There is a dicomdir file in the root folder. "
-                "Would you like to use it for the reading process ?" );
+                               "Would you like to use it for the reading process ?" );
         messageBox.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
         messageBox.addButton(::fwGui::dialog::IMessageDialog::YES_NO);
         ::fwGui::dialog::IMessageDialog::Buttons button = messageBox.show();
@@ -134,12 +136,12 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
     return myLoader->getConcreteObject();
@@ -159,7 +161,7 @@ void SDicomSeriesDBReader::updating() throw(::fwTools::Failed)
             // Retrieve dataStruct associated with this service
             ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
-            associatedSeriesDB->shallowCopy( seriesDB ) ;
+            associatedSeriesDB->shallowCopy( seriesDB );
 
             ::fwGui::Cursor cursor;
             cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -169,8 +171,8 @@ void SDicomSeriesDBReader::updating() throw(::fwTools::Failed)
         else
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Image Reader","This file can not be read. Retry with another file reader.",
-                    ::fwGui::dialog::IMessageDialog::WARNING);
+                "Image Reader","This file can not be read. Retry with another file reader.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }
@@ -180,7 +182,7 @@ void SDicomSeriesDBReader::updating() throw(::fwTools::Failed)
 void SDicomSeriesDBReader::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >() ;
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     ::fwComEd::SeriesDBMsg::sptr msg = ::fwComEd::SeriesDBMsg::New();

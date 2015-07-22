@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,13 +18,13 @@
 
 namespace fwDicomData
 {
-    class DicomSeries;
+class DicomSeries;
 }
 
 namespace fwMedData
 {
-    class ImageSeries;
-    class ModelSeries;
+class ImageSeries;
+class ModelSeries;
 }
 
 namespace fwDicomIOExt
@@ -76,14 +76,14 @@ public:
      * @param[in] series DicomSeries that must be converted
      */
     FWDICOMIOEXT_API static SPTR(::fwMedData::ImageSeries) convertToImageSeries(
-            const SPTR(::fwDicomData::DicomSeries)& series);
+        const SPTR(::fwDicomData::DicomSeries)& series);
 
     /**
      * @brief Convert a DicomSeries to a ModelSeries
      * @param[in] series DicomSeries that must be converted
      */
     FWDICOMIOEXT_API static SPTR(::fwMedData::ModelSeries) convertToModelSeries(
-            const SPTR(::fwDicomData::DicomSeries)& series);
+        const SPTR(::fwDicomData::DicomSeries)& series);
 
 };
 

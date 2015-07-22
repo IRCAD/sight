@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,11 +27,11 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-Fiducial::Fiducial(SPTR(::fwDicomData::DicomSeries) dicomSeries,
-        SPTR(::gdcm::Reader) reader,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwData::Image::sptr image):
-        ::gdcmIO::reader::tid::TemplateID< ::fwData::Image >(dicomSeries, reader, instance, image)
+Fiducial::Fiducial(SPTR(::fwDicomData::DicomSeries)dicomSeries,
+                   SPTR(::gdcm::Reader)reader,
+                   SPTR(::gdcmIO::container::DicomInstance)instance,
+                   ::fwData::Image::sptr image) :
+    ::gdcmIO::reader::tid::TemplateID< ::fwData::Image >(dicomSeries, reader, instance, image)
 {
 }
 
@@ -43,10 +43,10 @@ Fiducial::~Fiducial()
 
 //------------------------------------------------------------------------------
 
-void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode) node)
+void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
 {
     if(node->getCodedAttribute() == ::gdcmIO::container::DicomCodedAttribute("122340", "DCM", "Fiducial feature") &&
-            !node->getCRefSubNodeContainer().empty())
+       !node->getCRefSubNodeContainer().empty())
     {
         std::string label = "";
         float x, y, z;
@@ -54,10 +54,11 @@ void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode) node)
         BOOST_FOREACH(const SPTR(::gdcmIO::container::sr::DicomSRNode)& subNode, node->getCRefSubNodeContainer())
         {
             // Read label
-            if(subNode->getCodedAttribute() == ::gdcmIO::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"))
+            if(subNode->getCodedAttribute() ==
+               ::gdcmIO::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"))
             {
                 SPTR(::gdcmIO::container::sr::DicomSRTextNode) intentNode =
-                        ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRTextNode >(subNode);
+                    ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRTextNode >(subNode);
                 if(intentNode)
                 {
                     label = intentNode->getTextValue();
@@ -67,12 +68,12 @@ void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode) node)
             else if(subNode->getType() == "SCOORD")
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
-                        ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoordNode >(subNode);
+                    ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoordNode >(subNode);
                 if(scoordNode && scoordNode->getCRefGraphicType() == "POINT")
                 {
                     // Retrieve coordinates
                     ::gdcmIO::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
-                            scoordNode->getGraphicDataContainer();
+                        scoordNode->getGraphicDataContainer();
 
                     x = coordinates[0];
                     y = coordinates[1];
@@ -80,12 +81,13 @@ void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode) node)
                     if(!scoordNode->getCRefSubNodeContainer().empty())
                     {
                         SPTR(::gdcmIO::container::sr::DicomSRImageNode) imageNode =
-                                ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRImageNode >(
-                                        *scoordNode->getCRefSubNodeContainer().begin());
+                            ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRImageNode >(
+                                *scoordNode->getCRefSubNodeContainer().begin());
                         if(imageNode)
                         {
                             const int frameNumber = imageNode->getCRefFrameNumber();
-                            z = ::gdcmIO::helper::DicomData::convertFrameNumberToZCoordinate(m_object, frameNumber);
+                            z = ::gdcmIO::helper::DicomData::convertFrameNumberToZCoordinate(m_object,
+                                                                                             frameNumber);
                             foundLandmark = true;
                         }
                     }
@@ -95,15 +97,15 @@ void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode) node)
             else if(subNode->getType() == "SCOORD3D")
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoord3DNode =
-                        ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(subNode);
+                    ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(subNode);
                 if(scoord3DNode && scoord3DNode->getCRefGraphicType() == "POINT")
                 {
                     // Retrieve coordinates
                     ::gdcmIO::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
-                            scoord3DNode->getGraphicDataContainer();
-                    x = coordinates[0];
-                    y = coordinates[1];
-                    z = coordinates[2];
+                        scoord3DNode->getGraphicDataContainer();
+                    x             = coordinates[0];
+                    y             = coordinates[1];
+                    z             = coordinates[2];
                     foundLandmark = true;
                 }
             }
@@ -126,7 +128,7 @@ void Fiducial::addLandmark(float x, float y, float z, const std::string& label)
     point->setField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New(label));
 
     ::fwData::PointList::sptr pointList =
-                m_object->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
+        m_object->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
 
     if(!pointList)
     {

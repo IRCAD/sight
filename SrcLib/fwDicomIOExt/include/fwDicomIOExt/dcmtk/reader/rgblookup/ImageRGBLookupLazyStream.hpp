@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,8 +35,8 @@ namespace rgblookup
  */
 class FWDICOMIOEXT_CLASS_API ImageRGBLookupLazyInformation
 {
-public :
-    typedef SPTR( ImageRGBLookupLazyInformation ) sptr;
+public:
+    typedef SPTR ( ImageRGBLookupLazyInformation ) sptr;
 
     /// Dicom series used to get the paths of the instances
     ::fwDicomData::DicomSeries::sptr m_dicomSeries;
@@ -71,7 +71,7 @@ class FWDICOMIOEXT_CLASS_API ImageRGBLookupLazySource
 {
 public:
     typedef char char_type;
-    typedef ::boost::iostreams::source_tag  category;
+    typedef ::boost::iostreams::source_tag category;
 
     /**
      * @brief Constructor
@@ -86,7 +86,7 @@ public:
      */
     std::streamsize read(char* stream, std::streamsize size);
 
-private :
+private:
     /// DICOM information
     ImageRGBLookupLazyInformation::sptr m_dcmInfo;
 

@@ -1,8 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
-* FW4SPL - Copyright (C) IRCAD, 2009-2013.
-* Distributed under the terms of the GNU Lesser General Public License (LGPL) as
-* published by the Free Software Foundation.
-* ****** END LICENSE BLOCK ****** */
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #include <istream>
 
@@ -68,7 +68,7 @@ void write(const ::fwMedData::ModelSeries::sptr& modelSeries, const std::string&
 //-----------------------------------------------------------------------------------------------------
 
 ExportDialog::ExportDialog(
-        const ::midasIO::IConfiguration::sptr& config, const ::fwMedData::ModelSeries::sptr& modelSeries)
+    const ::midasIO::IConfiguration::sptr& config, const ::fwMedData::ModelSeries::sptr& modelSeries)
     : m_config(config), m_modelSeries(modelSeries)
 {
     m_txtEmail = new QLineEdit();
@@ -101,7 +101,7 @@ ExportDialog::ExportDialog(
 
     m_cbLicense = new QComboBox();
     BOOST_FOREACH(
-            ::midasIO::IConfiguration::LicenseContainerType::value_type it, ::midasIO::IConfiguration::s_LICENSES)
+        ::midasIO::IConfiguration::LicenseContainerType::value_type it, ::midasIO::IConfiguration::s_LICENSES)
     {
         m_cbLicense->insertItem(it.first, QString::fromStdString(it.second));
     }
@@ -110,13 +110,13 @@ ExportDialog::ExportDialog(
 
     switch(m_config->getPrivacy())
     {
-    case ::midasIO::IConfiguration::PUBLIC :
-        m_cbPermission->setCurrentIndex(0); break;
-    case ::midasIO::IConfiguration::PRIVATE :
-        m_cbPermission->setCurrentIndex(1); break;
-    case ::midasIO::IConfiguration::PARENT :
-        m_cbPermission->setCurrentIndex(2); break;
-    default : break;
+        case ::midasIO::IConfiguration::PUBLIC:
+            m_cbPermission->setCurrentIndex(0); break;
+        case ::midasIO::IConfiguration::PRIVATE:
+            m_cbPermission->setCurrentIndex(1); break;
+        case ::midasIO::IConfiguration::PARENT:
+            m_cbPermission->setCurrentIndex(2); break;
+        default: break;
     }
 
     QHBoxLayout* connectLayout = new QHBoxLayout();
@@ -182,12 +182,12 @@ ExportDialog::ExportDialog(
     this->setLayout(dialogLayout);
 
     QObject::connect(m_btnConnect, SIGNAL(clicked()), this, SLOT(onConnectClicked()));
-    QObject::connect(m_txtUrl, SIGNAL(textChanged(const QString&)), this, SLOT(onFormChanged(const QString&)));
-    QObject::connect(m_txtPassword, SIGNAL(textChanged(const QString&)), this, SLOT(onFormChanged(const QString&)));
-    QObject::connect(m_txtEmail, SIGNAL(textChanged(const QString&)), this, SLOT(onFormChanged(const QString&)));
+    QObject::connect(m_txtUrl, SIGNAL(textChanged(const QString &)), this, SLOT(onFormChanged(const QString &)));
+    QObject::connect(m_txtPassword, SIGNAL(textChanged(const QString &)), this, SLOT(onFormChanged(const QString &)));
+    QObject::connect(m_txtEmail, SIGNAL(textChanged(const QString &)), this, SLOT(onFormChanged(const QString &)));
 
-    QObject::connect(m_txtAppName, SIGNAL(textChanged(const QString&)), this, SLOT(onAppNameChanged(const QString&)));
-    QObject::connect(m_txtFolder, SIGNAL(textChanged(const QString&)), this, SLOT(onFolderChanged(const QString&)));
+    QObject::connect(m_txtAppName, SIGNAL(textChanged(const QString &)), this, SLOT(onAppNameChanged(const QString &)));
+    QObject::connect(m_txtFolder, SIGNAL(textChanged(const QString &)), this, SLOT(onFolderChanged(const QString &)));
     QObject::connect(m_cbPermission, SIGNAL(currentIndexChanged(int)), this, SLOT(onPrivacyChanged(int)));
     QObject::connect(m_cbLicense, SIGNAL(currentIndexChanged(int)), this, SLOT(onLicenseChanged(int)));
 
@@ -198,7 +198,8 @@ ExportDialog::ExportDialog(
 //-----------------------------------------------------------------------------------------------------
 
 ExportDialog::~ExportDialog()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------------------------------
 
@@ -254,7 +255,7 @@ void ExportDialog::updateCommunityList(const ::midasIO::IResponseHandler::sptr& 
 {
     m_communityList.clear();
 
-    ::midasIO::IResponseHandler::ArrayType data = handler->getArrayData();
+    ::midasIO::IResponseHandler::ArrayType data         = handler->getArrayData();
     ::midasIO::IResponseHandler::ArrayType::iterator it = data.begin();
 
     while(it != data.end())
@@ -422,7 +423,7 @@ void ExportDialog::exportAcquisition(const std::string& laboID, const std::strin
             try
             {
                 ::midasIO::IResponseHandler::csptr resp = handler.uploadFile(
-                        *it, folderId, m_cbLicense->currentIndex());
+                    *it, folderId, m_cbLicense->currentIndex());
 
                 if(!resp->isSuccess())
                 {
@@ -446,10 +447,10 @@ void ExportDialog::exportAcquisition(const std::string& laboID, const std::strin
     }
 
     m_txtStatus->setText(
-                QString::fromStdString(
-                    uploadSucceeded
-                    ? "Export succeeded in folder " + laboID + "."
-                    : "Failed to export acquisition : '" + errorMsg + "'"));
+        QString::fromStdString(
+            uploadSucceeded
+            ? "Export succeeded in folder " + laboID + "."
+            : "Failed to export acquisition : '" + errorMsg + "'"));
 
     fs::remove_all(directory);
 
@@ -483,7 +484,7 @@ void ExportDialog::onFolderChanged(const QString&)
 void ExportDialog::onLicenseChanged(int index)
 {
     OSLM_ASSERT("License ID '" << index << "' is not valid",
-            ::midasIO::IConfiguration::s_LICENSES.find(index) != ::midasIO::IConfiguration::s_LICENSES.end());
+                ::midasIO::IConfiguration::s_LICENSES.find(index) != ::midasIO::IConfiguration::s_LICENSES.end());
     m_config->setDefaultLicense(index);
 }
 
@@ -493,14 +494,14 @@ void ExportDialog::onPrivacyChanged(int index)
 {
     switch(index)
     {
-    case 0 :
-        m_config->setPrivacy(::midasIO::IConfiguration::PUBLIC); break;
-    case 1 :
-        m_config->setPrivacy(::midasIO::IConfiguration::PRIVATE); break;
-    case 2 :
-        m_config->setPrivacy(::midasIO::IConfiguration::PARENT); break;
-    default:
-        break;
+        case 0:
+            m_config->setPrivacy(::midasIO::IConfiguration::PUBLIC); break;
+        case 1:
+            m_config->setPrivacy(::midasIO::IConfiguration::PRIVATE); break;
+        case 2:
+            m_config->setPrivacy(::midasIO::IConfiguration::PARENT); break;
+        default:
+            break;
     }
 }
 

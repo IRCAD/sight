@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,14 +27,15 @@ namespace fwDicomIOExt
 namespace dcmtk
 {
 
-const ::fwCom::Slots::SlotKeyType SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT = "progressCallback";
-const ::fwCom::Slots::SlotKeyType SeriesEnquirer::s_STORE_INSTANCE_CALLBACK_SLOT = "storeInstanceCallbackFromGetRetrieveMethod";
+const ::fwCom::Slots::SlotKeyType SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT       = "progressCallback";
+const ::fwCom::Slots::SlotKeyType SeriesEnquirer::s_STORE_INSTANCE_CALLBACK_SLOT =
+    "storeInstanceCallbackFromGetRetrieveMethod";
 
 SeriesEnquirer::SeriesEnquirer() :
-        m_moveApplicationTitle(""),
-        m_progressCallback(ProgressCallbackSlotType::sptr()),
-        m_path(""),
-        m_storeInstanceCallback(StoreInstanceCallbackSlotType::sptr())
+    m_moveApplicationTitle(""),
+    m_progressCallback(ProgressCallbackSlotType::sptr()),
+    m_path(""),
+    m_storeInstanceCallback(StoreInstanceCallbackSlotType::sptr())
 {
 
 }
@@ -65,9 +66,10 @@ Uint8 SeriesEnquirer::findUncompressedPC(const OFString& sopClass)
 // ----------------------------------------------------------------------------
 
 void SeriesEnquirer::initialize(const std::string& applicationTitle, const std::string& peerHostName,
-        unsigned int peerPort, const std::string& peerApplicationTitle,
-        const std::string& moveApplicationTitle, StoreInstanceCallbackSlotType::sptr storeCallback,
-        ProgressCallbackSlotType::sptr progressCallback)
+                                unsigned int peerPort, const std::string& peerApplicationTitle,
+                                const std::string& moveApplicationTitle,
+                                StoreInstanceCallbackSlotType::sptr storeCallback,
+                                ProgressCallbackSlotType::sptr progressCallback)
 {
     //Save move application title for move requests
     m_moveApplicationTitle = moveApplicationTitle;
@@ -199,7 +201,7 @@ OFCondition SeriesEnquirer::sendMoveRequest(DcmDataset dataset)
     // Fetches all images of this particular study
     OFCondition result;
     OFList< RetrieveResponse * > dataResponse;
-    return  this->sendMOVERequest(presID, m_moveApplicationTitle.c_str(), &dataset, &dataResponse);
+    return this->sendMOVERequest(presID, m_moveApplicationTitle.c_str(), &dataset, &dataResponse);
 }
 
 // ----------------------------------------------------------------------------
@@ -311,8 +313,8 @@ std::string SeriesEnquirer::findSOPInstanceUID(const std::string& seriesInstance
     dataset.putAndInsertOFStringArray(DCM_InstanceNumber, ss.str().c_str());
 
     OFList< QRResponse* > responses = this->sendFindRequest(dataset);
-    OFIterator< QRResponse* > it = responses.begin();
-    std::string sopInstanceUID = "";
+    OFIterator< QRResponse* > it    = responses.begin();
+    std::string sopInstanceUID      = "";
     if(it != responses.end() && (*it)->m_dataset)
     {
         OFString sop;
@@ -354,8 +356,8 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer inst
         else
         {
             const std::string msg = "Unable to send a C-MOVE request to the server. "
-                    "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
-                    + std::string(result.text());
+                                    "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
+                                    + std::string(result.text());
             throw ::fwDicomIOExt::exceptions::RequestFailure(msg);
         }
     }
@@ -384,8 +386,8 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer insta
         else
         {
             const std::string msg = "Unable to send a C-GET request to the server. "
-                    "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
-                    + std::string(result.text());
+                                    "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
+                                    + std::string(result.text());
             throw ::fwDicomIOExt::exceptions::RequestFailure(msg);
         }
     }
@@ -394,7 +396,7 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer insta
 // ----------------------------------------------------------------------------
 
 void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& seriesInstanceUID,
-        const std::string& sopInstanceUID)
+                                                         const std::string& sopInstanceUID)
 {
     DcmDataset dataset;
     OFCondition result;
@@ -414,8 +416,8 @@ void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& seri
     else
     {
         const std::string msg = "Unable to send a C-MOVE request to the server. "
-                "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
-                + std::string(result.text());
+                                "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
+                                + std::string(result.text());
         throw ::fwDicomIOExt::exceptions::RequestFailure(msg);
     }
 }
@@ -423,7 +425,7 @@ void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(const std::string& seri
 // ----------------------------------------------------------------------------
 
 void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& seriesInstanceUID,
-        const std::string& sopInstanceUID)
+                                                        const std::string& sopInstanceUID)
 {
     DcmDataset dataset;
     OFCondition result;
@@ -443,8 +445,8 @@ void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(const std::string& serie
     else
     {
         const std::string msg = "Unable to send a C-GET request to the server. "
-                "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
-                + std::string(result.text());
+                                "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) +") : "
+                                + std::string(result.text());
         throw ::fwDicomIOExt::exceptions::RequestFailure(msg);
     }
 }
@@ -458,7 +460,7 @@ OFCondition SeriesEnquirer::handleMOVEResponse(
 
     // Compute percentage
     unsigned int total = response->m_numberOfRemainingSubops + response->m_numberOfFailedSubops
-            + response->m_numberOfWarningSubops + response->m_numberOfCompletedSubops;
+                         + response->m_numberOfWarningSubops + response->m_numberOfCompletedSubops;
     float percent = (float(response->m_numberOfCompletedSubops) / total) *100;
 
     // Check error status
@@ -477,8 +479,8 @@ OFCondition SeriesEnquirer::handleMOVEResponse(
 // ----------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::handleSTORERequest (
-        const T_ASC_PresentationContextID presID, DcmDataset *incomingObject,
-        OFBool &continueCGETSession, Uint16 &cStoreReturnStatus)
+    const T_ASC_PresentationContextID presID, DcmDataset *incomingObject,
+    OFBool &continueCGETSession, Uint16 &cStoreReturnStatus)
 {
     OFCondition result;
 

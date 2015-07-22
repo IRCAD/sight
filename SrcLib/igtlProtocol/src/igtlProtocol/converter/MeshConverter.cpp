@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -76,15 +76,15 @@ void MeshConverter::copyCellsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::P
         {
 
             case ::fwData::Mesh::EDGE:
-                cell[0]     = cellData[offset];
-                cell[1]     = cellData[offset + 1];
+                cell[0] = cellData[offset];
+                cell[1] = cellData[offset + 1];
                 dest->GetLines()->AddCell(2, cell);
                 break;
 
             case ::fwData::Mesh::TRIANGLE:
-                cell[0]     = cellData[offset];
-                cell[1]     = cellData[offset + 1];
-                cell[2]     = cellData[offset + 2];
+                cell[0] = cellData[offset];
+                cell[1] = cellData[offset + 1];
+                cell[2] = cellData[offset + 2];
                 dest->GetTriangleStrips()->AddCell(3, cell);
                 break;
 
@@ -140,7 +140,7 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
 
     dest->ClearAttributes();
     std::size_t numberOfPoints = meshSrc->getNumberOfPoints();
-    std::size_t numberOfCells = meshSrc->getNumberOfCells();
+    std::size_t numberOfCells  = meshSrc->getNumberOfCells();
 
     if (pointColorArray)
     {
@@ -268,8 +268,8 @@ throw (::igtlProtocol::exception::Conversion)
     mesh           = ::fwData::Mesh::dynamicCast(destObj);
     numberOfPoints = meshMsg->GetPoints()->GetNumberOfPoints();
 
-    numberOfCells  = meshMsg->GetLines()->GetNumberOfCells() + meshMsg->GetVertices()->GetNumberOfCells()
-                     + meshMsg->GetTriangleStrips()->GetNumberOfCells();
+    numberOfCells = meshMsg->GetLines()->GetNumberOfCells() + meshMsg->GetVertices()->GetNumberOfCells()
+                    + meshMsg->GetTriangleStrips()->GetNumberOfCells();
 
     ::fwComEd::helper::Mesh meshHelper(mesh);
     mesh->allocate(numberOfPoints, numberOfCells);
@@ -330,11 +330,11 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
             case ::igtl::PolyDataAttribute::POINT_RGBA:
             {
                 dest->allocatePointColors(
-                            static_cast< ::fwData::Mesh::ColorArrayTypes>(attr->GetNumberOfComponents()));
+                    static_cast< ::fwData::Mesh::ColorArrayTypes>(attr->GetNumberOfComponents()));
                 meshHelper.updateLock();
                 igtlFloat32* data = new igtlFloat32[attr->GetSize() * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for (unsigned int j = 0; j < attr->GetSize(); j=j+attr->GetNumberOfComponents())
+                for (unsigned int j = 0; j < attr->GetSize(); j = j+attr->GetNumberOfComponents())
                 {
                     std::transform(&data[j], &data[j] + attr->GetNumberOfComponents(), rgbaColor,
                                    &MeshConverter::toIgtlUint8);
@@ -347,11 +347,11 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
             case ::igtl::PolyDataAttribute::CELL_RGBA:
             {
                 dest->allocateCellColors(
-                            static_cast< ::fwData::Mesh::ColorArrayTypes>(attr->GetNumberOfComponents()));
+                    static_cast< ::fwData::Mesh::ColorArrayTypes>(attr->GetNumberOfComponents()));
                 meshHelper.updateLock();
                 igtlFloat32* data = new igtlFloat32[attr->GetSize() * attr->GetNumberOfComponents()];
                 attr->GetData(data);
-                for (unsigned int j = 0; j < attr->GetSize(); j+=attr->GetNumberOfComponents())
+                for (unsigned int j = 0; j < attr->GetSize(); j += attr->GetNumberOfComponents())
                 {
                     std::transform(&data[j], &data[j] + attr->GetNumberOfComponents(), rgbaColor,
                                    &MeshConverter::toIgtlUint8);
@@ -363,7 +363,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
             }
             case ::igtl::PolyDataAttribute::POINT_NORMAL:
             {
-            dest->allocatePointNormals();
+                dest->allocatePointNormals();
 
                 meshHelper.updateLock();
                 igtlFloat32* data = new igtlFloat32[attr->GetSize() * attr->GetNumberOfComponents()];

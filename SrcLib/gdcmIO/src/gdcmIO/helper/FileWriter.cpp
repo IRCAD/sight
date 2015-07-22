@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@ namespace gdcmIO
 namespace helper
 {
 
-void FileWriter::write(const std::string& filename, SPTR(::gdcm::Writer) writer)
+void FileWriter::write(const std::string& filename, SPTR(::gdcm::Writer)writer)
 {
     // Set file header
     ::gdcm::FileMetaInformation &metaInformation = writer->GetFile().GetHeader();

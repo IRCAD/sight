@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _ARLCORE_TYPE_H
-#define _ARLCORE_TYPE_H
+#ifndef __ARLCORE_TYPE_H__
+#define __ARLCORE_TYPE_H__
 
 //const double PI = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679;
 
@@ -17,9 +17,9 @@
 // created by Visual.
 #pragma warning (disable : 4786)
 
-// need a dll interface 
-// (Un classe de base ou une structure doit être déclarée avec 
-// le mot clé __declspec(dllexport) pour qu'une fonction d'une 
+// need a dll interface
+// (Un classe de base ou une structure doit être déclarée avec
+// le mot clé __declspec(dllexport) pour qu'une fonction d'une
 //classe dérivée soit exportée)
 #pragma warning (disable:4251)
 
@@ -91,8 +91,8 @@ typedef signed char int8;       // NB: non-ANSI compilers may not grok
 #else
 typedef char int8;
 #endif
-typedef unsigned char                           uint8;
-typedef unsigned short                          uint16;
+typedef unsigned char uint8;
+typedef unsigned short uint16;
 typedef short int16;
 #if defined(__alpha) || (defined(_MIPS_SZLONG) && _MIPS_SZLONG == 64)
 typedef int int32;
@@ -101,7 +101,7 @@ typedef unsigned int uint32;    // sizeof (uint32) must == 4
 typedef long int32;
 typedef unsigned long uint32;   // sizeof (uint32) must == 4
 #endif
-typedef unsigned long long                      uint64;
+typedef unsigned long long uint64;
 #endif
 
 typedef struct
@@ -112,13 +112,13 @@ typedef struct
 
 // Use only when you decide to delegate size to compiler
 //typedef int       int;
-typedef unsigned int    uint; 
-typedef unsigned long   ulong;
-typedef unsigned short  ushort;
-typedef signed char     schar;
+typedef unsigned int uint;
+typedef unsigned long ulong;
+typedef unsigned short ushort;
+typedef signed char schar;
 #ifndef uchar
     #ifndef _CV_H_
-        typedef unsigned char   uchar;
+typedef unsigned char uchar;
     #endif
 #endif
 
@@ -126,4 +126,4 @@ typedef signed char     schar;
 // For MSVC : __int64
 //typedef long long int64;
 
-#endif // _ARLCORE_TYPE_H
+#endif // __ARLCORE_TYPE_H__

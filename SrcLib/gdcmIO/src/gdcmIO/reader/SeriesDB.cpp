@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -64,10 +64,10 @@ static const gdcm::Tag s_PatientAgeTag(0x0010, 0x1010);
 //------------------------------------------------------------------------------
 
 SeriesDB::SeriesDB(::fwDataIO::reader::IObjectReader::Key key) :
-        ::fwData::location::enableFolder< IObjectReader >(this),
-        ::fwData::location::enableMultiFiles< IObjectReader >(this),
-        m_isDicomdirActivated(false),
-        m_dicomFilterType("")
+    ::fwData::location::enableFolder< IObjectReader >(this),
+    ::fwData::location::enableMultiFiles< IObjectReader >(this),
+    m_isDicomdirActivated(false),
+    m_dicomFilterType("")
 {
     SLM_TRACE_FUNC();
 
@@ -91,7 +91,8 @@ SeriesDB::FilenameContainerType SeriesDB::getFilenames()
     {
         // Try to read dicomdir file
         if(!m_isDicomdirActivated || (m_isDicomdirActivated &&
-                !::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(), filenames)))
+                                      !::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(),
+                                                                                             filenames)))
         {
             // Recursively search for dicom files
             ::fwDicomIOExt::dcmtk::helper::DicomSearch::searchRecursively(this->getFolder(), filenames);
@@ -199,11 +200,11 @@ void SeriesDB::addSeries(const std::vector< std::string > &filenames)
     ::gdcm::Directory::FilenamesType::const_iterator it;
 
     //Loop through every files available in the scanner
-    for(it = keys.begin(); it != keys.end() ; ++it)
+    for(it = keys.begin(); it != keys.end(); ++it)
     {
         const std::string filename = it->c_str();
         OSLM_ASSERT("The file \"" << filename << "\" is not a key of the gdcm scanner",
-                seriesScanner.IsKey(filename.c_str()));
+                    seriesScanner.IsKey(filename.c_str()));
 
         // Create Series
         this->createSeries(seriesScanner, filename);
@@ -238,11 +239,11 @@ void SeriesDB::addSeries(const std::vector< std::string > &filenames)
         status = attributeScanner.Scan( firstInstanceContainer );
         FW_RAISE_IF("Unable to read the files.", !status);
         OSLM_ASSERT("The file \"" << filename << "\" is not a key of the gdcm scanner",
-                attributeScanner.IsKey(filename.c_str()));
+                    attributeScanner.IsKey(filename.c_str()));
 
         // Create data objects from first instance
-        ::fwMedData::Patient::sptr patient = this->createPatient(attributeScanner, filename);
-        ::fwMedData::Study::sptr study = this->createStudy(attributeScanner, filename);
+        ::fwMedData::Patient::sptr patient     = this->createPatient(attributeScanner, filename);
+        ::fwMedData::Study::sptr study         = this->createStudy(attributeScanner, filename);
         ::fwMedData::Equipment::sptr equipment = this->createEquipment(attributeScanner, filename);
 
         // Fill series
@@ -265,7 +266,7 @@ void SeriesDB::addSeries(const std::vector< std::string > &filenames)
     // Check if the patient already exists
     if(m_patientMap.find(patientID) == m_patientMap.end())
     {
-        result = ::fwMedData::Patient::New();
+        result                  = ::fwMedData::Patient::New();
         m_patientMap[patientID] = result;
 
         //Patient ID
@@ -304,7 +305,7 @@ void SeriesDB::addSeries(const std::vector< std::string > &filenames)
     // Check if the study already exists
     if(m_studyMap.find(studyInstanceUID) == m_studyMap.end())
     {
-        result = ::fwMedData::Study::New();
+        result                       = ::fwMedData::Study::New();
         m_studyMap[studyInstanceUID] = result;
 
         //Study ID
@@ -351,7 +352,7 @@ void SeriesDB::addSeries(const std::vector< std::string > &filenames)
     // Check if the equipment already exists
     if(m_equipmentMap.find(institutionName) == m_equipmentMap.end())
     {
-        result = ::fwMedData::Equipment::New();
+        result                          = ::fwMedData::Equipment::New();
         m_equipmentMap[institutionName] = result;
 
         //Institution Name
@@ -414,7 +415,7 @@ void SeriesDB::createSeries(const ::gdcm::Scanner& scanner, const std::string& f
 
         //Performing Physicians Name
         std::string performingPhysicianNamesStr = SeriesDB::getStringValue( scanner, filename,
-                s_PerformingPhysicianNameTag );
+                                                                            s_PerformingPhysicianNameTag );
         ::fwMedData::DicomValuesType performingPhysicianNames;
         ::boost::split( performingPhysicianNames, performingPhysicianNamesStr, ::boost::is_any_of("\\"));
         series->setPerformingPhysiciansName(performingPhysicianNames);
@@ -475,7 +476,7 @@ void SeriesDB::convertDicomSeries(::fwServices::IService::sptr notifier)
 
 //------------------------------------------------------------------------------
 
-bool SeriesDB::dicomSeriesComparator(SPTR(::fwDicomData::DicomSeries) a, SPTR(::fwDicomData::DicomSeries) b)
+bool SeriesDB::dicomSeriesComparator(SPTR(::fwDicomData::DicomSeries)a, SPTR(::fwDicomData::DicomSeries)b)
 {
     ::fwDicomData::DicomSeries::SOPClassUIDContainerType aSOPClassUIDContainer = a->getSOPClassUIDs();
     std::string aSOPClassUID = *(aSOPClassUIDContainer.begin());
@@ -483,15 +484,17 @@ bool SeriesDB::dicomSeriesComparator(SPTR(::fwDicomData::DicomSeries) a, SPTR(::
     std::string bSOPClassUID = *(bSOPClassUIDContainer.begin());
     // a > b if a contains a SR and not b
     return !((::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
-                ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-                 aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" ||    // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
-                  ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
-                   ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage)
-            && !(::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
-                    ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
-                     bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" ||    // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
-                      ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
-                       ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage));
+              ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
+              aSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" ||       // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
+              ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SpacialFiducialsStorage ||
+              ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) == ::gdcm::MediaStorage::SurfaceSegmentationStorage)
+             && !(::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::EnhancedSR ||
+                  ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::ComprehensiveSR ||
+                  bSOPClassUID == "1.2.840.10008.5.1.4.1.1.88.34" ||       // FIXME Replace hard coded string by "::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) == ::gdcm::MediaStorage::Comprehensive3DSR"
+                  ::gdcm::MediaStorage::GetMSType(bSOPClassUID.c_str()) ==
+                  ::gdcm::MediaStorage::SpacialFiducialsStorage ||
+                  ::gdcm::MediaStorage::GetMSType(aSOPClassUID.c_str()) ==
+                  ::gdcm::MediaStorage::SurfaceSegmentationStorage));
 }
 
 //------------------------------------------------------------------------------
@@ -505,8 +508,8 @@ SeriesDB::DicomSeriesContainerType &SeriesDB::getDicomSeries()
 
 std::string SeriesDB::getStringValue(const ::gdcm::Scanner& scanner, const std::string& filename, const gdcm::Tag& tag)
 {
-    const char* value = scanner.GetValue( filename.c_str(), tag );
-    std::string result = (value)?value:"";
+    const char* value  = scanner.GetValue( filename.c_str(), tag );
+    std::string result = (value) ? value : "";
     ::boost::algorithm::trim(result);
     return result;
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,10 +39,10 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-Measurement::Measurement(SPTR(::gdcm::Writer) writer,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwData::Image::sptr image):
-        ::gdcmIO::writer::tid::TemplateID< ::fwData::Image >(writer, instance, image)
+Measurement::Measurement(SPTR(::gdcm::Writer)writer,
+                         SPTR(::gdcmIO::container::DicomInstance)instance,
+                         ::fwData::Image::sptr image) :
+    ::gdcmIO::writer::tid::TemplateID< ::fwData::Image >(writer, instance, image)
 {
 }
 
@@ -54,10 +54,10 @@ Measurement::~Measurement()
 
 //------------------------------------------------------------------------------
 
-void Measurement::createNodes(SPTR(::gdcmIO::container::sr::DicomSRNode) parent, bool useSCoord3D)
+void Measurement::createNodes(SPTR(::gdcmIO::container::sr::DicomSRNode)parent, bool useSCoord3D)
 {
     ::fwData::Vector::sptr distanceVector =
-            m_object->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+        m_object->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
     if (distanceVector)
     {
         unsigned int id = 1;
@@ -74,8 +74,8 @@ void Measurement::createNodes(SPTR(::gdcmIO::container::sr::DicomSRNode) parent,
 
 //------------------------------------------------------------------------------
 
-void Measurement::createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode) parent,
-        const ::fwData::PointList::sptr& pointList, unsigned int id, bool useSCoord3D)
+void Measurement::createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode)parent,
+                                    const ::fwData::PointList::sptr& pointList, unsigned int id, bool useSCoord3D)
 {
     // Retrieve dataset
     ::gdcm::DataSet &dataset = m_writer->GetFile().GetDataSet();
@@ -92,8 +92,8 @@ void Measurement::createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode) p
     coordinates[5] = point2->getCoord()[2];
 
     float distance = sqrt( (coordinates[0] - coordinates[3]) * (coordinates[0] - coordinates[3]) +
-    (coordinates[1] - coordinates[4]) * (coordinates[1] - coordinates[4]) +
-    (coordinates[2] - coordinates[5]) * (coordinates[2] - coordinates[5]) );
+                           (coordinates[1] - coordinates[4]) * (coordinates[1] - coordinates[4]) +
+                           (coordinates[2] - coordinates[5]) * (coordinates[2] - coordinates[5]) );
 
     // Retrieve Frame Numbers
     int frameNumber1 = ::gdcmIO::helper::DicomData::convertPointToFrameNumber(m_object, point1);
@@ -101,21 +101,21 @@ void Measurement::createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode) p
 
     // Create Measurement Node
     SPTR(::gdcmIO::container::sr::DicomSRNumNode) numNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRNumNode >(
+        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRNumNode >(
             ::gdcmIO::container::DicomCodedAttribute("121206", "DCM", "Distance"), "CONTAINS", distance,
-             ::gdcmIO::container::DicomCodedAttribute("mm", "UCUM", "millimeter", "1.4"));
+            ::gdcmIO::container::DicomCodedAttribute("mm", "UCUM", "millimeter", "1.4"));
     parent->addSubNode(numNode);
 
     if(useSCoord3D)
     {
         // Create SCoord Node
         const float scoord[] = {point1->getCoord()[0], point1->getCoord()[1], point1->getCoord()[2],
-                point2->getCoord()[0], point2->getCoord()[1], point2->getCoord()[2]};
+                                point2->getCoord()[0], point2->getCoord()[1], point2->getCoord()[2]};
         std::vector<float> scoordVector (scoord, scoord + 6);
         SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoordNode =
-                ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
+            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
                 ::gdcmIO::container::DicomCodedAttribute("121230", "DCM", "Path"),
-                 "INFERRED FROM", "POLYLINE", scoordVector, m_instance->getCRefSOPInstanceUIDContainer()[0]);
+                "INFERRED FROM", "POLYLINE", scoordVector, m_instance->getCRefSOPInstanceUIDContainer()[0]);
         numNode->addSubNode(scoordNode);
     }
     else
@@ -123,19 +123,20 @@ void Measurement::createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode) p
         SLM_ASSERT("Unable to save a 3D distance using a SCOORD object.", frameNumber1 == frameNumber2);
 
         // Create SCoord Node
-        const float scoord[] = {point1->getCoord()[0], point1->getCoord()[1], point2->getCoord()[0], point2->getCoord()[1]};
+        const float scoord[] =
+        {point1->getCoord()[0], point1->getCoord()[1], point2->getCoord()[0], point2->getCoord()[1]};
         std::vector<float> scoordVector (scoord, scoord + 4);
         SPTR(::gdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
-                ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(
+            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(
                 ::gdcmIO::container::DicomCodedAttribute("121230", "DCM", "Path"),
-                 "INFERRED FROM", "POLYLINE", scoordVector);
+                "INFERRED FROM", "POLYLINE", scoordVector);
         numNode->addSubNode(scoordNode);
 
         // Create Image Node
         SPTR(::gdcmIO::container::sr::DicomSRImageNode) imageNode =
-                ::boost::make_shared< ::gdcmIO::container::sr::DicomSRImageNode >(
+            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRImageNode >(
                 ::gdcmIO::container::DicomCodedAttribute(), "SELECTED FROM", m_instance->getSOPClassUID(),
-                 m_instance->getSOPInstanceUIDContainer()[frameNumber1-1], frameNumber1);
+                m_instance->getSOPInstanceUIDContainer()[frameNumber1-1], frameNumber1);
         scoordNode->addSubNode(imageNode);
     }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@ namespace common
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::ioDicomExt::common::action::SSeriesDBMerger , ::fwData::Vector ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::ioDicomExt::common::action::SSeriesDBMerger, ::fwData::Vector );
 
 //------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ SSeriesDBMerger::~SSeriesDBMerger() throw()
 
 void SSeriesDBMerger::info(std::ostream &_sstream )
 {
-    _sstream << "SSeriesDBMerger::info" ;
+    _sstream << "SSeriesDBMerger::info";
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ void SSeriesDBMerger::configuring() throw(::fwTools::Failed)
     // Destination Series DB ID
     ::boost::tie(success, m_destinationSeriesDBID) = config->getSafeAttributeValue("destinationSeriesDBID");
     SLM_ASSERT("It should be an \"destinationSeriesDBID\" in the "
-            "::ioDicomExt::common::action::SSeriesDBMerger config element.", success);
+               "::ioDicomExt::common::action::SSeriesDBMerger config element.", success);
 
 
 }
@@ -94,7 +94,7 @@ void SSeriesDBMerger::updating() throw(::fwTools::Failed)
 
     ::fwComEd::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
     ::fwMedData::SeriesDB::ContainerType container = m_destinationSeriesDB->getContainer();
-    ::fwData::Vector::sptr selectedSeries = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::sptr selectedSeries          = this->getObject< ::fwData::Vector >();
 
     // Save added series in this container in order to display information on the push
     std::vector< ::fwMedData::Series::sptr > addedSeries;
@@ -141,7 +141,7 @@ void SSeriesDBMerger::updating() throw(::fwTools::Failed)
         BOOST_FOREACH(const ::fwMedData::Series::sptr& series, addedSeries)
         {
             std::string description = series->getDescription();
-            description = (description.empty())?"[No description]":description;
+            description = (description.empty()) ? "[No description]" : description;
             ss << "- " << description << std::endl;
         }
         messageBox.setMessage( ss.str() );

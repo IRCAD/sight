@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _NETWORKLOGGER_OPENIGTLINKLOGGER_HPP_
-#define _NETWORKLOGGER_OPENIGTLINKLOGGER_HPP_
+#ifndef __NETWORKLOGGER_OPENIGTLINKLOGGER_HPP__
+#define __NETWORKLOGGER_OPENIGTLINKLOGGER_HPP__
 
 #include "NetworkLogger/INetworkLogger.hpp"
 #include "NetworkLogger/types.hpp"
@@ -83,4 +83,4 @@ private:
 };
 }
 
-#endif // _NETWORKLOGGER_OPENIGTLINKLOGGER_HPP_
+#endif // __NETWORKLOGGER_OPENIGTLINKLOGGER_HPP__

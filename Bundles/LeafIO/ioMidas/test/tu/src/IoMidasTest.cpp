@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,7 +41,7 @@ void IoMidasTest::tearDown()
 //------------------------------------------------------------------------------
 
 ::midasIO::IConfiguration::sptr createConfigurationTest(
-        const std::string& version, const std::string& appname, const std::string& url)
+    const std::string& version, const std::string& appname, const std::string& url)
 {
 
     ::midasIO::IConfiguration::sptr config;
@@ -64,19 +64,19 @@ void IoMidasTest::checkCreateConfigurationTest()
     ::midasIO::IConfiguration::sptr config;
 
     config = createConfigurationTest(version, appname, url);
-    CPPUNIT_ASSERT_MESSAGE("Url not equal" , config->getUrl() == url );
-    CPPUNIT_ASSERT_MESSAGE("Workspace not equal" , config->getAppName() == appname);
+    CPPUNIT_ASSERT_MESSAGE("Url not equal", config->getUrl() == url );
+    CPPUNIT_ASSERT_MESSAGE("Workspace not equal", config->getAppName() == appname);
 }
 
 //------------------------------------------------------------------------------
 
 void IoMidasTest::checkGetTest()
 {
-    const std::string CREFRESPSTAT = "ok";
-    const std::string CREFRESPCODE = "0";
+    const std::string CREFRESPSTAT    = "ok";
+    const std::string CREFRESPCODE    = "0";
     const std::string CREFRESPMESSAGE = "Hello";
-    const std::string CREFRESPDATA = "\"apikey\":\"cbd37826afeb77d20f4834383efff254\" ";
-    const std::string CREFRESPAPIKEY = "cbd37826afeb77d20f4834383efff254";
+    const std::string CREFRESPDATA    = "\"apikey\":\"cbd37826afeb77d20f4834383efff254\" ";
+    const std::string CREFRESPAPIKEY  = "cbd37826afeb77d20f4834383efff254";
 
     std::string CRESPAPIKEY = "{\"stat\":\"ok\",\"code\":\"0\",\"message\":\"Hello\",\"data\":{\"apikey\"";
     CRESPAPIKEY += ":\"cbd37826afeb77d20f4834383efff254\"}}";
@@ -86,15 +86,15 @@ void IoMidasTest::checkGetTest()
     ::midasIO::IResponseHandler::ObjectType obj = resp->get();
 
     CPPUNIT_ASSERT(obj.find("stat")!= obj.end());
-    CPPUNIT_ASSERT_EQUAL(CREFRESPSTAT , obj["stat"].get_str());
+    CPPUNIT_ASSERT_EQUAL(CREFRESPSTAT, obj["stat"].get_str());
 
     CPPUNIT_ASSERT(obj.find("code")!= obj.end());
-    CPPUNIT_ASSERT_EQUAL(CREFRESPCODE , obj["code"].get_str());
+    CPPUNIT_ASSERT_EQUAL(CREFRESPCODE, obj["code"].get_str());
 
     CPPUNIT_ASSERT(obj.find("message")!= obj.end());
-    CPPUNIT_ASSERT_EQUAL(CREFRESPMESSAGE , obj["message"].get_str());
+    CPPUNIT_ASSERT_EQUAL(CREFRESPMESSAGE, obj["message"].get_str());
 
-    ::midasIO::IResponseHandler::ObjectType objectData =  resp->getObjectData();
+    ::midasIO::IResponseHandler::ObjectType objectData = resp->getObjectData();
 
     CPPUNIT_ASSERT(objectData.find("apikey")!= objectData.end());
     CPPUNIT_ASSERT_EQUAL(CREFRESPAPIKEY, objectData["apikey"].get_str());
@@ -137,7 +137,7 @@ void IoMidasTest::checkSetMessageTest()
 {
     const std::string CREFMSG("Here the message.");
     std::string CRSP = "{\"stat\":\"ok\",\"code\":\"0\",\"message\":\"\",\"data\":{\"apikey\"";
-    CRSP += ":\"cbd37826afeb77d20f4834383efff254\"}}";
+    CRSP                                  += ":\"cbd37826afeb77d20f4834383efff254\"}}";
     ::midasIO::IResponseHandler::sptr resp = ::midasIO::responseHandlerFactory::New("3.2.6");
     resp->setJsonData(CRSP);
     resp->setErrorMsg(CREFMSG);
@@ -167,10 +167,10 @@ void IoMidasTest::checkGetDataTest()
     ::midasIO::IResponseHandler::ArrayType array = resp->getArrayData();
 
     ::midasIO::IResponseHandler::ArrayType::iterator it = array.begin();
-    ::midasIO::IResponseHandler::ObjectType& obj = it->get_obj();
+    ::midasIO::IResponseHandler::ObjectType& obj        = it->get_obj();
 
     CPPUNIT_ASSERT(obj.find("_model")!= obj.end());
-    CPPUNIT_ASSERT_EQUAL(CREFMODEL , obj["_model"].get_str());
+    CPPUNIT_ASSERT_EQUAL(CREFMODEL, obj["_model"].get_str());
 }
 
 //------------------------------------------------------------------------------
@@ -210,7 +210,7 @@ void IoMidasTest::checkConfigurationTest()
     ::fwServices::IService::sptr srv
         = ::fwServices::registry::ServiceFactory::getDefault()->create( srvType, srvImpl );
     CPPUNIT_ASSERT(srv);
-    ::fwServices::OSR::registerService( pAcq , srv );
+    ::fwServices::OSR::registerService( pAcq, srv );
     srv->setConfiguration(srvCfg);
 
     CPPUNIT_ASSERT_NO_THROW(srv->configure());

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@ class FWDICOMIOFILTER_CLASS_API TagValueInstanceRemoveSplitter : public ISplitte
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (TagValueInstanceRemoveSplitter)(ISplitter),
-            (()), ::fwDicomIOFilter::factory::New< TagValueInstanceRemoveSplitter > );
+                                            (()), ::fwDicomIOFilter::factory::New< TagValueInstanceRemoveSplitter > );
 
     /// Constructor
     FWDICOMIOFILTER_API TagValueInstanceRemoveSplitter(::fwDicomIOFilter::IFilter::Key key);
@@ -35,7 +35,7 @@ public:
 
     /// Override
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(::fwDicomData::DicomSeries::sptr series) const
-        throw(::fwDicomIOFilter::exceptions::FilterFailure);
+    throw(::fwDicomIOFilter::exceptions::FilterFailure);
 
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const;
@@ -46,9 +46,9 @@ public:
     /// Return true if a configuration is required
     FWDICOMIOFILTER_API virtual bool isConfigurationRequired();
 
-    fwGettersSettersDocMacro(Tag, tag, DcmTagKey, Tag used to sort instances);
+    fwGettersSettersDocMacro(Tag, tag, DcmTagKey, "Tag used to sort instances");
     fwGettersSettersDocMacro(TagValue, tagValue, std::string,
-            Tag value used to determine if an instance must be removed);
+                             "Tag value used to determine if an instance must be removed");
 
 protected:
     /// Filter name

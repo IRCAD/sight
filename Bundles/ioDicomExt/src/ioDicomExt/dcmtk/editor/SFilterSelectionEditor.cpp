@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,8 @@ namespace dcmtk
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::ioDicomExt::dcmtk::editor::SFilterSelectionEditor , ::fwData::Vector ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::ioDicomExt::dcmtk::editor::SFilterSelectionEditor,
+                         ::fwData::Vector );
 
 //------------------------------------------------------------------------------
 
@@ -51,7 +52,7 @@ SFilterSelectionEditor::~SFilterSelectionEditor() throw()
 
 void SFilterSelectionEditor::info(std::ostream &_sstream )
 {
-    _sstream << "SFilterSelectionEditor::info" ;
+    _sstream << "SFilterSelectionEditor::info";
 }
 
 //------------------------------------------------------------------------------
@@ -71,7 +72,7 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
     QWidget* const container = qtContainer->getQtContainer();
-    QVBoxLayout* mainLayout = new QVBoxLayout();
+    QVBoxLayout* mainLayout  = new QVBoxLayout();
     mainLayout->setAlignment(Qt::AlignTop);
     container->setLayout(mainLayout);
 
@@ -80,7 +81,7 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
 
     // Top widget
     QHBoxLayout* topLayout = new QHBoxLayout();
-    QWidget* topWidget = new QWidget();
+    QWidget* topWidget     = new QWidget();
     topWidget->setLayout(topLayout);
     topLayout->setContentsMargins(QMargins(0,0,0,0));
     mainLayout->addWidget(topWidget);
@@ -107,7 +108,7 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
 
     // Add forced apply checkbox
     QHBoxLayout* applyLayout = new QHBoxLayout();
-    QWidget* applyWidget = new QWidget();
+    QWidget* applyWidget     = new QWidget();
     applyWidget->setLayout(applyLayout);
     applyWidget->setSizePolicy(policy);
     applyLayout->setContentsMargins(QMargins(0,0,0,0));
@@ -117,13 +118,13 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
 
     // Bottom widget
     QHBoxLayout* bottomLayout = new QHBoxLayout();
-    QWidget* bottomWidget = new QWidget();
+    QWidget* bottomWidget     = new QWidget();
     bottomWidget->setLayout(bottomLayout);
     bottomLayout->setContentsMargins(QMargins(0,0,0,0));
     mainLayout->addWidget(bottomWidget);
 
     QHBoxLayout* buttonLayout = new QHBoxLayout();
-    QWidget* buttonWidget = new QWidget();
+    QWidget* buttonWidget     = new QWidget();
     buttonWidget->setLayout(buttonLayout);
     buttonWidget->setSizePolicy(policy);
     buttonLayout->setContentsMargins(QMargins(0,0,0,0));
@@ -154,7 +155,8 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
     bottomLayout->addWidget(buttonWidget, 0, Qt::AlignRight);
 
     // Create shortcut
-    m_deleteShortcut = new QShortcut(QKeySequence(Qt::Key_Delete), m_selectedFilterListWidget, 0, 0, Qt::WidgetShortcut);
+    m_deleteShortcut =
+        new QShortcut(QKeySequence(Qt::Key_Delete), m_selectedFilterListWidget, 0, 0, Qt::WidgetShortcut);
 
     // Connect the signals
     QObject::connect(m_selectedFilterListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(updateButtonStatus(int)));
@@ -165,7 +167,7 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
     QObject::connect(m_applyFiltersButton, SIGNAL(clicked(void)), this, SLOT(applyFilters(void)));
     QObject::connect(m_deleteShortcut, SIGNAL(activated()), this, SLOT(removeFilter(void)));
     QObject::connect(m_selectedFilterListWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this,
-            SLOT(showContextMenuForSelectedFilter(const QPoint &)));
+                     SLOT(showContextMenuForSelectedFilter(const QPoint &)));
 }
 
 //------------------------------------------------------------------------------
@@ -197,7 +199,8 @@ void SFilterSelectionEditor::fillAvailableFilters()
 
             // Set description
             m_availableFilterListWidget->setItemData(index,
-                    SFilterSelectionEditor::getFilterDescription(filter).c_str(), Qt::ToolTipRole);
+                                                     SFilterSelectionEditor::getFilterDescription(
+                                                         filter).c_str(), Qt::ToolTipRole);
 
             ++index;
         }
@@ -211,7 +214,8 @@ void SFilterSelectionEditor::stopping() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     // Disconnect the signals
-    QObject::disconnect(m_selectedFilterListWidget, SIGNAL(currentRowChanged(int)), this, SLOT(updateButtonStatus(int)));
+    QObject::disconnect(m_selectedFilterListWidget, SIGNAL(currentRowChanged(int)), this,
+                        SLOT(updateButtonStatus(int)));
     QObject::disconnect(m_addFilterButton, SIGNAL(clicked(void)), this, SLOT(addFilterAtTheEnd(void)));
     QObject::disconnect(m_removeFilterButton, SIGNAL(clicked(void)), this, SLOT(removeFilter(void)));
     QObject::disconnect(m_configureFilterButton, SIGNAL(clicked(void)), this, SLOT(configureFilter(void)));
@@ -219,7 +223,7 @@ void SFilterSelectionEditor::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_applyFiltersButton, SIGNAL(clicked(void)), this, SLOT(applyFilters(void)));
     QObject::disconnect(m_deleteShortcut, SIGNAL(activated()), this, SLOT(removeFilter(void)));
     QObject::disconnect(m_selectedFilterListWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this,
-            SLOT(showContextMenuForSelectedFilter(const QPoint &)));
+                        SLOT(showContextMenuForSelectedFilter(const QPoint &)));
 
     this->getContainer()->clean();
     this->::fwGui::IGuiContainerSrv::destroy();
@@ -234,14 +238,14 @@ void SFilterSelectionEditor::configuring() throw(::fwTools::Failed)
 
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioDicomExt::dcmtk::editor::SFilterSelectionEditor must have a \"config\" element.",
-            config);
+               config);
 
     bool success;
 
     // Destination Series DB ID
     ::boost::tie(success, m_destinationSeriesDBID) = config->getSafeAttributeValue("destinationSeriesDBID");
     SLM_ASSERT("It should be a \"destinationSeriesDBID\" attribute in the "
-            "::ioDicomExt::dcmtk::editor::SFilterSelectionEditor config element.", success);
+               "::ioDicomExt::dcmtk::editor::SFilterSelectionEditor config element.", success);
 }
 
 //------------------------------------------------------------------------------
@@ -278,10 +282,10 @@ void SFilterSelectionEditor::addFilterAtTheEnd()
 void SFilterSelectionEditor::addFilter(int filterTypeIndex, int position)
 {
     // Get information from selected filter
-    QIcon icon = m_availableFilterListWidget->itemIcon(filterTypeIndex);
-    QString name = m_availableFilterListWidget->itemText(filterTypeIndex);
+    QIcon icon          = m_availableFilterListWidget->itemIcon(filterTypeIndex);
+    QString name        = m_availableFilterListWidget->itemText(filterTypeIndex);
     QString description = m_availableFilterListWidget->itemData(filterTypeIndex, Qt::ToolTipRole).toString();
-    std::string key = m_availableFilterListWidget->itemData(filterTypeIndex).toString().toStdString();
+    std::string key     = m_availableFilterListWidget->itemData(filterTypeIndex).toString().toStdString();
 
     // Create filter
     ::fwDicomIOFilter::IFilter::sptr filter = ::fwDicomIOFilter::factory::New(key);
@@ -320,7 +324,8 @@ void SFilterSelectionEditor::removeFilter()
 void SFilterSelectionEditor::configureFilter()
 {
     int selectedFilterIndex = m_selectedFilterListWidget->currentRow();
-    std::string id = m_selectedFilterListWidget->item(selectedFilterIndex)->data(Qt::UserRole).toString().toStdString();
+    std::string id          =
+        m_selectedFilterListWidget->item(selectedFilterIndex)->data(Qt::UserRole).toString().toStdString();
     m_filtersMap[id]->configureWithGUI();
 }
 
@@ -328,10 +333,11 @@ void SFilterSelectionEditor::configureFilter()
 
 void SFilterSelectionEditor::splitFilter()
 {
-    int currentIndex = m_selectedFilterListWidget->currentRow();
-    std::string compositeId = m_selectedFilterListWidget->item(currentIndex)->data(Qt::UserRole).toString().toStdString();
+    int currentIndex        = m_selectedFilterListWidget->currentRow();
+    std::string compositeId =
+        m_selectedFilterListWidget->item(currentIndex)->data(Qt::UserRole).toString().toStdString();
     ::fwDicomIOFilter::composite::IComposite::sptr composite =
-            ::fwDicomIOFilter::composite::IComposite::dynamicCast(m_filtersMap[compositeId]);
+        ::fwDicomIOFilter::composite::IComposite::dynamicCast(m_filtersMap[compositeId]);
 
     // Remove composite filter
     this->removeFilter();
@@ -345,7 +351,7 @@ void SFilterSelectionEditor::splitFilter()
         m_selectedFilterListWidget->insertItem(position, filter->getName().c_str());
         m_selectedFilterListWidget->item(position)->setIcon(SFilterSelectionEditor::getFilterIcon(filter));
         m_selectedFilterListWidget->item(position)->setToolTip(
-                SFilterSelectionEditor::getFilterDescription(filter).c_str());
+            SFilterSelectionEditor::getFilterDescription(filter).c_str());
         m_selectedFilterListWidget->item(position)->setData(Qt::UserRole, id.c_str());
         ++position;
     }
@@ -432,7 +438,7 @@ void SFilterSelectionEditor::applyFilters()
         std::stringstream ssFilters;
         std::stringstream ssInfos;
         bool patchingError = false;
-        bool forcedApply = m_forcedApplyCheckBox->isChecked();
+        bool forcedApply   = m_forcedApplyCheckBox->isChecked();
 
         ssFilters << "<b>Filters :</b><br />";
         // Let's apply all the filters
@@ -499,10 +505,10 @@ void SFilterSelectionEditor::showContextMenuForSelectedFilter(const QPoint &pos)
     QPointer< QSignalMapper > mapper = new QSignalMapper();
 
     // Fill the menu with the available filters
-    for(unsigned int i=0; i < m_availableFilterListWidget->count(); ++i)
+    for(unsigned int i = 0; i < m_availableFilterListWidget->count(); ++i)
     {
-        QString text = m_availableFilterListWidget->itemText(i);
-        QIcon icon = m_availableFilterListWidget->itemIcon(i);
+        QString text               = m_availableFilterListWidget->itemText(i);
+        QIcon icon                 = m_availableFilterListWidget->itemIcon(i);
         QPointer< QAction > action = new QAction(icon, text, m_selectedFilterListWidget);
         action->setIconVisibleInMenu(true);
         addMenu->addAction(action);
@@ -548,7 +554,8 @@ void SFilterSelectionEditor::showContextMenuForSelectedFilter(const QPoint &pos)
 
 //------------------------------------------------------------------------------
 
-bool SFilterSelectionEditor::sortFilters(const ::fwDicomIOFilter::IFilter::sptr& a, const ::fwDicomIOFilter::IFilter::sptr& b)
+bool SFilterSelectionEditor::sortFilters(const ::fwDicomIOFilter::IFilter::sptr& a,
+                                         const ::fwDicomIOFilter::IFilter::sptr& b)
 {
     if(a->getFilterType() == b->getFilterType())
     {
@@ -575,12 +582,12 @@ QIcon SFilterSelectionEditor::getFilterIcon(::fwDicomIOFilter::IFilter::sptr fil
 
 std::string SFilterSelectionEditor::getFilterDescription(::fwDicomIOFilter::IFilter::sptr filter)
 {
-    std::string types[] = { "Modifier", "Sorter", "Splitter", "Composite", "Custom" };
+    std::string types[]     = { "Modifier", "Sorter", "Splitter", "Composite", "Custom" };
     std::string description =
-            "<b>Name :</b> "+filter->getName()+"<br />"
-            "<b>Type :</b> "+types[filter->getFilterType()]+"<br />"
-            "<b>Configurable :</b> "+((filter->isConfigurableWithGUI())?"Yes":"No")+"<br />"
-            "<b>Informations :</b><br />"+filter->getDescription();
+        "<b>Name :</b> "+filter->getName()+"<br />"
+        "<b>Type :</b> "+types[filter->getFilterType()]+"<br />"
+        "<b>Configurable :</b> "+((filter->isConfigurableWithGUI()) ? "Yes" : "No")+"<br />"
+        "<b>Informations :</b><br />"+filter->getDescription();
     return description;
 }
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UINETWORK__SOBJECTCONNECTORTREE_HPP__
-#define __UINETWORK__SOBJECTCONNECTORTREE_HPP__
+#ifndef __UINETWORK_SOBJECTCONNECTORTREE_HPP__
+#define __UINETWORK_SOBJECTCONNECTORTREE_HPP__
 
 #include "uiNetwork/config.hpp"
 #include "uiNetwork/ConnectorModel.hpp"
@@ -134,5 +134,5 @@ private:
 
 } // namespace uiNetwork
 
-#endif /*__UINETWORK__SOBJECTCONNECTORTREE_HPP__*/
+#endif /*__UINETWORK_SOBJECTCONNECTORTREE_HPP__*/
 

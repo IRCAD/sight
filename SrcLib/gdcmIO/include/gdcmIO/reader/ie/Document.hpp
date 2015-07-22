@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@
 
 namespace fwData
 {
-    class Point;
+class Point;
 }
 
 namespace gdcmIO
@@ -44,10 +44,10 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] image Image data
      */
-    GDCMIO_API Document(SPTR(::fwDicomData::DicomSeries) dicomSeries,
-            SPTR(::gdcm::Reader) reader,
-            SPTR(::gdcmIO::container::DicomInstance) instance,
-            ::fwData::Image::sptr image);
+    GDCMIO_API Document(SPTR(::fwDicomData::DicomSeries)dicomSeries,
+                        SPTR(::gdcm::Reader)reader,
+                        SPTR(::gdcmIO::container::DicomInstance)instance,
+                        ::fwData::Image::sptr image);
 
     /// Destructor
     GDCMIO_API virtual ~Document();

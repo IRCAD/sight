@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -137,15 +137,15 @@ void SOpenIGTLinkListener::setHost(std::string const &hostname, boost::uint16_t 
 void SOpenIGTLinkListener::starting() throw (::fwTools::Failed)
 {
 
-    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Object::sptr obj   = this->getObject();
     ::extData::TimeLine::sptr tl = ::extData::TimeLine::dynamicCast(obj);
 
     if(tl)
     {
         if(obj->isA("::extData::MatrixTL"))
         {
-            m_timelineType = SOpenIGTLinkListener::MATRIX;
-            ::extData::MatrixTL::sptr matTL =  this->getObject< ::extData::MatrixTL >();
+            m_timelineType                  = SOpenIGTLinkListener::MATRIX;
+            ::extData::MatrixTL::sptr matTL = this->getObject< ::extData::MatrixTL >();
             matTL->setMaximumSize(10);
             matTL->initPoolSize(1);
 
@@ -195,13 +195,13 @@ void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
     //MatrixTL
     if(m_timelineType == SOpenIGTLinkListener::MATRIX)
     {
-        ::extData::MatrixTL::sptr matTL =  this->getObject< ::extData::MatrixTL >();
+        ::extData::MatrixTL::sptr matTL = this->getObject< ::extData::MatrixTL >();
 
         SPTR(::extData::MatrixTL::BufferType) matrixBuf;
         matrixBuf = matTL->createBuffer(timestamp);
         ::fwData::TransformationMatrix3D::TMCoefArray values;
         ::fwData::TransformationMatrix3D::sptr t = ::fwData::TransformationMatrix3D::dynamicCast(obj);
-        values = t->getCoefficients();
+        values                                   = t->getCoefficients();
         float matrixValues[16];
 
         for(unsigned int i = 0; i< 16; ++i)
@@ -222,7 +222,7 @@ void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
 
         ::fwData::Image::sptr im = ::fwData::Image::dynamicCast(obj);
         ::fwComEd::helper::Image helper(im);
-        ::extData::FrameTL::sptr frameTL =  this->getObject< ::extData::FrameTL >();
+        ::extData::FrameTL::sptr frameTL = this->getObject< ::extData::FrameTL >();
         if(!m_frameTLInitialized)
         {
             frameTL->setMaximumSize(10);
@@ -243,7 +243,7 @@ void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
 
         ::extData::TimeLine::ObjectPushedSignalType::sptr sig;
         sig = frameTL->signal< ::extData::TimeLine::ObjectPushedSignalType >
-                (::extData::TimeLine::s_OBJECT_PUSHED_SIG );
+                  (::extData::TimeLine::s_OBJECT_PUSHED_SIG );
         sig->asyncEmit(timestamp);
 
     }

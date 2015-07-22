@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,9 +21,9 @@ namespace sr
 //------------------------------------------------------------------------------
 
 DicomSRImageNode::DicomSRImageNode(const DicomCodedAttribute& codedAttribute, const std::string& relationship,
-        const std::string& sopClassUID, const std::string& sopInstanceUID, int frameNumber) :
-        ::gdcmIO::container::sr::DicomSRNode(codedAttribute, "IMAGE", relationship), m_sopClassUID(sopClassUID),
-         m_sopInstanceUID(sopInstanceUID), m_frameNumber(frameNumber)
+                                   const std::string& sopClassUID, const std::string& sopInstanceUID, int frameNumber) :
+    ::gdcmIO::container::sr::DicomSRNode(codedAttribute, "IMAGE", relationship), m_sopClassUID(sopClassUID),
+    m_sopInstanceUID(sopInstanceUID), m_frameNumber(frameNumber)
 {
 }
 

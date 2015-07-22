@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,13 +36,14 @@ namespace editor
  * @class   SQueryEditor
  * @date    2013.
  */
-class IODICOMEXT_CLASS_API SQueryEditor : public QObject, public ::gui::editor::IEditor
+class IODICOMEXT_CLASS_API SQueryEditor : public QObject,
+                                          public ::gui::editor::IEditor
 {
 Q_OBJECT;
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SQueryEditor)( ::gui::editor::IEditor ) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SQueryEditor)( ::gui::editor::IEditor ) );
     /**
      * @brief Constructor
      */
@@ -59,12 +60,12 @@ protected:
      * @brief Configuring method. This method is used to configure the service.
      *
      * XML configuration sample:
-     @verbatim
-     <service uid="queryEditor" impl="::ioDicomExt::dcmtk::editor::SQueryEditor" autoConnect="yes">
+       @verbatim
+       <service uid="queryEditor" impl="::ioDicomExt::dcmtk::editor::SQueryEditor" autoConnect="yes">
          <config pacsConfigurationUID="pacsConfiguration" />
-     </service>
-     @endverbatim
-    */
+       </service>
+       @endverbatim
+     */
     IODICOMEXT_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -80,7 +81,7 @@ protected:
     IODICOMEXT_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Override
-    IODICOMEXT_API void info(std::ostream &_sstream ) ;
+    IODICOMEXT_API void info(std::ostream &_sstream );
 
     /**
      * @brief Display an error message
@@ -101,7 +102,7 @@ private Q_SLOTS:
      */
     IODICOMEXT_API void updateSeriesDB(::fwMedData::SeriesDB::ContainerType series);
 
-protected :
+protected:
     /// Patient Name Field
     QPointer< QLineEdit > m_patientNameLineEdit;
 

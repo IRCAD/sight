@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,7 @@
 
 namespace fwData
 {
-    class Reconstruction;
+class Reconstruction;
 }
 
 namespace gdcmIO
@@ -39,10 +39,10 @@ public:
      * @param[in] instance DICOM instance used to share informations between modules
      * @param[in] series Series data
      */
-    GDCMIO_API Surface(SPTR(::fwDicomData::DicomSeries) dicomSeries,
-            SPTR(::gdcm::Reader) reader,
-            SPTR(::gdcmIO::container::DicomInstance) instance,
-            ::fwMedData::ModelSeries::sptr series);
+    GDCMIO_API Surface(SPTR(::fwDicomData::DicomSeries)dicomSeries,
+                       SPTR(::gdcm::Reader)reader,
+                       SPTR(::gdcmIO::container::DicomInstance)instance,
+                       ::fwMedData::ModelSeries::sptr series);
 
     /// Destructor
     GDCMIO_API virtual ~Surface();
@@ -62,7 +62,7 @@ protected:
      * @see PS 3.3 C.27.1
      */
     GDCMIO_API virtual void readSurfaceMeshModule(::gdcm::SmartPointer< ::gdcm::Surface > surface,
-            SPTR(::fwData::Reconstruction) reconstruction);
+                                                  SPTR(::fwData::Reconstruction) reconstruction);
 
 };
 

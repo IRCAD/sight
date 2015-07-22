@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,7 +37,8 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IDialogEditor , ::ioDicomExt::dcmtk::editor::SFilterSelectorDialog , ::fwData::String );
+fwServicesRegisterMacro( ::gui::editor::IDialogEditor, ::ioDicomExt::dcmtk::editor::SFilterSelectorDialog,
+                         ::fwData::String );
 
 //------------------------------------------------------------------------------
 
@@ -67,26 +68,26 @@ void SFilterSelectorDialog::configuring() throw( ::fwTools::Failed )
     //  <addSelection filter="::fwDicomIOFilter::composite::CTImageStorageDefaultComposite" />
     //  <addSelection filter="::fwDicomIOFilter::composite::CTImageStorageDefaultComposite" />
 
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin() ;
-    for( ; iter != this->m_configuration->end() ; ++iter )
+    ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
+    for(; iter != this->m_configuration->end(); ++iter )
     {
         SLM_INFO( "SFilterSelectorDialog "  + (*iter)->getName());
 
         if( (*iter)->getName() == "selection" )
         {
-            SLM_ASSERT( "Sorry, xml element <selection> must have attribute 'mode'.", (*iter)->hasAttribute("mode")) ;
-            const std::string mode = (*iter)->getExistingAttributeValue("mode") ;
+            SLM_ASSERT( "Sorry, xml element <selection> must have attribute 'mode'.", (*iter)->hasAttribute("mode"));
+            const std::string mode = (*iter)->getExistingAttributeValue("mode");
             m_filtersAreExcluded = ( mode == "exclude" );
             SLM_ASSERT( "Sorry, xml attribute <mode> must be 'exclude' or 'include'.", mode == "exclude" ||
-                    mode == "include" );
+                        mode == "include" );
             SLM_DEBUG( "mode => " + mode );
         }
 
         if( (*iter)->getName() == "addSelection" )
         {
             SLM_ASSERT( "Sorry, xml element <addSelection> must have attribute 'filter'.",
-                    (*iter)->hasAttribute("filter")) ;
-            m_selectedFilters.push_back( (*iter)->getExistingAttributeValue("filter") ) ;
+                        (*iter)->hasAttribute("filter"));
+            m_selectedFilters.push_back( (*iter)->getExistingAttributeValue("filter") );
             SLM_DEBUG( "add selection => " + (*iter)->getExistingAttributeValue("filter") );
         }
 
@@ -126,20 +127,20 @@ void SFilterSelectorDialog::updating() throw( ::fwTools::Failed )
     std::map< std::string, ::fwDicomIOFilter::IFilter::sptr > availableFiltersMap;
     std::vector< std::string > availableFilterNames;
 
-    BOOST_FOREACH( ::fwDicomIOFilter::IFilter::sptr  filter, registredFilters )
+    BOOST_FOREACH( ::fwDicomIOFilter::IFilter::sptr filter, registredFilters )
     {
         const bool filterIsSelectedByUser = std::find( m_selectedFilters.begin(), m_selectedFilters.end(),
-                filter->getClassname() ) != m_selectedFilters.end();
+                                                       filter->getClassname() ) != m_selectedFilters.end();
 
         // Test if the filter is considered here as available by users
         // excluded mode => add filters that are not selected by users
         // included mode => add filters selected by users
-        if( (m_filtersAreExcluded && ! filterIsSelectedByUser) ||
-            (! m_filtersAreExcluded && filterIsSelectedByUser) )
+        if( (m_filtersAreExcluded && !filterIsSelectedByUser) ||
+            (!m_filtersAreExcluded && filterIsSelectedByUser) )
         {
             // Add this filter
             std::string filterName = filter->getName();
-            filterName = (filterName.empty())?filter->getClassname():filterName;
+            filterName                      = (filterName.empty()) ? filter->getClassname() : filterName;
             availableFiltersMap[filterName] = filter;
             availableFilterNames.push_back( filterName );
         }
@@ -149,9 +150,9 @@ void SFilterSelectorDialog::updating() throw( ::fwTools::Failed )
     std::sort( availableFilterNames.begin(), availableFilterNames.end() );
 
     // Test if we have an extension
-    if ( ! availableFilterNames.empty() )
+    if ( !availableFilterNames.empty() )
     {
-        std::string filterName = *availableFilterNames.begin() ;
+        std::string filterName         = *availableFilterNames.begin();
         bool filterSelectionIsCanceled = false;
 
         // Selection of extension when availableFilterNames.size() > 1
@@ -161,14 +162,14 @@ void SFilterSelectorDialog::updating() throw( ::fwTools::Failed )
 
             selector->setTitle("Filter to use");
             selector->setSelections(availableFilterNames);
-            filterName = selector->show();
+            filterName                = selector->show();
             filterSelectionIsCanceled = filterName.empty();
 
             SLM_ASSERT("Unable to find the selected filter name in the filter map.",
-                    filterSelectionIsCanceled || availableFiltersMap.find(filterName) != availableFiltersMap.end() );
+                       filterSelectionIsCanceled || availableFiltersMap.find(filterName) != availableFiltersMap.end() );
         }
 
-        if ( ! filterSelectionIsCanceled )
+        if ( !filterSelectionIsCanceled )
         {
 
             ::fwDicomIOFilter::IFilter::sptr filter = availableFiltersMap[filterName];

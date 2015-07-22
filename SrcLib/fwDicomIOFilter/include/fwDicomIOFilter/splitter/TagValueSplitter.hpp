@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@ class FWDICOMIOFILTER_CLASS_API TagValueSplitter : public ISplitter
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (TagValueSplitter)(ISplitter),
-            (()), ::fwDicomIOFilter::factory::New< TagValueSplitter > );
+                                            (()), ::fwDicomIOFilter::factory::New< TagValueSplitter > );
 
     /// Constructor
     FWDICOMIOFILTER_API TagValueSplitter(::fwDicomIOFilter::IFilter::Key key);
@@ -35,7 +35,7 @@ public:
 
     /// Override
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(::fwDicomData::DicomSeries::sptr series) const
-        throw(::fwDicomIOFilter::exceptions::FilterFailure);
+    throw(::fwDicomIOFilter::exceptions::FilterFailure);
 
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const;

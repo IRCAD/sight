@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,9 +21,10 @@ namespace sr
 //------------------------------------------------------------------------------
 
 DicomSRNumNode::DicomSRNumNode(const DicomCodedAttribute& codedAttribute,
-        const std::string& relationship, double numValue, const DicomCodedAttribute& measurementUnits) :
-        ::gdcmIO::container::sr::DicomSRNode(codedAttribute, "NUM", relationship), m_numValue(numValue),
-         m_measurementUnits(measurementUnits)
+                               const std::string& relationship, double numValue,
+                               const DicomCodedAttribute& measurementUnits) :
+    ::gdcmIO::container::sr::DicomSRNode(codedAttribute, "NUM", relationship), m_numValue(numValue),
+    m_measurementUnits(measurementUnits)
 {
 }
 
@@ -57,7 +58,7 @@ void DicomSRNumNode::writeMeasuredValueSequence(::gdcm::DataSet &dataset) const
 
     // Add measured units code sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > codeSequence =
-            this->createConceptNameCodeSequence(itemDataset, m_measurementUnits);
+        this->createConceptNameCodeSequence(itemDataset, m_measurementUnits);
     ::gdcmIO::helper::DicomData::insertSQ<0x0040, 0x08ea>(codeSequence, itemDataset);
 
     sequence->AddItem(item);

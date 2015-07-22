@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,11 +33,11 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Document::Document(SPTR(::gdcm::Writer) writer,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwData::Image::sptr image,
-         bool use3DSR):
-        ::gdcmIO::writer::ie::InformationEntity< ::fwData::Image >(writer, instance, image), m_use3DSR(use3DSR)
+Document::Document(SPTR(::gdcm::Writer)writer,
+                   SPTR(::gdcmIO::container::DicomInstance)instance,
+                   ::fwData::Image::sptr image,
+                   bool use3DSR) :
+    ::gdcmIO::writer::ie::InformationEntity< ::fwData::Image >(writer, instance, image), m_use3DSR(use3DSR)
 {
 }
 
@@ -64,7 +64,7 @@ void Document::writeSRDocumentGeneralModule()
     ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0023 >(date, dataset);
 
     // Content Time - Type 1 - FIXME: Keep series time ?
-    std::string time =  ::fwTools::getTime(ptime);
+    std::string time = ::fwTools::getTime(ptime);
     ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0033 >(time, dataset);
 
     // Performed Procedure Code Sequence (0040,A372) // Type 2 (FIXME: CID 7000 ?)

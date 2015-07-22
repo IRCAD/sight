@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,10 +30,10 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-SpatialFiducials::SpatialFiducials(SPTR(::gdcm::Writer) writer,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwData::Image::sptr image):
-        ::gdcmIO::writer::ie::InformationEntity< ::fwData::Image >(writer, instance, image)
+SpatialFiducials::SpatialFiducials(SPTR(::gdcm::Writer)writer,
+                                   SPTR(::gdcmIO::container::DicomInstance)instance,
+                                   ::fwData::Image::sptr image) :
+    ::gdcmIO::writer::ie::InformationEntity< ::fwData::Image >(writer, instance, image)
 {
 }
 
@@ -57,7 +57,7 @@ void SpatialFiducials::writeSpatialFiducialsModule()
     ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0023 >(date, dataset);
 
     // Content Time - Type 1 - FIXME: Keep series time ?
-    std::string time =  ::fwTools::getTime(ptime);
+    std::string time = ::fwTools::getTime(ptime);
     ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0033 >(time, dataset);
 
     // Instance Number - Type 1
@@ -99,11 +99,11 @@ void SpatialFiducials::writeSpatialFiducialsModule()
 
         // Referenced SOP Class UID - Type 1
         ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1150 >(m_instance->getCRefSOPClassUID(),
-                referencedImageItemDataset);
+                                                                   referencedImageItemDataset);
 
         // Referenced SOP Instance UID - Type 1
         ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1155 >(m_instance->getCRefSOPInstanceUIDContainer()[index],
-                referencedImageItemDataset);
+                                                                   referencedImageItemDataset);
 
         // Add referenced image to sequence
         referencedImageSequence->AddItem(referencedImageItem);
@@ -129,7 +129,7 @@ void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfIt
 throw(::gdcmIO::exception::Failed)
 {
     ::fwData::PointList::sptr pointList =
-            m_object->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
+        m_object->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
     if (pointList)
     {
         unsigned int index = 0;
@@ -153,7 +153,7 @@ throw(::gdcmIO::exception::Failed)
 
             // Graphic Coordinates Data Sequence - Type 1C
             ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > graphicCoodinatesDataSequence =
-                    new ::gdcm::SequenceOfItems();
+                new ::gdcm::SequenceOfItems();
             ::gdcmIO::helper::DicomData::setSQ< 0x0070, 0x0318 >(graphicCoodinatesDataSequence, fiducialItemDataset);
 
             ::gdcm::Item graphicDataItem;
@@ -204,7 +204,7 @@ void SpatialFiducials::writeCommonInstanceReferenceModule()
 
     // Series Instance UID - Type 1
     ::gdcmIO::helper::DicomData::setTagValue< 0x0020, 0x000E >(m_instance->getSeriesInstanceUID(),
-            referencedSeriesItemDataset);
+                                                               referencedSeriesItemDataset);
 
     // Referenced Instance Sequence - Type 1
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedInstanceSequence = new ::gdcm::SequenceOfItems();
@@ -219,11 +219,11 @@ void SpatialFiducials::writeCommonInstanceReferenceModule()
 
         // Referenced SOP Class UID - Type 1
         ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1150 >(m_instance->getCRefSOPClassUID(),
-                referencedInstanceItemDataset);
+                                                                   referencedInstanceItemDataset);
 
         // Referenced SOP Instance UID - Type 1
         ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1155 >(m_instance->getCRefSOPInstanceUIDContainer()[index],
-                referencedInstanceItemDataset);
+                                                                   referencedInstanceItemDataset);
 
         // Add referenced image to sequence
         referencedInstanceSequence->AddItem(referencedInstanceItem);
@@ -269,7 +269,8 @@ void SpatialFiducials::writeSOPCommonModule()
 //------------------------------------------------------------------------------
 
 void SpatialFiducials::addReferencedImage(int frameNumber,
-        ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(::gdcmIO::exception::Failed)
+                                          ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > referencedImageSequence) throw(
+    ::gdcmIO::exception::Failed)
 {
     ::gdcm::Item referencedImageItem;
     referencedImageItem.SetVLToUndefined();
@@ -277,15 +278,15 @@ void SpatialFiducials::addReferencedImage(int frameNumber,
 
     // Referenced Frame Number - Type 1C
     ::gdcmIO::helper::DicomData::setTagValues< int, 0x0008, 0x1160 >(&frameNumber, 1,
-            referencedImageItemDataset);
+                                                                     referencedImageItemDataset);
 
     // Referenced SOP Class UID - Type 1
     ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1150 >(m_instance->getCRefSOPClassUID(),
-            referencedImageItemDataset);
+                                                               referencedImageItemDataset);
 
     // Referenced SOP Instance UID - Type 1
     ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1155 >(
-            m_instance->getCRefSOPInstanceUIDContainer()[frameNumber-1], referencedImageItemDataset);
+        m_instance->getCRefSOPInstanceUIDContainer()[frameNumber-1], referencedImageItemDataset);
 
     // Add referenced image to sequence
     referencedImageSequence->AddItem(referencedImageItem);

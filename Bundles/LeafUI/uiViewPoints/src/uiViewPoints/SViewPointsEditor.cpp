@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,24 +44,25 @@ namespace uiViewPoints
 {
 
 const ::fwCom::Signals::SignalKeyType SViewPointsEditor::s_DIRECT_TARGET_CHANGED_SIG = "directTargetChanged";
-const std::string SViewPointsEditor::s_FIELD_NAME = "ViewPointName";
+const std::string SViewPointsEditor::s_FIELD_NAME                                    = "ViewPointName";
 
 //------------------------------------------------------------------------------
 
 SViewPointsEditor::SViewPointsEditor() throw() : m_nbViewPoints(0)
 {
     m_sigDirectTargetChanged = DirectTargetChangedSignalType::New();
-   ::fwCom::HasSignals::m_signals(s_DIRECT_TARGET_CHANGED_SIG, m_sigDirectTargetChanged);
+    ::fwCom::HasSignals::m_signals(s_DIRECT_TARGET_CHANGED_SIG, m_sigDirectTargetChanged);
 
 #ifdef COM_LOG
-   m_sigDirectTargetChanged->setID( s_DIRECT_TARGET_CHANGED_SIG );
+    m_sigDirectTargetChanged->setID( s_DIRECT_TARGET_CHANGED_SIG );
 #endif
 }
 
 //------------------------------------------------------------------------------
 
 SViewPointsEditor::~SViewPointsEditor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -95,10 +96,10 @@ void SViewPointsEditor::starting() throw(::fwTools::Failed)
     QObject::connect(m_removePointButton, SIGNAL(clicked()), this,SLOT(onClickRemovePoint()));
     QObject::connect(m_removeAllPointsButton, SIGNAL(clicked()), this,SLOT(onClickRemoveAllPoints()));
     QObject::connect(
-            m_viewPointsList, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-            this, SLOT(onDoubleClickItem(QListWidgetItem*)));
+        m_viewPointsList, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+        this, SLOT(onDoubleClickItem(QListWidgetItem*)));
     QObject::connect(
-            m_viewPointsList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onClickItem(QListWidgetItem*)));
+        m_viewPointsList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onClickItem(QListWidgetItem*)));
 
     QGridLayout* layout = new QGridLayout(container);
     layout->addWidget(m_addPointButton, 0, 0, Qt::AlignTop);
@@ -113,7 +114,7 @@ void SViewPointsEditor::starting() throw(::fwTools::Failed)
     ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector>();
     SLM_ASSERT("Invalid vector object", vector);
 
-    BOOST_FOREACH(::fwData::Object::sptr object , vector->getContainer())
+    BOOST_FOREACH(::fwData::Object::sptr object, vector->getContainer())
     {
         ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::dynamicCast(object);
         SLM_ASSERT("Invalid matrix object", matrix);
@@ -136,10 +137,10 @@ void SViewPointsEditor::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_removePointButton, SIGNAL(clicked()), this,SLOT(onClickRemovePoint()));
     QObject::disconnect(m_removeAllPointsButton, SIGNAL(clicked()), this,SLOT(onClickRemoveAllPoints()));
     QObject::disconnect(
-            m_viewPointsList, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-            this, SLOT(onDoubleClickItem(QListWidgetItem*)));
+        m_viewPointsList, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
+        this, SLOT(onDoubleClickItem(QListWidgetItem*)));
     QObject::disconnect(
-            m_viewPointsList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onClickItem(QListWidgetItem*)));
+        m_viewPointsList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onClickItem(QListWidgetItem*)));
 
     this->getContainer()->clean();
     this->destroy();
@@ -165,12 +166,14 @@ void SViewPointsEditor::configuring() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void SViewPointsEditor::updating() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void SViewPointsEditor::receiving(::fwServices::ObjectMsg::csptr msg) throw (::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -185,11 +188,11 @@ void SViewPointsEditor::onClickAddPoint()
     {
         // Get the current matrix
         ::fwData::TransformationMatrix3D::sptr Currentmatrix =
-                ::fwData::TransformationMatrix3D::dynamicCast(::fwTools::fwID::getObject(m_transformUID));
+            ::fwData::TransformationMatrix3D::dynamicCast(::fwTools::fwID::getObject(m_transformUID));
 
         // Copy the current matrix
         ::fwData::TransformationMatrix3D::sptr smatrix =
-                ::fwData::TransformationMatrix3D::sptr(::fwData::TransformationMatrix3D::New());
+            ::fwData::TransformationMatrix3D::sptr(::fwData::TransformationMatrix3D::New());
         smatrix->deepCopy(Currentmatrix);
         smatrix->setField(s_FIELD_NAME, ::fwData::String::New(name_stdstring));
         ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector>();
@@ -208,8 +211,8 @@ void SViewPointsEditor::onClickRenamePoint()
     dialogWindows.setMessage("Enter new name");
 
     QListWidgetItem* item = m_viewPointsList->selectedItems().takeFirst();
-    std::string text = dialogWindows.getInput();
-    QString str = QString::fromUtf8(text.c_str());
+    std::string text      = dialogWindows.getInput();
+    QString str           = QString::fromUtf8(text.c_str());
 
     if(text.size() != 0)
     {
@@ -273,7 +276,7 @@ void SViewPointsEditor::onDoubleClickItem(QListWidgetItem * item)
 
     // Send the matrix with the signal m_sigDirectTargetChanged
     fwServicesNotifyMacro( this->getLightID(), m_sigDirectTargetChanged,
-            (::fwData::TransformationMatrix3D::dynamicCast(vector->getContainer()[pointIndex])));
+                           (::fwData::TransformationMatrix3D::dynamicCast(vector->getContainer()[pointIndex])));
 
 }
 

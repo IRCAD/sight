@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,7 @@
 
 namespace fwMedData
 {
-    class SeriesDB;
+class SeriesDB;
 }
 
 namespace ioDicomExt
@@ -30,8 +30,8 @@ namespace gdcm
 class IODICOMEXT_CLASS_API SDicomSeriesAnonymizer : public ::fwServices::IController
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesAnonymizer)( ::fwServices::IController) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesAnonymizer)( ::fwServices::IController) );
 
     /**
      * @brief   constructor
@@ -49,12 +49,12 @@ protected:
      * @brief Configuring method. This method is used to configure the service.
      *
      * XML configuration sample:
-     @verbatim
-     <service uid="anonymizeSelection" impl="::ioDicomExt::gdcm::SDicomSeriesAnonymizer" autoConnect="yes">
+       @verbatim
+       <service uid="anonymizeSelection" impl="::ioDicomExt::gdcm::SDicomSeriesAnonymizer" autoConnect="yes">
          <config seriesDBUID="mySeriesDB" />
-     </service>
-     @endverbatim
-    */
+       </service>
+       @endverbatim
+     */
     IODICOMEXT_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -70,7 +70,7 @@ protected:
     IODICOMEXT_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Override
-    IODICOMEXT_API void info(std::ostream &_sstream ) ;
+    IODICOMEXT_API void info(std::ostream &_sstream );
 
     /// Override
     IODICOMEXT_API void anonymize();

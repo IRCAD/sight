@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,10 +52,11 @@ void DicomSeriesAnonymizer::anonymize(::fwDicomData::DicomSeries::sptr source)
 
 //------------------------------------------------------------------------------
 
-void DicomSeriesAnonymizer::anonymize(::fwDicomData::DicomSeries::sptr source, ::fwDicomData::DicomSeries::sptr destination)
+void DicomSeriesAnonymizer::anonymize(::fwDicomData::DicomSeries::sptr source,
+                                      ::fwDicomData::DicomSeries::sptr destination)
 {
     FW_RAISE_IF("Dicom series should contain binaries.",
-            source->getDicomAvailability() != ::fwDicomData::DicomSeries::BINARIES);
+                source->getDicomAvailability() != ::fwDicomData::DicomSeries::BINARIES);
 
     // Create destination directory
     const ::boost::filesystem::path destPath = ::fwTools::System::getTemporaryFolder() / "DicomSeriesAnonymizer";
@@ -79,7 +80,7 @@ void DicomSeriesAnonymizer::anonymize(::fwDicomData::DicomSeries::sptr source, :
 
     // Update DicomSeries
     ::fwDicomData::DicomSeries::sptr anonymizedSeries =
-            ::fwDicomData::DicomSeries::dynamicCast(seriesDB->getContainer().front());
+        ::fwDicomData::DicomSeries::dynamicCast(seriesDB->getContainer().front());
     destination->deepCopy(anonymizedSeries);
 
     // Delete directory

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _DEVFORUM_TUTO4_IMAGEREADERSERVICE_HPP_
-#define _DEVFORUM_TUTO4_IMAGEREADERSERVICE_HPP_
+#ifndef __DEVFORUM_TUTO04_IMAGEREADERSERVICE_HPP__
+#define __DEVFORUM_TUTO04_IMAGEREADERSERVICE_HPP__
 
 // Used to save the file system path of loaded image
 #include <boost/filesystem/path.hpp>
@@ -31,16 +31,16 @@ namespace tuto04
 class DEVFORUM_CLASS_API ImageReaderService : public ::devForum::tuto03::ImageReaderService
 {
 
-public :
+public:
 
     // Build some class definition like sptr, etc.
     fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)(::io::IReader) );
 
     /// Constructor, does nothing.
-    DEVFORUM_API ImageReaderService() throw() ;
+    DEVFORUM_API ImageReaderService() throw();
 
     /// Destructor, does nothing.
-    DEVFORUM_API virtual ~ImageReaderService() throw() ;
+    DEVFORUM_API virtual ~ImageReaderService() throw();
 
     /// This method is used to configure service with an IHM, open a dialog box to select vtk image path.
     DEVFORUM_API virtual void configureWithIHM();
@@ -52,4 +52,4 @@ public :
 } // end namespace devForum
 
 
-#endif // _DEVFORUM_TUTO4_IMAGEREADERSERVICE_HPP_
+#endif // __DEVFORUM_TUTO04_IMAGEREADERSERVICE_HPP__

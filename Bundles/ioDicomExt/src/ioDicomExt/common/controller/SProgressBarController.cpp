@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,8 @@ namespace common
 namespace controller
 {
 
-fwServicesRegisterMacro( ::fwServices::IController , ::ioDicomExt::common::controller::SProgressBarController , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwServices::IController, ::ioDicomExt::common::controller::SProgressBarController,
+                         ::fwData::Composite );
 
 const ::fwCom::Slots::SlotKeyType SProgressBarController::s_PROGRESS_SLOT = "progressBar";
 
@@ -55,7 +56,7 @@ SProgressBarController::~SProgressBarController() throw()
 
 void SProgressBarController::info(std::ostream &_sstream )
 {
-    _sstream << "SProgressBarController::info" ;
+    _sstream << "SProgressBarController::info";
 }
 
 //------------------------------------------------------------------------------

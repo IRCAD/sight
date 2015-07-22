@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@
 
 #include <fwServices/IController.hpp>
 
-#include <fwTools/Failed.hpp> 
+#include <fwTools/Failed.hpp>
 
 #include <cpr/ComputeCPRFunctor.hxx>
 
@@ -25,7 +25,7 @@
 
 namespace fwServices
 {
-    class ObjectMsg;
+class ObjectMsg;
 }
 
 namespace ctrlComputeCPR
@@ -85,12 +85,12 @@ protected:
     /**
      * @brief Overrides IService::configuring().
      * Configuration example :
-     @verbatim
-     <config>
+       @verbatim
+       <config>
         <splinePoints uid="..." />  <!-- ::fwData::PointList containing spline points -->
         <sourceImage uid="..." />   <!-- source image (::fwData::Image)               -->
-     </config>
-     @endverbatim
+       </config>
+       @endverbatim
      *
      * @throw fwTools::Failed
      */

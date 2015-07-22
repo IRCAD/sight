@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,9 +32,9 @@ public:
      * @param[in] instance DICOM instance used to share information between modules
      * @param[in] series Series data
      */
-    GDCMIO_API FrameOfReference(SPTR(::gdcm::Writer) writer,
-            SPTR(::gdcmIO::container::DicomInstance) instance,
-            ::fwMedData::Series::sptr series);
+    GDCMIO_API FrameOfReference(SPTR(::gdcm::Writer)writer,
+                                SPTR(::gdcmIO::container::DicomInstance)instance,
+                                ::fwMedData::Series::sptr series);
 
     /// Destructor
     GDCMIO_API virtual ~FrameOfReference();
@@ -50,4 +50,4 @@ public:
 } // namespace writer
 } // namespace gdcmIO
 
-#endif // __GDCMIO_WRITER_MODULE_FRAMEOFREFERENCE_HPP__
+#endif // __GDCMIO_WRITER_IE_FRAMEOFREFERENCE_HPP__

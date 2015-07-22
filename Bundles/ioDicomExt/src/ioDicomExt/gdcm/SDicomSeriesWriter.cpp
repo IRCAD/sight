@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,17 +34,19 @@ namespace ioDicomExt
 namespace gdcm
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioDicomExt::gdcm::SDicomSeriesWriter , ::fwDicomData::DicomSeries ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioDicomExt::gdcm::SDicomSeriesWriter, ::fwDicomData::DicomSeries );
 
 //------------------------------------------------------------------------------
 
 SDicomSeriesWriter::SDicomSeriesWriter() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SDicomSeriesWriter::~SDicomSeriesWriter() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -58,8 +60,8 @@ void SDicomSeriesWriter::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr  result;
-    result= ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    ::fwData::location::Folder::sptr result;
+    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
@@ -75,12 +77,14 @@ void SDicomSeriesWriter::configureWithIHM()
 //------------------------------------------------------------------------------
 
 void SDicomSeriesWriter::starting() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void SDicomSeriesWriter::stopping() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -95,7 +99,7 @@ void SDicomSeriesWriter::updating() throw(::fwTools::Failed)
         {
             ::fwGui::dialog::MessageDialog dialog;
             dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
-                    "\nDo you want to continue ?");
+                              "\nDo you want to continue ?");
             dialog.setTitle("Folder not empty.");
             dialog.setIcon(::fwGui::dialog::MessageDialog::QUESTION);
             dialog.addButton( ::fwGui::dialog::MessageDialog::YES_NO );
@@ -133,7 +137,7 @@ void SDicomSeriesWriter::updating() throw(::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void SDicomSeriesWriter::saveDicomSeries( const ::boost::filesystem::path folder,
-        ::fwDicomData::DicomSeries::sptr series ) const
+                                          ::fwDicomData::DicomSeries::sptr series ) const
 {
     ::fwDicomIOExt::gdcm::DicomSeriesWriter::sptr writer = ::fwDicomIOExt::gdcm::DicomSeriesWriter::New();
 
@@ -153,12 +157,12 @@ void SDicomSeriesWriter::saveDicomSeries( const ::boost::filesystem::path folder
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 

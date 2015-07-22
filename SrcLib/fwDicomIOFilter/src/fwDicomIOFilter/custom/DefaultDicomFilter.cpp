@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@ namespace fwDicomIOFilter
 namespace custom
 {
 
-const std::string DefaultDicomFilter::s_FILTER_NAME = "Default DICOM filter";
+const std::string DefaultDicomFilter::s_FILTER_NAME        = "Default DICOM filter";
 const std::string DefaultDicomFilter::s_FILTER_DESCRIPTION = "Default DICOM filter.";
 
 //-----------------------------------------------------------------------------
@@ -58,13 +58,13 @@ std::string DefaultDicomFilter::getDescription() const
 //-----------------------------------------------------------------------------
 
 DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
-        ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
 
-     //Split series depending on SOPClassUIDs
+    //Split series depending on SOPClassUIDs
     ::fwDicomIOFilter::splitter::SOPClassUIDSplitter::sptr sopFilter =
-            ::fwDicomIOFilter::splitter::SOPClassUIDSplitter::New();
+        ::fwDicomIOFilter::splitter::SOPClassUIDSplitter::New();
     DicomSeriesContainerType seriesContainer = sopFilter->apply(series);
 
     // Apply default filters depending on SOPClassUIDs
@@ -88,7 +88,7 @@ DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
 
         // CT Image Storage
         if(sopClassUID == "CTImageStorage" || sopClassUID == "MRImageStorage" ||
-                sopClassUID == "SecondaryCaptureImageStorage")
+           sopClassUID == "SecondaryCaptureImageStorage")
         {
             filter = ::fwDicomIOFilter::composite::CTImageStorageDefaultComposite::New();
         }

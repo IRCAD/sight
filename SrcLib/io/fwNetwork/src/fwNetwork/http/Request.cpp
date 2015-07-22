@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,9 +8,11 @@
 
 #include "fwNetwork/http/Request.hpp"
 
-namespace fwNetwork {
+namespace fwNetwork
+{
 
-namespace http {
+namespace http
+{
 
 Request::Request()
 {
@@ -40,7 +42,7 @@ const Request::HeadersType& Request::getHeaders() const
     return m_headers;
 }
 
-const std::string& Request::getUrl()const
+const std::string& Request::getUrl() const
 {
     return m_url;
 }

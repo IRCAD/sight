@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,15 +22,16 @@ namespace navigation
 {
 
 void computeSpline(
-        const ::fwData::PointList::sptr& pointList,
-        const int pointIndex,
-        const vtkSmartPointer<vtkPoints>& points,
-        const vtkSmartPointer<vtkParametricSpline>& computedSpline,
-        double& length)
+    const ::fwData::PointList::sptr& pointList,
+    const int pointIndex,
+    const vtkSmartPointer<vtkPoints>& points,
+    const vtkSmartPointer<vtkParametricSpline>& computedSpline,
+    double& length)
 {
     SLM_ASSERT("No valid point list", pointList);
     OSLM_ASSERT("Requested point of index '" << pointIndex << "' whereas point list size is '"
-            << pointList->getRefPoints().size() << "'", pointIndex < pointList->getRefPoints().size());
+                                             << pointList->getRefPoints().size() << "'",
+                pointIndex < pointList->getRefPoints().size());
 
     // Get the last point of PointList
     ::fwData::Point::sptr point = (pointList->getRefPoints())[pointIndex];
@@ -52,19 +53,19 @@ void computeSpline(
 }
 
 void updateSpline(
-        const ::fwData::PointList::sptr& pointList,
-        const vtkSmartPointer<vtkPoints>& points,
-        const vtkSmartPointer<vtkParametricSpline>& computedSpline,
-        double& length)
+    const ::fwData::PointList::sptr& pointList,
+    const vtkSmartPointer<vtkPoints>& points,
+    const vtkSmartPointer<vtkParametricSpline>& computedSpline,
+    double& length)
 {
     vtkSmartPointer<vtkPoints> tempPoints = vtkSmartPointer<vtkPoints>::New();
-    int nbofPoints = 0;
+    int nbofPoints                        = 0;
     SLM_ASSERT("No valid point list", pointList);
 
     BOOST_FOREACH(::fwData::Point::sptr point, pointList->getRefPoints())
     {
         tempPoints->InsertNextPoint(&point->getRefCoord()[0]);
-        nbofPoints ++;
+        nbofPoints++;
     }
 
     if(nbofPoints > 0)
@@ -115,7 +116,7 @@ void computeViewUp(const double x[3], double *viewUp)
     double i[3] = {1, 0, 0};
 
     math->Cross(x, i, res);
-    std::copy(i, i + 3 ,viewUp);
+    std::copy(i, i + 3,viewUp);
 
     double min = 1 - math->Norm(res);
 
@@ -136,14 +137,14 @@ void computeViewUp(const double x[3], double *viewUp)
 bool arePointsCoplanar(const ::fwData::PointList::sptr& pointList, double* normal)
 {
     const int numberOfPoints = pointList->getRefPoints().size();
-    bool arePointsCoplanar = true;
-    bool isNormalComputed = false;
+    bool arePointsCoplanar   = true;
+    bool isNormalComputed    = false;
 
     if (numberOfPoints >= 3)
     {
         ::fwData::Point::sptr point1, point2, point3, pointnext;
-        double col0[3] = {0,0,0}, col1[3] = {0,0,0}, col2[3] = {0,0,0};
-        double vector1[3] = {0,0,0}, vector2[3] = {0,0,0}, res[3] = {0,0,0};
+        double col0[3]                = {0,0,0}, col1[3] = {0,0,0}, col2[3] = {0,0,0};
+        double vector1[3]             = {0,0,0}, vector2[3] = {0,0,0}, res[3] = {0,0,0};
         vtkSmartPointer<vtkMath> math = vtkSmartPointer<vtkMath>::New();
 
         // Define the plane build by the 3 first points of the spline
@@ -182,9 +183,9 @@ bool arePointsCoplanar(const ::fwData::PointList::sptr& pointList, double* norma
 
                 for (int i = 0; i < 3; ++i)
                 {
-                    col0[i] = pointnext->getCRefCoord()[0] - point1->getCRefCoord()[i];
-                    col1[i] = pointnext->getCRefCoord()[1] - point2->getCRefCoord()[i];
-                    col2[i] = pointnext->getCRefCoord()[2] - point3->getCRefCoord()[i];
+                    col0[i]    = pointnext->getCRefCoord()[0] - point1->getCRefCoord()[i];
+                    col1[i]    = pointnext->getCRefCoord()[1] - point2->getCRefCoord()[i];
+                    col2[i]    = pointnext->getCRefCoord()[2] - point3->getCRefCoord()[i];
                     vector2[i] = pointnext->getCRefCoord()[i] - point1->getCRefCoord()[i];
                 }
             }
@@ -215,14 +216,14 @@ bool arePointsCoplanar(const ::fwData::PointList::sptr& pointList, double* norma
 }
 
 void initializeVectors(
-        const ::fwData::PointList::sptr& pointList,
-        const vtkSmartPointer<vtkParametricSpline>& computedSpline,
-        double* yfirst,
-        double angle)
+    const ::fwData::PointList::sptr& pointList,
+    const vtkSmartPointer<vtkParametricSpline>& computedSpline,
+    double* yfirst,
+    double angle)
 {
     double u[3], du[3], ptFirst[3], ptNext[3], viewUp[3], splineNormal[3], xfirst[3], zfirst[3];
-    int numberOfPoints = pointList->getRefPoints().size();
-    vtkSmartPointer<vtkMath> math = vtkSmartPointer<vtkMath>::New();
+    int numberOfPoints                      = pointList->getRefPoints().size();
+    vtkSmartPointer<vtkMath> math           = vtkSmartPointer<vtkMath>::New();
     vtkSmartPointer<vtkTransform> transform = vtkSmartPointer<vtkTransform>::New();
 
     // Compute xfirst:
@@ -269,19 +270,19 @@ void initializeVectors(
 }
 
 void computePolyData(
-        const vtkSmartPointer<vtkParametricSpline>& computedSpline,
-        vtkSmartPointer<vtkPolyData>& polyLine,
-        vtkSmartPointer<vtkPolyData>& splineNormals,
-        double* yprevious,
-        const double& step,
-        std::string axis)
+    const vtkSmartPointer<vtkParametricSpline>& computedSpline,
+    vtkSmartPointer<vtkPolyData>& polyLine,
+    vtkSmartPointer<vtkPolyData>& splineNormals,
+    double* yprevious,
+    const double& step,
+    std::string axis)
 {
-    double length=0.0;
+    double length = 0.0;
     double u[3], du[3], pt[3], x[3], y[3], z[3], direction[3], ptNext[3], yPreviouscurrent[3];
 
     vtkSmartPointer<vtkMath> math = vtkSmartPointer<vtkMath>::New();
     std::copy(yprevious, yprevious + 3, yPreviouscurrent);
-    vtkSmartPointer<vtkPoints> tempPoints = vtkSmartPointer<vtkPoints>::New();
+    vtkSmartPointer<vtkPoints> tempPoints     = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkPoints> tempDirections = vtkSmartPointer<vtkPoints>::New();
     ::navigation::computeSplineLength(computedSpline, length);
 

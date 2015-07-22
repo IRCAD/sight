@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@
 
 namespace fwDicomData
 {
-    class DicomSeries;
+class DicomSeries;
 }
 
 namespace gdcmIO
@@ -43,10 +43,10 @@ public:
      * @param[in] object FW4SPL data object
      */
     GDCMIO_API InformationEntity(
-            SPTR(::fwDicomData::DicomSeries) dicomSeries,
-            SPTR(::gdcm::Reader) reader,
-            SPTR(::gdcmIO::container::DicomInstance) instance,
-            SPTR(DATATYPE) object);
+        SPTR(::fwDicomData::DicomSeries)dicomSeries,
+        SPTR(::gdcm::Reader)reader,
+        SPTR(::gdcmIO::container::DicomInstance)instance,
+        SPTR(DATATYPE)object);
 
     /// Destructor
     GDCMIO_API virtual ~InformationEntity();
@@ -70,10 +70,10 @@ protected:
 
 template< class DATATYPE >
 InformationEntity<DATATYPE>::InformationEntity(
-        SPTR(::fwDicomData::DicomSeries) dicomSeries,
-        SPTR(::gdcm::Reader) reader,
-        SPTR(::gdcmIO::container::DicomInstance) instance, SPTR(DATATYPE) object):
-        m_dicomSeries(dicomSeries), m_reader(reader), m_instance(instance), m_object(object)
+    SPTR(::fwDicomData::DicomSeries)dicomSeries,
+    SPTR(::gdcm::Reader)reader,
+    SPTR(::gdcmIO::container::DicomInstance)instance, SPTR(DATATYPE)object) :
+    m_dicomSeries(dicomSeries), m_reader(reader), m_instance(instance), m_object(object)
 {
     SLM_ASSERT("DicomSeries should not be null.", dicomSeries);
     SLM_ASSERT("Reader should not be null.", reader);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,8 +16,8 @@
 
 namespace fwMedData
 {
-    class SeriesDB;
-    class Patient;
+class SeriesDB;
+class Patient;
 }
 
 namespace ioDicomExt
@@ -29,11 +29,11 @@ namespace dcmtk
 class IODICOMEXT_CLASS_API SDicomSeriesDBReader : public ::io::IReader
 {
 
-public :
-    typedef std::string                  ExtensionType;
+public:
+    typedef std::string ExtensionType;
     typedef std::vector< ExtensionType > ExtensionsType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesDBReader)( ::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesDBReader)( ::io::IReader) );
     /**
      * @brief   constructor
      *
@@ -57,10 +57,12 @@ protected:
     IODICOMEXT_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
+    virtual void receiving( CSPTR(::fwServices::ObjectMsg)_msg ) throw(::fwTools::Failed)
+    {
+    }
 
     /// Override
-    IODICOMEXT_API void info(std::ostream &_sstream ) ;
+    IODICOMEXT_API void info(std::ostream &_sstream );
 
     /// Override
     IODICOMEXT_API virtual std::string getSelectorDialogTitle();
@@ -71,7 +73,7 @@ protected:
     /// Return path type managed by the service, here FOLDER
     IODICOMEXT_API ::io::IOPathType getIOPathType() const;
 
-private :
+private:
 
     void notificationOfDBUpdate();
 

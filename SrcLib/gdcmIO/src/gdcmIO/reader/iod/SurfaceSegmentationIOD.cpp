@@ -1,8 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
-* FW4SPL - Copyright (C) IRCAD, 2009-2014.
-* Distributed under the terms of the GNU Lesser General Public License (LGPL) as
-* published by the Free Software Foundation.
-* ****** END LICENSE BLOCK ****** */
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #include <gdcmSegmentReader.h>
 #include <gdcmSurfaceReader.h>
@@ -32,8 +32,8 @@ namespace iod
 //------------------------------------------------------------------------------
 
 SurfaceSegmentationIOD::SurfaceSegmentationIOD(::fwDicomData::DicomSeries::sptr dicomSeries,
-        SPTR(::gdcmIO::container::DicomInstance) instance) :
-        ::gdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance)
+                                               SPTR(::gdcmIO::container::DicomInstance)instance) :
+    ::gdcmIO::reader::iod::InformationObjectDefinition(dicomSeries, instance)
 {
 }
 
@@ -41,7 +41,7 @@ SurfaceSegmentationIOD::SurfaceSegmentationIOD(::fwDicomData::DicomSeries::sptr 
 
 SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
 {
-   SLM_TRACE_FUNC();
+    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -57,14 +57,14 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::gdcm
     // Path container
     ::fwDicomData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();
     OSLM_WARN_IF("More than one surface segmentation storage was found in series. Only the first one will be read.",
-            pathContainer.size() > 1);
+                 pathContainer.size() > 1);
 
     // Read first file
     const std::string filename = pathContainer.begin()->second.string();
     reader->SetFileName( filename.c_str() );
     bool success = reader->Read();
     FW_RAISE_EXCEPTION_IF(::gdcmIO::exception::Failed("Unable to read the DICOM instance using the GDCM Image Reader."),
-               !success);
+                          !success);
 
     // Create Information Entity helpers
     ::gdcmIO::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient());
@@ -102,7 +102,7 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::gdcm
     unsigned int skippedSegmentationCount = 0;
 
     // Read each surface segmentation
-    const ::gdcm::SegmentReader::SegmentVector &segmentContainer= reader->GetSegments();
+    const ::gdcm::SegmentReader::SegmentVector &segmentContainer = reader->GetSegments();
     BOOST_FOREACH(::gdcm::SmartPointer< ::gdcm::Segment > segment, segmentContainer)
     {
         try
@@ -126,10 +126,10 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::gdcm
         OSLM_WARN(skippedSegmentationCount<<" 3D reconstruction(s) have been rejected.");
     }
 
-   OSLM_TRACE("Number of reconstructions : " << modelSeries->getReconstructionDB().size());
+    OSLM_TRACE("Number of reconstructions : " << modelSeries->getReconstructionDB().size());
 
-   // Display reconstructions
-   series->setField("ShowReconstructions", ::fwData::Boolean::New(true));
+    // Display reconstructions
+    series->setField("ShowReconstructions", ::fwData::Boolean::New(true));
 }
 
 //------------------------------------------------------------------------------

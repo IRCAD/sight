@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,8 +35,8 @@ namespace gdcm
 //------------------------------------------------------------------------------
 
 DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-        ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
-        m_writeCount(0)
+    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+    m_writeCount(0)
 {
 }
 
@@ -70,7 +70,7 @@ DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
 }
 
 ::boost::filesystem::path removePathPrefix(const ::boost::filesystem::path &path,
-        const ::boost::filesystem::path &prefix)
+                                           const ::boost::filesystem::path &prefix)
 {
     std::pair< ::boost::filesystem::path::const_iterator, ::boost::filesystem::path::const_iterator > p
         = std::mismatch(path.begin(), path.end(), prefix.begin());
@@ -89,7 +89,7 @@ void DicomSeriesWriter::write()
     ::fwDicomData::DicomSeries::sptr dicomSeries = this->getConcreteObject();
 
     FW_RAISE_IF("Dicom series should contain binaries.",
-            dicomSeries->getDicomAvailability() == ::fwDicomData::DicomSeries::NONE);
+                dicomSeries->getDicomAvailability() == ::fwDicomData::DicomSeries::NONE);
 
     // Create folder
     ::boost::filesystem::path folder = this->getFolder();
@@ -107,19 +107,19 @@ void DicomSeriesWriter::write()
     }
 
     unsigned int nbInstances = dicomSeries->getNumberOfInstances();
-    unsigned int count = 0;
+    unsigned int count       = 0;
     // Write binary files
 
     if(dicomSeries->getDicomAvailability() == ::fwDicomData::DicomSeries::BINARIES)
     {
         BOOST_FOREACH(::fwDicomData::DicomSeries::DicomBinaryContainerType::value_type value,
-                dicomSeries->getDicomBinaries())
+                      dicomSeries->getDicomBinaries())
         {
             ::fwData::Array::sptr array = value.second;
             ::fwComEd::helper::Array arrayHelper(array);
 
             char* buffer = static_cast<char*>(arrayHelper.getBuffer());
-            size_t size = array->getSizeInBytes();
+            size_t size  = array->getSizeInBytes();
 
             ::boost::filesystem::ofstream fs(folder / value.first, std::ios::binary|std::ios::trunc);
             FW_RAISE_IF("Can't open '" << (folder / value.first) << "' for write.", !fs.good());
@@ -136,17 +136,18 @@ void DicomSeriesWriter::write()
         ::boost::filesystem::path longestPrefix = longestCommonPrefix(dicomSeries->getLocalDicomPaths()).parent_path();
         SLM_TRACE("Longest prefix :" + longestPrefix.string());
 
-        BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type &value, dicomSeries->getLocalDicomPaths())
+        BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type &value,
+                      dicomSeries->getLocalDicomPaths())
         {
-            const ::boost::filesystem::path& src = value.second;
-            const ::boost::filesystem::path& dest_dir = folder / removePathPrefix(src.parent_path(), longestPrefix) ;
+            const ::boost::filesystem::path& src       = value.second;
+            const ::boost::filesystem::path& dest_dir  = folder / removePathPrefix(src.parent_path(), longestPrefix);
             const ::boost::filesystem::path& dest_file = dest_dir / src.filename();
             ::boost::filesystem::create_directories(dest_dir);
 
             ::boost::system::error_code ec;
             ::boost::filesystem::copy( src, dest_file, ec );
             FW_RAISE_IF("Copy " << src.string() << " " << dest_file.string() << " error : "
-                    << ec.message(), ec.value());
+                                << ec.message(), ec.value());
 
             ::boost::filesystem::permissions(dest_file, ::boost::filesystem::owner_all, ec);
             FW_RAISE_IF("Set permission " << dest_file.string() << " error : " << ec.message(), ec.value());
@@ -160,7 +161,7 @@ void DicomSeriesWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string  DicomSeriesWriter::extension()
+std::string DicomSeriesWriter::extension()
 {
     return "";
 }

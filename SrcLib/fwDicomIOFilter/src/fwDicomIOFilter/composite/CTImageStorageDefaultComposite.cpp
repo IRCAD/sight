@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,9 +19,9 @@ namespace fwDicomIOFilter
 namespace composite
 {
 
-const std::string CTImageStorageDefaultComposite::s_FILTER_NAME = "CTImageStorage default composite";
+const std::string CTImageStorageDefaultComposite::s_FILTER_NAME        = "CTImageStorage default composite";
 const std::string CTImageStorageDefaultComposite::s_FILTER_DESCRIPTION =
-        "CTImageStorage default composite.";
+    "CTImageStorage default composite.";
 
 //-----------------------------------------------------------------------------
 

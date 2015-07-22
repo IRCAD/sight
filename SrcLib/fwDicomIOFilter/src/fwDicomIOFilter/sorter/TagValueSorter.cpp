@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,9 +21,9 @@ namespace fwDicomIOFilter
 namespace sorter
 {
 
-const std::string TagValueSorter::s_FILTER_NAME = "Tag value sorter";
+const std::string TagValueSorter::s_FILTER_NAME        = "Tag value sorter";
 const std::string TagValueSorter::s_FILTER_DESCRIPTION =
-        "Sort instances using a tag value.";
+    "Sort instances using a tag value.";
 
 //-----------------------------------------------------------------------------
 
@@ -62,7 +62,7 @@ bool TagValueSorter::isConfigurationRequired()
 //-----------------------------------------------------------------------------
 
 TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
-        ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
 
     if(m_tag == DCM_UndefinedTagKey)
@@ -79,7 +79,8 @@ TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
     DcmFileFormat fileFormat;
     OFCondition status;
     DcmDataset* dataset;
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file, series->getLocalDicomPaths())
+    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file,
+                  series->getLocalDicomPaths())
     {
         const std::string& filename = file.second.string();
         status = fileFormat.loadFile(filename.c_str());
@@ -95,7 +96,7 @@ TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
     if(sortedFiles.size() != series->getLocalDicomPaths().size())
     {
         const std::string msg = "Unable to sort the series using the specified tag. The tag may be missing in "
-                "some instances or several instances may have the same tag value.";
+                                "some instances or several instances may have the same tag value.";
         throw ::fwDicomIOFilter::exceptions::FilterFailure(msg);
     }
 

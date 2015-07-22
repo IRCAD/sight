@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,13 +39,13 @@ public:
      * @param[in] rescaleIntercept Rescale intercept
      */
     FWDICOMIOEXT_API Image(
-            unsigned short samplesPerPixel,
-            unsigned short bitsAllocated,
-            unsigned short bitsStored,
-            unsigned short highBit,
-            unsigned short pixelRepresentation,
-            double rescaleSlope,
-            double rescaleIntercept);
+        unsigned short samplesPerPixel,
+        unsigned short bitsAllocated,
+        unsigned short bitsStored,
+        unsigned short highBit,
+        unsigned short pixelRepresentation,
+        double rescaleSlope,
+        double rescaleIntercept);
 
     /// Destructor
     FWDICOMIOEXT_API virtual ~Image();

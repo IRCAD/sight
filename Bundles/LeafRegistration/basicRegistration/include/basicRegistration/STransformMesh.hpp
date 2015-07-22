@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _BASICREGISTRATION_STRANSFORMMESH_HPP_
-#define _BASICREGISTRATION_STRANSFORMMESH_HPP_
+#ifndef __BASICREGISTRATION_STRANSFORMMESH_HPP__
+#define __BASICREGISTRATION_STRANSFORMMESH_HPP__
 
 #include <fwServices/IController.hpp>
 
@@ -19,14 +19,14 @@ class BASICREGISTRATION_CLASS_API STransformMesh : public ::fwServices::IControl
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (STransformMesh)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (STransformMesh)(::fwServices::IController) );
 
 
     BASICREGISTRATION_API STransformMesh();
 
     BASICREGISTRATION_API virtual ~STransformMesh();
 
-protected :
+protected:
 
     BASICREGISTRATION_API virtual void configuring() throw ( ::fwTools::Failed );
 
@@ -52,5 +52,5 @@ protected :
 
 } // namespace basicRegistration
 
-#endif /*_BASICREGISTRATION_STRANSFORMMESH_HPP_*/
+#endif /*__BASICREGISTRATION_STRANSFORMMESH_HPP__*/
 

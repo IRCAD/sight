@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,12 +47,12 @@ void IoDicomExtTest::pacsConfigurationInitializer()
 
     // Create service
     ::fwServices::IService::sptr srv =
-            ::fwServices::registry::ServiceFactory::getDefault()->create( "::fwServices::IController",
-                    "::ioDicomExt::common::controller::SPacsConfigurationInitializer" );
+        ::fwServices::registry::ServiceFactory::getDefault()->create( "::fwServices::IController",
+                                                                      "::ioDicomExt::common::controller::SPacsConfigurationInitializer" );
     CPPUNIT_ASSERT(srv);
 
     // Create service configuration
-    ::fwRuntime::EConfigurationElement::sptr srvElement = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr srvElement    = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr configElement = ::fwRuntime::EConfigurationElement::New("config");
     srvElement->addConfigurationElement(configElement);
     configElement->setAttributeValue("localApplicationTitle", "VRRender");
@@ -79,7 +79,7 @@ void IoDicomExtTest::pacsConfigurationInitializer()
     CPPUNIT_ASSERT_EQUAL(std::string("MoveApplicationTitle"), pacsConfiguration->getMoveApplicationTitle());
     CPPUNIT_ASSERT_EQUAL(11110u, pacsConfiguration->getMoveApplicationPort());
     CPPUNIT_ASSERT_EQUAL(::fwDicomIOExt::data::PacsConfiguration::GET_RETRIEVE_METHOD,
-            pacsConfiguration->getRetrieveMethod());
+                         pacsConfiguration->getRetrieveMethod());
 
 }
 

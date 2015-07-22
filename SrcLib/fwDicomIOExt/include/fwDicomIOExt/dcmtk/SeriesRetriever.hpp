@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,16 +29,17 @@ namespace dcmtk
  * @brief Reads DICOM series from pacs.
  * @date  2013.
  */
-class FWDICOMIOEXT_CLASS_API SeriesRetriever : public ::fwCore::BaseObject, public DcmSCP
+class FWDICOMIOEXT_CLASS_API SeriesRetriever : public ::fwCore::BaseObject,
+                                               public DcmSCP
 {
 
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (SeriesRetriever)(::fwDicomIOExt::dcmtk::SeriesRetriever),
-            (()), new SeriesRetriever);
+                                            (()), new SeriesRetriever);
     fwCoreAllowSharedFromThis();
 
     FWDICOMIOEXT_API static const ::fwCom::Slots::SlotKeyType s_STORE_INSTANCE_CALLBACK_SLOT;
-    typedef ::fwCom::Slot<void(const std::string&, unsigned int, const std::string&)> StoreInstanceCallbackSlotType;
+    typedef ::fwCom::Slot<void (const std::string&, unsigned int, const std::string&)> StoreInstanceCallbackSlotType;
 
     /// Constructor
     FWDICOMIOEXT_API SeriesRetriever();
@@ -55,15 +56,16 @@ public :
      * @param[in] storeCallback Store callback
      */
     FWDICOMIOEXT_API void initialize(const std::string& applicationTitle, unsigned int applicationport, int timeout = 3,
-            StoreInstanceCallbackSlotType::sptr storeCallback = StoreInstanceCallbackSlotType::sptr());
+                                     StoreInstanceCallbackSlotType::sptr storeCallback =
+                                         StoreInstanceCallbackSlotType::sptr());
 
     /// Start the server
     FWDICOMIOEXT_API bool start();
 
-protected :
+protected:
     /// Handle Incoming Command (Override)
     virtual OFCondition handleIncomingCommand(T_DIMSE_Message *incomingMsg,
-            const DcmPresentationContextInfo &presContextInfo);
+                                              const DcmPresentationContextInfo &presContextInfo);
 
     /**
      * @brief Handle C-STORE Request
@@ -72,7 +74,7 @@ protected :
      * @return OFTrue on success
      */
     virtual OFCondition handleSTORERequest(T_DIMSE_Message *incomingMsg,
-            T_ASC_PresentationContextID presID);
+                                           T_ASC_PresentationContextID presID);
 
     /// Path where the files must be saved
     ::boost::filesystem::path m_path;

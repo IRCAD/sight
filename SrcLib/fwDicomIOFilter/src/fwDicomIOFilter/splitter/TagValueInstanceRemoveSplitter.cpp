@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,15 +21,15 @@ namespace fwDicomIOFilter
 namespace splitter
 {
 
-const std::string TagValueInstanceRemoveSplitter::s_FILTER_NAME = "Tag value instance remove splitter";
+const std::string TagValueInstanceRemoveSplitter::s_FILTER_NAME        = "Tag value instance remove splitter";
 const std::string TagValueInstanceRemoveSplitter::s_FILTER_DESCRIPTION =
-        "Remove instances according to a tag value.";
+    "Remove instances according to a tag value.";
 
 //-----------------------------------------------------------------------------
 
 TagValueInstanceRemoveSplitter::TagValueInstanceRemoveSplitter(::fwDicomIOFilter::IFilter::Key key) : ISplitter()
 {
-    m_tag = DCM_UndefinedTagKey;
+    m_tag      = DCM_UndefinedTagKey;
     m_tagValue = "";
 }
 
@@ -63,7 +63,7 @@ bool TagValueInstanceRemoveSplitter::isConfigurationRequired()
 //-----------------------------------------------------------------------------
 
 TagValueInstanceRemoveSplitter::DicomSeriesContainerType TagValueInstanceRemoveSplitter::apply(
-        ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     if(m_tag == DCM_UndefinedTagKey)
     {
@@ -83,7 +83,8 @@ TagValueInstanceRemoveSplitter::DicomSeriesContainerType TagValueInstanceRemoveS
     DcmDataset* dataset;
     OFString data;
 
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file, series->getLocalDicomPaths())
+    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file,
+                  series->getLocalDicomPaths())
     {
         const std::string& filename = file.second.string();
         status = fileFormat.loadFile(filename.c_str());

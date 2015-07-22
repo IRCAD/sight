@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,14 +34,15 @@ SSplineAdaptor::SSplineAdaptor() throw()
     : m_numberOfPoints(0), m_splineLength(0.0)
 {
     m_parametricSpline = vtkSmartPointer<vtkParametricSpline>::New();
-    m_vtkpoints = vtkSmartPointer<vtkPoints>::New();
-    m_functionSource = vtkSmartPointer<vtkParametricFunctionSource>::New();
+    m_vtkpoints        = vtkSmartPointer<vtkPoints>::New();
+    m_functionSource   = vtkSmartPointer<vtkParametricFunctionSource>::New();
 }
 
 //-----------------------------------------------------------------------------------
 
 SSplineAdaptor::~SSplineAdaptor() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------------
 
@@ -81,20 +82,20 @@ void SSplineAdaptor::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools
     if( msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_ADDED) )
     {
         ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-        m_numberOfPoints = pointList->getRefPoints().size();
+        m_numberOfPoints                    = pointList->getRefPoints().size();
         ::navigation::computeSpline(pointList, m_numberOfPoints - 1, m_vtkpoints, m_parametricSpline, m_splineLength);
 
-        this->doUpdate(); 
+        this->doUpdate();
     }
 
     if( msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED) )
     {
         ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-        m_numberOfPoints = pointList->getRefPoints().size();
+        m_numberOfPoints                    = pointList->getRefPoints().size();
         ::navigation::updateSpline(pointList, m_vtkpoints, m_parametricSpline, m_splineLength);
 
         this->doUpdate();
-    } 
+    }
 
     if( msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_MODIFIED) )
     {
@@ -112,7 +113,7 @@ void SSplineAdaptor::doUpdate() throw (fwTools::Failed)
     OSLM_ASSERT("No valid spline", m_parametricSpline);
 
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+    vtkSmartPointer<vtkActor> actor           = vtkSmartPointer<vtkActor>::New();
 
     m_functionSource->SetUResolution(floor(m_splineLength));
     m_functionSource->SetParametricFunction(m_parametricSpline);

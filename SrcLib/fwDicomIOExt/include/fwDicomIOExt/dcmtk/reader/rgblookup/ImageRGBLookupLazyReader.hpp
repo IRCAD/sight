@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -51,18 +51,19 @@ public:
      */
     template< typename T>
     FWDICOMIOEXT_API static void* createInstanceBuffer(unsigned int rows, unsigned int columns,
-            const ::boost::filesystem::path& instance, const T* redLookup , const T* greenLookup,
-             const T* blueLookup, unsigned short pixelValueBitsAllocated)
+                                                       const ::boost::filesystem::path& instance, const T* redLookup,
+                                                       const T* greenLookup,
+                                                       const T* blueLookup, unsigned short pixelValueBitsAllocated)
     {
         if(pixelValueBitsAllocated == 16)
         {
             return ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyReader::createInstanceBuffer<T, Uint16>(
-                    rows, columns, instance, redLookup, greenLookup, blueLookup);
+                rows, columns, instance, redLookup, greenLookup, blueLookup);
         }
         else
         {
             return ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyReader::createInstanceBuffer<T, Uint8>(
-                    rows, columns, instance, redLookup, greenLookup, blueLookup);
+                rows, columns, instance, redLookup, greenLookup, blueLookup);
         }
     }
 
@@ -79,8 +80,9 @@ public:
      */
     template< typename T, typename U >
     FWDICOMIOEXT_API static T* createInstanceBuffer(unsigned int rows, unsigned int columns,
-            const ::boost::filesystem::path& instance, const T* redLookup , const T* greenLookup,
-             const T* blueLookup)
+                                                    const ::boost::filesystem::path& instance, const T* redLookup,
+                                                    const T* greenLookup,
+                                                    const T* blueLookup)
     {
         DcmFileFormat fileFormat;
         OFCondition status;
@@ -123,8 +125,8 @@ public:
             for (unsigned int y = 0; y < rows; ++y)
             {
                 unsigned int position = y + (x * rows);
-                U value = pixelData[position];
-                tempoBuffer[position*3] = (redLookup[value]/(double)0xffff)*256;
+                U value               = pixelData[position];
+                tempoBuffer[position*3]   = (redLookup[value]/(double)0xffff)*256;
                 tempoBuffer[position*3+1] = (greenLookup[value]/(double)0xffff)*256;
                 tempoBuffer[position*3+2] = (blueLookup[value]/(double)0xffff)*256;
             }

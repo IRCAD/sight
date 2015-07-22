@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ void compareDicom(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
     {
         SLM_ERROR( "new object difference found : " + prop.first + " '" + prop.second + "'" );
     }
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
 }
 
 //------------------------------------------------------------------------------

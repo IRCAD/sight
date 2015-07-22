@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _BEGINNERTRAINING_TUTO02_SSTRINGEDITOR_HPP_
-#define _BEGINNERTRAINING_TUTO02_SSTRINGEDITOR_HPP_
+#ifndef __BEGINNERTRAINING_TUTO02_SSTRINGEDITOR_HPP__
+#define __BEGINNERTRAINING_TUTO02_SSTRINGEDITOR_HPP__
 
 // Qt objects
 #include <qtextedit.h>
@@ -24,13 +24,13 @@ class BEGINNERTRAINING_CLASS_API SStringEditor : public ::gui::editor::IEditor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SStringEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SStringEditor)(::gui::editor::IEditor) );
 
     BEGINNERTRAINING_API SStringEditor();
 
     BEGINNERTRAINING_API virtual ~SStringEditor() throw();
 
-protected :
+protected:
 
 
     /// Overrides
@@ -61,5 +61,5 @@ protected :
 } // namespace tuto02
 } // namespace beginnerTraining
 
-#endif /*_BEGINNERTRAINING_TUTO02_SSTRINGEDITOR_HPP_*/
+#endif /*__BEGINNERTRAINING_TUTO02_SSTRINGEDITOR_HPP__*/
 

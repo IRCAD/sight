@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWNETWORK_HTPP_CLIENTQT_HPP__
-#define __FWNETWORK_HTPP_CLIENTQT_HPP__
+#ifndef __FWNETWORK_HTTP_CLIENTQT_HPP__
+#define __FWNETWORK_HTTP_CLIENTQT_HPP__
 
 #include <QtNetwork>
 #include <QNetworkReply>
@@ -31,9 +31,10 @@ struct HTTPResponse
  * @brief HTTP client using Qt Network.
  * @class ClientQt
  */
-class FWNETWORK_CLASS_API ClientQt : public QObject, public Client
+class FWNETWORK_CLASS_API ClientQt : public QObject,
+                                     public Client
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     /**
@@ -66,11 +67,11 @@ public:
     FWNETWORK_API virtual bool get(Request::sptr request, char* buffer, size_t size);
 
     /**
-      * @brief Puts HTTP request
-      * @param url destination of data
-      * @param content the data to put
-      * @return answer data
-      */
+     * @brief Puts HTTP request
+     * @param url destination of data
+     * @param content the data to put
+     * @return answer data
+     */
     FWNETWORK_API virtual std::string put(Request::sptr url, const std::string& content);
 
     /**
@@ -123,5 +124,5 @@ private:
 } // namespace http
 } // namespace fwNetwork
 
-#endif /* __FWNETWORK_HTPP_CLIENTQT_HPP__ */
+#endif /* __FWNETWORK_HTTP_CLIENTQT_HPP__ */
 

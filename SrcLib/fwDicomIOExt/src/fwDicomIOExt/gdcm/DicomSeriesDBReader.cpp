@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -151,18 +151,18 @@ void DicomSeriesDBReader::scanFiles( ::gdcm::Scanner & scanner, const std::vecto
 
 DicomSeriesDBReader::MapSeriesType buildMapDicomSeriesFromScanner( ::gdcm::Scanner & scanner )
 {
-    ::gdcm::Directory::FilenamesType keys = scanner.GetKeys();
+    ::gdcm::Directory::FilenamesType keys               = scanner.GetKeys();
     ::gdcm::Directory::FilenamesType::const_iterator it = keys.begin();
 
     DicomSeriesDBReader::MapSeriesType mapSeries;
 
-    for(; it != keys.end() ; ++it)
+    for(; it != keys.end(); ++it)
     {
         const char *filename = it->c_str();
         assert( scanner.IsKey( filename ) );
 
-        const char *seriesUID =  scanner.GetValue( filename, seriesUIDTag );
-        const char *acqDate   =  scanner.GetValue( filename, acquisitionDateTag );
+        const char *seriesUID = scanner.GetValue( filename, seriesUIDTag );
+        const char *acqDate   = scanner.GetValue( filename, acquisitionDateTag );
 
         if (seriesUID)
         {
@@ -234,12 +234,12 @@ T getDicomNumericValue( ::gdcm::Scanner & scanner, const std::string & dcmFile, 
 //------------------------------------------------------------------------------
 
 void DicomSeriesDBReader::fillSeries( ::gdcm::Scanner & scanner,
-        const std::string & dcmFile, ::fwMedData::Series::sptr series )
+                                      const std::string & dcmFile, ::fwMedData::Series::sptr series )
 {
-    const std::string seriesUID =  getDicomValue( scanner, dcmFile, seriesUIDTag );
-    const std::string seriesTime = getDicomValue( scanner, dcmFile, seriesTimeTag );
-    const std::string seriesDate = getDicomValue( scanner, dcmFile, seriesDateTag );
-    const std::string seriesModality = getDicomValue( scanner, dcmFile, seriesTypeTag );
+    const std::string seriesUID         = getDicomValue( scanner, dcmFile, seriesUIDTag );
+    const std::string seriesTime        = getDicomValue( scanner, dcmFile, seriesTimeTag );
+    const std::string seriesDate        = getDicomValue( scanner, dcmFile, seriesDateTag );
+    const std::string seriesModality    = getDicomValue( scanner, dcmFile, seriesTypeTag );
     const std::string seriesDescription = getDicomValue( scanner, dcmFile, seriesDescriptionTag );
 
     ::fwMedData::DicomValuesType seriesPhysicianNames;
@@ -264,7 +264,7 @@ void DicomSeriesDBReader::fillSeries( ::gdcm::Scanner & scanner,
 //------------------------------------------------------------------------------
 
 void DicomSeriesDBReader::fillPatient( ::gdcm::Scanner & scanner,
-        const std::string & dcmFile, ::fwMedData::Patient::sptr patient )
+                                       const std::string & dcmFile, ::fwMedData::Patient::sptr patient )
 {
     const std::string patientName      = getDicomValue( scanner, dcmFile, patientNameTag );
     const std::string patientId        = getDicomValue( scanner, dcmFile, patientIDTag );
@@ -280,14 +280,14 @@ void DicomSeriesDBReader::fillPatient( ::gdcm::Scanner & scanner,
 //------------------------------------------------------------------------------
 
 void DicomSeriesDBReader::fillStudy( ::gdcm::Scanner & scanner,
-        const std::string & dcmFile, ::fwMedData::Study::sptr study )
+                                     const std::string & dcmFile, ::fwMedData::Study::sptr study )
 {
-    const std::string studyUID =  getDicomValue( scanner, dcmFile, studyUIDTag );
+    const std::string studyUID                   = getDicomValue( scanner, dcmFile, studyUIDTag );
     const std::string studyReferingPhysicianName = getDicomValue( scanner, dcmFile, studyReferingPhysicianNameTag );
-    const std::string studyDate = getDicomValue( scanner, dcmFile, studyDateTag );
-    const std::string studyTime = getDicomValue( scanner, dcmFile, studyTimeTag );
-    const std::string studyDescription = getDicomValue( scanner, dcmFile, studyDescriptionTag );
-    const std::string studyPatientAge = getDicomValue( scanner, dcmFile, studyPatientAgeTag );
+    const std::string studyDate                  = getDicomValue( scanner, dcmFile, studyDateTag );
+    const std::string studyTime                  = getDicomValue( scanner, dcmFile, studyTimeTag );
+    const std::string studyDescription           = getDicomValue( scanner, dcmFile, studyDescriptionTag );
+    const std::string studyPatientAge            = getDicomValue( scanner, dcmFile, studyPatientAgeTag );
 
     SLM_ASSERT("No study UID", !studyUID.empty() );
     study->setInstanceUID(studyUID);
@@ -301,7 +301,7 @@ void DicomSeriesDBReader::fillStudy( ::gdcm::Scanner & scanner,
 //------------------------------------------------------------------------------
 
 void DicomSeriesDBReader::fillEquipment( ::gdcm::Scanner & scanner,
-        const std::string & dcmFile, ::fwMedData::Equipment::sptr equipment )
+                                         const std::string & dcmFile, ::fwMedData::Equipment::sptr equipment )
 {
     const std::string equipementInstitution = getDicomValue( scanner, dcmFile, equipmentInstitutionNameTag );
 
@@ -332,8 +332,8 @@ sortDicomSeriesFiles( const DicomSeriesDBReader::SeriesFilesType & seriesFiles )
 //------------------------------------------------------------------------------
 
 void DicomSeriesDBReader::fillDicomSeries(
-        const SeriesFilesType & seriesFiles,
-        SPTR( ::fwDicomData::DicomSeries ) series )
+    const SeriesFilesType & seriesFiles,
+    SPTR( ::fwDicomData::DicomSeries )series )
 {
     series->setNumberOfInstances(seriesFiles.size());
     unsigned int count = 0;
@@ -350,8 +350,8 @@ void DicomSeriesDBReader::fillDicomSeries(
 //------------------------------------------------------------------------------
 
 void DicomSeriesDBReader::addSeries(
-        const ::fwMedData::SeriesDB::sptr &seriesDB,
-        const std::vector< std::string > & filenames )
+    const ::fwMedData::SeriesDB::sptr &seriesDB,
+    const std::vector< std::string > & filenames )
 {
     //gdcm::Trace::SetDebug( 1 );
     //gdcm::Trace::SetWarning( 1 );
@@ -376,7 +376,7 @@ void DicomSeriesDBReader::addSeries(
 
         BOOST_FOREACH( MapSeriesType::value_type mapElem, mapSeries )
         {
-            SeriesFilesType seriesFiles = sortDicomSeriesFiles( mapElem.second );
+            SeriesFilesType seriesFiles    = sortDicomSeriesFiles( mapElem.second );
             const std::string & refDcmFile = seriesFiles[0];
 
             // ToDo
@@ -408,7 +408,7 @@ void DicomSeriesDBReader::addSeries(
     {
         OSLM_ERROR( "Try with another reader or retry with this reader on a specific subfolder : " << e.what() );
         std::vector< std::string >::const_iterator it = filenames.begin();
-        for( ; it != filenames.end(); ++it)
+        for(; it != filenames.end(); ++it)
         {
             SLM_ERROR("file error : " + *it );
         }
@@ -426,7 +426,8 @@ void DicomSeriesDBReader::read()
     {
         // Try to read dicomdir file
         if(!m_isDicomdirActivated || (m_isDicomdirActivated &&
-                !::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(), filenames)))
+                                      !::fwDicomIOExt::dcmtk::helper::DicomDir::readDicomDir(this->getFolder(),
+                                                                                             filenames)))
         {
             // Recursively search for dicom files
             ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(this->getFolder(), filenames);
@@ -440,7 +441,7 @@ void DicomSeriesDBReader::read()
             filenames.push_back(file.string());
         }
     }
-    this->addSeries( patientDB , filenames);
+    this->addSeries( patientDB, filenames);
 }
 
 //------------------------------------------------------------------------------
@@ -464,7 +465,7 @@ SPTR(::fwData::Array) DicomSeriesDBReader::convertToBinary(const std::string& fi
     FW_RAISE_IF("Unable to read file.", !file);
 
     // obtain file size:
-    fseek (file , 0 , SEEK_END);
+    fseek (file, 0, SEEK_END);
     size_t length = ftell (file);
     rewind (file);
 

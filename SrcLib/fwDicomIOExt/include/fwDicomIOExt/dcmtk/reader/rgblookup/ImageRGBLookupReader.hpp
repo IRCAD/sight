@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -53,11 +53,12 @@ public:
      */
     template< typename T, typename U >
     FWDICOMIOEXT_API static void fillImageBuffer(unsigned int rows, unsigned int columns, unsigned int depth,
-            DicomPathContainerType& instances, void* destination, const T* redLookup , const T* greenLookup,
-            const T* blueLookup)
+                                                 DicomPathContainerType& instances, void* destination,
+                                                 const T* redLookup, const T* greenLookup,
+                                                 const T* blueLookup)
     {
         U* tempoBuffer = ::fwDicomIOExt::dcmtk::reader::main::ImageReader::createTemporaryBuffer<U>(
-                       rows, columns, depth, instances);
+            rows, columns, depth, instances);
 
 
         T* arrayBuffer = static_cast< T* >(destination);
@@ -73,9 +74,9 @@ public:
                 for (z = 0; z < depth; ++z)
                 {
                     unsigned int position = y + yshift + z * frameSize;
-                    U value = tempoBuffer[position];
+                    U value               = tempoBuffer[position];
 
-                    arrayBuffer[position*3] = (redLookup[value]/(double)0xffff)*256;
+                    arrayBuffer[position*3]   = (redLookup[value]/(double)0xffff)*256;
                     arrayBuffer[position*3+1] = (greenLookup[value]/(double)0xffff)*256;
                     arrayBuffer[position*3+2] = (blueLookup[value]/(double)0xffff)*256;
 

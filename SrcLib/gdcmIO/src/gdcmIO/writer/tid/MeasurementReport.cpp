@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,10 +42,10 @@ namespace tid
 
 //------------------------------------------------------------------------------
 
-MeasurementReport::MeasurementReport(SPTR(::gdcm::Writer) writer,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwData::Image::sptr image):
-        ::gdcmIO::writer::tid::TemplateID< ::fwData::Image >(writer, instance, image)
+MeasurementReport::MeasurementReport(SPTR(::gdcm::Writer)writer,
+                                     SPTR(::gdcmIO::container::DicomInstance)instance,
+                                     ::fwData::Image::sptr image) :
+    ::gdcmIO::writer::tid::TemplateID< ::fwData::Image >(writer, instance, image)
 {
 }
 
@@ -61,31 +61,31 @@ SPTR(::gdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(boo
 {
     // Create Root Node - Measurement Report Document Titles
     SPTR(::gdcmIO::container::sr::DicomSRContainerNode) rootNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
+        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
             ::gdcmIO::container::DicomCodedAttribute("dd1dd1", "DCM", "Imaging Measurement Report"));
 
     // Create Language of Content Item and Descendants Node (TID 1204)
     SPTR(::gdcmIO::container::sr::DicomSRCodeNode) languagesNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(
-                    ::gdcmIO::container::DicomCodedAttribute("121049", "DCM", "Language of Content Item and Descendants"),
-                     "HAS CONCEPT MOD",
-                     ::gdcmIO::container::DicomCodedAttribute("en-US", "RFC3066", "English, United States")); // FIXME Do we keep English US ?
+        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(
+            ::gdcmIO::container::DicomCodedAttribute("121049", "DCM", "Language of Content Item and Descendants"),
+            "HAS CONCEPT MOD",
+            ::gdcmIO::container::DicomCodedAttribute("en-US", "RFC3066", "English, United States"));          // FIXME Do we keep English US ?
     rootNode->addSubNode(languagesNode);
 
     // Create Observation Context Node (TID 1001) FIXME Do we need to add that template ?
 
     // Create Procedure Reported Node
     SPTR(::gdcmIO::container::sr::DicomSRCodeNode) procedureReportedNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(
-                    ::gdcmIO::container::DicomCodedAttribute("121058", "DCM", "Procedure reported"),
-                     "HAS CONCEPT MOD",
-                     ::gdcmIO::container::DicomCodedAttribute("P5-09051", "SRT", "Magnetic resonance imaging guidance")); // FIXME Find a good value
+        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(
+            ::gdcmIO::container::DicomCodedAttribute("121058", "DCM", "Procedure reported"),
+            "HAS CONCEPT MOD",
+            ::gdcmIO::container::DicomCodedAttribute("P5-09051", "SRT", "Magnetic resonance imaging guidance"));          // FIXME Find a good value
     rootNode->addSubNode(procedureReportedNode);
 
     // Create ImageLibrary Node
     SPTR(::gdcmIO::container::sr::DicomSRContainerNode) imageLibraryNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
-                    ::gdcmIO::container::DicomCodedAttribute("111028", "DCM", "Image Library"), "CONTAINS");
+        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
+            ::gdcmIO::container::DicomCodedAttribute("111028", "DCM", "Image Library"), "CONTAINS");
     rootNode->addSubNode(imageLibraryNode);
 
     // Add landmarks
@@ -93,8 +93,8 @@ SPTR(::gdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(boo
     {
         // Create Fiducial Container
         SPTR(::gdcmIO::container::sr::DicomSRContainerNode) fiducialNode =
-                ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
-                        ::gdcmIO::container::DicomCodedAttribute("dd1d93", "DCM", "Fiducials"), "CONTAINS");
+            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
+                ::gdcmIO::container::DicomCodedAttribute("dd1d93", "DCM", "Fiducials"), "CONTAINS");
         rootNode->addSubNode(fiducialNode);
 
         ::gdcmIO::writer::tid::Fiducial fiducialTID(m_writer, m_instance, m_object);
@@ -106,29 +106,29 @@ SPTR(::gdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(boo
     {
         // Create Imaging Measurements Container
         SPTR(::gdcmIO::container::sr::DicomSRContainerNode) imagingMeasurementsNode =
-                ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
-                        ::gdcmIO::container::DicomCodedAttribute("dd1d91", "DCM", "Imaging Measurements"), "CONTAINS");
+            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
+                ::gdcmIO::container::DicomCodedAttribute("dd1d91", "DCM", "Imaging Measurements"), "CONTAINS");
         rootNode->addSubNode(imagingMeasurementsNode);
 
         // Create Measurement Group node
         SPTR(::gdcmIO::container::sr::DicomSRContainerNode) measurementGroupNode =
-                ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
+            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
                 ::gdcmIO::container::DicomCodedAttribute("125007", "DCM", "Measurement Group"), "CONTAINS");
         imagingMeasurementsNode->addSubNode(measurementGroupNode);
 
         // Create Tracking ID node
         SPTR(::gdcmIO::container::sr::DicomSRTextNode) idNode =
-                ::boost::make_shared< ::gdcmIO::container::sr::DicomSRTextNode >(
+            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRTextNode >(
                 ::gdcmIO::container::DicomCodedAttribute("112039", "DCM", "Tracking Identifier"),
-                 "HAS OBS CONTEXT", "1");
+                "HAS OBS CONTEXT", "1");
         imagingMeasurementsNode->addSubNode(idNode);
 
         // Create Tracking UID node
         ::gdcm::UIDGenerator generator;
         SPTR(::gdcmIO::container::sr::DicomSRUIDRefNode) uidNode =
-                ::boost::make_shared< ::gdcmIO::container::sr::DicomSRUIDRefNode >(
+            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRUIDRefNode >(
                 ::gdcmIO::container::DicomCodedAttribute("112040", "DCM", "Tracking Unique Identifier"),
-                 "HAS OBS CONTEXT", generator.Generate());
+                "HAS OBS CONTEXT", generator.Generate());
         imagingMeasurementsNode->addSubNode(uidNode);
 
         ::gdcmIO::writer::tid::Measurement measurementTID(m_writer, m_instance, m_object);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,15 +10,18 @@
 
 #include <arlcore/Misc.h>
 
-arlCore::File::File( const std::string &fullFileName, const std::string &fileType ):
-m_ok(false),
-m_version(0.0),
-m_fileType(fileType),
-m_error(""),
-m_fullFilename(fullFileName),
-m_position(0)
+arlCore::File::File( const std::string &fullFileName, const std::string &fileType ) :
+    m_ok(false),
+    m_version(0.0),
+    m_fileType(fileType),
+    m_error(""),
+    m_fullFilename(fullFileName),
+    m_position(0)
 {
-    if(m_fullFilename=="") return;
+    if(m_fullFilename=="")
+    {
+        return;
+    }
     arlString::splitFilename( m_fullFilename, m_folder, m_filename, m_extension );
     m_file.open(m_fullFilename.c_str(), std::fstream::in);
     if(!m_file.is_open())
@@ -58,7 +61,10 @@ bool arlCore::File::getEOF( void )
 
 bool arlCore::File::rewind( void )
 {
-    if(!m_file.is_open()) return false;
+    if(!m_file.is_open())
+    {
+        return false;
+    }
     m_file.clear();
     m_file.seekg(0, std::ios::beg);
     return true;
@@ -66,7 +72,10 @@ bool arlCore::File::rewind( void )
 
 bool arlCore::File::recordCurrentPosition( void )
 {
-    if(!m_file.is_open()) return false;
+    if(!m_file.is_open())
+    {
+        return false;
+    }
     m_position = m_file.tellg();
     return true;
 }
@@ -74,7 +83,10 @@ bool arlCore::File::recordCurrentPosition( void )
 
 bool arlCore::File::rewindRecordedPosition( void )
 {
-    if(!m_file.is_open() || m_position==0) return false;
+    if(!m_file.is_open() || m_position==0)
+    {
+        return false;
+    }
     m_file.seekg(m_position);
     return true;
 }
@@ -93,7 +105,10 @@ void arlCore::File::setError( const std::string &error )
 {
     const bool Verbose = true;
     m_error = error;
-    if(Verbose) std::cerr<<m_error<<"\n";
+    if(Verbose)
+    {
+        std::cerr<<m_error<<"\n";
+    }
 }
 
 std::string arlCore::File::getFullFilename( void )
@@ -118,10 +133,13 @@ std::string arlCore::File::getExtension( void )
 
 double arlCore::File::readHeader( void )
 {
-    if(!isOK()) return 0.0;
+    if(!isOK())
+    {
+        return 0.0;
+    }
     std::stringstream s;
     std::string token, text;
-    unsigned int n=0;
+    unsigned int n = 0;
     do
     {
         m_file>>token;
@@ -134,16 +152,20 @@ double arlCore::File::readHeader( void )
                 setError(s.str());
                 return m_version;
             }
-            n=(n|1);
+            n = (n|1);
         }
-        if(token=="Version") {m_file>>m_version; n=(n|2);}
+        if(token=="Version")
+        {
+            m_file>>m_version; n = (n|2);
+        }
         if(m_file.eof())
         {
             s<<"End of file unexpected : "<<m_filename;
             setError(s.str());
             return m_version;
         }
-    } while(n!=3);
+    }
+    while(n!=3);
     return m_version;
 }
 
@@ -189,7 +211,9 @@ std::string arlCore::File::getFiletype( const std::string &fileName )
     {
         file>>token;
         if(token=="FileType")
+        {
             file>>fileType;
+        }
     }
     return fileType;
 }

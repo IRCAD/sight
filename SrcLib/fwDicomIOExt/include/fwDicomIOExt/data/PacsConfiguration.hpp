@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,8 @@ class FWDICOMIOEXT_CLASS_API PacsConfiguration : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (PacsConfiguration)(::fwData::Object), (()), ::fwData::factory::New< PacsConfiguration >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (PacsConfiguration)(::fwData::Object), (()),
+                                            ::fwData::factory::New< PacsConfiguration >);
     fwCampMakeFriendDataMacro((fwDicomIOExt)(data)(PacsConfiguration));
 
 
@@ -108,7 +109,7 @@ public:
     /**  @} */
 
 
-protected :
+protected:
     /// Local application title
     std::string m_attrLocalApplicationTitle;
 

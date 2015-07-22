@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,13 +37,14 @@ namespace editor
  * @class   SFilterSelectionEditor
  * @date    2014.
  */
-class IODICOMEXT_CLASS_API SFilterSelectionEditor : public QObject, public ::gui::editor::IEditor
+class IODICOMEXT_CLASS_API SFilterSelectionEditor : public QObject,
+                                                    public ::gui::editor::IEditor
 {
 Q_OBJECT;
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SFilterSelectionEditor)( ::gui::editor::IEditor ) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SFilterSelectionEditor)( ::gui::editor::IEditor ) );
 
     typedef std::map< std::string, ::fwDicomIOFilter::IFilter::sptr > FilterMapType;
 
@@ -88,12 +89,12 @@ protected:
      * @brief Configuring method. This method is used to configure the service.
      *
      * XML configuration sample:
-     @verbatim
-     <service uid="filterSelectionEditor" impl="::ioDicomExt::dcmtk::editor::SFilterSelectionEditor"
+       @verbatim
+       <service uid="filterSelectionEditor" impl="::ioDicomExt::dcmtk::editor::SFilterSelectionEditor"
          autoConnect="yes">
-     </service>
-     @endverbatim
-    */
+       </service>
+       @endverbatim
+     */
     IODICOMEXT_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -109,7 +110,7 @@ protected:
     IODICOMEXT_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Override
-    IODICOMEXT_API void info(std::ostream &_sstream ) ;
+    IODICOMEXT_API void info(std::ostream &_sstream );
 
     /// Fill the combobox with the list of available filters
     IODICOMEXT_API void fillAvailableFilters();

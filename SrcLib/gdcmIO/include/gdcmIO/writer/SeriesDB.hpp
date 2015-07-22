@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,16 +28,16 @@ namespace writer
  * @class   SeriesDB
  * @brief   This class manages patient writing, in DICOM file format.
  */
-class SeriesDB: public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >,
-        public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
-        public ::fwTools::ProgressAdviser
+class SeriesDB : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >,
+                 public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
+                 public ::fwTools::ProgressAdviser
 {
 
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro(
-            (SeriesDB)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >),
-            (()), ::fwDataIO::writer::factory::New< SeriesDB >);
+        (SeriesDB)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::SeriesDB >),
+        (()), ::fwDataIO::writer::factory::New< SeriesDB >);
 
     /// Constructor
     GDCMIO_API SeriesDB(::fwDataIO::writer::IObjectWriter::Key key);
@@ -56,7 +56,8 @@ public:
      */
     GDCMIO_API std::string extension();
 
-    GDCMIO_API fwGettersSettersDocMacro(FiducialsExportMode, fiducialsExportMode, ::gdcmIO::writer::Series::FiducialsExportMode, Fiducials Export Mode);
+    GDCMIO_API fwGettersSettersDocMacro(FiducialsExportMode, fiducialsExportMode,
+                                        ::gdcmIO::writer::Series::FiducialsExportMode, Fiducials Export Mode);
 
 protected:
     /**

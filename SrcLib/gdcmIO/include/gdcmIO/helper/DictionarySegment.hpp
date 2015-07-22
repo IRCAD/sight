@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ public:
      * @param[in] label Label from witch the anatomic region is guessed.
      */
     GDCMIO_API static const ::gdcmIO::container::DicomCodedAttribute* guessAnatRegionFromLabel(
-            const std::string& label);
+        const std::string& label);
 
     /**
      * @brief Get segmented property category code sequence from label of an organ.
@@ -41,7 +41,7 @@ public:
      * @param[in] label Label from witch the property category is guessed.
      */
     GDCMIO_API static const ::gdcmIO::container::DicomCodedAttribute* guessPropCategoryFromLabel(
-            const std::string& label);
+        const std::string& label);
 
     /**
      * @brief Get segmented property type code sequence from label of an organ.
@@ -50,7 +50,7 @@ public:
      * @param[in] label Label from witch the property type is guessed.
      */
     GDCMIO_API static const ::gdcmIO::container::DicomCodedAttribute* guessPropTypeFromLabel(
-            const std::string& label);
+        const std::string& label);
 
 };
 

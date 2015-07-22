@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,32 +47,32 @@ void DicomSeriesCampTest::tearDown()
 
 void DicomSeriesCampTest::propertiesTest()
 {
-    const std::string instance_uid = "123456789";
-    const std::string modality = "CT";
-    const std::string date = "20130214";
-    const std::string time = "143328";
+    const std::string instance_uid               = "123456789";
+    const std::string modality                   = "CT";
+    const std::string date                       = "20130214";
+    const std::string time                       = "143328";
     const std::string performing_physicians_name = "John Doe";
-    const std::string description = "description";
+    const std::string description                = "description";
     //DicomSeries
-    const std::string dicom_availability = "PATHS";
+    const std::string dicom_availability  = "PATHS";
     const std::string number_of_instances = "100";
     ::DataCampHelper::PropertiesNameType dataProperties = ::boost::assign::list_of("fields")
-                                                                  ("dicom_availability")
-                                                                  ("number_of_instances")
-                                                                  ("local_dicom_paths")
-                                                                  ("dicom_binaries")
-                                                                  ("patient")
-                                                                  ("study")
-                                                                  ("equipment")
-                                                                  ("instance_uid")
-                                                                  ("modality")
-                                                                  ("date")
-                                                                  ("time")
-                                                                  ("performing_physicians_name")
-                                                                  ("description");
+                                                              ("dicom_availability")
+                                                              ("number_of_instances")
+                                                              ("local_dicom_paths")
+                                                              ("dicom_binaries")
+                                                              ("patient")
+                                                              ("study")
+                                                              ("equipment")
+                                                              ("instance_uid")
+                                                              ("modality")
+                                                              ("date")
+                                                              ("time")
+                                                              ("performing_physicians_name")
+                                                              ("description");
 
 
-    ::fwData::Array::sptr binary = ::fwData::Array::New();
+    ::fwData::Array::sptr binary   = ::fwData::Array::New();
     ::boost::filesystem::path path = "mypath";
 
     ::fwMedData::DicomValuesType performing_physicians_names;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -127,9 +127,9 @@ protected:
 class IGTLPROTOCOL_CLASS_API IntConverter : public ScalarConverter< int, ::fwData::Integer>
 {
 public:
-    typedef ScalarConverter< int, ::fwData::Integer>  Superclass ;
+    typedef ScalarConverter< int, ::fwData::Integer>  Superclass;
     /// Constructor
-    IntConverter(): Superclass("INTEGER")
+    IntConverter() : Superclass("INTEGER")
     {
     }
 
@@ -152,7 +152,7 @@ public:
 class IGTLPROTOCOL_CLASS_API FloatConverter : public ScalarConverter< float, ::fwData::Float>
 {
 public:
-    typedef ScalarConverter< float, ::fwData::Float>  Superclass ;
+    typedef ScalarConverter< float, ::fwData::Float>  Superclass;
     /// Constructor
     FloatConverter() : Superclass("FLOAT")
     {
@@ -177,4 +177,4 @@ public:
 } // namespace converter
 } // namespace igtlProtocol
 
-#endif // _IGTLPROTOCOL_CONVERTERS_SCALARCONVERTER_HPP_
+#endif // __IGTLPROTOCOL_CONVERTER_SCALARCONVERTER_HPP__

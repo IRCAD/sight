@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,19 +28,20 @@ namespace dcmtk
  * @brief Reads DICOM series from pacs.
  * @date  2013.
  */
-class FWDICOMIOEXT_CLASS_API SeriesEnquirer : public ::fwCore::BaseObject, protected DcmSCU
+class FWDICOMIOEXT_CLASS_API SeriesEnquirer : public ::fwCore::BaseObject,
+                                              protected DcmSCU
 {
 
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (SeriesEnquirer)(::fwDicomIOExt::dcmtk::SeriesEnquirer),
-            (()), new SeriesEnquirer);
+                                            (()), new SeriesEnquirer);
     fwCoreAllowSharedFromThis();
 
     FWDICOMIOEXT_API static const ::fwCom::Slots::SlotKeyType s_PROGRESS_CALLBACK_SLOT;
-    typedef ::fwCom::Slot<void(float, bool)> ProgressCallbackSlotType;
+    typedef ::fwCom::Slot<void (float, bool)> ProgressCallbackSlotType;
 
     FWDICOMIOEXT_API static const ::fwCom::Slots::SlotKeyType s_STORE_INSTANCE_CALLBACK_SLOT;
-    typedef ::fwCom::Slot<void(const std::string&, unsigned int, const std::string&)> StoreInstanceCallbackSlotType;
+    typedef ::fwCom::Slot<void (const std::string&, unsigned int, const std::string&)> StoreInstanceCallbackSlotType;
 
     typedef std::vector< std::string > InstanceUIDContainer;
 
@@ -62,11 +63,12 @@ public :
      * @param[in] progressCallback Progress callback
      */
     FWDICOMIOEXT_API void initialize(const std::string& applicationTitle,
-            const std::string& peerHostName, unsigned int peerPort,
-            const std::string& peerApplicationTitle,
-            const std::string& moveApplicationTitle = "",
-            StoreInstanceCallbackSlotType::sptr storeCallback = StoreInstanceCallbackSlotType::sptr(),
-            ProgressCallbackSlotType::sptr progressCallback = ProgressCallbackSlotType::sptr());
+                                     const std::string& peerHostName, unsigned int peerPort,
+                                     const std::string& peerApplicationTitle,
+                                     const std::string& moveApplicationTitle = "",
+                                     StoreInstanceCallbackSlotType::sptr storeCallback = StoreInstanceCallbackSlotType::sptr(),
+                                     ProgressCallbackSlotType::sptr progressCallback =
+                                         ProgressCallbackSlotType::sptr());
 
     /// Negotiate Association
     FWDICOMIOEXT_API bool connect();
@@ -121,7 +123,7 @@ public :
      * @param[in] sopInstanceUID SOP Instance UID
      */
     FWDICOMIOEXT_API void pullInstanceUsingMoveRetrieveMethod(const std::string& seriesInstanceUID,
-            const std::string& sopInstanceUID);
+                                                              const std::string& sopInstanceUID);
 
     /**
      * @brief Pull instance using C-GET requests
@@ -129,9 +131,9 @@ public :
      * @param[in] sopInstanceUID SOP Instance UID
      */
     FWDICOMIOEXT_API void pullInstanceUsingGetRetrieveMethod(const std::string& seriesInstanceUID,
-            const std::string& sopInstanceUID);
+                                                             const std::string& sopInstanceUID);
 
-protected :
+protected:
 
     /**
      * @brief Send Find Request
@@ -161,8 +163,8 @@ protected :
 
     /// Handle STORE Request (Override)
     FWDICOMIOEXT_API virtual OFCondition handleSTORERequest (
-            const T_ASC_PresentationContextID presID, DcmDataset *incomingObject,
-            OFBool &continueCGETSession, Uint16 &cStoreReturnStatus);
+        const T_ASC_PresentationContextID presID, DcmDataset *incomingObject,
+        OFBool &continueCGETSession, Uint16 &cStoreReturnStatus);
 
     /**
      * @brief Find uncompressed presentation context

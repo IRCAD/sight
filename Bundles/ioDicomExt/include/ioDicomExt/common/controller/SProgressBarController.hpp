@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,12 +33,12 @@ namespace controller
 class IODICOMEXT_CLASS_API SProgressBarController : public ::fwServices::IController
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SProgressBarController)( ::fwServices::IController ) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SProgressBarController)( ::fwServices::IController ) );
 
     IODICOMEXT_API static const ::fwCom::Slots::SlotKeyType s_PROGRESS_SLOT;
-    typedef ::fwCom::Slot<void(::ioDicomExt::common::data::ProgressMsg::sptr)> ProgressBarSlotType;
+    typedef ::fwCom::Slot<void (::ioDicomExt::common::data::ProgressMsg::sptr)> ProgressBarSlotType;
 
     /// Type of progress bar container
     typedef std::map< std::string, ::fwGuiQt::dialog::ProgressDialog::sptr > ProgressDialogContainerType;
@@ -65,12 +65,12 @@ protected:
      * @brief Configuring method. This method is used to configure the service.
      *
      * XML configuration sample:
-     @verbatim
-     <service uid="progressBarController" impl="::ioDicomExt::common::controller::SProgressBarController"
+       @verbatim
+       <service uid="progressBarController" impl="::ioDicomExt::common::controller::SProgressBarController"
          autoConnect="no">
-     </service>
-     @endverbatim
-    */
+       </service>
+       @endverbatim
+     */
     IODICOMEXT_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -86,7 +86,7 @@ protected:
     IODICOMEXT_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Override
-    IODICOMEXT_API void info(std::ostream &_sstream ) ;
+    IODICOMEXT_API void info(std::ostream &_sstream );
 
     /// Slot to call progressBar method
     ProgressBarSlotType::sptr m_slotProgressBar;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,10 +23,10 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Series::Series(SPTR(::gdcm::Writer) writer,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwMedData::Series::sptr series):
-        ::gdcmIO::writer::ie::InformationEntity< ::fwMedData::Series >(writer, instance, series)
+Series::Series(SPTR(::gdcm::Writer)writer,
+               SPTR(::gdcmIO::container::DicomInstance)instance,
+               ::fwMedData::Series::sptr series) :
+    ::gdcmIO::writer::ie::InformationEntity< ::fwMedData::Series >(writer, instance, series)
 {
 }
 
@@ -76,7 +76,7 @@ void Series::writeGeneralSeriesModule()
 
     // Laterality - Type 2C - FIXME: Fake Value - Should be absent for the abdomen or chest
     if(m_instance->getCRefSOPClassUID() !=
-            ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::SurfaceSegmentationStorage))
+       ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::SurfaceSegmentationStorage))
     {
         ::gdcmIO::helper::DicomData::setTagValue< 0x0020, 0x0060 >("R", dataset);
     }

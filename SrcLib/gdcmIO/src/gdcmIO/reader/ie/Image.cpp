@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,11 +33,11 @@ namespace ie
 
 //------------------------------------------------------------------------------
 
-Image::Image(SPTR(::fwDicomData::DicomSeries) dicomSeries,
-        SPTR(::gdcm::Reader) reader,
-        SPTR(::gdcmIO::container::DicomInstance) instance,
-        ::fwData::Image::sptr image):
-        ::gdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image)
+Image::Image(SPTR(::fwDicomData::DicomSeries)dicomSeries,
+             SPTR(::gdcm::Reader)reader,
+             SPTR(::gdcmIO::container::DicomInstance)instance,
+             ::fwData::Image::sptr image) :
+    ::gdcmIO::reader::ie::InformationEntity< ::fwData::Image >(dicomSeries, reader, instance, image)
 {
 }
 
@@ -53,7 +53,7 @@ void Image::readImagePlaneModule()
 {
     // Retrieve GDCM image
     SPTR(::gdcm::ImageReader) imageReader = ::boost::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
-    ::gdcm::Image &gdcmImage = imageReader->GetImage();
+    ::gdcm::Image &gdcmImage              = imageReader->GetImage();
 
     // Retrieve dataset
     ::gdcm::DataSet &dataset = m_reader->GetFile().GetDataSet();
@@ -81,7 +81,7 @@ void Image::readImagePlaneModule()
     }
 
     // Compute Z image spacing when extra information is required
-    std::string sliceThickness = ::gdcmIO::helper::DicomData::getTrimmedTagValue<0x0018,0x0050>(dataset);
+    std::string sliceThickness       = ::gdcmIO::helper::DicomData::getTrimmedTagValue<0x0018,0x0050>(dataset);
     std::string spacingBetweenSlices = ::gdcmIO::helper::DicomData::getTrimmedTagValue<0x0018,0x0088>(dataset);
 
     if(m_dicomSeries->hasComputedValues("SliceThickness"))
@@ -139,35 +139,35 @@ void Image::readImagePixelModule()
 {
     // Retrieve GDCM image
     SPTR(::gdcm::ImageReader) imageReader = ::boost::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
-    ::gdcm::Image &gdcmImage = imageReader->GetImage();
+    ::gdcm::Image &gdcmImage              = imageReader->GetImage();
 
     // Retrieve dataset
     ::gdcm::DataSet &dataset = m_reader->GetFile().GetDataSet();
 
     // Retrieve image information before processing the rescaling
-    ::gdcm::PixelFormat pixelFormat = ::gdcm::ImageHelper::GetPixelFormatValue(imageReader->GetFile());
+    ::gdcm::PixelFormat pixelFormat            = ::gdcm::ImageHelper::GetPixelFormatValue(imageReader->GetFile());
     ::gdcm::PixelFormat::ScalarType scalarType = pixelFormat.GetScalarType();
 
     std::vector< double > rescaleInterceptSlope =
-            ::gdcm::ImageHelper::GetRescaleInterceptSlopeValue(imageReader->GetFile());
-    double rescaleIntercept = rescaleInterceptSlope[0];
-    double rescaleSlope = rescaleInterceptSlope[1];
-    unsigned short samplesPerPixel = pixelFormat.GetSamplesPerPixel();
-    unsigned short bitsAllocated = pixelFormat.GetBitsAllocated();
-    unsigned short bitsStored = pixelFormat.GetBitsStored();
-    unsigned short highBit = pixelFormat.GetHighBit();
+        ::gdcm::ImageHelper::GetRescaleInterceptSlopeValue(imageReader->GetFile());
+    double rescaleIntercept            = rescaleInterceptSlope[0];
+    double rescaleSlope                = rescaleInterceptSlope[1];
+    unsigned short samplesPerPixel     = pixelFormat.GetSamplesPerPixel();
+    unsigned short bitsAllocated       = pixelFormat.GetBitsAllocated();
+    unsigned short bitsStored          = pixelFormat.GetBitsStored();
+    unsigned short highBit             = pixelFormat.GetHighBit();
     unsigned short pixelRepresentation = pixelFormat.GetPixelRepresentation();
 
     // Compute final image type
     ::fwDicomIOExt::dcmtk::helper::Image imageHelper(
-            samplesPerPixel,bitsAllocated,bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
+        samplesPerPixel,bitsAllocated,bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
     ::fwTools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
     m_object->setType(imageType);
     ::gdcm::PixelFormat targetPixelFormat = ::gdcmIO::helper::DicomData::getPixelType(m_object);
 
     // Compute number of components
     std::string photometricInterpretation = ::gdcmIO::helper::DicomData::getTrimmedTagValue<0x0028,0x0004>(dataset);
-    std::string pixelPresentation = ::gdcmIO::helper::DicomData::getTrimmedTagValue<0x0008,0x9205>(dataset);
+    std::string pixelPresentation         = ::gdcmIO::helper::DicomData::getTrimmedTagValue<0x0008,0x9205>(dataset);
 
     if(photometricInterpretation == "MONOCHROME2")
     {
@@ -194,7 +194,7 @@ void Image::readImagePixelModule()
 
     // Update image size
     std::vector<unsigned int> dimensions = ::gdcm::ImageHelper::GetDimensionsValue(imageReader->GetFile());
-    unsigned short sizeZ = m_dicomSeries->getLocalDicomPaths().size();
+    unsigned short sizeZ                 = m_dicomSeries->getLocalDicomPaths().size();
     if(sizeZ == 1)
     {
         sizeZ = gdcmImage.GetBufferLength() / (dimensions[0] * dimensions[1] * (bitsAllocated/8));
@@ -203,19 +203,19 @@ void Image::readImagePixelModule()
 
 
     // Compute real image size
-    const unsigned long imageSize = dimensions[0] * dimensions[1] * sizeZ * (bitsAllocated/8);
+    const unsigned long imageSize    = dimensions[0] * dimensions[1] * sizeZ * (bitsAllocated/8);
     const unsigned long newImageSize = dimensions[0] * dimensions[1] * sizeZ * (targetPixelFormat.GetBitsAllocated()/8);
 
     // Let's read the image buffer
     void* temporaryBuffer = this->readImageBuffer();
-    char* finalBuffer = new char[newImageSize];
+    char* finalBuffer     = new char[newImageSize];
 
     if(photometricInterpretation == "PALETTE COLOR" || pixelPresentation == "COLOR")
     {
         //TODO: Apply lookup
 //        ::gdcm::LookupTable lookup = gdcmImage.GetLUT();
 //        lookup.Decode(finalBuffer, newImageSize, (const char*)temporaryBuffer, imageSize);
-       throw ::gdcmIO::exception::Failed("The photometric interpretation \"PALETTE COLOR\" is not yet supported");
+        throw ::gdcmIO::exception::Failed("The photometric interpretation \"PALETTE COLOR\" is not yet supported");
     }
     else
     {
@@ -246,10 +246,10 @@ void* Image::readImageBuffer() throw(::gdcmIO::exception::Failed)
 {
     // Retrieve GDCM image
     SPTR(::gdcm::ImageReader) imageReader = ::boost::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
-    ::gdcm::Image &gdcmImage = imageReader->GetImage();
+    ::gdcm::Image &gdcmImage              = imageReader->GetImage();
 
     // Retrieve Datasets
-    ::gdcm::DataSet &gdcmDatasetRoot = imageReader->GetFile().GetDataSet();
+    ::gdcm::DataSet &gdcmDatasetRoot   = imageReader->GetFile().GetDataSet();
     ::gdcm::DataSet &gdcmDatasetHeader = imageReader->GetFile().GetHeader();
 
     // Path container
@@ -300,7 +300,8 @@ void* Image::readImageBuffer() throw(::gdcmIO::exception::Failed)
         }
 
         // Reference SOP Instance UID in dicomInstance for SR reading
-        const std::string sopInstanceUID = ::gdcmIO::helper::DicomData::getTrimmedTagValue<0x0008,0x0018>(gdcmDatasetRoot);
+        const std::string sopInstanceUID = ::gdcmIO::helper::DicomData::getTrimmedTagValue<0x0008,0x0018>(
+            gdcmDatasetRoot);
         if(!sopInstanceUID.empty())
         {
             m_instance->getRefSOPInstanceUIDContainer().push_back(sopInstanceUID);

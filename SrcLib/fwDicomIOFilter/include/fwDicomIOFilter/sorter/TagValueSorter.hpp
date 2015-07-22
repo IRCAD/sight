@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ class FWDICOMIOFILTER_CLASS_API TagValueSorter : public ISorter
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (TagValueSorter)(ISorter),
-            (()), ::fwDicomIOFilter::factory::New< TagValueSorter > );
+                                            (()), ::fwDicomIOFilter::factory::New< TagValueSorter > );
 
     /// Constructor
     FWDICOMIOFILTER_API TagValueSorter(::fwDicomIOFilter::IFilter::Key key);
@@ -38,7 +38,7 @@ public:
 
     /// Override
     FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(::fwDicomData::DicomSeries::sptr series) const
-        throw(::fwDicomIOFilter::exceptions::FilterFailure);
+    throw(::fwDicomIOFilter::exceptions::FilterFailure);
 
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,8 +26,8 @@ class FWDICOMIOFILTERQT_CLASS_API TagValueConfigurableSplitter : public ::fwDico
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (TagValueConfigurableSplitter)
-            (::fwDicomIOFilter::splitter::TagValueSplitter),
-            (()), ::fwDicomIOFilter::factory::New< TagValueConfigurableSplitter > );
+                                            (::fwDicomIOFilter::splitter::TagValueSplitter),
+                                            (()), ::fwDicomIOFilter::factory::New< TagValueConfigurableSplitter > );
 
     /// Constructor
     FWDICOMIOFILTERQT_API TagValueConfigurableSplitter(::fwDicomIOFilter::IFilter::Key key);

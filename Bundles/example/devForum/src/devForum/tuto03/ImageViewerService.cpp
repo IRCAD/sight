@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ namespace tuto03
 //-----------------------------------------------------------------------------
 
 // Declare a new service of type IRender for render Image
-fwServicesRegisterMacro( ::fwRender::IRender , ::devForum::tuto03::ImageViewerService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRender::IRender, ::devForum::tuto03::ImageViewerService, ::fwData::Image );
 
 //-----------------------------------------------------------------------------
 
@@ -37,7 +37,8 @@ ImageViewerService::ImageViewerService() throw()
 //-----------------------------------------------------------------------------
 
 ImageViewerService::~ImageViewerService() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 void ImageViewerService::configuring() throw ( ::fwTools::Failed )
@@ -49,7 +50,7 @@ void ImageViewerService::configuring() throw ( ::fwTools::Failed )
 void ImageViewerService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
 {
     // If message is a ImageMsg and if event is NEW IMAGE
-    ::fwComEd::ImageMsg::csptr pImageMsg = ::fwComEd::ImageMsg::dynamicConstCast( _msg ) ;
+    ::fwComEd::ImageMsg::csptr pImageMsg = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
     if ( pImageMsg && pImageMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) )
     {
         updateVTKPipeline();

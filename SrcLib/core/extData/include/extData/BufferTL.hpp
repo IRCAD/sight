@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -72,7 +72,10 @@ public:
     EXTDATA_API ::fwCore::HiResClock::HiResClockType getNewerTimestamp() const;
 
     /// Change the maximum size of the timeline
-    void setMaximumSize(size_t maximumSize) { m_maximumSize = maximumSize; }
+    void setMaximumSize(size_t maximumSize)
+    {
+        m_maximumSize = maximumSize;
+    }
 
     /// Default Timeline Size
     EXTDATA_API static const size_t s_DEFAULT_TIMELINE_MAX_SIZE;

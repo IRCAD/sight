@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,15 +27,15 @@ void DicomSearch::searchRecursively(const ::boost::filesystem::path &dirPath, st
     std::vector<std::string> vecStr;
     std::string strIgnoreFile = ".zip|.txt|.htm|.html|.xml|.exe|.gz|.dir|.gif|.jpeg|.jpg|dicomdir|.DS_Store";
     ::boost::algorithm::split( vecStr, strIgnoreFile, ::boost::algorithm::is_any_of("|"),
-            ::boost::algorithm::token_compress_on );
+                               ::boost::algorithm::token_compress_on );
 
     std::string lowerFilename;
     std::string filename;
     DcmFileFormat fileFormat;
     for( ::boost::filesystem::recursive_directory_iterator it(dirPath);
-            it != ::boost::filesystem::recursive_directory_iterator(); ++it)
+         it != ::boost::filesystem::recursive_directory_iterator(); ++it)
     {
-        if(! ::boost::filesystem::is_directory(*it))
+        if(!::boost::filesystem::is_directory(*it))
         {
 #if BOOST_FILESYSTEM_VERSION > 2
             lowerFilename = filename = it->path().string();
