@@ -297,7 +297,7 @@ void SFrameGrabber::toogleLoopMode()
 
 //-----------------------------------------------------------------------------
 
-void SFrameGrabber::setPosition(int position)
+void SFrameGrabber::setPosition(int64_t position)
 {
     if(m_mediaPlayer)
     {
@@ -310,7 +310,7 @@ void SFrameGrabber::setPosition(int position)
 void SFrameGrabber::onPositionChanged(qint64 position)
 {
     auto sig = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
-    sig->asyncEmit(position);
+    sig->asyncEmit(static_cast<int64_t>(position));
 }
 
 //----------------------------------------------------------------------------
@@ -318,7 +318,7 @@ void SFrameGrabber::onPositionChanged(qint64 position)
 void SFrameGrabber::onDurationChanged(qint64 duration)
 {
     auto sig = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
-    sig->asyncEmit(duration);
+    sig->asyncEmit(static_cast<int64_t>(duration));
 }
 
 //----------------------------------------------------------------------------

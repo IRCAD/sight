@@ -37,7 +37,7 @@ const ::fwCom::Slots::SlotKeyType SSlider::s_SET_POSITION_SLIDER_SLOT = "setPosi
 const ::fwCom::Slots::SlotKeyType SSlider::s_SET_DURATION_SLIDER_SLOT = "setDurationSlider";
 
 
-QString convertMSecToHHMMSS(long long milliseconds)
+QString convertMSecToHHMMSS(int64_t milliseconds)
 {
     std::chrono::milliseconds ms(milliseconds);
     std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(ms);
@@ -130,7 +130,7 @@ void SSlider::swapping() throw(::fwTools::Failed)
 
 void SSlider::changePosition()
 {
-    int newPos = m_positionSlider->sliderPosition();
+    int64_t newPos = m_positionSlider->sliderPosition();
     m_positionSlider->setSliderPosition(newPos);
     m_currentPosition->setText(convertMSecToHHMMSS(newPos));
 
@@ -148,7 +148,7 @@ void SSlider::sliderPressed()
 }
 //------------------------------------------------------------------------------
 
-void SSlider::setPosition(const long long newPos)
+void SSlider::setPosition(int64_t newPos)
 {
     if(!m_sliderPressed)
     {
@@ -159,7 +159,7 @@ void SSlider::setPosition(const long long newPos)
 
 //------------------------------------------------------------------------------
 
-void SSlider::setDuration(const long long duration)
+void SSlider::setDuration(int64_t duration)
 {
     m_positionSlider->setRange(0, duration);
     m_totalDuration->setText(convertMSecToHHMMSS(duration));
