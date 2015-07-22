@@ -46,6 +46,14 @@ void SConfigController::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+void SConfigController::swapping() throw(::fwTools::Failed)
+{
+    m_configLauncher->stopConfig();
+    m_configLauncher->startConfig(this->getSptr());
+}
+
+//------------------------------------------------------------------------------
+
 void SConfigController::configuring() throw(fwTools::Failed)
 {
     m_configLauncher->parseConfig(this->getConfigTree());

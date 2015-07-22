@@ -95,6 +95,9 @@ protected:
      */
     virtual void configuring() throw(fwTools::Failed);
 
+    /// Swaps the config
+    virtual void swapping() throw ( ::fwTools::Failed );
+
     /// Overrides
     virtual void info( std::ostream &_sstream );
 
