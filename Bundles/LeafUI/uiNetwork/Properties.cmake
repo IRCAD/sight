@@ -12,6 +12,7 @@ set( DEPENDENCIES
     fwRuntime
     fwGui
     fwGuiQt
+    fwNetwork
     gui
     ioNetwork
     uiIO

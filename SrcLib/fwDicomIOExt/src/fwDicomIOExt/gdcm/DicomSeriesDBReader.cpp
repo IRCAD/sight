@@ -47,9 +47,6 @@
 #include <gdcmReader.h>
 #include <gdcmIPPSorter.h>
 
-#include <fwVtkIO/vtk.hpp>
-#include <fwVtkIO/helper/ProgressVtkToFw.hpp>
-
 #include <vtkGdcmIO/helper/GdcmHelper.hpp>
 #include "fwDicomIOExt/gdcm/DicomSeriesDBReader.hpp"
 

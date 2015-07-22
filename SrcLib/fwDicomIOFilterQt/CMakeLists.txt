@@ -20,8 +20,12 @@ fwForwardInclude( ${DCMTK_config_INCLUDE_DIRS} )
 fwLink( ${DCMTK_LIBRARIES} )
 
 find_package(Qt5 COMPONENTS Core Gui Widgets Concurrent REQUIRED)
-QT5_USE_MODULES(${FWPROJECT_NAME} Core Gui Widgets Concurrent)
-fwLink(${QT_LIBRARIES})
+fwLink(
+    ${Qt5Core_LIBRARIES} 
+    ${Qt5Gui_LIBRARIES} 
+    ${Qt5Widgets_LIBRARIES}
+    ${Qt5Concurrent_LIBRARIES}
+)
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
 

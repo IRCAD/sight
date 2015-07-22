@@ -9,5 +9,7 @@ set( DEPENDENCIES
     fwTools
     fwGui
     fwGuiQt
+    fwCom
+    fwCore
     gui
     )

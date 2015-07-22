@@ -7,7 +7,7 @@
 #include <iconv.h>
 #include <zlib.h>
 
-#ifndef _WIN32
+#if !defined(_WIN32) && !defined(__MACOSX__)
 #include <localcharset.h>
 #endif
 
@@ -25,7 +25,7 @@ Plugin::Plugin()
     int j = deflateEnd(0);
 
     // Hack to force link with locale charset
-#ifndef _WIN32
+#if !defined(_WIN32) && !defined(__MACOSX__)
     locale_charset();
 #endif
 }

@@ -6,11 +6,19 @@ set( DEPENDENCIES
     gui
     io
     fwCore
+    fwCom
+    fwTools
+    fwData
     fwServices
     fwMedData
     fwGui
     fwGuiQt
     fwDicomIOExt
+    fwDicomIOFilter
     fwDicomIOFilterQt
     fwDicomData
+    fwComEd
+    fwDataIO
+    fwRuntime
+    fwThread
     )

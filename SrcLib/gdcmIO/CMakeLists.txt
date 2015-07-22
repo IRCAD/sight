@@ -11,5 +11,6 @@ fwForwardInclude(
 fwLink(
     ${GDCM_LIBRARIES}
     gdcmCommon
+    gdcmMSFF
     )
 

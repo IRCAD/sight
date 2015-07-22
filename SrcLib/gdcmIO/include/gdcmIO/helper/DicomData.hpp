@@ -56,7 +56,7 @@ public:
      * @return The tag value
      */
     template< uint16_t GROUP, uint16_t ELEMENT >
-    GDCMIO_TEMPLATE_API static const std::string getTagValue(const ::gdcm::DataSet &dataset)
+    static const std::string getTagValue(const ::gdcm::DataSet &dataset)
     {
         if (dataset.FindDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag()))
         {
@@ -80,7 +80,7 @@ public:
      * @return The trimmed tag value
      */
     template< uint16_t GROUP, uint16_t ELEMENT >
-    GDCMIO_TEMPLATE_API static const std::string getTrimmedTagValue(const ::gdcm::DataSet &dataset)
+    static const std::string getTrimmedTagValue(const ::gdcm::DataSet &dataset)
     {
         std::string val = getTagValue< GROUP, ELEMENT >(dataset);
         ::boost::algorithm::trim(val);
@@ -96,7 +96,7 @@ public:
      * @return The tag value.
      */
     template< uint16_t GROUP, uint16_t ELEMENT, typename T >
-    GDCMIO_TEMPLATE_API static const T getTagValue(const ::gdcm::DataSet &dataset)
+    static const T getTagValue(const ::gdcm::DataSet &dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
         attribute.SetFromDataSet(dataset);
@@ -111,7 +111,7 @@ public:
      * @tparam ELEMENT Element of the tag
      */
     template< uint16_t GROUP, uint16_t ELEMENT >
-    GDCMIO_TEMPLATE_API static void setTagValue(const std::string &value, ::gdcm::DataSet &dataset)
+    static void setTagValue(const std::string &value, ::gdcm::DataSet &dataset)
     {
         // WARNING : Do not use DataElement (for space padding)
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
@@ -129,7 +129,7 @@ public:
      * @tparam ELEMENT Element of the tag
      */
     template< typename T, uint16_t GROUP, uint16_t ELEMENT >
-    GDCMIO_TEMPLATE_API static void setTagValue(const T &value, ::gdcm::DataSet &dataset)
+    static void setTagValue(const T &value, ::gdcm::DataSet &dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
         attribute.SetValue(value);
@@ -146,7 +146,7 @@ public:
      * @tparam ELEMENT Element of the tag.
      */
     template< typename T, uint16_t GROUP, uint16_t ELEMENT >
-    GDCMIO_TEMPLATE_API static void setTagValues(const T * array, const unsigned int size, ::gdcm::DataSet &dataset)
+    static void setTagValues(const T * array, const unsigned int size, ::gdcm::DataSet &dataset)
     {
         ::gdcm::Attribute< GROUP, ELEMENT > attribute;
         if (array)
@@ -173,8 +173,8 @@ public:
      * @tparam ELEMENT Element of the tag
      */
     template< uint16_t GROUP, uint16_t ELEMENT >
-    GDCMIO_TEMPLATE_API static void setSQ(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
-                                          ::gdcm::DataSet &dataset)
+    static void setSQ(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
+                      ::gdcm::DataSet &dataset)
     {
         // Create the sequence of items
         ::gdcm::DataElement dataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag());
@@ -196,8 +196,8 @@ public:
      * @tparam ELEMENT Element of the tag
      */
     template< uint16_t GROUP, uint16_t ELEMENT >
-    GDCMIO_TEMPLATE_API static void insertSQ(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
-                                             ::gdcm::DataSet &dataset)
+    static void insertSQ(::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence,
+                         ::gdcm::DataSet &dataset)
     {
         // Set or add the SQ
         if (!dataset.FindDataElement(::gdcm::Attribute< GROUP, ELEMENT >::GetTag()))

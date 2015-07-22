@@ -176,7 +176,7 @@ vtkActor * ModelSeriesWriter::createActor( ::fwData::Reconstruction::sptr pRecon
     vtkSmartPointer< vtkPolyData > polyData = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, polyData);
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInput(polyData);
+    mapper->SetInputData(polyData);
     actor->SetMapper(mapper);
 
     ::fwData::Color::sptr color = material->ambient();

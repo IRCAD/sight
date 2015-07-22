@@ -5,6 +5,7 @@ set( DEPENDENCIES
        fwCore
        fwTools
        fwMath
+       fwData
        fwMedData
        fwDicomData
 )

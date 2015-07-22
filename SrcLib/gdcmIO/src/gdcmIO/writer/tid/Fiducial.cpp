@@ -107,7 +107,9 @@ void Fiducial::createFiducial(SPTR(::gdcmIO::container::sr::DicomSRNode)parent, 
     if(useSCoord3D)
     {
         // Create SCoord3D Node
-        const float scoord[] = {point->getCoord()[0], point->getCoord()[1], point->getCoord()[2]};
+        const float scoord[] = { static_cast<float>(point->getCoord()[0]),
+                                 static_cast<float>(point->getCoord()[1]),
+                                 static_cast<float>(point->getCoord()[2]) };
         std::vector<float> scoordVector (scoord, scoord + 3);
         SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoord3DNode =
             ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
@@ -118,7 +120,8 @@ void Fiducial::createFiducial(SPTR(::gdcmIO::container::sr::DicomSRNode)parent, 
     else
     {
         // Create SCoord Node
-        const float scoord[] = {point->getCoord()[0], point->getCoord()[1]};
+        const float scoord[] = { static_cast<float>(point->getCoord()[0]),
+                                 static_cast<float>(point->getCoord()[1]) };
         std::vector<float> scoordVector (scoord, scoord + 2);
         SPTR(::gdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
             ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(

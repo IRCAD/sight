@@ -109,8 +109,13 @@ void Measurement::createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode)pa
     if(useSCoord3D)
     {
         // Create SCoord Node
-        const float scoord[] = {point1->getCoord()[0], point1->getCoord()[1], point1->getCoord()[2],
-                                point2->getCoord()[0], point2->getCoord()[1], point2->getCoord()[2]};
+
+        const float scoord[] = { static_cast<float>(point1->getCoord()[0]),
+                                 static_cast<float>(point1->getCoord()[1]),
+                                 static_cast<float>(point1->getCoord()[2]),
+                                 static_cast<float>(point2->getCoord()[0]),
+                                 static_cast<float>(point2->getCoord()[1]),
+                                 static_cast<float>(point2->getCoord()[2]) };
         std::vector<float> scoordVector (scoord, scoord + 6);
         SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoordNode =
             ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
@@ -123,8 +128,10 @@ void Measurement::createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode)pa
         SLM_ASSERT("Unable to save a 3D distance using a SCOORD object.", frameNumber1 == frameNumber2);
 
         // Create SCoord Node
-        const float scoord[] =
-        {point1->getCoord()[0], point1->getCoord()[1], point2->getCoord()[0], point2->getCoord()[1]};
+        const float scoord[] = { static_cast<float>(point1->getCoord()[0]),
+                                 static_cast<float>(point1->getCoord()[1]),
+                                 static_cast<float>(point2->getCoord()[0]),
+                                 static_cast<float>(point2->getCoord()[1]) };
         std::vector<float> scoordVector (scoord, scoord + 4);
         SPTR(::gdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
             ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(

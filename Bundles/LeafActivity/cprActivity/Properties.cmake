@@ -2,7 +2,9 @@
 set( NAME cprActivity )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-set( DEPENDENCIES
+set( DEPENDENCIES )
+
+set( REQUIREMENTS
     gui
     io
     ioData
@@ -27,9 +29,6 @@ set( DEPENDENCIES
     ctrlPointSelection
     ctrlSplineNavigation
     visuNavigation
-    )
-
-set( REQUIREMENTS
     2DVisualizationActivity
     3DVisualizationActivity
     media
