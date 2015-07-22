@@ -33,12 +33,6 @@ VTK_MODULE_INIT(vtkRenderingOpenGL);
 #include <vtkPolyDataNormals.h>
 #include <vtkLookupTable.h>
 
-#include <vtkMassProperties.h>
-
-#include <vtkPolyDataToImageStencil.h>
-#include <vtkImageStencil.h>
-#include <vtkImageAccumulate.h>
-
 #include <vtkDataSetAttributes.h>
 #include <vtkDataArray.h>
 #include <vtkPointData.h>

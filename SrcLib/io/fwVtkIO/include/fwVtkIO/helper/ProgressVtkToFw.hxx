@@ -11,7 +11,6 @@
 #include <sstream>
 
 #include <vtkSmartPointer.h>
-#include <vtkEvent.h>
 #include <vtkCommand.h>
 #include <vtkObjectFactory.h>
 #include <vtkAlgorithm.h>
