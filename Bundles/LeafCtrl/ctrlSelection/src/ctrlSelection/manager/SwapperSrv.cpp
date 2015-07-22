@@ -126,7 +126,7 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
             {
                 subSrv->m_connections->disconnect();
             }
-            subSrv->getService()->stop();
+            subSrv->getService()->stop().wait();
             ::fwServices::OSR::unregisterService(subSrv->getService());
             subSrv->m_service.reset();
         }
