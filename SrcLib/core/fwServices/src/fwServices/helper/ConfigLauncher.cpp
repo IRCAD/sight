@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwServices/Base.hpp>
-#include <fwServices/registry/AppConfig.hpp>
 
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>
@@ -58,11 +57,12 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
 
 //------------------------------------------------------------------------------
 
-void ConfigLauncher::startConfig(::fwServices::IService::sptr srv)
+void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
+                                 const FieldAdaptorType& optReplaceMap )
 {
     ::fwData::Object::sptr currentObj = srv->getObject();
     typedef ::fwActivities::registry::ActivityAppConfig AppConfig;
-    ::fwServices::registry::AppConfig::FieldAdaptorType replaceMap;
+    FieldAdaptorType replaceMap(optReplaceMap);
 
     // Generate generic UID
     const std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( srv->getID() );

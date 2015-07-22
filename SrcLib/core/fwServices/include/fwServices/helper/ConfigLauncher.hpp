@@ -16,6 +16,7 @@
 
 #include "fwServices/AppConfigManager.hpp"
 #include "fwServices/helper/SigSlotConnection.hpp"
+#include "fwServices/registry/AppConfig.hpp"
 #include "fwServices/config.hpp"
 
 namespace fwServices
@@ -40,6 +41,8 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (ConfigLauncher)(::fwCore::BaseObject),
                                             (()),
                                             ::boost::make_shared< ConfigLauncher > );
+
+    typedef ::fwServices::registry::AppConfig::FieldAdaptorType FieldAdaptorType;
 
     /// Constructor. Do nothing.
     FWSERVICES_API ConfigLauncher();
@@ -66,8 +69,13 @@ public:
      */
     FWSERVICES_API virtual void parseConfig(const ::fwServices::IService::ConfigType& config);
 
-    /// Launch Appconfig and connect service with config root object
-    FWSERVICES_API virtual void startConfig( SPTR(::fwServices::IService) srv );
+    /**
+     * @brief Launch Appconfig
+     * @param[in] srv  service to connect with config root object
+     * @param[in] optReplaceMap optional replace map used to replace patterns (concatenated with parsed parameter)
+     */
+    FWSERVICES_API virtual void startConfig( SPTR(::fwServices::IService) srv,
+                                             const FieldAdaptorType& optReplaceMap = FieldAdaptorType() );
 
     /// Stop/destroy AppConfig and disconnect connection with config root object
     FWSERVICES_API virtual void stopConfig();
