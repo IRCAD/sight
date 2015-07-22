@@ -24,7 +24,6 @@ CPPUNIT_TEST( JSONTest );
 CPPUNIT_TEST( JSONZTest );
 CPPUNIT_TEST( XMLTest );
 CPPUNIT_TEST( XMLZTest );
-CPPUNIT_TEST( HDF5Test );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -37,10 +36,6 @@ public:
     void JSONZTest();
     void XMLTest();
     void XMLZTest();
-    void HDF5Test();
-
-
-
 };
 
 } // namespace ut

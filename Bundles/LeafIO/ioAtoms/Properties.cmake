@@ -6,7 +6,6 @@ set( DEPENDENCIES
     fwAtomConversion
     fwAtoms
     fwAtomsBoostIO
-    fwAtomsHdf5IO
     fwAtomsPatch
     fwAtomsFilter
     fwComEd

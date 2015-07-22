@@ -236,13 +236,6 @@ void IoAtomsTest::XMLZTest()
 
 //------------------------------------------------------------------------------
 
-void IoAtomsTest::HDF5Test()
-{
-    atomTest(::fwTools::System::getTemporaryFolder() / "HDF5Test" / "ioAtomsTest.hdf5");
-}
-
-//------------------------------------------------------------------------------
-
 } // namespace ut
 } // namespace ioAtoms
 

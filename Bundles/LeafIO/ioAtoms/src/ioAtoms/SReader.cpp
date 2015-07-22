@@ -11,8 +11,6 @@
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/types.hpp>
 
-#include <fwAtomsHdf5IO/Reader.hpp>
-
 #include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsFilter/IFilter.hpp>
@@ -55,8 +53,7 @@ const SReader::FileExtension2NameType SReader::s_EXTENSIONS
     = ::boost::assign::map_list_of(".xml", "XML")
           (".xmlz", "Zipped XML")
           (".json", "JSON")
-          (".jsonz", "Zipped JSON")
-          (".hdf5", "HDF5");
+          (".jsonz", "Zipped JSON");
 
 //-----------------------------------------------------------------------------
 
@@ -277,50 +274,43 @@ void SReader::updating() throw(::fwTools::Failed)
             }
 
             ::fwAtoms::Object::sptr atom;
-            if ( extension == ".hdf5" )
+
+            // Read atom
+            ::fwZip::IReadArchive::sptr readArchive;
+            ::boost::filesystem::path archiveRootName;
+            ::fwAtomsBoostIO::FormatType format = ::fwAtomsBoostIO::UNSPECIFIED;
+
+            if ( extension == ".json" )
             {
-                ::fwAtomsHdf5IO::Reader reader;
-                atom = ::fwAtoms::Object::dynamicCast( reader.read( filePath ) );
+                readArchive     = ::fwZip::ReadDirArchive::New(folderPath.string());
+                archiveRootName = filename;
+                format          = ::fwAtomsBoostIO::JSON;
+            }
+            else if ( extension == ".jsonz" )
+            {
+                readArchive     = ::fwZip::ReadZipArchive::New(filePath.string());
+                archiveRootName = "root.json";
+                format          = ::fwAtomsBoostIO::JSON;
+            }
+            else if ( extension == ".xml" )
+            {
+                readArchive     = ::fwZip::ReadDirArchive::New(folderPath.string());
+                archiveRootName = filename;
+                format          = ::fwAtomsBoostIO::XML;
+            }
+            else if ( extension == ".xmlz" )
+            {
+                readArchive     = ::fwZip::ReadZipArchive::New(filePath.string());
+                archiveRootName = "root.xml";
+                format          = ::fwAtomsBoostIO::XML;
             }
             else
             {
-                // Read atom
-                ::fwZip::IReadArchive::sptr readArchive;
-                ::boost::filesystem::path archiveRootName;
-                ::fwAtomsBoostIO::FormatType format = ::fwAtomsBoostIO::UNSPECIFIED;
-
-                if ( extension == ".json" )
-                {
-                    readArchive     = ::fwZip::ReadDirArchive::New(folderPath.string());
-                    archiveRootName = filename;
-                    format          = ::fwAtomsBoostIO::JSON;
-                }
-                else if ( extension == ".jsonz" )
-                {
-                    readArchive     = ::fwZip::ReadZipArchive::New(filePath.string());
-                    archiveRootName = "root.json";
-                    format          = ::fwAtomsBoostIO::JSON;
-                }
-                else if ( extension == ".xml" )
-                {
-                    readArchive     = ::fwZip::ReadDirArchive::New(folderPath.string());
-                    archiveRootName = filename;
-                    format          = ::fwAtomsBoostIO::XML;
-                }
-                else if ( extension == ".xmlz" )
-                {
-                    readArchive     = ::fwZip::ReadZipArchive::New(filePath.string());
-                    archiveRootName = "root.xml";
-                    format          = ::fwAtomsBoostIO::XML;
-                }
-                else
-                {
-                    FW_RAISE( "This file extension '" << extension << "' is not managed" );
-                }
-
-                ::fwAtomsBoostIO::Reader reader;
-                atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive, archiveRootName, format ) );
+                FW_RAISE( "This file extension '" << extension << "' is not managed" );
             }
+
+            ::fwAtomsBoostIO::Reader reader;
+            atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive, archiveRootName, format ) );
 
             FW_RAISE_IF( "Invalid atoms file :'" << filePath << "'", !atom );
 

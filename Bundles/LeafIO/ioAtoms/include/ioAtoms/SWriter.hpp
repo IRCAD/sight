@@ -60,11 +60,6 @@ protected:
             <extension>.vpz</extension>
         </archive>
 
-        <archive backend="hdf5">
-            <extension>.f4s</extension>
-            <extension>.mw</extension>
-        </archive>
-
         <extensions>
             <extension label="XML">.xml</extension>
             <extension label="Zipped XML>.xmlz</extension>
@@ -80,10 +75,10 @@ protected:
      * archive : defines custom file extensions. The file to be saved with an extension given in 'archive' tag will be
      * written with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must begin with
      * '.'.
-     * Available 'backend' values are json, xml, jsonz, xmlz, and hdf5.
+     * Available 'backend' values are json, xml, jsonz and xmlz.
      *
      * extensions : defines available extensions displayed in dialog to save file. If the 'extensions' is empty or not
-     * specified, all the extensions (.json, .xml, .jsonz, .xmlz, .hdf5 extensions and custom extensions) are available.
+     * specified, all the extensions (.json, .xml, .jsonz, .xmlz extensions and custom extensions) are available.
      * The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
      * shown.
      *
