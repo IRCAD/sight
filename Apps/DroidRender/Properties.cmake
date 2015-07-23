@@ -22,3 +22,7 @@ set( REQUIREMENTS
 )
 
 bundle_param(appXml PARAM_LIST config PARAM_VALUES DroidRenderConfig)
+
+set( JAVA_PACKAGES 
+    ndkGui
+)
