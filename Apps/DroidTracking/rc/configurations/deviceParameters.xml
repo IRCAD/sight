@@ -1,0 +1,58 @@
+<extension implements="::fwServices::registry::ServiceConfig">
+    <id>DeviceSelectorServiceConfig</id>
+    <service>::ctrlCamera::SExtractDeviceInfo</service>
+    <desc>Device selector parameters</desc>
+    <config>
+        <device>
+            <name>Nexus 10</name>
+            <intrinsic>
+                <width>640</width>
+                <height>480</height>
+                <cx>341.531</cx>
+                <cy>240.717</cy>
+                <fx>678.328</fx>
+                <fy>678.926</fy>
+                <k1>0.225691</k1>
+                <k2>-1.26938</k2>
+                <p1>-0.00122641</p1>
+                <p2>-0.000144831</p2>
+                <k3>2.13349</k3>
+                <skew>0</skew>
+            </intrinsic>
+        </device>
+        <device>
+            <name>Nexus 9</name>
+            <intrinsic>
+                <width>640</width>
+                <height>480</height>
+                <cx>360.955</cx>
+                <cy>210.173</cy>
+                <fx>544.064</fx>
+                <fy>544.0</fy>
+                <k1>0.309783</k1>
+                <k2>-1.40367</k2>
+                <p1>0.00382339</p1>
+                <p2>0.000846153</p2>
+                <k3>1.94049</k3>
+                <skew>0</skew>
+            </intrinsic>
+        </device>
+        <device>
+            <name>Nexus 7</name>
+            <intrinsic>
+                <width>640</width>
+                <height>480</height>
+                <cx>964.358</cx>
+                <cy>547.423</cy>
+                <fx>1620.37</fx>
+                <fy>1619.02</fy>
+                <k1>0.320301</k1>
+                <k2>-1.50138</k2>
+                <p1>0.00166611</p1>
+                <p2>0.00155052</p2>
+                <k3>2.26142</k3>
+                <skew>0</skew>
+            </intrinsic>
+        </device>
+    </config>
+</extension>
