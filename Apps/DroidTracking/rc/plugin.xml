@@ -130,8 +130,8 @@
                     </object>
                 </item>
 
-                <!-- <start uid="extractDeviceInfo" /> -->
-                <!-- <start uid="meshReader" /> -->
+                <start uid="extractDeviceInfo" />
+                <start uid="meshReader" />
                 <start uid="scene" />
                 <start uid="androidCamera" />
     
@@ -139,8 +139,8 @@
                 <start uid="tracker" />
                 <start uid="markerRegistration" />
                 
-                <!-- <update uid="extractDeviceInfo" /> -->
-                <!-- <update uid="meshReader" /> -->
+                <update uid="extractDeviceInfo" />
+                <update uid="meshReader" />
                 <update uid="androidCamera" />
 
             </object>
