@@ -9,6 +9,7 @@
         <param name="cameraSeriesUid" />
         <param name="chessboardWidth" default="11" />
         <param name="chessboardHeight" default="8" />
+        <param name="squareSizeChessboard" default="20" />        
     </parameters>
     <config>
 
@@ -64,6 +65,7 @@
                             <parameter replace="WID_PARENT" by="${GENERIC_UID}_calibrationView"  />
                             <parameter replace="chessboardWidth" by="!values.chessboardParameters.values.chessboardWidth.value" />
                             <parameter replace="chessboardHeight" by="!values.chessboardParameters.values.chessboardHeight.value" />
+                            <parameter replace="squareSizeChessboard" by="!values.chessboardParameters.values.squareSizeChessboard.value" />
                             <parameter replace="chessboardProxy" by="${GENERIC_UID}_chessboardProxy"  />
                         </parameters>
                     </appConfig>
@@ -73,7 +75,8 @@
                         <parameters>
                             <parameter replace="WID_PARENT" by="${GENERIC_UID}_calibrationView"  />
                             <parameter replace="chessboardWidth" by="!values.chessboardParameters.values.chessboardWidth.value" />
-                            <parameter replace="chessboardHeight" by="!values.chessboardParameters.values.chessboardHeight.value" />                            
+                            <parameter replace="chessboardHeight" by="!values.chessboardParameters.values.chessboardHeight.value" />
+                            <parameter replace="squareSizeChessboard" by="!values.chessboardParameters.values.squareSizeChessboard.value" />                                                       
                             <parameter replace="cameraSeriesUid" by="${cameraSeriesUid}"  />
                             <parameter replace="chessboardProxy" by="${GENERIC_UID}_chessboardProxy"  />
                         </parameters>
@@ -127,6 +130,12 @@
                             <value>${chessboardHeight}</value>
                         </object>
                     </item>
+                    <item key="squareSizeChessboard">
+                        <object type="::fwData::String">
+                            <value>${squareSizeChessboard}</value>
+                        </object>
+                    </item>
+                    
                 </object>
             </item>
             

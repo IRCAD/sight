@@ -220,7 +220,7 @@ void SCheckChessBoard::detectPoints( ::fwCore::HiResClock::HiResClockType timest
 
 // ----------------------------------------------------------------------------
 
-void SCheckChessBoard::updateChessboardSize(const int width, const int height)
+void SCheckChessBoard::updateChessboardSize(const int width, const int height, const float squareSize)
 {
     m_width  = width;
     m_height = height;

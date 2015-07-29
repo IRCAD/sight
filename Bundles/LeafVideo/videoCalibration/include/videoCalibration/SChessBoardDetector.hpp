@@ -43,7 +43,7 @@ public:
     VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_DETECTPTS_SLOT;
     typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> DetectPtsSlotType;
 
-    typedef ::fwCom::Slot <void (int, int)> UpdateChessboardSizeSlotType;
+    typedef ::fwCom::Slot <void (int, int, float)> UpdateChessboardSizeSlotType;
     ///@}
 
 
@@ -99,7 +99,7 @@ protected:
      * @param width chessboard's width expresses by the number of square.
      * @param height chessboard's height expresses by the number of square.
      */
-    void updateChessboardSize(const int width, const int height);
+    void updateChessboardSize(const int width, const int height, const float squareSize);
     ///@}
 
 

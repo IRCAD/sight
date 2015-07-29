@@ -41,6 +41,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "update
 
 SOpenCVExtrinsic::SOpenCVExtrinsic() throw () : m_width(0),
                                                 m_height(0),
+                                                m_squareSize(20.0),
                                                 m_camIndex(1)
 {
 
@@ -90,6 +91,13 @@ void SOpenCVExtrinsic::configuring() throw (fwTools::Failed)
     std::string height = cfgBoard->getAttributeValue("height");
     SLM_ASSERT("Attribute 'height' is empty", !height.empty());
     m_height = ::boost::lexical_cast< unsigned int> (height);
+
+    if( cfgBoard->hasAttribute("squareSize"))
+    {
+        std::string squareSize = cfgBoard->getAttributeValue("squareSize");
+        SLM_ASSERT("Attribute 'squareSize' is empty", !squareSize.empty());
+        m_squareSize = std::stof(squareSize);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -135,12 +143,11 @@ void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
         std::vector<std::vector< ::cv::Point3f > > objectPoints;
 
         std::vector< ::cv::Point3f > points;
-        const float squareSize = 20;
         for (unsigned int y = 0; y < m_height - 1; ++y)
         {
             for (unsigned int x = 0; x < m_width - 1; ++x)
             {
-                points.push_back(::cv::Point3f(float(y*squareSize), float(x*squareSize), 0));
+                points.push_back(::cv::Point3f(float(y*m_squareSize), float(x*m_squareSize), 0));
             }
         }
 
@@ -264,10 +271,11 @@ void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SOpenCVExtrinsic::updateChessboardSize(const int width, const int height)
+void SOpenCVExtrinsic::updateChessboardSize(const int width, const int height, const float squareSize)
 {
-    m_width  = width;
-    m_height = height;
+    m_width      = width;
+    m_height     = height;
+    m_squareSize = squareSize;
 }
 
 //------------------------------------------------------------------------------

@@ -8,7 +8,8 @@
         <param name="calibrationInfoUid" />
         <param name="chessboardWidth" />
         <param name="chessboardHeight" />
-        <param name="chessboardProxy" />        
+        <param name="squareSizeChessboard" />      
+        <param name="chessboardProxy" />  
     </parameters>
     <config>
 
@@ -157,7 +158,7 @@
 
                     <service uid="${GENERIC_UID}_OpenCVIntrinsicCal" impl="::videoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
                         <calibrationInfoID>${calibrationInfoUid}</calibrationInfoID>
-                        <board width="${chessboardWidth}" height="${chessboardHeight}" />
+                        <board width="${chessboardWidth}" height="${chessboardHeight}" squareSize="${squareSizeChessboard}"/>
                     </service>
                     
                     <service uid="${GENERIC_UID}_cameraInfo" type="::gui::editor::IEditor" impl="::uiCalibration::SCameraInformationEditor" autoConnect="yes" />

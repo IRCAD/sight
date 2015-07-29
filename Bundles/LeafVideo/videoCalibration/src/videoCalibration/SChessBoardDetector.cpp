@@ -222,7 +222,7 @@ void SChessBoardDetector::detectPoints( ::fwCore::HiResClock::HiResClockType tim
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::updateChessboardSize(const int width, const int height)
+void SChessBoardDetector::updateChessboardSize(const int width, const int height, const float squareSize)
 {
     m_width  = width;
     m_height = height;

@@ -11,6 +11,7 @@
         <param name="calibrationInfo2Uid" />
         <param name="chessboardWidth" />
         <param name="chessboardHeight" />
+        <param name="squareSizeChessboard" />
         <param name="camIndex" />
         <param name="chessboardProxy" />
     </parameters>
@@ -275,7 +276,7 @@
                         <calibrationInfo1ID>${calibrationInfo1Uid}</calibrationInfo1ID>
                         <calibrationInfo2ID>${calibrationInfo2Uid}</calibrationInfo2ID>
                         <camIndex>${camIndex}</camIndex>
-                        <board width="${chessboardWidth}" height="${chessboardHeight}" />
+                        <board width="${chessboardWidth}" height="${chessboardHeight}" squareSize="${squareSizeChessboard}"/>
                    </service>
                    <service uid="${GENERIC_UID}_cameraSeriesInfo" type="::gui::editor::IEditor" impl="::uiCalibration::SCameraSeriesEditor" autoConnect="yes">
                         <camIndex>${camIndex}</camIndex>
