@@ -30,7 +30,7 @@
                 <registry>
                     <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
                     <parent wid="${WID_PARENT}" />
-                    <view sid="${GENERIC_UID}_camerasView" start="yes" />
+                    <view sid="${GENERIC_UID}_videoView" start="yes" />
                     <view sid="${GENERIC_UID}_calibrationInfoView" start="yes" />
                     <view sid="${GENERIC_UID}_cameraInfoView" start="yes" />
                 </registry>
@@ -67,7 +67,21 @@
                     <toolBar sid="${GENERIC_UID}_extrinsicCamera" start="yes" />
                 </registry>
             </service>
-            
+
+            <service uid="${GENERIC_UID}_videoView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_camerasView" start="yes" />
+                    <view sid="${GENERIC_UID}_VideoSlider" start="yes" />
+                </registry>
+            </service>
+
             <service uid="${GENERIC_UID}_camerasView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
@@ -119,7 +133,7 @@
                 </registry>
             </service>
             
-            <service uid="${GENERIC_UID}_ActionAdd" impl="::uiTools::action::STimestampSlotCaller" autoConnect="no">
+            <service uid="${GENERIC_UID}_ActionAdd" impl="::gui::action::SSlotCaller" autoConnect="no">
                 <slots>
                     <slot>${GENERIC_UID}_ChessboardDetector/detectPoints</slot>
                 </slots>
@@ -177,6 +191,8 @@
                     <slot>${GENERIC_UID}_VideoGrabber2/loopVideo</slot>
                 </slots>
             </service>
+
+            <service uid="${GENERIC_UID}_VideoSlider" impl="::videoQt::editor::SSlider" type="::gui::editor::IEditor" autoConnect="no"/>
             
             <service uid="${GENERIC_UID}_synchronizer" impl="::videoTools::SFrameMatrixSynchronizer" autoConnect="no" worker="synchronizer">
                 <frames>
@@ -227,12 +243,6 @@
                 <board width="${chessboardWidth}" height="${chessboardHeight}" />
             </service>
             
-            <service uid="${GENERIC_UID}_CheckChessboard" impl="::videoCalibration::SCheckChessBoard" type="::fwServices::IController" autoConnect="no" worker="extr_chess_checker">
-                <calibration timeline="timeline1" />
-                <calibration timeline="timeline2" />
-                <board width="${chessboardWidth}" height="${chessboardHeight}" />
-            </service>
-
             <service uid="${GENERIC_UID}_DisplayCalibrationInfo" impl="::uiCalibration::SDisplayCalibrationInfo" type="::fwServices::IController" autoConnect="no">
                 <CalInfo1>calInfo1</CalInfo1>
                 <CalInfo2>calInfo2</CalInfo2>
@@ -298,20 +308,20 @@
             
             <connect>
                 <signal>${GENERIC_UID}_Frame1TL/objectPushed</signal>
-                <slot>${GENERIC_UID}_CheckChessboard/detectPoints</slot>
+                <slot>${GENERIC_UID}_ChessboardDetector/checkPoints</slot>
             </connect>
             <connect>
                 <signal>${GENERIC_UID}_Frame2TL/objectPushed</signal>
-                <slot>${GENERIC_UID}_CheckChessboard/detectPoints</slot>
+                <slot>${GENERIC_UID}_ChessboardDetector/checkPoints</slot>
             </connect>
             
             <connect>
-                <signal>${GENERIC_UID}_CheckChessboard/chessboardDetected</signal>
+                <signal>${GENERIC_UID}_ChessboardDetector/chessboardDetected</signal>
                 <slot>${GENERIC_UID}_Status/changeToGreen</slot>
             </connect>
             
             <connect>
-                <signal>${GENERIC_UID}_CheckChessboard/chessboardNotDetected</signal>
+                <signal>${GENERIC_UID}_ChessboardDetector/chessboardNotDetected</signal>
                 <slot>${GENERIC_UID}_Status/changeToRed</slot>
             </connect>
 
@@ -319,6 +329,22 @@
                 <signal>${calibrationInfo1Uid}/getRecord</signal>
                 <slot>${GENERIC_UID}_DisplayCalibrationInfo/displayImage</slot>
             </connect>
+
+            <connect>
+                <signal>${GENERIC_UID}_VideoSlider/positionChanged</signal>
+                <slot>${GENERIC_UID}_VideoGrabber1/setPositionVideo</slot>
+                <slot>${GENERIC_UID}_VideoGrabber2/setPositionVideo</slot>
+            </connect>
+            <connect>
+                <signal>${GENERIC_UID}_VideoGrabber1/durationModified</signal>
+                <slot>${GENERIC_UID}_VideoSlider/setDurationSlider</slot>
+            </connect>
+
+            <proxy channel="${GENERIC_UID}_sliderModifiedProxy">
+                <signal>${GENERIC_UID}_VideoGrabber1/positionModified</signal>
+                <signal>${GENERIC_UID}_VideoGrabber2/positionModified</signal>
+                <slot>${GENERIC_UID}_VideoSlider/setPositionSlider</slot>
+            </proxy>
 
             <proxy channel="${GENERIC_UID}_extrinsicProxy">
                 <signal>${calibrationInfo1Uid}/addedRecord</signal>
@@ -330,12 +356,11 @@
             <proxy channel="${chessboardProxy}">
                  <slot>${GENERIC_UID}_openCVExtrinsicCal/updateChessboardSize</slot>
                  <slot>${GENERIC_UID}_ChessboardDetector/updateChessboardSize</slot>
-                 <slot>${GENERIC_UID}_CheckChessboard/updateChessboardSize</slot>                
             </proxy>
-                                    
+
             <start uid="${GENERIC_UID}_extrinsicCameraView" />
             <start uid="${GENERIC_UID}_openCVExtrinsicCal" />
-            <start uid="${GENERIC_UID}_CheckChessboard" />
+            <start uid="${GENERIC_UID}_ChessboardDetector" />
             <start uid="${GENERIC_UID}_DisplayCalibrationInfo" />
             <start uid="${GENERIC_UID}_synchronizer" />
             <start uid="${GENERIC_UID}_VideoGrabber1" />

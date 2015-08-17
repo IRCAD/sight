@@ -68,7 +68,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_ActionAdd" impl="::uiTools::action::STimestampSlotCaller" autoConnect="no">
+            <service uid="${GENERIC_UID}_ActionAdd" impl="::gui::action::SSlotCaller" autoConnect="no">
                 <slots>
                     <slot>${GENERIC_UID}_ChessboardDetector/detectPoints</slot>
                 </slots>
@@ -128,11 +128,6 @@
                 <board width="${chessboardWidth}" height="${chessboardHeight}" />
             </service>
 
-            <service uid="${GENERIC_UID}_CheckChessboard" impl="::videoCalibration::SCheckChessBoard" type="::fwServices::IController" autoConnect="no" worker="intr_chess_checker">
-                <calibration timeline="timeline" />
-                <board width="${chessboardWidth}" height="${chessboardHeight}" />
-            </service>
-
             <service uid="${GENERIC_UID}_DisplayCalibrationInfo" impl="::uiCalibration::SDisplayCalibrationInfo" type="::fwServices::IController" autoConnect="no">
                 <CalInfo1>calInfo</CalInfo1>
             </service>
@@ -151,11 +146,6 @@
 
             <item key="camera">
                 <object uid="${cameraUid}" type="::arData::Camera" src="ref">
-                    <service uid="${GENERIC_UID}_IntrinsicCal" impl="::videoCalibration::SIntrinsic" worker="intr_chess_checker">
-                        <calibrationInfoID>${calibrationInfoUid}</calibrationInfoID>
-                        <board width="${chessboardWidth}" height="${chessboardHeight}" />
-                    </service>
-
                     <service uid="${GENERIC_UID}_OpenCVIntrinsicCal" impl="::videoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
                         <calibrationInfoID>${calibrationInfoUid}</calibrationInfoID>
                         <board width="${chessboardWidth}" height="${chessboardHeight}" squareSize="${squareSizeChessboard}"/>
@@ -168,16 +158,16 @@
 
             <connect>
                 <signal>${GENERIC_UID}_FrameTL/objectPushed</signal>
-                <slot>${GENERIC_UID}_CheckChessboard/detectPoints</slot>
+                <slot>${GENERIC_UID}_ChessboardDetector/checkPoints</slot>
             </connect>
 
             <connect>
-                <signal>${GENERIC_UID}_CheckChessboard/chessboardDetected</signal>
+                <signal>${GENERIC_UID}_ChessboardDetector/chessboardDetected</signal>
                 <slot>${GENERIC_UID}_Status/changeToGreen</slot>
             </connect>
 
             <connect>
-                <signal>${GENERIC_UID}_CheckChessboard/chessboardNotDetected</signal>
+                <signal>${GENERIC_UID}_ChessboardDetector/chessboardNotDetected</signal>
                 <slot>${GENERIC_UID}_Status/changeToRed</slot>
             </connect>
 
@@ -196,15 +186,12 @@
             <proxy channel="${chessboardProxy}">
                  <slot>${GENERIC_UID}_OpenCVIntrinsicCal/updateChessboardSize</slot>
                  <slot>${GENERIC_UID}_ChessboardDetector/updateChessboardSize</slot>
-                 <slot>${GENERIC_UID}_CheckChessboard/updateChessboardSize</slot>
             </proxy>
             
 
             <start uid="${GENERIC_UID}_intrinsicCameraView" />
-            <start uid="${GENERIC_UID}_IntrinsicCal" />
             <start uid="${GENERIC_UID}_OpenCVIntrinsicCal" />
             <start uid="${GENERIC_UID}_ChessboardDetector" />
-            <start uid="${GENERIC_UID}_CheckChessboard" />
             <start uid="${GENERIC_UID}_DisplayCalibrationInfo" />
             <start uid="${GENERIC_UID}_cameraLauncher" />
             <start uid="${GENERIC_UID}_intrinsicEdition" />

@@ -44,7 +44,7 @@ QString convertMSecToHHMMSS(int64_t milliseconds)
     std::chrono::minutes minutes = std::chrono::duration_cast<std::chrono::minutes>(ms);
     std::chrono::hours hours     = std::chrono::duration_cast<std::chrono::hours>(ms);
 
-    QTime time(hours.count(), minutes.count(), seconds.count(), milliseconds);
+    QTime time(hours.count(), minutes.count(), seconds.count());
     return time.toString("hh:mm:ss");
 
 }

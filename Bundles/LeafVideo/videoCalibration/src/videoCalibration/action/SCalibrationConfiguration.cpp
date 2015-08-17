@@ -116,16 +116,16 @@ void SCalibrationConfiguration::updating() throw(::fwTools::Failed)
     QPointer<QDialog> dialog     = new QDialog();
     QPointer<QGridLayout> layout = new QGridLayout();
 
-    QPointer<QLabel> chessboardHeightLabel     = new QLabel(QObject::tr("Chessboard height: "));
     QPointer<QLabel> chessboardWidthLabel      = new QLabel(QObject::tr("Chessboard width: "));
+    QPointer<QLabel> chessboardHeightLabel     = new QLabel(QObject::tr("Chessboard height: "));
     QPointer<QLabel> squareSizeChessboardLabel = new QLabel(QObject::tr("Square size Chessboard: "));
     QLabel squareSizeUnity(QObject::tr("mm"));
 
-    layout->addWidget(chessboardHeightLabel, 0, 0);
-    layout->addWidget(m_chessboardHeightEditor, 0, 1);
+    layout->addWidget(chessboardWidthLabel, 0, 0);
+    layout->addWidget(m_chessboardWidthEditor, 0, 1);
 
-    layout->addWidget(chessboardWidthLabel, 1, 0);
-    layout->addWidget(m_chessboardWidthEditor, 1, 1);
+    layout->addWidget(chessboardHeightLabel, 1, 0);
+    layout->addWidget(m_chessboardHeightEditor, 1, 1);
 
     layout->addWidget(squareSizeChessboardLabel, 2, 0);
     layout->addWidget(m_squareSizeChessboardEditor, 2, 1);

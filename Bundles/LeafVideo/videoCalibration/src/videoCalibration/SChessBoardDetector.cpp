@@ -4,16 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "videoCalibration/helper/ChessboardAnalyzer.hpp"
 #include "videoCalibration/SChessBoardDetector.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/Array.hpp>
-#include <fwData/PointList.hpp>
 
 #include <arData/CalibrationInfo.hpp>
 
-#include <fwCom/Slot.hxx>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwComEd/helper/Array.hpp>
@@ -22,32 +20,34 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/Base.hpp>
 
-#include <boost/foreach.hpp>
-#include <boost/tuple/tuple.hpp>
-#include <boost/range/combine.hpp>
-
-#include <algorithm>
+#include <opencv2/calib3d.hpp>
+#include <opencv2/imgproc.hpp>
 
 namespace videoCalibration
 {
 fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SChessBoardDetector, ::fwData::Composite);
 
-const ::fwCom::Slots::SlotKeyType SChessBoardDetector::s_DETECTPTS_SLOT = "detectPoints";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT  = "updateChessboardSize";
+const ::fwCom::Slots::SlotKeyType SChessBoardDetector::s_CHECK_POINTS_SLOT           = "checkPoints";
+const ::fwCom::Slots::SlotKeyType SChessBoardDetector::s_DETECT_POINTS_SLOT          = "detectPoints";
+const ::fwCom::Slots::SlotKeyType SChessBoardDetector::s_UPDATE_CHESSBOARD_SIZE_SLOT = "updateChessboardSize";
+
+const ::fwCom::Signals::SignalKeyType SChessBoardDetector::s_CHESSBOARD_DETECTED_SIG     = "chessboardDetected";
+const ::fwCom::Signals::SignalKeyType SChessBoardDetector::s_CHESSBOARD_NOT_DETECTED_SIG = "chessboardNotDetected";
 
 // ----------------------------------------------------------------------------
 
-SChessBoardDetector::SChessBoardDetector() throw () : m_width(0),
-                                                      m_height(0)
+SChessBoardDetector::SChessBoardDetector() throw () :
+    m_width(0),
+    m_height(0),
+    m_isDetected(false),
+    m_lastTimestamp(0)
 {
-    m_slotDetectPts = ::fwCom::newSlot(&SChessBoardDetector::detectPoints, this);
-    ::fwCom::HasSlots::m_slots(s_DETECTPTS_SLOT, m_slotDetectPts);
+    m_sigChessboardDetected    = newSignal< ChessboardDetectedSignalType >( s_CHESSBOARD_DETECTED_SIG );
+    m_sigChessboardNotDetected = newSignal< ChessboardNotDetectedSignalType >( s_CHESSBOARD_NOT_DETECTED_SIG );
 
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
-    m_slotUpdateChessboardSize =
-        newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SChessBoardDetector::updateChessboardSize, this);
-
+    newSlot( s_CHECK_POINTS_SLOT, &SChessBoardDetector::checkPoints, this );
+    newSlot( s_DETECT_POINTS_SLOT, &SChessBoardDetector::detectPoints, this );
+    newSlot( s_UPDATE_CHESSBOARD_SIZE_SLOT, &SChessBoardDetector::updateChessboardSize, this );
 }
 
 // ----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ void SChessBoardDetector::configuring() throw (fwTools::Failed)
         SLM_ASSERT("Attribute 'calInfo' is empty", !calInfo.empty());
 
         m_calInfoKeys.push_back(calInfo);
-
+        m_pointsLists.push_back(nullptr);
     }
 
     ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
@@ -98,6 +98,18 @@ void SChessBoardDetector::configuring() throw (fwTools::Failed)
 
 void SChessBoardDetector::starting() throw (fwTools::Failed)
 {
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+
+    // Grab timeline objects
+    for(const std::string &tlKey : m_timeLineKeys)
+    {
+        ::fwData::Composite::IteratorType it = composite->find(tlKey);
+        SLM_ASSERT("Missing '" + tlKey + "' key in the composite", it !=  composite->end());
+        ::extData::FrameTL::sptr frameTL = ::extData::FrameTL::dynamicCast(it->second);
+        SLM_ASSERT("'" + tlKey + "' key is not a ::extData::FrameTL", frameTL);
+
+        m_frameTLs.push_back(frameTL);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -120,65 +132,86 @@ void SChessBoardDetector::stopping() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::detectPoints( ::fwCore::HiResClock::HiResClockType timestamp)
+void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType timestamp)
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-
-    std::string tlKey, calInfoKey;
-    std::vector< ::fwData::Image::sptr > images;
-    std::vector< ::fwData::PointList::sptr > pointLists;
-
-    BOOST_FOREACH(::boost::tie(tlKey, calInfoKey), ::boost::combine(m_timeLineKeys, m_calInfoKeys))
+    if (timestamp > m_lastTimestamp)
     {
-        ::fwData::Composite::IteratorType it = composite->find(tlKey);
-        SLM_ASSERT("Missing '" + tlKey + "' key in the composite", it !=  composite->end());
-        ::extData::FrameTL::sptr frameTL = ::extData::FrameTL::dynamicCast(it->second);
+        ::fwCore::HiResClock::HiResClockType lastTimestamp;
+        lastTimestamp = std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
 
-
-        it = composite->find(calInfoKey);
-        SLM_ASSERT("Missing '" + calInfoKey + "' key in the composite", it !=  composite->end());
-        ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::dynamicCast(it->second);
-
-        ::fwData::Image::sptr im = this->createImage(frameTL, timestamp);
-        if(!im)
+        for(const auto& frameTL : m_frameTLs)
         {
-            OSLM_WARN("No frame found in timeline for timestanp '"<<timestamp<<"'.");
-            return;
+            lastTimestamp = std::min(lastTimestamp, frameTL->getNewerTimestamp());
         }
 
-        ::fwData::PointList::sptr chessBoardPoints =
-            ::videoCalibration::helper::ChessboardAnalyzer::detectChessboard(im, m_width, m_height);
+        size_t idx = 0;
+        m_isDetected = true;
 
-        if(chessBoardPoints)
+        for(const auto& tl : m_frameTLs)
         {
-            images.push_back(im);
-            pointLists.push_back(chessBoardPoints);
+            ::fwData::PointList::sptr chessBoardPoints = this->detectChessboard(tl, lastTimestamp, m_width, m_height);
 
+            if(!chessBoardPoints)
+            {
+                m_isDetected = false;
+                break;
+
+            }
+            m_pointsLists[idx] = chessBoardPoints;
+
+            ++idx;
+        }
+
+        if(m_isDetected)
+        {
+            m_sigChessboardDetected->asyncEmit();
         }
         else
         {
-            SLM_WARN("Something went wrong in the detection of chessboard ! ");
-            return;
+            m_sigChessboardNotDetected->asyncEmit();
+        }
+
+        m_lastTimestamp = lastTimestamp;
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+void SChessBoardDetector::detectPoints()
+{
+    if(m_isDetected)
+    {
+        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+
+        size_t idx = 0;
+        for(const auto& key : m_calInfoKeys)
+        {
+            ::fwData::Composite::IteratorType it = composite->find(key);
+            SLM_ASSERT("Missing '" + key + "' key in the composite", it !=  composite->end());
+            ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::dynamicCast(it->second);
+
+            ::fwData::Image::sptr image = this->createImage( m_frameTLs[idx], m_lastTimestamp);
+
+            calInfo->addRecord(image, m_pointsLists[idx]);
+
+            // Notify
+            ::arData::CalibrationInfo::AddedRecordSignalType::sptr sig;
+            sig = calInfo->signal< ::arData::CalibrationInfo::AddedRecordSignalType >
+                      (::arData::CalibrationInfo::s_ADDED_RECORD_SIG);
+
+            sig->asyncEmit();
+
+            ++idx;
         }
     }
+}
 
-    size_t idx = 0;
-    for(const auto& key : m_calInfoKeys)
-    {
-        ::fwData::Composite::IteratorType it = composite->find(key);
-        SLM_ASSERT("Missing '" + calInfoKey + "' key in the composite", it !=  composite->end());
-        ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::dynamicCast(it->second);
+// ----------------------------------------------------------------------------
 
-        calInfo->addRecord(images[idx], pointLists[idx]);
-        // Notify
-        ::arData::CalibrationInfo::AddedRecordSignalType::sptr sig;
-        sig = calInfo->signal< ::arData::CalibrationInfo::AddedRecordSignalType >
-                  (::arData::CalibrationInfo::s_ADDED_RECORD_SIG);
-
-        sig->asyncEmit();
-
-        ++idx;
-    }
+void SChessBoardDetector::updateChessboardSize(const int width, const int height)
+{
+    m_width  = static_cast<size_t>(width);
+    m_height = static_cast<size_t>(height);
 }
 
 // ----------------------------------------------------------------------------
@@ -186,47 +219,87 @@ void SChessBoardDetector::detectPoints( ::fwCore::HiResClock::HiResClockType tim
 ::fwData::Image::sptr SChessBoardDetector::createImage( ::extData::FrameTL::sptr tl,
                                                         ::fwCore::HiResClock::HiResClockType timestamp)
 {
+    ::fwData::Image::sptr image;
+
     const CSPTR(::extData::FrameTL::BufferType) buffer = tl->getClosestBuffer(timestamp);
-    if(!buffer)
+    if (buffer)
     {
-        return ::fwData::Image::sptr();
+        image = ::fwData::Image::New();
+
+        ::fwData::Image::SizeType size(3);
+        size[0] = tl->getWidth();
+        size[1] = tl->getHeight();
+        size[2] = 1;
+        const ::fwData::Image::SpacingType::value_type voxelSize = 1;
+        image->allocate(size, tl->getType(), tl->getNumberOfComponents());
+        ::fwData::Image::OriginType origin(3,0);
+
+        image->setOrigin(origin);
+        ::fwData::Image::SpacingType spacing(3,voxelSize);
+        image->setSpacing(spacing);
+        image->setWindowWidth(1);
+        image->setWindowCenter(0);
+
+        ::fwData::Array::sptr array = image->getDataArray();
+
+        ::fwComEd::helper::Array arrayHelper(array);
+
+        const ::boost::uint8_t*  frameBuff = &buffer->getElement(0);
+        ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
+
+        std::copy( frameBuff, frameBuff+buffer->getSize(), index);
     }
-
-    ::fwData::Image::sptr image = ::fwData::Image::New();
-
-    ::fwData::Image::SizeType size(3);
-    size[0] = tl->getWidth();
-    size[1] = tl->getHeight();
-    size[2] = 1;
-    const ::fwData::Image::SpacingType::value_type voxelSize = 1;
-    image->allocate(size, tl->getType(), tl->getNumberOfComponents());
-    ::fwData::Image::OriginType origin(3,0);
-
-    image->setOrigin(origin);
-    ::fwData::Image::SpacingType spacing(3,voxelSize);
-    image->setSpacing(spacing);
-    image->setWindowWidth(1);
-    image->setWindowCenter(0);
-
-    ::fwData::Array::sptr array = image->getDataArray();
-
-    ::fwComEd::helper::Array arrayHelper(array);
-
-    const ::boost::uint8_t*  frameBuff = &buffer->getElement(0);
-    ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
-
-    std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
     return image;
 }
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::updateChessboardSize(const int width, const int height, const float squareSize)
+SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::extData::FrameTL::sptr tl,
+                                                                ::fwCore::HiResClock::HiResClockType timestamp,
+                                                                size_t xDim, size_t yDim)
 {
-    m_width  = width;
-    m_height = height;
+    ::fwData::PointList::sptr pointlist;
+
+    const CSPTR(::extData::FrameTL::BufferType) buffer = tl->getClosestBuffer(timestamp);
+
+    if(buffer)
+    {
+        int height = static_cast<int>(tl->getWidth());
+        int width  = static_cast<int>(tl->getHeight());
+
+        ::boost::uint8_t* frameBuff = const_cast< ::boost::uint8_t*>( &buffer->getElement(0) );
+
+        cv::Mat img(width, height, CV_8UC4, frameBuff);
+        cv::Mat grayImg;
+        cv::cvtColor(img, grayImg, CV_RGBA2GRAY);
+        cv::Size boardSize(static_cast<int>(xDim) - 1, static_cast<int>(yDim) - 1);
+        std::vector< cv::Point2f > corners;
+
+        int flags = CV_CALIB_CB_ADAPTIVE_THRESH | CV_CALIB_CB_NORMALIZE_IMAGE | CV_CALIB_CB_FILTER_QUADS
+                    | CV_CALIB_CB_FAST_CHECK;
+
+        if (cv::findChessboardCorners(grayImg, boardSize, corners, flags))
+        {
+            cv::TermCriteria term(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 30, 0.1);
+            cv::cornerSubPix(grayImg, corners, cv::Size(5, 5), cv::Size(-1, -1), term);
+
+            pointlist                                       = ::fwData::PointList::New();
+            ::fwData::PointList::PointListContainer &points = pointlist->getRefPoints();
+            points.reserve(corners.size());
+
+            for(cv::Point2f& p : corners)
+            {
+                ::fwData::Point::sptr point = ::fwData::Point::New(p.x, p.y);
+                points.push_back(point);
+            }
+        }
+    }
+
+    return pointlist;
 }
+
+// ----------------------------------------------------------------------------
 
 } //namespace videoCalibration
 

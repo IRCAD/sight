@@ -12,9 +12,10 @@
         <object type="::fwData::Composite">
             <service uid="${GENERIC_UID}_cameraView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
-                    <layout type="::fwGui::CardinalLayoutManager">
-                        <view align="center" />
-                        <view align="bottom" />
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" />
                     </layout>
                     <toolBar />
                 </gui>
