@@ -157,7 +157,10 @@ void SHomography::stopping() throw (::fwTools::Failed)
     }
     delete m_planeSystem;
     m_arlCameras.clear();
+    m_3dModel.clear();
     m_connections->disconnect();
+    m_lastTimestamp    = 0;
+    m_isCamInitialized = false;
 }
 
 //-----------------------------------------------------------------------------
