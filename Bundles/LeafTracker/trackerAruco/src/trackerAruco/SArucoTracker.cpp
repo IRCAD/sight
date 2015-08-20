@@ -62,7 +62,7 @@ SArucoTracker::SArucoTracker() throw () :
     m_debugMarkers(false),
     m_speed(3),
     m_thresholdMethod(::aruco::MarkerDetector::ADPT_THRES),
-    m_cornerRefinement(::aruco::MarkerDetector::NONE)
+    m_cornerRefinement(::aruco::MarkerDetector::SUBPIX)
 {
     m_sigDetectionDone = DetectionDoneSignalType::New();
     m_signals( s_DETECTION_DONE_SIG,  m_sigDetectionDone);
