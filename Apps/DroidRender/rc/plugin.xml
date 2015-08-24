@@ -1,0 +1,100 @@
+
+<plugin id="DroidRender" version="0.1" >
+    
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>DroidRenderConfig</id>
+        <type>parameters</type>
+        <config>
+
+            <object type="::fwData::Composite">
+               <service uid="guiManagerUID" impl="::guiDroid::SManager" type="::fwServices::IService" autoConnect="no">
+                    <gui>
+                        <widget type="button" label="Load" align="top|left" >
+                            <width>200</width>
+                            <height>150</height>
+                            <margins>40,40,40,40</margins>
+                            <textSize>10</textSize>
+                            <slot>loaderUid/update</slot>
+                        </widget>
+                        <widget type="button" label="Axial" align="top|left" >
+                            <width>200</width>
+                            <height>150</height>
+                            <margins>40,240,40,40</margins>
+                            <textSize>10</textSize>
+                            <slot>medicalCamAdaptorUID/setAxial</slot>
+                        </widget>
+                        <widget type="button" label="Sagittal" align="top|left" >
+                            <width>200</width>
+                            <height>150</height>
+                            <margins>40,395,40,40</margins>
+                            <textSize>10</textSize>
+                            <slot>medicalCamAdaptorUID/setSagittal</slot>
+                        </widget>
+                        <widget type="button" label="Frontal" align="top|left" >
+                            <width>200</width>
+                            <height>150</height>
+                            <margins>40,550,40,40</margins>
+                            <textSize>10</textSize>
+                            <slot>medicalCamAdaptorUID/setFrontal</slot>
+                        </widget>
+                        <widget type="textview" label="GUI test" align="top|center">
+                            <margins>40,40,40,40</margins>
+                            <textSize>50</textSize>
+                        </widget>
+                    </gui>
+                </service>
+
+                <service uid="scene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <scene autoRender="true">
+                        <renderer id="default" layer="0" background="#000000" />
+
+                        <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesKey">
+                            <config renderer="default" picker="" autoresetcamera="yes"/>
+                        </adaptor>
+                        
+                        <adaptor id="medicalCamAdaptor" uid="medicalCamAdaptorUID" class="::visuVTKAdaptor::Medical3DCamera" objectId="self">
+                                <config renderer="default"/>
+                        </adaptor>
+                    </scene>
+                </service>
+                
+                <service uid="extractObject" type="::ctrlCamp::ICamp" impl="::ctrlCamp::SExtractObj" autoConnect="no">
+                    <extract from="@values.seriesDB.values.1" to="modelSeriesKey" /> 
+                </service>
+                
+                <item key="modelSeriesKey">
+                    <object uid="modelSeriesUid" type="::fwMedData::ModelSeries"/>
+                </item>
+
+                <item key="seriesDB" >
+                    <object uid="seriesDB" type="::fwMedData::SeriesDB">
+                        <service uid="loaderUid" type="::io::IReader" impl="::ioAtoms::SReader" autoConnect="no">
+                            <file>/data/data/com.fw4spl.DroidRender/Bundles/DroidRender_0-1/data/Patient.jsonz</file>
+                            <patcher context="MedicalData" version="V07ALA" />
+                            <archive backend="jsonz">
+                                <extension>.jsonz</extension>
+                            </archive>
+
+                            <extensions>
+                                <extension>.jsonz</extension>
+                            </extensions>
+
+                        </service>
+                    </object>
+                </item>
+                
+                <connect>
+                    <signal>seriesDB/modified</signal>
+                    <slot>extractObject/update</slot>
+                </connect>
+                
+
+                <start uid="scene" />
+                <start uid="guiManagerUID" />
+                <start uid="loaderUid" />
+                <start uid="extractObject" />
+
+            </object>
+        </config>
+    </extension> 
+</plugin>
