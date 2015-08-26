@@ -18,6 +18,18 @@
     <config>
 
         <object type="::fwData::Composite">
+            <service uid="${GENERIC_UID}_extrinsicView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                    </layout>
+                </gui>
+                <registry>
+                    <parent wid="${WID_PARENT}" />
+                    <view sid="${GENERIC_UID}_extrinsicCameraView" start="yes" />
+                </registry>
+            </service>            
+            
             <service uid="${GENERIC_UID}_extrinsicCameraView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
@@ -29,7 +41,6 @@
                 </gui>
                 <registry>
                     <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
-                    <parent wid="${WID_PARENT}" />
                     <view sid="${GENERIC_UID}_videoView" start="yes" />
                     <view sid="${GENERIC_UID}_calibrationInfoView" start="yes" />
                     <view sid="${GENERIC_UID}_cameraInfoView" start="yes" />
@@ -358,7 +369,7 @@
                  <slot>${GENERIC_UID}_ChessboardDetector/updateChessboardSize</slot>
             </proxy>
 
-            <start uid="${GENERIC_UID}_extrinsicCameraView" />
+            <start uid="${GENERIC_UID}_extrinsicView" />
             <start uid="${GENERIC_UID}_openCVExtrinsicCal" />
             <start uid="${GENERIC_UID}_ChessboardDetector" />
             <start uid="${GENERIC_UID}_DisplayCalibrationInfo" />
