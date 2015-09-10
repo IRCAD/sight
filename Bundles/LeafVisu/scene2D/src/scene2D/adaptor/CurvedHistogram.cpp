@@ -219,15 +219,33 @@ CurvedHistogram::Points CurvedHistogram::getResampledBSplinePoints( Points & _bS
 
 void CurvedHistogram::computePointToPathLengthMapFromBSplinePoints( Points & _bSplinePoints )
 {
-    Point p;
-    Points::iterator it;
+    Points::iterator it = _bSplinePoints.begin();
 
-    for(it = _bSplinePoints.begin(); it != _bSplinePoints.end(); ++it)
+    if( it != _bSplinePoints.end())
     {
-        p = this->mapAdaptorToScene( *it, m_xAxis, m_yAxis );
+        Point p;
 
+        p = this->mapAdaptorToScene( *it, m_xAxis, m_yAxis );
+        QPointF prevPt = QPointF(p.first,  p.second);
         m_painterPath->lineTo( p.first, p.second );
-        m_positionsToPathLength[ (int) p.first ] = m_painterPath->length();
+        qreal len = m_painterPath->length();
+        ++it;
+
+        for(; it != _bSplinePoints.end(); ++it)
+        {
+            p = this->mapAdaptorToScene( *it, m_xAxis, m_yAxis );
+
+            m_painterPath->lineTo( p.first, p.second );
+
+            // This is way too slow as the complexity is O(N.log(N) )
+            //m_positionsToPathLength[ (int) p.first ] = m_painterPath->length();
+
+            QPointF pt(p.first,  p.second);
+            len                                     += QLineF( prevPt, pt ).length();
+            m_positionsToPathLength[ (int) p.first ] = len;
+
+            prevPt = pt;
+        }
     }
 }
 
