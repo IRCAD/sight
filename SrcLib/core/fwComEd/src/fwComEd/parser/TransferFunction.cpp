@@ -60,6 +60,8 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
             tf->addTFColor(value,color);
         }
     }
+
+    tf->setWLMinMax(tf->getMinMaxTFValues());
 }
 
 //------------------------------------------------------------------------------
