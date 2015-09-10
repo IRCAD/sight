@@ -204,7 +204,11 @@
                         
                         <item key="modelSeries">
                             <object uid="modelSeriesUID" type="::fwMedData::ModelSeries">
-                                <service uid="listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes" />
+                                <service uid="listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes">
+                                    <columns>
+                                        <organ_name>@organ_name</organ_name>
+                                    </columns>
+                                </service>
                                 <service uid="modelSeriesWriter" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                                     <type mode="writer" />
                                 </service>
