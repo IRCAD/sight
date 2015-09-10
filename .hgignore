@@ -7,3 +7,5 @@ syntax: glob
 *.project
 *.pyc
 *.pyo
+#qt creator
+*.user
