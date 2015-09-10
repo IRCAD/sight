@@ -411,10 +411,10 @@
             <start uid="${GENERIC_UID}_Scene2D_Shutter" />
             <start uid="${GENERIC_UID}_Scene2D" />
             <start uid="${GENERIC_UID}_computeHistogram" />
+            <start uid="${GENERIC_UID}_FieldManager" />
             <start uid="${GENERIC_UID}_MedicalImageSrv" />
             <start uid="${GENERIC_UID}_LightSwapper" />
             <start uid="${GENERIC_UID}_vr" />
-            <start uid="${GENERIC_UID}_FieldManager" />
             <start uid="${GENERIC_UID}_cfgNegato" />
             <start uid="${GENERIC_UID}_managerModelSeries" />
 
