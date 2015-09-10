@@ -102,37 +102,45 @@ void NegatoMPR::doSwap() throw(fwTools::Failed)
 void NegatoMPR::doUpdate() throw(::fwTools::Failed)
 {
     this->doStop();
-    if(!this->getSliceMode() == NO_SLICE)
-    {
-        if(this->getSliceMode() == ONE_SLICE)
-        {
-            this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", m_orientation);
-        }
-        else if(this->getSliceMode() == THREE_SLICES)
-        {
-            this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", X_AXIS);
-            this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", Y_AXIS);
-            this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", Z_AXIS);
-        }
 
-        this->addAdaptor("::visuVTKAdaptor::NegatoWindowingInteractor");
-        this->addAdaptor("::visuVTKAdaptor::NegatoSlicingInteractor", m_orientation);
-        this->addAdaptor("::visuVTKAdaptor::SlicesCursor", m_orientation);
-        this->addAdaptor("::visuVTKAdaptor::ProbeCursor", m_orientation);
-    }
-    if(this->is3dModeEnabled())
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+
+    if ( imageIsValid)
     {
-        this->addAdaptor("::visuVTKAdaptor::Medical3DCamera", m_orientation);
+        if(!this->getSliceMode() == NO_SLICE)
+        {
+            if(this->getSliceMode() == ONE_SLICE)
+            {
+                this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", m_orientation);
+            }
+            else if(this->getSliceMode() == THREE_SLICES)
+            {
+                this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", X_AXIS);
+                this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", Y_AXIS);
+                this->addAdaptor("::visuVTKAdaptor::NegatoOneSlice", Z_AXIS);
+            }
+
+            this->addAdaptor("::visuVTKAdaptor::NegatoWindowingInteractor");
+            this->addAdaptor("::visuVTKAdaptor::NegatoSlicingInteractor", m_orientation);
+            this->addAdaptor("::visuVTKAdaptor::SlicesCursor", m_orientation);
+            this->addAdaptor("::visuVTKAdaptor::ProbeCursor", m_orientation);
+        }
+        if(this->is3dModeEnabled())
+        {
+            this->addAdaptor("::visuVTKAdaptor::Medical3DCamera", m_orientation);
+        }
+        else if(!this->is3dModeEnabled())
+        {
+            this->addAdaptor("::visuVTKAdaptor::SliceFollowerCamera", m_orientation);
+        }
+        else
+        {
+            SLM_TRACE("No 2D/3D mode specified.");
+        }
+        this->setVtkPipelineModified();
     }
-    else if(!this->is3dModeEnabled())
-    {
-        this->addAdaptor("::visuVTKAdaptor::SliceFollowerCamera", m_orientation);
-    }
-    else
-    {
-        SLM_TRACE("No 2D/3D mode specified.");
-    }
-    this->setVtkPipelineModified();
+
 }
 
 //------------------------------------------------------------------------------
@@ -213,6 +221,10 @@ void NegatoMPR::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::F
         {
             setOrientation( static_cast< Orientation >( toSliceType ));
         }
+    }
+    else if(imageMsg && imageMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ))
+    {
+        this->doUpdate();
     }
 }
 
