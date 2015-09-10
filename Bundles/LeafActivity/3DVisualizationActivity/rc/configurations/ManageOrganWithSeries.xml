@@ -28,10 +28,10 @@
 
             <service uid="${GENERIC_UID}_multiViewOrgans" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::fwGui::ToolboxLayoutManager" >
                         <orientation value="vertical" />
-                        <view caption="Organs" />
-                        <view caption="Material" />
+                        <view caption="Organs" expanded="true" />
+                        <view caption="Material" expanded="true" />
                         <view caption="Representation" />
                     </layout>
                 </gui>
