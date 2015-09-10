@@ -6,6 +6,11 @@
 
 #include "visuVTKAdaptor/Mesh.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwCom/Signal.hxx>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
@@ -48,17 +53,23 @@
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mesh, ::fwData::Mesh );
 
+//-----------------------------------------------------------------------------
+
 namespace visuVTKAdaptor
 {
 
+//-----------------------------------------------------------------------------
+
+const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
+const ::fwCom::Signals::SignalKeyType Mesh::s_TEXTURE_APPLIED_SIG = "textureApplied";
+
+//-----------------------------------------------------------------------------
 
 class MeshVtkCommand : public vtkCommand
 {
 public:
     virtual void Stop() = 0;
 };
-
-const ::fwCom::Signals::SignalKeyType Mesh::s_TEXTURE_APPLIED_SIG = "textureApplied";
 
 //------------------------------------------------------------------------------
 
@@ -381,8 +392,14 @@ Mesh::Mesh() throw()
     m_sigTextureApplied = TextureAppliedSignalType::New();
     ::fwCom::HasSignals::m_signals(s_TEXTURE_APPLIED_SIG, m_sigTextureApplied);
 
+    m_slotUpdateVisibility = ::fwCom::newSlot(&Mesh::updateVisibility, this);
+
+    ::fwCom::HasSlots::m_slots(s_UPDATE_VISIBILITY_SLOT, m_slotUpdateVisibility);
+    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+
 #ifdef COM_LOG
     ::fwCom::HasSignals::m_signals.setID();
+    ::fwCom::HasSlots::m_slots.setID();
 #endif
 }
 

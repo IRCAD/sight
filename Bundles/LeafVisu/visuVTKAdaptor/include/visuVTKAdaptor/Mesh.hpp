@@ -10,6 +10,9 @@
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
+
 #include "visuVTKAdaptor/config.hpp"
 
 class vtkCommand;
@@ -46,6 +49,9 @@ class VISUVTKADAPTOR_CLASS_API Mesh : public ::fwRenderVTK::IVtkAdaptorService
 public:
     fwCoreServiceClassDefinitionsMacro ( (Mesh)(::fwRenderVTK::IVtkAdaptorService) );
     /** @} */
+
+    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+    typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
 
     VISUVTKADAPTOR_API Mesh() throw();
     VISUVTKADAPTOR_API virtual ~Mesh() throw();
@@ -150,6 +156,10 @@ protected:
 
     /// Signal to emit when a texture must be applied on a material.
     TextureAppliedSignalType::sptr m_sigTextureApplied;
+
+private:
+
+    UpdateVisibilitySlotType::sptr m_slotUpdateVisibility; ///< slot used to change the mesh visibility
 
 public:
 
