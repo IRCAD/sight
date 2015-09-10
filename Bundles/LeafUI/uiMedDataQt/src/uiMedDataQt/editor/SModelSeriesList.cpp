@@ -308,6 +308,8 @@ void SModelSeriesList::fillTree()
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
     auto& reconstructions = modelSeries->getReconstructionDB();
 
+    m_tree->clear();
+
     // Create items
     BOOST_FOREACH(auto const& reconstruction, reconstructions)
     {
