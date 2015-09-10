@@ -87,7 +87,7 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
                 parameterToReplace.replace(0, 1, "@");
             }
 
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(currentObj, param.by);
+            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(currentObj, parameterToReplace);
             OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
             ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
 
