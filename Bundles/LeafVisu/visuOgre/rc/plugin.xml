@@ -1,0 +1,15 @@
+<plugin id="visuOgre" class="visuOgre::Plugin" >
+
+    <library name="visuOgre" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+    <requirement id="visu" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRender::IRender</type>
+        <service>::fwRenderOgre::SRender</service>
+        <object>::fwData::Composite</object>
+    </extension>
+    
+</plugin>

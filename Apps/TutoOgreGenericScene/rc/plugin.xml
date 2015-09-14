@@ -1,0 +1,235 @@
+<plugin id="TutoOgreGenericScene">
+
+<requirement id="servicesReg" />
+
+<extension implements="::fwServices::registry::AppConfig">
+        <id>TutoOgreGenericScene</id>
+        <type>parameters</type>
+        <config>
+
+            <object type="::fwData::Composite">
+                <service uid="MyIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                    <gui>
+                        <frame>
+                            <name>TutoOgreGenericScene</name>
+                            <icon>Bundles/TutoOgreGenericScene_0-1/tuto.ico</icon>
+                            <minSize width="1024" height="768" />
+                        </frame>
+                        <menuBar />
+                    </gui>
+                    <registry>
+                        <menuBar sid="myMenuBar" start="yes" />
+                        <view sid="mainView" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+                    <gui>
+                        <layout>
+                            <menu name="File" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menu sid="myMenu" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+                    <gui>
+                        <layout>
+                            <menuItem name="Open image" shortcut="Ctrl+I" />
+                            <menuItem name="Open mesh" shortcut="Ctrl+M" />
+                            <menuItem name="Open texture" shortcut="Ctrl+T" />
+                            <separator />
+                            <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menuItem sid="action_openImage" start="yes" />
+                        <menuItem sid="action_openMesh" start="yes" />
+                        <menuItem sid="action_openTexture" start="yes" />
+                        <menuItem sid="action_quit" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="action_openImage" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                    <start uid="imageReader" />
+                </service>
+
+                <service uid="action_openMesh" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no" >
+                    <start uid="meshReader" />
+                </service>
+
+                <service uid="action_openTexture" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                    <start uid="textureReader" />
+                </service>
+
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+
+                <service uid="mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+                    <gui>
+                        <layout type="::fwGui::LineLayoutManager" >
+                            <orientation value="vertical" />
+                            <view proportion="1" />
+                            <view proportion="0" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="genericSceneOgre" start="yes" />
+                        <view sid="multiView_bottom" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="multiView_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::LineLayoutManager" >
+                            <orientation value="vertical" />
+                            <view proportion="1" />
+                            <view proportion="1" />
+                            <view proportion="1" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="sliderIndexEditor" start="no" />
+                        <view sid="windowLevel" start="no" />
+                        <view sid="transparencyEditor" start="no" />
+                    </registry>
+                </service>
+
+                <item key="myCompositeVisu">
+                    <object uid="myCompositeVisu" type="::fwData::Composite">
+                        <service uid="genericSceneOgre" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes">
+                            <scene>
+                                <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+
+                                <renderer id="default" layer="1" />
+
+                                <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
+                                    <config renderer="default" style="Trackball" />
+                                </adaptor>
+
+                                <adaptor id="cameraAdaptor" class="::visuOgreAdaptor::SCamera" objectId="cameraTF">
+                                    <config renderer="default" />
+                                </adaptor>
+
+                                <!-- Mesh adaptor -->
+                                <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
+                                    <config renderer="default" materialAdaptor="materialAdaptorUID" />
+                                </adaptor>
+
+                                <adaptor id="materialAdaptor" uid="materialAdaptorUID" class="::visuOgreAdaptor::SMaterial" objectId="materialKey">
+                                    <config renderer="default" materialTemplate="1 - Default" textureAdaptor="textureAdaptorUID" />
+                                </adaptor>
+
+                                <!-- 3D Negato -->
+                                <adaptor id="Scene_Negato3D" uid="Negato3D" class="::visuOgreAdaptor::SNegato3D" objectId="image">
+                                    <config renderer="default"
+                                            opacity="opacityFloatUID"
+                                            selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                </adaptor>
+
+                                <adaptor id="textureAdaptor" uid="textureAdaptorUID" class="::visuOgreAdaptor::STexture" objectId="textureImage">
+                                    <config renderer="default" textureName="meshTexture" autoRender="true" filtering="linear" wrapping="repeat" />
+                                </adaptor>
+                            </scene>
+                        </service>
+
+                        <!-- *********************************************************************************************************** -->
+                        <!-- Negato manager -->
+                        <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
+                            <mode type="stop" />
+                            <config>
+                                <object id="image" type="::fwData::Image">
+                                    <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes" >
+                                        <sliceIndex>Sagittal</sliceIndex>
+                                    </service>
+
+                                    <service uid="windowLevel" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes">
+                                        <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                                    </service>
+
+                                    <service uid="transparencyEditor" impl="::uiImage::ImageTransparency" type="::gui::editor::IEditor" autoConnect="yes" />
+                                </object>
+                            </config>
+                        </service>
+
+                        <!-- *********************************************************************************************************** -->
+                        <!-- Negato resources -->
+                        <item key="image">
+                            <object uid="imageUID"  type="::fwData::Image">
+                                <service uid="imageReader" impl="::uiIO::editor::IOSelectorService"
+                                            type="::gui::editor::IDialogEditor" autoConnect="no">
+                                    <type mode="reader" />
+                                </service>
+                            </object>
+                        </item>
+
+                        <item key="TFSelectionsKey">
+                            <object uid="TFSelections" type="::fwData::Composite" >
+                            </object>
+                        </item>
+
+                        <!-- *********************************************************************************************************** -->
+                        <!-- Mesh resources -->
+                        <item key="meshKey">
+                            <object uid="meshUID" type="::fwData::Mesh">
+                                <service uid="meshReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                                    <type mode="reader" />
+                                </service>
+                            </object>
+                        </item>
+
+                        <item key="meshTF">
+                            <object uid="meshTF" type="::fwData::TransformationMatrix3D">
+                                <matrix>
+                                <![CDATA[
+                                    1  0  0  0
+                                    0  1  0  0
+                                    0  0  1  0
+                                    0  0  0  1
+                                ]]>
+                                </matrix>
+                            </object>
+                        </item>
+
+                        <!-- *********************************************************************************************************** -->
+                        <!-- Material -->
+                        <item key="materialKey">
+                            <object uid="materialUID" type="::fwData::Material" />
+                        </item>
+
+                        <!-- *********************************************************************************************************** -->
+                        <!-- Texture -->
+                        <item key="textureImage">
+                            <object uid="textureUID" type="::fwData::Image">
+                                <service uid="textureReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                                    <type mode="reader" />
+                                </service>
+                            </object>
+                        </item>
+
+                        <item key="cameraTF">
+                            <object uid="cameraTF" type="::fwData::TransformationMatrix3D" >
+                                <matrix>
+                                    <![CDATA[
+                                        1 0 0 0
+                                        0 1 0 0
+                                        0 0 1 0
+                                        0 0 0 1
+                                    ]]>
+                                </matrix>
+                            </object>
+                        </item>
+
+                    </object>
+                </item>
+
+                <start uid="MyIHM" />
+                <start uid="imageReader" />
+                <start uid="manager" />
+            </object>
+
+        </config>
+    </extension>
+
+</plugin>

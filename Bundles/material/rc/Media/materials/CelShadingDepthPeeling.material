@@ -1,0 +1,279 @@
+/// Cel shading depth peeling material's programs
+
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeelingRenderScene_Gouraud_VP_glsl glsl
+{
+    source CelShadingDepthPeelingRenderScene_VP.glsl
+    attach Lighting_VP
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeelingRenderScene_PixelLighting_VP_glsl glsl
+{
+    source CelShadingDepthPeelingRenderScene_VP.glsl
+    preprocessor_defines PIXEL_LIGHTING=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeelingRenderScene_Flat_VP_glsl glsl
+{
+    source CelShadingDepthPeelingRenderScene_VP.glsl
+    preprocessor_defines FLAT=1
+    attach Lighting_VP
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_Gouraud_FP_glsl glsl
+{
+    source CelShadingDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach Texture_FP
+    default_params
+    {
+        param_named u_bufferDepth int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named u_defaultTex int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_PixelLighting_FP_glsl glsl
+{
+    source CelShadingDepthPeelingPeel_FP.glsl
+    preprocessor_defines PIXEL_LIGHTING=1
+    attach Lighting_FP
+    attach DepthPeelingCommon_FP
+    attach Texture_FP
+    default_params
+    {
+        param_named u_bufferDepth int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_defaultTex int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_Flat_FP_glsl glsl
+{
+    source CelShadingDepthPeelingPeel_FP.glsl
+    preprocessor_defines FLAT=1
+    attach DepthPeelingCommon_FP
+    attach Texture_FP
+    default_params
+    {
+        param_named u_bufferDepth int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named u_defaultTex int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_Edge_FP_glsl glsl
+{
+    source CelShadingDepthPeelingPeel_FP.glsl
+    preprocessor_defines EDGE=1
+    attach DepthPeelingCommon_FP
+    default_params
+    {
+        param_named u_bufferDepth int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuseColor surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_depth_map_FP glsl
+{
+        source CelShadingDepthPeelingDepthMap_FP.glsl
+        default_params
+        {
+            param_named_auto u_diffuseColor surface_diffuse_colour
+        }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_init_FP glsl
+{
+        source CelShadingDepthPeelingInit_FP.glsl
+        attach DepthPeelingCommon_FP
+        default_params
+        {
+            param_named_auto u_diffuseColor surface_diffuse_colour
+        }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_FP glsl
+{
+        source CelShadingDepthPeelingPeel_FP.glsl
+        attach DepthPeelingCommon_FP
+        default_params
+        {
+                param_named u_bufferDepth int 0
+                param_named_auto u_vpWidth viewport_width
+                param_named_auto u_vpHeight viewport_height
+                param_named_auto u_diffuseColor surface_diffuse_colour
+        }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_blend_FP glsl
+{
+        source CelShadingDepthPeelingBlend_FP.glsl
+        attach DepthPeelingCommon_FP
+        default_params
+        {
+                param_named u_bufferColor int 0
+                param_named u_bufferDepth int 1
+                param_named u_bufferAlpha int 2
+                param_named u_bufferNormal int 3
+                param_named_auto u_invTexSize inverse_texture_size 0
+                param_named_auto u_near near_clip_distance
+                param_named_auto u_far far_clip_distance
+        }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_final_FP glsl
+{
+        source CelShadingDepthPeelingFinal_FP.glsl
+        default_params
+        {
+                param_named u_fragData0 int 0
+                param_named u_fragData1 int 1
+        }
+}
+
+//---------------------------------------------------------------------------
+
+material CelShadingDepthPeeling_Final
+{
+    technique
+    {
+        pass final
+        {
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref CelShadingDepthPeeling_final_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material CelShadingDepthPeeling_Blend
+{
+    technique
+    {
+        pass blend
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+            // Blend compositor render with previous layer's render
+            scene_blend_op add
+            separate_scene_blend dest_alpha one zero one_minus_src_alpha
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref CelShadingDepthPeeling_blend_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

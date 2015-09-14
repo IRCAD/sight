@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin id="OgreViewer" >
+
+    <xi:include href="configurations/vtkGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/OgreNegato2D.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/ManageOgreOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>MDAtomsConfig</id>
+        <desc>reader/writer config to read/write an atom representing a medical data</desc>
+        <config>
+            <patcher context="MedicalData" version="V08ALA" /> 
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+
+        <id>OgreViewer_Extension</id>
+        <type>parameters</type>
+        <config>
+            <object type="::fwData::Composite">
+
+                <service uid="ihm" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                    <gui>
+                        <frame>
+                            <name>Ogre Viewer</name>
+                            <icon>Bundles/OgreViewer_0-1/ogre_head.svg</icon>
+                            <minSize width="1100" height="700" />
+                        </frame>
+                        <menuBar />
+                    </gui>
+                    <registry>
+                        <menuBar sid="menuBar" start="yes" />
+                        <view sid="multiView_scene1" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+                    <gui>
+                        <layout>
+                            <menu name="File" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menu sid="menu_File" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::CardinalLayoutManager">
+                            <view align="center" />
+                            <view align="right" minWidth="500" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="tab_view" start="yes" />
+                        <view sid="rightView" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="rightView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::TabLayoutManager">
+                            <view caption="Compositor" />
+                            <view caption="OrganManager" selected="yes" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="CompositorView" start="yes"/>
+                        <view wid="${GENERIC_UID}_organView" start="yes"/>
+                    </registry>
+                </service>
+
+                <service uid="tab_view" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::TabLayoutManager">
+                            <view caption="VTK" selected="no" />
+                            <view caption="Ogre" selected="yes" />
+                            <view caption="2D Negato Ogre" selected="no" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view wid="${GENERIC_UID}_VTKSceneView" start="yes" />
+                        <view wid="${GENERIC_UID}_OgreSceneView" start="yes" />
+                        <view wid="${GENERIC_UID}_OgreNegato2DView" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                    <gui>
+                        <layout>
+                            <menuItem name="Open model series..." shortcut="Ctrl+M" />
+                            <menuItem name="Open image..." shortcut="Ctrl+O" />
+                            <menuItem name="Save model series..." shortcut="Ctrl+S" />
+                            <separator />
+                            <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menuItem sid="action_openMesh" start="yes" />
+                        <menuItem sid="action_openNegato" start="yes" />
+                        <menuItem sid="action_saveFile" start="yes" />
+                        <menuItem sid="action_quit" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="action_openMesh" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no">
+                    <start uid="readerPathMeshFile" />
+                </service>
+
+                <service uid="action_openNegato" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no">
+                    <start uid="imageReader" />
+                </service>
+
+                <service uid="action_saveFile" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no">
+                    <start uid="writerPathMeshFile" />
+                </service>
+
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+
+                <item key="modelSeries">
+                    <object uid="modelSeriesUID" type="::fwMedData::ModelSeries">
+
+                        <service uid="readerPathMeshFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                            <type mode="reader" />
+                        </service>
+
+                        <service uid="writerPathMeshFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                            <type mode="writer" />
+                        </service>
+
+                        <service uid="cfgOrganManagerConfig"  impl="::fwServices::SConfigController" autoConnect="yes">
+                            <config>
+                                <appConfig id="OgreOrganManagerWithSeries">
+                                    <parameters>
+                                        <parameter replace="ORGAN_MANAGER_MODELSERIES" by="modelSeriesUID" />
+                                        <parameter replace="RECONSTRUCTION_SELECTED" by="reconstruction" />
+                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_organView" />
+                                        <parameter replace="ICON_PATH" by="Bundles/arMedia_0-1/icons/app.ico" />
+                                    </parameters>
+                                </appConfig>
+                            </config>
+                        </service>
+
+                    </object>
+                </item>
+
+                <!-- Negato image -->
+                <item key="image">
+                    <object uid="imageUID" type="::fwData::Image">
+                        <service uid="imageReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                            <type mode="reader" />
+                        </service>
+                    </object>
+                </item>
+
+                <item key="TFSelectionsKey">
+                    <object uid="TFSelections" type="::fwData::Composite" />
+                </item>
+
+                <item key="cameraTF">
+                    <object uid="cameraTF_UID" type="::fwData::TransformationMatrix3D" />
+                </item>
+
+                <!-- CompositeVisu description -->
+                <item key="compositeVisu">
+                    <object uid="compositeVisu" type="::fwData::Composite">
+
+                        <service uid="CompositorView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                            <gui>
+                                <layout type="::fwGui::LineLayoutManager">
+                                    <orientation value="vertical" />
+                                    <view caption="Compositor Selector" />
+                                    <view/>
+                                </layout>
+                            </gui>
+                            <registry>
+                                <view sid="compositorSelector" />
+                                <view sid="propertiesView" start="yes"/>
+                            </registry>
+                        </service>
+
+                        <service uid="propertiesView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                            <gui>
+                                <layout type="::fwGui::LineLayoutManager">
+                                    <orientation value="vertical" />
+                                    <view caption="Default compositor parameters" />
+                                </layout>
+                            </gui>
+                            <registry>
+                                <view sid="defaultCompositorEditor" />
+                            </registry>
+                        </service>
+
+                        <service uid="compositorSelector" impl="::uiVisuOgre::SCompositorSelector" type="::gui::editor::IEditor" autoConnect="no" />
+
+                        <service uid="defaultCompositorEditor" impl="::uiVisuOgre::SDefaultCompositorEditor" type="::gui::editor::IEditor" autoConnect="no" />
+
+                        <service uid="updaterReconstUID" impl="::ctrlSelection::updater::SObjFromSlot" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <compositeKey>reconstruction</compositeKey>
+                        </service>
+
+                        <service uid="cfgVTKGenericScene" impl="::fwServices::SConfigController" autoConnect="no">
+                            <config>
+                                <appConfig id="VTKGenericScene" >
+                                    <parameters>
+                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_VTKSceneView" />
+                                        <parameter replace="modelSeriesUID" by="modelSeriesUID" />
+                                    </parameters>
+                                </appConfig>
+                            </config>
+                        </service>
+                        
+                        <service uid="cfgOgreGenericScene" impl="::fwServices::SConfigController" autoConnect="no">
+                            <config>
+                                <appConfig id="OgreGenericScene">
+                                    <parameters>
+                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreSceneView" />
+                                        <parameter replace="modelSeriesUID" by="modelSeriesUID" />
+                                        <parameter replace="cameraTF" by="cameraTF_UID" />
+                                        <parameter replace="imageUID" by="imageUID" />
+                                        <parameter replace="TFSelections" by="TFSelections" />
+                                    </parameters>
+                                </appConfig>
+                            </config>
+                        </service>
+
+                        <service uid="cfgOgreNegato2D" impl="::fwServices::SConfigController" type="::fwServices::IController" autoConnect="no">
+                            <config>
+                                <appConfig id="OgreNegato2D">
+                                    <parameters>
+                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreNegato2DView" />
+                                        <parameter replace="imageUID" by="imageUID" />
+                                        <parameter replace="TFSelections" by="TFSelections" />
+                                    </parameters>
+                                </appConfig>
+                            </config>
+                        </service>
+                                                
+                    </object>
+                
+                </item>
+                
+                <start uid="ihm" />
+                <start uid="updaterReconstUID" />
+                <start uid="cfgVTKGenericScene" />
+                <start uid="cfgOgreGenericScene" />
+                <start uid="cfgOgreNegato2D" />
+                <start uid="cfgOrganManagerConfig" />
+                <start uid="compositorSelector" />
+                <start uid="defaultCompositorEditor" />
+
+            </object>
+        </config>
+
+    </extension>
+</plugin>

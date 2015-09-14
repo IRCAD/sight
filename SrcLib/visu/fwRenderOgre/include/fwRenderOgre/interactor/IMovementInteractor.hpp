@@ -1,0 +1,127 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWRENDEROGRE_INTERACTOR_IMOVEMENTINTERACTOR_HPP__
+#define __FWRENDEROGRE_INTERACTOR_IMOVEMENTINTERACTOR_HPP__
+
+#include <fwCore/BaseObject.hpp>
+
+#include <fwRenderOgre/config.hpp>
+#include <fwRenderOgre/factory/new.hpp>
+#include <fwRenderOgre/interactor/IInteractor.hpp>
+#include <fwRenderOgre/registry/detail.hpp>
+
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreVector3.h>
+
+namespace fwRenderOgre
+{
+
+namespace interactor
+{
+
+/**
+ * @class IMovementInteractor
+ * @brief Interface implementation for all movement interaction with the mouse
+ */
+class FWRENDEROGRE_CLASS_API IMovementInteractor : public ::fwRenderOgre::interactor::IInteractor
+{
+
+public:
+
+    /**
+     * @name Signals API
+     * @{
+     */
+    typedef ::fwCom::Signal< void () > ResetCameraSignalType;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RESET_CAMERA_SIG;
+    /** @} */
+
+    /**
+     * @brief Class used to register a class factory in factory registry.
+     * This class defines also the object factory ( 'create' )
+     *
+     * @tparam T Factory product type
+     */
+    template <typename T>
+    class Registrar
+    {
+    public:
+        Registrar(std::string functorKey)
+        {
+            ::fwRenderOgre::registry::getInteractorRegistry()->addFactory(functorKey,
+                                                                          &::fwRenderOgre::interactorFactory::New<T>);
+        }
+    };
+
+    fwCoreNonInstanciableClassDefinitionsMacro( (IMovementInteractor)(::fwCore::BaseObject) )
+
+    /// Constructor.
+    /// Retrieves the Ogre root and the <sceneID> scene manager
+    FWRENDEROGRE_API IMovementInteractor();
+    /// Destructor
+    FWRENDEROGRE_API virtual ~IMovementInteractor();
+
+    /**
+     * @brief Behaviour on a MouseMoveEvent
+     * @param x The mouse X screen displacement
+     * @param y The mouse Y screen displacement
+     */
+    FWRENDEROGRE_API virtual void mouseMoveEvent(int dx, int dy) = 0;
+
+    /**
+     * @brief Behaviour on a WheelEvent
+     * @param delta The mouse's wheel displacement
+     * @param mouseX The mouse X screen coordinate
+     * @param mouseY The mouse Y screen coordinate
+     */
+    FWRENDEROGRE_API virtual void wheelEvent(int delta, int x, int y) = 0;
+
+    /**
+     * @brief Behaviour on a HorizontalMoveEvent
+     * @param x The mouse X screen position before movement
+     * @param move The mouse X screen displacement
+     */
+    FWRENDEROGRE_API virtual void horizontalMoveEvent(int x, int move) = 0;
+
+    /**
+     * @brief Behaviour on a VerticalMoveEvent
+     * @param y The mouse Y screen position before movement
+     * @param move The mouse Y screen displacement
+     */
+    FWRENDEROGRE_API virtual void verticalMoveEvent(int y, int move) = 0;
+
+    /**
+     * @brief Called when the window is resized
+     * @param x The width of the window
+     * @param y The height of the window
+     * */
+    FWRENDEROGRE_API virtual void resizeEvent(int x, int y) = 0;
+
+    /**
+     * @brief Called when a key is pressed
+     * @param key key pressed on the keyboard
+     * */
+    FWRENDEROGRE_API virtual void keyPressEvent(int key) = 0;
+
+    /// Update camera's move scale
+    FWRENDEROGRE_API virtual void setMouseScale(float mouseScale);
+
+protected:
+
+    /// Camera's current point of interest
+    float m_lookAtZ;
+
+    /// Camera's move scale
+    float m_mouseScale;
+
+    /// Default mouse scale coefficient (to move the scene)
+    const int MOUSE_SCALE_COEFFICIENT = 200;
+};
+
+}
+}
+#endif // __FWRENDEROGRE_INTERACTOR_IMOVEMENTINTERACTOR_HPP__

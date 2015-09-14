@@ -1,0 +1,8 @@
+<plugin id="material" class="::material::Plugin" >
+    
+    <library name="material" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+
+</plugin>

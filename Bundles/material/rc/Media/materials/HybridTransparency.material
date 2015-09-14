@@ -1,0 +1,423 @@
+/// Hybrid transparency material shaders
+
+//---------------------------------------------------------------------------
+
+/// Depth Peeling
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_back_depth_FP glsl
+{
+        source HybridTransparency_Back_Depth_FP.glsl
+        default_params
+        {
+            param_named_auto u_diffuseColor surface_diffuse_colour
+        }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_peel_Gouraud_FP_glsl glsl
+{
+    source HybridTransparency_Peel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach Texture_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named u_fragData1 int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named u_defaultTex int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_peel_PixelLighting_FP_glsl glsl
+{
+    source HybridTransparency_Peel_FP.glsl
+    preprocessor_defines PIXEL_LIGHTING=1
+    attach Lighting_FP
+    attach DepthPeelingCommon_FP
+    attach Texture_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named u_fragData1 int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_defaultTex int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_peel_Flat_FP_glsl glsl
+{
+    source HybridTransparency_Peel_FP.glsl
+    preprocessor_defines FLAT=1
+    attach DepthPeelingCommon_FP
+    attach Texture_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named u_fragData1 int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named u_defaultTex int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_peel_Edge_FP_glsl glsl
+{
+    source HybridTransparency_Peel_FP.glsl
+    preprocessor_defines EDGE=1
+    attach DepthPeelingCommon_FP
+    attach Texture_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named u_fragData1 int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named u_defaultTex int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_blend_FP glsl
+{
+        source DepthPeelingBlend_FP.glsl
+        attach DepthPeelingCommon_FP
+        default_params
+        {
+                param_named u_fragData0 int 0
+                param_named u_fragData1 int 1
+        }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_blend_final_FP glsl
+{
+        source HybridTransparency_Blend_Final_FP.glsl
+        default_params
+        {
+                param_named u_fragData0 int 0
+        }
+}
+
+//---------------------------------------------------------------------------
+
+material HybridTransparency_Blend
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+            scene_blend_op add
+            separate_scene_blend dest_alpha one zero one_minus_src_alpha
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref HybridTransparency_blend_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material HybridTransparency_Blend_Final
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+            //scene_blend dest_alpha one
+            scene_blend_op add
+            separate_scene_blend dest_alpha one zero one_minus_src_alpha
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref HybridTransparency_blend_final_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+/// WBOIT
+
+fragment_program HybridTransparency_occlusion_map_FP glsl
+{
+        source HybridTransparency_Occlusion_Map_FP.glsl
+        default_params
+        {
+            param_named_auto u_diffuseColor surface_diffuse_colour
+        }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_Gouraud_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    preprocessor_defines HYBRID=1
+    attach Texture_FP
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named u_defaultTex int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_PixelLighting_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    preprocessor_defines PIXEL_LIGHTING=1,HYBRID=1
+    attach Lighting_FP
+    attach Texture_FP
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_defaultTex int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_Flat_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    preprocessor_defines FLAT=1,HYBRID=1
+    attach Texture_FP
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named u_defaultTex int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_Edge_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    preprocessor_defines EDGE=1,HYBRID=1
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_transmittance_blend_Edge_FP glsl
+{
+    source WeightedBlended_Transmittance_Blend_FP.glsl
+    preprocessor_defines HYBRID=1,EDGE=1
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuseColor surface_diffuse_colour
+    }
+}
+
+//------------------------------------------------------------------
+
+fragment_program HybridTransparency_transmittance_blend_FP glsl
+{
+        source WeightedBlended_Transmittance_Blend_FP.glsl
+        preprocessor_defines HYBRID=1
+        default_params
+        {
+            param_named u_frontDepthBuffer int 0
+            param_named u_occlusionDepthBuffer int 1
+            param_named_auto u_vpWidth viewport_width
+            param_named_auto u_vpHeight viewport_height
+            param_named_auto u_diffuseColor surface_diffuse_colour
+        }
+}
+
+//------------------------------------------------------------------
+
+/// WBOIT blended render
+
+fragment_program HybridTransparency_WBOIT_Blend_FP glsl
+{
+        source HybridTransparency_WBOIT_Blend_FP.glsl
+        default_params
+        {
+            param_named u_fragData0 int 0
+            param_named u_fragData1 int 1
+            param_named_auto u_diffuseColor surface_diffuse_colour
+        }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program HybridTransparency_WBOIT_Blend_vs unified
+{
+        delegate HybridTransparency_WBOIT_Blend_vs_glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_WBOIT_Blend_FP unified
+{
+        delegate HybridTransparency_WBOIT_Blend_FP
+}
+
+//---------------------------------------------------------------------------
+
+material HybridTransparency_WBOIT_Blend
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref HybridTransparency_WBOIT_Blend_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+/// HybridTransparency quad final render
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_final_FP glsl
+{
+        source HybridTransparency_Final_FP.glsl
+        default_params
+        {
+                param_named u_fragData0 int 0
+                param_named u_fragData1 int 1
+        }
+}
+
+//---------------------------------------------------------------------------
+
+material HybridTransparency_Final
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref HybridTransparency_final_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

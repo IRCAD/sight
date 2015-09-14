@@ -1,0 +1,129 @@
+vertex_program Lighting_VP glsl
+{
+    source Lighting.glsl
+    preprocessor_defines NUM_LIGHTS=2
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program Lighting_FP glsl
+{
+    source Lighting.glsl
+    preprocessor_defines NUM_LIGHTS=2
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program Texture_FP glsl
+{
+    source Texture.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeelingCommon_FP glsl
+{
+    source DepthPeelingCommon_FP.glsl
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program Render_VP glsl
+{
+    source Render_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program RenderScene_VP glsl
+{
+    source RenderScene_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program RenderQuad_VP glsl
+{
+    source RenderQuad_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program RenderQuad_FP glsl
+{
+    source RenderQuad_FP.glsl
+    default_params
+    {
+        param_named u_fragData int 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program RenderScene_Flat_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    preprocessor_defines FLAT=1
+    attach Lighting_VP
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program RenderScene_Gouraud_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program RenderScene_PixelLighting_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    preprocessor_defines PIXEL_LIGHTING=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+
+//---------------------------------------------------------------------------

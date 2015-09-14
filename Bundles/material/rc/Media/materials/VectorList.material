@@ -1,0 +1,13 @@
+// Default material of Ogre Generic Scene
+material VectorList
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            ambient vertexcolour
+            diffuse vertexcolour
+        }
+    }
+}

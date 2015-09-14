@@ -1,0 +1,72 @@
+vertex_program Negato2D_VP glsl
+{
+    source Negato2D_VP.glsl
+
+    default_params
+    {
+        param_named orientation int 2
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+vertex_program Negato3D_VP glsl
+{
+    source Negato3D_VP.glsl
+    default_params
+    {
+        param_named orientation int 2
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+fragment_program Negato_FP glsl
+{
+    source Negato_FP.glsl
+
+    default_params
+    {
+        param_named minValue float 0.0
+        param_named maxValue float 1.0
+        param_named slice float 0
+        param_named orientation int 2
+    }
+}
+
+
+// Default Negato2D material
+material Negato2D
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            vertex_program_ref Negato2D_VP
+            {
+            }
+
+            fragment_program_ref Negato_FP
+            {
+            }
+        }
+    }
+}
+
+// Default Negato3D material
+material Negato3D
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            vertex_program_ref Negato3D_VP
+            {
+            }
+
+            fragment_program_ref Negato_FP
+            {
+            }
+        }
+    }
+}

@@ -1,0 +1,159 @@
+/// WBOIT material
+
+//------------------------------------------------------------------
+
+fragment_program WeightedBlended_occlusion_map_FP glsl
+{
+        source WeightedBlended_Occlusion_Map_FP.glsl
+        default_params
+        {
+            param_named_auto u_diffuseColor surface_diffuse_colour
+        }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_PixelLighting_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    preprocessor_defines PIXEL_LIGHTING=1
+    attach Lighting_FP
+    attach Texture_FP
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_defaultTex int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_Gouraud_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach Texture_FP
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named u_defaultTex int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_Flat_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    preprocessor_defines FLAT=1
+    attach Texture_FP
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named u_defaultTex int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_Edge_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    preprocessor_defines EDGE=1
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_transmittance_blend_Edge_FP glsl
+{
+    source WeightedBlended_Transmittance_Blend_FP.glsl
+    preprocessor_defines EDGE=1
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuseColor surface_diffuse_colour
+    }
+}
+
+//------------------------------------------------------------------
+
+fragment_program WeightedBlended_transmittance_blend_FP glsl
+{
+        source WeightedBlended_Transmittance_Blend_FP.glsl
+        default_params
+        {
+            param_named u_occlusionDepthBuffer int 0
+            param_named_auto u_vpWidth viewport_width
+            param_named_auto u_vpHeight viewport_height
+            param_named_auto u_diffuseColor surface_diffuse_colour
+        }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_blend_FP glsl
+{
+        source WeightedBlended_Blend_FP.glsl
+        default_params
+        {
+            param_named u_sumColorBuffer int 0
+            param_named u_transmittanceBuffer int 1
+        }
+}
+
+//---------------------------------------------------------------------------
+
+material WeightedBlended_blend
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref WeightedBlended_blend_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
