@@ -2,9 +2,17 @@
 uniform sampler2D u_fragData0;
 uniform float u_vpWidth;
 uniform float u_vpHeight;
-uniform vec4 u_diffuseColor;
 
 #ifndef EDGE
+
+#ifdef NEGATO
+
+vec4 u_diffuseColor = vec4(0,0,0,1);
+vec4 negato();
+
+#else
+
+uniform vec4 u_diffuseColor;
 
 #ifdef PIXEL_LIGHTING
 in vec3 oPosition_WS;
@@ -22,10 +30,14 @@ in vec4 oColor;
 
 #endif // PIXEL_LIGHTING
 
+
 vec4 fetch_texture();
+
+#endif // NEGATO
 
 #else
 
+uniform vec4 u_diffuseColor;
 vec4 oColor = vec4(0,0,0,u_diffuseColor.a);
 
 #endif // EDGE
@@ -68,6 +80,10 @@ void main()
             discard;
         }
 
+#ifdef NEGATO
+        vec4 colorOut = negato();
+#else
+
 #ifdef PIXEL_LIGHTING
         vec4 colorOut = lighting(normalize(oNormal_WS), oPosition_WS);
 #else
@@ -76,6 +92,8 @@ void main()
 #ifndef EDGE
         colorOut *= fetch_texture();
 #endif
+
+#endif // NEGATO
 
         // Depth sent to the next peel
         frontDepth.r = currentDepth;

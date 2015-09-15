@@ -59,8 +59,6 @@ public:
     FWRENDEROGRE_API std::vector< ::Ogre::Real > getDepthSpacing();
     FWRENDEROGRE_API void setDepthSpacing(std::vector<double> _spacing);
 
-    FWRENDEROGRE_API ::Ogre::Pass* getFirstPass();
-
     FWRENDEROGRE_API void setEntityOpacity( float _f );
     FWRENDEROGRE_API void setWindowing( float _minVal, float _maxVal );
     FWRENDEROGRE_API void switchThresholding(bool _threshold);
@@ -157,13 +155,6 @@ inline void Plane::setOriginPosition(const ::Ogre::Vector3& _origPos)
 inline std::vector< ::Ogre::Real > Plane::getDepthSpacing()
 {
     return m_spacing;
-}
-
-//------------------------------------------------------------------------------
-
-inline ::Ogre::Pass* Plane::getFirstPass()
-{
-    return m_texMaterial->getTechnique(0)->getPass(0);
 }
 
 //------------------------------------------------------------------------------

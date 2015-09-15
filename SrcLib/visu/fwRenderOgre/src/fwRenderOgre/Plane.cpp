@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwRenderOgre/Plane.hpp"
+
 #include <fwRenderOgre/Utils.hpp>
 
 #include <OGRE/OgreEntity.h>
@@ -13,7 +15,7 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreMovablePlane.h>
 
-#include "fwRenderOgre/Plane.hpp"
+#include <regex>
 
 namespace fwRenderOgre
 {
@@ -82,16 +84,6 @@ void Plane::initializeMaterial()
     m_texMaterial->setCullingMode(::Ogre::CULL_NONE);
     m_texMaterial->setTextureFiltering(::Ogre::TFO_NONE);
 
-    ::Ogre::Pass* pass = this->getFirstPass();
-
-    // Allows us to change the plane opacity
-    pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
-
-    ::Ogre::TextureUnitState* texState = pass->createTextureUnitState("acquisition");
-    texState->setTexture(m_texture);
-    texState->setTextureFiltering(::Ogre::TFO_NONE);
-    texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-
     int orientationIndex;
 
     switch (m_orientation)
@@ -107,19 +99,50 @@ void Plane::initializeMaterial()
             break;
     }
 
-    if(m_is3D)
-    {
-        pass->setVertexProgram("Negato3D_VP");
-    }
-    else
-    {
-        pass->setVertexProgram("Negato2D_VP");
-        pass->getFragmentProgramParameters()->setNamedConstant("opacity", m_entityOpacity);
-    }
-    pass->setFragmentProgram("Negato_FP");
+    const std::regex regexPeel("Depth.*_peel.*");
 
-    pass->getVertexProgramParameters()->setNamedConstant("orientation", orientationIndex);
-    pass->getFragmentProgramParameters()->setNamedConstant("orientation", orientationIndex);
+    // This is necessary to load and compile the material, otherwise the following technique iterator
+    // is null when we call this method on the first time (from doStart() for instance)
+    m_texMaterial->touch();
+
+    ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
+
+    while( tech_iter.hasMoreElements())
+    {
+        ::Ogre::Technique* tech = tech_iter.getNext();
+
+        const bool peelPass = std::regex_match(tech->getName(), regexPeel);
+
+        if(tech->getName() == "" || peelPass)
+        {
+            ::Ogre::Pass* pass = tech->getPass(0);
+
+            ::Ogre::TextureUnitState* texState = pass->createTextureUnitState("acquisition");
+            texState->setTexture(m_texture);
+            texState->setTextureFiltering(::Ogre::TFO_NONE);
+            texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+            if(!peelPass)
+            {
+                // Allows us to change the plane opacity
+                pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
+
+                if(m_is3D)
+                {
+                    pass->setVertexProgram("Negato3D_VP");
+                }
+                else
+                {
+                    pass->setVertexProgram("Negato2D_VP");
+
+                }
+            }
+
+            pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
+            pass->getFragmentProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
+            pass->getFragmentProgramParameters()->setNamedConstant("u_opacity", m_entityOpacity);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -289,24 +312,51 @@ void Plane::setRelativePosition(float _relativePosition)
 
 void Plane::setWindowing(float _minValue, float _maxValue)
 {
-    ::Ogre::Pass* pass = this->getFirstPass();
+    const std::regex regexPeel("Depth.*_peel.*");
 
-    SLM_ASSERT("Can't find Ogre pass", pass);
+    ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
 
-    pass->getFragmentProgramParameters()->setNamedConstant("minValue", _minValue);
-    pass->getFragmentProgramParameters()->setNamedConstant("maxValue", _maxValue);
+    while( tech_iter.hasMoreElements())
+    {
+        ::Ogre::Technique* tech = tech_iter.getNext();
+
+        const bool peelPass = std::regex_match(tech->getName(), regexPeel);
+
+        if(tech->getName() == "" || peelPass)
+        {
+            ::Ogre::Pass* pass = tech->getPass(0);
+            SLM_ASSERT("Can't find Ogre pass", pass);
+
+            pass->getFragmentProgramParameters()->setNamedConstant("u_minValue", _minValue);
+            pass->getFragmentProgramParameters()->setNamedConstant("u_maxValue", _maxValue);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void Plane::switchThresholding(bool _threshold)
 {
-    ::Ogre::Pass* pass = this->getFirstPass();
+    const std::regex regexPeel("Depth.*_peel.*");
 
-    SLM_ASSERT("Can't find Ogre pass", pass);
+    ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
 
-    m_threshold = _threshold;
-    pass->getFragmentProgramParameters()->setNamedConstant("threshold", static_cast<int>(m_threshold));
+    while( tech_iter.hasMoreElements())
+    {
+        ::Ogre::Technique* tech = tech_iter.getNext();
+
+        const bool peelPass = std::regex_match(tech->getName(), regexPeel);
+
+        if(tech->getName() == "" || peelPass)
+        {
+            ::Ogre::Pass* pass = tech->getPass(0);
+
+            SLM_ASSERT("Can't find Ogre pass", pass);
+
+            m_threshold = _threshold;
+            pass->getFragmentProgramParameters()->setNamedConstant("u_threshold", static_cast<int>(m_threshold));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -357,23 +407,54 @@ void Plane::setEntityOpacity(float _f)
 
     m_entityOpacity = _f;
 
-    ::Ogre::Pass* pass = this->getFirstPass();
-    pass->getFragmentProgramParameters()->setNamedConstant("opacity", m_entityOpacity);
+    const std::regex regexPeel("Depth.*_peel.*");
 
-    // We don't want a depth check if we have transparency
-    bool needDepthCheck = (m_entityOpacity == 1.f);
-    pass->setDepthCheckEnabled(needDepthCheck);
+    ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
+
+    while( tech_iter.hasMoreElements())
+    {
+        ::Ogre::Technique* tech = tech_iter.getNext();
+
+        const bool peelPass = std::regex_match(tech->getName(), regexPeel);
+
+        if(tech->getName() == "" || peelPass)
+        {
+            ::Ogre::Pass* pass = tech->getPass(0);
+            pass->getFragmentProgramParameters()->setNamedConstant("u_opacity", m_entityOpacity);
+
+            if(!peelPass)
+            {
+                // We don't want a depth check if we have non-OIT transparency
+                bool needDepthCheck = (m_entityOpacity == 1.f);
+                pass->setDepthCheckEnabled(needDepthCheck);
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void Plane::changeSlice(float sliceIndex)
 {
-    ::Ogre::Pass* pass = this->getFirstPass();
+    const std::regex regexPeel("Depth.*_peel.*");
 
-    SLM_ASSERT("Can't find Ogre pass", pass);
+    ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
 
-    pass->getFragmentProgramParameters()->setNamedConstant("slice", sliceIndex );
+    while( tech_iter.hasMoreElements())
+    {
+        ::Ogre::Technique* tech = tech_iter.getNext();
+
+        const bool peelPass = std::regex_match(tech->getName(), regexPeel);
+
+        if(tech->getName() == "" || peelPass)
+        {
+            ::Ogre::Pass* pass = tech->getPass(0);
+
+            SLM_ASSERT("Can't find Ogre pass", pass);
+
+            pass->getFragmentProgramParameters()->setNamedConstant("u_slice", sliceIndex );
+        }
+    }
 
     if (m_is3D)
     {

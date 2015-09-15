@@ -1,37 +1,74 @@
+
+//---------------------------------------------------------------------------
+
 vertex_program Negato2D_VP glsl
 {
     source Negato2D_VP.glsl
 
     default_params
     {
-        param_named orientation int 2
+        param_named u_orientation int 2
         param_named_auto u_worldViewProj worldviewproj_matrix
     }
 }
+
+//---------------------------------------------------------------------------
 
 vertex_program Negato3D_VP glsl
 {
     source Negato3D_VP.glsl
     default_params
     {
-        param_named orientation int 2
+        param_named u_orientation int 2
         param_named_auto u_worldViewProj worldviewproj_matrix
     }
 }
 
+//---------------------------------------------------------------------------
+
 fragment_program Negato_FP glsl
 {
     source Negato_FP.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program NegatoMain_FP glsl
+{
+    source NegatoMain_FP.glsl
+    attach Negato_FP
 
     default_params
     {
-        param_named minValue float 0.0
-        param_named maxValue float 1.0
-        param_named slice float 0
-        param_named orientation int 2
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
     }
 }
 
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling_Negato_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    preprocessor_defines NEGATO=1
+    attach DepthPeelingCommon_FP
+    attach Negato_FP
+    default_params
+    {
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named u_fragData0 int 0
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        param_named u_image int 1
+    }
+}
+
+//---------------------------------------------------------------------------
 
 // Default Negato2D material
 material Negato2D
@@ -45,12 +82,14 @@ material Negato2D
             {
             }
 
-            fragment_program_ref Negato_FP
+            fragment_program_ref NegatoMain_FP
             {
             }
         }
     }
 }
+
+//---------------------------------------------------------------------------
 
 // Default Negato3D material
 material Negato3D
@@ -64,8 +103,112 @@ material Negato3D
             {
             }
 
-            fragment_program_ref Negato_FP
+            fragment_program_ref NegatoMain_FP
             {
+            }
+        }
+    }
+
+    technique DepthPeeling_depth_map
+    {
+        scheme DepthPeeling_depth_map
+
+        pass DepthPeeling_depth_map
+        {
+            cull_hardware none
+            cull_software none
+
+            // Check previous FBO's buffers and write depth + color in another FBO's buffers
+            fragment_program_ref DepthPeeling_depth_map_FP
+            {
+            }
+
+            vertex_program_ref Render_VP
+            {
+            }
+
+        }
+    }
+
+    technique DepthPeeling_peel_init
+    {
+        scheme DepthPeeling_peel_init
+
+        pass peel_init
+        {
+            cull_hardware none
+            cull_software none
+
+            // Draw render depth + color
+            fragment_program_ref DepthPeeling_Negato_FP_glsl
+            {
+            }
+
+            vertex_program_ref Negato3D_VP
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor DepthPeeling peel_init 0
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+
+    technique DepthPeeling_peel
+    {
+        scheme DepthPeeling_peel_pong
+
+        pass peel_pong
+        {
+            //depth_func less
+            cull_hardware none
+            cull_software none
+
+            // Check previous FBO's buffers and write depth + color in another FBO's buffers
+            fragment_program_ref DepthPeeling_Negato_FP_glsl
+            {
+            }
+
+            vertex_program_ref Negato3D_VP
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor DepthPeeling ping_buffer 1
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+
+    technique DepthPeeling_peel
+    {
+        scheme DepthPeeling_peel_ping
+
+        pass peel_ping
+        {
+            //depth_func less
+            cull_hardware none
+            cull_software none
+
+            // Check previous FBO's buffers and write depth + color in another FBO's buffers
+            fragment_program_ref DepthPeeling_Negato_FP_glsl
+            {
+            }
+
+            vertex_program_ref Negato3D_VP
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor DepthPeeling pong_buffer 1
+                tex_address_mode clamp
+                filtering none
             }
         }
     }

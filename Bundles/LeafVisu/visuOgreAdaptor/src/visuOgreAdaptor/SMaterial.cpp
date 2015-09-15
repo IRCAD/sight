@@ -684,29 +684,28 @@ void SMaterial::updateFromOgre()
         f4s_mat->setDiffuse(diffuseColor);
     }
 
-//    // Update Polygon Mode
-//    ::Ogre::PolygonMode polygonMode = pass->getPolygonMode();
+    // Update Polygon Mode
+    ::Ogre::PolygonMode polygonMode = pass->getPolygonMode();
 
-//    // TODO: use polygonOptions, for now it's just set.
-//    // TODO: Add mode Edge, for GPUSprint07.
-//    ::fwData::Material::REPRESENTATION_MODE polygonOptions;
-//    switch( polygonMode )
-//    {
-//    case ::Ogre::PM_SOLID:
-//        polygonOptions = ::fwData::Material::MODE_SURFACE;
-//        break;
+    ::fwData::Material::REPRESENTATION_MODE polygonOptions;
+    switch( polygonMode )
+    {
+        case ::Ogre::PM_SOLID:
+            polygonOptions = ::fwData::Material::MODE_SURFACE;
+            break;
 
-//    case ::Ogre::PM_WIREFRAME:
-//        polygonOptions = ::fwData::Material::MODE_WIREFRAME;
-//        break;
+        case ::Ogre::PM_WIREFRAME:
+            polygonOptions = ::fwData::Material::MODE_WIREFRAME;
+            break;
 
-//    case ::Ogre::PM_POINTS:
-//        polygonOptions = ::fwData::Material::MODE_POINT;
-//        break;
-//    default:
-//        polygonOptions = ::fwData::Material::MODE_SURFACE;
-//        break;
-//    }
+        case ::Ogre::PM_POINTS:
+            polygonOptions = ::fwData::Material::MODE_POINT;
+            break;
+        default:
+            polygonOptions = ::fwData::Material::MODE_SURFACE;
+            break;
+    }
+    f4s_mat->setRepresentationMode(polygonOptions);
 
     auto sig = f4s_mat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
@@ -736,9 +735,7 @@ void SMaterial::setPolygonMode(int polygonMode)
     // is null when we call this method on the first time (from doStart() for instance)
     m_material->touch();
 
-    // No C++11 method because we don't have an accessor on the material's list of technique/passes.
     ::Ogre::Material::TechniqueIterator tech_iter = m_material->getSupportedTechniqueIterator();
-    ::Ogre::Technique* tech;
 
     const std::regex regexPeel(".*_peel.*");
     const std::regex regexWeightBlend(".*_weight_blend.*");
@@ -748,11 +745,11 @@ void SMaterial::setPolygonMode(int polygonMode)
     {
         while( tech_iter.hasMoreElements())
         {
-            tech = tech_iter.getNext();
+            ::Ogre::Technique* tech = tech_iter.getNext();
 
-            bool peelPass           = std::regex_match(tech->getName(), regexPeel);
-            bool weightBlend        = std::regex_match(tech->getName(), regexWeightBlend);
-            bool transmittanceBlend = std::regex_match(tech->getName(), regexTransmittanceBlend);
+            const bool peelPass           = std::regex_match(tech->getName(), regexPeel);
+            const bool weightBlend        = std::regex_match(tech->getName(), regexWeightBlend);
+            const bool transmittanceBlend = std::regex_match(tech->getName(), regexTransmittanceBlend);
 
             if(tech->getName() == "" || peelPass || weightBlend || transmittanceBlend)
             {
@@ -792,7 +789,7 @@ void SMaterial::setPolygonMode(int polygonMode)
     {
         while( tech_iter.hasMoreElements())
         {
-            tech                                      = tech_iter.getNext();
+            ::Ogre::Technique* tech                   = tech_iter.getNext();
             ::Ogre::Technique::PassIterator pass_iter = tech->getPassIterator();
             std::vector< ::Ogre::Pass* > edgePassVector;
 

@@ -78,17 +78,6 @@ fragment_program DepthPeeling_peel_Edge_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling_depth_map_FP glsl
-{
-    source DepthPeelingDepthMap_FP.glsl
-    default_params
-    {
-        param_named_auto u_diffuseColor surface_diffuse_colour
-    }
-}
-
-//---------------------------------------------------------------------------
-
 fragment_program DepthPeeling_blend_FP glsl
 {
     source DepthPeelingBlend_FP.glsl

@@ -28,6 +28,17 @@ fragment_program DepthPeelingCommon_FP glsl
 
 //---------------------------------------------------------------------------
 
+fragment_program DepthPeeling_depth_map_FP glsl
+{
+    source DepthPeelingDepthMap_FP.glsl
+    default_params
+    {
+        param_named_auto u_diffuseColor surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
 vertex_program Render_VP glsl
 {
     source Render_VP.glsl

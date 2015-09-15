@@ -5,7 +5,7 @@ in vec4 position;
 
 out vec2 uv;
 
-uniform int orientation;
+uniform int u_orientation;
 
 void main()
 {
@@ -14,15 +14,15 @@ void main()
     // sign return -1 for x<0, 0 for x=0 and 1 for x>1
     vec3 inPos = sign(position.xyz);
 
-    if (orientation == 0) // Sagittal
+    if (u_orientation == 0) // Sagittal
     {
         uv = (vec2(inPos.z, inPos.y) + 1.0)/2.0;
     }
-    else if (orientation == 1) // Frontal
+    else if (u_orientation == 1) // Frontal
     {
         uv = (vec2(inPos.x, inPos.z) + 1.0)/2.0;
     }
-    else if (orientation == 2) // Axial
+    else if (u_orientation == 2) // Axial
     {
         uv = (vec2(inPos.x, inPos.y) + 1.0)/2.0;
     }

@@ -1,25 +1,29 @@
 #version 150
 
-uniform sampler3D img;
-uniform float slice;
-uniform float minValue;
-uniform float maxValue;
-uniform int threshold = 0;
-uniform int orientation = 0;
-uniform float opacity = 1.f;
+uniform sampler3D u_image;
+uniform float u_slice;
+uniform float u_minValue;
+uniform float u_maxValue;
+uniform int u_threshold = 0;
+uniform int u_orientation = 0;
+uniform float u_opacity = 1.f;
 
 in vec2 uv;
-
-out vec4 fragColor;
 
 float windowLevel(vec4 color, float min, float max)
 {
     float outputColor = color.r * 65535.f - 32768.f;
 
-    if(threshold == 1)
+//    if(outputColor < min || outputColor > max)
+//    {
+//        discard;
+//    }
+
+    if(u_threshold == 1)
     {
         outputColor = step(min, outputColor) * step(outputColor, max);
-    } else
+    }
+    else
     {
         outputColor = clamp(outputColor, min, max);
         outputColor = (outputColor - min) / (max - min);
@@ -28,23 +32,23 @@ float windowLevel(vec4 color, float min, float max)
     return outputColor;
 }
 
-void main()
+vec4 negato()
 {
     vec4 color;
-    if (orientation == 0) // Sagittal
+    if (u_orientation == 0) // Sagittal
     {
-        color = texture(img, vec3(slice, uv.y, uv.x));
+        color = texture(u_image, vec3(u_slice, uv.y, uv.x));
     }
-    else if (orientation == 1) // Frontal
+    else if (u_orientation == 1) // Frontal
     {
-        color = texture(img, vec3(uv.x, slice, uv.y));
+        color = texture(u_image, vec3(uv.x, u_slice, uv.y));
     }
-    else if (orientation == 2) // Axial
+    else if (u_orientation == 2) // Axial
     {
-        color = texture(img, vec3(uv, slice));
+        color = texture(u_image, vec3(uv, u_slice));
     }
 
-    float lum = windowLevel(color, minValue, maxValue);
+    float lum = windowLevel(color, u_minValue, u_maxValue);
 
-    fragColor = vec4(lum, lum, lum, opacity);
+    return vec4(lum, lum, lum, u_opacity);
 }
