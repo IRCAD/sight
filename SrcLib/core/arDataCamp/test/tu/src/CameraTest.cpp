@@ -33,19 +33,22 @@ void CameraTest::tearDown()
 
 void CameraTest::propertiesTest()
 {
-    const double CX          = rand()%10000/100;
-    const double CY          = rand()%10000/100;
-    const double FX          = rand()%10000/100;
-    const double FY          = rand()%10000/100;
-    const double SKEW        = rand()%10000/100;
-    const double K1          = rand()%10000/100;
-    const double K2          = rand()%10000/100;
-    const double P1          = rand()%10000/100;
-    const double P2          = rand()%10000/100;
-    const double K3          = rand()%10000/100;
-    const bool IS_CALIBRATED = true;
-    const std::string DESC   = "My camera";
-    const std::string CAM_ID = "CAM_461384568";
+    const double CX           = rand()%10000/100;
+    const double CY           = rand()%10000/100;
+    const double FX           = rand()%10000/100;
+    const double FY           = rand()%10000/100;
+    const double SKEW         = rand()%10000/100;
+    const double K1           = rand()%10000/100;
+    const double K2           = rand()%10000/100;
+    const double P1           = rand()%10000/100;
+    const double P2           = rand()%10000/100;
+    const double K3           = rand()%10000/100;
+    const bool IS_CALIBRATED  = true;
+    const std::string DESC    = "My camera";
+    const std::string CAM_ID  = "CAM_461384568";
+    const float MAX_FRAMERATE = 42.5f;
+    const size_t WIDTH        = 1920;
+    const size_t HEIGHT       = 1080;
 
     ::arData::Camera::sptr camera = ::arData::Camera::New();
     camera->setCx(CX);
@@ -57,6 +60,11 @@ void CameraTest::propertiesTest()
     camera->setIsCalibrated(IS_CALIBRATED);
     camera->setDescription(DESC);
     camera->setCameraID(CAM_ID);
+    camera->setCameraSource(::arData::Camera::DEVICE);
+    camera->setPixelFormat(::arData::Camera::RGBA32);
+    camera->setMaximumFrameRate(MAX_FRAMERATE);
+    camera->setWidth(WIDTH);
+    camera->setHeight(HEIGHT);
 
 
 
@@ -65,8 +73,16 @@ void CameraTest::propertiesTest()
                                                                "is_calibrated",
                                                                "skew",
                                                                "distortion_coefficient",
+                                                               "width",
+                                                               "height",
+                                                               "camera_id",
                                                                "description",
-                                                               "camera_id"};
+                                                               "max_framerate",
+                                                               "video_file",
+                                                               "stream_url",
+                                                               "camera_source",
+                                                               "pixel_format"};
+
 
     DataCampHelper::visitProperties(camera->getClassname(), dataProperties);
     DataCampHelper::compareSimplePropertyValue(camera, "@description", DESC);
@@ -87,6 +103,12 @@ void CameraTest::propertiesTest()
                                                ::boost::lexical_cast<std::string>(P2));
     DataCampHelper::compareSimplePropertyValue(camera, "@distortion_coefficient.4",
                                                ::boost::lexical_cast<std::string>(K3));
+    DataCampHelper::compareSimplePropertyValue(camera, "@max_framerate",
+                                               ::boost::lexical_cast<std::string>(MAX_FRAMERATE));
+    DataCampHelper::compareSimplePropertyValue(camera, "@width",
+                                               ::boost::lexical_cast<std::string>(WIDTH));
+    DataCampHelper::compareSimplePropertyValue(camera, "@height",
+                                               ::boost::lexical_cast<std::string>(HEIGHT));
 }
 
 //------------------------------------------------------------------------------

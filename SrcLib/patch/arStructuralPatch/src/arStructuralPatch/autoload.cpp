@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
+#include "arStructuralPatch/arData/Camera/V1ToV2.hpp"
 
 #include <fwAtomsPatch/StructuralPatchDB.hpp>
 
@@ -18,7 +18,8 @@ struct runner
 {
     runner()
     {
-
+        ::fwAtomsPatch::StructuralPatchDB::sptr structuralPatches = ::fwAtomsPatch::StructuralPatchDB::getDefault();
+        structuralPatches->registerPatch(::arStructuralPatch::arData::Camera::V1ToV2::New());
     }
 
     static runner r;
