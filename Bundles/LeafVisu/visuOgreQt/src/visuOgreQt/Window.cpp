@@ -76,17 +76,15 @@ void Window::initialise()
     /*
        Flag within the parameters set so that Ogre3D initializes an OpenGL context on it's own.
      */
-    if (rs->getName().find("GL") <= rs->getName().size())
+    SLM_ASSERT("OpenGL RenderSystem not found", rs->getName().find("GL") != std::string::npos);
+    if(bFirst)
     {
-        if(bFirst)
-        {
-            parameters["currentGLContext"] = Ogre::String("false");
-            bFirst                         = false;
-        }
-        else
-        {
-            parameters["currentGLContext"] = Ogre::String("true");
-        }
+        parameters["currentGLContext"] = Ogre::String("false");
+        bFirst                         = false;
+    }
+    else
+    {
+        parameters["currentGLContext"] = Ogre::String("true");
     }
 
     /*
@@ -299,11 +297,11 @@ void Window::renderNow()
         m_isInitialised = true;
     }
 
-    render();
+    this->render();
 
     if (m_animating)
     {
-        renderLater();
+        this->renderLater();
     }
 }
 
