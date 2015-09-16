@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "arStructuralPatch/arData/Camera/V1ToV2.hpp"
+#include "arStructuralPatch/arData/Camera/V2ToV1.hpp"
 
 #include <fwAtomsPatch/StructuralPatchDB.hpp>
 
@@ -20,6 +21,7 @@ struct runner
     {
         ::fwAtomsPatch::StructuralPatchDB::sptr structuralPatches = ::fwAtomsPatch::StructuralPatchDB::getDefault();
         structuralPatches->registerPatch(::arStructuralPatch::arData::Camera::V1ToV2::New());
+        structuralPatches->registerPatch(::arStructuralPatch::arData::Camera::V2ToV1::New());
     }
 
     static runner r;
