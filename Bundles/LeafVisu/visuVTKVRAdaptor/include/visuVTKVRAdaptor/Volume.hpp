@@ -63,7 +63,7 @@ protected:
      * Configuration example :
        @verbatim
        <adaptor id="VolumeScene3D" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
-         <config renderer="default" clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no"/>
+         <config renderer="default" clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no" reductionFactor="0.5"/>
        </adaptor>
        @endverbatim
      *
@@ -71,6 +71,7 @@ protected:
      * \b clippingplanes : id of VTK object for clipping planes
      * \b autoresetcamera : (not mandatory, default is yes) set if the renderer must reset camera when updating image
      * \b croppingBox : (not mandatory, default is no) set if the cropping box must be shown
+     * \b reductionFactor [0-1]: factor to resample the original image.
      *
      * @throw fwTools::Failed
      */
@@ -112,6 +113,8 @@ protected:
 private:
 
     bool m_autoResetCamera;
+
+    double m_reductionFactor;
 };
 
 } //namespace visuVTKVRAdaptor

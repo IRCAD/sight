@@ -28,6 +28,8 @@
 #include <vtkObjectFactory.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkColorTransferFunction.h>
+#include <vtkImageResample.h>
+
 //Required for proper object factory initialization
 #include <vtkAutoInit.h>
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL);
@@ -132,8 +134,8 @@ Volume::Volume() throw() :
     ::fwRenderVTK::IVtkAdaptorService(),
     m_bClippingBoxIsActivate(false),
     m_autoResetCamera(true),
-    m_croppingBoxDefaultState(true)
-
+    m_croppingBoxDefaultState(true),
+    m_reductionFactor(1.0)
 {
     m_clippingPlanesId = "";
     m_clippingPlanes   = 0;
@@ -318,6 +320,11 @@ void Volume::configuring() throw(fwTools::Failed)
     {
         m_croppingBoxDefaultState = false;
     }
+
+    if(m_configuration->hasAttribute("reductionFactor"))
+    {
+        m_reductionFactor = std::stod(m_configuration->getAttributeValue("reductionFactor"));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -329,14 +336,27 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
     vtkImageImport *imageImport = vtkImageImport::New();
     ::fwVtkIO::configureVTKImageImport( imageImport, image );
 
+
     m_volumeMapper->RemoveAllClippingPlanes();
     if (m_clippingPlanes)
     {
         m_volumeMapper->SetClippingPlanes(m_clippingPlanes);
     }
 
-    //m_volumeMapper->SetInputConnection(shiftScale->GetOutputPort());
-    m_volumeMapper->SetInputConnection(imageImport->GetOutputPort());
+    if ( m_reductionFactor < 1.0 )
+    {
+        vtkImageResample *resample = vtkImageResample::New();
+        resample->SetInputConnection( imageImport->GetOutputPort() );
+        resample->SetAxisMagnificationFactor(0, m_reductionFactor);
+        resample->SetAxisMagnificationFactor(1, m_reductionFactor);
+        resample->SetAxisMagnificationFactor(2, m_reductionFactor);
+        m_volumeMapper->SetInputConnection(resample->GetOutputPort());
+        resample->Delete();
+    }
+    else
+    {
+        m_volumeMapper->SetInputConnection(imageImport->GetOutputPort());
+    }
 
     m_boxWidget->GetRepresentation()->SetPlaceFactor(1.0);
     m_boxWidget->GetRepresentation()->PlaceWidget(m_volumeMapper->GetBounds());
@@ -346,7 +366,6 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
     vtkVolumeMapper::SafeDownCast(m_volumeMapper)->SetCroppingRegionPlanes( m_volumeMapper->GetBounds() );
     m_bClippingBoxIsActivate = m_croppingBoxDefaultState;
 
-    //shiftScale->Delete();
     imageImport->Delete();
 
     if (m_autoResetCamera)
