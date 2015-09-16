@@ -106,8 +106,34 @@ struct SlotsTestHasSlots : public HasSlots
     SlotsTestHasSlots()
     {
         GetValueSlotType::sptr slotGetValue = ::fwCom::newSlot( &SlotsTestHasSlots::getValue, this );
+
         HasSlots::m_slots("sum", &SlotsTestHasSlots::sum, this)
             ("getValue", slotGetValue );
+    }
+
+    int sum(int a, int b)
+    {
+        return a+b;
+    }
+
+    int getValue()
+    {
+        return 4;
+    }
+};
+
+//-----------------------------------------------------------------------------
+
+struct SlotsTestHasSlots2 : public HasSlots
+{
+    typedef Slot< int ()> GetValueSlotType;
+
+    SlotsTestHasSlots2()
+    {
+        newSlot( "sum", &SlotsTestHasSlots2::sum, this );
+
+        GetValueSlotType::sptr slot = newSlot( "getValue", &SlotsTestHasSlots2::getValue, this );
+        CPPUNIT_ASSERT(slot);
     }
 
     int sum(int a, int b)
@@ -128,6 +154,10 @@ void SlotsTest::hasSlotsTest()
     SlotsTestHasSlots obj;
     CPPUNIT_ASSERT_EQUAL(14, obj.slot("sum")->call<int>(5,9));
     CPPUNIT_ASSERT_EQUAL(4, obj.slot< SlotsTestHasSlots::GetValueSlotType >("getValue")->call());
+
+    SlotsTestHasSlots2 obj2;
+    CPPUNIT_ASSERT_EQUAL(14, obj2.slot("sum")->call<int>(5,9));
+    CPPUNIT_ASSERT_EQUAL(4, obj2.slot< SlotsTestHasSlots::GetValueSlotType >("getValue")->call());
 }
 
 //-----------------------------------------------------------------------------

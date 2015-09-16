@@ -43,6 +43,13 @@ public:
         return Signal;
     }
 
+    template<typename SignalType>
+    SPTR( SignalType ) newSignal(const Signals::SignalKeyType & key)
+    {
+        SPTR( SignalType ) sig = std::make_shared< SignalType > ();
+        m_signals(key, sig);
+        return sig;
+    }
 
 protected:
 

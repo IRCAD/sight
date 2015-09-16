@@ -71,6 +71,21 @@ struct SignalsTestHasSignals : public HasSignals
     }
 };
 
+struct SignalsTestHasSignals2 : public HasSignals
+{
+    typedef ::fwCom::Signal< void ()> SignalType;
+
+    SignalsTestHasSignals2()
+    {
+        SignalType::sptr sig = this->newSignal< SignalType >("sig");
+        CPPUNIT_ASSERT(sig);
+
+#ifdef COM_LOG
+        signal->setID("sig");
+#endif
+    }
+};
+
 struct SignalsTestA
 {
 
@@ -90,17 +105,26 @@ struct SignalsTestA
 
 void SignalsTest::hasSignalsTest()
 {
-    SignalsTestHasSignals obj;
-    SignalsTestA srv;
-    Slot< void()>::sptr slot = ::fwCom::newSlot( &SignalsTestA::changeStatus, &srv );
-#ifdef COM_LOG
-    slot->setID("changeStatus");
-#endif
-    obj.signal("sig")->connect( slot );
-    obj.signal< SignalsTestHasSignals::SignalType >("sig")->emit();
+    {
+        SignalsTestHasSignals obj;
+        SignalsTestA srv;
+        Slot< void()>::sptr slot = ::fwCom::newSlot( &SignalsTestA::changeStatus, &srv );
+        obj.signal("sig")->connect( slot );
+        obj.signal< SignalsTestHasSignals::SignalType >("sig")->emit();
+        CPPUNIT_ASSERT( srv.m_val );
+        obj.signal("sig")->disconnect( slot );
+    }
+    {
+        SignalsTestHasSignals2 obj;
+        SignalsTestA srv;
+        Slot< void()>::sptr slot = ::fwCom::newSlot( &SignalsTestA::changeStatus, &srv );
 
-    CPPUNIT_ASSERT( srv.m_val );
-    obj.signal("sig")->disconnect( slot );
+        obj.signal("sig")->connect( slot );
+        obj.signal< SignalsTestHasSignals2::SignalType >("sig")->emit();
+
+        CPPUNIT_ASSERT( srv.m_val );
+        obj.signal("sig")->disconnect( slot );
+    }
 }
 
 //-----------------------------------------------------------------------------

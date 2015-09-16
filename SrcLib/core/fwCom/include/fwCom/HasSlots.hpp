@@ -9,6 +9,7 @@
 
 #include "fwCom/config.hpp"
 #include "fwCom/Slots.hpp"
+#include "fwCom/util/convert_function_type.hpp"
 
 namespace fwCom
 {
@@ -43,6 +44,9 @@ public:
         return slot;
     }
 
+    template<typename F, typename A>
+    SPTR(Slot< typename ::fwCom::util::convert_function_type< F >::type >) newSlot( const Slots::SlotKeyType & key, F f,
+                                                                                    A a );
 
 protected:
 

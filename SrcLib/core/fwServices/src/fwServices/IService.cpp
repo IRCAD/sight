@@ -20,7 +20,6 @@
 #include "fwServices/IService.hpp"
 #include "fwServices/IEditionService.hpp"
 #include "fwServices/registry/ObjectService.hpp"
-#include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/Base.hpp"
 
 namespace fwServices
@@ -61,8 +60,6 @@ IService::IService() :
     ::fwCom::HasSlots::m_slots.setID();
     ::fwCom::HasSignals::m_signals.setID();
 #endif
-
-    this->setWorker( registry::ActiveWorkers::getDefault()->getWorker( registry::ActiveWorkers::s_DEFAULT_WORKER ) );
 }
 
 //-----------------------------------------------------------------------------

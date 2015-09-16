@@ -99,7 +99,6 @@ SPTR(Slot< R( A ...  )>) Slot< Slot< R ( A ... )> >::New( SPTR( SlotRun< F > ) s
 }
 
 //-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
 
 template<typename F, typename ... BINDING>
 SPTR(Slot< typename ::fwCom::util::convert_function_type< F >::type >) newSlot(F f, BINDING ... binding)

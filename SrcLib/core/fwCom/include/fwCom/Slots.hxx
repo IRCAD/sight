@@ -26,6 +26,21 @@ Slots& Slots::operator()( const SlotKeyType &key, F f, A ... a )
     return this->operator()(key, slotBase);
 }
 
+// Only define it when fwCom/HasSlots.hpp has been included
+// This saves us a file like fwCom/HasSlots.hxx
+#ifdef __FWCOM_HASSLOTS_HPP__
+
+template<typename F, typename A>
+SPTR(Slot< typename ::fwCom::util::convert_function_type< F >::type >)
+HasSlots::newSlot( const ::fwCom::Slots::SlotKeyType & key, F f, A a )
+{
+    auto slot = ::fwCom::newSlot(f, a);
+    this->m_slots(key, slot);
+    return slot;
+}
+
+#endif
+
 } // namespace fwCom
 
 #endif //__FWCOM_SLOTS_HXX__

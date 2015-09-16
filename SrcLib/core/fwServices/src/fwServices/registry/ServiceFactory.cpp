@@ -14,6 +14,7 @@
 #include <fwRuntime/profile/Profile.hpp>
 
 #include "fwServices/IService.hpp"
+#include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"
 
 namespace fwServices
@@ -192,6 +193,12 @@ IService::sptr ServiceFactory::create( const std::string & _srvImpl ) const
     }
 
     this->checkServicesNotDeclaredInPluginXml();
+
+    // Setup worker here, this is a better place than the constructor
+    // because here, the service slots are also setup
+    // This allow to setup
+    service->setWorker( registry::ActiveWorkers::getDefault()->getWorker( registry::ActiveWorkers::s_DEFAULT_WORKER ) );
+
     return service;
 }
 
