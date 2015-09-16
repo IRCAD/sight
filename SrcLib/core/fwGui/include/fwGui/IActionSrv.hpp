@@ -7,11 +7,12 @@
 #ifndef __FWGUI_IACTIONSRV_HPP__
 #define __FWGUI_IACTIONSRV_HPP__
 
-#include <fwServices/IService.hpp>
-
 #include "fwGui/config.hpp"
-
 #include "fwGui/registrar/ActionRegistrar.hpp"
+
+#include <fwCom/Slots.hpp>
+
+#include <fwServices/IService.hpp>
 
 namespace fwGui
 {
@@ -19,8 +20,6 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing the menu items.
  * @class   IActionSrv
- *
- * @date    2009-2010.
  *
  */
 class FWGUI_CLASS_API IActionSrv : public ::fwServices::IService
@@ -31,6 +30,31 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (IActionSrv)(::fwServices::IService) );
     fwCoreAllowSharedFromThis();
 
+    /**
+     * @name Slots Keys
+     * @{
+     */
+    /// Slot to activate/deactivate the action
+    static const ::fwCom::Slots::SlotKeyType s_SET_IS_ACTIVE_SLOT;
+
+    /// Slot to activate the action
+    static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_SLOT;
+
+    /// Slot to desactivate the action
+    static const ::fwCom::Slots::SlotKeyType s_DEACTIVATE_SLOT;
+
+    /// Slot to enable/disable the action
+    static const ::fwCom::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT;
+
+    /// Slot to enable the action
+    static const ::fwCom::Slots::SlotKeyType s_SET_EXECUTABLE_SLOT;
+
+    /// Slot to disable the action
+    static const ::fwCom::Slots::SlotKeyType s_SET_INEXECUTABLE_SLOT;
+    /**
+     * @}
+     */
+
     /// Method called when the action service is stopping
     FWGUI_API void actionServiceStopping();
 
@@ -39,6 +63,12 @@ public:
 
     /// Set the action service is active/inactive.
     FWGUI_API virtual void setIsActive(bool isActive);
+
+    /// Set the action service is active.
+    FWGUI_API virtual void activate();
+
+    /// Set the action service is not active.
+    FWGUI_API virtual void deactivate();
 
     /// Return true if action service is active.
     FWGUI_API bool getIsActive();
@@ -50,7 +80,13 @@ public:
     }
 
     /// Set the action service executable or not.
-    FWGUI_API void setIsExecutable(bool isExecutable);
+    FWGUI_API virtual void setIsExecutable(bool isExecutable);
+
+    /// Set the action service executable.
+    FWGUI_API virtual void setExecutable();
+
+    /// Set the action service not executable.
+    FWGUI_API virtual void setInexecutable();
 
     /// Return action service is executable.
     FWGUI_API bool getIsExecutable();

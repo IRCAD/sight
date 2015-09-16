@@ -4,18 +4,32 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwCore/base.hpp>
-#include <fwTools/fwID.hpp>
-#include <fwServices/Base.hpp>
 
 #include "fwGui/IActionSrv.hpp"
 #include "fwGui/dialog/IMessageDialog.hpp"
 #include "fwGui/dialog/MessageDialog.hpp"
 
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwCore/base.hpp>
+#include <fwTools/fwID.hpp>
+#include <fwServices/Base.hpp>
+
+#include <boost/foreach.hpp>
+
 namespace fwGui
 {
+
+const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_IS_ACTIVE_SLOT     = "setIsActive";
+const ::fwCom::Slots::SlotKeyType IActionSrv::s_ACTIVATE_SLOT          = "activate";
+const ::fwCom::Slots::SlotKeyType IActionSrv::s_DEACTIVATE_SLOT        = "deactivate";
+const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
+const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_EXECUTABLE_SLOT    = "setExecutable";
+const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
 
 IActionSrv::IActionSrv() :
     m_activeStateValue(true),
@@ -23,6 +37,12 @@ IActionSrv::IActionSrv() :
     m_isExecutable(true),
     m_confirmAction(false)
 {
+    newSlot(s_SET_IS_ACTIVE_SLOT, &IActionSrv::setIsActive, this);
+    newSlot(s_ACTIVATE_SLOT, &IActionSrv::activate, this);
+    newSlot(s_DEACTIVATE_SLOT, &IActionSrv::deactivate, this);
+    newSlot(s_SET_IS_EXECUTABLE_SLOT, &IActionSrv::setIsExecutable, this);
+    newSlot(s_SET_EXECUTABLE_SLOT, &IActionSrv::setExecutable, this);
+    newSlot(s_SET_INEXECUTABLE_SLOT, &IActionSrv::setInexecutable, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -132,6 +152,20 @@ void IActionSrv::setIsActive(bool isActive)
 
 //-----------------------------------------------------------------------------
 
+void IActionSrv::activate()
+{
+    this->setIsActive(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void IActionSrv::deactivate()
+{
+    this->setIsActive(false);
+}
+
+//-----------------------------------------------------------------------------
+
 bool IActionSrv::getIsActive()
 {
     return m_isActive;
@@ -143,6 +177,20 @@ void IActionSrv::setIsExecutable(bool isExecutable)
 {
     m_isExecutable = isExecutable;
     this->m_registrar->actionServiceSetExecutable(isExecutable);
+}
+
+//-----------------------------------------------------------------------------
+
+void IActionSrv::setExecutable()
+{
+    this->setIsExecutable(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void IActionSrv::setInexecutable()
+{
+    this->setIsExecutable(false);
 }
 
 //-----------------------------------------------------------------------------
