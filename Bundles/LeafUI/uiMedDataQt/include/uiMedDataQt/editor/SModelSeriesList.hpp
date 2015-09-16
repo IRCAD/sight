@@ -9,6 +9,7 @@
 
 #include <QPointer>
 #include <QObject>
+#include <QPushButton>
 
 #include <fwTools/Failed.hpp>
 
@@ -117,9 +118,18 @@ protected Q_SLOTS:
 
     void onOrganChoiceVisibility(QTreeWidgetItem * item, int column);
 
+    void onCheckAllCheckBox();
+    void onUnCheckAllCheckBox();
+
 private:
 
     void refreshVisibility();
+
+    void onCheckAllBoxes(bool visible);
+
+    QPointer<QPushButton> m_checkAllButton;
+    QPointer<QPushButton> m_unCheckAllButton;
+
     QPointer< QCheckBox > m_showCheckBox;
     QPointer< QTreeWidget > m_tree;
     DisplayedInformation m_displayedInfo;

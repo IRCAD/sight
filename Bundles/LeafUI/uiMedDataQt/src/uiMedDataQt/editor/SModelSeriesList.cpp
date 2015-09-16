@@ -148,13 +148,24 @@ void SModelSeriesList::starting() throw(::fwTools::Failed)
 
     QVBoxLayout* layout = new QVBoxLayout(container);
 
+    QHBoxLayout* layoutButton = new QHBoxLayout(container);
+    layout->addLayout(layoutButton);
 
     if (m_enableHideAll)
     {
+        // check box "show"
         m_showCheckBox = new QCheckBox( tr("Hide all organs"));
         m_showCheckBox->setToolTip(tr("Show or hide all organs"));
-        layout->addWidget( m_showCheckBox, 0 );
+        layoutButton->addWidget( m_showCheckBox, 0 );
         QObject::connect(m_showCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowReconstructions(int)));
+
+        m_checkAllButton = new QPushButton(tr("Check all"));
+        layoutButton->addWidget(m_checkAllButton, 0);
+        QObject::connect( m_checkAllButton, SIGNAL(clicked()), this, SLOT(onCheckAllCheckBox()) );
+
+        m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
+        layoutButton->addWidget(m_unCheckAllButton, 0);
+        QObject::connect( m_unCheckAllButton, SIGNAL(clicked()), this, SLOT(onUnCheckAllCheckBox()) );
     }
 
     layout->addWidget( m_tree, 1 );
@@ -210,7 +221,7 @@ void SModelSeriesList::configuring() throw(fwTools::Failed)
     if(columns)
     {
         ::fwRuntime::ConfigurationElement::Container::const_iterator cIt = columns->begin();
-        m_tree->setColumnCount(columns->size());
+        m_tree->setColumnCount(static_cast<int>(columns->size()));
         QStringList header;
         for(; cIt != columns->end(); cIt++)
         {
@@ -302,6 +313,7 @@ void SModelSeriesList::updateReconstructions()
     }
 }
 
+//------------------------------------------------------------------------------
 
 void SModelSeriesList::fillTree()
 {
@@ -333,8 +345,6 @@ void SModelSeriesList::fillTree()
     }
 }
 
-
-
 //------------------------------------------------------------------------------
 
 void SModelSeriesList::onCurrentItemChanged( QTreeWidgetItem * current, QTreeWidgetItem * previous )
@@ -348,6 +358,7 @@ void SModelSeriesList::onCurrentItemChanged( QTreeWidgetItem * current, QTreeWid
     ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
 }
 
+//------------------------------------------------------------------------------
 
 void SModelSeriesList::onCurrentItemChanged ( QTreeWidgetItem * current, int column )
 {
@@ -378,6 +389,11 @@ void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem * item, int colum
 
 void SModelSeriesList::onShowReconstructions(int state )
 {
+    const bool visible = static_cast<bool>(state);
+
+    m_checkAllButton->setEnabled(!visible);
+    m_unCheckAllButton->setEnabled(!visible);
+
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
     modelSeries->setField("ShowReconstructions",  ::fwData::Boolean::New(state == Qt::Unchecked) );
 
@@ -398,6 +414,35 @@ void SModelSeriesList::refreshVisibility()
         item->setCheckState(0, rec->getIsVisible() ? Qt::Checked : Qt::Unchecked );
     }
 }
+
+//------------------------------------------------------------------------------
+
+void SModelSeriesList::onCheckAllCheckBox()
+{
+    this->onCheckAllBoxes(true);
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeriesList::onUnCheckAllCheckBox()
+{
+    this->onCheckAllBoxes(false);
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeriesList::onCheckAllBoxes( bool visible )
+{
+
+
+    for( int i = 0; i < m_tree->topLevelItemCount(); ++i )
+    {
+        QTreeWidgetItem *item = m_tree->topLevelItem( i );
+        item->setCheckState(0, visible ? Qt::Checked : Qt::Unchecked );
+    }
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace editor
 } // namespace uiMedData
