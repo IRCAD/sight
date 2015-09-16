@@ -122,6 +122,11 @@ protected:
                 <signal>adaptorUID/objectModified</signal>
                 <slot>serviceUid/updateTM</slot>
             </connect>
+
+            <connect waitForKey="tm3dKey">
+                <signal>objectModified</signal><!-- signal for object "tm3dKey" -->
+                <slot>serviceUid/updateTM</slot>
+            </connect>
         </scene>
         <fps>30</fps>
        </service>
@@ -150,7 +155,9 @@ protected:
      *     when the adaptor works on the scene's composite.
      *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
      *  - \b connect : not mandatory, connects signal to slot
-     *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name
+     *    - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
+     *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
+     *         object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
      *    - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
      */
     FWRENDERVTK_API virtual void configuring() throw( ::fwTools::Failed);
@@ -236,7 +243,26 @@ private:
     void configureVtkObject( ConfigurationType conf );
     vtkTransform * createVtkTransform( ConfigurationType conf );
 
+    /// Creates the connection if the required key is contained in the composite
+    void connectAfterWait(SPTR(::fwData::Composite) composite);
+
+    /// Creates the connection given by the configuration for obj associated with the key in the composite.
+    void manageConnection(const std::string key, const ::fwTools::Object::sptr &obj,
+                          ConfigurationType config);
+
+    /// Disconnects the connection based on a object key
+    void disconnect(SPTR(::fwData::Composite) composite);
+
+    /// Signal/ Slot connection
     ::fwServices::helper::SigSlotConnection::sptr m_connections;
+
+    typedef std::vector< ConfigurationType > ConnectConfigType;
+    /// vector containing all the connections configurations
+    ConnectConfigType m_connect;
+
+    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
+    /// map containing the object key/connection relation
+    ObjectConnectionsMapType m_objectConnections;
 };
 
 }

@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <boost/foreach.hpp>
+
 #include <QVBoxLayout>
 
 #include <QGraphicsRectItem>
@@ -11,7 +13,7 @@
 #include <fwData/Composite.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
-
+#include <fwServices/helper/Config.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <scene2D/adaptor/IAdaptor.hpp>
@@ -26,11 +28,12 @@ namespace scene2D
 {
 
 
-Render::Render() throw()
-    : m_sceneStart (-100,-100),
-      m_sceneWidth (200,200),
-      m_antialiasing(false)
+Render::Render() throw() :
+    m_sceneStart (-100,-100),
+    m_sceneWidth (200,200),
+    m_antialiasing(false)
 {
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
 //    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
 //    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
 //    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
@@ -75,8 +78,8 @@ SPTR(::fwData::Object) Render::getRegisteredObject(ObjectIDType _objectID)
 {
     SLM_TRACE_FUNC();
 
-    OSLM_ASSERT("Sorry, the object id '"<< _objectID <<"' does not exist in the registered objects map.", m_objectID2Object.find(
-                    _objectID) != m_objectID2Object.end() );
+    OSLM_ASSERT("Sorry, the object id '"<< _objectID <<"' does not exist in the registered objects map.",
+                m_objectID2Object.find( _objectID ) != m_objectID2Object.end() );
     return m_objectID2Object[_objectID];
 }
 
@@ -143,11 +146,17 @@ void Render::configuring() throw ( ::fwTools::Failed )
         {
             this->configureAdaptor(*iter);
         }
+        else if((*iter)->getName() == "connect")
+        {
+            m_connect.push_back(*iter);
+        }
         else
         {
             OSLM_ASSERT("Bad scene configurationType, unknown xml node : " << (*iter)->getName(), false);
         }
     }
+
+
 }
 
 //-----------------------------------------------------------------------------
@@ -173,6 +182,66 @@ void Render::starting() throw ( ::fwTools::Failed )
     }
 
     this->startAdaptorsFromComposite(composite);
+
+    //Create connections when adaptors are started
+
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr connect, m_connect)
+    {
+        if(!connect->hasAttribute("waitForKey"))
+        {
+            ::fwServices::helper::Config::createConnections(connect, m_connections);
+        }
+    }
+    this->connectAfterWait(composite);
+}
+
+//-----------------------------------------------------------------------------
+
+void Render::connectAfterWait(::fwData::Composite::sptr composite)
+{
+
+    BOOST_FOREACH(::fwData::Composite::value_type element, *composite)
+    {
+        std::string key = element.first;
+        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr connect, m_connect)
+        {
+            if(connect->hasAttribute("waitForKey"))
+            {
+                std::string waitForKey = connect->getAttributeValue("waitForKey");
+                if(waitForKey == key)
+                {
+                    ::fwServices::helper::SigSlotConnection::sptr connection;
+                    ObjectConnectionsMapType::iterator iter = m_objectConnections.find(key);
+                    if (iter != m_objectConnections.end())
+                    {
+                        connection = iter->second;
+                    }
+                    else
+                    {
+                        connection               = ::fwServices::helper::SigSlotConnection::New();
+                        m_objectConnections[key] = connection;
+                    }
+                    ::fwServices::helper::Config::createConnections(connect, connection, element.second);
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void Render::disconnect(::fwData::Composite::sptr composite)
+{
+
+    BOOST_FOREACH(::fwData::Composite::value_type element, *composite)
+    {
+        std::string key = element.first;
+        if(m_objectConnections.find(key) != m_objectConnections.end())
+        {
+            m_objectConnections[key]->disconnect();
+            m_objectConnections.erase(key);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -194,16 +263,20 @@ void Render::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fa
     {
         SPTR(::fwData::Composite) field = compositeMsg->getAddedKeys();
         this->startAdaptorsFromComposite(field);
+        this->connectAfterWait(field);
     }
     else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
     {
         SPTR(::fwData::Composite) field = compositeMsg->getRemovedKeys();
+        this->disconnect(field);
         this->stopAdaptorsFromComposite(field);
     }
     else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
     {
+        // clean old connections
+        this->disconnect(compositeMsg->getOldChangedKeys());
         this->swapAdaptorsFromComposite(compositeMsg->getNewChangedKeys());
-        //SLM_FATAL("ToDo IM");
+        this->connectAfterWait(compositeMsg->getNewChangedKeys());
     }
 }
 
@@ -212,8 +285,6 @@ void Render::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Fa
 void Render::swapping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-
-    //SLM_FATAL("ToDo IM");
 }
 
 //-----------------------------------------------------------------------------
@@ -222,7 +293,11 @@ void Render::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
+    m_connections->disconnect();
+
     SPTR(::fwData::Composite) composite = this->getObject< ::fwData::Composite >();
+
+    this->disconnect(composite);
 
     ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( "self" );
     if ( objectIter != m_objectsID2AdaptorIDVector.end() )
@@ -485,17 +560,13 @@ void Render::startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object)_objec
 
     if (!m_adaptorID2SceneAdaptor2D[_adaptorID].m_uid.empty())
     {
-        m_adaptorID2SceneAdaptor2D[_adaptorID].m_service = ::fwServices::add< ::scene2D::adaptor::IAdaptor >( _object,
-                                                                                                              m_adaptorID2SceneAdaptor2D[
-                                                                                                                  _adaptorID].m_type,
-                                                                                                              m_adaptorID2SceneAdaptor2D[
-                                                                                                                  _adaptorID].m_uid);
+        m_adaptorID2SceneAdaptor2D[_adaptorID].m_service = ::fwServices::add< ::scene2D::adaptor::IAdaptor >(
+            _object, m_adaptorID2SceneAdaptor2D[_adaptorID].m_type, m_adaptorID2SceneAdaptor2D[_adaptorID].m_uid);
     }
     else
     {
-        m_adaptorID2SceneAdaptor2D[_adaptorID].m_service = ::fwServices::add< ::scene2D::adaptor::IAdaptor >( _object,
-                                                                                                              m_adaptorID2SceneAdaptor2D[
-                                                                                                                  _adaptorID].m_type);
+        m_adaptorID2SceneAdaptor2D[_adaptorID].m_service = ::fwServices::add< ::scene2D::adaptor::IAdaptor >(
+            _object, m_adaptorID2SceneAdaptor2D[_adaptorID].m_type);
     }
 
     SLM_ASSERT("\"config\" tag required", m_adaptorID2SceneAdaptor2D[_adaptorID].m_config->getName() == "config");

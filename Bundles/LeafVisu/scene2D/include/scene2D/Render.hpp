@@ -14,6 +14,7 @@
 
 
 #include <fwRender/IRender.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
 #include <scene2D/data/Axis.hpp>
 #include <scene2D/data/Viewport.hpp>
 
@@ -112,6 +113,21 @@ protected:
                     color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
             </adaptor>
 
+            <connect>
+                <signal>adaptorUID/objectModified</signal>
+                <slot>serviceUid/updateTM</slot>
+            </connect>
+
+            <connect waitForKey="myData">
+                <signal>adaptorUID/objectModified</signal>
+                <slot>serviceUid/updateTM</slot>
+            </connect>
+
+            <connect waitForKey="myData">
+                <signal>objectModified</signal><!-- signal for object "myData" -->
+                <slot>serviceUid/updateTM</slot>
+            </connect>
+
         </scene>
 
        </service>
@@ -160,6 +176,12 @@ protected:
      * \b objectId : mandatory : Set the adaptor related object id
      *
      * \b uid : no mandatory : Set the adaptor uid
+     *
+     *  - \b connect : not mandatory, connects signal to slot
+     *   - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
+     *   - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
+     *        object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
+     *   - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
      */
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
 
@@ -264,6 +286,12 @@ private:
     ////  the m_adaptorID2SceneAdaptor2D map.
     void stopAdaptor(AdaptorIDType _adaptorID);
 
+    /// Creates the connection if the required key is contained in the composite
+    void connectAfterWait(SPTR(::fwData::Composite) composite);
+
+    /// Disconnects the connection based on a object key
+    void disconnect(SPTR(::fwData::Composite) composite);
+
     typedef std::map< ObjectIDType, std::vector<AdaptorIDType> > ObjectsID2AdaptorIDVector;
 
     /// Map of std::vector<AdaptorIDType> referenced by ObjectIDType;
@@ -301,6 +329,17 @@ private:
 
     /// How the scene should behave on view resize events
     Qt::AspectRatioMode m_aspectRatioMode;
+
+    /// Signal/ Slot connection
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+
+    typedef std::vector< ::fwRuntime::ConfigurationElement::sptr > ConnectConfigType;
+    /// vector containing all the connections configurations
+    ConnectConfigType m_connect;
+
+    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
+    /// map containing the object key/connection relation
+    ObjectConnectionsMapType m_objectConnections;
 };
 
 

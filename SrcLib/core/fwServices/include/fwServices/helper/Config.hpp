@@ -36,9 +36,12 @@ public:
      *
      * @param ::fwRuntime::ConfigurationElement configuration element containing "<connect>" tags
      * @param SigSlotConnection helper to connect signals and slots
+     * @param obj optional object used to retrieve signal if uid is not defined
      */
     FWSERVICES_API static void createConnections(
-        CSPTR(::fwRuntime::ConfigurationElement) cfg, SPTR(::fwServices::helper::SigSlotConnection) helper);
+        CSPTR(::fwRuntime::ConfigurationElement) cfg,
+        SPTR(::fwServices::helper::SigSlotConnection) helper,
+        const SPTR(::fwTools::Object)& obj = SPTR(::fwTools::Object)());
 };
 
 } // namespace helper

@@ -61,7 +61,7 @@ protected:
                     <service uid="myServices" impl="..." type="..." autoConnect="yes" />
 
                     <connect>
-                        <signal>key</signal>
+                        <signal>key</signal><!-- Signal of object "myImage" -->
                         <slot>uid/key</slot>
                     </connect>
 
@@ -70,7 +70,7 @@ protected:
                     <service uid="myServices2" impl="..." type="..." autoConnect="yes" worker="myThread" />
 
                     <proxy channel="...">
-                        <signal>...</signal>
+                        <signal>...</signal><!-- Signal of object "myAcquisition" -->
                         <signal>.../...</signal>
                         <slot>.../...</slot>
                         <slot>.../...</slot>
@@ -80,10 +80,16 @@ protected:
         </service>
        @endverbatim
      * With:
-     * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached object is deleted but swap it on a dummy object.
+     * @li \b mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached object is
+     * deleted but swap it on a dummy object.
      * @li the objects and services tags are defined as same as the configuration of objects and services.
-     * @li autoConnect: optional (default value = false), if true allows to listen signals from the associated object.
-     * @li worker: optional, allows to manage the service in another thread.
+     * @li \b autoConnect: optional (default value = false), if true allows to listen signals from the associated object.
+     * @li \b worker: optional, allows to manage the service in another thread.
+     * @li \b connect : not mandatory, connects signal to slot
+     *   - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
+     *        object signal, you don't have to write object uid, only the signal name.
+     *   - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
+     * @li \b proxy : not mandatory, connects the signals/slots in a proxy
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 

@@ -399,7 +399,21 @@ void VtkRenderService::starting() throw(fwTools::Failed)
         }
         else if((*iter)->getName() == "connect")
         {
-            ::fwServices::helper::Config::createConnections(*iter, m_connections);
+            if((*iter)->hasAttribute("waitForKey"))
+            {
+                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+                std::string key = (*iter)->getAttributeValue("waitForKey");
+                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
+                if(iterComposite != composite->end())
+                {
+                    this->manageConnection(key, iterComposite->second, *iter);
+                }
+                m_connect.push_back(*iter);
+            }
+            else
+            {
+                ::fwServices::helper::Config::createConnections(*iter, m_connections);
+            }
         }
         else
         {
@@ -472,18 +486,21 @@ void VtkRenderService::receiving( ::fwServices::ObjectMsg::csptr message ) throw
 
     if( compositeMsg )
     {
-
         ::fwData::Composite::ContainerType objects;
 
         ::fwData::Composite::sptr modifiedKeys;
 
         modifiedKeys = compositeMsg->getAddedKeys();
+        this->connectAfterWait(modifiedKeys);
         objects.insert(modifiedKeys->begin(), modifiedKeys->end());
 
         modifiedKeys = compositeMsg->getNewChangedKeys();
+        this->disconnect(compositeMsg->getOldChangedKeys());
+        this->connectAfterWait(modifiedKeys);
         objects.insert(modifiedKeys->begin(), modifiedKeys->end());
 
         modifiedKeys = compositeMsg->getRemovedKeys();
+        this->disconnect(modifiedKeys);
         objects.insert(modifiedKeys->begin(), modifiedKeys->end());
 
         assert ( m_sceneConfiguration );
@@ -647,6 +664,63 @@ vtkTransform * VtkRenderService::getOrAddVtkTransform( const VtkObjectIdType& _i
         this->addVtkObject(_id, t);
     }
     return t;
+}
+
+//-----------------------------------------------------------------------------
+
+void VtkRenderService::connectAfterWait(::fwData::Composite::sptr composite)
+{
+
+    BOOST_FOREACH(::fwData::Composite::value_type element, *composite)
+    {
+        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr connect, m_connect)
+        {
+            this->manageConnection(element.first, element.second, connect);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void VtkRenderService::manageConnection(const std::string key, const ::fwTools::Object::sptr &obj,
+                                        ConfigurationType config)
+{
+    if(config->hasAttribute("waitForKey"))
+    {
+        std::string waitForKey = config->getAttributeValue("waitForKey");
+        if(waitForKey == key)
+        {
+            ::fwServices::helper::SigSlotConnection::sptr connection;
+
+            ObjectConnectionsMapType::iterator iter = m_objectConnections.find(key);
+            if (iter != m_objectConnections.end())
+            {
+                connection = iter->second;
+            }
+            else
+            {
+                connection               = ::fwServices::helper::SigSlotConnection::New();
+                m_objectConnections[key] = connection;
+            }
+            ::fwServices::helper::Config::createConnections(config, connection, obj);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void VtkRenderService::disconnect(::fwData::Composite::sptr composite)
+{
+
+    BOOST_FOREACH(::fwData::Composite::value_type element, *composite)
+    {
+        std::string key = element.first;
+        if(m_objectConnections.find(key) != m_objectConnections.end())
+        {
+            m_objectConnections[key]->disconnect();
+            m_objectConnections.erase(key);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

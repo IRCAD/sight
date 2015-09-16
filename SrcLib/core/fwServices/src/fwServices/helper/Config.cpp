@@ -31,7 +31,8 @@ namespace helper
 
 void Config::createConnections(
     ::fwRuntime::ConfigurationElement::csptr connectionCfg,
-    ::fwServices::helper::SigSlotConnection::sptr connections)
+    ::fwServices::helper::SigSlotConnection::sptr connections,
+    const SPTR(::fwTools::Object)& obj)
 {
     typedef std::pair< std::string, ::fwCom::Signals::SignalKeyType > SignalInfoType;
     typedef std::pair< std::string, ::fwCom::Slots::SlotKeyType > SlotInfoType;
@@ -66,6 +67,16 @@ void Config::createConnections(
             {
                 slotInfos.push_back( std::make_pair(uid, key) );
             }
+        }
+        else
+        {
+            SLM_ASSERT("Object uid is not defined, object used to retrieve signal must be present.", obj);
+            uid = obj->getID();
+            key = src;
+            SLM_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
+            SLM_ASSERT("There must be only one signal by connection",
+                       signalInfo.first.empty() && signalInfo.second.empty());
+            signalInfo = std::make_pair(uid, key);
         }
     }
 
