@@ -47,7 +47,8 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTF::TransferFunctionEditor,
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-TransferFunctionEditor::TransferFunctionEditor() : m_selectedTFKey("")
+TransferFunctionEditor::TransferFunctionEditor() :
+    m_selectedTFKey("")
 {
 //    this->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
 //    this->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
@@ -79,6 +80,27 @@ void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
     {
         m_tfSelectionFwID = configuration->getAttributeValue("tfSelectionFwID");
         SLM_FATAL_IF("'tfSelectionFwID' must not be empty", m_tfSelectionFwID.empty());
+    }
+
+    std::vector< ::fwRuntime::ConfigurationElement::sptr > pathsCfg = configuration->find("path");
+    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr cfg, pathsCfg)
+    {
+        ::boost::filesystem::path path(cfg->getValue());
+        m_paths.push_back(path);
+    }
+
+    bool useDefaultPath = true;
+    if ( configuration->hasAttribute("useDefaultPath") )
+    {
+        std::string value = configuration->getAttributeValue("useDefaultPath");
+        SLM_FATAL_IF("'useDefaultPath' value must be 'yes' or 'no'", value != "yes" && value != "no");
+
+        useDefaultPath = (value == "yes");
+    }
+    if (useDefaultPath)
+    {
+        ::boost::filesystem::path pathRoot ("Bundles/uiTF_" + std::string(UITF_VER) + "/tf");
+        m_paths.push_back(pathRoot);
     }
 }
 
@@ -418,7 +440,7 @@ void TransferFunctionEditor::importTF()
 
         compositeHelper.add(tf->getName(), tf);
         m_pTransferFunctionPreset->addItem(QString(tf->getName().c_str()));
-        this->presetChoice((*tfPool).size()-1);
+        this->presetChoice(static_cast<int>((*tfPool).size()-1));
 
         compositeHelper.notify(this->getSptr());
     }
@@ -477,15 +499,17 @@ void TransferFunctionEditor::initTransferFunctions()
     {
         // Parse all TF contained in uiTF Bundle's resources
         std::vector< ::boost::filesystem::path > paths;
-        ::boost::filesystem::path pathRoot ("Bundles/uiTF_" + std::string(UITF_VER) + "/tf");
-        for(::boost::filesystem::directory_iterator it(pathRoot);
-            it != ::boost::filesystem::directory_iterator();
-            ++it )
+        BOOST_FOREACH(::boost::filesystem::path dirPath, m_paths)
         {
-            if(!::boost::filesystem::is_directory(*it) &&
-               ::boost::filesystem::extension(*it) == ".json")
+            for(::boost::filesystem::directory_iterator it(dirPath);
+                it != ::boost::filesystem::directory_iterator();
+                ++it )
             {
-                paths.push_back(*it);
+                if(!::boost::filesystem::is_directory(*it) &&
+                   ::boost::filesystem::extension(*it) == ".json")
+                {
+                    paths.push_back(*it);
+                }
             }
         }
 
