@@ -49,4 +49,11 @@ void WindowManager::unregisterWindow(::Ogre::RenderWindow* _window)
 
 // ----------------------------------------------------------------------------
 
+bool fwRenderOgre::WindowManager::hasWindow()
+{
+    return !m_windows.empty();
+}
+
+// ----------------------------------------------------------------------------
+
 } // namespace fwRenderOgre

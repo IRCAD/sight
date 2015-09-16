@@ -41,6 +41,10 @@ public:
     {
         return ::fwCore::util::LazyInstantiator< ::fwRenderOgre::WindowManager >::getInstance();
     }
+
+    /// returns true if at least one window is registered
+    FWRENDEROGRE_API bool hasWindow();
+
 private:
 
     /// Pointer on the first window

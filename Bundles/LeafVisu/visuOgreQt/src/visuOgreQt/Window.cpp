@@ -69,18 +69,17 @@ void Window::initialise()
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
     ::Ogre::RenderSystem* rs = m_ogreRoot->getRenderSystem();
-
-    static bool bFirst = true;
+    SLM_ASSERT("OpenGL RenderSystem not found", rs->getName().find("GL") != std::string::npos);
 
     Ogre::NameValuePairList parameters;
-    /*
-       Flag within the parameters set so that Ogre3D initializes an OpenGL context on it's own.
-     */
-    SLM_ASSERT("OpenGL RenderSystem not found", rs->getName().find("GL") != std::string::npos);
-    if(bFirst)
+
+    ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
+
+    // We share the OpenGL context on all windows. The first Ogre window will create the context, the other ones will
+    // reuse the current context
+    if(!mgr->hasWindow())
     {
         parameters["currentGLContext"] = Ogre::String("false");
-        bFirst                         = false;
     }
     else
     {
@@ -120,7 +119,6 @@ void Window::initialise()
     m_ogreRenderWindow->setAutoUpdated(false);
     m_ogreRenderWindow->addListener(this);
 
-    ::fwRenderOgre::WindowManager::sptr mgr = ::fwRenderOgre::WindowManager::get();
     mgr->registerWindow(m_ogreRenderWindow);
 
     Q_EMIT renderWindowCreated();
