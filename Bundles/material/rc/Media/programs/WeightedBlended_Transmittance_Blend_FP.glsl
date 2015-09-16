@@ -9,7 +9,7 @@ uniform sampler2D u_occlusionDepthBuffer;
 uniform float u_vpWidth;
 uniform float u_vpHeight;
 
-uniform vec4 u_diffuseColor;
+uniform vec4 u_diffuse;
 
 out vec4 FragColor;
 
@@ -32,5 +32,5 @@ void main()
         discard;
     }
 
-    FragColor.r = u_diffuseColor.a;
+    FragColor.r = u_diffuse.a;
 }

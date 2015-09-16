@@ -22,6 +22,21 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
+static bool isNegatoPass(const std::string _name, bool& _peelPass)
+{
+    const std::regex regexPeel(".*_peel.*");
+    const std::regex regexWeight(".*_weight_blend.*");
+    const std::regex regexDualPeelInit("Dual.*_peel_init.*");
+
+    _peelPass = std::regex_match(_name, regexPeel);
+    const bool weightPass   = std::regex_match(_name, regexWeight);
+    const bool peelInitPass = std::regex_match(_name, regexDualPeelInit);
+
+    return _name == "" || (_peelPass && !peelInitPass) || weightPass;
+}
+
+//-----------------------------------------------------------------------------
+
 Plane::Plane( const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
               ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, bool _is3D,
               ::Ogre::TexturePtr _tex, float _entityOpacity) :
@@ -69,18 +84,6 @@ Plane::~Plane()
 {
 }
 
-bool isNegatoPass(const std::string _name, bool& _peelPass)
-{
-    const std::regex regexPeel(".*_peel.*");
-    const std::regex regexDualPeelInit("Dual.*_peel_init.*");
-
-    _peelPass = std::regex_match(_name, regexPeel);
-    const bool peelInitPass = std::regex_match(_name, regexDualPeelInit);
-
-    return _name == "" || (_peelPass && !peelInitPass);
-}
-
-
 //-----------------------------------------------------------------------------
 
 void Plane::initializeMaterial()
@@ -95,6 +98,9 @@ void Plane::initializeMaterial()
     defaultMat->copyDetailsTo(m_texMaterial);
     m_texMaterial->setCullingMode(::Ogre::CULL_NONE);
     m_texMaterial->setTextureFiltering(::Ogre::TFO_NONE);
+
+    ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
+    m_texMaterial->setDiffuse(diffuse);
 
     int orientationIndex;
 
@@ -126,7 +132,7 @@ void Plane::initializeMaterial()
         {
             ::Ogre::Pass* pass = tech->getPass(0);
 
-            ::Ogre::TextureUnitState* texState = pass->createTextureUnitState("acquisition");
+            ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
             texState->setTexture(m_texture);
             texState->setTextureFiltering(::Ogre::TFO_NONE);
             texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
@@ -149,7 +155,6 @@ void Plane::initializeMaterial()
 
             pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
             pass->getFragmentProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
-            pass->getFragmentProgramParameters()->setNamedConstant("u_opacity", m_entityOpacity);
         }
     }
 }
@@ -410,6 +415,9 @@ void Plane::setEntityOpacity(float _f)
 
     m_entityOpacity = _f;
 
+    ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
+    m_texMaterial->setDiffuse(diffuse);
+
     ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
 
     while( tech_iter.hasMoreElements())
@@ -417,17 +425,13 @@ void Plane::setEntityOpacity(float _f)
         ::Ogre::Technique* tech = tech_iter.getNext();
 
         bool peelPass = false;
-        if(isNegatoPass(tech->getName(), peelPass))
+        if(isNegatoPass(tech->getName(), peelPass) && !peelPass)
         {
             ::Ogre::Pass* pass = tech->getPass(0);
-            pass->getFragmentProgramParameters()->setNamedConstant("u_opacity", m_entityOpacity);
 
-            if(!peelPass)
-            {
-                // We don't want a depth check if we have non-OIT transparency
-                bool needDepthCheck = (m_entityOpacity == 1.f);
-                pass->setDepthCheckEnabled(needDepthCheck);
-            }
+            // We don't want a depth check if we have non-OIT transparency
+            bool needDepthCheck = (m_entityOpacity == 1.f);
+            pass->setDepthCheckEnabled(needDepthCheck);
         }
     }
 }

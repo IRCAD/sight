@@ -7,8 +7,16 @@ uniform sampler2D u_frontDepthBuffer;
 uniform sampler2D u_occlusionDepthBuffer;
 uniform float u_vpWidth;
 uniform float u_vpHeight;
+uniform vec4 u_diffuse;
 
 #ifndef EDGE
+
+#ifdef NEGATO
+
+vec4 negato();
+
+#else
+
 
 #ifdef PIXEL_LIGHTING
 in vec3 oPosition_WS;
@@ -28,6 +36,8 @@ in vec4 oColor;
 #endif // PIXEL_LIGHTING
 
 vec4 fetch_texture();
+
+#endif // NEGATO
 
 #else
 
@@ -61,6 +71,10 @@ void main()
         discard;
     }
 
+#ifdef NEGATO
+        vec4 colorOut = negato();
+#else
+
 #ifdef PIXEL_LIGHTING
         vec4 colorOut = lighting(normalize(oNormal_WS), oPosition_WS);
 #else
@@ -69,6 +83,8 @@ void main()
 #ifndef EDGE
         colorOut *= fetch_texture();
 #endif
+
+#endif // NEGATO
 
     float linearDepth = linearizeDepth(gl_FragCoord.z);
     linearDepth = linearDepth*2.5;

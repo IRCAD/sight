@@ -5,17 +5,16 @@ uniform sampler2D u_forwardColorBuffer;
 uniform sampler2D u_forwardAlphasBuffer;
 uniform float u_vpWidth;
 uniform float u_vpHeight;
+uniform vec4 u_diffuse;
 
 #ifndef EDGE
 
 #ifdef NEGATO
 
-vec4 u_diffuseColor = vec4(0,0,0,1);
 vec4 negato();
 
 #else
 
-uniform vec4 u_diffuseColor;
 
 #ifdef PIXEL_LIGHTING
 in vec3 oPosition_WS;
@@ -39,8 +38,7 @@ vec4 fetch_texture();
 
 #else
 
-uniform vec4 u_diffuseColor;
-vec4 oColor = vec4(0,0,0,u_diffuseColor.a);
+vec4 oColor = vec4(0,0,0,u_diffuse.a);
 
 #endif // EDGE
 

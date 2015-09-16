@@ -68,7 +68,7 @@ fragment_program CelShadingDepthPeeling_peel_Gouraud_FP_glsl glsl
         param_named u_bufferDepth int 0
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named u_defaultTex int 1
     }
 }
@@ -87,7 +87,7 @@ fragment_program CelShadingDepthPeeling_peel_PixelLighting_FP_glsl glsl
         param_named u_bufferDepth int 0
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
         param_named_auto u_lightDir light_position_array 2
         param_named_auto u_ambient surface_ambient_colour
@@ -111,7 +111,7 @@ fragment_program CelShadingDepthPeeling_peel_Flat_FP_glsl glsl
         param_named u_bufferDepth int 0
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named u_defaultTex int 1
     }
 }
@@ -128,7 +128,7 @@ fragment_program CelShadingDepthPeeling_peel_Edge_FP_glsl glsl
         param_named u_bufferDepth int 0
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -139,7 +139,7 @@ fragment_program CelShadingDepthPeeling_depth_map_FP glsl
         source CelShadingDepthPeelingDepthMap_FP.glsl
         default_params
         {
-            param_named_auto u_diffuseColor surface_diffuse_colour
+            param_named_auto u_diffuse surface_diffuse_colour
         }
 }
 
@@ -151,7 +151,7 @@ fragment_program CelShadingDepthPeeling_peel_init_FP glsl
         attach DepthPeelingCommon_FP
         default_params
         {
-            param_named_auto u_diffuseColor surface_diffuse_colour
+            param_named_auto u_diffuse surface_diffuse_colour
         }
 }
 
@@ -166,7 +166,7 @@ fragment_program CelShadingDepthPeeling_peel_FP glsl
                 param_named u_bufferDepth int 0
                 param_named_auto u_vpWidth viewport_width
                 param_named_auto u_vpHeight viewport_height
-                param_named_auto u_diffuseColor surface_diffuse_colour
+                param_named_auto u_diffuse surface_diffuse_colour
         }
 }
 

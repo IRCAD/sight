@@ -11,7 +11,7 @@ fragment_program HybridTransparency_back_depth_FP glsl
         source HybridTransparency_Back_Depth_FP.glsl
         default_params
         {
-            param_named_auto u_diffuseColor surface_diffuse_colour
+            param_named_auto u_diffuse surface_diffuse_colour
         }
 }
 
@@ -28,7 +28,7 @@ fragment_program HybridTransparency_peel_Gouraud_FP_glsl glsl
         param_named u_fragData1 int 1
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named u_defaultTex int 2
     }
 }
@@ -48,7 +48,7 @@ fragment_program HybridTransparency_peel_PixelLighting_FP_glsl glsl
         param_named u_fragData1 int 1
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
         param_named_auto u_lightDir light_position_array 2
         param_named_auto u_ambient surface_ambient_colour
@@ -73,7 +73,7 @@ fragment_program HybridTransparency_peel_Flat_FP_glsl glsl
         param_named u_fragData1 int 1
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named u_defaultTex int 2
     }
 }
@@ -92,7 +92,7 @@ fragment_program HybridTransparency_peel_Edge_FP_glsl glsl
         param_named u_fragData1 int 1
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named u_defaultTex int 2
     }
 }
@@ -200,7 +200,7 @@ fragment_program HybridTransparency_occlusion_map_FP glsl
         source HybridTransparency_Occlusion_Map_FP.glsl
         default_params
         {
-            param_named_auto u_diffuseColor surface_diffuse_colour
+            param_named_auto u_diffuse surface_diffuse_colour
         }
 }
 
@@ -297,7 +297,7 @@ fragment_program HybridTransparency_transmittance_blend_Edge_FP glsl
         param_named u_occlusionDepthBuffer int 1
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -313,7 +313,7 @@ fragment_program HybridTransparency_transmittance_blend_FP glsl
             param_named u_occlusionDepthBuffer int 1
             param_named_auto u_vpWidth viewport_width
             param_named_auto u_vpHeight viewport_height
-            param_named_auto u_diffuseColor surface_diffuse_colour
+            param_named_auto u_diffuse surface_diffuse_colour
         }
 }
 
@@ -328,7 +328,7 @@ fragment_program HybridTransparency_WBOIT_Blend_FP glsl
         {
             param_named u_fragData0 int 0
             param_named u_fragData1 int 1
-            param_named_auto u_diffuseColor surface_diffuse_colour
+            param_named_auto u_diffuse surface_diffuse_colour
         }
 }
 

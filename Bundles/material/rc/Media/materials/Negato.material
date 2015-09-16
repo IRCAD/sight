@@ -44,6 +44,7 @@ fragment_program NegatoMain_FP glsl
         param_named u_maxValue float 1.0
         param_named u_slice float 0
         param_named u_orientation int 2
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -59,6 +60,7 @@ fragment_program DepthPeeling_peel_Negato_FP_glsl glsl
     {
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named u_fragData0 int 0
         param_named u_minValue float 0.0
         param_named u_maxValue float 1.0
@@ -85,11 +87,35 @@ fragment_program DualDepthPeeling_peel_Negato_FP_glsl glsl
         param_named u_forwardAlphasBuffer int 3
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named u_minValue float 0.0
         param_named u_maxValue float 1.0
         param_named u_slice float 0
         param_named u_orientation int 2
         param_named u_image int 4
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_Negato_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    preprocessor_defines NEGATO=1
+    attach Negato_FP
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        param_named u_image int 1
     }
 }
 
@@ -133,6 +159,10 @@ material Negato3D
             }
         }
     }
+
+    //-------------------------------------------------------------------------
+    // Dual Depth peeling
+    //-------------------------------------------------------------------------
 
     technique DepthPeeling_depth_map
     {
@@ -237,6 +267,10 @@ material Negato3D
             }
         }
     }
+
+    //-------------------------------------------------------------------------
+    // Dual Depth peeling
+    //-------------------------------------------------------------------------
 
     technique DualDepthPeeling_peel_init
     {
@@ -357,6 +391,85 @@ material Negato3D
             texture_unit
             {
                 content_type compositor DualDepthPeeling pong_buffer 4
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    // Weighted Blended Average OIT
+    //-------------------------------------------------------------------------
+
+    technique WeightedBlended_occlusion_map
+    {
+        scheme WeightedBlended_occlusion_map
+
+        pass occlusion_map
+        {
+            cull_hardware none
+            cull_software none
+
+            fragment_program_ref WeightedBlended_occlusion_map_FP
+            {
+            }
+
+            vertex_program_ref Render_VP
+            {
+            }
+        }
+    }
+
+    technique WeightedBlended_weight_blend
+    {
+        scheme WeightedBlended_weight_blend
+
+        pass blend
+        {
+            depth_check off
+            cull_hardware none
+            cull_software none
+            scene_blend add
+
+            fragment_program_ref WeightedBlended_weight_blend_Negato_FP_glsl
+            {
+            }
+
+            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor WeightedBlended occlusion 0
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+
+    technique WeightedBlended_transmittance_blend
+    {
+        scheme WeightedBlended_transmittance_blend
+
+        pass blend
+        {
+            depth_check off
+            cull_hardware none
+            cull_software none
+            scene_blend zero one_minus_src_colour
+
+            fragment_program_ref WeightedBlended_transmittance_blend_FP
+            {
+            }
+
+            vertex_program_ref Render_VP
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor WeightedBlended occlusion 0
                 tex_address_mode clamp
                 filtering none
             }

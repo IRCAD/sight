@@ -1,6 +1,6 @@
 #version 330
 in vec3 normal_VS;
-uniform vec4 u_diffuseColor;
+uniform vec4 u_diffuse;
 
 #ifdef PIXEL_LIGHTING
 in vec3 oPosition_WS;
@@ -37,7 +37,7 @@ vec3 computeCelShading(vec3 color)
   **/
 void main()
 {
-    if( u_diffuseColor.a == 0.)
+    if( u_diffuse.a == 0.)
     {
         discard;
     }

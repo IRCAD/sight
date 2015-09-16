@@ -33,7 +33,7 @@ fragment_program DepthPeeling_depth_map_FP glsl
     source DepthPeelingDepthMap_FP.glsl
     default_params
     {
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -42,6 +42,31 @@ fragment_program DepthPeeling_depth_map_FP glsl
 fragment_program DualDepthPeeling_peel_init_FP_glsl glsl
 {
     source DualDepthPeelingInit_FP.glsl
+}
+
+//------------------------------------------------------------------
+
+fragment_program WeightedBlended_occlusion_map_FP glsl
+{
+        source WeightedBlended_Occlusion_Map_FP.glsl
+        default_params
+        {
+            param_named_auto u_diffuse surface_diffuse_colour
+        }
+}
+
+//------------------------------------------------------------------
+
+fragment_program WeightedBlended_transmittance_blend_FP glsl
+{
+        source WeightedBlended_Transmittance_Blend_FP.glsl
+        default_params
+        {
+            param_named u_occlusionDepthBuffer int 0
+            param_named_auto u_vpWidth viewport_width
+            param_named_auto u_vpHeight viewport_height
+            param_named_auto u_diffuse surface_diffuse_colour
+        }
 }
 
 //---------------------------------------------------------------------------

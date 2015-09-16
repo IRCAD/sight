@@ -1,6 +1,6 @@
 #version 150
 
-uniform vec4 u_diffuseColor;
+uniform vec4 u_diffuse;
 out vec4 FragColor;
 
 void main()

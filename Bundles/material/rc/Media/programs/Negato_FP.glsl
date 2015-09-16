@@ -6,7 +6,7 @@ uniform float u_minValue;
 uniform float u_maxValue;
 uniform int u_threshold = 0;
 uniform int u_orientation = 0;
-uniform float u_opacity = 1.f;
+uniform vec4 u_diffuse;
 
 in vec2 uv;
 
@@ -50,5 +50,5 @@ vec4 negato()
 
     float lum = windowLevel(color, u_minValue, u_maxValue);
 
-    return vec4(lum, lum, lum, u_opacity);
+    return vec4(lum, lum, lum, u_diffuse.a);
 }

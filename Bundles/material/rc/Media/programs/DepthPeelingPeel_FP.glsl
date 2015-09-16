@@ -2,17 +2,15 @@
 uniform sampler2D u_fragData0;
 uniform float u_vpWidth;
 uniform float u_vpHeight;
+uniform vec4 u_diffuse;
 
 #ifndef EDGE
 
 #ifdef NEGATO
 
-vec4 u_diffuseColor = vec4(0,0,0,1);
 vec4 negato();
 
 #else
-
-uniform vec4 u_diffuseColor;
 
 #ifdef PIXEL_LIGHTING
 in vec3 oPosition_WS;
@@ -37,8 +35,7 @@ vec4 fetch_texture();
 
 #else
 
-uniform vec4 u_diffuseColor;
-vec4 oColor = vec4(0,0,0,u_diffuseColor.a);
+vec4 oColor = vec4(0,0,0,u_diffuse.a);
 
 #endif // EDGE
 
@@ -75,7 +72,7 @@ void main()
         // Disallow repetition of last passes
         // Check if current fragment is the nearest from last front peel by depth comparaison
         // if (yes), draws fragment as current nearest peel
-        if( currentDepth <= frontDepthBuffer || u_diffuseColor.a == 0.)
+        if( currentDepth <= frontDepthBuffer || u_diffuse.a == 0.)
         {
             discard;
         }

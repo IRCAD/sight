@@ -15,7 +15,7 @@ fragment_program DualDepthPeeling_peel_Gouraud_FP_glsl glsl
         param_named u_forwardAlphasBuffer int 3
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named u_defaultTex int 4
     }
 }
@@ -37,7 +37,7 @@ fragment_program DualDepthPeeling_peel_PixelLighting_FP_glsl glsl
         param_named u_forwardAlphasBuffer int 3
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
         param_named_auto u_lightDir light_position_array 2
         param_named_auto u_ambient surface_ambient_colour
@@ -64,7 +64,7 @@ fragment_program DualDepthPeeling_peel_Flat_FP_glsl glsl
         param_named u_forwardAlphasBuffer int 3
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
         param_named u_defaultTex int 4
     }
 }
@@ -84,7 +84,7 @@ fragment_program DualDepthPeeling_peel_Edge_FP_glsl glsl
         param_named u_forwardAlphasBuffer int 3
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -100,7 +100,7 @@ fragment_program DualDepthPeeling_peel_init_Edge_FP_glsl glsl
         param_named u_fragData0 int 0
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuseColor surface_diffuse_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
