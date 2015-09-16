@@ -49,7 +49,7 @@ fragment_program NegatoMain_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling_Negato_FP_glsl glsl
+fragment_program DepthPeeling_peel_Negato_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
     preprocessor_defines NEGATO=1
@@ -65,6 +65,31 @@ fragment_program DepthPeeling_Negato_FP_glsl glsl
         param_named u_slice float 0
         param_named u_orientation int 2
         param_named u_image int 1
+    }
+}
+
+
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling_peel_Negato_FP_glsl glsl
+{
+    source DualDepthPeelingPeel_FP.glsl
+    preprocessor_defines NEGATO=1
+    attach DepthPeelingCommon_FP
+    attach Negato_FP
+    default_params
+    {
+        param_named u_nearestDepthBuffer int 0
+        param_named u_farthestDepthBuffer int 1
+        param_named u_forwardColorBuffer int 2
+        param_named u_forwardAlphasBuffer int 3
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        param_named u_image int 4
     }
 }
 
@@ -140,7 +165,7 @@ material Negato3D
             cull_software none
 
             // Draw render depth + color
-            fragment_program_ref DepthPeeling_Negato_FP_glsl
+            fragment_program_ref DepthPeeling_peel_Negato_FP_glsl
             {
             }
 
@@ -168,7 +193,7 @@ material Negato3D
             cull_software none
 
             // Check previous FBO's buffers and write depth + color in another FBO's buffers
-            fragment_program_ref DepthPeeling_Negato_FP_glsl
+            fragment_program_ref DepthPeeling_peel_Negato_FP_glsl
             {
             }
 
@@ -196,7 +221,7 @@ material Negato3D
             cull_software none
 
             // Check previous FBO's buffers and write depth + color in another FBO's buffers
-            fragment_program_ref DepthPeeling_Negato_FP_glsl
+            fragment_program_ref DepthPeeling_peel_Negato_FP_glsl
             {
             }
 
@@ -207,6 +232,131 @@ material Negato3D
             texture_unit
             {
                 content_type compositor DepthPeeling pong_buffer 1
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+
+    technique DualDepthPeeling_peel_init
+    {
+        scheme DualDepthPeeling_peel_init
+
+        pass peel_init
+        {
+            depth_check off
+            cull_hardware none
+            cull_software none
+            scene_blend add
+            scene_blend_op max
+
+            // Draw render depth + color
+            fragment_program_ref DualDepthPeeling_peel_init_FP_glsl
+            {
+            }
+
+            vertex_program_ref Negato3D_VP
+            {
+            }
+        }
+    }
+
+    technique DualDepthPeeling_peel
+    {
+        scheme DualDepthPeeling_peel_pong
+
+        pass
+        {
+            depth_check off
+            cull_hardware none
+            cull_software none
+            scene_blend add
+            scene_blend_op max
+
+            // Check previous FBO's buffers and write depth + color in another FBO's buffers
+            fragment_program_ref DualDepthPeeling_peel_Negato_FP_glsl
+            {
+            }
+
+            vertex_program_ref Negato3D_VP
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor DualDepthPeeling ping_buffer 0
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit
+            {
+                content_type compositor DualDepthPeeling ping_buffer 1
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit
+            {
+                content_type compositor DualDepthPeeling ping_buffer 2
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit
+            {
+                content_type compositor DualDepthPeeling ping_buffer 4
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+
+    technique DualDepthPeeling_peel
+    {
+        scheme DualDepthPeeling_peel_ping
+
+        pass
+        {
+            depth_check off
+            cull_hardware none
+            cull_software none
+            scene_blend add
+            scene_blend_op max
+
+            // Check previous FBO's buffers and write depth + color in another FBO's buffers
+            fragment_program_ref DualDepthPeeling_peel_Negato_FP_glsl
+            {
+            }
+
+            vertex_program_ref Negato3D_VP
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor DualDepthPeeling pong_buffer 0
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit
+            {
+                content_type compositor DualDepthPeeling pong_buffer 1
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit
+            {
+                content_type compositor DualDepthPeeling pong_buffer 2
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit
+            {
+                content_type compositor DualDepthPeeling pong_buffer 4
                 tex_address_mode clamp
                 filtering none
             }

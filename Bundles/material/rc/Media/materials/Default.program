@@ -39,6 +39,13 @@ fragment_program DepthPeeling_depth_map_FP glsl
 
 //---------------------------------------------------------------------------
 
+fragment_program DualDepthPeeling_peel_init_FP_glsl glsl
+{
+    source DualDepthPeelingInit_FP.glsl
+}
+
+//---------------------------------------------------------------------------
+
 vertex_program Render_VP glsl
 {
     source Render_VP.glsl

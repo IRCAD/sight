@@ -69,6 +69,18 @@ Plane::~Plane()
 {
 }
 
+bool isNegatoPass(const std::string _name, bool& _peelPass)
+{
+    const std::regex regexPeel(".*_peel.*");
+    const std::regex regexDualPeelInit("Dual.*_peel_init.*");
+
+    _peelPass = std::regex_match(_name, regexPeel);
+    const bool peelInitPass = std::regex_match(_name, regexDualPeelInit);
+
+    return _name == "" || (_peelPass && !peelInitPass);
+}
+
+
 //-----------------------------------------------------------------------------
 
 void Plane::initializeMaterial()
@@ -99,8 +111,6 @@ void Plane::initializeMaterial()
             break;
     }
 
-    const std::regex regexPeel("Depth.*_peel.*");
-
     // This is necessary to load and compile the material, otherwise the following technique iterator
     // is null when we call this method on the first time (from doStart() for instance)
     m_texMaterial->touch();
@@ -111,9 +121,8 @@ void Plane::initializeMaterial()
     {
         ::Ogre::Technique* tech = tech_iter.getNext();
 
-        const bool peelPass = std::regex_match(tech->getName(), regexPeel);
-
-        if(tech->getName() == "" || peelPass)
+        bool peelPass = false;
+        if(isNegatoPass(tech->getName(), peelPass))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
 
@@ -312,17 +321,14 @@ void Plane::setRelativePosition(float _relativePosition)
 
 void Plane::setWindowing(float _minValue, float _maxValue)
 {
-    const std::regex regexPeel("Depth.*_peel.*");
-
     ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
 
     while( tech_iter.hasMoreElements())
     {
         ::Ogre::Technique* tech = tech_iter.getNext();
 
-        const bool peelPass = std::regex_match(tech->getName(), regexPeel);
-
-        if(tech->getName() == "" || peelPass)
+        bool peelPass = false;
+        if(isNegatoPass(tech->getName(), peelPass))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
             SLM_ASSERT("Can't find Ogre pass", pass);
@@ -337,17 +343,14 @@ void Plane::setWindowing(float _minValue, float _maxValue)
 
 void Plane::switchThresholding(bool _threshold)
 {
-    const std::regex regexPeel("Depth.*_peel.*");
-
     ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
 
     while( tech_iter.hasMoreElements())
     {
         ::Ogre::Technique* tech = tech_iter.getNext();
 
-        const bool peelPass = std::regex_match(tech->getName(), regexPeel);
-
-        if(tech->getName() == "" || peelPass)
+        bool peelPass = false;
+        if(isNegatoPass(tech->getName(), peelPass))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
 
@@ -407,17 +410,14 @@ void Plane::setEntityOpacity(float _f)
 
     m_entityOpacity = _f;
 
-    const std::regex regexPeel("Depth.*_peel.*");
-
     ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
 
     while( tech_iter.hasMoreElements())
     {
         ::Ogre::Technique* tech = tech_iter.getNext();
 
-        const bool peelPass = std::regex_match(tech->getName(), regexPeel);
-
-        if(tech->getName() == "" || peelPass)
+        bool peelPass = false;
+        if(isNegatoPass(tech->getName(), peelPass))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
             pass->getFragmentProgramParameters()->setNamedConstant("u_opacity", m_entityOpacity);
@@ -436,17 +436,14 @@ void Plane::setEntityOpacity(float _f)
 
 void Plane::changeSlice(float sliceIndex)
 {
-    const std::regex regexPeel("Depth.*_peel.*");
-
     ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
 
     while( tech_iter.hasMoreElements())
     {
         ::Ogre::Technique* tech = tech_iter.getNext();
 
-        const bool peelPass = std::regex_match(tech->getName(), regexPeel);
-
-        if(tech->getName() == "" || peelPass)
+        bool peelPass = false;
+        if(isNegatoPass(tech->getName(), peelPass))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
 
