@@ -665,23 +665,6 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
 
 endforeach()
 
-# Doxygen documentation
-include(${CMAKE_ROOT}/Modules/Documentation.cmake)
-option(BUILD_DOCUMENTATION "Build the doxygen documentation" OFF)
-if(BUILD_DOCUMENTATION)
-    find_package(Doxygen)
-    if(DOXYGEN_FOUND)
-        set(INCLUDE_DIRS)
-        foreach(PROJECT ${PROJECT_LIST})
-            set(INCLUDE_DIRS "${INCLUDE_DIRS} ${${PROJECT}_DIR}/include")
-        endforeach(PROJECT)
-        configure_file(${FWCMAKE_RESOURCE_PATH}/doxygen/Doxyfile.in ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Doxygen/Doxyfile @ONLY)
-        add_custom_target(doc ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Documentation/Doxygen/Doxyfile
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} COMMENT
-            "Generating API documentation with Doxygen" VERBATIM)
-    endif(DOXYGEN_FOUND)
-endif(BUILD_DOCUMENTATION)
-
 if(PROJECTS_TO_BUILD)
     set(PROJECT_LIST ${PROJECTS_TO_BUILD})
     findAllDependencies("${PROJECT_LIST}" PROJECT_LIST)
@@ -693,33 +676,43 @@ if(BUILD_TESTS)
     set(PROJECT_LIST ${PROJECT_LIST};${PROJECT_TESTS})
 endif()
 
-findAllDependencies("${PROJECTS_TO_INSTALL}" PROJECTS_TO_INSTALL)
-
 if(PROJECTS_TO_INSTALL)
     message(STATUS "Installation rules will be created for : ${PROJECTS_TO_INSTALL}")
+    findAllDependencies("${PROJECTS_TO_INSTALL}" PROJECTS_TO_INSTALL)
+    
+    foreach(PROJECT ${PROJECTS_TO_INSTALL})
+        list(FIND PROJECT_LIST "${PROJECT}" PROJECT_FOUND)
+        if(PROJECT_FOUND GREATER -1)
+            set(${PROJECT}_INSTALL 1)
+        else()
+            message(WARNING "Project ${PROJECT} not found, will not be installed.")
+            unset(${PROJECT}_INSTALL)
+        endif()
+    endforeach()
+    unset(PROJECT_FOUND)
 endif()
 
-foreach(PROJECT ${PROJECTS_TO_INSTALL})
-    list(FIND PROJECT_LIST "${PROJECT}" PROJECT_FOUND)
-    if(PROJECT_FOUND GREATER -1)
-        set(${PROJECT}_INSTALL 1)
-    else()
-        message(WARNING "Project ${PROJECT} not found, will not be installed.")
-        unset(${PROJECT}_INSTALL)
-    endif()
-endforeach()
-unset(PROJECT_FOUND)
+if(EXTERNAL_LIBRARIES)
+    foreach(PROJECT ${PROJECT_LIST})
+        addProject(${PROJECT})
+    endforeach()
+else()
+    message("EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to genereate CMake projects.")
+endif()
 
-foreach(PROJECT ${PROJECT_LIST})
-    addProject(${PROJECT})
-endforeach()
+# Doxygen documentation
+option(BUILD_DOCUMENTATION "Build the doxygen documentation" OFF)
+if(BUILD_DOCUMENTATION)
+    include(${FWCMAKE_RESOURCE_PATH}doxygen/doxygen_generator.cmake)
+    doxygenGenerator(${PROJECT_LIST})
+endif()
 
 # Eclipse project
 option(ECLIPSE_PROJECT "Generate eclipse project" OFF)
 if(ECLIPSE_PROJECT)
     include(${FWCMAKE_RESOURCE_PATH}eclipse/eclipse_generator.cmake)
     eclipseGenerator(${PROJECT_LIST})
-endif(ECLIPSE_PROJECT)
+endif()
 
 # command new service
 add_custom_target(newService
