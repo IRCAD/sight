@@ -313,6 +313,8 @@ bool Window::eventFilter(QObject *target, QEvent *event)
         {
             if (m_ogreRenderWindow != nullptr)
             {
+                this->makeCurrent();
+
                 m_ogreRenderWindow->reposition(x(), y());
 #if defined(linux) || defined(__linux)
                 m_ogreRenderWindow->resize(static_cast< unsigned int >(this->width()),
