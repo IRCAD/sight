@@ -54,7 +54,6 @@
 #define __FWCORE_TYPEDEF_WEAK_PTR_NAME           wptr
 #define __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME   csptr
 #define __FWCORE_TYPEDEF_WEAK_PTR_CONST_NAME     cwptr
-#define __FWCORE_TYPEDEF_SHARED_PTR_FACTORY_NAME NewSptr
 #define __FWCORE_FACTORY_NAME                    New
 #define __FWCORE_TYPEDEF_SUPERCLASS_NAME         BaseClass
 #define __FWCORE_TYPEDEF_ROOTCLASS_NAME          RootClass
@@ -63,7 +62,6 @@
 #define __FWCORE_CONST_CAST_FUNC_NAME            constCast
 #define __FWCORE_SPTR_FROM_THIS_FUNC_NAME        getSptr
 #define __FWCORE_CONST_SPTR_FROM_THIS_FUNC_NAME  getConstSptr
-#define __FWCORE_SHARED_PTR_FACTORY_CLASSNAME    __SelfNewSptr__
 #define __FWCORE_ARG_NAME                        __var
 /** @endcond */
 
@@ -150,104 +148,6 @@
         (),                                                                  \
         (BOOST_PP_ENUM_PARAMS(BOOST_PP_SEQ_SIZE(_args_), __FWCORE_ARG_NAME)) \
         )
-
-/*
- * __FWCORE_GENERATE_CONSTRUCTOR(_factory_, _classname_, superclassname, _args_)
- *
- *  - _args_ is a boost_pp sequence of (0, 1 or 2)-elem sequences
- *
- *  expands to  _classname_ (_args_) : superclassname ( _factory_ (_args_) ) {}
- *
- *  ex: __FWCORE_GENERATE_CONSTRUCTOR( new obj, MyClass, MySuperClass, ((int)) ((float)(5.))  )
- *  expands to : MyClass(int __var0, float __var2 = 5.) : MySuperClass( new obj(__var0, __var1)) {}
- *
- *  ex: __FWCORE_GENERATE_CONSTRUCTOR( new obj, MyClass, MySuperClass, ((int)) ((string)) )
- *  expands to : MyClass(int __var0, string __var2) : MySuperClass( new obj(__var0, __var1)) {}
- *
- *  and: __FWCORE_GENERATE_CONSTRUCTOR( new obj, MyClass, MySuperClass, ())
- *  expands to : MyClass() : MySuperClass( new obj()) {}
- *
- */
-#define __FWCORE_GENERATE_CONSTRUCTOR( _factory_, _classname_, superclassname, _args_ )                                                   \
-    _classname_ __FWCORE_GENERATE_TYPED_NUMBERED_TUPLE(_args_) : superclassname ( _factory_ __FWCORE_GENERATE_NUMBERED_TUPLE( \
-                                                                                      _args_) ) {}
-
-
-/*
- * __FWCORE_GENERATE_ONE_CONSTRUCTOR_III(_r_, _data_, _args_)
- *
- * wrapper of __FWCORE_GENERATE_CONSTRUCTOR for __FWCORE_GENERATE_CONSTRUCTORS_IV needs
- * _args_ : ( boost-needed, (factory) (classname) (superclassname), _args_)
- */
-#define __FWCORE_GENERATE_ONE_CONSTRUCTOR_III(_r_, _data_, _args_)                                                                 \
-    __FWCORE_GENERATE_CONSTRUCTOR( BOOST_PP_SEQ_ELEM(0,_data_),BOOST_PP_SEQ_ELEM(1,_data_),BOOST_PP_SEQ_ELEM(2, \
-                                                                                                             _data_), \
-                                   _args_);
-
-/*
- * __FWCORE_GENERATE_CONSTRUCTORS_IV( _factory_, _classname_, superclassname, _args_ )
- *
- * generates a constructor for each item of _args_ using "_factory_"
- *
- */
-#define __FWCORE_GENERATE_CONSTRUCTORS_IV( _factory_, _classname_, superclassname, _args_ )                          \
-    BOOST_PP_SEQ_FOR_EACH(__FWCORE_GENERATE_ONE_CONSTRUCTOR_III, (_factory_) (_classname_) (superclassname), _args_)
-
-
-/*
- * __FWCORE_GENERATE_ONE_CONSTRUCTOR_WITH_N_FACTORIES_III(_r_, _data_, _factory_args_)
- *
- * wrapper of __FWCORE_GENERATE_CONSTRUCTOR for __FWCORE_GENERATE_CONSTRUCTORS_WITH_N_FACTORIES_III usage
- *
- * _factory_args_ format : (factory, ((type1)) ((type2)) ... ((typeN)) )
- */
-#define __FWCORE_GENERATE_ONE_CONSTRUCTOR_WITH_N_FACTORIES_III(_r_, _data_, _factory_args_) \
-    __FWCORE_GENERATE_CONSTRUCTOR(                                                         \
-        BOOST_PP_TUPLE_ELEM(2,0,_factory_args_),                                       \
-        BOOST_PP_SEQ_ELEM(0,_data_),                                                   \
-        BOOST_PP_SEQ_ELEM(1,_data_),                                                   \
-        BOOST_PP_TUPLE_ELEM(2,1,_factory_args_)                                        \
-        );
-
-/*
- * __FWCORE_GENERATE_CONSTRUCTORS_WITH_N_FACTORIES_III( _classname_, superclassname, _factories_args_ )
- *
- * generates a constructor for each item of _args_ using a different specified factory
- *
- * ex. of _factories_args_ : ((new obj, () )) ((new objFromInt, ((int)) ))
- *
- */
-#define __FWCORE_GENERATE_CONSTRUCTORS_WITH_N_FACTORIES_III( _classname_, superclassname, _factories_args_ )                        \
-    BOOST_PP_SEQ_FOR_EACH(__FWCORE_GENERATE_ONE_CONSTRUCTOR_WITH_N_FACTORIES_III, (_classname_) (superclassname), \
-                          _factories_args_)
-
-
-/*
- * __FWCORE_GENERATE_CONSTRUCTORS( _classname_ , _factory_, _args_ )
- *
- * Wrapper for __FWCORE_GENERATE_CONSTRUCTORS_IV
- *
- */
-#define __FWCORE_GENERATE_CONSTRUCTORS( _classname_, _factory_, _args_) \
-    __FWCORE_GENERATE_CONSTRUCTORS_IV(                                   \
-        _factory_,                                                   \
-        __FWCORE_SHARED_PTR_FACTORY_CLASSNAME,                       \
-        __FWCORE_TYPEDEF_SHARED_PTR_NAME,                            \
-        _args_                                                       \
-        )
-
-/*
- * __FWCORE_GENERATE_CONSTRUCTORS_WITH_N_FACTORIES( _classname_ , _factories_args_ )
- *
- * Wrapper for __FWCORE_GENERATE_CONSTRUCTORS_WITH_N_FACTORIES_III *
- */
-#define __FWCORE_GENERATE_CONSTRUCTORS_WITH_N_FACTORIES( _classname_, _factories_args_ ) \
-    __FWCORE_GENERATE_CONSTRUCTORS_WITH_N_FACTORIES_III(                                  \
-        __FWCORE_SHARED_PTR_FACTORY_CLASSNAME,                                        \
-        __FWCORE_TYPEDEF_SHARED_PTR_NAME,                                             \
-        _factories_args_                                                              \
-        )
-
 
 
 /*
@@ -529,17 +429,8 @@ struct pointer_holder;
  */
 #define fwCoreClassDefinitionsWithFactoryMacro(_classinfo_, _parameters_, _factory_)                     \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                                \
-    friend class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME;                                                  \
-    /* @cond */                                                                                          \
-    class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME : public __FWCORE_TYPEDEF_SHARED_PTR_NAME                 \
-    {                                                                                                    \
-    public:                                                                                          \
-        __FWCORE_GENERATE_CONSTRUCTORS (__FWCORE_GET_CLASSNAME(_classinfo_), _factory_, _parameters_); \
-    };                                                                                                   \
-    /* @endcond */                                                                                       \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
      * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                  \
-    typedef  __FWCORE_SHARED_PTR_FACTORY_CLASSNAME __FWCORE_TYPEDEF_SHARED_PTR_FACTORY_NAME;             \
     /* @cond */                                                                                          \
     /* @endcond */                                                                                       \
     __FWCORE_GENERATE_FACTORIES_WITH_ONE_FACTORY (_factory_, _parameters_);                              \
@@ -567,17 +458,8 @@ struct pointer_holder;
  */
 #define fwCoreClassDefinitionsWithNFactoriesMacro(_classinfo_, _factories_args_)                                    \
     __FWCORE_CLASS_TYPEDEFS(_classinfo_);                                                                           \
-    friend class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME;                                                             \
-    /* @cond */                                                                                                     \
-    class __FWCORE_SHARED_PTR_FACTORY_CLASSNAME : public __FWCORE_TYPEDEF_SHARED_PTR_NAME                            \
-    {                                                                                                               \
-    public:                                                                                                     \
-        __FWCORE_GENERATE_CONSTRUCTORS_WITH_N_FACTORIES (__FWCORE_GET_CLASSNAME(_classinfo_), _factories_args_);  \
-    };                                                                                                             \
-    /* @endcond */                                                                                                  \
     /** Specialized version of shared_ptr (alias to shared_ptr< __FWCORE_GET_CLASSNAME(_classinfo_) > ) \
      * with embeded factory for __FWCORE_GET_CLASSNAME(_classinfo_). */                                             \
-    typedef __FWCORE_SHARED_PTR_FACTORY_CLASSNAME __FWCORE_TYPEDEF_SHARED_PTR_FACTORY_NAME;                         \
     /* @cond */                                                                                                     \
                                                                                                                     \
     __FWCORE_GENERATE_FACTORIES_WITH_N_FACTORIES (_factories_args_);                                                \
