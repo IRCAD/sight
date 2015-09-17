@@ -6,17 +6,6 @@
 
 //---------------------------------------------------------------------------
 
-fragment_program HybridTransparency_back_depth_FP glsl
-{
-        source HybridTransparency_Back_Depth_FP.glsl
-        default_params
-        {
-            param_named_auto u_diffuse surface_diffuse_colour
-        }
-}
-
-//---------------------------------------------------------------------------
-
 fragment_program HybridTransparency_peel_Gouraud_FP_glsl glsl
 {
     source HybridTransparency_Peel_FP.glsl
@@ -190,14 +179,6 @@ material HybridTransparency_Blend_Final
 
 /// WBOIT
 
-fragment_program HybridTransparency_occlusion_map_FP glsl
-{
-        source HybridTransparency_Occlusion_Map_FP.glsl
-        default_params
-        {
-            param_named_auto u_diffuse surface_diffuse_colour
-        }
-}
 
 //---------------------------------------------------------------------------
 
@@ -295,22 +276,6 @@ fragment_program HybridTransparency_transmittance_blend_Edge_FP glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
     }
-}
-
-//------------------------------------------------------------------
-
-fragment_program HybridTransparency_transmittance_blend_FP glsl
-{
-        source WeightedBlended_Transmittance_Blend_FP.glsl
-        preprocessor_defines HYBRID=1
-        default_params
-        {
-            param_named u_frontDepthBuffer int 0
-            param_named u_occlusionDepthBuffer int 1
-            param_named_auto u_vpWidth viewport_width
-            param_named_auto u_vpHeight viewport_height
-            param_named_auto u_diffuse surface_diffuse_colour
-        }
 }
 
 //------------------------------------------------------------------

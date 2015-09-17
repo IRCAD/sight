@@ -98,6 +98,54 @@ fragment_program DualDepthPeeling_peel_Negato_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
+fragment_program HybridTransparency_peel_Negato_FP_glsl glsl
+{
+    source HybridTransparency_Peel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach Negato_FP
+    attach MaterialColor_Negato_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named u_fragData1 int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        param_named u_image int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_Negato_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    preprocessor_defines HYBRID=1
+    attach Negato_FP
+    attach MaterialColor_Negato_FP
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        param_named u_image int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
 fragment_program WeightedBlended_weight_blend_Negato_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
@@ -393,6 +441,215 @@ material Negato3D
             texture_unit
             {
                 content_type compositor DualDepthPeeling pong_buffer 4
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    // Hybrid Transparency
+    //-------------------------------------------------------------------------
+
+    technique HybridTransparency_back_depth
+    {
+        scheme HybridTransparency_back_depth
+
+        pass back_depth
+        {
+            depth_func greater_equal
+            cull_hardware none
+            cull_software none
+
+            fragment_program_ref HybridTransparency_back_depth_FP
+            {
+            }
+
+            vertex_program_ref Render_VP
+            {
+            }
+        }
+    }
+
+    technique HybridTransparency_peel_init
+    {
+        scheme HybridTransparency_peel_init
+
+        pass peel_init
+        {
+            cull_hardware none
+            cull_software none
+
+            fragment_program_ref HybridTransparency_peel_Negato_FP_glsl
+            {
+            }
+
+            vertex_program_ref Negato3D_VP
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor HybridTransparency peel_init 0
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit
+            {
+                content_type compositor HybridTransparency back_depth 0
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+
+    technique HybridTransparency_peel
+    {
+        scheme HybridTransparency_peel_pong
+
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            fragment_program_ref HybridTransparency_peel_Negato_FP_glsl
+            {
+            }
+
+            vertex_program_ref Negato3D_VP
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor HybridTransparency ping_buffer 1
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                content_type compositor HybridTransparency back_depth 0
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+
+    technique HybridTransparency_peel
+    {
+        scheme HybridTransparency_peel_ping
+
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            fragment_program_ref HybridTransparency_peel_Negato_FP_glsl
+            {
+            }
+
+            vertex_program_ref Negato3D_VP
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor HybridTransparency pong_buffer 1
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                content_type compositor HybridTransparency back_depth 0
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+
+    technique HybridTransparency_occlusion_map
+    {
+        scheme HybridTransparency_occlusion_map
+
+        pass occlusion_map
+        {
+            cull_hardware none
+            cull_software none
+
+            fragment_program_ref HybridTransparency_occlusion_map_FP
+            {
+            }
+
+            vertex_program_ref Render_VP
+            {
+            }
+        }
+    }
+
+    technique HybridTransparency_weight_blend
+    {
+        scheme HybridTransparency_weight_blend
+
+        pass blend
+        {
+            depth_check off
+            cull_hardware none
+            cull_software none
+            scene_blend add
+
+            fragment_program_ref HybridTransparency_weight_blend_Negato_FP_glsl
+            {
+            }
+
+            vertex_program_ref Negato3D_VP
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor HybridTransparency ping_buffer 1
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                content_type compositor HybridTransparency occlusion 0
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+
+    technique HybridTransparency_transmittance_blend
+    {
+        scheme HybridTransparency_transmittance_blend
+
+        pass blend
+        {
+            depth_check off
+            cull_hardware none
+            cull_software none
+            scene_blend zero one_minus_src_colour
+
+            fragment_program_ref HybridTransparency_transmittance_blend_FP
+            {
+            }
+
+            vertex_program_ref Render_VP
+            {
+            }
+
+            texture_unit
+            {
+                content_type compositor HybridTransparency ping_buffer 1
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit
+            {
+                content_type compositor HybridTransparency occlusion 0
                 tex_address_mode clamp
                 filtering none
             }
