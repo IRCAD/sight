@@ -17,9 +17,9 @@ vertex_program Default_PixelLighting_VP_glsl glsl
 
 fragment_program Default_PixelLighting_FP_glsl glsl
 {
-    source DefaultPixelLighting_FP.glsl
+    source Default_FP.glsl
+    attach MaterialColor_PixelLighting_FP
     attach Lighting_FP
-    attach Texture_FP
     default_params
     {
         param_named_auto u_cameraPos camera_position
@@ -56,8 +56,8 @@ vertex_program Default_Gouraud_VP_glsl glsl
 
 fragment_program Default_Gouraud_FP_glsl glsl
 {
-    source DefaultVertexLighting_FP.glsl
-    attach Texture_FP
+    source Default_FP.glsl
+    attach MaterialColor_Gouraud_FP
     default_params
     {
         param_named u_defaultTex int 0
@@ -89,9 +89,8 @@ vertex_program Default_Flat_VP_glsl glsl
 
 fragment_program Default_Flat_FP_glsl glsl
 {
-    source DefaultVertexLighting_FP.glsl
-    attach Texture_FP
-    preprocessor_defines FLAT=1
+    source Default_FP.glsl
+    attach MaterialColor_Flat_FP
     default_params
     {
         param_named u_defaultTex int 0
@@ -107,6 +106,7 @@ vertex_program Default_Edge_VP_glsl glsl
     {
         param_named_auto u_worldView worldview_matrix
         param_named_auto u_proj projection_matrix
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -114,7 +114,8 @@ vertex_program Default_Edge_VP_glsl glsl
 
 fragment_program Default_Edge_FP_glsl glsl
 {
-    source DefaultEdge_FP.glsl
+    source Default_FP.glsl
+    attach MaterialColor_Edge_FP
 }
 
 //-----------------------------------------------------------------------------
@@ -150,7 +151,7 @@ material "1 - Default"
     }
 
     //-------------------------------------------------------------------------
-    // Dual Depth peeling
+    // Depth peeling
     //-------------------------------------------------------------------------
 
     technique DepthPeeling_depth_map
@@ -197,7 +198,6 @@ material "1 - Default"
                 tex_address_mode clamp
                 filtering none
             }
-
             texture_unit diffuseTexture
             {
                 texture default.png 2d

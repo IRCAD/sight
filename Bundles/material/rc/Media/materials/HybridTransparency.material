@@ -21,7 +21,7 @@ fragment_program HybridTransparency_peel_Gouraud_FP_glsl glsl
 {
     source HybridTransparency_Peel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach Texture_FP
+    attach MaterialColor_Gouraud_FP
     default_params
     {
         param_named u_fragData0 int 0
@@ -38,17 +38,15 @@ fragment_program HybridTransparency_peel_Gouraud_FP_glsl glsl
 fragment_program HybridTransparency_peel_PixelLighting_FP_glsl glsl
 {
     source HybridTransparency_Peel_FP.glsl
-    preprocessor_defines PIXEL_LIGHTING=1
     attach Lighting_FP
     attach DepthPeelingCommon_FP
-    attach Texture_FP
+    attach MaterialColor_PixelLighting_FP
     default_params
     {
         param_named u_fragData0 int 0
         param_named u_fragData1 int 1
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
         param_named_auto u_lightDir light_position_array 2
         param_named_auto u_ambient surface_ambient_colour
@@ -64,9 +62,8 @@ fragment_program HybridTransparency_peel_PixelLighting_FP_glsl glsl
 fragment_program HybridTransparency_peel_Flat_FP_glsl glsl
 {
     source HybridTransparency_Peel_FP.glsl
-    preprocessor_defines FLAT=1
     attach DepthPeelingCommon_FP
-    attach Texture_FP
+    attach MaterialColor_Flat_FP
     default_params
     {
         param_named u_fragData0 int 0
@@ -83,9 +80,8 @@ fragment_program HybridTransparency_peel_Flat_FP_glsl glsl
 fragment_program HybridTransparency_peel_Edge_FP_glsl glsl
 {
     source HybridTransparency_Peel_FP.glsl
-    preprocessor_defines EDGE=1
     attach DepthPeelingCommon_FP
-    attach Texture_FP
+    attach MaterialColor_Edge_FP
     default_params
     {
         param_named u_fragData0 int 0
@@ -93,7 +89,6 @@ fragment_program HybridTransparency_peel_Edge_FP_glsl glsl
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_defaultTex int 2
     }
 }
 
@@ -210,7 +205,7 @@ fragment_program HybridTransparency_weight_blend_Gouraud_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
     preprocessor_defines HYBRID=1
-    attach Texture_FP
+    attach MaterialColor_Gouraud_FP
     default_params
     {
         param_named u_frontDepthBuffer int 0
@@ -228,9 +223,9 @@ fragment_program HybridTransparency_weight_blend_Gouraud_FP_glsl glsl
 fragment_program HybridTransparency_weight_blend_PixelLighting_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
-    preprocessor_defines PIXEL_LIGHTING=1,HYBRID=1
+    preprocessor_defines HYBRID=1
     attach Lighting_FP
-    attach Texture_FP
+    attach MaterialColor_PixelLighting_FP
     default_params
     {
         param_named u_frontDepthBuffer int 0
@@ -254,8 +249,8 @@ fragment_program HybridTransparency_weight_blend_PixelLighting_FP_glsl glsl
 fragment_program HybridTransparency_weight_blend_Flat_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
-    preprocessor_defines FLAT=1,HYBRID=1
-    attach Texture_FP
+    preprocessor_defines HYBRID=1
+    attach MaterialColor_Flat_FP
     default_params
     {
         param_named u_frontDepthBuffer int 0
@@ -273,7 +268,8 @@ fragment_program HybridTransparency_weight_blend_Flat_FP_glsl glsl
 fragment_program HybridTransparency_weight_blend_Edge_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
-    preprocessor_defines EDGE=1,HYBRID=1
+    preprocessor_defines HYBRID=1
+    attach MaterialColor_Edge_FP
     default_params
     {
         param_named u_frontDepthBuffer int 0
@@ -290,7 +286,7 @@ fragment_program HybridTransparency_weight_blend_Edge_FP_glsl glsl
 fragment_program HybridTransparency_transmittance_blend_Edge_FP glsl
 {
     source WeightedBlended_Transmittance_Blend_FP.glsl
-    preprocessor_defines HYBRID=1,EDGE=1
+    preprocessor_defines HYBRID=1
     default_params
     {
         param_named u_frontDepthBuffer int 0

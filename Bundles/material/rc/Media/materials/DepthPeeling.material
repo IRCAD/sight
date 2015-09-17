@@ -6,7 +6,7 @@ fragment_program DepthPeeling_peel_Gouraud_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach Texture_FP
+    attach MaterialColor_Gouraud_FP
     default_params
     {
         param_named u_fragData0 int 0
@@ -22,16 +22,14 @@ fragment_program DepthPeeling_peel_Gouraud_FP_glsl glsl
 fragment_program DepthPeeling_peel_PixelLighting_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
-    preprocessor_defines PIXEL_LIGHTING=1
-    attach Lighting_FP
     attach DepthPeelingCommon_FP
-    attach Texture_FP
+    attach MaterialColor_PixelLighting_FP
+    attach Lighting_FP
     default_params
     {
         param_named u_fragData0 int 0
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
         param_named_auto u_lightDir light_position_array 2
         param_named_auto u_ambient surface_ambient_colour
@@ -47,9 +45,8 @@ fragment_program DepthPeeling_peel_PixelLighting_FP_glsl glsl
 fragment_program DepthPeeling_peel_Flat_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
-    preprocessor_defines FLAT=1
     attach DepthPeelingCommon_FP
-    attach Texture_FP
+    attach MaterialColor_Flat_FP
     default_params
     {
         param_named u_fragData0 int 0
@@ -65,8 +62,8 @@ fragment_program DepthPeeling_peel_Flat_FP_glsl glsl
 fragment_program DepthPeeling_peel_Edge_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
-    preprocessor_defines EDGE=1
     attach DepthPeelingCommon_FP
+    attach MaterialColor_Edge_FP
     default_params
     {
         param_named u_fragData0 int 0

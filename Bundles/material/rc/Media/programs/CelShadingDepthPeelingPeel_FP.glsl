@@ -5,31 +5,7 @@ uniform float u_vpHeight;
 uniform vec4 u_diffuse;
 in vec3 normal_VS;
 
-#ifndef EDGE
-
-#ifdef PIXEL_LIGHTING
-in vec3 oPosition_WS;
-in vec3 oNormal_WS;
-in vec3 oLight_WS;
-
-vec4 lighting(vec3 _normal, vec3 _position);
-#else
-
-#ifdef FLAT
-flat in vec4 oColor;
-#else
-in vec4 oColor;
-#endif // FLAT
-
-#endif // PIXEL_LIGHTING
-
-vec4 fetch_texture();
-
-#else
-
-vec4 oColor = vec4(0,0,0,u_diffuse.a);
-
-#endif // EDGE
+vec4 getMaterialColor();
 
 layout(location = 0) out vec4 bufferColorRG;
 layout(location = 1) out vec4 bufferDepth;
@@ -81,15 +57,8 @@ void main()
         // Depth sent to the next peel
         bufferDepth.r = currentDepth;
 
-#ifdef PIXEL_LIGHTING
-        vec4 colorOut = lighting(normalize(oNormal_WS), oPosition_WS);
-#else
-        vec4 colorOut = oColor;
-#endif
+        vec4 colorOut = getMaterialColor();
         colorOut.rgb = computeCelShading(colorOut.rgb);
-#ifndef EDGE
-        colorOut *= fetch_texture();
-#endif
 
         colorOut.rgb *= colorOut.a;
         bufferColorRG.r = packColor(colorOut.rg);

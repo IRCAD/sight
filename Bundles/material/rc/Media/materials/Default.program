@@ -14,9 +14,40 @@ fragment_program Lighting_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program Texture_FP glsl
+fragment_program MaterialColor_PixelLighting_FP glsl
 {
-    source Texture.glsl
+    source MaterialColor_FP.glsl
+    preprocessor_defines PIXEL_LIGHTING=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor_Gouraud_FP glsl
+{
+    source MaterialColor_FP.glsl
+}
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor_Flat_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines FLAT=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor_Edge_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines EDGE=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor_Negato_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines NEGATO=1
 }
 
 //---------------------------------------------------------------------------

@@ -7,40 +7,7 @@ uniform float u_vpWidth;
 uniform float u_vpHeight;
 uniform vec4 u_diffuse;
 
-#ifndef EDGE
-
-#ifdef NEGATO
-
-vec4 negato();
-
-#else
-
-
-#ifdef PIXEL_LIGHTING
-in vec3 oPosition_WS;
-in vec3 oNormal_WS;
-in vec3 oLight_WS;
-
-vec4 lighting(vec3 _normal, vec3 _position);
-#else
-
-#ifdef FLAT
-flat in vec4 oColor;
-#else
-in vec4 oColor;
-#endif // FLAT
-
-#endif // PIXEL_LIGHTING
-
-vec4 fetch_texture();
-
-#endif // NEGATO
-
-#else
-
-vec4 oColor = vec4(0,0,0,u_diffuse.a);
-
-#endif // EDGE
+vec4 getMaterialColor();
 
 layout(location = 0) out vec4 frontDepth;
 layout(location = 1) out vec4 backDepth;
@@ -109,20 +76,7 @@ void main()
         return;
     }
 
-#ifdef NEGATO
-        vec4 colorOut = negato();
-#else
-
-#ifdef PIXEL_LIGHTING
-        vec4 colorOut = lighting(normalize(oNormal_WS), oPosition_WS);
-#else
-        vec4 colorOut = oColor;
-#endif
-#ifndef EDGE
-        colorOut *= fetch_texture();
-#endif
-
-#endif // NEGATO
+    vec4 colorOut = getMaterialColor();
 
     // If we made it here, this fragment is on the peeled layer from last pass
     // therefore, we need to shade it, and make sure it is not peeled any farther

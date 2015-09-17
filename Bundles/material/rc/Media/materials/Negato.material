@@ -53,9 +53,9 @@ fragment_program NegatoMain_FP glsl
 fragment_program DepthPeeling_peel_Negato_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
-    preprocessor_defines NEGATO=1
     attach DepthPeelingCommon_FP
     attach Negato_FP
+    attach MaterialColor_Negato_FP
     default_params
     {
         param_named_auto u_vpWidth viewport_width
@@ -76,9 +76,9 @@ fragment_program DepthPeeling_peel_Negato_FP_glsl glsl
 fragment_program DualDepthPeeling_peel_Negato_FP_glsl glsl
 {
     source DualDepthPeelingPeel_FP.glsl
-    preprocessor_defines NEGATO=1
     attach DepthPeelingCommon_FP
     attach Negato_FP
+    attach MaterialColor_Negato_FP
     default_params
     {
         param_named u_nearestDepthBuffer int 0
@@ -101,8 +101,8 @@ fragment_program DualDepthPeeling_peel_Negato_FP_glsl glsl
 fragment_program WeightedBlended_weight_blend_Negato_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
-    preprocessor_defines NEGATO=1
     attach Negato_FP
+    attach MaterialColor_Negato_FP
     default_params
     {
         param_named u_occlusionDepthBuffer int 0
@@ -161,7 +161,7 @@ material Negato3D
     }
 
     //-------------------------------------------------------------------------
-    // Dual Depth peeling
+    // Depth peeling
     //-------------------------------------------------------------------------
 
     technique DepthPeeling_depth_map

@@ -13,7 +13,6 @@ out vec2 oTexCoord;
 #ifdef PIXEL_LIGHTING
 out vec3 oPosition_WS;
 out vec3 oNormal_WS;
-out vec3 oLight_WS;
 #else
 #ifdef FLAT
 flat out vec4 oColor;
