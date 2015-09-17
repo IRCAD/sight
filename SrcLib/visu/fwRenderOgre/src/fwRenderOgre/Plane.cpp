@@ -137,22 +137,6 @@ void Plane::initializeMaterial()
             texState->setTextureFiltering(::Ogre::TFO_NONE);
             texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-            if(!peelPass)
-            {
-                // Allows us to change the plane opacity
-                pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
-
-                if(m_is3D)
-                {
-                    pass->setVertexProgram("Negato3D_VP");
-                }
-                else
-                {
-                    pass->setVertexProgram("Negato2D_VP");
-
-                }
-            }
-
             pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
             pass->getFragmentProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
         }

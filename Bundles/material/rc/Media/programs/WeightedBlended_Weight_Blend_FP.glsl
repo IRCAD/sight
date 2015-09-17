@@ -7,7 +7,6 @@ uniform sampler2D u_frontDepthBuffer;
 uniform sampler2D u_occlusionDepthBuffer;
 uniform float u_vpWidth;
 uniform float u_vpHeight;
-uniform vec4 u_diffuse;
 
 vec4 getMaterialColor();
 

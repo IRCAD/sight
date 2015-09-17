@@ -71,7 +71,6 @@ fragment_program WeightedBlended_weight_blend_Edge_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
-        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 

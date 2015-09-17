@@ -150,6 +150,8 @@ material Negato3D
     {
         pass
         {
+            scene_blend alpha_blend
+
             vertex_program_ref Negato3D_VP
             {
             }
@@ -289,7 +291,7 @@ material Negato3D
             {
             }
 
-            vertex_program_ref Negato3D_VP
+            vertex_program_ref Render_VP
             {
             }
         }
@@ -435,7 +437,7 @@ material Negato3D
             {
             }
 
-            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            vertex_program_ref Negato3D_VP
             {
             }
 

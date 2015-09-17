@@ -421,7 +421,7 @@ material "1 - Default"
             {
             }
 
-            vertex_program_ref RenderScene_Flat_VP_glsl
+            vertex_program_ref Render_VP
             {
             }
         }
