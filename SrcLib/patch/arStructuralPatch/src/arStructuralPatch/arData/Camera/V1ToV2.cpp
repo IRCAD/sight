@@ -99,9 +99,9 @@ void V1ToV2::apply(
     helper.addAttribute("pixel_format", ::fwAtoms::String::New("RGBA32"));
 }
 
-} // namespace Image
+} // namespace Camera
 
-} // namespace fwData
+} // namespace rdData
 
 } // namespace arStructuralPatch
 

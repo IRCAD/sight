@@ -49,9 +49,9 @@ public:
 };
 
 
-} // namespace Image
+} // namespace Camera
 
-} // namespace fwData
+} // namespace arData
 
 } // namespace arStructuralPatch
 
