@@ -120,7 +120,6 @@ SMesh::SMesh() throw() :
     m_isDynamicVertices(false),
     m_hasUV(false),
     m_isVideo(false),
-    m_UVBinding(2),
     m_isReconstructionManaged(false),
     m_useNewMaterialAdaptor(false)
 {
@@ -417,7 +416,8 @@ void SMesh::updateMesh(::fwData::Mesh::sptr mesh)
         bind.setBinding(0, vbuf);
 
         // Allocate other buffers
-        if (m_hasColor)
+
+        // . Color buffer
         {
             ::Ogre::VertexDeclaration* declColor = m_ogreMesh->sharedVertexData->vertexDeclaration;
             size_t offsetColor = 0;
@@ -429,26 +429,23 @@ void SMesh::updateMesh(::fwData::Mesh::sptr mesh)
             ::Ogre::HardwareVertexBufferSharedPtr cbuf = mgr.createVertexBuffer(offsetColor, uiNumVertices, usage,
                                                                                 false);
 
+
             bind.setBinding(1, cbuf);
         }
 
-        // By now, we just use one UV coordinates set for each mesh
+        // . UV Buffer - By now, we just use one UV coordinates set for each mesh
         if (m_hasUV)
         {
-            if (!m_hasColor)
-            {
-                m_UVBinding = 1;
-            }
             ::Ogre::VertexDeclaration* declUV = m_ogreMesh->sharedVertexData->vertexDeclaration;
             size_t offsetUV = 0;
-            declUV->addElement(m_UVBinding, offsetUV, ::Ogre::VET_FLOAT2, ::Ogre::VES_TEXTURE_COORDINATES);
+            declUV->addElement(2, offsetUV, ::Ogre::VET_FLOAT2, ::Ogre::VES_TEXTURE_COORDINATES);
             offsetUV += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
 
             // Allocate vertex buffer of the requested number of vertices (vertexCount)
             // and bytes per vertex (offset)
             ::Ogre::HardwareVertexBufferSharedPtr uvbuf = mgr.createVertexBuffer(offsetUV, uiNumVertices, usage, false);
 
-            bind.setBinding(m_UVBinding, uvbuf);
+            bind.setBinding(2, uvbuf);
         }
 
     }
@@ -686,8 +683,8 @@ void SMesh::updateVertices(::fwData::Mesh::sptr mesh)
                                                                 ::Ogre::Math::Sqr(yMax - yMin) +
                                                                 ::Ogre::Math::Sqr(zMax - zMin)) /2);
 
-    // Copy other datas (color, UV, ...)
-    if (m_hasColor)
+    // Copy other datas
+    // . color
     {
         lock.lock();
         ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(1);
@@ -695,21 +692,34 @@ void SMesh::updateVertices(::fwData::Mesh::sptr mesh)
         ::Ogre::RGBA* pColor     = static_cast< ::Ogre::RGBA* >( pCol );
         ::Ogre::RenderSystem* rs = ::Ogre::Root::getSingleton().getRenderSystem();
 
-        ::fwData::Mesh::PointColorsMultiArrayType colors = meshHelper.getPointColors();
-        for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+
+        if (m_hasColor)
         {
-            rs->convertColourValue(::Ogre::ColourValue(colors[i][0] / 255.f, colors[i][1] / 255.f,
-                                                       colors[i][2] / 255.f), pColor++);
+            ::fwData::Mesh::PointColorsMultiArrayType colors = meshHelper.getPointColors();
+            for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+            {
+                rs->convertColourValue(::Ogre::ColourValue(colors[i][0] / 255.f, colors[i][1] / 255.f,
+                                                           colors[i][2] / 255.f), pColor++);
+            }
+        }
+        // If there are no color specified in the mesh data, just fill the buffer with white - so that shaders can work with a 'clean' value
+        else
+        {
+            for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+            {
+                rs->convertColourValue(::Ogre::ColourValue::White, pColor++);
+            }
         }
 
         cbuf->unlock();
         lock.unlock();
     }
 
+    // . UV
     if (m_hasUV)
     {
         lock.lock();
-        ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_UVBinding);
+        ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(2);
         void* pBuf = uvbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
         float* pUV = static_cast< float* >( pBuf );
 

@@ -9,6 +9,7 @@ vec4 negato();
 #   ifdef PIXEL_LIGHTING
 in vec3 oPosition_WS;
 in vec3 oNormal_WS;
+in vec4 oColor;
 
 vec4 lighting(vec3 _normal, vec3 _position);
 
@@ -18,7 +19,7 @@ vec4 lighting(vec3 _normal, vec3 _position);
 flat in vec4 oColor;
 #       else
 in vec4 oColor;
-#        endif // FLAT
+#       endif // FLAT
 
 #   endif // PIXEL_LIGHTING
 
@@ -36,7 +37,7 @@ vec4 getMaterialColor()
 #else
 
 #   ifdef PIXEL_LIGHTING
-        vec4 colorOut = lighting(normalize(oNormal_WS), oPosition_WS);
+        vec4 colorOut = lighting(normalize(oNormal_WS), oPosition_WS) * oColor;
 #   else
         vec4 colorOut = oColor;
 #   endif

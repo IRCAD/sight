@@ -7,21 +7,23 @@ uniform mat4 u_normalMatrix;
 in vec4 position;
 in vec3 normal;
 in vec2 uv0;
+in vec4 colour;
 
 out vec2 oTexCoord;
 
 #ifdef PIXEL_LIGHTING
 out vec3 oPosition_WS;
 out vec3 oNormal_WS;
-#else
-#ifdef FLAT
-flat out vec4 oColor;
-#else
 out vec4 oColor;
-#endif
+#else
+#   ifdef FLAT
+flat out vec4 oColor;
+#   else
+out vec4 oColor;
+#   endif // FLAT
 
 vec4 lighting(vec3 _normal, vec3 _position);
-#endif
+#endif // PIXEL_LIGHTING
 
 void main(void)
 {
@@ -30,11 +32,12 @@ void main(void)
 #ifdef PIXEL_LIGHTING
     oPosition_WS = (u_world * position).xyz;
     oNormal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
+    oColor = colour;
 #else
     vec3 position_WS = (u_world * position).xyz;
     vec3 normal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
-    oColor = lighting(normal_WS, position_WS);
-#endif
+    oColor = lighting(normal_WS, position_WS) * colour;
+#endif // PIXEL_LIGHTING
 
     oTexCoord = uv0;
 }

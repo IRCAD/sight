@@ -7,10 +7,12 @@ uniform mat4 u_normalMatrix;
 in vec4 position;
 in vec3 normal;
 in vec2 uv0;
+in vec4 colour;
 
 out vec3 oPosition_WS;
 out vec3 oNormal_WS;
 out vec2 oTexCoord;
+out vec4 oColor;
 
 void main(void)
 {
@@ -18,4 +20,5 @@ void main(void)
     oPosition_WS = (u_world * position).xyz;
     oNormal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
     oTexCoord = uv0;
+    oColor = colour;
 }

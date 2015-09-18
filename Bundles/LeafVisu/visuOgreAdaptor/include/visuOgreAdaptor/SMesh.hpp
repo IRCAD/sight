@@ -191,8 +191,6 @@ private:
     bool m_hasUV;
     /// Defines if the mesh is supposed to be used to display a video, no by default.
     bool m_isVideo;
-    /// Which buffer is the UV buffer. modified according to m_hascolor.
-    unsigned short m_UVBinding;
     /// Indicates if the mesh adaptor is managed by a reconstruction adaptor
     bool m_isReconstructionManaged;
     /// Indicates if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured
