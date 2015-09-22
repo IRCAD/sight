@@ -75,31 +75,6 @@ fragment_program DepthPeeling_peel_Edge_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling_blend_FP glsl
-{
-    source DepthPeelingBlend_FP.glsl
-    attach DepthPeelingCommon_FP
-    default_params
-    {
-        param_named u_fragData0 int 0
-        param_named u_fragData1 int 1
-    }
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program DepthPeeling_final_FP glsl
-{
-    source DepthPeelingFinal_FP.glsl
-    default_params
-    {
-        param_named u_fragData0 int 0
-        param_named u_fragData1 int 1
-    }
-}
-
-//---------------------------------------------------------------------------
-
 material DepthPeeling_Final
 {
     technique
@@ -151,11 +126,6 @@ material DepthPeeling_Blend
             {
             }
 
-            texture_unit
-            {
-                tex_address_mode clamp
-                filtering none
-            }
             texture_unit
             {
                 tex_address_mode clamp

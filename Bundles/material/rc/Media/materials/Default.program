@@ -62,9 +62,34 @@ fragment_program DepthPeelingCommon_FP glsl
 fragment_program DepthPeeling_depth_map_FP glsl
 {
     source DepthPeelingDepthMap_FP.glsl
+    attach DepthPeelingCommon_FP
     default_params
     {
         param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling_blend_FP glsl
+{
+    source DepthPeelingBlend_FP.glsl
+    default_params
+    {
+        param_named u_fragData0 int 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling_final_FP glsl
+{
+    source DepthPeelingFinal_FP.glsl
+    attach DepthPeelingCommon_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named u_fragData1 int 1
     }
 }
 
@@ -75,31 +100,21 @@ fragment_program DualDepthPeeling_peel_init_FP_glsl glsl
     source DualDepthPeelingInit_FP.glsl
 }
 
-//---------------------------------------------------------------------------
-
-fragment_program HybridTransparency_back_depth_FP glsl
-{
-        source HybridTransparency_Back_Depth_FP.glsl
-        default_params
-        {
-            param_named_auto u_diffuse surface_diffuse_colour
-        }
-}
-
 //------------------------------------------------------------------
 
 fragment_program HybridTransparency_transmittance_blend_FP glsl
 {
-        source WeightedBlended_Transmittance_Blend_FP.glsl
-        preprocessor_defines HYBRID=1
-        default_params
-        {
-            param_named u_frontDepthBuffer int 0
-            param_named u_occlusionDepthBuffer int 1
-            param_named_auto u_vpWidth viewport_width
-            param_named_auto u_vpHeight viewport_height
-            param_named_auto u_diffuse surface_diffuse_colour
-        }
+    source WeightedBlended_Transmittance_Blend_FP.glsl
+    preprocessor_defines HYBRID=1
+    attach DepthPeelingCommon_FP
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
 }
 
 //------------------------------------------------------------------
@@ -117,25 +132,25 @@ fragment_program HybridTransparency_occlusion_map_FP glsl
 
 fragment_program WeightedBlended_occlusion_map_FP glsl
 {
-        source WeightedBlended_Occlusion_Map_FP.glsl
-        default_params
-        {
-            param_named_auto u_diffuse surface_diffuse_colour
-        }
+    source WeightedBlended_Occlusion_Map_FP.glsl
+    default_params
+    {
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
 }
 
 //------------------------------------------------------------------
 
 fragment_program WeightedBlended_transmittance_blend_FP glsl
 {
-        source WeightedBlended_Transmittance_Blend_FP.glsl
-        default_params
-        {
-            param_named u_occlusionDepthBuffer int 0
-            param_named_auto u_vpWidth viewport_width
-            param_named_auto u_vpHeight viewport_height
-            param_named_auto u_diffuse surface_diffuse_colour
-        }
+    source WeightedBlended_Transmittance_Blend_FP.glsl
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
 }
 
 //---------------------------------------------------------------------------

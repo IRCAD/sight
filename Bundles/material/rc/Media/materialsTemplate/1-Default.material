@@ -555,7 +555,7 @@ material "1 - Default"
             cull_hardware none
             cull_software none
 
-            fragment_program_ref HybridTransparency_back_depth_FP
+            fragment_program_ref DepthPeeling_depth_map_FP
             {
             }
 
@@ -590,12 +590,6 @@ material "1 - Default"
                 filtering none
             }
 
-            texture_unit
-            {
-                content_type compositor HybridTransparency back_depth 0
-                tex_address_mode clamp
-                filtering none
-            }
             texture_unit diffuseTexture
             {
                 texture default.png 2d
@@ -630,12 +624,6 @@ material "1 - Default"
                 filtering none
             }
 
-            texture_unit
-            {
-                content_type compositor HybridTransparency back_depth 0
-                tex_address_mode clamp
-                filtering none
-            }
             texture_unit diffuseTexture
             {
                 texture default.png 2d
@@ -670,12 +658,6 @@ material "1 - Default"
                 filtering none
             }
 
-            texture_unit
-            {
-                content_type compositor HybridTransparency back_depth 0
-                tex_address_mode clamp
-                filtering none
-            }
             texture_unit diffuseTexture
             {
                 texture default.png 2d

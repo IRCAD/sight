@@ -14,11 +14,10 @@ fragment_program HybridTransparency_peel_Gouraud_FP_glsl glsl
     default_params
     {
         param_named u_fragData0 int 0
-        param_named u_fragData1 int 1
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_defaultTex int 2
+        param_named u_defaultTex int 1
     }
 }
 
@@ -33,7 +32,6 @@ fragment_program HybridTransparency_peel_PixelLighting_FP_glsl glsl
     default_params
     {
         param_named u_fragData0 int 0
-        param_named u_fragData1 int 1
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_cameraPos camera_position
@@ -42,7 +40,7 @@ fragment_program HybridTransparency_peel_PixelLighting_FP_glsl glsl
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
         param_named_auto u_shininess surface_shininess
-        param_named u_defaultTex int 2
+        param_named u_defaultTex int 1
     }
 }
 
@@ -56,11 +54,10 @@ fragment_program HybridTransparency_peel_Flat_FP_glsl glsl
     default_params
     {
         param_named u_fragData0 int 0
-        param_named u_fragData1 int 1
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_defaultTex int 2
+        param_named u_defaultTex int 1
     }
 }
 
@@ -74,7 +71,7 @@ fragment_program HybridTransparency_peel_Edge_FP_glsl glsl
     default_params
     {
         param_named u_fragData0 int 0
-        param_named u_fragData1 int 1
+        //param_named u_fragData1 int 1
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
@@ -85,24 +82,12 @@ fragment_program HybridTransparency_peel_Edge_FP_glsl glsl
 
 fragment_program HybridTransparency_blend_FP glsl
 {
-        source DepthPeelingBlend_FP.glsl
-        attach DepthPeelingCommon_FP
-        default_params
-        {
-                param_named u_fragData0 int 0
-                param_named u_fragData1 int 1
-        }
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program HybridTransparency_blend_final_FP glsl
-{
-        source HybridTransparency_Blend_Final_FP.glsl
-        default_params
-        {
-                param_named u_fragData0 int 0
-        }
+    source DepthPeelingBlend_FP.glsl
+    attach DepthPeelingCommon_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -133,11 +118,6 @@ material HybridTransparency_Blend
                 tex_address_mode clamp
                 filtering none
             }
-            texture_unit
-            {
-                tex_address_mode clamp
-                filtering none
-            }
         }
     }
 }
@@ -154,7 +134,6 @@ material HybridTransparency_Blend_Final
             cull_software none
 
             depth_check off
-            //scene_blend dest_alpha one
             scene_blend_op add
             separate_scene_blend dest_alpha one zero one_minus_src_alpha
 
@@ -162,7 +141,7 @@ material HybridTransparency_Blend_Final
             {
             }
 
-            fragment_program_ref HybridTransparency_blend_final_FP
+            fragment_program_ref DepthPeeling_blend_FP
             {
             }
 
@@ -207,6 +186,7 @@ fragment_program HybridTransparency_weight_blend_PixelLighting_FP_glsl glsl
     preprocessor_defines HYBRID=1
     attach Lighting_FP
     attach MaterialColor_PixelLighting_FP
+    attach DepthPeelingCommon_FP
     default_params
     {
         param_named u_frontDepthBuffer int 0
@@ -232,6 +212,7 @@ fragment_program HybridTransparency_weight_blend_Flat_FP_glsl glsl
     source WeightedBlended_Weight_Blend_FP.glsl
     preprocessor_defines HYBRID=1
     attach MaterialColor_Flat_FP
+    attach DepthPeelingCommon_FP
     default_params
     {
         param_named u_frontDepthBuffer int 0
@@ -251,6 +232,7 @@ fragment_program HybridTransparency_weight_blend_Edge_FP_glsl glsl
     source WeightedBlended_Weight_Blend_FP.glsl
     preprocessor_defines HYBRID=1
     attach MaterialColor_Edge_FP
+    attach DepthPeelingCommon_FP
     default_params
     {
         param_named u_frontDepthBuffer int 0
@@ -268,6 +250,7 @@ fragment_program HybridTransparency_transmittance_blend_Edge_FP glsl
 {
     source WeightedBlended_Transmittance_Blend_FP.glsl
     preprocessor_defines HYBRID=1
+    attach DepthPeelingCommon_FP
     default_params
     {
         param_named u_frontDepthBuffer int 0
@@ -339,22 +322,6 @@ material HybridTransparency_WBOIT_Blend
 
 //---------------------------------------------------------------------------
 
-/// HybridTransparency quad final render
-
-//---------------------------------------------------------------------------
-
-fragment_program HybridTransparency_final_FP glsl
-{
-        source HybridTransparency_Final_FP.glsl
-        default_params
-        {
-                param_named u_fragData0 int 0
-                param_named u_fragData1 int 1
-        }
-}
-
-//---------------------------------------------------------------------------
-
 material HybridTransparency_Final
 {
     technique
@@ -365,7 +332,7 @@ material HybridTransparency_Final
             {
             }
 
-            fragment_program_ref HybridTransparency_final_FP
+            fragment_program_ref DepthPeeling_final_FP
             {
             }
 

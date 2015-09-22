@@ -280,10 +280,7 @@ void DefaultCompositor::setTransparencyDepthOfDepthPeeling(int depth)
                     dpCompPassRenderQuad->setInput(2, pingPong+"_buffer",2);
                     dpCompPassRenderQuad->setInput(3, pingPong+"_buffer",3);
                 }
-                else
-                {
-                    dpCompPassRenderQuad->setInput(1, pingPong+"_buffer",2);
-                }
+
             }
         }
     }
@@ -430,7 +427,6 @@ void DefaultCompositor::setTransparencyDepthOfHybridTransparency(int depth)
                 dpCompPassRenderQuad->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
                 dpCompPassRenderQuad->setMaterialName("HybridTransparency_Blend");
                 dpCompPassRenderQuad->setInput(0, pingPong+"_buffer",0);
-                dpCompPassRenderQuad->setInput(1, pingPong+"_buffer",2);
             }
         }
     }

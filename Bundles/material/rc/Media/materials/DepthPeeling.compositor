@@ -5,13 +5,13 @@ compositor DepthPeeling
         // Color buffer - used for blending
         texture gbuffer target_width target_height PF_R8G8B8A8 chain_scope
         // Ping buffer
-        texture ping_buffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R chain_scope
+        texture ping_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8 chain_scope
         // Pong buffer
-        texture pong_buffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R chain_scope
+        texture pong_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8 chain_scope
         // Depth map
-        texture depth_map target_width target_height PF_FLOAT32_R chain_scope
+        texture depth_map target_width target_height PF_R8G8B8A8 chain_scope
         // Fake texture for the first peel
-        texture peel_init target_width target_height PF_FLOAT32_R depth_pool 0 chain_scope
+        texture peel_init target_width target_height PF_R8G8B8A8 depth_pool 0 chain_scope
 
         // Depth map buffer
         // Used as a stencil for the surrounding background
@@ -68,7 +68,6 @@ compositor DepthPeeling
              {
                  material DepthPeeling_Blend
                  input 0 ping_buffer 0
-                 input 1 ping_buffer 2
              }
          }
 
@@ -96,7 +95,6 @@ compositor DepthPeeling
              {
                  material DepthPeeling_Blend
                  input 0 pong_buffer 0
-                 input 1 pong_buffer 2
              }
          }
 
@@ -124,7 +122,6 @@ compositor DepthPeeling
              {
                  material DepthPeeling_Blend
                  input 0 ping_buffer 0
-                 input 1 ping_buffer 2
              }
          }
 
@@ -152,7 +149,6 @@ compositor DepthPeeling
              {
                  material DepthPeeling_Blend
                  input 0 pong_buffer 0
-                 input 1 pong_buffer 2
              }
          }
 
@@ -180,7 +176,6 @@ compositor DepthPeeling
              {
                  material DepthPeeling_Blend
                  input 0 ping_buffer 0
-                 input 1 ping_buffer 2
              }
          }
 

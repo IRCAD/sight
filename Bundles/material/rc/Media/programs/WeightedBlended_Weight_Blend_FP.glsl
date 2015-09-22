@@ -9,6 +9,7 @@ uniform float u_vpWidth;
 uniform float u_vpHeight;
 
 vec4 getMaterialColor();
+float unpackFloatFromVec4(vec4 value);
 
 uniform float u_near;
 uniform float u_far;
@@ -22,13 +23,13 @@ void main()
 {
     vec2 texCoord = gl_FragCoord.xy / vec2( u_vpWidth, u_vpHeight );
 #ifdef HYBRID
-    vec4 frontDepthBuffer = texture(u_frontDepthBuffer, texCoord);
+    float frontDepthBuffer = unpackFloatFromVec4(texture(u_frontDepthBuffer, texCoord));
 #endif
     vec4 occlusionDepthBuffer = texture(u_occlusionDepthBuffer, texCoord);
     float currentDepth = gl_FragCoord.z;
 
 #ifdef HYBRID
-    if(frontDepthBuffer.r == 0. || currentDepth <= frontDepthBuffer.r || currentDepth > occlusionDepthBuffer.r)
+    if(frontDepthBuffer == 0. || currentDepth <= frontDepthBuffer || currentDepth > occlusionDepthBuffer.r)
 #else
     if(currentDepth > occlusionDepthBuffer.r)
 #endif

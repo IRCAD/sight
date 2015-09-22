@@ -8,6 +8,6 @@ out vec4 FragColor;
 
 void main()
 {
-	vec4 frontColorBuffer = texture(u_fragData, uv);
+    vec4 frontColorBuffer = texture(u_fragData, uv);
     FragColor = frontColorBuffer;
 }

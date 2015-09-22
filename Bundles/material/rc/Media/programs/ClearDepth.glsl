@@ -2,7 +2,9 @@
 
 out vec4 FragColor;
 
+vec4 packFloatToVec4(float value);
+
 void main()
 {
-    FragColor.r = 1.0;
+    FragColor = packFloatToVec4(1.0);
 }
