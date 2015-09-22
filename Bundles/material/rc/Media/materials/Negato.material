@@ -100,7 +100,7 @@ fragment_program DualDepthPeeling_peel_Negato_FP_glsl glsl
 
 fragment_program HybridTransparency_peel_Negato_FP_glsl glsl
 {
-    source HybridTransparency_Peel_FP.glsl
+    source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach Negato_FP
     attach MaterialColor_Negato_FP

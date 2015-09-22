@@ -425,7 +425,7 @@ void DefaultCompositor::setTransparencyDepthOfHybridTransparency(int depth)
             {
                 ::Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetBlend->createPass();
                 dpCompPassRenderQuad->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
-                dpCompPassRenderQuad->setMaterialName("HybridTransparency_Blend");
+                dpCompPassRenderQuad->setMaterialName("DepthPeeling_Blend");
                 dpCompPassRenderQuad->setInput(0, pingPong+"_buffer",0);
             }
         }
