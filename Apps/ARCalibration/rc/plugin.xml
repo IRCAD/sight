@@ -1,4 +1,4 @@
-<plugin id="ARCalibration">
+<plugin id="ARCalibration" version="@DASH_VERSION@" >
 
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

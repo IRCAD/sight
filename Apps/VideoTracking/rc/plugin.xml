@@ -1,4 +1,4 @@
-<plugin id="VideoTracking">
+<plugin id="VideoTracking" version="@DASH_VERSION@" >
 
     <requirement id="tracker" />
     <requirement id="trackerAruco" />

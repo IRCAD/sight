@@ -1,4 +1,4 @@
-<plugin id="maths" class="::maths::Plugin" version="0.1" >
+<plugin id="maths" class="::maths::Plugin" version="@DASH_VERSION@" >
     
     <library name="maths" />
     
