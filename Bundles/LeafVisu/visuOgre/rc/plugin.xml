@@ -1,4 +1,4 @@
-<plugin id="visuOgre" class="visuOgre::Plugin" >
+<plugin id="visuOgre" class="visuOgre::Plugin"  version="@DASH_VERSION@" >
 
     <library name="visuOgre" />
 

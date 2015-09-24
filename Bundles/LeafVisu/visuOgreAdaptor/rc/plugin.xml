@@ -1,4 +1,4 @@
-<plugin id="visuOgreAdaptor" class="visuOgreAdaptor::Plugin" >
+<plugin id="visuOgreAdaptor" class="visuOgreAdaptor::Plugin"  version="@DASH_VERSION@" >
 
     <library name="visuOgreAdaptor" />
 

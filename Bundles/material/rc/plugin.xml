@@ -1,4 +1,4 @@
-<plugin id="material" class="::material::Plugin" >
+<plugin id="material" class="::material::Plugin"  version="@DASH_VERSION@" >
     
     <library name="material" />
 
