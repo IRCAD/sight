@@ -69,7 +69,7 @@ bool intersect_triangle(fwVec3d _orig, fwVec3d _dir, fwVec3d _vert0, fwVec3d _ve
 
 //------------------------------------------------------------------------------
 
-bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_vertexIndex, const fwVec3d &_P)
+bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_vertexIndex, const fwVec3d &_p)
 {
     const unsigned int X    = 0, Y = 1, Z = 2;
     const size_t ElementNbr = _vertexIndex.size();
@@ -93,9 +93,9 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
         //on enleve les triangles s'ils sont situes au dessus du point
         OSLM_TRACE(
             "Trg : " << i << " with Z = [" << P1[Z]  << "][" << P2[Z]  << "][" << P3[Z]  << "] compare with " <<
-            _P[Z] );
+            _p[Z] );
 
-        if ( !(P1[Z] > _P[Z] && P2[Z] > _P[Z] && P3[Z] > _P[Z] ) ) //trianglePotentiallyWellPositionned
+        if ( !(P1[Z] > _p[Z] && P2[Z] > _p[Z] && P3[Z] > _p[Z] ) ) //trianglePotentiallyWellPositionned
         {
             //on teste la presence des vertex de part et d'autre des 3 axes.
             //Si P1[X] > P[X] alors il faut necessairement P2[X] < P[X] ou P3[X] < P[X], idem pour les 2 autres axes
@@ -103,9 +103,9 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
             bool stop = false;
             for ( unsigned int axe = X; axe <= Y && !stop; ++axe )
             {
-                const double Delta1 = P1[axe] - _P[axe];
-                const double Delta2 = P2[axe] - _P[axe];
-                const double Delta3 = P3[axe] - _P[axe];
+                const double Delta1 = P1[axe] - _p[axe];
+                const double Delta2 = P2[axe] - _p[axe];
+                const double Delta3 = P3[axe] - _p[axe];
 
                 OSLM_TRACE("d1 : " << Delta1 << "d2 : " << Delta2 << "d3 : " << Delta3 );
 
@@ -122,7 +122,7 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
             {
                 OSLM_TRACE("The face(" << i << ") is interesting to find a point in volume");
 
-                fwVec3d orig = {{_P[0], _P[1], _P[2]}};
+                fwVec3d orig = {{_p[0], _p[1], _p[2]}};
 
                 fwVec3d dir   = {{ 0.f, 0.f, 1.f}};
                 fwVec3d vert0 = {{ P1[0], P1[1], P1[2]}};
@@ -131,7 +131,7 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
                 double t, u, v;
                 if ( intersect_triangle (orig, dir, vert0, vert1, vert2, t, u, v) )
                 {
-                    //on ne garde que les points situes en dessous du point _P selon l'axe (Oz)
+                    //on ne garde que les points situes en dessous du point _p selon l'axe (Oz)
                     if (t < 0.f)
                     {
                         OSLM_TRACE(" t = " << t << " u = " << u << " v = " << v);

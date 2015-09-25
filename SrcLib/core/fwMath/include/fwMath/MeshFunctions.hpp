@@ -18,7 +18,6 @@
 #include "fwMath/IntrasecTypes.hpp"
 #include "fwMath/config.hpp"
 
-
 namespace fwMath
 {
 
@@ -26,7 +25,7 @@ namespace fwMath
  * @brief
  */
 FWMATH_API bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_vertexIndex,
-                                 const fwVec3d &_P );
+                                 const fwVec3d &_p );
 
 /**
  * @brief Compute the intersection between triangle(define by threes vertex vert1, vert2, vert3) and the Oz parallel line and cross by the point P.
