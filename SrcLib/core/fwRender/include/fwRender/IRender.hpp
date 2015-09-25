@@ -14,7 +14,6 @@
 
 #include "fwRender/config.hpp"
 
-class wxWindow;
 
 namespace fwRender
 {
@@ -33,6 +32,7 @@ namespace fwRender
  * @li Finally we must call stop() before deleting the service
  *
  */
+
 class FWRENDER_CLASS_API IRender : public ::fwGui::IGuiContainerSrv
 {
 
