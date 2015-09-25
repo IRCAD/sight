@@ -21,5 +21,6 @@ fwLink(
     vtkIOXML
     vtkImagingStencil
     vtkImagingStatistics
+    vtkFiltersGeometry
 )
 

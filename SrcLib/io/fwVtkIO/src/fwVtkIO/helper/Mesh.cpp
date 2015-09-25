@@ -15,6 +15,8 @@
 #include <vtkMassProperties.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkFillHolesFilter.h>
+#include <vtkGeometryFilter.h>
+#include <vtkExtractUnstructuredGrid.h>
 
 #include <fwData/Array.hpp>
 #include <fwComEd/helper/Mesh.hpp>
@@ -195,6 +197,180 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
 
         mesh->adjustAllocatedMemory();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, ::fwData::Mesh::sptr mesh)
+{
+    vtkPoints *points = grid->GetPoints();
+    if(points)
+    {
+        mesh->clear();
+        vtkIdType numberOfPoints = points->GetNumberOfPoints();
+        vtkIdType numberOfCells  = grid->GetNumberOfCells();
+
+        mesh->allocate(numberOfPoints, numberOfCells, numberOfCells*3);
+        ::fwComEd::helper::Mesh meshHelper(mesh);
+        double* point;
+        ::fwData::Mesh::Id idx;
+        for (vtkIdType i = 0; i < numberOfPoints; ++i)
+        {
+            point = points->GetPoint(i);
+            idx   = meshHelper.insertNextPoint(point[0], point[1], point[2]);
+            SLM_ASSERT("Mesh index not correspond to VTK index point", idx == i);
+        }
+
+        vtkCell* cell;
+        vtkIdList* idList;
+        int cellType;
+        for (vtkIdType i = 0; i < numberOfCells; ++i)
+        {
+            cell     = grid->GetCell(i);
+            idList   = cell->GetPointIds();
+            cellType = cell->GetCellType();
+
+            switch (cellType)
+            {
+                case VTK_LINE:
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==2);
+                    meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1));
+                    break;
+                case VTK_TRIANGLE:
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==3);
+                    meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2));
+                    break;
+                case VTK_QUAD:
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==4);
+                    meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3));
+                    break;
+                case VTK_TETRA:
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==4);
+                    meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3));
+                    break;
+                default:
+                    FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
+            }
+        }
+
+        if(grid->GetPointData()->HasArray("Colors"))
+        {
+            vtkSmartPointer<vtkUnsignedCharArray> colors;
+            colors = vtkUnsignedCharArray::SafeDownCast(grid->GetPointData()->GetArray("Colors"));
+            FW_RAISE_IF("Only vtkUnsignedCharArray is supported to manage color.", !colors);
+
+            size_t nbComponents = colors->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")",
+                       nbComponents == 3 || nbComponents == 4);
+            mesh->allocatePointColors((::fwData::Mesh::ColorArrayTypes)nbComponents);
+            meshHelper.updateLock();
+
+            ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints();
+            for (size_t i = 0; i != nbPoints; ++i)
+            {
+                meshHelper.setPointColor(i, colors->GetPointer(i*nbComponents));
+            }
+        }
+
+        if(grid->GetCellData()->HasArray("Colors"))
+        {
+            vtkSmartPointer<vtkUnsignedCharArray> colors;
+            colors = vtkUnsignedCharArray::SafeDownCast(grid->GetCellData()->GetArray("Colors"));
+            FW_RAISE_IF("Only vtkUnsignedCharArray is supported to manage color.", !colors);
+
+            size_t nbComponents = colors->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")",
+                       nbComponents == 3 || nbComponents == 4);
+            mesh->allocateCellColors((::fwData::Mesh::ColorArrayTypes)nbComponents);
+            meshHelper.updateLock();
+
+            ::fwData::Mesh::Id nbCells = mesh->getNumberOfCells();
+            for (size_t i = 0; i != nbCells; ++i)
+            {
+                meshHelper.setCellColor(i, colors->GetPointer(i*nbComponents));
+            }
+        }
+
+        if(grid->GetPointData()->GetAttribute(vtkDataSetAttributes::NORMALS))
+        {
+            vtkSmartPointer<vtkFloatArray> normals;
+            normals = vtkFloatArray::SafeDownCast(grid->GetPointData()->GetNormals());
+            FW_RAISE_IF("Only vtkFloatArray is supported to manage normals.", !normals);
+
+            size_t nbComponents = normals->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 3);
+
+            mesh->allocatePointNormals();
+            meshHelper.updateLock();
+
+            ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints();
+            for (size_t i = 0; i != nbPoints; ++i)
+            {
+                meshHelper.setPointNormal(i, normals->GetPointer(i*nbComponents));
+            }
+        }
+
+        if(grid->GetCellData()->GetAttribute(vtkDataSetAttributes::NORMALS))
+        {
+            vtkSmartPointer<vtkFloatArray> normals;
+            normals = vtkFloatArray::SafeDownCast(grid->GetCellData()->GetNormals());
+            FW_RAISE_IF("Only vtkFloatArray is supported to manage normals.", !normals);
+
+            size_t nbComponents = normals->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 3);
+
+            mesh->allocateCellNormals();
+            meshHelper.updateLock();
+
+            ::fwData::Mesh::Id nbCells = mesh->getNumberOfCells();
+            for (size_t i = 0; i != nbCells; ++i)
+            {
+                meshHelper.setCellNormal(i, normals->GetPointer(i*nbComponents));
+            }
+        }
+
+        if(grid->GetPointData()->GetAttribute(vtkDataSetAttributes::TCOORDS))
+        {
+            vtkSmartPointer<vtkFloatArray> texCoords;
+            texCoords = vtkFloatArray::SafeDownCast(grid->GetPointData()->GetTCoords());
+            FW_RAISE_IF("Only vtkFloatArray is supported to manage texCoords.", !texCoords);
+
+            size_t nbComponents = texCoords->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 2);
+
+            mesh->allocatePointTexCoords();
+            meshHelper.updateLock();
+
+            ::fwData::Mesh::Id nbPoints = mesh->getNumberOfPoints();
+            for (size_t i = 0; i != nbPoints; ++i)
+            {
+                meshHelper.setPointTexCoord(i, texCoords->GetPointer(i*nbComponents));
+            }
+        }
+
+        if(grid->GetCellData()->GetAttribute(vtkDataSetAttributes::TCOORDS))
+        {
+            vtkSmartPointer<vtkFloatArray> texCoords;
+            texCoords = vtkFloatArray::SafeDownCast(grid->GetCellData()->GetTCoords());
+            FW_RAISE_IF("Only vtkFloatArray is supported to manage texCoords.", !texCoords);
+
+            size_t nbComponents = texCoords->GetNumberOfComponents();
+            SLM_ASSERT("Wrong nb of components ("<<nbComponents<<")", nbComponents == 2);
+
+            mesh->allocateCellTexCoords();
+            meshHelper.updateLock();
+
+            ::fwData::Mesh::Id nbCells = mesh->getNumberOfCells();
+            for (size_t i = 0; i != nbCells; ++i)
+            {
+                meshHelper.setCellTexCoord(i, texCoords->GetPointer(i*nbComponents));
+            }
+        }
+
+        mesh->adjustAllocatedMemory();
+
+    }
+
 }
 
 //------------------------------------------------------------------------------

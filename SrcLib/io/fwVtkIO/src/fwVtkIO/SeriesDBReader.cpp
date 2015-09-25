@@ -124,9 +124,22 @@ vtkSmartPointer< vtkDataObject  > getObj(FILE &file, SeriesDBReader *progressor)
 
 ::fwData::Object::sptr getDataObject(const vtkSmartPointer< vtkDataObject  > &obj, const boost::filesystem::path &file)
 {
-    vtkSmartPointer< vtkPolyData  > mesh = vtkPolyData::SafeDownCast(obj);
-    vtkSmartPointer< vtkImageData  > img = vtkImageData::SafeDownCast(obj);
+    vtkSmartPointer< vtkPolyData > mesh         = vtkPolyData::SafeDownCast(obj);
+    vtkSmartPointer< vtkImageData > img         = vtkImageData::SafeDownCast(obj);
+    vtkSmartPointer< vtkUnstructuredGrid > grid = vtkUnstructuredGrid::SafeDownCast(obj);
     ::fwData::Object::sptr dataObj;
+
+    if(grid)
+    {
+        ::fwData::Mesh::sptr meshObj = ::fwData::Mesh::New();
+        ::fwVtkIO::helper::Mesh::fromVTKGrid(grid, meshObj);
+
+        ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::New();
+        rec->setMesh(meshObj);
+        rec->setOrganName(file.stem().string());
+        rec->setIsVisible(true);
+        dataObj = rec;
+    }
     if(mesh)
     {
         ::fwData::Mesh::sptr meshObj = ::fwData::Mesh::New();
@@ -375,6 +388,10 @@ void SeriesDBReader::read()
         else if(file.extension().string() == ".mhd")
         {
             obj = getObj<vtkMetaImageReader>(file, this);
+        }
+        else if(file.extension().string() == ".vtu")
+        {
+            obj = getObj<vtkXMLGenericDataObjectReader>(file, this);
         }
 
         if (!img)

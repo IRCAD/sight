@@ -9,6 +9,7 @@
 
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
+#include <vtkUnstructuredGrid.h>
 
 #include <fwData/Mesh.hpp>
 
@@ -37,10 +38,16 @@ public:
      *
      * @param[in] _polyData vtkPolyData.
      * @param[out] _mesh ::fwData::Mesh::sptr.
-     *
-     * Returns \b true if the conversion is a success and \b false if it fails
      */
     FWVTKIO_API static void fromVTKMesh(  vtkSmartPointer<vtkPolyData> _polyData, ::fwData::Mesh::sptr _mesh );
+    /*!
+     * @brief Convert a vtkUnstructuredGrid to a ::fwData::Mesh::sptr.
+     *
+     * @param[in] grid vtkUnstructuredGrid.
+     * @param[out] mesh ::fwData::Mesh::sptr.
+     */
+
+    FWVTKIO_API static void fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, ::fwData::Mesh::sptr mesh);
 
     /*!
      * @brief Convert a ::fwData::Mesh::sptr to a vtkPolyData.
@@ -138,6 +145,7 @@ public:
      * @return volume of the mesh
      */
     FWVTKIO_API static double computeVolume( ::fwData::Mesh::sptr mesh );
+
 };
 
 } // namespace helper
