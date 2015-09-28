@@ -240,6 +240,8 @@ void SCamera::updateFromTMatrix3D()
     mat->Delete();
     oldTrans->Delete();
     trans->Delete();
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
