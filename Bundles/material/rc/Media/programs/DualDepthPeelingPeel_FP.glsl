@@ -17,7 +17,7 @@ layout(location = 4) out vec4 frontColorBA;
 layout(location = 5) out vec4 backColorBA;
 
 float packColor(vec2 color);
-vec2 unpackColor(float buffer);
+vec2 unpackColor(float value);
 
 #define MAX_DEPTH 1.0
 

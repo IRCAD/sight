@@ -30,8 +30,8 @@ float linearizeDepth(in float depth) {
 
 //---------------------------------------------------------------------------------------------------------------------
 
-vec2 unpackColor(float buffer);
-vec3 unpackNormal(float buffer);
+vec2 unpackColor(float value);
+vec3 unpackNormal(float value);
 
 //---------------------------------------------------------------------------------------------------------------------
 

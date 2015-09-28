@@ -6,7 +6,7 @@ uniform sampler2D u_frontColorRGBuffer;
 uniform sampler2D u_frontColorBABuffer;
 out vec4 FragColor;
 
-vec2 unpackColor(float buffer);
+vec2 unpackColor(float value);
 
 /** Final shader :
   * Blend scene with blended object

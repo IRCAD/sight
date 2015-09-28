@@ -7,12 +7,12 @@ float packNormal(vec3 normal)
             + clamp(int(256. * normal.b), 0, 256)/16777216.;
 }
 
-vec3 unpackNormal(float buffer)
+vec3 unpackNormal(float value)
 {
     vec3 normal;
-    normal.r = clamp(int(256. * buffer), 0, 256)/256.;
-    normal.g = clamp(int(65536. * (buffer-normal.r)), 0, 256)/256.;
-    normal.b = clamp(int(16777216. * (buffer-normal.r-normal.g/256.)), 0, 256)/256.;
+    normal.r = clamp(int(256. * value), 0, 256)/256.;
+    normal.g = clamp(int(65536. * (value-normal.r)), 0, 256)/256.;
+    normal.b = clamp(int(16777216. * (value-normal.r-normal.g/256.)), 0, 256)/256.;
     return normal;
 }
 
@@ -22,11 +22,11 @@ float packColor(vec2 color)
     return floor(256. * color.r) + color.g * 0.1;
 }
 
-vec2 unpackColor(float buffer)
+vec2 unpackColor(float value)
 {
     vec2 color;
-    color.r = floor(buffer);
-    color.g = (buffer - color.r) * 10;
+    color.r = floor(value);
+    color.g = (value - color.r) * 10;
     color.r /= 256.f;
     return color;
 }

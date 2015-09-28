@@ -4,7 +4,7 @@ uniform sampler2D u_backColorRGBuffer;
 uniform sampler2D u_backColorBABuffer;
 out vec4 FragColor;
 
-vec2 unpackColor(float buffer);
+vec2 unpackColor(float value);
 
 /** Blend shader :
   * Blend front passes
