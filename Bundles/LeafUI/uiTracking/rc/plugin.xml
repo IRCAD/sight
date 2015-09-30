@@ -1,4 +1,4 @@
-<plugin id="uiTracking" class="::uiTracking::Plugin" >
+<plugin id="uiTracking" class="::uiTracking::Plugin" version="@DASH_VERSION@" >
     <library name="uiTracking" />
 
     <requirement id="gui"/>

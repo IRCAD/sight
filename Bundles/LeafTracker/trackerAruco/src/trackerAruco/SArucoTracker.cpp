@@ -24,7 +24,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
 
 //-----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ SArucoTracker::SArucoTracker() throw () :
     m_debugMarkers(false),
     m_speed(3),
     m_thresholdMethod(::aruco::MarkerDetector::ADPT_THRES),
-    m_cornerRefinement(::aruco::MarkerDetector::NONE)
+    m_cornerRefinement(::aruco::MarkerDetector::SUBPIX)
 {
     m_sigDetectionDone = DetectionDoneSignalType::New();
     m_signals( s_DETECTION_DONE_SIG,  m_sigDetectionDone);
@@ -258,6 +258,7 @@ void SArucoTracker::detectMarker(::fwCore::HiResClock::HiResClockType timestamp)
             m_arUcoTracker->setThresholdMethod(m_thresholdMethod);
             m_arUcoTracker->setThresholdParams(m_blockSize, m_constant);
             m_arUcoTracker->setCornerRefinementMethod(::aruco::MarkerDetector::NONE);
+            m_arUcoTracker->setBorderDistance(0.01f);
 
             ::arData::Camera::sptr arCam = comp->at< ::arData::Camera >(m_cameraKey);
             ::cv::Mat cameraMatrix       = ::cv::Mat::eye(3, 3, CV_64F);
@@ -473,14 +474,7 @@ void SArucoTracker::setSpeed(unsigned int value)
 
 void SArucoTracker::displayTags(bool b)
 {
-    if(b)
-    {
-        m_debugMarkers = true;
-    }
-    else
-    {
-        m_debugMarkers = false;
-    }
+    m_debugMarkers = b;
 }
 } // namespace trackerAruco
 

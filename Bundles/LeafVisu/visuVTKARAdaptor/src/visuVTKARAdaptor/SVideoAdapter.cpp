@@ -68,7 +68,6 @@ SVideoAdapter::~SVideoAdapter() throw()
 
 void SVideoAdapter::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     assert(m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
 
@@ -79,6 +78,7 @@ void SVideoAdapter::configuring() throw(fwTools::Failed)
     {
         m_reverse = false;
     }
+    this->setPickerId(m_configuration->getAttributeValue("picker"));
 }
 
 //------------------------------------------------------------------------------
@@ -97,6 +97,10 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
     }
     this->setVtkPipelineModified();
     this->doUpdate();
+    if (this->getPicker())
+    {
+        this->addToPicker(m_actor);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -181,6 +185,10 @@ void SVideoAdapter::doStop() throw(fwTools::Failed)
 {
     this->unregisterServices();
     this->removeAllPropFromRenderer();
+    if (this->getPicker())
+    {
+        this->removeFromPicker(m_actor);
+    }
 }
 
 //------------------------------------------------------------------------------

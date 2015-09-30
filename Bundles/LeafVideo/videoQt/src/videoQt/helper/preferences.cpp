@@ -36,8 +36,8 @@ std::string getVideoDir()
             prefComposite = ::fwData::Composite::dynamicCast(iterPref->second);
 
             ::fwData::Composite::IteratorType iterVideoDir = prefComposite->find( s_VIDEO_DIR_PREF );
-            bool videoFounded = (iterVideoDir  != prefComposite->end());
-            if (videoFounded)
+            bool videoFound = (iterVideoDir  != prefComposite->end());
+            if (videoFound)
             {
                 ::fwData::String::sptr videoDir = ::fwData::String::dynamicCast(iterVideoDir->second);
                 SLM_ERROR_IF("Wrong type of preference : '" + s_VIDEO_DIR_PREF + "' parameter must be a string",

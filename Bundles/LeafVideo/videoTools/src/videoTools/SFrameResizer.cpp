@@ -10,9 +10,9 @@
 #include <fwData/Composite.hpp>
 #include <fwServices/Base.hpp>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgproc.hpp>
 
 namespace videoTools
 {
@@ -50,8 +50,8 @@ void SFrameResizer::configuring() throw(::fwTools::Failed)
     const std::string x = config->getAttributeValue("x");
     const std::string y = config->getAttributeValue("y");
 
-    m_ratio[0] = std::stof(x) / 100.f;
-    m_ratio[1] = std::stof(y) / 100.f;
+    m_ratio[0] = strtof(x.c_str(), NULL) / 100.f;
+    m_ratio[1] = strtof(y.c_str(), NULL) / 100.f;
 
     config = m_configuration->findConfigurationElement("interpolation");
 

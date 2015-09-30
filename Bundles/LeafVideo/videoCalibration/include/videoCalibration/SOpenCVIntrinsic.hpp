@@ -24,7 +24,7 @@ class VIDEOCALIBRATION_CLASS_API SOpenCVIntrinsic : public ::videoCalibration::I
 public:
     fwCoreServiceClassDefinitionsMacro((SOpenCVIntrinsic)(::videoCalibration::ICalibration));
 
-    typedef ::fwCom::Slot <void (int, int)> UpdateChessboardSizeSlotType;
+    typedef ::fwCom::Slot <void (int, int, float)> UpdateChessboardSizeSlotType;
 
     /// Constructor.
     VIDEOCALIBRATION_API SOpenCVIntrinsic() throw ();
@@ -65,7 +65,7 @@ protected:
      * @param width chessboard's width expresses by the number of square.
      * @param height chessboard's height expresses by the number of square.
      */
-    void updateChessboardSize(const int width, const int height);
+    void updateChessboardSize(const int width, const int height,  const float squareSize);
 
 private:
 
@@ -77,6 +77,9 @@ private:
 
     /// Height of the chessboard used for calibration
     unsigned int m_height;
+
+    /// Size of the chessboard'square used for calibration
+    float m_squareSize;
 
     /// Slot that calls update chessboard size method
     UpdateChessboardSizeSlotType::sptr m_slotUpdateChessboardSize;

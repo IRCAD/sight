@@ -11,9 +11,6 @@
 #include <vtkCommand.h>
 #include <vtkObjectFactory.h>
 
-
-vtkCxxRevisionMacro(FixedInteractorStyle, "$Revision: 1.24 $");
-
 //------------------------------------------------------------------------------
 
 vtkObject* vtkInstantiatorFixedInteractorStyleNew()

@@ -7,6 +7,8 @@
 #ifndef __ARDATACAMP_AUTOLOAD_HPP__
 #define __ARDATACAMP_AUTOLOAD_HPP__
 
+#include "arDataCamp/Camera.hpp"
+#include "arDataCamp/CameraSeries.hpp"
 #include "arDataCamp/config.hpp"
 
 #include <fwCamp/macros.hpp>
@@ -22,6 +24,8 @@ struct runner
 {
     runner()
     {
+        localDeclarearDataCameraSourceType();
+        localDeclarearDataCameraPixelFormat();
         localDeclarearDataCamera();
         localDeclarearDataCameraSeries();
         localDeclarearDataCalibrationInfo();

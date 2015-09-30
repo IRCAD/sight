@@ -77,6 +77,10 @@ protected Q_SLOTS:
 
 private:
 
+    void onChooseFile();
+    void onChooseStream();
+    void onChooseDevice();
+
     /// Combobox for camera selection
     QPointer<QComboBox> m_devicesComboBox;
 

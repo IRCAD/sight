@@ -51,7 +51,7 @@ public:
      */
 
     /// Type of signal when objects are added
-    typedef ::fwCom::Signal< void (int, int) > updatedChessboardSizeSignalType;
+    typedef ::fwCom::Signal< void (int, int, float) > updatedChessboardSizeSignalType;
     VIDEOCALIBRATION_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_CHESSBOARD_SIZE_SIG;
 
     /**
@@ -100,6 +100,7 @@ private:
 
     QPointer<QSpinBox > m_chessboardWidthEditor;
     QPointer<QSpinBox > m_chessboardHeightEditor;
+    QPointer<QDoubleSpinBox > m_squareSizeChessboardEditor;
 
     std::string m_compKey;
 

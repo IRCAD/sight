@@ -35,7 +35,59 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro((Camera)(::fwData::Object), (()), ::fwData::factory::New< Camera >);
 
     typedef std::array<double, 5> DistArrayType;
-    typedef std::array<double, 6> IntrinsecType;
+    typedef std::array<double, 4> IntrinsecType;
+
+    typedef enum
+    {
+        FILE,
+        STREAM,
+        DEVICE,
+        UNKNOWN
+    } SourceType;
+
+    typedef enum
+    {
+        INVALID,
+        ARGB32,
+        ARGB32_PREMULTIPLIED,
+        RGB32,
+        RGB24,
+        RGB565,
+        RGB555,
+        ARGB8565_PREMULTIPLIED,
+        BGRA32,
+        BGRA32_PREMULTIPLIED,
+        BGR32,
+        BGR24,
+        BGR565,
+        BGR555,
+        BGRA5658_PREMULTIPLIED,
+
+        AYUV444,
+        AYUV444_PREMULTIPLIED,
+        YUV444,
+        YUV420P,
+        YV12,
+        UYVY,
+        YUYV,
+        NV12,
+        NV21,
+        IMC1,
+        IMC2,
+        IMC3,
+        IMC4,
+        Y8,
+        Y16,
+
+        JPEG,
+
+        CAMERARAW,
+        ADOBEDNG,
+
+        RGBA32,
+
+        USER = 1000
+    } PixelFormat;
 
     /**
      * @brief Constructor
@@ -46,6 +98,9 @@ public:
     /// Destructor
     ARDATA_API virtual ~Camera() throw();
 
+    ARDATA_API static PixelFormat getPixelFormat(const std::string& name);
+
+    ARDATA_API static std::string getPixelFormatName(PixelFormat format);
 
     /// Defines shallow copy
     ARDATA_API void shallowCopy( const ::fwData::Object::csptr& _source );
@@ -57,9 +112,11 @@ public:
     /**@name Signals API
      * @{
      */
+    /// Signal when camera is calibrated
     ARDATA_API static const ::fwCom::Signals::SignalKeyType s_INTRINSIC_CALIBRATED_SIG;
     typedef ::fwCom::Signal<void ()> IntrinsicCalibratedSignalType;
 
+    /// Signal when camera id is modified
     ARDATA_API static const ::fwCom::Signals::SignalKeyType s_ID_MODIFIED_SIG;
     typedef ::fwCom::Signal<void (std::string)> IdModifiedSignalType;
     /** @} */
@@ -113,27 +170,27 @@ public:
     }
 
     /// @return camera resolution in pixels
-    double getWidth() const
+    size_t getWidth() const
     {
-        return m_intrinsic[4];
+        return m_width;
     }
 
     /// Sets camera resolution in pixels
-    void setWidth(double w)
+    void setWidth(size_t w)
     {
-        m_intrinsic[4] = w;
+        m_width = w;
     }
 
     /// @return camera resolution in pixels
-    double getHeight() const
+    size_t getHeight() const
     {
-        return m_intrinsic[5];
+        return m_height;
     }
 
     /// Sets camera resolution in pixels
-    void setHeight(double h)
+    void setHeight(size_t h)
     {
-        m_intrinsic[5] = h;
+        m_height = h;
     }
 
     /// Sets the distortion coefficient
@@ -182,57 +239,127 @@ public:
     }
     /**  @} */
 
-    /// Gets camera description
+    /// Gets the camera source (file, stream or device).
+    SourceType getCameraSource() const
+    {
+        return m_cameraSource;
+    }
+
+    /// Sets the camera source (file, stream or device).
+    void setCameraSource(SourceType cameraSource)
+    {
+        m_cameraSource = cameraSource;
+    }
+
+    /// Gets the human-readable description of the camera (only available in SourceType DEVICE mode).
     std::string getDescription() const
     {
         return m_description;
     }
 
-    /// Sets camera description
+    /// Sets the human-readable description of the camera (only available in SourceType DEVICE mode).
     void setDescription(const std::string & description)
     {
         m_description = description;
     }
 
-    /// Gets camera unique identifier
+    /// Gets the device name of the camera (only available in SourceType DEVICE mode).
     std::string getCameraID() const
     {
         return m_cameraID;
     }
 
-    /// Sets camera  unique identifier
+    /// Sets the device name of the camera (only available in SourceType DEVICE mode).
     void setCameraID(const std::string & cameraID)
     {
         m_cameraID = cameraID;
     }
-    /**  @} */
+
+    /// Gets the minimum frame rate in frames per second (only available in SourceType DEVICE mode).
+    float getMaximumFrameRate() const
+    {
+        return m_maxFrameRate;
+    }
+
+    /// Sets the minimum frame rate in frames per second (only available in SourceType DEVICE mode).
+    void setMaximumFrameRate(float maxFrameRate)
+    {
+        m_maxFrameRate = maxFrameRate;
+    }
+
+    /// Gets the color format of a video frame (only available in SourceType DEVICE mode).
+    PixelFormat getPixelFormat() const
+    {
+        return m_pixelFormat;
+    }
+
+    /// Sets the color format of a video frame (only available in SourceType DEVICE mode).
+    void setPixelFormat(PixelFormat pixelFormat)
+    {
+        m_pixelFormat = pixelFormat;
+    }
+
+    /// Gets the video source file (only available in SourceType FILE mode).
+    ::boost::filesystem::path getVideoFile() const
+    {
+        return m_videoFile;
+    }
+
+    /// Sets the video source file (only available in SourceType FILE mode).
+    void setVideoFile(const ::boost::filesystem::path& videoFile)
+    {
+        m_videoFile = videoFile;
+    }
+
+    /// Gets the video source stream (only available in SourceType STREAM mode).
+    std::string getStreamUrl() const
+    {
+        return m_streamUrl;
+    }
+
+    /// Sets the video source stream (only available in SourceType STREAM mode).
+    void setStreamUrl(const std::string& streamUrl)
+    {
+        m_streamUrl = streamUrl;
+    }
 
 protected:
 
+    //! Width video resolution
+    size_t m_width;
 
-    /// intrinsic parameters [fx, fy, cx, cy, width, height]
+    //! Height video resolution
+    size_t m_height;
+
+    /// Intrinsic parameters [fx, fy, cx, cy]
     IntrinsecType m_intrinsic;
 
     /// Image distortion coefficients (radial and tangential distortions, [k1, k2, p1, p2, k3])
     DistArrayType m_distortionCoefficient;
 
-    /// skew coefficient (angle between the x and y pixel axes)
+    /// Skew coefficient (angle between the x and y pixel axes)
     double m_skew;
 
-    //! flag if data is calibrated
+    //! Flag if data is calibrated
     bool m_isCalibrated;
 
-    //! Camera description
+    //! Human-readable description of the camera.
     std::string m_description;
-
-    //! Camera unique identifier
+    //! Device name of the camera, unique ID to identify the camera and may not be human-readable.
     std::string m_cameraID;
+    //! Maximum frame rate in frames per second.
+    float m_maxFrameRate;
+    //! Color format of a video frame.
+    PixelFormat m_pixelFormat;
 
-    /// Signal when camera is calibrated
-    IntrinsicCalibratedSignalType::sptr m_sigIntrinsicCalibrated;
+    //! Video source file
+    ::boost::filesystem::path m_videoFile;
 
-    /// Signal when camera id is modified
-    IdModifiedSignalType::sptr m_sigIdModified;
+    //! Video source stream
+    std::string m_streamUrl;
+
+    //! Camera source (file, stream or device)
+    SourceType m_cameraSource;
 };
 
 } // namespace arData

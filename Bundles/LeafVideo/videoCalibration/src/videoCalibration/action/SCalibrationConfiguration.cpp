@@ -43,10 +43,12 @@ const ::fwCom::Signals::SignalKeyType SCalibrationConfiguration::s_UPDATED_CHESS
 //-----------------------------------------------------------------------------
 
 SCalibrationConfiguration::SCalibrationConfiguration() throw() : m_chessboardWidthEditor(new QSpinBox()),
-                                                                 m_chessboardHeightEditor(new QSpinBox())
+                                                                 m_chessboardHeightEditor(new QSpinBox()),
+                                                                 m_squareSizeChessboardEditor(new QDoubleSpinBox())
 {
     m_chessboardWidthEditor->setRange(0, 100);
     m_chessboardHeightEditor->setRange(0, 100);
+    m_squareSizeChessboardEditor->setRange(0, 500);
 
     m_sigUpdatedChessboardSize = newSignal< updatedChessboardSizeSignalType >(s_UPDATED_CHESSBOARD_SIZE_SIG);
 }
@@ -99,26 +101,35 @@ void SCalibrationConfiguration::configuring() throw(fwTools::Failed)
 void SCalibrationConfiguration::updating() throw(::fwTools::Failed)
 {
 
-    ::fwData::Object::sptr width  = m_paramComp->getContainer()["chessboardWidth"];
-    ::fwData::Object::sptr height = m_paramComp->getContainer()["chessboardHeight"];
+    ::fwData::Object::sptr width      = m_paramComp->getContainer()["chessboardWidth"];
+    ::fwData::Object::sptr height     = m_paramComp->getContainer()["chessboardHeight"];
+    ::fwData::Object::sptr squareSize = m_paramComp->getContainer()["squareSizeChessboard"];
 
-    int chessboardWidth  = std::stoi(::fwData::String::dynamicCast(width)->value());
-    int chessboardHeight = std::stoi( ::fwData::String::dynamicCast(height)->value());
+    int chessboardWidth        = std::stoi(::fwData::String::dynamicCast(width)->value());
+    int chessboardHeight       = std::stoi( ::fwData::String::dynamicCast(height)->value());
+    float squareSizeChessboard = std::stof(::fwData::String::dynamicCast(squareSize)->value());
 
     m_chessboardWidthEditor->setValue(chessboardWidth);
     m_chessboardHeightEditor->setValue(chessboardHeight);
+    m_squareSizeChessboardEditor->setValue(squareSizeChessboard);
 
     QPointer<QDialog> dialog     = new QDialog();
     QPointer<QGridLayout> layout = new QGridLayout();
 
-    QPointer<QLabel> chessboardHeightLabel = new QLabel(QObject::tr("Chessboard height: "));
-    QPointer<QLabel> chessboardWidthLabel  = new QLabel(QObject::tr("Chessboard width: "));
+    QPointer<QLabel> chessboardWidthLabel      = new QLabel(QObject::tr("Chessboard width: "));
+    QPointer<QLabel> chessboardHeightLabel     = new QLabel(QObject::tr("Chessboard height: "));
+    QPointer<QLabel> squareSizeChessboardLabel = new QLabel(QObject::tr("Square size Chessboard: "));
+    QLabel squareSizeUnity(QObject::tr("mm"));
 
-    layout->addWidget(chessboardHeightLabel, 0, 0);
-    layout->addWidget(m_chessboardHeightEditor, 0, 1);
+    layout->addWidget(chessboardWidthLabel, 0, 0);
+    layout->addWidget(m_chessboardWidthEditor, 0, 1);
 
-    layout->addWidget(chessboardWidthLabel, 1, 0);
-    layout->addWidget(m_chessboardWidthEditor, 1, 1);
+    layout->addWidget(chessboardHeightLabel, 1, 0);
+    layout->addWidget(m_chessboardHeightEditor, 1, 1);
+
+    layout->addWidget(squareSizeChessboardLabel, 2, 0);
+    layout->addWidget(m_squareSizeChessboardEditor, 2, 1);
+    layout->addWidget(&squareSizeUnity, 2, 2);
 
     QPointer<QPushButton> cancelButton = new QPushButton("Cancel");
     QPointer<QPushButton> okButton     = new QPushButton("OK");
@@ -127,7 +138,7 @@ void SCalibrationConfiguration::updating() throw(::fwTools::Failed)
     QPointer<QHBoxLayout> buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(cancelButton);
     buttonLayout->addWidget(okButton);
-    layout->addLayout(buttonLayout, 2, 1, 2, 2 );
+    layout->addLayout(buttonLayout, 3, 1, 3, 2);
 
     QObject::connect(cancelButton.data(), &QPushButton::clicked, dialog.data(), &QDialog::reject);
     QObject::connect(okButton.data(), &QPushButton::clicked, dialog.data(), &QDialog::accept);
@@ -136,13 +147,18 @@ void SCalibrationConfiguration::updating() throw(::fwTools::Failed)
 
     if (dialog->exec() == QDialog::Accepted)
     {
-        ::fwData::String::sptr width  = ::fwData::String::New( std::to_string(m_chessboardWidthEditor->value()));
-        ::fwData::String::sptr height = ::fwData::String::New( std::to_string(m_chessboardHeightEditor->value()));
+        ::fwData::String::sptr width      = ::fwData::String::New( std::to_string(m_chessboardWidthEditor->value()));
+        ::fwData::String::sptr height     = ::fwData::String::New( std::to_string(m_chessboardHeightEditor->value()));
+        ::fwData::String::sptr squareSize =
+            ::fwData::String::New( std::to_string(m_squareSizeChessboardEditor->value()));
 
         (::fwData::String::dynamicCast(m_paramComp->getContainer()["chessboardWidth"]))->setValue(width->value());
         (::fwData::String::dynamicCast(m_paramComp->getContainer()["chessboardHeight"]))->setValue(height->value());
+        (::fwData::String::dynamicCast(
+             m_paramComp->getContainer()["squareSizeChessboard"]))->setValue(squareSize->value());
 
-        m_sigUpdatedChessboardSize->asyncEmit(m_chessboardWidthEditor->value(), m_chessboardHeightEditor->value());
+        m_sigUpdatedChessboardSize->asyncEmit(m_chessboardWidthEditor->value(), m_chessboardHeightEditor->value(),
+                                              m_squareSizeChessboardEditor->value());
     }
 }
 
