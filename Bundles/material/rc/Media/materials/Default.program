@@ -50,6 +50,18 @@ fragment_program MaterialColor_Negato_FP glsl
     preprocessor_defines NEGATO=1
 }
 
+//-----------------------------------------------------------------------------
+
+fragment_program Default_Flat_FP_glsl glsl
+{
+    source Default_FP.glsl
+    attach MaterialColor_Flat_FP
+    default_params
+    {
+        param_named u_defaultTex int 0
+    }
+}
+
 //---------------------------------------------------------------------------
 
 fragment_program DepthPeelingCommon_FP glsl
@@ -66,6 +78,23 @@ fragment_program DepthPeeling_depth_map_FP glsl
     default_params
     {
         param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling_peel_Flat_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Flat_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_defaultTex int 1
     }
 }
 

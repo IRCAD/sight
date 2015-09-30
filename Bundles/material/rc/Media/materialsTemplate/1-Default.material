@@ -87,18 +87,6 @@ vertex_program Default_Flat_VP_glsl glsl
 
 //-----------------------------------------------------------------------------
 
-fragment_program Default_Flat_FP_glsl glsl
-{
-    source Default_FP.glsl
-    attach MaterialColor_Flat_FP
-    default_params
-    {
-        param_named u_defaultTex int 0
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 vertex_program Default_Edge_VP_glsl glsl
 {
     source DefaultEdge_VP.glsl
@@ -144,7 +132,7 @@ material "1 - Default"
             texture_unit diffuseTexture
             {
                 texture default.png 2d
-                tex_address_mode wrap
+                tex_address_mode clamp
                 filtering trilinear
             }
         }

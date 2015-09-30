@@ -42,23 +42,6 @@ fragment_program DepthPeeling_peel_PixelLighting_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling_peel_Flat_FP_glsl glsl
-{
-    source DepthPeelingPeel_FP.glsl
-    attach DepthPeelingCommon_FP
-    attach MaterialColor_Flat_FP
-    default_params
-    {
-        param_named u_fragData0 int 0
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_defaultTex int 1
-    }
-}
-
-//---------------------------------------------------------------------------
-
 fragment_program DepthPeeling_peel_Edge_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl

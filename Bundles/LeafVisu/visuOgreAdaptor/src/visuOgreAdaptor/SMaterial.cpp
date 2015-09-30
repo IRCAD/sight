@@ -123,11 +123,6 @@ void SMaterial::loadMaterialParameters()
             OSLM_WARN("Tessellation Domain Program in Material not supported yet");
         }
     }
-
-    if(m_materialTemplateName != DEFAULT_MATERIAL_TEMPLATE_NAME)
-    {
-        this->updateFromOgre();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -910,7 +905,6 @@ void SMaterial::updateRGBAMode(fwData::Material::sptr fw_material)
     // FIXME : fwData's ambient can't be used without changing ::fwData::Material(::fwData::Object::Key key) m_ambient
     //        default value
     ::fwData::Color::sptr color_ambient = fw_material->ambient();
-
     ::fwData::Color::sptr color_diffuse = fw_material->diffuse();
 
     if(m_materialTemplateName == DEFAULT_MATERIAL_TEMPLATE_NAME && m_hasMeshNormal)
@@ -1034,15 +1028,8 @@ void SMaterial::updateTransparency(fwData::Material::sptr fw_material)
         m_material->setAmbient(ambient);
 
         ::Ogre::ColourValue diffuse;
-        if(m_hasMeshNormal)
-        {
-            diffuse = ::Ogre::ColourValue(color_diffuse->red(), color_diffuse->green(),
-                                          color_diffuse->blue(), color_diffuse->alpha());
-        }
-        else
-        {
-            diffuse = ::Ogre::ColourValue(0.0f, 0.0f, 0.0f, 1.f);
-        }
+        diffuse = ::Ogre::ColourValue(color_diffuse->red(), color_diffuse->green(),
+                                      color_diffuse->blue(), color_diffuse->alpha());
         m_material->setDiffuse(diffuse);
     }
 
