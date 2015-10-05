@@ -45,35 +45,28 @@ void CameraTest::tearDown()
 
 ::arData::Camera::sptr initCamera()
 {
-    ::arData::Camera::sptr camera = ::arData::Camera::New();
-    camera->setCx(rand()%10000/100.);
-    camera->setCy(rand()%10000/100.);
-    camera->setFx(rand()%10000/100.);
-    camera->setFy(rand()%10000/100.);
-    camera->setSkew(rand()%10000/100.);
-    camera->setDistortionCoefficient(rand()%10000/100., rand()%10000/100., rand()%10000/100.,
-                                     rand()%10000/100., rand()%10000/100.);
-
-    return camera;
-}
-
-//------------------------------------------------------------------------------
-
-void CameraTest::paramTest()
-{
-    const double CX = rand()%10000/100;
-    const double CY = rand()%10000/100;
-    const double FX = rand()%10000/100;
-    const double FY = rand()%10000/100;
-    const double SKEW = rand()%10000/100;
-    const double K1 = rand()%10000/100;
-    const double K2 = rand()%10000/100;
-    const double P1 = rand()%10000/100;
-    const double P2 = rand()%10000/100;
-    const double K3 = rand()%10000/100;
-    const bool IS_CALIBRATED = true;
-    const std::string DESC = "My camera";
-    const std::string CAM_ID = "CAM_461384568";
+    const double CX                                 = rand()%10000/100;
+    const double CY                                 = rand()%10000/100;
+    const double FX                                 = rand()%10000/100;
+    const double FY                                 = rand()%10000/100;
+    const double SKEW                               = rand()%10000/100;
+    const double K1                                 = rand()%10000/100;
+    const double K2                                 = rand()%10000/100;
+    const double P1                                 = rand()%10000/100;
+    const double P2                                 = rand()%10000/100;
+    const double K3                                 = rand()%10000/100;
+    const bool IS_CALIBRATED                        = true;
+    const std::string DESC                          = "My camera";
+    const std::string CAM_ID                        = "CAM_461384568";
+    const size_t WIDTH                              = 800;
+    const size_t HEIGHT                             = 800;
+    const bool ISCALIBRATED                         = true;
+    const ::arData::Camera::SourceType CAMERASOURCE = ::arData::Camera::DEVICE;
+    const std::string CAMERAID                      = "/dev/video0";
+    const float MAXIMUMFRAMERATE                    = 30.f;
+    const ::arData::Camera::PixelFormat PIXELFORMAT = ::arData::Camera::RGBA32;
+    const std::string VIDEOFILE                     = "/tmp/video.mp4";
+    const std::string STREAMURL                     = "rtsp://192.168.0.1/h264.sdp";
 
     ::arData::Camera::sptr camera = ::arData::Camera::New();
     camera->setCx(CX);
@@ -85,6 +78,62 @@ void CameraTest::paramTest()
     camera->setIsCalibrated(IS_CALIBRATED);
     camera->setDescription(DESC);
     camera->setCameraID(CAM_ID);
+    camera->setWidth(WIDTH);
+    camera->setHeight(HEIGHT);
+    camera->setCameraSource(CAMERASOURCE);
+    camera->setMaximumFrameRate(MAXIMUMFRAMERATE);
+    camera->setPixelFormat(PIXELFORMAT);
+    camera->setVideoFile(VIDEOFILE);
+    camera->setStreamUrl(STREAMURL);
+
+    return camera;
+}
+
+//------------------------------------------------------------------------------
+
+void CameraTest::paramTest()
+{
+    const double CX                                 = rand()%10000/100;
+    const double CY                                 = rand()%10000/100;
+    const double FX                                 = rand()%10000/100;
+    const double FY                                 = rand()%10000/100;
+    const double SKEW                               = rand()%10000/100;
+    const double K1                                 = rand()%10000/100;
+    const double K2                                 = rand()%10000/100;
+    const double P1                                 = rand()%10000/100;
+    const double P2                                 = rand()%10000/100;
+    const double K3                                 = rand()%10000/100;
+    const bool IS_CALIBRATED                        = true;
+    const std::string DESC                          = "My camera";
+    const std::string CAM_ID                        = "CAM_461384568";
+    const size_t WIDTH                              = 800;
+    const size_t HEIGHT                             = 800;
+    const bool ISCALIBRATED                         = true;
+    const ::arData::Camera::SourceType CAMERASOURCE = ::arData::Camera::DEVICE;
+    const std::string CAMERAID                      = "/dev/video0";
+    const float MAXIMUMFRAMERATE                    = 30.f;
+    const ::arData::Camera::PixelFormat PIXELFORMAT = ::arData::Camera::RGBA32;
+    const std::string VIDEOFILE                     = "/tmp/video.mp4";
+    const std::string STREAMURL                     = "rtsp://192.168.0.1/h264.sdp";
+
+    ::arData::Camera::sptr camera = ::arData::Camera::New();
+    camera->setCx(CX);
+    camera->setCy(CY);
+    camera->setFx(FX);
+    camera->setFy(FY);
+    camera->setSkew(SKEW);
+    camera->setDistortionCoefficient(K1, K2, P1, P2, K3);
+    camera->setIsCalibrated(IS_CALIBRATED);
+    camera->setDescription(DESC);
+    camera->setCameraID(CAM_ID);
+
+    camera->setWidth(WIDTH);
+    camera->setHeight(HEIGHT);
+    camera->setCameraSource(CAMERASOURCE);
+    camera->setMaximumFrameRate(MAXIMUMFRAMERATE);
+    camera->setPixelFormat(PIXELFORMAT);
+    camera->setVideoFile(VIDEOFILE);
+    camera->setStreamUrl(STREAMURL);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(CX, camera->getCx(), 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(CY, camera->getCy(), 0.00001);
@@ -102,13 +151,20 @@ void CameraTest::paramTest()
     CPPUNIT_ASSERT_EQUAL(IS_CALIBRATED, camera->getIsCalibrated());
     CPPUNIT_ASSERT_EQUAL(DESC, camera->getDescription());
     CPPUNIT_ASSERT_EQUAL(CAM_ID, camera->getCameraID());
+    CPPUNIT_ASSERT_EQUAL(WIDTH, camera->getWidth());
+    CPPUNIT_ASSERT_EQUAL(HEIGHT, camera->getHeight());
+    CPPUNIT_ASSERT_EQUAL(CAMERASOURCE, camera->getCameraSource());
+    CPPUNIT_ASSERT_EQUAL(MAXIMUMFRAMERATE, camera->getMaximumFrameRate());
+    CPPUNIT_ASSERT_EQUAL(PIXELFORMAT, camera->getPixelFormat());
+    CPPUNIT_ASSERT_EQUAL(VIDEOFILE, camera->getVideoFile().string());
+    CPPUNIT_ASSERT_EQUAL(STREAMURL, camera->getStreamUrl());
 }
 
 //------------------------------------------------------------------------------
 
 void CameraTest::shallowCopyTest()
 {
-    ::arData::Camera::sptr camera = initCamera();
+    ::arData::Camera::sptr camera  = initCamera();
     ::arData::Camera::sptr camera2 = ::arData::Camera::New();
 
     camera2->shallowCopy(camera);
@@ -119,7 +175,7 @@ void CameraTest::shallowCopyTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getFy(), camera2->getFy(), 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getSkew(), camera2->getSkew(), 0.00001);
 
-    ::arData::Camera::DistArrayType dist = camera->getDistortionCoefficient();
+    ::arData::Camera::DistArrayType dist  = camera->getDistortionCoefficient();
     ::arData::Camera::DistArrayType dist2 = camera2->getDistortionCoefficient();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[0], dist2[0], 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[1], dist2[1], 0.00001);
@@ -130,6 +186,13 @@ void CameraTest::shallowCopyTest()
     CPPUNIT_ASSERT_EQUAL(camera->getIsCalibrated(), camera2->getIsCalibrated());
     CPPUNIT_ASSERT_EQUAL(camera->getDescription(), camera2->getDescription());
     CPPUNIT_ASSERT_EQUAL(camera->getCameraID(), camera2->getCameraID());
+    CPPUNIT_ASSERT_EQUAL(camera->getWidth(), camera2->getWidth());
+    CPPUNIT_ASSERT_EQUAL(camera->getHeight(), camera2->getHeight());
+    CPPUNIT_ASSERT_EQUAL(camera->getCameraSource(), camera2->getCameraSource());
+    CPPUNIT_ASSERT_EQUAL(camera->getMaximumFrameRate(), camera2->getMaximumFrameRate());
+    CPPUNIT_ASSERT_EQUAL(camera->getPixelFormat(), camera2->getPixelFormat());
+    CPPUNIT_ASSERT_EQUAL(camera->getVideoFile(), camera2->getVideoFile());
+    CPPUNIT_ASSERT_EQUAL(camera->getStreamUrl(), camera2->getStreamUrl());
 }
 
 //------------------------------------------------------------------------------
@@ -139,7 +202,6 @@ void CameraTest::deepCopyTest()
     ::arData::Camera::sptr camera = initCamera();
     ::arData::Camera::sptr camera2;
     camera2 = ::fwData::Object::copy(camera);
-
     CPPUNIT_ASSERT(::fwTest::helper::compare(camera, camera2));
 }
 
