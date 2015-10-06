@@ -7,9 +7,9 @@
 #ifndef __VIDEOTOOLS_SFRAMEMATRIXSYNCHRONIZER_HPP__
 #define __VIDEOTOOLS_SFRAMEMATRIXSYNCHRONIZER_HPP__
 
-#include "videoTools/ISynchronizer.hpp"
 #include "videoTools/config.hpp"
 
+#include <arServices/ISynchronizer.hpp>
 #include <fwCore/base.hpp>
 #include <fwCore/HiResClock.hpp>
 #include <fwData/Composite.hpp>
@@ -35,7 +35,7 @@ namespace videoTools
  * @brief   SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
  * @class   SFrameMatrixSynchronizer
  */
-class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::videoTools::ISynchronizer
+class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISynchronizer
 {
 
 public:
@@ -70,7 +70,7 @@ protected:
      * @brief This method is used to configure the service.
      *
      * @verbatim
-       <service impl="::videoTools::SFrameMatrixSynchronizer" type="::videoTools::ISynchronizer">
+       <service impl="::videoTools::SFrameMatrixSynchronizer" type="::arServices::ISynchronizer">
            <frames>
                <frame from="frame1TL" to="frame1" />
                <frame from="frame2TL" to="frame2" />

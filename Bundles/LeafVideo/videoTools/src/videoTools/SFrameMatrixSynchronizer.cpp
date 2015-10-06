@@ -26,7 +26,7 @@
 
 #include <functional>
 
-fwServicesRegisterMacro(::videoTools::ISynchronizer, ::videoTools::SFrameMatrixSynchronizer, ::fwData::Composite);
+fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SFrameMatrixSynchronizer, ::fwData::Composite);
 
 namespace videoTools
 {
