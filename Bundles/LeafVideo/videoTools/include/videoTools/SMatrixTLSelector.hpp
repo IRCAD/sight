@@ -7,15 +7,14 @@
 #ifndef __VIDEOTOOLS_SMATRIXTLSELECTOR_HPP__
 #define __VIDEOTOOLS_SMATRIXTLSELECTOR_HPP__
 
-#include "videoTools/ISynchronizer.hpp"
 #include "videoTools/config.hpp"
 
+#include <arServices/ISynchronizer.hpp>
 #include <fwCore/base.hpp>
 #include <fwCore/HiResClock.hpp>
 #include <fwData/Composite.hpp>
 #include <fwServices/IController.hpp>
 #include <fwThread/Timer.hpp>
-
 
 namespace extData
 {
@@ -35,7 +34,7 @@ namespace videoTools
  * @brief   SMatrixTLSelector service synchronizes video frame and tracking matrixes.
  * @class   SMatrixTLSelector
  */
-class VIDEOTOOLS_CLASS_API SMatrixTLSelector : public ::videoTools::ISynchronizer
+class VIDEOTOOLS_CLASS_API SMatrixTLSelector : public ::arServices::ISynchronizer
 {
 
 public:

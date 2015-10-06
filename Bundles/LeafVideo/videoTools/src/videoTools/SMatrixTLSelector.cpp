@@ -26,7 +26,7 @@
 
 #include <functional>
 
-fwServicesRegisterMacro(::videoTools::ISynchronizer, ::videoTools::SMatrixTLSelector, ::fwData::Composite);
+fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SMatrixTLSelector, ::fwData::Composite);
 
 namespace videoTools
 {
