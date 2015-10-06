@@ -1,36 +1,11 @@
-<plugin id="videoTools" class="videoTools::Plugin" version="@DASH_VERSION@" >
+<plugin id="syncTimeline" class="syncTimeline::Plugin" version="@DASH_VERSION@" >
 
-    <library name="videoTools" />
-    
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::videoTools::ISynchronizer</type>
-        <service>::videoTools::SFrameMatrixSynchronizer</service>
-        <object>::fwData::Composite</object>
-    </extension>
-    
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::videoTools::ISynchronizer</type>
-        <service>::videoTools::SMatrixSynchronizer</service>
-        <object>::fwData::TransformationMatrix3D</object>
-    </extension>
+    <library name="syncTimeline" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::videoTools::ISynchronizer</type>
-        <service>::videoTools::SMatrixTLSelector</service>
-        <object>::fwData::Composite</object>
-    </extension>
-    
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IController</type>
-        <service>::videoTools::SFrameUpdater</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::arServices::IOperator</type>
-        <service>::videoTools::SFrameResizer</service>
-        <object>::fwData::Composite</object>
-        <desc>service description</desc>
+        <type>::arServices::ISynchronizer</type>
+        <service>::syncTimeline::SMatrixTLSynchronizer</service>
+        <object>::extData::MatrixTL</object>
     </extension>
 
 </plugin>
