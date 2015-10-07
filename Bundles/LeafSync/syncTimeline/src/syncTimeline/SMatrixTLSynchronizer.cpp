@@ -23,6 +23,7 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <functional>
+#include <sstream>
 
 fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, ::extData::MatrixTL);
 
@@ -52,8 +53,8 @@ void SMatrixTLSynchronizer::configuring() throw (::fwTools::Failed)
 
         for(ConfigurationType cfg : matrixCfgs)
         {
-            const std::string index      = cfg->getAttributeValue("index");
-            const std::uint8_t indexInTL = ::boost::lexical_cast< std::uint8_t >(index);
+            const std::string index       = cfg->getAttributeValue("index");
+            const unsigned long indexInTL = stoul(index);
 
             const std::string matrixUID = cfg->getAttributeValue("to");
 
@@ -95,23 +96,30 @@ void SMatrixTLSynchronizer::synchronize()
 
     if(buffer)
     {
+        std::stringstream matrixPrint;
+
         for(const MatrixIndexNameType::value_type& el : m_matrixIndexName)
         {
-            if(buffer->isPresent(el.first))
+            unsigned int index = static_cast< unsigned int >(el.first);
+            if(buffer->isPresent(index))
             {
-                const float* values = buffer->getElement(el.first);
+                const float* values = buffer->getElement(index);
 
                 ::fwTools::Object::sptr obj                   = ::fwTools::fwID::getObject(el.second);
                 ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::dynamicCast(obj);
 
                 SLM_ASSERT("Matrix '" + el.second + "' not found.", matrix);
+                matrixPrint << std::endl << "Matrix : " << el.second << std::endl;
 
                 for(unsigned int i = 0; i < 4; ++i)
                 {
                     for(unsigned int j = 0; j < 4; ++j)
                     {
                         matrix->setCoefficient(i,j,values[i*4+j]);
+                        matrixPrint << values[i*4+j] << " ; ";
+
                     }
+                    matrixPrint << std::endl;
                 }
 
                 auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
@@ -119,6 +127,8 @@ void SMatrixTLSynchronizer::synchronize()
                 sig->asyncEmit();
             }
         }
+
+        OSLM_DEBUG( std::endl <<matrixPrint.str());
     }
 }
 

@@ -54,7 +54,7 @@ public:
     {
     }
 
-    typedef std::map< std::uint8_t, std::string > MatrixIndexNameType;
+    typedef std::map< unsigned long, std::string > MatrixIndexNameType;
 
 protected:
     /**
