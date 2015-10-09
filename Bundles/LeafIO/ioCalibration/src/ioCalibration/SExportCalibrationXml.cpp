@@ -147,7 +147,6 @@ void SExportCalibrationXml::updating() throw (fwTools::Failed)
             fs << "imageHeight" << static_cast< int >(camSeries->getCamera(i)->getHeight());
             fs << "matrix" << cameraMatrices[i];
             fs << "distortion" << cameraDistCoefs[i];
-            fs << "}";
 
             extrinsicMatrix = camSeries->getExtrinsicMatrix(i);
             if(extrinsicMatrix)
@@ -161,6 +160,7 @@ void SExportCalibrationXml::updating() throw (fwTools::Failed)
                 }
                 fs<<"extrinsic"<<extrinsic;
             }
+            fs << "}";
         }
 
         fs.release();
