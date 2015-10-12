@@ -161,6 +161,8 @@ void SFrameGrabber::startCamera()
         }
     }
 
+    QObject::connect(m_videoPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
+    QObject::connect(m_videoPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
     QObject::connect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
 
     m_videoPlayer->play();
@@ -178,6 +180,8 @@ void SFrameGrabber::pauseCamera()
 void SFrameGrabber::stopCamera()
 {
     m_videoPlayer->stop();
+    QObject::disconnect(m_videoPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
+    QObject::disconnect(m_videoPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
     QObject::disconnect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
 }
 
