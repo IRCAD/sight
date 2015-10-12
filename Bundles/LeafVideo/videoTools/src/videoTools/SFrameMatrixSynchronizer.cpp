@@ -34,7 +34,6 @@ namespace videoTools
 // ----------------------------------------------------------------------------
 
 SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() throw () :
-    m_lastTimestamp(0),
     m_tolerance(500),
     m_imagesInitialized(false),
     m_timeStep(33)
@@ -153,27 +152,51 @@ void SFrameMatrixSynchronizer::stopping() throw (fwTools::Failed)
 
 void SFrameMatrixSynchronizer::synchronize()
 {
-    ::fwCore::HiResClock::HiResClockType frameTimestamp =
-        std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
+    // Timestamp reference for the synchronization
+    ::fwCore::HiResClock::HiResClockType frameTimestamp = 0;
+
+    typedef std::vector<std::string> TimelineType;
 
     // Get timestamp for synchronization
+    TimelineType availableFramesTL;
+    availableFramesTL.reserve(m_frameTLs.size());
+
+    // If multiple TLs are set, we want to synchronize their frames together.
+    // If TLs are updated, we get the one with the oldest timestamp to synchronize them.
+    // In particular case, we could have only one TL updated, we still need to get frames from it.
+    // Then we get the one with the newest timestamp and the other ones are not considered.
     for(FrameTLKeyType::value_type elt : m_frameTLs)
     {
         ::fwCore::HiResClock::HiResClockType tlTimestamp = elt.second->getNewerTimestamp();
-
-        if (tlTimestamp == 0)
+        if(tlTimestamp > 0)
         {
-            SLM_INFO("no available frame for timeline '" + elt.first + "'.");
-            return;
+            // Check if the current TL timestamp and the previous one are closed enough (according to the tolerance)
+            if (std::abs(frameTimestamp - tlTimestamp) < m_tolerance)
+            {
+                // Sets the reference timestamp as the minimum value
+                frameTimestamp = std::min(frameTimestamp, tlTimestamp);
+                availableFramesTL.push_back(elt.first);
+            }
+            // Otherwise keep the most recent timestamp as frameTimestamp
+            else
+            {
+                // If the difference between the TLs timestamp is superior to the tolerance
+                // we set the reference timestamp as the maximum of them
+                frameTimestamp = std::max(frameTimestamp, tlTimestamp);
+                availableFramesTL.clear();
+                availableFramesTL.push_back(elt.first);
+            }
         }
-        frameTimestamp = std::min(frameTimestamp, tlTimestamp);
+        else
+        {
+            SLM_INFO("no available matrix for timeline '" + elt.first + "'.");
+        }
     }
 
-    ::fwCore::HiResClock::HiResClockType currentTimestamp =
+    ::fwCore::HiResClock::HiResClockType matrixTimestamp =
         std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
 
-    typedef std::vector<std::string> MatricesType;
-    MatricesType availableMatricesTL;
+    TimelineType availableMatricesTL;
     availableMatricesTL.reserve(m_matrixTLs.size());
     for(MatrixTLKeyType::value_type elt : m_matrixTLs)
     {
@@ -182,7 +205,7 @@ void SFrameMatrixSynchronizer::synchronize()
         {
             if (std::abs(frameTimestamp - tlTimestamp) < m_tolerance)
             {
-                currentTimestamp = std::min(currentTimestamp, tlTimestamp);
+                matrixTimestamp = std::min(matrixTimestamp, tlTimestamp);
                 availableMatricesTL.push_back(elt.first);
             }
         }
@@ -192,10 +215,10 @@ void SFrameMatrixSynchronizer::synchronize()
         }
     }
 
-    for(FrameTLKeyType::value_type elt : m_frameTLs)
+    for(TimelineType::value_type key : availableFramesTL)
     {
-        ::extData::FrameTL::sptr frameTL = elt.second;
-        ::fwData::Image::sptr image      = m_images[elt.first];
+        ::extData::FrameTL::sptr frameTL = m_frameTLs[key];
+        ::fwData::Image::sptr image      = m_images[key];
 
         ::fwData::Image::SizeType size(3);
         size[0] = frameTL->getWidth();
@@ -232,11 +255,11 @@ void SFrameMatrixSynchronizer::synchronize()
 
         ::fwComEd::helper::Array arrayHelper(array);
 
-        CSPTR(::extData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(currentTimestamp);
+        CSPTR(::extData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(matrixTimestamp);
 
         if(!buffer)
         {
-            OSLM_INFO("Buffer not found with timestamp "<< currentTimestamp);
+            OSLM_INFO("Buffer not found with timestamp "<< matrixTimestamp);
             return;
         }
 
@@ -252,10 +275,10 @@ void SFrameMatrixSynchronizer::synchronize()
     }
 
 
-    for(MatricesType::value_type key : availableMatricesTL)
+    for(TimelineType::value_type key : availableMatricesTL)
     {
         ::extData::MatrixTL::sptr matrixTL            = m_matrixTLs[key];
-        CSPTR(::extData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
+        CSPTR(::extData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(matrixTimestamp);
 
         if(buffer)
         {
@@ -293,8 +316,6 @@ void SFrameMatrixSynchronizer::synchronize()
             }
         }
     }
-
-    m_lastTimestamp = currentTimestamp;
 }
 
 // ----------------------------------------------------------------------------
