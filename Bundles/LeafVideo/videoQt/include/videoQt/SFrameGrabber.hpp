@@ -7,25 +7,20 @@
 #ifndef __VIDEOQT_SFRAMEGRABBER_HPP__
 #define __VIDEOQT_SFRAMEGRABBER_HPP__
 
-#include <QObject>
-#include <QPointer>
-#include <QCamera>
-#include <QImage>
-#include <QMediaPlayer>
-#include <QVideoFrame>
-
+#include "videoQt/config.hpp"
 #include <fwTools/Failed.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
 #include <fwServices/IController.hpp>
+#include <videoQt/player/QVideoPlayer.hpp>
 
-#include "videoQt/config.hpp"
+#include <QObject>
+#include <QPointer>
+#include <QImage>
 
-class QVideoFrame;
 fwCorePredeclare( (arData)(Camera) )
-fwCorePredeclare( (videoQt)(VideoSurfaceQt) )
 
 namespace videoQt
 {
@@ -53,16 +48,11 @@ public:
      * @name Signals API
      * @{
      */
-
     VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
-    typedef ::fwCom::Signal<void (int64_t)> PositionModifiedSignalType;
+    typedef ::fwCom::Signal<void (std::int64_t)> PositionModifiedSignalType;
 
     VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_DURATION_MODIFIED_SIG;
-    typedef ::fwCom::Signal<void (int64_t)> DurationModifiedSignalType;
-
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_FRAME_PRESENTED_SIG;
-    typedef ::fwCom::Signal<void ()> FramePresentedSignalType;
-
+    typedef ::fwCom::Signal<void (std::int64_t)> DurationModifiedSignalType;
     /** @} */
 
     /**
@@ -78,21 +68,12 @@ public:
     VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_PAUSE_CAMERA_SLOT;
     typedef ::fwCom::Slot<void ()> PauseCameraSlotType;
 
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_SELECT_CAMERA_SLOT;
-    typedef ::fwCom::Slot<void (const std::string&)> SelectCameraSlotType;
-
     VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_LOOP_VIDEO_SLOT;
     typedef ::fwCom::Slot<void ()> LoopVideoSlotType;
 
     VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_SET_POSITION_VIDEO_SLOT;
     typedef ::fwCom::Slot<void (int)> SetPositionVideoSlotType;
-
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_PRESENT_SLOT;
-    typedef ::fwCom::Slot<void ()> PresentFrameSlotType;
     ///@}
-
-    /// Set the video frame. It is not a copy, the image data inside QVideoFrame is smart pointed.
-    VIDEOQT_API void setVideoFrame(const QVideoFrame& videoFrame);
 
 protected:
 
@@ -117,22 +98,23 @@ protected:
 
     /// SLOT : Initialize and start camera (restart camera if is already started)
     void startCamera();
+
     /// SLOT : Stop camera
     void stopCamera();
+
     /// SLOT : Pause camera
     void pauseCamera();
-    /// SLOT : Select camera
-    void selectCamera(const std::string& cameraID);
+
     /// SLOT : enable/disable loop in video
-    void toogleLoopMode();
+    void toggleLoopMode();
+
     /// SLOT : set the new position in the video.
     void setPosition(int64_t position);
-    /// SLOT: copy and push video frame in the timeline.
-    void presentFrame();
+
     /// Gets camera from m_cameraID
     SPTR(::arData::Camera) getCamera();
 
-    /// Mirrored the frame in the desired direction (Only available on Windows platform)
+    /// Mirrored the frame in the desired direction
     void setMirror(bool horizontallyFlip = false, bool verticallyFlip = false)
     {
         m_horizontallyFlip = horizontallyFlip;
@@ -147,31 +129,19 @@ protected Q_SLOTS:
     /// Call when reading position changed in the video.
     void onPositionChanged(qint64 position);
 
-private:
+    /// SLOT: copy and push video frame in the timeline.
+    void presentFrame(const QVideoFrame& frame);
 
-    /// Slot to call present frame method
-    PresentFrameSlotType::sptr m_slotPresentFrame;
+private:
 
     /// FwID of arData::Camera
     std::string m_cameraID;
-
-    /// Qt video surface
-    QPointer<VideoSurfaceQt> m_videoSurface;
-
-    /// Media player
-    QPointer<QMediaPlayer> m_mediaPlayer;
-
-    /// Play list
-    QPointer<QMediaPlaylist> m_playlist;
 
     /// state of the loop mode
     bool m_loopVideo;
 
     /// Camera
-    QPointer<QCamera> m_camera;
-
-    /// Video frame
-    QVideoFrame m_videoFrame;
+    player::QVideoPlayer* m_videoPlayer;
 
     /// Worker for the m_slotPresentFrame
     ::fwThread::Worker::sptr m_worker;
@@ -181,10 +151,12 @@ private:
 
     /// Mirror frame in horizontal direction
     bool m_horizontallyFlip;
+
     /// Mirror frame in vertical direction
     bool m_verticallyFlip;
 };
-}
+
+} // namespace videoQt
 
 #endif /*__VIDEOQT_SFRAMEGRABBER_HPP__*/
 
