@@ -34,7 +34,6 @@ namespace videoTools
 // ----------------------------------------------------------------------------
 
 SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() throw () :
-    m_lastTimestamp(0),
     m_tolerance(500),
     m_imagesInitialized(false),
     m_timeStep(33)
@@ -156,24 +155,34 @@ void SFrameMatrixSynchronizer::synchronize()
     ::fwCore::HiResClock::HiResClockType frameTimestamp =
         std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
 
+    typedef std::vector<std::string> TimelineType;
+
     // Get timestamp for synchronization
+    TimelineType availableFramesTL;
+    availableFramesTL.reserve(m_frameTLs.size());
     for(FrameTLKeyType::value_type elt : m_frameTLs)
     {
-        ::fwCore::HiResClock::HiResClockType tlTimestamp = elt.second->getNewerTimestamp();
 
-        if (tlTimestamp == 0)
+        ::fwCore::HiResClock::HiResClockType tlTimestamp = elt.second->getNewerTimestamp();
+        if(tlTimestamp > 0)
         {
-            SLM_INFO("no available frame for timeline '" + elt.first + "'.");
-            return;
+            ::fwCore::HiResClock::HiResClockType tmpTimestamp = std::min(frameTimestamp, tlTimestamp);
+            if (std::abs(tmpTimestamp - tlTimestamp) < m_tolerance)
+            {
+                frameTimestamp = tmpTimestamp;
+                availableFramesTL.push_back(elt.first);
+            }
         }
-        frameTimestamp = std::min(frameTimestamp, tlTimestamp);
+        else
+        {
+            SLM_INFO("no available matrix for timeline '" + elt.first + "'.");
+        }
     }
 
-    ::fwCore::HiResClock::HiResClockType currentTimestamp =
+    ::fwCore::HiResClock::HiResClockType matrixTimestamp =
         std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
 
-    typedef std::vector<std::string> MatricesType;
-    MatricesType availableMatricesTL;
+    TimelineType availableMatricesTL;
     availableMatricesTL.reserve(m_matrixTLs.size());
     for(MatrixTLKeyType::value_type elt : m_matrixTLs)
     {
@@ -182,7 +191,7 @@ void SFrameMatrixSynchronizer::synchronize()
         {
             if (std::abs(frameTimestamp - tlTimestamp) < m_tolerance)
             {
-                currentTimestamp = std::min(currentTimestamp, tlTimestamp);
+                matrixTimestamp = std::min(matrixTimestamp, tlTimestamp);
                 availableMatricesTL.push_back(elt.first);
             }
         }
@@ -192,10 +201,10 @@ void SFrameMatrixSynchronizer::synchronize()
         }
     }
 
-    for(FrameTLKeyType::value_type elt : m_frameTLs)
+    for(TimelineType::value_type key : availableFramesTL)
     {
-        ::extData::FrameTL::sptr frameTL = elt.second;
-        ::fwData::Image::sptr image      = m_images[elt.first];
+        ::extData::FrameTL::sptr frameTL = m_frameTLs[key];
+        ::fwData::Image::sptr image      = m_images[key];
 
         ::fwData::Image::SizeType size(3);
         size[0] = frameTL->getWidth();
@@ -232,11 +241,11 @@ void SFrameMatrixSynchronizer::synchronize()
 
         ::fwComEd::helper::Array arrayHelper(array);
 
-        CSPTR(::extData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(currentTimestamp);
+        CSPTR(::extData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(matrixTimestamp);
 
         if(!buffer)
         {
-            OSLM_INFO("Buffer not found with timestamp "<< currentTimestamp);
+            OSLM_INFO("Buffer not found with timestamp "<< matrixTimestamp);
             return;
         }
 
@@ -252,10 +261,10 @@ void SFrameMatrixSynchronizer::synchronize()
     }
 
 
-    for(MatricesType::value_type key : availableMatricesTL)
+    for(TimelineType::value_type key : availableMatricesTL)
     {
         ::extData::MatrixTL::sptr matrixTL            = m_matrixTLs[key];
-        CSPTR(::extData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
+        CSPTR(::extData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(matrixTimestamp);
 
         if(buffer)
         {
@@ -293,8 +302,6 @@ void SFrameMatrixSynchronizer::synchronize()
             }
         }
     }
-
-    m_lastTimestamp = currentTimestamp;
 }
 
 // ----------------------------------------------------------------------------

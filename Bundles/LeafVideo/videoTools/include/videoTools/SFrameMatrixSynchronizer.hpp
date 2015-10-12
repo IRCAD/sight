@@ -121,7 +121,6 @@ protected:
 
 private:
 
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
     ::fwCore::HiResClock::HiResClockType m_tolerance; ///< Tolerance to take into account matrix
 
     bool m_imagesInitialized;
