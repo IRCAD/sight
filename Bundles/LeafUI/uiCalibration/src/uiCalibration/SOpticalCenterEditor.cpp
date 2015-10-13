@@ -65,6 +65,10 @@ void SOpticalCenterEditor::starting() throw(::fwTools::Failed)
         SLM_ASSERT("Missing source camera '" + m_cameraSrcUid + "'", srcCamera);
 
         camera->deepCopy(srcCamera);
+
+        auto sig = camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >(
+            ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
+        sig->asyncEmit();
     }
 
     SLM_ASSERT("Camera must be calibrated.", camera->getIsCalibrated());
