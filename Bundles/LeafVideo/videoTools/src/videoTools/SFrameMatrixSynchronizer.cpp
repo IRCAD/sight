@@ -152,8 +152,8 @@ void SFrameMatrixSynchronizer::stopping() throw (fwTools::Failed)
 
 void SFrameMatrixSynchronizer::synchronize()
 {
-    ::fwCore::HiResClock::HiResClockType frameTimestamp =
-        std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
+    // Timestamp reference for the synchronization
+    ::fwCore::HiResClock::HiResClockType frameTimestamp = 0;
 
     typedef std::vector<std::string> TimelineType;
 
@@ -162,14 +162,20 @@ void SFrameMatrixSynchronizer::synchronize()
     availableFramesTL.reserve(m_frameTLs.size());
     for(FrameTLKeyType::value_type elt : m_frameTLs)
     {
-
         ::fwCore::HiResClock::HiResClockType tlTimestamp = elt.second->getNewerTimestamp();
         if(tlTimestamp > 0)
         {
-            ::fwCore::HiResClock::HiResClockType tmpTimestamp = std::min(frameTimestamp, tlTimestamp);
-            if (std::abs(tmpTimestamp - tlTimestamp) < m_tolerance)
+            // Check if the current TL timestamp and the previous one are closed enough (according to the tolerance)
+            if (std::abs(frameTimestamp - tlTimestamp) < m_tolerance)
             {
-                frameTimestamp = tmpTimestamp;
+                frameTimestamp = std::min(frameTimestamp, tlTimestamp);
+                availableFramesTL.push_back(elt.first);
+            }
+            // Otherwise keep the most recent timestamp as frameTimestamp
+            else
+            {
+                frameTimestamp = std::max(frameTimestamp, tlTimestamp);
+                availableFramesTL.clear();
                 availableFramesTL.push_back(elt.first);
             }
         }
