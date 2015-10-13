@@ -4,7 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "videoQt/VideoPlayer.hpp"
+#include "videoQt/player/QVideoPlayer.hpp"
+#include "videoQt/player/QVideoSurface.hpp"
 
 #include <fwCore/spyLog.hpp>
 #include <fwCore/exceptionmacros.hpp>
@@ -17,62 +18,23 @@
 
 namespace videoQt
 {
-
-
-QVideoSurface::QVideoSurface(QObject *parent) : QAbstractVideoSurface(parent)
+namespace player
 {
-}
 
-QList<QVideoFrame::PixelFormat> QVideoSurface::supportedPixelFormats(QAbstractVideoBuffer::HandleType handleType) const
-{
-    if (handleType == QAbstractVideoBuffer::NoHandle)
-    {
-        return QList<QVideoFrame::PixelFormat>()
-               << QVideoFrame::Format_RGB32
-               << QVideoFrame::Format_ARGB32
-               << QVideoFrame::Format_ARGB32_Premultiplied;
-    }
-    else
-    {
-        return QList<QVideoFrame::PixelFormat>();
-    }
-}
-
-bool QVideoSurface::present(const QVideoFrame& frame)
-{
-    if (surfaceFormat().pixelFormat() != frame.pixelFormat()
-        || surfaceFormat().frameSize() != frame.size())
-    {
-        SLM_WARN( "IncorrectFormatError" );
-        return false;
-    }
-    else
-    {
-        QVideoFrame currentFrame = frame;
-        if (currentFrame.map(QAbstractVideoBuffer::ReadOnly))
-        {
-            Q_EMIT frameAvailable(currentFrame);
-        }
-        return true;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-VideoPlayer::VideoPlayer() : m_loopVideo(false)
+QVideoPlayer::QVideoPlayer() : m_loopVideo(false)
 {
 }
 
 //------------------------------------------------------------------------------
 
-VideoPlayer::~VideoPlayer()
+QVideoPlayer::~QVideoPlayer()
 {
     this->stop();
 }
 
 //-----------------------------------------------------------------------------
 
-void VideoPlayer::initCameraFile(const ::boost::filesystem::path& videoPath)
+void QVideoPlayer::initCameraFile(const ::boost::filesystem::path& videoPath)
 {
     FW_RAISE_IF("Invalid video path '"+videoPath.string()+"'", !::boost::filesystem::exists(videoPath));
 
@@ -100,7 +62,7 @@ void VideoPlayer::initCameraFile(const ::boost::filesystem::path& videoPath)
 
 //-----------------------------------------------------------------------------
 
-void VideoPlayer::initCameraStream(const std::string& strVideoUrl)
+void QVideoPlayer::initCameraStream(const std::string& strVideoUrl)
 {
     m_mediaPlayer = new QMediaPlayer(0, QMediaPlayer::VideoSurface);
 
@@ -121,11 +83,11 @@ void VideoPlayer::initCameraStream(const std::string& strVideoUrl)
 
 //-----------------------------------------------------------------------------
 
-void VideoPlayer::initCameraDevice(const std::string& cameraID, int width, int height, double maximumFrameRate)
+void QVideoPlayer::initCameraDevice(const std::string& cameraID, size_t width, size_t height, float maximumFrameRate)
 {
     m_camera = new QCamera(QByteArray(cameraID.c_str(), static_cast<int>(cameraID.size())));
     QCameraViewfinderSettings viewfinderSettings;
-    viewfinderSettings.setResolution(width, height);
+    viewfinderSettings.setResolution(static_cast<int>(width), static_cast<int>(height));
     viewfinderSettings.setMaximumFrameRate(maximumFrameRate);
     m_camera->setViewfinderSettings(viewfinderSettings);
 
@@ -144,7 +106,7 @@ void VideoPlayer::initCameraDevice(const std::string& cameraID, int width, int h
 
 //-----------------------------------------------------------------------------
 
-void VideoPlayer::play()
+void QVideoPlayer::play()
 {
     if(m_mediaPlayer)
     {
@@ -158,7 +120,7 @@ void VideoPlayer::play()
 
 //-----------------------------------------------------------------------------
 
-void VideoPlayer::pause()
+void QVideoPlayer::pause()
 {
     if(m_mediaPlayer)
     {
@@ -175,7 +137,7 @@ void VideoPlayer::pause()
 
 //-----------------------------------------------------------------------------
 
-void VideoPlayer::stop()
+void QVideoPlayer::stop()
 {
     if(m_camera)
     {
@@ -213,7 +175,7 @@ void VideoPlayer::stop()
 
 //-----------------------------------------------------------------------------
 
-void VideoPlayer::toggleLoopMode(bool isLoopEnable)
+void QVideoPlayer::toggleLoopMode(bool isLoopEnable)
 {
     if(m_playlist)
     {
@@ -230,7 +192,7 @@ void VideoPlayer::toggleLoopMode(bool isLoopEnable)
 
 //-----------------------------------------------------------------------------
 
-void VideoPlayer::setPosition(int64_t position)
+void QVideoPlayer::setPosition(int64_t position)
 {
     if(m_mediaPlayer)
     {
@@ -240,4 +202,5 @@ void VideoPlayer::setPosition(int64_t position)
 
 //-----------------------------------------------------------------------------
 
+} //namespace player
 } //namespace videoQt

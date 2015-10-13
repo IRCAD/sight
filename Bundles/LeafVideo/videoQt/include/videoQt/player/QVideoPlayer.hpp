@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOQT_VIDEOPLAYER_HPP__
-#define __VIDEOQT_VIDEOPLAYER_HPP__
+#ifndef __VIDEOQT_PLAYER_QVIDEOPLAYER_HPP__
+#define __VIDEOQT_PLAYER_QVIDEOPLAYER_HPP__
 
 #include "videoQt/config.hpp"
 
@@ -16,63 +16,43 @@
 #include <QObject>
 #include <QPointer>
 #include <QVideoFrame>
-#include <QVideoProbe>
 
 #include <boost/filesystem/path.hpp>
 
-class QAbstractVideoSurface;
-
 namespace videoQt
 {
+namespace player
+{
 
-class QVideoSurface : public QAbstractVideoSurface
+class VIDEOQT_CLASS_API QVideoPlayer : public QObject
 {
 Q_OBJECT
 public:
 
-    QVideoSurface(QObject *parent);
+    VIDEOQT_API QVideoPlayer();
 
-    QList<QVideoFrame::PixelFormat> supportedPixelFormats(QAbstractVideoBuffer::HandleType handleType) const;
-
-    bool present(const QVideoFrame &frame);
-
-Q_SIGNALS:
-    void frameAvailable(const QVideoFrame& frame);
-
-};
-
-//-----------------------------------------------------------------------------
-
-class VideoPlayer : public QObject
-{
-Q_OBJECT
-
-public:
-
-    VideoPlayer();
-
-    ~VideoPlayer();
+    VIDEOQT_API ~QVideoPlayer();
 
     /// Stop camera
-    void stop();
+    VIDEOQT_API void stop();
 
     /// Pause camera
-    void pause();
+    VIDEOQT_API void pause();
 
     /// Pause camera
-    void play();
+    VIDEOQT_API void play();
 
     /// enable/disable loop in video
-    void toggleLoopMode(bool isLoopEnable);
+    VIDEOQT_API void toggleLoopMode(bool isLoopEnable);
 
     /// set the new position in the video.
-    void setPosition(int64_t position);
+    VIDEOQT_API void setPosition(int64_t position);
 
-    void initCameraFile(const ::boost::filesystem::path& videoPath);
+    VIDEOQT_API void initCameraFile(const ::boost::filesystem::path& videoPath);
 
-    void initCameraStream(const std::string& strVideoUrl);
+    VIDEOQT_API void initCameraStream(const std::string& strVideoUrl);
 
-    void initCameraDevice(const std::string& cameraID, int width, int height, double maximumFrameRate);
+    VIDEOQT_API void initCameraDevice(const std::string& cameraID, size_t width, size_t height, float maximumFrameRate);
 
 Q_SIGNALS:
 
@@ -103,6 +83,7 @@ private:
     bool m_loopVideo;
 };
 
-}
+} //namespace player
+} //namespace videoQt
 
-#endif // __VIDEOQT_VIDEOPLAYER_HPP__
+#endif // __VIDEOQT_PLAYER_QVIDEOPLAYER_HPP__

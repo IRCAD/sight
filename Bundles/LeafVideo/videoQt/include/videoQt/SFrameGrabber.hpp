@@ -8,20 +8,17 @@
 #define __VIDEOQT_SFRAMEGRABBER_HPP__
 
 #include "videoQt/config.hpp"
-#include "videoQt/VideoPlayer.hpp"
-
 #include <fwTools/Failed.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
 #include <fwServices/IController.hpp>
+#include <videoQt/player/QVideoPlayer.hpp>
 
 #include <QObject>
 #include <QPointer>
-#include <QCamera>
 #include <QImage>
-#include <QMediaPlayer>
 
 fwCorePredeclare( (arData)(Camera) )
 
@@ -144,7 +141,7 @@ private:
     bool m_loopVideo;
 
     /// Camera
-    QPointer<VideoPlayer> m_videoPlayer;
+    player::QVideoPlayer* m_videoPlayer;
 
     /// Worker for the m_slotPresentFrame
     ::fwThread::Worker::sptr m_worker;

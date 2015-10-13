@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "videoQt/player/VideoRegistry.hpp"
+
 #include "videoQt/SFrameGrabber.hpp"
 #include "videoQt/helper/preferences.hpp"
 
@@ -17,8 +19,6 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwTools/Type.hpp>
 #include <fwServices/Base.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <extData/FrameTL.hpp>
 #include <arData/Camera.hpp>
@@ -49,6 +49,7 @@ const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_SET_POSITION_VIDEO_SLOT = "se
 //-----------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() throw() : m_loopVideo(false),
+                                         m_videoPlayer(nullptr),
                                          m_horizontallyFlip(false),
                                          m_verticallyFlip(false)
 {
@@ -72,9 +73,7 @@ SFrameGrabber::~SFrameGrabber() throw()
 
 void SFrameGrabber::starting() throw(::fwTools::Failed)
 {
-    SLM_ASSERT("m_videoPlayer must be null - have you called starting() twice ?", m_videoPlayer.isNull());
-
-    m_videoPlayer = new VideoPlayer();
+    SLM_ASSERT("m_videoPlayer must be null - have you called starting() twice ?", nullptr == m_videoPlayer);
 }
 
 //-----------------------------------------------------------------------------
@@ -104,85 +103,66 @@ void SFrameGrabber::updating() throw ( ::fwTools::Failed )
 
 void SFrameGrabber::startCamera()
 {
-    this->stopCamera();
-    this->setMirror(false, false);
+    ::arData::Camera::sptr camera            = this->getCamera();
+    ::arData::Camera::SourceType eSourceType = camera->getCameraSource();
 
-    ::arData::Camera::sptr camera = this->getCamera();
-
-    switch(camera->getCameraSource())
+    // Make sure the user has selected a valid source
+    if( ::arData::Camera::UNKNOWN != eSourceType )
     {
-        case ::arData::Camera::FILE:
-        {
-            /// Path of the video file stored in the camera description
-            ::boost::filesystem::path videoPath(camera->getVideoFile());
-            ::boost::filesystem::path videoDir(helper::getVideoDir());
+        this->stopCamera();
+        this->setMirror(false, false);
 
-            // For compatibility with old calibration with absolute path
-            if (!videoPath.is_absolute())
-            {
-                videoPath = videoDir / videoPath;
-            }
 
-            try
-            {
-                m_videoPlayer->initCameraFile(videoPath);
-            }
-            catch(std::exception& e)
-            {
-                ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Camera error",
-                    e.what(),
-                    ::fwGui::dialog::IMessageDialog::WARNING);
-            }
 
-            break;
-        }
-        case ::arData::Camera::STREAM:
+    #ifdef WIN32
+        if( ::arData::Camera::DEVICE == eSourceType )
         {
-            /// Path of the video file stored in the camera description
-            const std::string videoPath = camera->getStreamUrl();
-            m_videoPlayer->initCameraStream(videoPath);
-            break;
-        }
-        case ::arData::Camera::DEVICE:
-        {
-#ifdef WIN32
             this->setMirror(false, true);
-#endif
-            std::string cameraID = camera->getCameraID();
-            m_videoPlayer->initCameraDevice(cameraID, camera->getWidth(), camera->getHeight(),
-                                            camera->getMaximumFrameRate());
-            break;
         }
-        case ::arData::Camera::UNKNOWN:
+    #endif
+
+        player::VideoRegistry& registry = player::VideoRegistry::getInstance();
+        m_videoPlayer = registry.requestPlayer(camera);
+        if(m_videoPlayer)
         {
-            SLM_ERROR("No camera source defined.");
-            break;
+            QObject::connect(m_videoPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
+            QObject::connect(m_videoPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
+            QObject::connect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
+
+            m_videoPlayer->play();
         }
     }
-
-    QObject::connect(m_videoPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
-    QObject::connect(m_videoPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
-    QObject::connect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
-
-    m_videoPlayer->play();
 }
 
 //-----------------------------------------------------------------------------
 
 void SFrameGrabber::pauseCamera()
 {
-    m_videoPlayer->pause();
+    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the "pause" button
+    if(m_videoPlayer)
+    {
+        m_videoPlayer->pause();
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SFrameGrabber::stopCamera()
 {
-    m_videoPlayer->stop();
-    QObject::disconnect(m_videoPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
-    QObject::disconnect(m_videoPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
-    QObject::disconnect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
+    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the "pause" button
+    if(m_videoPlayer)
+    {
+        m_videoPlayer->stop();
+
+        QObject::disconnect(m_videoPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
+        QObject::disconnect(m_videoPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
+        QObject::disconnect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
+
+        player::VideoRegistry& registry = player::VideoRegistry::getInstance();
+        registry.releasePlayer(m_videoPlayer);
+
+        m_videoPlayer = nullptr;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -199,15 +179,23 @@ SPTR(::arData::Camera) SFrameGrabber::getCamera()
 
 void SFrameGrabber::toggleLoopMode()
 {
-    m_loopVideo = !m_loopVideo;
-    m_videoPlayer->toggleLoopMode(m_loopVideo);
+    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the "pause" button
+    if(m_videoPlayer)
+    {
+        m_loopVideo = !m_loopVideo;
+        m_videoPlayer->toggleLoopMode(m_loopVideo);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SFrameGrabber::setPosition(std::int64_t position)
 {
-    m_videoPlayer->setPosition(position);
+    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the "pause" button
+    if(m_videoPlayer)
+    {
+        m_videoPlayer->setPosition(position);
+    }
 }
 
 //-----------------------------------------------------------------------------

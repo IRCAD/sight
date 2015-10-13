@@ -42,7 +42,7 @@ public:
         FILE,
         STREAM,
         DEVICE,
-        UNKNOWN
+        UNKNOWN = 0xFF
     } SourceType;
 
     typedef enum
