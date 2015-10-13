@@ -15,6 +15,7 @@ class vtkImageData;
 class vtkTexture;
 class vtkActor;
 
+fwCorePredeclare( (arData)(Camera) )
 
 namespace visuVTKARAdaptor
 {
@@ -80,6 +81,9 @@ private:
     /// Slot: update image
     void updateImage();
 
+    /// Slot: apply the optical center offset to our video plane
+    void offsetOpticalCenter();
+
     vtkImageData* m_imageData; ///< vtk image created from current data Image. It is shown in the frame.
     vtkTexture* m_texture;  ///< texture used to show the image
     vtkActor * m_actor;  ///< actor to show frame
@@ -89,6 +93,8 @@ private:
     std::string m_cameraUID; ///< uid of the camera
 
     bool m_reverse; ///< if true, the actor is rotated in z and y axis.
+
+    SPTR(::arData::Camera) m_camera; ///< camera used to retrieve the optical center
 };
 
 } //namespace visuVTKARAdaptor

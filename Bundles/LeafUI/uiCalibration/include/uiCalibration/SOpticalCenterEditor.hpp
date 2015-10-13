@@ -64,9 +64,6 @@ private Q_SLOTS:
     void onCxSliderChanged(int value);
     void onCySliderChanged(int value);
     void onFySliderChanged(int value);
-    void onCxSliderReleased();
-    void onCySliderReleased();
-    void onFySliderReleased();
 
 private:
 
