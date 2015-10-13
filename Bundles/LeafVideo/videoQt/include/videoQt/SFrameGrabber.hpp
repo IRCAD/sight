@@ -51,16 +51,11 @@ public:
      * @name Signals API
      * @{
      */
-
     VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
-    typedef ::fwCom::Signal<void (int64_t)> PositionModifiedSignalType;
+    typedef ::fwCom::Signal<void (std::int64_t)> PositionModifiedSignalType;
 
     VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_DURATION_MODIFIED_SIG;
-    typedef ::fwCom::Signal<void (int64_t)> DurationModifiedSignalType;
-
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_FRAME_PRESENTED_SIG;
-    typedef ::fwCom::Signal<void ()> FramePresentedSignalType;
-
+    typedef ::fwCom::Signal<void (std::int64_t)> DurationModifiedSignalType;
     /** @} */
 
     /**
@@ -75,9 +70,6 @@ public:
 
     VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_PAUSE_CAMERA_SLOT;
     typedef ::fwCom::Slot<void ()> PauseCameraSlotType;
-
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_SELECT_CAMERA_SLOT;
-    typedef ::fwCom::Slot<void (const std::string&)> SelectCameraSlotType;
 
     VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_LOOP_VIDEO_SLOT;
     typedef ::fwCom::Slot<void ()> LoopVideoSlotType;

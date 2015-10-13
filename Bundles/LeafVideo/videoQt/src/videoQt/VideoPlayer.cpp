@@ -74,7 +74,7 @@ VideoPlayer::~VideoPlayer()
 
 void VideoPlayer::initCameraFile(const ::boost::filesystem::path& videoPath)
 {
-    SLM_ASSERT("Invalid video path '"+videoPath.string()+"'", ::boost::filesystem::exists(videoPath));
+    FW_RAISE_IF("Invalid video path '"+videoPath.string()+"'", !::boost::filesystem::exists(videoPath));
 
     m_mediaPlayer = new QMediaPlayer(0, QMediaPlayer::VideoSurface);
 

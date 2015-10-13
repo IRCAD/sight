@@ -205,7 +205,7 @@ void SFrameGrabber::toggleLoopMode()
 
 //-----------------------------------------------------------------------------
 
-void SFrameGrabber::setPosition(int64_t position)
+void SFrameGrabber::setPosition(std::int64_t position)
 {
     m_videoPlayer->setPosition(position);
 }
@@ -215,7 +215,7 @@ void SFrameGrabber::setPosition(int64_t position)
 void SFrameGrabber::onPositionChanged(qint64 position)
 {
     auto sig = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
-    sig->asyncEmit(static_cast<int64_t>(position));
+    sig->asyncEmit(static_cast<std::int64_t>(position));
 }
 
 //----------------------------------------------------------------------------
@@ -223,7 +223,7 @@ void SFrameGrabber::onPositionChanged(qint64 position)
 void SFrameGrabber::onDurationChanged(qint64 duration)
 {
     auto sig = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
-    sig->asyncEmit(static_cast<int64_t>(duration));
+    sig->asyncEmit(static_cast<std::int64_t>(duration));
 }
 
 //----------------------------------------------------------------------------
