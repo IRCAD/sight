@@ -40,12 +40,6 @@ SOpticalCenterEditor::~SOpticalCenterEditor() throw()
 void SOpticalCenterEditor::configuring() throw(::fwTools::Failed)
 {
     this->initialize();
-
-    ConfigurationType srcCfg = m_configuration->findConfigurationElement("cameraSrcUid");
-    if (srcCfg)
-    {
-        m_cameraSrcUid = srcCfg->getValue();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -57,21 +51,7 @@ void SOpticalCenterEditor::starting() throw(::fwTools::Failed)
         ::fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
     ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
-    if (!m_cameraSrcUid.empty())
-    {
-        ::fwData::mt::ObjectWriteLock lock(camera);
-        ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(m_cameraSrcUid);
-        ::arData::Camera::sptr srcCamera = ::arData::Camera::dynamicCast(obj);
-        SLM_ASSERT("Missing source camera '" + m_cameraSrcUid + "'", srcCamera);
-
-        camera->deepCopy(srcCamera);
-
-        auto sig = camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >(
-            ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
-        sig->asyncEmit();
-    }
-
-    SLM_ASSERT("Camera must be calibrated.", camera->getIsCalibrated());
+    OSLM_ASSERT("Camera " << this->getID() << " must be calibrated.", camera->getIsCalibrated());
 
     QWidget* const container = qtContainer->getQtContainer();
 
