@@ -160,6 +160,11 @@ void SFrameMatrixSynchronizer::synchronize()
     // Get timestamp for synchronization
     TimelineType availableFramesTL;
     availableFramesTL.reserve(m_frameTLs.size());
+
+    // If multiple TLs are set, we want to synchronize their frames together.
+    // If TLs are updated, we get the one with the oldest timestamp to synchronize them.
+    // In particular case, we could have only one TL updated, we still need to get frames from it.
+    // Then we get the one with the newest timestamp and the other ones are not considered.
     for(FrameTLKeyType::value_type elt : m_frameTLs)
     {
         ::fwCore::HiResClock::HiResClockType tlTimestamp = elt.second->getNewerTimestamp();
@@ -168,12 +173,15 @@ void SFrameMatrixSynchronizer::synchronize()
             // Check if the current TL timestamp and the previous one are closed enough (according to the tolerance)
             if (std::abs(frameTimestamp - tlTimestamp) < m_tolerance)
             {
+                // Sets the reference timestamp as the minimum value
                 frameTimestamp = std::min(frameTimestamp, tlTimestamp);
                 availableFramesTL.push_back(elt.first);
             }
             // Otherwise keep the most recent timestamp as frameTimestamp
             else
             {
+                // If the difference between the TLs timestamp is superior to the tolerance
+                // we set the reference timestamp as the maximum of them
                 frameTimestamp = std::max(frameTimestamp, tlTimestamp);
                 availableFramesTL.clear();
                 availableFramesTL.push_back(elt.first);
