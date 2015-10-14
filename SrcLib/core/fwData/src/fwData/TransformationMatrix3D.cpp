@@ -15,9 +15,10 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-TransformationMatrix3D::TransformationMatrix3D(::fwData::Object::Key key) :  m_vCoefficients(16, 0.)
+TransformationMatrix3D::TransformationMatrix3D(::fwData::Object::Key key)
 {
     //default initialization
+    m_vCoefficients.fill(0.);
     for(size_t t = 0; t < MATRIX_SIZE; ++t)
     {
         m_vCoefficients[t*MATRIX_SIZE + t] = 1.;
@@ -52,24 +53,6 @@ void TransformationMatrix3D::cachedDeepCopy(const Object::csptr &_source, DeepCo
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
     m_vCoefficients = other->m_vCoefficients;
-}
-
-//------------------------------------------------------------------------------
-
-double TransformationMatrix3D::getCoefficient(size_t l, size_t c) const
-{
-    size_t pos = l * MATRIX_SIZE + c;
-    assert(pos < m_vCoefficients.size());
-    return m_vCoefficients.at(pos);
-}
-
-//------------------------------------------------------------------------------
-
-void TransformationMatrix3D::setCoefficient(size_t l, size_t c, TransformationMatrix3D::TM3DType val)
-{
-    size_t pos = l * MATRIX_SIZE + c;
-    assert(pos < m_vCoefficients.size());
-    m_vCoefficients.at(pos) = val;
 }
 
 //------------------------------------------------------------------------------

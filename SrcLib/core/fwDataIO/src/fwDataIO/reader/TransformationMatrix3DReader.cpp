@@ -49,13 +49,11 @@ void TransformationMatrix3DReader::read()
 
     char readedValue = 0;
     double value;
-    this->getConcreteObject()->getRefCoefficients().clear();
-    this->getConcreteObject()->getRefCoefficients().reserve(16);
 
     while ( !inFile.eof() && readedValue<16 )
     {
         inFile >> value;
-        this->getConcreteObject()->getRefCoefficients().push_back( value );
+        this->getConcreteObject()->getRefCoefficients()[readedValue] = value;
         readedValue++;
     }
 

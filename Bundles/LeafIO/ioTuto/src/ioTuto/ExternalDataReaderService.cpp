@@ -134,11 +134,11 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
                     file >> value;
                     if  (readedValue<16)
                     {
-                        transformation1->getRefCoefficients().push_back( value );
+                        transformation1->getRefCoefficients()[readedValue] = value;
                     }
                     else
                     {
-                        transformation2->getRefCoefficients().push_back( value );
+                        transformation2->getRefCoefficients()[readedValue] = value;
                     }
                     readedValue++;
                 }

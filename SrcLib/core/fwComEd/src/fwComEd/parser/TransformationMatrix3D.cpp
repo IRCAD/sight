@@ -40,14 +40,11 @@ void TransformationMatrix3D::createConfig( ::fwTools::Object::sptr _obj )
             std::string input = elem->getValue();
             std::istringstream inputString( input );
 
-            matrix->getRefCoefficients().clear();
-            matrix->getRefCoefficients().reserve(16);
-
             double coef;
             for ( unsigned int k = 0; k < 16; k++)
             {
                 inputString >> coef;
-                matrix->getRefCoefficients().push_back( coef );
+                matrix->getRefCoefficients()[k] = coef;
             }
         }
     }

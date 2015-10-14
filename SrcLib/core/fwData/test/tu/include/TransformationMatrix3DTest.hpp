@@ -18,8 +18,8 @@ class TransformationMatrix3DTest : public CPPUNIT_NS::TestFixture
 {
 private:
     CPPUNIT_TEST_SUITE( TransformationMatrix3DTest );
-    CPPUNIT_TEST( methode1 );
-    CPPUNIT_TEST( methode2 );
+    CPPUNIT_TEST( getterSetterByCoef );
+    CPPUNIT_TEST( getterSetterByArray );
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -27,8 +27,8 @@ public:
     void setUp();
     void tearDown();
 
-    void methode1();
-    void methode2();
+    void getterSetterByCoef();
+    void getterSetterByArray();
 };
 
 } //namespace ut

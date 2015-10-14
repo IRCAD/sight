@@ -25,6 +25,7 @@ class TransformationMatrix3DTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE( TransformationMatrix3DTest );
 CPPUNIT_TEST( identityMatrixTest );
 CPPUNIT_TEST( matrixTest );
+CPPUNIT_TEST( glmGetterSetterTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -35,6 +36,7 @@ public:
 
     void identityMatrixTest();
     void matrixTest();
+    void glmGetterSetterTest();
 
 };
 

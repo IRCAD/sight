@@ -4,111 +4,98 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/numeric/ublas/matrix.hpp>
-#include <boost/numeric/ublas/lu.hpp>
-#include <boost/numeric/ublas/io.hpp>
-
 #include "fwDataTools/TransformationMatrix3D.hpp"
+#include <glm/matrix.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace fwDataTools
 {
 
-bool TransformationMatrix3D::invert(::fwData::TransformationMatrix3D::sptr trf_input,
-                                    ::fwData::TransformationMatrix3D::sptr trf_output)
+bool TransformationMatrix3D::invert(const ::fwData::TransformationMatrix3D::sptr& _input,
+                                    ::fwData::TransformationMatrix3D::sptr& _output)
 {
-    OSLM_INFO("Inverting matrix. Input:" << std::endl << *trf_input);
-    ::boost::numeric::ublas::matrix< ::fwData::TransformationMatrix3D::TM3DType, ::boost::numeric::ublas::row_major,
-                                     ::fwData::TransformationMatrix3D::TMCoefArray > mx_input(4, 4,
-                                                                                              trf_input->getCRefCoefficients()),
-    mx_output(4,
-              4,
-              trf_output->getCRefCoefficients());
+    // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
+    // However the transposition has a cost and inversion does not care about the layout, so we skip it
+    const ::glm::dmat4x4 mat        = ::glm::make_mat4<double>(_input->getCoefficients().data());
+    const ::glm::dmat4x4 matInverse = ::glm::inverse(mat);
 
-    // create a permutation matrix for the LU-factorization
-    ::boost::numeric::ublas::permutation_matrix< std::size_t > mx_perm(mx_input.size1());
-
-    // perform LU-factorization
-    int res = ::boost::numeric::ublas::lu_factorize(mx_input, mx_perm);
-    if (res != 0)
+    auto& coefs = _output->getRefCoefficients();
+    for (size_t i = 0; i < 4; ++i)
     {
-        SLM_INFO("Cannot compute.");
-        return false;
-    }
-
-    // create identity matrix of "inverse"
-    mx_output.assign(
-        ::boost::numeric::ublas::identity_matrix< ::fwData::TransformationMatrix3D::TM3DType >(mx_input.size1()));
-
-    // backsubstitute to get the inverse
-    ::boost::numeric::ublas::lu_substitute(mx_input, mx_perm, mx_output);
-
-    for (int i = 0; i < 4; ++i)
-    {
-        for (int j = 0; j < 4; ++j)
+        const size_t rowDst          = i * 4;
+        const ::glm::length_t rowSrc = static_cast< ::glm::length_t>(i);
+        for (size_t j = 0; j < 4; ++j)
         {
-            trf_output->setCoefficient(i, j, mx_output(i, j));
+            const ::glm::length_t colSrc = static_cast< ::glm::length_t>(j);
+            coefs[rowDst+j] = matInverse[rowSrc][colSrc];
         }
     }
-    OSLM_INFO("Output:" << std::endl << *trf_output);
+
     return true;
 }
 
 // ----------------------------------------------------------------------------
 
-void TransformationMatrix3D::multiply(::fwData::TransformationMatrix3D::sptr fTrf_A,
-                                      ::fwData::TransformationMatrix3D::sptr fTrf_B,
-                                      ::fwData::TransformationMatrix3D::sptr fTrf_C)
+void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::sptr& _trfA,
+                                      const ::fwData::TransformationMatrix3D::sptr& _trfB,
+                                      ::fwData::TransformationMatrix3D::sptr& _output)
 {
-    ::boost::numeric::ublas::matrix< ::fwData::TransformationMatrix3D::TM3DType, ::boost::numeric::ublas::row_major,
-                                     ::fwData::TransformationMatrix3D::TMCoefArray > mx_a(4, 4,
-                                                                                          fTrf_A->getCRefCoefficients()),
-    mx_b(4, 4,
-         fTrf_B->getCRefCoefficients()),
-    mx_c(4, 4);
+    // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
+    // However the transposition has a cost, so it is faster to not transpose them
+    // and perform the inverse multiplication
+    const ::glm::dmat4x4 matA = ::glm::make_mat4<double>(_trfA->getCoefficients().data());
+    const ::glm::dmat4x4 matB = ::glm::make_mat4<double>(_trfB->getCoefficients().data());
 
-    mx_c = ::boost::numeric::ublas::prod(mx_a, mx_b);
+    const ::glm::dmat4x4 matC = matB * matA;
 
-    for (int i = 0; i < 4; ++i)
+    auto& coefs = _output->getRefCoefficients();
+    for (size_t i = 0; i < 4; ++i)
     {
-        for (int j = 0; j < 4; ++j)
+        const size_t rowDst          = i * 4;
+        const ::glm::length_t rowSrc = static_cast< ::glm::length_t>(i);
+        for (size_t j = 0; j < 4; ++j)
         {
-            fTrf_C->setCoefficient(i, j, mx_c(i, j));
+            const ::glm::length_t colSrc = static_cast< ::glm::length_t>(j);
+            coefs[rowDst + j] = matC[rowSrc][colSrc];
         }
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void TransformationMatrix3D::identity(::fwData::TransformationMatrix3D::sptr trf)
+void TransformationMatrix3D::identity(::fwData::TransformationMatrix3D::sptr& _trf)
 {
-    for (int i = 0; i < 4; ++i)
+    for (size_t i = 0; i < 4; ++i)
     {
-        for (int j = 0; j < 4; ++j)
+        for (size_t j = 0; j < 4; ++j)
         {
-            trf->setCoefficient(i, j, i == j ? 1 : 0);
+            _trf->setCoefficient(i, j, i == j ? 1 : 0);
         }
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void TransformationMatrix3D::multiply(::fwData::TransformationMatrix3D::sptr trf,
-                                      ::fwData::Point::sptr input, ::fwData::Point::sptr output)
+void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::sptr& _trf,
+                                      const ::fwData::Point::sptr& _input, ::fwData::Point::sptr& _output)
 {
-    ::boost::numeric::ublas::matrix< ::fwData::TransformationMatrix3D::TM3DType, ::boost::numeric::ublas::row_major,
-                                     ::fwData::TransformationMatrix3D::TMCoefArray > mx(4, 4,
-                                                                                        trf->getCRefCoefficients());
+    // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
+    // However the transposition has a cost, so it is faster to not transpose them
+    // and perform the inverse multiplication
+    const ::glm::dmat4x4 mat = ::glm::make_mat4<double>(_trf->getCoefficients().data());
 
-    ::boost::array<double, 3> inCoord = input->getCRefCoord();
-    ::boost::numeric::ublas::vector< double > in(4), out(4);
+    const auto& inCoord = _input->getCRefCoord();
+    ::glm::dvec4 in;
     in[0] = inCoord[0];
     in[1] = inCoord[1];
     in[2] = inCoord[2];
     in[3] = 1;
 
-    out = ::boost::numeric::ublas::prod(mx, in);
+    ::glm::dvec4 out = in * mat;
     ::boost::array<double, 3> res = {{ out[0], out[1], out[2] }};
-    output->setCoord(res);
+    _output->setCoord(res);
 }
+
+// ----------------------------------------------------------------------------
 
 } // namespace fwDataTools

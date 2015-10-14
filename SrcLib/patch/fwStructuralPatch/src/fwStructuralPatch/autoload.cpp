@@ -17,6 +17,7 @@
 #include "fwStructuralPatch/fwData/Mesh/V1ToV2.hpp"
 #include "fwStructuralPatch/fwData/Mesh/V1ToV3.hpp"
 #include "fwStructuralPatch/fwData/Mesh/V2ToV3.hpp"
+#include "fwStructuralPatch/fwData/TransformationMatrix3D/V1ToV2.hpp"
 
 
 namespace fwStructuralPatch
@@ -38,6 +39,7 @@ struct runner
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V1ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V1ToV3::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V2ToV3::New());
+        structuralPatches->registerPatch(::fwStructuralPatch::fwData::TransformationMatrix3D::V1ToV2::New());
     }
 
     static runner r;
