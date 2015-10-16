@@ -48,8 +48,7 @@ void notifyRemoveLandMark( ::fwData::Point::sptr point )
 
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = point->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-
-    fwServicesNotifyMsgMacro( point->getLightID(), sig, msgPointList );
+    sig->asyncEmit(msgPointList);
 }
 
 //------------------------------------------------------------------------------

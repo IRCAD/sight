@@ -51,7 +51,7 @@ void IEditionService::notify(
 
     if( _allowLoops )
     {
-        fwServicesNotifyMsgMacro( _pSource->getLightID(), sig, _pMsg );
+        sig->asyncEmit(_pMsg);
     }
     else
     {

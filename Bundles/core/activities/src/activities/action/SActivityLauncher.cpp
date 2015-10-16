@@ -4,14 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QApplication>
-#include <QDialog>
-#include <QPushButton>
-#include <QListWidget>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QStandardItemModel>
+#include "activities/helper/Activity.hpp"
+#include "activities/action/SActivityLauncher.hpp"
 
 #include <fwRuntime/Convert.hpp>
 
@@ -44,8 +38,14 @@
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
 
-#include "activities/helper/Activity.hpp"
-#include "activities/action/SActivityLauncher.hpp"
+#include <QApplication>
+#include <QDialog>
+#include <QPushButton>
+#include <QListWidget>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QPushButton>
+#include <QStandardItemModel>
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
 
@@ -386,7 +386,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
 
     if( m_mode == "message" )
     {
-        fwServicesNotifyMsgMacro(this->getLightID(), m_sigActivityLaunched, msg);
+        m_sigActivityLaunched->asyncEmit(msg);
     }
     else
     {
@@ -436,7 +436,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Activity can not be launched",
             "The activity " + info.title + " can't be launched. Reason : " + validation.second,
-            ::fwGui::dialog::MessageDialog::WARNING
+            ::fwGui::dialog::IMessageDialog::WARNING
             );
     }
     else
@@ -469,7 +469,7 @@ bool SActivityLauncher::launchAS(::fwData::Vector::sptr &selection)
                 ParametersType parameters = this->translateParameters(m_parameters);
                 ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(as, info, parameters);
 
-                fwServicesNotifyMsgMacro(this->getLightID(), m_sigActivityLaunched, msg);
+                m_sigActivityLaunched->asyncEmit(msg);
                 launchAS = true;
             }
         }
@@ -489,7 +489,7 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
         ParametersType parameters = this->translateParameters(m_parameters);
         ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(as, info, parameters);
 
-        fwServicesNotifyMsgMacro(this->getLightID(), m_sigActivityLaunched, msg);
+        m_sigActivityLaunched->asyncEmit(msg);
     }
     else
     {

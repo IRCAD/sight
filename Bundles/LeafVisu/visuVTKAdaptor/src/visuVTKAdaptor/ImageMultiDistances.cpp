@@ -126,7 +126,7 @@ public:
                         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
                         sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(
                             ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-                        fwServicesNotifyMsgMacro( image->getLightID(), sig, msg );
+                        sig->asyncEmit(msg);
 
                         break;
                     }

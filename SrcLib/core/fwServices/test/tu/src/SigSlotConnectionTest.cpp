@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "SigSlotConnectionTest.hpp"
+#include "SlotsSignalsStuff.hpp"
+
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwTest/Exception.hpp>
-
-#include "SigSlotConnectionTest.hpp"
-#include "SlotsSignalsStuff.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::SigSlotConnectionTest );
@@ -59,13 +59,13 @@ void SigSlotConnectionTest::basicTest()
 
     helper->connect( buffer, showTestSrv, showTestSrv->getObjSrvConnections() );
     showTestSrv->start().wait();
-    fwServicesNotifyMsgMacro("SigSlotConnectionTest::basicTest()", sig, msg);
+    sig->asyncEmit(msg);
     showTestSrv->stop().wait();
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
     helper->disconnect();
     showTestSrv->start().wait();
-    fwServicesNotifyMsgMacro("SigSlotConnectionTest::basicTest()", sig, msg);
+    sig->asyncEmit(msg);
     showTestSrv->stop().wait();
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 

@@ -47,7 +47,7 @@ void notifyDeletePlane( ::fwData::PlaneList::sptr planeList, ::fwData::Plane::sp
 
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = planeList->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-    fwServicesNotifyMsgMacro( planeList->getLightID(), sig, msg );
+    sig->asyncEmit(msg);
 }
 
 class vtkPlaneDeleteCallBack : public vtkCommand
@@ -175,8 +175,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-PlaneList::PlaneList() throw()
-    : m_planeCollectionId("")
+PlaneList::PlaneList() throw()  : m_rightButtonCommand(nullptr), m_planeCollectionId("")
 {
     //addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
     //addNewHandledEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE );

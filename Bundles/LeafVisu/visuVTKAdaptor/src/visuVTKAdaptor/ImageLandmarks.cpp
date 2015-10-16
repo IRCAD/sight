@@ -59,7 +59,7 @@ void notifyRemoveLandMark( ::fwData::Image::sptr image, ::fwServices::IService* 
     msgLandmark->addEvent( ::fwComEd::ImageMsg::LANDMARK, point );
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-    fwServicesNotifyMsgMacro( image->getLightID(), sig, msgLandmark );
+    sig->asyncEmit(msgLandmark);
 }
 
 //------------------------------------------------------------------------------
