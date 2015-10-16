@@ -37,4 +37,4 @@ set( REQUIREMENTS
     preferences
     )
 
-bundle_param(appXml PARAM_LIST config PARAM_VALUES OgreViewer_Extension)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES OgreViewer_Extension)
