@@ -59,7 +59,7 @@ class FWRENDERVTK_CLASS_API fwVtkPicker : public vtkPicker
 public:
     FWRENDERVTK_API static fwVtkPicker *New();
 
-    vtkTypeRevisionMacro(fwVtkPicker,vtkPicker);
+    vtkTypeMacro(fwVtkPicker,vtkPicker);
     void PrintSelf(ostream& os, vtkIndent indent);
 
     // Description:

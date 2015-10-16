@@ -35,7 +35,7 @@ public:
 
     // Description:
     // Standard methods for instances of this class.
-    vtkTypeRevisionMacro(MarkedSphereHandleRepresentation,vtkHandleRepresentation);
+    vtkTypeMacro(MarkedSphereHandleRepresentation,vtkHandleRepresentation);
     FWRENDERVTK_API void PrintSelf(ostream& os, vtkIndent indent);
 
     FWRENDERVTK_API virtual void SetWorldPosition(double p[3]);

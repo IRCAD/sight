@@ -45,7 +45,7 @@ class FWRENDERVTK_CLASS_API fwVtkCellPicker : public fwVtkPicker
 {
 public:
     FWRENDERVTK_API static fwVtkCellPicker *New();
-    vtkTypeRevisionMacro(fwVtkCellPicker,fwVtkPicker);
+    vtkTypeMacro(fwVtkCellPicker,fwVtkPicker);
     void PrintSelf(ostream& os, vtkIndent indent);
 
     // Description:
@@ -82,10 +82,8 @@ private:
     vtkGenericCell *Cell; //used to accelerate picking
 
 private:
-    fwVtkCellPicker(const fwVtkCellPicker&); // Not implemented.
-    void operator=(const fwVtkCellPicker&); // Not implemented.
+    fwVtkCellPicker(const fwVtkCellPicker&);  // Not implemented.
+    void operator=(const fwVtkCellPicker&);  // Not implemented.
 };
 
-#endif //__FWRENDERVTK_VTK_FWVTKCELLPICKER_HPP__
-
-
+#endif // __FWRENDERVTK_VTK_FWVTKCELLPICKER_HPP__

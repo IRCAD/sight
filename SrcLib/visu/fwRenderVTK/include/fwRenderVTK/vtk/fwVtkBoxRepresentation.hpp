@@ -40,11 +40,11 @@
 #ifndef __FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__
 #define __FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__
 
-#include "vtkWidgetRepresentation.h"
-
 #include "fwRenderVTK/config.hpp"
 
-class vtkBoxRepresentation;
+#include <vtkBoxRepresentation.h>
+#include <vtkWidgetRepresentation.h>
+
 class vtkActor;
 class vtkPolyDataMapper;
 class vtkLineSource;
@@ -71,7 +71,7 @@ public:
 
     // Description:
     // Standard methods for the class.
-    vtkTypeRevisionMacro(fwVtkBoxRepresentation,vtkBoxRepresentation);
+    vtkTypeMacro(fwVtkBoxRepresentation,vtkBoxRepresentation);
     void PrintSelf(ostream& os, vtkIndent indent);
 
     // Description:

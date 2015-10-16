@@ -5,28 +5,16 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
-#include <boost/lambda/lambda.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include <vtkActor.h>
 #include <vtkCellPicker.h>
-#include <vtkFrustumCoverageCuller.h>
-#include <vtkInteractorStyleTrackballCamera.h>
-#include <vtkLight.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkProperty.h>
-#include <vtkRendererCollection.h>
-#include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
-#include <vtkSphereSource.h>
 #include <vtkInstantiator.h>
 #include <vtkTransform.h>
-#include <vtkCamera.h>
-//Required for proper object factory initialization
-#include <vtkAutoInit.h>
-VTK_MODULE_INIT(vtkInteractionStyle);
-VTK_MODULE_INIT(vtkRenderingFreeTypeOpenGL);
+#include <vtkRendererCollection.h>
+#include <vtkRenderWindow.h>
+#include <vtkSmartPointer.h>
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
@@ -325,6 +313,7 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
+
     this->initialize();
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = m_configuration->find("scene");
@@ -375,6 +364,7 @@ void VtkRenderService::starting() throw(fwTools::Failed)
     SLM_TRACE_FUNC();
 
     this->create();
+
     this->startContext();
 
     // Instantiate vtk object, class...
@@ -427,6 +417,7 @@ void VtkRenderService::starting() throw(fwTools::Failed)
         vtkRenderer *renderer = (*iter).second;
         m_interactorManager->getInteractor()->GetRenderWindow()->AddRenderer(renderer);
     }
+
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
     SceneAdaptorsMapType::iterator adaptorIter;
@@ -553,30 +544,19 @@ void VtkRenderService::updateTimer()
 void VtkRenderService::startContext()
 {
     m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
-    m_interactorManager->setRenderService(this->getSptr());
     m_interactorManager->installInteractor( this->getContainer() );
+    InteractorStyle3DForNegato* interactor = InteractorStyle3DForNegato::New();
+    SLM_ASSERT("Can't instantiate interactor", interactor);
+    interactor->setAutoRender(m_renderMode == RenderMode::AUTO);
+    m_interactorManager->getInteractor()->SetInteractorStyle( interactor );
 
-    // For Depth peeling (translucent rendering)
-//    m_interactorManager->getInteractor()->SetRenderWhenDisabled(false);
+    m_interactorManager->setRenderService(this->getSptr());
 
 #ifndef __linux
     m_interactorManager->getInteractor()->GetRenderWindow()->SetAlphaBitPlanes(1);
     m_interactorManager->getInteractor()->GetRenderWindow()->SetMultiSamples(0);
 #endif
 
-//    m_interactor->GetRenderWindow()->PointSmoothingOn();
-//    m_interactor->GetRenderWindow()->LineSmoothingOn();
-//    m_interactor->GetRenderWindow()->PolygonSmoothingOn();
-//    m_interactor->Register(NULL);
-    InteractorStyle3DForNegato* interactor = InteractorStyle3DForNegato::New();
-    SLM_ASSERT("Can't instantiate interactor", interactor);
-    interactor->setAutoRender(m_renderMode == RenderMode::AUTO);
-    m_interactorManager->getInteractor()->SetInteractorStyle( interactor );
-
-//    m_interactorManager->getInteractor()->SetRenderModeToDirect();
-    //m_interactor->SetRenderModeToFrameRated();
-//    m_interactor->SetRenderModeToOneShot();
-//    m_interactor->SetRenderModeToMeanTime();
 }
 
 //-----------------------------------------------------------------------------

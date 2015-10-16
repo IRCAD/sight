@@ -15,7 +15,6 @@
 
 #include "fwRenderVTK/vtk/InteractorStyle2DForNegato.hpp"
 
-vtkCxxRevisionMacro(InteractorStyle2DForNegato, "$Revision: 1.24 $");
 vtkStandardNewMacro(InteractorStyle2DForNegato);
 
 //------------------------------------------------------------------------------

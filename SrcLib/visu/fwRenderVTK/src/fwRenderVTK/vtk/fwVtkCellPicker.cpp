@@ -30,6 +30,7 @@
      PURPOSE.  See the above copyright notice for more information.
 
    =========================================================================*/
+
 #include <boost/assign.hpp>
 
 #include <vtkGenericCell.h>
@@ -41,10 +42,8 @@
 #include <vtkAbstractVolumeMapper.h>
 #include <vtkInstantiator.h>
 
-#include <fwVtkIO/vtk.hpp>
 #include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
 
-vtkCxxRevisionMacro(fwVtkCellPicker, "$Revision: 1.38 $");
 vtkStandardNewMacro(fwVtkCellPicker);
 
 
@@ -216,12 +215,10 @@ fwVtkCellPicker::PickedCellType fwVtkCellPicker::GetPickedCellIds( double p1[3],
         }
 
 
-        boost::assign::push_back(res).range( this->GetPickedCellIds(p1, p3a, polydata) );
-        boost::assign::push_back(res).range( this->GetPickedCellIds(p3b, p2, polydata) );
+        ::boost::assign::push_back(res).range( this->GetPickedCellIds(p1, p3a, polydata) );
+        ::boost::assign::push_back(res).range( this->GetPickedCellIds(p3b, p2, polydata) );
 
     }
 
     return res;
 }
-
-

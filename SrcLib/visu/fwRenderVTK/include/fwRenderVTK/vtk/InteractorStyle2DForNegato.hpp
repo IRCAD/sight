@@ -7,7 +7,6 @@
 #ifndef __FWRENDERVTK_VTK_INTERACTORSTYLE2DFORNEGATO_HPP__
 #define __FWRENDERVTK_VTK_INTERACTORSTYLE2DFORNEGATO_HPP__
 
-#include <vtkImagePlaneWidget.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 
 #include "fwRenderVTK/config.hpp"
@@ -24,7 +23,7 @@ public:
 
     FWRENDERVTK_API static InteractorStyle2DForNegato *New();
 
-    vtkTypeRevisionMacro(InteractorStyle2DForNegato, vtkInteractorStyle);
+    vtkTypeMacro(InteractorStyle2DForNegato, vtkInteractorStyle);
 
     FWRENDERVTK_API virtual void OnMiddleButtonDown();
 

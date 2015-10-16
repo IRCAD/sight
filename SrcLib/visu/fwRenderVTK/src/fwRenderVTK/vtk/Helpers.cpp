@@ -68,23 +68,6 @@ vtkProp * getNearestPickedProp(vtkAbstractPropPicker *picker, vtkRenderer *rende
 
         if (id>-1 && vtkpicker->GetProp3Ds()->GetNumberOfItems() > id)
         {
-//          vtkIdType i = id;
-//          vtkAssemblyPath *path = picker->GetPath();
-//          vtkAssemblyNode *node;
-//          path->InitTraversal();
-//          for ( path->InitTraversal(); (node=path->GetNextNode()); )
-//          {
-//              if (--i == 0)
-//              {
-//                  res = node->GetViewProp();
-//                  break;
-//              }
-//          }
-//          vtkAssemblyNode *node = vtkAssemblyNode::SafeDownCast(picker->GetPath()->GetItemAsObject(id));
-//          SLM_ASSERT("vtkAssemblyNode error: not found", node);
-//          res = node->GetViewProp();
-//          SLM_ASSERT("No vtkProp found in picker's path", res);
-
             res = vtkProp::SafeDownCast(vtkpicker->GetProp3Ds()->GetItemAsObject(id));
         }
     }

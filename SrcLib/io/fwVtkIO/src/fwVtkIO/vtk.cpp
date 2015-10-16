@@ -14,10 +14,6 @@
 #include <vtkImageImport.h>
 #include <vtkSetGet.h>
 #include <vtkType.h>
-//Required for proper object factory initialization
-#include <vtkAutoInit.h>
-VTK_MODULE_INIT(vtkRenderingFreeType);
-VTK_MODULE_INIT(vtkRenderingOpenGL);
 
 // for mesh
 #include <vtkCell.h>

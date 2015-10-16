@@ -26,9 +26,6 @@ namespace fwRenderVTK
 /**
  * @brief   Defines a class to manage vtkRenderWindowInteractor in a window.
  * @class   IVtkRenderWindowInteractorManager
- *
- * @date    2009-2010.
- *
  */
 class FWRENDERVTK_CLASS_API IVtkRenderWindowInteractorManager : public ::fwCore::BaseObject
 {

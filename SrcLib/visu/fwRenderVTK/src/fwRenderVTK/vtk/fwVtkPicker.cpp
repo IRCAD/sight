@@ -57,7 +57,6 @@
 
 #include "fwRenderVTK/vtk/fwVtkPicker.hpp"
 
-vtkCxxRevisionMacro(fwVtkPicker, "$Revision: 1.95 $");
 vtkStandardNewMacro(fwVtkPicker);
 
 // Construct object with initial tolerance of 1/40th of window. There are no

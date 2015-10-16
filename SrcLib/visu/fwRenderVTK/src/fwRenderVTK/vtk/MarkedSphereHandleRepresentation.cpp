@@ -31,7 +31,6 @@ namespace fwRenderVTK
 namespace vtk
 {
 
-vtkCxxRevisionMacro(MarkedSphereHandleRepresentation, "$Revision: 0.0 $");
 vtkStandardNewMacro(MarkedSphereHandleRepresentation);
 
 //----------------------------------------------------------------------
@@ -190,4 +189,3 @@ void MarkedSphereHandleRepresentation::PrintSelf(ostream& os, vtkIndent indent)
 } // namespace vtk
 
 } // namespace fwRenderVTK
-

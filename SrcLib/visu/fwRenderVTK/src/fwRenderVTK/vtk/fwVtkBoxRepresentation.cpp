@@ -56,7 +56,6 @@
 
 #include "fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp"
 
-vtkCxxRevisionMacro(fwVtkBoxRepresentation, "$Revision: 1.9 $");
 vtkStandardNewMacro(fwVtkBoxRepresentation);
 
 //----------------------------------------------------------------------------

@@ -5,16 +5,22 @@
  * ****** END LICENSE BLOCK ****** */
 
 
+#include "fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp"
+#include "fwRenderVTK/vtk/fwVtkPicker.hpp"
+#include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
+#include "fwRenderVTK/vtk/InteractorStyle2DForNegato.hpp"
+#include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
+
 #include <fwCore/base.hpp>
 #include <vtkInstantiator.h>
 
 #include "fwRenderVTK/vtk/Instantiator.hpp"
 
-extern vtkObject* vtkInstantiatorfwVtkBoxRepresentationNew();
-extern vtkObject* vtkInstantiatorfwVtkPickerNew();
-extern vtkObject* vtkInstantiatorfwVtkCellPickerNew();
-extern vtkObject* vtkInstantiatorInteractorStyle2DForNegatoNew();
-extern vtkObject* vtkInstantiatorInteractorStyle3DForNegatoNew();
+vtkInstantiatorNewMacro(fwVtkBoxRepresentation);
+vtkInstantiatorNewMacro(fwVtkPicker);
+vtkInstantiatorNewMacro(fwVtkCellPicker);
+vtkInstantiatorNewMacro(InteractorStyle2DForNegato);
+vtkInstantiatorNewMacro(InteractorStyle3DForNegato);
 
 namespace fwRenderVTK
 {

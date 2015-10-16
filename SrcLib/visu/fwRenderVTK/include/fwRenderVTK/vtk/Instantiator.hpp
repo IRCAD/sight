@@ -21,8 +21,8 @@ public:
     FWRENDERVTK_API static void ClassInitialize();
     FWRENDERVTK_API static void ClassFinalize();
 };
-} //vtk
 
+} //vtk
 } //fwRenderVTK
 
 #endif //__FWRENDERVTK_VTK_INSTANTIATOR_HPP__

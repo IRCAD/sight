@@ -20,9 +20,8 @@ IVtkRenderWindowInteractorManager::sptr IVtkRenderWindowInteractorManager::creat
 {
     IVtkRenderWindowInteractorManager::sptr manager = ::fwRenderVTK::factory::New(
         ::fwRenderVTK::IVtkRenderWindowInteractorManager::REGISTRY_KEY );
-    SLM_ASSERT(
-        "Sorry, The factory process to create an IVtkRenderWindowInteractorManager, failed. Missing Qt or Wx component ?",
-        manager );
+    SLM_ASSERT("Sorry, The factory process to create an IVtkRenderWindowInteractorManager, failed."
+               "Missing Qt or Wx component ?", manager );
     return manager;
 }
 

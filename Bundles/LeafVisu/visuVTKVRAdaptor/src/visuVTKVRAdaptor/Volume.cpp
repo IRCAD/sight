@@ -50,7 +50,7 @@ public:
 
     static vtkBoxRepresentationHack *New();
 
-    vtkTypeRevisionMacro(vtkBoxRepresentationHack,vtkWidgetRepresentation);
+    vtkTypeMacro(vtkBoxRepresentationHack,vtkWidgetRepresentation);
 
     int ComputeInteractionState(int X, int Y, int modify)
     {
@@ -59,7 +59,6 @@ public:
 
 };
 
-vtkCxxRevisionMacro(vtkBoxRepresentationHack, "$Revision: 1.8 $");
 vtkStandardNewMacro(vtkBoxRepresentationHack);
 
 
