@@ -14,6 +14,7 @@
 #include "fwStructuralPatch/fwData/Acquisition/V1ToFwMedDataImageSeriesV1.hpp"
 #include "fwStructuralPatch/fwData/Image/V1ToV2.hpp"
 #include "fwStructuralPatch/fwData/Material/V1ToV2.hpp"
+#include "fwStructuralPatch/fwData/Material/V2ToV3.hpp"
 #include "fwStructuralPatch/fwData/Mesh/V1ToV2.hpp"
 #include "fwStructuralPatch/fwData/Mesh/V1ToV3.hpp"
 #include "fwStructuralPatch/fwData/Mesh/V2ToV3.hpp"
@@ -36,6 +37,7 @@ struct runner
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Acquisition::V1ToFwMedDataImageSeriesV1::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Image::V1ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Material::V1ToV2::New());
+        structuralPatches->registerPatch(::fwStructuralPatch::fwData::Material::V2ToV3::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V1ToV2::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V1ToV3::New());
         structuralPatches->registerPatch(::fwStructuralPatch::fwData::Mesh::V2ToV3::New());
