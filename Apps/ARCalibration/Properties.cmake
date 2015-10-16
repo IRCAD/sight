@@ -41,4 +41,4 @@ set( REQUIREMENTS
     uiTools
     )
 
-bundle_param(appXml PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)
+bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)
