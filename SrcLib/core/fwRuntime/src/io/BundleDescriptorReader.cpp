@@ -92,7 +92,7 @@ std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::file
     ::boost::filesystem::path completeLocation = location;
     if(!completeLocation.is_complete())
     {
-        completeLocation = ::boost::filesystem::current_path() / location;
+        completeLocation = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / location;
     }
 
     ::boost::filesystem::path descriptorLocation(location / "plugin.xml");
@@ -104,7 +104,8 @@ std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::file
     // Validation
     std::ostringstream fileLocation;
     fileLocation << "share/fwRuntime_" <<  FWRUNTIME_VER << "/plugin.xsd";
-    const ::boost::filesystem::path pluginXSDLocation( ::boost::filesystem::current_path() / fileLocation.str() );
+    const ::boost::filesystem::path pluginXSDLocation(
+        ::fwRuntime::Runtime::getDefault()->getWorkingPath() / fileLocation.str() );
 
     Validator validator(pluginXSDLocation);
     if( validator.validate(descriptorLocation) == false )
@@ -164,7 +165,7 @@ throw ( RuntimeException )
     ::boost::filesystem::path tmpCompleteLocation = location;
     if(!tmpCompleteLocation.is_complete())
     {
-        tmpCompleteLocation = ::boost::filesystem::current_path() / location;
+        tmpCompleteLocation = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / location;
     }
     tmpCompleteLocation.normalize();
 
@@ -179,7 +180,8 @@ throw ( RuntimeException )
     // Validation
     std::ostringstream fileLocation;
     fileLocation << "share/fwRuntime_" <<  FWRUNTIME_VER << "/plugin.xsd";
-    const ::boost::filesystem::path pluginXSDLocation( ::boost::filesystem::current_path() / fileLocation.str() );
+    const ::boost::filesystem::path pluginXSDLocation(
+        ::fwRuntime::Runtime::getDefault()->getWorkingPath() / fileLocation.str() );
 
     Validator validator(pluginXSDLocation);
     if( validator.validate(descriptorLocation) == false )

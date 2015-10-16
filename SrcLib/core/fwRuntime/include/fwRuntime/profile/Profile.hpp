@@ -7,13 +7,15 @@
 #ifndef __FWRUNTIME_PROFILE_PROFILE_HPP__
 #define __FWRUNTIME_PROFILE_PROFILE_HPP__
 
-#include <vector>
+#include "fwRuntime/config.hpp"
+#include <fwCore/base.hpp>
 
 #include <boost/function.hpp>
 #include <boost/utility.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/make_shared.hpp>
 
-#include "fwCore/base.hpp"
+#include <vector>
 
 #include "fwRuntime/config.hpp"
 
@@ -24,7 +26,6 @@ namespace fwRuntime
 /**
  * @namespace   ::fwRuntime::profile
  * @brief       Namespace ::fwRuntime::profile
- * @date    2007-2009
  */
 namespace profile
 {
@@ -38,8 +39,7 @@ class Uninitializer;
 
 /**
  * @brief   Implements a bundle set profile.
- * @class  Profile
- * @date    2007-2009
+ * @class   Profile
  */
 class Profile : public ::fwCore::BaseObject
 {
@@ -116,7 +116,7 @@ public:
     /**
      * @brief   Return profile name.
      */
-    std::string getName()
+    std::string getName() const
     {
         return m_sName;
     }
@@ -132,14 +132,13 @@ public:
     }
 
     /// Get profile m_filePath
-    ::boost::filesystem::path getFilePath()
+    ::boost::filesystem::path getFilePath() const
     {
         return m_filePath;
     }
-    const
 
     /// Set profile m_filePath
-    void setFilePath( const ::boost::filesystem::path& _filePath)
+    void setFilePath(const ::boost::filesystem::path& _filePath)
     {
         m_filePath = _filePath;
     }
@@ -147,7 +146,7 @@ public:
     /**
      * @brief   Return profile version.
      */
-    std::string getVersion()
+    std::string getVersion() const
     {
         return m_sVersion;
     }
@@ -162,12 +161,10 @@ public:
         m_sVersion = _sVersion;
     }
 
-
-
     /**
      * @brief   Return profile CheckSingleInstance.
      */
-    bool getCheckSingleInstance()
+    bool getCheckSingleInstance() const
     {
         return m_checkSingleInstance;
     }
@@ -182,24 +179,33 @@ public:
         m_checkSingleInstance = _checkSingleInstance;
     }
 
-    FWRUNTIME_API ParamsContainer getParams();
+    ParamsContainer getParams() const
+    {
+        return m_params;
+    }
 
     FWRUNTIME_API void setParams(const ParamsContainer &params);
     FWRUNTIME_API void setParams(int argc, char** argv);
 
     /**
-     * @brief Returns a reference on internal arg count.
+     * @brief Returns internal arg count.
      * The returned int shall not be modified. This is provided for external
      * library needs (QApplication contructor for example)
      */
-    FWRUNTIME_API int& getRawArgCount();
+    int& getRawArgCount()
+    {
+        return m_argc;
+    }
 
     /**
      * @brief Returns a raw pointer on internal arguments.
      * The returned data shall not be modified. This is provided for external
      * library needs (QApplication contructor for example)
      */
-    FWRUNTIME_API char** getRawParams();
+    char** getRawParams() const
+    {
+        return m_argv;
+    }
 
 private:
 
@@ -220,12 +226,11 @@ private:
     ::boost::filesystem::path m_filePath;   ///< xml parsed file used to generate profile
 
     bool m_checkSingleInstance;
+    RunCallbackType m_run;
 
     ParamsContainer m_params;
     int m_argc;
-    char              **m_argv;
-
-    RunCallbackType m_run;
+    char**          m_argv;
 };
 
 

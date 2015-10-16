@@ -29,7 +29,6 @@ namespace profile
 
 namespace
 {
-
 template< typename E >
 struct Apply
 {
@@ -38,10 +37,10 @@ struct Apply
         e->apply();
     }
 };
-
 }
 
-// =========================================================
+//------------------------------------------------------------------------------
+
 Profile::wptr current_profile;
 
 void setCurrentProfile(Profile::sptr prof)
@@ -54,7 +53,7 @@ Profile::sptr getCurrentProfile()
     return current_profile.lock();
 }
 
-// =========================================================
+//------------------------------------------------------------------------------
 
 Profile::Profile() :
     m_checkSingleInstance(false),
@@ -64,7 +63,7 @@ Profile::Profile() :
     m_run = ::boost::bind(&Profile::defaultRun, this);
 }
 
-// =========================================================
+//------------------------------------------------------------------------------
 
 Profile::~Profile()
 {
@@ -73,8 +72,6 @@ Profile::~Profile()
         delete[] m_argv;
     }
 }
-
-
 
 //------------------------------------------------------------------------------
 
@@ -98,12 +95,14 @@ void Profile::add( SPTR( Stopper )stopper )
 }
 
 //------------------------------------------------------------------------------
+
 void Profile::add( SPTR( Initializer )initializer )
 {
     m_initializers.push_back(initializer);
 }
 
 //------------------------------------------------------------------------------
+
 void Profile::add( SPTR( Uninitializer )uninitializer )
 {
     m_uninitializers.push_back(uninitializer);
@@ -163,7 +162,6 @@ void Profile::stop()
     std::for_each( m_stoppers.rbegin(), m_stoppers.rend(), Apply< StopperContainer::value_type >() );
 }
 
-
 //------------------------------------------------------------------------------
 
 void Profile::setup()
@@ -184,45 +182,21 @@ void Profile::cleanup()
 
 //------------------------------------------------------------------------------
 
-Profile::ParamsContainer Profile::getParams()
-{
-    return m_params;
-}
-
-//------------------------------------------------------------------------------
-
-int &Profile::getRawArgCount()
-{
-    return m_argc;
-}
-
-//------------------------------------------------------------------------------
-
-char** Profile::getRawParams()
-{
-    return m_argv;
-}
-
-//------------------------------------------------------------------------------
-
 void Profile::setParams(int argc, char** argv)
 {
-    Profile::ParamsContainer params;
-
-    for(int i = 0; i < argc; i++)
+    ParamsContainer params;
+    for(int i = 0; i < argc; ++i)
     {
-        std::string arg = argv[i];
-        params.push_back( arg );
+        params.push_back( std::string(argv[i]) );
     }
-
     this->setParams(params);
 }
 
 //------------------------------------------------------------------------------
+
 void Profile::setParams(const Profile::ParamsContainer &params)
 {
     m_params = params;
-
 
     if (m_argv)
     {
@@ -234,7 +208,7 @@ void Profile::setParams(const Profile::ParamsContainer &params)
     m_argv = new char*[m_params.size()];
 
     // for each string, allocate memory in the character array and copy
-    for (unsigned long i = 0; i<m_params.size(); i++)
+    for(size_t i = 0; i<m_params.size(); i++)
     {
         size_t paramSize = m_params[i].size();
         m_argv[i] = new char[paramSize+1];

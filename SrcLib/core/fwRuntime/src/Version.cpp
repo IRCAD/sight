@@ -4,16 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#if defined(__GNUC__)
-#pragma GCC visibility push(default)
-#endif
-#include <limits.h>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 #include <sstream>
-#if defined(__GNUC__)
-#pragma GCC visibility pop
-#endif
 
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
@@ -22,28 +15,26 @@
 namespace fwRuntime
 {
 
-
-
-Version::Version()
-    : m_major(-1), m_minor(-1), m_build(-1), m_defined(false)
+Version::Version() : m_major(-1),
+                     m_minor(-1),
+                     m_defined(false)
 {
 }
 
+//------------------------------------------------------------------------------
 
-
-Version::Version(const std::string & version)
-    : m_major(-1), m_minor(-1), m_build(-1), m_defined(false)
+Version::Version(const std::string & version) : m_major(-1),
+                                                m_minor(-1),
+                                                m_defined(false)
 {
     if( version.empty() == false )
     {
-        boost::regex regex ("(\\d+)[-.](\\d+)(svn(\\d+)){0,1}");
-        boost::smatch what;
-
-        if( boost::regex_match(version, what, regex) )
+        ::boost::regex regex ("(\\d+)[-.](\\d+){0,1}");
+        ::boost::smatch what;
+        if( ::boost::regex_match(version, what, regex) )
         {
-            m_major   = boost::lexical_cast<int>( what[1].str() );
-            m_minor   = boost::lexical_cast<int>( what[2].str() );
-            m_build   = (what.size() == 4) ? boost::lexical_cast<int>( what[3].str() ) : 0;
+            m_major   = ::boost::lexical_cast<int>( what[1].str() );
+            m_minor   = ::boost::lexical_cast<int>( what[2].str() );
             m_defined = true;
         }
         else
@@ -53,14 +44,16 @@ Version::Version(const std::string & version)
     }
 }
 
+//------------------------------------------------------------------------------
 
-
-Version::Version(const int major, const int minor, const int build)
-    : m_major(major), m_minor(minor), m_build(build), m_defined(true)
+Version::Version(const int major, const int minor) :
+    m_major(major),
+    m_minor(minor),
+    m_defined(true)
 {
 }
 
-
+//------------------------------------------------------------------------------
 
 const std::string Version::string() const
 {
@@ -69,7 +62,7 @@ const std::string Version::string() const
     return os.str();
 }
 
-
+//------------------------------------------------------------------------------
 
 bool Version::operator==(const Version & version) const
 {
@@ -83,20 +76,19 @@ bool Version::operator==(const Version & version) const
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 std::ostream & operator<<(std::ostream & os, const Version & version)
 {
     if(version.m_defined)
     {
-        return os << version.m_major << "-" << version.m_minor << "svn" << version.m_build;
+        return os << version.m_major << "-" << version.m_minor;
     }
     else
     {
         return os << "version-not-defined";
     }
 }
-
 
 
 } // namespace fwRuntime

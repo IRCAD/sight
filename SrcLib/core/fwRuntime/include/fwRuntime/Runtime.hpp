@@ -62,6 +62,20 @@ struct Runtime
 
 
     /**
+     * @brief       Set the working path where Bundles and share folder are located.
+     *
+     * @param[in]   a boost path.
+     */
+    FWRUNTIME_API void setWorkingPath(const ::boost::filesystem::path &workingPath);
+
+    /**
+     * @brief       Get the path where Bundles and share folder are located.
+     *
+     * @return      a boost path.
+     */
+    FWRUNTIME_API ::boost::filesystem::path getWorkingPath() const;
+
+    /**
      * @name    Bundles
      *
      * @{
@@ -278,6 +292,8 @@ struct Runtime
         BundleContainer m_bundles;                                      ///< Contains all bundles.
         PluginContainer m_plugins;                                      ///< Contains all plugins.
 
+        ::boost::filesystem::path m_workingPath; ///< Path wehre Bundles and share folder are located.
+
 
         /**
          * @brief   Constructor.
@@ -289,4 +305,4 @@ struct Runtime
 } // namespace fwRuntime
 
 
-#endif //__FWRUNTIME_RUNTIME_HPP__
+#endif // __FWRUNTIME_RUNTIME_HPP__

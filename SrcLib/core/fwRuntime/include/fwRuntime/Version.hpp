@@ -17,10 +17,8 @@ namespace fwRuntime
 
 
 /**
- * @brief   Managment of lib and bundle version.
+ * @brief   Management of lib and bundle version.
  * @struct  Version
- * @date    2007-2009
- *
  */
 struct Version
 {
@@ -44,9 +42,8 @@ struct Version
      *
      * @param[in]   major   the version major number
      * @param[in]   minor   the version minor number (0 by default)
-     * @param[in]   build   the version build number (0 by default)
      */
-    FWRUNTIME_API Version(const int major, const int minor = 0, const int build = 0);
+    FWRUNTIME_API Version(const int major, const int minor = 0);
 
 
     /**
@@ -69,7 +66,6 @@ struct Version
 
         int m_major; ///< defines the major number of the version
         int m_minor; ///< defines the minor number of the version
-        int m_build; ///< defines the svn build number of the version
         bool m_defined; ///< to know if the version is defined
 };
 

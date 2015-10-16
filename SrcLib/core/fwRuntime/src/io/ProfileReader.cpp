@@ -11,11 +11,12 @@
 #include <boost/filesystem/operations.hpp>
 #include <libxml/parser.h>
 
-#include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/io/Validator.hpp"
 #include "fwRuntime/profile/Activater.hpp"
 #include "fwRuntime/profile/Profile.hpp"
 #include "fwRuntime/profile/Starter.hpp"
+#include "fwRuntime/Runtime.hpp"
+#include "fwRuntime/RuntimeException.hpp"
 
 namespace fwRuntime
 {
@@ -52,7 +53,8 @@ std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( c
     // Validation
     std::ostringstream fileLocation;
     fileLocation << "share/fwRuntime_" <<  FWRUNTIME_VER << "/profile.xsd";
-    const ::boost::filesystem::path profileXSDLocation( ::boost::filesystem::current_path() / fileLocation.str() );
+    const ::boost::filesystem::path profileXSDLocation(
+        ::fwRuntime::Runtime::getDefault()->getWorkingPath() / fileLocation.str() );
 
     Validator validator(profileXSDLocation);
 

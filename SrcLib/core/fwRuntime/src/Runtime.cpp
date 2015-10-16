@@ -59,7 +59,8 @@ std::shared_ptr<Runtime> Runtime::m_instance;
 
 //------------------------------------------------------------------------------
 
-Runtime::Runtime()
+Runtime::Runtime() :
+    m_workingPath(::boost::filesystem::current_path())
 {
 }
 
@@ -86,10 +87,6 @@ void Runtime::addBundle( std::shared_ptr< Bundle > bundle ) throw(RuntimeExcepti
 void Runtime::unregisterBundle( std::shared_ptr< Bundle > bundle )
 {
     FwCoreNotUsedMacro(bundle);
-//    std::for_each( bundle->extensionsBegin(), bundle->extensionsEnd(), ::boost::bind(&Runtime::unregisterExtension, this, _1));
-//    std::for_each( bundle->extensionPointsBegin(), bundle->extensionPointsEnd(), ::boost::bind(&Runtime::unregisterExtensionPoint, this, _1));
-//    std::for_each( bundle->executableFactoriesBegin(), bundle->executableFactoriesEnd(), ::boost::bind(&Runtime::unregisterExecutableFactory, this, _1));
-//    m_bundles.erase( bundle );
 }
 
 //------------------------------------------------------------------------------
@@ -336,6 +333,20 @@ IExecutable * Runtime::createExecutableInstance( const std::string & type,
     }
     // Job's done.
     return result;
+}
+
+//------------------------------------------------------------------------------
+
+void Runtime::setWorkingPath(const ::boost::filesystem::path &workingPath)
+{
+    m_workingPath = workingPath;
+}
+
+//------------------------------------------------------------------------------
+
+::boost::filesystem::path Runtime::getWorkingPath() const
+{
+    return m_workingPath;
 }
 
 //------------------------------------------------------------------------------
