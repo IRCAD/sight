@@ -34,11 +34,11 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-Material::Material() throw()
+Material::Material() throw() :
+    m_property(vtkProperty::New()),
+    m_manageProperty(true),
+    m_lighting(true)
 {
-    m_manageProperty = true;
-    m_property       = vtkProperty::New();
-    //addNewHandledEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -145,6 +145,7 @@ void Material::updateMaterial( SPTR(::fwData::Material)material )
                           color->blue());
 
     //3DVSP-like rendering
+    m_property->SetLighting(material->getLighting());
     m_property->SetSpecularColor(1.,1.,1.);
     m_property->SetSpecularPower(100.); //Shininess
     m_property->SetAmbient(.05);

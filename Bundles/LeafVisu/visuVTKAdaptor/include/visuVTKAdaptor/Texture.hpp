@@ -60,6 +60,7 @@ protected:
      *    doStart, doUpdate, doSwap, doReceive and doStop if m_vtkPipelineModified=true.
      *  - \b filtering (optional) : filtering of the texture, "nearest" or "linear"
      *  - \b wrapping (optional) : wrapping of the texture, "clamp" or "repeat"
+     *  - \b lighting (optional) : enable the lighting, "yes" or "no" default yes
      * And either of the three (adaptor is preferred if several are specified) :
      *  - \b meshAdaptor : the meshAdaptor referring to the mesh you want to map
      *  - \b mesh : a mesh data, in this case the first mesh adaptor linked to it is used
@@ -96,6 +97,9 @@ protected:
 
     /// register connections between signal and slot
     ::fwServices::helper::SigSlotConnection::sptr m_connections;
+
+    /// enable or not the lighting (default true)
+    bool m_lighting;
 };
 
 } //namespace visuVTKAdaptor

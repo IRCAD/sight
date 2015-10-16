@@ -33,7 +33,6 @@
 
 #include <boost/foreach.hpp>
 
-
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Texture, ::fwData::Image );
 
 namespace visuVTKAdaptor
@@ -45,7 +44,8 @@ const ::fwCom::Slots::SlotKeyType Texture::s_APPLY_TEXTURE_SLOT = "applyTexture"
 
 Texture::Texture() throw() :
     m_filtering("linear"),
-    m_wrapping("repeat")
+    m_wrapping("repeat"),
+    m_lighting(true)
 {
     m_slotApplyTexture = ::fwCom::newSlot( &Texture::applyTexture, this );
     ::fwCom::HasSlots::m_slots( s_APPLY_TEXTURE_SLOT, m_slotApplyTexture);
@@ -83,6 +83,10 @@ void Texture::configuring() throw(fwTools::Failed)
     if ( m_configuration->hasAttribute( "wrapping" ) )
     {
         m_wrapping = m_configuration->getAttributeValue("wrapping");
+    }
+    if ( m_configuration->hasAttribute( "lighting" ) )
+    {
+        m_lighting = (m_configuration->getAttributeValue("lighting") == "yes");
     }
 }
 
@@ -146,6 +150,7 @@ void Texture::applyTexture( SPTR(::fwData::Material)_material )
     }
 
     _material->setDiffuseTexture(image);
+    _material->setLighting(m_lighting);
 
     ::fwData::Material::FilteringType filtering = ::fwData::Material::LINEAR;
     ::fwData::Material::WrappingType wrapping   = ::fwData::Material::REPEAT;

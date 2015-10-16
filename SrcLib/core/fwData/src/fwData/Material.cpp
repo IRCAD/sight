@@ -20,7 +20,8 @@ Material::Material(::fwData::Object::Key key) :
     m_ambient( Color::New() ),
     m_diffuse( Color::New() ),
     m_diffuseTextureFiltering(NEAREST),
-    m_diffuseTextureWrapping(REPEAT)
+    m_diffuseTextureWrapping(REPEAT),
+    m_lighting(true)
 {
 }
 
@@ -112,6 +113,20 @@ void Material::setDiffuse(const Color::sptr& diffuse)
 void Material::setDiffuseTexture(const Image::sptr& diffuseTexture)
 {
     m_diffuseTexture = diffuseTexture;
+}
+
+//------------------------------------------------------------------------------
+
+void Material::setLighting(bool lighting)
+{
+    m_lighting = lighting;
+}
+
+//------------------------------------------------------------------------------
+
+bool Material::getLighting() const
+{
+    return m_lighting;
 }
 
 //------------------------------------------------------------------------------

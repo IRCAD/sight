@@ -53,6 +53,7 @@ protected:
 
     vtkProperty *m_property;
     bool m_manageProperty;
+    bool m_lighting;
 
 };
 

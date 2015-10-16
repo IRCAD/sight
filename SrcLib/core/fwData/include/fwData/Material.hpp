@@ -82,6 +82,19 @@ public:
     FWDATA_API void setDiffuseTexture(const Image::sptr& diffuseTexture);
 
     /**
+     * @brief Setter for lighting
+     *
+     * @param boolean lighting
+     */
+    FWDATA_API void setLighting(bool lighting);
+
+    /**
+     * @brief return lighting
+     *
+     */
+    FWDATA_API bool getLighting() const;
+
+    /**
      * @brief Options
      */
     typedef enum
@@ -200,6 +213,9 @@ protected:
 
     /// Wrapping for diffuse texture
     WrappingType m_diffuseTextureWrapping;
+
+    /// Enable or not the lighting on material (true by default)
+    bool m_lighting;
 };
 
 //-----------------------------------------------------------------------------
