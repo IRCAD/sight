@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
-
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/StructureTraits.hpp"
+
+#include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::StructureTraits );
 

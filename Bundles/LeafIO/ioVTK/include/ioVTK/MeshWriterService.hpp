@@ -56,7 +56,7 @@ public:
     /**
      * @brief Save a VTK mesh.
      * @param[in] meshFile \b const ::boost::filesystem::path.
-     * @param[out] mesh ::boost::shared_ptr< ::fwData::Mesh >.
+     * @param[out] mesh std::shared_ptr< ::fwData::Mesh >.
      *
      * This method is used to save a mesh using the file path.
      */

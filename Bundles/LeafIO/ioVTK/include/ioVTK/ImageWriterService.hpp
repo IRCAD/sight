@@ -54,7 +54,7 @@ public:
     /**
      * @brief Save a VTK image.
      * @param[in] imgFile ::boost::filesystem::path.
-     * @param[out] image ::boost::shared_ptr< ::fwData::Image >.
+     * @param[out] image std::shared_ptr< ::fwData::Image >.
      * @return bool.
      *
      * This method is used to save an image using the file path.

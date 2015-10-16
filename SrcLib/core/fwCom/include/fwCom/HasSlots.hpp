@@ -26,7 +26,7 @@ class HasSlots
 
 public:
 
-    typedef ::boost::shared_ptr< HasSlots > sptr;
+    typedef std::shared_ptr< HasSlots > sptr;
 
     HasSlots()
     {
@@ -40,7 +40,7 @@ public:
     template< typename SlotType >
     SPTR( SlotType ) slot( const Slots::SlotKeyType & key ) const
     {
-        SPTR( SlotType ) slot = ::boost::dynamic_pointer_cast< SlotType >( this->slot(key) );
+        SPTR( SlotType ) slot = std::dynamic_pointer_cast< SlotType >( this->slot(key) );
         return slot;
     }
 

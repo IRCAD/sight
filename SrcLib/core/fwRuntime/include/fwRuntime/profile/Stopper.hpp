@@ -9,7 +9,6 @@
 
 #include <string>
 #include <boost/utility.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include "fwRuntime/profile/Starter.hpp"
 #include "fwRuntime/config.hpp"

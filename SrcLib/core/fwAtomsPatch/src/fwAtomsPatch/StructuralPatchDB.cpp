@@ -4,14 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 
 #include "fwAtomsPatch/StructuralPatchDB.hpp"
 
 namespace fwAtomsPatch
 {
 
-StructuralPatchDB::sptr StructuralPatchDB::s_default = ::boost::make_shared<StructuralPatchDB>();
+StructuralPatchDB::sptr StructuralPatchDB::s_default = std::make_shared<StructuralPatchDB>();
 
 void StructuralPatchDB::registerPatch(::fwAtomsPatch::IStructuralPatch::sptr patch)
 {

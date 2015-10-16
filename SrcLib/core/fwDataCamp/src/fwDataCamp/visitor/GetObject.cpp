@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/shared_ptr.hpp>
 #include <boost/utility/enable_if.hpp>
 
 #include <fwData/camp/mapper.hpp>
@@ -105,7 +104,7 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
 GetObject::GetObject( ::fwData::Object::sptr object, const std::string & subObjPath ) :
     m_object(object), m_subObjPath(subObjPath),
     m_newSubObjPath(subObjPath),
-    m_pathVisitor(::boost::make_shared<PathVisitor>(subObjPath))
+    m_pathVisitor(std::make_shared<PathVisitor>(subObjPath))
 {
     SLM_FATAL_IF("Cannot retrieve an object with an empty path.", subObjPath.empty());
     m_campObj      = camp::UserObject( object.get() );

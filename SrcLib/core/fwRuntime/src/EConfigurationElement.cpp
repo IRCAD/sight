@@ -15,7 +15,7 @@ namespace fwRuntime
 {
 
 EConfigurationElement::EConfigurationElement(const std::string& name) :
-    ::fwRuntime::ConfigurationElement( ::boost::shared_ptr< ::fwRuntime::Bundle >(), name )
+    ::fwRuntime::ConfigurationElement( std::shared_ptr< ::fwRuntime::Bundle >(), name )
 {
 }
 

@@ -7,13 +7,13 @@
 #ifndef __FWDATA_TRANSFERFUNCTION_HPP__
 #define __FWDATA_TRANSFERFUNCTION_HPP__
 
-#include <vector>
-#include <map>
-#include <limits>
-
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <vector>
+#include <map>
+#include <limits>
 
 fwCampAutoDeclareDataMacro((fwData)(TransferFunction), FWDATA_API);
 

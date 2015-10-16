@@ -7,7 +7,6 @@
 #ifndef __FWRUNTIME_EXECUTABLE_HPP__
 #define __FWRUNTIME_EXECUTABLE_HPP__
 
-#include <boost/shared_ptr.hpp>
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/IExecutable.hpp"
@@ -39,7 +38,7 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
      * @return  a shared pointer to the configuration element being the initialization data of the executable
      *          or null when none
      */
-    FWRUNTIME_API const ::boost::shared_ptr< ConfigurationElement > getInitializationData() const throw();
+    FWRUNTIME_API const std::shared_ptr< ConfigurationElement > getInitializationData() const throw();
 
 
     /**
@@ -47,9 +46,9 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
      */
     /// @{
 
-    FWRUNTIME_API virtual ::boost::shared_ptr<Bundle> getBundle() const throw();
+    FWRUNTIME_API virtual std::shared_ptr<Bundle> getBundle() const throw();
 
-    FWRUNTIME_API virtual void setInitializationData( const ::boost::shared_ptr< ConfigurationElement > configuration )
+    FWRUNTIME_API virtual void setInitializationData( const std::shared_ptr< ConfigurationElement > configuration )
     throw();
 
     /// @}
@@ -58,7 +57,7 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
     protected:
 
         // Overrides
-        FWRUNTIME_API virtual void setBundle( ::boost::shared_ptr< Bundle > bundle );
+        FWRUNTIME_API virtual void setBundle( std::shared_ptr< Bundle > bundle );
 
 
     private:
@@ -66,12 +65,12 @@ struct FWRUNTIME_CLASS_API Executable : public IExecutable
         /**
          * @brief   a pointer to the bundle that owns the executable instance
          */
-        ::boost::shared_ptr< Bundle > m_bundle;
+        std::shared_ptr< Bundle > m_bundle;
 
         /**
          * @brief   the initialization data of the executable instance
          */
-        ::boost::shared_ptr< ConfigurationElement > m_initializationData;
+        std::shared_ptr< ConfigurationElement > m_initializationData;
 
 };
 

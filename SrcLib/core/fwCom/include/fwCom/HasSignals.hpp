@@ -25,7 +25,7 @@ class HasSignals
 
 public:
 
-    typedef ::boost::shared_ptr< HasSignals > sptr;
+    typedef std::shared_ptr< HasSignals > sptr;
 
     HasSignals()
     {
@@ -39,7 +39,7 @@ public:
     template< typename SignalType >
     SPTR( SignalType ) signal( const Signals::SignalKeyType & key ) const
     {
-        SPTR( SignalType ) Signal = ::boost::dynamic_pointer_cast< SignalType >( this->signal(key) );
+        SPTR( SignalType ) Signal = std::dynamic_pointer_cast< SignalType >( this->signal(key) );
         return Signal;
     }
 

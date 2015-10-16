@@ -9,7 +9,6 @@
 
 #include <vector>
 
-#include <boost/make_shared.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwCore/mt/types.hpp>
@@ -37,7 +36,7 @@ class FWSERVICES_CLASS_API Proxy : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((Proxy)(::fwCore::BaseObject), (()), ::boost::make_shared< Proxy >);
+    fwCoreClassDefinitionsWithFactoryMacro((Proxy)(::fwCore::BaseObject), (()), std::make_shared< Proxy >);
 
     typedef std::string ChannelKeyType;
 

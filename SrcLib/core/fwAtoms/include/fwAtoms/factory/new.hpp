@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -46,7 +45,7 @@ FWATOMS_API SPTR( ::fwAtoms::Base ) New( const ::fwAtoms::registry::KeyType & cl
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
     return obj;
 }
 

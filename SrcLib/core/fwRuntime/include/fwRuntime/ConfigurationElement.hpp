@@ -9,9 +9,9 @@
 
 #include <map>
 #include <string>
+#include <vector>
+#include <memory>
 #include <utility>
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -44,13 +44,13 @@ namespace fwRuntime
 
  */
 struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementContainer,
-                                                    public boost::enable_shared_from_this< ConfigurationElement >
+                                                    public std::enable_shared_from_this< ConfigurationElement >
 {
 
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 
     fwCoreClassDefinitionsWithFactoryMacro((ConfigurationElement),
-                                           ((( const ::boost::shared_ptr< Bundle > ))(
+                                           ((( const std::shared_ptr< Bundle > ))(
                                                 ( const std::string ))), new ConfigurationElement);
 
     /**
@@ -75,7 +75,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
      *
      * @return  a shared pointer to a bundle instance
      */
-    FWRUNTIME_API const ::boost::shared_ptr< Bundle > getBundle() const throw();
+    FWRUNTIME_API const std::shared_ptr< Bundle > getBundle() const throw();
 
     /**
      * @brief       Retrieves the value of an attribute for the specified name.
@@ -194,7 +194,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
          *
          * @todo        test parameters validity
          */
-        FWRUNTIME_API ConfigurationElement(const ::boost::shared_ptr<Bundle> bundle, const std::string& name);
+        FWRUNTIME_API ConfigurationElement(const std::shared_ptr<Bundle> bundle, const std::string& name);
 
 
         /**
@@ -226,7 +226,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
         /**
          * @brief   A pointer to the bundle the configuration element is attached to.
          */
-        const ::boost::shared_ptr<Bundle> m_bundle;
+        const std::shared_ptr<Bundle> m_bundle;
 
         /**
          * @brief   A string containing the configuration element name.
@@ -256,4 +256,4 @@ struct FWRUNTIME_CLASS_API ConfigurationElement :   public ConfigurationElementC
 } // namespace fwRuntime
 
 
-#endif // __FWRUNTIME_CONFIGURATIONELEMENT_HPP__
+#endif //  __FWRUNTIME_CONFIGURATIONELEMENT_HPP__

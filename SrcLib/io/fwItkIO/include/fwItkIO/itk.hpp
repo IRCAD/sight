@@ -7,7 +7,6 @@
 #ifndef __FWITKIO_ITK_HPP__
 #define __FWITKIO_ITK_HPP__
 
-#include <boost/shared_ptr.hpp>
 
 #include <fwData/Image.hpp>
 

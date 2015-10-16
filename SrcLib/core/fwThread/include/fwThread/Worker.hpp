@@ -9,8 +9,6 @@
 
 #include <boost/any.hpp>
 #include <boost/asio/io_service.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 
 #include <fwCore/base.hpp>

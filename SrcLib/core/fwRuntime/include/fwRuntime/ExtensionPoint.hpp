@@ -11,7 +11,6 @@
 #include <iostream>
 #include <string>
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -77,7 +76,7 @@ struct ExtensionPoint : public BundleElement
     void getAllConfigurationElements( OutputIterator & output ) const
     {
         // Retrieves all connected extensions.
-        typedef std::vector< ::boost::shared_ptr< Extension > > ExtensionContainer;
+        typedef std::vector< std::shared_ptr< Extension > > ExtensionContainer;
         typedef std::back_insert_iterator< ExtensionContainer > Inserter;
 
         ExtensionContainer extensions;
@@ -88,7 +87,7 @@ struct ExtensionPoint : public BundleElement
         // Walk through the collected extensions to extract configuration elements.
         for( ExtensionContainer::const_iterator i = extensions.begin(); i != extensions.end(); ++i )
         {
-            ::boost::shared_ptr< Extension >   extension( *i );
+            std::shared_ptr< Extension >   extension( *i );
             if ( extension->isEnable() )
             {
                 std::copy( extension->begin(), extension->end(), output);
@@ -111,7 +110,7 @@ struct ExtensionPoint : public BundleElement
 
         for( Runtime::ExtensionIterator i = rntm->extensionsBegin(); i != rntm->extensionsEnd(); ++i )
         {
-            ::boost::shared_ptr< Extension >   extension( *i );
+            std::shared_ptr< Extension >   extension( *i );
             if( extension->getPoint() == m_id && extension->isEnable() == true
                 && extension->validate() == Extension::Valid
                 )
@@ -135,7 +134,7 @@ struct ExtensionPoint : public BundleElement
      *
      * @return  a shared pointer to the extension validator, or null when none
      */
-    FWRUNTIME_API ::boost::shared_ptr< io::Validator > getExtensionValidator() const;
+    FWRUNTIME_API std::shared_ptr< io::Validator > getExtensionValidator() const;
 
 
     protected:
@@ -151,7 +150,7 @@ struct ExtensionPoint : public BundleElement
          *                      validate extensions contributed to the point.
          */
         ExtensionPoint(
-            const ::boost::shared_ptr<Bundle>       bundle,
+            const std::shared_ptr<Bundle>       bundle,
             const std::string&              id,
             const boost::filesystem::path&  schema);
 
@@ -160,7 +159,7 @@ struct ExtensionPoint : public BundleElement
 
         const std::string m_id;                                     ///< a string containing the extension point identifier
         const ::boost::filesystem::path m_schema;                   ///< a path to the XML schema used to validate contributed extensions
-        mutable ::boost::shared_ptr< io::Validator >    m_validator;///< a shared pointer to the extension validator
+        mutable std::shared_ptr< io::Validator >    m_validator;///< a shared pointer to the extension validator
 
         /**
          * @brief   Assignment operator.

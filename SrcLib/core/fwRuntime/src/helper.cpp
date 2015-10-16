@@ -17,8 +17,8 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-std::pair< bool, std::string > validateConfigurationElement(
-    ::boost::shared_ptr< ::fwRuntime::io::Validator > _validator, ::fwRuntime::ConfigurationElement::sptr _element )
+std::pair< bool, std::string > validateConfigurationElement( std::shared_ptr< ::fwRuntime::io::Validator > _validator,
+                                                             ::fwRuntime::ConfigurationElement::sptr _element )
 {
     SLM_ASSERT("_validator not instanced", _validator);
     SLM_ASSERT("_element not instanced", _element);
@@ -209,9 +209,9 @@ std::map< std::string,
 
 //------------------------------------------------------------------------------
 
-std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > getAllExtensionsForPoint(std::string extension_pt)
+std::vector< std::shared_ptr< ::fwRuntime::Extension > > getAllExtensionsForPoint(std::string extension_pt)
 {
-    typedef std::vector< ::boost::shared_ptr< Extension > > ExtensionContainer;
+    typedef std::vector< std::shared_ptr< Extension > > ExtensionContainer;
     typedef std::back_insert_iterator< ExtensionContainer > Inserter;
 
     ExtensionContainer extElements;

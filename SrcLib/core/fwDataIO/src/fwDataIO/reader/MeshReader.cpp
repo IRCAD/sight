@@ -219,9 +219,8 @@ MeshReader::~MeshReader()
 
 void MeshReader::read()
 {
-    assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-    ::boost::filesystem::path path =
-        ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+    assert( std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
+    ::boost::filesystem::path path = std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
     SLM_TRACE( "Trian file: " + path.string());
     SLM_ASSERT("Empty path for Trian file", !path.empty() );

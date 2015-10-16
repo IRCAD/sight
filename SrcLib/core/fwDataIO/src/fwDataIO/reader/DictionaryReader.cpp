@@ -273,9 +273,8 @@ DictionaryReader::~DictionaryReader()
 void DictionaryReader::read()
 {
     SLM_TRACE_FUNC();
-    assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-    ::boost::filesystem::path path =
-        ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+    assert( std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
+    ::boost::filesystem::path path = std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
     OSLM_INFO( "[DictionaryReader::read] dictionary file: " << path.string());
     SLM_ASSERT("Empty path for dictionary file", !path.empty());

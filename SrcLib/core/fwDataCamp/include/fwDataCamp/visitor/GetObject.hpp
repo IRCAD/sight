@@ -28,7 +28,7 @@ struct PathVisitor
     /**
      * @name Typedefs
      * @{ */
-    typedef ::boost::shared_ptr<PathVisitor> sptr;
+    typedef std::shared_ptr<PathVisitor> sptr;
     typedef std::vector<std::string> ObjectsNamesType;
     /**  @} */
 

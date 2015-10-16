@@ -22,7 +22,7 @@ namespace dl
 //------------------------------------------------------------------------------
 
 Win32::Win32( const boost::filesystem::path & modulePath ) throw()
-    : Native        ( modulePath, ::boost::shared_ptr< INameDecorator >(new Win32NameDecorator()) ),
+    : Native        ( modulePath, std::shared_ptr< INameDecorator >(new Win32NameDecorator()) ),
       m_handle  ( 0 )
 {
 }

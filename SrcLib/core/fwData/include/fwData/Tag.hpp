@@ -7,13 +7,12 @@
 #ifndef __FWDATA_TAG_HPP__
 #define __FWDATA_TAG_HPP__
 
-
-#include <vector>
-
 #include "fwData/config.hpp"
 #include "fwData/PointList.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(Tag), FWDATA_API);
 

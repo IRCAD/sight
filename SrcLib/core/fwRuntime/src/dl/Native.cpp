@@ -26,7 +26,7 @@ namespace dl
 //------------------------------------------------------------------------------
 
 Native::Native( const ::boost::filesystem::path & modulePath,
-                const ::boost::shared_ptr< INameDecorator > nameDecorator ) throw()
+                const std::shared_ptr< INameDecorator > nameDecorator ) throw()
     :   m_modulePath        ( modulePath ),
       m_nameDecorator ( nameDecorator ),
       m_bundle            ( 0 )

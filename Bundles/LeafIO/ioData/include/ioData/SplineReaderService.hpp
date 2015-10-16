@@ -7,13 +7,13 @@
 #ifndef __IODATA_SPLINEREADERSERVICE_HPP__
 #define __IODATA_SPLINEREADERSERVICE_HPP__
 
-#include <io/IReader.hpp>
-#include <boost/filesystem/path.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <boost/weak_ptr.hpp>
-#include <boost/shared_ptr.hpp>
-
 #include "ioData/config.hpp"
+
+#include <io/IReader.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+
+#include <boost/filesystem/path.hpp>
+
 
 namespace ioData
 {
@@ -147,12 +147,12 @@ private:
      * @param m_file fichier contenat la matrice de transformation.
      * @return TransformationMatrix3D
      */
-    ::boost::shared_ptr< ::fwData::TransformationMatrix3D > loadObjectTransformationMatrix3D(std::string m_file);
+    std::shared_ptr< ::fwData::TransformationMatrix3D > loadObjectTransformationMatrix3D(std::string m_file);
 
     /**
      * @brief   matrice 4X4 permettant de positionner l'objet
      */
-    ::boost::shared_ptr< ::fwData::TransformationMatrix3D> objectMatrix;
+    std::shared_ptr< ::fwData::TransformationMatrix3D> objectMatrix;
     /**
      * @brief   true s'il existe matrice 4X4 permettant de positionner l'objet
      */

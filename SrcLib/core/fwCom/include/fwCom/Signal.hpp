@@ -52,7 +52,8 @@ struct Signal< R (A ...) > : SignalBase
     typedef std::pair< bool, SlotRunType* > PairType;
     typedef std::list< PairType* > SlotContainerType;
 
-    typedef std::map< WPTR( SlotBase ), WPTR( SlotConnectionBase ) > ConnectionMapType;
+    typedef std::map< WPTR( SlotBase ), WPTR( SlotConnectionBase ),
+                      std::owner_less< WPTR( SlotBase ) > > ConnectionMapType;
     /**  @} */
 
     /// Constructs a new Signal of type Signal<R(A...)>.

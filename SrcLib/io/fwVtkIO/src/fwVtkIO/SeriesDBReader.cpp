@@ -177,8 +177,8 @@ struct FilteringStream : ::boost::iostreams::filtering_istream
         m_image(source),
         m_bufferObject(source->getDataArray()->getBufferObject()),
         m_lock( m_bufferObject->lock() ),
-        m_bufferStream( ::boost::make_shared<BufferStreamType>(static_cast<char *>(m_lock.getBuffer()),
-                                                               m_bufferObject->getSize()) )
+        m_bufferStream( std::make_shared<BufferStreamType>(static_cast<char *>(m_lock.getBuffer()),
+                                                           m_bufferObject->getSize()) )
     {
         this->push(*m_bufferStream);
     }
@@ -229,7 +229,7 @@ protected:
     SPTR(std::istream) get()
     {
         SPTR(FilteringStream) is
-            = ::boost::make_shared< FilteringStream>( this->getImage() );
+            = std::make_shared< FilteringStream>( this->getImage() );
 
         return is;
     }
@@ -295,7 +295,7 @@ void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader > &reader, const 
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
-    buffObj->setIStreamFactory( ::boost::make_shared< ImageStream<vtkStructuredPointsReader> >(
+    buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkStructuredPointsReader> >(
                                     file), imgObj->getSizeInBytes());
 }
 
@@ -314,8 +314,7 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader > &reader, con
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
-    buffObj->setIStreamFactory( ::boost::make_shared< ImageStream<vtkXMLImageDataReader> >(
-                                    file), imgObj->getSizeInBytes());
+    buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkXMLImageDataReader> >(file), imgObj->getSizeInBytes());
 
 }
 

@@ -54,14 +54,14 @@ public:
     typedef ::boost::function< SPTR(::fwServices::IService)() > FactoryType;
 
     fwCoreClassDefinitionsWithFactoryMacro( (ServiceInfo)(::fwTools::Object), (()),
-                                            ::boost::make_shared< ServiceInfo > );
+                                            std::make_shared< ServiceInfo > );
 
     std::string serviceType;
     std::string objectImpl;
     /// service description.
     std::string desc;
 
-    ::boost::shared_ptr< ::fwRuntime::Bundle > bundle;
+    std::shared_ptr< ::fwRuntime::Bundle > bundle;
 
     FactoryType factory;
 };

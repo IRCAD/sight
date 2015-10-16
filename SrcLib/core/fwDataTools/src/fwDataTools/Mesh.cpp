@@ -352,10 +352,10 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
             nbOfPoints);
 
 
-        rt( boost::bind( &normalizeRegionCellNormalsByPoints,
-                         ::boost::ref(normalsData[0]),
-                         ::boost::ref(normalCounts[0]),
-                         mesh, _1, _2),
+        rt( ::boost::bind( &normalizeRegionCellNormalsByPoints,
+                           ::boost::ref(normalsData[0]),
+                           ::boost::ref(normalCounts[0]),
+                           mesh, _1, _2),
             nbOfPoints);
 
         meshHelper.reset();

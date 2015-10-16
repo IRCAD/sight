@@ -7,7 +7,6 @@
 #ifndef __FWDATAIO_WRITER_GENERICOBJECTWRITER_HPP__
 #define __FWDATAIO_WRITER_GENERICOBJECTWRITER_HPP__
 
-#include <boost/shared_ptr.hpp>
 
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/IObjectWriter.hpp"
@@ -58,7 +57,7 @@ public:
      */
     virtual void  setObject( ::fwTools::Object::sptr obj)
     {
-        assert ( ::boost::dynamic_pointer_cast< DataType >( obj ) );
+        assert ( std::dynamic_pointer_cast< DataType >( obj ) );
         m_object = obj;
     }
 
@@ -68,9 +67,9 @@ public:
      *
      * This method automatic cast object in correct DataType.
      */
-    virtual ::boost::shared_ptr< DataType >  getConcreteObject()
+    virtual std::shared_ptr< DataType >  getConcreteObject()
     {
-        return ::boost::dynamic_pointer_cast< DataType >( getObject() );
+        return std::dynamic_pointer_cast< DataType >( getObject() );
     }
 
 };

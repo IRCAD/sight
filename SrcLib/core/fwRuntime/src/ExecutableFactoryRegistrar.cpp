@@ -16,13 +16,13 @@ namespace fwRuntime
 
 
 
-ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( ::boost::shared_ptr< ExecutableFactory > factory )
+ExecutableFactoryRegistrar::ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory )
 {
     // Pre-condition
     SLM_ASSERT("No bundle bundle currently loaded", Bundle::getLoadingBundle() != 0 );
 
     // Retrieves the bundle that is currently loading.
-    ::boost::shared_ptr< Bundle >  loadingBundle( Bundle::getLoadingBundle() );
+    std::shared_ptr< Bundle >  loadingBundle( Bundle::getLoadingBundle() );
     Runtime* runtime( Runtime::getDefault() );
 
     // Stores the factory into that bundle and the default runtime instance.

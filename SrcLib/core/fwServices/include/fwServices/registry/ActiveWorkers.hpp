@@ -32,7 +32,7 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro(
         (ActiveWorkers)(::fwCore::BaseObject),
         (()),
-        ::boost::make_shared< ActiveWorkers >);
+        std::make_shared< ActiveWorkers >);
 
     typedef std::string WorkerKeyType;
 

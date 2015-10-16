@@ -7,7 +7,6 @@
 #ifndef __FWRUNTIME_RUNTIME_HPP__
 #define __FWRUNTIME_RUNTIME_HPP__
 
-#include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
 #include <set>
 #include <vector>
@@ -42,10 +41,10 @@ struct Runtime
      * @name    Type Definitions
      */
     //@{
-    typedef std::set< ::boost::shared_ptr<Bundle> >     BundleContainer;    ///< Defines the bundle container type.
+    typedef std::set< std::shared_ptr<Bundle> >     BundleContainer;    ///< Defines the bundle container type.
     typedef BundleContainer::iterator BundleIterator;                       ///< Defines the bundle container iterator type.
 
-    typedef std::set< ::boost::shared_ptr<Extension> >  ExtensionContainer; ///< Defines the extension container type.
+    typedef std::set< std::shared_ptr<Extension> >  ExtensionContainer; ///< Defines the extension container type.
     typedef ExtensionContainer::iterator ExtensionIterator;                 ///< Defines the extension container type.
     //@}
 
@@ -74,14 +73,14 @@ struct Runtime
      * @remark      The given bundle state will be altered according to the current configuration rules.
      * @param[in]   bundle  a shared pointer to the bundle instance to add
      */
-    FWRUNTIME_API void addBundle( ::boost::shared_ptr< Bundle > bundle ) throw( RuntimeException );
+    FWRUNTIME_API void addBundle( std::shared_ptr< Bundle > bundle ) throw( RuntimeException );
 
     /**
      * @brief       Unregister a bundle instance to the runtime system.
      *
      * @param[in]   bundle  a shared pointer to the bundle instance to unregister
      */
-    FWRUNTIME_API void unregisterBundle( ::boost::shared_ptr< Bundle > bundle );
+    FWRUNTIME_API void unregisterBundle( std::shared_ptr< Bundle > bundle );
 
     /**
      * @brief       Adds all bundle found in t he given path.
@@ -112,8 +111,8 @@ struct Runtime
      *
      * @return      a shared pointer to the found bundle or null if none
      */
-    FWRUNTIME_API ::boost::shared_ptr< Bundle > findBundle( const std::string & identifier,
-                                                            const Version & version = Version() ) const;
+    FWRUNTIME_API std::shared_ptr< Bundle > findBundle( const std::string & identifier,
+                                                        const Version & version = Version() ) const;
 
     //@}
 
@@ -129,14 +128,14 @@ struct Runtime
      *
      * @param[in]   factory a shared pointer to an executable factory
      */
-    FWRUNTIME_API void addExecutableFactory( ::boost::shared_ptr< ExecutableFactory > factory ) throw(RuntimeException);
+    FWRUNTIME_API void addExecutableFactory( std::shared_ptr< ExecutableFactory > factory ) throw(RuntimeException);
 
     /**
      * @brief       Unregister a new executable factory instance to the runtime system.
      *
      * @param[in]   factory a shared pointer to an executable factory
      */
-    FWRUNTIME_API void unregisterExecutableFactory( ::boost::shared_ptr< ExecutableFactory > factory );
+    FWRUNTIME_API void unregisterExecutableFactory( std::shared_ptr< ExecutableFactory > factory );
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -167,7 +166,7 @@ struct Runtime
      * @return  a pointer to the created executable instance
      */
     FWRUNTIME_API IExecutable * createExecutableInstance( const std::string & type,
-                                                          ::boost::shared_ptr< ConfigurationElement > configurationElement )
+                                                          std::shared_ptr< ConfigurationElement > configurationElement )
     throw( RuntimeException );
 
     /**
@@ -177,7 +176,7 @@ struct Runtime
      *
      * @return      a sgared pointer to the found executable factory or null of none
      */
-    FWRUNTIME_API ::boost::shared_ptr< ExecutableFactory > findExecutableFactory( const std::string & type ) const;
+    FWRUNTIME_API std::shared_ptr< ExecutableFactory > findExecutableFactory( const std::string & type ) const;
 
     /**
      * @brief       Retrieves the plugin instance for the specified bundle.
@@ -186,7 +185,7 @@ struct Runtime
      *
      * @return      a shared pointer to a plugin instance or null if none
      */
-    FWRUNTIME_API ::boost::shared_ptr< IPlugin > getPlugin( const ::boost::shared_ptr< Bundle > bundle ) const;
+    FWRUNTIME_API std::shared_ptr< IPlugin > getPlugin( const std::shared_ptr< Bundle > bundle ) const;
 
     //@}
 
@@ -202,14 +201,14 @@ struct Runtime
      *
      * @param[in]   extension   a shared pointer to the extension to register
      */
-    FWRUNTIME_API void addExtension( ::boost::shared_ptr<Extension> extension) throw(RuntimeException);
+    FWRUNTIME_API void addExtension( std::shared_ptr<Extension> extension) throw(RuntimeException);
 
     /**
      * @brief       Unregister a new extension.
      *
      * @param[in]   extension   a shared pointer to the extension to register
      */
-    FWRUNTIME_API void unregisterExtension( ::boost::shared_ptr<Extension> extension);
+    FWRUNTIME_API void unregisterExtension( std::shared_ptr<Extension> extension);
 
     /**
      * @brief   Retrieves the iterator on the beginning of the extension collection.
@@ -232,7 +231,7 @@ struct Runtime
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    FWRUNTIME_API ::boost::shared_ptr< Extension > findExtension( const std::string & identifier ) const;
+    FWRUNTIME_API std::shared_ptr< Extension > findExtension( const std::string & identifier ) const;
 
     //@}
 
@@ -246,14 +245,14 @@ struct Runtime
      *
      * @param[in]   point   a pointer to the extension point to register
      */
-    FWRUNTIME_API void addExtensionPoint( ::boost::shared_ptr<ExtensionPoint> point) throw(RuntimeException);
+    FWRUNTIME_API void addExtensionPoint( std::shared_ptr<ExtensionPoint> point) throw(RuntimeException);
 
     /**
      * @brief       Unregister a new extension point.
      *
      * @param[in]   point   a pointer to the extension point to register
      */
-    FWRUNTIME_API void unregisterExtensionPoint( ::boost::shared_ptr<ExtensionPoint> point);
+    FWRUNTIME_API void unregisterExtensionPoint( std::shared_ptr<ExtensionPoint> point);
 
     /**
      * @brief       Retrieves the extension point instance matching the specified identifier.
@@ -262,16 +261,16 @@ struct Runtime
      *
      * @return      a shared pointer to the found extension point instance or null if none
      */
-    FWRUNTIME_API ::boost::shared_ptr< ExtensionPoint > findExtensionPoint( const std::string & identifier ) const;
+    FWRUNTIME_API std::shared_ptr< ExtensionPoint > findExtensionPoint( const std::string & identifier ) const;
     //@}
 
     private:
 
-        typedef std::set< ::boost::shared_ptr< ExecutableFactory > > ExecutableFactoryContainer; ///< Defines the executable factory container type.
-        typedef std::set< ::boost::shared_ptr<ExtensionPoint> > ExtensionPointContainer;        ///< Defines the extension point container type.
-        typedef std::vector< ::boost::shared_ptr<IPlugin> > PluginContainer;                    ///< Defines the plugin container type.
+        typedef std::set< std::shared_ptr< ExecutableFactory > > ExecutableFactoryContainer; ///< Defines the executable factory container type.
+        typedef std::set< std::shared_ptr<ExtensionPoint> > ExtensionPointContainer;        ///< Defines the extension point container type.
+        typedef std::vector< std::shared_ptr<IPlugin> > PluginContainer;                    ///< Defines the plugin container type.
 
-        static ::boost::shared_ptr<Runtime> m_instance; ///< The runtime instance.
+        static std::shared_ptr<Runtime> m_instance; ///< The runtime instance.
 
         ExecutableFactoryContainer m_executableFactories;               ///< Contains all executable factories.
         ExtensionContainer m_extensions;                                ///< Contains all registered extensions.

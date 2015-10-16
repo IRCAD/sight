@@ -36,7 +36,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( const boost::filesystem::path & path )
+std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( const boost::filesystem::path & path )
 {
     // Normalizes the path.
     boost::filesystem::path normalizedPath(path);
@@ -93,7 +93,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
         xmlFree(pChkInst);
 
         // Creates and process the profile element.
-        ::boost::shared_ptr< ::fwRuntime::profile::Profile > profile = processProfile(rootNode);
+        std::shared_ptr< ::fwRuntime::profile::Profile > profile = processProfile(rootNode);
 
         profile->setFilePath(normalizedPath);
         profile->setName(sName);
@@ -113,13 +113,13 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::processProfile(xmlNodePtr node)
+std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::processProfile(xmlNodePtr node)
 {
     using namespace ::fwRuntime::profile;
 
 
     // Process child nodes.
-    ::boost::shared_ptr< Profile > profile( new Profile() );
+    SPTR(Profile) profile = std::make_shared<Profile>();
     xmlNodePtr curChild = node->children;
     for(curChild = node->children; curChild != 0; curChild = curChild->next)
     {
@@ -140,7 +140,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ::fwRuntime::profile::Activater > ProfileReader::processActivater(xmlNodePtr node)
+std::shared_ptr< ::fwRuntime::profile::Activater > ProfileReader::processActivater(xmlNodePtr node)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
@@ -163,7 +163,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
 
     // Creates the activater object.
     using ::fwRuntime::profile::Activater;
-    ::boost::shared_ptr< Activater >   activater( new Activater(identifier, version) );
+    std::shared_ptr< Activater >   activater( new Activater(identifier, version) );
 
     // Processes child node that are the parameters
     xmlNodePtr curChild = node->children;
@@ -193,8 +193,7 @@ std::string ProfileReader::DIS_EXT               ("disable-extension");
 
 //------------------------------------------------------------------------------
 
-void ProfileReader::processActivaterParam(xmlNodePtr node,
-                                          ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
+void ProfileReader::processActivaterParam(xmlNodePtr node, std::shared_ptr< ::fwRuntime::profile::Activater > activater)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
@@ -221,7 +220,7 @@ void ProfileReader::processActivaterParam(xmlNodePtr node,
 //------------------------------------------------------------------------------
 
 void ProfileReader::processActivaterDisableExtensionPoint(xmlNodePtr node,
-                                                          ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
+                                                          std::shared_ptr< ::fwRuntime::profile::Activater > activater)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
@@ -242,7 +241,7 @@ void ProfileReader::processActivaterDisableExtensionPoint(xmlNodePtr node,
 //------------------------------------------------------------------------------
 
 void ProfileReader::processActivaterDisableExtension(xmlNodePtr node,
-                                                     ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater)
+                                                     std::shared_ptr< ::fwRuntime::profile::Activater > activater)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
@@ -262,7 +261,7 @@ void ProfileReader::processActivaterDisableExtension(xmlNodePtr node,
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ::fwRuntime::profile::Starter > ProfileReader::processStarter(xmlNodePtr node)
+std::shared_ptr< ::fwRuntime::profile::Starter > ProfileReader::processStarter(xmlNodePtr node)
 {
     // Processes all attributes.
     xmlAttrPtr curAttr;
@@ -278,7 +277,7 @@ void ProfileReader::processActivaterDisableExtension(xmlNodePtr node,
 
     // Creates the activater object.
     using ::fwRuntime::profile::Starter;
-    ::boost::shared_ptr< Starter > starter( new Starter(identifier) );
+    std::shared_ptr< Starter > starter( new Starter(identifier) );
     return starter;
 }
 

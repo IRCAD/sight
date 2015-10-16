@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 #include <fwTools/DynamicAttributes.hxx>
@@ -50,7 +49,7 @@ FWDATAIO_API SPTR( ::fwDataIO::reader::IObjectReader ) New( const ::fwDataIO::re
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
 
     return obj;
 }

@@ -60,7 +60,7 @@ void Activater::addDisableExtension( const std::string & identifier )
 
 void Activater::apply()
 {
-    ::boost::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier, m_version);
+    std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier, m_version);
     OSLM_FATAL_IF("Unable to activate Bundle " << m_identifier << "_" << m_version << ". Not found.", bundle==0);
 
     bundle->setEnable( true );

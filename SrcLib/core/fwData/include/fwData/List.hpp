@@ -11,8 +11,6 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
 
-#include <boost/shared_ptr.hpp>
-
 #include <list>
 
 fwCampAutoDeclareDataMacro((fwData)(List), FWDATA_API);

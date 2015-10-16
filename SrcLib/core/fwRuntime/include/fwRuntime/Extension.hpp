@@ -10,7 +10,6 @@
 #include <string>
 #include <libxml/tree.h>
 
-#include <boost/shared_ptr.hpp>
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/BundleElement.hpp"
@@ -110,7 +109,7 @@ struct Extension : public BundleElement,
          *
          * @todo        test parameters validity
          */
-        Extension( ::boost::shared_ptr<Bundle> bundle, const std::string & id, const std::string & point,
+        Extension( std::shared_ptr<Bundle> bundle, const std::string & id, const std::string & point,
                    const xmlNodePtr xmlNode );
 
 

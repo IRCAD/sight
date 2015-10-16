@@ -221,10 +221,10 @@ void BufferObjectTest::lockThreadedStressTest()
 
     boost::thread_group group;
 
-    group.create_thread( boost::bind( &stressLock, bo, 800, 600 ) );
-    group.create_thread( boost::bind( &stressLock, bo, 600, 800 ) );
-    group.create_thread( boost::bind( &stressLock, bo, 452, 692 ) );
-    group.create_thread( boost::bind( &stressLock, bo, 253, 345 ) );
+    group.create_thread( ::boost::bind( &stressLock, bo, 800, 600 ) );
+    group.create_thread( ::boost::bind( &stressLock, bo, 600, 800 ) );
+    group.create_thread( ::boost::bind( &stressLock, bo, 452, 692 ) );
+    group.create_thread( ::boost::bind( &stressLock, bo, 253, 345 ) );
 
     group.join_all();
 

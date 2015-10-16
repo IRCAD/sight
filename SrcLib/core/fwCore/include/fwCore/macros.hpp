@@ -12,9 +12,7 @@
  */
 
 #include <string>
-
-#include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
+#include <memory>
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
@@ -71,13 +69,13 @@
  * @{ */
 
 /** Expand to shared_ptr < _cls_ > */
-#define SPTR(_cls_)  ::boost::shared_ptr < _cls_ >
+#define SPTR(_cls_)  std::shared_ptr < _cls_ >
 /** Expand to shared_ptr < const _cls_ > */
-#define CSPTR(_cls_) ::boost::shared_ptr < const _cls_ >
+#define CSPTR(_cls_) std::shared_ptr < const _cls_ >
 /** Expand to weak_ptr < _cls_ > */
-#define WPTR(_cls_)  ::boost::weak_ptr   < _cls_ >
+#define WPTR(_cls_)  std::weak_ptr   < _cls_ >
 /** Expand to weak_ptr < const _cls_ > */
-#define CWPTR(_cls_) ::boost::weak_ptr   < const _cls_ >
+#define CWPTR(_cls_) std::weak_ptr   < const _cls_ >
 /**  @} */
 
 
@@ -231,19 +229,19 @@
     template< class BASETYPE > static __FWCORE_TYPEDEF_SHARED_PTR_NAME __FWCORE_DYNAMIC_CAST_FUNC_NAME ( \
         BASETYPE const &p )             \
     {                                                                                                                                    \
-        return ::boost::dynamic_pointer_cast< _classname_ >(p);                                                                          \
+        return std::dynamic_pointer_cast< _classname_ >(p);                                                                          \
     };                                                                                                                                   \
     /** @brief Const shared pointer cast to dynamic pointer */                                                                           \
     template< class BASETYPE > static __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME __FWCORE_DYNAMIC_CONST_CAST_FUNC_NAME ( \
         BASETYPE const &p ) \
     {                                                                                                                                    \
-        return ::boost::dynamic_pointer_cast< const _classname_ >(p);                                                                    \
+        return std::dynamic_pointer_cast< const _classname_ >(p);                                                                    \
     };                                                                                                                                   \
     /** @brief Cast to const shared pointer */                                                                                           \
     static __FWCORE_TYPEDEF_SHARED_PTR_NAME __FWCORE_CONST_CAST_FUNC_NAME ( \
         __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME const &p )            \
     {                                                                                                                                    \
-        return ::boost::const_pointer_cast< _classname_ >(p);                                                                            \
+        return std::const_pointer_cast< _classname_ >(p);                                                                            \
     }
 
 
@@ -401,9 +399,7 @@ struct pointer_holder;
 #define fwCoreFriendClassFactoryMacro()                                      \
     friend class ::boost::serialization::access;                             \
     template<class, class>                                                   \
-    friend struct ::boost::python::objects::pointer_holder;                  \
-    template<typename _FWCORE_CHECKED_DELETE_T_ >                            \
-    friend void ::boost::checked_delete(_FWCORE_CHECKED_DELETE_T_ *x);       \
+    friend struct ::boost::python::objects::pointer_holder;   \
     template<class, class, class>                                            \
     friend class ::fwTools::ClassFactory;                                    \
     friend class ::fwTools::Factory;

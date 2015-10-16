@@ -12,7 +12,6 @@
 #include <fwTools/System.hpp>
 #include <fwTest/Data.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
@@ -45,11 +44,11 @@ void ZipTest::commentTest()
     const ::boost::filesystem::path archiveFile = "makao.jpg";
 
 
-    SPTR(WriteZipArchive) writer = ::boost::make_shared<WriteZipArchive>(path, writerComment);
+    SPTR(WriteZipArchive) writer = std::make_shared<WriteZipArchive>(path, writerComment);
     writer->putFile(sourceFile, archiveFile);
     writer->createFile("");
 
-    SPTR(ReadZipArchive) reader = ::boost::make_shared<ReadZipArchive>(path);
+    SPTR(ReadZipArchive) reader = std::make_shared<ReadZipArchive>(path);
     std::string readerComment = reader->getComment();
 
     ::boost::filesystem::remove_all( path );

@@ -6,7 +6,6 @@
 
 #include <string>
 
-#include <boost/shared_ptr.hpp>
 #include <boost/utility/enable_if.hpp>
 
 #include <camp/class.hpp>

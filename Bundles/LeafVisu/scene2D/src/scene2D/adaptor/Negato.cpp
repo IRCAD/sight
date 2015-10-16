@@ -323,7 +323,7 @@ void Negato::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Fai
     if( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE) && m_changeSliceTypeAllowed )
     {
         ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-        ::fwData::Object::sptr objInfo   = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+        ::fwData::Object::sptr objInfo   = std::const_pointer_cast< ::fwData::Object > ( cObjInfo );
         ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
 
         ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] );

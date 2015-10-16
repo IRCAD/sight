@@ -13,7 +13,6 @@
 
 #include <boost/function_types/function_arity.hpp>
 #include <boost/function_types/result_type.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 
@@ -95,7 +94,7 @@ SPTR(Slot< R( A ...  )>) Slot< Slot< R ( A ... )> >::New( SPTR( SlotRun< F > ) s
 {
     assert (::boost::function_types::function_arity< F >::value <=
             ::boost::function_types::function_arity< R ( A ... ) >::value);
-    return ::boost::make_shared< Slot< Slot< R ( A ... ) > > >( slot );
+    return std::make_shared< Slot< Slot< R ( A ... ) > > >( slot );
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +105,7 @@ SPTR(Slot< typename ::fwCom::util::convert_function_type< F >::type >) newSlot(F
     SLM_ASSERT( "Too many arguments", ( sizeof ... (binding) < 2 ) );
     typedef ::boost::function< typename ::fwCom::util::convert_function_type< F >::type > FunctionType;
     FunctionType func = ::fwCom::util::autobind(f, binding ...);
-    return ::boost::make_shared< Slot< FunctionType > > ( func );
+    return std::make_shared< Slot< FunctionType > > ( func );
 }
 
 //-----------------------------------------------------------------------------

@@ -7,11 +7,10 @@
 #ifndef __FWDATA_STRUCTURETRAITSHELPER_HPP__
 #define __FWDATA_STRUCTURETRAITSHELPER_HPP__
 
-#include <boost/bimap/bimap.hpp>
-
-#include <fwData/StructureTraits.hpp>
-
 #include "fwData/config.hpp"
+#include "fwData/StructureTraits.hpp"
+
+#include <boost/bimap/bimap.hpp>
 
 namespace fwData
 {

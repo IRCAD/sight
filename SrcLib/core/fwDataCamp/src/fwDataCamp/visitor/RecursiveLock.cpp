@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
 
 #include <fwCore/mt/types.hpp>
 

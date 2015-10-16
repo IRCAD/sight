@@ -7,11 +7,10 @@
 #ifndef __FWRUNTIME_EXECUTABLEFACTORYREGISTRAR_HPP__
 #define __FWRUNTIME_EXECUTABLEFACTORYREGISTRAR_HPP__
 
-#include <boost/shared_ptr.hpp>
 
 #include "fwRuntime/config.hpp"
 
-
+#include <memory>
 
 namespace fwRuntime
 {
@@ -43,7 +42,7 @@ struct ExecutableFactoryRegistrar
      * @param[in]   factory a shared pointer to an executable factory instance to manage
      * @pre         Loading bundle exists.
      */
-    FWRUNTIME_API ExecutableFactoryRegistrar( ::boost::shared_ptr< ExecutableFactory > factory );
+    FWRUNTIME_API ExecutableFactoryRegistrar( std::shared_ptr< ExecutableFactory > factory );
 
 };
 

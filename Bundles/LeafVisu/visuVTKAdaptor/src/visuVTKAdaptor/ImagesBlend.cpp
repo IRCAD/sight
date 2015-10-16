@@ -150,7 +150,7 @@ void ImagesBlend::configuring() throw(fwTools::Failed)
     SLM_ASSERT("Missing tag 'image' ", !configs.empty());
     BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr element, configs)
     {
-        SPTR(ImageInfo) info = ::boost::shared_ptr< ImageInfo >(new ImageInfo());
+        SPTR(ImageInfo) info = std::shared_ptr< ImageInfo >(new ImageInfo());
         SLM_ASSERT("Missing attribute 'objectId'", element->hasAttribute("objectId"));
         std::string objectId = element->getAttributeValue("objectId");
 

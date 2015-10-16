@@ -29,8 +29,6 @@
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 
-
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/unordered_map.hpp>
 #include <string>
 

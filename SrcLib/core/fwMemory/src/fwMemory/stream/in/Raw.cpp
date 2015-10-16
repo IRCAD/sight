@@ -8,7 +8,6 @@
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
 
-#include <boost/make_shared.hpp>
 
 #include <fwCore/macros.hpp>
 #include <fwCore/exceptionmacros.hpp>
@@ -28,7 +27,7 @@ SPTR(std::istream) Raw::get()
                 !boost::filesystem::exists(m_path));
 
     SPTR(::boost::filesystem::ifstream) fs
-        = ::boost::make_shared< ::boost::filesystem::ifstream>(m_path, std::ios::in|std::ios::binary);
+        = std::make_shared< ::boost::filesystem::ifstream>(m_path, std::ios::in|std::ios::binary);
     return fs;
 }
 

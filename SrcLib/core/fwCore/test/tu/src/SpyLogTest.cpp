@@ -13,7 +13,6 @@
 #include <boost/thread.hpp>
 #include <boost/foreach.hpp>
 #include <boost/regex.hpp>
-#include <boost/make_shared.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/regex.hpp>
@@ -87,7 +86,7 @@ void SpyLogTest::logMessageTest()
 
 struct LogProducerThread
 {
-    typedef ::boost::shared_ptr< LogProducerThread > sptr;
+    typedef std::shared_ptr< LogProducerThread > sptr;
     typedef std::vector< std::string > LogContainerType;
 
     LogProducerThread()
@@ -140,7 +139,7 @@ void SpyLogTest::threadSafetyTest()
     ::boost::thread_group tg;
     for(size_t i = 0; i < NB_THREAD; ++i)
     {
-        LogProducerThread::sptr ct = ::boost::make_shared<LogProducerThread>();
+        LogProducerThread::sptr ct = std::make_shared<LogProducerThread>();
         size_t offset              = i * NB_LOG;
         ::boost::thread* t =
             new ::boost::thread(::boost::bind(&LogProducerThread::run, ct, boost::ref(logs), NB_LOG, offset) );

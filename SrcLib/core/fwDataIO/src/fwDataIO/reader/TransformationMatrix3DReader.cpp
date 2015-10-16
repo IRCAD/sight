@@ -38,9 +38,9 @@ TransformationMatrix3DReader::~TransformationMatrix3DReader()
 
 void TransformationMatrix3DReader::read()
 {
-    assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
+    assert( ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
     ::boost::filesystem::path file =
-        ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+        ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
     assert( ::boost::filesystem::exists(file) );
 

@@ -14,7 +14,7 @@ template< class DATATYPE >
 SPTR(DATATYPE) IService::getObject()
 {
     OSLM_ASSERT("Expired object in service " << this->getID(), !m_associatedObject.expired() );
-    SPTR(DATATYPE) casteDdata = ::boost::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
+    SPTR(DATATYPE) casteDdata = std::dynamic_pointer_cast<DATATYPE>( m_associatedObject.lock() );
     OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", casteDdata);
 
     return casteDdata;

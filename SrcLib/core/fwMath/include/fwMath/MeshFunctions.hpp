@@ -76,7 +76,7 @@ bool isBorderlessSurface(T* cellDataBegin, T* cellDataEnd, U* cellDataOffsetsBeg
                          V* cellTypesBegin)
 {
     typedef std::pair< T, T >  Edge; // always Edge.first < Edge.second !!
-    typedef boost::unordered_map< Edge, int >  EdgeHistogram;
+    typedef ::boost::unordered_map< Edge, int >  EdgeHistogram;
     EdgeHistogram edgesHistogram;
     bool isBorderless = true;
 

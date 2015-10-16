@@ -3,12 +3,11 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
 #ifndef __FWCOM_UTIL_WEAKCALL_HPP__
 #define __FWCOM_UTIL_WEAKCALL_HPP__
 
 #include <boost/function.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
 
 #include <fwCore/mt/types.hpp>
 
@@ -40,13 +39,13 @@ template< typename T, typename R >
 struct WeakCall
 {
 
-    WeakCall( const ::boost::shared_ptr< T const > &ptr, ::boost::function< R() > f)
+    WeakCall( const std::shared_ptr< T const > &ptr, ::boost::function< R() > f)
         : m_weakPtr(ptr), m_func(f)
     {
         OSLM_COM("WeakCall object : " << ptr->getFullClassname() );
 #ifdef COM_LOG
         this->m_objectType = ptr->getFullClassname();
-        ::fwCom::SlotBase::csptr slot = ::boost::dynamic_pointer_cast< const ::fwCom::SlotBase >(ptr);
+        ::fwCom::SlotBase::csptr slot = std::dynamic_pointer_cast< const ::fwCom::SlotBase >(ptr);
         if(slot)
         {
             this->m_objectId = slot->getID();
@@ -54,14 +53,14 @@ struct WeakCall
 #endif // COM_LOG
     }
 
-    WeakCall( const ::boost::shared_ptr< T const > &ptr, ::boost::function< R() > f,
-              const ::boost::shared_ptr< ::fwThread::Worker > &m)
+    WeakCall( const std::shared_ptr< T const > &ptr, ::boost::function< R() > f,
+              const std::shared_ptr< ::fwThread::Worker > &m)
         : m_weakPtr(ptr), m_func(f), m_worker( m )
     {
         OSLM_COM("WeakCall object : " << ptr->getFullClassname() );
 #ifdef COM_LOG
         this->m_objectType = ptr->getFullClassname();
-        ::fwCom::SlotBase::csptr slot = ::boost::dynamic_pointer_cast< const ::fwCom::SlotBase >(ptr);
+        ::fwCom::SlotBase::csptr slot = std::dynamic_pointer_cast< const ::fwCom::SlotBase >(ptr);
         if(slot)
         {
             this->m_objectId = slot->getID();
@@ -82,18 +81,18 @@ struct WeakCall
                      << this->m_objectType << ", " << this->m_objectId,
                      this->m_weakPtr.expired() );
 
-        ::boost::shared_ptr< T const > ptr(this->m_weakPtr.lock());
+        std::shared_ptr< T const > ptr(this->m_weakPtr.lock());
 
         if (!ptr)
         {
             m_worker.reset();
             // will throw an exception because m_weakPtr is expired
-            ::boost::shared_ptr< T const > ptr(this->m_weakPtr);
+            std::shared_ptr< T const > ptr(this->m_weakPtr);
         }
 
         ::fwCore::mt::ReadLock lock(ptr->m_workerMutex);
 
-        ::boost::shared_ptr< ::fwThread::Worker > worker = m_worker.lock();
+        std::shared_ptr< ::fwThread::Worker > worker = m_worker.lock();
 
         if (worker && ptr->m_worker != worker)
         {
@@ -107,9 +106,9 @@ struct WeakCall
     }
 
     protected:
-        mutable ::boost::weak_ptr< T const > m_weakPtr;
+        mutable std::weak_ptr< T const > m_weakPtr;
         ::boost::function< R() > m_func;
-        mutable ::boost::weak_ptr< ::fwThread::Worker > m_worker;
+        mutable std::weak_ptr< ::fwThread::Worker > m_worker;
 
 #ifdef COM_LOG
         std::string m_objectType;
@@ -120,15 +119,15 @@ struct WeakCall
 
 /// Returns weak call from given object and function.
 template <typename T, typename R >
-WeakCall<T, R> weakcall( const ::boost::shared_ptr< T const > &ptr, ::boost::function< R() > f)
+WeakCall<T, R> weakcall( const std::shared_ptr< T const > &ptr, ::boost::function< R() > f)
 {
     return WeakCall<T, R>(ptr, f);
 }
 
 /// Returns weak call from given object, function and mutex.
 template <typename T, typename R >
-WeakCall<T, R> weakcall( const ::boost::shared_ptr< T const > &ptr, ::boost::function< R() > f,
-                         const ::boost::shared_ptr< ::fwThread::Worker > & m)
+WeakCall<T, R> weakcall( const std::shared_ptr< T const > &ptr, ::boost::function< R() > f,
+                         const std::shared_ptr< ::fwThread::Worker > & m)
 {
     return WeakCall<T, R>(ptr, f, m);
 }

@@ -7,7 +7,6 @@
 #ifndef __FWRUNTIME_CONVERT_HPP__
 #define __FWRUNTIME_CONVERT_HPP__
 
-#include <boost/shared_ptr.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 
@@ -37,7 +36,7 @@ public:
     /**
      * @brief   Build an xmlNodePtr from a ConfigurationElement
      */
-    FWRUNTIME_API static xmlNodePtr toXml( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement);
+    FWRUNTIME_API static xmlNodePtr toXml( std::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement);
 
     /**
      * @brief   Build an std::string from a ConfigurationElement
@@ -58,7 +57,7 @@ public:
 private:
 
     FWRUNTIME_API static void fromConfigurationElementToXml(
-        ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement, xmlNodePtr _node);                                                       //_node is modified
+        std::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement, xmlNodePtr _node);                                                       //_node is modified
 
     /**
      * @brief   Constructor : does nothing.

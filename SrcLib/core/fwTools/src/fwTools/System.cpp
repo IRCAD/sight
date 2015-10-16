@@ -6,7 +6,6 @@
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/regex.hpp>
 #include <boost/foreach.hpp>
 
@@ -37,7 +36,7 @@ std::string System::s_tempPrefix;
 
 struct RemoveTemporaryFolder
 {
-    typedef ::boost::shared_ptr< RemoveTemporaryFolder > sptr;
+    typedef std::shared_ptr< RemoveTemporaryFolder > sptr;
 
     RemoveTemporaryFolder(const ::boost::filesystem::path &path) : m_path(path)
     {
@@ -161,7 +160,7 @@ const ::boost::filesystem::path System::getTemporaryFolder(const std::string& su
     fs::path pidFile = tmpDir / (::boost::lexical_cast<std::string>(getPID()) + ".pid");
     fs::fstream( pidFile, std::ios::out ).close();
 
-    autoRemoveTempFolder = ::boost::make_shared<RemoveTemporaryFolder>(tmpDirPath);
+    autoRemoveTempFolder = std::make_shared<RemoveTemporaryFolder>(tmpDirPath);
 
     if(!subFolderPrefix.empty())
     {

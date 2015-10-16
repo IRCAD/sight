@@ -13,7 +13,7 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<Bundle> Executable::getBundle() const throw()
+std::shared_ptr<Bundle> Executable::getBundle() const throw()
 {
     return m_bundle;
 }
@@ -27,7 +27,7 @@ const ConfigurationElement::sptr Executable::getInitializationData() const throw
 
 //------------------------------------------------------------------------------
 
-void Executable::setBundle( ::boost::shared_ptr< Bundle > bundle )
+void Executable::setBundle( std::shared_ptr< Bundle > bundle )
 {
     m_bundle = bundle;
 }

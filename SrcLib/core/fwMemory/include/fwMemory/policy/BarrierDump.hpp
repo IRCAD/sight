@@ -7,7 +7,6 @@
 #ifndef __FWMEMORY_POLICY_BARRIERDUMP_HPP__
 #define __FWMEMORY_POLICY_BARRIERDUMP_HPP__
 
-#include <boost/shared_ptr.hpp>
 
 #include <fwCore/base.hpp>
 

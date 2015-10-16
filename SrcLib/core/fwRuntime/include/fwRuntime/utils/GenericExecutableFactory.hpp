@@ -9,7 +9,6 @@
 
 #include <sstream>
 #include <string>
-#include <boost/shared_ptr.hpp>
 
 #include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/ExecutableFactory.hpp"

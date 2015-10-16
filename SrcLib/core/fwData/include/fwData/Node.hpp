@@ -7,14 +7,12 @@
 #ifndef __FWDATA_NODE_HPP__
 #define __FWDATA_NODE_HPP__
 
-#include <vector>
-
-#include <boost/shared_ptr.hpp>
-
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Port.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(Node), FWDATA_API);
 

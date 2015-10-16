@@ -60,4 +60,4 @@ struct FWRUNTIME_CLASS_API IPlugin : public IExecutable
 
 } // namespace fwRuntime
 
-#endif //__FWRUNTIME_IPLUGIN_HPP__
+#endif // __FWRUNTIME_IPLUGIN_HPP__

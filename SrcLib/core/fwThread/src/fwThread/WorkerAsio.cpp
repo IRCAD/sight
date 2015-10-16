@@ -34,7 +34,7 @@ class WorkerAsio : public ::fwThread::Worker
 public:
     typedef ::boost::asio::io_service IOServiceType;
     typedef ::boost::asio::io_service::work WorkType;
-    typedef ::boost::shared_ptr< WorkType > WorkPtrType;
+    typedef std::shared_ptr< WorkType > WorkPtrType;
     typedef ::boost::thread ThreadType;
 
 
@@ -157,13 +157,13 @@ protected:
 
 WorkerAsio::WorkerAsio() :
     m_ioService(),
-    m_work( ::boost::make_shared< WorkType >(::boost::ref(m_ioService)) )
+    m_work( std::make_shared< WorkType >(::boost::ref(m_ioService)) )
 {
     ::boost::packaged_task< ::fwThread::Worker::ExitReturnType > task( ::boost::bind(&WorkerThread, ::boost::ref(
                                                                                          m_ioService)) );
     ::boost::future< ::fwThread::Worker::ExitReturnType > ufuture = task.get_future();
 
-    m_thread = ::boost::make_shared< ThreadType >( ::boost::move( task ) );
+    m_thread = std::make_shared< ThreadType >( ::boost::move( task ) );
 
     m_future = ::boost::move(ufuture);
 }
@@ -184,7 +184,7 @@ void WorkerAsio::stop()
 
 SPTR(::fwThread::Timer) WorkerAsio::createTimer()
 {
-    return ::boost::make_shared< TimerAsio >(::boost::ref(m_ioService));
+    return std::make_shared< TimerAsio >(::boost::ref(m_ioService));
 }
 
 void WorkerAsio::post(TaskType handler)
@@ -217,7 +217,7 @@ void WorkerAsio::processTasks(PeriodType maxtime)
 // ---------- Worker ----------
 SPTR(Worker) Worker::defaultFactory()
 {
-    return ::boost::make_shared< WorkerAsio >();
+    return std::make_shared< WorkerAsio >();
 }
 
 

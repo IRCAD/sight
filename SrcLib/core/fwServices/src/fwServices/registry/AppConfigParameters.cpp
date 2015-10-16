@@ -41,9 +41,9 @@ AppConfigParameters::~AppConfigParameters()
 
 void AppConfigParameters::parseBundleInformation()
 {
-    std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > >  extensions = ::fwRuntime::getAllExtensionsForPoint(
+    std::vector< std::shared_ptr< ::fwRuntime::Extension > >  extensions = ::fwRuntime::getAllExtensionsForPoint(
         "::fwServices::registry::AppConfigParameters");
-    BOOST_FOREACH( ::boost::shared_ptr< ::fwRuntime::Extension > ext, extensions )
+    BOOST_FOREACH( std::shared_ptr< ::fwRuntime::Extension > ext, extensions )
     {
         // Get id
         std::string extensionId = ext->findConfigurationElement("id")->getValue();

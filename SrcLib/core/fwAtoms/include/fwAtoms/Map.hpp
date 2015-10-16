@@ -25,7 +25,7 @@ namespace fwAtoms
  *
  * For exemple, this metadata is used to bind :
  * \li std::map
- * \li boost::unordered_map
+ * \li ::boost::unordered_map
  * \li fwData::Graph (a part)
  * \li boost graph
  */

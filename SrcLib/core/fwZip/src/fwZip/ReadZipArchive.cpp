@@ -6,7 +6,6 @@
 
 #include <iosfwd>    // streamsize
 
-#include <boost/make_shared.hpp>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -134,7 +133,7 @@ ReadZipArchive::ReadZipArchive( const ::boost::filesystem::path &archive ) :
 SPTR(std::istream) ReadZipArchive::getFile(const ::boost::filesystem::path &path)
 {
     SPTR(::boost::iostreams::stream<ZipSource>) is
-        = ::boost::make_shared< ::boost::iostreams::stream<ZipSource> >(m_archive, path);
+        = std::make_shared< ::boost::iostreams::stream<ZipSource> >(m_archive, path);
 
     return is;
 }
@@ -143,7 +142,7 @@ SPTR(std::istream) ReadZipArchive::getFile(const ::boost::filesystem::path &path
 
 std::string ReadZipArchive::getComment()
 {
-    SPTR(ZipSource) zip = ::boost::make_shared<ZipSource>(m_archive);
+    SPTR(ZipSource) zip = std::make_shared<ZipSource>(m_archive);
 
     return zip->getComment();
 }

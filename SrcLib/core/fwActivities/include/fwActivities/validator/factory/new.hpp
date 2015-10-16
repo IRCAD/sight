@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -48,7 +47,7 @@ FWACTIVITIES_API SPTR( ::fwActivities::IValidator ) New( const ::fwActivities::v
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) validator = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) validator = std::make_shared< CLASSNAME >( Key() );
     return validator;
 }
 

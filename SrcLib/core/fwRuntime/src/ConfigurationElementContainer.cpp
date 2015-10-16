@@ -79,12 +79,12 @@ bool ConfigurationElementContainer::hasConfigurationElement( const std::string &
 
 //-----------------------------------------------------------------------------
 
-const ::boost::shared_ptr<ConfigurationElement> ConfigurationElementContainer::findConfigurationElement(
+const std::shared_ptr<ConfigurationElement> ConfigurationElementContainer::findConfigurationElement(
     const std::string & name ) const
 {
     Container::const_iterator found = std::find_if( m_elements.begin(), m_elements.end(), HasName(name) );
 
-    return ( found == m_elements.end() ) ? ::boost::shared_ptr< ConfigurationElement >() : *found;
+    return ( found == m_elements.end() ) ? std::shared_ptr< ConfigurationElement >() : *found;
 }
 
 //-----------------------------------------------------------------------------

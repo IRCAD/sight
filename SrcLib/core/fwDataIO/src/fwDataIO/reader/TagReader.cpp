@@ -47,15 +47,15 @@ TagReader::~TagReader()
 
 void TagReader::read()
 {
-    assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
+    assert( ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
     ::boost::filesystem::path path =
-        ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+        ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
 
     OSLM_INFO( "[TagReader::read] Tag file: " << path);
     assert( path.empty() ==  false );
 
-    ::boost::shared_ptr< ::fwData::Tag > tag = getConcreteObject();
+    ::std::shared_ptr< ::fwData::Tag > tag = getConcreteObject();
 
     std::fstream file;
     file.open(path.string().c_str(), std::fstream::in);

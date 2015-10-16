@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/shared_ptr.hpp>
 
 #include <fwCore/Exception.hpp>
 

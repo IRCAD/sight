@@ -164,7 +164,7 @@
         bool set(ClassType& objectptr, const Value &value) const \
         { \
             ReturnType ptr = m_getter(objectptr); \
-            ptr = __FWCAMP_NAMESPACE_NAME(attribut) ::dynamicCast(value.to< DataType* >()->getSptr()); \
+            ptr = __FWCAMP_NAMESPACE_NAME(attribut) ::dynamicCast(((value.to< DataType* >()))->getSptr()); \
             return true; \
         } \
 \

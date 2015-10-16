@@ -29,7 +29,7 @@ Uninitializer::Uninitializer( const std::string & identifier )
 
 void Uninitializer::apply()
 {
-    ::boost::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier);
+    std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier);
     OSLM_FATAL_IF("Unable to uninitialize bundle " << m_identifier << ". Not found.", bundle == 0);
     try
     {

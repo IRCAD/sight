@@ -11,7 +11,6 @@
 
 #include <boost/type_traits/conditional.hpp>
 #include <boost/type_traits/is_const.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include <fwCore/mt/types.hpp>
@@ -61,8 +60,8 @@ class FWMEMORY_CLASS_API BufferObject : public ::fwCore::BaseObject
 
 public:
 
-    typedef ::boost::shared_ptr< void > CounterType;
-    typedef ::boost::weak_ptr< void > WeakCounterType;
+    typedef std::shared_ptr< void > CounterType;
+    typedef std::weak_ptr< void > WeakCounterType;
 
     typedef size_t SizeType;
 

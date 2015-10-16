@@ -7,12 +7,11 @@
 #ifndef __FWDATA_LOCATION_MULTIFILES_HPP__
 #define __FWDATA_LOCATION_MULTIFILES_HPP__
 
-#include <vector>
-#include <boost/filesystem/path.hpp>
-
 #include "fwData/config.hpp"
 #include "fwData/location/ILocation.hpp"
 
+#include <boost/filesystem/path.hpp>
+#include <vector>
 
 namespace fwData
 {

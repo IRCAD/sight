@@ -11,7 +11,6 @@
 
 #include <boost/signals2/signal.hpp>
 #include <boost/signals2/connection.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/cstdint.hpp>
 
 #include <fwTools/Object.hpp>
@@ -37,7 +36,7 @@ public:
     typedef ::boost::signals2::connection ConnectionType;
 
     fwCoreClassDefinitionsWithFactoryMacro( (UndoRedoManager)(::fwTools::Object), (( )),
-                                            ::boost::make_shared< UndoRedoManager > );
+                                            std::make_shared< UndoRedoManager > );
 
     /// Return the unique Instance, create it if required at first access
     FWCOMMAND_API static UndoRedoManager::sptr getDefault();
@@ -153,4 +152,4 @@ private:
 } // namespace fwCommand
 
 
-#endif //__FWCOMMAND_UNDOREDOMANAGER_HPP__
+#endif // __FWCOMMAND_UNDOREDOMANAGER_HPP__

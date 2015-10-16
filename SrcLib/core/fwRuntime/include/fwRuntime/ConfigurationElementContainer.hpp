@@ -10,7 +10,6 @@
 #include <iterator>
 #include <vector>
 
-#include <boost/shared_ptr.hpp>
 
 #include "fwRuntime/config.hpp"
 
@@ -44,7 +43,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      * @{
      */
 
-    typedef std::vector< ::boost::shared_ptr<ConfigurationElement> >    Container;  ///< Defines the configuration element container type.
+    typedef std::vector< std::shared_ptr<ConfigurationElement> >    Container;  ///< Defines the configuration element container type.
     typedef Container::iterator Iterator;                                           ///< Defines the configuration element container iterator type.
 
     //@}
@@ -79,7 +78,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      *
      * @return      a pointer to a configuration element instance or null if none
      */
-    FWRUNTIME_API const ::boost::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string & name )
+    FWRUNTIME_API const std::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string & name )
     const;
 
     /**
@@ -114,7 +113,7 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
          *
          * @param[in]   element a shared pointer to the configuration element to add
          */
-        FWRUNTIME_API void addConfigurationElement( ::boost::shared_ptr< ConfigurationElement > element );
+        FWRUNTIME_API void addConfigurationElement( std::shared_ptr< ConfigurationElement > element );
 
 
     private:

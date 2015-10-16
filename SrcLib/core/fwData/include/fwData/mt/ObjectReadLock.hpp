@@ -7,11 +7,10 @@
 #ifndef __FWDATA_MT_OBJECTREADLOCK_HPP__
 #define __FWDATA_MT_OBJECTREADLOCK_HPP__
 
-#include <fwCore/mt/types.hpp>
-
 #include "fwData/Object.hpp"
-
 #include "fwData/config.hpp"
+
+#include <fwCore/mt/types.hpp>
 
 namespace fwData
 {

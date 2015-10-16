@@ -23,7 +23,7 @@ SPTR(SERVICE) add( ::fwData::Object::sptr obj, std::string _implementationId, st
     std::string serviceType = ::fwCore::TypeDemangler< SERVICE >().getClassname();
     ::fwServices::IService::sptr service = ::fwServices::add( obj, serviceType, _implementationId, _id );
     OSLM_ASSERT("Failed to add "<<_implementationId, service );
-    SPTR(SERVICE) castedService = ::boost::dynamic_pointer_cast< SERVICE >( service );
+    SPTR(SERVICE) castedService = std::dynamic_pointer_cast< SERVICE >( service );
     SLM_ASSERT("DynamicCast failed", castedService );
     return castedService;
 }
@@ -32,4 +32,4 @@ SPTR(SERVICE) add( ::fwData::Object::sptr obj, std::string _implementationId, st
 
 }
 
-#endif /*__FWSERVICES_OP_ADD_HXX__*/
+#endif /* __FWSERVICES_OP_ADD_HXX__ */

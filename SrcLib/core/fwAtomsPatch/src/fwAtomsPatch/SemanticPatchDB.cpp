@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 
 #include "fwAtomsPatch/SemanticPatchDB.hpp"
 #include "fwAtomsPatch/ISemanticPatch.hpp"
@@ -13,7 +12,7 @@ namespace fwAtomsPatch
 {
 
 
-SemanticPatchDB::sptr SemanticPatchDB::s_default = ::boost::make_shared<SemanticPatchDB>();
+SemanticPatchDB::sptr SemanticPatchDB::s_default = std::make_shared<SemanticPatchDB>();
 
 // ----------------------------------------------------------------------------
 

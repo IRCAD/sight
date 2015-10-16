@@ -64,7 +64,7 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
     for (int i = 0; i<nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
-        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+        thread = std::shared_ptr< ::fwTest::helper::Thread >(
             new ::fwTest::helper::Thread(::boost::bind(&ServiceConfigTest::serviceConfigTest, this)));
         threads.push_back(thread);
     }
@@ -88,8 +88,8 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
 
 ::fwRuntime::ConfigurationElement::sptr ServiceConfigTest::buildConfig()
 {
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceCfg ( new ::fwRuntime::EConfigurationElement(
-                                                                               "config"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceCfg ( new ::fwRuntime::EConfigurationElement(
+                                                                           "config"));
     serviceCfg->setAttributeValue( "uid", "serviceUUID");
     serviceCfg->setAttributeValue( "type", "serviceType");
 

@@ -7,7 +7,6 @@
 #ifndef __FWCOMMAND_EMPTY_HPP__
 #define __FWCOMMAND_EMPTY_HPP__
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -24,7 +23,7 @@ namespace fwCommand
 class FWCOMMAND_CLASS_API Empty : public ICommand
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Empty)(ICommand), (( )), ::boost::make_shared< Empty > );
+    fwCoreClassDefinitionsWithFactoryMacro( (Empty)(ICommand), (( )), std::make_shared< Empty > );
 
     // Overrides.
     FWCOMMAND_API const boost::uint32_t  getSize() const;
@@ -44,4 +43,4 @@ public:
 } // namespace fwCommand
 
 
-#endif //__FWCOMMAND_EMPTY_HPP__
+#endif // __FWCOMMAND_EMPTY_HPP__

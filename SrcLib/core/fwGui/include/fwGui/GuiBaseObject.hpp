@@ -7,9 +7,6 @@
 #ifndef __FWGUI_GUIBASEOBJECT_HPP__
 #define __FWGUI_GUIBASEOBJECT_HPP__
 
-
-#include <boost/enable_shared_from_this.hpp>
-
 #include <fwCore/base.hpp>
 
 #include "fwGui/factory/new.hpp"

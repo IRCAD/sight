@@ -42,7 +42,7 @@ struct IsEnableAndHasType
     {
     }
 
-    bool operator() ( const ::boost::shared_ptr< T > p ) const
+    bool operator() ( const std::shared_ptr< T > p ) const
     {
         return p->getType() == m_type && p->isEnable();
     }
@@ -55,7 +55,7 @@ struct IsEnableAndHasType
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<Runtime> Runtime::m_instance;
+std::shared_ptr<Runtime> Runtime::m_instance;
 
 //------------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ Runtime::~Runtime()
 
 //------------------------------------------------------------------------------
 
-void Runtime::addBundle( ::boost::shared_ptr< Bundle > bundle ) throw(RuntimeException)
+void Runtime::addBundle( std::shared_ptr< Bundle > bundle ) throw(RuntimeException)
 {
     m_bundles.insert( bundle );
     std::for_each( bundle->extensionsBegin(), bundle->extensionsEnd(), ::boost::bind(&Runtime::addExtension, this, _1));
@@ -83,7 +83,7 @@ void Runtime::addBundle( ::boost::shared_ptr< Bundle > bundle ) throw(RuntimeExc
 
 //------------------------------------------------------------------------------
 
-void Runtime::unregisterBundle( ::boost::shared_ptr< Bundle > bundle )
+void Runtime::unregisterBundle( std::shared_ptr< Bundle > bundle )
 {
     FwCoreNotUsedMacro(bundle);
 //    std::for_each( bundle->extensionsBegin(), bundle->extensionsEnd(), ::boost::bind(&Runtime::unregisterExtension, this, _1));
@@ -124,7 +124,7 @@ Runtime::BundleIterator Runtime::bundlesEnd()
 
 //------------------------------------------------------------------------------
 
-void Runtime::addExecutableFactory( ::boost::shared_ptr< ExecutableFactory > factory ) throw(RuntimeException)
+void Runtime::addExecutableFactory( std::shared_ptr< ExecutableFactory > factory ) throw(RuntimeException)
 {
     // Ensures no registered factory has the same identifier.
     const std::string type( factory->getType() );
@@ -138,7 +138,7 @@ void Runtime::addExecutableFactory( ::boost::shared_ptr< ExecutableFactory > fac
 
 //------------------------------------------------------------------------------
 
-void Runtime::unregisterExecutableFactory( ::boost::shared_ptr< ExecutableFactory > factory )
+void Runtime::unregisterExecutableFactory( std::shared_ptr< ExecutableFactory > factory )
 {
     // Ensures no registered factory has the same identifier.
     const std::string type( factory->getType() );
@@ -149,18 +149,18 @@ void Runtime::unregisterExecutableFactory( ::boost::shared_ptr< ExecutableFactor
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ExecutableFactory > Runtime::findExecutableFactory( const std::string & type ) const
+std::shared_ptr< ExecutableFactory > Runtime::findExecutableFactory( const std::string & type ) const
 {
     ExecutableFactoryContainer::const_iterator found;
     found =
         std::find_if( m_executableFactories.begin(), m_executableFactories.end(),
                       IsEnableAndHasType<ExecutableFactory>(type) );
-    return ( found == m_executableFactories.end() ) ? ::boost::shared_ptr< ExecutableFactory >() : *found;
+    return ( found == m_executableFactories.end() ) ? std::shared_ptr< ExecutableFactory >() : *found;
 }
 
 //------------------------------------------------------------------------------
 
-void Runtime::addExtension( ::boost::shared_ptr<Extension> extension) throw(RuntimeException)
+void Runtime::addExtension( std::shared_ptr<Extension> extension) throw(RuntimeException)
 {
     // Asserts no registered extension has the same identifier.
     const std::string identifier(extension->getIdentifier());
@@ -174,7 +174,7 @@ void Runtime::addExtension( ::boost::shared_ptr<Extension> extension) throw(Runt
 
 //------------------------------------------------------------------------------
 
-void Runtime::unregisterExtension( ::boost::shared_ptr<Extension> extension)
+void Runtime::unregisterExtension( std::shared_ptr<Extension> extension)
 {
     // Asserts no registered extension has the same identifier.
     const std::string identifier(extension->getIdentifier());
@@ -200,7 +200,7 @@ Runtime::ExtensionIterator Runtime::extensionsEnd()
 
 //------------------------------------------------------------------------------
 
-void Runtime::addExtensionPoint( ::boost::shared_ptr<ExtensionPoint> point) throw(RuntimeException)
+void Runtime::addExtensionPoint( std::shared_ptr<ExtensionPoint> point) throw(RuntimeException)
 {
     // Asserts no registered extension point has the same identifier.
     const std::string identifier(point->getIdentifier());
@@ -214,7 +214,7 @@ void Runtime::addExtensionPoint( ::boost::shared_ptr<ExtensionPoint> point) thro
 
 //------------------------------------------------------------------------------
 
-void Runtime::unregisterExtensionPoint( ::boost::shared_ptr<ExtensionPoint> point)
+void Runtime::unregisterExtensionPoint( std::shared_ptr<ExtensionPoint> point)
 {
     // Asserts no registered extension point has the same identifier.
     const std::string identifier(point->getIdentifier());
@@ -226,9 +226,9 @@ void Runtime::unregisterExtensionPoint( ::boost::shared_ptr<ExtensionPoint> poin
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< Bundle > Runtime::findBundle( const std::string & identifier, const Version & version ) const
+std::shared_ptr< Bundle > Runtime::findBundle( const std::string & identifier, const Version & version ) const
 {
-    ::boost::shared_ptr<Bundle> resBundle;
+    std::shared_ptr<Bundle> resBundle;
     BOOST_FOREACH(SPTR(Bundle) bundle, m_bundles)
     {
         if(bundle->getIdentifier() == identifier && bundle->getVersion() == version)
@@ -246,36 +246,36 @@ Runtime * Runtime::getDefault()
 {
     if(m_instance.get() == 0)
     {
-        m_instance = ::boost::shared_ptr<Runtime>(new Runtime());
+        m_instance = std::shared_ptr<Runtime>(new Runtime());
     }
     return m_instance.get();
 }
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<Extension> Runtime::findExtension( const std::string & identifier ) const
+std::shared_ptr<Extension> Runtime::findExtension( const std::string & identifier ) const
 {
     ExtensionContainer::const_iterator found;
     found = std::find_if( m_extensions.begin(), m_extensions.end(), IsEnableAndHasIdentifier<Extension>(identifier) );
-    return (found != m_extensions.end()) ? (*found) : ::boost::shared_ptr<Extension>();
+    return (found != m_extensions.end()) ? (*found) : std::shared_ptr<Extension>();
 }
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<ExtensionPoint> Runtime::findExtensionPoint( const std::string & identifier ) const
+std::shared_ptr<ExtensionPoint> Runtime::findExtensionPoint( const std::string & identifier ) const
 {
     ExtensionPointContainer::const_iterator found;
     found =
         std::find_if( m_extensionPoints.begin(), m_extensionPoints.end(), IsEnableAndHasIdentifier<ExtensionPoint>(
                           identifier) );
-    return (found != m_extensionPoints.end()) ? (*found) : ::boost::shared_ptr<ExtensionPoint>();
+    return (found != m_extensionPoints.end()) ? (*found) : std::shared_ptr<ExtensionPoint>();
 }
 
 //------------------------------------------------------------------------------
 
 IExecutable * Runtime::createExecutableInstance( const std::string & type ) throw( RuntimeException )
 {
-    ::boost::shared_ptr< ExecutableFactory > factory;
+    std::shared_ptr< ExecutableFactory > factory;
 
     // Retrieves the executable factory.
     factory = this->findExecutableFactory( type );
@@ -298,7 +298,7 @@ IExecutable * Runtime::createExecutableInstance( const std::string & type,
                                                  ConfigurationElement::sptr configurationElement ) throw(
     RuntimeException )
 {
-    ::boost::shared_ptr< ExecutableFactory > factory;
+    std::shared_ptr< ExecutableFactory > factory;
 
     // Retrieves the executable factory.
     factory = this->findExecutableFactory( type );

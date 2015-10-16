@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -49,7 +48,7 @@ FWATOMSFILTER_API SPTR(::fwAtomsFilter::IFilter) New(
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
 
     return obj;
 }

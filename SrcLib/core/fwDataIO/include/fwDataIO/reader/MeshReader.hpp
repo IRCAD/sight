@@ -8,7 +8,6 @@
 #define __FWDATAIO_READER_MESHREADER_HPP__
 
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <fwData/Mesh.hpp>
 #include <fwData/location/SingleFile.hpp>

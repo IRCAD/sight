@@ -7,8 +7,6 @@
 #ifndef __FWACTIVITIES_IBUILDER_HPP__
 #define __FWACTIVITIES_IBUILDER_HPP__
 
-#include <boost/enable_shared_from_this.hpp>
-
 #include <fwCore/base.hpp>
 #include <fwMedData/ActivitySeries.hpp>
 

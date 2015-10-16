@@ -9,8 +9,7 @@
 // #include <boost/iostreams/filtering_stream.hpp>
 // #include <boost/iostreams/filter/gzip.hpp>
 //
-// #include <boost/make_shared.hpp>
-//
+// //
 // #include <fwCore/macros.hpp>
 //
 // #include "fwMemory/stream/in/RawZ.hpp"
@@ -36,9 +35,9 @@
 // SPTR(std::istream) RawZ::get()
 // {
 //     SPTR(::boost::filesystem::ifstream) fs
-//         = ::boost::make_shared< ::boost::filesystem::ifstream>(m_path, std::ios::in|std::ios::binary);
+//         = std::make_shared< ::boost::filesystem::ifstream>(m_path, std::ios::in|std::ios::binary);
 //
-//     SPTR(FilteringStream) filter = ::boost::make_shared< FilteringStream >();
+//     SPTR(FilteringStream) filter = std::make_shared< FilteringStream >();
 //
 //     filter->heldStream = fs;
 //

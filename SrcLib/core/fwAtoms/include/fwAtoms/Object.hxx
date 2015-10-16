@@ -22,7 +22,7 @@ template < typename OBJECT_TYPE >
 SPTR(OBJECT_TYPE) Object::getAttribute(const std::string& key) const
 {
     ::fwAtoms::Base::sptr base = this->getAttribute(key);
-    return ::boost::dynamic_pointer_cast< OBJECT_TYPE >(base);
+    return std::dynamic_pointer_cast< OBJECT_TYPE >(base);
 }
 
 }

@@ -35,8 +35,8 @@ void EConfigurationElementTest::testConfiguration()
     const std::string VALUE2     = "value2";
     const std::string ATTRIBUTE1 = "attibute1";
 
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > config1( new ::fwRuntime::EConfigurationElement(NAME1));
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > config2( new ::fwRuntime::EConfigurationElement(NAME2));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > config1( new ::fwRuntime::EConfigurationElement(NAME1));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > config2( new ::fwRuntime::EConfigurationElement(NAME2));
 
     config1->addConfigurationElement(config2);
     config2->setAttributeValue(ATTRIBUTE1, VALUE1);
@@ -50,8 +50,8 @@ void EConfigurationElementTest::testConfiguration()
     CPPUNIT_ASSERT_EQUAL(VALUE1, config2->getExistingAttributeValue(ATTRIBUTE1));
     CPPUNIT_ASSERT_EQUAL(VALUE1, config2->getAttributeValue(ATTRIBUTE1));
 
-    ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config3 =
-        ::boost::dynamic_pointer_cast< ::fwRuntime::ConfigurationElement >(config2);
+    std::shared_ptr< ::fwRuntime::ConfigurationElement > config3 =
+        std::dynamic_pointer_cast< ::fwRuntime::ConfigurationElement >(config2);
     CPPUNIT_ASSERT_EQUAL(config3, config1->findConfigurationElement(NAME2));
     CPPUNIT_ASSERT(config2->findConfigurationElement(NAME3) != NULL);
 }

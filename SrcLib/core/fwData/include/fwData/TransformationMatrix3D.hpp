@@ -7,12 +7,12 @@
 #ifndef __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
 #define __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
 
+#include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
+
 #include <vector>
 #include <iostream>
 #include <assert.h>
-
-#include "fwData/Object.hpp"
-#include "fwData/factory/new.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(TransformationMatrix3D), FWDATA_API);
 

@@ -122,7 +122,7 @@ char** WorkerQtInstanciator::s_argv     = NULL;
 bool WorkerQtInstanciator::s_GUIenabled = true;
 
 FWGUIQT_API WorkerQtInstanciator::WorkerQtInstanciator(bool reg) :
-    m_qtWorker(::boost::make_shared< WorkerQt >())
+    m_qtWorker(std::make_shared< WorkerQt >())
 {
     m_qtWorker->init( boost::ref(s_argc), s_argv);
 
@@ -307,7 +307,7 @@ void WorkerQt::stop()
 
 SPTR(::fwThread::Timer) WorkerQt::createTimer()
 {
-    return ::boost::make_shared< TimerQt >();
+    return std::make_shared< TimerQt >();
 }
 
 void WorkerQt::post(TaskType handler)

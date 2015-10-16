@@ -11,7 +11,6 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include <boost/make_shared.hpp>
 
 #include <fwCore/macros.hpp>
 
@@ -33,7 +32,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((ReadDirArchive)(IReadArchive),
                                            ((( const ::boost::filesystem::path& ))),
-                                           ::boost::make_shared< ReadDirArchive >);
+                                           std::make_shared< ReadDirArchive >);
 
     /// Constructors. Initializes archive path.
     FWZIP_API ReadDirArchive( const ::boost::filesystem::path &archive );

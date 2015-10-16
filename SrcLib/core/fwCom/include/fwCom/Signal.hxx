@@ -13,7 +13,6 @@
 
 #include <boost/foreach.hpp>
 #include <boost/function_types/function_arity.hpp>
-#include <boost/make_shared.hpp>
 
 #include "fwCom/exception/BadSlot.hpp"
 #include "fwCom/exception/AlreadyConnected.hpp"
@@ -31,7 +30,7 @@ namespace fwCom
 template < typename R, typename ... A >
 typename Signal< R (A ...) >::sptr Signal< R (A ...) >::New()
 {
-    return ::boost::make_shared< Signal< R (A ...) > > ();
+    return std::make_shared< Signal< R (A ...) > > ();
 }
 
 //-----------------------------------------------------------------------------
@@ -145,12 +144,12 @@ Connection Signal< R( A ... ) >::connect( SlotBase::sptr slot )
     unsigned int sigArity = ::boost::function_types::function_arity< SignatureType >::value;
     if ( sigArity == slot->arity() )
     {
-        SlotSptr slotToConnect = ::boost::dynamic_pointer_cast< SlotRunType >(slot);
+        SlotSptr slotToConnect = std::dynamic_pointer_cast< SlotRunType >(slot);
         if(slotToConnect)
         {
             ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             typename Signal< R( A ... ) >::sptr sig =
-                ::boost::dynamic_pointer_cast < Signal< R( A ... ) > > ( this->shared_from_this() );
+                std::dynamic_pointer_cast < Signal< R( A ... ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slotToConnect);
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );
@@ -166,14 +165,14 @@ Connection Signal< R( A ... ) >::connect( SlotBase::sptr slot )
     {
 
         typedef SlotRun< FROM_F > WrappedSlotRunType;
-        typename SPTR(WrappedSlotRunType) wrappedSlot = ::boost::dynamic_pointer_cast< WrappedSlotRunType >(slot);
+        typename SPTR(WrappedSlotRunType) wrappedSlot = std::dynamic_pointer_cast< WrappedSlotRunType >(slot);
 
         if(wrappedSlot)
         {
             ::fwCore::mt::WriteLock lock(m_connectionsMutex);
             SlotSptr slotToConnect = Slot < Slot < void (A ...) > >::New(wrappedSlot);
             typename Signal< R( A ... ) >::sptr sig =
-                ::boost::dynamic_pointer_cast < Signal< R( A ... ) > > ( this->shared_from_this() );
+                std::dynamic_pointer_cast < Signal< R( A ... ) > > ( this->shared_from_this() );
             typename ConnectionType::sptr slotConnection = ConnectionType::New( sig, slot, slotToConnect );
             slot->m_connections.insert(slotConnection);
             m_connections.insert( typename ConnectionMapType::value_type( slot, slotConnection ) );

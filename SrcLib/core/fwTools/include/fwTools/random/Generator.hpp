@@ -7,7 +7,7 @@
 #ifndef __FWTOOLS_RANDOM_GENERATOR_HPP__
 #define __FWTOOLS_RANDOM_GENERATOR_HPP__
 
-#include <ctime>
+#include <fwCore/base.hpp>
 
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/mersenne_twister.hpp>
@@ -18,7 +18,8 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/concept_check.hpp>
 
-#include <fwCore/base.hpp>
+#include <algorithm>
+#include <ctime>
 
 namespace fwTools
 {

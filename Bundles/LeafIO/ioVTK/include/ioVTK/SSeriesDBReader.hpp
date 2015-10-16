@@ -102,7 +102,7 @@ private:
     /**
      * @brief Load VTK mesh or image and push it into SeriesDB.
      * @param[in] vtkFiles vector of boost::filesystem::path.
-     * @param[out] seriesDB ::boost::shared_ptr< ::fwMedData::SeriesDB >.
+     * @param[out] seriesDB std::shared_ptr< ::fwMedData::SeriesDB >.
      * @return bool.
      *
      * This method is used to load a mesh using the file path.

@@ -11,8 +11,6 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
 
-#include <boost/shared_ptr.hpp>
-#include <camp/class.hpp>
 #include <vector>
 
 fwCorePredeclare((fwData)(Vector))
@@ -268,7 +266,7 @@ inline std::vector< SPTR(DATATYPE) > Vector::getDataContainer() const
     SPTR(DATATYPE) castedData;
     for(const ::fwData::Object::sptr& data : this->getContainer() )
     {
-        castedData = ::boost::dynamic_pointer_cast<DATATYPE>( data );
+        castedData = std::dynamic_pointer_cast<DATATYPE>( data );
         OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castedData);
         vec.push_back( castedData );
     }

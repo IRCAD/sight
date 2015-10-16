@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 
@@ -54,7 +53,7 @@ SPTR(std::istream) Buffer::get()
 
     typedef HoldCounterStream ArrayStreamType;
     SPTR( ArrayStreamType ) arrayInStream
-        = ::boost::make_shared< ArrayStreamType > ( static_cast<char *>(m_buf), m_size, m_counterFactory() );
+        = std::make_shared< ArrayStreamType > ( static_cast<char *>(m_buf), m_size, m_counterFactory() );
 
     return arrayInStream;
 }

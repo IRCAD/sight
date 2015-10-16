@@ -648,14 +648,14 @@ void AppConfigManager::createProxy(::fwRuntime::ConfigurationElement::csptr conf
 
             if (elem->getName() == "signal")
             {
-                ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+                ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
                 ::fwCom::SignalBase::sptr sig        = hasSignals->signal(key);
                 proxy->connect(channel, sig);
                 proxyCnt.addSignalConnection(uid, key);
             }
             else if (elem->getName() == "slot")
             {
-                ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
                 ::fwCom::SlotBase::sptr slot     = hasSlots->slot(key);
                 proxy->connect(channel, slot);
                 proxyCnt.addSlotConnection(uid, key);
@@ -675,14 +675,14 @@ void AppConfigManager::destroyProxies()
         BOOST_FOREACH(ProxyConnections::ProxyEltType signalElt, proxyConnections.m_signals)
         {
             ::fwTools::Object::sptr obj          = ::fwTools::fwID::getObject(signalElt.first);
-            ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+            ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
             ::fwCom::SignalBase::sptr sig        = hasSignals->signal(signalElt.second);
             proxy->disconnect(proxyConnections.m_channel, sig);
         }
         BOOST_FOREACH(ProxyConnections::ProxyEltType slotElt, proxyConnections.m_slots)
         {
             ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotElt.first);
-            ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+            ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
             ::fwCom::SlotBase::sptr slot     = hasSlots->slot(slotElt.second);
             proxy->disconnect(proxyConnections.m_channel, slot);
         }

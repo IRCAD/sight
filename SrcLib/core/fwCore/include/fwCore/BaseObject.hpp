@@ -8,10 +8,11 @@
 #define __FWCORE_BASEOBJECT_HPP__
 
 
-#include <boost/enable_shared_from_this.hpp>
-
 #include "fwCore/macros.hpp"
 #include "fwCore/config.hpp"
+
+//keep it first to prevent nasty warns in MSVC
+#include <boost/config.hpp>
 
 namespace fwCore
 {
@@ -19,7 +20,7 @@ namespace fwCore
 /**
  * @brief Base class for all FW4SPL's classes
  */
-class FWCORE_CLASS_API BaseObject : public ::boost::enable_shared_from_this<BaseObject>
+class FWCORE_CLASS_API BaseObject : public std::enable_shared_from_this<BaseObject>
 {
 
 public:
@@ -29,7 +30,7 @@ protected:
     virtual ~BaseObject()
     {
     }
-    using ::boost::enable_shared_from_this<BaseObject>::shared_from_this;
+    using std::enable_shared_from_this<BaseObject>::shared_from_this;
 };
 
 } // namespace fwCore

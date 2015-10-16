@@ -38,7 +38,7 @@ SPTR(std::istream) ReadDirArchive::getFile(const ::boost::filesystem::path &path
                                  "in archive '" + m_archive.string() + "' doesn't exist."),
         !this->exists(m_archive / path));
 
-    SPTR(std::ifstream) is = ::boost::make_shared< std::ifstream >();
+    SPTR(std::ifstream) is = std::make_shared< std::ifstream >();
     is->open((m_archive / path).string().c_str(), std::fstream::binary | std::fstream::in);
     return is;
 }

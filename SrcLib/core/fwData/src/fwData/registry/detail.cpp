@@ -4,10 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/util/LazyInstantiator.hpp>
-
 #include "fwData/registry/detail.hpp"
 
+#include <fwCore/util/LazyInstantiator.hpp>
 
 namespace fwData
 {

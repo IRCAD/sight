@@ -10,7 +10,6 @@
 #include <map>
 #include <set>
 #include <string>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include "fwCore/base.hpp"
@@ -49,7 +48,7 @@ namespace fwRuntime
  * @date    2004-2009
  *
  */
-struct Bundle : public ::boost::enable_shared_from_this< Bundle >
+struct Bundle : public std::enable_shared_from_this< Bundle >
 {
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 

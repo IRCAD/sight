@@ -22,13 +22,13 @@ struct SlotConnectionBase : virtual fwCore::BaseObject
     /**
      * @name Typedefs
      * @{ */
-    typedef ::boost::shared_ptr< SlotConnectionBase > sptr;
-    typedef ::boost::shared_ptr< SlotConnectionBase const > csptr;
-    typedef ::boost::weak_ptr< SlotConnectionBase > wptr;
-    typedef ::boost::weak_ptr< SlotConnectionBase const > cwptr;
+    typedef std::shared_ptr< SlotConnectionBase > sptr;
+    typedef std::shared_ptr< SlotConnectionBase const > csptr;
+    typedef std::weak_ptr< SlotConnectionBase > wptr;
+    typedef std::weak_ptr< SlotConnectionBase const > cwptr;
 
-    typedef boost::shared_ptr< void > BlockerSptrType;
-    typedef boost::weak_ptr< void >   BlockerWptrType;
+    typedef std::shared_ptr< void > BlockerSptrType;
+    typedef std::weak_ptr< void >   BlockerWptrType;
     /**  @} */
 
     SlotConnectionBase()

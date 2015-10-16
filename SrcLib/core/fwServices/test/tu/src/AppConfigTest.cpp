@@ -90,7 +90,7 @@ void AppConfigTest::concurentAccessToAppConfigTest()
     for (int i = 0; i<nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
-        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+        thread = std::shared_ptr< ::fwTest::helper::Thread >(
             new ::fwTest::helper::Thread(::boost::bind(&AppConfigTest::parametersConfigTest, this)));
         threads.push_back(thread);
     }
@@ -113,32 +113,32 @@ void AppConfigTest::concurentAccessToAppConfigTest()
 ::fwRuntime::ConfigurationElement::sptr AppConfigTest::buildParametersConfig()
 {
     // Configuration on fwTools::Object which uid is objectUUID
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
     cfg->setAttributeValue( "uid", "${TEST_IMAGE}");
     cfg->setAttributeValue( "type", "::fwData::Image");
 
     // Object's service A
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid", "${GENERIC_UID}_myTestService1" );
     serviceA->setAttributeValue( "type", "::fwComEd::ut::TestService" );
     serviceA->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationImage" );
     serviceA->setAttributeValue( "autoConnect", "no" );
 
     // Object's service B
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
     serviceB->setAttributeValue( "uid", "${UID_SERVICE2}" );
     serviceB->setAttributeValue( "type", "::fwComEd::ut::TestService" );
     serviceB->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationImage" );
     serviceB->setAttributeValue( "autoConnect", "no" );
 
     // Start method from object's services
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
     startA->setAttributeValue( "uid", "myTestService1" );
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
     startB->setAttributeValue( "uid", "myTestService2" );
 
     // Update method from object's services
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
     updateA->setAttributeValue( "uid", "myTestService1" );
 
     return cfg;

@@ -8,7 +8,6 @@
 
 #include <boost/foreach.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/property_tree/exceptions.hpp>
@@ -44,7 +43,7 @@ std::string getValue(const ::boost::property_tree::ptree& node, const std::strin
     return value;
 }
 
-SPTR(VersionsManager) VersionsManager::s_default = ::boost::make_shared<VersionsManager>();
+SPTR(VersionsManager) VersionsManager::s_default = std::make_shared<VersionsManager>();
 
 // ----------------------------------------------------------------------------
 

@@ -49,12 +49,12 @@ void RuntimeTest::testRuntime()
 
     // Test bundle dataReg
     CPPUNIT_ASSERT(runtime->findBundle("dataReg"));
-    ::boost::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("dataReg");
+    std::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("dataReg");
     bundle->setEnable(true);
     CPPUNIT_ASSERT(bundle->isEnable());
 
     // Test bundle servicesReg
-    ::boost::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("servicesReg");
+    std::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("servicesReg");
     bundle2->setEnable(true);
 
     // Test runtime extensions

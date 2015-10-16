@@ -28,7 +28,7 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-Extension::Extension( ::boost::shared_ptr< Bundle > bundle, const std::string & id, const std::string & point,
+Extension::Extension( std::shared_ptr< Bundle > bundle, const std::string & id, const std::string & point,
                       xmlNodePtr xmlNode )
     : BundleElement ( bundle                    ),
       m_id          ( id                        ),
@@ -87,7 +87,7 @@ Extension::Validity Extension::validate()
 
     // Retrieves the extension point.
     Runtime * rntm( Runtime::getDefault() );
-    ::boost::shared_ptr< ExtensionPoint >  point( rntm->findExtensionPoint(m_point) );
+    std::shared_ptr< ExtensionPoint >  point( rntm->findExtensionPoint(m_point) );
 
     // Checks that the point exists.
     if( !point )
@@ -96,7 +96,7 @@ Extension::Validity Extension::validate()
     }
 
     // Validates the extension.
-    ::boost::shared_ptr< io::Validator >   validator( point->getExtensionValidator() );
+    std::shared_ptr< io::Validator >   validator( point->getExtensionValidator() );
     OSLM_ASSERT("Sorry, validator creation failed for point "<<point->getIdentifier(), validator );
 
     // Check extension XML Node <extension id="xxx" implements="yyy" >...</extension>

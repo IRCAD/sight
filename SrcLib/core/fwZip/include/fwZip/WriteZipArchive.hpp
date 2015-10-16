@@ -9,10 +9,8 @@
 
 #include <ostream>
 
-#include <boost/make_shared.hpp>
 #include <boost/filesystem/path.hpp>
 
-#include <boost/make_shared.hpp>
 
 #include <fwCore/macros.hpp>
 
@@ -34,7 +32,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((WriteZipArchive)(IWriteArchive),
                                            ((( const ::boost::filesystem::path& ))((const std::string&)(""))),
-                                           ::boost::make_shared<WriteZipArchive> );
+                                           std::make_shared<WriteZipArchive> );
 
     /**
      * @brief Constructors. Initializes archive path.

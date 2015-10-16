@@ -101,7 +101,7 @@ private:
     /**
      * @brief Load a VTK mesh.
      * @param[in] _vtkFile ::boost::filesystem::path.
-     * @param[out] _pMesh ::boost::shared_ptr< ::fwData::Mesh >.
+     * @param[out] _pMesh std::shared_ptr< ::fwData::Mesh >.
      * @return bool.
      *
      * This method is used to load a mesh using the file path.

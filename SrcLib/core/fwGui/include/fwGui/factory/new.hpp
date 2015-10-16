@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -45,7 +44,7 @@ FWGUI_API SPTR( ::fwGui::GuiBaseObject ) New( const ::fwGui::registry::KeyType &
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) guiObj = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) guiObj = std::make_shared< CLASSNAME >( Key() );
     return guiObj;
 }
 

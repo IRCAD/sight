@@ -12,7 +12,6 @@
 
 #include <boost/static_assert.hpp>
 #include <boost/type_traits.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/bimap.hpp>
 #include <boost/bimap/unordered_set_of.hpp>
 #include <boost/bimap/multiset_of.hpp>

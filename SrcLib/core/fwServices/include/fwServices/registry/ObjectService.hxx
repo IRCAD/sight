@@ -52,7 +52,7 @@ std::vector< SPTR(SERVICE) > ObjectService::getServices() const
     const ServiceContainerType::right_map &right = m_container.right;
     BOOST_FOREACH( const ServiceContainerType::right_map::value_type &elt, right)
     {
-        SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( elt.first );
+        SPTR(SERVICE) service = std::dynamic_pointer_cast< SERVICE >( elt.first );
         if ( service )
         {
             services.push_back( service );
@@ -76,7 +76,7 @@ std::vector< SPTR(SERVICE) > ObjectService::getServices(::fwData::Object::sptr o
         ServiceContainerType::left_map::const_iterator lastElement  = m_container.left.upper_bound(key);
         for (iter = firstElement; iter != lastElement; ++iter)
         {
-            SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( iter->second );
+            SPTR(SERVICE) service = std::dynamic_pointer_cast< SERVICE >( iter->second );
             if ( service)
             {
                 services.push_back( service );
@@ -95,7 +95,7 @@ ObjectService::ObjectVectorType ObjectService::getObjects() const
     const ServiceContainerType::right_map & right = m_container.right;
     BOOST_FOREACH( const ServiceContainerType::right_map::value_type &elt, right)
     {
-        SPTR(SERVICE) service = ::boost::dynamic_pointer_cast< SERVICE >( elt.first );
+        SPTR(SERVICE) service = std::dynamic_pointer_cast< SERVICE >( elt.first );
         if ( service && std::find(objects.begin(), objects.end(), service->getObject()) == objects.end() )
         {
             objects.push_back( service->getObject() );

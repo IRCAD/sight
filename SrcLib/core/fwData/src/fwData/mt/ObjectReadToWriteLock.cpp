@@ -4,10 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/thread/locks.hpp>
-#include <boost/make_shared.hpp>
-
 #include "fwData/mt/ObjectReadToWriteLock.hpp"
+
+#include <boost/thread/locks.hpp>
 
 namespace fwData
 {
@@ -52,7 +51,7 @@ void ObjectReadToWriteLock::unlock()
 
 void ObjectReadToWriteLock::upgrade()
 {
-    m_upgradedLock = ::boost::make_shared< ::fwCore::mt::UpgradeToWriteLock >(::boost::ref(m_lock));
+    m_upgradedLock = std::make_shared< ::fwCore::mt::UpgradeToWriteLock >(::boost::ref(m_lock));
 }
 
 //-----------------------------------------------------------------------------

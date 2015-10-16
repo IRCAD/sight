@@ -20,7 +20,7 @@ namespace dl
 
 
 Posix::Posix( const boost::filesystem::path & modulePath ) throw()
-    : Native        ( modulePath, ::boost::shared_ptr< INameDecorator >(new PosixNameDecorator()) ),
+    : Native        ( modulePath, std::shared_ptr< INameDecorator >(new PosixNameDecorator()) ),
       m_handle  ( 0 )
 {
 }

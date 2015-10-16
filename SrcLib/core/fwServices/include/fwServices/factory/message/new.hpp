@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -49,7 +48,7 @@ FWSERVICES_API SPTR( ::fwServices::ObjectMsg ) New( const ::fwServices::registry
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) objMsg = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) objMsg = std::make_shared< CLASSNAME >( Key() );
     return objMsg;
 }
 

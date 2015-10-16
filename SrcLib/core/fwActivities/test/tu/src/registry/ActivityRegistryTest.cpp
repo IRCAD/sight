@@ -40,7 +40,7 @@ struct ActivityRegistryTestPimpl
 
 void ActivityRegistryTest::setUp()
 {
-    m_pimpl = ::boost::make_shared< ActivityRegistryTestPimpl >();
+    m_pimpl = std::make_shared< ActivityRegistryTestPimpl >();
 
     ::boost::filesystem::path plugin = "share/tu_exec_fwActivities_0-0/tu_registry";
     m_pimpl->bundle                  = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);

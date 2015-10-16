@@ -7,7 +7,6 @@
 #ifndef __FWDATAIO_WRITER_TRANSFORMATIONMATRIX3DWRITER_HPP__
 #define __FWDATAIO_WRITER_TRANSFORMATIONMATRIX3DWRITER_HPP__
 
-#include <boost/shared_ptr.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/location/SingleFile.hpp>
 

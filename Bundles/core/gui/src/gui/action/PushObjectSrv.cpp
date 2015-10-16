@@ -111,7 +111,7 @@ void PushObjectSrv::configuring() throw( ::fwTools::Failed)
 void PushObjectSrv::updating() throw(::fwTools::Failed)
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    ::boost::shared_ptr< ::fwComEd::helper::Composite > compositeHelper ( new ::fwComEd::helper::Composite( composite ) );
+    std::shared_ptr< ::fwComEd::helper::Composite > compositeHelper ( new ::fwComEd::helper::Composite( composite ) );
 
     std::string src_uid("");
     std::string src_key("");

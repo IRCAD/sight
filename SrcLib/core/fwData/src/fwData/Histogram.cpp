@@ -6,9 +6,7 @@
 
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
-#include <fwData/Image.hpp>
-
+#include "fwData/Image.hpp"
 #include "fwData/Histogram.hpp"
 
 

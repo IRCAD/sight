@@ -12,7 +12,6 @@
 
 #include "fwData/config.hpp"
 
-#include <boost/shared_ptr.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Histogram), FWDATA_API);
 

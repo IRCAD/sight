@@ -36,7 +36,7 @@ struct ConfigurationElementIdentifierPredicate
     {
     }
 
-    bool operator() ( ::boost::shared_ptr< ConfigurationElement > element )
+    bool operator() ( std::shared_ptr< ConfigurationElement > element )
     {
         return element->getAttributeValue("id") == m_identifier;
     }
@@ -70,7 +70,7 @@ ConfigurationElement::sptr findConfigurationElement( const std::string & identif
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< Extension > findExtension( const std::string & identifier )
+std::shared_ptr< Extension > findExtension( const std::string & identifier )
 {
     ::fwRuntime::Runtime* rntm = ::fwRuntime::Runtime::getDefault();
     return rntm->findExtension( identifier );
@@ -78,7 +78,7 @@ ConfigurationElement::sptr findConfigurationElement( const std::string & identif
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string &identifier)
+std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string &identifier)
 {
     ::fwRuntime::Runtime * rntm = ::fwRuntime::Runtime::getDefault();
     return rntm->findExtensionPoint( identifier );
@@ -89,14 +89,14 @@ ConfigurationElement::sptr findConfigurationElement( const std::string & identif
 const ::boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier,
                                                       const ::boost::filesystem::path &path) throw()
 {
-    Runtime *rntm                         = Runtime::getDefault();
-    ::boost::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier );
+    Runtime *rntm                     = Runtime::getDefault();
+    std::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier );
     return bundle != 0 ? getBundleResourcePath(bundle, path) : ::boost::filesystem::path();
 }
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getBundleResourcePath( ::boost::shared_ptr<Bundle> bundle,
+const ::boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
                                                        const ::boost::filesystem::path &path) throw()
 {
     return bundle->getLocation() / path;
@@ -144,7 +144,7 @@ void addBundles( const ::boost::filesystem::path & directory) throw(RuntimeExcep
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< Bundle > findBundle( const std::string & identifier, const Version & version )
+std::shared_ptr< Bundle > findBundle( const std::string & identifier, const Version & version )
 {
     return Runtime::getDefault()->findBundle( identifier, version );
 }
@@ -156,7 +156,7 @@ void startBundle(const std::string &identifier) throw(RuntimeException)
     Runtime* rntm = Runtime::getDefault();
 
     // Retrieves the specified bundle.
-    ::boost::shared_ptr<Bundle> bundle = rntm->findBundle( identifier );
+    std::shared_ptr<Bundle> bundle = rntm->findBundle( identifier );
     if( bundle == 0 )
     {
         throw RuntimeException(identifier + ": bundle not found.");

@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 
@@ -133,7 +132,7 @@ ImageDicomStream::ImageDicomStream( ImageDicomInfo::sptr dcmInfo ) : m_dcmInfo (
 SPTR(std::istream) ImageDicomStream::get()
 {
     SPTR(::boost::iostreams::stream<ImageDicomSource>) is
-        = ::boost::make_shared< ::boost::iostreams::stream<ImageDicomSource> >( m_dcmInfo );
+        = std::make_shared< ::boost::iostreams::stream<ImageDicomSource> >( m_dcmInfo );
 
     return is;
 }

@@ -73,7 +73,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Management of observations : update editor according to the received message
-    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( std::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /// Update editor information from the image
     virtual void updating() throw(::fwTools::Failed);

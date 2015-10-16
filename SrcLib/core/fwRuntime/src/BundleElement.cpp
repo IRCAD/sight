@@ -5,11 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRuntime/BundleElement.hpp"
-
-#include <cassert>
-
 #include "fwRuntime/Bundle.hpp"
 
+#include <cassert>
+#include <memory>
 
 
 namespace fwRuntime
@@ -17,8 +16,7 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-BundleElement::BundleElement()
-    :   m_bundle( Bundle::getLoadingBundle() ), m_enable(true)
+BundleElement::BundleElement() :   m_bundle( Bundle::getLoadingBundle() ), m_enable(true)
 {
     // Post-condition
 
@@ -27,7 +25,7 @@ BundleElement::BundleElement()
 
 //------------------------------------------------------------------------------
 
-BundleElement::BundleElement( ::boost::shared_ptr< Bundle > bundle )
+BundleElement::BundleElement( std::shared_ptr< Bundle > bundle )
     :   m_bundle( bundle ), m_enable(true)
 {
     // Post-condition
@@ -36,7 +34,7 @@ BundleElement::BundleElement( ::boost::shared_ptr< Bundle > bundle )
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<Bundle> BundleElement::getBundle() const
+std::shared_ptr<Bundle> BundleElement::getBundle() const
 {
     return m_bundle;
 }

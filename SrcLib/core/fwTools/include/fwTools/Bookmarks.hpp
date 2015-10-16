@@ -65,11 +65,11 @@ public:
      */
     FWTOOLS_API static std::list<BookmarkName> getBookmarks();
 
+
+    FWTOOLS_API virtual ~Bookmarks();
 protected:
 
     FWTOOLS_API Bookmarks();
-
-    FWTOOLS_API virtual ~Bookmarks();
 
     typedef ::boost::unordered_map< BookmarkName, WPTR(::fwTools::Object ) > Dictionary;
 

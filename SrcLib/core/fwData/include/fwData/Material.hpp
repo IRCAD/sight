@@ -7,7 +7,6 @@
 #ifndef __FWDATA_MATERIAL_HPP__
 #define __FWDATA_MATERIAL_HPP__
 
-
 #include "fwData/Object.hpp"
 #include "fwData/Color.hpp"
 #include "fwData/Image.hpp"

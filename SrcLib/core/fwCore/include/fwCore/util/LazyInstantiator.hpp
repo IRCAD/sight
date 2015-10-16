@@ -7,8 +7,6 @@
 #ifndef __FWCORE_UTIL_LAZYINSTANTIATOR_HPP__
 #define __FWCORE_UTIL_LAZYINSTANTIATOR_HPP__
 
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread/once.hpp>
 #include <boost/noncopyable.hpp>
 
@@ -33,7 +31,7 @@ public:
 
     typedef INSTANCE_TYPE InstanceType;
     typedef TAG TagType;
-    typedef ::boost::shared_ptr<InstanceType> InstanceSptrType;
+    typedef std::shared_ptr<InstanceType> InstanceSptrType;
 
     /// Returns the singleton instance. This method is thread safe.
     static InstanceSptrType getInstance()
@@ -57,7 +55,7 @@ protected:
         static InstanceSptrType s_instance;
         if(!s_instance)
         {
-            s_instance = ::boost::make_shared< InstanceType >();
+            s_instance = std::make_shared< InstanceType >();
         }
         return s_instance;
     }

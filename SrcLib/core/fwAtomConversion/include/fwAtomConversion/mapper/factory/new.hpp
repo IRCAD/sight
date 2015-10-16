@@ -8,7 +8,6 @@
 #define __FWATOMCONVERSION_MAPPER_FACTORY_NEW_HPP__
 
 #include <string>
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -33,7 +32,7 @@ FWATOMCONVERSION_API SPTR(::fwAtomConversion::mapper::Base) New(
 
 template<class CLASSNAME > SPTR( CLASSNAME ) New()
 {
-    SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >();
+    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >();
     return obj;
 }
 

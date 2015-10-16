@@ -94,7 +94,7 @@ void ConfigParserTest::testBuildComposite()
     const std::string objAType      = "::fwData::Image";
 
     // build composite from ConfigurationElement
-    ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildCompositeConfig();
+    std::shared_ptr< ::fwRuntime::ConfigurationElement > config = buildCompositeConfig();
 
     // Create the object and its services from the configuration
     ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
@@ -140,29 +140,29 @@ void ConfigParserTest::testBuildComposite()
 ::fwRuntime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
 {
     // Configuration on fwTools::Object which uid is objectUUID
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
     cfg->setAttributeValue( "uid", "objectUUID");
     cfg->setAttributeValue( "type", "::fwData::Image");
 
     // Object's service A
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid", "myTestService1" );
     serviceA->setAttributeValue( "type", "::fwComEd::ut::TestService" );
     serviceA->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationImage" );
 
     // Object's service B
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
     serviceB->setAttributeValue( "uid", "myTestService2" );
     serviceB->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationImage" );
 
     // Start method from object's services
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
     startA->setAttributeValue( "uid", "myTestService1" );
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
     startB->setAttributeValue( "uid", "myTestService2" );
 
     // Update method from object's services
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
     updateA->setAttributeValue( "uid", "myTestService1" );
 
     return cfg;
@@ -173,59 +173,59 @@ void ConfigParserTest::testBuildComposite()
 ::fwRuntime::ConfigurationElement::sptr ConfigParserTest::buildCompositeConfig()
 {
     // Composite
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
     cfg->setAttributeValue( "uid", "compositeUUID");
     cfg->setAttributeValue( "type", "::fwData::Composite");
 
 
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > itemA = cfg->addConfigurationElement("item");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > itemA = cfg->addConfigurationElement("item");
     itemA->setAttributeValue( "key", "imageUUID");
 
 
     // composite object : image
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > objA = itemA->addConfigurationElement("object");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > objA = itemA->addConfigurationElement("object");
     objA->setAttributeValue( "uid", "imageUUID");
     objA->setAttributeValue( "type", "::fwData::Image");
 
     // image's services
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > imageService = objA->addConfigurationElement("service");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > imageService = objA->addConfigurationElement("service");
     imageService->setAttributeValue( "uid", "myImageService" );
     imageService->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationImage" );
 
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > imageService2 = objA->addConfigurationElement("service");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > imageService2 = objA->addConfigurationElement("service");
     imageService2->setAttributeValue( "uid", "myImageService2" );
     imageService2->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationImage" );
 
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > itemB = cfg->addConfigurationElement("item");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > itemB = cfg->addConfigurationElement("item");
     itemB->setAttributeValue( "key", "videoUUID");
 
 
     // composite object : video
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > objB = itemB->addConfigurationElement("object");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > objB = itemB->addConfigurationElement("object");
     objB->setAttributeValue( "uid", "videoUUID");
     //objB->setAttributeValue( "id" , "videoUUID") ;
     objB->setAttributeValue( "type", "::fwData::Video");
 
     // composite's service 1
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service = cfg->addConfigurationElement("service");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > service = cfg->addConfigurationElement("service");
     service->setAttributeValue( "uid", "myTestService1" );
     service->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationComposite" );
 
     // start / stop / update on service 1
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > start = cfg->addConfigurationElement("start");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > start = cfg->addConfigurationElement("start");
     start->setAttributeValue( "uid", "myTestService1" );
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > update = cfg->addConfigurationElement("update");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > update = cfg->addConfigurationElement("update");
     update->setAttributeValue( "uid", "myTestService1" );
 
     // composite's service 2
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
     service2->setAttributeValue( "uid", "myTestService2" );
     service2->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationComposite" );
 
     // start / stop / update on service 2
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > start2 = cfg->addConfigurationElement("start");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > start2 = cfg->addConfigurationElement("start");
     start2->setAttributeValue( "uid", "myTestService2" );
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > update2 = cfg->addConfigurationElement("update");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > update2 = cfg->addConfigurationElement("update");
     update2->setAttributeValue( "uid", "myTestService2" );
 
     return cfg;

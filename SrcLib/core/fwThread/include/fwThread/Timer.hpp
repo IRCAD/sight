@@ -35,7 +35,7 @@ public:
     /**
      * @name Typedefs
      * @{ */
-    typedef ::boost::shared_ptr< Timer >        sptr;
+    typedef std::shared_ptr< Timer >        sptr;
     typedef ::boost::function< void () >         FunctionType;
     typedef ::boost::chrono::duration<double>   TimeDurationType;
     /**  @} */

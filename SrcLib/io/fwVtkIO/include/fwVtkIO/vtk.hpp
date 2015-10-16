@@ -7,7 +7,6 @@
 #ifndef __FWVTKIO_VTK_HPP__
 #define __FWVTKIO_VTK_HPP__
 
-#include <boost/shared_ptr.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>

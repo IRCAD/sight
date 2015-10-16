@@ -243,9 +243,9 @@ void ServiceTest::testCommunication()
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ::fwRuntime::EConfigurationElement > ServiceTest::buildServiceConfig()
+std::shared_ptr< ::fwRuntime::EConfigurationElement > ServiceTest::buildServiceConfig()
 {
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("service"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("service"));
     cfg->setAttributeValue( "uid", "myTestService" );
     cfg->setAttributeValue( "type", "::fwServices::ut::TestService" );
     cfg->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementation" );
@@ -256,41 +256,41 @@ void ServiceTest::testCommunication()
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ::fwRuntime::ConfigurationElement > ServiceTest::buildObjectConfig()
+std::shared_ptr< ::fwRuntime::ConfigurationElement > ServiceTest::buildObjectConfig()
 {
     // Configuration on fwTools::Object which uid is objectUUID
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
     cfg->setAttributeValue( "uid", "objectUUID");
     cfg->setAttributeValue( "type", "::fwData::Composite");
 
     // Object's service A
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid", "myTestService1" );
     serviceA->setAttributeValue( "type", "::fwServices::ut::TestService" );
     serviceA->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementation" );
     serviceA->setAttributeValue( "autoConnect", "no" );
 
     // Object's service B
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
     serviceB->setAttributeValue( "uid", "myTestService2" );
     serviceB->setAttributeValue( "type", "::fwServices::ut::TestService" );
     serviceB->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementation" );
     serviceB->setAttributeValue( "autoConnect", "no" );
 
     // Start method from object's services
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > startA = cfg->addConfigurationElement("start");
     startA->setAttributeValue( "uid", "myTestService1" );
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > startB = cfg->addConfigurationElement("start");
     startB->setAttributeValue( "uid", "myTestService2" );
 
     // Update method from object's services
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > updateA = cfg->addConfigurationElement("update");
     updateA->setAttributeValue( "uid", "myTestService1" );
 
     // Stop method from object's services
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > stopA = cfg->addConfigurationElement("stop");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > stopA = cfg->addConfigurationElement("stop");
     stopA->setAttributeValue( "uid", "myTestService1" );
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > stopB = cfg->addConfigurationElement("stop");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > stopB = cfg->addConfigurationElement("stop");
     stopB->setAttributeValue( "uid", "myTestService2" );
 
     return cfg;

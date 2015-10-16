@@ -7,11 +7,11 @@
 #ifndef __FWDATA_CAMP_MAPPER_HPP__
 #define __FWDATA_CAMP_MAPPER_HPP__
 
- #include <boost/algorithm/string.hpp>
+#include "fwData/TransferFunction.hpp"
 
 #include <fwCamp/Mapper/ValueMapper.hpp>
 
-#include "fwData/TransferFunction.hpp"
+#include <boost/algorithm/string.hpp>
 
 namespace camp_ext
 {

@@ -39,7 +39,7 @@ ServiceConfig::~ServiceConfig()
 void ServiceConfig::parseBundleInformation()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    typedef ::boost::shared_ptr< ::fwRuntime::Extension > ExtensionType;
+    typedef std::shared_ptr< ::fwRuntime::Extension > ExtensionType;
 
     std::vector< ExtensionType >  extElements;
     extElements = ::fwRuntime::getAllExtensionsForPoint(CONFIG_EXT_POINT);

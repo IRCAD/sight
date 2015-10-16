@@ -467,13 +467,13 @@ void SeriesDBLazyReader::fillImage(
     img->setSpacing(imgSpacing);
 
 
-    ::vtkGdcmIO::helper::ImageDicomInfo::sptr dcmInfo = ::boost::make_shared< ::vtkGdcmIO::helper::ImageDicomInfo >();
+    ::vtkGdcmIO::helper::ImageDicomInfo::sptr dcmInfo = std::make_shared< ::vtkGdcmIO::helper::ImageDicomInfo >();
     dcmInfo->m_buffSizeInBytes                        = img->getSizeInBytes();
     dcmInfo->m_seriesFiles                            = seriesFiles;
 
     ::fwMemory::BufferObject::sptr buffObj = img->getDataArray()->getBufferObject();
     buffObj->setIStreamFactory(
-        ::boost::make_shared< ::vtkGdcmIO::helper::ImageDicomStream >( dcmInfo ),
+        std::make_shared< ::vtkGdcmIO::helper::ImageDicomStream >( dcmInfo ),
         img->getSizeInBytes() );
 }
 

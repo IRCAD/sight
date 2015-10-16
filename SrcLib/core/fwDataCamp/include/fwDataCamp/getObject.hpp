@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/shared_ptr.hpp>
 
 #include <fwCore/macros.hpp>
 
@@ -46,7 +45,7 @@ SPTR(DATATYPE) getObject( SPTR(::fwData::Object) object,
                           bool raiseException = false )
 {
     SPTR(::fwData::Object) subObject = getObject( object, path, raiseException );
-    SPTR(DATATYPE) casteDdata        = ::boost::dynamic_pointer_cast<DATATYPE>( subObject );
+    SPTR(DATATYPE) casteDdata        = ::std::dynamic_pointer_cast<DATATYPE>( subObject );
     return casteDdata;
 }
 

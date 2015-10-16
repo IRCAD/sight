@@ -17,8 +17,6 @@
 #include <boost/cstdint.hpp>
 #include <boost/multi_array.hpp>
 
-#include <camp/class.hpp>
-
 fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
 
 namespace fwData

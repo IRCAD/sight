@@ -222,7 +222,7 @@ struct PTreeVisitor
                     format     = ::fwMemory::RAW;
                 }
 
-                buffObj->setIStreamFactory( ::boost::make_shared< AtomsBoostIOReadStream >(m_archive->clone(), bufFile),
+                buffObj->setIStreamFactory( std::make_shared< AtomsBoostIOReadStream >(m_archive->clone(), bufFile),
                                             buffSize, sourceFile, format);
             }
         }

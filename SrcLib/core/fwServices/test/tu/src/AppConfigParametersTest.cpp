@@ -47,11 +47,11 @@ void AppConfigParametersTest::setUp()
     CPPUNIT_ASSERT(runtime->bundlesBegin() !=  runtime->bundlesEnd());
 
     // Test bundle servicesReg
-    ::boost::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("servicesReg");
+    std::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("servicesReg");
     bundle->setEnable(true);
 
     // Test bundle servicesReg
-    ::boost::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("AppConfigParametersTest");
+    std::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("AppConfigParametersTest");
     bundle2->setEnable(true);
 
     ::fwServices::registry::AppConfigParameters::sptr appConfigParam;
@@ -94,7 +94,7 @@ void AppConfigParametersTest::concurentAccessToAppConfigParametersTest()
     for (int i = 0; i<nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
-        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+        thread = std::shared_ptr< ::fwTest::helper::Thread >(
             new ::fwTest::helper::Thread(::boost::bind(&AppConfigParametersTest::appConfigParametersTest, this)));
         threads.push_back(thread);
     }

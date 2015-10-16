@@ -11,7 +11,6 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include <boost/make_shared.hpp>
 
 #include <fwCore/macros.hpp>
 
@@ -33,7 +32,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((WriteDirArchive)(IWriteArchive),
                                            ((( const ::boost::filesystem::path& ))),
-                                           ::boost::make_shared<WriteDirArchive> );
+                                           std::make_shared<WriteDirArchive> );
 
     /// Constructors. Initializes archive path and creates archive directories if doesn't exist.
     FWZIP_API WriteDirArchive( const ::boost::filesystem::path &archive );

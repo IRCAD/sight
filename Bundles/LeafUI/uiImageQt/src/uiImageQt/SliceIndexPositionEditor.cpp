@@ -187,7 +187,7 @@ void SliceIndexPositionEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) 
         if ( imageMessage->hasEvent( fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )
         {
             ::fwData::Object::csptr cObjInfo = imageMessage->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-            ::fwData::Object::sptr objInfo   = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
+            ::fwData::Object::sptr objInfo   = std::const_pointer_cast< ::fwData::Object > ( cObjInfo );
             ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
 
             ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast(

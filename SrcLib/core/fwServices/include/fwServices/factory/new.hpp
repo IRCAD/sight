@@ -8,7 +8,6 @@
 #define __FWSERVICES_FACTORY_NEW_HPP__
 
 #include <string>
-#include <boost/make_shared.hpp>
 
 #include "fwServices/config.hpp"
 
@@ -22,7 +21,7 @@ namespace factory
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) srv = ::boost::make_shared< CLASSNAME >();
+    SPTR(CLASSNAME) srv = std::make_shared< CLASSNAME >();
 #ifdef COM_LOG
     srv->setID(srv->getID());
 #endif

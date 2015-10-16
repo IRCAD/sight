@@ -33,7 +33,7 @@ Stopper::Stopper( const std::string & identifier )
 void Stopper::apply()
 {
     SLM_TRACE_FUNC();
-    ::boost::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier);
+    std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier);
     OSLM_FATAL_IF("Unable to stop bundle " << m_identifier << ". Not found.", bundle == 0);
     try
     {

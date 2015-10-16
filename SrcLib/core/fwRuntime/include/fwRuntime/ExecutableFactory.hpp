@@ -79,4 +79,4 @@ struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
 } // namespace fwRuntime
 
 
-#endif //__FWRUNTIME_EXECUTABLEFACTORY_HPP__
+#endif // __FWRUNTIME_EXECUTABLEFACTORY_HPP__

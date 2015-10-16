@@ -232,9 +232,9 @@ struct ValueMapper<unsigned char>
 //-----------------------------------------------------------------------------
 
 template <typename T>
-struct ValueMapper<boost::shared_ptr<T> >
+struct ValueMapper<std::shared_ptr<T> >
 {
-    typedef boost::shared_ptr<T> ReturnType;
+    typedef std::shared_ptr<T> ReturnType;
     static const int type = camp::userType;
     static const camp::UserObject to(const ReturnType& source)
     {
@@ -271,7 +271,7 @@ struct ValueMapper<boost::shared_ptr<T> >
         }
         catch(...)
         {
-            boost::shared_ptr<T> tmp;
+            std::shared_ptr<T> tmp;
             return tmp;
         }
         return result;

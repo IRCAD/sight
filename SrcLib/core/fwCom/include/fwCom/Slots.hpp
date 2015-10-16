@@ -49,7 +49,7 @@ public:
     template<typename R, typename ... A>
     Slots& operator()( const SlotKeyType &key, SPTR(Slot< R (A ...) >)slot )
     {
-        SPTR( SlotBase ) slotBase = ::boost::dynamic_pointer_cast< SlotBase >( slot );
+        SPTR( SlotBase ) slotBase = std::dynamic_pointer_cast< SlotBase >( slot );
         return this->operator()(key, slotBase);
     }
 

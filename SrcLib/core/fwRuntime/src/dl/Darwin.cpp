@@ -17,7 +17,7 @@ namespace dl
 {
 
 Darwin::Darwin( const boost::filesystem::path & modulePath ) throw()
-    : Native                ( modulePath, ::boost::shared_ptr< INameDecorator >(new DarwinNameDecorator()) ),
+    : Native                ( modulePath, std::shared_ptr< INameDecorator >(new DarwinNameDecorator()) ),
       m_handle      ( 0 )
 {
 }

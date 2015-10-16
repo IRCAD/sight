@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/spyLog.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -41,7 +40,7 @@ FileHolder::FileHolder(const ::boost::filesystem::path &file, bool autodelete) :
 {
     if (autodelete)
     {
-        m_autoDelete = ::boost::make_shared< FileAutoDelete >( file );
+        m_autoDelete = std::make_shared< FileAutoDelete >( file );
     }
 }
 

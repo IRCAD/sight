@@ -7,12 +7,11 @@
 #ifndef __FWDATA_LOCATION_FOLDER_HPP__
 #define __FWDATA_LOCATION_FOLDER_HPP__
 
-
-#include <boost/filesystem.hpp>
-
 #include "fwData/config.hpp"
 #include "fwData/location/ILocation.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <boost/filesystem.hpp>
 
 
 fwCampAutoDeclareDataMacro((fwData)(location)(Folder), FWDATA_API);

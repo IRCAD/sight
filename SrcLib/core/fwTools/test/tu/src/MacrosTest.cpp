@@ -29,7 +29,6 @@ public:
         return m_num;
     }
 
-protected:
     ClassTest()
         : m_num(1)
     {

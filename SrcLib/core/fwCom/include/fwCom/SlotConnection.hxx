@@ -12,7 +12,6 @@
 #endif
 
 #include <boost/bind.hpp>
-#include <boost/make_shared.hpp>
 
 #include "fwCom/SlotBase.hpp"
 #include "fwCom/SlotRun.hpp"
@@ -24,24 +23,24 @@ namespace fwCom
 
 
 template < typename ... A >
-inline ::boost::shared_ptr< SlotConnection< void (A ...) > >  SlotConnection< void (A ...) >::New(
+inline std::shared_ptr< SlotConnection< void (A ...) > >  SlotConnection< void (A ...) >::New(
     const SignalSptrType &signal,
     const SlotRunSptrType &slot
     )
 {
-    return ::boost::make_shared< SelfType >(signal, slot);
+    return std::make_shared< SelfType >(signal, slot);
 }
 
 //-----------------------------------------------------------------------------
 
 template < typename ... A >
-inline ::boost::shared_ptr< SlotConnection< void (A ...) > > SlotConnection< void (A ...) >::New(
+inline std::shared_ptr< SlotConnection< void (A ...) > > SlotConnection< void (A ...) >::New(
     const SignalSptrType &signal,
     const SlotBase::sptr &slot,
     const SlotWrapperSptrType &slotWrapper
     )
 {
-    return ::boost::make_shared< SelfType >(signal, slot, slotWrapper);
+    return std::make_shared< SelfType >(signal, slot, slotWrapper);
 }
 
 //-----------------------------------------------------------------------------
@@ -101,8 +100,8 @@ inline void SlotConnection< void (A ...) >::disconnectSlotNoLock(const SlotBase:
 {
     try
     {
-        ::boost::shared_ptr< const SlotConnection< void (A ...) > > thisSptr =
-            ::boost::dynamic_pointer_cast< const SlotConnection< void (A ...) > > ( this->shared_from_this() );
+        std::shared_ptr< const SlotConnection< void (A ...) > > thisSptr =
+            std::dynamic_pointer_cast< const SlotConnection< void (A ...) > > ( this->shared_from_this() );
         slot->m_connections.erase( thisSptr );
         OSLM_COM("Disconnect '"
                  << (m_signal.expired() ? "<dead signal>" : m_signal.lock()->getID())

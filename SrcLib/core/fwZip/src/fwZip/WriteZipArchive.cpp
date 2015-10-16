@@ -8,7 +8,6 @@
 #include <fstream>
 #include <functional>
 
-#include <boost/make_shared.hpp>
 
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/stream_buffer.hpp>
@@ -160,7 +159,7 @@ WriteZipArchive::~WriteZipArchive()
 SPTR(std::ostream) WriteZipArchive::createFile(const ::boost::filesystem::path &path)
 {
     SPTR(::boost::iostreams::stream<ZipSink>) os
-        = ::boost::make_shared< ::boost::iostreams::stream<ZipSink> >(m_archive, path, m_comment);
+        = std::make_shared< ::boost::iostreams::stream<ZipSink> >(m_archive, path, m_comment);
     return os;
 }
 

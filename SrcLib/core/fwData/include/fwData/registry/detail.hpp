@@ -7,12 +7,12 @@
 #ifndef __FWDATA_REGISTRY_DETAIL_HPP__
 #define __FWDATA_REGISTRY_DETAIL_HPP__
 
-#include <string>
+#include "fwData/config.hpp"
 
 #include <fwCore/macros.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
 
-#include "fwData/config.hpp"
+#include <string>
 
 namespace fwData
 {

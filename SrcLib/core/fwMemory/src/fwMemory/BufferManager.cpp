@@ -20,7 +20,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
 
 #include <iosfwd> // #include <strstream>
 #include <iomanip>
@@ -120,8 +119,8 @@ void BufferManager::allocateBufferImpl(BufferManager::BufferPtrType bufferPtr, S
 
 
     info.istreamFactory =
-        ::boost::make_shared< ::fwMemory::stream::in::Buffer >(*bufferPtr, size,
-                                                               ::boost::bind(&getLock, this->getSptr(), bufferPtr));
+        std::make_shared< ::fwMemory::stream::in::Buffer >(*bufferPtr, size,
+                                                           ::boost::bind(&getLock, this->getSptr(), bufferPtr));
 
     info.lastAccess.modified();
     info.size         = size;
@@ -162,8 +161,8 @@ void BufferManager::setBufferImpl(BufferManager::BufferPtrType bufferPtr, ::fwMe
     info.fileFormat   = ::fwMemory::OTHER;
     info.fsFile.clear();
     info.istreamFactory =
-        ::boost::make_shared< ::fwMemory::stream::in::Buffer >(*bufferPtr, size,
-                                                               ::boost::bind(&getLock, this->getSptr(), bufferPtr));
+        std::make_shared< ::fwMemory::stream::in::Buffer >(*bufferPtr, size,
+                                                           ::boost::bind(&getLock, this->getSptr(), bufferPtr));
     info.userStreamFactory = false;
     m_updatedSig->asyncEmit();
 }
@@ -200,8 +199,8 @@ void BufferManager::reallocateBufferImpl(BufferManager::BufferPtrType bufferPtr,
     }
 
     info.istreamFactory =
-        ::boost::make_shared< ::fwMemory::stream::in::Buffer>(*bufferPtr, newSize,
-                                                              ::boost::bind(&getLock, this->getSptr(), bufferPtr));
+        std::make_shared< ::fwMemory::stream::in::Buffer>(*bufferPtr, newSize,
+                                                          ::boost::bind(&getLock, this->getSptr(), bufferPtr));
 
     info.lastAccess.modified();
     info.size = newSize;
@@ -309,7 +308,7 @@ SPTR(void) BufferManager::lockBufferImpl(BufferManager::ConstBufferPtrType buffe
     SPTR(void) counter = info.lockCounter.lock();
     if ( !counter )
     {
-        counter          = ::boost::make_shared< AutoUnlock >( this->getSptr(), bufferPtr, info);
+        counter          = std::make_shared< AutoUnlock >( this->getSptr(), bufferPtr, info);
         info.lockCounter = counter;
     }
 
@@ -369,7 +368,7 @@ bool BufferManager::dumpBuffer(BufferInfo & info, BufferManager::BufferPtrType b
     {
         info.fsFile            = ::fwMemory::FileHolder(dumpedFile, true);
         info.fileFormat        = ::fwMemory::RAW;
-        info.istreamFactory    = ::boost::make_shared< ::fwMemory::stream::in::Raw >(info.fsFile);
+        info.istreamFactory    = std::make_shared< ::fwMemory::stream::in::Raw >(info.fsFile);
         info.userStreamFactory = false;
         info.bufferPolicy->destroy(*bufferPtr);
         *bufferPtr  = NULL;
@@ -433,10 +432,10 @@ bool BufferManager::restoreBuffer(BufferInfo & info,
 
             info.fileFormat = ::fwMemory::OTHER;
             info.istreamFactory
-                = ::boost::make_shared< ::fwMemory::stream::in::Buffer >(*bufferPtr,
-                                                                         allocSize,
-                                                                         ::boost::bind(&getLock, this->getSptr(),
-                                                                                       bufferPtr));
+                = std::make_shared< ::fwMemory::stream::in::Buffer >(*bufferPtr,
+                                                                     allocSize,
+                                                                     ::boost::bind(&getLock, this->getSptr(),
+                                                                                   bufferPtr));
             info.userStreamFactory = false;
             m_updatedSig->asyncEmit();
             return true;

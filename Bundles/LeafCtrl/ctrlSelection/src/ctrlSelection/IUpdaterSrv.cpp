@@ -125,8 +125,7 @@ void IUpdaterSrv::updateComposite(::fwData::Composite::sptr pComposite, ::fwData
     }
 
     // Use helper on composite
-    ::boost::shared_ptr< ::fwComEd::helper::Composite > pCompositeHelper ( new ::fwComEd::helper::Composite(
-                                                                               pComposite ) );
+    std::shared_ptr< ::fwComEd::helper::Composite > pCompositeHelper ( new ::fwComEd::helper::Composite( pComposite ) );
 
     if(_action != DO_NOTHING)
     {

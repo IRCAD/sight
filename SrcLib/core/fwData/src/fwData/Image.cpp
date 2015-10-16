@@ -15,8 +15,6 @@
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
-#include <boost/lexical_cast.hpp>
-
 #include <climits>
 #include <numeric>
 #include <functional>

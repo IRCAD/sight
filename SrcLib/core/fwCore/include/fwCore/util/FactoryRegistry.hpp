@@ -15,7 +15,6 @@
 #include <boost/function.hpp>
 #include <boost/functional/factory.hpp>
 #include <boost/functional/value_factory.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include "fwCore/mt/types.hpp"
 

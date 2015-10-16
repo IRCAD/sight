@@ -8,7 +8,6 @@
 #define __FWCOMMAND_PAINTCOMMAND_HPP__
 
 #include <boost/cstdint.hpp>
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -27,7 +26,7 @@ namespace fwCommand
 class FWCOMMAND_CLASS_API PaintCommand : public ICommand
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (PaintCommand)(ICommand), (( )), ::boost::make_shared< PaintCommand > );
+    fwCoreClassDefinitionsWithFactoryMacro( (PaintCommand)(ICommand), (( )), std::make_shared< PaintCommand > );
 
     FWCOMMAND_API PaintCommand();
 

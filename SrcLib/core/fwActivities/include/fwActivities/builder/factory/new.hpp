@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -47,7 +46,7 @@ FWACTIVITIES_API SPTR( ::fwActivities::IBuilder ) New( const ::fwActivities::bui
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) builder = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) builder = std::make_shared< CLASSNAME >( Key() );
     return builder;
 }
 

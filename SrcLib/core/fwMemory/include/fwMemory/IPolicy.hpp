@@ -7,7 +7,6 @@
 #ifndef __FWMEMORY_IPOLICY_HPP__
 #define __FWMEMORY_IPOLICY_HPP__
 
-#include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 
 #include <fwCore/base.hpp>

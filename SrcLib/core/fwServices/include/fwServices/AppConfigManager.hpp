@@ -48,7 +48,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((AppConfigManager)(::fwTools::Object),
                                            (()),
-                                           ::boost::make_shared< AppConfigManager >);
+                                           std::make_shared< AppConfigManager >);
 
     /// Constructor. Do nothing.
     FWSERVICES_API AppConfigManager();
@@ -88,7 +88,7 @@ public:
 
     /// Get config root with autocast
     template < class ClassName >
-    ::boost::shared_ptr< ClassName > getConfigRoot() const;
+    std::shared_ptr< ClassName > getConfigRoot() const;
 
     /// Creates objects and services from config
     FWSERVICES_API virtual void create();

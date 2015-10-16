@@ -7,13 +7,13 @@
 #ifndef __FWDATA_LINE_HPP__
 #define __FWDATA_LINE_HPP__
 
-#include <vector>
-#include <utility>
-
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Point.hpp"
+
+#include <vector>
+#include <utility>
 
 fwCampAutoDeclareDataMacro((fwData)(Line), FWDATA_API);
 

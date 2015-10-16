@@ -24,8 +24,7 @@ namespace fwRuntime
 
  */
 FWRUNTIME_API std::pair< bool, std::string > validateConfigurationElement(
-    ::boost::shared_ptr< ::fwRuntime::io::Validator >   _validator,
-    ::fwRuntime::ConfigurationElement::sptr _element );
+    std::shared_ptr< ::fwRuntime::io::Validator >   _validator, ::fwRuntime::ConfigurationElement::sptr _element );
 
 /**
  * @brief   Update pNode content according to _cfgElement
@@ -58,8 +57,7 @@ FWRUNTIME_API std::vector< ConfigurationElement::sptr > getAllCfgForPoint( std::
  *
 
  */
-FWRUNTIME_API std::vector< ::boost::shared_ptr< ::fwRuntime::Extension > > getAllExtensionsForPoint(
-    std::string extension_pt);
+FWRUNTIME_API std::vector< std::shared_ptr< ::fwRuntime::Extension > > getAllExtensionsForPoint(std::string extension_pt);
 
 /**
  * @brief       Returns contribution ids and configuration elements related to a given extension point

@@ -12,7 +12,7 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<Bundle> Plugin::getBundle() const throw()
+std::shared_ptr<Bundle> Plugin::getBundle() const throw()
 {
     return m_bundle;
 }
@@ -25,7 +25,7 @@ void Plugin::setInitializationData(const ConfigurationElement::sptr) throw()
 
 //------------------------------------------------------------------------------
 
-void Plugin::setBundle( ::boost::shared_ptr<Bundle> bundle) throw()
+void Plugin::setBundle( std::shared_ptr<Bundle> bundle) throw()
 {
     m_bundle = bundle;
 }

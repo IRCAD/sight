@@ -68,8 +68,8 @@ void SlotsTest::buildTest()
     ::fwCom::Slot< int (int, int) >::sptr slot1             = ::fwCom::newSlot( &slotsTestSum );
     ::fwCom::Slot< void (const std::string &) >::sptr slot2 = ::fwCom::newSlot( &slotsTestPrint );
 
-    slots("sum", ::boost::dynamic_pointer_cast< SlotBase >(slot1))
-        ("print", ::boost::dynamic_pointer_cast< SlotBase >(slot2))
+    slots("sum", std::dynamic_pointer_cast< SlotBase >(slot1))
+        ("print", std::dynamic_pointer_cast< SlotBase >(slot2))
         ("another_key", slot1);
 
     CPPUNIT_ASSERT(slot1 == slots["sum"]);

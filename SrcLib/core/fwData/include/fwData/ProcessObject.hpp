@@ -7,11 +7,11 @@
 #ifndef __FWDATA_PROCESSOBJECT_HPP__
 #define __FWDATA_PROCESSOBJECT_HPP__
 
-#include <map>
-#include <vector>
-
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <map>
+#include <vector>
 
 fwCorePredeclare( (fwData)(Field) );
 

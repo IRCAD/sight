@@ -125,7 +125,7 @@ private:
      * @param[in] fileName calibration filename
      * @param[out] cam camera created with readed calibration file
      */
-    bool loadCalibration( const std::string &fileName, ::boost::shared_ptr< ::fwData::Camera > cam );
+    bool loadCalibration( const std::string &fileName, std::shared_ptr< ::fwData::Camera > cam );
 
 };
 

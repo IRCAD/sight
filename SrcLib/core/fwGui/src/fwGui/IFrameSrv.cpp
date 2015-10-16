@@ -26,7 +26,7 @@ const std::string IFrameSrv::CLOSE_POLICY_NOTIFY  = "notify";
 const std::string IFrameSrv::CLOSE_POLICY_MESSAGE = "message";
 
 ::fwGui::container::fwContainer::wptr IFrameSrv::m_progressWidget =
-    ::boost::weak_ptr< ::fwGui::container::fwContainer >();
+    std::weak_ptr< ::fwGui::container::fwContainer >();
 
 IFrameSrv::IFrameSrv() :
     m_hasMenuBar(false),

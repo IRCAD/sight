@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 
 #include "fwAtomsPatch/infos/log.hpp"
 #include "fwAtomsPatch/IStructuralCreator.hpp"
@@ -13,7 +12,7 @@
 namespace fwAtomsPatch
 {
 
-StructuralCreatorDB::sptr StructuralCreatorDB::s_default = ::boost::make_shared<StructuralCreatorDB>();
+StructuralCreatorDB::sptr StructuralCreatorDB::s_default = std::make_shared<StructuralCreatorDB>();
 
 void StructuralCreatorDB::registerCreator(::fwAtomsPatch::IStructuralCreator::sptr creator)
 {

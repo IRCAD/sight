@@ -461,7 +461,7 @@ void Bundle::startPlugin() throw(RuntimeException)
         Runtime * rntm  ( Runtime::getDefault() );
         SPTR( IExecutable ) executable ( rntm->createExecutableInstance(pluginType) );
 
-        plugin = ::boost::dynamic_pointer_cast< IPlugin >( executable );
+        plugin = std::dynamic_pointer_cast< IPlugin >( executable );
     }
 
     // Ensures that a plugin has been created.
@@ -516,7 +516,7 @@ void Bundle::stop() throw(RuntimeException)
 //    LibraryContainer::iterator endEntry = m_libraries.end();
 //    for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
 //    {
-//        ::boost::shared_ptr<dl::Library> library(*curEntry);
+//        std::shared_ptr<dl::Library> library(*curEntry);
 //        if(library->isLoaded() == true )
 //        {
 //            library->unload();

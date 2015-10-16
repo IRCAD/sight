@@ -8,10 +8,12 @@
 #define __FWTOOLS_PROGRESSADVISER_HPP__
 
 #include <string>
-#include <boost/signals2.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwTools/config.hpp>
+
+#include <boost/weak_ptr.hpp>
+#include <boost/signals2.hpp>
 
 
 namespace fwTools
@@ -24,8 +26,6 @@ namespace fwTools
  * Handlers can be added using addHandler(). the Handler of type ProgessHandler can be a function or functor or boost::signal with a signature
  * ( float, std::string ) and returning nothing.
  * @class   ProgressAdviser
- *
- * @date    2007-2009.
  */
 class FWTOOLS_CLASS_API ProgressAdviser : public ::boost::signals2::trackable
 {

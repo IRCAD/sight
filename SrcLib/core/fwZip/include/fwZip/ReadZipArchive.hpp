@@ -9,7 +9,6 @@
 
 #include <istream>
 
-#include <boost/make_shared.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include <fwCore/macros.hpp>
@@ -32,7 +31,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((ReadZipArchive)(IReadArchive),
                                            ((( const ::boost::filesystem::path& ))),
-                                           ::boost::make_shared< ReadZipArchive >);
+                                           std::make_shared< ReadZipArchive >);
 
     /*
      * @brief Constructors. Initializes archive path, zip descriptor and zip stream.

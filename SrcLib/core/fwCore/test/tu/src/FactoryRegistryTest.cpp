@@ -43,7 +43,7 @@ void FactoryRegistryTest::tearDown()
 class ObjectTest
 {
 public:
-    typedef ::boost::shared_ptr< ObjectTest > sptr;
+    typedef std::shared_ptr< ObjectTest > sptr;
 
     ObjectTest() : m_name("ObjectTest")
     {
@@ -83,7 +83,7 @@ int ObjectTest::s_counter = 0;
 class DerivedObjectTest : public ObjectTest
 {
 public:
-    typedef ::boost::shared_ptr< DerivedObjectTest > sptr;
+    typedef std::shared_ptr< DerivedObjectTest > sptr;
 
     DerivedObjectTest() : ObjectTest()
     {
@@ -209,7 +209,7 @@ typedef ::fwCore::util::FactoryRegistry< ObjectTest::sptr(int) > ThreadSafetyTes
 struct UseFactoryThread
 {
 
-    typedef ::boost::shared_ptr< UseFactoryThread > sptr;
+    typedef std::shared_ptr< UseFactoryThread > sptr;
     typedef std::vector< ObjectTest::sptr > ObjectVectorType;
 
     UseFactoryThread( const ThreadSafetyTestFactoryType &factory, std::string objType = "ObjectTest" ) :
@@ -239,7 +239,7 @@ const int UseFactoryThread::s_NBOBJECTS = 10;
 
 struct PopulateRegistryThread
 {
-    typedef ::boost::shared_ptr< PopulateRegistryThread > sptr;
+    typedef std::shared_ptr< PopulateRegistryThread > sptr;
     typedef std::vector< ObjectTest::sptr > ObjectVectorType;
 
     PopulateRegistryThread( ThreadSafetyTestFactoryType &factory ) :
@@ -288,12 +288,12 @@ void FactoryRegistryTest::threadSafetyTest()
         UseFactoryThread::sptr uft;
         ::boost::thread* t;
 
-        uft = ::boost::make_shared<UseFactoryThread>(objectTestFactory);
+        uft = std::make_shared<UseFactoryThread>(objectTestFactory);
         t   = new ::boost::thread(::boost::bind(&UseFactoryThread::run, uft) );
         tg.add_thread(t);
         objects.push_back(uft);
 
-        uft = ::boost::make_shared<UseFactoryThread>(objectTestFactory, "DerivedObjectTest");
+        uft = std::make_shared<UseFactoryThread>(objectTestFactory, "DerivedObjectTest");
         t   = new ::boost::thread(::boost::bind(&UseFactoryThread::run, uft) );
         tg.add_thread(t);
         objects.push_back(uft);
@@ -304,7 +304,7 @@ void FactoryRegistryTest::threadSafetyTest()
         PopulateRegistryThread::sptr pft;
         ::boost::thread* t;
 
-        pft = ::boost::make_shared<PopulateRegistryThread>(::boost::ref(objectTestFactory));
+        pft = std::make_shared<PopulateRegistryThread>(::boost::ref(objectTestFactory));
         t   = new ::boost::thread(::boost::bind(&PopulateRegistryThread::run, pft) );
         tg.add_thread(t);
     }

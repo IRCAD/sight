@@ -139,7 +139,7 @@ public:
             }
 
             m_isUpdatedMessage = true;
-            m_compoMsg         = ::boost::const_pointer_cast< ::fwServices::ObjectMsg >( _msg );
+            m_compoMsg         = std::const_pointer_cast< ::fwServices::ObjectMsg >( _msg );
         }
     }
 };
@@ -172,14 +172,14 @@ public:
     {
         m_isUpdated = true;
     }
-    virtual void receiving( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
+    virtual void receiving( std::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
     {
         ::fwComEd::ImageMsg::csptr imageMessage = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
         if (imageMessage && imageMessage->hasEvent(::fwComEd::ImageMsg::SLICE_INDEX))
         {
             // if receiving a imageMsg : tag service is updated
             m_isUpdatedMessage = true;
-            m_compoMsg         = ::boost::const_pointer_cast< ::fwServices::ObjectMsg >( _msg );
+            m_compoMsg         = std::const_pointer_cast< ::fwServices::ObjectMsg >( _msg );
         }
     }
 };

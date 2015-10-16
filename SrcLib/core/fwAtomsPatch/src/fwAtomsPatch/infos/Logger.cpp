@@ -63,7 +63,7 @@ Logger::Logger()
 
     // Construct the sink
     typedef ::boost::log::sinks::synchronous_sink< ::boost::log::sinks::text_ostream_backend > text_sink;
-    boost::shared_ptr< text_sink > pSink = boost::make_shared< text_sink >();
+    ::boost::shared_ptr< text_sink > pSink = ::boost::make_shared< text_sink >();
 
     // Add a stream to write log to
     pSink->locked_backend()->add_stream(s_stream);

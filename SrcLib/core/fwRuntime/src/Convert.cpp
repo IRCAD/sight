@@ -36,7 +36,7 @@ Convert::~Convert()
 
 //------------------------------------------------------------------------------
 
-void Convert::fromConfigurationElementToXml( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement,
+void Convert::fromConfigurationElementToXml( std::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement,
                                              xmlNodePtr _node)
 {
     //NAME
@@ -86,7 +86,7 @@ void Convert::fromConfigurationElementToXml( ::boost::shared_ptr< ::fwRuntime::C
 xmlNodePtr Convert::runningBundlesToXml( )
 {
     xmlNodePtr node_root = xmlNewNode( NULL,  xmlCharStrdup( "Bundles" ) );
-    std::set< ::boost::shared_ptr< ::fwRuntime::Bundle > > ::iterator iter_bundles;
+    std::set< std::shared_ptr< ::fwRuntime::Bundle > > ::iterator iter_bundles;
     ::fwRuntime::Runtime * tmp_runtime = ::fwRuntime::Runtime::getDefault();
 
     xmlNodePtr activated_Node = xmlNewNode( NULL,  xmlCharStrdup( "Activated" ) );
@@ -119,7 +119,7 @@ xmlNodePtr Convert::runningBundlesToXml( )
             xmlNodePtr extensionPoint_activated_list_Node = xmlNewNode( NULL,  xmlCharStrdup( "Extensions_Points" ) );
             xmlAddChild(bundleNode, extensionPoint_activated_list_Node );
 
-            for ( std::set< ::boost::shared_ptr< ::fwRuntime::ExtensionPoint > >::const_iterator iter_extensionPoints =
+            for ( std::set< std::shared_ptr< ::fwRuntime::ExtensionPoint > >::const_iterator iter_extensionPoints =
                       (*iter_bundles)->extensionPointsBegin();
                   iter_extensionPoints != (*iter_bundles)->extensionPointsEnd();
                   ++iter_extensionPoints)
@@ -151,7 +151,7 @@ xmlNodePtr Convert::runningBundlesToXml( )
             xmlNodePtr extension_activated_list_Node = xmlNewNode( NULL,  xmlCharStrdup( "Extensions" ) );
             xmlAddChild(bundleNode, extension_activated_list_Node );
 
-            for ( std::set< ::boost::shared_ptr< ::fwRuntime::Extension > >::const_iterator iter_extension =
+            for ( std::set< std::shared_ptr< ::fwRuntime::Extension > >::const_iterator iter_extension =
                       (*iter_bundles)->extensionsBegin();
                   iter_extension != (*iter_bundles)->extensionsEnd();
                   ++iter_extension)

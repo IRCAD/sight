@@ -84,4 +84,4 @@ public:
 } // namespace fwCommand
 
 
-#endif //__FWCOMMAND_ICOMMAND_HPP__
+#endif // __FWCOMMAND_ICOMMAND_HPP__

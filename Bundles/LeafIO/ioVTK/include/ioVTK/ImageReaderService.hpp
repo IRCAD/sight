@@ -87,7 +87,7 @@ private:
      * @param[out] _pImage new empty image that will contain image loaded, if reading process is a success.
      * @return bool  \b true if the image loading is a success and \b false if it fails
      */
-    bool loadImage( const ::boost::filesystem::path _vtkFile, ::boost::shared_ptr< ::fwData::Image > _pImage );
+    bool loadImage( const ::boost::filesystem::path _vtkFile, std::shared_ptr< ::fwData::Image > _pImage );
 
     /// This method notifies other image services that a new image has been loaded.
     void notificationOfDBUpdate();

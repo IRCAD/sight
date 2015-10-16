@@ -60,8 +60,8 @@ void DataInfoFromMsgUpdaterSrv::receiving( ::fwServices::ObjectMsg::csptr _msg )
             // Test if we manage this event from this object message uid
             if( obj->getID() == uuid || uuid == "*")
             {
-                ::fwData::Object::sptr dataInfo =
-                    ::boost::const_pointer_cast< ::fwData::Object >(_msg->getDataInfo(  event ));
+                ::fwData::Object::sptr dataInfo = std::const_pointer_cast< ::fwData::Object >(_msg->getDataInfo(
+                                                                                                  event ));
                 SLM_ASSERT("no dataInfo set!!!",  dataInfo
                            ||  action== ctrlSelection::IUpdaterSrv::REMOVE
                            ||  action== ctrlSelection::IUpdaterSrv::REMOVE_IF_PRESENT

@@ -54,7 +54,7 @@ struct FWRUNTIME_CLASS_API IExecutable
      *
      * @return  a pointer to the originating bundle.
      */
-    virtual ::boost::shared_ptr<Bundle> getBundle() const throw() = 0;
+    virtual std::shared_ptr<Bundle> getBundle() const throw() = 0;
 
     /**
      * @brief       Initializes the executable instance with the specified
@@ -63,7 +63,7 @@ struct FWRUNTIME_CLASS_API IExecutable
      * @param[in]   configuration   a shared pointer to the configuration element used to
      *              trigger this execution
      */
-    virtual void setInitializationData( const ::boost::shared_ptr<ConfigurationElement> configuration ) throw() = 0;
+    virtual void setInitializationData( const std::shared_ptr<ConfigurationElement> configuration ) throw() = 0;
 
 
     protected:
@@ -73,7 +73,7 @@ struct FWRUNTIME_CLASS_API IExecutable
          *
          * @param[in]   bundle  a pointer to the bundle the executable originates from
          */
-        virtual void setBundle( ::boost::shared_ptr< Bundle > bundle ) = 0;
+        virtual void setBundle( std::shared_ptr< Bundle > bundle ) = 0;
 
 };
 

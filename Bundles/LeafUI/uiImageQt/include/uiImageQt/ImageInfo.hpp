@@ -51,7 +51,7 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Receive InteractionMsg and updates text informations
-    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( std::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 

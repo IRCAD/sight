@@ -12,13 +12,17 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
-#include <boost/shared_ptr.hpp>
-
 #include <map>
 
 namespace fwData
-{ class Composite; }
+{
+class Composite;
+}
 
+inline boost::mpl::true_ * boost_foreach_is_noncopyable( ::fwData::Composite *&, BOOST_FOREACH_TAG_DEFAULT )
+{
+    return 0;
+}
 
 fwCampAutoDeclareDataMacro((fwData)(Composite), FWDATA_API);
 
@@ -277,7 +281,7 @@ inline std::map< std::string, SPTR(DATATYPE) > Composite::getDataContainer() con
     SPTR(DATATYPE) castData;
     for( ::fwData::Composite::value_type elem : *this )
     {
-        castData = ::boost::dynamic_pointer_cast<DATATYPE>( elem.second );
+        castData = std::dynamic_pointer_cast<DATATYPE>( elem.second );
         OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castData);
         map[elem.first] = castData;
     }
@@ -294,7 +298,7 @@ SPTR(DATATYPE) Composite::at(const std::string& key)
     ::fwData::Composite::iterator iter = this->find(key);
     if(iter != this->end())
     {
-        castData = ::boost::dynamic_pointer_cast<DATATYPE>(iter->second);
+        castData = std::dynamic_pointer_cast<DATATYPE>(iter->second);
         SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()+" failed", !castData);
     }
     else
@@ -313,7 +317,7 @@ CSPTR(DATATYPE) Composite::at(const std::string& key) const
     ::fwData::Composite::const_iterator iter = this->find(key);
     if(iter != this->end())
     {
-        castData = ::boost::dynamic_pointer_cast<DATATYPE>(iter->second);
+        castData = std::dynamic_pointer_cast<DATATYPE>(iter->second);
         SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()+" failed", !castData);
     }
     else

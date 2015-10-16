@@ -7,7 +7,6 @@
 #ifndef __FWRUNTIME_PLUGIN_HPP__
 #define __FWRUNTIME_PLUGIN_HPP__
 
-#include <boost/shared_ptr.hpp>
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/IPlugin.hpp"
@@ -34,7 +33,7 @@ struct FWRUNTIME_CLASS_API Plugin : public IPlugin
      * @name    Overrides
      */
     //@{
-    FWRUNTIME_API ::boost::shared_ptr<Bundle> getBundle() const throw();
+    FWRUNTIME_API std::shared_ptr<Bundle> getBundle() const throw();
     FWRUNTIME_API virtual void setInitializationData(const SPTR(ConfigurationElement)configuration) throw();
     //@}
 
@@ -42,7 +41,7 @@ struct FWRUNTIME_CLASS_API Plugin : public IPlugin
     protected:
 
         // Overrides
-        FWRUNTIME_API void setBundle( ::boost::shared_ptr<Bundle> bundle) throw();
+        FWRUNTIME_API void setBundle( std::shared_ptr<Bundle> bundle) throw();
 
 
     private:
@@ -50,7 +49,7 @@ struct FWRUNTIME_CLASS_API Plugin : public IPlugin
         /**
          * @brief   a pointer to the bundle the plugin is attached to
          */
-        ::boost::shared_ptr<Bundle> m_bundle;
+        std::shared_ptr<Bundle> m_bundle;
 
 };
 

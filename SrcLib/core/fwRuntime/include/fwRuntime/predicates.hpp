@@ -10,6 +10,8 @@
 namespace fwRuntime
 {
 
+
+
 /**
  * @brief   Implements a STL compliant predicate that tests if a given
  *          object has a given identifier and is enabled.
@@ -31,7 +33,7 @@ struct IsEnableAndHasIdentifier
     {
     }
 
-    bool operator() ( const ::boost::shared_ptr< T > p ) const
+    bool operator() ( const std::shared_ptr< T > p ) const
     {
         return p->getIdentifier() == m_identifier && p->isEnable();
     }

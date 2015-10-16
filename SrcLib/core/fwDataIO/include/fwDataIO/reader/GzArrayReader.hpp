@@ -8,7 +8,6 @@
 #define __FWDATAIO_READER_GZARRAYREADER_HPP__
 
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/location/SingleFile.hpp>

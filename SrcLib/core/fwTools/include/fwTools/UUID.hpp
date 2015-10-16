@@ -64,9 +64,14 @@ public:
      */
     FWTOOLS_API static bool set(::fwTools::Object::sptr object,  const UUID::UUIDType & uuid);
 
+    /**
+     * @brief   Destructor : does nothing.
+     */
+    FWTOOLS_API virtual ~UUID();
+
 protected:
 
-    /// Store association \::boost::weak_ptr <--> uuid as a string
+    /// Store association \std::weak_ptr <--> uuid as a string
     typedef std::map< UUIDType, ::fwTools::Object::wptr > UUIDContainer;
 
     FWTOOLS_API static UUIDContainer s_uuidMap;
@@ -76,10 +81,6 @@ protected:
      */
     FWTOOLS_API UUID();
 
-    /**
-     * @brief   Destructor : does nothing.
-     */
-    FWTOOLS_API virtual ~UUID();
 
     /// Mutex used to lock uuid object access.
     ::fwCore::mt::ReadWriteMutex m_uuidMutex;

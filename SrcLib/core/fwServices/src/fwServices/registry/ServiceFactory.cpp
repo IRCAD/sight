@@ -35,7 +35,7 @@ void ServiceFactory::parseBundleInformation()
     SrvRegContainer bundleInfoMap;
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    typedef ::boost::shared_ptr< ::fwRuntime::Extension > ExtensionType;
+    typedef std::shared_ptr< ::fwRuntime::Extension > ExtensionType;
 
     std::vector< ExtensionType >  extElements;
     extElements = ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::ServiceFactory");

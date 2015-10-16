@@ -465,7 +465,7 @@ void ImageMultiDistances::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(
         ::fwData::PointList::csptr plToRemove;
         plToRemove = ::fwData::PointList::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::DELETE_DISTANCE));
         SLM_ASSERT( "No dataInfo for the PointList ",plToRemove );
-        this->removeDistance( ::boost::const_pointer_cast< ::fwData::PointList>(plToRemove) );
+        this->removeDistance( std::const_pointer_cast< ::fwData::PointList>(plToRemove) );
     }
 }
 

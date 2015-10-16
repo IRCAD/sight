@@ -7,7 +7,6 @@
 #ifndef __FWDATAIO_READER_DICTIONARYREADER_HPP__
 #define __FWDATAIO_READER_DICTIONARYREADER_HPP__
 
-#include <boost/shared_ptr.hpp>
 #include <boost/filesystem.hpp>
 
 #include <fwData/StructureTraitsDictionary.hpp>

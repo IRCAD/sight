@@ -171,7 +171,7 @@ void WorkerQtTest::postFromInsideTest()
 {
     TestHandler handler;
 
-    m_worker->post( boost::bind(&runBasicTest, boost::ref(handler), m_worker) );
+    m_worker->post( ::boost::bind(&runBasicTest, boost::ref(handler), m_worker) );
 
     m_worker->getFuture().wait();
 
@@ -196,7 +196,7 @@ void WorkerQtTest::postFromOutsideTest()
     TestHandler handler;
 
     ::boost::thread testThread(
-        boost::bind(&runFromOutsideTest, boost::ref(handler), m_worker)
+        ::boost::bind(&runFromOutsideTest, boost::ref(handler), m_worker)
         );
 
     m_worker->getFuture().wait();
@@ -303,7 +303,7 @@ void WorkerQtTest::basicTimerTest()
         CPPUNIT_ASSERT(handler.m_threadCheckOk);
         CPPUNIT_ASSERT_EQUAL(0, handler.m_step);
 
-        m_worker->post( boost::bind(&runBasicTimerTest, ::boost::ref(handler), ::boost::ref(timer), duration) );
+        m_worker->post( ::boost::bind(&runBasicTimerTest, ::boost::ref(handler), ::boost::ref(timer), duration) );
 
 
         ::fwThread::Worker::FutureType future = m_worker->getFuture();

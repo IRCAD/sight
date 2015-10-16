@@ -7,7 +7,6 @@
 #ifndef __FWDATAIO_WRITER_ARRAYWRITER_HPP__
 #define __FWDATAIO_WRITER_ARRAYWRITER_HPP__
 
-#include <boost/shared_ptr.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/location/SingleFile.hpp>

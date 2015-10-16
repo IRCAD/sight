@@ -101,11 +101,11 @@ void SlotTest::buildTest ()
 
 
     ::fwCom::SlotCall< int (int, int) >::sptr slotcall1
-        = ::boost::dynamic_pointer_cast< ::fwCom::SlotCall< int (int, int) > > ( slot1 );
+        = std::dynamic_pointer_cast< ::fwCom::SlotCall< int (int, int) > > ( slot1 );
     ::fwCom::SlotCall< void () >::sptr slotcall2
-        = ::boost::dynamic_pointer_cast< ::fwCom::SlotCall< void () >        > ( slot2 );
+        = std::dynamic_pointer_cast< ::fwCom::SlotCall< void () >        > ( slot2 );
     ::fwCom::SlotCall< float (float) >::sptr slotcall3
-        = ::boost::dynamic_pointer_cast< ::fwCom::SlotCall< float (float) >  > ( slot3 );
+        = std::dynamic_pointer_cast< ::fwCom::SlotCall< float (float) >  > ( slot3 );
 
     CPPUNIT_ASSERT( slotcall1 );
     CPPUNIT_ASSERT( slotcall2 );
@@ -114,11 +114,11 @@ void SlotTest::buildTest ()
 
 
     ::fwCom::SlotRun< void (int, int) >::sptr slotrun1
-        = ::boost::dynamic_pointer_cast< ::fwCom::SlotRun< void (int, int) > > ( slot1 );
+        = std::dynamic_pointer_cast< ::fwCom::SlotRun< void (int, int) > > ( slot1 );
     ::fwCom::SlotRun< void () >::sptr slotrun2
-        = ::boost::dynamic_pointer_cast< ::fwCom::SlotRun< void () >         > ( slot2 );
+        = std::dynamic_pointer_cast< ::fwCom::SlotRun< void () >         > ( slot2 );
     ::fwCom::SlotRun< void (float) >::sptr slotrun3
-        = ::boost::dynamic_pointer_cast< ::fwCom::SlotRun< void (float) >    > ( slot3 );
+        = std::dynamic_pointer_cast< ::fwCom::SlotRun< void (float) >    > ( slot3 );
 
     CPPUNIT_ASSERT( slotrun1 );
     CPPUNIT_ASSERT( slotrun2 );
@@ -126,9 +126,9 @@ void SlotTest::buildTest ()
 
 
 
-    ::fwCom::SlotBase::sptr slotbase1 = ::boost::dynamic_pointer_cast< ::fwCom::SlotBase > ( slot1 );
-    ::fwCom::SlotBase::sptr slotbase2 = ::boost::dynamic_pointer_cast< ::fwCom::SlotBase > ( slot2 );
-    ::fwCom::SlotBase::sptr slotbase3 = ::boost::dynamic_pointer_cast< ::fwCom::SlotBase > ( slot3 );
+    ::fwCom::SlotBase::sptr slotbase1 = std::dynamic_pointer_cast< ::fwCom::SlotBase > ( slot1 );
+    ::fwCom::SlotBase::sptr slotbase2 = std::dynamic_pointer_cast< ::fwCom::SlotBase > ( slot2 );
+    ::fwCom::SlotBase::sptr slotbase3 = std::dynamic_pointer_cast< ::fwCom::SlotBase > ( slot3 );
 
     CPPUNIT_ASSERT( slotbase1 );
     CPPUNIT_ASSERT( slotbase2 );

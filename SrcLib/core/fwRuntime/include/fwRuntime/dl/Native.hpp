@@ -8,7 +8,6 @@
 #define __FWRUNTIME_DL_NATIVE_HPP__
 
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/RuntimeException.hpp"
@@ -47,8 +46,7 @@ struct Native
      * @param[in]   modulePath      a path to the module to manage
      * @param[in]   nameDecorator   a shared pointer to a name decorator to use to retrieve the native file name
      */
-    Native( const boost::filesystem::path & modulePath,
-            const ::boost::shared_ptr< INameDecorator > nameDecorator ) throw();
+    Native( const boost::filesystem::path & modulePath, const std::shared_ptr< INameDecorator > nameDecorator ) throw();
 
     /**
      * @brief   Destructor : does nothing.
@@ -120,7 +118,7 @@ struct Native
         /**
          * @brief   a name decorator to use to retrieve the native path
          */
-        const ::boost::shared_ptr< INameDecorator > m_nameDecorator;
+        const std::shared_ptr< INameDecorator > m_nameDecorator;
 
         /**
          * @brief   A pointer to the bundle the library is attached to.

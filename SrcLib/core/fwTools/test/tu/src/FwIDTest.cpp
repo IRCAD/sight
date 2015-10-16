@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 #include <boost/chrono/duration.hpp>
 
 #include <fwTools/fwID.hpp>
@@ -29,7 +28,7 @@ namespace ut
 void FwIDTest::setUp()
 {
     // Set up context before running a test.
-    m_object = ::boost::make_shared< ::fwTools::Object >();
+    m_object = std::make_shared< ::fwTools::Object >();
 }
 
 //-----------------------------------------------------------------------------
@@ -45,7 +44,7 @@ void FwIDTest::objectFwIDTest()
 {
     const std::string fwID = "myID";
 
-    ::fwTools::Object::sptr obj = ::boost::make_shared< ::fwTools::Object >();
+    ::fwTools::Object::sptr obj = std::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwID) == false);
 
@@ -55,7 +54,7 @@ void FwIDTest::objectFwIDTest()
     CPPUNIT_ASSERT_EQUAL(  fwID, obj->getID() );
     CPPUNIT_ASSERT_EQUAL( obj, ::fwTools::fwID::getObject(fwID) );
 
-    ::fwTools::Object::sptr obj2 = ::boost::make_shared< ::fwTools::Object >();
+    ::fwTools::Object::sptr obj2 = std::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT(obj2->hasID() == false);
     CPPUNIT_ASSERT_THROW (obj2->getID(::fwTools::fwID::MUST_EXIST), ::fwTools::Failed);
@@ -82,7 +81,7 @@ void FwIDTest::conccurentAccessOnFwIDMapTest()
     for (int i = 0; i<nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
-        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+        thread = std::shared_ptr< ::fwTest::helper::Thread >(
             new ::fwTest::helper::Thread(::boost::bind(&FwIDTest::runFwIDCreation, this)));
         threads.push_back(thread);
     }
@@ -102,7 +101,7 @@ void FwIDTest::runFwIDCreation()
 {
     const std::string fwID = ::fwTools::UUID::generateUUID();
 
-    ::fwTools::Object::sptr obj = ::boost::make_shared< ::fwTools::Object >();
+    ::fwTools::Object::sptr obj = std::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT( ::fwTools::fwID::exist(fwID) == false);
 
@@ -114,7 +113,7 @@ void FwIDTest::runFwIDCreation()
 
     CPPUNIT_ASSERT_EQUAL( obj, ::fwTools::fwID::getObject(fwID) );
 
-    ::fwTools::Object::sptr obj2 = ::boost::make_shared< ::fwTools::Object >();
+    ::fwTools::Object::sptr obj2 = std::make_shared< ::fwTools::Object >();
 
     CPPUNIT_ASSERT(obj2->hasID() == false);
     CPPUNIT_ASSERT_THROW (obj2->getID(::fwTools::fwID::MUST_EXIST), ::fwTools::Failed);
@@ -141,7 +140,7 @@ void FwIDTest::conccurentAccessOnSameObjFwIDTest()
     for (int i = 0; i<nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
-        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
+        thread = std::shared_ptr< ::fwTest::helper::Thread >(
             new ::fwTest::helper::Thread(::boost::bind(&FwIDTest::runAccessToObjectFwID, this)));
         threads.push_back(thread);
     }

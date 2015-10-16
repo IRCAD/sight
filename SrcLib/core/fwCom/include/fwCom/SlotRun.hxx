@@ -50,7 +50,7 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(
     return postWeakCall< void >(
         worker,
         ::fwCom::util::weakcall(
-            ::boost::dynamic_pointer_cast< const SlotBase >(this->shared_from_this()),
+            std::dynamic_pointer_cast< const SlotBase >(this->shared_from_this()),
             this->bindRun( args ... )
             )
         );
@@ -73,7 +73,7 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(A ... ar
     return postWeakCall< void >(
         m_worker,
         ::fwCom::util::weakcall(
-            ::boost::dynamic_pointer_cast< const SlotBase >(this->shared_from_this()),
+            std::dynamic_pointer_cast< const SlotBase >(this->shared_from_this()),
             this->bindRun( args ... ),
             this->m_worker
             )

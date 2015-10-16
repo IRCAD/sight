@@ -22,7 +22,7 @@ namespace fwCom
 template<typename F, typename ... A>
 Slots& Slots::operator()( const SlotKeyType &key, F f, A ... a )
 {
-    SPTR( SlotBase ) slotBase = ::boost::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f, a ...) );
+    SPTR( SlotBase ) slotBase = std::dynamic_pointer_cast< SlotBase >( ::fwCom::newSlot(f, a ...) );
     return this->operator()(key, slotBase);
 }
 

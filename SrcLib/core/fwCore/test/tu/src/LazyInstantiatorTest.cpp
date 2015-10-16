@@ -42,7 +42,7 @@ template < int SLEEP = 0 >
 class StaticCounter
 {
 public:
-    typedef ::boost::shared_ptr< StaticCounter > sptr;
+    typedef std::shared_ptr< StaticCounter > sptr;
 
     StaticCounter()
     {
@@ -92,7 +92,7 @@ struct thread_counter_tag {};
 struct CounterThread
 {
     typedef StaticCounter<5> CounterType;
-    typedef ::boost::shared_ptr< CounterThread > sptr;
+    typedef std::shared_ptr< CounterThread > sptr;
 
     CounterThread()
     {
@@ -115,7 +115,7 @@ void LazyInstantiatorTest::threadSafetyTest()
     ::boost::thread_group tg;
     for(size_t i = 0; i <= NB_THREAD; i++)
     {
-        CounterThread::sptr ct = ::boost::make_shared<CounterThread>();
+        CounterThread::sptr ct = std::make_shared<CounterThread>();
         ::boost::thread* t = new ::boost::thread(::boost::bind(&CounterThread::run, ct) );
         tg.add_thread(t);
     }

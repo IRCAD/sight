@@ -8,7 +8,6 @@
 #define __FWDATAIO_WRITER_GZBUFFERIMAGEWRITER_HPP__
 
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/SingleFile.hpp>

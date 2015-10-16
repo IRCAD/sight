@@ -17,7 +17,6 @@
 #pragma GCC visibility pop
 #endif
 
-#include <boost/shared_ptr.hpp>
 #include "fwRuntime/config.hpp"
 
 namespace fwRuntime
@@ -52,7 +51,7 @@ struct ProfileReader
      *
      * @param[in]   path    a path to an xml profile file
      */
-    FWRUNTIME_API static ::boost::shared_ptr< ::fwRuntime::profile::Profile > createProfile(
+    FWRUNTIME_API static std::shared_ptr< ::fwRuntime::profile::Profile > createProfile(
         const boost::filesystem::path & path );
 
 
@@ -77,7 +76,7 @@ struct ProfileReader
          *
          * @return      a shared pointer to the created profile
          */
-        static ::boost::shared_ptr< ::fwRuntime::profile::Profile > processProfile(xmlNodePtr node);
+        static std::shared_ptr< ::fwRuntime::profile::Profile > processProfile(xmlNodePtr node);
 
         /**
          * @brief       Processes the given xml node as an activater.
@@ -86,7 +85,7 @@ struct ProfileReader
          *
          * @return      a shared pointer to the created activater
          */
-        static ::boost::shared_ptr< ::fwRuntime::profile::Activater > processActivater(xmlNodePtr node);
+        static std::shared_ptr< ::fwRuntime::profile::Activater > processActivater(xmlNodePtr node);
 
         /**
          * @brief       Processes the given xml node as an activater parameter and
@@ -96,7 +95,7 @@ struct ProfileReader
          * @param[out]  activater   a shared pointer to an activater
          */
         static void processActivaterParam(xmlNodePtr node,
-                                          ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater);
+                                          std::shared_ptr< ::fwRuntime::profile::Activater > activater);
 
         /**
          * @brief       Processes the given xml node as an activater disable extension point and
@@ -106,7 +105,7 @@ struct ProfileReader
          * @param[out]  activater   a shared pointer to an activater
          */
         static void processActivaterDisableExtensionPoint(xmlNodePtr node,
-                                                          ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater);
+                                                          std::shared_ptr< ::fwRuntime::profile::Activater > activater);
 
         /**
          * @brief       Processes the given xml node as an activater disable extension and
@@ -116,7 +115,7 @@ struct ProfileReader
          * @param[out]  activater   a shared pointer to an activater
          */
         static void processActivaterDisableExtension(xmlNodePtr node,
-                                                     ::boost::shared_ptr< ::fwRuntime::profile::Activater > activater);
+                                                     std::shared_ptr< ::fwRuntime::profile::Activater > activater);
 
         /**
          * @brief       Processes the given xml node as a starter.
@@ -125,7 +124,7 @@ struct ProfileReader
          *
          * @return      a shared pointer to the created starter
          */
-        static ::boost::shared_ptr< ::fwRuntime::profile::Starter > processStarter(xmlNodePtr node);
+        static std::shared_ptr< ::fwRuntime::profile::Starter > processStarter(xmlNodePtr node);
 
 };
 

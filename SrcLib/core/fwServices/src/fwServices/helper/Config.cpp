@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2004-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -81,7 +81,7 @@ void Config::createConnections(
     }
 
     ::fwTools::Object::sptr sigSource    = ::fwTools::fwID::getObject(signalInfo.first);
-    ::fwCom::HasSignals::sptr hasSignals = ::boost::dynamic_pointer_cast< ::fwCom::HasSignals >(sigSource);
+    ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(sigSource);
 
     SLM_ASSERT("Signal source not found" << signalInfo.first, sigSource);
     SLM_ASSERT("invalid signal source " << signalInfo.first, hasSignals);
@@ -90,7 +90,7 @@ void Config::createConnections(
     {
         ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotInfo.first);
         SLM_ASSERT("Failed to retrieve object '" + slotInfo.first + "'", obj);
-        ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+        ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
         SLM_ASSERT("invalid slot owner " << slotInfo.first, hasSlots);
 
         connections->connect(hasSignals, signalInfo.second, hasSlots, slotInfo.second);

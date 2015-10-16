@@ -13,7 +13,6 @@
 #include <string>
 #include <vector>
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 #include <libxml/parser.h>
 #if defined(__GNUC__)
 #pragma GCC visibility pop
@@ -42,7 +41,7 @@ namespace io
  */
 struct BundleDescriptorReader
 {
-    typedef std::vector< ::boost::shared_ptr<Bundle> >  BundleContainer;
+    typedef std::vector< std::shared_ptr<Bundle> >  BundleContainer;
     /// Pair of created extension point associated with extensions
     typedef std::pair< SPTR(ExtensionPoint), std::vector< SPTR(Extension) > > PointExtensionsPairType;
 
@@ -54,7 +53,7 @@ struct BundleDescriptorReader
      *
      * @return      a shared pointer to the created bundle
      */
-    FWRUNTIME_API static ::boost::shared_ptr<Bundle> createBundle(const boost::filesystem::path& location) throw(
+    FWRUNTIME_API static std::shared_ptr<Bundle> createBundle(const boost::filesystem::path& location) throw(
         RuntimeException);
 
     /**
@@ -65,8 +64,8 @@ struct BundleDescriptorReader
      *
      * @return      a shared pointer to the created bundle
      */
-    FWRUNTIME_API static ::boost::shared_ptr<Bundle> createBundleFromXmlPlugin(
-        const ::boost::filesystem::path & location ) throw ( RuntimeException );
+    FWRUNTIME_API static std::shared_ptr<Bundle> createBundleFromXmlPlugin( const ::boost::filesystem::path & location )
+    throw ( RuntimeException );
 
     /**
      * @brief       Creates all bundles that are found at the given location.
@@ -85,9 +84,9 @@ struct BundleDescriptorReader
      *
      * @return  a pointer to the created configuration element
      */
-    static ::boost::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node,
-                                                                                 const ::boost::shared_ptr<Bundle> bundle)
-    throw(RuntimeException);
+    static std::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node,
+                                                                             const std::shared_ptr<Bundle> bundle) throw(
+        RuntimeException);
 
 
 
@@ -114,9 +113,8 @@ struct BundleDescriptorReader
          *
          * @return  a pointer to the created extension
          */
-        static ::boost::shared_ptr<Extension> processExtension(xmlNodePtr node,
-                                                               const ::boost::shared_ptr<Bundle> bundle) throw(
-            RuntimeException);
+        static std::shared_ptr<Extension> processExtension(xmlNodePtr node,
+                                                           const std::shared_ptr<Bundle> bundle) throw(RuntimeException);
 
 
         /**
@@ -127,7 +125,7 @@ struct BundleDescriptorReader
          * @return  a pair with the created extension point and extensions
          */
         static PointExtensionsPairType processPoint(xmlNodePtr node,
-                                                    const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException);
+                                                    const std::shared_ptr<Bundle> bundle) throw(RuntimeException);
 
         /**
          * @brief   Processes an extension point XML node.
@@ -137,8 +135,8 @@ struct BundleDescriptorReader
          *
          * @return  a pointer to the created extension point
          */
-        static ::boost::shared_ptr<ExtensionPoint> processExtensionPoint(xmlNodePtr node,
-                                                                         const ::boost::shared_ptr<Bundle> bundle) throw(
+        static std::shared_ptr<ExtensionPoint> processExtensionPoint(xmlNodePtr node,
+                                                                     const std::shared_ptr<Bundle> bundle) throw(
             RuntimeException);
 
         /**
@@ -148,7 +146,7 @@ struct BundleDescriptorReader
          *
          * @return  a pointer to the created library
          */
-        static ::boost::shared_ptr<dl::Library> processLibrary(xmlNodePtr node) throw(RuntimeException);
+        static std::shared_ptr<dl::Library> processLibrary(xmlNodePtr node) throw(RuntimeException);
 
         /**
          * Processes a node that is a plugin element.
@@ -158,8 +156,8 @@ struct BundleDescriptorReader
          *
          * @return  a pointer to the created bundle
          */
-        static ::boost::shared_ptr<Bundle> processPlugin(xmlNodePtr node,
-                                                         const boost::filesystem::path& location) throw(RuntimeException);
+        static std::shared_ptr<Bundle> processPlugin(xmlNodePtr node,
+                                                     const boost::filesystem::path& location) throw(RuntimeException);
 
         /**
          * Processes a node that is a requirement
@@ -175,7 +173,7 @@ struct BundleDescriptorReader
          *
          * @return  a pointer to a bundle
          */
-//   ::boost::shared_ptr<Bundle> run(const boost::filesystem::path& location) throw(RuntimeException);
+//   std::shared_ptr<Bundle> run(const boost::filesystem::path& location) throw(RuntimeException);
 };
 
 

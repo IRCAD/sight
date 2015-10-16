@@ -35,7 +35,7 @@ struct GenericExecutableFactoryRegistrar : public ExecutableFactoryRegistrar
      * @brief   Constructor
      */
     GenericExecutableFactoryRegistrar(const std::string& type)
-        : ExecutableFactoryRegistrar( ::boost::shared_ptr< FactoryType >( new FactoryType(type) ) )
+        : ExecutableFactoryRegistrar( std::shared_ptr< FactoryType >( new FactoryType(type) ) )
     {
     }
 

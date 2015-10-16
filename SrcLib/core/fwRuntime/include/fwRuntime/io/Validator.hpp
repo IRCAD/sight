@@ -10,7 +10,6 @@
 #include <string>
 #include <sstream>
 
-#include <boost/shared_ptr.hpp>
 #include <boost/filesystem/path.hpp>
 #include <libxml/tree.h>
 #include <libxml/xmlschemastypes.h>
@@ -115,9 +114,9 @@ struct Validator
         std::string m_xsd_content;
         std::ostringstream m_errorLog;
 
-        typedef ::boost::shared_ptr< xmlSchemaParserCtxt > SchemaParserCtxtSptr;
-        typedef ::boost::shared_ptr< xmlSchema > SchemaSptr;
-        typedef ::boost::shared_ptr< xmlSchemaValidCtxt > SchemaValidCtxtSptr;
+        typedef std::shared_ptr< xmlSchemaParserCtxt > SchemaParserCtxtSptr;
+        typedef std::shared_ptr< xmlSchema > SchemaSptr;
+        typedef std::shared_ptr< xmlSchemaValidCtxt > SchemaValidCtxtSptr;
 
         SchemaParserCtxtSptr m_schemaParserContext;
         SchemaSptr m_schema;

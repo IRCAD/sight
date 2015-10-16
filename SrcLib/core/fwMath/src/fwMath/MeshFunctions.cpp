@@ -150,7 +150,7 @@ bool IsInclosedVolume(const fwVertexPosition &_vertex, const fwVertexIndex &_ver
 bool isBorderlessSurface(const fwVertexIndex &_vertexIndex)
 {
     typedef std::pair< int, int >  Edge; // always Edge.first < Edge.second !!
-    typedef boost::unordered_map< Edge, int >  EdgeHistogram;
+    typedef ::boost::unordered_map< Edge, int >  EdgeHistogram;
     EdgeHistogram edgesHistogram;
     bool isBorderless = true;
 

@@ -13,7 +13,6 @@
 
 #include <fstream>
 
-#include <boost/make_shared.hpp>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -52,7 +51,7 @@ SPTR(std::ostream) WriteDirArchive::createFile(const ::boost::filesystem::path &
         ::boost::filesystem::create_directories(parentFile);
     }
 
-    SPTR(std::ofstream) os = ::boost::make_shared< std::ofstream >();
+    SPTR(std::ofstream) os = std::make_shared< std::ofstream >();
     os->open(file.string().c_str(), std::fstream::binary | std::fstream::out | std::fstream::trunc);
     return os;
 }

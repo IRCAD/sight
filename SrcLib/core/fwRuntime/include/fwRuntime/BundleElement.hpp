@@ -7,9 +7,9 @@
 #ifndef __FWRUNTIME_BUNDLEELEMENT_HPP__
 #define __FWRUNTIME_BUNDLEELEMENT_HPP__
 
-#include <boost/shared_ptr.hpp>
-
 #include "fwRuntime/config.hpp"
+
+#include <memory>
 
 namespace fwRuntime
 {
@@ -36,7 +36,7 @@ struct BundleElement
      *
      * @return  a pointer to a bundle instance
      */
-    FWRUNTIME_API ::boost::shared_ptr<Bundle> getBundle() const;
+    FWRUNTIME_API std::shared_ptr<Bundle> getBundle() const;
 
     /**
      * @brief   Tells if the element is enabled or not.
@@ -79,12 +79,12 @@ struct BundleElement
          * @post        The bundle isn't null.
          * @param[in]   bundle  a shared pointer to the managing bundle
          */
-        BundleElement( ::boost::shared_ptr< Bundle > bundle );
+        BundleElement( std::shared_ptr< Bundle > bundle );
 
 
     private:
 
-        ::boost::shared_ptr< Bundle >  m_bundle;///< a shared pointer to the bundle managing the element
+        std::shared_ptr< Bundle >  m_bundle;///< a shared pointer to the bundle managing the element
         bool m_enable;                          ///< to know if bundle element is enabled
 
 };

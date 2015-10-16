@@ -38,7 +38,7 @@ std::ostream & operator<<(std::ostream & _sstream, ConfigurationElement& _config
 
 //------------------------------------------------------------------------------
 
-ConfigurationElement::ConfigurationElement( const ::boost::shared_ptr< Bundle > bundle, const std::string & name )
+ConfigurationElement::ConfigurationElement( const std::shared_ptr< Bundle > bundle, const std::string & name )
     :   m_bundle( bundle    ),
       m_name  ( name      ),
       m_value ( std::string("") )
@@ -47,7 +47,7 @@ ConfigurationElement::ConfigurationElement( const ::boost::shared_ptr< Bundle > 
 
 //------------------------------------------------------------------------------
 
-const ::boost::shared_ptr<Bundle> ConfigurationElement::getBundle() const throw()
+const std::shared_ptr<Bundle> ConfigurationElement::getBundle() const throw()
 {
     return m_bundle;
 }
