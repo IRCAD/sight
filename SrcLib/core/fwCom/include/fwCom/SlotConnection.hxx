@@ -13,10 +13,9 @@
 
 #include <boost/bind.hpp>
 
-#include "fwCom/SlotBase.hpp"
+#include "fwCom/util/log.hpp"
 #include "fwCom/SlotRun.hpp"
 
-#include "fwCom/util/log.hpp"
 
 namespace fwCom
 {

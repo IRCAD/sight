@@ -8,6 +8,7 @@
 
 #include "fwCom/SlotConnectionBase.hpp"
 
+#include "fwCom/SlotBase.hpp"
 
 namespace fwCom
 {
@@ -17,8 +18,6 @@ struct Signal;
 
 template < typename F >
 struct SlotConnection;
-
-struct SlotBase;
 
 /**
  * @brief Slot connection implementation.

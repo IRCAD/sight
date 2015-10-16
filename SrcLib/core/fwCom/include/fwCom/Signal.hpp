@@ -13,9 +13,10 @@
 
 #include <boost/type_traits/is_same.hpp>
 
+#include <fwCom/SlotConnection.hpp>
 #include <fwCore/mt/types.hpp>
-
 #include "fwCom/SignalBase.hpp"
+
 
 namespace fwCom
 {
@@ -103,11 +104,13 @@ struct Signal< R (A ...) > : SignalBase
      */
     Connection getConnection( SPTR( SlotBase ) slot, bool throws = false );
 
+
+
     protected:
+
 
         template < typename F >
         friend struct SlotConnection;
-
         /**
          * @brief Connects the given slot.
          * Tries to connect a slot of type R (A1, A2, ..., Am, An) :
