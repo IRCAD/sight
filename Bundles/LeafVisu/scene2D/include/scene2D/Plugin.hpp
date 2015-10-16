@@ -17,10 +17,7 @@ namespace scene2D
 /**
  * @brief   This class is started when the bundles is loaded.
  * @class   Plugin
- *
- * @date    2010.
  */
-
 struct Plugin : public ::fwRuntime::Plugin
 {
 

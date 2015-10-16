@@ -16,9 +16,9 @@ fwCampImplementDataMacro((fwData)(Reconstruction))
     .property("is_visible", &::fwData::Reconstruction::m_bIsVisible)
     .property("organ_name", &::fwData::Reconstruction::m_sOrganName)
     .property("structure_type", &::fwData::Reconstruction::m_sStructureType)
-    .property("material", &::fwData::Reconstruction::m_attrMaterial)
-    .property("image", &::fwData::Reconstruction::m_attrImage)
-    .property("mesh", &::fwData::Reconstruction::m_attrMesh)
-    .property("volume", &::fwData::Reconstruction::m_attrComputedMaskVolume)
+    .property("material", &::fwData::Reconstruction::m_material)
+    .property("image", &::fwData::Reconstruction::m_image)
+    .property("mesh", &::fwData::Reconstruction::m_mesh)
+    .property("volume", &::fwData::Reconstruction::m_computedMaskVolume)
     ;
 }

@@ -7,16 +7,15 @@
 #ifndef __FWDATA_PLANE_HPP__
 #define __FWDATA_PLANE_HPP__
 
-#include <vector>
-
-#include <fwMath/IntrasecTypes.hpp>
-
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Point.hpp"
 
-fwCampAutoDeclareDataMacro((fwData)(Plane), FWDATA_API);
+#include <fwMath/IntrasecTypes.hpp>
 
+#include <vector>
+
+fwCampAutoDeclareDataMacro((fwData)(Plane), FWDATA_API);
 namespace fwData
 {
 /**
@@ -27,8 +26,7 @@ class FWDATA_CLASS_API Plane : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object),
-                                            (()), ::fwData::factory::New< Plane >);
+    fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object), (()), ::fwData::factory::New< Plane >);
 
     fwCampMakeFriendDataMacro((fwData)(Plane));
 
@@ -58,10 +56,7 @@ public:
     FWDATA_API bool operator==( const Plane & _plane );
 
     /// get the plane coordinate
-    fwPlane getPlane() const
-    {
-        return m_plane;
-    }
+    fwPlane getPlane() const;
 
     /// Re-initialize the plane with 3 points
     FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2,
@@ -70,11 +65,24 @@ public:
     /// Compute plane normal and distance from points coordinates
     FWDATA_API void computePlaneFromPoints();
 
-    /// Points container
-    fwGettersSettersDocMacro(Points, vPoints, PointContainer, a container of all points);
+    /** @{
+     *  @brief get/set points container
+     */
+    const PointContainer getPoints() const;
+    PointContainer& getRefPoints();
+    const PointContainer& getCRefPoints() const;
+    void setPoints(const PointContainer _vPoints);
+    void setCRefPoints(const PointContainer& _vPoints);
+    /// @}
 
-    fwGettersSettersDocMacro(IsIntersection, isIntersection, bool,
-                             "flag if the plane is an intersection one (else an union one)");
+    /** @{
+     *  @brief get/set flag if the plane is an intersection one (else an union one)
+     */
+    bool getIsIntersection () const;
+    bool& getRefIsIntersection ();
+    const bool& getCRefIsIntersection () const;
+    void setIsIntersection(bool _isIntersection);
+    /// @}
 
 protected:
 
@@ -87,7 +95,79 @@ protected:
 
 }; // end class Plane
 
+//-----------------------------------------------------------------------------
+
+inline fwPlane Plane::getPlane() const
+{
+    return m_plane;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Plane::PointContainer Plane::getPoints() const
+{
+    return m_vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Plane::PointContainer& Plane::getRefPoints()
+{
+    return this->m_vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Plane::PointContainer& Plane::getCRefPoints() const
+{
+    return this->m_vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Plane::setPoints(const Plane::PointContainer _vPoints)
+{
+    this->m_vPoints = _vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Plane::setCRefPoints(const Plane::PointContainer& _vPoints)
+{
+    this->m_vPoints = _vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool Plane::getIsIntersection () const
+{
+    return m_isIntersection;
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool& Plane::getRefIsIntersection ()
+{
+    return this->m_isIntersection;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const bool& Plane::getCRefIsIntersection () const
+{
+    return this->m_isIntersection;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Plane::setIsIntersection(bool _isIntersection)
+{
+    this->m_isIntersection = _isIntersection;
+}
+
+//-----------------------------------------------------------------------------
+
 } // end namespace fwData
 
-#endif //__FWDATA_PLANE_HPP__
+#endif // __FWDATA_PLANE_HPP__
 

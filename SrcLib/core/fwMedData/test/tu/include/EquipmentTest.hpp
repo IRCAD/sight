@@ -9,8 +9,11 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+#include <fwMedData/Equipment.hpp>
+
 namespace fwMedData
 {
+
 namespace ut
 {
 

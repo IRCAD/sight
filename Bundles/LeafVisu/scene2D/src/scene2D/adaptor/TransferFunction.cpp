@@ -4,7 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "scene2D/data/Viewport.hpp"
+#include "scene2D/adaptor/TransferFunction.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/data/ViewportMsg.hpp"
 
 #include <fwServices/Base.hpp>
 
@@ -24,11 +28,6 @@
 #include <QPoint>
 #include <QColorDialog>
 
-#include "scene2D/data/Viewport.hpp"
-#include "scene2D/adaptor/TransferFunction.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/ViewportMsg.hpp"
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::TransferFunction, ::fwData::Image );
 
@@ -104,7 +103,7 @@ void TransferFunction::buildTFPoints()
     ::fwData::TransferFunction::TFValueType window     = selectedTF->getWindow();
     ::fwData::TransferFunction::TFValueType width      = minMax.second - minMax.first;
 
-    BOOST_FOREACH(::fwData::TransferFunction::TFDataType::value_type elt, selectedTF->getTFData())
+    for(const ::fwData::TransferFunction::TFDataType::value_type& elt : selectedTF->getTFData())
     {
         ::fwData::TransferFunction::TFValueType val;
         val             = (elt.first - minMax.first) / width;
@@ -143,17 +142,16 @@ void TransferFunction::buildCircles()
     m_circleHeight *= ratio.second;
 
     // Remove the circles items from the scene and clear the circles vector
-    for (std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin(); circleIt != m_circles.end();
-         ++circleIt)
+    for(QGraphicsEllipseItem* circle : m_circles)
     {
-        this->getScene2DRender()->getScene()->removeItem(*circleIt);
-        delete *circleIt;
+        this->getScene2DRender()->getScene()->removeItem(circle);
+        delete circle;
     }
 
     m_circles.clear();
 
     // Iterate on the tf points map to add circle items to the circles vector
-    BOOST_FOREACH(::fwData::TransferFunction::TFDataType::value_type elt,  m_TFPoints)
+    for(const ::fwData::TransferFunction::TFDataType::value_type& elt : m_TFPoints)
     {
         // Build circle corresponding to the tf point and push it back into the circles vector
         m_circles.push_back(this->buildCircle(elt.first, elt.second));
@@ -191,12 +189,10 @@ void TransferFunction::buildLinesAndPolygons()
     ::fwData::TransferFunction::sptr selectedTF = this->getTransferFunction();
 
     // Remove line and polygon items from the scene and clear the lines and polygons vector
-    std::vector< QGraphicsItem* >::iterator linesAndPolygonsIt;
-    for( linesAndPolygonsIt = m_linesAndPolygons.begin(); linesAndPolygonsIt != m_linesAndPolygons.end();
-         ++linesAndPolygonsIt)
+    for( QGraphicsItem* linesAndPolygons : m_linesAndPolygons)
     {
-        this->getScene2DRender()->getScene()->removeItem(*linesAndPolygonsIt);
-        delete *linesAndPolygonsIt;
+        this->getScene2DRender()->getScene()->removeItem(linesAndPolygons);
+        delete linesAndPolygons;
     }
 
     m_linesAndPolygons.clear();
@@ -481,7 +477,7 @@ void TransferFunction::updateImageTF()
     double width = minMax.second - minMax.first;
     double min   = m_TFPoints.begin()->first;
     double max   = m_TFPoints.rbegin()->first;
-    BOOST_FOREACH(::fwData::TransferFunction::TFDataType::value_type elt,  m_TFPoints)
+    for(const ::fwData::TransferFunction::TFDataType::value_type& elt :  m_TFPoints)
     {
         val = (elt.first - wlMin) / window;
         val = val * width + minMax.first;
@@ -602,7 +598,7 @@ void TransferFunction::processInteraction( ::scene2D::data::Event::sptr _event )
 
     // Iterate parallely on the circles vector and the tf points map
     ::fwData::TransferFunction::TFDataType::iterator TFPointIt = m_TFPoints.begin();
-    BOOST_FOREACH(QGraphicsEllipseItem* circle, m_circles)
+    for(QGraphicsEllipseItem* circle : m_circles)
     {
         if ( items.indexOf(circle) >=0)
         {

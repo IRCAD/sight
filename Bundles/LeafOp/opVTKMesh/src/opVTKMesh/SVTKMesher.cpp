@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/lexical_cast.hpp>
+#include "opVTKMesh/SVTKMesher.hpp"
 
 #include <fwTools/fwID.hpp>
 
@@ -30,7 +30,6 @@
 #include <vtkSmartPointer.h>
 #include <vtkImageData.h>
 
-#include "opVTKMesh/SVTKMesher.hpp"
 
 namespace opVTKMesh
 {
@@ -169,8 +168,8 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
 
     static unsigned int organNumber = 0;
     ++organNumber;
-    reconstruction->setCRefOrganName("OrganMesher_VTK_" + ::boost::lexical_cast<std::string>(organNumber));
-    reconstruction->setCRefStructureType("OrganType");
+    reconstruction->setOrganName("OrganMesher_VTK_" + std::to_string(organNumber));
+    reconstruction->setStructureType("OrganType");
     reconstruction->setIsVisible(true);
     // Set Mesh
     reconstruction->setMesh(mesh);

@@ -9,7 +9,6 @@
 
 #include <fwData/Object.hpp>
 #include <fwData/factory/new.hpp>
-#include <fwData/macros.hpp>
 
 #include <fwMedData/Series.hpp>
 

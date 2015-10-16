@@ -49,8 +49,25 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
+    const TMCoefArray  getCoefficients () const
+    {
+        return m_vCoefficients;
+    }
 
-    fwGettersSettersDocMacro(Coefficients, vCoefficients, TMCoefArray, the elements of the matrix)
+    TMCoefArray & getRefCoefficients ()
+    {
+        return this->m_vCoefficients;
+    }
+
+    const TMCoefArray & getCRefCoefficients () const
+    {
+        return this->m_vCoefficients;
+    }
+
+    void setCoefficients (const TMCoefArray& _vCoefficients)
+    {
+        this->m_vCoefficients = _vCoefficients;
+    }
 
     /**
      * @{

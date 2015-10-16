@@ -18,9 +18,9 @@ fwDataRegisterMacro( ::fwData::Histogram );
 namespace fwData
 {
 
-Histogram::Histogram(::fwData::Object::Key key) : m_binsWidth(1),
-                                                  m_minValue(0),
-                                                  m_maxValue(100)
+Histogram::Histogram(::fwData::Object::Key key) : m_binsWidth(1.f),
+                                                  m_minValue(0.f),
+                                                  m_maxValue(100.f)
 {
 }
 
@@ -62,7 +62,7 @@ void Histogram::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &
 
     m_values.clear();
 
-    BOOST_FOREACH( long value, other->m_values )
+    for(long value : other->m_values )
     {
         m_values.push_back( value );
     }

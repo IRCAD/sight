@@ -4,19 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-
-#include <boost/foreach.hpp>
-
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
 #include "fwData/Edge.hpp"
 #include "fwData/Port.hpp"
 #include "fwData/Node.hpp"
 #include "fwData/Graph.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <utility>
 
@@ -89,9 +86,9 @@ const Graph::NodeContainer &Graph::getCRefNodes() const
 
 bool Graph::haveConnectedEdges(Node::csptr node ) const
 {
-    for ( ConnectionContainer::const_iterator i = m_connections.begin(); i !=  m_connections.end(); ++i )
+    for(const auto&  connection : m_connections)
     {
-        if ( i->second.first == node ||  i->second.second == node)
+        if ( connection.second.first == node ||  connection.second.second == node)
         {
             return true;
         }
@@ -130,25 +127,25 @@ bool Graph::addEdge(Edge::sptr edge, Node::csptr nodeSource, Node::csptr nodeDes
     {
         return false; // edge already stored
     }
-    // node registred ?
+    // node registered ?
     if (m_nodes.find( Node::constCast(nodeSource) ) ==  m_nodes.end() )
     {
         return false; // node already stored
     }
-    // node registred ?
+    // node registered ?
     if ( m_nodes.find( Node::constCast(nodeDestination) ) ==  m_nodes.end() )
     {
         return false; // node already stored
     }
 
-    // test port existance
+    // test port existence
     Port::sptr sourcePort = nodeSource->findPort( edge->getIdentifiers().first, DOWN_STREAM );
     if ( !sourcePort )
     {
         return false; // port doesn't exist
     }
 
-    // test port existance
+    // test port existence
     Port::sptr sourceDest = nodeDestination->findPort( edge->getIdentifiers().second, UP_STREAM );
     if ( !sourceDest )
     {
@@ -232,20 +229,19 @@ std::vector< Edge::sptr > Graph::getEdges( const Node::csptr &node, bool upStrea
                                            const std::string &portID
                                            )
 {
-    SLM_ASSERT("Node " + node->getID()  + " not found in graph",
-               m_nodes.find( Node::constCast(node) ) != m_nodes.end());
+    SLM_ASSERT("Node " + node->getID()  + " not found in graph", m_nodes.find( Node::constCast(node) ) !=
+               m_nodes.end());
     SLM_ASSERT("Port " + portID  + " not found on node" + node->getID(),
                portID.empty() || node->findPort(portID, upStream));
 
     std::vector< Edge::sptr > result;
     result.reserve(4);
 
-    ConnectionContainer::const_iterator end = m_connections.end();
-    for ( ConnectionContainer::const_iterator i = m_connections.begin(); i != end; ++i )
+    for(const auto&  connection : m_connections)
     {
-        const Edge::sptr &edge     = i->first;
-        const Node::sptr &nodeFrom = i->second.first;
-        const Node::sptr &nodeTo   = i->second.second;
+        const Edge::sptr &edge     = connection.first;
+        const Node::sptr &nodeFrom = connection.second.first;
+        const Node::sptr &nodeTo   = connection.second.second;
 
         bool isConnectedEdge = ( upStream ? nodeTo : nodeFrom ) == node;
         if( !isConnectedEdge)
@@ -273,18 +269,16 @@ std::vector< Edge::sptr > Graph::getEdges( const Node::csptr &node, bool upStrea
 
 //------------------------------------------------------------------------------
 
-std::vector< ::fwData::Node::sptr >
-Graph::getNodes(
-    const ::fwData::Node::csptr &node,
-    bool upStream,
-    const std::string &nature,
-    const std::string &portID )
+std::vector< ::fwData::Node::sptr > Graph::getNodes( const ::fwData::Node::csptr &node,
+                                                     bool upStream,
+                                                     const std::string &nature,
+                                                     const std::string &portID )
 {
     std::vector< Edge::sptr > edges;
     edges = getEdges( node, upStream, nature, portID);
 
     std::vector< Node::sptr > nodes;
-    BOOST_FOREACH( Edge::sptr edge, edges )
+    for(const Edge::sptr& edge : edges )
     {
         Node::sptr distantNode;
         distantNode = ( upStream ? m_connections[edge].first : m_connections[edge].second );
@@ -353,7 +347,7 @@ void Graph::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
     typedef std::pair< Edge::sptr,  std::pair<  Node::sptr,  Node::sptr > > ConnectionContainerElt;
 
     m_nodes.clear();
-    BOOST_FOREACH(const ::fwData::Node::sptr &node, other->m_nodes)
+    for(const ::fwData::Node::sptr &node : other->m_nodes)
     {
         ::fwData::Node::sptr newNode = ::fwData::Object::copy(node, cache);
         bool addOK = this->addNode(newNode);
@@ -363,7 +357,7 @@ void Graph::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
     }
 
     m_connections.clear();
-    BOOST_FOREACH(const ConnectionContainerElt &connection, other->m_connections)
+    for(const ConnectionContainerElt &connection : other->m_connections)
     {
         // Edge deep copy .
         ::fwData::Edge::sptr newEdge  = ::fwData::Object::copy(connection.first, cache);

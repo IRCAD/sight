@@ -45,7 +45,7 @@ void Spline::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cach
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
-    OSLM_FATAL("Not implemented." );
+    SLM_FATAL("Not implemented." );
 }
 
 //------------------------------------------------------------------------------

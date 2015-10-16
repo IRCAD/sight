@@ -39,7 +39,7 @@ void StructureTraits::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheT
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
-    OSLM_FATAL("Not implemented." );
+    SLM_FATAL("Not implemented." );
 }
 
 } // namespace fwData

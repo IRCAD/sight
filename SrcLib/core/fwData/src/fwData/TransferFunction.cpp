@@ -4,15 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/bind.hpp>
-
-#include <fwCore/base.hpp>
-#include <fwTools/Type.hpp>
-
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/TransferFunction.hpp"
 
+#include <fwCore/base.hpp>
+#include <fwTools/Type.hpp>
 
 fwDataRegisterMacro( ::fwData::TransferFunction );
 
@@ -34,13 +31,13 @@ TransferFunction::TransferFunction(::fwData::Object::Key key)
 
 void TransferFunction::initTF()
 {
-    m_attrLevel  = 0;
-    m_attrWindow = 100;
+    m_level  = 0;
+    m_window = 100;
 
-    m_attrName = "";
+    m_name = "";
 
-    m_attrInterpolationMode = TransferFunction::LINEAR;
-    m_attrIsClamped         = true;
+    m_interpolationMode = TransferFunction::LINEAR;
+    m_isClamped         = true;
 
     m_tfData.clear();
 }
@@ -85,9 +82,9 @@ TransferFunction::TFValueVectorType TransferFunction::getScaledValues() const
     TFValuePairType minMax       = this->getMinMaxTFValues();
     TFValuePairType windowMinMax = this->getWLMinMax();
 
-    const double scale = m_attrWindow / (minMax.second - minMax.first);
+    const double scale = m_window / (minMax.second - minMax.first);
 
-    BOOST_FOREACH(const TFDataType::value_type &data, m_tfData)
+    for(const TFDataType::value_type &data : m_tfData)
     {
         const double value = (data.first - minMax.first) * scale + windowMinMax.first;
         values.push_back(value);
@@ -101,7 +98,7 @@ TransferFunction::TFValueVectorType TransferFunction::getScaledValues() const
 TransferFunction::TFValuePairType
 TransferFunction::getMinMaxTFValues() const
 {
-    OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
+    SLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
     TFValuePairType minMax;
     minMax.first  = m_tfData.begin()->first;
     minMax.second = (m_tfData.rbegin())->first;
@@ -114,9 +111,9 @@ TransferFunction::TFValuePairType
 TransferFunction::getWLMinMax() const
 {
     TFValuePairType minMax;
-    double halfWindow = m_attrWindow/2.f;
-    minMax.first  = m_attrLevel - halfWindow;
-    minMax.second = m_attrLevel + halfWindow;
+    double halfWindow = m_window/2.f;
+    minMax.first  = m_level - halfWindow;
+    minMax.second = m_level + halfWindow;
     return minMax;
 }
 
@@ -124,9 +121,9 @@ TransferFunction::getWLMinMax() const
 
 void TransferFunction::setWLMinMax(const TFValuePairType& minMax)
 {
-    m_attrWindow = minMax.second - minMax.first;
-    double halfWindow = m_attrWindow/2.f;
-    m_attrLevel = halfWindow + minMax.first;
+    m_window = minMax.second - minMax.first;
+    double halfWindow = m_window/2.f;
+    m_level = halfWindow + minMax.first;
 }
 
 //------------------------------------------------------------------------------
@@ -139,7 +136,7 @@ TransferFunction::TFValueType TransferFunction::getNearestValue( TFValueType val
     double nextValue                 = minMax.second;
 
     TFValueType val;
-    BOOST_FOREACH(const TFDataType::value_type &data, m_tfData)
+    for(const TFDataType::value_type &data : m_tfData)
     {
         if(value < data.first )
         {
@@ -212,7 +209,7 @@ TransferFunction::TFColorVectorType TransferFunction::getTFColors() const
     TFColorVectorType colors;
     std::transform( m_tfData.begin(), m_tfData.end(),
                     std::back_inserter(colors),
-                    ::boost::bind(&TFDataType::value_type::second, _1) );
+                    std::bind(&TFDataType::value_type::second, std::placeholders::_1) );
     return colors;
 }
 
@@ -230,7 +227,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
     TFColor previousColor = blackColor;
     TFColor nextColor     = blackColor;
 
-    BOOST_FOREACH(const TFDataType::value_type &data, m_tfData)
+    for(const TFDataType::value_type &data : m_tfData)
     {
         if(value < data.first )
         {
@@ -246,7 +243,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
     }
     if(previousValue == minMax.first)
     {
-        if(m_attrIsClamped)
+        if(m_isClamped)
         {
             color = blackColor;
         }
@@ -257,7 +254,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
     }
     else if(nextValue == minMax.second)
     {
-        if(m_attrIsClamped && (value != previousValue))
+        if(m_isClamped && (value != previousValue))
         {
             color = blackColor;
         }
@@ -295,7 +292,7 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
     TFColor previousColor = blackColor;
     TFColor nextColor     = blackColor;
 
-    BOOST_FOREACH(const TFDataType::value_type &data, m_tfData)
+    for(const TFDataType::value_type &data : m_tfData)
     {
         if(value < data.first )
         {
@@ -311,7 +308,7 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
     }
     if(previousValue == minMax.first)
     {
-        if(m_attrIsClamped)
+        if(m_isClamped)
         {
             color = blackColor;
         }
@@ -322,7 +319,7 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
     }
     else if(nextValue == minMax.second)
     {
-        if(m_attrIsClamped && (value != previousValue))
+        if(m_isClamped && (value != previousValue))
         {
             color = blackColor;
         }
@@ -354,11 +351,11 @@ TransferFunction::TFColor TransferFunction::getInterpolatedColor( TFValueType va
 {
     TFColor color;
 
-    if(m_attrInterpolationMode == LINEAR)
+    if(m_interpolationMode == LINEAR)
     {
         color = this->getLinearColor(value);
     }
-    else if(m_attrInterpolationMode == NEAREST)
+    else if(m_interpolationMode == NEAREST)
     {
         color = this->getNearestColor(value);
     }
@@ -382,13 +379,13 @@ void TransferFunction::shallowCopy(const Object::csptr &_source )
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    this->m_attrLevel             = other->m_attrLevel;
-    this->m_attrWindow            = other->m_attrWindow;
-    this->m_attrName              = other->m_attrName;
-    this->m_attrBackgroundColor   = other->m_attrBackgroundColor;
-    this->m_tfData                = other->m_tfData;
-    this->m_attrInterpolationMode = other->m_attrInterpolationMode;
-    this->m_attrIsClamped         = other->m_attrIsClamped;
+    this->m_level             = other->m_level;
+    this->m_window            = other->m_window;
+    this->m_name              = other->m_name;
+    this->m_backgroundColor   = other->m_backgroundColor;
+    this->m_tfData            = other->m_tfData;
+    this->m_interpolationMode = other->m_interpolationMode;
+    this->m_isClamped         = other->m_isClamped;
 }
 
 //------------------------------------------------------------------------------
@@ -400,13 +397,13 @@ void TransferFunction::cachedDeepCopy(const Object::csptr &_source, DeepCopyCach
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
-    this->m_attrLevel             = other->m_attrLevel;
-    this->m_attrWindow            = other->m_attrWindow;
-    this->m_attrName              = other->m_attrName;
-    this->m_attrBackgroundColor   = other->m_attrBackgroundColor;
-    this->m_tfData                = other->m_tfData;
-    this->m_attrInterpolationMode = other->m_attrInterpolationMode;
-    this->m_attrIsClamped         = other->m_attrIsClamped;
+    this->m_level             = other->m_level;
+    this->m_window            = other->m_window;
+    this->m_name              = other->m_name;
+    this->m_backgroundColor   = other->m_backgroundColor;
+    this->m_tfData            = other->m_tfData;
+    this->m_interpolationMode = other->m_interpolationMode;
+    this->m_isClamped         = other->m_isClamped;
 }
 
 //------------------------------------------------------------------------------

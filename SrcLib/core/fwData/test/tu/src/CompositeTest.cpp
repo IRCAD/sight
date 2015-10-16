@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <utility>
-#include <boost/foreach.hpp>
+#include "CompositeTest.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/Boolean.hpp>
@@ -13,8 +12,7 @@
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 
-#include "CompositeTest.hpp"
-
+#include <utility>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::CompositeTest );
@@ -51,7 +49,7 @@ void CompositeTest::methode1()
 
     CPPUNIT_ASSERT( composite->size() == 0 );
 
-    BOOST_FOREACH( pair_type p, PAIRS)
+    for( pair_type p : PAIRS)
     {
         composite->getContainer()[p.first] = p.second;
     }
@@ -60,7 +58,7 @@ void CompositeTest::methode1()
 
     CPPUNIT_ASSERT( composite->size() == stdmap.size() );
 
-    BOOST_FOREACH( pair_type p, *composite)
+    for( pair_type p : *composite)
     {
         CPPUNIT_ASSERT( composite->getContainer()[p.first] == (*composite)[p.first] );
         CPPUNIT_ASSERT(                 stdmap[p.first] == (*composite)[p.first] );

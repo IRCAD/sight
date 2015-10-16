@@ -4,12 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/data/Event.hpp"
+
 #include <fwCore/base.hpp>
 
 #include <fwData/registry/macros.hpp>
 #include <fwData/Exception.hpp>
-
-#include "scene2D/data/Event.hpp"
 
 namespace scene2D
 {
@@ -91,6 +91,4 @@ void Event::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCache
 
 } // namespace data
 } // namespace scene2D
-
-
 

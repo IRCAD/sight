@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/bind.hpp>
+
+#include "fwData/Exception.hpp"
+#include "fwData/ProcessObject.hpp"
+#include "fwData/registry/macros.hpp"
 
 #include <fwCore/base.hpp>
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
 
-#include "fwData/ProcessObject.hpp"
+#include <functional>
 
 fwDataRegisterMacro( ::fwData::ProcessObject );
 
@@ -47,14 +47,14 @@ ProcessObject::~ProcessObject()
 
 ::fwData::Object::sptr ProcessObject::getInput(const ParamNameType& name)
 {
-    return this->getValue(name, m_attrInputs);
+    return this->getValue(name, m_inputs);
 }
 
 //------------------------------------------------------------------------------
 
 ::fwData::Object::sptr ProcessObject::getOutput(const ParamNameType& name)
 {
-    return this->getValue(name, m_attrOutputs);
+    return this->getValue(name, m_outputs);
 }
 
 //------------------------------------------------------------------------------
@@ -73,14 +73,14 @@ void ProcessObject::setValue(const ParamNameType& name, ::fwData::Object::sptr o
 
 void ProcessObject::setInputValue(const ParamNameType& name, ::fwData::Object::sptr object)
 {
-    this->setValue(name, object, m_attrInputs);
+    this->setValue(name, object, m_inputs);
 }
 
 //------------------------------------------------------------------------------
 
 void ProcessObject::setOutputValue(const ParamNameType& name, ::fwData::Object::sptr object)
 {
-    this->setValue(name, object, m_attrOutputs);
+    this->setValue(name, object, m_outputs);
 }
 
 //------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ ProcessObject::ParamNameVectorType ProcessObject::getParamNames(const ProcessObj
     ParamNameVectorType names;
     std::transform( params.begin(), params.end(),
                     std::back_inserter(names),
-                    ::boost::bind(&ProcessObjectMapType::value_type::first, _1) );
+                    std::bind(&ProcessObjectMapType::value_type::first, std::placeholders::_1) );
     return names;
 }
 
@@ -98,28 +98,28 @@ ProcessObject::ParamNameVectorType ProcessObject::getParamNames(const ProcessObj
 
 ProcessObject::ParamNameVectorType ProcessObject::getInputsParamNames() const
 {
-    return this->getParamNames(m_attrInputs);
+    return this->getParamNames(m_inputs);
 }
 
 //------------------------------------------------------------------------------
 
 ProcessObject::ParamNameVectorType ProcessObject::getOutputsParamNames() const
 {
-    return this->getParamNames(m_attrOutputs);
+    return this->getParamNames(m_outputs);
 }
 
 //------------------------------------------------------------------------------
 
 void ProcessObject::clearInputs()
 {
-    this->clearParams(m_attrOutputs);
+    this->clearParams(m_outputs);
 }
 
 //------------------------------------------------------------------------------
 
 void ProcessObject::clearOutputs()
 {
-    this->clearParams(m_attrInputs);
+    this->clearParams(m_inputs);
 }
 
 //------------------------------------------------------------------------------
@@ -139,8 +139,8 @@ void ProcessObject::shallowCopy(const Object::csptr &source )
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( source );
 
-    m_attrInputs  = other->m_attrInputs;
-    m_attrOutputs = other->m_attrOutputs;
+    m_inputs  = other->m_inputs;
+    m_outputs = other->m_outputs;
 }
 
 //-----------------------------------------------------------------------------
@@ -156,14 +156,14 @@ void ProcessObject::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheTyp
     this->clearInputs();
     this->clearOutputs();
 
-    BOOST_FOREACH(ProcessObjectMapType::value_type elt, other->m_attrInputs)
+    for(const ProcessObjectMapType::value_type& elt : other->m_inputs)
     {
-        m_attrInputs[elt.first] = ::fwData::Object::copy(elt.second, cache);
+        m_inputs[elt.first] = ::fwData::Object::copy(elt.second, cache);
     }
 
-    BOOST_FOREACH(ProcessObjectMapType::value_type elt, other->m_attrOutputs)
+    for(const ProcessObjectMapType::value_type& elt : other->m_outputs)
     {
-        m_attrOutputs[elt.first] = ::fwData::Object::copy(elt.second, cache);
+        m_outputs[elt.first] = ::fwData::Object::copy(elt.second, cache);
     }
 }
 

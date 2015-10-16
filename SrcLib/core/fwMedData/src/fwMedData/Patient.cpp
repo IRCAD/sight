@@ -4,11 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-#include <fwData/registry/macros.hpp>
-#include <fwData/Exception.hpp>
-
 #include "fwMedData/Patient.hpp"
+
+#include <fwData/Exception.hpp>
+#include <fwData/registry/macros.hpp>
 
 fwDataRegisterMacro( ::fwMedData::Patient );
 
@@ -35,10 +34,10 @@ void Patient::shallowCopy(const ::fwData::Object::csptr &_source)
                                + " to " + this->getClassname()), !bool(other) );
 
     this->fieldShallowCopy( other );
-    m_attrName      = other->m_attrName;
-    m_attrBirthdate = other->m_attrBirthdate;
-    m_attrPatientId = other->m_attrPatientId;
-    m_attrSex       = other->m_attrSex;
+    m_name      = other->m_name;
+    m_birthdate = other->m_birthdate;
+    m_patientId = other->m_patientId;
+    m_sex       = other->m_sex;
 }
 
 //------------------------------------------------------------------------------
@@ -51,10 +50,10 @@ void Patient::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCac
                                + " to " + this->getClassname()), !bool(other) );
 
     this->fieldDeepCopy( other, cache );
-    m_attrName      = other->m_attrName;
-    m_attrBirthdate = other->m_attrBirthdate;
-    m_attrPatientId = other->m_attrPatientId;
-    m_attrSex       = other->m_attrSex;
+    m_name      = other->m_name;
+    m_birthdate = other->m_birthdate;
+    m_patientId = other->m_patientId;
+    m_sex       = other->m_sex;
 }
 
 //------------------------------------------------------------------------------

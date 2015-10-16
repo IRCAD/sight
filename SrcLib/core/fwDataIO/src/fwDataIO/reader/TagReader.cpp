@@ -87,16 +87,15 @@ void TagReader::read()
             for(int i = 0; i < nbPts; i++)
             {
                 ::fwData::Point::sptr p;
-//              ::fwData::Point::PointCoordArray vPoint;
                 fwVec3d vPoint;
                 file>>vPoint[0]>>vPoint[1]>>vPoint[2]>>radius;
-                p->setCRefCoord(vPoint);
+                p->setCoord(vPoint);
                 tag->getRefPointList()->getRefPoints().push_back(p);
             }
         }
         else
         {
-            OSLM_ERROR( "Tag file loading error for " << path.string() <<" with type "<<type);
+            SLM_ERROR( "Tag file loading error for " + path.string() + " with type " + type);
             std::string str = "Unable to open ";
             str += path.string();
             throw std::ios_base::failure(str);

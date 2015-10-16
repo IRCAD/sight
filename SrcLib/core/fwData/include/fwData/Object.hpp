@@ -7,10 +7,9 @@
 #ifndef __FWDATA_OBJECT_HPP__
 #define __FWDATA_OBJECT_HPP__
 
-#include <boost/unordered_map.hpp>
-#include <string>
-
-#include <boost/enable_shared_from_this.hpp>
+#include "fwData/factory/new.hpp"
+#include "fwData/registry/detail.hpp"
+#include "fwData/config.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwCore/mt/types.hpp>
@@ -30,11 +29,10 @@
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 
-#include "fwData/factory/new.hpp"
-#include "fwData/registry/detail.hpp"
 
-#include "fwData/macros.hpp"
-#include "fwData/config.hpp"
+#include <boost/enable_shared_from_this.hpp>
+#include <boost/unordered_map.hpp>
+#include <string>
 
 fwCampAutoDeclareDataMacro((fwData)(Object), FWDATA_API);
 
@@ -201,7 +199,8 @@ public:
     //-----------------------------------------------------------------------------
 
     /// Returns the object's mutex.
-    ::fwCore::mt::ReadWriteMutex &getMutex() {
+    ::fwCore::mt::ReadWriteMutex &getMutex()
+    {
         return m_mutex;
     }
 

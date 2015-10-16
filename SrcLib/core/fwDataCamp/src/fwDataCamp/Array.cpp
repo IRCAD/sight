@@ -22,7 +22,7 @@ fwCampImplementDataMacro((fwData)(Array))
     .property("size", &::fwData::Array::m_size)
     .property("type", &::fwData::Array::m_type)
     .property("nb_of_components", &::fwData::Array::m_nbOfComponents)
-    .property("buffer", &::fwData::Array::m_attrBufferObject)
+    .property("buffer", &::fwData::Array::m_bufferObject)
     .property("isOwner", &::fwData::Array::m_isBufferOwner)
     ;
 }

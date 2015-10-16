@@ -16,9 +16,10 @@ namespace ut
 
 class CameraTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( CameraTest );
-CPPUNIT_TEST( methode1 );
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( CameraTest );
+    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface

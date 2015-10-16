@@ -11,8 +11,7 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
 
-#include <boost/foreach.hpp>
-#include <boost/bind.hpp>
+#include <functional>
 
 namespace fwData
 {
@@ -76,7 +75,7 @@ Object::FieldNameVectorType Object::getFieldNames() const
     FieldNameVectorType names;
     std::transform( m_fields.begin(), m_fields.end(),
                     std::back_inserter(names),
-                    ::boost::bind(&FieldMapType::value_type::first, _1) );
+                    std::bind(&FieldMapType::value_type::first, std::placeholders::_1) );
     return names;
 }
 
@@ -117,7 +116,6 @@ void Object::updateFields( const FieldMapType & fieldMap )
     m_fields.insert(fieldMap.begin(), fieldMap.end());
 }
 
-
 //-----------------------------------------------------------------------------
 
 void Object::fieldShallowCopy(const ::fwData::Object::csptr &source)
@@ -146,7 +144,7 @@ void Object::fieldDeepCopy(const ::fwData::Object::csptr &source, DeepCopyCacheT
 {
     m_fields.clear();
     const ::fwData::Object::FieldMapType &sourceFields = source->getFields();
-    BOOST_FOREACH(const ::fwData::Object::FieldMapType::value_type &elt, sourceFields)
+    for(const ::fwData::Object::FieldMapType::value_type &elt : sourceFields)
     {
         this->setField(elt.first, ::fwData::Object::copy(elt.second, cache));
     }
@@ -157,7 +155,7 @@ void Object::fieldDeepCopy(const ::fwData::Object::csptr &source, DeepCopyCacheT
 void Object::shallowCopy(const ::fwData::Object::csptr &source )
 {
     FwCoreNotUsedMacro(source);
-    OSLM_FATAL("shallowCopy not implemented for : " << this->getClassname() );
+    SLM_FATAL("shallowCopy not implemented for : " + this->getClassname() );
 }
 
 //-----------------------------------------------------------------------------

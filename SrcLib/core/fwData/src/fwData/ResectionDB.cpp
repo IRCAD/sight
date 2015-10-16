@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
 #include "fwData/ResectionDB.hpp"
+
+#include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::ResectionDB );
 
@@ -53,14 +53,14 @@ void ResectionDB::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType
 
 ResectionDB::ResectionContainerType::size_type ResectionDB::getNumberOfResections() const
 {
-    return m_attrResections.size();
+    return m_resections.size();
 }
 
 //------------------------------------------------------------------------------
 
-void ResectionDB::addResection( ::fwData::Resection::sptr resection )
+void ResectionDB::addResection(const ::fwData::Resection::sptr& resection )
 {
-    m_attrResections.push_back( resection );
+    m_resections.push_back( resection );
 }
 
 //------------------------------------------------------------------------------

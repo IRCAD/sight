@@ -8,9 +8,9 @@
 #define __FWDATA_STRING_HPP__
 
 
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/GenericField.hpp"
+#include "fwData/Object.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(String), FWDATA_API);
 

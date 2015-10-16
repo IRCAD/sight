@@ -16,13 +16,14 @@ namespace ut
 
 class ImageTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ImageTest );
-CPPUNIT_TEST( testGetterSetter );
-CPPUNIT_TEST( testAllocation );
-CPPUNIT_TEST( testReallocation );
-CPPUNIT_TEST( testPixelType );
-CPPUNIT_TEST( testSetGetPixel );
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( ImageTest );
+    CPPUNIT_TEST( testGetterSetter );
+    CPPUNIT_TEST( testAllocation );
+    CPPUNIT_TEST( testReallocation );
+    CPPUNIT_TEST( testPixelType );
+    CPPUNIT_TEST( testSetGetPixel );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface

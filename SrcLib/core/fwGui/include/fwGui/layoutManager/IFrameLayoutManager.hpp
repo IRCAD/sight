@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef __FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__
+#define __FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__
+
 /**
  * @file fwGui/layoutManager/IFrameLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a frame.
@@ -11,9 +14,6 @@
  *
  * @date 2009-2010
  */
-
-#ifndef __FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__
-#define __FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__
 
 #include <list>
 
@@ -143,9 +143,27 @@ public:
     typedef ::boost::function0< void > CloseCallback;
     FWGUI_API virtual void setCloseCallback(CloseCallback fct);
 
+
 protected:
 
-    fwGettersSettersDocMacro(FrameInfo, frameInfo, FrameInfo, configuration definition.);
+    /**
+     * @brief Configuration definition.
+     * @{ */
+    const FrameInfo& getFrameInfo() const
+    {
+        return m_frameInfo;
+    }
+
+    FrameInfo& getRefFrameInfo()
+    {
+        return m_frameInfo;
+    }
+
+    void setFrameInfo(const FrameInfo& frameInfo)
+    {
+        m_frameInfo = frameInfo;
+    }
+    /**  @} */
 
     ::fwGui::container::fwContainer::sptr m_frame;
     ::fwGui::container::fwContainer::sptr m_container;

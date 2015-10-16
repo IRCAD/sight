@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
 #include "fwData/Tag.hpp"
+
+#include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::Tag );
 
@@ -42,7 +42,6 @@ void Tag::shallowCopy(const Object::csptr &source )
     m_sType     = other->m_sType;
     m_size      = other->m_size;
     m_pointList = other->m_pointList;
-
 }
 
 //------------------------------------------------------------------------------

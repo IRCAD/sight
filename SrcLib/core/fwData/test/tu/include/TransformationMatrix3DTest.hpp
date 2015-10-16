@@ -16,10 +16,11 @@ namespace ut
 
 class TransformationMatrix3DTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( TransformationMatrix3DTest );
-CPPUNIT_TEST( methode1 );
-CPPUNIT_TEST( methode2 );
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( TransformationMatrix3DTest );
+    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST( methode2 );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -32,4 +33,5 @@ public:
 
 } //namespace ut
 } //namespace fwData
+
 #endif //__FWDATA_UT_TRANSFORMATIONMATRIX3DTEST_HPP__

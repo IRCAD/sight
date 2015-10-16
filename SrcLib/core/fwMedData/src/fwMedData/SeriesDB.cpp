@@ -4,12 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwMedData/Series.hpp"
 #include "fwMedData/SeriesDB.hpp"
 
-#include <fwData/registry/macros.hpp>
 #include <fwData/Exception.hpp>
+#include <fwData/registry/macros.hpp>
 
-#include "fwMedData/Series.hpp"
 
 fwDataRegisterMacro( ::fwMedData::SeriesDB );
 
@@ -37,7 +37,7 @@ void SeriesDB::shallowCopy(const ::fwData::Object::csptr &_source)
 
     this->fieldShallowCopy( other );
 
-    m_attrContainer = other->m_attrContainer;
+    m_container = other->m_container;
 }
 
 //------------------------------------------------------------------------------
@@ -50,11 +50,11 @@ void SeriesDB::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCa
                                + " to " + this->getClassname()), !bool(other) );
 
     this->fieldDeepCopy( other, cache );
-    m_attrContainer.clear();
-    m_attrContainer.reserve(other->m_attrContainer.size());
-    BOOST_FOREACH(const ValueType &series, other->m_attrContainer)
+    m_container.clear();
+    m_container.reserve(other->m_container.size());
+    BOOST_FOREACH(const ValueType &series, other->m_container)
     {
-        m_attrContainer.push_back(::fwData::Object::copy(series, cache));
+        m_container.push_back(::fwData::Object::copy(series, cache));
     }
 }
 

@@ -9,8 +9,7 @@
 namespace fwData
 {
 
-Exception::Exception(const std::string &message) throw()
-    : ::fwCore::Exception(message)
+Exception::Exception(const std::string &message) throw() : ::fwCore::Exception(message)
 {
 }
 

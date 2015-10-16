@@ -14,7 +14,7 @@ fwCampImplementDataMacro((fwData)(ProcessObject))
     .tag("object_version", "1")
     .tag("lib_name", "fwData")
     .base< ::fwData::Object >()
-    .property("inputs", &fwData::ProcessObject::m_attrInputs)
-    .property("outputs", &fwData::ProcessObject::m_attrOutputs)
+    .property("inputs", &fwData::ProcessObject::m_inputs)
+    .property("outputs", &fwData::ProcessObject::m_outputs)
     ;
 }

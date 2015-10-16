@@ -16,9 +16,10 @@ namespace ut
 
 class VideoTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( VideoTest );
-CPPUNIT_TEST( methode1 );
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( VideoTest );
+    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface

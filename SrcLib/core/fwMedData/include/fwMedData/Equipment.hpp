@@ -7,12 +7,11 @@
 #ifndef __FWMEDDATA_EQUIPMENT_HPP__
 #define __FWMEDDATA_EQUIPMENT_HPP__
 
-#include "fwData/Object.hpp"
-#include "fwData/factory/new.hpp"
-#include "fwData/macros.hpp"
-
-#include "fwMedData/types.hpp"
 #include "fwMedData/config.hpp"
+#include "fwMedData/types.hpp"
+
+#include <fwData/factory/new.hpp>
+#include <fwData/Object.hpp>
 
 fwCampAutoDeclareDataMacro((fwMedData)(Equipment), FWMEDDATA_API);
 
@@ -52,7 +51,8 @@ public:
     /**
      * @brief Institution where the equipment that produced the composite instances is located (0008,0080)
      * @{ */
-    fwDataGetSetCRefMacro(InstitutionName, DicomValueType);
+    const DicomValueType &getInstitutionName() const;
+    void setInstitutionName(const DicomValueType &val);
     /**  @} */
 
     /**  @} */
@@ -60,8 +60,24 @@ public:
 protected:
 
     /// Institution name
-    DicomValueType m_attrInstitutionName;
+    DicomValueType m_institutionName;
 };
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType &Equipment::getInstitutionName() const
+{
+    return m_institutionName;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Equipment::setInstitutionName(const DicomValueType &val)
+{
+    m_institutionName = val;
+}
+
+//-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
 

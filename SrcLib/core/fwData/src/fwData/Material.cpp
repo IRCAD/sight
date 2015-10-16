@@ -6,7 +6,6 @@
 
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
 #include "fwData/Material.hpp"
 
 fwDataRegisterMacro( ::fwData::Material );
@@ -96,25 +95,25 @@ Image::sptr Material::getDiffuseTexture() const
 
 //------------------------------------------------------------------------------
 
-void Material::setAmbient(Color::sptr ambient)
+void Material::setAmbient(const Color::sptr& ambient)
 {
     m_ambient = ambient;
 }
 
 //------------------------------------------------------------------------------
 
-void Material::setDiffuse(Color::sptr diffuse)
+void Material::setDiffuse(const Color::sptr& diffuse)
 {
     m_diffuse = diffuse;
 }
 
 //------------------------------------------------------------------------------
 
-void Material::setDiffuseTexture(Image::sptr diffuseTexture)
+void Material::setDiffuseTexture(const Image::sptr& diffuseTexture)
 {
     m_diffuseTexture = diffuseTexture;
 }
 
 //------------------------------------------------------------------------------
 
-}
+} //namespace fwData

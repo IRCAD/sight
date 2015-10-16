@@ -65,7 +65,7 @@ void ColorTest::methode2()
     array[2] = B;
     array[3] = A;
 
-    color->setCRefRGBA(array);
+    color->setRGBA(array);
 
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], R);
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], G);

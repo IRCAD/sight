@@ -4,13 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
 #include "fwData/Video.hpp"
 
+#include <fwCore/base.hpp>
+
 fwDataRegisterMacro( ::fwData::Video );
+
 namespace fwData
 {
 //------------------------------------------------------------------------------
@@ -63,7 +64,7 @@ void Video::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
-    OSLM_FATAL("Not implemented." );
+    SLM_FATAL("Not implemented." );
 }
 
 

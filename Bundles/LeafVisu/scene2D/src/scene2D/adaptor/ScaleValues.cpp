@@ -4,16 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/adaptor/ScaleValues.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/data/ViewportMsg.hpp"
 
 #include <fwServices/Base.hpp>
 #include <fwData/Composite.hpp>
 
 #include <QGraphicsItemGroup>
-
-#include "scene2D/adaptor/ScaleValues.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/ViewportMsg.hpp"
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ScaleValues, ::fwData::Composite );
 
@@ -156,7 +155,7 @@ void ScaleValues::buildValues()
     }
 
     // Add the values to the item group
-    BOOST_FOREACH( QGraphicsItem* item, m_values )
+    for( QGraphicsItem* item : m_values )
     {
         m_layer->addToGroup( item );
     }
@@ -265,8 +264,8 @@ void ScaleValues::rescaleValues()
     bool suggestResampling = false;     /* scale value items resampling is suggested because of
                                            a lack of sufficient width to display all of them */
 
-    const int valuesSize = m_values.size();
-    float val            = getStartVal();
+    const size_t valuesSize = m_values.size();
+    float val               = getStartVal();
 
     if(m_align == "left" || m_align == "right")
     {

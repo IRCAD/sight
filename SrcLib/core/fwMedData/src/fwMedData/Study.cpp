@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include <fwData/registry/macros.hpp>
-#include <fwData/Exception.hpp>
-
 #include "fwMedData/Study.hpp"
+
+#include <fwData/Exception.hpp>
+#include <fwData/registry/macros.hpp>
 
 fwDataRegisterMacro( ::fwMedData::Study );
 
@@ -35,12 +35,12 @@ void Study::shallowCopy(const ::fwData::Object::csptr &_source)
                                + " to " + this->getClassname()), !bool(other) );
 
     this->fieldShallowCopy( other );
-    m_attrInstanceUID            = other->m_attrInstanceUID;
-    m_attrDate                   = other->m_attrDate;
-    m_attrTime                   = other->m_attrTime;
-    m_attrReferringPhysicianName = other->m_attrReferringPhysicianName;
-    m_attrDescription            = other->m_attrDescription;
-    m_attrPatientAge             = other->m_attrPatientAge;
+    m_instanceUID            = other->m_instanceUID;
+    m_date                   = other->m_date;
+    m_time                   = other->m_time;
+    m_referringPhysicianName = other->m_referringPhysicianName;
+    m_description            = other->m_description;
+    m_patientAge             = other->m_patientAge;
 }
 
 //------------------------------------------------------------------------------
@@ -53,12 +53,12 @@ void Study::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCache
                                + " to " + this->getClassname()), !bool(other) );
 
     this->fieldDeepCopy( other, cache );
-    m_attrInstanceUID            = other->m_attrInstanceUID;
-    m_attrDate                   = other->m_attrDate;
-    m_attrTime                   = other->m_attrTime;
-    m_attrReferringPhysicianName = other->m_attrReferringPhysicianName;
-    m_attrDescription            = other->m_attrDescription;
-    m_attrPatientAge             = other->m_attrPatientAge;
+    m_instanceUID            = other->m_instanceUID;
+    m_date                   = other->m_date;
+    m_time                   = other->m_time;
+    m_referringPhysicianName = other->m_referringPhysicianName;
+    m_description            = other->m_description;
+    m_patientAge             = other->m_patientAge;
 }
 
 //------------------------------------------------------------------------------

@@ -7,11 +7,11 @@
 #ifndef __FWDATA_COLOR_HPP__
 #define __FWDATA_COLOR_HPP__
 
-#include <boost/array.hpp>
-
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <boost/array.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Color), FWDATA_API);
 
@@ -53,7 +53,14 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    fwGettersSettersDocMacro(RGBA, vRGBA, ColorArray, "the array of color values (red, green, blue, alpha).");
+    /** Get/Set the array of color values (red, green, blue, alpha).
+     *  @name ColorArray accessor
+     *  @{  */
+    const ColorArray getRGBA() const;
+    ColorArray& getRefRGBA();
+    const ColorArray& getCRefRGBA() const;
+    void setRGBA(const ColorArray&  _vRGBA);
+    /** @} */
 
     ///@{
     ///@brief set RGBA color
@@ -69,9 +76,9 @@ public:
     FWDATA_API void setRGBA( std::string hexaColor );
     ///@}
 
-    /** @name color attributes accessor */
-    /**@brief Get editable reference to color attributes
-     * @{
+    /** @name color attributes accessor
+     *  @brief Get editable reference to color attributes
+     *  @{
      */
     FWDATA_API ColorType  &red();
     FWDATA_API ColorType  &green();
@@ -96,9 +103,37 @@ protected:
     //! RGBA of the image (in terms of points)
     ColorArray m_vRGBA;
 
-
-
 }; // end class Color
+
+//-----------------------------------------------------------------------------
+
+inline const Color::ColorArray Color::getRGBA() const
+{
+    return m_vRGBA;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Color::ColorArray& Color::getRefRGBA()
+{
+    return this->m_vRGBA;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Color::ColorArray& Color::getCRefRGBA() const
+{
+    return this->m_vRGBA;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Color::setRGBA(const Color::ColorArray&  _vRGBA)
+{
+    this->m_vRGBA = _vRGBA;
+}
+
+//-----------------------------------------------------------------------------
 
 } // end namespace fwData
 

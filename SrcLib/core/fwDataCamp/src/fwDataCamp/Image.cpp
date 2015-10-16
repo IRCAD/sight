@@ -22,8 +22,8 @@ fwCampImplementDataMacro((fwData)(Image))
     .property("spacing", &::fwData::Image::m_spacing)
     .property("origin", &::fwData::Image::m_origin)
     .property("array", &::fwData::Image::m_dataArray)
-    .property("nb_components", &::fwData::Image::m_attrNumberOfComponents)
-    .property("window_center", &::fwData::Image::m_attrWindowCenter)
-    .property("window_width", &::fwData::Image::m_attrWindowWidth)
+    .property("nb_components", &::fwData::Image::m_numberOfComponents)
+    .property("window_center", &::fwData::Image::m_windowCenter)
+    .property("window_width", &::fwData::Image::m_windowWidth)
     ;
 }

@@ -7,14 +7,14 @@
 #ifndef __FWDATA_OBJECTLOCK_HPP__
 #define __FWDATA_OBJECTLOCK_HPP__
 
-#include <vector>
 
 #include "fwData/Image.hpp"
 #include "fwData/Array.hpp"
 #include "fwData/Mesh.hpp"
 #include "fwData/Reconstruction.hpp"
-
 #include "fwData/config.hpp"
+
+#include <vector>
 
 namespace fwData
 {

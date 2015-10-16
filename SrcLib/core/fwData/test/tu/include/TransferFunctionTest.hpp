@@ -18,16 +18,17 @@ namespace ut
 
 class TransferFunctionTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( TransferFunctionTest );
-CPPUNIT_TEST( constructorTest );
-CPPUNIT_TEST( defaultTfTest );
-CPPUNIT_TEST( classicGetSetTest );
-CPPUNIT_TEST( usingTfTest );
-CPPUNIT_TEST( setTFDataTest );
-CPPUNIT_TEST( shallowAndDeepCopyTest );
-CPPUNIT_TEST( linearColorTest );
-CPPUNIT_TEST( nearestColorTest);
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( TransferFunctionTest );
+    CPPUNIT_TEST( constructorTest );
+    CPPUNIT_TEST( defaultTfTest );
+    CPPUNIT_TEST( classicGetSetTest );
+    CPPUNIT_TEST( usingTfTest );
+    CPPUNIT_TEST( setTFDataTest );
+    CPPUNIT_TEST( shallowAndDeepCopyTest );
+    CPPUNIT_TEST( linearColorTest );
+    CPPUNIT_TEST( nearestColorTest);
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface

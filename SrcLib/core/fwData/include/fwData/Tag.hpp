@@ -42,11 +42,37 @@ public:
 
     fwCampMakeFriendDataMacro((fwData)(Tag));
 
-    fwGettersSettersDocMacro(PointList, pointList, ::fwData::PointList::sptr, "the list of points" )
+    /**
+     * @{
+     * @brief Get/Set value of the pointList.
+     */
+    const ::fwData::PointList::sptr  getPointList () const;
+    ::fwData::PointList::sptr & getRefPointList ();
+    const ::fwData::PointList::sptr & getCRefPointList () const;
+    void setPointList (const ::fwData::PointList::sptr & _pointList);
+    /// @}
 
-    fwGettersSettersDocMacro(Type, sType, std::string, "the type of tag")
+    /**
+     * @{
+     * @brief Get/Set value of the Type.
+     */
+    const std::string  getType () const;
+    std::string & getRefType ();
+    const std::string & getCRefType () const;
+    void setType (const std::string _sType);
+    void setCRefType (const std::string & _sType);
+    /// @}
 
-    fwGettersSettersDocMacro(Size, size, double, "the size of the tag")
+    /**
+     * @{
+     * @brief Get/Set value of the Tag size.
+     */
+    const double  getSize () const;
+    double & getRefSize ();
+    const double & getCRefSize () const;
+    void setSize (const double _size);
+    void setCRefSize (const double & _size);
+    /// @}
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& source );
@@ -66,6 +92,106 @@ protected:
     double m_size;
 
 }; // end class Tag
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::PointList::sptr Tag::getPointList () const
+{
+    return m_pointList;
+}
+
+//-----------------------------------------------------------------------------
+
+inline ::fwData::PointList::sptr & Tag::getRefPointList ()
+{
+    return this->m_pointList;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::PointList::sptr & Tag::getCRefPointList () const
+{
+    return this->m_pointList;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Tag::setPointList (const ::fwData::PointList::sptr & _pointList)
+{
+    this->m_pointList = _pointList;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string Tag::getType () const
+{
+    return m_sType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::string & Tag::getRefType ()
+{
+    return m_sType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string & Tag::getCRefType () const
+{
+    return m_sType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Tag::setType (const std::string _sType)
+{
+    this->m_sType = _sType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Tag::setCRefType (const std::string & _sType)
+{
+    this->m_sType = _sType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const double Tag::getSize () const
+{
+    return m_size;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double & Tag::getRefSize ()
+{
+    return m_size;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const double & Tag::getCRefSize () const
+{
+    return m_size;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Tag::setSize (const double _size)
+{
+    m_size = _size;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Tag::setCRefSize (const double & _size)
+{
+    m_size = _size;
+}
+
+//-----------------------------------------------------------------------------
 
 } // end namespace fwData
 

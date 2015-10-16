@@ -4,23 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwMedData/Series.hpp"
-
-#include <fwData/registry/macros.hpp>
-#include <fwData/Exception.hpp>
-
-#include "fwMedData/Patient.hpp"
-#include "fwMedData/Study.hpp"
 #include "fwMedData/Equipment.hpp"
+#include "fwMedData/Patient.hpp"
+#include "fwMedData/Series.hpp"
+#include "fwMedData/Study.hpp"
 
+#include <fwData/Exception.hpp>
+#include <fwData/registry/macros.hpp>
 
 namespace fwMedData
 {
 
 Series::Series(::fwData::Object::Key key) :
-    m_attrPatient(::fwMedData::Patient::New()),
-    m_attrStudy(::fwMedData::Study::New()),
-    m_attrEquipment(::fwMedData::Equipment::New())
+    m_patient(::fwMedData::Patient::New()),
+    m_study(::fwMedData::Study::New()),
+    m_equipment(::fwMedData::Equipment::New())
 {
 }
 
@@ -41,16 +39,16 @@ void Series::shallowCopy(const ::fwData::Object::csptr &_source)
 
     this->fieldShallowCopy( other );
 
-    m_attrPatient   = other->m_attrPatient;
-    m_attrStudy     = other->m_attrStudy;
-    m_attrEquipment = other->m_attrEquipment;
+    m_patient   = other->m_patient;
+    m_study     = other->m_study;
+    m_equipment = other->m_equipment;
 
-    m_attrInstanceUID              = other->m_attrInstanceUID;
-    m_attrModality                 = other->m_attrModality;
-    m_attrDate                     = other->m_attrDate;
-    m_attrTime                     = other->m_attrTime;
-    m_attrPerformingPhysiciansName = other->m_attrPerformingPhysiciansName;
-    m_attrDescription              = other->m_attrDescription;
+    m_instanceUID              = other->m_instanceUID;
+    m_modality                 = other->m_modality;
+    m_date                     = other->m_date;
+    m_time                     = other->m_time;
+    m_performingPhysiciansName = other->m_performingPhysiciansName;
+    m_description              = other->m_description;
 }
 
 //------------------------------------------------------------------------------
@@ -64,16 +62,16 @@ void Series::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCach
 
     this->fieldDeepCopy( other, cache );
 
-    m_attrPatient   = ::fwData::Object::copy(other->m_attrPatient, cache);
-    m_attrStudy     = ::fwData::Object::copy(other->m_attrStudy, cache);
-    m_attrEquipment = ::fwData::Object::copy(other->m_attrEquipment, cache);
+    m_patient   = ::fwData::Object::copy(other->m_patient, cache);
+    m_study     = ::fwData::Object::copy(other->m_study, cache);
+    m_equipment = ::fwData::Object::copy(other->m_equipment, cache);
 
-    m_attrInstanceUID              = other->m_attrInstanceUID;
-    m_attrModality                 = other->m_attrModality;
-    m_attrDate                     = other->m_attrDate;
-    m_attrTime                     = other->m_attrTime;
-    m_attrPerformingPhysiciansName = other->m_attrPerformingPhysiciansName;
-    m_attrDescription              = other->m_attrDescription;
+    m_instanceUID              = other->m_instanceUID;
+    m_modality                 = other->m_modality;
+    m_date                     = other->m_date;
+    m_time                     = other->m_time;
+    m_performingPhysiciansName = other->m_performingPhysiciansName;
+    m_description              = other->m_description;
 }
 
 //------------------------------------------------------------------------------

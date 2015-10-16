@@ -7,11 +7,11 @@
 #ifndef __FWDATA_POINT_HPP__
 #define __FWDATA_POINT_HPP__
 
-#include <fwMath/IntrasecTypes.hpp>
-
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <fwMath/IntrasecTypes.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Point), FWDATA_API);
 
@@ -54,8 +54,13 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    /// Coordinates of point
-    fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, "point coordinates." );
+    /// @brief get/set point coordinates
+    /// @{
+    const fwVec3d  getCoord () const;
+    fwVec3d& getRefCoord ();
+    const fwVec3d & getCRefCoord() const;
+    void setCoord(const fwVec3d & _vCoord);
+    /// @}
 
 protected:
 
@@ -69,6 +74,36 @@ protected:
     PointCoordArrayType m_vCoord;
 
 }; // end class Point
+
+//-----------------------------------------------------------------------------
+
+inline const fwVec3d Point::getCoord () const
+{
+    return m_vCoord;
+}
+
+//-----------------------------------------------------------------------------
+
+inline fwVec3d& Point::getRefCoord ()
+{
+    return this->m_vCoord;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const fwVec3d & Point::getCRefCoord() const
+{
+    return this->m_vCoord;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Point::setCoord(const fwVec3d & _vCoord)
+{
+    this->m_vCoord = _vCoord;
+}
+
+//-----------------------------------------------------------------------------
 
 } // end namespace fwData
 

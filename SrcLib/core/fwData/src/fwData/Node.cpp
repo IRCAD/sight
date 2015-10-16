@@ -13,10 +13,6 @@
 #include "fwData/Exception.hpp"
 #include "fwData/Port.hpp"
 
-
-
-#include <boost/foreach.hpp>
-
 fwDataRegisterMacro( ::fwData::Node );
 
 namespace fwData
@@ -34,7 +30,6 @@ Node::Node(::fwData::Object::Key key) :
 #ifdef COM_LOG
     ::fwCom::HasSignals::m_signals.setID();
 #endif
-
 }
 
 //------------------------------------------------------------------------------
@@ -46,14 +41,14 @@ Node::~Node()
 
 //------------------------------------------------------------------------------
 
-void Node::addInputPort(::fwData::Port::sptr port)
+void Node::addInputPort(const ::fwData::Port::sptr& port)
 {
     m_inputs.push_back(port);
 }
 
 //------------------------------------------------------------------------------
 
-void Node::addOutputPort(::fwData::Port::sptr port)
+void Node::addOutputPort(const ::fwData::Port::sptr& port)
 {
     m_outputs.push_back(port);
 }
@@ -74,7 +69,7 @@ Node::PortContainer & Node::getOutputPorts()
 
 //------------------------------------------------------------------------------
 
-void Node::setObject( ::fwData::Object::sptr object )
+void Node::setObject(const ::fwData::Object::sptr& object )
 {
     m_object = object;
 }
@@ -88,25 +83,25 @@ void Node::setObject( ::fwData::Object::sptr object )
 
 //------------------------------------------------------------------------------
 
-Port::sptr Node::findPort(const std::string &identifier, /*const std::string &type,*/ bool modeInput) const
+Port::sptr Node::findPort(const std::string &identifier, bool modeInput) const
 {
     if ( modeInput)
     {
-        for ( PortContainer::const_iterator i = m_inputs.begin(); i != m_inputs.end(); ++i )
+        for ( const auto& input : m_inputs)
         {
-            if ( (*i)->getIdentifier() == identifier)
+            if ( input->getIdentifier() == identifier)
             {
-                return *i;
+                return input;
             }
         }
     }
     else
     {
-        for ( PortContainer::const_iterator i = m_outputs.begin(); i != m_outputs.end(); ++i )
+        for ( const auto& output : m_outputs )
         {
-            if ( (*i)->getIdentifier() == identifier)
+            if ( output->getIdentifier() == identifier)
             {
-                return *i;
+                return output;
             }
         }
     }
@@ -120,7 +115,7 @@ void Node::shallowCopy(const Object::csptr &_source )
     Node::csptr other = Node::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-                               + " to " + this->getClassname()), !bool(other) );
+                               + " to " + this->getClassname()), !other );
     this->fieldShallowCopy( _source );
 
     m_inputs.clear();
@@ -133,11 +128,11 @@ void Node::shallowCopy(const Object::csptr &_source )
         m_object = ::fwData::Object::dynamicCast(object);
         m_object->shallowCopy( other->m_object );
     }
-    BOOST_FOREACH(::fwData::Port::sptr port, other->m_inputs)
+    for(const ::fwData::Port::sptr& port : other->m_inputs)
     {
         this->addInputPort( ::fwData::Object::copy(port) );
     }
-    BOOST_FOREACH(::fwData::Port::sptr port, other->m_outputs)
+    for(const ::fwData::Port::sptr& port : other->m_outputs)
     {
         this->addOutputPort( ::fwData::Object::copy(port) );
     }
@@ -158,13 +153,13 @@ void Node::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache
 
     m_object = ::fwData::Object::copy( other->m_object, cache );
 
-    BOOST_FOREACH(const ::fwData::Port::sptr &port, other->m_inputs)
+    for(const ::fwData::Port::sptr &port : other->m_inputs)
     {
         ::fwData::Port::sptr newPort;
         newPort = ::fwData::Object::copy(port, cache);
         this->addInputPort(newPort);
     }
-    BOOST_FOREACH(const ::fwData::Port::sptr &port, other->m_outputs)
+    for(const ::fwData::Port::sptr &port : other->m_outputs)
     {
         ::fwData::Port::sptr newPort;
         newPort = ::fwData::Object::copy(port, cache);

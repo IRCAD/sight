@@ -16,9 +16,9 @@ fwCampImplementDataMacro((fwMedData)(Patient))
     .tag("object_version", "1")
     .tag("lib_name", "fwMedData")
     .base< ::fwData::Object>()
-    .property("name", &::fwMedData::Patient::m_attrName)
-    .property("patient_id", &::fwMedData::Patient::m_attrPatientId)
-    .property("birth_date", &::fwMedData::Patient::m_attrBirthdate)
-    .property("sex", &::fwMedData::Patient::m_attrSex)
+    .property("name", &::fwMedData::Patient::m_name)
+    .property("patient_id", &::fwMedData::Patient::m_patientId)
+    .property("birth_date", &::fwMedData::Patient::m_birthdate)
+    .property("sex", &::fwMedData::Patient::m_sex)
     ;
 }

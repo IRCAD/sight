@@ -7,15 +7,16 @@
 #ifndef __FWMEDDATA_MODELSERIES_HPP__
 #define __FWMEDDATA_MODELSERIES_HPP__
 
-#include <vector>
+#include "fwMedData/config.hpp"
+#include "fwMedData/Series.hpp"
+#include "fwMedData/types.hpp"
+
+#include <fwData/factory/new.hpp>
 
 #include <fwData/Object.hpp>
-#include <fwData/factory/new.hpp>
-#include <fwData/macros.hpp>
 
-#include "fwMedData/types.hpp"
-#include "fwMedData/Series.hpp"
-#include "fwMedData/config.hpp"
+#include <vector>
+
 
 fwCampAutoDeclareDataMacro((fwMedData)(ModelSeries), FWMEDDATA_API);
 
@@ -60,22 +61,33 @@ public:
     /**
      * @name Getters / Setters
      * @{ */
-
-    /**
-     * @brief Model container
-     * @{ */
-    fwDataGetSetCRefMacro(ReconstructionDB, ReconstructionVectorType);
-    /**  @} */
-
+    const ReconstructionVectorType &getReconstructionDB() const;
+    void setReconstructionDB(const ReconstructionVectorType &val);
     /**  @} */
 
 
 protected:
 
     /// Model container
-    ReconstructionVectorType m_attrReconstructionDB;
+    ReconstructionVectorType m_reconstructionDB;
 
 };
+
+//-----------------------------------------------------------------------------
+
+inline const ModelSeries::ReconstructionVectorType& ModelSeries::getReconstructionDB() const
+{
+    return m_reconstructionDB;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ModelSeries::setReconstructionDB(const ModelSeries::ReconstructionVectorType &val)
+{
+    m_reconstructionDB = val;
+}
+
+//-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
 

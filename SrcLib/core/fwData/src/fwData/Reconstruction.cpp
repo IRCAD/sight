@@ -28,8 +28,8 @@ Reconstruction::Reconstruction(::fwData::Object::Key key) :
     m_bIsVisible(false),
     m_sOrganName(""),
     m_sStructureType(""),
-    m_attrMaterial( ::fwData::factory::New< ::fwData::Material>() ),
-    m_attrComputedMaskVolume(Reconstruction::s_NO_COMPUTED_MASK_VOLUME)
+    m_material( ::fwData::factory::New< ::fwData::Material>() ),
+    m_computedMaskVolume(Reconstruction::s_NO_COMPUTED_MASK_VOLUME)
 {
     SLM_TRACE_FUNC();
 }
@@ -55,11 +55,11 @@ void Reconstruction::shallowCopy(const Object::csptr &_source )
     m_sOrganName     = other->m_sOrganName;
     m_sStructureType = other->m_sStructureType;
 
-    m_attrMaterial = other->m_attrMaterial;
-    m_attrImage    = other->m_attrImage;
-    m_attrMesh     = other->m_attrMesh;
+    m_material = other->m_material;
+    m_image    = other->m_image;
+    m_mesh     = other->m_mesh;
 
-    m_attrComputedMaskVolume = other->m_attrComputedMaskVolume;
+    m_computedMaskVolume = other->m_computedMaskVolume;
 }
 
 //------------------------------------------------------------------------------
@@ -76,11 +76,11 @@ void Reconstruction::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheT
     m_sOrganName     = other->m_sOrganName;
     m_sStructureType = other->m_sStructureType;
 
-    m_attrMaterial = ::fwData::Object::copy(other->m_attrMaterial, cache);
-    m_attrImage    = ::fwData::Object::copy(other->m_attrImage, cache);
-    m_attrMesh     = ::fwData::Object::copy(other->m_attrMesh, cache);
+    m_material = ::fwData::Object::copy(other->m_material, cache);
+    m_image    = ::fwData::Object::copy(other->m_image, cache);
+    m_mesh     = ::fwData::Object::copy(other->m_mesh, cache);
 
-    m_attrComputedMaskVolume = other->m_attrComputedMaskVolume;
+    m_computedMaskVolume = other->m_computedMaskVolume;
 }
 
 //------------------------------------------------------------------------------

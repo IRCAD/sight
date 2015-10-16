@@ -6,10 +6,10 @@
 
 #include "fwMedData/ActivitySeries.hpp"
 
-#include <fwData/registry/macros.hpp>
-#include <fwData/Object.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Exception.hpp>
+#include <fwData/Object.hpp>
+#include <fwData/registry/macros.hpp>
 
 fwDataRegisterMacro( ::fwMedData::ActivitySeries );
 
@@ -17,7 +17,7 @@ namespace fwMedData
 {
 
 ActivitySeries::ActivitySeries(::fwData::Object::Key key) : Series(key),
-                                                            m_attrData(::fwData::Composite::New())
+                                                            m_data(::fwData::Composite::New())
 {
 }
 
@@ -37,8 +37,8 @@ void ActivitySeries::shallowCopy(const ::fwData::Object::csptr &_source)
                                + " to " + this->getClassname()), !bool(other) );
 
     this->::fwMedData::Series::shallowCopy(_source);
-    m_attrActivityConfigId = other->m_attrActivityConfigId;
-    m_attrData             = other->m_attrData;
+    m_activityConfigId = other->m_activityConfigId;
+    m_data             = other->m_data;
 }
 
 //------------------------------------------------------------------------------
@@ -52,8 +52,8 @@ void ActivitySeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, Deep
 
     this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 
-    m_attrActivityConfigId = other->m_attrActivityConfigId;
-    m_attrData             = ::fwData::Object::copy(other->m_attrData, cache);
+    m_activityConfigId = other->m_activityConfigId;
+    m_data             = ::fwData::Object::copy(other->m_data, cache);
 }
 
 //------------------------------------------------------------------------------

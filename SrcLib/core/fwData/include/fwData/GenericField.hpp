@@ -7,15 +7,15 @@
 #ifndef __FWDATA_GENERICFIELD_HPP__
 #define __FWDATA_GENERICFIELD_HPP__
 
-#include <string>
-
-#include <boost/lexical_cast.hpp>
-
-#include <fwCore/base.hpp>
-
 #include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
 #include "fwData/GenericFieldBase.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <boost/lexical_cast.hpp>
+
+#include <string>
 
 namespace fwData
 {
@@ -127,8 +127,8 @@ protected:
      * @brief Constructor.
      * @param[in] value The initial value.
      */
-    GenericField( const T value = T( ) ) throw()
-        :   m_value( value )
+    GenericField( const T value = T( ) ) throw() :
+        m_value( value )
     {
     }
 

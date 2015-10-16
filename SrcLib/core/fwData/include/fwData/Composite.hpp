@@ -7,31 +7,17 @@
 #ifndef __FWDATA_COMPOSITE_HPP__
 #define __FWDATA_COMPOSITE_HPP__
 
-#include <map>
-
-#include <boost/shared_ptr.hpp>
 
 #include "fwData/config.hpp"
-
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+#include <boost/shared_ptr.hpp>
 
-// boost 1.47 issue with FOREACH
-#include <boost/version.hpp>
-#if BOOST_VERSION >= 104700
-#include <boost/foreach.hpp>
+#include <map>
 
 namespace fwData
 { class Composite; }
-
-inline boost::mpl::true_ * boost_foreach_is_noncopyable( ::fwData::Composite *&, BOOST_FOREACH_TAG_DEFAULT )
-{
-    return 0;
-}
-
-#endif //BOOST_VERSION >= 104700
-
 
 
 fwCampAutoDeclareDataMacro((fwData)(Composite), FWDATA_API);
@@ -85,78 +71,33 @@ public:
     FWDATA_API virtual ~Composite();
 
 
-    IteratorType begin()
-    {
-        return m_attrContainer.begin();
-    }
-    IteratorType end()
-    {
-        return m_attrContainer.end();
-    }
-    ConstIteratorType begin() const
-    {
-        return m_attrContainer.begin();
-    }
-    ConstIteratorType end()   const
-    {
-        return m_attrContainer.end();
-    }
+    IteratorType begin();
+    IteratorType end();
+    ConstIteratorType begin() const;
+    ConstIteratorType end()   const;
 
-    ReverseIteratorType rbegin()
-    {
-        return m_attrContainer.rbegin();
-    }
-    ReverseIteratorType rend()
-    {
-        return m_attrContainer.rend();
-    }
-    ConstReverseIteratorType rbegin() const
-    {
-        return m_attrContainer.rbegin();
-    }
-    ConstReverseIteratorType rend()   const
-    {
-        return m_attrContainer.rend();
-    }
+    ReverseIteratorType rbegin();
+    ReverseIteratorType rend();
+    ConstReverseIteratorType rbegin() const;
+    ConstReverseIteratorType rend()   const;
 
-    bool empty() const
-    {
-        return m_attrContainer.empty();
-    }
-    SizeType size() const
-    {
-        return m_attrContainer.size();
-    }
+    bool empty() const;
+    SizeType size() const;
 
-    mapped_type& operator[] ( KeyType n )
-    {
-        return this->m_attrContainer[n];
-    }
+    mapped_type& operator[] ( KeyType n );
 
-    IteratorType find ( const KeyType& x )
-    {
-        return m_attrContainer.find(x);
-    }
-    ConstIteratorType find ( const KeyType& x ) const
-    {
-        return m_attrContainer.find(x);
-    }
+    IteratorType find ( const KeyType& x );
+    ConstIteratorType find ( const KeyType& x ) const;
 
-    SizeType count ( const KeyType& x ) const
-    {
-        return m_attrContainer.count(x);
-    }
+    SizeType count ( const KeyType& x ) const;
     /// @}
-
 
 
     /// @brief get/set the map of std::string/::fwData::Object
     /// @{
-    ContainerType &getContainer()
-    {
-        return m_attrContainer;
-    }
-    fwDataGetSetCRefMacro(Container, ContainerType);
+    ContainerType &getContainer();
+    const ContainerType &getContainer () const;
+    void setContainer (const ContainerType &val);
     /// @}
 
 
@@ -168,27 +109,11 @@ public:
 
     /// Method to initialize a ::fwData::Composite from a std::map< string, X >
     template< class DATATYPE >
-    void setDataContainer( const std::map< std::string, SPTR(DATATYPE) > & map )
-    {
-        this->getContainer().clear();
-        this->getContainer().insert( map.begin(), map.end() );
-    }
+    void setDataContainer( const std::map< std::string, SPTR(DATATYPE) > & map );
 
     /// Method to get a std::map< string, X > from ::fwData::Composite
     template< class DATATYPE >
-    std::map< std::string, SPTR(DATATYPE) > getDataContainer() const
-    {
-        std::map< std::string, SPTR(DATATYPE) > map;
-        SPTR(DATATYPE) castData;
-        BOOST_FOREACH( ::fwData::Composite::value_type elem, *this )
-        {
-            castData = ::boost::dynamic_pointer_cast<DATATYPE>( elem.second );
-            OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castData);
-            map[elem.first] = castData;
-        }
-
-        return map;
-    }
+    std::map< std::string, SPTR(DATATYPE) > getDataContainer() const;
 
     /**
      * @brief Returns object in composite associated with the key.
@@ -199,21 +124,7 @@ public:
      *  @return requested object in composite associated with the key
      */
     template< class DATATYPE >
-    SPTR(DATATYPE) at(const std::string& key)
-    {
-        SPTR(DATATYPE) castData;
-        ::fwData::Composite::iterator iter = this->find(key);
-        if(iter != this->end())
-        {
-            castData = ::boost::dynamic_pointer_cast<DATATYPE>(iter->second);
-            SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()+" failed", !castData);
-        }
-        else
-        {
-            SLM_TRACE( "Object '" + key + "' not found.");
-        }
-        return castData;
-    }
+    SPTR(DATATYPE) at(const std::string& key);
 
     /**
      * @brief Returns object in composite associated with the key.
@@ -224,24 +135,195 @@ public:
      *  @return requested object in composite associated with the key
      */
     template< class DATATYPE >
-    CSPTR(DATATYPE) at(const std::string& key) const
-    {
-        CSPTR(DATATYPE) castData;
-        ::fwData::Composite::const_iterator iter = this->find(key);
-        if(iter != this->end())
-        {
-            castData = ::boost::dynamic_pointer_cast<DATATYPE>(iter->second);
-            SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()+" failed", !castData);
-        }
-        else
-        {
-            SLM_TRACE( "Object '" + key + "' not found.");
-        }
-        return castData;
-    }
+    CSPTR(DATATYPE) at(const std::string& key) const;
 protected:
-    ContainerType m_attrContainer;
+    ContainerType m_container;
 };
+
+//-----------------------------------------------------------------------------
+
+inline Composite::IteratorType Composite::begin()
+{
+    return m_container.begin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::IteratorType Composite::end()
+{
+    return m_container.end();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::ConstIteratorType Composite::begin() const
+{
+    return m_container.begin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::ConstIteratorType Composite::end() const
+{
+    return m_container.end();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::ReverseIteratorType Composite::rbegin()
+{
+    return m_container.rbegin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::ReverseIteratorType Composite::rend()
+{
+    return m_container.rend();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::ConstReverseIteratorType Composite::rbegin() const
+{
+    return m_container.rbegin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::ConstReverseIteratorType Composite::rend() const
+{
+    return m_container.rend();
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool Composite::empty() const
+{
+    return m_container.empty();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::SizeType Composite::size() const
+{
+    return m_container.size();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::mapped_type &Composite::operator[](Composite::KeyType n)
+{
+    return this->m_container[n];
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::IteratorType Composite::find(const Composite::KeyType &x)
+{
+    return m_container.find(x);
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::ConstIteratorType Composite::find(const Composite::KeyType &x) const
+{
+    return m_container.find(x);
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::SizeType Composite::count(const Composite::KeyType &x) const
+{
+    return m_container.count(x);
+}
+
+//-----------------------------------------------------------------------------
+
+inline Composite::ContainerType &Composite::getContainer()
+{
+    return m_container;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Composite::ContainerType &Composite::getContainer () const
+{
+    return m_container;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Composite::setContainer (const Composite::ContainerType &val)
+{
+    m_container = val;
+}
+
+//-----------------------------------------------------------------------------
+
+template< class DATATYPE >
+inline void Composite::setDataContainer( const std::map< std::string, SPTR(DATATYPE) > & map )
+{
+    this->getContainer().clear();
+    this->getContainer().insert( map.begin(), map.end() );
+}
+
+//-----------------------------------------------------------------------------
+
+template< class DATATYPE >
+inline std::map< std::string, SPTR(DATATYPE) > Composite::getDataContainer() const
+{
+    std::map< std::string, SPTR(DATATYPE) > map;
+    SPTR(DATATYPE) castData;
+    for( ::fwData::Composite::value_type elem : *this )
+    {
+        castData = ::boost::dynamic_pointer_cast<DATATYPE>( elem.second );
+        OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castData);
+        map[elem.first] = castData;
+    }
+
+    return map;
+}
+
+//-----------------------------------------------------------------------------
+
+template< class DATATYPE >
+SPTR(DATATYPE) Composite::at(const std::string& key)
+{
+    SPTR(DATATYPE) castData;
+    ::fwData::Composite::iterator iter = this->find(key);
+    if(iter != this->end())
+    {
+        castData = ::boost::dynamic_pointer_cast<DATATYPE>(iter->second);
+        SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()+" failed", !castData);
+    }
+    else
+    {
+        SLM_TRACE( "Object '" + key + "' not found.");
+    }
+    return castData;
+}
+
+//-----------------------------------------------------------------------------
+
+template< class DATATYPE >
+CSPTR(DATATYPE) Composite::at(const std::string& key) const
+{
+    CSPTR(DATATYPE) castData;
+    ::fwData::Composite::const_iterator iter = this->find(key);
+    if(iter != this->end())
+    {
+        castData = ::boost::dynamic_pointer_cast<DATATYPE>(iter->second);
+        SLM_TRACE_IF("DynamicCast "+ ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()+" failed", !castData);
+    }
+    else
+    {
+        SLM_TRACE( "Object '" + key + "' not found.");
+    }
+    return castData;
+}
+
+//-----------------------------------------------------------------------------
 
 } //namespace fwData
 

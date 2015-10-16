@@ -7,18 +7,18 @@
 #ifndef __FWDATA_IMAGE_HPP__
 #define __FWDATA_IMAGE_HPP__
 
-#include <vector>
+#include "fwData/Object.hpp"
+#include "fwData/Array.hpp"
+#include "fwData/factory/new.hpp"
+
+#include <fwTools/Type.hpp>
+#include <fwTools/DynamicType.hpp>
 
 #include <boost/shared_array.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/cstdint.hpp>
 
-#include <fwTools/Type.hpp>
-#include <fwTools/DynamicType.hpp>
-
-#include "fwData/Object.hpp"
-#include "fwData/Array.hpp"
-#include "fwData/factory/new.hpp"
+#include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(Image), FWDATA_API);
 
@@ -87,37 +87,44 @@ public:
 
     FWDATA_API const SpacingType &getSpacing() const;
     FWDATA_API void setSpacing(const SpacingType &spacing);
-    // @}
+    /// @}
 
     /** @{
-     * @brief get/set image origin
+     *  @brief get/set image origin
      */
     FWDATA_API const OriginType &getOrigin() const;
     FWDATA_API void setOrigin(const OriginType &origin);
-    // @}
+    /// @}
 
     /** @{
      * @brief get/set image size
      */
     FWDATA_API const SizeType &getSize() const;
     FWDATA_API void setSize(const SizeType &size);
-    // @}
+    /// @}
 
-    /**
-     * @brief Get/set prefered window center
+    /** @{
+     *  @brief Get/set preferred window center
      */
-    fwDataGetSetMacro(WindowCenter, double);
+    double  getWindowCenter () const;
 
-    /**
-     * @brief Get/set prefered window width
+    void setWindowCenter (double val);
+    /// @}
+
+    /** @{
+     *  @brief Get/set preferred window width
      */
-    fwDataGetSetMacro(WindowWidth, double);
+    double  getWindowWidth () const;
+    void setWindowWidth (double val);
+    /// @}
 
-
-    /**
-     * @brief Get/set prefered window center
+    /** @{
+     *  @brief Get/set preferred window center
      */
-    fwDataGetSetMacro(NumberOfComponents, size_t);
+    size_t  getNumberOfComponents() const;
+
+    void setNumberOfComponents(size_t val);
+    /// @}
 
     /**
      * @brief set data array
@@ -137,7 +144,7 @@ public:
     FWDATA_API void setType(::fwTools::Type type);
     FWDATA_API void setType(const std::string &type);
     FWDATA_API ::fwTools::Type getType() const;
-    // @}
+    /// @}
 
     /// get a DynamicType for retrocompatibility
     FWDATA_API ::fwTools::DynamicType getPixelType() const;
@@ -157,7 +164,7 @@ public:
                                const ::fwTools::Type &type, size_t numberOfComponents = 1) throw(::fwData::Exception);
     FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents = 1)
     throw(::fwData::Exception);
-    // @}
+    /// @}
 
 
     /// @brief return image size in bytes
@@ -181,16 +188,60 @@ protected:
 
     //! Preferred window center/with
     ///@{
-    double m_attrWindowCenter;
-    double m_attrWindowWidth;
+    double m_windowCenter;
+    double m_windowWidth;
     ///@}
 
     //! Number of components
-    size_t m_attrNumberOfComponents;
+    size_t m_numberOfComponents;
 
     //! image buffer
     ::fwData::Array::sptr m_dataArray;
 };
+
+//-----------------------------------------------------------------------------
+
+inline double Image::getWindowCenter () const
+{
+    return m_windowCenter;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Image::setWindowCenter (double val)
+{
+    m_windowCenter = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Image::getWindowWidth () const
+{
+    return m_windowWidth;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Image::setWindowWidth (double val)
+{
+    m_windowWidth = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline size_t Image::getNumberOfComponents() const
+{
+    return m_numberOfComponents;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Image::setNumberOfComponents(size_t val)
+{
+    m_numberOfComponents = val;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

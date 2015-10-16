@@ -16,11 +16,12 @@ namespace ut
 
 class ReconstructionTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ReconstructionTest );
-CPPUNIT_TEST( methode1 );
-CPPUNIT_TEST( methode2 );
-CPPUNIT_TEST( image );
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( ReconstructionTest );
+    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST( methode2 );
+    CPPUNIT_TEST( image );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface

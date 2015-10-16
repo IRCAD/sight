@@ -7,14 +7,13 @@
 #ifndef __FWDATA_GENERICFIELDBASE_HPP__
 #define __FWDATA_GENERICFIELDBASE_HPP__
 
-#include <string>
-#include <ostream>
-
 #include <fwCore/base.hpp>
-
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+
+#include <string>
+#include <ostream>
 
 namespace fwData
 {

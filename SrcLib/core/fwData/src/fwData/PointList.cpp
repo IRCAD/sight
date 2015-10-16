@@ -4,13 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwCore/base.hpp>
-
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/PointList.hpp"
+
+#include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::PointList );
 
@@ -53,7 +51,7 @@ void PointList::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &
     this->fieldDeepCopy( _source, cache );
 
     m_vPoints.clear();
-    BOOST_FOREACH(PointListContainer::value_type point, other->m_vPoints )
+    for(const PointListContainer::value_type& point : other->m_vPoints )
     {
         Point::sptr newPoint = Point::New();
         newPoint = ::fwData::Object::copy(point, cache);

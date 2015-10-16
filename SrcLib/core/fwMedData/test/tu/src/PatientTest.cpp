@@ -57,7 +57,7 @@ void PatientTest::idTest()
 
 void PatientTest::birthdateTest()
 {
-    const std::string birthdate = "02-14-2013 11:28";
+    const std::string birthdate = "02-14-2015 11:28";
     CPPUNIT_ASSERT(m_patient);
     m_patient->setBirthdate(birthdate);
     CPPUNIT_ASSERT_EQUAL(birthdate, m_patient->getBirthdate());

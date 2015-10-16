@@ -7,9 +7,9 @@
 #ifndef __SCENE2D_DATA_VIEWPORT_HPP__
 #define __SCENE2D_DATA_VIEWPORT_HPP__
 
-#include <fwData/Object.hpp>
-
 #include "scene2D/config.hpp"
+
+#include <fwData/Object.hpp>
 
 namespace scene2D
 {

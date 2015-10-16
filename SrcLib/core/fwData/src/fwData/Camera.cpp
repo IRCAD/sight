@@ -4,20 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
-
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-#include "fwData/Video.hpp"
 #include "fwData/Camera.hpp"
+
+#include <fwCore/base.hpp>
 
 fwDataRegisterMacro(::fwData::Camera);
 
 namespace fwData
 {
 
-Camera::Camera( ::fwData::Object::Key key )
-    : m_attrSkew(0.0), m_dataAvailable(false)
+Camera::Camera( ::fwData::Object::Key key ) :
+    m_skew(0.0),
+    m_dataAvailable(false)
 {
     SLM_TRACE_FUNC();
 
@@ -48,11 +48,11 @@ void Camera::setCameraGUID(uint32HL cameraGUID)
 void Camera::setDistortionCoefficient(double k1, double k2,
                                       double p1, double p2, double k3)
 {
-    m_attrDistortionCoefficient[0] = k1;
-    m_attrDistortionCoefficient[1] = k2;
-    m_attrDistortionCoefficient[2] = p1;
-    m_attrDistortionCoefficient[3] = p2;
-    m_attrDistortionCoefficient[4] = k3;
+    m_distortionCoefficient[0] = k1;
+    m_distortionCoefficient[1] = k2;
+    m_distortionCoefficient[2] = p1;
+    m_distortionCoefficient[3] = p2;
+    m_distortionCoefficient[4] = k3;
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ void Camera::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cach
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
-    OSLM_FATAL("Not implemented." );
+    SLM_FATAL("Not implemented." );
 }
 
 } // namespace fwData

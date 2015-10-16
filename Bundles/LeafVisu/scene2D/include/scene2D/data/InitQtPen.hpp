@@ -7,9 +7,10 @@
 #ifndef __SCENE2D_DATA_INITQTPEN_HPP__
 #define __SCENE2D_DATA_INITQTPEN_HPP__
 
+#include "scene2D/config.hpp"
+
 #include <QPen>
 
-#include "scene2D/config.hpp"
 
 namespace scene2D
 {

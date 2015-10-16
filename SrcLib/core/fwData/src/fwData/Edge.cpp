@@ -6,19 +6,22 @@
 
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
 #include "fwData/Edge.hpp"
 
 fwDataRegisterMacro( ::fwData::Edge );
+
 namespace fwData
 {
+
 std::string Edge::NATURE_FLOW = "flow";
 std::string Edge::NATURE_DATA = "data";
 
 //------------------------------------------------------------------------------
 
 Edge::Edge( ::fwData::Object::Key key ) :
-    m_fromPortIdentifier("not defined"), m_toPortIdentifier("not defined"), m_nature("not defined")
+    m_fromPortIdentifier("not defined"),
+    m_toPortIdentifier("not defined"),
+    m_nature("not defined")
 {
     SLM_TRACE_FUNC();
 }

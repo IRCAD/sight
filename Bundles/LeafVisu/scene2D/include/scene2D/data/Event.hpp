@@ -7,11 +7,11 @@
 #ifndef __SCENE2D_DATA_EVENT_HPP__
 #define __SCENE2D_DATA_EVENT_HPP__
 
-#include <Qt>
-
 #include "scene2D/config.hpp"
 #include "scene2D/data/Coord.hpp"
 #include "scene2D/data/Size.hpp"
+
+#include <Qt>
 
 namespace scene2D
 {
@@ -70,14 +70,29 @@ public:
     /// Defines deep copy
     SCENE2D_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType &cache );
 
-    fwGettersSettersDocMacro(OldSize, oldSize, Size, no comment);
-    fwGettersSettersDocMacro(Size, size, Size, no comment);
-    fwGettersSettersDocMacro(Type, type, Type, no comment);
-    fwGettersSettersDocMacro(Coord, coord, Coord, no comment);
-    fwGettersSettersDocMacro(Button, button, Button, no comment);
-    fwGettersSettersDocMacro(Accepted, accepted, bool, no comment);
-    fwGettersSettersDocMacro(Modifier, modifier, Modifier, no comment);
-    fwGettersSettersDocMacro(Key, key, int, no comment);
+    bool isAccepted() const;
+    void setAccepted(bool accepted);
+
+    Button getButton() const;
+    void setButton(Button button);
+
+    const Coord& getCoord() const;
+    void setCoord(const Coord& coord);
+
+    int getKey() const;
+    void setKey(int key);
+
+    Modifier getModifier() const;
+    void setModifier(Modifier modifier);
+
+    const Size& getOldSize() const;
+    void setOldSize(const Size& oldSize);
+
+    const Size& getSize() const;
+    void setSize(const Size& size);
+
+    Type getType() const;
+    void setType(Type type);
 
 private:
 
@@ -91,6 +106,117 @@ private:
     int m_key;
 };
 
+//------------------------------------------------------------------------------
+
+inline bool Event::isAccepted() const
+{
+    return m_accepted;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Event::setAccepted(bool accepted)
+{
+    m_accepted = accepted;
+}
+
+//------------------------------------------------------------------------------
+
+inline Event::Button Event::getButton() const
+{
+    return m_button;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Event::setButton(Button button)
+{
+    m_button = button;
+}
+
+//------------------------------------------------------------------------------
+
+inline const Coord& Event::getCoord() const
+{
+    return m_coord;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Event::setCoord(const Coord& coord)
+{
+    m_coord = coord;
+}
+
+//------------------------------------------------------------------------------
+
+inline int Event::getKey() const
+{
+    return m_key;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Event::setKey(int key)
+{
+    m_key = key;
+}
+
+//------------------------------------------------------------------------------
+
+inline Event::Modifier Event::getModifier() const
+{
+    return m_modifier;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Event::setModifier(Modifier modifier)
+{
+    m_modifier = modifier;
+}
+
+//------------------------------------------------------------------------------
+
+inline const Size& Event::getOldSize() const
+{
+    return m_oldSize;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Event::setOldSize(const Size& oldSize)
+{
+    m_oldSize = oldSize;
+}
+
+//------------------------------------------------------------------------------
+
+inline const Size& Event::getSize() const
+{
+    return m_size;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Event::setSize(const Size& size)
+{
+    m_size = size;
+}
+
+//------------------------------------------------------------------------------
+
+inline Event::Type Event::getType() const
+{
+    return m_type;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Event::setType(Type type)
+{
+    m_type = type;
+}
 
 } // namespace data
 } // namespace scene2D

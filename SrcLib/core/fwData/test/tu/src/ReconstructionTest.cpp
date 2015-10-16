@@ -50,14 +50,11 @@ void ReconstructionTest::methode1() //test des setters et getters
     ::fwData::Reconstruction::sptr p1 = ::fwData::Reconstruction::New();
 
     p1->setIsVisible( ISVISIBLE );
-    p1->setCRefOrganName( CREFORGANNAME );
-    p1->setCRefStructureType( CREFSTRUCTURETYPE );
+    p1->setOrganName( CREFORGANNAME );
+    p1->setStructureType( CREFSTRUCTURETYPE );
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), ISVISIBLE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsVisible(), ISVISIBLE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIsVisible(), ISVISIBLE);
-
 
     CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefOrganName(), CREFORGANNAME);
@@ -80,15 +77,12 @@ void ReconstructionTest::methode2()
     // process
     ::fwData::Reconstruction::sptr p1 = ::fwData::Reconstruction::New();
 
-    p1->setCRefIsVisible( ISVISIBLE );
-    p1->setCRefOrganName( CREFORGANNAME );
-    p1->setCRefStructureType( CREFSTRUCTURETYPE );
+    p1->setIsVisible( ISVISIBLE );
+    p1->setOrganName( CREFORGANNAME );
+    p1->setStructureType( CREFSTRUCTURETYPE );
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), ISVISIBLE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsVisible(), ISVISIBLE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIsVisible(), ISVISIBLE);
-
 
     CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefOrganName(), CREFORGANNAME);

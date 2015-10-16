@@ -4,15 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwTools/Type.hpp>
-
-#include <fwTest/generator/Mesh.hpp>
 
 #include "fwMedData/ModelSeries.hpp"
 
 #include "ModelSeriesTest.hpp"
+
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwTest/generator/Mesh.hpp>
+#include <fwTools/Type.hpp>
 
 
 // Registers the fixture into the 'registry'

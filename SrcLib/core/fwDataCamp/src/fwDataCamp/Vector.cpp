@@ -14,5 +14,5 @@ fwCampImplementDataMacro((fwData)(Vector))
     .tag("object_version", "1")
     .tag("lib_name", "fwData")
     .base< ::fwData::Object>()
-    .property("values", &::fwData::Vector::m_attrContainer);
+    .property("values", &::fwData::Vector::m_container);
 }

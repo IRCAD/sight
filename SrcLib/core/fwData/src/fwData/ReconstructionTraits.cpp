@@ -17,7 +17,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-void ReconstructionTraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
+void ReconstructionTraits::setMaskOpNode(const ::fwData::Node::sptr& maskOpNode )
 {
     m_maskOpNode = maskOpNode;
 }
@@ -32,7 +32,7 @@ void ReconstructionTraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
 
 //------------------------------------------------------------------------------
 
-void ReconstructionTraits::setMeshOpNode( ::fwData::Node::sptr meshOpNode )
+void ReconstructionTraits::setMeshOpNode(const ::fwData::Node::sptr& meshOpNode )
 {
     m_meshOpNode = meshOpNode;
 }
@@ -41,13 +41,12 @@ void ReconstructionTraits::setMeshOpNode( ::fwData::Node::sptr meshOpNode )
 
 ::fwData::Node::sptr ReconstructionTraits::getMeshOpNode()
 {
-
     return m_meshOpNode;
 }
 
 //------------------------------------------------------------------------------
 
-void ReconstructionTraits::setStructureTraits( ::fwData::StructureTraits::sptr structureTraits )
+void ReconstructionTraits::setStructureTraits(const ::fwData::StructureTraits::sptr& structureTraits )
 {
     m_structureTraits = structureTraits;
 }
@@ -82,7 +81,7 @@ void ReconstructionTraits::cachedDeepCopy(const Object::csptr &source, DeepCopyC
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
-    OSLM_FATAL("Not implemented." );
+    SLM_FATAL("Not implemented." );
 }
 
 } // namespace fwData

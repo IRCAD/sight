@@ -4,11 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <QVBoxLayout>
-
-#include <QGraphicsRectItem>
+#include "scene2D/Render.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwServices/Base.hpp>
@@ -19,8 +16,8 @@
 #include <scene2D/adaptor/IAdaptor.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include "scene2D/Render.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
+#include <QVBoxLayout>
+#include <QGraphicsRectItem>
 
 fwServicesRegisterMacro( ::fwRender::IRender, ::scene2D::Render, ::fwData::Composite );
 
@@ -96,7 +93,7 @@ void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
      */
     for(ZValue2AdaptorID::reverse_iterator rit = m_zValue2AdaptorID.rbegin(); rit != m_zValue2AdaptorID.rend(); ++rit )
     {
-        if ( !_event->getAccepted() && !m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.expired() )
+        if ( !_event->isAccepted() && !m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.expired() )
         {
             m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.lock()->processInteraction( _event );
         }
@@ -174,7 +171,7 @@ void Render::starting() throw ( ::fwTools::Failed )
     ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( "self" );
     if ( objectIter != m_objectsID2AdaptorIDVector.end() )
     {
-        BOOST_FOREACH( AdaptorIDType adaptorId,  objectIter->second )
+        for(const AdaptorIDType& adaptorId :  objectIter->second )
         {
             this->startAdaptor( adaptorId, composite );
             SLM_ASSERT("Service is not started", m_adaptorID2SceneAdaptor2D[adaptorId].getService()->isStarted());
@@ -185,7 +182,7 @@ void Render::starting() throw ( ::fwTools::Failed )
 
     //Create connections when adaptors are started
 
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr connect, m_connect)
+    for(const ::fwRuntime::ConfigurationElement::sptr& connect : m_connect)
     {
         if(!connect->hasAttribute("waitForKey"))
         {
@@ -200,10 +197,10 @@ void Render::starting() throw ( ::fwTools::Failed )
 void Render::connectAfterWait(::fwData::Composite::sptr composite)
 {
 
-    BOOST_FOREACH(::fwData::Composite::value_type element, *composite)
+    for(const ::fwData::Composite::value_type& element : *composite)
     {
         std::string key = element.first;
-        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr connect, m_connect)
+        for(const ::fwRuntime::ConfigurationElement::sptr& connect : m_connect)
         {
             if(connect->hasAttribute("waitForKey"))
             {
@@ -233,7 +230,7 @@ void Render::connectAfterWait(::fwData::Composite::sptr composite)
 void Render::disconnect(::fwData::Composite::sptr composite)
 {
 
-    BOOST_FOREACH(::fwData::Composite::value_type element, *composite)
+    for(const ::fwData::Composite::value_type& element : *composite)
     {
         std::string key = element.first;
         if(m_objectConnections.find(key) != m_objectConnections.end())
@@ -302,7 +299,7 @@ void Render::stopping() throw ( ::fwTools::Failed )
     ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( "self" );
     if ( objectIter != m_objectsID2AdaptorIDVector.end() )
     {
-        BOOST_FOREACH( AdaptorIDType adaptorId,  objectIter->second )
+        for(const AdaptorIDType& adaptorId : objectIter->second )
         {
             this->stopAdaptor( adaptorId );
         }
@@ -491,17 +488,17 @@ void Render::startAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 {
     SLM_TRACE_FUNC();
 
-    BOOST_FOREACH( ::fwData::Composite::value_type elem, (*_composite) )
+    for(const ::fwData::Composite::value_type& elem : *_composite )
     {
         std::string compositeKey                       = elem.first;
         ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
         if ( objectIter != m_objectsID2AdaptorIDVector.end() )
         {
-            BOOST_FOREACH( AdaptorIDType adaptorId,  objectIter->second )
+            for(const AdaptorIDType& adaptorId :  objectIter->second )
             {
                 this->startAdaptor( adaptorId, elem.second );
-                OSLM_ASSERT("Service "<<adaptorId<<" is not started",
-                            m_adaptorID2SceneAdaptor2D[adaptorId].getService()->isStarted());
+                SLM_ASSERT("Service "+adaptorId+" is not started",
+                           m_adaptorID2SceneAdaptor2D[adaptorId].getService()->isStarted());
             }
         }
     }
@@ -511,14 +508,13 @@ void Render::startAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 
 void Render::swapAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 {
-    SLM_TRACE_FUNC();
-    BOOST_FOREACH( ::fwData::Composite::value_type elem, (*_composite) )
+    for(const ::fwData::Composite::value_type& elem : *_composite)
     {
         std::string compositeKey                       = elem.first;
         ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
         if ( objectIter != m_objectsID2AdaptorIDVector.end() )
         {
-            BOOST_FOREACH( AdaptorIDType adaptorId,  objectIter->second )
+            for(const AdaptorIDType& adaptorId : objectIter->second )
             {
                 ::fwRuntime::ConfigurationElementContainer::Iterator iter;
                 for (iter = m_sceneConfiguration->begin(); iter != m_sceneConfiguration->end(); ++iter)
@@ -537,14 +533,13 @@ void Render::swapAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 
 void Render::stopAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 {
-    SLM_TRACE_FUNC();
-    BOOST_FOREACH( ::fwData::Composite::value_type elem, (*_composite) )
+    for(const ::fwData::Composite::value_type& elem : *_composite )
     {
         std::string compositeKey                       = elem.first;
         ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
         if ( objectIter != m_objectsID2AdaptorIDVector.end() )
         {
-            BOOST_FOREACH( AdaptorIDType adaptorId,  objectIter->second )
+            for(const AdaptorIDType& adaptorId : objectIter->second )
             {
                 this->stopAdaptor( adaptorId );
             }
@@ -556,8 +551,6 @@ void Render::stopAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 
 void Render::startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object)_object)
 {
-    SLM_TRACE_FUNC();
-
     if (!m_adaptorID2SceneAdaptor2D[_adaptorID].m_uid.empty())
     {
         m_adaptorID2SceneAdaptor2D[_adaptorID].m_service = ::fwServices::add< ::scene2D::adaptor::IAdaptor >(
@@ -634,7 +627,6 @@ void Render::updateSceneSize( float ratioPercent )
     m_sceneWidth.setY( h );
 
     m_scene->setSceneRect( rec );
-
 }
 
 //-----------------------------------------------------------------------------

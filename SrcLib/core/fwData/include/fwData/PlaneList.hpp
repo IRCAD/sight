@@ -7,12 +7,13 @@
 #ifndef __FWDATA_PLANELIST_HPP__
 #define __FWDATA_PLANELIST_HPP__
 
-#include <vector>
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Plane.hpp"
+
+#include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(PlaneList), FWDATA_API);
 namespace fwData
@@ -25,8 +26,7 @@ class FWDATA_CLASS_API PlaneList : public Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (PlaneList)(::fwData::Object),
-                                            (()), ::fwData::factory::New< PlaneList >);
+    fwCoreClassDefinitionsWithFactoryMacro( (PlaneList)(::fwData::Object), (()), ::fwData::factory::New< PlaneList >);
 
     fwCampMakeFriendDataMacro((fwData)(PlaneList));
 
@@ -51,8 +51,14 @@ public:
     // Looking for duplicate plan
     FWDATA_API void deleteDuplicatedPlan(void);
 
-    /// Planes container
-    fwGettersSettersDocMacro(Planes, vPlanes, PlaneListContainer, "a container of all planes");
+    /** @{
+     *  @brief get/set container of all planes
+     */
+    const PlaneListContainer  getPlanes () const;
+    PlaneListContainer & getRefPlanes ();
+    const PlaneListContainer & getCRefPlanes () const;
+    void setPlanes (const PlaneListContainer& _vPlanes);
+    /// @}
 
 protected:
 
@@ -60,6 +66,36 @@ protected:
     PlaneListContainer m_vPlanes;
 
 }; // end class PlaneList
+
+//-----------------------------------------------------------------------------
+
+inline const PlaneList::PlaneListContainer PlaneList::getPlanes () const
+{
+    return m_vPlanes;
+}
+
+//-----------------------------------------------------------------------------
+
+inline PlaneList::PlaneListContainer & PlaneList::getRefPlanes ()
+{
+    return this->m_vPlanes;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const PlaneList::PlaneListContainer & PlaneList::getCRefPlanes () const
+{
+    return this->m_vPlanes;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void PlaneList::setPlanes (const PlaneList::PlaneListContainer& _vPlanes)
+{
+    this->m_vPlanes = _vPlanes;
+}
+
+//-----------------------------------------------------------------------------
 
 } // end namespace fwData
 

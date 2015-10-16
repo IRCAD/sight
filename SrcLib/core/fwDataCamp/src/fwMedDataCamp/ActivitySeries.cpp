@@ -19,7 +19,7 @@ fwCampImplementDataMacro((fwMedData)(ActivitySeries))
     .tag("object_version", "1")
     .tag("lib_name", "fwActivities")
     .base< ::fwMedData::Series>()
-    .property("activity_config_id", &::fwMedData::ActivitySeries::m_attrActivityConfigId)
-    .property("data", &::fwMedData::ActivitySeries::m_attrData)
+    .property("activity_config_id", &::fwMedData::ActivitySeries::m_activityConfigId)
+    .property("data", &::fwMedData::ActivitySeries::m_data)
     ;
 }

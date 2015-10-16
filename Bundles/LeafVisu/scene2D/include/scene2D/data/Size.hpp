@@ -7,9 +7,9 @@
 #ifndef __SCENE2D_DATA_SIZE_HPP__
 #define __SCENE2D_DATA_SIZE_HPP__
 
-#include <fwData/Object.hpp>
-
 #include "scene2D/config.hpp"
+
+#include <fwData/Object.hpp>
 
 namespace scene2D
 {
@@ -20,27 +20,27 @@ class SCENE2D_CLASS_API Size
 {
 public:
 
-    SCENE2D_API Size()
+    Size()
     {
         m_w = 0; m_h = 0;
     }
-    SCENE2D_API Size( double w, double h )
+    Size( double w, double h )
     {
         m_w = w; m_h = h;
     }
-    SCENE2D_API double getWidth() const
+    double getWidth() const
     {
         return m_w;
     }
-    SCENE2D_API void setWidth ( double w )
+    void setWidth ( double w )
     {
         m_w = w;
     }
-    SCENE2D_API double getHeight() const
+    double getHeight() const
     {
         return m_h;
     }
-    SCENE2D_API void setHeight ( double h )
+    void setHeight ( double h )
     {
         m_h = h;
     }

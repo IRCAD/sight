@@ -4,11 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwData/String.hpp>
 #include "StringTest.hpp"
 
+#include <fwData/String.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::StringTest );
@@ -32,7 +30,7 @@ void StringTest::methode1()
 {
     const std::string VALUES[] = { "", "chaine_caractere" };
 
-    BOOST_FOREACH ( std::string VALUE, VALUES )
+    for( std::string VALUE : VALUES )
     {
         ::fwData::String::sptr s0 = ::fwData::String::New();
         s0->value()               = VALUE;

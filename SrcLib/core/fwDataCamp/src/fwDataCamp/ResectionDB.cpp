@@ -14,6 +14,6 @@ fwCampImplementDataMacro((fwData)(ResectionDB))
     .tag("lib_name", "fwData")
     .base< ::fwData::Object>()
     .property("safe_resection", &::fwData::ResectionDB::m_safeResection)
-    .property("resections", &::fwData::ResectionDB::m_attrResections)
+    .property("resections", &::fwData::ResectionDB::m_resections)
     ;
 }

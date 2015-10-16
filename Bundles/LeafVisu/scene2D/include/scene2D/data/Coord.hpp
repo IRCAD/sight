@@ -20,27 +20,27 @@ class SCENE2D_CLASS_API Coord
 {
 public:
 
-    SCENE2D_API Coord()
+    Coord()
     {
         m_x = 0; m_y = 0;
     }
-    SCENE2D_API Coord( double x, double y )
+    Coord( double x, double y )
     {
         m_x = x; m_y = y;
     }
-    SCENE2D_API double getX() const
+    double getX() const
     {
         return m_x;
     }
-    SCENE2D_API void setX ( double x )
+    void setX ( double x )
     {
         m_x = x;
     }
-    SCENE2D_API double getY() const
+    double getY() const
     {
         return m_y;
     }
-    SCENE2D_API void setY ( double y )
+    void setY ( double y )
     {
         m_y = y;
     }

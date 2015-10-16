@@ -4,13 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwCore/base.hpp>
 
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/Resection.hpp"
+
+#include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::Resection );
 
@@ -19,10 +18,9 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Resection::Resection (::fwData::Object::Key key)
-    : m_isSafePart(true),
-      m_isValid(false),
-      m_isVisible(true)
+Resection::Resection (::fwData::Object::Key key) : m_isSafePart(true),
+                                                   m_isValid(false),
+                                                   m_isVisible(true)
 {
     m_planeList = ::fwData::PlaneList::New();
 }
@@ -69,13 +67,13 @@ void Resection::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &
     m_planeList  = ::fwData::Object::copy(other->m_planeList, cache);
 
     this->m_vInputs.clear();
-    BOOST_FOREACH(const ResectionInputs::value_type &resec, other->m_vInputs)
+    for(const ResectionInputs::value_type &resec : other->m_vInputs)
     {
         m_vInputs.push_back( ::fwData::Object::copy(resec, cache) );
     }
 
     this->m_vOutputs.clear();
-    BOOST_FOREACH(const ResectionOutputs::value_type &resec, other->m_vOutputs)
+    for(const ResectionOutputs::value_type &resec : other->m_vOutputs)
     {
         m_vOutputs.push_back( ::fwData::Object::copy(resec, cache) );
     }

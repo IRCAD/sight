@@ -47,7 +47,7 @@ void StudyTest::instanceUIDTest()
 
 void StudyTest::dateTest()
 {
-    const std::string date = "02-14-2013";
+    const std::string date = "02-14-2015";
     CPPUNIT_ASSERT(m_study);
     m_study->setDate(date);
     CPPUNIT_ASSERT_EQUAL(date, m_study->getDate());

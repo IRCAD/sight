@@ -7,11 +7,11 @@
 #ifndef __FWDATA_EDGE_HPP__
 #define __FWDATA_EDGE_HPP__
 
-#include <utility>
-
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <utility>
 
 fwCampAutoDeclareDataMacro((fwData)(Edge), FWDATA_API);
 
@@ -20,7 +20,7 @@ namespace fwData
 /**
  * @brief This class defines an edge object.
  *
- * An edge is reprensented by a to identifier ("from" and "to") and a nature.
+ * An edge is represented by a to identifier ("from" and "to") and a nature.
  */
 class FWDATA_CLASS_API Edge : public ::fwData::Object
 {
@@ -30,7 +30,6 @@ public:
 
     FWDATA_API static std::string NATURE_FLOW;
     FWDATA_API static std::string NATURE_DATA;
-
 
     /**
      * @brief Constructor
@@ -67,7 +66,7 @@ public:
     /// @brief return "to" identifier
     FWDATA_API std::string getToPortID() const;
 
-    /// @brief return "to or from" identifier accroding to upStream
+    /// @brief return "to or from" identifier according to upStream
     FWDATA_API std::string getPortID(bool upStream) const;
 
     /// @brief Set edge nature ("FLOW" , "FWDATA")

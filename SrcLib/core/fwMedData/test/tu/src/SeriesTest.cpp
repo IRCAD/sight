@@ -100,7 +100,7 @@ void SeriesTest::attrModalityTest()
 
 void SeriesTest::attrDateTest()
 {
-    const std::string date = "02-14-2013";
+    const std::string date = "02-14-2015";
 
     for (SeriesVectorType::iterator iter = m_series.begin(); iter != m_series.end(); ++iter)
     {

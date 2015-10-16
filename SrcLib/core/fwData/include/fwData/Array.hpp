@@ -7,14 +7,14 @@
 #ifndef __FWDATA_ARRAY_HPP__
 #define __FWDATA_ARRAY_HPP__
 
-#include <fwTools/Type.hpp>
-#include <fwMemory/BufferObject.hpp>
-
 #include "fwData/Exception.hpp"
-
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <fwTools/Type.hpp>
+
+#include <fwMemory/BufferObject.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Array), FWDATA_API);
 
@@ -97,8 +97,8 @@ public:
     /// Aliases to the resize method
     FWDATA_API virtual size_t resize(const std::string &type, const SizeType &size, size_t nbOfComponents,
                                      bool reallocate = false) throw(::fwData::Exception);
-    FWDATA_API virtual size_t resize(const SizeType &size, size_t nbOfComponents,
-                                     bool reallocate = false) throw(::fwData::Exception);
+    FWDATA_API virtual size_t resize(const SizeType &size, size_t nbOfComponents, bool reallocate =
+                                         false) throw(::fwData::Exception);
     FWDATA_API virtual size_t resize(const SizeType &size, bool reallocate = false) throw(::fwData::Exception);
 
     /**
@@ -227,7 +227,10 @@ public:
      */
     FWDATA_API static OffsetType computeStrides( SizeType size, size_t nbOfComponents, size_t sizeOfType );
 
-    fwDataGetSetSptrMacro(BufferObject, ::fwMemory::BufferObject::sptr);
+    ::fwMemory::BufferObject::sptr getBufferObject () const;
+
+    void setBufferObject (const ::fwMemory::BufferObject::sptr& val);
+
 
     /// Exchanges the content of the Array with the content of _source.
     FWDATA_API void swap( Array::sptr _source );
@@ -241,12 +244,28 @@ protected:
 
     OffsetType m_strides;
     ::fwTools::Type m_type;
-    ::fwMemory::BufferObject::sptr m_attrBufferObject;
+    ::fwMemory::BufferObject::sptr m_bufferObject;
     SizeType m_size;
     size_t m_nbOfComponents;
     bool m_isBufferOwner;
 
 };
+
+//-----------------------------------------------------------------------------
+
+inline ::fwMemory::BufferObject::sptr Array::getBufferObject () const
+{
+    return m_bufferObject;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Array::setBufferObject (const ::fwMemory::BufferObject::sptr& val)
+{
+    m_bufferObject = val;
+}
+
+//-----------------------------------------------------------------------------
 
 
 } // namespace fwData

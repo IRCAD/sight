@@ -7,10 +7,11 @@
 #ifndef __FWMEDDATA_UT_SERIESTEST_HPP__
 #define __FWMEDDATA_UT_SERIESTEST_HPP__
 
-#include <cppunit/extensions/HelperMacros.h>
 
 #include "fwMedData/ImageSeries.hpp"
 #include "fwMedData/ModelSeries.hpp"
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace fwMedData
 {

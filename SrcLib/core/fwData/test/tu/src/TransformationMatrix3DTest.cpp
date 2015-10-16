@@ -53,7 +53,7 @@ void TransformationMatrix3DTest::methode2()
 
     // process
     ::fwData::TransformationMatrix3D::sptr p1 = ::fwData::TransformationMatrix3D::New();
-    p1->setCRefCoefficients(VECTORCOEFFICIENTS);
+    p1->setCoefficients(VECTORCOEFFICIENTS);
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->getCoefficients().back(),  COEFFICIENTS);

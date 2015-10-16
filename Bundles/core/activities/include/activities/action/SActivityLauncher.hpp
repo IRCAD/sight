@@ -7,14 +7,14 @@
 #ifndef __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
 #define __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
 
-#include <fwTools/Failed.hpp>
+#include <fwActivities/registry/Activities.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
-#include <fwActivities/registry/Activities.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
 
 #include "activities/config.hpp"
 

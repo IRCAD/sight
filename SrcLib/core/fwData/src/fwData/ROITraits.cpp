@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
-
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/ROITraits.hpp"
+
+#include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::ROITraits );
 
@@ -29,7 +29,7 @@ ROITraits::~ROITraits()
 
 //------------------------------------------------------------------------------
 
-void ROITraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
+void ROITraits::setMaskOpNode(const ::fwData::Node::sptr& maskOpNode )
 {
     m_maskOpNode = maskOpNode;
 }
@@ -48,7 +48,7 @@ void ROITraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
 
 //------------------------------------------------------------------------------
 
-void ROITraits::setStructureTraits( ::fwData::StructureTraits::sptr structureTraits )
+void ROITraits::setStructureTraits(const ::fwData::StructureTraits::sptr& structureTraits )
 {
     m_structureTraits = structureTraits;
 }

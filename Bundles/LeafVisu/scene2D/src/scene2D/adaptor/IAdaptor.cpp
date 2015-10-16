@@ -327,7 +327,7 @@ void IAdaptor::registerService( ::scene2D::adaptor::IAdaptor::sptr srv )
 
 void IAdaptor::unregisterServices()
 {
-    BOOST_FOREACH( ManagedAdaptorVector::value_type adaptor, m_managedAdaptors )
+    for(const ManagedAdaptorVector::value_type& adaptor : m_managedAdaptors )
     {
         adaptor.lock()->stop();
         ::fwServices::OSR::unregisterService(adaptor.lock());

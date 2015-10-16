@@ -45,8 +45,6 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-protected:
-
 };
 
 } // namespace fwData

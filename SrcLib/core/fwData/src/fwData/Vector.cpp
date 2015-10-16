@@ -34,7 +34,7 @@ void Vector::shallowCopy(const Object::csptr &_source )
                                "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_attrContainer = other->m_attrContainer;
+    m_container = other->m_container;
 }
 
 //------------------------------------------------------------------------------
@@ -46,11 +46,11 @@ void Vector::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cach
                                "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
-    m_attrContainer.clear();
-    m_attrContainer.reserve(other->m_attrContainer.size());
-    BOOST_FOREACH(const ContainerType::value_type &obj, other->m_attrContainer)
+    m_container.clear();
+    m_container.reserve(other->m_container.size());
+    for(const ContainerType::value_type &obj : other->m_container)
     {
-        m_attrContainer.push_back( ::fwData::Object::copy(obj, cache) );
+        m_container.push_back( ::fwData::Object::copy(obj, cache) );
     }
 }
 

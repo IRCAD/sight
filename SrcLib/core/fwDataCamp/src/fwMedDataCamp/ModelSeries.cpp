@@ -17,6 +17,6 @@ fwCampImplementDataMacro((fwMedData)(ModelSeries))
     .tag("object_version", "1")
     .tag("lib_name", "fwMedData")
     .base< ::fwMedData::Series>()
-    .property("reconstruction_db", &::fwMedData::ModelSeries::m_attrReconstructionDB)
+    .property("reconstruction_db", &::fwMedData::ModelSeries::m_reconstructionDB)
     ;
 }

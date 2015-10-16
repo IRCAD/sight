@@ -4,12 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwMedData/ImageSeries.hpp"
 
+#include <fwData/Exception.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/registry/macros.hpp>
-#include <fwData/Exception.hpp>
-
-#include "fwMedData/ImageSeries.hpp"
 
 fwDataRegisterMacro( ::fwMedData::ImageSeries );
 
@@ -37,7 +36,7 @@ void ImageSeries::shallowCopy(const ::fwData::Object::csptr &_source)
 
     this->::fwMedData::Series::shallowCopy(_source);
 
-    m_attrImage = other->m_attrImage;
+    m_image = other->m_image;
 }
 
 //------------------------------------------------------------------------------
@@ -51,7 +50,7 @@ void ImageSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCop
 
     this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 
-    m_attrImage = ::fwData::Object::copy(other->m_attrImage);
+    m_image = ::fwData::Object::copy(other->m_image);
 }
 
 //------------------------------------------------------------------------------

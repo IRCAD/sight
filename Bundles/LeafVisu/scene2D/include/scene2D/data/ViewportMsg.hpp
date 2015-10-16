@@ -7,10 +7,9 @@
 #ifndef __SCENE2D_DATA_VIEWPORTMSG_HPP__
 #define __SCENE2D_DATA_VIEWPORTMSG_HPP__
 
-#include <fwServices/ObjectMsg.hpp>
-
 #include "scene2D/config.hpp"
 
+#include <fwServices/ObjectMsg.hpp>
 
 namespace scene2D
 {

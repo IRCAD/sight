@@ -7,12 +7,12 @@
 #ifndef __SCENE2D_PROCESSING_SCOMPUTEHISTOGRAM_HPP__
 #define __SCENE2D_PROCESSING_SCOMPUTEHISTOGRAM_HPP__
 
+#include "scene2D/config.hpp"
+
 #include <fwData/Histogram.hpp>
 #include <fwData/Image.hpp>
 
 #include <fwServices/IController.hpp>
-
-#include "scene2D/config.hpp"
 
 namespace scene2D
 {

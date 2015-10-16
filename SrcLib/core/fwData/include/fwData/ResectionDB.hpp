@@ -7,11 +7,11 @@
 #ifndef __FWDATA_RESECTIONDB_HPP__
 #define __FWDATA_RESECTIONDB_HPP__
 
-#include <boost/cstdint.hpp>
-
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Resection.hpp"
+
+#include <boost/cstdint.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(ResectionDB), FWDATA_API);
 
@@ -56,19 +56,76 @@ public:
     /**
      * @brief add resection
      */
-    FWDATA_API void addResection( ::fwData::Resection::sptr resection );
+    FWDATA_API void addResection(const ::fwData::Resection::sptr& resection );
 
-    fwDataGetSetCRefMacro(Resections, ResectionContainerType);
+    /**
+     * @{
+     * @brief Get/Set value of the resections.
+     */
+    const ResectionContainerType &getResections () const;
+    void setResections (const ResectionContainerType &val);
+    /// @}
 
-    fwGettersSettersDocMacro(SafeResection, safeResection, ::fwData::Resection::sptr,
-                             "Get the safe part of the resections");
+    /**
+     * @{
+     * @brief Get/Set value of the safe resection.
+     */
+    const ::fwData::Resection::sptr  getSafeResection() const;
+    ::fwData::Resection::sptr & getRefSafeResection();
+    const ::fwData::Resection::sptr & getCRefSafeResection() const;
+    void setSafeResection(const ::fwData::Resection::sptr& _safeResection);
+    /// @}
 
 protected:
 
     ::fwData::Resection::sptr m_safeResection;
 
-    ResectionContainerType m_attrResections;
+    ResectionContainerType m_resections;
 };
+
+//-----------------------------------------------------------------------------
+
+inline const ResectionDB::ResectionContainerType &ResectionDB::getResections () const
+{
+    return m_resections;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ResectionDB::setResections (const ResectionDB::ResectionContainerType &val)
+{
+    m_resections = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::Resection::sptr ResectionDB::getSafeResection() const
+{
+    return m_safeResection;
+}
+
+//-----------------------------------------------------------------------------
+
+inline ::fwData::Resection::sptr & ResectionDB::getRefSafeResection()
+{
+    return m_safeResection;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::Resection::sptr & ResectionDB::getCRefSafeResection() const
+{
+    return m_safeResection;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ResectionDB::setSafeResection(const ::fwData::Resection::sptr& _safeResection)
+{
+    m_safeResection = _safeResection;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/assign/list_of.hpp>
-#include <boost/assign/std/vector.hpp>
 #include <boost/cstdint.hpp>
 
 #include <fwData/Mesh.hpp>
@@ -15,9 +13,6 @@
 #include <fwComEd/helper/Array.hpp>
 
 #include "MeshTest.hpp"
-
-
-using namespace boost::assign;
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::MeshTest );
@@ -230,9 +225,9 @@ void MeshTest::insertion()
 
     ::fwData::Array::sptr array = mesh->getPointsArray();
     ::fwComEd::helper::Array arrayHelper(array);
-    CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >(list_of(4),0)), pointArray[4][0]);
-    CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >(list_of(4),1)), pointArray[4][1]);
-    CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >(list_of(4),2)), pointArray[4][2]);
+    CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >({4},0)), pointArray[4][0]);
+    CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >({4},1)), pointArray[4][1]);
+    CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >({4},2)), pointArray[4][2]);
 }
 
 //-----------------------------------------------------------------------------
@@ -369,7 +364,7 @@ void MeshTest::addingArray()
     // Add point array
     ::fwData::Array::sptr pointArray = ::fwData::Array::New();
 
-    pointArray->resize(::fwTools::Type::create< ::fwData::Mesh::PointValueType >(), list_of(nbPoints), 3, true);
+    pointArray->resize(::fwTools::Type::create< ::fwData::Mesh::PointValueType >(), {nbPoints}, 3, true);
     ::fwComEd::helper::Array pointArrayHelper(pointArray);
 
     ::fwData::Mesh::PointValueType count = 0;
@@ -395,12 +390,11 @@ void MeshTest::addingArray()
     CPPUNIT_ASSERT_EQUAL(nbPoints, mesh->getNumberOfPoints());
 
     ::fwData::Mesh::PointsMultiArrayType pointMultiArray = meshHelper.getPoints();
-    CPPUNIT_ASSERT_EQUAL(*(pointArrayHelper.getItem< ::fwData::Mesh::PointValueType >(list_of(
-                                                                                          0),0)),
+    CPPUNIT_ASSERT_EQUAL(*(pointArrayHelper.getItem< ::fwData::Mesh::PointValueType >({0},0)),
                          pointMultiArray[0][0]);
-    CPPUNIT_ASSERT_EQUAL(*(pointArrayHelper.getItem< ::fwData::Mesh::PointValueType >(list_of(12),2)),
+    CPPUNIT_ASSERT_EQUAL(*(pointArrayHelper.getItem< ::fwData::Mesh::PointValueType >({12},2)),
                          pointMultiArray[12][2]);
-    CPPUNIT_ASSERT_EQUAL(*(pointArrayHelper.getItem< ::fwData::Mesh::PointValueType >(list_of(45),1)),
+    CPPUNIT_ASSERT_EQUAL(*(pointArrayHelper.getItem< ::fwData::Mesh::PointValueType >({45},1)),
                          pointMultiArray[45][1]);
 
 
@@ -410,10 +404,9 @@ void MeshTest::addingArray()
     ::fwData::Array::sptr cellDataArray       = ::fwData::Array::New();
 
 
-    cellTypeArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellTypes >(), list_of(nbCells), 1, true);
-    cellDataOffsetArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellDataOffsetType >(), list_of(
-                                    nbCells), 1, true);
-    cellDataArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellValueType >(), list_of(nbCells*3), 1, true);
+    cellTypeArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellTypes >(), {nbCells}, 1, true);
+    cellDataOffsetArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellDataOffsetType >(), {nbCells}, 1, true);
+    cellDataArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellValueType >(), {nbCells*3}, 1, true);
 
     ::fwComEd::helper::Array cellTypeArrayHelper(cellTypeArray);
     ::fwComEd::helper::Array cellDataOffsetArrayHelper(cellDataOffsetArray);
@@ -423,14 +416,14 @@ void MeshTest::addingArray()
     for (int id = 0; id<nbCells; id++)
     {
         ::fwData::Mesh::CellTypes type = static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE);
-        cellTypeArrayHelper.setItem(list_of(id), &type);
+        cellTypeArrayHelper.setItem({size_t(id)}, &type);
 
         ::fwData::Mesh::CellDataOffsetType offset = id*3;
-        cellDataOffsetArrayHelper.setItem(list_of(id), &offset);
+        cellDataOffsetArrayHelper.setItem({size_t(id)}, &offset);
 
         ::fwData::Mesh::CellValueType cell[3] = { counter, counter+1, counter+2 };
         counter                              += 3;
-        cellDataArrayHelper.setItem(list_of(offset), &cell);
+        cellDataArrayHelper.setItem({offset}, &cell);
     }
     mesh->setCellTypesArray(cellTypeArray);
     mesh->setCellDataOffsetsArray(cellDataOffsetArray);
@@ -445,22 +438,19 @@ void MeshTest::addingArray()
     CPPUNIT_ASSERT_EQUAL(nbCells, mesh->getNumberOfCells());
 
     ::fwData::Mesh::CellTypesMultiArrayType cellTypesMultiArray = meshHelper.getCellTypes();
-    CPPUNIT_ASSERT_EQUAL(*(cellTypeArrayHelper.getItem< ::fwData::Mesh::CellTypes >(list_of(0))),
+    CPPUNIT_ASSERT_EQUAL(*(cellTypeArrayHelper.getItem< ::fwData::Mesh::CellTypes >({0})),
                          cellTypesMultiArray[0]);
-    CPPUNIT_ASSERT_EQUAL(*(cellTypeArrayHelper.getItem< ::fwData::Mesh::CellTypes >(list_of(12))),
+    CPPUNIT_ASSERT_EQUAL(*(cellTypeArrayHelper.getItem< ::fwData::Mesh::CellTypes >({12})),
                          cellTypesMultiArray[12]);
-    CPPUNIT_ASSERT_EQUAL(*(cellTypeArrayHelper.getItem< ::fwData::Mesh::CellTypes >(list_of(18))),
+    CPPUNIT_ASSERT_EQUAL(*(cellTypeArrayHelper.getItem< ::fwData::Mesh::CellTypes >({18})),
                          cellTypesMultiArray[18]);
 
     ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsetsMultiArray = meshHelper.getCellDataOffsets();
-    CPPUNIT_ASSERT_EQUAL(*(cellDataOffsetArrayHelper.getItem< ::fwData::Mesh::CellDataOffsetType >(list_of(
-                                                                                                       0))),
+    CPPUNIT_ASSERT_EQUAL(*(cellDataOffsetArrayHelper.getItem< ::fwData::Mesh::CellDataOffsetType >({0})),
                          cellDataOffsetsMultiArray[0]);
-    CPPUNIT_ASSERT_EQUAL(*(cellDataOffsetArrayHelper.getItem< ::fwData::Mesh::CellDataOffsetType >(list_of(
-                                                                                                       12))),
+    CPPUNIT_ASSERT_EQUAL(*(cellDataOffsetArrayHelper.getItem< ::fwData::Mesh::CellDataOffsetType >({12})),
                          cellDataOffsetsMultiArray[12]);
-    CPPUNIT_ASSERT_EQUAL(*(cellDataOffsetArrayHelper.getItem< ::fwData::Mesh::CellDataOffsetType >(list_of(
-                                                                                                       18))),
+    CPPUNIT_ASSERT_EQUAL(*(cellDataOffsetArrayHelper.getItem< ::fwData::Mesh::CellDataOffsetType >({18})),
                          cellDataOffsetsMultiArray[18]);
 
 
@@ -469,14 +459,11 @@ void MeshTest::addingArray()
     ::fwData::Mesh::CellDataOffsetType offset18 = cellTypesMultiArray[18];
 
     ::fwData::Mesh::CellDataMultiArrayType cellDataMultiArray = meshHelper.getCellData();
-    CPPUNIT_ASSERT_EQUAL(*(cellDataArrayHelper.getItem< ::fwData::Mesh::CellValueType >(list_of(
-                                                                                            offset0))),
+    CPPUNIT_ASSERT_EQUAL(*(cellDataArrayHelper.getItem< ::fwData::Mesh::CellValueType >({offset0})),
                          cellDataMultiArray[offset0]);
-    CPPUNIT_ASSERT_EQUAL(*(cellDataArrayHelper.getItem< ::fwData::Mesh::CellValueType >(list_of(
-                                                                                            offset12))),
+    CPPUNIT_ASSERT_EQUAL(*(cellDataArrayHelper.getItem< ::fwData::Mesh::CellValueType >({offset12})),
                          cellDataMultiArray[offset12]);
-    CPPUNIT_ASSERT_EQUAL(*(cellDataArrayHelper.getItem< ::fwData::Mesh::CellValueType >(list_of(
-                                                                                            offset18))),
+    CPPUNIT_ASSERT_EQUAL(*(cellDataArrayHelper.getItem< ::fwData::Mesh::CellValueType >({offset18})),
                          cellDataMultiArray[offset18]);
 }
 

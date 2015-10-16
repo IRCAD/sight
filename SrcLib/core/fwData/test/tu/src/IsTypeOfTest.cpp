@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <utility>
-#include <boost/foreach.hpp>
+#include "IsTypeOfTest.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/Boolean.hpp>
@@ -14,7 +13,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include "IsTypeOfTest.hpp"
+#include <utility>
 
 
 // Registers the fixture into the 'registry'

@@ -18,8 +18,7 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-Boolean::Boolean( ::fwData::Object::Key key  ) throw()
-    :   GenericField< bool >( false )
+Boolean::Boolean( ::fwData::Object::Key key  ) throw() : GenericField< bool >( false )
 {
 }
 

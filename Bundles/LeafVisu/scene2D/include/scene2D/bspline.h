@@ -15,8 +15,6 @@
 #define BUFFER_SIZE 128
 #define DEFAULT_PRECISION 40
 
-using namespace std;
-
 struct point
 {
     float x;
@@ -41,6 +39,7 @@ struct point
         return *this;
     }
 };
+
 class point_list
 {
 public:
@@ -150,5 +149,6 @@ public:
     int precision;
     bool draw_number;
 };
+
 #endif //__SCENE2D_BSPLINE_H__
 

@@ -4,10 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Composite.hpp>
-
-
 #include "ActivitySeriesTest.hpp"
+
+#include <fwData/Composite.hpp>
 
 
 // Registers the fixture into the 'registry'

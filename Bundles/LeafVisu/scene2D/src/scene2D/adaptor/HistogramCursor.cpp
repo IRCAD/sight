@@ -27,8 +27,7 @@ namespace scene2D
 namespace adaptor
 {
 
-HistogramCursor::HistogramCursor() throw()
-    : m_color("red"), m_borderColor(Qt::gray), m_opacity(0.8), m_pointSize(6)
+HistogramCursor::HistogramCursor() throw() : m_color("red"), m_borderColor(Qt::gray), m_opacity(0.8f), m_pointSize(6.f)
 {
 //    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }

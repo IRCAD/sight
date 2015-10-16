@@ -7,17 +7,17 @@
 #ifndef __FWDATA_MESH_HPP__
 #define __FWDATA_MESH_HPP__
 
-#include <camp/class.hpp>
-
-#include <fwCore/macros.hpp>
-#include <boost/cstdint.hpp>
-#include <boost/multi_array.hpp>
 #include "fwData/Array.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/factory/new.hpp"
-
 #include "fwData/config.hpp"
-#include "fwData/Array.hpp"
+
+#include <fwCore/macros.hpp>
+
+#include <boost/cstdint.hpp>
+#include <boost/multi_array.hpp>
+
+#include <camp/class.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
 
@@ -192,25 +192,25 @@ public:
     FWDATA_API bool adjustAllocatedMemory() throw(::fwData::Exception);
 
     /// Sets the internal corresponding array
-    FWDATA_API void setPointsArray           (::fwData::Array::sptr array);
+    FWDATA_API void setPointsArray           (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellTypesArray        (::fwData::Array::sptr array);
+    FWDATA_API void setCellTypesArray        (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellDataArray         (::fwData::Array::sptr array);
+    FWDATA_API void setCellDataArray         (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellDataOffsetsArray  (::fwData::Array::sptr array);
+    FWDATA_API void setCellDataOffsetsArray  (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setPointColorsArray      (::fwData::Array::sptr array);
+    FWDATA_API void setPointColorsArray      (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellColorsArray       (::fwData::Array::sptr array);
+    FWDATA_API void setCellColorsArray       (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setPointNormalsArray     (::fwData::Array::sptr array);
+    FWDATA_API void setPointNormalsArray     (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellNormalsArray      (::fwData::Array::sptr array);
+    FWDATA_API void setCellNormalsArray      (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setPointTexCoordsArray   (::fwData::Array::sptr array);
+    FWDATA_API void setPointTexCoordsArray   (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellTexCoordsArray    (::fwData::Array::sptr array);
+    FWDATA_API void setCellTexCoordsArray    (const ::fwData::Array::sptr& array);
 
     /// Returns the internal corresponding array
     FWDATA_API ::fwData::Array::sptr getPointsArray           () const;
@@ -331,12 +331,14 @@ protected:
      * This array contains points : [ x1 y1 z1 x2 y2 z2 ... xn yn zn ]
      */
     ::fwData::Array::sptr m_points;
+
     /**
      * @brief Cell types array : 1-components 1-dimension uint8 array, size = m_nbCells.
      *
      * This array each cell type : [ TRIANGLE QUAD QUAD ... TRIANGLE TRIANGLE QUAD ]
      */
     ::fwData::Array::sptr m_cellTypes;
+
     /**
      * @brief Cell data array : 1-components 1-dimension uint64 array, size = m_cellsDataSize.
      *
@@ -346,6 +348,7 @@ protected:
      * This array contains point indexes (index in m_points) : [ TRIAN_ID1, TRIAN_ID2, TRIAN_ID3, QUAD_ID1, QUAD_ID2, QUAD_ID3, QUAD_ID4, ... ]
      */
     ::fwData::Array::sptr m_cellData;
+
     /**
      * @brief Cell data offsets array : 1-components 1-dimension uint64 array, size = m_nbCells.
      *
@@ -355,36 +358,42 @@ protected:
      * This array contains cell indexes m_cellData : [ INDEX_TRIAN_1, INDEX_QUAD_1, INDEX_QUAD_2 ...  ]
      */
     ::fwData::Array::sptr m_cellDataOffsets;
+
     /**
      * @brief point colors array : 3 or 4-components 1-dimension float array, size = m_nbPoints.
      *
      * This array contains point colors : [ R1 G1 B1 R2 G2 B2 ... ] or [ R1 G1 B1 A1 R2 G2 B2 A2 ... ]
      */
     ::fwData::Array::sptr m_pointColors;
+
     /**
      * @brief Mesh point array : 3 or 4-components 1-dimension uint8_t array, size = m_nbCells.
      *
      * This array contains cell colors : [ R1 G1 B1 R2 G2 B2 ... ] or [ R1 G1 B1 A1 R2 G2 B2 A2 ... ]
      */
     ::fwData::Array::sptr m_cellColors;
+
     /**
      * @brief Mesh point array : 3-components 1-dimension uint8_t array, size = m_nbPoints.
      *
      * This array contains point normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
      */
     ::fwData::Array::sptr m_pointNormals;
+
     /**
      * @brief Mesh point array : 3-components 1-dimension float array, size = m_nbCells.
      *
      * This array contains cell normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
      */
     ::fwData::Array::sptr m_cellNormals;
+
     /**
      * @brief Mesh texCoord array : 2-components 1-dimension float array, size = m_nbPoints.
      *
      * This array contains point texCoords : [ tx1 ty1 tx2 ty2 ... ]
      */
     ::fwData::Array::sptr m_pointTexCoords;
+
     /**
      * @brief Mesh texCoord array : 2-components 1-dimension float array, size = m_nbCells.
      *

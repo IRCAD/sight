@@ -8,8 +8,8 @@
 #define __FWDATA_STRUCTURETRAITS_HPP__
 
 #include "fwData/Color.hpp"
-#include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
 
 
 fwCampAutoDeclareDataMacro((fwData)(StructureTraits), FWDATA_API);
@@ -74,29 +74,118 @@ public:
     /// Destructor. Does nothing.
     FWDATA_API virtual ~StructureTraits();
 
-    fwGettersSettersDocMacro(Type, type, std::string, "the structure type");
+    /**
+     * @{
+     * @brief Get/Set value of the structure type.
+     */
+    const std::string  getType () const;
+    std::string & getRefType ();
+    const std::string & getCRefType () const;
+    void setType (const std::string & _type);
+    /// @}
 
-    fwGettersSettersDocMacro(Categories, categories, CategoryContainer, "the structure type");
+    /**
+     * @{
+     * @brief Get/Set value of the categories.
+     */
+    const CategoryContainer getCategories () const;
+    CategoryContainer & getRefCategories ();
+    const CategoryContainer & getCRefCategories () const;
+    void setCategories (const CategoryContainer _categories);
+    void setCRefCategories (const CategoryContainer & _categories);
+    /// @}
 
-    fwGettersSettersDocMacro(Class, class, StructureClass, "the structure class");
+    /**
+     * @{
+     * @brief Get/Set value of the class.
+     */
+    const StructureClass getClass () const;
+    StructureClass & getRefClass ();
+    const StructureClass & getCRefClass () const;
+    void setClass (const StructureClass _class);
+    void setCRefClass (const StructureClass & _class);
+    /// @}
 
-    fwGettersSettersDocMacro(NativeExp, nativeExp, ROIExpression, "the native ROI expression");
+    /**
+     * @{
+     * @brief Get/Set value of the nativeExp.
+     */
+    const ROIExpression  getNativeExp () const;
+    ROIExpression & getRefNativeExp ();
+    const ROIExpression & getCRefNativeExp () const;
+    void setNativeExp (const ROIExpression _nativeExp);
+    void setCRefNativeExp (const ROIExpression & _nativeExp);
+    /// @}
 
-    fwGettersSettersDocMacro(NativeGeometricExp, nativeGeometricExp, ROIExpression,
-                             "the native geometric ROI expression");
+    /**
+     * @{
+     * @brief Get/Set value of the nativeGeometricExp.
+     */
+    const ROIExpression  getNativeGeometricExp () const;
+    ROIExpression & getRefNativeGeometricExp ();
+    const ROIExpression & getCRefNativeGeometricExp () const;
+    void setNativeGeometricExp (const ROIExpression _nativeGeometricExp);
+    void setCRefNativeGeometricExp (const ROIExpression & _nativeGeometricExp);
 
-    fwGettersSettersDocMacro(AttachmentType, attachmentType, std::string,
-                             "structure attachment type if class is LESION or FUNCTIONAL");
+    /// @}
 
-    fwGettersSettersDocMacro(Color, color, ::fwData::Color::sptr, "structure default color");
+    /**
+     * @{
+     * @brief Get/Set value of the attachmentType.
+     */
+    const std::string  getAttachmentType () const;
+    std::string & getRefAttachmentType ();
+    const std::string & getCRefAttachmentType () const;
+    void setAttachmentType (const std::string _attachmentType);
+    void setCRefAttachmentType (const std::string & _attachmentType);
 
-    /// Get Organ dicom Designation.
+    /// @}
 
-    fwGettersSettersDocMacro(AnatomicRegion, anatomicRegion, std::string, "Dicom anatomic region");
+    /**
+     * @{
+     * @brief Get/Set value of the color.
+     */
+    const ::fwData::Color::sptr  getColor () const;
+    ::fwData::Color::sptr & getRefColor ();
+    const ::fwData::Color::sptr & getCRefColor () const;
+    void setColor (const ::fwData::Color::sptr _color);
+    void setCRefColor (const ::fwData::Color::sptr & _color);
+    /// @}
 
-    fwGettersSettersDocMacro(PropertyCategory, propertyCategory, std::string, "Dicom property category");
+    /**
+     * @{
+     * @brief Get/Set value of the anatomicRegion.
+     */
 
-    fwGettersSettersDocMacro(PropertyType, propertyType, std::string, "Dicom property type");
+    const std::string  getAnatomicRegion () const;
+    std::string & getRefAnatomicRegion ();
+    const std::string & getCRefAnatomicRegion () const;
+    void setAnatomicRegion (const std::string _anatomicRegion);
+    void setCRefAnatomicRegion (const std::string & _anatomicRegion);
+    /// @}
+
+    /**
+     * @{
+     * @brief Get/Set value of the propertyCategory.
+     */
+    const std::string  getPropertyCategory () const;
+    std::string & getRefPropertyCategory ();
+    const std::string & getCRefPropertyCategory () const;
+    void setPropertyCategory (const std::string _propertyCategory);
+    void setCRefPropertyCategory (const std::string & _propertyCategory);
+
+    /// @}
+
+    /**
+     * @{
+     * @brief Get/Set value of the propertyType.
+     */
+    const std::string  getPropertyType () const;
+    std::string & getRefPropertyType ();
+    const std::string & getCRefPropertyType () const;
+    void setPropertyType (const std::string _propertyType);
+    void setCRefPropertyType (const std::string & _propertyType);
+    /// @}
 
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
@@ -133,6 +222,351 @@ private:
     /// Dicom property type of organ if unknown it must be set to "ToDefine"
     std::string m_propertyType;
 };
+
+//-----------------------------------------------------------------------------
+
+inline const std::string StructureTraits::getType () const
+{
+    return m_type;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::string & StructureTraits::getRefType ()
+{
+    return m_type;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string & StructureTraits::getCRefType () const
+{
+    return m_type;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setType (const std::string & _type)
+{
+    m_type = _type;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const StructureTraits::CategoryContainer StructureTraits::getCategories () const
+{
+    return m_categories;
+}
+
+//-----------------------------------------------------------------------------
+
+inline StructureTraits::CategoryContainer & StructureTraits::getRefCategories ()
+{
+    return m_categories;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const StructureTraits::CategoryContainer & StructureTraits::getCRefCategories () const
+{
+    return m_categories;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setCategories (const StructureTraits::CategoryContainer _categories)
+{
+    m_categories = _categories;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setCRefCategories (const StructureTraits::CategoryContainer & _categories)
+{
+    m_categories = _categories;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const StructureTraits::StructureClass StructureTraits::getClass () const
+{
+    return m_class;
+}
+
+//-----------------------------------------------------------------------------
+
+inline StructureTraits::StructureClass & StructureTraits::getRefClass ()
+{
+    return m_class;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const StructureTraits::StructureClass & StructureTraits::getCRefClass () const
+{
+    return m_class;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setClass (const StructureTraits::StructureClass _class)
+{
+    m_class = _class;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setCRefClass (const StructureTraits::StructureClass & _class)
+{
+    m_class = _class;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const StructureTraits::ROIExpression StructureTraits::getNativeExp () const
+{
+    return m_nativeExp;
+}
+
+//-----------------------------------------------------------------------------
+
+inline StructureTraits::ROIExpression & StructureTraits::getRefNativeExp ()
+{
+    return m_nativeExp;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const StructureTraits::ROIExpression & StructureTraits::getCRefNativeExp () const
+{
+    return m_nativeExp;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setNativeExp (const StructureTraits::ROIExpression _nativeExp)
+{
+    m_nativeExp = _nativeExp;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setCRefNativeExp (const StructureTraits::ROIExpression & _nativeExp)
+{
+    m_nativeExp = _nativeExp;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const StructureTraits::ROIExpression StructureTraits::getNativeGeometricExp () const
+{
+    return m_nativeGeometricExp;
+}
+
+//-----------------------------------------------------------------------------
+
+inline StructureTraits::ROIExpression & StructureTraits::getRefNativeGeometricExp ()
+{
+    return m_nativeGeometricExp;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const StructureTraits::ROIExpression & StructureTraits::getCRefNativeGeometricExp () const
+{
+    return m_nativeGeometricExp;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setNativeGeometricExp (const StructureTraits::ROIExpression _nativeGeometricExp)
+{
+    m_nativeGeometricExp = _nativeGeometricExp;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setCRefNativeGeometricExp (const StructureTraits::ROIExpression & _nativeGeometricExp)
+{
+    m_nativeGeometricExp = _nativeGeometricExp;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string StructureTraits::getAttachmentType () const
+{
+    return m_attachmentType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::string & StructureTraits::getRefAttachmentType ()
+{
+    return m_attachmentType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string & StructureTraits::getCRefAttachmentType () const
+{
+    return m_attachmentType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setAttachmentType (const std::string _attachmentType)
+{
+    m_attachmentType = _attachmentType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setCRefAttachmentType (const std::string & _attachmentType)
+{
+    m_attachmentType = _attachmentType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::Color::sptr StructureTraits::getColor () const
+{
+    return m_color;
+}
+
+//-----------------------------------------------------------------------------
+
+inline ::fwData::Color::sptr & StructureTraits::getRefColor ()
+{
+    return m_color;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::Color::sptr & StructureTraits::getCRefColor () const
+{
+    return m_color;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setColor (const ::fwData::Color::sptr _color)
+{
+    m_color = _color;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setCRefColor (const ::fwData::Color::sptr & _color)
+{
+    m_color = _color;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string StructureTraits::getAnatomicRegion () const
+{
+    return m_anatomicRegion;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::string & StructureTraits::getRefAnatomicRegion ()
+{
+    return m_anatomicRegion;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string & StructureTraits::getCRefAnatomicRegion () const
+{
+    return m_anatomicRegion;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setAnatomicRegion (const std::string _anatomicRegion)
+{
+    m_anatomicRegion = _anatomicRegion;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setCRefAnatomicRegion (const std::string & _anatomicRegion)
+{
+    m_anatomicRegion = _anatomicRegion;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string StructureTraits::getPropertyCategory () const
+{
+    return m_propertyCategory;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::string & StructureTraits::getRefPropertyCategory ()
+{
+    return m_propertyCategory;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string & StructureTraits::getCRefPropertyCategory () const
+{
+    return m_propertyCategory;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setPropertyCategory (const std::string _propertyCategory)
+{
+    m_propertyCategory = _propertyCategory;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setCRefPropertyCategory (const std::string & _propertyCategory)
+{
+    m_propertyCategory = _propertyCategory;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string StructureTraits::getPropertyType () const
+{
+    return m_propertyType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::string & StructureTraits::getRefPropertyType ()
+{
+    return m_propertyType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string & StructureTraits::getCRefPropertyType () const
+{
+    return m_propertyType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setPropertyType (const std::string _propertyType)
+{
+    m_propertyType = _propertyType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void StructureTraits::setCRefPropertyType (const std::string & _propertyType)
+{
+    m_propertyType = _propertyType;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

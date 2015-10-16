@@ -4,9 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/assign/list_of.hpp>
-#include <boost/assign/std/vector.hpp>
-
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwData/Camera.hpp>
@@ -50,8 +47,6 @@
 
 #include "CopyTest.hpp"
 
-
-using namespace boost::assign;
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::CopyTest);

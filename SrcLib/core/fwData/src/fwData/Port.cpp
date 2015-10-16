@@ -6,7 +6,6 @@
 
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
 #include "fwData/Port.hpp"
 
 fwDataRegisterMacro( ::fwData::Port );
@@ -15,7 +14,8 @@ namespace fwData
 {
 //------------------------------------------------------------------------------
 
-Port::Port(::fwData::Object::Key key) : m_identifier("IDNOTdefined"), m_type("TypeNotDefined")
+Port::Port(::fwData::Object::Key key) : m_identifier("IDNOTdefined"),
+                                        m_type("TypeNotDefined")
 {
 }
 

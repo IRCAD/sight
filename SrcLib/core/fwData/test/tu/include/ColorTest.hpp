@@ -16,10 +16,11 @@ namespace ut
 
 class ColorTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ColorTest );
-CPPUNIT_TEST( methode1 );
-CPPUNIT_TEST( methode2 );
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( ColorTest );
+    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST( methode2 );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -31,4 +32,5 @@ public:
 };
 } //namespace ut
 } //namespace fwData
+
 #endif //__FWDATA_UT_COLORTEST_HPP__

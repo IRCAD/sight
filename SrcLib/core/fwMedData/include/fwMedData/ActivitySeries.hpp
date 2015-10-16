@@ -7,12 +7,10 @@
 #ifndef __FWMEDDATA_ACTIVITYSERIES_HPP__
 #define __FWMEDDATA_ACTIVITYSERIES_HPP__
 
-#include <fwData/factory/new.hpp>
-#include <fwData/macros.hpp>
-
-#include <fwMedData/Series.hpp>
-
 #include "fwMedData/config.hpp"
+#include "fwMedData/Series.hpp"
+
+#include <fwData/factory/new.hpp>
 
 fwCampAutoDeclareDataMacro((fwMedData)(ActivitySeries), FWMEDDATA_API);
 
@@ -63,25 +61,58 @@ public:
     /**
      * @brief Data container
      * @{ */
-    fwDataGetSetSptrMacro(Data, SPTR(::fwData::Composite));
+    SPTR(::fwData::Composite) getData () const;
+    void setData(const SPTR(::fwData::Composite)& val);
     /**  @} */
 
     /**
      * @brief Activity configuration identifier
      * @{ */
-    fwDataGetSetCRefMacro(ActivityConfigId, ConfigIdType);
+    const ConfigIdType &getActivityConfigId () const;
+    void setActivityConfigId (const ConfigIdType &val);
     /**  @} */
 
     /**  @} */
+
 protected:
 
     /// Activity configuration identifier
-    ConfigIdType m_attrActivityConfigId;
+    ConfigIdType m_activityConfigId;
 
     /// ... container
-    SPTR(::fwData::Composite) m_attrData;
+    SPTR(::fwData::Composite) m_data;
 
 };
+
+//-----------------------------------------------------------------------------
+
+inline SPTR(::fwData::Composite) ActivitySeries::getData () const
+{
+    return m_data;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ActivitySeries::setData(const SPTR(::fwData::Composite)& val)
+{
+    m_data = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ActivitySeries::ConfigIdType &ActivitySeries::getActivityConfigId () const
+{
+    return m_activityConfigId;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ActivitySeries::setActivityConfigId (const ActivitySeries::ConfigIdType &val)
+{
+    m_activityConfigId = val;
+}
+
+//-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
 

@@ -4,17 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
-
-
 #include "fwData/Color.hpp"
 
+#include <fwCore/base.hpp>
+
 fwDataRegisterMacro( ::fwData::Color );
+
 namespace fwData
 {
+
 //------------------------------------------------------------------------------
 
 Color::Color ( ::fwData::Object::Key key )
@@ -26,6 +26,7 @@ Color::Color ( ::fwData::Object::Key key )
 }
 
 //------------------------------------------------------------------------------
+
 Color::sptr Color::ColorFactory(Color::ColorType red, Color::ColorType green, Color::ColorType blue,
                                 Color::ColorType alpha)
 {
@@ -113,7 +114,6 @@ void Color::setRGBA( std::string hexaColor )
     }
 
     this->setRGBA(r/255.0f, g/255.0f, b/255.0f, a/255.0f);
-
 }
 
 //------------------------------------------------------------------------------
@@ -122,32 +122,37 @@ Color::ColorType  &Color::red()
 {
     return m_vRGBA[0];
 }
+
 Color::ColorType  &Color::green()
 {
     return m_vRGBA[1];
 }
+
 Color::ColorType  &Color::blue()
 {
     return m_vRGBA[2];
 }
+
 Color::ColorType  &Color::alpha()
 {
     return m_vRGBA[3];
 }
 
-
 const Color::ColorType  &Color::red() const
 {
     return m_vRGBA[0];
 }
+
 const Color::ColorType  &Color::green() const
 {
     return m_vRGBA[1];
 }
+
 const Color::ColorType  &Color::blue() const
 {
     return m_vRGBA[2];
 }
+
 const Color::ColorType  &Color::alpha() const
 {
     return m_vRGBA[3];

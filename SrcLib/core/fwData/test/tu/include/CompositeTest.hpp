@@ -16,10 +16,11 @@ namespace ut
 
 class CompositeTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( CompositeTest );
-CPPUNIT_TEST( methode1 );
-CPPUNIT_TEST( setGetContainerTest );
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( CompositeTest );
+    CPPUNIT_TEST( methode1 );
+    CPPUNIT_TEST( setGetContainerTest );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface

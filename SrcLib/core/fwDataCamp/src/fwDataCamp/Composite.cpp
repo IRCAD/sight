@@ -16,6 +16,6 @@ fwCampImplementDataMacro((fwData)(Composite))
     .tag("object_version", "1")
     .tag("lib_name", "fwData")
     .base< ::fwData::Object>()
-    .property("values", &::fwData::Composite::m_attrContainer)
+    .property("values", &::fwData::Composite::m_container)
     ;
 }

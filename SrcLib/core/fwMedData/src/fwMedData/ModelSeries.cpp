@@ -5,12 +5,12 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include <fwData/Image.hpp>
-#include <fwData/registry/macros.hpp>
-#include <fwData/Exception.hpp>
-#include <fwData/Reconstruction.hpp>
-
 #include "fwMedData/ModelSeries.hpp"
+
+#include <fwData/Exception.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/registry/macros.hpp>
 
 fwDataRegisterMacro( ::fwMedData::ModelSeries );
 
@@ -38,7 +38,7 @@ void ModelSeries::shallowCopy(const ::fwData::Object::csptr &_source)
 
     this->::fwMedData::Series::shallowCopy(_source);
 
-    m_attrReconstructionDB = other->m_attrReconstructionDB;
+    m_reconstructionDB = other->m_reconstructionDB;
 }
 
 //------------------------------------------------------------------------------
@@ -52,10 +52,10 @@ void ModelSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCop
 
     this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 
-    m_attrReconstructionDB.clear();
-    for(const ::fwData::Reconstruction::sptr &rec : other->m_attrReconstructionDB)
+    m_reconstructionDB.clear();
+    for(const ::fwData::Reconstruction::sptr &rec : other->m_reconstructionDB)
     {
-        m_attrReconstructionDB.push_back(::fwData::Object::copy(rec, cache));
+        m_reconstructionDB.push_back(::fwData::Object::copy(rec, cache));
     }
 }
 

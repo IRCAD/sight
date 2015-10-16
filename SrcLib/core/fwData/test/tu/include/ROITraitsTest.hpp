@@ -16,9 +16,10 @@ namespace ut
 
 class ROITraitsTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ROITraitsTest );
-CPPUNIT_TEST( creation );
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( ROITraitsTest );
+    CPPUNIT_TEST( creation );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface

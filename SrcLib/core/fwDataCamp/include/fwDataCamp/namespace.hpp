@@ -13,7 +13,7 @@
 /**
  * @brief This namespace contains data object descriptions used for introspection.
  * @namespace fwDataCamp
- * @date 2012-2013.
+ * @date 2012-2015.
  */
 namespace fwDataCamp
 {

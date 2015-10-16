@@ -7,12 +7,12 @@
 #ifndef __FWMEDDATA_PATIENT_HPP__
 #define __FWMEDDATA_PATIENT_HPP__
 
-#include "fwData/Object.hpp"
-#include "fwData/factory/new.hpp"
-#include "fwData/macros.hpp"
-
-#include "fwMedData/types.hpp"
 #include "fwMedData/config.hpp"
+#include "fwMedData/types.hpp"
+
+#include <fwData/factory/new.hpp>
+#include <fwData/Object.hpp>
+
 
 fwCampAutoDeclareDataMacro((fwMedData)(Patient), FWMEDDATA_API);
 
@@ -52,26 +52,30 @@ public:
     /**
      * @brief Patient's full name (0010,0010)
      * @{ */
-    fwDataGetSetCRefMacro(Name, DicomValueType);
+    const DicomValueType &getName () const;
+    void setName(const DicomValueType &val);
     /**  @} */
 
     /**
      * @brief Primary hospital identification number or code for the patient (0010,0020)
      * @{ */
-    fwDataGetSetCRefMacro(PatientId, DicomValueType);
+    const DicomValueType &getPatientId () const;
+    void setPatientId (const DicomValueType &val);
     /**  @} */
 
     /**
      * @brief Birthdate of the patient (0010,0030)
      * @{ */
-    fwDataGetSetCRefMacro(Birthdate, DicomValueType);
+    const DicomValueType &getBirthdate () const;
+    void setBirthdate (const DicomValueType &val);
     /**  @} */
 
     /**
      * @brief Sex of the named patient (0010,0040)
      * Enumerated Values: M = male, F = female, O = other
      * @{ */
-    fwDataGetSetCRefMacro(Sex, DicomValueType);
+    const DicomValueType &getSex () const;
+    void setSex (const DicomValueType &val);
     /**  @} */
 
     /**  @} */
@@ -79,17 +83,75 @@ public:
 protected:
 
     /// Full name
-    DicomValueType m_attrName;
+    DicomValueType m_name;
 
     /// Primary hospital identification
-    DicomValueType m_attrPatientId;
+    DicomValueType m_patientId;
 
     /// Birthdate
-    DicomValueType m_attrBirthdate;
+    DicomValueType m_birthdate;
 
     /// Patient's sex
-    DicomValueType m_attrSex;
+    DicomValueType m_sex;
 };
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType &Patient::getName () const
+{
+    return m_name;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Patient::setName(const DicomValueType &val)
+{
+    m_name = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType &Patient::getPatientId () const
+{
+    return m_patientId;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Patient::setPatientId (const DicomValueType &val)
+{
+    m_patientId = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType &Patient::getBirthdate () const
+{
+    return m_birthdate;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Patient::setBirthdate (const DicomValueType &val)
+{
+    m_birthdate = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType &Patient::getSex () const
+{
+    return m_sex;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Patient::setSex (const DicomValueType &val)
+{
+    m_sex = val;
+}
+
+//-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
 

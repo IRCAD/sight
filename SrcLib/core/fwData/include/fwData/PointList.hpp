@@ -7,12 +7,13 @@
 #ifndef __FWDATA_POINTLIST_HPP__
 #define __FWDATA_POINTLIST_HPP__
 
-#include <vector>
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Point.hpp"
+
+#include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(PointList), FWDATA_API);
 
@@ -49,8 +50,16 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    /// Points container
-    fwGettersSettersDocMacro(Points, vPoints, PointListContainer, "a container of all points");
+    /// @brief get/set points container
+    /// @{
+    const PointListContainer  getPoints () const;
+
+    PointListContainer & getRefPoints ();
+
+    const PointListContainer & getCRefPoints () const;
+
+    void setPoints (const PointListContainer & _vPoints);
+    /// @}
 
 protected:
 
@@ -58,6 +67,36 @@ protected:
     PointListContainer m_vPoints;
 
 }; // end class PointList
+
+//-----------------------------------------------------------------------------
+
+inline const PointList::PointListContainer PointList::getPoints () const
+{
+    return m_vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline PointList::PointListContainer & PointList::getRefPoints ()
+{
+    return this->m_vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const PointList::PointListContainer & PointList::getCRefPoints () const
+{
+    return this->m_vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void PointList::setPoints (const PointList::PointListContainer & _vPoints)
+{
+    this->m_vPoints = _vPoints;
+}
+
+//-----------------------------------------------------------------------------
 
 } // end namespace fwData
 

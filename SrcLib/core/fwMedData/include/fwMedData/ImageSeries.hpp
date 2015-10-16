@@ -7,13 +7,13 @@
 #ifndef __FWMEDDATA_IMAGESERIES_HPP__
 #define __FWMEDDATA_IMAGESERIES_HPP__
 
-#include <fwData/Object.hpp>
-#include <fwData/factory/new.hpp>
-#include <fwData/macros.hpp>
-
-#include "fwMedData/types.hpp"
-#include "fwMedData/Series.hpp"
 #include "fwMedData/config.hpp"
+#include "fwMedData/Series.hpp"
+#include "fwMedData/types.hpp"
+
+#include <fwData/factory/new.hpp>
+#include <fwData/Object.hpp>
+
 
 fwCampAutoDeclareDataMacro((fwMedData)(ImageSeries), FWMEDDATA_API);
 
@@ -60,7 +60,8 @@ public:
     /**
      * @brief Image container
      * @{ */
-    fwDataGetSetSptrMacro(Image, SPTR(::fwData::Image));
+    SPTR(::fwData::Image) getImage() const;
+    void setImage(const SPTR(::fwData::Image)& val);
     /**  @} */
 
     /**  @} */
@@ -68,9 +69,25 @@ public:
 protected:
 
     /// Image container
-    SPTR(::fwData::Image) m_attrImage;
+    SPTR(::fwData::Image) m_image;
 
 };
+
+//-----------------------------------------------------------------------------
+
+inline SPTR(::fwData::Image) ImageSeries::getImage() const
+{
+    return m_image;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setImage(const SPTR(::fwData::Image)& val)
+{
+    m_image = val;
+}
+
+//-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
 

@@ -4,13 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-#include <boost/foreach.hpp>
-#include <limits>
+#include "FloatTest.hpp"
 
 #include <fwData/Float.hpp>
 
-#include "FloatTest.hpp"
+#include <limits>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::FloatTest );
@@ -39,7 +37,7 @@ void FloatTest::methode1()
         std::numeric_limits< float >::signaling_NaN()
     };
 
-    BOOST_FOREACH ( float VALUE, VALUES )
+    for( float VALUE : VALUES )
     {
         ::fwData::Float::sptr f0 = ::fwData::Float::New();
         f0->value()              = VALUE;
@@ -50,7 +48,7 @@ void FloatTest::methode1()
         CPPUNIT_ASSERT_EQUAL( VALUE, ::fwData::Float::New( VALUE )->value() );
     }
 
-    BOOST_FOREACH ( float VALUE, NAN_VALUES )
+    for( float VALUE : NAN_VALUES )
     {
         ::fwData::Float::sptr f0 = ::fwData::Float::New();
         f0->value()              = VALUE;

@@ -47,11 +47,25 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    FWDATA_API void setValue( ::fwData::Point::sptr _position, ::fwData::Point::sptr _direction);
+    FWDATA_API void setValue(const ::fwData::Point::sptr& _position, const ::fwData::Point::sptr&  _direction);
 
-    /// Points container
-    fwGettersSettersDocMacro(Position, position, ::fwData::Point::sptr, "a point positon");
-    fwGettersSettersDocMacro(Direction, direction, ::fwData::Point::sptr, "a point direction");
+    /** @{
+     *  @brief get/set point position
+     */
+    const ::fwData::Point::sptr getPosition() const;
+    ::fwData::Point::sptr& getRefPosition();
+    const ::fwData::Point::sptr& getCRefPosition() const;
+    void setPosition(const ::fwData::Point::sptr& _position);
+    /// @}
+
+    /** @{
+     *  @brief get/set point direction
+     */
+    const ::fwData::Point::sptr getDirection () const;
+    ::fwData::Point::sptr & getRefDirection ();
+    const ::fwData::Point::sptr & getCRefDirection () const;
+    void setDirection (const ::fwData::Point::sptr& _direction);
+    /// @}
 
 protected:
 
@@ -60,6 +74,64 @@ protected:
     ::fwData::Point::sptr m_direction;
 
 }; // class Line
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::Point::sptr Line::getPosition() const
+{
+    return m_position;
+}
+
+//-----------------------------------------------------------------------------
+
+inline ::fwData::Point::sptr& Line::getRefPosition()
+{
+    return this->m_position;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::Point::sptr& Line::getCRefPosition() const
+{
+    return this->m_position;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Line::setPosition(const ::fwData::Point::sptr& _position)
+{
+    this->m_position = _position;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::Point::sptr Line::getDirection () const
+{
+    return m_direction;
+}
+
+//-----------------------------------------------------------------------------
+
+inline ::fwData::Point::sptr & Line::getRefDirection ()
+{
+    return this->m_direction;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::Point::sptr & Line::getCRefDirection () const
+{
+    return this->m_direction;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Line::setDirection (const ::fwData::Point::sptr& _direction)
+{
+    this->m_direction = _direction;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

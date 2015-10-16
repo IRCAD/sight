@@ -7,15 +7,14 @@
 #ifndef __FWDATA_GRAPH_HPP__
 #define __FWDATA_GRAPH_HPP__
 
-#include <map>
-#include <set>
-
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Edge.hpp"
 #include "fwData/Node.hpp"
 
+#include <map>
+#include <set>
 
 fwCampAutoDeclareDataMacro((fwData)(Graph), FWDATA_API);
 
@@ -71,7 +70,7 @@ public:
     /**
      * @brief remove a node
      *
-     * @return true on sucess
+     * @return true on success
      */
     FWDATA_API bool removeNode( Node::csptr _node);
 

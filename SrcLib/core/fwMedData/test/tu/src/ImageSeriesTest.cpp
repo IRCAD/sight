@@ -4,12 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTest/generator/Image.hpp>
-#include <fwTools/Type.hpp>
 
 #include "fwMedData/ImageSeries.hpp"
 
 #include "ImageSeriesTest.hpp"
+
+#include <fwTest/generator/Image.hpp>
+#include <fwTools/Type.hpp>
 
 
 // Registers the fixture into the 'registry'

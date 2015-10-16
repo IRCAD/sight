@@ -7,14 +7,13 @@
 #ifndef __FWMEDDATA_SERIESDB_HPP__
 #define __FWMEDDATA_SERIESDB_HPP__
 
-#include <vector>
-
-#include <fwData/Object.hpp>
-#include <fwData/factory/new.hpp>
-#include <fwData/macros.hpp>
-
-#include "fwMedData/types.hpp"
 #include "fwMedData/config.hpp"
+#include "fwMedData/types.hpp"
+
+#include <fwData/factory/new.hpp>
+#include <fwData/Object.hpp>
+
+#include <vector>
 
 fwCampAutoDeclareDataMacro((fwMedData)(SeriesDB), FWMEDDATA_API);
 
@@ -55,76 +54,27 @@ public:
     typedef ContainerType::const_reverse_iterator const_reverse_iterator;
     typedef ContainerType::size_type size_type;
 
+    IteratorType begin();
+    IteratorType end();
+    ConstIteratorType begin() const;
+    ConstIteratorType end()   const;
 
-    IteratorType begin()
-    {
-        return m_attrContainer.begin();
-    }
-    IteratorType end()
-    {
-        return m_attrContainer.end();
-    }
-    ConstIteratorType begin() const
-    {
-        return m_attrContainer.begin();
-    }
-    ConstIteratorType end()   const
-    {
-        return m_attrContainer.end();
-    }
+    ReverseIteratorType rbegin();
+    ReverseIteratorType rend();
+    ConstReverseIteratorType rbegin() const;
+    ConstReverseIteratorType rend()   const;
 
-    ReverseIteratorType rbegin()
-    {
-        return m_attrContainer.rbegin();
-    }
-    ReverseIteratorType rend()
-    {
-        return m_attrContainer.rend();
-    }
-    ConstReverseIteratorType rbegin() const
-    {
-        return m_attrContainer.rbegin();
-    }
-    ConstReverseIteratorType rend()   const
-    {
-        return m_attrContainer.rend();
-    }
+    bool empty() const;
+    SizeType size() const;
 
-    bool empty() const
-    {
-        return m_attrContainer.empty();
-    }
-    SizeType size() const
-    {
-        return m_attrContainer.size();
-    }
+    ValueType front();
+    ValueType back();
 
-    ValueType front()
-    {
-        return m_attrContainer.front();
-    }
-    ValueType back()
-    {
-        return m_attrContainer.back();
-    }
+    ReferenceType operator[] ( size_type n );
+    ConstReferenceType operator[] ( size_type n ) const;
 
-    ReferenceType operator[] ( size_type n )
-    {
-        return this->m_attrContainer[n];
-    }
-    ConstReferenceType operator[] ( size_type n ) const
-    {
-        return this->m_attrContainer[n];
-    }
-
-    ReferenceType at ( SizeType n )
-    {
-        return m_attrContainer.at(n);
-    }
-    ConstReferenceType at ( SizeType n ) const
-    {
-        return m_attrContainer.at(n);
-    }
+    ReferenceType at ( SizeType n );
+    ConstReferenceType at ( SizeType n ) const;
     /// @}
 
 
@@ -151,11 +101,9 @@ public:
     /**
      * @brief Series container
      * @{ */
-    ContainerType &getContainer()
-    {
-        return m_attrContainer;
-    }
-    fwDataGetSetCRefMacro(Container, ContainerType);
+    ContainerType &getContainer();
+    const ContainerType &getContainer () const;
+    void setContainer (const ContainerType &val);
     /**  @} */
 
     /**  @} */
@@ -163,9 +111,145 @@ public:
 protected:
 
     /// Series container
-    ContainerType m_attrContainer;
+    ContainerType m_container;
 
 };
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::IteratorType SeriesDB::begin()
+{
+    return m_container.begin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::IteratorType SeriesDB::end()
+{
+    return m_container.end();
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ConstIteratorType SeriesDB::begin() const
+{
+    return m_container.begin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ConstIteratorType SeriesDB::end() const
+{
+    return m_container.end();
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ReverseIteratorType SeriesDB::rbegin()
+{
+    return m_container.rbegin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ReverseIteratorType SeriesDB::rend()
+{
+    return m_container.rend();
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ConstReverseIteratorType SeriesDB::rbegin() const
+{
+    return m_container.rbegin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ConstReverseIteratorType SeriesDB::rend() const
+{
+    return m_container.rend();
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool SeriesDB::empty() const
+{
+    return m_container.empty();
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::SizeType SeriesDB::size() const
+{
+    return m_container.size();
+}
+
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ValueType SeriesDB::front()
+{
+    return m_container.front();
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ValueType SeriesDB::back()
+{
+    return m_container.back();
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ReferenceType SeriesDB::operator[](SeriesDB::size_type n)
+{
+    return this->m_container[n];
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ConstReferenceType SeriesDB::operator[](SeriesDB::size_type n) const
+{
+    return this->m_container[n];
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ReferenceType SeriesDB::at(SeriesDB::SizeType n)
+{
+    return m_container.at(n);
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ConstReferenceType SeriesDB::at(SeriesDB::SizeType n) const
+{
+    return m_container.at(n);
+}
+
+//-----------------------------------------------------------------------------
+
+inline SeriesDB::ContainerType &SeriesDB::getContainer()
+{
+    return m_container;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const SeriesDB::ContainerType &SeriesDB::getContainer () const
+{
+    return m_container;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void SeriesDB::setContainer (const SeriesDB::ContainerType &val)
+{
+    m_container = val;
+}
+
+//-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
 

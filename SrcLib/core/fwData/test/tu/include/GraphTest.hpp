@@ -17,11 +17,12 @@ namespace ut
 class GraphTest : public CPPUNIT_NS::TestFixture
 {
 
-CPPUNIT_TEST_SUITE( GraphTest );
-CPPUNIT_TEST( normalCase );
-CPPUNIT_TEST( limitCase1 );
-CPPUNIT_TEST( limitCase2 );
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( GraphTest );
+    CPPUNIT_TEST( normalCase );
+    CPPUNIT_TEST( limitCase1 );
+    CPPUNIT_TEST( limitCase2 );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
 

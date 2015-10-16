@@ -7,9 +7,9 @@
 #ifndef __FWDATA_RECONSTRUCTIONTRAITS_HPP__
 #define __FWDATA_RECONSTRUCTIONTRAITS_HPP__
 
+#include "fwData/factory/new.hpp"
 #include "fwData/Node.hpp"
 #include "fwData/StructureTraits.hpp"
-#include "fwData/factory/new.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(ReconstructionTraits), FWDATA_API);
 
@@ -45,22 +45,30 @@ public:
      */
     FWDATA_API virtual ~ReconstructionTraits();
 
-    fwGettersSettersDocMacro(Identifier, identifier, std::string, "the ROIs identifier");
+    /**
+     * @{
+     * @brief Get/Set value of the identifier.
+     */
+    const std::string  getIdentifier () const;
+    std::string & getRefIdentifier ();
+    const std::string & getCRefIdentifier () const;
+    void setIdentifier (const std::string& _identifier);
+    /// @}
 
     /// Set the reconstruction operator mask node
-    FWDATA_API void setMaskOpNode( ::fwData::Node::sptr maskOpNode );
+    FWDATA_API void setMaskOpNode(const ::fwData::Node::sptr& maskOpNode );
 
     /// Get the reconstruction operator mask node. Return a null pointer if the mask node is not defined.
     FWDATA_API ::fwData::Node::sptr getMaskOpNode();
 
     /// Set the reconstruction operator mesh node.
-    FWDATA_API void setMeshOpNode( ::fwData::Node::sptr meshOpNode );
+    FWDATA_API void setMeshOpNode(const ::fwData::Node::sptr& meshOpNode );
 
     /// Get the reconstruction operator mesh node. Return a null pointer if the mesh node is not defined.
     FWDATA_API ::fwData::Node::sptr getMeshOpNode();
 
     /// Set the associated structure traits
-    FWDATA_API void setStructureTraits( ::fwData::StructureTraits::sptr structureTraits );
+    FWDATA_API void setStructureTraits(const ::fwData::StructureTraits::sptr& structureTraits );
 
     /// Get the associated structure traits
     FWDATA_API ::fwData::StructureTraits::sptr getStructureTraits();
@@ -83,6 +91,36 @@ private:
     ::fwData::StructureTraits::sptr m_structureTraits;
 
 };
+
+//-----------------------------------------------------------------------------
+
+inline const std::string ReconstructionTraits::getIdentifier () const
+{
+    return m_identifier;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::string & ReconstructionTraits::getRefIdentifier ()
+{
+    return m_identifier;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string & ReconstructionTraits::getCRefIdentifier () const
+{
+    return m_identifier;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ReconstructionTraits::setIdentifier (const std::string& _identifier)
+{
+    m_identifier = _identifier;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

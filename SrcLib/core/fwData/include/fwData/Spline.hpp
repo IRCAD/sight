@@ -7,12 +7,13 @@
 #ifndef __FWDATA_SPLINE_HPP__
 #define __FWDATA_SPLINE_HPP__
 
-#include <vector>
-#include <boost/cstdint.hpp>
-
+#include "fwData/Color.hpp"
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
-#include "fwData/Color.hpp"
+
+#include <boost/cstdint.hpp>
+#include <vector>
+
 
 namespace fwData
 {
@@ -73,11 +74,37 @@ public:
      */
     FWDATA_API Points &points();
 
-    fwGettersSettersDocMacro(Radius, radius, double, "radius value");
+    /**
+     * @{
+     * @brief Get/Set value of the radius.
+     */
+    const double  getRadius () const;
+    double & getRefRadius ();
+    const double & getCRefRadius () const;
+    void setRadius(double _radius);
+    /// @}
 
-    fwGettersSettersDocMacro(NbSides, nbSides, int, "number of slices");
+    /**
+     * @{
+     * @brief Get/Set value of the number of slices.
+     */
+    const int  getNbSides () const;
+    int & getRefNbSides ();
+    const int & getCRefNbSides () const;
+    void setNbSides (const int _nbSides);
+    void setCRefNbSides (const int & _nbSides);
+    /// @}
 
-    fwGettersSettersDocMacro(IdSpline, idSpline, int, "spline identifier");
+    /**
+     * @{
+     * @brief Get/Set value of the spline identifier.
+     */
+    const int  getIdSpline () const;
+    int & getRefIdSpline ();
+    const int & getCRefIdSpline () const;
+    void setIdSpline (const int _idSpline);
+    void setCRefIdSpline (const int & _idSpline);
+    /// @}
 
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
@@ -91,6 +118,106 @@ protected:
     int m_idSpline;
 
 };
+
+//-----------------------------------------------------------------------------
+
+inline const double Spline::getRadius () const
+{
+    return m_radius;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double & Spline::getRefRadius ()
+{
+    return m_radius;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const double & Spline::getCRefRadius () const
+{
+    return m_radius;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Spline::setRadius(double _radius)
+{
+    m_radius = _radius;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const int Spline::getNbSides () const
+{
+    return m_nbSides;
+}
+
+//-----------------------------------------------------------------------------
+
+inline int & Spline::getRefNbSides ()
+{
+    return this->m_nbSides;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const int & Spline::getCRefNbSides () const
+{
+    return m_nbSides;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Spline::setNbSides (const int _nbSides)
+{
+    m_nbSides = _nbSides;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Spline::setCRefNbSides (const int & _nbSides)
+{
+    m_nbSides = _nbSides;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const int Spline::getIdSpline () const
+{
+    return m_idSpline;
+}
+
+//-----------------------------------------------------------------------------
+
+inline int & Spline::getRefIdSpline ()
+{
+    return m_idSpline;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const int & Spline::getCRefIdSpline () const
+{
+    return m_idSpline;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Spline::setIdSpline (const int _idSpline)
+{
+    m_idSpline = _idSpline;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Spline::setCRefIdSpline (const int & _idSpline)
+{
+    m_idSpline = _idSpline;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

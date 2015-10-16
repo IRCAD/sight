@@ -18,10 +18,11 @@ namespace ut
 
 class MTLockTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( MTLockTest );
-CPPUNIT_TEST( lockTest );
-CPPUNIT_TEST( multipleLockTest );
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( MTLockTest );
+    CPPUNIT_TEST( lockTest );
+    CPPUNIT_TEST( multipleLockTest );
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface

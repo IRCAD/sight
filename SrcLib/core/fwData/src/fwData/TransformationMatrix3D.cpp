@@ -6,7 +6,6 @@
 
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
 #include "fwData/TransformationMatrix3D.hpp"
 
 fwDataRegisterMacro( ::fwData::TransformationMatrix3D );

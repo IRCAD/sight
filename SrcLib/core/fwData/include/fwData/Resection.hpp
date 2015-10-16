@@ -7,12 +7,12 @@
 #ifndef __FWDATA_RESECTION_HPP__
 #define __FWDATA_RESECTION_HPP__
 
-#include <vector>
-
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
-#include "fwData/Reconstruction.hpp"
 #include "fwData/PlaneList.hpp"
+#include "fwData/Reconstruction.hpp"
+
+#include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(Resection), FWDATA_API);
 namespace fwData
@@ -32,7 +32,6 @@ public:
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionInputs;
     typedef std::vector< ::fwData::Reconstruction::sptr > ResectionOutputs;
 
-
     /**
      * @brief Constructor
      * @param key Private construction key
@@ -48,20 +47,75 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    /// PlaneList
-    fwGettersSettersDocMacro(PlaneList, planeList, ::fwData::PlaneList::sptr, "the plane list");
-    /// Inputs
-    fwGettersSettersDocMacro(Inputs, vInputs, ResectionInputs, "the resection inputs");
-    /// Outputs
-    fwGettersSettersDocMacro(Outputs, vOutputs, ResectionOutputs, "the resection outputs");
+    /**
+     * @{
+     * @brief Get/Set value of the planeList.
+     */
+    const ::fwData::PlaneList::sptr  getPlaneList () const;
+    ::fwData::PlaneList::sptr & getRefPlaneList ();
+    const ::fwData::PlaneList::sptr & getCRefPlaneList () const;
+    void setPlaneList (const ::fwData::PlaneList::sptr& _planeList);
+    /// @}
 
-    fwGettersSettersDocMacro(IsSafePart, isSafePart, bool, "the flag if the part is safe");
+    /**
+     * @{
+     * @brief Get/Set value of the inputs.
+     */
+    const ResectionInputs  getInputs () const;
+    ResectionInputs & getRefInputs ();
+    const ResectionInputs & getCRefInputs () const;
+    void setInputs (const ResectionInputs _vInputs);
+    void setCRefInputs (const ResectionInputs & _vInputs);
+    /// @}
 
-    fwGettersSettersDocMacro(Name, name, std::string, "the resection name");
+    /**
+     * @{
+     * @brief Get/Set value of the outputs.
+     */
+    const ResectionOutputs  getOutputs () const;
+    ResectionOutputs & getRefOutputs ();
+    const ResectionOutputs & getCRefOutputs () const;
+    void setOutputs (const ResectionOutputs _vOutputs);
+    void setCRefOutputs (const ResectionOutputs & _vOutputs);
+    /// @}
 
-    fwGettersSettersDocMacro(IsVisible, isVisible, bool, "the flag if the resection is visible");
+    /**
+     * @{
+     * @brief Get/Set value of the IsSafePart.
+     */
+    const bool  getIsSafePart () const;
+    void setIsSafePart (const bool _isSafePart);
+    /// @}
 
-    fwGettersSettersDocMacro(IsValid, isValid, bool, "the flag if the resection is valid");
+    /**
+     * @{
+     * @brief Get/Set value of the name.
+     */
+    const std::string  getName () const;
+    std::string & getRefName ();
+    const std::string & getCRefName () const;
+    void setName (const std::string _name);
+    void setCRefName (const std::string & _name);
+
+    /// @}
+
+    /**
+     * @{
+     * @brief Get/Set value of the IsVisible.
+     */
+    const bool  getIsVisible () const;
+    void setIsVisible (const bool _isVisible);
+
+    /// @}
+
+    /**
+     * @{
+     * @brief Get/Set value of the IsValid.
+     */
+    const bool  getIsValid () const;
+    void setIsValid (const bool _isValid);
+
+    /// @}
 
 protected:
 
@@ -87,6 +141,183 @@ protected:
     bool m_isVisible;
 
 }; // end class Resection
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::PlaneList::sptr Resection::getPlaneList () const
+{
+    return m_planeList;
+}
+
+//-----------------------------------------------------------------------------
+
+inline ::fwData::PlaneList::sptr & Resection::getRefPlaneList ()
+{
+    return m_planeList;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ::fwData::PlaneList::sptr & Resection::getCRefPlaneList () const
+{
+    return m_planeList;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Resection::setPlaneList (const ::fwData::PlaneList::sptr& _planeList)
+{
+    m_planeList = _planeList;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Resection::ResectionInputs Resection::getInputs () const
+{
+    return m_vInputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Resection::ResectionInputs & Resection::getRefInputs ()
+{
+    return m_vInputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Resection::ResectionInputs & Resection::getCRefInputs () const
+{
+    return m_vInputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Resection::setInputs (const Resection::ResectionInputs _vInputs)
+{
+    m_vInputs = _vInputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Resection::setCRefInputs (const Resection::ResectionInputs & _vInputs)
+{
+    m_vInputs = _vInputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Resection::ResectionOutputs Resection::getOutputs () const
+{
+    return m_vOutputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Resection::ResectionOutputs & Resection::getRefOutputs ()
+{
+    return m_vOutputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Resection::ResectionOutputs & Resection::getCRefOutputs () const
+{
+    return m_vOutputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Resection::setOutputs (const Resection::ResectionOutputs _vOutputs)
+{
+    m_vOutputs = _vOutputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Resection::setCRefOutputs (const Resection::ResectionOutputs & _vOutputs)
+{
+    m_vOutputs = _vOutputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const bool Resection::getIsSafePart () const
+{
+    return m_isSafePart;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Resection::setIsSafePart (const bool _isSafePart)
+{
+    m_isSafePart = _isSafePart;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string Resection::getName () const
+{
+    return m_name;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::string & Resection::getRefName ()
+{
+    return m_name;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string & Resection::getCRefName () const
+{
+    return m_name;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Resection::setName (const std::string _name)
+{
+    m_name = _name;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Resection::setCRefName (const std::string & _name)
+{
+    m_name = _name;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const bool Resection::getIsVisible () const
+{
+    return m_isVisible;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Resection::setIsVisible (const bool _isVisible)
+{
+    m_isVisible = _isVisible;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const bool Resection::getIsValid () const
+{
+    return m_isValid;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Resection::setIsValid (const bool _isValid)
+{
+    m_isValid = _isValid;
+}
+
+//-----------------------------------------------------------------------------
 
 } // end namespace fwData
 

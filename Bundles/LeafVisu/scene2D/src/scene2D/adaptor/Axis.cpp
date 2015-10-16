@@ -4,16 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/data/InitQtPen.hpp"
+#include "scene2D/data/ViewportMsg.hpp"
+#include "scene2D/adaptor/Axis.hpp"
 
 #include <fwServices/Base.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <QGraphicsItemGroup>
-
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/data/ViewportMsg.hpp"
-#include "scene2D/adaptor/Axis.hpp"
 
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Axis, ::fwData::Composite );
@@ -24,7 +23,7 @@ namespace scene2D
 namespace adaptor
 {
 
-Axis::Axis() throw() : m_showLine(true), m_tickSize(0.02), m_color(Qt::white)
+Axis::Axis() throw() : m_showLine(true), m_tickSize(0.02f), m_color(Qt::white)
 {
 //    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
@@ -198,7 +197,7 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
     scaleX = scaleX * ratio.first;
     scaleY = scaleY * ratio.second;
 
-    const int nbValues = m_ticks.size();
+    const size_t nbValues = m_ticks.size();
 
     const double min = this->getStartVal();
     const double max = this->getEndVal();

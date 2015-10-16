@@ -7,11 +7,11 @@
 #ifndef __SCENE2D_PROCESSING_COMPUTEHISTOGRAMFUNCTOR_HXX__
 #define __SCENE2D_PROCESSING_COMPUTEHISTOGRAMFUNCTOR_HXX__
 
+#include "scene2D/processing/SComputeHistogram.hpp"
+
 #include <fwComEd/helper/Image.hpp>
 #include <fwComEd/helper/Array.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
-#include "scene2D/processing/SComputeHistogram.hpp"
 
 namespace scene2D
 {

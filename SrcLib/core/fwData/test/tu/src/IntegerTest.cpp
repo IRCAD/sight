@@ -4,12 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <limits>
+#include "IntegerTest.hpp"
 
 #include <fwData/Integer.hpp>
 
-#include "IntegerTest.hpp"
+#include <limits>
 
 
 // Registers the fixture into the 'registry'
@@ -38,7 +37,7 @@ void IntegerTest::methode1()
         std::numeric_limits< int >::max()
     };
 
-    BOOST_FOREACH ( int VALUE, VALUES )
+    for ( int VALUE : VALUES )
     {
         ::fwData::Integer::sptr i0 = ::fwData::Integer::New();
         i0->value()                = VALUE;

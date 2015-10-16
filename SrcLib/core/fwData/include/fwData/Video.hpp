@@ -7,14 +7,14 @@
 #ifndef __FWDATA_VIDEO_HPP__
 #define __FWDATA_VIDEO_HPP__
 
-#include <boost/cstdint.hpp>
-
-#include <fwCore/mt/types.hpp>
-
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Camera.hpp"
 #include "fwData/TransformationMatrix3D.hpp"
+
+#include <fwCore/mt/types.hpp>
+
+#include <boost/cstdint.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Video), FWDATA_API);
 

@@ -7,21 +7,20 @@
 #ifndef __SCENE2D_RENDER_HPP__
 #define __SCENE2D_RENDER_HPP__
 
-#include <Qt>
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QResizeEvent>
-
+#include "scene2D/config.hpp"
+#include "scene2D/data/Event.hpp"
+#include "scene2D/data/Coord.hpp"
 
 #include <fwRender/IRender.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
 #include <scene2D/data/Axis.hpp>
 #include <scene2D/data/Viewport.hpp>
 
+#include <Qt>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QResizeEvent>
 
-#include "scene2D/config.hpp"
-#include "scene2D/data/Event.hpp"
-#include "scene2D/data/Coord.hpp"
 
 namespace  fwData
 {
