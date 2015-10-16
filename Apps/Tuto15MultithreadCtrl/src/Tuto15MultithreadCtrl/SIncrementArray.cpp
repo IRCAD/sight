@@ -73,7 +73,11 @@ void SIncrementArray::updating() throw( ::fwTools::Failed )
 
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent("MODIFIED_EVENT");
-    fwServicesBlockAndNotifyMsgMacro(this->getLightID(), sig, msg, m_slotReceive);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit(msg);
+    }
+
 }
 
 void SIncrementArray::configuring() throw( ::fwTools::Failed )

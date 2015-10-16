@@ -31,7 +31,11 @@ void IEditionService::notify(
 
     IService::ReceiveSlotType::sptr slot = _pSource->slot< IService::ReceiveSlotType >( IService::s_RECEIVE_SLOT );
 
-    fwServicesBlockAndNotifyMsgMacro( _pSource->getLightID(), sig, _pMsg, slot );
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+        sig->asyncEmit(_pMsg);
+    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -56,7 +60,10 @@ void IEditionService::notify(
     else
     {
         IService::ReceiveSlotType::sptr slot = _pSource->slot< IService::ReceiveSlotType >( IService::s_RECEIVE_SLOT );
-        fwServicesBlockAndNotifyMsgMacro( _pSource->getLightID(), sig, _pMsg, slot );
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+            sig->asyncEmit(_pMsg);
+        }
     }
 }
 

@@ -16,12 +16,13 @@ namespace ut
 
 class SlotsSignalsTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SlotsSignalsTest );
-CPPUNIT_TEST( basicTest );
-CPPUNIT_TEST( comObjectServiceTest );
-CPPUNIT_TEST( comServiceToServiceTest );
-CPPUNIT_TEST( blockConnectionTest );
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( SlotsSignalsTest );
+    CPPUNIT_TEST( basicTest );
+    CPPUNIT_TEST( comObjectServiceTest );
+    CPPUNIT_TEST( comServiceToServiceTest );
+    CPPUNIT_TEST( blockConnectionTest );
+    CPPUNIT_TEST_SUITE_END();
 
 
 public:
@@ -40,3 +41,5 @@ public:
 } //namespace fwServices
 
 #endif // __FWSERVICES_UT_SLOTSSIGNALSTEST_HPP__
+
+

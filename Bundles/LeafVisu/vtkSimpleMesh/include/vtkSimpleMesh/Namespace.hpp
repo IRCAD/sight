@@ -11,7 +11,6 @@
  * @brief       The namespace vtkSimpleMesh contains a service which renders one mesh (::fwData::Mesh).
  * @namespace   vtkSimpleMesh
  *
- * @date        2009-2010.
  *
  */
 namespace vtkSimpleMesh

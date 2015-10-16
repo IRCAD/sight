@@ -4,23 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/registry/macros.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include "SlotsSignalsStuff.hpp"
 
 #include <fwCom/Connection.hpp>
-
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+
+#include <fwData/registry/macros.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
-
-#include "SlotsSignalsStuff.hpp"
 
 namespace fwServices
 {
@@ -85,7 +82,10 @@ void SReaderTest::updating() throw ( ::fwTools::Failed )
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = buff->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
-    fwServicesBlockAndNotifyMsgMacro(this->getLightID(), sig, msg, m_slotReceive)
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit(msg);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -179,7 +179,10 @@ void SShow2Test::updating() throw ( ::fwTools::Failed )
     msg->addEvent(ObjectMsg::NEW_OBJECT);
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = buff->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-    fwServicesBlockAndNotifyMsgMacro(this->getLightID(), sig, msg, m_slotReceive);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit(msg);
+    }
 }
 
 //------------------------------------------------------------------------------

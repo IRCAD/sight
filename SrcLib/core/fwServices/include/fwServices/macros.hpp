@@ -62,19 +62,6 @@ namespace fwServices
         fwServicesNotifyMacro(Sender, Signal, Parameters)                   \
     }
 
-/// Signal async emit the message. Print SLM_COM with Sender string.
-#define fwServicesNotifyMsgMacro( Sender, Signal, Message)                                                           \
-    OSLM_COM(Sender << " uses '" << Signal->getID() << "' sig to asyncEmit " << Message->getLightID()  \
-                    << "::" << Message->getEventIds()[0]);                                                                              \
-    Signal->asyncEmit(Message);
-
-/// Signal async emit Message and block given Slot connection. Print SLM_COM with Sender string.
-#define fwServicesBlockAndNotifyMsgMacro( Sender, Signal, Message, Slot)    \
-    {                                                                       \
-        ::fwCom::Connection::Blocker block(Signal->getConnection(Slot));    \
-        fwServicesNotifyMsgMacro(Sender, Signal, Message)                   \
-    }
-
 }
 
 #endif /*__FWSERVICES_MACROS_HPP__*/

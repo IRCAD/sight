@@ -224,7 +224,11 @@ void SSimpleMeshDeformation::updating() throw(fwTools::Failed)
         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
         sig = mesh->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
 
-        fwServicesBlockAndNotifyMsgMacro( this->getLightID(), sig, msg, m_slotReceive );
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit(msg);
+        }
+
     }
 }
 

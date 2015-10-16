@@ -13,8 +13,6 @@
  * @brief   Namespace vtkSimpleMesh.
  * @namespace   vtkSimpleMesh
  *
- * @date    2009.
- *
  *  The namespace vtkSimpleMesh contains a simple mesh renderer using vtk.
  */
 namespace vtkSimpleMesh

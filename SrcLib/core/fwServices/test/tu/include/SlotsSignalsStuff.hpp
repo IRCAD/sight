@@ -7,13 +7,12 @@
 #ifndef __FWSERVICES_UT_SLOTSSIGNALSSTUFF_HPP__
 #define __FWSERVICES_UT_SLOTSSIGNALSSTUFF_HPP__
 
-#include <boost/chrono/duration.hpp>
+#include <fwServices/IService.hpp>
 
 #include <fwCom/Signals.hpp>
-
 #include <fwData/Object.hpp>
 
-#include <fwServices/IService.hpp>
+#include <boost/chrono/duration.hpp>
 
 namespace fwServices
 {

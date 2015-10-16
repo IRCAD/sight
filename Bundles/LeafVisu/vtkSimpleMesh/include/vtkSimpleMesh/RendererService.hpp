@@ -30,8 +30,6 @@ namespace vtkSimpleMesh
  * @brief   Renderer service.
  * @class   RendererService
  *
- * @date    2009.
- *
  * Service rendering a ::fwData::Mesh using VTK.
  *
  * Service registered details : \n

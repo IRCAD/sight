@@ -38,4 +38,4 @@ public:
 } //namespace ut
 } //namespace fwServices
 
-#endif //__FWSERVICES_UT_OBJECTMSGTEST_HPP__
+#endif  // __FWSERVICES_UT_OBJECTMSGTEST_HPP__

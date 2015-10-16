@@ -64,5 +64,5 @@ private:
 } //namespace ut
 } //namespace fwServices
 
-#endif //__FWSERVICES_UT_SERVICETEST_HPP__
+#endif // __FWSERVICES_UT_SERVICETEST_HPP__
 
