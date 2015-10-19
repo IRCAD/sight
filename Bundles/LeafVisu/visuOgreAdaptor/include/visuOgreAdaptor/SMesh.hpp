@@ -105,9 +105,13 @@ private:
     ::Ogre::Entity* newEntity();
 
     /// Updates the Mesh, checks if color, number of vertices have changed, and updates them.
-    void updateMesh(::fwData::Mesh::sptr mesh);
-    /// Updates the Mesh, checks if vertices position have changed, and updates them.
-    void updateVertices(::fwData::Mesh::sptr mesh);
+    void updateMesh(const ::fwData::Mesh::sptr& mesh);
+    /// Updates the vertices position
+    void updateVertices(const ::fwData::Mesh::sptr& mesh);
+    /// Updates the vertices colors.
+    void updateColors(const ::fwData::Mesh::sptr& mesh);
+    /// Updates the vertices texture coordinates.
+    void updateTexCoords(const ::fwData::Mesh::sptr& mesh);
 
     /// Associates a new SMaterial to the managed SMesh.
     /// With this method, SMesh is responsible for creating a SMaterial
@@ -127,13 +131,15 @@ private:
      * @name Slots methods
      * @{
      */
-    /// Slot called when the mesh is modified
-    void modifyMesh();
-    /// Slot called when the point colors are modified
-    void modifyPointColors();
-    /// Slot called when the vertices are modified
+    /// Slot: called when the mesh is modified
+    /// Slot: called when the vertices are modified
     void modifyVertices();
-    /// Slot called when the material is modified
+    void modifyMesh();
+    /// Slot: called when the point colors are modified
+    void modifyPointColors();
+    /// Slot: called when the texture coordinates are modified
+    void modifyTexCoords();
+    /// Slot: called when the material is modified
     void modifyMaterial();
     /** @} */
 

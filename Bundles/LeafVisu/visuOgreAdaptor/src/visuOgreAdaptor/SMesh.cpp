@@ -6,7 +6,7 @@
 
 #include "visuOgreAdaptor/SMesh.hpp"
 
-#define FW_PROFILING_DISABLED
+//#define FW_PROFILING_DISABLED
 
 #include <fwCore/Profiling.hpp>
 
@@ -36,11 +36,12 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
-static const ::fwCom::Slots::SlotKeyType s_MODIFY_MESH_SLOT        = "modifyMesh";
-static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINTCOLORS_SLOT = "modifyPointColors";
-static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT    = "modifyVertices";
-static const ::fwCom::Slots::SlotKeyType s_MODIFY_MATERIAL_SLOT    = "modifyMaterial";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT       = "updateVisibility";
+static const ::fwCom::Slots::SlotKeyType s_MODIFY_MESH_SLOT             = "modifyMesh";
+static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINTCOLORS_SLOT      = "modifyPointColors";
+static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
+static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modifyVertices";
+static const ::fwCom::Slots::SlotKeyType s_MODIFY_MATERIAL_SLOT         = "modifyMaterial";
 
 //-----------------------------------------------------------------------------
 
@@ -128,6 +129,7 @@ SMesh::SMesh() throw() :
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SMesh::updateVisibility, this);
     newSlot(s_MODIFY_MESH_SLOT, &SMesh::modifyMesh, this);
     newSlot(s_MODIFY_POINTCOLORS_SLOT, &SMesh::modifyPointColors, this);
+    newSlot(s_MODIFY_POINT_TEX_COORDS_SLOT, &SMesh::modifyTexCoords, this);
     newSlot(s_MODIFY_VERTICES_SLOT, &SMesh::modifyVertices, this);
     newSlot(s_MODIFY_MATERIAL_SLOT, &SMesh::modifyMaterial, this);
 
@@ -145,30 +147,6 @@ SMesh::~SMesh() throw()
         ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
         sceneMgr->destroyEntity(m_entity);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void SMesh::doStart() throw(::fwTools::Failed)
-{
-    m_meshName = this->getID() + "_Mesh";
-
-    // Create Mesh Data Structure
-    m_ogreMesh = ::Ogre::MeshManager::getSingleton().createManual(
-        m_meshName,
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-    m_useNewMaterialAdaptor = m_isReconstructionManaged || m_materialAdaptorUID.empty();
-    if(!m_useNewMaterialAdaptor)
-    {
-        // A material adaptor has been configured in the XML scene
-        auto materialService = ::fwServices::get(m_materialAdaptorUID);
-        m_materialAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(materialService);
-
-        m_material = m_materialAdaptor->getObject< ::fwData::Material >();
-    }
-
-    doUpdate();
 }
 
 //-----------------------------------------------------------------------------
@@ -246,6 +224,34 @@ void SMesh::doConfigure() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
+void SMesh::doStart() throw(::fwTools::Failed)
+{
+    m_meshName = this->getID() + "_Mesh";
+
+    // Create Mesh Data Structure
+    m_ogreMesh = ::Ogre::MeshManager::getSingleton().createManual(
+        m_meshName,
+        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+    // We have to create a new material adaptor only if this adaptor is instanciated by a reconstruction adaptor
+    // or if no material adaptor uid has been configured
+    m_useNewMaterialAdaptor = m_isReconstructionManaged || m_materialAdaptorUID.empty();
+
+    if(!m_useNewMaterialAdaptor)
+    {
+        // A material adaptor has been configured in the XML scene
+        auto materialService = ::fwServices::get(m_materialAdaptorUID);
+        m_materialAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(materialService);
+
+        m_material = m_materialAdaptor->getObject< ::fwData::Material >();
+    }
+
+    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    this->updateMesh(mesh);
+}
+
+//-----------------------------------------------------------------------------
+
 void SMesh::doStop() throw(fwTools::Failed)
 {
     if(!m_transformService.expired())
@@ -280,38 +286,17 @@ void SMesh::doSwap() throw(fwTools::Failed)
 
 void SMesh::doUpdate() throw(::fwTools::Failed)
 {
-    ::fwData::Mesh::sptr mesh = this->getObject< fwData::Mesh >();
-
-    this->updateMesh(mesh);
-
-    if(m_useNewMaterialAdaptor)
-    {
-        this->updateNewMaterialAdaptor();
-    }
-    else
-    {
-        this->updateXMLMaterialAdaptor();
-    }
-
-    if(m_entity)
-    {
-        this->updateVertices(mesh);
-    }
-
-    if (m_autoResetCamera)
-    {
-        this->getRenderService()->resetCameraCoordinates(m_layerID);
-    }
 }
 
 //-----------------------------------------------------------------------------
 
-void SMesh::updateMesh(::fwData::Mesh::sptr mesh)
+void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 {
     ::fwComEd::helper::Mesh meshHelper(mesh);
 
     /// The values in this table refer to vertices in the above table
     size_t uiNumVertices = mesh->getNumberOfPoints();
+    OSLM_DEBUG("Vertices #" << uiNumVertices);
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
 
@@ -550,6 +535,7 @@ void SMesh::updateMesh(::fwData::Mesh::sptr mesh)
                     m_subMeshes[i]->indexData->indexBuffer = ibuf;
                 }
                 m_subMeshes[i]->indexData->indexCount = numIndices[i];
+                OSLM_DEBUG("Index #" << m_subMeshes[i]->indexData->indexCount );
 
                 // Lock index data ow, we are going to write into it in the next loop
                 indexBuffer[i] = ibuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
@@ -603,28 +589,44 @@ void SMesh::updateMesh(::fwData::Mesh::sptr mesh)
     }
 
     this->createTransformService();
+
+    // Update vertex attributes
+    this->updateVertices(mesh);
+    this->updateColors(mesh);
+    this->updateTexCoords(mesh);
+
+    if(m_useNewMaterialAdaptor)
+    {
+        this->updateNewMaterialAdaptor();
+    }
+    else
+    {
+        this->updateXMLMaterialAdaptor();
+    }
+
+    if (m_autoResetCamera)
+    {
+        this->getRenderService()->resetCameraCoordinates(m_layerID);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
-void SMesh::updateVertices(::fwData::Mesh::sptr mesh)
+void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
 {
     SLM_ASSERT("Nonexistent ::Ogre::Entity", m_entity);
     FW_PROFILE_AVG("UPDATE VERTICES", 5);
-
-    this->getRenderService()->makeCurrent();
-
-    ::fwComEd::helper::Mesh meshHelper(mesh);
 
     // Getting Vertex Buffer
     ::Ogre::VertexBufferBinding* bind          = m_ogreMesh->sharedVertexData->vertexBufferBinding;
     ::Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(0);
 
-    ::fwData::mt::ObjectReadLock lock(mesh);
     /// Upload the index data to the card
     void* pVertex = vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 
     // Update Ogre Mesh with ::fwData::Mesh
+    ::fwData::mt::ObjectReadLock lock(mesh);
+    ::fwComEd::helper::Mesh meshHelper(mesh);
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
 
     size_t uiStrideFloat = 3;
@@ -635,7 +637,6 @@ void SMesh::updateVertices(::fwData::Mesh::sptr mesh)
 
     typedef ::fwData::Mesh::PointValueType PointValueType;
     typedef ::fwData::Mesh::NormalValueType NormalValueType;
-    PointValueType* __restrict pPos = static_cast< PointValueType* >( pVertex );
 
     // Copy position and normal of each vertices
     // Compute bounding box (for culling)
@@ -646,24 +647,37 @@ void SMesh::updateVertices(::fwData::Mesh::sptr mesh)
     float yMax = -std::numeric_limits<float>::max();
     float zMax = -std::numeric_limits<float>::max();
 
-    for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
     {
-        memcpy(pPos, &points[i][0], 3 * sizeof(PointValueType) );
+        PointValueType* __restrict pPos = static_cast< PointValueType* >( pVertex );
+        FW_PROFILE_AVG("UPDATE BBOX", 5);
+        for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+        {
+            pPos += uiStrideFloat;
 
-        pPos += uiStrideFloat;
+            xMin = std::min(xMin, points[i][0]);
+            xMax = std::max(xMax, points[i][0]);
 
-        xMin = std::min(xMin, points[i][0]);
-        xMax = std::max(xMax, points[i][0]);
+            yMin = std::min(yMin, points[i][1]);
+            yMax = std::max(yMax, points[i][1]);
 
-        yMin = std::min(yMin, points[i][1]);
-        yMax = std::max(yMax, points[i][1]);
+            zMin = std::min(zMin, points[i][2]);
+            zMax = std::max(zMax, points[i][2]);
+        }
+    }
+    {
+        PointValueType* __restrict pPos = static_cast< PointValueType* >( pVertex );
+        FW_PROFILE_AVG("UPDATE POS", 5);
+        for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+        {
+            memcpy(pPos, &points[i][0], 3 * sizeof(PointValueType) );
 
-        zMin = std::min(zMin, points[i][2]);
-        zMax = std::max(zMax, points[i][2]);
+            pPos += uiStrideFloat;
+        }
     }
 
     if(m_hasNormal)
     {
+        FW_PROFILE_AVG("UPDATE NORMALS", 5);
         ::fwData::Mesh::PointNormalsMultiArrayType normals = meshHelper.getPointNormals();
         NormalValueType* __restrict pNormal = static_cast< NormalValueType* >( pVertex ) + 3;
 
@@ -683,47 +697,70 @@ void SMesh::updateVertices(::fwData::Mesh::sptr mesh)
                                                                 ::Ogre::Math::Sqr(yMax - yMin) +
                                                                 ::Ogre::Math::Sqr(zMax - zMin)) /2);
 
-    // Copy other datas
-    // . color
+}
+
+//-----------------------------------------------------------------------------
+
+void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
+{
+    SLM_ASSERT("Nonexistent ::Ogre::Entity", m_entity);
+
+    FW_PROFILE_AVG("UPDATE COLORS", 5);
+
+    // Update Ogre Mesh with ::fwData::Mesh
+    ::fwData::mt::ObjectReadLock lock(mesh);
+    ::fwComEd::helper::Mesh meshHelper(mesh);
+
+    ::Ogre::VertexBufferBinding* bind          = m_ogreMesh->sharedVertexData->vertexBufferBinding;
+    ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(1);
+    void* pCol = cbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+    ::Ogre::RGBA* pColor     = static_cast< ::Ogre::RGBA* >( pCol );
+    ::Ogre::RenderSystem* rs = ::Ogre::Root::getSingleton().getRenderSystem();
+
+    m_hasColor = (mesh->getPointColorsArray() != nullptr);
+
+    if (m_hasColor)
     {
-        lock.lock();
-        ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(1);
-        void* pCol = cbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-        ::Ogre::RGBA* pColor     = static_cast< ::Ogre::RGBA* >( pCol );
-        ::Ogre::RenderSystem* rs = ::Ogre::Root::getSingleton().getRenderSystem();
-
-
-        if (m_hasColor)
+        ::fwData::Mesh::PointColorsMultiArrayType colors = meshHelper.getPointColors();
+        for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
         {
-            ::fwData::Mesh::PointColorsMultiArrayType colors = meshHelper.getPointColors();
-            for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
-            {
-                rs->convertColourValue(::Ogre::ColourValue(colors[i][0] / 255.f, colors[i][1] / 255.f,
-                                                           colors[i][2] / 255.f), pColor++);
-            }
+            rs->convertColourValue(::Ogre::ColourValue(colors[i][0] / 255.f, colors[i][1] / 255.f,
+                                                       colors[i][2] / 255.f), pColor++);
         }
-        // If there are no color specified in the mesh data, just fill the buffer with white - so that shaders can work with a 'clean' value
-        else
+    }
+    else
+    {
+        // If there are no color specified in the mesh data, just fill the buffer with white - so that shaders can work
+        // with a 'clean' value
+        for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
         {
-            for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
-            {
-                rs->convertColourValue(::Ogre::ColourValue::White, pColor++);
-            }
+            rs->convertColourValue(::Ogre::ColourValue::White, pColor++);
         }
-
-        cbuf->unlock();
-        lock.unlock();
     }
 
-    // . UV
+    cbuf->unlock();
+}
+
+//-----------------------------------------------------------------------------
+
+void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
+{
+    m_hasUV = (mesh->getPointTexCoordsArray() != nullptr);
+
     if (m_hasUV)
     {
-        lock.lock();
+        FW_PROFILE_AVG("UPDATE TexCoords", 5);
+
+        ::fwData::mt::ObjectReadLock lock(mesh);
+        ::fwComEd::helper::Mesh meshHelper(mesh);
+
+        ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
         ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(2);
         void* pBuf = uvbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
         float* pUV = static_cast< float* >( pBuf );
 
         ::fwData::Mesh::PointTexCoordsMultiArrayType uvCoord = meshHelper.getPointTexCoords();
+
         // Copy UV coordinates for each mesh point
         for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
         {
@@ -732,13 +769,7 @@ void SMesh::updateVertices(::fwData::Mesh::sptr mesh)
         }
 
         uvbuf->unlock();
-        lock.unlock();
     }
-
-    /// Notify -Mesh object that it has been loaded
-    m_ogreMesh->load();
-
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -931,25 +962,47 @@ void SMesh::modifyMesh()
         return;
     }
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
-
     this->updateMesh(mesh);
-    this->updateVertices(mesh);
-
-    if(m_useNewMaterialAdaptor)
-    {
-        this->updateNewMaterialAdaptor();
-    }
-    else
-    {
-        this->updateXMLMaterialAdaptor();
-    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SMesh::modifyPointColors()
 {
-    SLM_ASSERT("m_ogreMesh not instantiated", m_ogreMesh.getPointer());
+    if((m_isDynamic || m_isDynamicVertices) && (!getVisibility() || !this->getRenderService()->isShownOnScreen()))
+    {
+        return;
+    }
+
+    // Keep the make current outside to avoid too many context changes when we update multiple attributes
+    this->getRenderService()->makeCurrent();
+
+    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    this->updateColors(mesh);
+
+    /// Notify -Mesh object that it has been loaded
+    m_ogreMesh->load();
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SMesh::modifyTexCoords()
+{
+    if((m_isDynamic || m_isDynamicVertices) && (!getVisibility() || !this->getRenderService()->isShownOnScreen()))
+    {
+        return;
+    }
+
+    // Keep the make current outside to avoid too many context changes when we update multiple attributes
+    this->getRenderService()->makeCurrent();
+
+    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    this->updateTexCoords(mesh);
+
+    /// Notify -Mesh object that it has been loaded
+    m_ogreMesh->load();
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -961,9 +1014,15 @@ void SMesh::modifyVertices()
         return;
     }
 
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    // Keep the make current outside to avoid too many context changes when we update multiple attributes
+    this->getRenderService()->makeCurrent();
 
+    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
     this->updateVertices(mesh);
+
+    /// Notify -Mesh object that it has been loaded
+    m_ogreMesh->load();
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -980,6 +1039,8 @@ void SMesh::modifyMaterial()
     ::fwServices::IService::KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_POINTCOLORS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG,
+                                           s_MODIFY_POINT_TEX_COORDS_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Mesh::s_MODIFIED_SIG, s_MODIFY_MESH_SLOT ) );
     return connections;
 }
