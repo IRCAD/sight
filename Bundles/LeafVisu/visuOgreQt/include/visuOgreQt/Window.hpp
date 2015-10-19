@@ -95,9 +95,6 @@ Q_SIGNALS:
     /// When the render window is created
     void interacted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
 
-    /// When a camera reset occurs
-    void cameraResetRequested();
-
     /// When a ray cast request is emitted
     void rayCastRequested(int, int, int, int);
 

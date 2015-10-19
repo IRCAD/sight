@@ -55,9 +55,11 @@ public:
     /// Call Widget render
     VISUOGREQT_API virtual void requestRender();
 
-    /// Links Window and SRender, and connects their respective signals and slots.
-    VISUOGREQT_API virtual void connectToContainer( ::fwGui::container::fwContainer::sptr _parent,
-                                                    bool showOverlay = false );
+    /// Create the container that holds the QtWidget.
+    VISUOGREQT_API virtual void createContainer( ::fwGui::container::fwContainer::sptr _parent, bool showOverlay);
+
+    /// Connects widget and SRender signals and slots.
+    VISUOGREQT_API virtual void connectToContainer();
 
     /// Not implemented yet
     /// Deletes interactor and manages correctly the window (removing layout).
@@ -79,9 +81,6 @@ private Q_SLOTS:
 
     /// When the render window is created
     void onInteracted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo _info);
-
-    /// When a camera reset occurs
-    void onCameraResetRequested();
 
     /// When the clipping range has to match the last updating of the scene bounding box
     void onCameraClippingComputation();

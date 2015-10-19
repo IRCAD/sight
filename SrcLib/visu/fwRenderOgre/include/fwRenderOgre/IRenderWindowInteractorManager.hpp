@@ -103,8 +103,11 @@ public:
     FWRENDEROGRE_API virtual void requestRender() = 0;
 
     /// Creates an interactor and installs it in window.
-    FWRENDEROGRE_API virtual void connectToContainer( ::fwGui::container::fwContainer::sptr _parent,
-                                                      bool showOverlay = false ) = 0;
+    FWRENDEROGRE_API virtual void createContainer( ::fwGui::container::fwContainer::sptr _parent,
+                                                   bool showOverlay = false ) = 0;
+
+    /// Connects widget and SRender signals and slots.
+    FWRENDEROGRE_API virtual void connectToContainer() = 0;
 
     /// Deletes interactor and manage correctly the window (removing layout).
     FWRENDEROGRE_API virtual void disconnectInteractor() = 0;

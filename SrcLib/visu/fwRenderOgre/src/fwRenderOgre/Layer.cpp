@@ -368,6 +368,7 @@ void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::s
     m_connections->disconnect();
 
     m_moveInteractor = interactor;
+    m_moveInteractor->resizeEvent(m_renderWindow->getWidth(), m_renderWindow->getHeight());
 
     m_connections->connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RESET_CAMERA_SIG,
                            this->getSptr(), s_RESET_CAMERA_SLOT);

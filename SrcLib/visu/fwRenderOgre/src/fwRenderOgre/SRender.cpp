@@ -404,6 +404,9 @@ void SRender::startObject()
         layer->createScene();
     }
 
+    // Everything is started now, we can safely create connections and thus receive interactions from the widget
+    m_interactorManager->connectToContainer();
+
     if (this->isStarted())
     {
         // Erm... We start scene adaptors from the back because of texture adaptors
@@ -484,7 +487,7 @@ void SRender::startContext()
 {
     m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
     m_interactorManager->setRenderService(this->getSptr());
-    m_interactorManager->connectToContainer( this->getContainer(), m_showOverlay );
+    m_interactorManager->createContainer( this->getContainer(), m_showOverlay );
 }
 
 //-----------------------------------------------------------------------------

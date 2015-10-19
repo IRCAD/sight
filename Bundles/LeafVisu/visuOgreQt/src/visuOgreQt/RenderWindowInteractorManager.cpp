@@ -50,8 +50,7 @@ void RenderWindowInteractorManager::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void RenderWindowInteractorManager::connectToContainer( ::fwGui::container::fwContainer::sptr _parent,
-                                                        bool showOverlay )
+void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr _parent, bool showOverlay )
 {
     SLM_ASSERT("Invalid parent.", _parent );
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
@@ -63,6 +62,19 @@ void RenderWindowInteractorManager::connectToContainer( ::fwGui::container::fwCo
     QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
     renderingContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
 
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->addWidget(renderingContainer);
+
+    container->setLayout(layout);
+
+    QObject::connect(m_qOgreWidget, SIGNAL(renderWindowCreated()), this, SLOT(onRenderWindowCreated()));
+}
+
+//-----------------------------------------------------------------------------
+
+void RenderWindowInteractorManager::connectToContainer()
+{
     // Connect widget window render to render service start adaptors
     ::fwServices::IService::sptr renderService      = m_renderService.lock();
     ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
@@ -72,19 +84,12 @@ void RenderWindowInteractorManager::connectToContainer( ::fwGui::container::fwCo
         SLM_ERROR("RenderService wrongly instantiated. ");
     }
 
-    QObject::connect(m_qOgreWidget, SIGNAL(renderWindowCreated()), this, SLOT(onRenderWindowCreated()));
     QObject::connect(m_qOgreWidget, SIGNAL(rayCastRequested(int, int, int, int)), this,
                      SLOT(onRayCastRequested(int, int, int, int)));
     QObject::connect(m_qOgreWidget, SIGNAL(cameraClippingComputation()), this, SLOT(onCameraClippingComputation()));
     QObject::connect(m_qOgreWidget, SIGNAL(interacted(
                                                ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo)), this,
                      SLOT(onInteracted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo)));
-
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->addWidget(renderingContainer);
-
-    container->setLayout(layout);
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +99,6 @@ void RenderWindowInteractorManager::disconnectInteractor()
     QObject::disconnect(m_qOgreWidget, SIGNAL(renderWindowCreated()), this, SLOT(onRenderWindowCreated()));
     QObject::disconnect(m_qOgreWidget, SIGNAL(rayCastRequested(int, int, int, int)), this,
                         SLOT(onRayCastRequested(int, int, int, int)));
-    QObject::disconnect(m_qOgreWidget, SIGNAL(cameraResetRequested()), this, SLOT(onCameraResetRequested()));
     QObject::disconnect(m_qOgreWidget, SIGNAL(cameraClippingComputation()), this, SLOT(onCameraClippingComputation()));
     QObject::disconnect(m_qOgreWidget, SIGNAL(interacted(
                                                   ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo)), this,
@@ -157,16 +161,6 @@ void RenderWindowInteractorManager::onInteracted(::fwRenderOgre::IRenderWindowIn
         layer->slot< ::fwRenderOgre::Layer::InteractionSlotType>(::fwRenderOgre::Layer::s_INTERACTION_SLOT)->asyncRun(
             _info);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void RenderWindowInteractorManager::onCameraResetRequested()
-{
-    ::fwServices::IService::sptr renderService      = m_renderService.lock();
-    ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
-
-    ogreRenderService->slot(::fwRenderOgre::SRender::s_COMPUTE_CAMERA_ORIG_SLOT)->asyncRun();
 }
 
 //-----------------------------------------------------------------------------
