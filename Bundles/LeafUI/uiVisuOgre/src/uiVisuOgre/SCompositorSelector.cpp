@@ -71,8 +71,7 @@ void SCompositorSelector::starting() throw(::fwTools::Failed)
 
     this->refreshRenderers();
 
-    QObject::connect(m_layersBox, SIGNAL(activated(int)), this,
-                     SLOT(onSelectedLayerItem(int)));
+    QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
     QObject::connect(m_compositorChain, SIGNAL(itemChanged(QListWidgetItem*)), this,
                      SLOT(onSelectedCompositorItem(QListWidgetItem*)));
 }
@@ -83,8 +82,7 @@ void SCompositorSelector::stopping() throw(::fwTools::Failed)
 {
     m_connections->disconnect();
 
-    QObject::disconnect(m_layersBox, SIGNAL(activated(const QString &)), this,
-                        SLOT(onSelectedLayerItem(const QString &)));
+    QObject::disconnect(m_layersBox, SIGNAL(activated(const QString &)), this, SLOT(onSelectedLayerItem(int)));
     QObject::disconnect(m_compositorChain, SIGNAL(itemChanged(QListWidgetItem*)), this,
                         SLOT(onSelectedCompositorItem(QListWidgetItem*)));
 

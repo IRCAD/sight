@@ -159,14 +159,9 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
 
     this->refreshRenderers();
 
-    QObject::connect(m_layersBox, SIGNAL(activated(int)), this,
-                     SLOT(onSelectedLayerItem(int)));
-
+    QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
     QObject::connect(m_useCelShadingCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onUseCelShading(int)));
-
-    QObject::connect( m_transparencyDepthSlider, SIGNAL(valueChanged(int)), this,
-                      SLOT(onEditTransparencyDepth(int)) );
-
+    QObject::connect( m_transparencyDepthSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditTransparencyDepth(int)) );
     QObject::connect(m_transparencyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onEditTransparency(int)));
 }
 
@@ -174,8 +169,7 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
 
 void SDefaultCompositorEditor::stopping() throw(::fwTools::Failed)
 {
-    QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this,
-                        SLOT(onSelectedLayerItem(const QString &)));
+    QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
 
     this->getContainer()->clean();
     this->destroy();
