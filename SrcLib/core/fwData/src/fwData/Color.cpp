@@ -19,10 +19,7 @@ namespace fwData
 
 Color::Color ( ::fwData::Object::Key key )
 {
-    m_vRGBA[0] = 1.0;
-    m_vRGBA[1] = 1.0;
-    m_vRGBA[2] = 1.0;
-    m_vRGBA[3] = 1.0;
+    m_vRGBA.fill(1.0);
 }
 
 //------------------------------------------------------------------------------
@@ -31,10 +28,7 @@ Color::sptr Color::ColorFactory(Color::ColorType red, Color::ColorType green, Co
                                 Color::ColorType alpha)
 {
     Color::sptr color = ::fwData::Color::New();
-    color->m_vRGBA[0] = red;
-    color->m_vRGBA[1] = green;
-    color->m_vRGBA[2] = blue;
-    color->m_vRGBA[3] = alpha;
+    color->m_vRGBA = {red, green, blue, alpha};
     return color;
 }
 
@@ -43,7 +37,6 @@ Color::sptr Color::ColorFactory(Color::ColorType red, Color::ColorType green, Co
 Color::~Color ()
 {
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -73,10 +66,7 @@ void Color::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
 
 void Color::setRGBA( const ColorType red, const ColorType green, const ColorType blue, const ColorType alpha )
 {
-    m_vRGBA[0] = red;
-    m_vRGBA[1] = green;
-    m_vRGBA[2] = blue;
-    m_vRGBA[3] = alpha;
+    m_vRGBA = {red, green, blue, alpha};
 }
 
 //------------------------------------------------------------------------------

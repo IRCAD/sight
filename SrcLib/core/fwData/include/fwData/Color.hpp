@@ -11,7 +11,7 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
-#include <boost/array.hpp>
+#include <array>
 
 fwCampAutoDeclareDataMacro((fwData)(Color), FWDATA_API);
 
@@ -27,7 +27,7 @@ class FWDATA_CLASS_API Color : public Object
 public:
 
     typedef float ColorType;
-    typedef ::boost::array<ColorType,4> ColorArray;
+    typedef std::array<ColorType,4> ColorArray;
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Color)(::fwData::Object),
                                                ((::fwData::factory::New< Color >,() ))
