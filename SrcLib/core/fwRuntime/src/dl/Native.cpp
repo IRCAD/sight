@@ -55,20 +55,11 @@ const ::boost::filesystem::path Native::getFullPath( const bool _bMustBeFile ) c
     }
     if( !::boost::filesystem::exists(result) )
     {
-#if BOOST_FILESYSTEM_VERSION > 2
         throw RuntimeException("'" + result.string() + "': invalid native module file name.");
-#else
-        throw RuntimeException("'" + result.native_file_string() + "': invalid native module file name.");
-#endif
     }
     if(_bMustBeFile && ::boost::filesystem::is_directory(result) )
     {
-#if BOOST_FILESYSTEM_VERSION > 2
         throw RuntimeException("'" + result.string() + "': is a file. Perhaps dynamic librairie is missing.");
-#else
-        throw RuntimeException("'" + result.native_file_string() +
-                               "': is a file. Perhaps dynamic librairie is missing.");
-#endif
     }
     return result;
 }
@@ -83,11 +74,7 @@ const ::boost::filesystem::path Native::getPath() const throw(RuntimeException)
     ::boost::filesystem::path result;
 
     const ::boost::filesystem::path fullModulePath( m_bundle->getLocation() / m_modulePath );
-#if BOOST_FILESYSTEM_VERSION > 2
     const ::boost::regex nativeFileRegex( m_nameDecorator->getNativeName(fullModulePath.filename().string()) );
-#else
-    const ::boost::regex nativeFileRegex( m_nameDecorator->getNativeName(fullModulePath.leaf()) );
-#endif // BOOST_FILESYSTEM_VERSION > 2
 
     // Walk through the module directory, seeking for a matching file.
     ::boost::filesystem::directory_iterator curDirEntry(fullModulePath.parent_path());
@@ -95,19 +82,11 @@ const ::boost::filesystem::path Native::getPath() const throw(RuntimeException)
     for(; curDirEntry != endDirEntry; ++curDirEntry)
     {
         ::boost::filesystem::path curEntryPath( *curDirEntry );
-#if BOOST_FILESYSTEM_VERSION > 2
         if( ::boost::regex_match( curEntryPath.filename().string(), nativeFileRegex ) )
         {
             result = m_modulePath.parent_path() / curEntryPath.filename();
             break;
         }
-#else
-        if( ::boost::regex_match( curEntryPath.leaf(), nativeFileRegex ) )
-        {
-            result = m_modulePath.parent_path() / curEntryPath.leaf();
-            break;
-        }
-#endif // BOOST_FILESYSTEM_VERSION > 2
     }
 
     return result;

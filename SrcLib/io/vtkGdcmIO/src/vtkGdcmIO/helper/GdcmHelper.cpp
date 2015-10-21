@@ -46,11 +46,7 @@ void DicomSearch::searchRecursivelyFiles(const ::boost::filesystem::path &dirPat
     {
         if(!::boost::filesystem::is_directory(*it))
         {
-#if BOOST_FILESYSTEM_VERSION > 2
             lowerFilename = filename = it->path().string();
-#else
-            lowerFilename = filename = it->string();
-#endif
             std::transform ( lowerFilename.begin(), lowerFilename.end(), lowerFilename.begin(), tolower );
             if(DicomSearch::compare( lowerFilename, &vecStr) )
             {

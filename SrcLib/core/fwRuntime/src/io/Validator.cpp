@@ -46,11 +46,7 @@ Validator::Validator( const std::string & buffer )
 
 Validator::Validator( const boost::filesystem::path & path )
 {
-#if BOOST_FILESYSTEM_VERSION > 2
     std::string strPath( path.string() );
-#else
-    std::string strPath( path.native_file_string() );
-#endif
     // Checks the path validity.
     if( ::boost::filesystem::exists(path) == false || ::boost::filesystem::is_directory(path) )
     {

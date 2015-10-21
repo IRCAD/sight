@@ -224,18 +224,10 @@ const ShowRevInfo::FindMapType ShowRevInfo::findRevInfo(const ::boost::filesyste
     std::string findname;
     for (::boost::filesystem::recursive_directory_iterator iter(findPath), end; iter != end; ++iter)
     {
-#if BOOST_FILESYSTEM_VERSION > 2
         filename = iter->path().filename().string();
-#else
-        filename = iter->path().leaf();
-#endif
         if(filename == "rev.info")
         {
-#if BOOST_FILESYSTEM_VERSION > 2
-            findname = iter->path().parent_path().filename().string();
-#else
-            findname = iter->path().leaf();
-#endif
+            findname          = iter->path().parent_path().filename().string();
             findname          = iter->path().parent_path().filename().string();
             findMap[findname] = iter->path();
         }

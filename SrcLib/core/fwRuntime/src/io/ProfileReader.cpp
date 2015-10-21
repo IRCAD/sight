@@ -64,11 +64,7 @@ std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( c
     }
 
     // Get the document.
-#if BOOST_FILESYSTEM_VERSION > 2
     xmlDocPtr document = xmlParseFile(normalizedPath.string().c_str());
-#else
-    xmlDocPtr document = xmlParseFile(normalizedPath.native_file_string().c_str());
-#endif
     if(document == 0)
     {
         throw RuntimeException("Unable to read the profile file.");

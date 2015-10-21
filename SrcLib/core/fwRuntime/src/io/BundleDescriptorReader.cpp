@@ -114,11 +114,7 @@ std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::file
     }
 
     // Get the document.
-#if BOOST_FILESYSTEM_VERSION > 2
     xmlDocPtr document = xmlParseFile(  descriptorLocation.string().c_str() );
-#else
-    xmlDocPtr document = xmlParseFile(  descriptorLocation.native_file_string().c_str() );
-#endif
     if(document == 0)
     {
         throw RuntimeException("Unable to read the bundle descriptor file.");
@@ -190,11 +186,7 @@ throw ( RuntimeException )
     }
 
     // Get the document.
-#if BOOST_FILESYSTEM_VERSION > 2
     xmlDocPtr document = xmlParseFile(  descriptorLocation.string().c_str() );
-#else
-    xmlDocPtr document = xmlParseFile(  descriptorLocation.native_file_string().c_str() );
-#endif
     if(document == 0)
     {
         throw RuntimeException("Unable to read the bundle descriptor file.");
