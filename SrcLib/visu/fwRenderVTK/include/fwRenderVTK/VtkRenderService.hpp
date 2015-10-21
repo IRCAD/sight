@@ -105,7 +105,7 @@ protected:
      * @brief configures the adaptor
      * @verbatim
        <service uid="generiSceneUID" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender">
-        <scene renderMode="auto|timer|none">
+        <scene renderMode="auto|timer|none" offScreen="imageKey" width="1920" height="1080">
             <renderer id="background" layer="0" background="0.0" />
             <vtkObject id="transform" class="vtkTransform" />
             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
@@ -136,6 +136,9 @@ protected:
      *    if renderMode="auto",  the scene is automatically rendered after doStart, doUpdate, doSwap, doStop
      *    and m_vtkPipelineModified=true. If renderMode="timer" the scene is rendered at N frame per seconds (N is
      *    defined by fps tag). If renderMode="none" you should call 'render' slot to call reder the scene.
+     *  - \b offScreen (optional): key of the image used for off screen render
+     *  - \b width (optional, "1280" by default): width for off screen render
+     *  - \b height (optional, "720" by default): height for off screen render
      *  - \b renderer
      *     - \b id (mandatory): the identifier of the renderer
      *     - \b layer (optional): defines the layer of the vtkRenderer. This is only used if there are layered renderers.
@@ -230,6 +233,11 @@ private:
     /// Does the scene update automatically when something changes ?
     /// Otherwise it is updated periodically (default 30Hz)
     RenderMode m_renderMode;
+
+    std::string m_offScreenImageKey; ///< Key of the image used for off screen render
+    unsigned int m_width; ///< width for off screen render
+    unsigned int m_height; ///< height for off screen render
+    bool m_offScreen; ///< if true, scene is render in off screen
 
     /// Timer used for the update
     ::fwThread::Timer::sptr m_timer;

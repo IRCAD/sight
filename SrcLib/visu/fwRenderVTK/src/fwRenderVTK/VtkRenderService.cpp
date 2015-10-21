@@ -15,26 +15,31 @@
 #include <vtkRendererCollection.h>
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
+#include <vtkWindowToImageFilter.h>
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
+#include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/CompositeMsg.hpp>
+
+#include <fwData/Color.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/IEditionService.hpp>
 #include <fwTools/fwID.hpp>
-#include <fwData/Color.hpp>
 
 #include <fwRuntime/ConfigurationElementContainer.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/CameraMsg.hpp>
-
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
+#include "fwRenderVTK/OffScreenInteractorManager.hpp"
 #include "fwRenderVTK/VtkRenderService.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
 
+#include <fwVtkIO/vtk.hpp>
 
 fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::VtkRenderService, ::fwData::Composite );
 
@@ -50,7 +55,10 @@ const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT = "render";
 
 VtkRenderService::VtkRenderService() throw() :
     m_pendingRenderRequest(false),
-    m_renderMode(RenderMode::AUTO)
+    m_renderMode(RenderMode::AUTO),
+    m_width(1280),
+    m_height(720),
+    m_offScreen(false)
 {
     m_slotRender = ::fwCom::newSlot( &VtkRenderService::render, this);
     m_slotRender->setWorker(m_associatedWorker);
@@ -313,8 +321,10 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
-
-    this->initialize();
+    if (!m_offScreen)
+    {
+        this->initialize();
+    }
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = m_configuration->find("scene");
     SLM_ASSERT("Missing 'scene' configuration.",!vectConfig.empty());
@@ -336,6 +346,24 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
     else
     {
         SLM_WARN_IF("renderMode '" + renderMode + " is unknown, setting renderMode to 'auto'.", !renderMode.empty());
+    }
+
+    m_offScreenImageKey = m_sceneConfiguration->getAttributeValue("offScreen");
+    if (!m_offScreenImageKey.empty())
+    {
+        m_offScreen = true;
+    }
+
+    std::string widthKey = m_sceneConfiguration->getAttributeValue("width");
+    if (!widthKey.empty())
+    {
+        m_width = ::boost::lexical_cast<unsigned int>(widthKey);
+    }
+
+    std::string heightKey = m_sceneConfiguration->getAttributeValue("height");
+    if (!heightKey.empty())
+    {
+        m_height = ::boost::lexical_cast<unsigned int>(heightKey);
     }
 
     /// Target frame rate (default 30Hz)
@@ -363,7 +391,10 @@ void VtkRenderService::starting() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    this->create();
+    if (!m_offScreen)
+    {
+        this->create();
+    }
 
     this->startContext();
 
@@ -461,8 +492,11 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
 
     this->stopContext();
 
-    this->getContainer()->clean();
-    this->destroy();
+    if (!m_offScreen)
+    {
+        this->getContainer()->clean();
+        this->destroy();
+    }
 
     m_sceneAdaptors.clear();
 }
@@ -517,7 +551,35 @@ void VtkRenderService::updating() throw(fwTools::Failed)
 
 void VtkRenderService::render()
 {
-    m_interactorManager->getInteractor()->Render();
+    if (m_offScreen)
+    {
+        vtkSmartPointer<vtkRenderWindow> renderWindow = m_interactorManager->getInteractor()->GetRenderWindow();
+
+        renderWindow->Render();
+
+        vtkSmartPointer<vtkWindowToImageFilter> windowToImageFilter = vtkWindowToImageFilter::New();
+        windowToImageFilter->SetInputBufferTypeToRGBA();
+        windowToImageFilter->SetInput( renderWindow );
+        windowToImageFilter->Update();
+
+        vtkImageData * vtkImage = windowToImageFilter->GetOutput();
+        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+        ::fwData::Image::sptr image         = composite->at< ::fwData::Image >(m_offScreenImageKey);
+        SLM_ASSERT("Image '" + m_offScreenImageKey + "' not found.", image);
+
+        {
+            ::fwData::mt::ObjectWriteLock lock(image);
+            ::fwVtkIO::fromVTKImage(vtkImage, image);
+        }
+
+        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
+        msg->addEvent(::fwComEd::ImageMsg::NEW_IMAGE);
+        ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+    }
+    else
+    {
+        m_interactorManager->getInteractor()->Render();
+    }
     this->setPendingRenderRequest(false);
 }
 
@@ -525,7 +587,15 @@ void VtkRenderService::render()
 
 bool VtkRenderService::isShownOnScreen()
 {
-    return this->getContainer()->isShownOnScreen();
+    if (!m_offScreen)
+    {
+        return this->getContainer()->isShownOnScreen();
+    }
+    else
+    {
+        return true;
+    }
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -543,8 +613,19 @@ void VtkRenderService::updateTimer()
 
 void VtkRenderService::startContext()
 {
-    m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
-    m_interactorManager->installInteractor( this->getContainer() );
+    if (!m_offScreen)
+    {
+        m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
+        m_interactorManager->installInteractor( this->getContainer() );
+    }
+    else
+    {
+        ::fwRenderVTK::OffScreenInteractorManager::sptr interactorManager =
+            ::fwRenderVTK::OffScreenInteractorManager::New();
+        interactorManager->installInteractor(m_width, m_height);
+        m_interactorManager = interactorManager;
+    }
+
     InteractorStyle3DForNegato* interactor = InteractorStyle3DForNegato::New();
     SLM_ASSERT("Can't instantiate interactor", interactor);
     interactor->setAutoRender(m_renderMode == RenderMode::AUTO);

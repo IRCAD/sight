@@ -8,6 +8,7 @@ fwUseForwardInclude(
     fwRuntime
     fwServices
     fwTools
+    fwVtkIO
 )
 
 find_package(VTK REQUIRED)
