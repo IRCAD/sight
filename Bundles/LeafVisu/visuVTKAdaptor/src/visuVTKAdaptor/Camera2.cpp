@@ -6,6 +6,9 @@
 
 #include <boost/foreach.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwData/Boolean.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>

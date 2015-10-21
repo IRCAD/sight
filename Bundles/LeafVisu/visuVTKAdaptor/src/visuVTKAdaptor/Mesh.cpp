@@ -35,7 +35,12 @@
 #include <vtkActor.h>
 #include <vtkCamera.h>
 #include <vtkCommand.h>
+
 #include <vtkDepthSortPolyData.h>
+#include <vtkTextureMapToCylinder.h>
+#include <vtkTextureMapToPlane.h>
+#include <vtkTextureMapToSphere.h>
+
 #include <vtkMath.h>
 #include <vtkMatrix4x4.h>
 #include <vtkPicker.h>
@@ -46,9 +51,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
-#include <vtkTextureMapToSphere.h>
-#include <vtkTextureMapToCylinder.h>
-#include <vtkTextureMapToPlane.h>
+
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mesh, ::fwData::Mesh );
@@ -1021,6 +1024,7 @@ void Mesh::setAutoResetCamera(bool autoResetCamera)
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
+
 
 
 

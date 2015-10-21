@@ -26,6 +26,8 @@
 #include "visuVTKAdaptor/NegatoMPR.hpp"
 
 
+#include <string>
+
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoMPR, ::fwData::Image );
 
 namespace visuVTKAdaptor
