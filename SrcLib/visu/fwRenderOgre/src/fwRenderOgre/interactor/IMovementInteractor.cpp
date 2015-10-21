@@ -23,7 +23,8 @@ const ::fwCom::Signals::SignalKeyType IMovementInteractor::s_RESET_CAMERA_SIG = 
 
 IMovementInteractor::IMovementInteractor() :
     m_lookAtZ(0.f),
-    m_mouseScale(33.f)
+    m_mouseScale(33.f),
+    m_fZoom(1.f)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
@@ -42,6 +43,7 @@ void IMovementInteractor::setMouseScale(float mouseScale)
 {
     m_mouseScale = static_cast<float>(MOUSE_SCALE_COEFFICIENT) / mouseScale;
     m_lookAtZ    = mouseScale;
+    m_fZoom      = 1.f;
 }
 
 // ----------------------------------------------------------------------------

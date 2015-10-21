@@ -108,12 +108,22 @@ void TrackballInteractor::mouseMoveEvent(int dx, int dy)
 
 void TrackballInteractor::wheelEvent(int delta, int x, int y)
 {
+    // The zoom factor is reduced when coming closer and increased when going away
+    const float fNewZoom = (delta > 0) ? m_fZoom * 0.85f : m_fZoom / 0.85f;
+
+    // Moreover we cannot pass through the center of the trackball
+    const float z = (m_fZoom - fNewZoom) * 200.f / (m_mouseScale );
+
+    // Update the center of interest for future rotations
+    m_lookAtZ -= z;
+
+    m_fZoom = fNewZoom;
+
+    // Last, translate the camera
     ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
     ::Ogre::Vector3 direction  = camera->getDirection();
-    direction                 *= static_cast< float>(delta) / m_mouseScale;
-
-    m_lookAtZ -= static_cast< float>(delta) / m_mouseScale;
+    direction                  = direction * z;
     camNode->translate( direction, ::Ogre::Node::TS_LOCAL );
 }
 

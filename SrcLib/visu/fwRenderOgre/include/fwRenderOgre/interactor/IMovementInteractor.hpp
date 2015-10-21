@@ -112,13 +112,16 @@ public:
 
 protected:
 
-    /// Camera's current point of interest
+    /// Current point of interest, needed especially when rotating
     float m_lookAtZ;
 
-    /// Camera's move scale
+    /// Move scale
     float m_mouseScale;
 
-    /// Default mouse scale coefficient (to move the scene)
+    /// Current zoom coefficient
+    float m_fZoom;
+
+    /// Default mouse scale coefficient (used to move the camera)
     const int MOUSE_SCALE_COEFFICIENT = 200;
 };
 

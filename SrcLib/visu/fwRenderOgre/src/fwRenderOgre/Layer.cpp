@@ -472,7 +472,7 @@ void Layer::resetCameraCoordinates() const
             ::Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0 ?
                                              worldCoordBoundingBox.getSize().length() : 0;
 
-            float coeffZoom = boundingBoxLength * 3;
+            float coeffZoom = boundingBoxLength * 1.2;
             OSLM_DEBUG("Zoom coefficient : " << coeffZoom);
 
             // Set the direction of the camera
