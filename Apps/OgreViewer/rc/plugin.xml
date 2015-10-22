@@ -11,14 +11,13 @@
         <id>MDAtomsConfig</id>
         <desc>reader/writer config to read/write an atom representing a medical data</desc>
         <config>
-            <patcher context="MedicalData" version="V08ALA" /> 
+            <patcher context="MedicalData" version="V08ALA" />
         </config>
     </extension>
 
     <extension implements="::fwServices::registry::AppConfig">
 
         <id>OgreViewer_Extension</id>
-        <type>parameters</type>
         <config>
             <object type="::fwData::Composite">
 
@@ -213,7 +212,7 @@
                                 </appConfig>
                             </config>
                         </service>
-                        
+
                         <service uid="cfgOgreGenericScene" impl="::fwServices::SConfigController" autoConnect="no">
                             <config>
                                 <appConfig id="OgreGenericScene">
@@ -239,11 +238,11 @@
                                 </appConfig>
                             </config>
                         </service>
-                                                
+
                     </object>
-                
+
                 </item>
-                
+
                 <start uid="ihm" />
                 <start uid="updaterReconstUID" />
                 <start uid="cfgVTKGenericScene" />

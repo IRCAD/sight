@@ -1,7 +1,6 @@
 
 <extension implements="::fwServices::registry::AppConfig">
     <id>OgreNegato2D</id>
-    <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" />
         <param name="WID_PARENT" />
@@ -26,20 +25,20 @@
                     <view sid="${GENERIC_UID}_negato2DInteractor" start="yes" />
                 </registry>
             </service>
-            
+
             <service uid="${GENERIC_UID}_negato2DScene" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes" >
                 <scene >
-                    
+
                     <!-- Fix afterglow bug when dezooming -->
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
                     <!-- Default Layer -->
                     <renderer id="default" layer="1"/>
-                    
+
                     <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
                         <config renderer="default" style="Negato2D" />
                     </adaptor>
-                    
+
                     <adaptor id="negato2DAdaptor" class="::visuOgreAdaptor::SNegato2D" objectId="image">
                         <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
                     </adaptor>

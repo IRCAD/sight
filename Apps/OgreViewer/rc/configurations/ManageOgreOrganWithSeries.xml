@@ -1,7 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>OgreOrganManagerWithSeries</id>
-    <type>parameters</type>
-
     <parameters>
         <param name="GENERIC_UID" />
         <param name="WID_PARENT" />
@@ -74,7 +72,7 @@
                 <signal>${GENERIC_UID}_listOrganEditor/emptiedSelection</signal>
                 <slot>${GENERIC_UID}_myUpdaterReconst/remove</slot>
             </connect>
-            
+
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_organView" />
             <start uid="${GENERIC_UID}_myUpdaterReconst" />
@@ -82,4 +80,4 @@
 
         </object>
     </config>
-</extension> 
+</extension>

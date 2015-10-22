@@ -1,7 +1,6 @@
 
 <extension implements="::fwServices::registry::AppConfig">
     <id>VTKGenericScene</id>
-    <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" />
         <param name="WID_PARENT" />
@@ -44,4 +43,3 @@
 
     </config>
 </extension>
-
