@@ -31,7 +31,7 @@ public:
     VISUVTKARADAPTOR_API static FixedInteractorStyle *New();
 
     /// vtk revision macro
-    vtkTypeRevisionMacro(FixedInteractorStyle, vtkInteractorStyle);
+    vtkTypeMacro(FixedInteractorStyle, vtkInteractorStyle);
 
     VISUVTKARADAPTOR_API virtual void OnMiddleButtonDown();
     VISUVTKARADAPTOR_API virtual void OnChar();

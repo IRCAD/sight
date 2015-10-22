@@ -1,4 +1,4 @@
-<plugin id="videoCalibration" class="::videoCalibration::Plugin" >
+<plugin id="videoCalibration" class="::videoCalibration::Plugin" version="@DASH_VERSION@" >
 
     <library name="videoCalibration" />
 

@@ -1,4 +1,4 @@
-<plugin id="tracker" class="::tracker::Plugin" version="0.1" >
+<plugin id="tracker" class="::tracker::Plugin" version="@DASH_VERSION@" >
 
     <library name="tracker" />
 

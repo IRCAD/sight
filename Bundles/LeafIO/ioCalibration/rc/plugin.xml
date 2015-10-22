@@ -1,4 +1,4 @@
-<plugin id="ioCalibration" class="::ioCalibration::Plugin" >
+<plugin id="ioCalibration" class="::ioCalibration::Plugin" version="@DASH_VERSION@" >
 
     <library name="ioCalibration" />
 

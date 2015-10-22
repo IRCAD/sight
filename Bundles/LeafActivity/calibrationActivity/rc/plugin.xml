@@ -1,4 +1,4 @@
-<plugin id="calibrationActivity" >
+<plugin id="calibrationActivity" version="@DASH_VERSION@" >
 
     <library name="calibrationActivity" />
 

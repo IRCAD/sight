@@ -55,10 +55,10 @@ public:
      */
 
     VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
-    typedef ::fwCom::Signal<void (qint64)> PositionModifiedSignalType;
+    typedef ::fwCom::Signal<void (int64_t)> PositionModifiedSignalType;
 
     VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_DURATION_MODIFIED_SIG;
-    typedef ::fwCom::Signal<void (qint64)> DurationModifiedSignalType;
+    typedef ::fwCom::Signal<void (int64_t)> DurationModifiedSignalType;
 
     VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_FRAME_PRESENTED_SIG;
     typedef ::fwCom::Signal<void ()> FramePresentedSignalType;
@@ -126,7 +126,7 @@ protected:
     /// SLOT : enable/disable loop in video
     void toogleLoopMode();
     /// SLOT : set the new position in the video.
-    void setPosition(const int position);
+    void setPosition(int64_t position);
     /// SLOT: copy and push video frame in the timeline.
     void presentFrame();
     /// Gets camera from m_cameraID

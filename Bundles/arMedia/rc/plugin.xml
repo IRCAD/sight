@@ -1,2 +1,2 @@
-<plugin id="arMedia">
+<plugin id="arMedia" version="@DASH_VERSION@" >
 </plugin>

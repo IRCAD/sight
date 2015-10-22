@@ -13,6 +13,7 @@ set( REQUIREMENTS
     io
     ioAtoms
     patchMedicalData
+    arPatchMedicalData
     uiIO
     uiGenericQt
     uiMedDataQt
@@ -29,7 +30,7 @@ set( REQUIREMENTS
     visuVTKAdaptor
     visuVTKARAdaptor
     activities
-    calibrationActivity 
+    calibrationActivity
     uiCalibration
     appXml
     preferences

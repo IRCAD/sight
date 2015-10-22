@@ -99,8 +99,8 @@ void SVideoConfiguration::updating() throw(::fwTools::Failed)
     {
         ::fwData::String::sptr videoDir;
         ::fwData::Composite::IteratorType iterVideoDir = m_videoPref->find( helper::s_VIDEO_DIR_PREF );
-        bool videoFounded = (iterVideoDir  != m_videoPref->end());
-        if (videoFounded)
+        bool videoFound = (iterVideoDir  != m_videoPref->end());
+        if (videoFound)
         {
             videoDir = ::fwData::String::dynamicCast(iterVideoDir->second);
             SLM_ERROR_IF("Wrong type of preference : '" + helper::s_VIDEO_DIR_PREF + "' parameter must be a string",
@@ -146,7 +146,7 @@ void SVideoConfiguration::updating() throw(::fwTools::Failed)
             if(!m_videoDirEdit->text().isEmpty())
             {
                 videoDir->value() = m_videoDirEdit->text().toStdString();
-                if (!videoFounded)
+                if (!videoFound)
                 {
                     (*m_videoPref)[helper::s_VIDEO_DIR_PREF] = videoDir;
                 }
