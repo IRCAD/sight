@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>calCameraView</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
@@ -70,7 +69,7 @@
                 </slots>
             </service>
 
-           <service uid="${GENERIC_UID}_VideoSlider" impl="::videoQt::editor::SSlider" type="::gui::editor::IEditor" autoConnect="no"/>
+            <service uid="${GENERIC_UID}_VideoSlider" impl="::videoQt::editor::SSlider" type="::gui::editor::IEditor" autoConnect="no" />
 
             <service uid="${GENERIC_UID}_FrameUpdater" type="::fwServices::IController" impl="::videoTools::SFrameUpdater" autoConnect="no">
                 <config>

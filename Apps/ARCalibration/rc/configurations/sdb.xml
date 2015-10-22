@@ -1,7 +1,6 @@
 
 <extension implements="::fwServices::registry::AppConfig">
     <id>SDBARCalibration</id>
-    <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" />
         <param name="SERIESDB" />
@@ -78,11 +77,11 @@
                             </filter>
                         </config>
                     </service>
-                    <service uid="${GENERIC_UID}_action_exportCameraActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                    <service uid="${GENERIC_UID}_action_exportCameraActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes">
                         <config>
                             <mode>immediate</mode>
                             <parameters>
-                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="SERIESDB" by="seriesDB" />
                                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                             </parameters>
                             <filter>
