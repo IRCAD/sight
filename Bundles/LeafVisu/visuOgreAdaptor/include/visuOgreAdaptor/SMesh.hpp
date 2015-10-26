@@ -122,10 +122,6 @@ private:
 
     /// Creates a transform Service, and attaches it to a corresponding sceneNode in the Ogre scene.
     void createTransformService();
-    /// creates a Normals service
-    void createNormalsService();
-    /// Unregisters Normals service
-    void removeNormalsService();
 
     /**
      * @name Slots methods

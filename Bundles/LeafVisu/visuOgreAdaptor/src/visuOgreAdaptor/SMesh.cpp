@@ -41,7 +41,6 @@ static const ::fwCom::Slots::SlotKeyType s_MODIFY_MESH_SLOT             = "modif
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINTCOLORS_SLOT      = "modifyPointColors";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modifyVertices";
-static const ::fwCom::Slots::SlotKeyType s_MODIFY_MATERIAL_SLOT         = "modifyMaterial";
 
 //-----------------------------------------------------------------------------
 
@@ -133,7 +132,6 @@ SMesh::SMesh() throw() :
     newSlot(s_MODIFY_POINTCOLORS_SLOT, &SMesh::modifyPointColors, this);
     newSlot(s_MODIFY_POINT_TEX_COORDS_SLOT, &SMesh::modifyTexCoords, this);
     newSlot(s_MODIFY_VERTICES_SLOT, &SMesh::modifyVertices, this);
-    newSlot(s_MODIFY_MATERIAL_SLOT, &SMesh::modifyMaterial, this);
 
     m_ogreMesh.setNull();
 
@@ -262,7 +260,6 @@ void SMesh::doStop() throw(fwTools::Failed)
         ::fwServices::OSR::unregisterService(m_transformService.lock());
     }
 
-    this->removeNormalsService();
     this->unregisterServices();
 
     // Destroy Ogre Mesh
@@ -907,54 +904,6 @@ void SMesh::createTransformService()
     }
 }
 
-//------------------------------------------------------------------------------
-
-void SMesh::removeNormalsService()
-{
-    if ( !m_normalsService.expired() )
-    {
-        m_normalsService.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_normalsService.lock());
-        m_normalsService.reset();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SMesh::updateOptionsMode()
-{
-    if (m_material->getOptionsMode() == ::fwData::Material::MODE_NORMALS)
-    {
-        OSLM_WARN("Normal services not already implemented yet in Ogre Render Engine");
-
-//        this->createNormalsService();
-    }
-    else
-    {
-        this->removeNormalsService();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SMesh::createNormalsService()
-{
-    if(m_normalsService.expired())
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
-
-        ::fwRenderOgre::IAdaptor::sptr service =
-            ::fwServices::add< fwRenderOgre::IAdaptor > (mesh, "::visuOgreAdaptor::SMeshNormals");
-
-        SLM_ASSERT( "service not instantiated", service);
-
-        service->setID(this->getID() + "_" + service->getID());
-        service->setLayerID(m_layerID);
-        service->setRenderService( this->getRenderService() );
-        m_normalsService = service;
-    }
-}
-
 //-----------------------------------------------------------------------------
 
 void SMesh::modifyMesh()
@@ -1025,13 +974,6 @@ void SMesh::modifyVertices()
     /// Notify -Mesh object that it has been loaded
     m_ogreMesh->load();
     this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-void SMesh::modifyMaterial()
-{
-    this->updateOptionsMode();
 }
 
 //-----------------------------------------------------------------------------
