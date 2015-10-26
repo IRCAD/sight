@@ -6,11 +6,6 @@ fwUseForwardInclude(
     fwRuntime
 )
 
-fwReq(
-    visu
-    visuOgre
-)
-
 useOgre()
 
 add_definitions("-DQT_NO_KEYWORDS")
@@ -43,4 +38,3 @@ if(UNIX AND NOT APPLE)
 endif()
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
-

@@ -19,7 +19,6 @@ set( REQUIREMENTS
     launcher
     visuOgre
     visuOgreQt
-    visu
     visuOgreAdaptor
     visuVTKAdaptor
     visuVTK

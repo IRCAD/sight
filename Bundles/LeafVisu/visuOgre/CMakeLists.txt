@@ -5,6 +5,4 @@ fwUseForwardInclude(
     fwComEd
 )
 
-fwReq(visu)
-
 useOgre()

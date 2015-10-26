@@ -14,5 +14,4 @@ set( DEPENDENCIES
     fwData
     fwTools
 )
-set( REQUIREMENTS visu )
-
+set( REQUIREMENTS )
