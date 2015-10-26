@@ -2,6 +2,7 @@
 set( NAME material )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
+set( START ON )
 set( DEPENDENCIES
     fwCore
     fwComEd
@@ -11,4 +12,3 @@ set( DEPENDENCIES
     fwRenderOgre
 )
 set( REQUIREMENTS  )
-set( PRIORITY 2)
