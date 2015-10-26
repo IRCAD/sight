@@ -49,6 +49,8 @@ template <typename T>
 void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras,
                  ::fwComEd::helper::Mesh& _meshHelper, size_t uiNumCells)
 {
+    FW_PROFILE_AVG("copyIndices", 5);
+
     T* pTriangles = static_cast<T*>(_pTriangles);
     T* pQuads     = static_cast<T*>(_pQuads);
     T* pEdges     = static_cast<T*>(_pEdges);
@@ -648,20 +650,20 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
     float zMax = -std::numeric_limits<float>::max();
 
     {
-        PointValueType* __restrict pPos = static_cast< PointValueType* >( pVertex );
         FW_PROFILE_AVG("UPDATE BBOX", 5);
         for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
         {
-            pPos += uiStrideFloat;
+            const auto& pt0 = points[i][0];
+            xMin = std::min(xMin, pt0);
+            xMax = std::max(xMax, pt0);
 
-            xMin = std::min(xMin, points[i][0]);
-            xMax = std::max(xMax, points[i][0]);
+            const auto& pt1 = points[i][1];
+            yMin = std::min(yMin, pt1);
+            yMax = std::max(yMax, pt1);
 
-            yMin = std::min(yMin, points[i][1]);
-            yMax = std::max(yMax, points[i][1]);
-
-            zMin = std::min(zMin, points[i][2]);
-            zMax = std::max(zMax, points[i][2]);
+            const auto& pt2 = points[i][2];
+            zMin = std::min(zMin, pt2);
+            zMax = std::max(zMax, pt2);
         }
     }
     {
