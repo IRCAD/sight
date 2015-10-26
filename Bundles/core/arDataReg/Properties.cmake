@@ -2,7 +2,7 @@
 set( NAME arDataReg )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-set( PRIORITY 1)
+set( START ON )
 set( DEPENDENCIES 
     fwCore 
     fwRuntime 
