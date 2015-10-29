@@ -15,7 +15,7 @@
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_OgreSceneView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_OgreSceneView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -32,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Show/Hide negato interactor" icon="Bundles/OgreViewer_0-1/icons/hide-view_horizontal.png" style="check" />
@@ -65,13 +65,13 @@
                 </scene>
             </service>
 
-            <service uid="${GENERIC_UID}_action_negato3DInteractor" type="::fwGui::IActionSrv" impl="::gui::action::ModifyLayoutActionSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_action_negato3DInteractor" type="::fwGui::IActionSrv" impl="::gui::action::SModifyLayout" autoConnect="no">
                 <config>
                     <show_or_hide sid="${GENERIC_UID}_negato3DInteractor" />
                 </config>
             </service>
 
-            <service uid="${GENERIC_UID}_negato3DInteractor" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_negato3DInteractor" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="vertical" />

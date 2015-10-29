@@ -21,7 +21,7 @@
         <config>
             <object type="::fwData::Composite">
 
-                <service uid="ihm" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                <service uid="ihm" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                     <gui>
                         <frame>
                             <name>Ogre Viewer</name>
@@ -36,7 +36,7 @@
                     </registry>
                 </service>
 
-                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -47,7 +47,7 @@
                     </registry>
                 </service>
 
-                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::CardinalLayoutManager">
                             <view align="center" />
@@ -60,7 +60,7 @@
                     </registry>
                 </service>
 
-                <service uid="rightView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="rightView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::TabLayoutManager">
                             <view caption="Compositor" />
@@ -73,7 +73,7 @@
                     </registry>
                 </service>
 
-                <service uid="tab_view" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="tab_view" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::TabLayoutManager">
                             <view caption="VTK" selected="no" />
@@ -88,7 +88,7 @@
                     </registry>
                 </service>
 
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                     <gui>
                         <layout>
                             <menuItem name="Open model series..." shortcut="Ctrl+M" />
@@ -106,19 +106,19 @@
                     </registry>
                 </service>
 
-                <service uid="action_openMesh" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no">
+                <service uid="action_openMesh" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
                     <start uid="readerPathMeshFile" />
                 </service>
 
-                <service uid="action_openNegato" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no">
+                <service uid="action_openNegato" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
                     <start uid="imageReader" />
                 </service>
 
-                <service uid="action_saveFile" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no">
+                <service uid="action_saveFile" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
                     <start uid="writerPathMeshFile" />
                 </service>
 
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
                 <item key="modelSeries">
                     <object uid="modelSeriesUID" type="::fwMedData::ModelSeries">
@@ -168,7 +168,7 @@
                 <item key="compositeVisu">
                     <object uid="compositeVisu" type="::fwData::Composite">
 
-                        <service uid="CompositorView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                        <service uid="CompositorView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                             <gui>
                                 <layout type="::fwGui::LineLayoutManager">
                                     <orientation value="vertical" />
@@ -182,7 +182,7 @@
                             </registry>
                         </service>
 
-                        <service uid="propertiesView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                        <service uid="propertiesView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                             <gui>
                                 <layout type="::fwGui::LineLayoutManager">
                                     <orientation value="vertical" />
