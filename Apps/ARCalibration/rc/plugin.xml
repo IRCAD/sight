@@ -18,7 +18,7 @@
         </parameters>
         <config>
             <object uid="${selection}" src="ref">
-                <service uid="export_selection" impl="::uiIO::editor::IOSelectorService" autoConnect="yes">
+                <service uid="export_selection" impl="::uiIO::editor::SIOSelector" autoConnect="yes">
                     <type mode="writer" />
                     <selection mode="include" />
                     <addSelection service="::ioAtoms::SWriter" />
@@ -48,7 +48,7 @@
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>SDBOpenIOSelectorConfig</id>
-        <service>::uiIO::editor::IOSelectorService</service>
+        <service>::uiIO::editor::SIOSelector</service>
         <desc>"Open" action's IOSelector config</desc>
         <config>
             <type mode="reader" />

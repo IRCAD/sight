@@ -109,7 +109,7 @@
 
             <item key="cameraSeries">
                 <object uid="${cameraSeriesUid}" type="::arData::CameraSeries" src="ref">
-                    <service uid="${GENERIC_UID}_CalibrationXmlWriter" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                    <service uid="${GENERIC_UID}_CalibrationXmlWriter" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                         <type mode="writer" />
                         <selection mode="include" />
                         <addSelection service="::ioCalibration::SExportCalibrationXml" />
