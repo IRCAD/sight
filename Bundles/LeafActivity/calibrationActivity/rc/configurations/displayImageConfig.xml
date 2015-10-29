@@ -10,7 +10,7 @@
 
         <!-- <object uid="${imageUid}" src="ref" type="::fwData::Image"> -->
         <object uid="${GENERIC_UID}_composite" type="::fwData::Composite">
-            <service uid="${GENERIC_UID}_BasicViewerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="${GENERIC_UID}_BasicViewerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <window onclose="notify" />
                 <gui>
                     <frame>
