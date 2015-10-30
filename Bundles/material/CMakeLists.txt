@@ -1,8 +1,6 @@
 fwLoadProperties()
 fwUseForwardInclude(
-        fwComEd 
-        fwRuntime 
-        fwServices 
-        fwTools
+        fwRuntime
+        fwServices
         fwRenderOgre
 )

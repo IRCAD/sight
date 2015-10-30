@@ -5,10 +5,8 @@ set( TYPE BUNDLE )
 set( START ON )
 set( DEPENDENCIES
     fwCore
-    fwComEd
-    fwRuntime 
-    fwServices 
-    fwTools
+    fwRuntime
+    fwServices
     fwRenderOgre
 )
 set( REQUIREMENTS  )
