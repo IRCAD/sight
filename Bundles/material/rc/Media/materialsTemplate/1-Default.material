@@ -2,91 +2,6 @@
 
 //-----------------------------------------------------------------------------
 
-vertex_program Default_PixelLighting_VP_glsl glsl
-{
-    source DefaultPixelLighting_VP.glsl
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-fragment_program Default_PixelLighting_FP_glsl glsl
-{
-    source Default_FP.glsl
-    attach MaterialColor_PixelLighting_FP
-    attach Lighting_FP
-    default_params
-    {
-        param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
-        param_named_auto u_ambient surface_ambient_colour
-        param_named_auto u_diffuse surface_diffuse_colour
-        param_named_auto u_specular surface_specular_colour
-        param_named_auto u_shininess surface_shininess
-        param_named u_defaultTex int 0
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-vertex_program Default_Gouraud_VP_glsl glsl
-{
-    source DefaultVertexLighting_VP.glsl
-    attach Lighting_VP
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
-        param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
-        param_named_auto u_ambient surface_ambient_colour
-        param_named_auto u_diffuse surface_diffuse_colour
-        param_named_auto u_specular surface_specular_colour
-        param_named_auto u_shininess surface_shininess
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-fragment_program Default_Gouraud_FP_glsl glsl
-{
-    source Default_FP.glsl
-    attach MaterialColor_Gouraud_FP
-    default_params
-    {
-        param_named u_defaultTex int 0
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-vertex_program Default_Flat_VP_glsl glsl
-{
-    source DefaultVertexLighting_VP.glsl
-    attach Lighting_VP
-    preprocessor_defines FLAT=1
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
-        param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
-        param_named_auto u_ambient surface_ambient_colour
-        param_named_auto u_diffuse surface_diffuse_colour
-        param_named_auto u_specular surface_specular_colour
-        param_named_auto u_shininess surface_shininess
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 vertex_program Default_Edge_VP_glsl glsl
 {
     source DefaultEdge_VP.glsl
@@ -96,14 +11,6 @@ vertex_program Default_Edge_VP_glsl glsl
         param_named_auto u_proj projection_matrix
         param_named_auto u_diffuse surface_diffuse_colour
     }
-}
-
-//-----------------------------------------------------------------------------
-
-fragment_program Default_Edge_FP_glsl glsl
-{
-    source Default_FP.glsl
-    attach MaterialColor_Edge_FP
 }
 
 //-----------------------------------------------------------------------------
@@ -121,11 +28,11 @@ material "1 - Default"
             cull_hardware none
             cull_software none
 
-            vertex_program_ref Default_PixelLighting_VP_glsl
+            vertex_program_ref RenderScene_PixelLit_VP_glsl
             {
             }
 
-            fragment_program_ref Default_PixelLighting_FP_glsl
+            fragment_program_ref Default_PixelLit_FP_glsl
             {
             }
 
@@ -172,11 +79,11 @@ material "1 - Default"
             cull_software none
 
             // Draw render depth + color
-            fragment_program_ref DepthPeeling_peel_PixelLighting_FP_glsl
+            fragment_program_ref DepthPeeling_peel_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            vertex_program_ref RenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -206,11 +113,11 @@ material "1 - Default"
             cull_software none
 
             // Check previous FBO's buffers and write depth + color in another FBO's buffers
-            fragment_program_ref DepthPeeling_peel_PixelLighting_FP_glsl
+            fragment_program_ref DepthPeeling_peel_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            vertex_program_ref RenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -240,11 +147,11 @@ material "1 - Default"
             cull_software none
 
             // Check previous FBO's buffers and write depth + color in another FBO's buffers
-            fragment_program_ref DepthPeeling_peel_PixelLighting_FP_glsl
+            fragment_program_ref DepthPeeling_peel_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            vertex_program_ref RenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -297,11 +204,11 @@ material "1 - Default"
             cull_software none
 
             // Draw render depth + color
-            fragment_program_ref CelShadingDepthPeeling_peel_PixelLighting_FP_glsl
+            fragment_program_ref CelShadingDepthPeeling_peel_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref CelShadingDepthPeelingRenderScene_PixelLighting_VP_glsl
+            vertex_program_ref CelShadingDepthPeelingRenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -331,11 +238,11 @@ material "1 - Default"
             cull_software none
 
             // Check previous FBO's buffers and write depth + color in another FBO's buffers
-            fragment_program_ref CelShadingDepthPeeling_peel_PixelLighting_FP_glsl
+            fragment_program_ref CelShadingDepthPeeling_peel_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref CelShadingDepthPeelingRenderScene_PixelLighting_VP_glsl
+            vertex_program_ref CelShadingDepthPeelingRenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -365,11 +272,11 @@ material "1 - Default"
             cull_software none
 
             // Check previous FBO's buffers and write depth + color in another FBO's buffers
-            fragment_program_ref CelShadingDepthPeeling_peel_PixelLighting_FP_glsl
+            fragment_program_ref CelShadingDepthPeeling_peel_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref CelShadingDepthPeelingRenderScene_PixelLighting_VP_glsl
+            vertex_program_ref CelShadingDepthPeelingRenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -428,11 +335,11 @@ material "1 - Default"
             scene_blend_op max
 
             // Check previous FBO's buffers and write depth + color in another FBO's buffers
-            fragment_program_ref DualDepthPeeling_peel_PixelLighting_FP_glsl
+            fragment_program_ref DualDepthPeeling_peel_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            vertex_program_ref RenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -485,11 +392,11 @@ material "1 - Default"
             scene_blend_op max
 
             // Check previous FBO's buffers and write depth + color in another FBO's buffers
-            fragment_program_ref DualDepthPeeling_peel_PixelLighting_FP_glsl
+            fragment_program_ref DualDepthPeeling_peel_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            vertex_program_ref RenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -563,11 +470,11 @@ material "1 - Default"
             cull_software none
 
             // Draw render depth + color
-            fragment_program_ref HybridTransparency_peel_PixelLighting_FP_glsl
+            fragment_program_ref HybridTransparency_peel_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            vertex_program_ref RenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -597,11 +504,11 @@ material "1 - Default"
             cull_software none
 
             // Check previous FBO's buffers and write depth + color in another FBO's buffers
-            fragment_program_ref HybridTransparency_peel_PixelLighting_FP_glsl
+            fragment_program_ref HybridTransparency_peel_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            vertex_program_ref RenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -631,11 +538,11 @@ material "1 - Default"
             cull_software none
 
             // Check previous FBO's buffers and write depth + color in another FBO's buffers
-            fragment_program_ref HybridTransparency_peel_PixelLighting_FP_glsl
+            fragment_program_ref HybridTransparency_peel_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            vertex_program_ref RenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -685,11 +592,11 @@ material "1 - Default"
             cull_software none
             scene_blend add
 
-            fragment_program_ref HybridTransparency_weight_blend_PixelLighting_FP_glsl
+            fragment_program_ref HybridTransparency_weight_blend_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            vertex_program_ref RenderScene_PixelLit_VP_glsl
             {
             }
 
@@ -784,11 +691,11 @@ material "1 - Default"
             cull_software none
             scene_blend add
 
-            fragment_program_ref WeightedBlended_weight_blend_PixelLighting_FP_glsl
+            fragment_program_ref WeightedBlended_weight_blend_PixelLit_FP_glsl
             {
             }
 
-            vertex_program_ref RenderScene_PixelLighting_VP_glsl
+            vertex_program_ref RenderScene_PixelLit_VP_glsl
             {
             }
 

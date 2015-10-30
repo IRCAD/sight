@@ -6,7 +6,7 @@ vec4 negato();
 
 #else
 
-#   ifdef PIXEL_LIGHTING
+#   ifdef PIXEL_LIT
 in vec3 oPosition_WS;
 in vec3 oNormal_WS;
 in vec4 oColor;
@@ -21,11 +21,11 @@ flat in vec4 oColor;
 in vec4 oColor;
 #       endif // FLAT
 
-#   endif // PIXEL_LIGHTING
+#   endif // PIXEL_LIT
 
 #   ifndef EDGE
 in vec2 oTexCoord;
-uniform sampler2D u_defaultTex;
+uniform sampler2D u_texture;
 #   endif // EDGE
 
 #endif // NEGATO
@@ -36,14 +36,14 @@ vec4 getMaterialColor()
     vec4 colorOut = negato();
 #else
 
-#   ifdef PIXEL_LIGHTING
+#   ifdef PIXEL_LIT
         vec4 colorOut = lighting(normalize(oNormal_WS), oPosition_WS) * oColor;
 #   else
         vec4 colorOut = oColor;
 #   endif
 
 #   ifndef EDGE
-        colorOut *= texture(u_defaultTex, oTexCoord);
+        colorOut *= texture(u_texture, oTexCoord);
 #   endif
 
 #endif // NEGATO

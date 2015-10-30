@@ -1,6 +1,6 @@
 #version 150
 
-uniform sampler3D u_image;
+uniform sampler3D u_texture;
 uniform float u_slice;
 uniform float u_minValue;
 uniform float u_maxValue;
@@ -37,15 +37,15 @@ vec4 negato()
     vec4 color;
     if (u_orientation == 0) // Sagittal
     {
-        color = texture(u_image, vec3(u_slice, uv.y, uv.x));
+        color = texture(u_texture, vec3(u_slice, uv.y, uv.x));
     }
     else if (u_orientation == 1) // Frontal
     {
-        color = texture(u_image, vec3(uv.x, u_slice, uv.y));
+        color = texture(u_texture, vec3(uv.x, u_slice, uv.y));
     }
     else if (u_orientation == 2) // Axial
     {
-        color = texture(u_image, vec3(uv, u_slice));
+        color = texture(u_texture, vec3(uv, u_slice));
     }
 
     float lum = windowLevel(color, u_minValue, u_maxValue);
