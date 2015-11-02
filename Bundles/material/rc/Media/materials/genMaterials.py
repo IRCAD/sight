@@ -10,7 +10,7 @@ def generatePermutations(baseConfig, *configs):
     for currentConfig in configs:
 
         # Iterate over all permutations generated before the currentConfig
-        # At the beginning, only baseConfig, then growing wih the permutations we create
+        # At the beginning, only baseConfig, then growing with the permutations we create
         for config in permutations:
 
             # Concatenate name
@@ -47,7 +47,7 @@ template = env.get_template('Common.program.tpl')
 ## Shader Parameters
 ###############################################################################
 
-## Common parameters used in Lighting.glsl, used both for Vertex and Fragment stages
+## Common parameters used in Lighting.glsl, used both at Vertex and Fragment stages
 lightingParams = [ 'param_named_auto u_cameraPos camera_position',
                    'param_named_auto u_lightDir light_position_array 2',
                    'param_named_auto u_ambient surface_ambient_colour',
@@ -115,6 +115,12 @@ configsListVP += generatePermutations(cfgFlat, cfgVertexColor)
 configsListVP += generatePermutations(cfgGouraud, cfgVertexColor)
 configsListVP += generatePermutations(cfgPixelLit, cfgVertexColor)
 
+configsListGP = []
+
+configsListGP += [cfgFlat]
+configsListGP += [cfgGouraud]
+configsListGP += [cfgPixelLit]
+
 configsListFP = []
 
 configsListFP += generatePermutations(cfgFlat, cfgVertexColor)
@@ -126,4 +132,4 @@ configsListFP += [cfgNegato]
 
 #pprint(configsListVP)
 
-template.stream(configsVP=configsListVP, configsFP=configsListFP).dump('Common.program')
+template.stream(configsVP=configsListVP, configsGP=configsListGP, configsFP=configsListFP).dump('Common.program')

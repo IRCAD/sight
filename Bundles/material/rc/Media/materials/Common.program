@@ -153,6 +153,61 @@ vertex_program RenderScene_PixelLit+VT_VP_glsl glsl
     }
 }
 
+
+
+//-----------------------------------------------------------------------------
+// Geometry shader materials
+//-----------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+
+geometry_program PerPrimitiveAttribute_Flat_GP_glsl glsl
+{
+    source PerPrimitiveAttribute.glsl
+
+    preprocessor_defines FLAT=1
+    default_params
+    {
+        // Unit state is set to 10, but the real index will be set in SMaterial::setShadingMode() at runtime
+        // Ogre packs texture unit indices so we can't use spare indices :'(
+        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program PerPrimitiveAttribute_Gouraud_GP_glsl glsl
+{
+    source PerPrimitiveAttribute.glsl
+
+    
+    default_params
+    {
+        // Unit state is set to 10, but the real index will be set in SMaterial::setShadingMode() at runtime
+        // Ogre packs texture unit indices so we can't use spare indices :'(
+        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program PerPrimitiveAttribute_PixelLit_GP_glsl glsl
+{
+    source PerPrimitiveAttribute.glsl
+
+    preprocessor_defines PIXEL_LIT=1
+    default_params
+    {
+        // Unit state is set to 10, but the real index will be set in SMaterial::setShadingMode() at runtime
+        // Ogre packs texture unit indices so we can't use spare indices :'(
+        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
 //-----------------------------------------------------------------------------
 // Common color materials
 //-----------------------------------------------------------------------------

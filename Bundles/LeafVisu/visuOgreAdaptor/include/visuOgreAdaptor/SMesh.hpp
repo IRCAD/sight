@@ -75,6 +75,13 @@ public:
 
 private:
 
+    enum BufferBinding
+    {
+        POSITION_NORMAL = 0,
+        COLOUR          = 1,
+        TEXCOORD        = 2,
+    };
+
     /**
      * @brief Configures the adaptor
      * @verbatim
@@ -155,9 +162,10 @@ private:
     ::fwData::Material::sptr m_material;
     /// Attached Material's name
     std::string m_materialTemplateName;
-
-    /// Pointer to the normals service.
-    ::fwRenderOgre::IAdaptor::wptr m_normalsService;
+    /// Texture used to store per-primitive color
+    ::Ogre::TexturePtr m_perPrimitiveColorTexture;
+    /// Name of the texture used to store per-primitive color
+    std::string m_perPrimitiveColorTextureName;
 
     /// Number of primitives types that are handled by ::fwData::Mesh
     static const unsigned int s_numPrimitiveTypes = ::fwData::Mesh::TETRA + 1;
@@ -165,34 +173,26 @@ private:
     /// Pointers on submeshes needed for reallocation check
     ::Ogre::SubMesh* m_subMeshes[s_numPrimitiveTypes];
 
-    /// Enum containing the different types of UvGen handled by the service.
-    enum UvGenType
-    {
-        NONE,
-        SPHERE,
-        CYLINDER,
-        PLANE,
-    };
+    /// Maximum size of a texture (TODO: get this from hardware instead)
+    static const unsigned int s_maxTextureSize = 2048;
 
     /// Mesh's name in Ogre
     std::string m_meshName;
-    /// Stores the enum's value corresponding to this service.
-    UvGenType m_uvgen;
     /// Attached texture adaptor UID
     std::string m_texAdaptorUID;
 
     /// Defines if there is a normal layer
     bool m_hasNormal;
-    /// Defines if there is color layer
-    bool m_hasColor;
+    /// Defines if there is a vertex color layer
+    bool m_hasVertexColor;
+    /// Defines if there is a primitive color layer
+    bool m_hasPrimitiveColor;
     /// defines if the mesh changes dynamically, defined in m_configuration
     bool m_isDynamic;
     /// defines if the vertices change dynamically, defined in m_configuration
     bool m_isDynamicVertices;
     /// defines if the mesh has UV coordinates, defined in m_configuration
     bool m_hasUV;
-    /// Defines if the mesh is supposed to be used to display a video, no by default.
-    bool m_isVideo;
     /// Indicates if the mesh adaptor is managed by a reconstruction adaptor
     bool m_isReconstructionManaged;
     /// Indicates if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured

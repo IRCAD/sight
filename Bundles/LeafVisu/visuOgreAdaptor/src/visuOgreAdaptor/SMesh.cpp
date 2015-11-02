@@ -34,11 +34,13 @@ fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMesh, ::f
 namespace visuOgreAdaptor
 {
 
+const unsigned int SMesh::s_maxTextureSize;
+
 //-----------------------------------------------------------------------------
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT       = "updateVisibility";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_MESH_SLOT             = "modifyMesh";
-static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINTCOLORS_SLOT      = "modifyPointColors";
+static const ::fwCom::Slots::SlotKeyType s_MODIFY_COLORS_SLOT           = "modifyColors";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
 static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modifyVertices";
 
@@ -114,14 +116,13 @@ SMesh::SMesh() throw() :
     m_materialAdaptorUID(""),
     m_materialTemplateName(SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME),
     m_meshName(""),
-    m_uvgen(NONE),
     m_texAdaptorUID(""),
     m_hasNormal(false),
-    m_hasColor(false),
+    m_hasVertexColor(false),
+    m_hasPrimitiveColor(false),
     m_isDynamic(false),
     m_isDynamicVertices(false),
     m_hasUV(false),
-    m_isVideo(false),
     m_isReconstructionManaged(false),
     m_useNewMaterialAdaptor(false)
 {
@@ -129,11 +130,12 @@ SMesh::SMesh() throw() :
 
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SMesh::updateVisibility, this);
     newSlot(s_MODIFY_MESH_SLOT, &SMesh::modifyMesh, this);
-    newSlot(s_MODIFY_POINTCOLORS_SLOT, &SMesh::modifyPointColors, this);
+    newSlot(s_MODIFY_COLORS_SLOT, &SMesh::modifyPointColors, this);
     newSlot(s_MODIFY_POINT_TEX_COORDS_SLOT, &SMesh::modifyTexCoords, this);
     newSlot(s_MODIFY_VERTICES_SLOT, &SMesh::modifyVertices, this);
 
     m_ogreMesh.setNull();
+    m_perPrimitiveColorTexture.setNull();
 
     memset(m_subMeshes, 0, sizeof(m_subMeshes));
 }
@@ -166,23 +168,6 @@ void SMesh::doConfigure() throw(fwTools::Failed)
     {
         std::string autoResetCamera = m_configuration->getAttributeValue("autoresetcamera");
         m_autoResetCamera = (autoResetCamera == "yes");
-    }
-
-    if(m_configuration->hasAttribute("uvgen"))
-    {
-        std::string uvGen = m_configuration->getAttributeValue("uvgen");
-        if(uvGen == "sphere")
-        {
-            m_uvgen = SPHERE;
-        }
-        else if(uvGen == "cylinder")
-        {
-            m_uvgen = CYLINDER;
-        }
-        else if(uvGen == "plane")
-        {
-            m_uvgen = PLANE;
-        }
     }
 
     // If a material adaptor is configured in the XML scene, we keep its UID
@@ -313,7 +298,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
     // Check if mesh attributes
     m_hasNormal = (mesh->getPointNormalsArray() != nullptr);
-    m_hasColor  = (mesh->getPointColorsArray() != nullptr);
     m_hasUV     = (mesh->getPointTexCoordsArray() != nullptr);
 
     this->getRenderService()->makeCurrent();
@@ -330,9 +314,9 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
     ::Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
     size_t uiPrevNumVertices = 0;
-    if(bind.isBufferBound(0))
+    if(bind.isBufferBound(POSITION_NORMAL))
     {
-        uiPrevNumVertices = bind.getBuffer(0)->getNumVertices();
+        uiPrevNumVertices = bind.getBuffer(POSITION_NORMAL)->getNumVertices();
     }
 
     if(uiPrevNumVertices < uiNumVertices)
@@ -379,57 +363,40 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
         size_t offsetMain = 0;
 
-
         // Create declaration (memory format) of vertex data based on ::fwData::Mesh
         ::Ogre::VertexDeclaration* declMain = m_ogreMesh->sharedVertexData->vertexDeclaration;
 
         // Clear if necessary
         declMain->removeAllElements();
         // 1st buffer
-        declMain->addElement(0, offsetMain, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION);
+        declMain->addElement(POSITION_NORMAL, offsetMain, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION);
         offsetMain += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
 
         if(m_hasNormal)
         {
-            declMain->addElement(0, offsetMain, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL);
+            declMain->addElement(POSITION_NORMAL, offsetMain, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL);
             offsetMain += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
         }
 
         // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
         vbuf = mgr.createVertexBuffer(offsetMain, uiNumVertices, usage, false);
-        bind.setBinding(0, vbuf);
+        bind.setBinding(POSITION_NORMAL, vbuf);
 
         // Allocate other buffers
 
-        // . Color buffer
-        {
-            ::Ogre::VertexDeclaration* declColor = m_ogreMesh->sharedVertexData->vertexDeclaration;
-            size_t offsetColor = 0;
-            declColor->addElement(1, offsetColor, ::Ogre::VET_COLOUR, ::Ogre::VES_DIFFUSE);
-            offsetColor += ::Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
-
-            // Allocate color buffer of the requested number of vertices (vertexCount)
-            // and bytes per vertex (offset)
-            ::Ogre::HardwareVertexBufferSharedPtr cbuf = mgr.createVertexBuffer(offsetColor, uiNumVertices, usage,
-                                                                                false);
-
-
-            bind.setBinding(1, cbuf);
-        }
 
         // . UV Buffer - By now, we just use one UV coordinates set for each mesh
         if (m_hasUV)
         {
             ::Ogre::VertexDeclaration* declUV = m_ogreMesh->sharedVertexData->vertexDeclaration;
             size_t offsetUV = 0;
-            declUV->addElement(2, offsetUV, ::Ogre::VET_FLOAT2, ::Ogre::VES_TEXTURE_COORDINATES);
+            declUV->addElement(TEXCOORD, offsetUV, ::Ogre::VET_FLOAT2, ::Ogre::VES_TEXTURE_COORDINATES);
             offsetUV += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
 
             // Allocate vertex buffer of the requested number of vertices (vertexCount)
             // and bytes per vertex (offset)
             ::Ogre::HardwareVertexBufferSharedPtr uvbuf = mgr.createVertexBuffer(offsetUV, uiNumVertices, usage, false);
-
-            bind.setBinding(2, uvbuf);
+            bind.setBinding(TEXCOORD, uvbuf);
         }
 
     }
@@ -588,12 +555,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
     }
 
     this->createTransformService();
-
-    // Update vertex attributes
-    this->updateVertices(mesh);
-    this->updateColors(mesh);
-    this->updateTexCoords(mesh);
-
     if(m_useNewMaterialAdaptor)
     {
         this->updateNewMaterialAdaptor();
@@ -602,6 +563,11 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
     {
         this->updateXMLMaterialAdaptor();
     }
+
+    // Update vertex attributes
+    this->updateVertices(mesh);
+    this->updateColors(mesh);
+    this->updateTexCoords(mesh);
 
     if (m_autoResetCamera)
     {
@@ -618,7 +584,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
 
     // Getting Vertex Buffer
     ::Ogre::VertexBufferBinding* bind          = m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    ::Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(0);
+    ::Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(POSITION_NORMAL);
 
     /// Upload the index data to the card
     void* pVertex = vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
@@ -706,38 +672,224 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
 
     FW_PROFILE_AVG("UPDATE COLORS", 5);
 
-    // Update Ogre Mesh with ::fwData::Mesh
-    ::fwData::mt::ObjectReadLock lock(mesh);
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    const bool hasVertexColor    = (mesh->getPointColorsArray() != nullptr);
+    const bool hasPrimitiveColor = (mesh->getCellColorsArray() != nullptr);
 
-    ::Ogre::VertexBufferBinding* bind          = m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(1);
-    void* pCol = cbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-    ::Ogre::RGBA* pColor     = static_cast< ::Ogre::RGBA* >( pCol );
+    OSLM_ERROR_IF("Mesh " << mesh->getID() << " contains both per-cell and per-vertex color.\n"
+                  "Per-vertex color will be used.", hasVertexColor && hasPrimitiveColor);
+
+
+    ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
+    SLM_ASSERT("Invalid vertex buffer binding", bind);
+
+    // 1 - Initialization
+    if(hasVertexColor)
+    {
+        size_t offsetColor = 0;
+        ::Ogre::VertexDeclaration* vtxDecl = m_ogreMesh->sharedVertexData->vertexDeclaration;
+
+        if(!vtxDecl->findElementBySemantic(::Ogre::VES_DIFFUSE))
+        {
+            vtxDecl->addElement(COLOUR, offsetColor, ::Ogre::VET_COLOUR, ::Ogre::VES_DIFFUSE);
+            offsetColor += ::Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
+        }
+
+        ::Ogre::HardwareVertexBufferSharedPtr cbuf;
+
+        size_t uiNumVertices     = mesh->getNumberOfPoints();
+        size_t uiPrevNumVertices = 0;
+        if(bind->isBufferBound(COLOUR))
+        {
+            cbuf              = bind->getBuffer(COLOUR);
+            uiPrevNumVertices = cbuf->getNumVertices();
+        }
+
+        if(!bind->isBufferBound(COLOUR) || uiPrevNumVertices < uiNumVertices )
+        {
+            FW_PROFILE_AVG("REALLOC COLORS_VERTEX", 5);
+
+            // Allocate color buffer of the requested number of vertices (vertexCount) and bytes per vertex (offset)
+            ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices) ?
+                                                  ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
+                                                  ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+
+
+            ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
+
+            cbuf = mgr.createVertexBuffer(offsetColor, uiNumVertices, usage, false);
+            bind->setBinding(COLOUR, cbuf);
+
+            m_perPrimitiveColorTexture.setNull();
+            m_perPrimitiveColorTextureName = "";
+        }
+    }
+    else if(hasPrimitiveColor)
+    {
+        unsigned int numIndicesTotal = 0;
+        for(size_t i = 0; i < s_numPrimitiveTypes; ++i)
+        {
+            if(m_subMeshes[i])
+            {
+                numIndicesTotal += m_subMeshes[i]->indexData->indexCount;
+            }
+        }
+
+        if(m_perPrimitiveColorTexture.isNull())
+        {
+            m_perPrimitiveColorTextureName = this->getID() + "_PerCellColorTexture";
+            m_perPrimitiveColorTexture     = ::Ogre::TextureManager::getSingleton().create(
+                m_perPrimitiveColorTextureName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+        }
+
+        size_t width  = std::min(s_maxTextureSize, numIndicesTotal);
+        size_t height = std::ceil(numIndicesTotal / s_maxTextureSize);
+
+        if(m_perPrimitiveColorTexture->getWidth() != width || m_perPrimitiveColorTexture->getHeight() != height )
+        {
+            FW_PROFILE_AVG("REALLOC COLORS_CELL", 5);
+
+            auto usage = (m_isDynamic || m_isDynamicVertices) ?
+                         ::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
+                         ::Ogre::TU_STATIC_WRITE_ONLY;
+
+            m_perPrimitiveColorTexture->freeInternalResources();
+
+            m_perPrimitiveColorTexture->setWidth(static_cast< ::Ogre::uint32>(width));
+            m_perPrimitiveColorTexture->setHeight(static_cast< ::Ogre::uint32>(height));
+            m_perPrimitiveColorTexture->setDepth(static_cast< ::Ogre::uint32>(1));
+            m_perPrimitiveColorTexture->setTextureType(::Ogre::TEX_TYPE_2D);
+            m_perPrimitiveColorTexture->setNumMipmaps(0);
+            m_perPrimitiveColorTexture->setFormat(::Ogre::PF_BYTE_RGBA);
+            m_perPrimitiveColorTexture->setUsage(usage);
+
+            m_perPrimitiveColorTexture->createInternalResources();
+
+            // Unbind vertex color if it was previously enabled
+            if(bind->isBufferBound(COLOUR))
+            {
+                bind->unsetBinding(COLOUR);
+            }
+        }
+    }
+
     ::Ogre::RenderSystem* rs = ::Ogre::Root::getSingleton().getRenderSystem();
 
-    m_hasColor = (mesh->getPointColorsArray() != nullptr);
-
-    if (m_hasColor)
+    if (hasVertexColor)
     {
-        ::fwData::Mesh::PointColorsMultiArrayType colors = meshHelper.getPointColors();
-        for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+        ::fwData::mt::ObjectReadLock lock(mesh);
+        ::fwComEd::helper::Mesh meshHelper(mesh);
+
+        ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(COLOUR);
+        void* pCol = cbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+        ::Ogre::RGBA* pColor = static_cast< ::Ogre::RGBA* >( pCol );
+
+        auto colors          = meshHelper.getPointColors();
+        size_t numComponents = colors.shape()[1];
+
+        if(numComponents == 3)
         {
-            rs->convertColourValue(::Ogre::ColourValue(colors[i][0] / 255.f, colors[i][1] / 255.f,
-                                                       colors[i][2] / 255.f), pColor++);
+            for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+            {
+                rs->convertColourValue(::Ogre::ColourValue(colors[i][0] / 255.f, colors[i][1] / 255.f,
+                                                           colors[i][2] / 255.f), pColor++);
+            }
         }
+        else if(numComponents == 4)
+        {
+            for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+            {
+                rs->convertColourValue(::Ogre::ColourValue(colors[i][0] / 255.f, colors[i][1] / 255.f,
+                                                           colors[i][2] / 255.f, colors[i][3] / 255.f), pColor++);
+            }
+        }
+        else
+        {
+            SLM_FATAL("We only support RGB or RGBA vertex color");
+        }
+
+        cbuf->unlock();
     }
-    else
+    else if(hasPrimitiveColor)
     {
-        // If there are no color specified in the mesh data, just fill the buffer with white - so that shaders can work
-        // with a 'clean' value
-        for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+        ::fwData::mt::ObjectReadLock lock(mesh);
+        ::fwComEd::helper::Mesh meshHelper(mesh);
+
+        ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
+
+        pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
+        const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
+
+        unsigned int* __restrict pColorDest = static_cast<unsigned int*>(pixelBox.data);
+
+        auto colors          = meshHelper.getCellColors();
+        auto cellsType       = meshHelper.getCellTypes();
+        size_t numComponents = colors.shape()[1];
+
+        if(numComponents == 3)
         {
-            rs->convertColourValue(::Ogre::ColourValue::White, pColor++);
+            const auto uiNumCells = mesh->getNumberOfCells();
+            for (unsigned int i = 0; i < uiNumCells; ++i)
+            {
+                if ( cellsType[i] == ::fwData::Mesh::TRIANGLE ||
+                     cellsType[i] == ::fwData::Mesh::EDGE)
+                {
+                    const auto color = colors[i];
+
+                    rs->convertColourValue(::Ogre::ColourValue(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f),
+                                           pColorDest++);
+                }
+                else if ( cellsType[i] == ::fwData::Mesh::QUAD )
+                {
+                    SLM_ERROR("Not yet implemented");
+                }
+                else if ( cellsType[i] == ::fwData::Mesh::TETRA )
+                {
+                    SLM_ERROR("Not yet implemented");
+                }
+            }
         }
+        else if(numComponents == 4)
+        {
+            const auto uiNumCells = mesh->getNumberOfCells();
+            for (unsigned int i = 0; i < uiNumCells; ++i)
+            {
+                if ( cellsType[i] == ::fwData::Mesh::TRIANGLE ||
+                     cellsType[i] == ::fwData::Mesh::EDGE)
+                {
+                    const auto color = colors[i];
+
+                    rs->convertColourValue(::Ogre::ColourValue(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f,
+                                                               color[3] / 255.f),
+                                           pColorDest++);
+                }
+                else if ( cellsType[i] == ::fwData::Mesh::QUAD )
+                {
+                    SLM_ERROR("Not yet implemented");
+                }
+                else if ( cellsType[i] == ::fwData::Mesh::TETRA )
+                {
+                    SLM_ERROR("Not yet implemented");
+                }
+            }
+        }
+        else
+        {
+            SLM_FATAL("We only support RGB or RGBA vertex color");
+        }
+
+
+        pixelBuffer->unlock();
     }
 
-    cbuf->unlock();
+    if(hasVertexColor != m_hasVertexColor || hasPrimitiveColor != m_hasPrimitiveColor)
+    {
+        m_materialAdaptor->setHasVertexColor(hasVertexColor);
+        m_materialAdaptor->setHasPrimitiveColor(hasPrimitiveColor, m_perPrimitiveColorTextureName);
+        m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->asyncRun();
+
+        m_hasVertexColor    = hasVertexColor;
+        m_hasPrimitiveColor = hasPrimitiveColor;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -754,7 +906,7 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
         ::fwComEd::helper::Mesh meshHelper(mesh);
 
         ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
-        ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(2);
+        ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(TEXCOORD);
         void* pBuf = uvbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
         float* pUV = static_cast< float* >( pBuf );
 
@@ -796,6 +948,8 @@ void SMesh::updateNewMaterialAdaptor()
             std::string meshName = this->getObject()->getID();
             m_materialAdaptor->setMaterialName(meshName + "_" + m_materialAdaptor->getID() + "_Material");
             m_materialAdaptor->setHasMeshNormal(m_hasNormal);
+            m_materialAdaptor->setHasVertexColor(m_hasVertexColor);
+            m_materialAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
 
             m_materialAdaptor->start();
 
@@ -828,10 +982,9 @@ void SMesh::updateXMLMaterialAdaptor()
             m_materialAdaptor->setMaterialName(meshName + "_Material");
         }
 
-        if(m_materialAdaptor->getHasMeshNormal())
-        {
-            m_materialAdaptor->setHasMeshNormal(m_hasNormal);
-        }
+        m_materialAdaptor->setHasMeshNormal(m_hasNormal);
+        m_materialAdaptor->setHasVertexColor(m_hasVertexColor);
+        m_materialAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
 
         if(m_entity)
         {
@@ -982,7 +1135,8 @@ void SMesh::modifyVertices()
 {
     ::fwServices::IService::KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_MODIFY_VERTICES_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_POINTCOLORS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG,
                                            s_MODIFY_POINT_TEX_COORDS_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Mesh::s_MODIFIED_SIG, s_MODIFY_MESH_SLOT ) );

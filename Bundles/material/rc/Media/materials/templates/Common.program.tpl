@@ -61,6 +61,32 @@ vertex_program RenderScene_{{ shading }}_VP_glsl glsl
 }
 {% endfor %}
 
+
+
+//-----------------------------------------------------------------------------
+// Geometry shader materials
+//-----------------------------------------------------------------------------
+
+{% for shading, defines, shadersVP, shadersFP, params in configsGP %}
+
+//---------------------------------------------------------------------------
+
+geometry_program PerPrimitiveAttribute_{{ shading }}_GP_glsl glsl
+{
+    source PerPrimitiveAttribute.glsl
+
+    {% if defines %}preprocessor_defines {{ defines }}{% endif %}
+
+    default_params
+    {
+        // Unit state is set to 10, but the real index will be set in SMaterial::setShadingMode() at runtime
+        // Ogre packs texture unit indices so we can't use spare indices :'(
+        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+{% endfor %}
+
 //-----------------------------------------------------------------------------
 // Common color materials
 //-----------------------------------------------------------------------------

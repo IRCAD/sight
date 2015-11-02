@@ -74,8 +74,13 @@ public:
     VISUOGREADAPTOR_API void setTextureAdaptor(const std::string& textureAdaptorId);
 
     VISUOGREADAPTOR_API bool getHasMeshNormal() const;
-
     VISUOGREADAPTOR_API void setHasMeshNormal(bool hasMeshNormal);
+
+    VISUOGREADAPTOR_API bool getHasVertexColor() const;
+    VISUOGREADAPTOR_API void setHasVertexColor(bool hasMeshNormal);
+
+    VISUOGREADAPTOR_API bool getHasPrimitiveColor() const;
+    VISUOGREADAPTOR_API void setHasPrimitiveColor(bool hasMeshNormal, const std::string& textureName);
 
     /// Update fwData material parameters from Ogre material parameters
     VISUOGREADAPTOR_API void updateFromOgre();
@@ -174,11 +179,94 @@ private:
     /// Defines if the associated mesh has a normal layer
     bool m_hasMeshNormal;
 
+    /// Defines if the associated mesh has a a per vertex color layer
+    bool m_hasVertexColor;
+
+    /// Defines if the associated mesh has a a per primitive color layer
+    bool m_hasPrimitiveColor;
+
+    /// Name of the texture used to store per-primitive color
+    std::string m_perPrimitiveColorTextureName;
+
     std::vector< Ogre::String > m_schemesSupported;
 
     /// Signal/Slot connections with texture adaptor
     ::fwServices::helper::SigSlotConnection::sptr m_textureConnection;
 };
+
+//------------------------------------------------------------------------------
+// Inline functions
+
+//------------------------------------------------------------------------------
+
+inline ::Ogre::MaterialPtr SMaterial::getMaterial()
+{
+    return m_material;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool SMaterial::getHasMeshNormal() const
+{
+    return m_hasMeshNormal;
+}
+
+//------------------------------------------------------------------------------
+
+inline void SMaterial::setHasMeshNormal(bool hasMeshNormal)
+{
+    m_hasMeshNormal = hasMeshNormal;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool SMaterial::getHasVertexColor() const
+{
+    return m_hasVertexColor;
+}
+
+//------------------------------------------------------------------------------
+
+inline void SMaterial::setHasVertexColor(bool hasVertexColor)
+{
+    m_hasVertexColor = hasVertexColor;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool SMaterial::getHasPrimitiveColor() const
+{
+    return m_hasPrimitiveColor;
+}
+
+//------------------------------------------------------------------------------
+
+inline void SMaterial::setHasPrimitiveColor(bool hasPrimitiveColor, const std::string& textureName)
+{
+    m_hasPrimitiveColor            = hasPrimitiveColor;
+    m_perPrimitiveColorTextureName = textureName;
+}
+
+//------------------------------------------------------------------------------
+
+inline void SMaterial::setMaterialTemplateName(const std::string& materialName)
+{
+    m_materialTemplateName = materialName;
+}
+
+//------------------------------------------------------------------------------
+
+inline void SMaterial::setMaterialName(const std::string& materialName)
+{
+    m_materialName = materialName;
+}
+
+//------------------------------------------------------------------------------
+
+inline std::string SMaterial::getMaterialName() const
+{
+    return m_materialName;
+}
 
 } //namespace visuOgreAdaptor
 

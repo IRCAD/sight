@@ -29,17 +29,18 @@
 
 #include <fwTools/fwID.hpp>
 
+#include "visuOgreAdaptor/defines.hpp"
+#include "visuOgreAdaptor/SShaderParameter.hpp"
+#include "visuOgreAdaptor/STexture.hpp"
+
 #include <boost/regex.hpp>
 #include <regex>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreTechnique.h>
+#include <OgreTextureManager.h>
 
-
-#include "visuOgreAdaptor/defines.hpp"
-#include "visuOgreAdaptor/SShaderParameter.hpp"
-#include "visuOgreAdaptor/STexture.hpp"
 
 #define PLUGIN_PATH "./share/fwRenderOgre_0-1/plugins.cfg"
 
@@ -60,7 +61,9 @@ const std::string SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME = "1 - Default";
 SMaterial::SMaterial() throw() :
     m_materialName(""),
     m_materialTemplateName(DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_hasMeshNormal(true)
+    m_hasMeshNormal(true),
+    m_hasVertexColor(false),
+    m_hasPrimitiveColor(false)
 {
     m_textureConnection = ::fwServices::helper::SigSlotConnection::New();
 
@@ -439,53 +442,12 @@ void SMaterial::setServiceOnShaderParameter(::fwRenderOgre::IAdaptor::sptr& srv,
 
 //------------------------------------------------------------------------------
 
-::Ogre::MaterialPtr SMaterial::getMaterial()
-{
-    return m_material;
-}
-
-//------------------------------------------------------------------------------
-
 void SMaterial::setTextureAdaptor(const std::string& textureAdaptorUID)
 {
     auto textureService = ::fwServices::get(textureAdaptorUID);
     m_texAdaptor = ::visuOgreAdaptor::STexture::dynamicCast(textureService);
 }
 
-//------------------------------------------------------------------------------
-
-bool SMaterial::getHasMeshNormal() const
-{
-    return m_hasMeshNormal;
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::setHasMeshNormal(bool hasMeshNormal)
-{
-    m_hasMeshNormal = hasMeshNormal;
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::setMaterialTemplateName(const std::string& materialName)
-{
-    m_materialTemplateName = materialName;
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::setMaterialName(const std::string& materialName)
-{
-    m_materialName = materialName;
-}
-
-//------------------------------------------------------------------------------
-
-std::string SMaterial::getMaterialName() const
-{
-    return m_materialName;
-}
 
 //------------------------------------------------------------------------------
 
@@ -768,7 +730,8 @@ void SMaterial::setPolygonMode(int polygonMode)
                     // For the latter, we use a specific version when we use an OIT technique
                     // (mainly to force the diffuse color because we don't manage to set uniforms with compositors usage)
                     const ::boost::regex regexShading("(PixelLighting)|(Flat)|(Gouraud)");
-                    auto fpName = ::boost::regex_replace(edgePass->getFragmentProgramName(), regexShading, "Edge" );
+                    auto fpName =
+                        ::boost::regex_replace(edgePass->getFragmentProgramName(), regexShading, "Edge_Normal" );
 
                     const ::boost::regex regexTech("(peel_init)|(transmittance_blend)");
                     fpName = ::boost::regex_replace(fpName, regexTech, "$&_Edge" );
@@ -843,7 +806,7 @@ void SMaterial::setShadingMode( int shadingMode  )
         ::Ogre::String shadingProgramSuffix;
         const std::string flat          = "Flat";
         const std::string gouraud       = "Gouraud";
-        const std::string pixelLighting = "PixelLighting";
+        const std::string pixelLighting = "PixelLit";
 
         // Catch the shading option from fwData material
         switch( shadingMode )
@@ -859,6 +822,11 @@ void SMaterial::setShadingMode( int shadingMode  )
                 break;
             default:
                 SLM_ERROR("Unknown shading mode. ");
+        }
+
+        if(m_hasVertexColor)
+        {
+            shadingProgramSuffix += "+VT";
         }
 
         // Iterate through each technique found in the material and switch the shading mode
@@ -881,11 +849,51 @@ void SMaterial::setShadingMode( int shadingMode  )
                 std::string ogreVertexName   = ogrePass->getVertexProgram()->getName();
 
                 const ::boost::regex regexShading("("+flat+")|("+gouraud+")|("+pixelLighting+")");
-                ogreVertexName   = ::boost::regex_replace(ogreVertexName, regexShading, shadingProgramSuffix );
-                ogreFragmentName = ::boost::regex_replace(ogreFragmentName, regexShading, shadingProgramSuffix );
+                ogreVertexName   = ::boost::regex_replace(ogreVertexName, regexShading, shadingProgramSuffix);
+                ogreFragmentName = ::boost::regex_replace(ogreFragmentName, regexShading, shadingProgramSuffix);
 
                 ogrePass->setVertexProgram(ogreVertexName);
                 ogrePass->setFragmentProgram(ogreFragmentName);
+
+                if(m_hasPrimitiveColor)
+                {
+                    ogrePass->setGeometryProgram("PerPrimitiveAttribute_" + shadingProgramSuffix + "_GP_glsl");
+                    ::Ogre::TextureUnitState* texUnitState = ogrePass->getTextureUnitState(
+                        m_perPrimitiveColorTextureName);
+
+                    auto result = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
+                        m_perPrimitiveColorTextureName,
+                        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+
+                    SLM_ASSERT("Texture should have been created before in SMesh !", !result.second);
+
+                    ::Ogre::TexturePtr tex = result.first.dynamicCast< ::Ogre::Texture>();
+
+                    if(texUnitState == nullptr)
+                    {
+                        OSLM_DEBUG("create unit state: " << m_perPrimitiveColorTextureName);
+
+                        ::Ogre::TextureUnitState* texUnitState = ogrePass->createTextureUnitState();
+                        texUnitState->setTexture(tex);
+                        texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+                        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+                        auto unitStateCount = ogrePass->getNumTextureUnitStates();
+
+                        // Unit state is set to 10 in the material fie, but the real index is set here
+                        // Ogre packs texture unit indices so we can't use spare indices :'(
+                        ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTexture",
+                                                                                   unitStateCount - 1);
+                    }
+
+                    // Set outside the scope of texture creation because the size could vary
+                    ::Ogre::Vector2 size(static_cast<float>(tex->getWidth()), static_cast<float>(tex->getHeight()));
+                    ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTextureSize", size);
+                }
+                else
+                {
+                    ogrePass->setGeometryProgram("");
+                }
             }
         }
     }
