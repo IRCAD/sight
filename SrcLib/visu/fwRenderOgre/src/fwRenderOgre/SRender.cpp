@@ -572,10 +572,9 @@ SPTR (IAdaptor) SRender::getAdaptor(SRender::AdaptorIdType adaptorId)
 ::fwRenderOgre::Layer::sptr SRender::getLayer(::std::string sceneID)
 {
     OSLM_ASSERT("Empty sceneID", !sceneID.empty());
+    OSLM_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) !=  m_layers.end());
 
     ::fwRenderOgre::Layer::sptr layer = m_layers.at(sceneID);
-
-    OSLM_ASSERT("Layer not found", layer);
 
     return layer;
 }
