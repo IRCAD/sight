@@ -215,7 +215,7 @@ void SNegato3D::newImage()
     // Retrieves or creates the slice index fields
     this->updateImageInfos(image);
 
-    ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+    ::fwRenderOgre::Utils::loadOgreTexture(image, m_3DOgreTexture, ::Ogre::TEX_TYPE_3D);
 
     createPlanes(image->getSpacing(), image->getOrigin());
 

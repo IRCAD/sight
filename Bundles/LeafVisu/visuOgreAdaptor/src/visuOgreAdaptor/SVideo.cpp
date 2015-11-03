@@ -114,14 +114,14 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
     this->getRenderService()->makeCurrent();
 
     // Getting FW4SPL Image
-    ::fwData::Image::sptr imageFw4s = ::fwData::Image::dynamicCast(this->getObject());
-    SLM_ASSERT("Problem getting the image",imageFw4s);
+    ::fwData::Image::sptr imageF4s = ::fwData::Image::dynamicCast(this->getObject());
+    SLM_ASSERT("Problem getting the image",imageF4s);
 
-    ::fwData::Image::SizeType size       = imageFw4s->getSize();
-    ::fwData::Image::SpacingType spacing = imageFw4s->getSpacing();
+    ::fwData::Image::SizeType size       = imageF4s->getSize();
+    ::fwData::Image::SpacingType spacing = imageF4s->getSpacing();
 
-    ::fwData::mt::ObjectReadLock lock(imageFw4s);
-    ::Ogre::Image imageOgre = ::fwRenderOgre::Utils::convertFwDataImageToOgreImage( imageFw4s );
+    ::fwData::mt::ObjectReadLock lock(imageF4s);
+    ::Ogre::Image imageOgre = ::fwRenderOgre::Utils::convertFwDataImageToOgreImage( imageF4s );
 
     if (!m_isTextureInit || imageOgre.getWidth() != m_previousWidth || imageOgre.getHeight() != m_previousHeight )
     {

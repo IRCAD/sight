@@ -52,18 +52,9 @@ public:
     /**
      * @brief convertFwDataImageToOgreImage
      * @param imageFw The FW4SPL Image to convert
-     * @return
+     * @return Ogre image
      */
     FWRENDEROGRE_API static ::Ogre::Image convertFwDataImageToOgreImage( const ::fwData::Image::sptr imageFw);
-
-    /**
-     * @brief convertImageForNegato
-     * @param _texture The target texture
-     * @param _image The FW4SPL Image to convert
-     * @return
-     */
-    FWRENDEROGRE_API static void convertImageForNegato( ::Ogre::Texture* _texture,
-                                                        const ::fwData::Image::sptr& _image );
 
     /**
      * @brief getPixelFormatOgre
@@ -72,8 +63,14 @@ public:
      */
     FWRENDEROGRE_API static ::Ogre::PixelFormat getPixelFormatOgre( ::fwData::Image::sptr imageFw );
 
-    FWRENDEROGRE_API static void loadOgreTexture(::fwData::Image::sptr image, ::Ogre::TexturePtr texture,
-                                                 ::Ogre::TextureType texType, ::Ogre::PixelFormat pxFormat);
+    /**
+     * @brief loadOgreTexture
+     * @param _image The FW4SPL Image to convert
+     * @param _texture The target texture
+     * @param _texType Type of the texture (::Ogre::TEX_TYPE_2D, ::Ogre::TEX_TYPE_3D, ...)
+     */
+    FWRENDEROGRE_API static void loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::TexturePtr _texture,
+                                                 ::Ogre::TextureType _texType);
 
     FWRENDEROGRE_API static ::Ogre::OverlaySystem* getOverlaySystem();
 

@@ -92,29 +92,28 @@ void STexture::doStart() throw(fwTools::Failed)
 void STexture::doUpdate() throw(fwTools::Failed)
 {
     // Retrieves associated f4s image
-    ::fwData::Image::sptr imageFw4s = ::fwData::Image::dynamicCast(this->getObject());
+    ::fwData::Image::sptr imageF4s = ::fwData::Image::dynamicCast(this->getObject());
 
-    SLM_ASSERT("Failed object dynamic cast", imageFw4s);
+    SLM_ASSERT("Failed object dynamic cast", imageF4s);
 
-    if(imageFw4s->getSizeInBytes() != 0)
+    if(imageF4s->getSizeInBytes() != 0)
     {
-        ::fwData::mt::ObjectReadLock lock(imageFw4s);
+        ::fwData::mt::ObjectReadLock lock(imageF4s);
 
-        ::Ogre::Image imageOgre = ::fwRenderOgre::Utils::convertFwDataImageToOgreImage( imageFw4s );
+        ::fwData::Image::SizeType imageSize = imageF4s->getSize();
+        size_t width  = imageSize[0];
+        size_t height = (imageSize.size() >= 2) ? imageSize[1] : 0;
 
         // Check if the image is the same as before
-        if ( imageOgre.getWidth() != m_previousWidth || imageOgre.getHeight() != m_previousHeight )
+        if ( width != m_previousWidth || height != m_previousHeight )
         {
             // Loads the new image
-            m_texture = ::Ogre::TextureManager::getSingleton().loadImage(
-                m_textureName,
-                ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                imageOgre, ::Ogre::TEX_TYPE_2D, 0);
+            ::fwRenderOgre::Utils::loadOgreTexture(imageF4s, m_texture, ::Ogre::TEX_TYPE_2D);
 
             m_sigTextureSwapped->asyncEmit();
 
-            m_previousWidth  = imageOgre.getWidth();
-            m_previousHeight = imageOgre.getHeight();
+            m_previousWidth  = width;
+            m_previousHeight = height;
         }
 
         lock.unlock();

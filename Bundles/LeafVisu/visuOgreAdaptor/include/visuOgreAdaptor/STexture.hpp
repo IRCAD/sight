@@ -96,10 +96,10 @@ private:
     std::string m_wrapping;
 
     /// Store previous image size
-    unsigned int m_previousWidth;
+    size_t m_previousWidth;
 
     /// Store previous image spacing
-    unsigned int m_previousHeight;
+    size_t m_previousHeight;
 
     /// Signal emitted when the texture has to be changed on the associated material
     TextureSwappedSignalType::sptr m_sigTextureSwapped;

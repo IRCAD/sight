@@ -1,6 +1,6 @@
 #version 150
 
-uniform sampler3D u_texture;
+uniform isampler3D u_texture;
 uniform float u_slice;
 uniform float u_minValue;
 uniform float u_maxValue;
@@ -12,7 +12,7 @@ in vec2 uv;
 
 float windowLevel(vec4 color, float min, float max)
 {
-    float outputColor = color.r * 65535.f - 32768.f;
+    float outputColor = color.r;
 
 //    if(outputColor < min || outputColor > max)
 //    {
@@ -34,7 +34,7 @@ float windowLevel(vec4 color, float min, float max)
 
 vec4 negato()
 {
-    vec4 color;
+    ivec4 color;
     if (u_orientation == 0) // Sagittal
     {
         color = texture(u_texture, vec3(u_slice, uv.y, uv.x));
