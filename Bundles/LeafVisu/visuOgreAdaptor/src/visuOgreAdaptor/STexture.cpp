@@ -84,10 +84,6 @@ void STexture::doStart() throw(fwTools::Failed)
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
-    m_blankTexture =
-        ::Ogre::TextureManager::getSingleton().load(DEFAULT_TEXTURE_FILENAME,
-                                                    ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
     this->doUpdate();
 }
 

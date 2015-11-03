@@ -10,13 +10,8 @@ vec4 negato();
 vec4 lighting(vec3 _normal, vec3 _position);
 #   endif // PIXEL_LIT
 
-#   ifndef EDGE
-uniform sampler2D u_texture;
-#   endif // EDGE
-
 in PixelDataIn
 {
-
 #   ifdef PIXEL_LIT
 
     vec3 oPosition_WS;
@@ -33,14 +28,18 @@ in PixelDataIn
 
 #   endif // PIXEL_LIT
 
-#   ifndef EDGE
+#ifdef DIFFUSE_TEX
     vec2 oTexCoord;
-#   endif // EDGE
+#endif // DIFFUSE_TEX
 
 } pixelIn;
 
 
 #endif // NEGATO
+
+#ifdef DIFFUSE_TEX
+uniform sampler2D u_texture;
+#endif // DIFFUSE_TEX
 
 vec4 getMaterialColor()
 {
@@ -54,9 +53,9 @@ vec4 getMaterialColor()
         vec4 colorOut = pixelIn.oColor;
 #   endif
 
-#   ifndef EDGE
+#ifdef DIFFUSE_TEX
         colorOut *= texture(u_texture, pixelIn.oTexCoord);
-#   endif
+#endif // DIFFUSE_TEX
 
 #endif // NEGATO
     return colorOut;

@@ -39,13 +39,6 @@ material "1 - Default"
             fragment_program_ref Default_PixelLit_FP_glsl
             {
             }
-
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode clamp
-                filtering trilinear
-            }
         }
     }
 
@@ -97,12 +90,6 @@ material "1 - Default"
                 tex_address_mode clamp
                 filtering none
             }
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
-            }
         }
     }
 
@@ -131,12 +118,6 @@ material "1 - Default"
                 tex_address_mode clamp
                 filtering none
             }
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
-            }
         }
     }
 
@@ -164,12 +145,6 @@ material "1 - Default"
                 content_type compositor DepthPeeling pong_buffer 1
                 tex_address_mode clamp
                 filtering none
-            }
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
             }
         }
     }
@@ -222,12 +197,6 @@ material "1 - Default"
                 tex_address_mode clamp
                 filtering none
             }
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
-            }
         }
     }
 
@@ -256,12 +225,6 @@ material "1 - Default"
                 tex_address_mode clamp
                 filtering none
             }
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
-            }
         }
     }
 
@@ -289,12 +252,6 @@ material "1 - Default"
                 content_type compositor CelShadingDepthPeeling pong_buffer 1
                 tex_address_mode clamp
                 filtering none
-            }
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
             }
         }
     }
@@ -374,12 +331,6 @@ material "1 - Default"
                 tex_address_mode clamp
                 filtering none
             }
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
-            }
         }
     }
 
@@ -430,12 +381,6 @@ material "1 - Default"
                 content_type compositor DualDepthPeeling pong_buffer 4
                 tex_address_mode clamp
                 filtering none
-            }
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
             }
         }
     }
@@ -488,13 +433,6 @@ material "1 - Default"
                 tex_address_mode clamp
                 filtering none
             }
-
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
-            }
         }
     }
 
@@ -522,13 +460,6 @@ material "1 - Default"
                 tex_address_mode clamp
                 filtering none
             }
-
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
-            }
         }
     }
 
@@ -555,13 +486,6 @@ material "1 - Default"
                 content_type compositor HybridTransparency pong_buffer 1
                 tex_address_mode clamp
                 filtering none
-            }
-
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
             }
         }
     }
@@ -616,12 +540,6 @@ material "1 - Default"
                 content_type compositor HybridTransparency occlusion 0
                 tex_address_mode clamp
                 filtering none
-            }
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
             }
         }
     }
@@ -708,12 +626,6 @@ material "1 - Default"
                 content_type compositor WeightedBlended occlusion 0
                 tex_address_mode clamp
                 filtering none
-            }
-            texture_unit diffuseTexture
-            {
-                texture default.png 2d
-                tex_address_mode wrap
-                filtering trilinear
             }
         }
     }

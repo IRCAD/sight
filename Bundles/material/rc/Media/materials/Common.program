@@ -83,6 +83,48 @@ vertex_program RenderScene_Flat+VT_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
+vertex_program RenderScene_Flat+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines FLAT=1,DIFFUSE_TEX=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program RenderScene_Flat+VT+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines FLAT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
 vertex_program RenderScene_Gouraud_VP_glsl glsl
 {
     source RenderScene_VP.glsl
@@ -125,6 +167,48 @@ vertex_program RenderScene_Gouraud+VT_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
+vertex_program RenderScene_Gouraud+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines DIFFUSE_TEX=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program RenderScene_Gouraud+VT+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
 vertex_program RenderScene_PixelLit_VP_glsl glsl
 {
     source RenderScene_VP.glsl
@@ -145,6 +229,36 @@ vertex_program RenderScene_PixelLit+VT_VP_glsl glsl
     source RenderScene_VP.glsl
     
     preprocessor_defines PIXEL_LIT=1,VERTEX_COLOR=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program RenderScene_PixelLit+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines PIXEL_LIT=1,DIFFUSE_TEX=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program RenderScene_PixelLit+VT+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines PIXEL_LIT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
@@ -231,6 +345,22 @@ fragment_program MaterialColor_Flat+VT_FP glsl
 
 //---------------------------------------------------------------------------
 
+fragment_program MaterialColor_Flat+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines FLAT=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor_Flat+VT+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines FLAT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
 fragment_program MaterialColor_Gouraud_FP glsl
 {
     source MaterialColor_FP.glsl
@@ -247,6 +377,22 @@ fragment_program MaterialColor_Gouraud+VT_FP glsl
 
 //---------------------------------------------------------------------------
 
+fragment_program MaterialColor_Gouraud+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor_Gouraud+VT+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines VERTEX_COLOR=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
 fragment_program MaterialColor_PixelLit_FP glsl
 {
     source MaterialColor_FP.glsl
@@ -259,6 +405,22 @@ fragment_program MaterialColor_PixelLit+VT_FP glsl
 {
     source MaterialColor_FP.glsl
     preprocessor_defines PIXEL_LIT=1,VERTEX_COLOR=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor_PixelLit+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines PIXEL_LIT=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program MaterialColor_PixelLit+VT+DfsTex_FP glsl
+{
+    source MaterialColor_FP.glsl
+    preprocessor_defines PIXEL_LIT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
 }
 
 //---------------------------------------------------------------------------
@@ -291,7 +453,6 @@ fragment_program Default_Flat_FP_glsl glsl
     
     default_params
     {
-        param_named u_texture int 0
     }
 }
 
@@ -301,6 +462,31 @@ fragment_program Default_Flat+VT_FP_glsl glsl
 {
     source Default_FP.glsl
     attach MaterialColor_Flat+VT_FP
+    
+    default_params
+    {
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default_Flat+DfsTex_FP_glsl glsl
+{
+    source Default_FP.glsl
+    attach MaterialColor_Flat+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_texture int 0
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default_Flat+VT+DfsTex_FP_glsl glsl
+{
+    source Default_FP.glsl
+    attach MaterialColor_Flat+VT+DfsTex_FP
     
     default_params
     {
@@ -317,7 +503,6 @@ fragment_program Default_Gouraud_FP_glsl glsl
     
     default_params
     {
-        param_named u_texture int 0
     }
 }
 
@@ -327,6 +512,31 @@ fragment_program Default_Gouraud+VT_FP_glsl glsl
 {
     source Default_FP.glsl
     attach MaterialColor_Gouraud+VT_FP
+    
+    default_params
+    {
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default_Gouraud+DfsTex_FP_glsl glsl
+{
+    source Default_FP.glsl
+    attach MaterialColor_Gouraud+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_texture int 0
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default_Gouraud+VT+DfsTex_FP_glsl glsl
+{
+    source Default_FP.glsl
+    attach MaterialColor_Gouraud+VT+DfsTex_FP
     
     default_params
     {
@@ -349,7 +559,6 @@ fragment_program Default_PixelLit_FP_glsl glsl
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
         param_named_auto u_shininess surface_shininess
-        param_named u_texture int 0
     }
 }
 
@@ -359,6 +568,43 @@ fragment_program Default_PixelLit+VT_FP_glsl glsl
 {
     source Default_FP.glsl
     attach MaterialColor_PixelLit+VT_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default_PixelLit+DfsTex_FP_glsl glsl
+{
+    source Default_FP.glsl
+    attach MaterialColor_PixelLit+DfsTex_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_texture int 0
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default_PixelLit+VT+DfsTex_FP_glsl glsl
+{
+    source Default_FP.glsl
+    attach MaterialColor_PixelLit+VT+DfsTex_FP
     attach Lighting_FP
     default_params
     {
@@ -397,8 +643,8 @@ fragment_program Default_Negato_FP_glsl glsl
         param_named u_maxValue float 1.0
         param_named u_slice float 0
         param_named u_orientation int 2
-        param_named u_texture int 0
         param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_texture int 0
     }
 }
 
@@ -421,7 +667,6 @@ fragment_program DepthPeeling_peel_Flat_FP_glsl glsl
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_texture int 1
     }
 }
 
@@ -432,6 +677,41 @@ fragment_program DepthPeeling_peel_Flat+VT_FP_glsl glsl
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_Flat+VT_FP
+    
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling_peel_Flat+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Flat+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_texture int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling_peel_Flat+VT+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Flat+VT+DfsTex_FP
     
     default_params
     {
@@ -457,7 +737,6 @@ fragment_program DepthPeeling_peel_Gouraud_FP_glsl glsl
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_texture int 1
     }
 }
 
@@ -468,6 +747,41 @@ fragment_program DepthPeeling_peel_Gouraud+VT_FP_glsl glsl
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_Gouraud+VT_FP
+    
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling_peel_Gouraud+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Gouraud+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_texture int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling_peel_Gouraud+VT+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Gouraud+VT+DfsTex_FP
     
     default_params
     {
@@ -499,7 +813,6 @@ fragment_program DepthPeeling_peel_PixelLit_FP_glsl glsl
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
         param_named_auto u_shininess surface_shininess
-        param_named u_texture int 1
     }
 }
 
@@ -510,6 +823,53 @@ fragment_program DepthPeeling_peel_PixelLit+VT_FP_glsl glsl
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_PixelLit+VT_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling_peel_PixelLit+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_PixelLit+DfsTex_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_texture int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling_peel_PixelLit+VT+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_PixelLit+VT+DfsTex_FP
     attach Lighting_FP
     default_params
     {
@@ -588,7 +948,6 @@ fragment_program DualDepthPeeling_peel_Flat_FP_glsl glsl
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_texture int 4
     }
 }
 
@@ -599,6 +958,47 @@ fragment_program DualDepthPeeling_peel_Flat+VT_FP_glsl glsl
     source DualDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_Flat+VT_FP
+    
+    default_params
+    {
+        param_named u_nearestDepthBuffer int 0
+        param_named u_farthestDepthBuffer int 1
+        param_named u_forwardColorBuffer int 2
+        param_named u_forwardAlphasBuffer int 3
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling_peel_Flat+DfsTex_FP_glsl glsl
+{
+    source DualDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Flat+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_nearestDepthBuffer int 0
+        param_named u_farthestDepthBuffer int 1
+        param_named u_forwardColorBuffer int 2
+        param_named u_forwardAlphasBuffer int 3
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_texture int 4
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling_peel_Flat+VT+DfsTex_FP_glsl glsl
+{
+    source DualDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Flat+VT+DfsTex_FP
     
     default_params
     {
@@ -630,7 +1030,6 @@ fragment_program DualDepthPeeling_peel_Gouraud_FP_glsl glsl
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_texture int 4
     }
 }
 
@@ -641,6 +1040,47 @@ fragment_program DualDepthPeeling_peel_Gouraud+VT_FP_glsl glsl
     source DualDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_Gouraud+VT_FP
+    
+    default_params
+    {
+        param_named u_nearestDepthBuffer int 0
+        param_named u_farthestDepthBuffer int 1
+        param_named u_forwardColorBuffer int 2
+        param_named u_forwardAlphasBuffer int 3
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling_peel_Gouraud+DfsTex_FP_glsl glsl
+{
+    source DualDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Gouraud+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_nearestDepthBuffer int 0
+        param_named u_farthestDepthBuffer int 1
+        param_named u_forwardColorBuffer int 2
+        param_named u_forwardAlphasBuffer int 3
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_texture int 4
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling_peel_Gouraud+VT+DfsTex_FP_glsl glsl
+{
+    source DualDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Gouraud+VT+DfsTex_FP
     
     default_params
     {
@@ -678,7 +1118,6 @@ fragment_program DualDepthPeeling_peel_PixelLit_FP_glsl glsl
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
         param_named_auto u_shininess surface_shininess
-        param_named u_texture int 4
     }
 }
 
@@ -689,6 +1128,59 @@ fragment_program DualDepthPeeling_peel_PixelLit+VT_FP_glsl glsl
     source DualDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_PixelLit+VT_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named u_nearestDepthBuffer int 0
+        param_named u_farthestDepthBuffer int 1
+        param_named u_forwardColorBuffer int 2
+        param_named u_forwardAlphasBuffer int 3
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling_peel_PixelLit+DfsTex_FP_glsl glsl
+{
+    source DualDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_PixelLit+DfsTex_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named u_nearestDepthBuffer int 0
+        param_named u_farthestDepthBuffer int 1
+        param_named u_forwardColorBuffer int 2
+        param_named u_forwardAlphasBuffer int 3
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_texture int 4
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling_peel_PixelLit+VT+DfsTex_FP_glsl glsl
+{
+    source DualDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_PixelLit+VT+DfsTex_FP
     attach Lighting_FP
     default_params
     {
@@ -773,7 +1265,6 @@ fragment_program HybridTransparency_peel_Flat_FP_glsl glsl
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_texture int 1
     }
 }
 
@@ -784,6 +1275,41 @@ fragment_program HybridTransparency_peel_Flat+VT_FP_glsl glsl
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_Flat+VT_FP
+    
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_peel_Flat+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Flat+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_texture int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_peel_Flat+VT+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Flat+VT+DfsTex_FP
     
     default_params
     {
@@ -809,7 +1335,6 @@ fragment_program HybridTransparency_peel_Gouraud_FP_glsl glsl
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_texture int 1
     }
 }
 
@@ -820,6 +1345,41 @@ fragment_program HybridTransparency_peel_Gouraud+VT_FP_glsl glsl
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_Gouraud+VT_FP
+    
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_peel_Gouraud+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Gouraud+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_texture int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_peel_Gouraud+VT+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Gouraud+VT+DfsTex_FP
     
     default_params
     {
@@ -851,7 +1411,6 @@ fragment_program HybridTransparency_peel_PixelLit_FP_glsl glsl
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
         param_named_auto u_shininess surface_shininess
-        param_named u_texture int 1
     }
 }
 
@@ -862,6 +1421,53 @@ fragment_program HybridTransparency_peel_PixelLit+VT_FP_glsl glsl
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_PixelLit+VT_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_peel_PixelLit+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_PixelLit+DfsTex_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_texture int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_peel_PixelLit+VT+DfsTex_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_PixelLit+VT+DfsTex_FP
     attach Lighting_FP
     default_params
     {
@@ -937,7 +1543,6 @@ fragment_program HybridTransparency_weight_blend_Flat_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
-        param_named u_texture int 2
     }
 }
 
@@ -948,6 +1553,47 @@ fragment_program HybridTransparency_weight_blend_Flat+VT_FP_glsl glsl
     source WeightedBlended_Weight_Blend_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_Flat+VT_FP
+    
+    preprocessor_defines HYBRID=1
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_Flat+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Flat+DfsTex_FP
+    
+    preprocessor_defines HYBRID=1
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named u_texture int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_Flat+VT+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Flat+VT+DfsTex_FP
     
     preprocessor_defines HYBRID=1
     default_params
@@ -979,7 +1625,6 @@ fragment_program HybridTransparency_weight_blend_Gouraud_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
-        param_named u_texture int 2
     }
 }
 
@@ -990,6 +1635,47 @@ fragment_program HybridTransparency_weight_blend_Gouraud+VT_FP_glsl glsl
     source WeightedBlended_Weight_Blend_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_Gouraud+VT_FP
+    
+    preprocessor_defines HYBRID=1
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_Gouraud+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Gouraud+DfsTex_FP
+    
+    preprocessor_defines HYBRID=1
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named u_texture int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_Gouraud+VT+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Gouraud+VT+DfsTex_FP
     
     preprocessor_defines HYBRID=1
     default_params
@@ -1027,7 +1713,6 @@ fragment_program HybridTransparency_weight_blend_PixelLit_FP_glsl glsl
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
         param_named_auto u_shininess surface_shininess
-        param_named u_texture int 2
     }
 }
 
@@ -1038,6 +1723,59 @@ fragment_program HybridTransparency_weight_blend_PixelLit+VT_FP_glsl glsl
     source WeightedBlended_Weight_Blend_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_PixelLit+VT_FP
+    attach Lighting_FP
+    preprocessor_defines HYBRID=1
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_PixelLit+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_PixelLit+DfsTex_FP
+    attach Lighting_FP
+    preprocessor_defines HYBRID=1
+    default_params
+    {
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_texture int 2
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_PixelLit+VT+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_PixelLit+VT+DfsTex_FP
     attach Lighting_FP
     preprocessor_defines HYBRID=1
     default_params
@@ -1099,8 +1837,8 @@ fragment_program HybridTransparency_weight_blend_Negato_FP_glsl glsl
         param_named u_maxValue float 1.0
         param_named u_slice float 0
         param_named u_orientation int 2
-        param_named u_texture int 2
         param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_texture int 2
     }
 }
 
@@ -1124,7 +1862,6 @@ fragment_program WeightedBlended_weight_blend_Flat_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
-        param_named u_texture int 1
     }
 }
 
@@ -1134,6 +1871,41 @@ fragment_program WeightedBlended_weight_blend_Flat+VT_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
     attach MaterialColor_Flat+VT_FP
+    
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_Flat+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach MaterialColor_Flat+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named u_texture int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_Flat+VT+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach MaterialColor_Flat+VT+DfsTex_FP
     
     default_params
     {
@@ -1160,7 +1932,6 @@ fragment_program WeightedBlended_weight_blend_Gouraud_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
-        param_named u_texture int 1
     }
 }
 
@@ -1170,6 +1941,41 @@ fragment_program WeightedBlended_weight_blend_Gouraud+VT_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
     attach MaterialColor_Gouraud+VT_FP
+    
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_Gouraud+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach MaterialColor_Gouraud+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named u_texture int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_Gouraud+VT+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach MaterialColor_Gouraud+VT+DfsTex_FP
     
     default_params
     {
@@ -1202,7 +2008,6 @@ fragment_program WeightedBlended_weight_blend_PixelLit_FP_glsl glsl
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
         param_named_auto u_shininess surface_shininess
-        param_named u_texture int 1
     }
 }
 
@@ -1212,6 +2017,53 @@ fragment_program WeightedBlended_weight_blend_PixelLit+VT_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
     attach MaterialColor_PixelLit+VT_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_PixelLit+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach MaterialColor_PixelLit+DfsTex_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_texture int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_PixelLit+VT+DfsTex_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach MaterialColor_PixelLit+VT+DfsTex_FP
     attach Lighting_FP
     default_params
     {
@@ -1265,8 +2117,8 @@ fragment_program WeightedBlended_weight_blend_Negato_FP_glsl glsl
         param_named u_maxValue float 1.0
         param_named u_slice float 0
         param_named u_orientation int 2
-        param_named u_texture int 1
         param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_texture int 1
     }
 }
 
@@ -1304,6 +2156,48 @@ vertex_program CelShadingDepthPeelingRenderScene_Flat+VT_VP_glsl glsl
     source RenderScene_VP.glsl
     attach Lighting_VP
     preprocessor_defines CEL_SHADING=1,FLAT=1,VERTEX_COLOR=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeelingRenderScene_Flat+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1,FLAT=1,DIFFUSE_TEX=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeelingRenderScene_Flat+VT+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1,FLAT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
@@ -1362,6 +2256,48 @@ vertex_program CelShadingDepthPeelingRenderScene_Gouraud+VT_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
+vertex_program CelShadingDepthPeelingRenderScene_Gouraud+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1,DIFFUSE_TEX=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeelingRenderScene_Gouraud+VT+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    attach Lighting_VP
+    preprocessor_defines CEL_SHADING=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//---------------------------------------------------------------------------
+
 vertex_program CelShadingDepthPeelingRenderScene_PixelLit_VP_glsl glsl
 {
     source RenderScene_VP.glsl
@@ -1390,6 +2326,36 @@ vertex_program CelShadingDepthPeelingRenderScene_PixelLit+VT_VP_glsl glsl
     }
 }
 
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeelingRenderScene_PixelLit+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines CEL_SHADING=1,PIXEL_LIT=1,DIFFUSE_TEX=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program CelShadingDepthPeelingRenderScene_PixelLit+VT+DfsTex_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+    
+    preprocessor_defines CEL_SHADING=1,PIXEL_LIT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
 
 
 //-----------------------------------------------------------------------------
@@ -1406,7 +2372,6 @@ fragment_program CelShadingDepthPeeling_peel_Flat_FP_glsl glsl
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_texture int 1
     }
 }
 
@@ -1417,6 +2382,41 @@ fragment_program CelShadingDepthPeeling_peel_Flat+VT_FP_glsl glsl
     source CelShadingDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_Flat+VT_FP
+    
+    default_params
+    {
+        param_named u_bufferDepth int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_Flat+DfsTex_FP_glsl glsl
+{
+    source CelShadingDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Flat+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_bufferDepth int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_texture int 1
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_Flat+VT+DfsTex_FP_glsl glsl
+{
+    source CelShadingDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Flat+VT+DfsTex_FP
     
     default_params
     {
@@ -1442,7 +2442,6 @@ fragment_program CelShadingDepthPeeling_peel_Gouraud_FP_glsl glsl
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_texture int 1
     }
 }
 
@@ -1453,6 +2452,41 @@ fragment_program CelShadingDepthPeeling_peel_Gouraud+VT_FP_glsl glsl
     source CelShadingDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_Gouraud+VT_FP
+    
+    default_params
+    {
+        param_named u_bufferDepth int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_Gouraud+DfsTex_FP_glsl glsl
+{
+    source CelShadingDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Gouraud+DfsTex_FP
+    
+    default_params
+    {
+        param_named u_bufferDepth int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named u_texture int 1
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_Gouraud+VT+DfsTex_FP_glsl glsl
+{
+    source CelShadingDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_Gouraud+VT+DfsTex_FP
     
     default_params
     {
@@ -1484,7 +2518,6 @@ fragment_program CelShadingDepthPeeling_peel_PixelLit_FP_glsl glsl
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
         param_named_auto u_shininess surface_shininess
-        param_named u_texture int 1
     }
 }
 
@@ -1495,6 +2528,53 @@ fragment_program CelShadingDepthPeeling_peel_PixelLit+VT_FP_glsl glsl
     source CelShadingDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
     attach MaterialColor_PixelLit+VT_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named u_bufferDepth int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_PixelLit+DfsTex_FP_glsl glsl
+{
+    source CelShadingDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_PixelLit+DfsTex_FP
+    attach Lighting_FP
+    default_params
+    {
+        param_named u_bufferDepth int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
+        param_named u_texture int 1
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling_peel_PixelLit+VT+DfsTex_FP_glsl glsl
+{
+    source CelShadingDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach MaterialColor_PixelLit+VT+DfsTex_FP
     attach Lighting_FP
     default_params
     {

@@ -138,6 +138,10 @@ SMesh::SMesh() throw() :
     m_perPrimitiveColorTexture.setNull();
 
     memset(m_subMeshes, 0, sizeof(m_subMeshes));
+
+    m_binding[POSITION_NORMAL] = 0;
+    m_binding[COLOUR]          = 0xFFFF;
+    m_binding[TEXCOORD]        = 0xFFFF;
 }
 
 //-----------------------------------------------------------------------------
@@ -298,7 +302,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
     // Check if mesh attributes
     m_hasNormal = (mesh->getPointNormalsArray() != nullptr);
-    m_hasUV     = (mesh->getPointTexCoordsArray() != nullptr);
 
     this->getRenderService()->makeCurrent();
 
@@ -314,9 +317,9 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
     ::Ogre::VertexBufferBinding& bind = *m_ogreMesh->sharedVertexData->vertexBufferBinding;
     size_t uiPrevNumVertices = 0;
-    if(bind.isBufferBound(POSITION_NORMAL))
+    if(bind.isBufferBound(m_binding[POSITION_NORMAL]))
     {
-        uiPrevNumVertices = bind.getBuffer(POSITION_NORMAL)->getNumVertices();
+        uiPrevNumVertices = bind.getBuffer(m_binding[POSITION_NORMAL])->getNumVertices();
     }
 
     if(uiPrevNumVertices < uiNumVertices)
@@ -369,36 +372,18 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
         // Clear if necessary
         declMain->removeAllElements();
         // 1st buffer
-        declMain->addElement(POSITION_NORMAL, offsetMain, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION);
+        declMain->addElement(m_binding[POSITION_NORMAL], offsetMain, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION);
         offsetMain += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
 
         if(m_hasNormal)
         {
-            declMain->addElement(POSITION_NORMAL, offsetMain, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL);
+            declMain->addElement(m_binding[POSITION_NORMAL], offsetMain, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL);
             offsetMain += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
         }
 
         // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
         vbuf = mgr.createVertexBuffer(offsetMain, uiNumVertices, usage, false);
-        bind.setBinding(POSITION_NORMAL, vbuf);
-
-        // Allocate other buffers
-
-
-        // . UV Buffer - By now, we just use one UV coordinates set for each mesh
-        if (m_hasUV)
-        {
-            ::Ogre::VertexDeclaration* declUV = m_ogreMesh->sharedVertexData->vertexDeclaration;
-            size_t offsetUV = 0;
-            declUV->addElement(TEXCOORD, offsetUV, ::Ogre::VET_FLOAT2, ::Ogre::VES_TEXTURE_COORDINATES);
-            offsetUV += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
-
-            // Allocate vertex buffer of the requested number of vertices (vertexCount)
-            // and bytes per vertex (offset)
-            ::Ogre::HardwareVertexBufferSharedPtr uvbuf = mgr.createVertexBuffer(offsetUV, uiNumVertices, usage, false);
-            bind.setBinding(TEXCOORD, uvbuf);
-        }
-
+        bind.setBinding(m_binding[POSITION_NORMAL], vbuf);
     }
     else
     {
@@ -548,6 +533,11 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
     lock.unlock();
 
+    // Update vertex attributes
+    this->updateVertices(mesh);
+    this->updateColors(mesh);
+    this->updateTexCoords(mesh);
+
     // Add mesh to Ogre Root Scene Node if it doesn't exist yet
     if(!m_entity)
     {
@@ -564,11 +554,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
         this->updateXMLMaterialAdaptor();
     }
 
-    // Update vertex attributes
-    this->updateVertices(mesh);
-    this->updateColors(mesh);
-    this->updateTexCoords(mesh);
-
     if (m_autoResetCamera)
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
@@ -579,12 +564,11 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
 void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
 {
-    SLM_ASSERT("Nonexistent ::Ogre::Entity", m_entity);
     FW_PROFILE_AVG("UPDATE VERTICES", 5);
 
     // Getting Vertex Buffer
     ::Ogre::VertexBufferBinding* bind          = m_ogreMesh->sharedVertexData->vertexBufferBinding;
-    ::Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(POSITION_NORMAL);
+    ::Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(m_binding[POSITION_NORMAL]);
 
     /// Upload the index data to the card
     void* pVertex = vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
@@ -668,8 +652,6 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
 
 void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
 {
-    SLM_ASSERT("Nonexistent ::Ogre::Entity", m_entity);
-
     FW_PROFILE_AVG("UPDATE COLORS", 5);
 
     const bool hasVertexColor    = (mesh->getPointColorsArray() != nullptr);
@@ -690,7 +672,9 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
 
         if(!vtxDecl->findElementBySemantic(::Ogre::VES_DIFFUSE))
         {
-            vtxDecl->addElement(COLOUR, offsetColor, ::Ogre::VET_COLOUR, ::Ogre::VES_DIFFUSE);
+            m_binding[COLOUR] = bind->getBindings().size();
+
+            vtxDecl->addElement(m_binding[COLOUR], offsetColor, ::Ogre::VET_COLOUR, ::Ogre::VES_DIFFUSE);
             offsetColor += ::Ogre::VertexElement::getTypeSize(Ogre::VET_COLOUR);
         }
 
@@ -698,13 +682,13 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
 
         size_t uiNumVertices     = mesh->getNumberOfPoints();
         size_t uiPrevNumVertices = 0;
-        if(bind->isBufferBound(COLOUR))
+        if(bind->isBufferBound(m_binding[COLOUR]))
         {
-            cbuf              = bind->getBuffer(COLOUR);
+            cbuf              = bind->getBuffer(m_binding[COLOUR]);
             uiPrevNumVertices = cbuf->getNumVertices();
         }
 
-        if(!bind->isBufferBound(COLOUR) || uiPrevNumVertices < uiNumVertices )
+        if(!bind->isBufferBound(m_binding[COLOUR]) || uiPrevNumVertices < uiNumVertices )
         {
             FW_PROFILE_AVG("REALLOC COLORS_VERTEX", 5);
 
@@ -717,7 +701,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
             ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
 
             cbuf = mgr.createVertexBuffer(offsetColor, uiNumVertices, usage, false);
-            bind->setBinding(COLOUR, cbuf);
+            bind->setBinding(m_binding[COLOUR], cbuf);
 
             m_perPrimitiveColorTexture.setNull();
             m_perPrimitiveColorTextureName = "";
@@ -765,9 +749,10 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
             m_perPrimitiveColorTexture->createInternalResources();
 
             // Unbind vertex color if it was previously enabled
-            if(bind->isBufferBound(COLOUR))
+            if(bind->isBufferBound(m_binding[COLOUR]))
             {
-                bind->unsetBinding(COLOUR);
+                bind->unsetBinding(m_binding[COLOUR]);
+                m_binding[COLOUR] = 0xFFFF;
             }
         }
     }
@@ -779,7 +764,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         ::fwData::mt::ObjectReadLock lock(mesh);
         ::fwComEd::helper::Mesh meshHelper(mesh);
 
-        ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(COLOUR);
+        ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
         void* pCol = cbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
         ::Ogre::RGBA* pColor = static_cast< ::Ogre::RGBA* >( pCol );
 
@@ -898,6 +883,47 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
 {
     m_hasUV = (mesh->getPointTexCoordsArray() != nullptr);
 
+    // . UV Buffer - By now, we just use one UV coordinates set for each mesh
+    if (m_hasUV)
+    {
+        ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
+        SLM_ASSERT("Invalid vertex buffer binding", bind);
+
+        ::Ogre::VertexDeclaration* declUV = m_ogreMesh->sharedVertexData->vertexDeclaration;
+        size_t offsetUV = 0;
+
+        if(!declUV->findElementBySemantic(::Ogre::VES_TEXTURE_COORDINATES))
+        {
+            m_binding[TEXCOORD] = bind->getBindings().size();
+
+            declUV->addElement(m_binding[TEXCOORD], offsetUV, ::Ogre::VET_FLOAT2, ::Ogre::VES_TEXTURE_COORDINATES);
+            offsetUV += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
+
+        }
+
+        ::Ogre::HardwareVertexBufferSharedPtr uvbuf;
+
+        size_t uiNumVertices     = mesh->getNumberOfPoints();
+        size_t uiPrevNumVertices = 0;
+        if(bind->isBufferBound(m_binding[TEXCOORD]))
+        {
+            uvbuf             = bind->getBuffer(m_binding[TEXCOORD]);
+            uiPrevNumVertices = uvbuf->getNumVertices();
+        }
+
+        if(!bind->isBufferBound(m_binding[TEXCOORD]) || uiPrevNumVertices < uiNumVertices )
+        {
+            // Allocate color buffer of the requested number of vertices (vertexCount) and bytes per vertex (offset)
+            ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices) ?
+                                                  ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
+                                                  ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+
+            ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
+            uvbuf                              = mgr.createVertexBuffer(offsetUV, uiNumVertices, usage, false);
+            bind->setBinding(m_binding[TEXCOORD], uvbuf);
+        }
+    }
+
     if (m_hasUV)
     {
         FW_PROFILE_AVG("UPDATE TexCoords", 5);
@@ -906,7 +932,7 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
         ::fwComEd::helper::Mesh meshHelper(mesh);
 
         ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
-        ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(TEXCOORD);
+        ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_binding[TEXCOORD]);
         void* pBuf = uvbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
         float* pUV = static_cast< float* >( pBuf );
 

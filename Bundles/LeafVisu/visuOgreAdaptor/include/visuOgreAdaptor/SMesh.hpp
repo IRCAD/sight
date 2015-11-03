@@ -80,6 +80,7 @@ private:
         POSITION_NORMAL = 0,
         COLOUR          = 1,
         TEXCOORD        = 2,
+        NUM_BINDINGS
     };
 
     /**
@@ -180,6 +181,9 @@ private:
     std::string m_meshName;
     /// Attached texture adaptor UID
     std::string m_texAdaptorUID;
+
+    /// Binding for each layer
+    unsigned short m_binding[NUM_BINDINGS];
 
     /// Defines if there is a normal layer
     bool m_hasNormal;

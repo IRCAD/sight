@@ -13,7 +13,10 @@ in VertexDataIn
 #else
     vec4 oColor;
 #endif // PIXEL_LIT
+
+#ifdef DIFFUSE_TEX
     vec2 oTexCoord;
+#endif // DIFFUSE_TEX
 
 } vertexIn[];
 
@@ -26,7 +29,10 @@ out VertexDataOut
 #else
     vec4 oColor;
 #endif // VERTEX_COLOR
+
+#ifdef DIFFUSE_TEX
     vec2 oTexCoord;
+#endif // DIFFUSE_TEX
 } vertexOut;
 
 uniform sampler2D u_colorPrimitiveTexture;
@@ -39,7 +45,10 @@ void main(void)
     {
         gl_Position = gl_in[i].gl_Position;
 
+#ifdef DIFFUSE_TEX
         vertexOut.oTexCoord = vertexIn[i].oTexCoord;
+#endif // DIFFUSE_TEX
+
 #ifdef PIXEL_LIT
         vertexOut.oPosition_WS = vertexIn[i].oPosition_WS;
         vertexOut.oNormal_WS = vertexIn[i].oNormal_WS;

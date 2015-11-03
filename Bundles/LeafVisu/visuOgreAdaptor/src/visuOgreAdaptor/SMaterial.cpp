@@ -56,6 +56,20 @@ const ::fwCom::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeText
 
 const std::string SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME = "1 - Default";
 
+//-----------------------------------------------------------------------------
+
+static bool isColorPass(const std::string _name, bool& _peelPass)
+{
+    const std::regex regexPeel(".*_peel.*");
+    const std::regex regexWeight(".*_weight_blend.*");
+    const std::regex regexDualPeelInit("Dual.*_peel_init.*");
+
+    _peelPass = std::regex_match(_name, regexPeel);
+    const bool weightPass   = std::regex_match(_name, regexWeight);
+    const bool peelInitPass = std::regex_match(_name, regexDualPeelInit);
+
+    return _name == "" || (_peelPass && !peelInitPass) || weightPass;
+}
 //------------------------------------------------------------------------------
 
 SMaterial::SMaterial() throw() :
@@ -575,14 +589,28 @@ void SMaterial::swapTexture()
     ::Ogre::Material::TechniqueIterator tech_iter = m_material->getTechniqueIterator();
     while( tech_iter.hasMoreElements())
     {
-        ::Ogre::Technique* technique           = tech_iter.getNext();
-        ::Ogre::TextureUnitState* texUnitState = technique->getPass(0)->getTextureUnitState("diffuseTexture");
+        ::Ogre::Technique* technique = tech_iter.getNext();
 
-        if(texUnitState)
+        bool peelPass = false;
+        if(isColorPass(technique->getName(), peelPass))
         {
+            ::Ogre::Pass* pass                     = technique->getPass(0);
+            ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
+
+            if(!texUnitState)
+            {
+                texUnitState = pass->createTextureUnitState();
+                texUnitState->setName("diffuseTexture");
+                texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+                texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_WRAP);
+            }
             texUnitState->setTexture(m_texAdaptor->getTexture());
         }
     }
+
+    // Update the shaders
+    ::fwData::Material::sptr material = this->getObject< ::fwData::Material >();
+    this->setShadingMode( material->getShadingMode() );
 
     this->requestRender();
 }
@@ -833,6 +861,10 @@ void SMaterial::setShadingMode( int shadingMode  )
         {
             shadingProgramSuffix += "+VT";
         }
+        if(m_texAdaptor && !m_texAdaptor->getTexture().isNull())
+        {
+            shadingProgramSuffix += "+DfsTex";
+        }
 
         // Iterate through each technique found in the material and switch the shading mode
         ::Ogre::Material::TechniqueIterator tech_iter = m_material->getTechniqueIterator();
@@ -868,9 +900,9 @@ void SMaterial::setShadingMode( int shadingMode  )
 
                 if(m_hasPrimitiveColor)
                 {
+                    const std::string texUnitName = "PerPrimitiveColor";
                     ogrePass->setGeometryProgram("PerPrimitiveAttribute_" + shadingProgramSuffix + "_GP_glsl");
-                    ::Ogre::TextureUnitState* texUnitState = ogrePass->getTextureUnitState(
-                        m_perPrimitiveColorTextureName);
+                    ::Ogre::TextureUnitState* texUnitState = ogrePass->getTextureUnitState(texUnitName);
 
                     auto result = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
                         m_perPrimitiveColorTextureName,
@@ -885,6 +917,7 @@ void SMaterial::setShadingMode( int shadingMode  )
                         OSLM_DEBUG("create unit state: " << m_perPrimitiveColorTextureName);
 
                         ::Ogre::TextureUnitState* texUnitState = ogrePass->createTextureUnitState();
+                        texUnitState->setName(texUnitName);
                         texUnitState->setTexture(tex);
                         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
                         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
@@ -991,18 +1024,23 @@ void SMaterial::removeTextureAdaptor(::fwData::Image::sptr texture)
     SLM_ASSERT("Missing texture adaptor", m_texAdaptor);
     SLM_ASSERT("Texture adaptor already configured in XML", m_texAdaptorUID.empty());
 
-    // Apply blank texture
     this->getRenderService()->makeCurrent();
 
     ::Ogre::Material::TechniqueIterator tech_iter = m_material->getTechniqueIterator();
     while( tech_iter.hasMoreElements())
     {
-        ::Ogre::Technique* technique           = tech_iter.getNext();
-        ::Ogre::TextureUnitState* texUnitState = technique->getPass(0)->getTextureUnitState("diffuseTexture");
+        ::Ogre::Technique* technique = tech_iter.getNext();
 
-        if(texUnitState)
+        bool peelPass = false;
+        if(isColorPass(technique->getName(), peelPass))
         {
-            texUnitState->setTexture(m_texAdaptor->getBlankTexture());
+            ::Ogre::Pass* pass                     = technique->getPass(0);
+            ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
+            if(texUnitState)
+            {
+                auto texUnitStateIndex = pass->getTextureUnitStateIndex(texUnitState);
+                pass->removeTextureUnitState(texUnitStateIndex);
+            }
         }
     }
 
@@ -1011,6 +1049,11 @@ void SMaterial::removeTextureAdaptor(::fwData::Image::sptr texture)
     m_textureConnection->disconnect();
     this->unregisterServices("::visuOgreAdaptor::STexture");
     m_texAdaptor.reset();
+
+    // Update the shaders
+    ::fwData::Material::sptr material = this->getObject< ::fwData::Material >();
+    this->setShadingMode( material->getShadingMode() );
+
 }
 
 //------------------------------------------------------------------------------

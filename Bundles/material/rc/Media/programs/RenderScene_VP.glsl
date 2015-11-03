@@ -6,7 +6,10 @@ uniform mat4 u_normalMatrix;
 
 in vec4 position;
 in vec3 normal;
+
+#ifdef DIFFUSE_TEX
 in vec2 uv0;
+#endif // DIFFUSE_TEX
 
 #ifdef VERTEX_COLOR
 in vec4 colour;
@@ -30,7 +33,9 @@ out VertexDataOut
     #endif
     #endif // PIXEL_LIT
 
+#ifdef DIFFUSE_TEX
     vec2 oTexCoord;
+#endif // DIFFUSE_TEX
 } vertexOut;
 
 vec4 lighting(vec3 _normal, vec3 _position);
@@ -64,5 +69,7 @@ void main(void)
 
 #endif // PIXEL_LIT
 
+#ifdef DIFFUSE_TEX
     vertexOut.oTexCoord = uv0;
+#endif // DIFFUSE_TEX
 }

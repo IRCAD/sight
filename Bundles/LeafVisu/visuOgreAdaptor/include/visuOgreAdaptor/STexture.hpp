@@ -51,8 +51,6 @@ public:
     VISUOGREADAPTOR_API std::string getTextureName() const;
     VISUOGREADAPTOR_API void setTextureName(std::string texName);
 
-    VISUOGREADAPTOR_API ::Ogre::TexturePtr getBlankTexture() const;
-
 protected:
 
     /// Creates the managed Ogre texture
@@ -91,9 +89,6 @@ private:
     /// Texture's name in the Ogre Ressource manager
     std::string m_textureName;
 
-    /// Default white texture used on a material
-    ::Ogre::TexturePtr m_blankTexture;
-
     /// How to filter this texture
     std::string m_filtering;
 
@@ -130,13 +125,6 @@ inline std::string STexture::getTextureName() const
 inline void STexture::setTextureName(std::string texName)
 {
     m_textureName = texName;
-}
-
-//------------------------------------------------------------------------------
-
-inline ::Ogre::TexturePtr STexture::getBlankTexture() const
-{
-    return m_blankTexture;
 }
 
 //------------------------------------------------------------------------------
