@@ -727,11 +727,16 @@ void SMaterial::setPolygonMode(int polygonMode)
                     edgePass->setVertexProgram("Default_Edge_VP_glsl");
 
                     // ... and the fragment shader
+                    auto fpName = edgePass->getFragmentProgramName();
+
+                    // Clear the suffix in shader names  (+VT+...)
+                    const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P_glsl)", ::boost::regex::extended);
+                    fpName = ::boost::regex_replace(fpName, regexConcat, "$1");
+
                     // For the latter, we use a specific version when we use an OIT technique
                     // (mainly to force the diffuse color because we don't manage to set uniforms with compositors usage)
                     const ::boost::regex regexShading("(PixelLighting)|(Flat)|(Gouraud)");
-                    auto fpName =
-                        ::boost::regex_replace(edgePass->getFragmentProgramName(), regexShading, "Edge_Normal" );
+                    fpName = ::boost::regex_replace(fpName, regexShading, "Edge_Normal" );
 
                     const ::boost::regex regexTech("(peel_init)|(transmittance_blend)");
                     fpName = ::boost::regex_replace(fpName, regexTech, "$&_Edge" );
@@ -845,9 +850,15 @@ void SMaterial::setShadingMode( int shadingMode  )
                     continue;
                 }
 
-                std::string ogreFragmentName = ogrePass->getFragmentProgram()->getName();
                 std::string ogreVertexName   = ogrePass->getVertexProgram()->getName();
+                std::string ogreFragmentName = ogrePass->getFragmentProgram()->getName();
 
+                // Clear the suffix in shader names (+VT+...)
+                const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P_glsl)", ::boost::regex::extended);
+                ogreVertexName   = ::boost::regex_replace(ogreVertexName, regexConcat, "$1");
+                ogreFragmentName = ::boost::regex_replace(ogreFragmentName, regexConcat, "$1");
+
+                // Replace the shading technique
                 const ::boost::regex regexShading("("+flat+")|("+gouraud+")|("+pixelLighting+")");
                 ogreVertexName   = ::boost::regex_replace(ogreVertexName, regexShading, shadingProgramSuffix);
                 ogreFragmentName = ::boost::regex_replace(ogreFragmentName, regexShading, shadingProgramSuffix);
