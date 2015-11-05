@@ -41,7 +41,7 @@ void CompositorChainManager::addAvailableCompositor(CompositorIdType compositorN
     bool needFinalCompositorSwap(false);
 
     // If the compositor chain already contains the final compositor, we have to remove it
-    if(!m_compositorChain.empty() && m_compositorChain.back().first == FINAL_CHAIN_COMPOSITOR)
+    if(!m_compositorChain.empty() && !(compositorManager->getByName(FINAL_CHAIN_COMPOSITOR)).isNull())
     {
         m_compositorChain.pop_back();
         compositorManager->setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, false);
