@@ -1,5 +1,14 @@
 <plugin id="ARCalibration" version="@DASH_VERSION@">
 
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="extDataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="patchMedicalData" />
+    <requirement id="arPatchMedicalData" />
+    <requirement id="memory" />
+    <requirement id="preferences" />
+    
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
