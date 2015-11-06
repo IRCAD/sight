@@ -19,5 +19,4 @@ set( DEPENDENCIES
     fwDataTools
     arData
 )
-set( REQUIREMENTS  )
-
+set( REQUIREMENTS visuOgre )

@@ -2,6 +2,12 @@
 
 <plugin id="OgreViewer"  version="@DASH_VERSION@" >
 
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuOgreQt" />
+    <requirement id="visuVTKQt" />
+    <requirement id="material" />
+
     <xi:include href="configurations/vtkGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreNegato2D.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
