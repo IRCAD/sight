@@ -2,8 +2,6 @@
 
     <library name="ioIGTL" />
 
-   <requirement id="dataReg"/>
-   <requirement id="servicesReg"/>
    <requirement id="io" />
    <requirement id="ioNetwork" />
 

@@ -2,7 +2,4 @@
 
     <library name="ioNetwork" />
 
-    <requirement id="dataReg" />
-    <requirement id="servicesReg" />
-
 </plugin>

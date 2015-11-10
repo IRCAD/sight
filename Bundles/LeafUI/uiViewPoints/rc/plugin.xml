@@ -2,8 +2,6 @@
 
     <library name="uiViewPoints" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
     <requirement id="io"/>
     <requirement id="gui"/>
 

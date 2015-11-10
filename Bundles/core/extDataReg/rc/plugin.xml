@@ -1,7 +1,6 @@
 <plugin id="extDataReg" class="::extDataReg::Plugin" version="0.1">
     
     <library name="extDataReg" />
-    <requirement id="dataReg" />
 
 </plugin>
 

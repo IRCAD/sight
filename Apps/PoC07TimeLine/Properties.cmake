@@ -1,7 +1,7 @@
 
 set( NAME PoC07TimeLine )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE APP )
 set( DEPENDENCIES
     fwServices
     extData
@@ -11,6 +11,14 @@ set( DEPENDENCIES
     fwThread
     fwTools
     fwCore
-)
-set( REQUIREMENTS appXml extDataReg servicesReg launcher)
 
+)
+set( REQUIREMENTS 
+    appXml 
+    extDataReg 
+    servicesReg 
+    launcher
+    dataReg
+)
+
+bundleParam(appXml PARAM_LIST config PARAM_VALUES PoC07TimeLineConfig)

@@ -1,8 +1,6 @@
 <plugin id="dicomActivity">
 
-    <requirement id="servicesReg" />
     <requirement id="gui" />
-    <requirement id="guiQt" />
     <requirement id="ctrlSelection" />
     <requirement id="ctrlMemory" />
     <requirement id="visuVTKQt" />

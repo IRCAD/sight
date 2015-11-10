@@ -2,9 +2,7 @@
 
     <library name="uiZMQ" />
     <requirement id="gui" />
-    <requirement id="guiQt" />
     <requirement id="ioZMQ" />
-
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::uiZMQ::SZMQConfigEditor</type>

@@ -2,8 +2,6 @@
 
     <library name="opSofa" />
 
-    <requirement id="dataReg" />
-    <requirement id="servicesReg" />
     <requirement id="io" />
 
     <extension implements="::fwServices::registry::ServiceFactory">

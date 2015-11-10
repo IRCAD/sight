@@ -1,7 +1,7 @@
 
 set( NAME VRRenderExt )
 set( VERSION 0.9 )
-set( TYPE BUNDLE )
+set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     servicesReg
@@ -51,5 +51,6 @@ set( REQUIREMENTS
     cprActivity
     viewPointsActivity
     splineEditionActivity
-    )
+)
 
+bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderExtBase VRRenderExtAppBase)

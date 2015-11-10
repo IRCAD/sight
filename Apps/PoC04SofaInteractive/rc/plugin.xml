@@ -1,6 +1,5 @@
 <plugin id="PoC04SofaInteractive">
-    <requirement id="servicesReg" />
-
+    
     <extension implements="::fwServices::registry::AppConfig">
         <id>PoC04SofaInteractive</id>
         <type>parameters</type>

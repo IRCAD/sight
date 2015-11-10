@@ -2,8 +2,6 @@
 
     <library name="uiNetwork" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
     <requirement id="gui" />
     <requirement id="uiIO" />
     <requirement id="ioNetwork" />

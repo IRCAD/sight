@@ -1,9 +1,7 @@
 <plugin id="ioZMQ" class="::ioZMQ::Plugin" version="0.1">
 
     <library name="ioZMQ" />
-
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
+    
     <requirement id="io" />
     <requirement id="ioNetwork" />
 

@@ -1,8 +1,6 @@
 <plugin id="ioGdcm" class="ioGdcm::Plugin" >
     <library name="ioGdcm" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
     <requirement id="io" />
 
     <extension implements="::fwServices::registry::ServiceFactory">

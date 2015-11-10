@@ -1,9 +1,4 @@
 <plugin id="DemoComSofaConfiguration">
-
-    <!--<extension id="DemoComSofaConfig" implements="::fwData::Mesh">-->
-    
-    <requirement id="servicesReg" /> <!-- new -->
-
     
     <extension implements="::fwServices::registry::AppConfig">
         <id>DemoComSofaConfigurationID</id>

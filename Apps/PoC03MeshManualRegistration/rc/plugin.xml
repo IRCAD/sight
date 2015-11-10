@@ -1,7 +1,5 @@
 <plugin id="PoC03MeshManualRegistration">
 
-    <requirement id="servicesReg" />
-
     <xi:include href="configurations/organManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/manualRegistrationEditorConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/camViewManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

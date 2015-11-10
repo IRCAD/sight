@@ -1,7 +1,8 @@
 
 set( NAME PoC08Igtl )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE APP )
+set( UNIQUE TRUE)
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
@@ -21,6 +22,9 @@ set( REQUIREMENTS
     ioNetwork
     ioIGTL
     ioData
+    uiIO
     uiNetwork
     uiIGTL
     )
+
+bundleParam(appXml PARAM_LIST config PARAM_VALUES PoC08Igtl)
