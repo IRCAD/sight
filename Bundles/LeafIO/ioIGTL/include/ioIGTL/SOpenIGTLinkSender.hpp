@@ -62,7 +62,11 @@ protected:
      * @verbatim
      * <service type="::ioNetwork::INetworkSender" impl="::ioIGTL::SOpenIGTSender" uid="networkSender" autoConnect="no">
      *      <port>4242</port>
+     *      <deviceName>FW4SPL</deviceName>
      * </service>
+     *
+     * - deviceName is optional (if set,sended message have 'deviceName' name).
+     *
      * @endverbatim
      */
     IOIGTL_API virtual void configuring() throw ( ::fwTools::Failed );
@@ -130,6 +134,9 @@ private:
 
     ///True is server is sending
     bool m_isSending;
+
+    ///device name
+    std::string m_deviceName;
 };
 
 

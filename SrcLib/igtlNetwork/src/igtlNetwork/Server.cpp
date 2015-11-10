@@ -184,7 +184,7 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeader()
 {
     std::vector< ::igtl::MessageHeader::Pointer > headerMsgs;
 
-    std::vector<Client::sptr>::iterator it;
+    std::vector< Client::sptr >::iterator it;
 
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
@@ -194,24 +194,52 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeader()
 
         ::igtl::MessageHeader::Pointer headerMsg = ::igtl::MessageHeader::New();
         headerMsg->InitPack();
-        sizeReceive = (*it)->getSocket()->Receive (headerMsg->GetPackPointer(), headerMsg->GetPackSize());
-        if (sizeReceive == -1 || sizeReceive == 0)
+
+        //if client is disconnected
+        if((*it) == NULL)
         {
-            headerMsgs.push_back( ::igtl::MessageHeader::Pointer());
+            continue;
         }
-        else
+
+        ::igtl::Socket::Pointer socket = (*it)->getSocket();
+
+        if(socket->GetConnected())
         {
-            if (sizeReceive != 0 && sizeReceive != headerMsg->GetPackSize())
+            sizeReceive = socket->Receive (headerMsg->GetPackPointer(), headerMsg->GetPackSize());
+
+            if (sizeReceive == -1 || sizeReceive == 0)
             {
                 headerMsgs.push_back( ::igtl::MessageHeader::Pointer());
             }
-            else if (headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
+            else
             {
-                headerMsgs.push_back( headerMsg );
+                if (sizeReceive != 0 && sizeReceive != headerMsg->GetPackSize())
+                {
+                    headerMsgs.push_back( ::igtl::MessageHeader::Pointer());
+                }
+                else if (headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
+                {
+                    std::string deviceName = headerMsg->GetDeviceName();
+
+                    if(m_filteringByDeviceName)
+                    {
+                        if(m_deviceNamesIn.find(deviceName) != m_deviceNamesIn.end())
+                        {
+                            headerMsgs.push_back( headerMsg );
+                        }
+                        else
+                        {
+                            headerMsgs.push_back( ::igtl::MessageHeader::Pointer());
+                        }
+                    }
+                    else
+                    {
+                        headerMsgs.push_back( headerMsg );
+                    }
+
+                }
             }
         }
-        headerMsgs.push_back( ::igtl::MessageHeader::Pointer());
-
     }
 
     return headerMsgs;
@@ -251,4 +279,21 @@ throw (::fwCore::Exception)
 
 //------------------------------------------------------------------------------
 
+void Server::setMessageDeviceName(std::string deviceName)
+{
+    std::vector<Client::sptr>::iterator it;
+
+    for (it = m_clients.begin(); it != m_clients.end(); ++it)
+    {
+        //if client is disconnected
+        if((*it) == NULL)
+        {
+            continue;
+        }
+
+        (*it)->setDeviceNameOut(deviceName);
+    }
 }
+
+//------------------------------------------------------------------------------
+}//namespace igtlNetwork

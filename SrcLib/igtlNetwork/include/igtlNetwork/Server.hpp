@@ -117,6 +117,12 @@ public:
     IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header,
                                                               unsigned int client) throw (::fwCore::Exception);
 
+    /**
+     * @brief set the device name when a message is sended
+     */
+    IGTLNETWORK_API void setMessageDeviceName(std::string deviceName);
+
+
 private:
 
     /// server socket
@@ -136,6 +142,9 @@ private:
 
     /// integer constant for success
     static const int s_SUCCESS = 0;
+
+    /// device name in the sended message
+    std::string m_deviceNameOut;
 
 };
 

@@ -53,8 +53,14 @@ protected:
      * @verbatim
      * <service type="::ioNetwork::INetworkListener" impl="::ioIGTL::SOpenIGTLinkListener" uid="networkListener" autoConnect="no">
      *      <server>127.0.0.1:4242</server>
+     *      <deviceName>Name1</deviceName>
+     *      <deviceName>...</deviceName>
+     *      ...
      * </service>
      * @endverbatim
+     *
+     * - deviceName(optional) : filter by device Name in Message, by default all message will be processed
+     *
      */
     IOIGTL_API virtual void configuring() throw ( ::fwTools::Failed );
 

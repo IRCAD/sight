@@ -16,7 +16,9 @@ namespace igtlNetwork
 
 //------------------------------------------------------------------------------
 
-INetwork::INetwork()
+INetwork::INetwork() :
+    m_filteringByDeviceName(false),
+    m_deviceNameOut("F4S")
 {
     m_dataConverter = ::igtlProtocol::DataConverter::getInstance();
 }
@@ -34,6 +36,7 @@ bool INetwork::sendObject (::fwData::Object::sptr obj) throw (::fwCore::Exceptio
     igtl::MessageBase::Pointer msg;
 
     msg = m_dataConverter->fromFwObject(obj);
+    msg->SetDeviceName(m_deviceNameOut.c_str());
     msg->Pack();
     return (m_socket->Send(msg->GetPackPointer(), msg->GetPackSize()) == 1);
 }
@@ -42,6 +45,7 @@ bool INetwork::sendObject (::fwData::Object::sptr obj) throw (::fwCore::Exceptio
 
 bool INetwork::sendMsg (igtl::MessageBase::Pointer msg) throw (::fwCore::Exception)
 {
+    msg->SetDeviceName(m_deviceNameOut.c_str());
     msg->Pack();
     return (m_socket->Send(msg->GetPackPointer(), msg->GetPackSize()) == 1);
 }
@@ -90,7 +94,24 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj) throw (::fwCore::Except
         }
         else if (headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
         {
-            return headerMsg;
+            std::string deviceName = headerMsg->GetDeviceName();
+
+            if(m_filteringByDeviceName)
+            {
+                if(m_deviceNamesIn.find(deviceName) != m_deviceNamesIn.end())
+                {
+                    return headerMsg;
+                }
+                else
+                {
+                    return igtl::MessageHeader::Pointer();
+                }
+            }
+            else
+            {
+                return headerMsg;
+            }
+
         }
     }
     return ::igtl::MessageHeader::Pointer();
@@ -128,6 +149,54 @@ throw (::fwCore::Exception)
 ::igtl::Socket::Pointer INetwork::getSocket()
 {
     return m_socket;
+}
+
+//------------------------------------------------------------------------------
+
+void INetwork::addAuthorizedDevice(std::string deviceName)
+{
+    std::set< std::string >::iterator it = m_deviceNamesIn.find(deviceName);
+
+    if(it == m_deviceNamesIn.end())
+    {
+        m_deviceNamesIn.insert(deviceName);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+bool INetwork::getFilteringByDeviceName()
+{
+    return m_filteringByDeviceName;
+}
+
+//------------------------------------------------------------------------------
+
+void INetwork::setFilteringByDeviceName(bool filtering)
+{
+    if(m_deviceNamesIn.empty())
+    {
+        m_filteringByDeviceName = false;
+    }
+    else
+    {
+        m_filteringByDeviceName = filtering;
+    }
+
+}
+
+//------------------------------------------------------------------------------
+
+void INetwork::setDeviceNameOut(std::string deviceName)
+{
+    m_deviceNameOut = deviceName;
+}
+
+//------------------------------------------------------------------------------
+
+std::string INetwork::getDeviceNameOut()
+{
+    return m_deviceNameOut;
 }
 
 //------------------------------------------------------------------------------

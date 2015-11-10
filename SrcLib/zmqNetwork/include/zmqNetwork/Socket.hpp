@@ -139,6 +139,19 @@ public:
      */
     ZMQNETWORK_API SocketMode getSocketMode() const;
 
+    /**
+     * @brief set device Name when igtl message are sended
+     * @param[in] std::string deviceName
+     */
+    ZMQNETWORK_API void setDeviceNameOut(std::string deviceName);
+
+    /**
+     * @brief get device Name when igtl message are sended
+     * @return std::string deviceName
+     */
+    ZMQNETWORK_API std::string getDeviceNameOut();
+
+
 private:
 
     /**
@@ -190,6 +203,10 @@ private:
 
     /// header size
     static const int s_HEADER_SIZE = 58;
+
+    //device name in sended IGTL message
+
+    std::string m_deviceNameOut;
 
 
 };

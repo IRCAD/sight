@@ -21,7 +21,8 @@ Socket::Socket(SocketMode socketMode, PatternMode patternMode) :
     m_isStarted(false),
     m_sockMode(socketMode),
     m_patternMode(patternMode),
-    m_timeout(1000)
+    m_timeout(1000),
+    m_deviceNameOut("F4S")
 {
     m_dataConverter = ::igtlProtocol::DataConverter::getInstance();
 }
@@ -49,7 +50,7 @@ void Socket::sendObject(::fwData::Object::sptr data) throw (::fwCore::Exception)
     ::igtl::MessageBase::Pointer    *igtlMsg;
 
     igtlMsg = new ::igtl::MessageBase::Pointer(m_dataConverter->fromFwObject(data));
-    (*igtlMsg)->SetDeviceName ("Tracker");
+    (*igtlMsg)->SetDeviceName (m_deviceNameOut.c_str());
     (*igtlMsg)->Pack();
 
     ::zmq::message_t zmqMsg((*igtlMsg)->GetPackPointer(), (*igtlMsg)->GetPackSize(),
@@ -169,6 +170,20 @@ void Socket::stop()
     m_socket->close();
     m_context->close();
     m_isStarted = false;
+}
+
+//------------------------------------------------------------------------------
+
+std::string Socket::getDeviceNameOut()
+{
+    return m_deviceNameOut;
+}
+
+//------------------------------------------------------------------------------
+
+void Socket::setDeviceNameOut(std::string deviceName)
+{
+    m_deviceNameOut = deviceName;
 }
 
 //------------------------------------------------------------------------------

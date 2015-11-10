@@ -80,6 +80,16 @@ void SOpenIGTLinkListener::configuring() throw (::fwTools::Failed)
     {
         throw ::fwTools::Failed ("Server element not found");
     }
+
+    std::vector < ::fwRuntime::ConfigurationElement::sptr > deviceNames = m_configuration->find("deviceName");
+    if(!deviceNames.empty())
+    {
+        for(auto dn : deviceNames)
+        {
+            m_client.addAuthorizedDevice(dn->getValue());
+        }
+        m_client.setFilteringByDeviceName(true);
+    }
 }
 
 //-----------------------------------------------------------------------------

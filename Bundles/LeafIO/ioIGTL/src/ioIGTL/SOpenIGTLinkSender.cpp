@@ -37,7 +37,8 @@ const ::fwCom::Slots::SlotKeyType SOpenIGTLinkSender::s_STOP_SENDING_SLOT       
 SOpenIGTLinkSender::SOpenIGTLinkSender() :
     ioNetwork::INetworkSender(),
     m_port(4242),
-    m_isSending(false)
+    m_isSending(false),
+    m_deviceName("")
 {
     m_updateConfigurationSlot = ::fwCom::newSlot (&SOpenIGTLinkSender::updateConfiguration, this);
     m_startSendingSlot        = ::fwCom::newSlot (&SOpenIGTLinkSender::startSending, this);
@@ -65,6 +66,12 @@ void SOpenIGTLinkSender::configuring() throw (::fwTools::Failed)
     {
         m_port = ::boost::lexical_cast< ::boost::uint16_t > (
             m_configuration->findConfigurationElement ("port")->getValue());
+    }
+
+    if(m_configuration != NULL && m_configuration->findConfigurationElement ("deviceName"))
+    {
+        m_deviceName = ::boost::lexical_cast< std::string >(
+            m_configuration->findConfigurationElement ("deviceName")->getValue());
     }
 }
 
@@ -113,7 +120,10 @@ void SOpenIGTLinkSender::startSending()
         ::boost::function<void() > task = ::boost::bind (&::igtlNetwork::Server::runServer, m_server);
         try
         {
+
             m_server->start (m_port);
+
+
             m_serverWorker->post(task)
             fwServicesNotifyMacro(this->getLightID(), m_sigServerStarted, ());
             m_isSending = true;
@@ -152,6 +162,10 @@ void SOpenIGTLinkSender::stopSending()
 //-----------------------------------------------------------------------------
 void SOpenIGTLinkSender::sendObject(const ::fwData::Object::sptr &obj)
 {
+    if(m_deviceName!="")
+    {
+        m_server->setMessageDeviceName(m_deviceName);
+    }
     m_server->broadcast(obj);
 }
 

@@ -18,6 +18,8 @@
 #include <boost/type.hpp>
 #include <igtl/igtlSocket.h>
 #include <igtl/igtlMessageHeader.h>
+
+#include <set>
 #include <string>
 
 namespace igtlNetwork
@@ -96,6 +98,40 @@ public:
      */
     IGTLNETWORK_API ::igtl::Socket::Pointer getSocket();
 
+    /**
+     * @brief add a new authorized device name
+     * @param[in] std::string device name
+     */
+    IGTLNETWORK_API void addAuthorizedDevice(std::string deviceName);
+
+    /**
+     * @brief get filteringByDeviceName (true if activated, false otherwise)
+     *
+     * @return boolean
+     */
+    IGTLNETWORK_API bool getFilteringByDeviceName();
+
+    /**
+     * @brief activate/desactivate the filtering by device name
+     * note that if addAuthorizedDevice() is never called this option is automaticaly desactivate
+     *
+     * @param[in] boolean
+     */
+    IGTLNETWORK_API void setFilteringByDeviceName(bool filtering);
+
+    /**
+     * @brief set the device name when a message is sended
+     */
+    IGTLNETWORK_API void setDeviceNameOut(std::string deviceName);
+
+    /**
+     * @brief get the device name when a message is sended
+     *
+     * return std::string
+     */
+    IGTLNETWORK_API std::string getDeviceNameOut();
+
+
 protected:
     /// client socket
     ::igtl::Socket::Pointer m_socket;
@@ -103,6 +139,15 @@ protected:
     /// DataConverter instance to convert fwData::Object
     /// to igtl::MessageBase and igtl::MessageBase to fwData::Object
     ::igtlProtocol::DataConverter::sptr m_dataConverter;
+
+    /// Filter the message by device name
+    bool m_filteringByDeviceName;
+
+    /// Set of authorized device names
+    std::set< std::string > m_deviceNamesIn;
+
+    /// device name in the sended message
+    std::string m_deviceNameOut;
 };
 
 } // namespace igtlNetwork
