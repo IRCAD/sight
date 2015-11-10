@@ -1,4 +1,4 @@
-<plugin id="appXml" class="::appXml::Plugin" >
+<plugin id="appXml" class="::appXml::Plugin" version="0.1" >
 
     <library name="appXml" />
     <requirement id="servicesReg" />
