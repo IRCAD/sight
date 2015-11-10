@@ -7,16 +7,14 @@
 #ifndef __GDCMIO_CONTAINER_SR_DICOMSRNUMNODE_HPP__
 #define __GDCMIO_CONTAINER_SR_DICOMSRNUMNODE_HPP__
 
-#include <string>
-#include <vector>
-
-#include <gdcmDataSet.h>
-
-#include <fwData/macros.hpp>
-
 #include "gdcmIO/container/DicomCodedAttribute.hpp"
 #include "gdcmIO/container/sr/DicomSRNode.hpp"
 #include "gdcmIO/config.hpp"
+
+#include <gdcmDataSet.h>
+
+#include <string>
+#include <vector>
 
 
 namespace gdcmIO
@@ -48,8 +46,31 @@ public:
      */
     GDCMIO_API virtual void write(::gdcm::DataSet &dataset) const;
 
-    GDCMIO_API fwGettersSettersDocMacro(NumValue, numValue, double, Numeric value);
-    GDCMIO_API fwGettersSettersDocMacro(MeasurementUnits, measurementUnits, DicomCodedAttribute, Measurement units);
+    /**
+     * @brief Numeric value
+     * @{ */
+    const double getNumValue() const
+    {
+        return m_numValue;
+    }
+    void setNumValue(double value)
+    {
+        this->m_numValue = value;
+    }
+    /**  @} */
+
+    /**
+     * @brief Measurement units
+     * @{ */
+    const DicomCodedAttribute& getMeasurementUnits() const
+    {
+        return m_measurementUnits;
+    }
+    void setMeasurementUnits(const DicomCodedAttribute&  measurementUnits)
+    {
+        this->m_measurementUnits = measurementUnits;
+    }
+    /**  @} */
 
 protected:
 
@@ -68,8 +89,6 @@ protected:
 
     /// Measurement Units
     DicomCodedAttribute m_measurementUnits;
-
-
 
 };
 

@@ -7,12 +7,12 @@
 #ifndef __GDCMIO_CONTAINER_DICOMCODEDATTRIBUTE_HPP__
 #define __GDCMIO_CONTAINER_DICOMCODEDATTRIBUTE_HPP__
 
+#include "gdcmIO/config.hpp"
+
 #include <string>
 #include <vector>
+#include <ostream>
 
-#include <fwData/macros.hpp>
-
-#include "gdcmIO/config.hpp"
 
 namespace gdcmIO
 {
@@ -37,7 +37,7 @@ public:
     GDCMIO_API bool operator==(const DicomCodedAttribute& other) const;
 
     /// Dump operator
-    GDCMIO_API friend std::ostream& operator<< (std::ostream& os, const DicomCodedAttribute& attribute)
+    friend std::ostream& operator<< (std::ostream& os, const DicomCodedAttribute& attribute)
     {
         os << "\\\"" << attribute.m_codeValue << "\\\" ";
         os << "\\\"" << attribute.m_codingSchemeDesignator << "\\\" ";
@@ -46,12 +46,58 @@ public:
         return os;
     }
 
-    GDCMIO_API fwGettersSettersDocMacro(CodeValue, codeValue, std::string, Retrieve code value);
-    GDCMIO_API fwGettersSettersDocMacro(CodingSchemeDesignator, codingSchemeDesignator, std::string,
-                                        Retrieve coding scheme designator);
-    GDCMIO_API fwGettersSettersDocMacro(CodeMeaning, codeMeaning, std::string, Retrieve code meaning);
-    GDCMIO_API fwGettersSettersDocMacro(CodingSchemeVersion, codingSchemeVersion, std::string,
-                                        Retrieve coding scheme version);
+    /**
+     * @brief  Retrieve code meaning
+     * @{ */
+    const std::string& getCodeMeaning() const
+    {
+        return m_codeMeaning;
+    }
+    void setCodeMeaning(const std::string& codeMeaning)
+    {
+        m_codeMeaning = codeMeaning;
+    }
+    /**  @} */
+
+    /**
+     * @brief Retrieve code value
+     * @{ */
+    const std::string& getCodeValue() const
+    {
+        return m_codeValue;
+    }
+    void setCodeValue(const std::string& codeValue)
+    {
+        m_codeValue = codeValue;
+    }
+    /**  @} */
+
+    /**
+     * @brief Retrieve coding scheme designator
+     * @{ */
+    const std::string& getCodingSchemeDesignator() const
+    {
+        return m_codingSchemeDesignator;
+    }
+    void setCodingSchemeDesignator(const std::string& codingSchemeDesignator)
+    {
+        m_codingSchemeDesignator = codingSchemeDesignator;
+    }
+    /**  @} */
+
+    /**
+     * @brief Retrieve coding scheme version
+     * @{ */
+    const std::string& getCodingSchemeVersion() const
+    {
+        return m_codingSchemeVersion;
+    }
+    void setCodingSchemeVersion(const std::string& codingSchemeVersion)
+    {
+        m_codingSchemeVersion = codingSchemeVersion;
+    }
+    /**  @} */
+
 protected:
     /// Code Value (see : Tag(0008,0100) )
     std::string m_codeValue;

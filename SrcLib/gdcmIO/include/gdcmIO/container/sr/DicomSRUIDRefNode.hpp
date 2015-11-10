@@ -7,16 +7,14 @@
 #ifndef __GDCMIO_CONTAINER_SR_DICOMSRUIDREFNODE_HPP__
 #define __GDCMIO_CONTAINER_SR_DICOMSRUIDREFNODE_HPP__
 
-#include <string>
-#include <vector>
-
-#include <gdcmDataSet.h>
-
-#include <fwData/macros.hpp>
-
 #include "gdcmIO/container/DicomCodedAttribute.hpp"
 #include "gdcmIO/container/sr/DicomSRNode.hpp"
 #include "gdcmIO/config.hpp"
+
+#include <gdcmDataSet.h>
+
+#include <string>
+#include <vector>
 
 
 namespace gdcmIO
@@ -47,7 +45,18 @@ public:
      */
     GDCMIO_API virtual void write(::gdcm::DataSet &dataset) const;
 
-    GDCMIO_API fwGettersSettersDocMacro(UIDValue, uidValue, std::string, UID value);
+    /**
+     * @brief UID value
+     * @{ */
+    const std::string& getUidValue() const
+    {
+        return m_uidValue;
+    }
+    void setUidValue(const std::string& uidValue)
+    {
+        m_uidValue = uidValue;
+    }
+    /**  @} */
 
 protected:
 

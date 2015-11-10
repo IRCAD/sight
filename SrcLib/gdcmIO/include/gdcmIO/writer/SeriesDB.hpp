@@ -56,8 +56,18 @@ public:
      */
     GDCMIO_API std::string extension();
 
-    GDCMIO_API fwGettersSettersDocMacro(FiducialsExportMode, fiducialsExportMode,
-                                        ::gdcmIO::writer::Series::FiducialsExportMode, Fiducials Export Mode);
+    /**
+     * @brief Fiducials Export Mode
+     * @{ */
+    ::gdcmIO::writer::Series::FiducialsExportMode getFiducialsExportMode() const
+    {
+        return m_fiducialsExportMode;
+    }
+    void setFiducialsExportMode(::gdcmIO::writer::Series::FiducialsExportMode fiducialsExportMode)
+    {
+        m_fiducialsExportMode = fiducialsExportMode;
+    }
+    /**  @} */
 
 protected:
     /**

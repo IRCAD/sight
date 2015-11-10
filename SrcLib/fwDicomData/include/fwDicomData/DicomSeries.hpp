@@ -7,15 +7,14 @@
 #ifndef __FWDICOMDATA_DICOMSERIES_HPP__
 #define __FWDICOMDATA_DICOMSERIES_HPP__
 
-#include <boost/filesystem/path.hpp>
-
-#include <fwData/Object.hpp>
-#include <fwData/factory/new.hpp>
-#include <fwData/macros.hpp>
-
 #include "fwMedData/types.hpp"
 #include "fwMedData/Series.hpp"
 #include "fwDicomData/config.hpp"
+
+#include <fwData/Object.hpp>
+#include <fwData/factory/new.hpp>
+
+#include <boost/filesystem/path.hpp>
 
 fwCampAutoDeclareDataMacro((fwDicomData)(DicomSeries), FWDICOMDATA_API);
 
@@ -114,37 +113,80 @@ public:
     /**
      * @brief Dicom files availability
      * @{ */
-    fwDataGetSetMacro(DicomAvailability, DICOM_AVAILABILITY);
+    DICOM_AVAILABILITY  getDicomAvailability () const
+    {
+        return m_dicomAvailability;
+    }
+
+    void setDicomAvailability(DICOM_AVAILABILITY val)
+    {
+        m_dicomAvailability = val;
+    }
     /**  @} */
 
     /**
      * @brief Local paths of Dicom files
      * @{ */
-    fwDataGetSetCRefMacro(LocalDicomPaths, DicomPathContainerType);
+    const DicomPathContainerType &getLocalDicomPaths() const
+    {
+        return m_localDicomPaths;
+    }
+    void setLocalDicomPaths(const DicomPathContainerType &val)
+    {
+        m_localDicomPaths = val;
+    }
     /**  @} */
 
     /**
      * @brief Number of instances in the series (0020,1009)
      * @{ */
-    fwDataGetSetMacro(NumberOfInstances, unsigned int);
+    unsigned int  getNumberOfInstances () const
+    {
+        return m_numberOfInstances;
+    }
+    void setNumberOfInstances (unsigned int val)
+    {
+        m_numberOfInstances = val;
+    }
     /**  @} */
 
     /**
      * @brief Dicom binaries
      * @{ */
-    fwDataGetSetCRefMacro(DicomBinaries, DicomBinaryContainerType);
+    const DicomBinaryContainerType &getDicomBinaries () const
+    {
+        return m_dicomBinaries;
+    }
+    void setDicomBinaries (const DicomBinaryContainerType &val)
+    {
+        m_dicomBinaries = val;
+    }
     /**  @} */
 
     /**
      * @brief SOP Class UID
      * @{ */
-    fwDataGetSetCRefMacro(SOPClassUIDs, SOPClassUIDContainerType);
+    const SOPClassUIDContainerType &getSOPClassUIDs () const
+    {
+        return m_SOPClassUIDs;
+    }
+    void setSOPClassUIDs (const SOPClassUIDContainerType &val)
+    {
+        m_SOPClassUIDs = val;
+    }
     /**  @} */
 
     /**
      * @brief Computed Tag Values
      * @{ */
-    fwDataGetSetCRefMacro(ComputedTagValues, ComputedTagValueContainerType);
+    const ComputedTagValueContainerType &getComputedTagValues () const
+    {
+        return m_computedTagValues;
+    }
+    void setComputedTagValues (const ComputedTagValueContainerType &val)
+    {
+        m_computedTagValues = val;
+    }
     /**  @} */
 
     /**  @} */
@@ -153,22 +195,22 @@ public:
 protected:
 
     /// Dicom Availability
-    DICOM_AVAILABILITY m_attrDicomAvailability;
+    DICOM_AVAILABILITY m_dicomAvailability;
 
     /// Number of instances in the series (0020,1209)
-    unsigned int m_attrNumberOfInstances;
+    unsigned int m_numberOfInstances;
 
     /// Local paths of Dicom files
-    DicomPathContainerType m_attrLocalDicomPaths;
+    DicomPathContainerType m_localDicomPaths;
 
     /// Dicom binaries
-    DicomBinaryContainerType m_attrDicomBinaries;
+    DicomBinaryContainerType m_dicomBinaries;
 
     /// SOP Class UIDs
-    SOPClassUIDContainerType m_attrSOPClassUIDs;
+    SOPClassUIDContainerType m_SOPClassUIDs;
 
     /// Computed tag values
-    ComputedTagValueContainerType m_attrComputedTagValues;
+    ComputedTagValueContainerType m_computedTagValues;
 };
 
 }   //end namespace fwDicomData

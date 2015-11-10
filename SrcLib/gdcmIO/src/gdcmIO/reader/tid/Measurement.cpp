@@ -47,28 +47,28 @@ Measurement::~Measurement()
 void Measurement::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
 {
     if(node->getCodedAttribute() == ::gdcmIO::container::DicomCodedAttribute("121206", "DCM", "Distance") &&
-       !node->getCRefSubNodeContainer().empty())
+       !node->getSubNodeContainer().empty())
     {
-        BOOST_FOREACH(const SPTR(::gdcmIO::container::sr::DicomSRNode)& subNode, node->getCRefSubNodeContainer())
+        for(const SPTR(::gdcmIO::container::sr::DicomSRNode)& subNode : node->getSubNodeContainer())
         {
             if(subNode->getType() == "SCOORD")
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
                     ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoordNode >(subNode);
-                if(scoordNode && scoordNode->getCRefGraphicType() == "POLYLINE")
+                if(scoordNode && scoordNode->getGraphicType() == "POLYLINE")
                 {
                     // Retrieve coordinates
                     ::gdcmIO::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
                         scoordNode->getGraphicDataContainer();
 
-                    if(!scoordNode->getCRefSubNodeContainer().empty())
+                    if(!scoordNode->getSubNodeContainer().empty())
                     {
                         SPTR(::gdcmIO::container::sr::DicomSRImageNode) imageNode =
                             ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRImageNode >(
-                                *scoordNode->getCRefSubNodeContainer().begin());
+                                *scoordNode->getSubNodeContainer().begin());
                         if(imageNode)
                         {
-                            const int frameNumber = imageNode->getCRefFrameNumber();
+                            const int frameNumber = imageNode->getFrameNumber();
                             float zCoordinate     = ::gdcmIO::helper::DicomData::convertFrameNumberToZCoordinate(
                                 m_object, frameNumber);
                             this->addDistance(::fwData::Point::New(coordinates[0], coordinates[1], zCoordinate),
@@ -82,7 +82,7 @@ void Measurement::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoord3DNode =
                     ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(subNode);
-                if(scoord3DNode && scoord3DNode->getCRefGraphicType() == "POLYLINE")
+                if(scoord3DNode && scoord3DNode->getGraphicType() == "POLYLINE")
                 {
                     // Retrieve coordinates
                     ::gdcmIO::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =

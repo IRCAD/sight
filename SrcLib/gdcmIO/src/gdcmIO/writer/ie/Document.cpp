@@ -117,7 +117,7 @@ void Document::writePertinentOtherEvidenceSequence()
     sopSequence->SetLengthToUndefined();
     ::gdcmIO::helper::DicomData::setSQ< 0x0008, 0x1199 >(sopSequence, seriesItemDataset);
 
-    BOOST_FOREACH(const std::string& instanceUID, m_instance->getCRefSOPInstanceUIDContainer())
+    for(const std::string& instanceUID : m_instance->getSOPInstanceUIDContainer())
     {
         // Add new instance to sequence
         ::gdcm::Item instanceItem;

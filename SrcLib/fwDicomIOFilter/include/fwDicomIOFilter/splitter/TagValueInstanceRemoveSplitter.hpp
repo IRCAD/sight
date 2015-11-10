@@ -46,9 +46,47 @@ public:
     /// Return true if a configuration is required
     FWDICOMIOFILTER_API virtual bool isConfigurationRequired();
 
-    fwGettersSettersDocMacro(Tag, tag, DcmTagKey, "Tag used to sort instances");
-    fwGettersSettersDocMacro(TagValue, tagValue, std::string,
-                             "Tag value used to determine if an instance must be removed");
+    /**
+     * @brief Tag used to sort instances
+     * @{ */
+    const DcmTagKey getTag () const
+    {
+        return m_tag;
+    }
+    DcmTagKey& getRefTag ()
+    {
+        return this->m_tag;
+    }
+    const DcmTagKey &getCRefTag() const
+    {
+        return this->m_tag;
+    }
+    void setTag (const DcmTagKey& _tag)
+    {
+        this->m_tag = _tag;
+    }
+    /**  @} */
+
+    /**
+     * @brief Tag value used to determine if an instance must be removed
+     * @{ */
+    const std::string  getTagValue() const
+    {
+        return m_tagValue;
+    }
+    std::string & getRefTagValue()
+    {
+        return this->m_tagValue;
+    }
+    const std::string &getCRefTagValue() const
+    {
+        return this->m_tagValue;
+    }
+    void setTagValue(const std::string&  _tagValue)
+    {
+        this->m_tagValue = _tagValue;
+    }
+    /**  @} */
 
 protected:
     /// Filter name

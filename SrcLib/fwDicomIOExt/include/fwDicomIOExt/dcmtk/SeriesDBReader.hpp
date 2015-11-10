@@ -7,14 +7,14 @@
 #ifndef __FWDICOMIOEXT_DCMTK_SERIESDBREADER_HPP__
 #define __FWDICOMIOEXT_DCMTK_SERIESDBREADER_HPP__
 
+#include "fwDicomIOExt/dcmtk/reader/IObjectReader.hpp"
+#include "fwDicomIOExt/config.hpp"
+
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwServices/IService.hpp>
 #include <fwTools/ProgressAdviser.hpp>
-
-#include "fwDicomIOExt/dcmtk/reader/IObjectReader.hpp"
-#include "fwDicomIOExt/config.hpp"
 
 namespace fwMedData
 {
@@ -85,10 +85,47 @@ public:
     /// Return DicomSeries container
     FWDICOMIOEXT_API DicomSeriesContainerType &getDicomSeries();
 
-    fwGettersSettersDocMacro(DicomdirActivated, isDicomdirActivated, bool,
-                             Set whether the reader must use the dicomdir file or not);
-    fwGettersSettersDocMacro(DicomFilterType, dicomFilterType, std::string,
-                             Dicom filter type that must be applied prior the reading process);
+    /**
+     * @brief Set whether the reader must use the dicomdir file or not
+     * @{ */
+    const bool  getDicomdirActivated () const
+    {
+        return m_isDicomdirActivated;
+    }
+    bool & getRefDicomdirActivated ()
+    {
+        return this->m_isDicomdirActivated;
+    }
+    const bool &getCRefDicomdirActivated () const
+    {
+        return this->m_isDicomdirActivated;
+    }
+    void setDicomdirActivated (const bool _isDicomdirActivated)
+    {
+        this->m_isDicomdirActivated = _isDicomdirActivated;
+    }
+    /**  @} */
+
+    /**
+     * @brief Dicom filter type that must be applied prior the reading process
+     * @{ */
+    const std::string  getDicomFilterType () const
+    {
+        return m_dicomFilterType;
+    }
+    std::string & getRefDicomFilterType ()
+    {
+        return this->m_dicomFilterType;
+    }
+    const std::string &getCRefDicomFilterType () const
+    {
+        return this->m_dicomFilterType;
+    }
+    void setDicomFilterType (const std::string&  _dicomFilterType)
+    {
+        this->m_dicomFilterType = _dicomFilterType;
+    }
+    /**  @} */
 
 private:
 

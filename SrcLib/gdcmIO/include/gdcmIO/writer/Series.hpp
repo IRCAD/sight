@@ -7,6 +7,10 @@
 #ifndef __GDCMIO_WRITER_SERIES_HPP__
 #define __GDCMIO_WRITER_SERIES_HPP__
 
+#include "gdcmIO/container/DicomInstance.hpp"
+#include "gdcmIO/exception/Failed.hpp"
+#include "gdcmIO/config.hpp"
+
 #include <fwTools/ProgressAdviser.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
@@ -16,9 +20,6 @@
 
 #include <fwData/location/Folder.hpp>
 
-#include "gdcmIO/container/DicomInstance.hpp"
-#include "gdcmIO/exception/Failed.hpp"
-#include "gdcmIO/config.hpp"
 
 namespace gdcmIO
 {
@@ -70,8 +71,18 @@ public:
      */
     GDCMIO_API std::string extension();
 
-    GDCMIO_API fwGettersSettersDocMacro(FiducialsExportMode, fiducialsExportMode, FiducialsExportMode,
-                                        Fiducials Export Mode);
+    /**
+     * @brief  Fiducials Export Mode
+     * @{ */
+    FiducialsExportMode getFiducialsExportMode() const
+    {
+        return m_fiducialsExportMode;
+    }
+    void setFiducialsExportMode(FiducialsExportMode fiducialsExportMode)
+    {
+        m_fiducialsExportMode = fiducialsExportMode;
+    }
+    /**  @} */
 
 private:
 

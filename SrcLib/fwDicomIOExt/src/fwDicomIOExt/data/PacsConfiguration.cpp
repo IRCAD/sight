@@ -4,10 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomIOExt/data/PacsConfiguration.hpp"
+
 #include <fwData/registry/macros.hpp>
 #include <fwData/Exception.hpp>
 
-#include "fwDicomIOExt/data/PacsConfiguration.hpp"
 
 fwDataRegisterMacro( ::fwDicomIOExt::data::PacsConfiguration );
 
@@ -17,13 +18,13 @@ namespace data
 {
 
 PacsConfiguration::PacsConfiguration(::fwData::Object::Key key) :
-    m_attrLocalApplicationTitle(""),
-    m_attrPacsHostName(""),
-    m_attrPacsApplicationTitle(""),
-    m_attrPacsApplicationPort(0),
-    m_attrMoveApplicationTitle(""),
-    m_attrMoveApplicationPort(0),
-    m_attrRetrieveMethod(MOVE_RETRIEVE_METHOD)
+    m_localApplicationTitle(""),
+    m_pacsHostName(""),
+    m_pacsApplicationTitle(""),
+    m_pacsApplicationPort(0),
+    m_moveApplicationTitle(""),
+    m_moveApplicationPort(0),
+    m_retrieveMethod(MOVE_RETRIEVE_METHOD)
 {
 }
 
@@ -43,13 +44,13 @@ void PacsConfiguration::shallowCopy(const Object::csptr &_source )
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
 
-    m_attrLocalApplicationTitle = other->m_attrLocalApplicationTitle;
-    m_attrPacsHostName          = other->m_attrPacsHostName;
-    m_attrPacsApplicationTitle  = other->m_attrPacsApplicationTitle;
-    m_attrPacsApplicationPort   = other->m_attrPacsApplicationPort;
-    m_attrMoveApplicationTitle  = other->m_attrMoveApplicationTitle;
-    m_attrMoveApplicationPort   = other->m_attrMoveApplicationPort;
-    m_attrRetrieveMethod        = other->m_attrRetrieveMethod;
+    m_localApplicationTitle = other->m_localApplicationTitle;
+    m_pacsHostName          = other->m_pacsHostName;
+    m_pacsApplicationTitle  = other->m_pacsApplicationTitle;
+    m_pacsApplicationPort   = other->m_pacsApplicationPort;
+    m_moveApplicationTitle  = other->m_moveApplicationTitle;
+    m_moveApplicationPort   = other->m_moveApplicationPort;
+    m_retrieveMethod        = other->m_retrieveMethod;
 }
 
 //------------------------------------------------------------------------------
@@ -62,13 +63,13 @@ void PacsConfiguration::cachedDeepCopy(const Object::csptr &_source, DeepCopyCac
                                + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
-    m_attrLocalApplicationTitle = other->m_attrLocalApplicationTitle;
-    m_attrPacsHostName          = other->m_attrPacsHostName;
-    m_attrPacsApplicationTitle  = other->m_attrPacsApplicationTitle;
-    m_attrPacsApplicationPort   = other->m_attrPacsApplicationPort;
-    m_attrMoveApplicationTitle  = other->m_attrMoveApplicationTitle;
-    m_attrMoveApplicationPort   = other->m_attrMoveApplicationPort;
-    m_attrRetrieveMethod        = other->m_attrRetrieveMethod;
+    m_localApplicationTitle = other->m_localApplicationTitle;
+    m_pacsHostName          = other->m_pacsHostName;
+    m_pacsApplicationTitle  = other->m_pacsApplicationTitle;
+    m_pacsApplicationPort   = other->m_pacsApplicationPort;
+    m_moveApplicationTitle  = other->m_moveApplicationTitle;
+    m_moveApplicationPort   = other->m_moveApplicationPort;
+    m_retrieveMethod        = other->m_retrieveMethod;
 }
 
 //------------------------------------------------------------------------------

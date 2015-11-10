@@ -7,12 +7,10 @@
 #ifndef __FWDICOMIOEXT_DATA_PACSCONFIGURATION_HPP__
 #define __FWDICOMIOEXT_DATA_PACSCONFIGURATION_HPP__
 
+#include "fwDicomIOExt/config.hpp"
 
 #include <fwData/Object.hpp>
 #include <fwData/factory/new.hpp>
-#include <fwData/macros.hpp>
-
-#include "fwDicomIOExt/config.hpp"
 
 fwCampAutoDeclareDataMacro((fwDicomIOExt)(data)(PacsConfiguration), FWDICOMIOEXT_API);
 
@@ -67,43 +65,92 @@ public:
     /**
      * @brief Local application title
      * @{ */
-    fwDataGetSetCRefMacro(LocalApplicationTitle, std::string);
+    const std::string &getLocalApplicationTitle () const
+    {
+        return m_localApplicationTitle;
+    }
+    void setLocalApplicationTitle (const std::string &val)
+    {
+        m_localApplicationTitle = val;
+    }
     /**  @} */
 
     /**
      * @brief Pacs host name
      * @{ */
-    fwDataGetSetCRefMacro(PacsHostName, std::string);
+    const std::string &getPacsHostName () const
+    {
+        return m_pacsHostName;
+    }
+    void setPacsHostName (const std::string &val)
+    {
+        m_pacsHostName = val;
+    }
     /**  @} */
 
     /**
      * @brief Pacs application title
      * @{ */
-    fwDataGetSetCRefMacro(PacsApplicationTitle, std::string);
+    const std::string &getPacsApplicationTitle () const
+    {
+        return m_pacsApplicationTitle;
+    }
+    void setPacsApplicationTitle (const std::string &val)
+    {
+        m_pacsApplicationTitle = val;
+    }
     /**  @} */
 
     /**
      * @brief Pacs port
      * @{ */
-    fwDataGetSetMacro(PacsApplicationPort, unsigned int);
+    unsigned int  getPacsApplicationPort () const
+    {
+        return m_pacsApplicationPort;
+    }
+    void setPacsApplicationPort (unsigned int val)
+    {
+        m_pacsApplicationPort = val;
+    }
     /**  @} */
 
     /**
      * @brief Move application title
      * @{ */
-    fwDataGetSetCRefMacro(MoveApplicationTitle, std::string);
+    const std::string &getMoveApplicationTitle() const
+    {
+        return m_moveApplicationTitle;
+    }
+    void setMoveApplicationTitle(const std::string &val)
+    {
+        m_moveApplicationTitle = val;
+    }
     /**  @} */
 
     /**
      * @brief Move application port
      * @{ */
-    fwDataGetSetMacro(MoveApplicationPort, unsigned int);
+    unsigned int  getMoveApplicationPort() const
+    {
+        return m_moveApplicationPort;
+    }
+    void setMoveApplicationPort(unsigned int val)
+    {
+        m_moveApplicationPort = val;
+    }
     /**  @} */
 
     /**
      * @brief Request mode
      * @{ */
-    fwDataGetSetMacro(RetrieveMethod, RETRIEVE_METHOD);
+    RETRIEVE_METHOD  getRetrieveMethod () const
+    {
+        return m_retrieveMethod;
+    }
+    void setRetrieveMethod (RETRIEVE_METHOD val)
+    {
+        m_retrieveMethod = val;
+    }
     /**  @} */
 
     /**  @} */
@@ -111,27 +158,25 @@ public:
 
 protected:
     /// Local application title
-    std::string m_attrLocalApplicationTitle;
+    std::string m_localApplicationTitle;
 
     /// Pacs host name
-    std::string m_attrPacsHostName;
+    std::string m_pacsHostName;
 
     /// Pacs application title
-    std::string m_attrPacsApplicationTitle;
+    std::string m_pacsApplicationTitle;
 
     /// Pacs application port
-    unsigned int m_attrPacsApplicationPort;
+    unsigned int m_pacsApplicationPort;
 
     /// Move application title
-    std::string m_attrMoveApplicationTitle;
+    std::string m_moveApplicationTitle;
 
     /// Move application port
-    unsigned int m_attrMoveApplicationPort;
+    unsigned int m_moveApplicationPort;
 
     /// Retrieve method
-    RETRIEVE_METHOD m_attrRetrieveMethod;
-
-
+    RETRIEVE_METHOD m_retrieveMethod;
 };
 
 } //namespace data

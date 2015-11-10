@@ -120,7 +120,7 @@ void Measurement::createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode)pa
         SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoordNode =
             ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
                 ::gdcmIO::container::DicomCodedAttribute("121230", "DCM", "Path"),
-                "INFERRED FROM", "POLYLINE", scoordVector, m_instance->getCRefSOPInstanceUIDContainer()[0]);
+                "INFERRED FROM", "POLYLINE", scoordVector, m_instance->getSOPInstanceUIDContainer()[0]);
         numNode->addSubNode(scoordNode);
     }
     else

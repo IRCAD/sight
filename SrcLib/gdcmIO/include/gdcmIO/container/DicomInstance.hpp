@@ -7,14 +7,13 @@
 #ifndef __GDCMIO_CONTAINER_DICOMINSTANCE_HPP__
 #define __GDCMIO_CONTAINER_DICOMINSTANCE_HPP__
 
-#include <string>
-#include <vector>
+#include "gdcmIO/config.hpp"
 
 #include <gdcmMediaStorage.h>
 
-#include <fwData/macros.hpp>
+#include <string>
+#include <vector>
 
-#include "gdcmIO/config.hpp"
 
 namespace fwDicomData
 {
@@ -64,16 +63,75 @@ public:
     /// Destructor
     GDCMIO_API virtual ~DicomInstance();
 
-    GDCMIO_API fwGettersSettersDocMacro(IsMultiFiles, isMultiFiles, bool, Flag on multi-files state of an image series);
+    /**
+     * @brief Flag on multi-files state of an image series
+     * @{ */
+    bool getIsMultiFiles() const
+    {
+        return this->m_isMultiFiles;
+    }
+    void setIsMultiFiles(bool isMultiFiles)
+    {
+        m_isMultiFiles = isMultiFiles;
+    }
+    /**  @} */
 
-    GDCMIO_API fwGettersSettersDocMacro(SOPClassUID, SOPClassUID, std::string, SOP Class UID);
+    /**
+     * @brief Series Instance UID
+     * @{ */
+    const std::string& getSeriesInstanceUID() const
+    {
+        return m_seriesInstanceUID;
+    }
+    void setSeriesInstanceUID(const std::string& seriesInstanceUid)
+    {
+        m_seriesInstanceUID = seriesInstanceUid;
+    }
+    /**  @} */
 
-    GDCMIO_API fwGettersSettersDocMacro(SeriesInstanceUID, seriesInstanceUID, std::string, Series Instance UID);
+    /**
+     * @brief SOP Class UID
+     * @{ */
+    const std::string& getSOPClassUID() const
+    {
+        return m_SOPClassUID;
+    }
+    void setSOPClassUID(const std::string& sopClassUid)
+    {
+        m_SOPClassUID = sopClassUid;
+    }
+    /**  @} */
 
-    GDCMIO_API fwGettersSettersDocMacro(StudyInstanceUID, studyInstanceUID, std::string, Study Instance UID);
+    /**
+     * @brief SOP Instance UID container
+     * @{ */
+    const SOPInstanceUIDContainerType& getSOPInstanceUIDContainer() const
+    {
+        return m_SOPInstanceUIDContainer;
+    }
+    SOPInstanceUIDContainerType& getSOPInstanceUIDContainer()
+    {
+        return m_SOPInstanceUIDContainer;
+    }
+    void setSOPInstanceUIDContainer(const SOPInstanceUIDContainerType& sopInstanceUidContainer)
+    {
+        m_SOPInstanceUIDContainer = sopInstanceUidContainer;
+    }
+    /**  @} */
 
-    GDCMIO_API fwGettersSettersDocMacro(SOPInstanceUIDContainer, SOPInstanceUIDContainer, SOPInstanceUIDContainerType,
-                                        SOP Instance UID container);
+    /**
+     * @brief Study Instance UID
+     * @{ */
+    const std::string& getStudyInstanceUID() const
+    {
+        return m_studyInstanceUID;
+    }
+    void setStudyInstanceUID(const std::string& studyInstanceUid)
+    {
+        m_studyInstanceUID = studyInstanceUid;
+    }
+    /**  @} */
+
 
 protected:
     /**

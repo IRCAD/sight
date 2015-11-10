@@ -7,7 +7,8 @@
 #ifndef __GDCMIO_READER_SERIESDB_HPP__
 #define __GDCMIO_READER_SERIESDB_HPP__
 
-#include <gdcmScanner.h>
+#include "gdcmIO/exception/Failed.hpp"
+#include "gdcmIO/config.hpp"
 
 #include <fwTools/ProgressAdviser.hpp>
 
@@ -20,8 +21,7 @@
 #include <fwMedData/SeriesDB.hpp>
 #include <fwServices/IService.hpp>
 
-#include "gdcmIO/exception/Failed.hpp"
-#include "gdcmIO/config.hpp"
+#include <gdcmScanner.h>
 
 namespace gdcmIO
 {
@@ -79,10 +79,19 @@ public:
     /// Return DicomSeries container
     GDCMIO_API DicomSeriesContainerType &getDicomSeries();
 
-    fwGettersSettersDocMacro(DicomdirActivated, isDicomdirActivated, bool,
-                             Set whether the reader must use the dicomdir file or not);
-    fwGettersSettersDocMacro(DicomFilterType, dicomFilterType, std::string,
-                             Dicom filter type that must be applied prior to the reading process);
+    /**
+     * @brief Dicom filter type that must be applied prior to the reading process
+     * @{ */
+    const std::string& getDicomFilterType() const;
+    void setDicomFilterType(const std::string& dicomFilterType);
+    /**  @} */
+
+    /**
+     * @brief Set whether the reader must use the dicomdir file or not
+     * @{ */
+    bool getDicomdirActivated() const;
+    void setDicomdirActivated(bool isDicomdirActivated);
+    /**  @} */
 
 private:
 
@@ -164,6 +173,36 @@ private:
     std::string m_dicomFilterType;
 
 };
+
+//-----------------------------------------------------------------------------
+
+inline const std::string &SeriesDB::getDicomFilterType() const
+{
+    return m_dicomFilterType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void SeriesDB::setDicomFilterType(const std::string &dicomFilterType)
+{
+    m_dicomFilterType = dicomFilterType;
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool SeriesDB::getDicomdirActivated() const
+{
+    return m_isDicomdirActivated;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void SeriesDB::setDicomdirActivated(bool isDicomdirActivated)
+{
+    m_isDicomdirActivated = isDicomdirActivated;
+}
+
+//-----------------------------------------------------------------------------
 
 }  // namespace reader
 

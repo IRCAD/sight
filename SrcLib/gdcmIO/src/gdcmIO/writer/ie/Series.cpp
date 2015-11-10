@@ -75,7 +75,7 @@ void Series::writeGeneralSeriesModule()
     }
 
     // Laterality - Type 2C - FIXME: Fake Value - Should be absent for the abdomen or chest
-    if(m_instance->getCRefSOPClassUID() !=
+    if(m_instance->getSOPClassUID() !=
        ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::SurfaceSegmentationStorage))
     {
         ::gdcmIO::helper::DicomData::setTagValue< 0x0020, 0x0060 >("R", dataset);

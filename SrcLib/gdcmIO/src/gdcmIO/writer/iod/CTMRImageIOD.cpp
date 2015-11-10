@@ -96,12 +96,12 @@ void CTMRImageIOD::write(::fwMedData::Series::sptr series)
     // Write Image Pixel Module - PS 3.3 C.7.6.3
     imageIE.writeImagePixelModule();
 
-    if(m_instance->getCRefSOPClassUID() == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::CTImageStorage))
+    if(m_instance->getSOPClassUID() == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::CTImageStorage))
     {
         // Write CT Image Module - PS 3.3 C.8.2.1
         imageIE.writeCTImageModule();
     }
-    else if(m_instance->getCRefSOPClassUID() == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
+    else if(m_instance->getSOPClassUID() == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))
     {
         // Write MR Image Module - PS 3.3 C.8.3.1
         imageIE.writeMRImageModule();

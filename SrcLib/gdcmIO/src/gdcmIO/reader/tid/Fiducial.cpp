@@ -4,11 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwData/Boolean.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
 
 #include "gdcmIO/container/sr/DicomSRImageNode.hpp"
 #include "gdcmIO/container/sr/DicomSRTextNode.hpp"
@@ -17,6 +12,13 @@
 #include "gdcmIO/helper/DicomData.hpp"
 
 #include "gdcmIO/reader/tid/Fiducial.hpp"
+
+#include <fwComEd/Dictionary.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Point.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/String.hpp>
 
 namespace gdcmIO
 {
@@ -46,12 +48,12 @@ Fiducial::~Fiducial()
 void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
 {
     if(node->getCodedAttribute() == ::gdcmIO::container::DicomCodedAttribute("122340", "DCM", "Fiducial feature") &&
-       !node->getCRefSubNodeContainer().empty())
+       !node->getSubNodeContainer().empty())
     {
         std::string label = "";
         float x, y, z;
         bool foundLandmark = false;
-        BOOST_FOREACH(const SPTR(::gdcmIO::container::sr::DicomSRNode)& subNode, node->getCRefSubNodeContainer())
+        for(const SPTR(::gdcmIO::container::sr::DicomSRNode)& subNode : node->getSubNodeContainer())
         {
             // Read label
             if(subNode->getCodedAttribute() ==
@@ -69,7 +71,7 @@ void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
                     ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoordNode >(subNode);
-                if(scoordNode && scoordNode->getCRefGraphicType() == "POINT")
+                if(scoordNode && scoordNode->getGraphicType() == "POINT")
                 {
                     // Retrieve coordinates
                     ::gdcmIO::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =
@@ -78,14 +80,14 @@ void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
                     x = coordinates[0];
                     y = coordinates[1];
 
-                    if(!scoordNode->getCRefSubNodeContainer().empty())
+                    if(!scoordNode->getSubNodeContainer().empty())
                     {
                         SPTR(::gdcmIO::container::sr::DicomSRImageNode) imageNode =
                             ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRImageNode >(
-                                *scoordNode->getCRefSubNodeContainer().begin());
+                                *scoordNode->getSubNodeContainer().begin());
                         if(imageNode)
                         {
-                            const int frameNumber = imageNode->getCRefFrameNumber();
+                            const int frameNumber = imageNode->getFrameNumber();
                             z = ::gdcmIO::helper::DicomData::convertFrameNumberToZCoordinate(m_object,
                                                                                              frameNumber);
                             foundLandmark = true;
@@ -98,7 +100,7 @@ void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoord3DNode =
                     ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(subNode);
-                if(scoord3DNode && scoord3DNode->getCRefGraphicType() == "POINT")
+                if(scoord3DNode && scoord3DNode->getGraphicType() == "POINT")
                 {
                     // Retrieve coordinates
                     ::gdcmIO::container::sr::DicomSRSCoordNode::GraphicDataContainerType coordinates =

@@ -7,17 +7,14 @@
 #ifndef __GDCMIO_CONTAINER_SR_DICOMSRCODENODE_HPP__
 #define __GDCMIO_CONTAINER_SR_DICOMSRCODENODE_HPP__
 
-#include <string>
-#include <vector>
-
-#include <gdcmDataSet.h>
-
-#include <fwData/macros.hpp>
-
 #include "gdcmIO/container/DicomCodedAttribute.hpp"
 #include "gdcmIO/container/sr/DicomSRNode.hpp"
 #include "gdcmIO/config.hpp"
 
+#include <gdcmDataSet.h>
+
+#include <string>
+#include <vector>
 
 namespace gdcmIO
 {
@@ -47,7 +44,18 @@ public:
      */
     GDCMIO_API virtual void write(::gdcm::DataSet &dataset) const;
 
-    GDCMIO_API fwGettersSettersDocMacro(CodedEntry, codedEntry, DicomCodedAttribute, Coded Entry);
+    /**
+     * @brief Coded Entry
+     * @{ */
+    const DicomCodedAttribute& getCodedEntry() const
+    {
+        return this->m_codedEntry;
+    }
+    void setCodedEntry (const DicomCodedAttribute &_codedEntry)
+    {
+        this->m_codedEntry = _codedEntry;
+    }
+    /**  @} */
 
 protected:
 

@@ -7,11 +7,12 @@
 #ifndef __GDCMIO_CONTAINER_DICOMSURFACE_HPP__
 #define __GDCMIO_CONTAINER_DICOMSURFACE_HPP__
 
-#include <stdint.h> // for uint16_t on Windows
+#include "gdcmIO/config.hpp"
+
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include "gdcmIO/config.hpp"
+#include <stdint.h> // for uint16_t on Windows
 
 namespace gdcmIO
 {

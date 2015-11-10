@@ -87,7 +87,7 @@ void SpatialFiducials::writeSpatialFiducialsModule()
     ::gdcmIO::helper::DicomData::setSQ< 0x0008, 0x1140 >(referencedImageSequence, fiducialSetItemDataset);
 
     // Add all referenced image
-    for(int index = 0; index < m_instance->getCRefSOPInstanceUIDContainer().size(); ++index)
+    for(int index = 0; index < m_instance->getSOPInstanceUIDContainer().size(); ++index)
     {
         ::gdcm::Item referencedImageItem;
         referencedImageItem.SetVLToUndefined();
@@ -98,11 +98,11 @@ void SpatialFiducials::writeSpatialFiducialsModule()
         ::gdcmIO::helper::DicomData::setTagValues< int, 0x0008, 0x1160 >(&frameNumber, 1, referencedImageItemDataset);
 
         // Referenced SOP Class UID - Type 1
-        ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1150 >(m_instance->getCRefSOPClassUID(),
+        ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1150 >(m_instance->getSOPClassUID(),
                                                                    referencedImageItemDataset);
 
         // Referenced SOP Instance UID - Type 1
-        ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1155 >(m_instance->getCRefSOPInstanceUIDContainer()[index],
+        ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1155 >(m_instance->getSOPInstanceUIDContainer()[index],
                                                                    referencedImageItemDataset);
 
         // Add referenced image to sequence
@@ -211,18 +211,18 @@ void SpatialFiducials::writeCommonInstanceReferenceModule()
     ::gdcmIO::helper::DicomData::setSQ< 0x0008, 0x114A >(referencedInstanceSequence, referencedSeriesItemDataset);
 
     // Add all referenced image
-    for(int index = 0; index < m_instance->getCRefSOPInstanceUIDContainer().size(); ++index)
+    for(int index = 0; index < m_instance->getSOPInstanceUIDContainer().size(); ++index)
     {
         ::gdcm::Item referencedInstanceItem;
         referencedInstanceItem.SetVLToUndefined();
         ::gdcm::DataSet &referencedInstanceItemDataset = referencedInstanceItem.GetNestedDataSet();
 
         // Referenced SOP Class UID - Type 1
-        ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1150 >(m_instance->getCRefSOPClassUID(),
+        ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1150 >(m_instance->getSOPClassUID(),
                                                                    referencedInstanceItemDataset);
 
         // Referenced SOP Instance UID - Type 1
-        ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1155 >(m_instance->getCRefSOPInstanceUIDContainer()[index],
+        ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1155 >(m_instance->getSOPInstanceUIDContainer()[index],
                                                                    referencedInstanceItemDataset);
 
         // Add referenced image to sequence
@@ -281,12 +281,12 @@ void SpatialFiducials::addReferencedImage(int frameNumber,
                                                                      referencedImageItemDataset);
 
     // Referenced SOP Class UID - Type 1
-    ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1150 >(m_instance->getCRefSOPClassUID(),
+    ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1150 >(m_instance->getSOPClassUID(),
                                                                referencedImageItemDataset);
 
     // Referenced SOP Instance UID - Type 1
     ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x1155 >(
-        m_instance->getCRefSOPInstanceUIDContainer()[frameNumber-1], referencedImageItemDataset);
+        m_instance->getSOPInstanceUIDContainer()[frameNumber-1], referencedImageItemDataset);
 
     // Add referenced image to sequence
     referencedImageSequence->AddItem(referencedImageItem);

@@ -4,10 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomDataCamp/DicomSeries.hpp"
+
 #include <fwDicomData/DicomSeries.hpp>
 #include <fwCamp/UserObject.hpp>
-
-#include "fwDicomDataCamp/DicomSeries.hpp"
 
 //------------------------------------------------------------------------------
 
@@ -17,12 +17,12 @@ fwCampImplementDataMacro((fwDicomData)(DicomSeries))
     .tag("object_version", "1")
     .tag("lib_name", "fwDicomData")
     .base< ::fwMedData::Series>()
-    .property("dicom_availability", &::fwDicomData::DicomSeries::m_attrDicomAvailability)
-    .property("number_of_instances", &::fwDicomData::DicomSeries::m_attrNumberOfInstances)
-    .property("local_dicom_paths", &::fwDicomData::DicomSeries::m_attrLocalDicomPaths)
-    .property("dicom_binaries", &::fwDicomData::DicomSeries::m_attrDicomBinaries)
-    .property("sop_class_uids", &::fwDicomData::DicomSeries::m_attrSOPClassUIDs)
-    .property("computed_tag_values", &::fwDicomData::DicomSeries::m_attrComputedTagValues)
+    .property("dicom_availability", &::fwDicomData::DicomSeries::m_dicomAvailability)
+    .property("number_of_instances", &::fwDicomData::DicomSeries::m_numberOfInstances)
+    .property("local_dicom_paths", &::fwDicomData::DicomSeries::m_localDicomPaths)
+    .property("dicom_binaries", &::fwDicomData::DicomSeries::m_dicomBinaries)
+    .property("sop_class_uids", &::fwDicomData::DicomSeries::m_SOPClassUIDs)
+    .property("computed_tag_values", &::fwDicomData::DicomSeries::m_computedTagValues)
     ;
 }
 

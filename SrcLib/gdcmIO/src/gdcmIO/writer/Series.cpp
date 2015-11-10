@@ -57,7 +57,7 @@ void Series::write() throw (::gdcmIO::exception::Failed)
         ::boost::make_shared< ::gdcmIO::container::DicomInstance >(series, multiFiles);
 
     // Retrieve series SOPClassUID
-    const std::string& sopClassUID = instance->getCRefSOPClassUID();
+    const std::string& sopClassUID = instance->getSOPClassUID();
 
     if(sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::CTImageStorage) ||
        sopClassUID == ::gdcm::MediaStorage::GetMSString(::gdcm::MediaStorage::MRImageStorage))

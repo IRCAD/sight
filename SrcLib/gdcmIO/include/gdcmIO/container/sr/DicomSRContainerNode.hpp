@@ -7,16 +7,14 @@
 #ifndef __GDCMIO_CONTAINER_SR_DICOMSRCONTAINERNODE_HPP__
 #define __GDCMIO_CONTAINER_SR_DICOMSRCONTAINERNODE_HPP__
 
-#include <string>
-#include <vector>
-
-#include <gdcmDataSet.h>
-
-#include <fwData/macros.hpp>
-
 #include "gdcmIO/container/DicomCodedAttribute.hpp"
 #include "gdcmIO/container/sr/DicomSRNode.hpp"
 #include "gdcmIO/config.hpp"
+
+#include <gdcmDataSet.h>
+
+#include <string>
+#include <vector>
 
 
 namespace gdcmIO

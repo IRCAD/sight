@@ -45,7 +45,7 @@ Surface::Surface(SPTR(::gdcm::Writer)writer,
 {
     SLM_ASSERT("Image instance should not be null.", imageInstance);
     SLM_ASSERT("Image instance SOPInstanceUID container should not be empty.",
-               !imageInstance->getCRefSOPInstanceUIDContainer().empty());
+               !imageInstance->getSOPInstanceUIDContainer().empty());
 
     // Create dictionary
     m_structureDictionary = ::fwData::StructureTraitsDictionary::New();
@@ -230,7 +230,7 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
         // Include ‘Image SOP Instance Reference Macro’ Table C.10-3
         const std::string &referencedSOPClassUID                            = m_imageInstance->getSOPClassUID();
         const std::vector< std::string >& referencedSOPInstanceUIDContainer =
-            m_imageInstance->getCRefSOPInstanceUIDContainer();
+            m_imageInstance->getSOPInstanceUIDContainer();
 
         BOOST_FOREACH(const std::string& sopInstanceUID, referencedSOPInstanceUIDContainer)
         {

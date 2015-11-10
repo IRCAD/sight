@@ -7,15 +7,15 @@
 #ifndef __GDCMIO_CONTAINER_SR_DICOMSRNODE_HPP__
 #define __GDCMIO_CONTAINER_SR_DICOMSRNODE_HPP__
 
-#include <string>
-#include <vector>
+#include "gdcmIO/container/DicomCodedAttribute.hpp"
+#include "gdcmIO/config.hpp"
+
+#include <fwCore/macros.hpp>
 
 #include <gdcmDataSet.h>
 
-#include <fwData/macros.hpp>
-
-#include "gdcmIO/container/DicomCodedAttribute.hpp"
-#include "gdcmIO/config.hpp"
+#include <string>
+#include <vector>
 
 
 namespace gdcmIO
@@ -48,16 +48,63 @@ public:
     GDCMIO_API void addSubNode(const SPTR(DicomSRNode)& node);
 
     /// Dump operator
-    GDCMIO_API friend std::ostream& operator<< (std::ostream& os, const DicomSRNode& node)
+    friend std::ostream& operator<< (std::ostream& os, const DicomSRNode& node)
     {
         node.print(os);
         return os;
     }
 
-    GDCMIO_API fwGettersSettersDocMacro(SubNodeContainer, subNodeContainer, SubNodeContainer, Sub node container);
-    GDCMIO_API fwGettersSettersDocMacro(CodedAttribute, codedAttribute, DicomCodedAttribute, Coded attribute);
-    GDCMIO_API fwGettersSettersDocMacro(Type, type, std::string, Type);
-    GDCMIO_API fwGettersSettersDocMacro(Relationship, relationship, std::string, Relationship);
+    /**
+     * @brief Sub node container
+     * @{ */
+    const SubNodeContainer& getSubNodeContainer() const
+    {
+        return m_subNodeContainer;
+    }
+    void setSubNodeContainer(const SubNodeContainer&  _subNodeContainer)
+    {
+        this->m_subNodeContainer = _subNodeContainer;
+    }
+    /**  @} */
+
+    /**
+     * @brief Coded attribute
+     * @{ */
+    const DicomCodedAttribute& getCodedAttribute() const
+    {
+        return m_codedAttribute;
+    }
+    void setCodedAttribute(const DicomCodedAttribute&  _codedAttribute)
+    {
+        this->m_codedAttribute = _codedAttribute;
+    }
+    /**  @} */
+
+    /**
+     * @brief Type
+     * @{ */
+    const std::string& getType() const
+    {
+        return m_type;
+    }
+    void setType(const std::string&  _type)
+    {
+        this->m_type = _type;
+    }
+    /**  @} */
+
+    /**
+     * @brief Relationship
+     * @{ */
+    const std::string& getRelationship() const
+    {
+        return m_relationship;
+    }
+    void setRelationship(const std::string&  _relationship)
+    {
+        this->m_relationship = _relationship;
+    }
+    /**  @} */
 
 protected:
 

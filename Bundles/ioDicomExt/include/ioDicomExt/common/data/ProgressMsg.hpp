@@ -8,7 +8,6 @@
 #define __IODICOMEXT_COMMON_DATA_PROGRESSMSG_HPP__
 
 #include <fwServices/ObjectMsg.hpp>
-#include <fwData/macros.hpp>
 
 #include "ioDicomExt/config.hpp"
 
@@ -51,9 +50,14 @@ public:
      */
     IODICOMEXT_API virtual ~ProgressMsg() throw();
 
-    fwGettersSettersDocMacro(BarID,barId,std::string,Get/Set Progress Bar ID);
-    fwGettersSettersDocMacro(Message,message,std::string,Get/Set Message);
-    fwGettersSettersDocMacro(Percentage,percentage,float,Get/Set Percentage);
+    const std::string& getBarID() const;
+    void setBarID(const std::string& barId);
+
+    const std::string& getMessage() const;
+    void setMessage(const std::string& message);
+
+    float getPercentage() const;
+    void setPercentage(float percentage);
 
 private:
     /// Progress ID
@@ -66,6 +70,50 @@ private:
     float m_percentage;
 
 };
+
+//------------------------------------------------------------------------------
+
+inline const std::string& ProgressMsg::getBarID() const
+{
+    return m_barId;
+}
+
+//------------------------------------------------------------------------------
+
+inline void ProgressMsg::setBarID(const std::string& barId)
+{
+    m_barId = barId;
+}
+
+//------------------------------------------------------------------------------
+
+inline const std::string& ProgressMsg::getMessage() const
+{
+    return m_message;
+}
+
+//------------------------------------------------------------------------------
+
+inline void ProgressMsg::setMessage(const std::string& message)
+{
+    m_message = message;
+}
+
+//------------------------------------------------------------------------------
+
+inline float ProgressMsg::getPercentage() const
+{
+    return m_percentage;
+}
+
+//------------------------------------------------------------------------------
+
+inline void ProgressMsg::setPercentage(float percentage)
+{
+    m_percentage = percentage;
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace data
 } // namespace common

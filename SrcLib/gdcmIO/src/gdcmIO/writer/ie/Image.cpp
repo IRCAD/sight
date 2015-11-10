@@ -206,7 +206,7 @@ void Image::writeSOPCommonModuleSpecificTags(unsigned int instanceNumber)
     ::gdcm::DataSet &dataset = m_writer->GetFile().GetDataSet();
 
     // SOP Instance UID
-    const std::string sopInstanceUID = m_instance->getCRefSOPInstanceUIDContainer()[instanceNumber];
+    const std::string sopInstanceUID = m_instance->getSOPInstanceUIDContainer()[instanceNumber];
     ::gdcmIO::helper::DicomData::setTagValue< 0x0008, 0x0018 >(sopInstanceUID, dataset);
 }
 

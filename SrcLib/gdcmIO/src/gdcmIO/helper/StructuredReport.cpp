@@ -263,16 +263,14 @@ void StructuredReport::dumpSRNode(const SPTR(::gdcmIO::container::sr::DicomSRNod
     out << "\t" << index << "[label=\"" << (*root) << "\"][shape=box];" << std::endl;
 
     const int parentIndex = index;
-    BOOST_FOREACH(const SPTR(::gdcmIO::container::sr::DicomSRNode)& child, root->getCRefSubNodeContainer())
+    for(const SPTR(::gdcmIO::container::sr::DicomSRNode)& child : root->getSubNodeContainer())
     {
         // Write edge
-        out << "\t" << parentIndex  << "--" << (index+1) << "[label=\"" << child->getRefRelationship() << "\"];" <<
+        out << "\t" << parentIndex  << "--" << (index+1) << "[label=\"" << child->getRelationship() << "\"];" <<
             std::endl;
 
         // Write child
         StructuredReport::dumpSRNode(child, out, ++index);
-
-
     }
 }
 

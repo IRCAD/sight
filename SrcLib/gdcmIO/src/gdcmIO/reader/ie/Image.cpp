@@ -273,7 +273,7 @@ void* Image::readImageBuffer() throw(::gdcmIO::exception::Failed)
 
     // Read every frames
     unsigned int frameNumber = 0;
-    BOOST_FOREACH(::fwDicomData::DicomSeries::DicomPathContainerType::value_type v, pathContainer)
+    for(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& v : pathContainer)
     {
         // Get filename
         const std::string filename = v.second.string();
@@ -304,9 +304,9 @@ void* Image::readImageBuffer() throw(::gdcmIO::exception::Failed)
             gdcmDatasetRoot);
         if(!sopInstanceUID.empty())
         {
-            m_instance->getRefSOPInstanceUIDContainer().push_back(sopInstanceUID);
+            m_instance->getSOPInstanceUIDContainer().push_back(sopInstanceUID);
         }
-        OSLM_WARN_IF("Empty SOP instance UID found", sopInstanceUID.empty());
+        SLM_WARN_IF("Empty SOP instance UID found", sopInstanceUID.empty());
 
         // Next frame
         ++frameNumber;

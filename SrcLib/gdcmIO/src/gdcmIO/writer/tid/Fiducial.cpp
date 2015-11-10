@@ -114,7 +114,7 @@ void Fiducial::createFiducial(SPTR(::gdcmIO::container::sr::DicomSRNode)parent, 
         SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoord3DNode =
             ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
                 ::gdcmIO::container::DicomCodedAttribute(), "HAS PROPERTIES", "POINT", scoordVector,
-                m_instance->getCRefSOPInstanceUIDContainer()[0]);
+                m_instance->getSOPInstanceUIDContainer()[0]);
         rootNode->addSubNode(scoord3DNode);
     }
     else

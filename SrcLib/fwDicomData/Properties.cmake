@@ -9,7 +9,7 @@ set( DEPENDENCIES
         fwMedData
         fwCamp
         fwDataCamp
-        )
+)
 set( REQUIREMENTS  )
 
 

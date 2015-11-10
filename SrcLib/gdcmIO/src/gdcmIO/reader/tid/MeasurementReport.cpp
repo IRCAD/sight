@@ -39,13 +39,12 @@ void MeasurementReport::readSR(SPTR(::gdcmIO::container::sr::DicomSRNode)root)
     if(root->getCodedAttribute() ==
        ::gdcmIO::container::DicomCodedAttribute("dd1dd1", "DCM", "Imaging Measurement Report"))
     {
-        BOOST_FOREACH(const SPTR(::gdcmIO::container::sr::DicomSRNode)& node, root->getCRefSubNodeContainer())
+        for(const SPTR(::gdcmIO::container::sr::DicomSRNode)& node : root->getSubNodeContainer())
         {
             // Try to identify a fiducial node
             if(node->getCodedAttribute() == ::gdcmIO::container::DicomCodedAttribute("dd1d93", "DCM", "Fiducials"))
             {
-                BOOST_FOREACH(const SPTR(::gdcmIO::container::sr::DicomSRNode)& subNode,
-                              node->getCRefSubNodeContainer())
+                for(const SPTR(::gdcmIO::container::sr::DicomSRNode)& subNode : node->getSubNodeContainer())
                 {
                     ::gdcmIO::reader::tid::Fiducial fiducial(m_dicomSeries, m_reader, m_instance, m_object);
                     fiducial.readNode(subNode);
@@ -55,8 +54,7 @@ void MeasurementReport::readSR(SPTR(::gdcmIO::container::sr::DicomSRNode)root)
             else if(node->getCodedAttribute() ==
                     ::gdcmIO::container::DicomCodedAttribute("dd1d91", "DCM", "Imaging Measurements"))
             {
-                BOOST_FOREACH(const SPTR(::gdcmIO::container::sr::DicomSRNode)& subNode,
-                              node->getCRefSubNodeContainer())
+                for(const SPTR(::gdcmIO::container::sr::DicomSRNode)& subNode : node->getSubNodeContainer())
                 {
                     ::gdcmIO::reader::tid::Measurement measurement(m_dicomSeries, m_reader, m_instance, m_object);
                     measurement.readNode(subNode);

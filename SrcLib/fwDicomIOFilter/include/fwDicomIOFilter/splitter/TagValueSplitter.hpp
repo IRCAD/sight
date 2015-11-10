@@ -7,9 +7,10 @@
 #ifndef __FWDICOMIOFILTER_SPLITTER_TAGVALUESPLITTER_HPP__
 #define __FWDICOMIOFILTER_SPLITTER_TAGVALUESPLITTER_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
 #include "fwDicomIOFilter/splitter/ISplitter.hpp"
 #include "fwDicomIOFilter/config.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -46,7 +47,26 @@ public:
     /// Return true if a configuration is required
     FWDICOMIOFILTER_API virtual bool isConfigurationRequired();
 
-    fwGettersSettersDocMacro(Tag, tag, DcmTagKey, Tag used to sort instances);
+    /**
+     * @brief Tag used to sort instances
+     * @{ */
+    const DcmTagKey getTag () const
+    {
+        return m_tag;
+    }
+    DcmTagKey& getRefTag ()
+    {
+        return this->m_tag;
+    }
+    const DcmTagKey &getCRefTag() const
+    {
+        return this->m_tag;
+    }
+    void setTag (const DcmTagKey& _tag)
+    {
+        this->m_tag = _tag;
+    }
+    /**  @} */
 
 protected:
     /// Filter name

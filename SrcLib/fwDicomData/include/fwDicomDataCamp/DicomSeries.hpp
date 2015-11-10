@@ -7,11 +7,11 @@
 #ifndef __FWDICOMDATACAMP_DICOMSERIES_HPP__
 #define __FWDICOMDATACAMP_DICOMSERIES_HPP__
 
+#include "fwDicomData/DicomSeries.hpp"
+#include "fwDicomData/config.hpp"
+
 #include <fwCamp/macros.hpp>
 #include <fwData/Array.hpp>
-#include "fwDicomData/DicomSeries.hpp"
-
-#include "fwDicomData/config.hpp"
 
 fwCampAutoDeclareEnumMacro((fwDicomData)(DicomSeries)(DICOM_AVAILABILITY));
 

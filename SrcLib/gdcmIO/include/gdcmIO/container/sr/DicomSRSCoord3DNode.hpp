@@ -7,16 +7,14 @@
 #ifndef __GDCMIO_CONTAINER_SR_DICOMSRSCOORD3DNODE_HPP__
 #define __GDCMIO_CONTAINER_SR_DICOMSRSCOORD3DNODE_HPP__
 
-#include <string>
-#include <vector>
-
-#include <gdcmDataSet.h>
-
-#include <fwData/macros.hpp>
-
 #include "gdcmIO/container/DicomCodedAttribute.hpp"
 #include "gdcmIO/container/sr/DicomSRNode.hpp"
 #include "gdcmIO/config.hpp"
+
+#include <gdcmDataSet.h>
+
+#include <string>
+#include <vector>
 
 
 namespace gdcmIO
@@ -50,10 +48,44 @@ public:
      */
     GDCMIO_API virtual void write(::gdcm::DataSet &dataset) const;
 
-    GDCMIO_API fwGettersSettersDocMacro(FrameOfReferenceUID, frameOfReferenceUID, std::string, Frame of reference UID);
-    GDCMIO_API fwGettersSettersDocMacro(GraphicType, graphicType, std::string, Graphic type);
-    GDCMIO_API fwGettersSettersDocMacro(GraphicDataContainer, graphicDataContainer, GraphicDataContainerType,
-                                        Graphic data container);
+    /**
+     * @brief Frame of reference UID
+     * @{ */
+    const std::string& getFrameOfReferenceUID() const
+    {
+        return m_frameOfReferenceUID;
+    }
+    void setFrameOfReferenceUID(const std::string&  frameOfReferenceUID)
+    {
+        this->m_frameOfReferenceUID = frameOfReferenceUID;
+    }
+    /**  @} */
+
+    /**
+     * @brief Graphic type
+     * @{ */
+    const std::string& getGraphicType() const
+    {
+        return m_graphicType;
+    }
+    void setGraphicType(const std::string&  graphicType)
+    {
+        this->m_graphicType = graphicType;
+    }
+    /**  @} */
+
+    /**
+     * @brief Graphic data container
+     * @{ */
+    const GraphicDataContainerType& getGraphicDataContainer() const
+    {
+        return m_graphicDataContainer;
+    }
+    void setGraphicDataContainer(const GraphicDataContainerType&  graphicDataContainer)
+    {
+        this->m_graphicDataContainer = graphicDataContainer;
+    }
+    /**  @} */
 
 protected:
 
