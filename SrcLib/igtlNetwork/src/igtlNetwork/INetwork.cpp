@@ -38,6 +38,13 @@ bool INetwork::sendObject (::fwData::Object::sptr obj) throw (::fwCore::Exceptio
     return (m_socket->Send(msg->GetPackPointer(), msg->GetPackSize()) == 1);
 }
 
+//------------------------------------------------------------------------------
+
+bool INetwork::sendMsg (igtl::MessageBase::Pointer msg) throw (::fwCore::Exception)
+{
+    msg->Pack();
+    return (m_socket->Send(msg->GetPackPointer(), msg->GetPackSize()) == 1);
+}
 
 //------------------------------------------------------------------------------
 
@@ -59,6 +66,7 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj) throw (::fwCore::Except
     return false;
 }
 
+
 //------------------------------------------------------------------------------
 
 ::igtl::MessageHeader::Pointer INetwork::receiveHeader()
@@ -69,6 +77,7 @@ bool INetwork::receiveObject(::fwData::Object::sptr obj) throw (::fwCore::Except
     headerMsg = ::igtl::MessageHeader::New();
     headerMsg->InitPack();
     sizeReceive = m_socket->Receive (headerMsg->GetPackPointer(), headerMsg->GetPackSize());
+
     if (sizeReceive == -1 || sizeReceive == 0)
     {
         return ::igtl::MessageHeader::Pointer();
@@ -100,6 +109,7 @@ throw (::fwCore::Exception)
     msg->SetMessageHeader (headerMsg);
     msg->AllocatePack();
     result = m_socket->Receive (msg->GetPackBodyPointer(), msg->GetPackBodySize());
+
     if (result == -1)
     {
         return ::igtl::MessageBase::Pointer();
@@ -111,6 +121,13 @@ throw (::fwCore::Exception)
         return msg;
     }
     throw Exception("Body pack is not valid");
+}
+
+//------------------------------------------------------------------------------
+
+::igtl::Socket::Pointer INetwork::getSocket()
+{
+    return m_socket;
 }
 
 //------------------------------------------------------------------------------

@@ -5,7 +5,6 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
-    extDataReg
     gui
     guiQt
     servicesReg

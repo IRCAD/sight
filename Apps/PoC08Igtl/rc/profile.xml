@@ -1,7 +1,7 @@
 <profile name="PoC08Igtl" version="0.1" check-single-instance="true">
 
     <activate id="dataReg" version="0-1" />
-    <activate id="extDataReg" version="0-1" />
+<!--    <activate id="extDataReg" version="0-1" />-->
     <activate id="servicesReg" version="0-1" />
     <activate id="visu" version="0-1" />
     <activate id="visuVTK" version="0-1" />
@@ -27,7 +27,7 @@
     <start id="guiQt" />
     <start id="visuVTK" />
     <start id="visuVTKQt" />
-    <start id="extDataReg" />
+<!--    <start id="extDataReg" />-->
     <start id="appXml" />
 
 </profile>

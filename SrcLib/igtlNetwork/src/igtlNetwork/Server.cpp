@@ -8,6 +8,7 @@
 #include "igtlNetwork/Exception.hpp"
 
 #include <fwCore/spyLog.hpp>
+#include <igtlProtocol/MessageFactory.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
 
@@ -57,25 +58,47 @@ void Server::runServer()
 
     Client::sptr newClient;
 
+
     while (this->isStarted())
     {
         newClient = this->waitForConnection();
         if (newClient != NULL)
         {
             m_clients.push_back(newClient);
+            OSLM_TRACE("New client on server "<<m_port);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Server::broadcast (::fwData::Object::sptr obj)
+void Server::broadcast(::fwData::Object::sptr obj)
 {
-    std::list<Client::sptr>::iterator it;
+    std::vector<Client::sptr>::iterator it;
 
     for (it = m_clients.begin(); it != m_clients.end(); ++it)
     {
         if (!(*it)->sendObject(obj))
+        {
+            (*it)->disconnect();
+            it = m_clients.erase(it);
+            if (it ==  m_clients.end())
+            {
+                break;
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Server::broadcast(::igtl::MessageBase::Pointer msg)
+{
+    std::vector<Client::sptr>::iterator it;
+
+    for (it = m_clients.begin(); it != m_clients.end(); ++it)
+    {
+        if (!(*it)->sendMsg(msg))
         {
             (*it)->disconnect();
             it = m_clients.erase(it);
@@ -101,6 +124,7 @@ void Server::start (::boost::uint16_t port) throw (::fwCore::Exception)
 
     result = this->m_serverSocket->CreateServer(port);
     m_port = port;
+
     if (result != Server::s_SUCCESS)
     {
         throw Exception("Cannot create server on port : " + ::boost::lexical_cast< std::string >(port));
@@ -137,6 +161,92 @@ void Server::stop() throw (::fwCore::Exception)
     m_clients.clear();
     this->m_serverSocket->CloseSocket();
 
+}
+
+//------------------------------------------------------------------------------
+
+unsigned int Server::getNumberOfClients()
+{
+    if(this->isStarted())
+    {
+        ::fwCore::mt::ScopedLock lock(m_mutex);
+
+        return m_clients.size();
+    }
+
+    return 0;
+
+}
+
+//------------------------------------------------------------------------------
+
+std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeader()
+{
+    std::vector< ::igtl::MessageHeader::Pointer > headerMsgs;
+
+    std::vector<Client::sptr>::iterator it;
+
+    ::fwCore::mt::ScopedLock lock(m_mutex);
+
+    for (it = m_clients.begin(); it != m_clients.end(); ++it)
+    {
+        int sizeReceive;
+
+        ::igtl::MessageHeader::Pointer headerMsg = ::igtl::MessageHeader::New();
+        headerMsg->InitPack();
+        sizeReceive = (*it)->getSocket()->Receive (headerMsg->GetPackPointer(), headerMsg->GetPackSize());
+        if (sizeReceive == -1 || sizeReceive == 0)
+        {
+            headerMsgs.push_back( ::igtl::MessageHeader::Pointer());
+        }
+        else
+        {
+            if (sizeReceive != 0 && sizeReceive != headerMsg->GetPackSize())
+            {
+                headerMsgs.push_back( ::igtl::MessageHeader::Pointer());
+            }
+            else if (headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
+            {
+                headerMsgs.push_back( headerMsg );
+            }
+        }
+        headerMsgs.push_back( ::igtl::MessageHeader::Pointer());
+
+    }
+
+    return headerMsgs;
+
+
+}
+
+//------------------------------------------------------------------------------
+
+::igtl::MessageBase::Pointer Server::receiveBody (::igtl::MessageHeader::Pointer const headerMsg, unsigned int client)
+throw (::fwCore::Exception)
+{
+    int unpackResult;
+    int result;
+    ::igtl::MessageBase::Pointer msg;
+
+    msg = ::igtlProtocol::MessageFactory::create(headerMsg->GetDeviceType());
+    msg->SetMessageHeader (headerMsg);
+    msg->AllocatePack();
+
+    ::fwCore::mt::ScopedLock lock(m_mutex);
+
+    result = (m_clients[client]->getSocket())->Receive (msg->GetPackBodyPointer(), msg->GetPackBodySize());
+
+    if (result == -1)
+    {
+        return ::igtl::MessageBase::Pointer();
+    }
+
+    unpackResult = msg->Unpack (1);
+    if (unpackResult & igtl::MessageHeader::UNPACK_BODY)
+    {
+        return msg;
+    }
+    throw Exception("Body pack is not valid");
 }
 
 //------------------------------------------------------------------------------

@@ -78,6 +78,11 @@ public:
     IGTLNETWORK_API void broadcast(::fwData::Object::sptr obj);
 
     /**
+     * @brief method to broadcast to all client a msg
+     */
+    IGTLNETWORK_API void broadcast(::igtl::MessageBase::Pointer msg);
+
+    /**
      * @brief get the port
      *
      * @return the port listened by server instance
@@ -90,6 +95,27 @@ public:
      */
     IGTLNETWORK_API void runServer();
 
+    /**
+     * @brief method to have the current number of clients
+     */
+    IGTLNETWORK_API unsigned int getNumberOfClients();
+    /**
+     * @brief methdo to receive all headers of all connected clients
+     *
+     * @return vector of igl::MessageHeader::Pointer
+     */
+
+    IGTLNETWORK_API std::vector< ::igtl::MessageHeader::Pointer > receiveHeader();
+
+    /** @brief receive body pack of a specific connected client
+     *
+     *  @param[in] header msg header
+     *  @param[in] client num
+     *
+     *  @return Message
+     */
+    IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header,
+                                                              unsigned int client) throw (::fwCore::Exception);
 
 private:
 
@@ -102,9 +128,8 @@ private:
     /// state of server
     bool m_isStarted;
 
-    /// Map of client each client have own thread it's dirty
-    /// but i have no found other solution for multi client with openigtlink
-    std::list<Client::sptr> m_clients;
+    /// vector of clients
+    std::vector< Client::sptr > m_clients;
 
     /// Server port
     ::boost::uint16_t m_port;

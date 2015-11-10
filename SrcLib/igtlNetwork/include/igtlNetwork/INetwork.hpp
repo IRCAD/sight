@@ -51,6 +51,14 @@ public:
     IGTLNETWORK_API bool receiveObject(::fwData::Object::sptr dest) throw (::fwCore::Exception);
 
     /**
+     * @brief generic method to receive message the type of the message is determined by response header
+     *
+     * @return a smart pointer of igtl::MessageHeader and a pointer on igtlMessageBase
+     */
+    IGTLNETWORK_API bool receiveMsg(::igtl::MessageHeader::Pointer headerMsg,
+                                    ::igtl::MessageBase::Pointer msg) throw (::fwCore::Exception);
+
+    /**
      * @brief generic method to send a object the type of object is determined by classname
      *        this method call the correct sender method. If the client is not connected you receive
      *        a sigpipe signal
@@ -58,14 +66,18 @@ public:
      */
     IGTLNETWORK_API bool sendObject (::fwData::Object::sptr dest) throw (::fwCore::Exception);
 
-protected:
+    /**
+     * @brief generic method to send a igtl Msg, this method is usefull for redirect message
+     * @param[in] msg message to send
+     */
+    IGTLNETWORK_API bool sendMsg (::igtl::MessageBase::Pointer msg) throw (::fwCore::Exception);
 
     /**
      * @brief receive header
      * @return header
      */
 
-    ::igtl::MessageHeader::Pointer receiveHeader();
+    IGTLNETWORK_API ::igtl::MessageHeader::Pointer receiveHeader();
 
     /** @brief receive body pack
      *
@@ -73,8 +85,18 @@ protected:
      *
      *  @return Message
      */
-    ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header) throw (::fwCore::Exception);
+    IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header) throw (::fwCore::
+                                                                                                            Exception);
 
+
+    /**
+     * @brief get socket
+     *
+     * @return socket
+     */
+    IGTLNETWORK_API ::igtl::Socket::Pointer getSocket();
+
+protected:
     /// client socket
     ::igtl::Socket::Pointer m_socket;
 
