@@ -885,6 +885,7 @@ void SMaterial::setShadingMode( int shadingMode  )
             shadingProgramSuffixGS = "Triangles";
         }
 
+        shadingProgramSuffix   += shadingCfgs;
         shadingProgramSuffixGS += shadingCfgs;
         if(m_hasPrimitiveColor)
         {
