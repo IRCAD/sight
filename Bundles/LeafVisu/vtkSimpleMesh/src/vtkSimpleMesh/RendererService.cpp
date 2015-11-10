@@ -14,7 +14,11 @@
 #include <vtkPolyDataNormals.h>
 #include <vtkCamera.h>
 #include <vtkMatrix4x4.h>
+#ifndef ANDROID
 #include <vtkInteractorStyleTrackballCamera.h>
+#else
+#include <vtkInteractorStyleMultiTouchCamera.h>
+#endif
 #include <vtkTransform.h>
 
 #include <fwCore/HiResTimer.hpp>
@@ -114,6 +118,7 @@ void RendererService::starting() throw(fwTools::Failed)
     this->create();
 
     m_interactorManager = ::fwRenderVTK::IVtkRenderWindowInteractorManager::createManager();
+
     m_interactorManager->installInteractor( this->getContainer() );
 
     m_bPipelineIsInit = false;
@@ -232,8 +237,11 @@ void RendererService::initVTKPipeline()
 
     // Add the actors
     m_render->AddActor( actor);
-
+#ifndef ANDROID
     m_interactorManager->getInteractor()->SetInteractorStyle(vtkInteractorStyleTrackballCamera::New());
+#else
+    m_interactorManager->getInteractor()->SetInteractorStyle(vtkInteractorStyleMultiTouchCamera::New());
+#endif
     m_loc = new vtkLocalCommand(this);
 
     m_interactorManager->getInteractor()->AddObserver(vtkCommand::AnyEvent, m_loc);
