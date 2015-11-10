@@ -61,7 +61,7 @@ void SSeriesDBWriter::configureWithIHM()
     dialogFile.setTitle("Choose a directory for DICOM images");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
-    dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
+    dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
     ::fwData::location::Folder::sptr result;
     result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
@@ -102,11 +102,11 @@ void SSeriesDBWriter::updating() throw(::fwTools::Failed)
             dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
                               "\nDo you want to continue ?");
             dialog.setTitle("Folder not empty.");
-            dialog.setIcon(::fwGui::dialog::MessageDialog::QUESTION);
-            dialog.addButton( ::fwGui::dialog::MessageDialog::YES_NO );
-            ::fwGui::dialog::MessageDialog::Buttons button = dialog.show();
+            dialog.setIcon(::fwGui::dialog::IMessageDialog::QUESTION);
+            dialog.addButton( ::fwGui::dialog::IMessageDialog::YES_NO );
+            ::fwGui::dialog::IMessageDialog::Buttons button = dialog.show();
 
-            if(button == ::fwGui::dialog::MessageDialog::NO)
+            if(button == ::fwGui::dialog::IMessageDialog::NO)
             {
                 return;
             }

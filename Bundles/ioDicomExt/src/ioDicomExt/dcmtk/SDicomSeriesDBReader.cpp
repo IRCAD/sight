@@ -61,7 +61,7 @@ void SDicomSeriesDBReader::configureWithIHM()
     dialogFile.setTitle(this->getSelectorDialogTitle());
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-    dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
+    dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
     ::fwData::location::Folder::sptr result;
     result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
