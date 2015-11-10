@@ -180,7 +180,7 @@ void SSplinePointsEditor::updating() throw(::fwTools::Failed)
 {
     ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList >();
 
-    ::fwServices::ObjectMsg::NewSptr msg;
+    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
     ::fwServices::IEditionService::notify(this->getSptr(), pointList, msg);
 
@@ -423,7 +423,7 @@ void SSplinePointsEditor::updatePointList()
 {
     ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
 
-    ::fwServices::ObjectMsg::NewSptr msg;
+    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_MODIFIED );
     ::fwServices::IEditionService::notify( this->getSptr(),pointList, msg );
 }
