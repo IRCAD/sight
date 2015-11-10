@@ -4,29 +4,33 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwAtomsPatch/infos/Logger.hpp"
+
 #include <boost/foreach.hpp>
+#ifndef ANDROID
 #include <boost/log/attributes.hpp>
 #include <boost/log/expressions.hpp>
-#include <boost/log/sources/channel_logger.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/sinks.hpp>
-#include <boost/parameter/keyword.hpp>
-#include <boost/log/keywords/channel.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/sources/global_logger_storage.hpp>
-#include <boost/log/utility/setup/file.hpp>
 #include <boost/log/expressions/formatters/date_time.hpp>
+#include <boost/log/keywords/channel.hpp>
+#include <boost/log/sinks.hpp>
+#include <boost/log/sources/channel_logger.hpp>
+#include <boost/log/sources/global_logger_storage.hpp>
 #include <boost/log/support/date_time.hpp>
+#include <boost/log/trivial.hpp>
+#include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/log/utility/setup/file.hpp>
+#include <boost/parameter/keyword.hpp>
+#else
+#include <android/log.h>
+#endif
 
-#include "fwAtomsPatch/infos/Logger.hpp"
 
 namespace fwAtomsPatch
 {
 namespace infos
 {
 
-Logger::StreamPtrType Logger::s_stream = ::boost::make_shared< Logger::StreamType >();
-Logger Logger::s_logger;
+#ifndef ANDROID
 
 BOOST_LOG_GLOBAL_LOGGER(lg_channel,
                         ::boost::log::sources::channel_logger<std::string>);
@@ -35,9 +39,22 @@ BOOST_LOG_GLOBAL_LOGGER_CTOR_ARGS(lg_channel,
                                   ::boost::log::sources::channel_logger_mt<std::string>,
                                   (std::string("patch")));
 
+Logger::StreamPtrType Logger::s_stream = ::boost::make_shared< Logger::StreamType >();
+
+#else
+#define  LOG_TAG    "Logger"
+#define  LOGSTREAM(...)  __android_log_print(ANDROID_LOG_INFO,  LOG_TAG, __VA_ARGS__)
+
+Logger::StreamPtrType Logger::s_stream;
+
+#endif
+
+Logger Logger::s_logger;
 
 Logger::Logger()
 {
+
+#ifndef ANDROID
     namespace expr     = ::boost::log::expressions;
     namespace keywords = ::boost::log::keywords;
 
@@ -70,6 +87,7 @@ Logger::Logger()
 
     // Register the sink in the logging core
     ::boost::log::core::get()->add_sink(pSink);
+#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -89,49 +107,77 @@ Logger::StreamPtrType Logger::getStream()
 
 void Logger::error(const std::string& message)
 {
+#ifndef ANDROID
     BOOST_LOG_STREAM(lg_channel::get()) << "PATCH_ERROR" << ": " << message;
+#else
+    LOGSTREAM("BADCAST: %s", message.c_str());
+#endif
 }
 
 // ----------------------------------------------------------------------------
 
 void Logger::badCast(const std::string& message)
 {
+#ifndef ANDROID
     BOOST_LOG_STREAM(lg_channel::get()) << "BADCAST" << ": " << message;
+#else
+    LOGSTREAM("BADCAST: %s", message.c_str());
+#endif
 }
 
 // ----------------------------------------------------------------------------
 
 void Logger::outOfRange(const std::string& message)
 {
+#ifndef ANDROID
     BOOST_LOG_STREAM(lg_channel::get()) << "OUTOFRANGE" << ": " << message;
+#else
+    LOGSTREAM("BADCAST: %s", message.c_str());
+#endif
 }
 
 // ----------------------------------------------------------------------------
 
 void Logger::info(const std::string& message)
 {
+#ifndef ANDROID
     BOOST_LOG_STREAM(lg_channel::get()) << "INFO" << ": " << message;
+#else
+    LOGSTREAM("BADCAST: %s", message.c_str());
+#endif
 }
 
 // ----------------------------------------------------------------------------
 
 void Logger::addAttribute(const std::string& message)
 {
+#ifndef ANDROID
     BOOST_LOG_STREAM(lg_channel::get()) << "ADD_ATTR" << ": " << message;
+#else
+    LOGSTREAM("BADCAST: %s", message.c_str());
+#endif
 }
 
 // ----------------------------------------------------------------------------
 
 void Logger::eraseAttribute(const std::string& message)
 {
+#ifndef ANDROID
     BOOST_LOG_STREAM(lg_channel::get()) << "ERASE_ATTR" << ": " << message;
+#else
+    LOGSTREAM("BADCAST: %s", message.c_str());
+#endif
 }
 
 // ----------------------------------------------------------------------------
 
 void Logger::replaceAttribute(const std::string& message)
 {
+#ifndef ANDROID
     BOOST_LOG_STREAM(lg_channel::get()) << "REPLACE_ATTR" << ": " << message;
+#else
+    LOGSTREAM("BADCAST: %s", message.c_str());
+#endif
 }
 
 // ----------------------------------------------------------------------------
