@@ -80,7 +80,7 @@ protected:
     IOMIDAS_API virtual std::string getSelectorDialogTitle();
     IOMIDAS_API virtual void configureWithIHM();
 
-    virtual void updating( ::boost::shared_ptr< const ::fwServices::ObjectMsg > _msg )
+    virtual void updating( std::shared_ptr< const ::fwServices::ObjectMsg > _msg )
     throw(::fwTools::Failed)
     {
     }

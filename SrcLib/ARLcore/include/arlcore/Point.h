@@ -7,7 +7,6 @@
 #ifndef __ARLCORE_POINT_H__
 #define __ARLCORE_POINT_H__
 
-#include <boost/make_shared.hpp>
 
 #include <fwCore/macros.hpp>
 #include <arlcore/Common.h>
@@ -66,7 +65,7 @@ public:
 
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Point)(::fwTools::Object),
-                                               ((::boost::make_shared< Point >,() ))
+                                               ((std::make_shared< Point >,() ))
                                                    ((PointFactory,((Point::csptr)) ))
                                                    ((PointFactory,((int)) ))
                                                    ((PointFactory,((double))((double)) ))

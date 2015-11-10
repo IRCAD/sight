@@ -38,7 +38,7 @@ SPTR(::gdcmIO::container::sr::DicomSRContainerNode) StructuredReport::readSR(con
 
     if(type == "CONTAINER" && !codedAttribute.isEmpty())
     {
-        result = ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(codedAttribute);
+        result = std::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(codedAttribute);
         ::gdcmIO::helper::StructuredReport::readSubNodeContainer(dataset, result);
     }
 
@@ -87,7 +87,7 @@ void StructuredReport::readSubNode(const ::gdcm::DataSet& dataset, SPTR(::gdcmIO
         const std::string textValue = ::gdcmIO::helper::DicomData::getTrimmedTagValue< 0x0040, 0xa160 >(dataset);
 
         // Create Text Node
-        node = ::boost::make_shared< ::gdcmIO::container::sr::DicomSRTextNode >(
+        node = std::make_shared< ::gdcmIO::container::sr::DicomSRTextNode >(
             codedAttribute, relationship, textValue);
     }
     else if(type == "NUM")
@@ -109,7 +109,7 @@ void StructuredReport::readSubNode(const ::gdcm::DataSet& dataset, SPTR(::gdcmIO
                     ::gdcmIO::helper::StructuredReport::readCodeSequence<0x0040, 0x08ea>(itemDataset);
 
                 // Create Num Node
-                node = ::boost::make_shared< ::gdcmIO::container::sr::DicomSRNumNode >(
+                node = std::make_shared< ::gdcmIO::container::sr::DicomSRNumNode >(
                     codedAttribute, relationship, numValue, measurementUnits);
 
             }
@@ -129,14 +129,14 @@ void StructuredReport::readSubNode(const ::gdcm::DataSet& dataset, SPTR(::gdcmIO
         {
             // Create Text Node
             std::vector<float> scoordVector(graphicData, graphicData + 2);
-            node = ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(
+            node = std::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(
                 codedAttribute, relationship, graphicType, scoordVector);
         }
         else if(graphicType == "POLYLINE" && graphicDataAttribute.GetNumberOfValues() == 4)
         {
             // Create Text Node
             std::vector<float> scoordVector(graphicData, graphicData + 4);
-            node = ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(
+            node = std::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(
                 codedAttribute, relationship, graphicType, scoordVector);
         }
         else
@@ -162,14 +162,14 @@ void StructuredReport::readSubNode(const ::gdcm::DataSet& dataset, SPTR(::gdcmIO
         {
             // Create Text Node
             std::vector<float> scoordVector(graphicData, graphicData + 3);
-            node = ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
+            node = std::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
                 codedAttribute, relationship, graphicType, scoordVector, frameOfReferenceUID);
         }
         else if(graphicType == "POLYLINE" && graphicDataAttribute.GetNumberOfValues() == 6)
         {
             // Create Text Node
             std::vector<float> scoordVector(graphicData, graphicData + 6);
-            node = ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
+            node = std::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
                 codedAttribute, relationship, graphicType, scoordVector, frameOfReferenceUID);
         }
         else
@@ -201,7 +201,7 @@ void StructuredReport::readSubNode(const ::gdcm::DataSet& dataset, SPTR(::gdcmIO
                 int frameNumber = ::gdcmIO::helper::DicomData::getTagValue< 0x0008, 0x1160, int >(itemDataset);
 
                 // Create Num Node
-                node = ::boost::make_shared< ::gdcmIO::container::sr::DicomSRImageNode >(
+                node = std::make_shared< ::gdcmIO::container::sr::DicomSRImageNode >(
                     codedAttribute, relationship, sopClassUID, sopInstanceUID, frameNumber);
 
             }
@@ -214,8 +214,8 @@ void StructuredReport::readSubNode(const ::gdcm::DataSet& dataset, SPTR(::gdcmIO
 
         // Create Code Node
         node =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(codedAttribute, relationship,
-                                                                             codedEntry);
+            std::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(codedAttribute, relationship,
+                                                                         codedEntry);
 
 
     }
@@ -226,13 +226,13 @@ void StructuredReport::readSubNode(const ::gdcm::DataSet& dataset, SPTR(::gdcmIO
 
         // Create UIDRef Node
         node =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRUIDRefNode >(codedAttribute, relationship,
-                                                                               uidValue);
+            std::make_shared< ::gdcmIO::container::sr::DicomSRUIDRefNode >(codedAttribute, relationship,
+                                                                           uidValue);
     }
     else if(type == "CONTAINER")
     {
         // Create Container Node
-        node = ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(codedAttribute, relationship);
+        node = std::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(codedAttribute, relationship);
     }
 
     if(node)

@@ -101,7 +101,7 @@ void Measurement::createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode)pa
 
     // Create Measurement Node
     SPTR(::gdcmIO::container::sr::DicomSRNumNode) numNode =
-        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRNumNode >(
+        std::make_shared< ::gdcmIO::container::sr::DicomSRNumNode >(
             ::gdcmIO::container::DicomCodedAttribute("121206", "DCM", "Distance"), "CONTAINS", distance,
             ::gdcmIO::container::DicomCodedAttribute("mm", "UCUM", "millimeter", "1.4"));
     parent->addSubNode(numNode);
@@ -118,7 +118,7 @@ void Measurement::createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode)pa
                                  static_cast<float>(point2->getCoord()[2]) };
         std::vector<float> scoordVector (scoord, scoord + 6);
         SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoordNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
+            std::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
                 ::gdcmIO::container::DicomCodedAttribute("121230", "DCM", "Path"),
                 "INFERRED FROM", "POLYLINE", scoordVector, m_instance->getSOPInstanceUIDContainer()[0]);
         numNode->addSubNode(scoordNode);
@@ -134,14 +134,14 @@ void Measurement::createMeasurement(SPTR(::gdcmIO::container::sr::DicomSRNode)pa
                                  static_cast<float>(point2->getCoord()[1]) };
         std::vector<float> scoordVector (scoord, scoord + 4);
         SPTR(::gdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(
+            std::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(
                 ::gdcmIO::container::DicomCodedAttribute("121230", "DCM", "Path"),
                 "INFERRED FROM", "POLYLINE", scoordVector);
         numNode->addSubNode(scoordNode);
 
         // Create Image Node
         SPTR(::gdcmIO::container::sr::DicomSRImageNode) imageNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRImageNode >(
+            std::make_shared< ::gdcmIO::container::sr::DicomSRImageNode >(
                 ::gdcmIO::container::DicomCodedAttribute(), "SELECTED FROM", m_instance->getSOPClassUID(),
                 m_instance->getSOPInstanceUIDContainer()[frameNumber1-1], frameNumber1);
         scoordNode->addSubNode(imageNode);

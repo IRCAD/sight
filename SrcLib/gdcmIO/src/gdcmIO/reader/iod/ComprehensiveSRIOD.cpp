@@ -48,7 +48,7 @@ void ComprehensiveSRIOD::read(::fwMedData::Series::sptr series) throw(::gdcmIO::
     SLM_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
-    SPTR(::gdcm::Reader) reader = ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    SPTR(::gdcm::Reader) reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
 
     // Read the first file
     ::fwDicomData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();

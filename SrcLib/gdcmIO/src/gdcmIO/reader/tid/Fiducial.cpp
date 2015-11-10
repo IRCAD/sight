@@ -60,7 +60,7 @@ void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
                ::gdcmIO::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"))
             {
                 SPTR(::gdcmIO::container::sr::DicomSRTextNode) intentNode =
-                    ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRTextNode >(subNode);
+                    std::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRTextNode >(subNode);
                 if(intentNode)
                 {
                     label = intentNode->getTextValue();
@@ -70,7 +70,7 @@ void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
             else if(subNode->getType() == "SCOORD")
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
-                    ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoordNode >(subNode);
+                    std::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoordNode >(subNode);
                 if(scoordNode && scoordNode->getGraphicType() == "POINT")
                 {
                     // Retrieve coordinates
@@ -83,7 +83,7 @@ void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
                     if(!scoordNode->getSubNodeContainer().empty())
                     {
                         SPTR(::gdcmIO::container::sr::DicomSRImageNode) imageNode =
-                            ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRImageNode >(
+                            std::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRImageNode >(
                                 *scoordNode->getSubNodeContainer().begin());
                         if(imageNode)
                         {
@@ -99,7 +99,7 @@ void Fiducial::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
             else if(subNode->getType() == "SCOORD3D")
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoord3DNode =
-                    ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(subNode);
+                    std::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(subNode);
                 if(scoord3DNode && scoord3DNode->getGraphicType() == "POINT")
                 {
                     // Retrieve coordinates

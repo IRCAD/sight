@@ -77,7 +77,7 @@ void AtomConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
 
 IConverter::sptr AtomConverter::New()
 {
-    return ::boost::make_shared< AtomConverter >();
+    return std::make_shared< AtomConverter >();
 }
 
 //-----------------------------------------------------------------------------

@@ -12,7 +12,6 @@
 #include "igtlProtocol/helper/ScalarToBytes.hpp"
 #include "igtlProtocol/exception/Conversion.hpp"
 
-#include <boost/make_shared.hpp>
 #include <boost/static_assert.hpp>
 #include <boost/type_traits/is_base_of.hpp>
 #include <boost/lexical_cast.hpp>
@@ -94,7 +93,7 @@ public:
      */
     static IConverter::sptr New(std::string const &igtlScalarType)
     {
-        return ::boost::make_shared<ScalarConverter<ScalarType, FwDataObjectType> >(igtlScalarType);
+        return std::make_shared<ScalarConverter<ScalarType, FwDataObjectType> >(igtlScalarType);
     }
 
     /**
@@ -145,7 +144,7 @@ public:
      */
     static IConverter::sptr New()
     {
-        return ::boost::make_shared< IntConverter >();
+        return std::make_shared< IntConverter >();
     }
 };
 
@@ -170,7 +169,7 @@ public:
      */
     static IConverter::sptr New()
     {
-        return ::boost::make_shared< FloatConverter >();
+        return std::make_shared< FloatConverter >();
     }
 };
 

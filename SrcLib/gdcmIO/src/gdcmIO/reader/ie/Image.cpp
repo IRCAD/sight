@@ -52,7 +52,7 @@ Image::~Image()
 void Image::readImagePlaneModule()
 {
     // Retrieve GDCM image
-    SPTR(::gdcm::ImageReader) imageReader = ::boost::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
+    SPTR(::gdcm::ImageReader) imageReader = std::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
     ::gdcm::Image &gdcmImage              = imageReader->GetImage();
 
     // Retrieve dataset
@@ -138,7 +138,7 @@ void Image::readVOILUTModule()
 void Image::readImagePixelModule()
 {
     // Retrieve GDCM image
-    SPTR(::gdcm::ImageReader) imageReader = ::boost::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
+    SPTR(::gdcm::ImageReader) imageReader = std::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
     ::gdcm::Image &gdcmImage              = imageReader->GetImage();
 
     // Retrieve dataset
@@ -245,7 +245,7 @@ void Image::readImagePixelModule()
 void* Image::readImageBuffer() throw(::gdcmIO::exception::Failed)
 {
     // Retrieve GDCM image
-    SPTR(::gdcm::ImageReader) imageReader = ::boost::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
+    SPTR(::gdcm::ImageReader) imageReader = std::static_pointer_cast< ::gdcm::ImageReader >(m_reader);
     ::gdcm::Image &gdcmImage              = imageReader->GetImage();
 
     // Retrieve Datasets

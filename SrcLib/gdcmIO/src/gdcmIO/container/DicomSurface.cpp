@@ -33,7 +33,7 @@ DicomSurface::~DicomSurface()
 
 //------------------------------------------------------------------------------
 
-const ::boost::shared_ptr< float > DicomSurface::getPointCoordData() const
+const std::shared_ptr< float > DicomSurface::getPointCoordData() const
 {
     return this->m_pointCoordData;
 }
@@ -47,7 +47,7 @@ unsigned long DicomSurface::getPointCoordSize() const
 
 //------------------------------------------------------------------------------
 
-const ::boost::shared_ptr< uint32_t > DicomSurface::getPointIndexList() const
+const std::shared_ptr< uint32_t > DicomSurface::getPointIndexList() const
 {
     return this->m_pointIndexList;
 }
@@ -61,7 +61,7 @@ unsigned long DicomSurface::getPointIndexSize() const
 
 //------------------------------------------------------------------------------
 
-const ::boost::shared_ptr< float > DicomSurface::getNormalCoordData() const
+const std::shared_ptr< float > DicomSurface::getNormalCoordData() const
 {
     return this->m_normalCoordData;
 }
@@ -75,7 +75,7 @@ unsigned long DicomSurface::getNormalCoordSize() const
 
 //------------------------------------------------------------------------------
 
-void DicomSurface::setPointCoordData(const ::boost::shared_ptr< float > array)
+void DicomSurface::setPointCoordData(const std::shared_ptr< float > array)
 {
     this->m_pointCoordData = array;
 }
@@ -89,7 +89,7 @@ void DicomSurface::setPointCoordSize(const unsigned long size)
 
 //------------------------------------------------------------------------------
 
-void DicomSurface::setPointIndexList(const ::boost::shared_ptr< uint32_t > array)
+void DicomSurface::setPointIndexList(const std::shared_ptr< uint32_t > array)
 {
     this->m_pointIndexList = array;
 }
@@ -103,7 +103,7 @@ void DicomSurface::setPointIndexSize(const unsigned long size)
 
 //------------------------------------------------------------------------------
 
-void DicomSurface::setNormalCoordData(const ::boost::shared_ptr< float > array)
+void DicomSurface::setNormalCoordData(const std::shared_ptr< float > array)
 {
     this->m_normalCoordData = array;
 }
@@ -134,10 +134,10 @@ void DicomSurface::setFromData(fwData::Reconstruction::csptr reconstruction)
 
     // Initialize members
     m_pointCoordSize = mesh->getNumberOfPoints();
-    m_pointCoordData = ::boost::shared_ptr< float >(new float[3 * m_pointCoordSize]);
+    m_pointCoordData = std::shared_ptr< float >(new float[3 * m_pointCoordSize]);
 
     m_pointIndexSize = mesh->getNumberOfCells();
-    m_pointIndexList = ::boost::shared_ptr< uint32_t >(new uint32_t[3 * m_pointIndexSize]);
+    m_pointIndexList = std::shared_ptr< uint32_t >(new uint32_t[3 * m_pointIndexSize]);
 
     m_normalCoordSize = 0;
 
@@ -161,7 +161,7 @@ void DicomSurface::setFromData(fwData::Reconstruction::csptr reconstruction)
         ::fwData::Mesh::NormalValueType* normals = normalArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
 
         m_normalCoordSize = mesh->getNumberOfPoints();
-        m_normalCoordData = ::boost::shared_ptr< float >(new float[3 * m_normalCoordSize]);
+        m_normalCoordData = std::shared_ptr< float >(new float[3 * m_normalCoordSize]);
 
         float *normalCoordData = m_normalCoordData.get();
 

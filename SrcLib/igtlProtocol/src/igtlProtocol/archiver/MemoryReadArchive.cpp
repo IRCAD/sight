@@ -9,7 +9,6 @@
 #include <fwZip/exception/Read.hpp>
 
 #include <boost/iostreams/stream.hpp>
-#include <boost/make_shared.hpp>
 
 #include <archive_entry.h>
 
@@ -105,7 +104,7 @@ MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size)
             fileContent = BufferSPtr(new std::vector<char>);
             filename    = std::string(archive_entry_pathname(entry));
             this->readEntry(fileContent);
-            is                  = ::boost::make_shared< ::boost::iostreams::stream<MemoryArchiveSource> >(fileContent);
+            is                  = std::make_shared< ::boost::iostreams::stream<MemoryArchiveSource> >(fileContent);
             m_streams[filename] = is;
 
         }

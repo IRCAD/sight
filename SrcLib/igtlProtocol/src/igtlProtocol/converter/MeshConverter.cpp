@@ -430,7 +430,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
 
 IConverter::sptr MeshConverter::New()
 {
-    return ::boost::make_shared< MeshConverter >();
+    return std::make_shared< MeshConverter >();
 }
 
 //-----------------------------------------------------------------------------

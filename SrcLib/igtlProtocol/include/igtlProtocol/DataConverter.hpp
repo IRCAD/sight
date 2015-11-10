@@ -12,8 +12,6 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <boost/make_shared.hpp>
-
 namespace igtlProtocol
 {
 ///converterRegisterMacro need to be called by every converter
@@ -31,11 +29,11 @@ class IGTLPROTOCOL_CLASS_API DataConverter
 {
 
 public:
+    /// Constructor
+    IGTLPROTOCOL_API DataConverter();
+
     ///Typedef to a DataConverter::sptr
     typedef SPTR (DataConverter) sptr;
-
-    ///friend make_shared, usefull since constructor of DataConverter is protected
-    friend DataConverter::sptr boost::make_shared< DataConverter >();
 
     ///Destructor
     IGTLPROTOCOL_API ~DataConverter();
@@ -91,9 +89,6 @@ public:
      */
     IGTLPROTOCOL_API ::igtl::MessageBase::Pointer getCapabilitiesMessage() const;
 
-protected:
-
-    IGTLPROTOCOL_API DataConverter();
 private:
     /// a vector of IConverter smart pointer
     std::vector<converter::IConverter::sptr > m_converters;

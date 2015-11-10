@@ -9,7 +9,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/pool/pool.hpp>
 
 #include <fwCore/base.hpp>
@@ -64,7 +63,7 @@ CSPTR(::extData::timeline::RawBuffer) RawBufferTL::getClosestBuffer( ::fwCore::H
                                                                      DirectionType direction) const
 {
     CSPTR(::extData::timeline::Object) buffer = this->getClosestObject(timestamp, direction);
-    return ::boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(buffer);
+    return std::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -72,7 +71,7 @@ CSPTR(::extData::timeline::RawBuffer) RawBufferTL::getClosestBuffer( ::fwCore::H
 CSPTR(::extData::timeline::RawBuffer) RawBufferTL::getBuffer(::fwCore::HiResClock::HiResClockType timestamp) const
 {
     CSPTR(::extData::timeline::Object) buffer = this->getObject(timestamp);
-    return ::boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(buffer);
+    return std::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +92,7 @@ SPTR(::extData::timeline::Object) RawBufferTL::createObject(::fwCore::HiResClock
 
 SPTR(::extData::timeline::RawBuffer) RawBufferTL::createBuffer(::fwCore::HiResClock::HiResClockType timestamp)
 {
-    return ::boost::make_shared< ::extData::timeline::RawBuffer >(
+    return std::make_shared< ::extData::timeline::RawBuffer >(
         timestamp,
         (::extData::timeline::Buffer::BufferDataType) m_pool->malloc(),
         m_pool->get_requested_size(),
@@ -106,7 +105,7 @@ SPTR(::extData::timeline::RawBuffer) RawBufferTL::createBuffer(::fwCore::HiResCl
 bool RawBufferTL::isObjectValid(const CSPTR(::extData::timeline::Object) &obj) const
 {
     CSPTR(::extData::timeline::RawBuffer) srcObj =
-        ::boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(obj);
+        std::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(obj);
     return srcObj != NULL;
 }
 

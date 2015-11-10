@@ -347,7 +347,7 @@ void ImageStorageReader::lazyRead(::fwData::Image::sptr image, ::fwDicomData::Di
 {
     // Create information object
     ::fwDicomIOExt::dcmtk::reader::main::ImageLazyInformation::sptr dcmInfo =
-        ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::main::ImageLazyInformation >();
+        std::make_shared< ::fwDicomIOExt::dcmtk::reader::main::ImageLazyInformation >();
     dcmInfo->m_dicomSeries         = series;
     dcmInfo->m_rows                = rows;
     dcmInfo->m_columns             = columns;
@@ -360,7 +360,7 @@ void ImageStorageReader::lazyRead(::fwData::Image::sptr image, ::fwDicomData::Di
     // Create streamer
     ::fwMemory::BufferObject::sptr buffObj = image->getDataArray()->getBufferObject();
     buffObj->setIStreamFactory(
-        ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::main::ImageLazyStream >( dcmInfo ),
+        std::make_shared< ::fwDicomIOExt::dcmtk::reader::main::ImageLazyStream >( dcmInfo ),
         image->getSizeInBytes() );
 }
 
@@ -376,7 +376,7 @@ void ImageStorageReader::lazyRGBLookupRead(::fwData::Image::sptr image, ::fwDico
 
     // Create information object
     ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyInformation::sptr dcmInfo =
-        ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyInformation >();
+        std::make_shared< ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyInformation >();
     dcmInfo->m_dicomSeries             = series;
     dcmInfo->m_rows                    = rows;
     dcmInfo->m_columns                 = columns;
@@ -388,7 +388,7 @@ void ImageStorageReader::lazyRGBLookupRead(::fwData::Image::sptr image, ::fwDico
     // Create streamer
     ::fwMemory::BufferObject::sptr buffObj = image->getDataArray()->getBufferObject();
     buffObj->setIStreamFactory(
-        ::boost::make_shared< ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyStream >( dcmInfo ),
+        std::make_shared< ::fwDicomIOExt::dcmtk::reader::rgblookup::ImageRGBLookupLazyStream >( dcmInfo ),
         image->getSizeInBytes() );
 
 }

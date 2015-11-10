@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 
 #include "fwNetwork/http/Request.hpp"
 
@@ -24,7 +23,7 @@ Request::Request(const std::string & url) : m_url(url)
 
 Request::sptr Request::New(const std::string& url)
 {
-    return ::boost::make_shared<Request>(url);
+    return std::make_shared<Request>(url);
 }
 
 void Request::addHeader(const std::string & key, const std::string & value)

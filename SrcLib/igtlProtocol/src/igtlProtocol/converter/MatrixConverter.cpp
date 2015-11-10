@@ -81,7 +81,7 @@ throw (::igtlProtocol::exception::Conversion)
 
 IConverter::sptr MatrixConverter::New()
 {
-    return ::boost::make_shared< MatrixConverter >();
+    return std::make_shared< MatrixConverter >();
 }
 
 //-----------------------------------------------------------------------------

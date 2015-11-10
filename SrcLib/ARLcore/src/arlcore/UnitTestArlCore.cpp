@@ -457,8 +457,7 @@ bool arlCore::testProjectiveRegistration( long int nbIterations, double toleranc
         for( j = 0; j<cameras.size(); ++j )
         {
             scene.detection( j+1, 0, splMonde, GaussianNoise2D );
-            splMonde->getPoints(reprojection2D[j], j+1,
-                                ::boost::dynamic_pointer_cast<void>(scene.getTags().getTag(0)) );
+            splMonde->getPoints(reprojection2D[j], j+1, std::dynamic_pointer_cast<void>(scene.getTags().getTag(0)) );
         }
         arlCore::vnl_rigid_matrix T1,T2;
         T1.uniform_random(TransfVolumeSize);

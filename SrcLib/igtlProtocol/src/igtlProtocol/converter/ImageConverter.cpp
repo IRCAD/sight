@@ -109,7 +109,7 @@ void ImageConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
 
 IConverter::sptr ImageConverter::New()
 {
-    return ::boost::make_shared< ImageConverter >();
+    return std::make_shared< ImageConverter >();
 }
 
 //-----------------------------------------------------------------------------

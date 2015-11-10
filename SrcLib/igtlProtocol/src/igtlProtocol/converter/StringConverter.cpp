@@ -64,7 +64,7 @@ void StringConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
 
 IConverter::sptr StringConverter::New()
 {
-    return ::boost::make_shared< StringConverter >();
+    return std::make_shared< StringConverter >();
 }
 
 //-----------------------------------------------------------------------------

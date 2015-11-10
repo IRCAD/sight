@@ -156,7 +156,7 @@ void GenericTLTest::pushPopTest()
 
         CSPTR(::extData::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
         CSPTR(::extData::Float4TL::BufferType) obj        =
-            ::boost::dynamic_pointer_cast< const ::extData::Float4TL::BufferType >(dataPushed1Bis);
+            std::dynamic_pointer_cast< const ::extData::Float4TL::BufferType >(dataPushed1Bis);
         CPPUNIT_ASSERT(obj);
         CPPUNIT_ASSERT_EQUAL(obj, timeline->getClosestBuffer(time1 + 1.5));
 
@@ -197,7 +197,7 @@ void GenericTLTest::pushPopTest()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(time3, time3Pushed, 0.00001);
 
         CSPTR(::extData::Float4TL::BufferType) obj =
-            ::boost::dynamic_pointer_cast< const ::extData::Float4TL::BufferType >(dataPushed3Bis);
+            std::dynamic_pointer_cast< const ::extData::Float4TL::BufferType >(dataPushed3Bis);
         CPPUNIT_ASSERT(obj);
 
         CPPUNIT_ASSERT_EQUAL(2u, obj->getPresentElementNum());
@@ -448,7 +448,7 @@ void GenericTLTest::copyTest()
     CPPUNIT_ASSERT(deepDataPushed1);
     CPPUNIT_ASSERT(data1 != deepDataPushed1);
     CSPTR(::extData::Float3TL::BufferType) obj1 =
-        ::boost::dynamic_pointer_cast< const ::extData::Float3TL::BufferType >(deepDataPushed1);
+        std::dynamic_pointer_cast< const ::extData::Float3TL::BufferType >(deepDataPushed1);
     CPPUNIT_ASSERT(obj1);
     CPPUNIT_ASSERT_EQUAL(obj1, deepTimeline->getBuffer(time1));
 

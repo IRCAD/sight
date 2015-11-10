@@ -52,7 +52,7 @@ protected:
      * @{ */
     virtual void starting() throw(::fwTools::Failed);
     virtual void stopping() throw(::fwTools::Failed);
-    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
+    virtual void receiving( std::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
     virtual void updating() throw(::fwTools::Failed);
     virtual void configuring() throw(fwTools::Failed);
     /**  @} */

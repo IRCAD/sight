@@ -10,7 +10,6 @@
 
 #include <boost/integer_traits.hpp>
 #include <boost/date_time.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -165,7 +164,7 @@ SPTR(std::ostream) MemoryWriteArchive::createFile(const ::boost::filesystem::pat
 {
     SPTR(::boost::iostreams::stream<MemoryArchiveSink>) os;
 
-    os = ::boost::make_shared< ::boost::iostreams::stream<MemoryArchiveSink> >(m_archive, path);
+    os = std::make_shared< ::boost::iostreams::stream<MemoryArchiveSink> >(m_archive, path);
     m_sinks.push_back(os);
     return os;
 }

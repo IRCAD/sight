@@ -61,12 +61,12 @@ SPTR(::gdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(boo
 {
     // Create Root Node - Measurement Report Document Titles
     SPTR(::gdcmIO::container::sr::DicomSRContainerNode) rootNode =
-        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
+        std::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
             ::gdcmIO::container::DicomCodedAttribute("dd1dd1", "DCM", "Imaging Measurement Report"));
 
     // Create Language of Content Item and Descendants Node (TID 1204)
     SPTR(::gdcmIO::container::sr::DicomSRCodeNode) languagesNode =
-        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(
+        std::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(
             ::gdcmIO::container::DicomCodedAttribute("121049", "DCM", "Language of Content Item and Descendants"),
             "HAS CONCEPT MOD",
             ::gdcmIO::container::DicomCodedAttribute("en-US", "RFC3066", "English, United States"));          // FIXME Do we keep English US ?
@@ -76,7 +76,7 @@ SPTR(::gdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(boo
 
     // Create Procedure Reported Node
     SPTR(::gdcmIO::container::sr::DicomSRCodeNode) procedureReportedNode =
-        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(
+        std::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(
             ::gdcmIO::container::DicomCodedAttribute("121058", "DCM", "Procedure reported"),
             "HAS CONCEPT MOD",
             ::gdcmIO::container::DicomCodedAttribute("P5-09051", "SRT", "Magnetic resonance imaging guidance"));          // FIXME Find a good value
@@ -84,7 +84,7 @@ SPTR(::gdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(boo
 
     // Create ImageLibrary Node
     SPTR(::gdcmIO::container::sr::DicomSRContainerNode) imageLibraryNode =
-        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
+        std::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
             ::gdcmIO::container::DicomCodedAttribute("111028", "DCM", "Image Library"), "CONTAINS");
     rootNode->addSubNode(imageLibraryNode);
 
@@ -93,7 +93,7 @@ SPTR(::gdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(boo
     {
         // Create Fiducial Container
         SPTR(::gdcmIO::container::sr::DicomSRContainerNode) fiducialNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
+            std::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
                 ::gdcmIO::container::DicomCodedAttribute("dd1d93", "DCM", "Fiducials"), "CONTAINS");
         rootNode->addSubNode(fiducialNode);
 
@@ -106,19 +106,19 @@ SPTR(::gdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(boo
     {
         // Create Imaging Measurements Container
         SPTR(::gdcmIO::container::sr::DicomSRContainerNode) imagingMeasurementsNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
+            std::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
                 ::gdcmIO::container::DicomCodedAttribute("dd1d91", "DCM", "Imaging Measurements"), "CONTAINS");
         rootNode->addSubNode(imagingMeasurementsNode);
 
         // Create Measurement Group node
         SPTR(::gdcmIO::container::sr::DicomSRContainerNode) measurementGroupNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
+            std::make_shared< ::gdcmIO::container::sr::DicomSRContainerNode >(
                 ::gdcmIO::container::DicomCodedAttribute("125007", "DCM", "Measurement Group"), "CONTAINS");
         imagingMeasurementsNode->addSubNode(measurementGroupNode);
 
         // Create Tracking ID node
         SPTR(::gdcmIO::container::sr::DicomSRTextNode) idNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRTextNode >(
+            std::make_shared< ::gdcmIO::container::sr::DicomSRTextNode >(
                 ::gdcmIO::container::DicomCodedAttribute("112039", "DCM", "Tracking Identifier"),
                 "HAS OBS CONTEXT", "1");
         imagingMeasurementsNode->addSubNode(idNode);
@@ -126,7 +126,7 @@ SPTR(::gdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(boo
         // Create Tracking UID node
         ::gdcm::UIDGenerator generator;
         SPTR(::gdcmIO::container::sr::DicomSRUIDRefNode) uidNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRUIDRefNode >(
+            std::make_shared< ::gdcmIO::container::sr::DicomSRUIDRefNode >(
                 ::gdcmIO::container::DicomCodedAttribute("112040", "DCM", "Tracking Unique Identifier"),
                 "HAS OBS CONTEXT", generator.Generate());
         imagingMeasurementsNode->addSubNode(uidNode);

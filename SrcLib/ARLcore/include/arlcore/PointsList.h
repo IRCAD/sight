@@ -7,7 +7,6 @@
 #ifndef __ARLCORE_POINTSLIST_H__
 #define __ARLCORE_POINTSLIST_H__
 
-#include <boost/make_shared.hpp>
 
 #include <arlcore/Common.h>
 
@@ -62,7 +61,7 @@ public:
 
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (PointList)(::fwTools::Object),
-                                               ((::boost::make_shared< PointList >,() ))
+                                               ((std::make_shared< PointList >,() ))
                                                    ((PointListFactory,((int)) ))
                                                    ((PointListFactory,(( const std::vector< Point::csptr >&)) ))
                                                );

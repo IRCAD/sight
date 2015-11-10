@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 #include <fwTools/DynamicAttributes.hxx>
@@ -48,7 +47,7 @@ FWDICOMIOFILTER_API SPTR( ::fwDicomIOFilter::IFilter ) New( const ::fwDicomIOFil
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
 
     ::fwTools::DynamicAttributesBase *dynAttr = obj.get();
     dynAttr->__FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME();

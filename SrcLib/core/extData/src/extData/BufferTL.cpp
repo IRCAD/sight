@@ -13,7 +13,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/pool/pool.hpp>
 
 #include <cmath>
@@ -44,7 +43,7 @@ void BufferTL::allocPoolSize(std::size_t size)
 {
     this->clearTimeline();
     ::fwCore::mt::WriteLock lock(m_tlMutex);
-    m_pool = ::boost::make_shared< PoolType >(size);
+    m_pool = std::make_shared< PoolType >(size);
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +60,7 @@ void BufferTL::pushObject(const SPTR(::extData::timeline::Object) &obj)
         m_timeline.erase(begin);
     }
 
-    SPTR(::extData::timeline::Buffer) srcObj = ::boost::dynamic_pointer_cast< ::extData::timeline::Buffer >(obj);
+    SPTR(::extData::timeline::Buffer) srcObj = std::dynamic_pointer_cast< ::extData::timeline::Buffer >(obj);
     m_timeline.insert(TimelineType::value_type(obj->getTimestamp(), srcObj));
 }
 
@@ -110,7 +109,7 @@ void BufferTL::setObject(TimestampType timestamp, const SPTR(::extData::timeline
 
     ::fwCore::mt::WriteLock writeLock(m_tlMutex);
 
-    SPTR(::extData::timeline::Buffer) srcObj = ::boost::dynamic_pointer_cast< ::extData::timeline::Buffer >(obj);
+    SPTR(::extData::timeline::Buffer) srcObj = std::dynamic_pointer_cast< ::extData::timeline::Buffer >(obj);
     m_timeline[timestamp]                    = srcObj;
 }
 

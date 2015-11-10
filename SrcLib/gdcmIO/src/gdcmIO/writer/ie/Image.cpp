@@ -62,7 +62,7 @@ void Image::writeImagePlaneModule()
     ::gdcm::DataSet &dataset = m_writer->GetFile().GetDataSet();
 
     // Retrieve GDCM image
-    SPTR(::gdcm::ImageWriter) imageWriter = ::boost::static_pointer_cast< ::gdcm::ImageWriter >(m_writer);
+    SPTR(::gdcm::ImageWriter) imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer);
     ::gdcm::Image &gdcmImage              = imageWriter->GetImage();
 
     // Pixel Spacing - Type 1
@@ -89,7 +89,7 @@ void Image::writeImagePlaneModule()
 void Image::writeImagePlaneModuleSpecificTags(unsigned int instanceNumber)
 {
     // Retrieve GDCM image
-    SPTR(::gdcm::ImageWriter) imageWriter = ::boost::static_pointer_cast< ::gdcm::ImageWriter >(m_writer);
+    SPTR(::gdcm::ImageWriter) imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer);
     ::gdcm::Image &gdcmImage              = imageWriter->GetImage();
 
     // Image Position (Patient) - Type 1
@@ -108,7 +108,7 @@ void Image::writeImagePixelModule()
     ::gdcm::DataSet &dataset = m_writer->GetFile().GetDataSet();
 
     // Retrieve GDCM image
-    ::gdcm::ImageWriter *imageWriter = ::boost::static_pointer_cast< ::gdcm::ImageWriter >(m_writer).get();
+    ::gdcm::ImageWriter *imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer).get();
     ::gdcm::Image &gdcmImage         = imageWriter->GetImage();
 
     // Image's photometric interpretation - Type 1
@@ -146,7 +146,7 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
     ::gdcm::DataSet &dataset = m_writer->GetFile().GetDataSet();
 
     // Retrieve GDCM image
-    ::gdcm::ImageWriter *imageWriter = ::boost::static_pointer_cast< ::gdcm::ImageWriter >(m_writer).get();
+    ::gdcm::ImageWriter *imageWriter = std::static_pointer_cast< ::gdcm::ImageWriter >(m_writer).get();
     ::gdcm::Image &gdcmImage         = imageWriter->GetImage();
 
     // Compute buffer size

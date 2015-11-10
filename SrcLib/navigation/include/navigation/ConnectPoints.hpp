@@ -11,7 +11,6 @@
 #include <utility>
 #include <vector>
 
-#include <boost/make_shared.hpp>
 
 #include <fwCore/BaseObject.hpp>
 
@@ -43,7 +42,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (ConnectPoints)(::fwCore::BaseObject),
                                             (()),
-                                            ::boost::make_shared< ConnectPoints > );
+                                            std::make_shared< ConnectPoints > );
 
     /**
      * @name Typedefs

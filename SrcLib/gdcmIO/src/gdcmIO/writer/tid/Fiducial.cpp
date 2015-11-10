@@ -77,14 +77,14 @@ void Fiducial::createFiducial(SPTR(::gdcmIO::container::sr::DicomSRNode)parent, 
 
     // Create Fiducial node
     SPTR(::gdcmIO::container::sr::DicomSRCodeNode) rootNode =
-        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(
+        std::make_shared< ::gdcmIO::container::sr::DicomSRCodeNode >(
             ::gdcmIO::container::DicomCodedAttribute("122340", "DCM", "Fiducial feature"), "CONTAINS",
             ::gdcmIO::container::DicomCodedAttribute("111123", "DCM", "Marker placement"));     //FIXME : Find a better representation
     parent->addSubNode(rootNode);
 
     // Create Fiducial ID node
     SPTR(::gdcmIO::container::sr::DicomSRUIDRefNode) idNode =
-        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRUIDRefNode >(
+        std::make_shared< ::gdcmIO::container::sr::DicomSRUIDRefNode >(
             ::gdcmIO::container::DicomCodedAttribute("dd1201", "DCM",
                                                      "Fiducial ID"), "HAS PROPERTIES", ::fwTools::getString(id));
     rootNode->addSubNode(idNode);
@@ -92,7 +92,7 @@ void Fiducial::createFiducial(SPTR(::gdcmIO::container::sr::DicomSRNode)parent, 
     // Create Fiducial UID node
     ::gdcm::UIDGenerator generator;
     SPTR(::gdcmIO::container::sr::DicomSRUIDRefNode) uidNode =
-        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRUIDRefNode >(
+        std::make_shared< ::gdcmIO::container::sr::DicomSRUIDRefNode >(
             ::gdcmIO::container::DicomCodedAttribute("dd1202", "DCM",
                                                      "Fiducial UID"), "HAS PROPERTIES", generator.Generate());
     rootNode->addSubNode(uidNode);
@@ -100,7 +100,7 @@ void Fiducial::createFiducial(SPTR(::gdcmIO::container::sr::DicomSRNode)parent, 
     // Create Fiducial intent node
     const std::string label = point->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value();
     SPTR(::gdcmIO::container::sr::DicomSRTextNode) intentNode =
-        ::boost::make_shared< ::gdcmIO::container::sr::DicomSRTextNode >(
+        std::make_shared< ::gdcmIO::container::sr::DicomSRTextNode >(
             ::gdcmIO::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"), "HAS PROPERTIES", label);
     rootNode->addSubNode(intentNode);
 
@@ -112,7 +112,7 @@ void Fiducial::createFiducial(SPTR(::gdcmIO::container::sr::DicomSRNode)parent, 
                                  static_cast<float>(point->getCoord()[2]) };
         std::vector<float> scoordVector (scoord, scoord + 3);
         SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoord3DNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
+            std::make_shared< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(
                 ::gdcmIO::container::DicomCodedAttribute(), "HAS PROPERTIES", "POINT", scoordVector,
                 m_instance->getSOPInstanceUIDContainer()[0]);
         rootNode->addSubNode(scoord3DNode);
@@ -124,14 +124,14 @@ void Fiducial::createFiducial(SPTR(::gdcmIO::container::sr::DicomSRNode)parent, 
                                  static_cast<float>(point->getCoord()[1]) };
         std::vector<float> scoordVector (scoord, scoord + 2);
         SPTR(::gdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(
+            std::make_shared< ::gdcmIO::container::sr::DicomSRSCoordNode >(
                 ::gdcmIO::container::DicomCodedAttribute(), "HAS PROPERTIES", "POINT", scoordVector);
         rootNode->addSubNode(scoordNode);
 
         // Create Image Node
         int frameNumber = ::gdcmIO::helper::DicomData::convertPointToFrameNumber(m_object, point);
         SPTR(::gdcmIO::container::sr::DicomSRImageNode) imageNode =
-            ::boost::make_shared< ::gdcmIO::container::sr::DicomSRImageNode >(
+            std::make_shared< ::gdcmIO::container::sr::DicomSRImageNode >(
                 ::gdcmIO::container::DicomCodedAttribute(), "SELECTED FROM", m_instance->getSOPClassUID(),
                 m_instance->getSOPInstanceUIDContainer()[frameNumber-1], frameNumber);
         scoordNode->addSubNode(imageNode);

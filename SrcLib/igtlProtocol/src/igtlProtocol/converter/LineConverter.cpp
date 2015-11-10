@@ -83,7 +83,7 @@ void LineConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
 
 IConverter::sptr LineConverter::New()
 {
-    return ::boost::make_shared< LineConverter >();
+    return std::make_shared< LineConverter >();
 }
 
 //-----------------------------------------------------------------------------

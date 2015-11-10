@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 
 #include <gdcmSurfaceWriter.h>
 
@@ -58,7 +57,7 @@ void SurfaceSegmentationIOD::write(::fwMedData::Series::sptr series)
     SLM_ASSERT("Image series should not be null.", modelSeries);
 
     // Create writer
-    SPTR(::gdcm::SurfaceWriter) writer = ::boost::make_shared< ::gdcm::SurfaceWriter >();
+    SPTR(::gdcm::SurfaceWriter) writer = std::make_shared< ::gdcm::SurfaceWriter >();
 
 
     // Create Information Entity helpers

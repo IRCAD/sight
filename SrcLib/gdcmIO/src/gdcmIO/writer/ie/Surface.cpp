@@ -76,7 +76,7 @@ Surface::~Surface()
 void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
 {
     // Retrieve Surface Writer
-    SPTR(::gdcm::SurfaceWriter) surfaceWriter = ::boost::static_pointer_cast< ::gdcm::SurfaceWriter >(m_writer);
+    SPTR(::gdcm::SurfaceWriter) surfaceWriter = std::static_pointer_cast< ::gdcm::SurfaceWriter >(m_writer);
 
     // Retrieve dataset
     ::gdcm::DataSet &dataset = m_writer->GetFile().GetDataSet();
@@ -269,7 +269,7 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
 void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
 {
     // Retrieve Surface Writer
-    SPTR(::gdcm::SurfaceWriter) surfaceWriter = ::boost::static_pointer_cast< ::gdcm::SurfaceWriter >(m_writer);
+    SPTR(::gdcm::SurfaceWriter) surfaceWriter = std::static_pointer_cast< ::gdcm::SurfaceWriter >(m_writer);
 
     // Retrieve dataset
     ::gdcm::DataSet &dataset = m_writer->GetFile().GetDataSet();
@@ -289,7 +289,7 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
 
     // Set DicomSurface data - NOTE: must be called before points and primitives writing
     SPTR(::gdcmIO::container::DicomSurface) surfaceContainer =
-        ::boost::make_shared< ::gdcmIO::container::DicomSurface >();
+        std::make_shared< ::gdcmIO::container::DicomSurface >();
     surfaceContainer->setFromData(reconstruction);
 
     // Create Surface Sequence

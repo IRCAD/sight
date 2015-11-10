@@ -7,7 +7,6 @@
 #ifndef __EXTDATA_GENERICTL_HXX__
 #define __EXTDATA_GENERICTL_HXX__
 
-#include <boost/make_shared.hpp>
 #include <boost/pool/pool.hpp>
 
 #include <fwData/Exception.hpp>
@@ -64,7 +63,7 @@ GenericTL<BUFFER_TYPE>::getClosestBuffer( ::fwCore::HiResClock::HiResClockType t
                                           DirectionType direction) const
 {
     CSPTR(::extData::timeline::Object) buffer = this->getClosestObject(timestamp, direction);
-    return ::boost::dynamic_pointer_cast< const BufferType >(buffer);
+    return std::dynamic_pointer_cast< const BufferType >(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +73,7 @@ CSPTR(typename GenericTL<BUFFER_TYPE>::BufferType)
 GenericTL<BUFFER_TYPE>::getBuffer(::fwCore::HiResClock::HiResClockType timestamp) const
 {
     CSPTR(::extData::timeline::Object) buffer = this->getObject(timestamp);
-    return ::boost::dynamic_pointer_cast< const BufferType >(buffer);
+    return std::dynamic_pointer_cast< const BufferType >(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -101,7 +100,7 @@ template < class BUFFER_TYPE >
 SPTR(typename GenericTL<BUFFER_TYPE>::BufferType)
 GenericTL<BUFFER_TYPE>::createBuffer(::fwCore::HiResClock::HiResClockType timestamp)
 {
-    SPTR(BufferType) obj = ::boost::make_shared< BufferType >(
+    SPTR(BufferType) obj = std::make_shared< BufferType >(
         m_maxElementNum, timestamp,
         (::extData::timeline::Buffer::BufferDataType) m_pool->malloc(),
         m_pool->get_requested_size(),
@@ -115,7 +114,7 @@ GenericTL<BUFFER_TYPE>::createBuffer(::fwCore::HiResClock::HiResClockType timest
 template < class BUFFER_TYPE >
 bool GenericTL<BUFFER_TYPE>::isObjectValid(const CSPTR(::extData::timeline::Object) &obj) const
 {
-    CSPTR(BufferType) srcObj = ::boost::dynamic_pointer_cast< const BufferType >(obj);
+    CSPTR(BufferType) srcObj = std::dynamic_pointer_cast< const BufferType >(obj);
     return srcObj != NULL;
 }
 

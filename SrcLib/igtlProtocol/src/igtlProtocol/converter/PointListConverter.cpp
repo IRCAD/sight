@@ -88,7 +88,7 @@ void PointListConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
 
 IConverter::sptr PointListConverter::New()
 {
-    return ::boost::make_shared< PointListConverter >();
+    return std::make_shared< PointListConverter >();
 }
 
 //-----------------------------------------------------------------------------

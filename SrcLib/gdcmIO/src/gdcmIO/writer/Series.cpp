@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwData/Image.hpp>
@@ -54,7 +53,7 @@ void Series::write() throw (::gdcmIO::exception::Failed)
 
     // Initialization shared object
     SPTR(::gdcmIO::container::DicomInstance) instance =
-        ::boost::make_shared< ::gdcmIO::container::DicomInstance >(series, multiFiles);
+        std::make_shared< ::gdcmIO::container::DicomInstance >(series, multiFiles);
 
     // Retrieve series SOPClassUID
     const std::string& sopClassUID = instance->getSOPClassUID();

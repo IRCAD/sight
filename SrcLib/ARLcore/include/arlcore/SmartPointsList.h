@@ -7,7 +7,6 @@
 #ifndef __ARLCORE_SMARTPOINTSLIST_H__
 #define __ARLCORE_SMARTPOINTSLIST_H__
 
-#include <boost/make_shared.hpp>
 
 #include <arlcore/Common.h>
 
@@ -56,7 +55,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (SmartPointList)(::fwTools::Object),
                                             (()),
-                                            ::boost::make_shared< SmartPointList >);
+                                            std::make_shared< SmartPointList >);
     //! @brief Default constructor of an empty list
     ARLCORE_API SmartPointList( void );
 
@@ -231,5 +230,4 @@ ARLCORE_API unsigned int epipolarMatching( const std::vector<Camera>&cameras, CS
         MultiPointsCont m_lists;
     };*/
 } // namespace arlCore
-
 #endif // __ARLCORE_SMARTPOINTSLIST_H__

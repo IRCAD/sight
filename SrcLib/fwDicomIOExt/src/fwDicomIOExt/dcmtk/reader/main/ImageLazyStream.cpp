@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 
@@ -154,7 +153,7 @@ ImageLazyStream::ImageLazyStream( ImageLazyInformation::sptr dcmInfo ) : m_dcmIn
 SPTR(std::istream) ImageLazyStream::get()
 {
     SPTR(::boost::iostreams::stream<ImageLazySource>) is
-        = ::boost::make_shared< ::boost::iostreams::stream<ImageLazySource> >( m_dcmInfo );
+        = std::make_shared< ::boost::iostreams::stream<ImageLazySource> >( m_dcmInfo );
     return is;
 }
 

@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 
 #include <gdcmImageWriter.h>
 
@@ -59,7 +58,7 @@ void CTMRImageIOD::write(::fwMedData::Series::sptr series)
     ::fwData::Image::sptr image = imageSeries->getImage();
 
     // Create writer
-    SPTR(::gdcm::ImageWriter) writer = ::boost::make_shared< ::gdcm::ImageWriter >();
+    SPTR(::gdcm::ImageWriter) writer = std::make_shared< ::gdcm::ImageWriter >();
 
     // Create Information Entity helpers
     ::gdcmIO::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());

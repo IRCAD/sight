@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <boost/foreach.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 
@@ -212,7 +211,7 @@ ImageRGBLookupLazyStream::ImageRGBLookupLazyStream( ImageRGBLookupLazyInformatio
 SPTR(std::istream) ImageRGBLookupLazyStream::get()
 {
     SPTR(::boost::iostreams::stream<ImageRGBLookupLazySource>) is
-        = ::boost::make_shared< ::boost::iostreams::stream<ImageRGBLookupLazySource> >( m_dcmInfo );
+        = std::make_shared< ::boost::iostreams::stream<ImageRGBLookupLazySource> >( m_dcmInfo );
     return is;
 }
 

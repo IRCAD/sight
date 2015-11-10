@@ -54,7 +54,7 @@ void Measurement::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
             if(subNode->getType() == "SCOORD")
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoordNode) scoordNode =
-                    ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoordNode >(subNode);
+                    std::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoordNode >(subNode);
                 if(scoordNode && scoordNode->getGraphicType() == "POLYLINE")
                 {
                     // Retrieve coordinates
@@ -64,7 +64,7 @@ void Measurement::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
                     if(!scoordNode->getSubNodeContainer().empty())
                     {
                         SPTR(::gdcmIO::container::sr::DicomSRImageNode) imageNode =
-                            ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRImageNode >(
+                            std::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRImageNode >(
                                 *scoordNode->getSubNodeContainer().begin());
                         if(imageNode)
                         {
@@ -81,7 +81,7 @@ void Measurement::readNode(SPTR(::gdcmIO::container::sr::DicomSRNode)node)
             else if(subNode->getType() == "SCOORD3D")
             {
                 SPTR(::gdcmIO::container::sr::DicomSRSCoord3DNode) scoord3DNode =
-                    ::boost::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(subNode);
+                    std::dynamic_pointer_cast< ::gdcmIO::container::sr::DicomSRSCoord3DNode >(subNode);
                 if(scoord3DNode && scoord3DNode->getGraphicType() == "POLYLINE")
                 {
                     // Retrieve coordinates

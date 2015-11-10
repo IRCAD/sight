@@ -52,7 +52,7 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::gdcm
     SLM_ASSERT("ModelSeries should not be null.", modelSeries);
 
     // Create GDCM Reader
-    SPTR(::gdcm::SurfaceReader) reader = ::boost::shared_ptr< ::gdcm::SurfaceReader >( new ::gdcm::SurfaceReader );
+    SPTR(::gdcm::SurfaceReader) reader = std::shared_ptr< ::gdcm::SurfaceReader >( new ::gdcm::SurfaceReader );
 
     // Path container
     ::fwDicomData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();

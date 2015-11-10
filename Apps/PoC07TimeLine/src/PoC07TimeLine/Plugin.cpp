@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/Object.hpp>
 #include <fwRuntime/profile/Profile.hpp>

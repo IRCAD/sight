@@ -59,7 +59,7 @@ void RawBufferTLTest::pushTest()
 
     CSPTR(::extData::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
     CSPTR(::extData::timeline::RawBuffer) buff        =
-        ::boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(dataPushed1Bis);
+        std::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(dataPushed1Bis);
     CPPUNIT_ASSERT(buff);
     CPPUNIT_ASSERT_EQUAL(buff, timeline->getClosestBuffer(time1 + 1.5));
     float* buffData = buff->getBuffer<float>();
@@ -306,7 +306,7 @@ void RawBufferTLTest::copyTest()
     CPPUNIT_ASSERT(deepDataPushed1);
     CPPUNIT_ASSERT(data1 != deepDataPushed1);
     CSPTR(::extData::timeline::RawBuffer) buff1 =
-        ::boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(deepDataPushed1);
+        std::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(deepDataPushed1);
     CPPUNIT_ASSERT(buff1);
     CPPUNIT_ASSERT_EQUAL(buff1, deepTimeline->getBuffer(time1));
     float* buffData1 = buff1->getBuffer<float>();
@@ -318,7 +318,7 @@ void RawBufferTLTest::copyTest()
     CPPUNIT_ASSERT(deepDataPushed2);
     CPPUNIT_ASSERT(data2 != deepDataPushed2);
     CSPTR(::extData::timeline::RawBuffer) buff2 =
-        ::boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(deepDataPushed2);
+        std::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(deepDataPushed2);
     CPPUNIT_ASSERT(buff2);
     float* buffData2 = buff2->getBuffer<float>();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(8.0, buffData2[0], 0.00001);

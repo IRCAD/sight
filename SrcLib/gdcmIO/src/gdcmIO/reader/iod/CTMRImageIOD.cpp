@@ -50,7 +50,7 @@ void CTMRImageIOD::read(::fwMedData::Series::sptr series) throw(::gdcmIO::except
     SLM_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
-    SPTR(::gdcm::ImageReader) reader = ::boost::shared_ptr< ::gdcm::ImageReader >( new ::gdcm::ImageReader );
+    SPTR(::gdcm::ImageReader) reader = std::shared_ptr< ::gdcm::ImageReader >( new ::gdcm::ImageReader );
 
     // Read the first file
     ::fwDicomData::DicomSeries::DicomPathContainerType pathContainer = m_dicomSeries->getLocalDicomPaths();

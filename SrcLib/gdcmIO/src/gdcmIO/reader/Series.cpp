@@ -6,7 +6,6 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
-#include <boost/make_shared.hpp>
 
 #include <gdcmImageReader.h>
 #include <gdcmScanner.h>
@@ -60,7 +59,7 @@ throw(::gdcmIO::exception::Failed)
 
     // Create instance
     SPTR(::gdcmIO::container::DicomInstance) instance =
-        ::boost::make_shared< ::gdcmIO::container::DicomInstance >(dicomSeries);
+        std::make_shared< ::gdcmIO::container::DicomInstance >(dicomSeries);
 
     // Create result
     ::fwMedData::Series::sptr result;
@@ -210,7 +209,7 @@ SPTR(::gdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferencedSe
     const std::string filename = pathContainer.begin()->second.string();
 
     // Create Reader
-    ::boost::shared_ptr< ::gdcm::Reader > reader = ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    std::shared_ptr< ::gdcm::Reader > reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
     reader->SetFileName( filename.c_str() );
 
     // Series Instance UID of the referenced Series
@@ -267,7 +266,7 @@ SPTR(::gdcmIO::container::DicomInstance) Series::getStructuredReportReferencedSe
     const std::string filename = pathContainer.begin()->second.string();
 
     // Create Reader
-    ::boost::shared_ptr< ::gdcm::Reader > reader = ::boost::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
+    std::shared_ptr< ::gdcm::Reader > reader = std::shared_ptr< ::gdcm::Reader >( new ::gdcm::Reader );
     reader->SetFileName( filename.c_str() );
 
     // Series Instance UID of the referenced Series

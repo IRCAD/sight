@@ -60,19 +60,19 @@ public:
                                                   const float * normalCoord);
 
     /// Return point coordinates
-    GDCMIO_API const ::boost::shared_ptr< float > getPointCoordData() const;
+    GDCMIO_API const std::shared_ptr< float > getPointCoordData() const;
 
     /// Return number of points
     GDCMIO_API unsigned long getPointCoordSize() const;
 
     /// Return index list
-    GDCMIO_API const ::boost::shared_ptr< uint32_t > getPointIndexList() const;
+    GDCMIO_API const std::shared_ptr< uint32_t > getPointIndexList() const;
 
     /// Return number of index
     GDCMIO_API unsigned long getPointIndexSize() const;
 
     /// Return normal list
-    GDCMIO_API const ::boost::shared_ptr< float > getNormalCoordData() const;
+    GDCMIO_API const std::shared_ptr< float > getNormalCoordData() const;
 
     /// Return number of normals
     GDCMIO_API unsigned long getNormalCoordSize() const;
@@ -81,7 +81,7 @@ public:
      * @brief Set point coordinates
      * @param[in] array Point coordinates
      */
-    GDCMIO_API void setPointCoordData(const ::boost::shared_ptr< float > array);
+    GDCMIO_API void setPointCoordData(const std::shared_ptr< float > array);
 
     /**
      * @brief Set number of points
@@ -93,7 +93,7 @@ public:
      * @brief Set index list
      * @param[in] array Index list
      */
-    GDCMIO_API void setPointIndexList(const ::boost::shared_ptr< uint32_t > array);
+    GDCMIO_API void setPointIndexList(const std::shared_ptr< uint32_t > array);
 
     /**
      * @brief Set number of index
@@ -105,7 +105,7 @@ public:
      * @brief Set normals list
      * @param[in] array Normals list
      */
-    GDCMIO_API void setNormalCoordData(const ::boost::shared_ptr< float > array);
+    GDCMIO_API void setNormalCoordData(const std::shared_ptr< float > array);
 
     /**
      * @brief Set number of normals
@@ -116,7 +116,7 @@ public:
 private:
 
     /// Surface Points Coordinates (List of points coordinates for one surface) (eg : x1,y1,z1, x2,y2,z2, ...).
-    ::boost::shared_ptr< float > m_pointCoordData;
+    std::shared_ptr< float > m_pointCoordData;
 
     /// Number of points.
     unsigned long m_pointCoordSize;
@@ -125,13 +125,13 @@ private:
     /// Primitives will be written in Triangle Point Index List ( Tag(0066,0023) ) which has a VR equal to OW
     /// VR::OW is a string of 16-bit words where the encoding of the contents is specified by the negotiated Transfer Syntax
     /// Here, we try to force VR::OW to have a length of 32 bits for each primitive
-    ::boost::shared_ptr< uint32_t > m_pointIndexList;
+    std::shared_ptr< uint32_t > m_pointIndexList;
 
     /// Number of primitives/cells.
     unsigned long m_pointIndexSize;
 
     /// Surface Point Normal Coordinates (List of point normal coordinates for one surface) (eg : x1,y1,z1, x2,y2,z2, ...).
-    ::boost::shared_ptr< float > m_normalCoordData;
+    std::shared_ptr< float > m_normalCoordData;
 
     /// Number of normals.
     unsigned long m_normalCoordSize;
