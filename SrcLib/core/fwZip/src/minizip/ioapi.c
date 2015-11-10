@@ -20,7 +20,8 @@
         #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#ifdef __APPLE__
+//FIXME : ANDROID does not yet support 64 bit functions
+#if defined(__APPLE__) || defined(ANDROID)
 // In darwin and perhaps other BSD variants off_t is a 64 bit value, hence no need for specific 64 bit functions
 #define FOPEN_FUNC(filename, mode) fopen(filename, mode)
 #define FTELLO_FUNC(stream) ftello(stream)

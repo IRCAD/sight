@@ -17,8 +17,9 @@
 
 #include <vector>
 
-#include "fwRuntime/config.hpp"
-
+#ifdef ANDROID
+class android_app;
+#endif
 
 namespace fwRuntime
 {
@@ -179,6 +180,17 @@ public:
         m_checkSingleInstance = _checkSingleInstance;
     }
 
+#ifdef ANDROID
+    /// Returns android native activity interface
+    android_app* getApp() const
+    {
+        return m_app;
+    }
+    void setApp(android_app* app)
+    {
+        m_app = app;
+    }
+#endif
     ParamsContainer getParams() const
     {
         return m_params;
@@ -228,6 +240,9 @@ private:
     bool m_checkSingleInstance;
     RunCallbackType m_run;
 
+#ifdef ANDROID
+    android_app* m_app; ///< native android activity interface
+#endif
     ParamsContainer m_params;
     int m_argc;
     char**          m_argv;

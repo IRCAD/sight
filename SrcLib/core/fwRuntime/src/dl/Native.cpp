@@ -14,6 +14,7 @@
 #include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/dl/INameDecorator.hpp"
 #include "fwRuntime/dl/Native.hpp"
+#include "fwRuntime/Runtime.hpp"
 
 
 
@@ -46,7 +47,13 @@ const ::boost::filesystem::path Native::getFullPath( const bool _bMustBeFile ) c
     // Pre-condition
     SLM_ASSERT("bundle not initialized", m_bundle != 0 );
 
-    ::boost::filesystem::path result = m_bundle->getLocation() / getPath();
+    ::boost::filesystem::path result;
+#ifdef ANDROID
+    std::string libName = "lib"+m_bundle->getIdentifier()+"_"+m_bundle->getVersion().string()+".so";
+    result = ::fwRuntime::Runtime::getDefault()->getWorkingPath()/"lib"/libName;
+#else
+    result = m_bundle->getLocation()/ getPath();
+#endif
 
     // Test that the result path exists.
     if(result.empty())

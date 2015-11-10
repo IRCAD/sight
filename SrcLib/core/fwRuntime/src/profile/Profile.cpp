@@ -57,6 +57,9 @@ Profile::sptr getCurrentProfile()
 
 Profile::Profile() :
     m_checkSingleInstance(false),
+#ifdef ANDROID
+    m_app(nullptr),
+#endif
     m_argc(0),
     m_argv(NULL)
 {

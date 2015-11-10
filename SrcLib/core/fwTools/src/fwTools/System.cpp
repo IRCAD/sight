@@ -23,6 +23,9 @@
 #endif
 
 #include <fwCore/base.hpp>
+#ifdef ANDROID
+#include <fwRuntime/Runtime.hpp>
+#endif
 
 #include "fwTools/System.hpp"
 
@@ -88,6 +91,14 @@ const ::boost::filesystem::path &System::getTempPath() throw()
     {
         return sysTmp;
     }
+#ifdef ANDROID
+    sysTmp = ::fwRuntime::Runtime::getDefault()->getWorkingPath()/"tmp";
+    if(!fs::exists(sysTmp))
+    {
+        bool res = fs::create_directories(sysTmp);
+        SLM_ASSERT(" Failed to create '"+sysTmp.string()+"' path", res);
+    }
+#else
 
     ::boost::system::error_code err;
     sysTmp = fs::temp_directory_path(err);
@@ -100,10 +111,9 @@ const ::boost::filesystem::path &System::getTempPath() throw()
         fs::path fallback("/tmp");
 #endif
         OSLM_ERROR("Temporary Path Error : " << err.message() << ". " << "Falling back to " << fallback );
-
         sysTmp = fallback;
     }
-
+#endif
     return sysTmp;
 }
 
