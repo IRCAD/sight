@@ -7,6 +7,8 @@
 #ifndef __VISUVTKADAPTOR_ORIENTATIONMARKER_HPP__
 #define __VISUVTKADAPTOR_ORIENTATIONMARKER_HPP__
 
+#ifndef ANDROID
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
@@ -60,4 +62,6 @@ protected:
 };
 } //namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_ORIENTATIONMARKER_HPP__
+#endif // ANDROID
+
+#endif //__VISUVTKADAPTOR_ORIENTATIONMARKER_HPP__

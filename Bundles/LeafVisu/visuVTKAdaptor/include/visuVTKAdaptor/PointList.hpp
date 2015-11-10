@@ -7,6 +7,10 @@
 #ifndef __VISUVTKADAPTOR_POINTLIST_HPP__
 #define __VISUVTKADAPTOR_POINTLIST_HPP__
 
+#ifndef ANDROID
+
+#ifndef ANDROID
+
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
 
@@ -51,10 +55,10 @@ protected:
     WeakPointListType m_weakPointList;
 
 };
-
-
-
-
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
+
+#endif // ANDROID
 
 #endif // __VISUVTKADAPTOR_POINTLIST_HPP__

@@ -8,6 +8,8 @@
 #ifndef __VISUVTKADAPTOR_PLANESELECTIONNOTIFIER_HPP__
 #define __VISUVTKADAPTOR_PLANESELECTIONNOTIFIER_HPP__
 
+#ifndef ANDROID
+
 #include <fwData/Object.hpp>
 #include <fwData/PlaneList.hpp>
 
@@ -76,5 +78,7 @@ protected:
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
 
 #endif // __VISUVTKADAPTOR_PLANESELECTIONNOTIFIER_HPP__

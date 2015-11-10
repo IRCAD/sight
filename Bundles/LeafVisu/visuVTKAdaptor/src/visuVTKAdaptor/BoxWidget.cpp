@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
+
 #include <boost/lexical_cast.hpp>
 
 #include <vtkRenderWindowInteractor.h>
@@ -220,3 +222,5 @@ void BoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools
 //------------------------------------------------------------------------------
 
 } // namespace visuVTKAdaptor
+
+#endif

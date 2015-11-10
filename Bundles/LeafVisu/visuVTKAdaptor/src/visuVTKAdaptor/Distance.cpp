@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
+
 #include <boost/foreach.hpp>
 
 #include <fwData/PointList.hpp>
@@ -192,3 +194,5 @@ void Distance::doStop()
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

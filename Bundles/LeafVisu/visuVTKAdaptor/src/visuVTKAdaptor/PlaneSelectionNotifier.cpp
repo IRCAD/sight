@@ -19,6 +19,8 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
 
+#ifndef ANDROID
+
 #include "visuVTKAdaptor/PlaneSelectionNotifier.hpp"
 
 
@@ -243,4 +245,6 @@ void PlaneSelectionNotifier::deselectPlane()
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
 

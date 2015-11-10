@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
+
 #include <iterator>
 #include <algorithm>
 #include <functional>
@@ -189,3 +191,5 @@ PointList::WeakPointListType PointList::getNewPoints()
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
 
 #include <boost/format.hpp>
 
@@ -92,3 +93,5 @@ void PointLabel::doSwap() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

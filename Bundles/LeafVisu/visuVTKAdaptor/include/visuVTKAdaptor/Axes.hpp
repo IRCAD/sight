@@ -7,6 +7,8 @@
 #ifndef __VISUVTKADAPTOR_AXES_HPP__
 #define __VISUVTKADAPTOR_AXES_HPP__
 
+#ifndef ANDROID
+
 // FW4SPL Includes
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -52,5 +54,6 @@ protected:
 
 } // namespace visuVTKAdaptor
 
-#endif // __VISUVTKADAPTOR_AXES_HPP__
+#endif // ANDROID
 
+#endif // __VISUVTKADAPTOR_AXES_HPP__

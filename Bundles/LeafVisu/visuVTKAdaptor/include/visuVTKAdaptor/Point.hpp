@@ -7,6 +7,7 @@
 #ifndef __VISUVTKADAPTOR_POINT_HPP__
 #define __VISUVTKADAPTOR_POINT_HPP__
 
+#ifndef ANDROID
 
 #include <fwServices/ObjectMsg.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
@@ -55,10 +56,8 @@ protected:
     vtkCommand              * m_pointUpdateCommand;
 
 };
-
-
-
-
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
 
 #endif // __VISUVTKADAPTOR_POINT_HPP__

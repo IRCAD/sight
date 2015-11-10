@@ -7,6 +7,8 @@
 #ifndef __VISUVTKADAPTOR_DISTANCE_HPP__
 #define __VISUVTKADAPTOR_DISTANCE_HPP__
 
+#ifndef ANDROID
+
 #include <vector>
 
 #include <fwData/Point.hpp>
@@ -70,5 +72,7 @@ protected:
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
 
 #endif // __VISUVTKADAPTOR_DISTANCE_HPP__

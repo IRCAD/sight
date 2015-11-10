@@ -7,6 +7,8 @@
 #ifndef __VISUVTKADAPTOR_BOXWIDGET_HPP__
 #define __VISUVTKADAPTOR_BOXWIDGET_HPP__
 
+#ifndef ANDROID
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include "visuVTKAdaptor/config.hpp"
 
@@ -54,4 +56,7 @@ private:
 
 } // namespace visuVTKAdaptor
 
+#endif // ANDROID
+
 #endif // __VISUVTKADAPTOR_BOXWIDGET_HPP__
+

@@ -11,6 +11,8 @@
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
+#ifndef ANDROID
+
 #include "visuVTKAdaptor/config.hpp"
 
 class vtkBoxWidget2;
@@ -74,5 +76,7 @@ private:
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
 
 #endif // __VISUVTKADAPTOR_MESHESBOXWIDGET_HPP__

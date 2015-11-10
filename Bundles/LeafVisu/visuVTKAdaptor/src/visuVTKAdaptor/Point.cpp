@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
+
 #include <vtkCommand.h>
 #include <vtkHandleWidget.h>
 #include <vtkSphereHandleRepresentation.h>
@@ -272,3 +274,5 @@ void Point::setSelectedColor(double red, double green, double blue, double alpha
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

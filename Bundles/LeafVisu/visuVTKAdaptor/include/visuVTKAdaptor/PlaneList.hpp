@@ -7,6 +7,8 @@
 #ifndef __VISUVTKADAPTOR_PLANELIST_HPP__
 #define __VISUVTKADAPTOR_PLANELIST_HPP__
 
+#ifndef ANDROID
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
@@ -60,5 +62,7 @@ protected:
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
 
 #endif // __VISUVTKADAPTOR_PLANELIST_HPP__

@@ -7,6 +7,8 @@
 #ifndef __VISUVTKADAPTOR_PLANEINTERACTOR_HPP__
 #define __VISUVTKADAPTOR_PLANEINTERACTOR_HPP__
 
+#ifndef ANDROID
+
 #include <fwData/TransferFunction.hpp>
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
@@ -56,5 +58,7 @@ protected:
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
 
 #endif // __VISUVTKADAPTOR_PLANEINTERACTOR_HPP__

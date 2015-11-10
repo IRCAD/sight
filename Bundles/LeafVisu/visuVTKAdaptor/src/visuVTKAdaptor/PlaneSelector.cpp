@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
+
 #include <boost/foreach.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
@@ -14,6 +16,8 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/IEditionService.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Object.hpp>
 
@@ -133,5 +137,7 @@ void PlaneSelector::selectObject( ::fwData::Object::sptr object )
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
+
+#endif //ANDROID
 
 

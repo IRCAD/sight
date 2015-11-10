@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
+
 #include <boost/foreach.hpp>
 
 #include <fwData/Video.hpp>
@@ -177,3 +179,5 @@ void Video::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

@@ -7,6 +7,8 @@
 #ifndef __VISUVTKADAPTOR_VIDEO_HPP__
 #define __VISUVTKADAPTOR_VIDEO_HPP__
 
+#ifndef ANDROID
+
 #include <vector>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
@@ -55,9 +57,8 @@ private:
 
 };
 
-
-
-
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
 
 #endif // __VISUVTKADAPTOR_VIDEO_HPP__

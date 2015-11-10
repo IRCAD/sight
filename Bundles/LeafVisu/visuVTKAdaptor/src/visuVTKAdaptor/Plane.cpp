@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
+
 #include <boost/foreach.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
@@ -290,9 +292,9 @@ void Plane::selectPlane(bool select)
         }
     }
 
-
-
 }
 
 
 } //namespace visuVTKAdaptor
+
+#endif //ANDROID

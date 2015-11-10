@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
+
 #include <boost/foreach.hpp>
 
 
@@ -21,6 +23,7 @@
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkCommand.h>
+
 
 #include "visuVTKAdaptor/PlaneInteractor.hpp"
 #include <fwServices/IEditionService.hpp>
@@ -252,3 +255,5 @@ void PlaneInteractor::deselectPlane()
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

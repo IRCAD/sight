@@ -8,6 +8,8 @@
 #ifndef __VISUVTKADAPTOR_PLANESELECTOR_HPP__
 #define __VISUVTKADAPTOR_PLANESELECTOR_HPP__
 
+#ifndef ANDROID
+
 #include <fwData/Object.hpp>
 #include <fwData/PlaneList.hpp>
 
@@ -52,5 +54,7 @@ protected:
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
 
 #endif // __VISUVTKADAPTOR_PLANESELECTOR_HPP__

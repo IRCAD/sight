@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
+
 #include <boost/lexical_cast.hpp>
 
 /// FW4SPL Includes
@@ -120,3 +122,5 @@ void Axes::buildPipeline()
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

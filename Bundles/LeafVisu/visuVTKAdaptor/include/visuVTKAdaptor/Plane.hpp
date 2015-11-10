@@ -7,6 +7,8 @@
 #ifndef __VISUVTKADAPTOR_PLANE_HPP__
 #define __VISUVTKADAPTOR_PLANE_HPP__
 
+#ifndef ANDROID
+
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwData/Plane.hpp>
@@ -70,5 +72,7 @@ private:
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
 
 #endif // __VISUVTKADAPTOR_PLANE_HPP__

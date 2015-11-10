@@ -7,6 +7,8 @@
 #ifndef __VISUVTKADAPTOR_POINTLABEL_HPP__
 #define __VISUVTKADAPTOR_POINTLABEL_HPP__
 
+#ifndef ANDROID
+
 #include <string>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
@@ -37,15 +39,10 @@ protected:
 
     void starting() throw(::fwTools::Failed);
     void stopping() throw(::fwTools::Failed);
-
-
-
-
 };
-
-
 
 } //namespace visuVTKAdaptor
 
-#endif //  __VISUVTKADAPTOR_POINTLABEL_HPP__
+#endif // ANDROID
 
+#endif //  __VISUVTKADAPTOR_POINTLABEL_HPP__

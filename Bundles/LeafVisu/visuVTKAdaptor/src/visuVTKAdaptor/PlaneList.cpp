@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
+
 #include "visuVTKAdaptor/Plane.hpp"
 #include "visuVTKAdaptor/PlaneList.hpp"
 
@@ -308,3 +310,5 @@ void PlaneList::doStop() throw(fwTools::Failed)
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
