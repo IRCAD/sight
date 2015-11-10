@@ -3,7 +3,6 @@ fwUseForwardInclude(
     fwCore
     fwData
     fwGui
-    fwMath
     fwRender
     fwRuntime
     fwServices
@@ -17,9 +16,16 @@ fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
 )
 
-fwLink(
-    vtkInteractionWidgets
-    vtkInteractionStyle
-    vtkRenderingFreeTypeOpenGL
-    vtkRenderingVolumeOpenGL
-)
+if(NOT ANDROID)
+    fwLink(
+        vtkInteractionWidgets
+        vtkInteractionStyle
+        vtkRenderingFreeTypeOpenGL
+        vtkRenderingVolumeOpenGL
+    )
+else()
+    fwLink(
+        vtkRenderingOpenGL2
+        vtkInteractionStyle
+    )
+endif()

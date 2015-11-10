@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
 
 #include "vtkAssemblyPath.h"
 #include "vtkCellPicker.h"
@@ -189,3 +190,5 @@ void MarkedSphereHandleRepresentation::PrintSelf(ostream& os, vtkIndent indent)
 } // namespace vtk
 
 } // namespace fwRenderVTK
+
+#endif //ANDROID

@@ -4,9 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #ifndef __FWRENDERVTK_VTK_MARKEDSPHEREHANDLEREPRESENTATION_HPP__
 #define __FWRENDERVTK_VTK_MARKEDSPHEREHANDLEREPRESENTATION_HPP__
+#ifndef ANDROID
 
 #include "vtkHandleRepresentation.h"
 #include "vtkSphereHandleRepresentation.h"
@@ -81,4 +81,5 @@ private:
 
 } // namespace fwRenderVTK
 
+#endif //ANDROID
 #endif //__FWRENDERVTK_VTK_MARKEDSPHEREHANDLEREPRESENTATION_HPP__

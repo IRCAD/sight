@@ -21,7 +21,6 @@ class vtkShaderProgram2;
 
 namespace fwRenderVTK
 {
-
 namespace vtk
 {
 
@@ -30,6 +29,7 @@ FWRENDERVTK_API vtkProp  *getNearestPickedProp(vtkAbstractPropPicker *picker, vt
 FWRENDERVTK_API bool      getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *renderer,
                                                    double *position);
 
+#ifndef ANDROID
 FWRENDERVTK_API vtkSmartPointer<vtkShaderProgram2> buildShader(vtkRenderWindow* pWindow,
                                                                const char* pcVertexShader,
                                                                const char* pcFragmentShader );
@@ -37,9 +37,10 @@ FWRENDERVTK_API vtkSmartPointer<vtkShaderProgram2> buildShader(vtkRenderWindow* 
 FWRENDERVTK_API vtkSmartPointer<vtkShaderProgram2> buildShaderFromFile( vtkRenderWindow* pWindow,
                                                                         const char* pcVertexName,
                                                                         const char* pcFragmentName );
+#endif
 
 } //vtk
-
 } //fwRenderVTK
 
 #endif //__FWRENDERVTK_VTK_HELPERS_HPP__
+

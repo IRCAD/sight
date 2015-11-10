@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include "fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp"
 #include "fwRenderVTK/vtk/fwVtkPicker.hpp"
 #include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
@@ -16,7 +15,9 @@
 
 #include "fwRenderVTK/vtk/Instantiator.hpp"
 
+#ifndef ANDROID
 vtkInstantiatorNewMacro(fwVtkBoxRepresentation);
+#endif
 vtkInstantiatorNewMacro(fwVtkPicker);
 vtkInstantiatorNewMacro(fwVtkCellPicker);
 vtkInstantiatorNewMacro(InteractorStyle2DForNegato);
@@ -30,16 +31,21 @@ namespace vtk
 
 void Instantiator::ClassInitialize()
 {
+#ifndef ANDROID
     vtkInstantiator::RegisterInstantiator("fwVtkBoxRepresentation", vtkInstantiatorfwVtkBoxRepresentationNew);
+#endif
     vtkInstantiator::RegisterInstantiator("fwVtkPicker", vtkInstantiatorfwVtkPickerNew);
     vtkInstantiator::RegisterInstantiator("fwVtkCellPicker", vtkInstantiatorfwVtkCellPickerNew);
     vtkInstantiator::RegisterInstantiator("InteractorStyle2DForNegato", vtkInstantiatorInteractorStyle2DForNegatoNew);
     vtkInstantiator::RegisterInstantiator("InteractorStyle3DForNegato", vtkInstantiatorInteractorStyle3DForNegatoNew);
 
 #ifdef DEBUG
-    vtkObject *o = vtkInstantiator::CreateInstance("fwVtkBoxRepresentation");
+    vtkObject *o;
+#ifndef ANDROID
+    o = vtkInstantiator::CreateInstance("fwVtkBoxRepresentation");
     SLM_ASSERT("Unable to instantiate a fwVtkBoxRepresentation",o);
     o->Delete();
+#endif
 
     o = vtkInstantiator::CreateInstance("fwVtkPicker");
     SLM_ASSERT("Unable to instantiate a fwVtkPicker",o);
@@ -61,7 +67,9 @@ void Instantiator::ClassInitialize()
 
 void Instantiator::ClassFinalize()
 {
+#ifndef ANDROID
     vtkInstantiator::UnRegisterInstantiator("fwVtkBoxRepresentation", vtkInstantiatorfwVtkBoxRepresentationNew);
+#endif
     vtkInstantiator::UnRegisterInstantiator("fwVtkPicker", vtkInstantiatorfwVtkPickerNew);
     vtkInstantiator::UnRegisterInstantiator("fwVtkCellPicker", vtkInstantiatorfwVtkCellPickerNew);
     vtkInstantiator::UnRegisterInstantiator("InteractorStyle2DForNegato", vtkInstantiatorInteractorStyle2DForNegatoNew);
@@ -70,3 +78,4 @@ void Instantiator::ClassFinalize()
 } //vtk
 
 } //fwRenderVTK
+

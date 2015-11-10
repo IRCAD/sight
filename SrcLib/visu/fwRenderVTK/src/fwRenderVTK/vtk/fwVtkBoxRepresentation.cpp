@@ -30,6 +30,8 @@
 
    =========================================================================*/
 
+#ifndef ANDROID
+
 #include <vtkBoxRepresentation.h>
 #include <vtkActor.h>
 #include <vtkSphereSource.h>
@@ -160,3 +162,5 @@ void fwVtkBoxRepresentation::PrintSelf(ostream& os, vtkIndent indent)
     os << indent << "Scaling Enabled: " << (this->ScalingEnabled ? "On\n" : "Off\n");
     os << indent << "Rotation Enabled: " << (this->RotationEnabled ? "On\n" : "Off\n");
 }
+
+#endif //ANDROID

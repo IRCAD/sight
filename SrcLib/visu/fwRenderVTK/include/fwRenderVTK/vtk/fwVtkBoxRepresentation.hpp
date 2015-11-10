@@ -40,6 +40,8 @@
 #ifndef __FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__
 #define __FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__
 
+#ifndef ANDROID
+
 #include "fwRenderVTK/config.hpp"
 
 #include <vtkBoxRepresentation.h>
@@ -102,4 +104,5 @@ protected:
 
 };
 
+#endif //ANDROID
 #endif //__FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__

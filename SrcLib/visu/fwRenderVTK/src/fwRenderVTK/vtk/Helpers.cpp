@@ -13,9 +13,11 @@
 #include <vtkCamera.h>
 #include <vtkAssemblyPath.h>
 #include <vtkProp3DCollection.h>
-#include <vtkShader2Collection.h>
+#ifndef ANDROID
 #include <vtkShaderProgram2.h>
 #include <vtkShader2.h>
+#include <vtkShader2Collection.h>
+#endif
 #include <vtkOpenGLRenderWindow.h>
 
 #include <fwCore/base.hpp>
@@ -118,6 +120,7 @@ bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *render
 
 //------------------------------------------------------------------------------
 
+#ifndef ANDROID
 vtkSmartPointer<vtkShaderProgram2> buildShader( vtkOpenGLRenderWindow* pWindow,
                                                 const char* pcVertexShader,
                                                 const char* pcFragmentShader )
@@ -237,6 +240,7 @@ vtkSmartPointer<vtkShaderProgram2> buildShaderFromFile( vtkRenderWindow* pWindow
 
     return pProgram;
 }
+#endif
 
 } //vtk
 
