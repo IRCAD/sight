@@ -32,6 +32,7 @@ App::App(int & argc, char ** argv, bool GUIenabled)
     SLM_TRACE_FUNC();
 
     setlocale(LC_ALL,"C"); // needed for mfo save process
+    QLocale::setDefault(QLocale::C); // on Linux we need that as well...
 
     std::string appName = "No name";
 
