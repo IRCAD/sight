@@ -57,7 +57,11 @@
             
             <item key="modelSeries">
                 <object uid="${MODEL_SERIES_UID}" src="ref" type="::fwMedData::ModelSeries">
-                    <service uid="listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes" />
+                    <service uid="listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes">
+                    <columns>
+                            <organ_name>@organ_name</organ_name>
+                        </columns>
+                    </service>
                 </object>
             </item>
             
