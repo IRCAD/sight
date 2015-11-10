@@ -460,8 +460,7 @@ void SSeriesPuller::notifyProgressBar(const ::std::string& actionId, const ::std
     event->addEvent(actionId);
     event->setMessage(msg);
     event->setPercentage(percentage);
-
-    fwServicesNotifyMsgMacro( this->getLightID(), m_sigProgressBar, event );
+    m_sigProgressBar->asyncEmit(event);
 }
 
 //------------------------------------------------------------------------------
