@@ -10,10 +10,37 @@ include(CMakeParseArguments)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
 
 
-
 set(BUILD_SHARED_LIBS ON)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
+
+set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
+set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
+set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
+set(ADDITIONAL_PROJECTS CACHE PATH
+        "Paths to the additional projects"
+    )
+
+set(SET_API_VERSION ON)
+
+# Empty custom macro that can be overriden by projects CMakeLists
+macro(fwLibExtra)
+    # Do nothing
+endmacro()
+macro(fwBundleExtra)
+    # Do nothing
+endmacro()
+
+if(ADDITIONAL_PROJECTS)
+    foreach(ADDITIONAL_PROJECT ${ADDITIONAL_PROJECTS})
+        # parse additional CMakeLists
+        if(EXISTS ${ADDITIONAL_PROJECT}/CMakeLists.txt)
+            get_filename_component(DIRECTORY_PATH ${ADDITIONAL_PROJECT} ABSOLUTE )
+            get_filename_component(DIR_NAME ${DIRECTORY_PATH} NAME )
+            add_subdirectory(${ADDITIONAL_PROJECT} ${DIR_NAME})
+        endif()
+    endforeach()
+endif(ADDITIONAL_PROJECTS)
 
 # Set warning level and function export visibility on Unix
 if(UNIX)
@@ -31,10 +58,6 @@ if(UNIX)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcolor-diagnostics")
     endif()
 endif()
-
-set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
-
-set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
 
 set(LIBRARY_OUTPUT_DIR lib)
 
@@ -99,12 +122,12 @@ macro(initProject PRJNAME )
         list(APPEND ${FWPROJECT_NAME}_SOURCES ${SOURCES})
     endforeach(SUBDIR)
 
-    set (${FWPROJECT_NAME}_INCLUDE_DIR ${${FWPROJECT_NAME}_INCLUDE_DIR} PARENT_SCOPE) 
+    set (${FWPROJECT_NAME}_INCLUDE_DIR ${${FWPROJECT_NAME}_INCLUDE_DIR} PARENT_SCOPE)
     set (${FWPROJECT_NAME}_DIR     ${CMAKE_CURRENT_SOURCE_DIR}  PARENT_SCOPE)
-    
-    set (${FWPROJECT_NAME}_HEADERS ${${FWPROJECT_NAME}_HEADERS} PARENT_SCOPE) 
+
+    set (${FWPROJECT_NAME}_HEADERS ${${FWPROJECT_NAME}_HEADERS} PARENT_SCOPE)
     set (${FWPROJECT_NAME}_SOURCES ${${FWPROJECT_NAME}_SOURCES} PARENT_SCOPE)
-    
+
 endmacro(initProject)
 
 
@@ -121,7 +144,11 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
 
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
     string(REGEX MATCH "^[^.]+" API_VERSION ${PROJECT_VERSION})
-    set_target_properties(${FWPROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${API_VERSION})
+
+    if(SET_API_VERSION)
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${API_VERSION})
+    endif()
+
     set_target_properties(${FWPROJECT_NAME} PROPERTIES DEFINE_SYMBOL ${PROJECT_NAME_UPCASE}_EXPORTS)
 
     add_definitions(-D${PROJECT_NAME_UPCASE}_VER="${DASH_VERSION}")
@@ -156,8 +183,8 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
         file(RELATIVE_PATH REL_PATH "${RES_DIR}" "${RESOURCE_FILE}")
         if ("${TARGET_DIR}/${REL_PATH}" MATCHES "^.*\\.(txt|xml)$")
             set(COPY_COMMAND ${CMAKE_COMMAND}
-            -DIN_FILE="${RES_DIR}/${REL_PATH}" 
-            -DOUT_FILE="${TARGET_DIR}/${REL_PATH}" 
+            -DIN_FILE="${RES_DIR}/${REL_PATH}"
+            -DOUT_FILE="${TARGET_DIR}/${REL_PATH}"
             -DFWPROJECT_NAME="${FWPROJECT_NAME}"
             -DDASH_VERSION="${${FWPROJECT_NAME}_DASH_VERSION}"
             -DPROJECT_VERSION="${${FWPROJECT_NAME}_VERSION}"
@@ -166,17 +193,17 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
             )
             set(COPY_DEPENDS "${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake" )
         else()
-            
+
             set(COPY_COMMAND ${CMAKE_COMMAND} -E copy "${RES_DIR}/${REL_PATH}" "${TARGET_DIR}/${REL_PATH}")
             set(COPY_DEPENDS )
         endif()
-        
+
         add_custom_command(OUTPUT "${TARGET_DIR}/${REL_PATH}"
             COMMAND ${COPY_COMMAND}
             DEPENDS "${RES_DIR}/${REL_PATH}" ${COPY_DEPENDS}
-            ) 
+            )
         LIST (APPEND CREATED_RESOURCES_LIST "${TARGET_DIR}/${REL_PATH}")
-        
+
     endforeach()
     
     add_custom_target("${TARGET}" ALL DEPENDS ${CREATED_RESOURCES_LIST} )
@@ -186,7 +213,7 @@ endmacro()
 
 macro(createResourcesInstallTarget CONFIGURED_FILES_DIR DESTINATION)
     file(GLOB_RECURSE RESOURCES_FILES "${CONFIGURED_FILES_DIR}/*")
-    
+
     # Add to target the generated profile.xml
     if( ${FWPROJECT_NAME}_TYPE STREQUAL "APP" )
         LIST (APPEND RESOURCES_FILES "${CONFIGURED_FILES_DIR}/profile.xml" )
@@ -296,6 +323,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     set(${FWPROJECT_NAME}_TYPE "LIBRARY")
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
+
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
     add_library(${FWPROJECT_NAME} ${ARGN} ${${FWPROJECT_NAME}_HEADERS} ${${FWPROJECT_NAME}_SOURCES} )
@@ -318,7 +346,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
             TARGETS ${FWPROJECT_NAME}
             RUNTIME DESTINATION bin
             LIBRARY DESTINATION ${LIBRARY_OUTPUT_DIR}
-            OPTIONAL
+            OPTIONAL NAMELINK_SKIP
             )
     endif()
 
@@ -331,6 +359,8 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         IMMEDIATE @ONLY)
 
     target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
+
+    fwLibExtra()
 
 endmacro(fwLib)
 
@@ -359,7 +389,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
                 TARGETS ${FWPROJECT_NAME}
                 RUNTIME DESTINATION Bundles/${FWPROJECT_NAME}_${DASH_VERSION}
                 LIBRARY DESTINATION Bundles/${FWPROJECT_NAME}_${DASH_VERSION}
-                OPTIONAL
+                OPTIONAL NAMELINK_SKIP
                 )
         endif()
 
@@ -382,6 +412,8 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             createResourcesInstallTarget( "${BUNDLE_DIR}" Bundles/${FWPROJECT_NAME}_${DASH_VERSION} )
         endif()
     endif()
+
+    fwBundleExtra()
 
 endmacro(fwBundle)
 
@@ -543,6 +575,7 @@ macro(loadProperties PROPERTIES_FILE)
     set(REQUIREMENTS)
     set(CPPUNITTEST_OPTIONS)
     set(UNIQUE)
+    set(PLATFORM)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -552,7 +585,7 @@ macro(fwLoadProperties)
     loadProperties("Properties.cmake")
 
     string( TOUPPER "${TYPE}" TYPE )
-    
+
     if( TYPE STREQUAL "EXECUTABLE" )
         fwExec(${NAME} ${VERSION} ${OPTIONS})
     elseif( TYPE STREQUAL "LIBRARY" )
@@ -566,7 +599,7 @@ macro(fwLoadProperties)
         set(${NAME}_TYPE "APP")
         fwBundle(${NAME} ${VERSION} ${OPTIONS})
     endif()
-    
+
     if(DEPENDENCIES)
         fwUse( ${DEPENDENCIES} )
     endif()
@@ -608,12 +641,10 @@ macro(addProject PROJECT)
     unset(PROJECT_CACHE)
 endmacro()
 
-
-
-set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
 if(EXTERNAL_LIBRARIES)
     list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
     list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
+    list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
 
     file(GLOB LIB_CONFIGS ${EXTERNAL_LIBRARIES}/fw-*.cmake )
     foreach(LIB_CONFIG ${LIB_CONFIGS})
@@ -623,19 +654,18 @@ if(EXTERNAL_LIBRARIES)
 endif(EXTERNAL_LIBRARIES)
 
 
-set(PROJECTS_TO_BUILD CACHE STRING 
+set(PROJECTS_TO_BUILD CACHE STRING
         "List of projects that will be configured for build.
         Leave empty to configure all projects"
     )
 
-set(PROJECTS_TO_INSTALL CACHE STRING 
+set(PROJECTS_TO_INSTALL CACHE STRING
         "List of projects for which the installation rules will be created."
     )
 
-
 file(GLOB_RECURSE PROJECTS_PROPERTIES */Properties.cmake)
 
-set(ADDITIONAL_PROJECTS CACHE PATH 
+set(ADDITIONAL_PROJECTS CACHE PATH
         "Paths to the additional projects"
     )
 set(ADDITIONAL_PROJECTS_SOURCE_DIR "")
@@ -652,38 +682,51 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
 
     loadProperties("${PROPERTIES_FILE}")
 
-    if(NOT NAME)
-        message(FATAL_ERROR "${PROPERTIES_FILE}: Project NAME can not be empty.")
+    # Check if project is compatible with the current platform
+    set(APPEND_PROJECT OFF)
+    if( NOT PLATFORM OR PLATFORM STREQUAL "ALL")
+        set(APPEND_PROJECT ON)
+    elseif(PLATFORM STREQUAL "DROID" AND ANDROID)
+        set(APPEND_PROJECT ON)
+    elseif(PLATFORM STREQUAL "DESKTOP" AND NOT ANDROID)
+        set(APPEND_PROJECT ON)
     endif()
 
-    list(FIND DEPENDENCIES ${NAME} DEP_LOOP)
-    if(DEP_LOOP GREATER -1)
-        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be it's own dependency.")
-    endif()
+    if (APPEND_PROJECT)
 
-    list(FIND REQUIREMENTS ${NAME} REQ_LOOP)
-    if(REQ_LOOP GREATER -1)
-        message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be it's own requirement.")
-    endif()
+        if(NOT NAME)
+            message(FATAL_ERROR "${PROPERTIES_FILE}: Project NAME can not be empty.")
+        endif()
 
-    if(${NAME}_DIR)
-        message(FATAL_ERROR "${PROPERTIES_FILE}: A project NAME must be unique in the workspace. ${NAME} already defined there : ${${NAME}_DIR}")
-    endif()
+        list(FIND DEPENDENCIES ${NAME} DEP_LOOP)
+        if(DEP_LOOP GREATER -1)
+            message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be it's own dependency.")
+        endif()
 
-    set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
-    set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
-    set(${NAME}_VERSION "${VERSION}")
-    set(${NAME}_DIR "${PROJECT_DIR}")
+        list(FIND REQUIREMENTS ${NAME} REQ_LOOP)
+        if(REQ_LOOP GREATER -1)
+            message(FATAL_ERROR "${PROPERTIES_FILE}: A project can not be it's own requirement.")
+        endif()
 
-    if(TYPE STREQUAL "APP")
-        set(${NAME}_UNIQUE "${UNIQUE}")
-    endif()
-    
-    if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "APP" AND START)  
-        set(${NAME}_START "${START}")
-    endif()
+        if(${NAME}_DIR)
+            message(FATAL_ERROR "${PROPERTIES_FILE}: A project NAME must be unique in the workspace. ${NAME} already defined there : ${${NAME}_DIR}")
+        endif()
 
-    LIST(APPEND PROJECT_LIST ${NAME})
+        set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
+        set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
+        set(${NAME}_VERSION "${VERSION}")
+        set(${NAME}_DIR "${PROJECT_DIR}")
+
+        if(TYPE STREQUAL "APP")
+            set(${NAME}_UNIQUE "${UNIQUE}")
+        endif()
+
+        if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "APP" AND START)
+            set(${NAME}_START "${START}")
+        endif()
+
+        list(APPEND PROJECT_LIST ${NAME})
+    endif()
 
 endforeach()
 
@@ -701,7 +744,7 @@ endif()
 if(PROJECTS_TO_INSTALL)
     message(STATUS "Installation rules will be created for : ${PROJECTS_TO_INSTALL}")
     findAllDependencies("${PROJECTS_TO_INSTALL}" PROJECTS_TO_INSTALL)
-    
+
     foreach(PROJECT ${PROJECTS_TO_INSTALL})
         list(FIND PROJECT_LIST "${PROJECT}" PROJECT_FOUND)
         if(PROJECT_FOUND GREATER -1)
@@ -724,7 +767,7 @@ if(EXTERNAL_LIBRARIES)
             endif()
         endif()
     endforeach()
-    
+
 else()
     message("EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to genereate CMake projects.")
 endif()
@@ -745,14 +788,12 @@ endif()
 
 # command new service
 add_custom_target(newService
-        COMMAND ${CMAKE_COMMAND} -DSOURCEDIR:VAR=${CMAKE_CURRENT_SOURCE_DIR} 
+        COMMAND ${CMAKE_COMMAND} -DSOURCEDIR:VAR=${CMAKE_CURRENT_SOURCE_DIR}
                                  -DADDITIONALDIR="${ADDITIONAL_PROJECTS}"
                                  -P ${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/cmake_newService.cmake)
 
 # command new bundle
 add_custom_target(newBundle
         COMMAND ${CMAKE_COMMAND} -DSOURCEDIR:VAR=${CMAKE_CURRENT_SOURCE_DIR}
-                                 -DADDITIONALDIR="${ADDITIONAL_PROJECTS}" 
+                                 -DADDITIONALDIR="${ADDITIONAL_PROJECTS}"
                                  -P ${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/cmake_newBundle.cmake)
-
-
