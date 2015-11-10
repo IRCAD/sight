@@ -7,6 +7,8 @@ enable_testing()
 
 include(CheckVariableExists)
 include(CMakeParseArguments)
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
+
 
 
 set(BUILD_SHARED_LIBS ON)
@@ -164,30 +166,39 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
             )
             set(COPY_DEPENDS "${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake" )
         else()
+            
             set(COPY_COMMAND ${CMAKE_COMMAND} -E copy "${RES_DIR}/${REL_PATH}" "${TARGET_DIR}/${REL_PATH}")
             set(COPY_DEPENDS )
         endif()
-
+        
         add_custom_command(OUTPUT "${TARGET_DIR}/${REL_PATH}"
-            # COMMAND cmake -E copy "${RES_DIR}/${REL_PATH}" "${TARGET_DIR}/${REL_PATH}"
             COMMAND ${COPY_COMMAND}
             DEPENDS "${RES_DIR}/${REL_PATH}" ${COPY_DEPENDS}
             ) 
         LIST (APPEND CREATED_RESOURCES_LIST "${TARGET_DIR}/${REL_PATH}")
+        
     endforeach()
-
+    
     add_custom_target("${TARGET}" ALL DEPENDS ${CREATED_RESOURCES_LIST} )
 
     unset(CREATED_RESOURCES_LIST)
 endmacro()
 
-macro(createResourcesInstallTarget RES_DIR CONFIGURED_FILES_DIR DESTINATION)
-    file(GLOB_RECURSE RESOURCES_FILES "${RES_DIR}/*")
+macro(createResourcesInstallTarget CONFIGURED_FILES_DIR DESTINATION)
+    file(GLOB_RECURSE RESOURCES_FILES "${CONFIGURED_FILES_DIR}/*")
+    
+    # Add to target the generated profile.xml
+    if( ${FWPROJECT_NAME}_TYPE STREQUAL "APP" )
+        LIST (APPEND RESOURCES_FILES "${CONFIGURED_FILES_DIR}/profile.xml" )
+    endif()
     foreach(RESOURCE_FILE ${RESOURCES_FILES})
-        file(RELATIVE_PATH REL_PATH "${RES_DIR}" "${RESOURCE_FILE}")
-        get_filename_component(RC_REL_DIR "${REL_PATH}" DIRECTORY)
-        install(FILES "${CONFIGURED_FILES_DIR}/${REL_PATH}" DESTINATION "${DESTINATION}/${RC_REL_DIR}" )
-        unset(RC_REL_DIR)
+        get_filename_component(RESOURCE_NAME "${RESOURCE_FILE}" NAME)
+        if (NOT "${RESOURCE_NAME}" MATCHES "${FWPROJECT_NAME}_${${FWPROJECT_NAME}_DASH_VERSION}*")
+            file(RELATIVE_PATH REL_PATH "${CONFIGURED_FILES_DIR}" "${RESOURCE_FILE}")
+            get_filename_component(RC_REL_DIR "${REL_PATH}" DIRECTORY)
+            install(FILES "${CONFIGURED_FILES_DIR}/${REL_PATH}" DESTINATION "${DESTINATION}/${RC_REL_DIR}" )
+            unset(RC_REL_DIR)
+        endif()
     endforeach()
 endmacro()
 
@@ -267,9 +278,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/tu/rc"
-                "${${FWPROJECT_NAME}_RC_BUILD_DIR}" 
-                "share/tu_exec_${DIRNAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/tu_exec_${DIRNAME}_${DASH_VERSION}" )
         endif()
     endif()
 
@@ -299,7 +308,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
         endif()
 
     endif()
@@ -329,7 +338,6 @@ endmacro(fwLib)
 macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     initProject( ${FWPROJECT_NAME} )
 
-    set(${FWPROJECT_NAME}_TYPE "BUNDLE")
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
@@ -371,7 +379,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/rc" "${BUNDLE_DIR}" Bundles/${FWPROJECT_NAME}_${DASH_VERSION} )
+            createResourcesInstallTarget( "${BUNDLE_DIR}" Bundles/${FWPROJECT_NAME}_${DASH_VERSION} )
         endif()
     endif()
 
@@ -530,9 +538,11 @@ macro(loadProperties PROPERTIES_FILE)
     set(OPTIONS)
     set(VERSION)
     set(TYPE)
+    set(START)
     set(DEPENDENCIES)
     set(REQUIREMENTS)
     set(CPPUNITTEST_OPTIONS)
+    set(UNIQUE)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -548,11 +558,15 @@ macro(fwLoadProperties)
     elseif( TYPE STREQUAL "LIBRARY" )
         fwLib(${NAME} ${VERSION} ${OPTIONS})
     elseif( TYPE STREQUAL "BUNDLE" )
+        set(${NAME}_TYPE "BUNDLE")
         fwBundle(${NAME} ${VERSION} ${OPTIONS})
     elseif( TYPE STREQUAL "TEST" )
         fwCppunitTest(${NAME} "${CPPUNITTEST_OPTIONS}" "${OPTIONS}")
+    elseif( TYPE STREQUAL "APP" )
+        set(${NAME}_TYPE "APP")
+        fwBundle(${NAME} ${VERSION} ${OPTIONS})
     endif()
-
+    
     if(DEPENDENCIES)
         fwUse( ${DEPENDENCIES} )
     endif()
@@ -661,6 +675,14 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     set(${NAME}_VERSION "${VERSION}")
     set(${NAME}_DIR "${PROJECT_DIR}")
 
+    if(TYPE STREQUAL "APP")
+        set(${NAME}_UNIQUE "${UNIQUE}")
+    endif()
+    
+    if( TYPE STREQUAL "BUNDLE" OR TYPE STREQUAL "APP" AND START)  
+        set(${NAME}_START "${START}")
+    endif()
+
     LIST(APPEND PROJECT_LIST ${NAME})
 
 endforeach()
@@ -693,9 +715,16 @@ if(PROJECTS_TO_INSTALL)
 endif()
 
 if(EXTERNAL_LIBRARIES)
+    set(APP_TO_BUILD)
     foreach(PROJECT ${PROJECT_LIST})
         addProject(${PROJECT})
+        if(${PROJECT}_TYPE STREQUAL "APP")
+            if(NOT EXISTS "${${PROJECT}_DIR}/rc/profile.xml" )
+                profile_setup("${PROJECT}")
+            endif()
+        endif()
     endforeach()
+    
 else()
     message("EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to genereate CMake projects.")
 endif()

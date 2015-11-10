@@ -1,7 +1,7 @@
 
 set( NAME TutoGui )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS 
     io
@@ -13,3 +13,4 @@ set( REQUIREMENTS
     launcher
 )
 
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoGuiConfig)

@@ -1,7 +1,21 @@
 
 set( NAME TutoPython )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE APP )
 set( DEPENDENCIES )
-set( REQUIREMENTS fwPython io ioVTK uiIO guiQt binding uiPython dataReg servicesReg appXml launcher )
+set( REQUIREMENTS 
+    fwPython
+    io
+    ioVTK
+    uiIO
+    gui
+    guiQt
+    binding
+    uiPython
+    dataReg
+    servicesReg
+    appXml
+    launcher
+)
 
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoPythonConfig)

@@ -1,0 +1,6 @@
+<profile name="@PROJECT@" version="@PROJECT_VERSION@" check-single-instance="@UNIQUE@">
+
+@ACTIVATE_LIST@
+@START_BUNDLE_LIST@
+
+</profile>

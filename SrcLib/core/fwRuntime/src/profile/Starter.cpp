@@ -35,7 +35,14 @@ void Starter::apply()
     OSLM_FATAL_IF("Unable to start bundle " << m_identifier << ". Not found.", bundle == 0);
     try
     {
-        bundle->start();
+        if(!bundle->isStarted())
+        {
+            bundle->start();
+        }
+        else
+        {
+            SLM_WARN("bundle " + m_identifier + " already started");
+        }
     }
     catch( const std::exception & e )
     {

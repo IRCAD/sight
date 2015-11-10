@@ -1,7 +1,23 @@
 
 set( NAME Tuto15Multithread )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE APP )
 set( DEPENDENCIES  )
-set( REQUIREMENTS io gui guiQt dataReg servicesReg visu visuVTKQt ioVTK ioData vtkSimpleMesh uiIO appXml launcher )
+set( REQUIREMENTS
+    io
+    gui
+    guiQt
+    dataReg
+    servicesReg
+    visu
+    visuVTK
+    visuVTKQt
+    ioVTK
+    ioData
+    vtkSimpleMesh
+    uiIO
+    appXml
+    launcher
+)
 
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tuto15MultithreadConfig)

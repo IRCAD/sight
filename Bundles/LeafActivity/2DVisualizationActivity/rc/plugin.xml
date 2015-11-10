@@ -2,7 +2,6 @@
 
     <requirement id="servicesReg" />
     <requirement id="gui" />
-    <requirement id="guiQt" />
     <requirement id="uiMeasurement" />
     <requirement id="uiMeasurementQt" />
     <requirement id="ctrlSelection" />
