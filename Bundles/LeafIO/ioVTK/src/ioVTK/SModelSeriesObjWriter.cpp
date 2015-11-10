@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
+
 #include <boost/filesystem/operations.hpp>
 
 #include <fwServices/macros.hpp>
@@ -174,3 +176,4 @@ void SModelSeriesObjWriter::updating() throw(::fwTools::Failed)
 
 } // namespace ioVtk
 
+#endif // ANDROID

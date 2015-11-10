@@ -7,6 +7,8 @@
 #ifndef __IOVTK_SMODELSERIESOBJWRITER_HPP__
 #define __IOVTK_SMODELSERIESOBJWRITER_HPP__
 
+#ifndef ANDROID
+
 #include <string>
 #include <boost/filesystem/path.hpp>
 
@@ -112,5 +114,6 @@ private:
 
 } // namespace ioVTK
 
-#endif //__IOVTK_SMODELSERIESOBJWRITER_HPP__
+#endif //ANDROID
 
+#endif // __IOVTK_SMODELSERIESOBJWRITER_HPP__
