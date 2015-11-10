@@ -15,6 +15,7 @@
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/MeshMsg.hpp>
+#include <fwComEd/ModelSeriesMsg.hpp>
 #include <fwComEd/helper/MsgHelper.hpp>
 
 #include <fwCom/Signal.hxx>
@@ -32,7 +33,8 @@ ObjectUpdateNotifier::s_EVENT_MSG_REGISTRY =
     ::boost::assign::map_list_of
         (::fwComEd::TransformationMatrix3DMsg::classname(),::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED)
         (::fwComEd::ImageMsg::classname(),::fwComEd::ImageMsg::NEW_IMAGE)
-        (::fwComEd::MeshMsg::classname(),::fwComEd::MeshMsg::NEW_MESH);
+        (::fwComEd::MeshMsg::classname(),::fwComEd::MeshMsg::NEW_MESH)
+        (::fwComEd::ModelSeriesMsg::classname(),::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION);
 
 //-----------------------------------------------------------------------------
 
