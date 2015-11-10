@@ -9,6 +9,8 @@
 #include <boost/cstdint.hpp>
 #include <boost/numeric/conversion/cast.hpp>
 
+#include <cstdint>
+
 #include <algorithm>
 
 namespace igtlProtocol
@@ -64,20 +66,20 @@ RawMessage::RawDataType& RawMessage::getMessage()
 
 int RawMessage::GetBodyPackSize()
 {
-    return ::boost::numeric_cast<int>(sizeof(::boost::uint64_t) + m_msg.size());
+    return ::boost::numeric_cast<int>(sizeof(uint32_t) + m_msg.size());
 }
 
 //-----------------------------------------------------------------------------
 
 int RawMessage::PackBody()
 {
-    ::boost::uint64_t *size;
+    uint32_t *size;
     char *str;
 
     this->AllocatePack();
-    size  = (::boost::uint64_t*)(m_Body);
+    size  = (uint32_t*)(m_Body);
     *size = m_msg.size();
-    str   = (char*)(m_Body + sizeof(::boost::uint64_t));
+    str   = (char*)(m_Body + sizeof(uint32_t));
     if (*size > 0)
     {
         std::copy(m_msg.begin(), m_msg.end(), str);
@@ -89,12 +91,12 @@ int RawMessage::PackBody()
 
 int RawMessage::UnpackBody()
 {
-    ::boost::uint64_t *size;
+    uint32_t *size;
     char              *str;
 
     m_msg.clear();
-    size = (::boost::uint64_t*)(m_Body);
-    str  = (char*)(m_Body + sizeof(::boost::uint64_t));
+    size = (uint32_t*)(m_Body);
+    str  = (char*)(m_Body + sizeof(uint32_t));
     if (*size > 0)
     {
         m_msg.resize(*size);

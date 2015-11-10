@@ -52,12 +52,19 @@ SZeroMQSender::~SZeroMQSender()
 
 void SZeroMQSender::configuring() throw (::fwTools::Failed)
 {
-    ZeroMQConfigurationParser parser (m_configuration);
+    try
+    {
+        ZeroMQConfigurationParser parser (m_configuration);
 
-    parser.parse (Patterns::getSupportedWriterPatterns());
-    m_hostStr     = parser.getHostname();
-    m_sockMode    = parser.getSocketMode();
-    m_patternMode = parser.getPatternMode();
+        parser.parse (Patterns::getSupportedWriterPatterns());
+        m_hostStr     = parser.getHostname();
+        m_sockMode    = parser.getSocketMode();
+        m_patternMode = parser.getPatternMode();
+    }
+    catch(std::exception &err)
+    {
+        OSLM_FATAL("Failed to parse configuration "<< err.what());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +126,14 @@ void SZeroMQSender::stopping() throw (::fwTools::Failed)
 
 void SZeroMQSender::sendObject (const ::fwData::Object::sptr &obj)
 {
-    m_socket->sendObject (obj);
+    try
+    {
+        m_socket->sendObject (obj);
+    }
+    catch(std::exception &err)
+    {
+        OSLM_FATAL("Failed to send object: "<< err.what());
+    }
 }
 
 //-----------------------------------------------------------------------------

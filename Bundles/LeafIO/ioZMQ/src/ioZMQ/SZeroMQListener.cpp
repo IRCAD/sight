@@ -60,12 +60,19 @@ void SZeroMQListener::setHost(std::string const &host, ::boost::uint16_t const p
 
 void SZeroMQListener::configuring() throw (::fwTools::Failed)
 {
-    ZeroMQConfigurationParser parser(m_configuration);
+    try
+    {
+        ZeroMQConfigurationParser parser (m_configuration);
 
-    parser.parse(Patterns::getSupportedReaderPatterns());
-    m_hostStr     = parser.getHostname();
-    m_sockMode    = parser.getSocketMode();
-    m_patternMode = parser.getPatternMode();
+        parser.parse (Patterns::getSupportedReaderPatterns());
+        m_hostStr     = parser.getHostname();
+        m_sockMode    = parser.getSocketMode();
+        m_patternMode = parser.getPatternMode();
+    }
+    catch(std::exception &err)
+    {
+        OSLM_FATAL("Failed to parse configuration "<< err.what());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -96,14 +103,9 @@ void SZeroMQListener::runReceiver()
                 this->notifyObjectUpdated();
             }
         }
-        catch (::fwCore::Exception &ex)
+        catch(std::exception &err)
         {
-            SLM_WARN("Error while receiving object from network : " + std::string(ex.what()));
-        }
-        catch (std::exception &ex)
-        {
-            SLM_ERROR("Fatal error : " + std::string(ex.what()));
-            break;
+            OSLM_FATAL("Failed to revieved object: "<< err.what());
         }
     }
     m_socket->stop();
