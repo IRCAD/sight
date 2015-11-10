@@ -21,23 +21,23 @@ namespace fwRenderOgre
 class FWRENDEROGRE_CLASS_API R2VBRenderable : public ::Ogre::SimpleRenderable
 {
 public:
-    FWRENDEROGRE_API R2VBRenderable()
+    R2VBRenderable()
     {
     }
-    virtual FWRENDEROGRE_API ~R2VBRenderable()
+    virtual ~R2VBRenderable()
     {
     }
 
-    FWRENDEROGRE_API void setBuffer(::Ogre::RenderToVertexBufferSharedPtr r2vbObject)
+    void setBuffer(::Ogre::RenderToVertexBufferSharedPtr r2vbObject)
     {
         mR2vbObject = r2vbObject;
     }
-    FWRENDEROGRE_API ::Ogre::RenderToVertexBufferSharedPtr getBuffer()
+    ::Ogre::RenderToVertexBufferSharedPtr getBuffer()
     {
         return mR2vbObject;
     }
 
-    void setSourceObject(::Ogre::SubEntity* _sourceObject);
+    FWRENDEROGRE_API void setSourceObject(::Ogre::SubEntity* _sourceObject);
     ::Ogre::SubEntity* getSourceObject() const { return m_srcObject; }
 
     /** @copydoc SimpleRenderable::_updateRenderQueue. */
@@ -65,10 +65,10 @@ protected:
 class FWRENDEROGRE_CLASS_API R2VBRenderableFactory : public ::Ogre::MovableObjectFactory
 {
 public:
-    FWRENDEROGRE_API R2VBRenderableFactory()
+    R2VBRenderableFactory()
     {
     }
-    FWRENDEROGRE_API ~R2VBRenderableFactory()
+    ~R2VBRenderableFactory()
     {
     }
 
