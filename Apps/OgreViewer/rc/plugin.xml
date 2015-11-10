@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<plugin id="OgreViewer"  version="@DASH_VERSION@" >
+<plugin id="OgreViewer" version="@DASH_VERSION@" >
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
+    <requirement id="visuOgreAdaptor" />
     <requirement id="visuOgreQt" />
     <requirement id="visuVTKQt" />
     <requirement id="material" />

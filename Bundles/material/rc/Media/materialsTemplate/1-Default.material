@@ -32,10 +32,6 @@ material "1 - Default"
             {
             }
 
-            geometry_program_ref PerPrimitiveAttribute_PixelLit_GP_glsl
-            {
-            }
-
             fragment_program_ref Default_PixelLit_FP_glsl
             {
             }

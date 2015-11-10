@@ -36,13 +36,9 @@
 #include <boost/regex.hpp>
 #include <regex>
 
-#include <OGRE/OgreCompositorManager.h>
-#include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreTechnique.h>
-#include <OgreTextureManager.h>
-
-
-#define PLUGIN_PATH "./share/fwRenderOgre_0-1/plugins.cfg"
+#include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreTextureManager.h>
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMaterial, ::fwData::Material );
 
@@ -77,7 +73,9 @@ SMaterial::SMaterial() throw() :
     m_materialTemplateName(DEFAULT_MATERIAL_TEMPLATE_NAME),
     m_hasMeshNormal(true),
     m_hasVertexColor(false),
-    m_hasPrimitiveColor(false)
+    m_hasPrimitiveColor(false),
+    m_hasQuad(false),
+    m_hasTetra(false)
 {
     m_textureConnection = ::fwServices::helper::SigSlotConnection::New();
 
@@ -458,8 +456,15 @@ void SMaterial::setServiceOnShaderParameter(::fwRenderOgre::IAdaptor::sptr& srv,
 
 void SMaterial::setTextureAdaptor(const std::string& textureAdaptorUID)
 {
-    auto textureService = ::fwServices::get(textureAdaptorUID);
-    m_texAdaptor = ::visuOgreAdaptor::STexture::dynamicCast(textureService);
+    if(textureAdaptorUID.empty())
+    {
+        m_texAdaptor = nullptr;
+    }
+    else
+    {
+        auto textureService = ::fwServices::get(textureAdaptorUID);
+        m_texAdaptor = ::visuOgreAdaptor::STexture::dynamicCast(textureService);
+    }
 }
 
 
@@ -535,7 +540,6 @@ void SMaterial::doUpdate() throw(fwTools::Failed)
     this->setPolygonMode( material->getRepresentationMode() );
     this->setShadingMode( material->getShadingMode() );
     this->updateRGBAMode( material );
-    this->updateTransparency( material );
     this->updateSchemeSupport();
     this->requestRender();
 }
@@ -857,13 +861,34 @@ void SMaterial::setShadingMode( int shadingMode  )
                 SLM_ERROR("Unknown shading mode. ");
         }
 
+        ::Ogre::String shadingCfgs;
         if(m_hasVertexColor)
         {
-            shadingProgramSuffix += "+VT";
+            shadingCfgs += "+VT";
         }
-        if(m_texAdaptor && !m_texAdaptor->getTexture().isNull())
+        if(this->hasDiffuseTexture())
         {
-            shadingProgramSuffix += "+DfsTex";
+            shadingCfgs += "+DfsTex";
+        }
+
+        std::string shadingProgramSuffixGS;
+        if(m_hasQuad)
+        {
+            shadingProgramSuffixGS = "Quad";
+        }
+        else if(m_hasTetra)
+        {
+            shadingProgramSuffixGS = "Tetra";
+        }
+        else
+        {
+            shadingProgramSuffixGS = "Triangles";
+        }
+
+        shadingProgramSuffixGS += shadingCfgs;
+        if(m_hasPrimitiveColor)
+        {
+            shadingProgramSuffixGS += "+PPColor";
         }
 
         // Iterate through each technique found in the material and switch the shading mode
@@ -882,29 +907,38 @@ void SMaterial::setShadingMode( int shadingMode  )
                     continue;
                 }
 
-                std::string ogreVertexName   = ogrePass->getVertexProgram()->getName();
-                std::string ogreFragmentName = ogrePass->getFragmentProgram()->getName();
+                std::string ogreVertexName   = ogrePass->getVertexProgramName();
+                std::string ogreFragmentName = ogrePass->getFragmentProgramName();
 
-                // Clear the suffix in shader names (+VT+...)
-                const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P_glsl)", ::boost::regex::extended);
-                ogreVertexName   = ::boost::regex_replace(ogreVertexName, regexConcat, "$1");
-                ogreFragmentName = ::boost::regex_replace(ogreFragmentName, regexConcat, "$1");
+                // Check if we need a geometry shader (primitive generation and per-primitive color)
+                if(m_hasQuad || m_hasTetra || m_hasPrimitiveColor)
+                {
+                    ogrePass->setVertexProgram("RenderScene_R2VB_" + shadingProgramSuffix + "_VP_glsl");
+                    ogrePass->setGeometryProgram("RenderScene_" + shadingProgramSuffixGS + "_GP_glsl");
+                    ogrePass->setFragmentProgram("");
+                }
+                else
+                {
+                    // Clear the suffix in shader names (+VT+...)
+                    const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P_glsl)", ::boost::regex::extended);
+                    ogreVertexName   = ::boost::regex_replace(ogreVertexName, regexConcat, "$1");
+                    ogreFragmentName = ::boost::regex_replace(ogreFragmentName, regexConcat, "$1");
 
-                // Replace the shading technique
-                const ::boost::regex regexShading("("+flat+")|("+gouraud+")|("+pixelLighting+")");
-                ogreVertexName   = ::boost::regex_replace(ogreVertexName, regexShading, shadingProgramSuffix);
-                ogreFragmentName = ::boost::regex_replace(ogreFragmentName, regexShading, shadingProgramSuffix);
+                    // Replace the shading technique
+                    const ::boost::regex regexShading("("+flat+")|("+gouraud+")|("+pixelLighting+")");
+                    ogreVertexName   = ::boost::regex_replace(ogreVertexName, regexShading, shadingProgramSuffix);
+                    ogreFragmentName = ::boost::regex_replace(ogreFragmentName, regexShading, shadingProgramSuffix);
 
-                ogrePass->setVertexProgram(ogreVertexName);
-                ogrePass->setFragmentProgram(ogreFragmentName);
+                    ogrePass->setVertexProgram(ogreVertexName);
+                    ogrePass->setFragmentProgram(ogreFragmentName);
+                }
 
                 if(m_hasPrimitiveColor)
                 {
                     const std::string texUnitName = "PerPrimitiveColor";
-                    ogrePass->setGeometryProgram("PerPrimitiveAttribute_" + shadingProgramSuffix + "_GP_glsl");
                     ::Ogre::TextureUnitState* texUnitState = ogrePass->getTextureUnitState(texUnitName);
 
-                    auto result = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
+                    const auto result = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
                         m_perPrimitiveColorTextureName,
                         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 
@@ -922,9 +956,9 @@ void SMaterial::setShadingMode( int shadingMode  )
                         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
                         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-                        auto unitStateCount = ogrePass->getNumTextureUnitStates();
+                        const auto unitStateCount = ogrePass->getNumTextureUnitStates();
 
-                        // Unit state is set to 10 in the material fie, but the real index is set here
+                        // Unit state is set to 10 in the material file, but the real index is set here
                         // Ogre packs texture unit indices so we can't use spare indices :'(
                         ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTexture",
                                                                                    unitStateCount - 1);
@@ -933,10 +967,6 @@ void SMaterial::setShadingMode( int shadingMode  )
                     // Set outside the scope of texture creation because the size could vary
                     ::Ogre::Vector2 size(static_cast<float>(tex->getWidth()), static_cast<float>(tex->getHeight()));
                     ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTextureSize", size);
-                }
-                else
-                {
-                    ogrePass->setGeometryProgram("");
                 }
             }
         }
@@ -961,7 +991,7 @@ void SMaterial::updateRGBAMode(fwData::Material::sptr fw_material)
 
     if(m_materialTemplateName == DEFAULT_MATERIAL_TEMPLATE_NAME && m_hasMeshNormal)
     {
-        ::Ogre::ColourValue ambient(0.2f, 0.2f, 0.2f, 1.f);
+        ::Ogre::ColourValue ambient(0.05f, 0.05f, 0.05f, 1.0f);
         m_material->setAmbient(ambient);
         ::Ogre::ColourValue diffuse(color_ambient->red(), color_ambient->green(),
                                     color_ambient->blue(), color_ambient->alpha());
@@ -972,8 +1002,9 @@ void SMaterial::updateRGBAMode(fwData::Material::sptr fw_material)
         ::Ogre::ColourValue ambient(color_ambient->red(), color_ambient->green(),
                                     color_ambient->blue(), color_ambient->alpha());
         m_material->setAmbient(ambient);
+        // Use the alpha from ambient (this is not a typo ;-) )
         ::Ogre::ColourValue diffuse(color_diffuse->red(), color_diffuse->green(),
-                                    color_diffuse->blue(), color_diffuse->alpha());
+                                    color_diffuse->blue(), color_ambient->alpha());
         m_material->setDiffuse(diffuse);
     }
 
@@ -1054,50 +1085,6 @@ void SMaterial::removeTextureAdaptor(::fwData::Image::sptr texture)
     ::fwData::Material::sptr material = this->getObject< ::fwData::Material >();
     this->setShadingMode( material->getShadingMode() );
 
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::updateTransparency(fwData::Material::sptr fw_material)
-{
-    //Set up Material colors
-    m_material->setLightingEnabled( true );
-    // TODO : Change fwData to store :
-    // - ambient color in the ambient parameter,
-    // - diffuse color in diffuse parameter
-    // - specular parameters
-    // For now, fwData only stores the color of the mesh in the ambient parameter
-
-    // FIXME : fwData's ambient can't be used without changing ::fwData::Material(::fwData::Object::Key key) m_ambient
-    //        default value
-    ::fwData::Color::sptr color_ambient = fw_material->ambient();
-
-    ::fwData::Color::sptr color_diffuse = fw_material->diffuse();
-
-    ::Ogre::ColourValue ambient;
-    if(m_materialTemplateName == DEFAULT_MATERIAL_TEMPLATE_NAME && m_hasMeshNormal)
-    {
-        ambient = ::Ogre::ColourValue(0.05f, 0.05f, 0.05f, 1.f);
-        m_material->setAmbient(ambient);
-        ::Ogre::ColourValue diffuse(color_ambient->red(), color_ambient->green(),
-                                    color_ambient->blue(), color_ambient->alpha());
-        m_material->setDiffuse(diffuse);
-    }
-    else
-    {
-        ambient = ::Ogre::ColourValue(color_ambient->red(), color_ambient->green(),
-                                      color_ambient->blue(), color_ambient->alpha());
-        m_material->setAmbient(ambient);
-
-        ::Ogre::ColourValue diffuse;
-        diffuse = ::Ogre::ColourValue(color_diffuse->red(), color_diffuse->green(),
-                                      color_diffuse->blue(), color_diffuse->alpha());
-        m_material->setDiffuse(diffuse);
-    }
-
-    ::Ogre::ColourValue specular(.2f, .2f, .2f, 1.f);
-    m_material->setSpecular( specular );
-    m_material->setShininess( 25 );
 }
 
 //-----------------------------------------------------------------------------

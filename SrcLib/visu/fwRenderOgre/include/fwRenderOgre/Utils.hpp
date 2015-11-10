@@ -9,6 +9,8 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwRenderOgre/R2VBRenderable.hpp>
+
 #include <OGRE/OgreRoot.h>
 #include <OGRE/OgreImage.h>
 #include <OGRE/OgrePixelFormat.h>
@@ -76,6 +78,8 @@ public:
 
 private:
     static ::Ogre::OverlaySystem* s_overlaySystem;
+
+    static ::fwRenderOgre::R2VBRenderableFactory* s_R2VBRenderableFactory;
 };
 
 } // namespace fwRenderOgre

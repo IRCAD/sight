@@ -6,12 +6,12 @@
 
 #include "visuOgreAdaptor/Plugin.hpp"
 
-#include <fwRenderOgre/Utils.hpp>
-
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
+
+#include <OGRE/OgreRoot.h>
 
 namespace visuOgreAdaptor
 {

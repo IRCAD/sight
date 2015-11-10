@@ -6,16 +6,10 @@
 
 #include "fwRenderOgre/IAdaptor.hpp"
 
-#include <fwData/String.hpp>
-
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/Base.hpp>
-
-#include <fwTools/fwID.hpp>
-
-#include <boost/foreach.hpp>
 
 namespace fwRenderOgre
 {

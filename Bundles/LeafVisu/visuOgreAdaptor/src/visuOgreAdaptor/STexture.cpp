@@ -22,8 +22,6 @@
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreTextureManager.h>
 
-#define PLUGIN_PATH "./share/fwRenderOgre_0-1/plugins.cfg"
-
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::STexture,
                         ::fwData::Image);
 

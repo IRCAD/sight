@@ -22,15 +22,32 @@
 #include "visuOgreAdaptor/SMaterial.hpp"
 #include "visuOgreAdaptor/STransform.hpp"
 
-namespace fwData
-{
-class Mesh;
-class Material;
-}
+
+fwCorePredeclare( (fwData)(Material) )
+fwCorePredeclare( (fwData)(Mesh) )
+fwCorePredeclare( (fwRenderOgre)(R2VBRenderable) )
 
 namespace visuOgreAdaptor
 {
 
+/**
+ * @brief This adaptor shows individual meshes.
+ *
+ * This class handles the conversion of ::fwData::Mesh to Ogre3d. It can handle triangles, edges, quads or tetrahedrons.
+ * For the quads and tetrahedrons, we generate the triangles in a pre-process, using the render to vertex buffer (r2vb)
+ * feature to avoid the cost of geometry shaders when usign multi-pass rendering techniques.
+ *
+ * An Ogre entity is created from the mesh. A second mesh and a second entity are created as an input for the r2vb.
+ * Thus, the main mesh will contains only triangles or edges, while the second entity contains only quads or tetras.
+ * An Ogre material is also created, and then managed by a SMaterial adaptor (specified in the configuration otherwise
+ * a new one is generated).
+ *
+ * To handle the per-primitive color of ::fwData::Mesh we also rely on geometry shaders, and thus on r2vb. We build a
+ * texture containing the color for each primitive. This texture is fetched inside the geometry shader using the
+ * primitive id.
+ *
+ * @class SMesh
+ */
 class VISUOGREADAPTOR_CLASS_API SMesh : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
 {
@@ -120,6 +137,8 @@ private:
     void updateColors(const ::fwData::Mesh::sptr& mesh);
     /// Updates the vertices texture coordinates.
     void updateTexCoords(const ::fwData::Mesh::sptr& mesh);
+    /// Erase the mesh data, called when the configuration change (new layer, etc...), to simplify modifications.
+    void clearMesh(const ::fwData::Mesh::sptr& mesh);
 
     /// Associates a new SMaterial to the managed SMesh.
     /// With this method, SMesh is responsible for creating a SMaterial
@@ -130,6 +149,9 @@ private:
 
     /// Creates a transform Service, and attaches it to a corresponding sceneNode in the Ogre scene.
     void createTransformService();
+
+    /// Attach a node in the scene graph
+    void attachNode(::Ogre::MovableObject* _node);
 
     /**
      * @name Slots methods
@@ -155,7 +177,7 @@ private:
     /// Actual mesh data
     ::Ogre::MeshPtr m_ogreMesh;
 
-    /// SMaterial attached to the Mesh
+    /// SMaterial attached to the mesh
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
     /// Attached material adaptor UID
     std::string m_materialAdaptorUID;
@@ -171,13 +193,16 @@ private:
     /// Number of primitives types that are handled by ::fwData::Mesh
     static const unsigned int s_numPrimitiveTypes = ::fwData::Mesh::TETRA + 1;
 
-    /// Pointers on submeshes needed for reallocation check
+    /// Pointers on submeshes needed for reallocation check.
+    /// For QUADS and TETRAS primitives, they point to r2vb submeshes.
     ::Ogre::SubMesh* m_subMeshes[s_numPrimitiveTypes];
+    /// SMaterial adaptors attached to the r2vb objects
+    ::visuOgreAdaptor::SMaterial::sptr m_r2vbMaterialAdaptor[s_numPrimitiveTypes];
 
     /// Maximum size of a texture (TODO: get this from hardware instead)
     static const unsigned int s_maxTextureSize = 2048;
 
-    /// Mesh's name in Ogre
+    /// Name of the mesh in Ogre
     std::string m_meshName;
     /// Attached texture adaptor UID
     std::string m_texAdaptorUID;
@@ -201,6 +226,15 @@ private:
     bool m_isReconstructionManaged;
     /// Indicates if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured
     bool m_useNewMaterialAdaptor;
+
+    /// Node containing inputs for the r2vb objects - it will never be inserted in the scene
+    ::Ogre::Entity* m_r2vbEntity;
+    /// Mesh data for r2vb input - contains only line lists with adjency information primitives
+    ::Ogre::MeshPtr m_r2vbMesh;
+    /// Name of the r2vb mesh
+    std::string m_r2vbMeshName;
+    /// List of r2vb objects - these objects triggers the r2vb process and render the output data
+    std::vector< ::fwRenderOgre::R2VBRenderable*> m_r2vbObject;
 };
 
 //------------------------------------------------------------------------------
@@ -246,6 +280,11 @@ inline void SMesh::updateVisibility(bool isVisible)
     if(m_entity)
     {
         m_entity->setVisible(isVisible);
+
+        if(m_r2vbEntity)
+        {
+            m_r2vbEntity->setVisible(isVisible);
+        }
         this->requestRender();
     }
 }

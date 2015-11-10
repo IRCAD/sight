@@ -49,18 +49,20 @@ void main(void)
         vertexOut.oTexCoord = vertexIn[i].oTexCoord;
 #endif // DIFFUSE_TEX
 
-#ifdef PIXEL_LIT
-        vertexOut.oPosition_WS = vertexIn[i].oPosition_WS;
-        vertexOut.oNormal_WS = vertexIn[i].oNormal_WS;
-
         // compute offset
         int div = gl_PrimitiveIDIn / int(u_colorPrimitiveTextureSize[0]);
         int mod = gl_PrimitiveIDIn - int(u_colorPrimitiveTextureSize[0]) * div;
 
         vec2 uv = vec2(mod / u_colorPrimitiveTextureSize[0] , div/ u_colorPrimitiveTextureSize[1]);
-        vertexOut.oColor = texture(u_colorPrimitiveTexture, uv );
+        vec4 color = texture(u_colorPrimitiveTexture, uv );
+
+#ifdef PIXEL_LIT
+        vertexOut.oPosition_WS = vertexIn[i].oPosition_WS;
+        vertexOut.oNormal_WS = vertexIn[i].oNormal_WS;
+
+        vertexOut.oColor = color;
 #else
-//        vertexOut.oColor = vertexIn[i].oColor;
+        vertexOut.oColor = color * vertexIn[i].oColor;
 #endif // VERTEX_COLOR
         EmitVertex();
     }

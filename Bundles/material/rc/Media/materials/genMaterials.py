@@ -2,7 +2,21 @@
 
 from jinja2 import Environment, PackageLoader, Template
 from pprint import pprint
+import copy
 
+
+def appendDict(dict1, dict2):
+    res = { k: v[:] for k,v in dict1.items() }
+    for k in dict2.keys():
+        if k in dict1:
+            res[k] += dict2[k][:]
+        else:
+            res[k] = dict2[k][:]
+    return res
+
+## Function that generate permutations of the configurations in parameters/
+## It takes a base config A and combine it with all the subsequent configurations 1, 2, 3,...
+## It will thus generate for instance [A,1] [A,2], [A,1,2], [A,3], [A,1,3], [A,2,3], [A,1,2,3]
 def generatePermutations(baseConfig, *configs):
     permutations = [baseConfig]
 
@@ -32,12 +46,12 @@ def generatePermutations(baseConfig, *configs):
             # Concatenate attached shaders
             currentPermutation += [config[2] + currentConfig[2]]
             currentPermutation += [config[3] + currentConfig[3]]
+            currentPermutation += [config[4] + currentConfig[4]]
 
             # Concatenate params
-            dict = {}
-            for key, param, in config[4].iteritems():
-                dict[key] = param + currentConfig[4][key]
-            currentPermutation.append(dict)
+            paramsDict = appendDict(config[5], currentConfig[5])
+
+            currentPermutation.append(paramsDict)
 
             newPermutations += [currentPermutation]
 
@@ -75,65 +89,73 @@ negatoParams = [ 'param_named u_minValue float 0.0',
 ## Diffuse needed alone in some cases
 diffuseColorParams = ['param_named_auto u_diffuse surface_diffuse_colour']
 
-cfgFlat = ['Flat', 'FLAT=1', 'Lighting_VP', '', {  'renderSceneVP' : lightingParams,
-                                                   'defaultFP' : [],
-                                                   'depthPeelingFP' : [],
-                                                   'dualDepthPeelingFP' : [],
-                                                   'HT_weight_blendFP' : [],
-                                                   'weighted_blendFP' : [] } ]
+## Per primitive color
+ppColorParams = ['param_named u_colorPrimitiveTexture int 10',
+                 'param_named u_colorPrimitiveTextureSize float2 0 0']
 
-cfgGouraud = ['Gouraud', '', 'Lighting_VP', '', { 'renderSceneVP' : lightingParams,
-                                                  'defaultFP' : [],
-                                                  'depthPeelingFP' : [],
-                                                  'dualDepthPeelingFP' : [],
-                                                  'HT_weight_blendFP' : [],
-                                                  'weighted_blendFP' : [] } ]
+cfgFlat = ['Flat', 'FLAT=1', 'Lighting_VP', '', '', {  'renderSceneVP' : lightingParams,
+                                                       'defaultFP' : [],
+                                                       'depthPeelingFP' : [],
+                                                       'dualDepthPeelingFP' : [],
+                                                       'HT_weight_blendFP' : [],
+                                                       'weighted_blendFP' : [] } ]
 
-cfgPixelLit = ['PixelLit', 'PIXEL_LIT=1', '', 'Lighting_FP', { 'renderSceneVP' : [],
-                                                               'defaultFP' : lightingParams,
-                                                               'depthPeelingFP' : lightingParams,
-                                                               'dualDepthPeelingFP' : lightingParams,
-                                                               'HT_weight_blendFP' : lightingParams,
-                                                               'weighted_blendFP' : lightingParams } ]
+cfgGouraud = ['Gouraud', '', 'Lighting_VP', '', '', { 'renderSceneVP' : lightingParams,
+                                                      'defaultFP' : [],
+                                                      'depthPeelingFP' : [],
+                                                      'dualDepthPeelingFP' : [],
+                                                      'HT_weight_blendFP' : [],
+                                                      'weighted_blendFP' : [] } ]
 
-cfgEdgeNormal = ['Edge_Normal', 'EDGE_NORMAL=1', '', '', { 'defaultFP' : [],
-                                                           'depthPeelingFP' : [],
-                                                           'dualDepthPeelingFP' : [],
-                                                           'HT_weight_blendFP' : [],
-                                                           'weighted_blendFP' : [] } ]
+cfgPixelLit = ['PixelLit', 'PIXEL_LIT=1', '', 'Lighting_FP', '', { 'renderSceneVP' : [],
+                                                                   'defaultFP' : lightingParams,
+                                                                   'depthPeelingFP' : lightingParams,
+                                                                   'dualDepthPeelingFP' : lightingParams,
+                                                                   'HT_weight_blendFP' : lightingParams,
+                                                                   'weighted_blendFP' : lightingParams } ]
 
-cfgNegato = ['Negato', 'NEGATO=1', '', 'Negato_FP', { 'defaultFP' : negatoParams + diffuseColorParams + texParams,
-                                                      'depthPeelingFP' : negatoParams + dpTexParams,
-                                                      'dualDepthPeelingFP' : negatoParams + ddpTexParams,
-                                                      'HT_weight_blendFP' : negatoParams + diffuseColorParams + htwbTexParams,
-                                                      'weighted_blendFP' : negatoParams + diffuseColorParams + dpTexParams} ]
+cfgEdgeNormal = ['Edge_Normal', 'EDGE_NORMAL=1', '', '', '', { 'defaultFP' : [],
+                                                               'depthPeelingFP' : [],
+                                                               'dualDepthPeelingFP' : [],
+                                                               'HT_weight_blendFP' : [],
+                                                               'weighted_blendFP' : [] } ]
 
-cfgVertexColor = ['VT', 'VERTEX_COLOR=1', '', '', { 'renderSceneVP' : [],
-                                                    'defaultFP' : [],
-                                                    'depthPeelingFP' : [],
-                                                    'dualDepthPeelingFP' : [],
-                                                    'HT_weight_blendFP' : [],
-                                                    'weighted_blendFP' : [] } ]
+cfgNegato = ['Negato', 'NEGATO=1', '', 'Negato_FP', '', { 'defaultFP' : negatoParams + diffuseColorParams + texParams,
+                                                          'depthPeelingFP' : negatoParams + dpTexParams,
+                                                          'dualDepthPeelingFP' : negatoParams + ddpTexParams,
+                                                          'HT_weight_blendFP' : negatoParams + diffuseColorParams + htwbTexParams,
+                                                          'weighted_blendFP' : negatoParams + diffuseColorParams + dpTexParams} ]
 
-cfgDiffuseTex = ['DfsTex', 'DIFFUSE_TEX=1', '', '', { 'renderSceneVP' : [],
-                                                      'defaultFP' : texParams,
-                                                      'depthPeelingFP' : dpTexParams,
-                                                      'dualDepthPeelingFP' : ddpTexParams,
-                                                      'HT_weight_blendFP' : htwbTexParams,
-                                                      'weighted_blendFP' : dpTexParams } ]
+cfgVertexColor = ['VT', 'VERTEX_COLOR=1', '', '', '', { 'renderSceneVP' : [],
+                                                        'defaultFP' : [],
+                                                        'depthPeelingFP' : [],
+                                                        'dualDepthPeelingFP' : [],
+                                                        'HT_weight_blendFP' : [],
+                                                        'weighted_blendFP' : [] } ]
 
+cfgDiffuseTex = ['DfsTex', 'DIFFUSE_TEX=1', '', '', '', { 'renderSceneVP' : [],
+                                                          'defaultFP' : texParams,
+                                                          'depthPeelingFP' : dpTexParams,
+                                                          'dualDepthPeelingFP' : ddpTexParams,
+                                                          'HT_weight_blendFP' : htwbTexParams,
+                                                          'weighted_blendFP' : dpTexParams } ]
+
+cfgTriangles = ['Triangles', 'TRIANGLES=1', '', '', '', { 'renderSceneGP' : [], } ]
+cfgQuad = ['Quad', 'QUAD=1', '', '', '1', { 'renderSceneGP' : [], } ]
+cfgTetra = ['Tetra', 'TETRA=1', '', '', '1', { 'renderSceneGP' : [], } ]
+
+cfgPerPrimitiveColor = ['PPColor', 'PER_PRIMITIVE_COLOR=1', '', '', '', { 'renderSceneGP' : ppColorParams} ]
+
+## Configurations for vertex programs
+## Basis are the different lighting techniques, and optional are vertex color and diffuse texture
 configsListVP = []
 
 configsListVP += generatePermutations(cfgFlat, cfgVertexColor, cfgDiffuseTex)
 configsListVP += generatePermutations(cfgGouraud, cfgVertexColor, cfgDiffuseTex)
 configsListVP += generatePermutations(cfgPixelLit, cfgVertexColor, cfgDiffuseTex)
 
-configsListGP = []
-
-configsListGP += [cfgFlat]
-configsListGP += [cfgGouraud]
-configsListGP += [cfgPixelLit]
-
+## Configurations for fragment programs
+## Base are the different lighting techniques, and optional are vertex color and diffuse texture
 configsListFP = []
 
 configsListFP += generatePermutations(cfgFlat, cfgVertexColor, cfgDiffuseTex)
@@ -142,6 +164,15 @@ configsListFP += generatePermutations(cfgPixelLit, cfgVertexColor, cfgDiffuseTex
 
 configsListFP += [cfgEdgeNormal]
 configsListFP += [cfgNegato]
+
+## Configurations for geometry programs
+## Base are the different primitives types to generate, and optional are vertex color, diffuse texture and per-primitive
+## color
+configsListGP = []
+
+configsListGP += generatePermutations(cfgTriangles, cfgVertexColor, cfgDiffuseTex, cfgPerPrimitiveColor)
+configsListGP += generatePermutations(cfgQuad, cfgVertexColor, cfgDiffuseTex, cfgPerPrimitiveColor)
+configsListGP += generatePermutations(cfgTetra, cfgVertexColor, cfgDiffuseTex, cfgPerPrimitiveColor)
 
 #pprint(configsListVP)
 

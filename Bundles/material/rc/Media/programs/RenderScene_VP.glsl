@@ -17,6 +17,9 @@ in vec4 colour;
 
 out VertexDataOut
 {
+#ifdef R2VB
+    vec3 oNormal;
+#endif
     #ifdef PIXEL_LIT
     vec3 oPosition_WS;
     vec3 oNormal_WS;
@@ -42,34 +45,55 @@ vec4 lighting(vec3 _normal, vec3 _position);
 
 void main(void)
 {
+#ifdef R2VB
+    gl_Position = position;
+    vertexOut.oNormal = normal;
+
+#   ifdef VERTEX_COLOR
+    vertexOut.oColor = colour;
+#   endif // VERTEX_COLOR
+
+#   ifdef DIFFUSE_TEX
+    vertexOut.oTexCoord = uv0;
+#   endif // DIFFUSE_TEX
+
+#else
+
     gl_Position = u_worldViewProj * position;
-#ifdef CEL_SHADING
+
+#   ifdef CEL_SHADING
     // TODO: merge with oNormal_WS
     normal_VS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
-#endif
+#   endif
 
-#ifdef PIXEL_LIT
+#   ifdef PIXEL_LIT
     vertexOut.oPosition_WS = (u_world * position).xyz;
     vertexOut.oNormal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
 
-#ifdef VERTEX_COLOR
-    vertexOut.oColor = colour;
-#else
-    vertexOut.oColor = vec4(1.,1.,1.,1.);
-#endif // VERTEX_COLOR
+#       ifdef VERTEX_COLOR
 
-#else
+    // We could skip this division, however r2vb in Ogre doesn't allow us to output the color in the correct format.
+    // So we use VET_UBYTE4 for both pipelines (r2vb/regular) to avoid a new #define.
+    vertexOut.oColor = colour/255.f;
+#       else
+    vertexOut.oColor = vec4(1.,1.,1.,1.);
+#       endif // VERTEX_COLOR
+
+#   else
     vec3 position_WS = (u_world * position).xyz;
     vec3 normal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
     vertexOut.oColor = lighting(normal_WS, position_WS);
 
-#ifdef VERTEX_COLOR
+#       ifdef VERTEX_COLOR
     vertexOut.oColor *= colour;
-#endif // VERTEX_COLOR
+#       endif // VERTEX_COLOR
 
-#endif // PIXEL_LIT
+#   endif // PIXEL_LIT
 
-#ifdef DIFFUSE_TEX
+#   ifdef DIFFUSE_TEX
     vertexOut.oTexCoord = uv0;
-#endif // DIFFUSE_TEX
+#   endif // DIFFUSE_TEX
+
+#endif // R2VB
+
 }

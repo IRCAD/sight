@@ -38,7 +38,7 @@ fragment_program Negato_FP glsl
 // Vertex shader materials
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, params in configsVP %}
+{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsVP %}
 
 //---------------------------------------------------------------------------
 
@@ -61,37 +61,50 @@ vertex_program RenderScene_{{ shading }}_VP_glsl glsl
 }
 {% endfor %}
 
+{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsVP %}
 
+//---------------------------------------------------------------------------
+
+vertex_program RenderScene_R2VB_{{ shading }}_VP_glsl glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1{% if defines %}, {{ defines }}{% endif %}
+
+}
+{% endfor %}
 
 //-----------------------------------------------------------------------------
 // Geometry shader materials
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, params in configsGP %}
+{% for shading, defines, shadersGP, shadersFP, useAdjInfo, params in configsGP %}
 
 //---------------------------------------------------------------------------
 
-geometry_program PerPrimitiveAttribute_{{ shading }}_GP_glsl glsl
+geometry_program RenderScene_{{ shading }}_GP_glsl glsl
 {
-    source PerPrimitiveAttribute.glsl
+    source RenderScene_GP.glsl
 
     {% if defines %}preprocessor_defines {{ defines }}{% endif %}
 
+    {% if useAdjInfo == "1" %}uses_adjacency_information true{% endif %}
+
     default_params
     {
-        // Unit state is set to 10, but the real index will be set in SMaterial::setShadingMode() at runtime
-        // Ogre packs texture unit indices so we can't use spare indices :'(
-        param_named u_colorPrimitiveTexture int 10
-        param_named u_colorPrimitiveTextureSize float2 0 0
+{% for param in params['renderSceneGP'] %}
+        {{ param }}
+{% endfor %}
     }
 }
 {% endfor %}
+
 
 //-----------------------------------------------------------------------------
 // Common color materials
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, params in configsFP %}
+{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsFP %}
 
 //---------------------------------------------------------------------------
 
@@ -107,7 +120,7 @@ fragment_program MaterialColor_{{ shading }}_FP glsl
 // Default technique
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, params in configsFP %}
+{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsFP %}
 
 //-----------------------------------------------------------------------------
 
@@ -130,7 +143,7 @@ fragment_program Default_{{ shading }}_FP_glsl glsl
 // Depth Peeling technique
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, params in configsFP %}
+{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsFP %}
 
 //---------------------------------------------------------------------------
 
@@ -158,7 +171,7 @@ fragment_program DepthPeeling_peel_{{ shading }}_FP_glsl glsl
 // Dual Depth Peeling technique
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, params in configsFP %}
+{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsFP %}
 
 //---------------------------------------------------------------------------
 
@@ -189,7 +202,7 @@ fragment_program DualDepthPeeling_peel_{{ shading }}_FP_glsl glsl
 // Hybrid Transparency technique
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, params in configsFP %}
+{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsFP %}
 
 //---------------------------------------------------------------------------
 
@@ -214,7 +227,7 @@ fragment_program HybridTransparency_peel_{{ shading }}_FP_glsl glsl
 {% endfor %}
 
 
-{% for shading, defines, shadersVP, shadersFP, params in configsFP %}
+{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsFP %}
 
 //---------------------------------------------------------------------------
 
@@ -246,7 +259,7 @@ fragment_program HybridTransparency_weight_blend_{{ shading }}_FP_glsl glsl
 // Weighted Blended technique
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, params in configsFP %}
+{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsFP %}
 
 //---------------------------------------------------------------------------
 
@@ -275,7 +288,7 @@ fragment_program WeightedBlended_weight_blend_{{ shading }}_FP_glsl glsl
 // Cell shading + depth peeling technique
 //-----------------------------------------------------------------------------
 
-{% for shading, defines, shadersVP, shadersFP, params in configsVP %}
+{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsVP %}
 
 //---------------------------------------------------------------------------
 
@@ -299,7 +312,7 @@ vertex_program CelShadingDepthPeelingRenderScene_{{ shading }}_VP_glsl glsl
 {% endfor %}
 
 
-{% for shading, defines, shadersVP, shadersFP, params in configsFP %}
+{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsFP %}
 
 //-----------------------------------------------------------------------------
 

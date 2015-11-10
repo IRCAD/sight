@@ -18,20 +18,21 @@ namespace visuOgreAdaptor
  * @brief   This class is started when the bundles is loaded.
  * @class   Plugin
  */
-struct Plugin : public ::fwRuntime::Plugin
+class VISUOGREADAPTOR_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
+public:
     /**
      * @brief   destructor
      */
     ~Plugin() throw();
 
     // Overrides
-    void start() throw(::fwRuntime::RuntimeException);
+    VISUOGREADAPTOR_API void start() throw(::fwRuntime::RuntimeException);
 
     // Overrides
-    void stop() throw();
+    VISUOGREADAPTOR_API void stop() throw();
 };
 
-} // namespace visuOgre
+} // namespace visuOgreAdaptor
 
 #endif // __VISUOGREADAPTOR_PLUGIN_HPP__

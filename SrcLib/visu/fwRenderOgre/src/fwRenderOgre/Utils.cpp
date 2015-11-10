@@ -36,7 +36,8 @@ namespace fwRenderOgre
 
 static std::set<std::string> s_resourcesPath;
 
-::Ogre::OverlaySystem* Utils::s_overlaySystem = nullptr;
+::Ogre::OverlaySystem* Utils::s_overlaySystem                         = nullptr;
+::fwRenderOgre::R2VBRenderableFactory* Utils::s_R2VBRenderableFactory = nullptr;
 
 //------------------------------------------------------------------------------
 
@@ -167,6 +168,9 @@ void Utils::addResourcesPath(const std::string& path)
         {
             Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
         }
+
+        s_R2VBRenderableFactory = OGRE_NEW ::fwRenderOgre::R2VBRenderableFactory();
+        ::Ogre::Root::getSingleton().addMovableObjectFactory(s_R2VBRenderableFactory);
     }
 
     return root;
@@ -176,6 +180,9 @@ void Utils::addResourcesPath(const std::string& path)
 
 void Utils::destroyOgreRoot()
 {
+    ::Ogre::Root::getSingleton().removeMovableObjectFactory(s_R2VBRenderableFactory);
+    delete s_R2VBRenderableFactory;
+
     ::Ogre::Root* root = ::fwRenderOgre::Utils::getOgreRoot();
     ::Ogre::ResourceGroupManager::getSingleton().shutdownAll();
 

@@ -64,23 +64,36 @@ public:
     /// Get material name
     VISUOGREADAPTOR_API std::string getMaterialName() const;
 
-    /// Set material name
-    VISUOGREADAPTOR_API void setMaterialName(const std::string &materialName);
-
-    /// Set material template name
-    VISUOGREADAPTOR_API void setMaterialTemplateName(const std::string &materialName);
-
     /// Retrieves the associated texture adaptor
     VISUOGREADAPTOR_API void setTextureAdaptor(const std::string& textureAdaptorId);
 
-    VISUOGREADAPTOR_API bool getHasMeshNormal() const;
-    VISUOGREADAPTOR_API void setHasMeshNormal(bool hasMeshNormal);
+    /// Set material name
+    void setMaterialName(const std::string &materialName);
 
-    VISUOGREADAPTOR_API bool getHasVertexColor() const;
-    VISUOGREADAPTOR_API void setHasVertexColor(bool hasMeshNormal);
+    /// Set material template name
+    void setMaterialTemplateName(const std::string &materialName);
 
-    VISUOGREADAPTOR_API bool getHasPrimitiveColor() const;
-    VISUOGREADAPTOR_API void setHasPrimitiveColor(bool hasMeshNormal, const std::string& textureName);
+    bool getHasMeshNormal() const;
+    void setHasMeshNormal(bool hasMeshNormal);
+
+    bool getHasVertexColor() const;
+    void setHasVertexColor(bool hasMeshNormal);
+
+    bool getHasPrimitiveColor() const;
+    void setHasPrimitiveColor(bool hasMeshNormal, const std::string& textureName);
+
+    void setHasQuad(bool _quad)
+    {
+        m_hasQuad = _quad;
+    }
+
+    void setHasTetra(bool _Tetra)
+    {
+        m_hasTetra = _Tetra;
+    }
+
+    /// Tells if there is a texture currently bound
+    bool hasDiffuseTexture() const;
 
     /// Update fwData material parameters from Ogre material parameters
     VISUOGREADAPTOR_API void updateFromOgre();
@@ -157,9 +170,6 @@ private:
     /// Slot called to remove the texture adaptor when the texture is removed from the material
     void removeTextureAdaptor(::fwData::Image::sptr texture);
 
-    /// Updates material color in fixed function pipeline
-    void updateTransparency( ::fwData::Material::sptr fw_material );
-
     /// Checks support of technique's schemes
     void updateSchemeSupport();
 
@@ -184,6 +194,9 @@ private:
 
     /// Defines if the associated mesh has a a per primitive color layer
     bool m_hasPrimitiveColor;
+
+    bool m_hasQuad;
+    bool m_hasTetra;
 
     /// Name of the texture used to store per-primitive color
     std::string m_perPrimitiveColorTextureName;
@@ -267,6 +280,15 @@ inline std::string SMaterial::getMaterialName() const
 {
     return m_materialName;
 }
+
+//------------------------------------------------------------------------------
+
+inline bool SMaterial::hasDiffuseTexture() const
+{
+    return (m_texAdaptor && !m_texAdaptor->getTexture().isNull());
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace visuOgreAdaptor
 
