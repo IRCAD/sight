@@ -17,10 +17,14 @@ fwLink(
     vtkFiltersModeling
     vtkIOImage
     vtkIOLegacy
-    vtkIOExport
     vtkIOXML
     vtkImagingStencil
     vtkImagingStatistics
     vtkFiltersGeometry
 )
-
+    
+if(NOT ANDROID)
+    fwLink(
+        vtkIOExport
+    )
+endif()

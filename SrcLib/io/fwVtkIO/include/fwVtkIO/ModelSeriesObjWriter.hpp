@@ -7,6 +7,8 @@
 #ifndef __FWVTKIO_MODELSERIESOBJWRITER_HPP__
 #define __FWVTKIO_MODELSERIESOBJWRITER_HPP__
 
+#ifndef ANDROID
+
 #include <boost/filesystem/path.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
@@ -66,6 +68,8 @@ public:
 };
 
 } // namespace fwVtkIO
+
+#endif //ANDROID
 
 #endif // __FWVTKIO_MODELSERIESOBJWRITER_HPP__
 
