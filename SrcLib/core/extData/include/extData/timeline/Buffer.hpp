@@ -25,7 +25,7 @@ namespace timeline
 class EXTDATA_CLASS_API Buffer : public extData::timeline::Object
 {
 public:
-    typedef ::boost::uint8_t* BufferDataType;
+    typedef uint8_t* BufferDataType;
     typedef ::boost::function< void (void *) > DeleterType;
 
     /// Constructor

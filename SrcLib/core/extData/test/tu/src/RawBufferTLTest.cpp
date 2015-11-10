@@ -59,7 +59,7 @@ void RawBufferTLTest::pushTest()
 
     CSPTR(::extData::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
     CSPTR(::extData::timeline::RawBuffer) buff        =
-        boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(dataPushed1Bis);
+        ::boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(dataPushed1Bis);
     CPPUNIT_ASSERT(buff);
     CPPUNIT_ASSERT_EQUAL(buff, timeline->getClosestBuffer(time1 + 1.5));
     float* buffData = buff->getBuffer<float>();
@@ -174,6 +174,109 @@ void RawBufferTLTest::getObjectTest()
     obj = timeline->getClosestObject(4.1, ::extData::TimeLine::FUTURE);
     CPPUNIT_ASSERT(NULL == obj);
 
+}
+
+//------------------------------------------------------------------------------
+
+void RawBufferTLTest::setObjectTest()
+{
+    ::extData::RawBufferTL::sptr timeline = ::extData::RawBufferTL::New();
+    timeline->initPoolSize(3* sizeof(float));
+
+    float values[3] = {1.0f, 5.2f, 7.5f};
+
+    SPTR(::extData::timeline::RawBuffer) data1 = timeline->createBuffer(1);
+    std::copy(values, values + 3, data1->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data2 = timeline->createBuffer(2);
+    std::copy(values, values + 3, data2->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data3 = timeline->createBuffer(3);
+    std::copy(values, values + 3, data3->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data4 = timeline->createBuffer(4);
+    std::copy(values, values + 3, data4->getBuffer<float>());
+
+    timeline->pushObject(data1);
+    timeline->pushObject(data2);
+    timeline->pushObject(data3);
+    timeline->pushObject(data4);
+
+
+    CSPTR(::extData::timeline::Object) obj;
+
+    timeline->setObject(1, data2);
+    timeline->setObject(2, data3);
+    timeline->setObject(4, data3);
+
+    obj = timeline->getObject(1);
+    CPPUNIT_ASSERT(data2 == obj);
+
+    obj = timeline->getClosestObject(2.2);
+    CPPUNIT_ASSERT(data3 == obj);
+
+    obj = timeline->getClosestObject(3.8);
+    CPPUNIT_ASSERT(data3 == obj);
+
+    obj = timeline->getObject(3);
+    CPPUNIT_ASSERT(data3 == obj);
+
+    timeline->setObject(3, data1);
+
+    obj = timeline->getObject(3);
+    CPPUNIT_ASSERT(data1 == obj);
+}
+
+//------------------------------------------------------------------------------
+
+void RawBufferTLTest::modifyTimeTest()
+{
+    ::extData::RawBufferTL::sptr timeline = ::extData::RawBufferTL::New();
+    timeline->initPoolSize(3* sizeof(float));
+
+    float values[3] = {2.0f, 1.2f, 6.5f};
+
+    SPTR(::extData::timeline::RawBuffer) data1 = timeline->createBuffer(1);
+    std::copy(values, values + 3, data1->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data2 = timeline->createBuffer(2);
+    std::copy(values, values + 3, data2->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data3 = timeline->createBuffer(3);
+    std::copy(values, values + 3, data3->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data4 = timeline->createBuffer(4);
+    std::copy(values, values + 3, data4->getBuffer<float>());
+
+    timeline->pushObject(data1);
+    timeline->pushObject(data2);
+    timeline->pushObject(data3);
+    timeline->pushObject(data4);
+
+    CSPTR(::extData::timeline::Object) obj;
+
+    obj = timeline->getObject(1);
+    CPPUNIT_ASSERT(data1 == obj);
+    obj = timeline->getClosestObject(0.1);
+    CPPUNIT_ASSERT(data1 == obj);
+    obj = timeline->getClosestObject(1.1);
+    CPPUNIT_ASSERT(data1 == obj);
+
+    obj = timeline->getObject(2);
+    CPPUNIT_ASSERT(data2 == obj);
+    obj = timeline->getClosestObject(4.1);
+    CPPUNIT_ASSERT(data4 == obj);
+
+    timeline->modifyTime(1, 5);
+    timeline->modifyTime(2, 1);
+    timeline->modifyTime(5, 6);
+    timeline->modifyTime(3, 7);
+
+    obj = timeline->getObject(1);
+    CPPUNIT_ASSERT(data2 == obj);
+
+    obj = timeline->getClosestObject(6.2);
+    CPPUNIT_ASSERT(data1 == obj);
+
+    obj = timeline->getClosestObject(3.1);
+    CPPUNIT_ASSERT(data4 == obj);
+
+    obj = timeline->getObject(7);
+    CPPUNIT_ASSERT(data3 == obj);
 }
 
 //------------------------------------------------------------------------------

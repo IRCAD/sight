@@ -20,6 +20,8 @@ public:
     CPPUNIT_TEST_SUITE( RawBufferTLTest );
     CPPUNIT_TEST( pushTest );
     CPPUNIT_TEST( getObjectTest );
+    CPPUNIT_TEST( setObjectTest );
+    CPPUNIT_TEST( modifyTimeTest );
     CPPUNIT_TEST( copyTest );
     CPPUNIT_TEST_SUITE_END();
 
@@ -30,6 +32,8 @@ public:
 
     void pushTest();
     void getObjectTest();
+    void setObjectTest();
+    void modifyTimeTest();
     void copyTest();
 };
 

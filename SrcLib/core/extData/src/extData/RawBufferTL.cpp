@@ -106,7 +106,7 @@ SPTR(::extData::timeline::RawBuffer) RawBufferTL::createBuffer(::fwCore::HiResCl
 bool RawBufferTL::isObjectValid(const CSPTR(::extData::timeline::Object) &obj) const
 {
     CSPTR(::extData::timeline::RawBuffer) srcObj =
-        boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(obj);
+        ::boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(obj);
     return srcObj != NULL;
 }
 

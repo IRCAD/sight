@@ -23,7 +23,7 @@ namespace extData
  * @class   FrameTL
  * @brief   This class defines a timeline of images.
  */
-class EXTDATA_CLASS_API FrameTL : public GenericTL< ::boost::uint8_t >
+class EXTDATA_CLASS_API FrameTL : public GenericTL< uint8_t >
 {
 
 public:

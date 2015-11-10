@@ -52,8 +52,8 @@ void GenericObject<TYPE>::setElement(const ElementType& element, unsigned int in
     memcpy(dstElement, &element, getElementSize());
 
     // update presence mask
-    ::boost::uint64_t oldMask = m_presenceMask;
-    m_presenceMask           |= (::boost::uint64_t(1) << index);
+    uint64_t oldMask = m_presenceMask;
+    m_presenceMask |= (uint64_t(1) << index);
 
     if( oldMask != m_presenceMask)
     {
@@ -69,8 +69,8 @@ TYPE* GenericObject<TYPE>::addElement(unsigned int index)
     SLM_ASSERT("Index out of bounds", index < m_maxElementNum);
 
     // update presence mask
-    ::boost::uint64_t oldMask = m_presenceMask;
-    m_presenceMask           |= (::boost::uint64_t(1) << index);
+    uint64_t oldMask = m_presenceMask;
+    m_presenceMask |= (uint64_t(1) << index);
 
     if( oldMask != m_presenceMask)
     {

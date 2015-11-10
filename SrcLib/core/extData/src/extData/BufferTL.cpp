@@ -61,8 +61,57 @@ void BufferTL::pushObject(const SPTR(::extData::timeline::Object) &obj)
         m_timeline.erase(begin);
     }
 
-    SPTR(::extData::timeline::Buffer) srcObj = boost::dynamic_pointer_cast< ::extData::timeline::Buffer >(obj);
+    SPTR(::extData::timeline::Buffer) srcObj = ::boost::dynamic_pointer_cast< ::extData::timeline::Buffer >(obj);
     m_timeline.insert(TimelineType::value_type(obj->getTimestamp(), srcObj));
+}
+
+//------------------------------------------------------------------------------
+
+SPTR(::extData::timeline::Object) BufferTL::popObject(TimestampType timestamp)
+{
+    const auto itFind = m_timeline.find(timestamp);
+
+    // Check if timestamp exists
+    SLM_ASSERT("Trying to erase not existing timestamp", itFind != m_timeline.end());
+
+    SPTR(::extData::timeline::Object) object = itFind->second;
+
+    ::fwCore::mt::WriteLock writeLock(m_tlMutex);
+
+    m_timeline.erase(itFind);
+
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+void BufferTL::modifyTime(TimestampType timestamp, TimestampType newTimestamp)
+{
+    const auto itFind = m_timeline.find(timestamp);
+
+    // Check if timestamp exists
+    SLM_ASSERT("Trying to swap at non-existing timestamp", itFind != m_timeline.end());
+
+    // Check if newTimestamp is not already used
+    SLM_ASSERT("New timestamp already used by an other object", m_timeline.find(newTimestamp) == m_timeline.end());
+
+    ::fwCore::mt::WriteLock writeLock(m_tlMutex);
+
+    m_timeline.insert(TimelineType::value_type(newTimestamp, itFind->second));
+    m_timeline.erase(itFind);
+}
+
+//------------------------------------------------------------------------------
+
+void BufferTL::setObject(TimestampType timestamp, const SPTR(::extData::timeline::Object) &obj)
+{
+    // Check if timestamp exists
+    SLM_ASSERT("Trying to set an object at non-existing timestamp", m_timeline.find(timestamp) != m_timeline.end());
+
+    ::fwCore::mt::WriteLock writeLock(m_tlMutex);
+
+    SPTR(::extData::timeline::Buffer) srcObj = ::boost::dynamic_pointer_cast< ::extData::timeline::Buffer >(obj);
+    m_timeline[timestamp]                    = srcObj;
 }
 
 //------------------------------------------------------------------------------

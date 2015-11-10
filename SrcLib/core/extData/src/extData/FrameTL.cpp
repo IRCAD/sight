@@ -22,7 +22,7 @@ namespace extData
 //------------------------------------------------------------------------------
 
 FrameTL::FrameTL ( ::fwData::Object::Key key ) :
-    GenericTL< ::boost::uint8_t >(key),
+    GenericTL< uint8_t >(key),
     m_width(0),
     m_height(0),
     m_numberOfComponents(3),

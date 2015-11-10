@@ -38,7 +38,7 @@ public:
     EXTDATA_API bool isPresent(unsigned int index) const;
 
     /// Return the raw presence mask
-    EXTDATA_API ::boost::uint64_t getMask() const;
+    EXTDATA_API uint64_t getMask() const;
 
     /// Return the maximum number of elements in the buffer
     EXTDATA_API unsigned int getMaxElementNum() const;
@@ -58,7 +58,7 @@ protected:
     /// Number of elements that are actually set
     unsigned int m_numPresent;
     /// Binary mask that indicates which element are set
-    ::boost::uint64_t m_presenceMask;
+    uint64_t m_presenceMask;
     /// Maximum number of elements in an object
     unsigned int m_maxElementNum;
 };

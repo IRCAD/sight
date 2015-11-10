@@ -13,7 +13,8 @@
 namespace extData
 {
 
-const ::fwCom::Signals::SignalKeyType TimeLine::s_OBJECT_PUSHED_SIG = "objectPushed";
+const ::fwCom::Signals::SignalKeyType TimeLine::s_OBJECT_PUSHED_SIG  = "objectPushed";
+const ::fwCom::Signals::SignalKeyType TimeLine::s_OBJECT_REMOVED_SIG = "objectRemoved";
 
 //------------------------------------------------------------------------------
 
@@ -21,6 +22,10 @@ TimeLine::TimeLine ( ::fwData::Object::Key key )
 {
     m_sigObjectPushed = ObjectPushedSignalType::New();
     m_signals( s_OBJECT_PUSHED_SIG,  m_sigObjectPushed);
+
+
+    m_sigObjectRemoved = ObjectRemovedSignalType::New();
+    m_signals( s_OBJECT_REMOVED_SIG,  m_sigObjectRemoved);
 
 #ifdef COM_LOG
     ::fwCom::HasSignals::m_signals.setID();

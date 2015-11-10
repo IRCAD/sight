@@ -18,7 +18,7 @@ class GenericTLTest : public CPPUNIT_NS::TestFixture
 {
 public:
     CPPUNIT_TEST_SUITE( GenericTLTest );
-    CPPUNIT_TEST( pushTest );
+    CPPUNIT_TEST( pushPopTest );
     CPPUNIT_TEST( pushClassTest );
     CPPUNIT_TEST( copyTest );
     CPPUNIT_TEST( iteratorTest );
@@ -30,7 +30,7 @@ public:
     void setUp();
     void tearDown();
 
-    void pushTest();
+    void pushPopTest();
     void pushClassTest();
     void copyTest();
     void iteratorTest();

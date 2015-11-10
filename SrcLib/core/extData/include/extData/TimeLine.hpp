@@ -35,9 +35,12 @@ public:
     } DirectionType;
 
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > ObjectPushedSignalType;
+    typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > ObjectRemovedSignalType;
 
     /// Key in m_signals map of signal m_sigObjectPushed
     EXTDATA_API static const ::fwCom::Signals::SignalKeyType s_OBJECT_PUSHED_SIG;
+    /// Key in m_signals map of signal m_sigObjectRemoved
+    EXTDATA_API static const ::fwCom::Signals::SignalKeyType s_OBJECT_REMOVED_SIG;
 
     /**
      * @brief Constructor
@@ -50,6 +53,17 @@ public:
 
     /// Push an object to the timeline
     EXTDATA_API virtual void pushObject(const SPTR(::extData::timeline::Object) &obj) = 0;
+
+    /// Removes an object from the timeline
+    EXTDATA_API virtual SPTR(::extData::timeline::Object) popObject(::fwCore::HiResClock::HiResClockType timestamp) = 0;
+
+    /// modify an object timestamp
+    EXTDATA_API virtual void modifyTime(::fwCore::HiResClock::HiResClockType timestamp,
+                                        ::fwCore::HiResClock::HiResClockType newTimestamp) = 0;
+
+    /// Change an object to the specified timestamp
+    EXTDATA_API virtual void setObject(::fwCore::HiResClock::HiResClockType timestamp,
+                                       const SPTR(::extData::timeline::Object) &obj) = 0;
 
     /**
      * @brief Return a new ::extData::timeline::Object with the given timestamp.
@@ -75,6 +89,8 @@ protected:
 
     /// Signal to emit when an object is pushed in the timeline.
     ObjectPushedSignalType::sptr m_sigObjectPushed;
+    /// Signal to emit when an object is removed in the timeline.
+    ObjectPushedSignalType::sptr m_sigObjectRemoved;
 
 }; // class TimeLine
 
