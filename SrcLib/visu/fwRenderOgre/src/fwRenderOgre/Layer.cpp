@@ -639,6 +639,10 @@ void Layer::setDefaultCompositorEnabled(bool hasDefaultCompositor, std::string t
         {
             m_defaultCompositorTransaprencyTechnique = HYBRIDTRANSPARENCY;
         }
+        else
+        {
+            OSLM_ERROR("Unknown transparency technique : " << transparencyTechnique);
+        }
     }
     if(useCelShading != "")
     {
