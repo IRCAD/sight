@@ -19,6 +19,7 @@
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwRenderOgre/R2VBRenderable.hpp>
+#include <fwRenderOgre/factory/R2VBRenderable.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
@@ -618,7 +619,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
             const std::string r2vbObjectName = this->getID() + "_r2vbObject";
             ::fwRenderOgre::R2VBRenderable* r2vbObject;
 
-            const auto& factoryName = ::fwRenderOgre::R2VBRenderableFactory::FACTORY_TYPE_NAME;
+            const auto& factoryName = ::fwRenderOgre::factory::R2VBRenderable::FACTORY_TYPE_NAME;
             if(!sceneMgr->hasMovableObject(r2vbObjectName, factoryName) )
             {
                 r2vbObject = static_cast< ::fwRenderOgre::R2VBRenderable*>
@@ -736,6 +737,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
             // Set bounds.
             r2vbObject->setBoundingBox(m_r2vbEntity->getBoundingBox());
+            r2vbObject->setDirty();
 
         }
     }

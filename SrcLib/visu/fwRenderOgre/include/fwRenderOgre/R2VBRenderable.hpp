@@ -7,80 +7,115 @@
 #ifndef __FWRENDEROGRE_R2VBRENDERABLE_HPP__
 #define __FWRENDEROGRE_R2VBRENDERABLE_HPP__
 
+#include "fwRenderOgre/config.hpp"
+
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreSimpleRenderable.h>
 #include <OGRE/OgreSubEntity.h>
 #include <OGRE/OgreRenderToVertexBuffer.h>
 
-#include "fwRenderOgre/config.hpp"
 
 namespace fwRenderOgre
 {
 
+/**
+ * @class R2VBRenderable
+ * @brief This object is used to implement a render-to-vertex-buffer (r2vb) process (GL_TRANSFORM_FEEDBACK).
+ *
+ * This objects holds a reference to the object used as input for the render-to-vertex-buffer process.
+ * It also contains the output vertex buffer, that is used to be displayed like a "regular" object.
+ */
 class FWRENDEROGRE_CLASS_API R2VBRenderable : public ::Ogre::SimpleRenderable
 {
 public:
-    R2VBRenderable()
-    {
-    }
-    virtual ~R2VBRenderable()
+    FWRENDEROGRE_API R2VBRenderable();
+    virtual FWRENDEROGRE_API ~R2VBRenderable()
     {
     }
 
-    void setBuffer(::Ogre::RenderToVertexBufferSharedPtr r2vbObject)
-    {
-        mR2vbObject = r2vbObject;
-    }
-    ::Ogre::RenderToVertexBufferSharedPtr getBuffer()
-    {
-        return mR2vbObject;
-    }
+    void setBuffer(::Ogre::RenderToVertexBufferSharedPtr r2vbObject);
+    ::Ogre::RenderToVertexBufferSharedPtr getBuffer();
 
     FWRENDEROGRE_API void setSourceObject(::Ogre::SubEntity* _sourceObject);
-    ::Ogre::SubEntity* getSourceObject() const { return m_srcObject; }
+    ::Ogre::SubEntity* getSourceObject() const;
 
     /** @copydoc SimpleRenderable::_updateRenderQueue. */
     FWRENDEROGRE_API void _updateRenderQueue(::Ogre::RenderQueue* queue);
+
     /** @copydoc SimpleRenderable::getMovableType. */
     FWRENDEROGRE_API const ::Ogre::String& getMovableType(void) const;
+
     /** @copydoc SimpleRenderable::getRenderOperation. */
     FWRENDEROGRE_API void getRenderOperation(::Ogre::RenderOperation& op);
 
     /// Delegate to the subentity.
-    ::Ogre::Real getBoundingRadius(void) const
-    {
-        return m_srcObject->getParent()->getBoundingRadius();
-    }
-    ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* cam) const
-    {
-        return m_srcObject->getSquaredViewDepth(cam);
-    }
+    ::Ogre::Real getBoundingRadius(void) const;
+
+    /// @copydoc Renderable::getSquaredViewDepth
+    ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* cam) const;
+    /// Mark the output verex buffer as dirty, the r2vb process will be run on next update
+    void setDirty();
 
 protected:
+    /// Source object of the r2vb process
     ::Ogre::SubEntity* m_srcObject;
-    ::Ogre::RenderToVertexBufferSharedPtr mR2vbObject;
+
+    /// Buffer used as output
+    ::Ogre::RenderToVertexBufferSharedPtr m_r2vbBuffer;
+
+    /// Tells if the r2vb must be run on next update - typically we want this to be done only once per frame.
+    /// Thus we use this flag, depending on the technique to enable the r2vb only on the first rendering pass.
+    bool m_dirty;
 };
 
-class FWRENDEROGRE_CLASS_API R2VBRenderableFactory : public ::Ogre::MovableObjectFactory
+//-----------------------------------------------------------------------------
+// Inline functions
+
+//-----------------------------------------------------------------------------
+
+inline void R2VBRenderable::setDirty()
 {
-public:
-    R2VBRenderableFactory()
-    {
-    }
-    ~R2VBRenderableFactory()
-    {
-    }
+    m_dirty = true;
+}
 
-    FWRENDEROGRE_API static ::Ogre::String FACTORY_TYPE_NAME;
+//-----------------------------------------------------------------------------
 
-    FWRENDEROGRE_API const ::Ogre::String& getType(void) const;
-    FWRENDEROGRE_API void destroyInstance( ::Ogre::MovableObject* obj);
+inline void R2VBRenderable::setBuffer(Ogre::RenderToVertexBufferSharedPtr r2vbObject)
+{
+    m_r2vbBuffer = r2vbObject;
+}
 
-protected:
-    FWRENDEROGRE_API ::Ogre::MovableObject* createInstanceImpl(const ::Ogre::String& name,
-                                                               const ::Ogre::NameValuePairList* params);
-};
+//-----------------------------------------------------------------------------
+
+inline ::Ogre::RenderToVertexBufferSharedPtr R2VBRenderable::getBuffer()
+{
+    return m_r2vbBuffer;
+}
+
+//-----------------------------------------------------------------------------
+
+inline ::Ogre::SubEntity *R2VBRenderable::getSourceObject() const
+{
+    return m_srcObject;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Ogre::Real R2VBRenderable::getBoundingRadius() const
+{
+    return m_srcObject->getParent()->getBoundingRadius();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Ogre::Real R2VBRenderable::getSquaredViewDepth(const Ogre::Camera *cam) const
+{
+    return m_srcObject->getSquaredViewDepth(cam);
+}
+
+//-----------------------------------------------------------------------------
+
 
 } // namespace fwRenderOgre
 

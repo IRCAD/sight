@@ -5,25 +5,40 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/R2VBRenderable.hpp"
+#include "fwRenderOgre/factory/R2VBRenderable.hpp"
 
 #include <OGRE/OgreRenderQueue.h>
 
 namespace fwRenderOgre
 {
+
+//-----------------------------------------------------------------------------
+
+fwRenderOgre::R2VBRenderable::R2VBRenderable() : m_dirty(false)
+{
+}
+
 //-----------------------------------------------------------------------------
 
 const ::Ogre::String& R2VBRenderable::getMovableType(void) const
 {
-    return R2VBRenderableFactory::FACTORY_TYPE_NAME;
+    return factory::R2VBRenderable::FACTORY_TYPE_NAME;
 }
 
 //-----------------------------------------------------------------------------
 
 void R2VBRenderable::_updateRenderQueue(::Ogre::RenderQueue* queue)
 {
+    // Don't do anything if the object is not visible
     if(m_srcObject->getParent()->isVisible())
     {
-        mR2vbObject->update(mParentSceneManager);
+        // Update the ouput vertex buffer only if the dirty flag is set
+        if(m_dirty)
+        {
+            m_r2vbBuffer->update(mParentSceneManager);
+            m_dirty = false;
+        }
+        // Add the output vertex buffer in the render queue
         queue->addRenderable(this);
     }
 }
@@ -32,7 +47,7 @@ void R2VBRenderable::_updateRenderQueue(::Ogre::RenderQueue* queue)
 
 void R2VBRenderable::getRenderOperation(::Ogre::RenderOperation& op)
 {
-    mR2vbObject->getRenderOperation(op);
+    m_r2vbBuffer->getRenderOperation(op);
 }
 
 //-----------------------------------------------------------------------------
@@ -41,36 +56,10 @@ void R2VBRenderable::setSourceObject(::Ogre::SubEntity *_sourceObject)
 {
     m_srcObject         = _sourceObject;
     mParentSceneManager = _sourceObject->getParent()->_getManager();
-    if (!mR2vbObject.isNull())
+    if (!m_r2vbBuffer.isNull())
     {
-        mR2vbObject->setSourceRenderable(_sourceObject);
+        m_r2vbBuffer->setSourceRenderable(_sourceObject);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-::Ogre::String R2VBRenderableFactory::FACTORY_TYPE_NAME = "R2VBRenderable";
-
-//-----------------------------------------------------------------------------
-
-const ::Ogre::String& R2VBRenderableFactory::getType(void) const
-{
-    return FACTORY_TYPE_NAME;
-}
-
-//-----------------------------------------------------------------------------
-
-::Ogre::MovableObject* R2VBRenderableFactory::createInstanceImpl(
-    const ::Ogre::String& name, const ::Ogre::NameValuePairList* params)
-{
-    return new R2VBRenderable();
-}
-
-//-----------------------------------------------------------------------------
-
-void R2VBRenderableFactory::destroyInstance( ::Ogre::MovableObject* obj)
-{
-    delete obj;
 }
 
 //-----------------------------------------------------------------------------

@@ -25,8 +25,6 @@
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
 
-#include <fwThread/Timer.hpp>
-
 #include <OGRE/OgreAxisAlignedBox.h>
 
 #include <map>

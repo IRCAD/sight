@@ -9,7 +9,6 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwRenderOgre/R2VBRenderable.hpp>
 
 #include <OGRE/OgreRoot.h>
 #include <OGRE/OgreImage.h>
@@ -20,6 +19,8 @@
 #include <string>
 
 #include "fwRenderOgre/config.hpp"
+
+fwCorePredeclare((fwRenderOgre)(factory)(R2VBRenderable))
 
 namespace fwRenderOgre
 {
@@ -79,7 +80,7 @@ public:
 private:
     static ::Ogre::OverlaySystem* s_overlaySystem;
 
-    static ::fwRenderOgre::R2VBRenderableFactory* s_R2VBRenderableFactory;
+    static ::fwRenderOgre::factory::R2VBRenderable* s_R2VBRenderableFactory;
 };
 
 } // namespace fwRenderOgre

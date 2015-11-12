@@ -12,6 +12,8 @@
 #include <fwComEd/helper/Image.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
+#include "fwRenderOgre/factory/R2VBRenderable.hpp"
+
 #include <OgreConfigFile.h>
 #include <OgreException.h>
 #include <OgreLog.h>
@@ -36,8 +38,8 @@ namespace fwRenderOgre
 
 static std::set<std::string> s_resourcesPath;
 
-::Ogre::OverlaySystem* Utils::s_overlaySystem                         = nullptr;
-::fwRenderOgre::R2VBRenderableFactory* Utils::s_R2VBRenderableFactory = nullptr;
+::Ogre::OverlaySystem* Utils::s_overlaySystem                           = nullptr;
+::fwRenderOgre::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory = nullptr;
 
 //------------------------------------------------------------------------------
 
@@ -169,7 +171,7 @@ void Utils::addResourcesPath(const std::string& path)
             Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
         }
 
-        s_R2VBRenderableFactory = OGRE_NEW ::fwRenderOgre::R2VBRenderableFactory();
+        s_R2VBRenderableFactory = OGRE_NEW ::fwRenderOgre::factory::R2VBRenderable();
         ::Ogre::Root::getSingleton().addMovableObjectFactory(s_R2VBRenderableFactory);
     }
 
