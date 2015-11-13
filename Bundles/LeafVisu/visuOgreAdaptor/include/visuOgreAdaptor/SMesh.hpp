@@ -90,6 +90,9 @@ public:
     /// Returns proposals to connect service slots to associated object signals
     ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
 
+    /// Ask the render service (SRender) to update - we also flag the r2vb objects as dirty
+    FWRENDEROGRE_API virtual void requestRender();
+
 private:
 
     enum BufferBinding

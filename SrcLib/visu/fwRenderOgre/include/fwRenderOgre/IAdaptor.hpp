@@ -105,7 +105,8 @@ protected:
      */
     FWRENDEROGRE_API void unregisterServices(std::string classname = "");
 
-    FWRENDEROGRE_API void requestRender();
+    /// Ask the render service (SRender) to update
+    FWRENDEROGRE_API virtual void requestRender();
 
     /// Layer ID
     ::std::string m_layerID;
@@ -120,15 +121,6 @@ protected:
     AdaptorVector m_subAdaptors;
 };
 
-//------------------------------------------------------------------------------
-// Inline function(s)
-
-inline void IAdaptor::requestRender()
-{
-    this->getRenderService()->requestRender();
-}
-
-//------------------------------------------------------------------------------
 
 } //namespace fwRenderOgre
 

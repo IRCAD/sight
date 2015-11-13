@@ -1382,4 +1382,17 @@ void SMesh::attachNode(Ogre::MovableObject *_node)
 
 //-----------------------------------------------------------------------------
 
+void SMesh::requestRender()
+{
+    ::fwRenderOgre::IAdaptor::requestRender();
+
+    for(auto r2vbObject : m_r2vbObject)
+    {
+        r2vbObject->setDirty();
+    }
+
+}
+
+//-----------------------------------------------------------------------------
+
 } //namespace visuOgreAdaptor

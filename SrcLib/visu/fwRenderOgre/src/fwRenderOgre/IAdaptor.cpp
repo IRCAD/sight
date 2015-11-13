@@ -159,4 +159,11 @@ void IAdaptor::unregisterServices(std::string classname)
 
 //------------------------------------------------------------------------------
 
+void fwRenderOgre::IAdaptor::requestRender()
+{
+    this->getRenderService()->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace fwRenderOgre
