@@ -9,6 +9,7 @@ include(CheckVariableExists)
 include(CMakeParseArguments)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
 
 set(BUILD_SHARED_LIBS ON)
 
@@ -384,6 +385,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${BUNDLE_DIR})
 
         if(${FWPROJECT_NAME}_INSTALL)
+            qt_plugins_setup() # search and setup qt plugins for each bundles
             install(
                 TARGETS ${FWPROJECT_NAME}
                 RUNTIME DESTINATION Bundles/${FWPROJECT_NAME}_${DASH_VERSION}

@@ -37,11 +37,10 @@ function(osx_install PRJ_NAME)
     install(TARGETS ${EXECUTABLE_NAME} BUNDLE DESTINATION . COMPONENT ApplicationBundle)
     install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/share" DESTINATION "${EXECUTABLE_NAME}/Contents/" COMPONENT ApplicationBundle)
     install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/Bundles" DESTINATION "${EXECUTABLE_NAME}/Contents/" COMPONENT ApplicationBundle)
-    install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/qtplugins" DESTINATION "${EXECUTABLE_NAME}/Contents/" COMPONENT ApplicationBundle)
-
+    install(DIRECTORY "${CMAKE_INSTALL_PREFIX}/plugins" DESTINATION "${EXECUTABLE_NAME}/Contents/" COMPONENT ApplicationBundle)
 
     install(CODE "
-    file(GLOB_RECURSE QTPLUGINS \"${APP_INSTALL_PATH}/Contents/qtplugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+    file(GLOB_RECURSE QTPLUGINS \"${APP_INSTALL_PATH}/Contents/plugins/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
     file(GLOB_RECURSE BUNDLES \"${APP_INSTALL_PATH}/Contents/Bundles/*/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
     include(BundleUtilities)
     fixup_bundle(\"${APP_INSTALL_PATH}\" \"\${BUNDLES};\${QTPLUGINS}\" \"${CMAKE_INSTALL_PREFIX}/${LIBRARY_OUTPUT_DIR}\")

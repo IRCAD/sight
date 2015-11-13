@@ -201,7 +201,7 @@ void WorkerQt::init( int& argc, char **argv, bool guiEnabled )
 {
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
 
-    QDir pluginDir("./qtplugins");
+    QDir pluginDir("./plugins");
     if (pluginDir.exists())
     {
         QCoreApplication::setLibraryPaths(QStringList(pluginDir.absolutePath()));
