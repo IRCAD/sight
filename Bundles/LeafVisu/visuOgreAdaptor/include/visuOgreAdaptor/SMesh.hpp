@@ -238,6 +238,8 @@ private:
     std::string m_r2vbMeshName;
     /// List of r2vb objects - these objects triggers the r2vb process and render the output data
     std::vector< ::fwRenderOgre::R2VBRenderable*> m_r2vbObject;
+    /// Previous number of cells
+    size_t m_uiPrevNumCells;
 };
 
 //------------------------------------------------------------------------------

@@ -112,7 +112,8 @@ SMesh::SMesh() throw() :
     m_hasUV(false),
     m_isReconstructionManaged(false),
     m_useNewMaterialAdaptor(false),
-    m_r2vbEntity(nullptr)
+    m_r2vbEntity(nullptr),
+    m_uiPrevNumCells(0)
 {
     m_material = ::fwData::Material::New();
 
@@ -278,6 +279,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
     /// The values in this table refer to vertices in the above table
     size_t uiNumVertices = mesh->getNumberOfPoints();
+    size_t uiNumCells    = mesh->getNumberOfCells();
     OSLM_DEBUG("Vertices #" << uiNumVertices);
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
@@ -700,7 +702,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbMtlAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
             }
 
-            if(r2vbObject->getBuffer().isNull())
+            if(r2vbObject->getBuffer().isNull() || m_uiPrevNumCells < uiNumCells)
             {
                 // Generate the RenderToBufferObject.
                 ::Ogre::RenderToVertexBufferSharedPtr r2vb =
@@ -716,6 +718,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 // Define input
                 r2vbObject->setSourceObject(subEntity);
 
+                m_uiPrevNumCells = uiNumCells;
             }
 
             auto r2vb                = r2vbObject->getBuffer();
@@ -723,6 +726,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                                        bTetra ? subMesh->indexData->indexCount * 4 :
                                        subMesh->indexData->indexCount;
             r2vb->setMaxVertexCount(static_cast<unsigned int>(numVertices));
+
 
             // Define feedback vertex declarations
             ::Ogre::VertexDeclaration* vtxDecl = r2vb->getVertexDeclaration();
@@ -1295,6 +1299,14 @@ void SMesh::modifyMesh()
         return;
     }
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+
+    const bool hasVertexColor    = (mesh->getPointColorsArray() != nullptr);
+    const bool hasPrimitiveColor = (mesh->getCellColorsArray() != nullptr);
+
+    if(hasVertexColor != m_hasVertexColor || hasPrimitiveColor != m_hasPrimitiveColor)
+    {
+        this->clearMesh(mesh);
+    }
     this->updateMesh(mesh);
     this->requestRender();
 }
