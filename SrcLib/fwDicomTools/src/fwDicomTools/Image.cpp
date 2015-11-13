@@ -4,15 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomTools/Image.hpp"
+
 #include <fwCore/spyLog.hpp>
 
-#include "fwDicomIOExt/dcmtk/helper/Image.hpp"
-
-namespace fwDicomIOExt
-{
-namespace dcmtk
-{
-namespace helper
+namespace fwDicomTools
 {
 
 Image::Image(
@@ -154,7 +150,4 @@ int64_t Image::getPixelMax() const
     return 0;
 }
 
-
-} //dcmtk
-} //helper
-} //fwDicomIOExt
+} //fwDicomTools

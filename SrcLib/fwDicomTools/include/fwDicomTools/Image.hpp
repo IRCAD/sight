@@ -4,27 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDICOMIOEXT_DCMTK_HELPER_IMAGE_HPP__
-#define __FWDICOMIOEXT_DCMTK_HELPER_IMAGE_HPP__
+#ifndef __FWDICOMTOOLS_IMAGE_HPP__
+#define __FWDICOMTOOLS_IMAGE_HPP__
 
-#include <stdint.h>
+#include "fwDicomTools/config.hpp"
+
 #include <fwTools/Type.hpp>
 
-#include "fwDicomIOExt/config.hpp"
+#include <stdint.h>
 
-namespace fwDicomIOExt
-{
-namespace dcmtk
-{
-namespace helper
+namespace fwDicomTools
 {
 
 /**
- * @class Image
- * @brief Image Helper
- * @date  2013.
+ * @brief DICOM Image Helper
  */
-class FWDICOMIOEXT_CLASS_API Image
+class FWDICOMTOOLS_CLASS_API Image
 {
 public:
 
@@ -38,7 +33,7 @@ public:
      * @param[in] rescaleSlope Rescale slope
      * @param[in] rescaleIntercept Rescale intercept
      */
-    FWDICOMIOEXT_API Image(
+    FWDICOMTOOLS_API Image(
         unsigned short samplesPerPixel,
         unsigned short bitsAllocated,
         unsigned short bitsStored,
@@ -48,18 +43,18 @@ public:
         double rescaleIntercept);
 
     /// Destructor
-    FWDICOMIOEXT_API virtual ~Image();
+    FWDICOMTOOLS_API virtual ~Image();
 
     /// Find Image Type
-    FWDICOMIOEXT_API ::fwTools::Type findImageTypeFromMinMaxValues() const;
+    FWDICOMTOOLS_API ::fwTools::Type findImageTypeFromMinMaxValues() const;
 
 protected:
 
     /// Return minimum possible value of the pixel
-    FWDICOMIOEXT_API int64_t getPixelMin() const;
+    FWDICOMTOOLS_API int64_t getPixelMin() const;
 
     /// Return maximum possible value of the pixel
-    FWDICOMIOEXT_API int64_t getPixelMax() const;
+    FWDICOMTOOLS_API int64_t getPixelMax() const;
 
     /// Samples per pixel
     unsigned short m_samplesPerPixel;
@@ -84,9 +79,7 @@ protected:
 
 };
 
-} //dcmtk
-} //helper
-} //fwDicomIOExt
+} //fwDicomTools
 
 
-#endif /* __FWDICOMIOEXT_DCMTK_HELPER_IMAGE_HPP__ */
+#endif /* __FWDICOMTOOLS_IMAGE_HPP__ */
