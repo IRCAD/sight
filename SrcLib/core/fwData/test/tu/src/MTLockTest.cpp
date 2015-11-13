@@ -15,6 +15,7 @@
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <boost/chrono.hpp>
+#include <functional>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::MTLockTest );
@@ -44,7 +45,7 @@ void MTLockTest::tearDown()
 void MTLockTest::lockTest()
 {
 
-    ::fwTest::helper::Thread thread(::boost::bind(&MTLockTest::runLock, this));
+    ::fwTest::helper::Thread thread(std::bind(&MTLockTest::runLock, this));
 
     CPPUNIT_ASSERT(thread.timedJoin(2000));
 
@@ -92,8 +93,8 @@ void MTLockTest::runLock()
 
 void MTLockTest::multipleLockTest()
 {
-    ::fwTest::helper::Thread thread(::boost::bind(&MTLockTest::runMultipleLock1, this));
-    ::fwTest::helper::Thread thread2(::boost::bind(&MTLockTest::runMultipleLock2, this));
+    ::fwTest::helper::Thread thread(std::bind(&MTLockTest::runMultipleLock1, this));
+    ::fwTest::helper::Thread thread2(std::bind(&MTLockTest::runMultipleLock2, this));
 
     CPPUNIT_ASSERT(thread.timedJoin(2500));
     CPPUNIT_ASSERT(thread2.timedJoin(2500));

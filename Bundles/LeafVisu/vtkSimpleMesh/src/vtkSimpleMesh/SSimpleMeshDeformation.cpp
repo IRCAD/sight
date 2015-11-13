@@ -21,6 +21,8 @@
 
 #include <fwDataTools/Mesh.hpp>
 
+#include <functional>
+
 fwServicesRegisterMacro( ::fwServices::IController, ::vtkSimpleMesh::SSimpleMeshDeformation, ::fwData::Mesh );
 
 namespace vtkSimpleMesh
@@ -60,7 +62,7 @@ void SSimpleMeshDeformation::starting() throw(fwTools::Failed)
 
     ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(200);
 
-    m_timer->setFunction(  ::boost::bind( &SSimpleMeshDeformation::updating, this)  );
+    m_timer->setFunction(  std::bind( &SSimpleMeshDeformation::updating, this)  );
     m_timer->setDuration(duration);
 }
 

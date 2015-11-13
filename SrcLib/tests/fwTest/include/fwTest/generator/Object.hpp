@@ -7,6 +7,8 @@
 #ifndef __FWTEST_GENERATOR_OBJECT_HPP__
 #define __FWTEST_GENERATOR_OBJECT_HPP__
 
+#include "fwTest/config.hpp"
+
 #include <fwCore/base.hpp>
 
 #include <fwData/Array.hpp>
@@ -26,7 +28,6 @@
 #include <fwData/StructureTraitsDictionary.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include "fwTest/config.hpp"
 
 namespace fwTest
 {

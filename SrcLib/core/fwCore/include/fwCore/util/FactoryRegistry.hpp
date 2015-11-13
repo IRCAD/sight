@@ -7,16 +7,17 @@
 #ifndef __FWCORE_UTIL_FACTORYREGISTRY_HPP__
 #define __FWCORE_UTIL_FACTORYREGISTRY_HPP__
 
-#include <map>
-#include <string>
-#include <vector>
+#include "fwCore/mt/types.hpp"
 
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 #include <boost/functional/factory.hpp>
 #include <boost/functional/value_factory.hpp>
 
-#include "fwCore/mt/types.hpp"
+#include <functional>
+#include <map>
+#include <string>
+#include <vector>
 
 namespace fwCore
 {
@@ -78,7 +79,7 @@ public:
         KeyVectorType vectKeys;
         std::transform( m_registry.begin(), m_registry.end(),
                         std::back_inserter(vectKeys),
-                        ::boost::bind(&RegistryType::value_type::first,_1) );
+                        std::bind(&RegistryType::value_type::first, std::placeholders::_1) );
         return vectKeys;
     }
 

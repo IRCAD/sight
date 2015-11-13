@@ -4,18 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QApplication>
-#include <QComboBox>
-#include <QGridLayout>
-#include <QDoubleValidator>
-#include <QLabel>
-#include <QLineEdit>
-#include <QMenu>
-#include <QSignalMapper>
-#include <QToolButton>
-#include <QWidget>
+#include "uiImageQt/WindowLevel.hpp"
 
-#include <boost/math/special_functions/fpclassify.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Composite.hpp>
@@ -38,8 +28,20 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/widget/QRangeSlider.hpp>
 
+#include <boost/math/special_functions/fpclassify.hpp>
 
-#include "uiImageQt/WindowLevel.hpp"
+#include <QApplication>
+#include <QComboBox>
+#include <QGridLayout>
+#include <QDoubleValidator>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMenu>
+#include <QSignalMapper>
+#include <QToolButton>
+#include <QWidget>
+
+#include <functional>
 
 namespace uiImage
 {
@@ -432,7 +434,7 @@ void WindowLevel::notifyWindowLevel(double _imageMin, double _imageMax)
 
     this->setWindowLevel(m_imageMin, m_imageMax);
     ::fwComEd::TransferFunctionMsg::sptr msg = this->notifyTFWindowing(this->getSptr());
-    msg->setMessageCallback(::boost::bind( WLCallback(WindowLevel::dynamicCast(this->getSptr())) ));
+    msg->setMessageCallback(std::bind( WLCallback(WindowLevel::dynamicCast(this->getSptr())) ));
 
     m_isNotifying = true;
 }

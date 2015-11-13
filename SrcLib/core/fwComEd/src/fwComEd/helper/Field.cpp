@@ -11,8 +11,9 @@
 
 #include <fwServices/IService.hpp>
 
-#include <boost/bind.hpp>
 #include <algorithm>
+#include <boost/bind.hpp>
+#include <functional>
 
 namespace fwComEd
 {
@@ -118,12 +119,12 @@ void Field::buildMessage(
     std::transform(
         oldFields.begin(), oldFields.end(),
         std::back_inserter(oldFieldNames),
-        ::boost::bind(&::fwData::Object::FieldMapType::value_type::first, _1)
+        std::bind(&::fwData::Object::FieldMapType::value_type::first, std::placeholders::_1)
         );
     std::transform(
         newFields.begin(), newFields.end(),
         std::back_inserter(newFieldNames),
-        ::boost::bind(&::fwData::Object::FieldMapType::value_type::first, _1)
+        std::bind(&::fwData::Object::FieldMapType::value_type::first, std::placeholders::_1)
         );
 
     std::sort(oldFieldNames.begin(), oldFieldNames.end());

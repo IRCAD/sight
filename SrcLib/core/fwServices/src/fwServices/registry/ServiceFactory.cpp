@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <functional>
 #include <vector>
 
 #include <fwCore/util/LazyInstantiator.hpp>
@@ -484,7 +485,7 @@ ServiceFactory::KeyVectorType ServiceFactory::getFactoryKeys() const
     KeyVectorType vectKeys;
     std::transform( m_srvImplTosrvInfo.begin(), m_srvImplTosrvInfo.end(),
                     std::back_inserter(vectKeys),
-                    ::boost::bind(&SrvRegContainer::value_type::first,_1) );
+                    std::bind(&SrvRegContainer::value_type::first, std::placeholders::_1) );
     return vectKeys;
 }
 

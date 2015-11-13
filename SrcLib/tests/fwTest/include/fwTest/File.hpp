@@ -7,10 +7,10 @@
 #ifndef __FWTEST_FILE_HPP__
 #define __FWTEST_FILE_HPP__
 
-#include <boost/filesystem/path.hpp>
-
 #include "fwTest/Exception.hpp"
 #include "fwTest/config.hpp"
+
+#include <boost/filesystem/path.hpp>
 
 namespace fwTest
 {

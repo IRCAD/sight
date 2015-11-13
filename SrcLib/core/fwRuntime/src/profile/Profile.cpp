@@ -6,11 +6,6 @@
 
 #include "fwRuntime/profile/Profile.hpp"
 
-#include <algorithm>
-#include <cstring>
-
-#include <boost/bind.hpp>
-
 #include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/profile/Activater.hpp"
 #include "fwRuntime/profile/Starter.hpp"
@@ -20,6 +15,10 @@
 
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/Bundle.hpp"
+
+#include <algorithm>
+#include <cstring>
+#include <functional>
 
 namespace fwRuntime
 {
@@ -63,7 +62,7 @@ Profile::Profile() :
     m_argc(0),
     m_argv(NULL)
 {
-    m_run = ::boost::bind(&Profile::defaultRun, this);
+    m_run = std::bind(&Profile::defaultRun, this);
 }
 
 //------------------------------------------------------------------------------

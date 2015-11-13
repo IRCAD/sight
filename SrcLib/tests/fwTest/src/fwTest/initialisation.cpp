@@ -4,12 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <ostream>
-#include <cstdio>
+# include <fwCore/log/SpyLogger.hpp>
 
 #include <boost/filesystem.hpp>
 
-# include <fwCore/log/SpyLogger.hpp>
+#include <ostream>
+#include <cstdio>
 
 namespace fwTest
 {

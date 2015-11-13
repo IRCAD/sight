@@ -23,6 +23,7 @@
 #include <fwThread/Worker.hpp>
 
 #include <cmath>
+#include <functional>
 
 namespace Tuto15MultithreadCtrl
 {
@@ -43,7 +44,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     SLM_TRACE_FUNC();
 
-    ::fwRuntime::profile::getCurrentProfile()->setRunCallback(::boost::bind(&Plugin::run, this));
+    ::fwRuntime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
 
 //-----------------------------------------------------------------------------

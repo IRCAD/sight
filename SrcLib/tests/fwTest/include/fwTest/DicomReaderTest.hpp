@@ -7,12 +7,9 @@
 #ifndef __FWTEST_DICOMREADERTEST_HPP__
 #define __FWTEST_DICOMREADERTEST_HPP__
 
-#include "fwTest/config.hpp"
+#include <fwMedData/ImageSeries.hpp>
 
-namespace fwMedData
-{
-class ImageSeries;
-}
+#include "fwTest/config.hpp"
 
 namespace fwTest
 {

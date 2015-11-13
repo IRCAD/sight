@@ -7,6 +7,8 @@
 #ifndef __FWTOOLS_UT_FWIDTEST_HPP__
 #define __FWTOOLS_UT_FWIDTEST_HPP__
 
+#include <fwTools/Object.hpp>
+
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace fwTools

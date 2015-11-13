@@ -133,7 +133,7 @@ void AlgoMeshDeformation::computeSimu()
     ::fwData::Mesh::PointsMultiArrayType opoints =
         ::fwData::Mesh::PointsMultiArrayType(
             static_cast< ::fwData::Mesh::PointsMultiArrayType::element* >(originPointsHelper.getBuffer()),
-            boost::extents[m_nbPoints][3] );
+            ::boost::extents[m_nbPoints][3] );
 
     for(unsigned int i = 0; i < m_nbPoints; ++i)
     {

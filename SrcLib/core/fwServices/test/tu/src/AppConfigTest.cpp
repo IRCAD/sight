@@ -91,7 +91,7 @@ void AppConfigTest::concurentAccessToAppConfigTest()
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = std::shared_ptr< ::fwTest::helper::Thread >(
-            new ::fwTest::helper::Thread(::boost::bind(&AppConfigTest::parametersConfigTest, this)));
+            new ::fwTest::helper::Thread(std::bind(&AppConfigTest::parametersConfigTest, this)));
         threads.push_back(thread);
     }
 

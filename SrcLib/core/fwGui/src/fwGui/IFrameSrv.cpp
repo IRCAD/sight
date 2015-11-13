@@ -16,8 +16,6 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <boost/foreach.hpp>
-#include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
 namespace fwGui
@@ -124,15 +122,15 @@ void IFrameSrv::create()
 
     if (m_closePolicy == CLOSE_POLICY_EXIT)
     {
-        fct = ::boost::bind( &::fwGui::IFrameSrv::onCloseExit, this);
+        fct = std::bind( &::fwGui::IFrameSrv::onCloseExit, this);
     }
     else if (m_closePolicy == CLOSE_POLICY_NOTIFY)
     {
-        fct = ::boost::bind( &::fwGui::IFrameSrv::onCloseNotify, this);
+        fct = std::bind( &::fwGui::IFrameSrv::onCloseNotify, this);
     }
     else if(m_closePolicy == CLOSE_POLICY_MESSAGE)
     {
-        fct = ::boost::bind( &::fwGui::IFrameSrv::onCloseMessage, this);
+        fct = std::bind( &::fwGui::IFrameSrv::onCloseMessage, this);
         auto app = ::fwGui::Application::New();
         app->setConfirm(true);
     }

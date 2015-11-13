@@ -7,10 +7,10 @@
 #ifndef __FWTEST_EXCEPTION_HPP__
 #define __FWTEST_EXCEPTION_HPP__
 
+#include "fwTest/config.hpp"
+
 #include <stdexcept>
 #include <string>
-
-#include "fwTest/config.hpp"
 
 namespace fwTest
 {

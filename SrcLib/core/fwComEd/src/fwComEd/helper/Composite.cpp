@@ -10,7 +10,7 @@
 
 #include <fwServices/IService.hpp>
 
-#include <boost/bind.hpp>
+#include <functional>
 
 namespace fwComEd
 {
@@ -72,7 +72,7 @@ void Composite::clear()
     std::vector<std::string> vectKey;
     std::transform( composite->begin(), composite->end(),
                     std::back_inserter(vectKey),
-                    ::boost::bind(&::fwData::Composite::value_type::first,_1) );
+                    std::bind(&::fwData::Composite::value_type::first, std::placeholders::_1) );
 
     BOOST_FOREACH(std::string key, vectKey)
     {

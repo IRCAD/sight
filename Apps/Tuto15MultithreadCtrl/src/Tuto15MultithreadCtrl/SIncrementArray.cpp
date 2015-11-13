@@ -18,8 +18,9 @@
 
 #include <fwCom/Signal.hxx>
 
-#include <boost/bind.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <functional>
 
 fwServicesRegisterMacro( ::fwServices::IService, ::Tuto15MultithreadCtrl::SIncrementArray, ::fwData::Array );
 
@@ -39,7 +40,7 @@ void SIncrementArray::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     m_timer = m_associatedWorker->createTimer();
-    m_timer->setFunction( ::boost::bind(&SIncrementArray::updating, this) );
+    m_timer->setFunction( std::bind(&SIncrementArray::updating, this) );
     m_timer->setDuration( ::boost::chrono::milliseconds(m_periodInMillisec) );
 }
 

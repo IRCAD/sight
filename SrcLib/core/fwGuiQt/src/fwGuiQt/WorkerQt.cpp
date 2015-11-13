@@ -20,7 +20,7 @@
 
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
-
+#include <functional>
 #include <QEvent>
 #include <QDir>
 #include <QPointer>
@@ -281,7 +281,7 @@ WorkerQt::~WorkerQt()
         SLM_ASSERT("WorkerQt loop shall be created and ran from main thread ",
                    !m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
 
-        ::boost::packaged_task< ExitReturnType > task( ::boost::bind(&QApplication::exec) );
+        ::boost::packaged_task< ExitReturnType > task( std::bind(&QApplication::exec) );
 
         ::boost::future< ExitReturnType > ufuture = task.get_future();
 

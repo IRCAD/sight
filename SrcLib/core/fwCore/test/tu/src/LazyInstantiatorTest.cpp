@@ -4,17 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <exception>
-
-#include <boost/thread.hpp>
-#include <boost/chrono/duration.hpp>
+#include "LazyInstantiatorTest.hpp"
 
 #include <fwCore/util/LazyInstantiator.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include "LazyInstantiatorTest.hpp"
-
+#include <chrono>
+#include <exception>
+#include <iostream>
+#include <thread>
+#include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCore::ut::LazyInstantiatorTest );
@@ -48,7 +47,7 @@ public:
     {
         ::fwCore::mt::ScopedLock lock(s_mutex);
         ++s_counter;
-        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(SLEEP));
+        std::this_thread::sleep_for( std::chrono::seconds(SLEEP));
     }
 
     static int s_counter;
@@ -112,14 +111,16 @@ void LazyInstantiatorTest::threadSafetyTest()
     const int NB_THREAD(100);
     CounterThread::CounterType::s_counter = 0;
 
-    ::boost::thread_group tg;
+    std::vector< std::thread > tg;
     for(size_t i = 0; i <= NB_THREAD; i++)
     {
         CounterThread::sptr ct = std::make_shared<CounterThread>();
-        ::boost::thread* t = new ::boost::thread(::boost::bind(&CounterThread::run, ct) );
-        tg.add_thread(t);
+        tg.push_back(std::thread(std::bind(&CounterThread::run, ct) ));
     }
-    tg.join_all();
+    for(auto& t : tg)
+    {
+        t.join();
+    }
 
     CounterThread::CounterType::sptr counter;
     counter = ::fwCore::util::LazyInstantiator< CounterThread::CounterType, thread_counter_tag >::getInstance();

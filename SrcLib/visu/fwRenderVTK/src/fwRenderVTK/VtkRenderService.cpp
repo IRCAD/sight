@@ -32,7 +32,7 @@
 #include <boost/foreach.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
-
+#include <functional>
 #include <vtkCellPicker.h>
 #include <vtkRenderer.h>
 #include <vtkInstantiator.h>
@@ -381,7 +381,7 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
         m_timer = m_associatedWorker->createTimer();
 
         ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(timeStep);
-        m_timer->setFunction( ::boost::bind( &VtkRenderService::updateTimer, this)  );
+        m_timer->setFunction( std::bind( &VtkRenderService::updateTimer, this)  );
         m_timer->setDuration(duration);
     }
 }

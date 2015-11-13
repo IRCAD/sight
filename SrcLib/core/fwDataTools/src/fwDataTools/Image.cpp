@@ -4,15 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDataTools/Image.hpp"
+
 #include <fwTools/Combinatory.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/IntrinsicTypes.hpp>
 
 #include <fwComEd/helper/Array.hpp>
-
-#include "fwDataTools/Image.hpp"
-
 
 namespace fwDataTools
 {

@@ -4,27 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <exception>
-#include <streambuf>
-
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/fstream.hpp>
-#include <boost/thread.hpp>
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
-
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/regex.hpp>
-#include <boost/algorithm/string/regex_find_format.hpp>
+#include "SpyLogTest.hpp"
 
 #include <fwCore/spyLog.hpp>
 #include <fwCore/mt/types.hpp>
 
 #include <fwTest/Exception.hpp>
 
-#include "SpyLogTest.hpp"
-
+#include <iostream>
+#include <exception>
+#include <streambuf>
+#include <thread>
+#include <regex>
+#include <string>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCore::ut::SpyLogTest );
@@ -115,11 +107,11 @@ struct RegexLogCompare
 {
     bool operator() (std::string a, std::string b)
     {
-        ::boost::regex re(".*(msg n [[:digit:]]+)$");
-        ::boost::smatch matchA;
-        ::boost::smatch matchB;
-        bool doMatchA = boost::regex_match(a, matchA, re);
-        bool doMatchB = boost::regex_match(b, matchB, re);
+        std::regex re(".*(msg n [[:digit:]]+)$");
+        std::smatch matchA;
+        std::smatch matchB;
+        bool doMatchA = std::regex_match(a, matchA, re);
+        bool doMatchB = std::regex_match(b, matchB, re);
         CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + a, doMatchA);
         CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + b, doMatchB);
 
@@ -133,19 +125,20 @@ struct RegexLogCompare
 void SpyLogTest::threadSafetyTest()
 {
     m_ostream.clear();
-    const size_t NB_THREAD(100);
-    const size_t NB_LOG(100);
+    const size_t NB_THREAD(20);
+    const size_t NB_LOG(20);
     LogProducerThread::LogContainerType logs(NB_THREAD * NB_LOG, "test");
-    ::boost::thread_group tg;
+    std::vector< std::thread > tg;
     for(size_t i = 0; i < NB_THREAD; ++i)
     {
         LogProducerThread::sptr ct = std::make_shared<LogProducerThread>();
         size_t offset              = i * NB_LOG;
-        ::boost::thread* t =
-            new ::boost::thread(::boost::bind(&LogProducerThread::run, ct, boost::ref(logs), NB_LOG, offset) );
-        tg.add_thread(t);
+        tg.push_back(std::thread(std::bind(&LogProducerThread::run, ct, std::ref(logs), NB_LOG, offset) ));
     }
-    tg.join_all();
+    for(auto& t : tg)
+    {
+        t.join();
+    }
 
     LogProducerThread::LogContainerType logMessages = this->logToVector(m_ostream);
 
@@ -158,11 +151,12 @@ void SpyLogTest::threadSafetyTest()
 std::vector<std::string> SpyLogTest::logToVector(const std::stringstream &logsStream)
 {
     std::vector<std::string> lines;
-    ::boost::split_regex(lines, logsStream.str(), ::boost::regex("\r?\n"));
-
-    if(lines.back().empty())
+    std::string line;
+    std::istringstream input;
+    input.str(logsStream.str());
+    while(std::getline(input, line))
     {
-        lines.pop_back();
+        lines.push_back(line);
     }
     return lines;
 }
@@ -180,7 +174,7 @@ void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const 
     const std::string fileLinePattern("([0-9]+: )");
     const std::string messagePattern("(.*)$");
 
-    ::boost::regex re(
+    std::regex re(
         linePattern
         + timePattern
         + levelPattern
@@ -188,13 +182,13 @@ void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const 
         + fileLinePattern
         + messagePattern );
 
-    ::boost::smatch match;
+    std::smatch match;
     std::string regexMessage;
     size_t i = 0;
 
-    BOOST_FOREACH(const std::string &log, logMessages)
+    for(const std::string &log :  logMessages)
     {
-        bool doMatch = boost::regex_match(log, match, re);
+        bool doMatch = std::regex_match(log, match, re);
 
         CPPUNIT_ASSERT_MESSAGE(log + " don't match regex.", doMatch);
 

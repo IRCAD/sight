@@ -4,12 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ServiceConfigTest.hpp"
+
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwData/String.hpp>
 #include <fwTest/helper/Thread.hpp>
 
-#include "ServiceConfigTest.hpp"
+#include <functional>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ServiceConfigTest );
@@ -65,7 +67,7 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = std::shared_ptr< ::fwTest::helper::Thread >(
-            new ::fwTest::helper::Thread(::boost::bind(&ServiceConfigTest::serviceConfigTest, this)));
+            new ::fwTest::helper::Thread(std::bind(&ServiceConfigTest::serviceConfigTest, this)));
         threads.push_back(thread);
     }
 

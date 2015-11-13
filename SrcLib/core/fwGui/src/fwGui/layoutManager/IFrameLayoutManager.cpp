@@ -45,7 +45,7 @@ const std::string IFrameLayoutManager::FRAME_POSITION_Y_UI = "FRAME_POSITION_Y_U
 
 IFrameLayoutManager::IFrameLayoutManager()
 {
-    CloseCallback fct = ::boost::bind( &::fwGui::layoutManager::IFrameLayoutManager::defaultCloseCallback, this);
+    CloseCallback fct = std::bind( &::fwGui::layoutManager::IFrameLayoutManager::defaultCloseCallback, this);
     this->setCloseCallback(fct);
 }
 

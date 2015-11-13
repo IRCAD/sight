@@ -4,13 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QWidget>
-#include <QVBoxLayout>
-
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/trim.hpp>
+#include "uiImageQt/SliceIndexPositionEditor.hpp"
 
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
@@ -32,7 +26,13 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiImageQt/SliceIndexPositionEditor.hpp"
+#include <QWidget>
+#include <QVBoxLayout>
+
+#include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/trim.hpp>
+
+#include <functional>
 
 namespace uiImage
 {
@@ -78,11 +78,13 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
     m_sliceSelectorPanel->setEnable(false);
 
     ::fwGuiQt::SliceSelector::ChangeIndexCallback changeIndexCallback;
-    changeIndexCallback = ::boost::bind( &::uiImage::SliceIndexPositionEditor::sliceIndexNotification, this, _1);
+    changeIndexCallback = std::bind( &::uiImage::SliceIndexPositionEditor::sliceIndexNotification, this,
+                                     std::placeholders::_1);
     m_sliceSelectorPanel->setChangeIndexCallback(changeIndexCallback);
 
     ::fwGuiQt::SliceSelector::ChangeIndexCallback changeTypeCallback;
-    changeTypeCallback = ::boost::bind( &::uiImage::SliceIndexPositionEditor::sliceTypeNotification, this, _1);
+    changeTypeCallback = std::bind( &::uiImage::SliceIndexPositionEditor::sliceTypeNotification, this,
+                                    std::placeholders::_1);
     m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);
     layout->addWidget( m_sliceSelectorPanel );
     layout->setContentsMargins(0,0,0,0);

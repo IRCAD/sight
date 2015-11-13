@@ -4,11 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <cmath>
-
-#include <boost/assign/std/vector.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include "fwTest/generator/Image.hpp"
+#include "fwTest/generator/Mesh.hpp"
+#include "fwTest/generator/SeriesDB.hpp"
+#include "fwTest/generator/Object.hpp"
 
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
@@ -17,14 +16,13 @@
 #include <fwData/Plane.hpp>
 #include <fwData/ProcessObject.hpp>
 
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/generator/Mesh.hpp>
-#include <fwTest/generator/SeriesDB.hpp>
-#include "fwTest/generator/Object.hpp"
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/convenience.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 
-using namespace boost::assign;
+#include <cmath>
+
 
 namespace fwTest
 {

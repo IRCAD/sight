@@ -4,13 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "UUIDTest.hpp"
 
 #include <fwTools/UUID.hpp>
 #include <fwTools/Object.hpp>
 
 #include <fwTest/helper/Thread.hpp>
 
-#include "UUIDTest.hpp"
+#include <functional>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::UUIDTest );
@@ -67,7 +68,7 @@ void UUIDTest::conccurentAccessOnUUIDMapTest()
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = std::shared_ptr< ::fwTest::helper::Thread >(
-            new ::fwTest::helper::Thread(::boost::bind(&UUIDTest::runUUIDCreation, this)));
+            new ::fwTest::helper::Thread(std::bind(&UUIDTest::runUUIDCreation, this)));
         threads.push_back(thread);
     }
 
@@ -111,7 +112,7 @@ void UUIDTest::conccurentAccessOnSameObjUUIDTest()
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = std::shared_ptr< ::fwTest::helper::Thread >(
-            new ::fwTest::helper::Thread(::boost::bind(&UUIDTest::runAccessToObjectUUID, this)));
+            new ::fwTest::helper::Thread(std::bind(&UUIDTest::runAccessToObjectUUID, this)));
         threads.push_back(thread);
     }
 

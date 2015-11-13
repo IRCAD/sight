@@ -7,15 +7,13 @@
 #ifndef __FWTEST_HELPER_THREAD_HPP__
 #define __FWTEST_HELPER_THREAD_HPP__
 
-#include <exception>
-
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
-#include <boost/thread/thread_time.hpp>
+#include "fwTest/config.hpp"
 
 #include <cppunit/Exception.h>
 
-#include "fwTest/config.hpp"
+#include <exception>
+#include <functional>
+#include <thread>
 
 namespace fwTest
 {
@@ -34,7 +32,7 @@ class FWTEST_CLASS_API Thread
 {
 public:
 
-    typedef ::boost::function<void ()> FunctionType;
+    typedef std::function<void ()> FunctionType;
 
     /**
      * @brief Constructor : launch a thread which call run(f)
@@ -63,7 +61,7 @@ public:
     }
 
     /// Return true if function launched by thread raised exception
-    bool hasFailed()
+    bool hasFailed() const
     {
         return m_hasFailed;
     }
@@ -79,7 +77,7 @@ private:
     void run(FunctionType f);
 
     /// Thread created in constructor
-    ::boost::thread m_thread;
+    std::thread m_thread;
 
     /// Exception raised by function launched by thread
     CPPUNIT_NS::Exception m_exception;

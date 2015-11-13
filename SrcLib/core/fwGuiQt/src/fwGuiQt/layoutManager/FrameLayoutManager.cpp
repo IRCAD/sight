@@ -51,7 +51,7 @@ void FrameLayoutManager::createFrame()
     m_qtWindow                        = mainframe;
 
 
-    ::fwGuiQt::QtMainFrame::CloseCallback fct = ::boost::bind( &::fwGui::FrameLayoutManager::onCloseFrame, this);
+    ::fwGuiQt::QtMainFrame::CloseCallback fct = std::bind( &::fwGui::FrameLayoutManager::onCloseFrame, this);
     mainframe->setCloseCallback(fct);
 
     m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));

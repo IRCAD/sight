@@ -4,20 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-#include <boost/type_traits/is_const.hpp>
-#include <boost/type_traits/remove_pointer.hpp>
-
-#include <limits>
-
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
+#include "BufferObjectTest.hpp"
 
 #include <fwMemory/BufferObject.hpp>
 #include <fwMemory/BufferAllocationPolicy.hpp>
 #include <fwMemory/exception/Memory.hpp>
 
-#include "BufferObjectTest.hpp"
+#include <boost/type_traits/is_const.hpp>
+#include <boost/type_traits/remove_pointer.hpp>
+
+#include <boost/thread.hpp>
+#include <functional>
+#include <limits>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMemory::ut::BufferObjectTest );
@@ -221,10 +219,10 @@ void BufferObjectTest::lockThreadedStressTest()
 
     boost::thread_group group;
 
-    group.create_thread( ::boost::bind( &stressLock, bo, 800, 600 ) );
-    group.create_thread( ::boost::bind( &stressLock, bo, 600, 800 ) );
-    group.create_thread( ::boost::bind( &stressLock, bo, 452, 692 ) );
-    group.create_thread( ::boost::bind( &stressLock, bo, 253, 345 ) );
+    group.create_thread( std::bind( &stressLock, bo, 800, 600 ) );
+    group.create_thread( std::bind( &stressLock, bo, 600, 800 ) );
+    group.create_thread( std::bind( &stressLock, bo, 452, 692 ) );
+    group.create_thread( std::bind( &stressLock, bo, 253, 345 ) );
 
     group.join_all();
 

@@ -4,20 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/type_traits/make_unsigned.hpp>
-
-#include <map>
-
-#include <cstdlib>
-#include <ctime>
-
-#include <boost/foreach.hpp>
-
-#include <fwTools/NumericRoundCast.hxx>
-
 #include "fwDataTools/thread/RegionThreader.hpp"
 #include "fwDataTools/Mesh.hpp"
 
+#include <fwTools/NumericRoundCast.hxx>
+
+#include <cstdlib>
+#include <ctime>
+#include <functional>
+#include <map>
 
 namespace fwDataTools
 {
@@ -205,7 +200,8 @@ void Mesh::generateCellNormals(::fwData::Mesh::sptr mesh)
         meshHelper = ::fwComEd::helper::Mesh::New(mesh);
 
         ::fwDataTools::thread::RegionThreader rt((numberOfCells >= 200000) ? 4 : 1);
-        rt( ::boost::bind(&generateRegionCellNormals, meshHelper, _1, _2), numberOfCells );
+        rt( std::bind(&generateRegionCellNormals, meshHelper, std::placeholders::_1, std::placeholders::_2),
+            numberOfCells );
     }
 }
 
@@ -334,28 +330,31 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
         FloatVectors normalsData(rt.numberOfThread());
         CharVectors normalCounts(rt.numberOfThread());
 
-        rt( ::boost::bind(&generateRegionCellNormalsByPoints,
-                          ::boost::ref(normalsData),
-                          ::boost::ref(normalCounts),
-                          _3, meshHelper, _1, _2),
+        rt( std::bind(&generateRegionCellNormalsByPoints,
+                      ::boost::ref(normalsData),
+                      ::boost::ref(normalCounts),
+                      std::placeholders::_3,
+                      meshHelper,
+                      std::placeholders::_1,
+                      std::placeholders::_2),
             numberOfCells);
 
-        rt( ::boost::bind(&vectorSum<FloatVectors::value_type::value_type>,
-                          ::boost::ref(normalsData),
-                          _1, _2),
+        rt( std::bind(&vectorSum<FloatVectors::value_type::value_type>,
+                      ::boost::ref(normalsData),
+                      std::placeholders::_1, std::placeholders::_2),
             nbOfPoints*3);
 
 
-        rt( ::boost::bind(&vectorSum<CharVectors::value_type::value_type>,
-                          ::boost::ref(normalCounts),
-                          _1, _2),
+        rt( std::bind(&vectorSum<CharVectors::value_type::value_type>,
+                      ::boost::ref(normalCounts),
+                      std::placeholders::_1, std::placeholders::_2),
             nbOfPoints);
 
 
-        rt( ::boost::bind( &normalizeRegionCellNormalsByPoints,
-                           ::boost::ref(normalsData[0]),
-                           ::boost::ref(normalCounts[0]),
-                           mesh, _1, _2),
+        rt( std::bind( &normalizeRegionCellNormalsByPoints,
+                       ::boost::ref(normalsData[0]),
+                       ::boost::ref(normalCounts[0]),
+                       mesh, std::placeholders::_1, std::placeholders::_2),
             nbOfPoints);
 
         meshHelper.reset();
@@ -396,13 +395,13 @@ void Mesh::shakeNormals(::fwData::Array::sptr array)
         typedef boost::multi_array_ref<Vector<float>, 1> NormalsMultiArrayType;
         NormalsMultiArrayType normals = NormalsMultiArrayType(
             static_cast<NormalsMultiArrayType::element*>(buf),
-            boost::extents[nbOfNormals]
+            ::boost::extents[nbOfNormals]
             );
 
         ::fwDataTools::thread::RegionThreader rt((nbOfNormals >= 150000) ? 4 : 1);
-        rt( ::boost::bind(&regionShakeNormals<NormalsMultiArrayType>,
-                          boost::ref(normals),
-                          _1, _2),
+        rt( std::bind(&regionShakeNormals<NormalsMultiArrayType>,
+                      std::ref(normals),
+                      std::placeholders::_1, std::placeholders::_2),
             nbOfNormals);
     }
 }

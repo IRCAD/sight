@@ -14,6 +14,7 @@
 #include "fwThread/Worker.hpp"
 #include "fwThread/config.hpp"
 
+#include <functional>
 
 namespace fwThread
 {
@@ -36,7 +37,7 @@ public:
      * @name Typedefs
      * @{ */
     typedef std::shared_ptr< Timer >        sptr;
-    typedef ::boost::function< void () >         FunctionType;
+    typedef std::function< void () >         FunctionType;
     typedef ::boost::chrono::duration<double>   TimeDurationType;
     /**  @} */
 

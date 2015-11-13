@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/chrono/duration.hpp>
+#include "FwIDTest.hpp"
 
 #include <fwTools/fwID.hpp>
 #include <fwTools/UUID.hpp>
@@ -13,7 +13,8 @@
 
 #include <fwTest/helper/Thread.hpp>
 
-#include "FwIDTest.hpp"
+#include <chrono>
+#include <thread>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTools::ut::FwIDTest );
@@ -82,7 +83,7 @@ void FwIDTest::conccurentAccessOnFwIDMapTest()
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = std::shared_ptr< ::fwTest::helper::Thread >(
-            new ::fwTest::helper::Thread(::boost::bind(&FwIDTest::runFwIDCreation, this)));
+            new ::fwTest::helper::Thread(std::bind(&FwIDTest::runFwIDCreation, this)));
         threads.push_back(thread);
     }
 
@@ -141,7 +142,7 @@ void FwIDTest::conccurentAccessOnSameObjFwIDTest()
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = std::shared_ptr< ::fwTest::helper::Thread >(
-            new ::fwTest::helper::Thread(::boost::bind(&FwIDTest::runAccessToObjectFwID, this)));
+            new ::fwTest::helper::Thread(std::bind(&FwIDTest::runAccessToObjectFwID, this)));
         threads.push_back(thread);
     }
 
@@ -151,7 +152,6 @@ void FwIDTest::conccurentAccessOnSameObjFwIDTest()
         str << "thread " << i;
         CPPUNIT_ASSERT_MESSAGE(str.str(), threads[i]->timedJoin(1000));
     }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -162,13 +162,13 @@ void FwIDTest::runAccessToObjectFwID()
     CPPUNIT_ASSERT( ::fwTools::fwID::exist(id) );
     CPPUNIT_ASSERT( m_object->hasID() );
 
-    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(200));
+    std::this_thread::sleep_for( std::chrono::milliseconds(200));
 
     CPPUNIT_ASSERT_EQUAL(  id, m_object->getID() );
 
     CPPUNIT_ASSERT_EQUAL( m_object, ::fwTools::fwID::getObject(id) );
 
-    ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(200));
+    std::this_thread::sleep_for( std::chrono::milliseconds(200));
 
     m_object->resetID();
     CPPUNIT_ASSERT( m_object->hasID() == false );

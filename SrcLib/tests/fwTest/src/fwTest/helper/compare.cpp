@@ -4,13 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwTest/helper/compare.hpp"
 
 #include <fwData/Object.hpp>
-
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include "fwTest/helper/compare.hpp"
 
 namespace fwTest
 {
@@ -22,11 +20,11 @@ bool compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp, Excl
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH(const ExcludeSetType::value_type& key, excludeCompare)
+    for(const ExcludeSetType::value_type& key :  excludeCompare)
     {
         props->erase(key);
     }
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }

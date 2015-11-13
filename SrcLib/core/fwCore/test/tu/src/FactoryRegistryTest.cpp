@@ -4,21 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <exception>
-
-#include <boost/assign/list_of.hpp>
-#include <boost/foreach.hpp>
-#include <boost/thread.hpp>
-#include <boost/chrono/duration.hpp>
+#include "FactoryRegistryTest.hpp"
 
 #include <fwCore/util/LazyInstantiator.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
 #include <fwCore/mt/types.hpp>
 #include <fwCore/spyLog.hpp>
 
-#include "FactoryRegistryTest.hpp"
-
+#include <functional>
+#include <iostream>
+#include <exception>
+#include <thread>
+#include <chrono>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCore::ut::FactoryRegistryTest );
@@ -60,7 +57,7 @@ public:
     ObjectTest(int msec) : m_name("ObjectTest+sleep")
     {
         ::fwCore::mt::ScopedLock lock(s_mutex);
-        ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(msec));
+        std::this_thread::sleep_for( std::chrono::milliseconds(msec));
         ++s_counter;
     }
 
@@ -77,6 +74,7 @@ public:
     static int s_counter;
     static ::fwCore::mt::Mutex s_mutex;
 };
+
 int ObjectTest::s_counter = 0;
 ::fwCore::mt::Mutex ObjectTest::s_mutex;
 
@@ -110,7 +108,7 @@ void FactoryRegistryTest::pointerTest()
     objectTestFactory.addFactory("ObjectTest", ::boost::factory<ObjectTest::sptr>());
     objectTestFactory.addFactory("DerivedObjectTest", ::boost::factory<DerivedObjectTest::sptr>());
 
-    FactoryType::KeyVectorType keys = ::boost::assign::list_of("ObjectTest") ("DerivedObjectTest");
+    FactoryType::KeyVectorType keys = {"ObjectTest", "DerivedObjectTest"};
     std::sort(keys.begin(), keys.end());
     FactoryType::KeyVectorType vectKeys = objectTestFactory.getFactoryKeys();
     std::sort(vectKeys.begin(), vectKeys.end());
@@ -252,12 +250,12 @@ struct PopulateRegistryThread
         for (int i = 0; i< s_NBREGISTRYITEMS; ++i)
         {
             std::stringstream ss;
-            ss << "PopulateFactoryThreadObject-" << ::boost::this_thread::get_id() <<"-" << i;
+            ss << "PopulateFactoryThreadObject-" << std::this_thread::get_id() <<"-" << i;
             std::string name = ss.str();
-            OSLM_WARN( "adding " << name << "... " );
+            SLM_WARN( "adding " + name + "... " );
             m_factory.addFactory(name, ::boost::factory<ObjectTest::sptr>());
-            OSLM_WARN( "added " << name << "... " );
-            ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(1));
+            SLM_WARN( "added " + name + "... " );
+            std::this_thread::sleep_for( std::chrono::milliseconds(1));
         }
 
     }
@@ -280,39 +278,36 @@ void FactoryRegistryTest::threadSafetyTest()
     const int NB_THREAD(10);
 
     typedef std::vector < UseFactoryThread::sptr > UseFactoryThreadVector;
-    ::boost::thread_group tg;
+    std::vector< std::thread > tg;
 
     UseFactoryThreadVector objects;
     for(size_t i = 0; i < NB_THREAD; i++)
     {
         UseFactoryThread::sptr uft;
-        ::boost::thread* t;
 
         uft = std::make_shared<UseFactoryThread>(objectTestFactory);
-        t   = new ::boost::thread(::boost::bind(&UseFactoryThread::run, uft) );
-        tg.add_thread(t);
+        tg.push_back(std::thread(std::bind(&UseFactoryThread::run, uft) ));
         objects.push_back(uft);
 
         uft = std::make_shared<UseFactoryThread>(objectTestFactory, "DerivedObjectTest");
-        t   = new ::boost::thread(::boost::bind(&UseFactoryThread::run, uft) );
-        tg.add_thread(t);
+        tg.push_back(std::thread(std::bind(&UseFactoryThread::run, uft) ));
         objects.push_back(uft);
     }
 
     for(size_t i = 0; i < NB_THREAD; i++)
     {
         PopulateRegistryThread::sptr pft;
-        ::boost::thread* t;
 
         pft = std::make_shared<PopulateRegistryThread>(::boost::ref(objectTestFactory));
-        t   = new ::boost::thread(::boost::bind(&PopulateRegistryThread::run, pft) );
-        tg.add_thread(t);
+        tg.push_back(std::thread(std::bind(&PopulateRegistryThread::run, pft) ));
     }
 
+    for(auto& t : tg)
+    {
+        t.join();
+    }
 
-    tg.join_all();
-
-    BOOST_FOREACH(UseFactoryThreadVector::value_type uft, objects)
+    for(const UseFactoryThreadVector::value_type& uft :  objects)
     {
         CPPUNIT_ASSERT_EQUAL(size_t(UseFactoryThread::s_NBOBJECTS), uft->m_objects.size());
     }
@@ -323,7 +318,6 @@ void FactoryRegistryTest::threadSafetyTest()
         objectTestFactory.getFactoryKeys().size()
         );
     ObjectTest::s_counter = 0;
-
 }
 
 //-----------------------------------------------------------------------------

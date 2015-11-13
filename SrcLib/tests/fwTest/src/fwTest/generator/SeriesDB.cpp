@@ -4,7 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <sstream>
+#include "fwTest/generator/SeriesDB.hpp"
+#include "fwTest/generator/Image.hpp"
+#include "fwTest/generator/Mesh.hpp"
 
 #include <fwTools/Type.hpp>
 
@@ -24,9 +26,7 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Equipment.hpp>
 
-#include "fwTest/generator/SeriesDB.hpp"
-#include "fwTest/generator/Image.hpp"
-#include "fwTest/generator/Mesh.hpp"
+#include <sstream>
 
 
 namespace fwTest

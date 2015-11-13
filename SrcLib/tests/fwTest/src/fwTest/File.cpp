@@ -5,9 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include <fstream>
-#include <boost/filesystem/path.hpp>
 #include "fwTest/File.hpp"
+
+#include <boost/filesystem/path.hpp>
+#include <fstream>
 
 namespace fwTest
 {

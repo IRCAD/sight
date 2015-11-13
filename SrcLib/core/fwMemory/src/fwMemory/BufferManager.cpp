@@ -16,14 +16,13 @@
 #include "fwMemory/stream/in/Buffer.hpp"
 #include "fwMemory/policy/NeverDump.hpp"
 
-#include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/foreach.hpp>
 
 #include <iosfwd> // #include <strstream>
 #include <iomanip>
 #include <algorithm>
+#include <functional>
 
 namespace fwMemory
 {
@@ -63,7 +62,7 @@ BufferManager::~BufferManager()
 
 ::boost::shared_future<void> BufferManager::registerBuffer(BufferManager::BufferPtrType bufferPtr)
 {
-    return m_worker->postTask<void>( ::boost::bind(&BufferManager::registerBufferImpl, this, bufferPtr) );
+    return m_worker->postTask<void>( std::bind(&BufferManager::registerBufferImpl, this, bufferPtr) );
 }
 
 void BufferManager::registerBufferImpl(BufferManager::BufferPtrType bufferPtr)
@@ -76,7 +75,7 @@ void BufferManager::registerBufferImpl(BufferManager::BufferPtrType bufferPtr)
 
 ::boost::shared_future<void> BufferManager::unregisterBuffer(BufferManager::BufferPtrType bufferPtr)
 {
-    return m_worker->postTask<void>( ::boost::bind(&BufferManager::unregisterBufferImpl, this, bufferPtr) );
+    return m_worker->postTask<void>( std::bind(&BufferManager::unregisterBufferImpl, this, bufferPtr) );
 }
 
 void BufferManager::unregisterBufferImpl(BufferManager::BufferPtrType bufferPtr)
@@ -91,7 +90,7 @@ void BufferManager::unregisterBufferImpl(BufferManager::BufferPtrType bufferPtr)
 ::boost::shared_future<void> BufferManager::allocateBuffer(BufferManager::BufferPtrType bufferPtr, SizeType size,
                                                            const ::fwMemory::BufferAllocationPolicy::sptr &policy)
 {
-    return m_worker->postTask<void>(::boost::bind(&BufferManager::allocateBufferImpl, this, bufferPtr, size, policy));
+    return m_worker->postTask<void>(std::bind(&BufferManager::allocateBufferImpl, this, bufferPtr, size, policy));
 }
 
 void BufferManager::allocateBufferImpl(BufferManager::BufferPtrType bufferPtr, SizeType size,
@@ -120,7 +119,7 @@ void BufferManager::allocateBufferImpl(BufferManager::BufferPtrType bufferPtr, S
 
     info.istreamFactory =
         std::make_shared< ::fwMemory::stream::in::Buffer >(*bufferPtr, size,
-                                                           ::boost::bind(&getLock, this->getSptr(), bufferPtr));
+                                                           std::bind(&getLock, this->getSptr(), bufferPtr));
 
     info.lastAccess.modified();
     info.size         = size;
@@ -136,7 +135,7 @@ void BufferManager::allocateBufferImpl(BufferManager::BufferPtrType bufferPtr, S
                                                       const ::fwMemory::BufferAllocationPolicy::sptr &policy)
 {
     return m_worker->postTask<void>(
-        ::boost::bind(&BufferManager::setBufferImpl, this, bufferPtr, buffer, size, policy));
+        std::bind(&BufferManager::setBufferImpl, this, bufferPtr, buffer, size, policy));
 }
 
 void BufferManager::setBufferImpl(BufferManager::BufferPtrType bufferPtr, ::fwMemory::BufferManager::BufferType buffer,
@@ -171,7 +170,7 @@ void BufferManager::setBufferImpl(BufferManager::BufferPtrType bufferPtr, ::fwMe
 
 ::boost::shared_future<void> BufferManager::reallocateBuffer(BufferManager::BufferPtrType bufferPtr, SizeType newSize)
 {
-    return m_worker->postTask<void>( ::boost::bind(&BufferManager::reallocateBufferImpl, this, bufferPtr, newSize) );
+    return m_worker->postTask<void>( std::bind(&BufferManager::reallocateBufferImpl, this, bufferPtr, newSize) );
 }
 
 void BufferManager::reallocateBufferImpl(BufferManager::BufferPtrType bufferPtr, SizeType newSize)
@@ -200,7 +199,7 @@ void BufferManager::reallocateBufferImpl(BufferManager::BufferPtrType bufferPtr,
 
     info.istreamFactory =
         std::make_shared< ::fwMemory::stream::in::Buffer>(*bufferPtr, newSize,
-                                                          ::boost::bind(&getLock, this->getSptr(), bufferPtr));
+                                                          std::bind(&getLock, this->getSptr(), bufferPtr));
 
     info.lastAccess.modified();
     info.size = newSize;
@@ -212,7 +211,7 @@ void BufferManager::reallocateBufferImpl(BufferManager::BufferPtrType bufferPtr,
 
 ::boost::shared_future<void> BufferManager::destroyBuffer(BufferManager::BufferPtrType bufferPtr)
 {
-    return m_worker->postTask<void>( ::boost::bind(&BufferManager::destroyBufferImpl, this, bufferPtr) );
+    return m_worker->postTask<void>( std::bind(&BufferManager::destroyBufferImpl, this, bufferPtr) );
 }
 
 void BufferManager::destroyBufferImpl(BufferManager::BufferPtrType bufferPtr)
@@ -237,7 +236,7 @@ void BufferManager::destroyBufferImpl(BufferManager::BufferPtrType bufferPtr)
 ::boost::shared_future<void> BufferManager::swapBuffer(BufferManager::BufferPtrType bufA,
                                                        BufferManager::BufferPtrType bufB)
 {
-    return m_worker->postTask<void>( ::boost::bind(&BufferManager::swapBufferImpl, this, bufA, bufB) );
+    return m_worker->postTask<void>( std::bind(&BufferManager::swapBufferImpl, this, bufA, bufB) );
 }
 
 void BufferManager::swapBufferImpl(BufferManager::BufferPtrType bufA, BufferManager::BufferPtrType bufB)
@@ -295,7 +294,7 @@ struct AutoUnlock
 
 ::boost::shared_future<SPTR(void)> BufferManager::lockBuffer(BufferManager::ConstBufferPtrType bufferPtr)
 {
-    return m_worker->postTask<SPTR(void)>( ::boost::bind(&BufferManager::lockBufferImpl, this, bufferPtr) );
+    return m_worker->postTask<SPTR(void)>( std::bind(&BufferManager::lockBufferImpl, this, bufferPtr) );
 }
 
 SPTR(void) BufferManager::lockBufferImpl(BufferManager::ConstBufferPtrType bufferPtr)
@@ -323,7 +322,7 @@ SPTR(void) BufferManager::lockBufferImpl(BufferManager::ConstBufferPtrType buffe
 
 ::boost::shared_future<bool> BufferManager::unlockBuffer(BufferManager::ConstBufferPtrType bufferPtr)
 {
-    return m_worker->postTask<bool>( ::boost::bind(&BufferManager::unlockBufferImpl, this, bufferPtr) );
+    return m_worker->postTask<bool>( std::bind(&BufferManager::unlockBufferImpl, this, bufferPtr) );
 }
 
 bool BufferManager::unlockBufferImpl(BufferManager::ConstBufferPtrType bufferPtr)
@@ -386,7 +385,7 @@ bool BufferManager::dumpBuffer(BufferInfo & info, BufferManager::BufferPtrType b
 
 ::boost::shared_future<bool> BufferManager::restoreBuffer(BufferManager::ConstBufferPtrType bufferPtr)
 {
-    return m_worker->postTask<bool>( ::boost::bind(&BufferManager::restoreBufferImpl, this, bufferPtr) );
+    return m_worker->postTask<bool>( std::bind(&BufferManager::restoreBufferImpl, this, bufferPtr) );
 }
 
 bool BufferManager::restoreBufferImpl(BufferManager::ConstBufferPtrType bufferPtr)
@@ -434,8 +433,8 @@ bool BufferManager::restoreBuffer(BufferInfo & info,
             info.istreamFactory
                 = std::make_shared< ::fwMemory::stream::in::Buffer >(*bufferPtr,
                                                                      allocSize,
-                                                                     ::boost::bind(&getLock, this->getSptr(),
-                                                                                   bufferPtr));
+                                                                     std::bind(&getLock, this->getSptr(),
+                                                                               bufferPtr));
             info.userStreamFactory = false;
             m_updatedSig->asyncEmit();
             return true;
@@ -450,7 +449,7 @@ bool BufferManager::restoreBuffer(BufferInfo & info,
 ::boost::shared_future<bool> BufferManager::writeBuffer(BufferManager::ConstBufferType buffer,
                                                         SizeType size, ::boost::filesystem::path &path)
 {
-    return m_worker->postTask<bool>( ::boost::bind(&BufferManager::writeBufferImpl, this, buffer, size, path) );
+    return m_worker->postTask<bool>( std::bind(&BufferManager::writeBufferImpl, this, buffer, size, path) );
 }
 
 bool BufferManager::writeBufferImpl(BufferManager::ConstBufferType buffer,
@@ -470,7 +469,7 @@ bool BufferManager::writeBufferImpl(BufferManager::ConstBufferType buffer,
 ::boost::shared_future<bool> BufferManager::readBuffer(BufferManager::BufferType buffer, SizeType size,
                                                        ::boost::filesystem::path &path)
 {
-    return m_worker->postTask<bool>( ::boost::bind(&BufferManager::readBufferImpl, this, buffer, size, path) );
+    return m_worker->postTask<bool>( std::bind(&BufferManager::readBufferImpl, this, buffer, size, path) );
 }
 
 bool BufferManager::readBufferImpl(BufferManager::BufferType buffer, SizeType size, ::boost::filesystem::path &path)
@@ -496,7 +495,7 @@ bool BufferManager::readBufferImpl(BufferManager::BufferType buffer, SizeType si
 
 ::boost::shared_future<std::string> BufferManager::toString() const
 {
-    return m_worker->postTask<std::string>( ::boost::bind(&BufferManager::toStringImpl, this ) );
+    return m_worker->postTask<std::string>( std::bind(&BufferManager::toStringImpl, this ) );
 }
 
 std::string BufferManager::toStringImpl() const
@@ -545,7 +544,7 @@ void BufferManager::setDumpPolicy( const ::fwMemory::IPolicy::sptr &policy )
 
 ::boost::shared_future<BufferManager::BufferInfoMapType> BufferManager::getBufferInfos() const
 {
-    return m_worker->postTask<BufferInfoMapType>( ::boost::bind(&BufferManager::getBufferInfosImpl, this) );
+    return m_worker->postTask<BufferInfoMapType>( std::bind(&BufferManager::getBufferInfosImpl, this) );
 }
 
 BufferManager::BufferInfoMapType BufferManager::getBufferInfosImpl() const
@@ -558,7 +557,7 @@ BufferManager::BufferInfoMapType BufferManager::getBufferInfosImpl() const
 ::boost::shared_future<BufferManager::BufferStats> BufferManager::getBufferStats() const
 {
     return m_worker->postTask<BufferManager::BufferStats>(
-        ::boost::bind(&BufferManager::computeBufferStats, m_bufferInfos) );
+        std::bind(&BufferManager::computeBufferStats, m_bufferInfos) );
 }
 
 BufferManager::BufferStats BufferManager::computeBufferStats(const BufferInfoMapType& bufferInfo)
@@ -587,7 +586,7 @@ BufferManager::BufferStats BufferManager::computeBufferStats(const BufferInfoMap
                                                               )
 {
     return m_worker->postTask<void>(
-        ::boost::bind(&BufferManager::setIStreamFactoryImpl, this, bufferPtr, factory, size, fsFile, format, policy) );
+        std::bind(&BufferManager::setIStreamFactoryImpl, this, bufferPtr, factory, size, fsFile, format, policy) );
 }
 
 void BufferManager::setIStreamFactoryImpl(BufferPtrType bufferPtr,
@@ -632,7 +631,7 @@ void BufferManager::setIStreamFactoryImpl(BufferPtrType bufferPtr,
 BufferManager::getStreamInfo(const BufferManager::ConstBufferPtrType bufferPtr) const
 {
     return m_worker->postTask<BufferManager::StreamInfo>(
-        ::boost::bind(&BufferManager::getStreamInfoImpl, this, bufferPtr) );
+        std::bind(&BufferManager::getStreamInfoImpl, this, bufferPtr) );
 }
 
 BufferManager::StreamInfo BufferManager::getStreamInfoImpl(const BufferManager::ConstBufferPtrType bufferPtr) const

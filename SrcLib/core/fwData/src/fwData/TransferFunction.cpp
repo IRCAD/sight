@@ -11,6 +11,8 @@
 #include <fwCore/base.hpp>
 #include <fwTools/Type.hpp>
 
+#include <functional>
+
 fwDataRegisterMacro( ::fwData::TransferFunction );
 
 namespace fwData
@@ -69,7 +71,7 @@ TransferFunction::TFValueVectorType TransferFunction::getTFValues() const
     values.reserve(m_tfData.size());
     std::transform( m_tfData.begin(), m_tfData.end(),
                     std::back_inserter(values),
-                    ::boost::bind(&TFDataType::value_type::first, _1) );
+                    std::bind(&TFDataType::value_type::first, std::placeholders::_1) );
     return values;
 }
 

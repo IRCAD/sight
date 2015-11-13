@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <ctime>
+#include "fwTest/generator/Image.hpp"
 
 #include <fwTools/Type.hpp>
 #include <fwTools/NumericRoundCast.hxx>
 
 #include <fwComEd/helper/Array.hpp>
 
-#include "fwTest/generator/Image.hpp"
+#include <ctime>
 
 
 namespace fwTest

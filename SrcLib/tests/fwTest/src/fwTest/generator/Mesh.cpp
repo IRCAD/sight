@@ -4,19 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/type_traits/make_unsigned.hpp>
-
-#include <cstdlib>
-#include <ctime>
-
-#include <boost/foreach.hpp>
+#include "fwTest/generator/Mesh.hpp"
 
 #include <fwTools/NumericRoundCast.hxx>
 
 #include <fwDataTools/Mesh.hpp>
 
-#include "fwTest/generator/Mesh.hpp"
+#include <boost/type_traits/make_unsigned.hpp>
 
+#include <cstdlib>
+#include <ctime>
 
 namespace fwTest
 {

@@ -7,9 +7,10 @@
 #ifndef __FWTEST_GENERATOR_SERIESDB_HPP__
 #define __FWTEST_GENERATOR_SERIESDB_HPP__
 
+#include "fwTest/config.hpp"
+
 #include <fwCore/base.hpp>
 
-#include "fwTest/config.hpp"
 
 namespace fwData
 {

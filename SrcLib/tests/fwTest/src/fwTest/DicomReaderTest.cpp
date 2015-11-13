@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwTest/DicomReaderTest.hpp"
+
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/Type.hpp>
 
@@ -16,8 +18,6 @@
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
 #include <fwMedData/Series.hpp>
-
-#include "fwTest/DicomReaderTest.hpp"
 
 namespace fwTest
 {

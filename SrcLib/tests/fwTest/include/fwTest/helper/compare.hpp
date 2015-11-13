@@ -7,12 +7,12 @@
 #ifndef __FWTEST_HELPER_COMPARE_HPP__
 #define __FWTEST_HELPER_COMPARE_HPP__
 
-#include <set>
-#include <string>
+#include "fwTest/config.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwTest/config.hpp"
+#include <set>
+#include <string>
 
 namespace fwData
 {
