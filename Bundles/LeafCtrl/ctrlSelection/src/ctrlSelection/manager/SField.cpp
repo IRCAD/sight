@@ -4,10 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
-
-#include <fwTools/fwID.hpp>
+#include "ctrlSelection/manager/SField.hpp"
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
@@ -15,7 +12,11 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
-#include "ctrlSelection/manager/SField.hpp"
+#include <fwTools/fwID.hpp>
+
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
+
 
 namespace ctrlSelection
 {
@@ -93,7 +94,7 @@ void SField::stopping()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    BOOST_FOREACH(SubServicesMapType::value_type elt, m_fieldsSubServices)
+    for(SubServicesMapType::value_type elt :  m_fieldsSubServices)
     {
         SubServicesVecType subServices = elt.second;
         BOOST_REVERSE_FOREACH( SPTR(SubService) subSrv, subServices )
@@ -177,7 +178,7 @@ void SField::starting()  throw ( ::fwTools::Failed )
 
 void SField::addFields( const ModifiedFieldsContainerType& fields )
 {
-    BOOST_FOREACH( ModifiedFieldsContainerType::value_type addedObjectId, fields)
+    for( ModifiedFieldsContainerType::value_type addedObjectId :  fields)
     {
         if(m_fieldsSubServices.find(addedObjectId.first) != m_fieldsSubServices.end())
         {
@@ -248,7 +249,7 @@ void SField::addField( const FieldNameType& fieldName, ::fwData::Object::sptr fi
                     fieldType == field->getClassname());
         SubServicesVecType subVecSrv;
         std::vector< ConfigurationType > services = conf->find("service");
-        BOOST_FOREACH( ConfigurationType cfg, services)
+        for( ConfigurationType cfg :  services)
         {
             ::fwServices::IService::sptr srv = this->add( field, cfg );
             OSLM_ASSERT("Instantiation Service failed on field "<<fieldName, srv);
@@ -306,7 +307,7 @@ void SField::addField( const FieldNameType& fieldName, ::fwData::Object::sptr fi
 
 void SField::swapFields( const ModifiedFieldsContainerType& fields )
 {
-    BOOST_FOREACH( ModifiedFieldsContainerType::value_type swappedObjectId, fields)
+    for( ModifiedFieldsContainerType::value_type swappedObjectId :  fields)
     {
         this->swapField(swappedObjectId.first, swappedObjectId.second);
     }
@@ -317,10 +318,10 @@ void SField::swapFields( const ModifiedFieldsContainerType& fields )
 void SField::swapField(const FieldNameType& fieldName, ::fwData::Object::sptr field)
 {
     std::vector< ConfigurationType > fields = m_managerConfiguration->find("field", "id", fieldName);
-    BOOST_FOREACH( ConfigurationType cfg, fields)
+    for( ConfigurationType cfg :  fields)
     {
         SubServicesVecType subServices = m_fieldsSubServices[fieldName];
-        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
+        for( SPTR(SubService) subSrv :  subServices )
         {
             OSLM_ASSERT("SubService on " << fieldName <<" expired !", subSrv->getService() );
             OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
@@ -355,7 +356,7 @@ void SField::swapField(const FieldNameType& fieldName, ::fwData::Object::sptr fi
 
 void SField::removeFields( const ModifiedFieldsContainerType& fields )
 {
-    BOOST_FOREACH( ModifiedFieldsContainerType::value_type swappedObjectId, fields)
+    for( ModifiedFieldsContainerType::value_type swappedObjectId :  fields)
     {
         this->removeField(swappedObjectId.first);
     }
@@ -376,7 +377,7 @@ void SField::removeField( const FieldNameType& fieldName )
         SubServicesVecType subServices = m_fieldsSubServices[fieldName];
         ::fwData::Object::sptr dummyObj;
         dummyObj = ::fwData::factory::New(fieldType);
-        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
+        for( SPTR(SubService) subSrv :  subServices )
         {
             OSLM_ASSERT("SubService on " << fieldName <<" expired !", subSrv->getService() );
             OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
@@ -437,7 +438,7 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
         dummyObj = ::fwData::factory::New(fieldType);
         SubServicesVecType subVecSrv;
         std::vector< ConfigurationType > services = conf->find("service");
-        BOOST_FOREACH( ConfigurationType cfg, services)
+        for( ConfigurationType cfg :  services)
         {
             ::fwServices::IService::sptr srv = this->add( dummyObj, cfg );
             OSLM_ASSERT("Instantiation Service failed ofieldct "<<fieldName, srv);

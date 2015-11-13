@@ -8,6 +8,12 @@
 #include "visuVTKAdaptor/PointLabel.hpp"
 #include "visuVTKAdaptor/PointList.hpp"
 
+#include <fwCom/Signal.hxx>
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/PointListMsg.hpp>
+
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
@@ -17,11 +23,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/PointListMsg.hpp>
-
-#include <fwCom/Signal.hxx>
+#include <algorithm>
 
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
@@ -32,12 +34,6 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
-
-
-#include <boost/foreach.hpp>
-
-#include <algorithm>
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageLandmarks, ::fwData::Image );
 
@@ -282,7 +278,7 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
             this->registerService( servicePointList );
 
 
-            BOOST_FOREACH( ::fwData::Point::sptr point, landmarks->getRefPoints() )
+            for( ::fwData::Point::sptr point :  landmarks->getRefPoints() )
             {
                 ::fwRenderVTK::IVtkAdaptorService::sptr serviceLabel;
                 serviceLabel = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(point,

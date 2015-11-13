@@ -4,32 +4,28 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/Camera.hpp"
 
-#include <fwData/Camera.hpp>
-#include <fwData/Video.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Boolean.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwComEd/Dictionary.hpp>
 #include <fwComEd/CameraMsg.hpp>
+#include <fwComEd/Dictionary.hpp>
 #include <fwComEd/VideoMsg.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Camera.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/Video.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkActor.h>
 #include <vtkRenderer.h>
 #include <vtkMatrix4x4.h>
 #include <vtkTransform.h>
 #include <vtkCamera.h>
-
-#include "visuVTKAdaptor/Camera.hpp"
-
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera, ::fwData::Video );
 

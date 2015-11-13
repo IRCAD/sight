@@ -4,14 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwDataTools/AlgoMeshDeformation.hpp"
+#include "fwDataTools/Mesh.hpp"
 
 #include <fwTools/NumericRoundCast.hxx>
 
 #include <fwComEd/helper/Array.hpp>
 
-#include "fwDataTools/AlgoMeshDeformation.hpp"
-#include "fwDataTools/Mesh.hpp"
 
 namespace fwDataTools
 {

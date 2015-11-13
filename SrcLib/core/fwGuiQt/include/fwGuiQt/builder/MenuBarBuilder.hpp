@@ -15,7 +15,7 @@
 #include <fwGui/container/fwContainer.hpp>
 
 #include "fwGuiQt/config.hpp"
-
+#include "fwGuiQt/container/QtContainer.hpp"
 namespace fwGui
 {
 namespace builder

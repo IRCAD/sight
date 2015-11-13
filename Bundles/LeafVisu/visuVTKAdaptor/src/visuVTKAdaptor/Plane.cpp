@@ -6,41 +6,34 @@
 
 #ifndef ANDROID
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/Plane.hpp"
+#include "visuVTKAdaptor/Point.hpp"
 
+#include <fwRenderVTK/vtk/Helpers.hpp>
+#include <fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp>
+
+#include <fwComEd/PlaneMsg.hpp>
+#include <fwComEd/PointMsg.hpp>
+#include <fwData/Color.hpp>
+#include <fwData/Plane.hpp>
 #include <fwMath/IntrasecTypes.hpp>
 #include <fwMath/PlaneFunctions.hpp>
-
-#include <fwData/Plane.hpp>
-#include <fwData/Color.hpp>
-
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwComEd/PointMsg.hpp>
-#include <fwComEd/PlaneMsg.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkActor.h>
 #include <vtkPlaneCollection.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPropCollection.h>
 #include <vtkProperty.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
-
-
-#include "fwRenderVTK/vtk/Helpers.hpp"
-#include "fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp"
-#include "visuVTKAdaptor/Plane.hpp"
-#include "visuVTKAdaptor/Point.hpp"
-
+#include <vtkRenderWindowInteractor.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Plane, ::fwData::Plane );
 
 namespace visuVTKAdaptor
 {
-
-
 
 Plane::Plane() throw()
 {
@@ -122,7 +115,7 @@ void Plane::doStart() throw(fwTools::Failed)
 
     m_pPlane = this->getObject< ::fwData::Plane >();
 
-    BOOST_FOREACH( ::fwData::Point::sptr point, m_pPlane.lock()->getPoints() )
+    for( ::fwData::Point::sptr point :  m_pPlane.lock()->getPoints() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr servicePoint =
             ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
@@ -291,7 +284,7 @@ void Plane::setVtkPlaneCollection( vtkObject * col )
 
 void Plane::selectPlane(bool select)
 {
-    BOOST_FOREACH( ServiceVector::value_type service, m_subServices )
+    for( ServiceVector::value_type service :  m_subServices )
     {
         if(!service.expired())
         {

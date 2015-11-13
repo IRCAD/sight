@@ -4,18 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
+#include "fwServices/registry/AppConfig.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/helper.hpp>
-
+#include <fwData/Composite.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
-#include <fwData/Composite.hpp>
 
-#include "fwServices/registry/AppConfig.hpp"
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/helper.hpp>
+#include <fwRuntime/Runtime.hpp>
+
+#include <boost/regex.hpp>
 
 namespace fwServices
 {
@@ -45,7 +44,7 @@ void AppConfig::parseBundleInformation()
 {
     std::vector< std::shared_ptr< ::fwRuntime::Extension > >  extensions =
         ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::AppConfig");
-    BOOST_FOREACH( std::shared_ptr< ::fwRuntime::Extension > ext, extensions )
+    for( std::shared_ptr< ::fwRuntime::Extension > ext :  extensions )
     {
         // Get id
         std::string configId = ext->findConfigurationElement("id")->getValue();
@@ -75,7 +74,7 @@ void AppConfig::parseBundleInformation()
         {
             ::fwRuntime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
             ::fwRuntime::ConfigurationElement::Container elements     = parametersConfig->getElements();
-            BOOST_FOREACH( ::fwRuntime::ConfigurationElement::sptr paramConfig, elements )
+            for( ::fwRuntime::ConfigurationElement::sptr paramConfig :  elements )
             {
                 std::string name = paramConfig->getExistingAttributeValue("name");
 
@@ -159,7 +158,7 @@ void AppConfig::clearRegistry()
 
     FieldAdaptorType fields;
     AppInfo::ParamatersType parameters = iter->second->parameters;
-    BOOST_FOREACH( AppInfo::ParamatersType::value_type param, parameters )
+    for( AppInfo::ParamatersType::value_type param :  parameters )
     {
         FieldAdaptorType::const_iterator iter = fieldAdaptors.find( param.first );
         std::stringstream key;
@@ -198,7 +197,7 @@ std::vector< std::string > AppConfig::getAllConfigs() const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > ids;
-    BOOST_FOREACH( Registry::value_type elem, m_reg )
+    for( Registry::value_type elem :  m_reg )
     {
         ids.push_back( elem.first );
     }
@@ -211,7 +210,7 @@ std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string & gr
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > ids;
-    BOOST_FOREACH( Registry::value_type elem, m_reg )
+    for( Registry::value_type elem :  m_reg )
     {
         AppInfo::sptr info = elem.second;
         if(info->group == group)
@@ -227,7 +226,7 @@ std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string & gr
 AppConfig::FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const
 {
     FieldAdaptorType fields;
-    BOOST_FOREACH(const ::fwData::Composite::value_type &elem, *fieldAdaptors )
+    for(const ::fwData::Composite::value_type &elem :  *fieldAdaptors )
     {
         fields[elem.first] = ::fwData::String::dynamicCast( elem.second )->value();
     }
@@ -266,12 +265,12 @@ std::string AppConfig::getUniqueIdentifier(const std::string& serviceUid )
     result->setValue( this->adaptField( _cfgElem->getValue(), fieldAdaptors ) );
 
     typedef std::map<std::string, std::string> MapAttributesType;
-    BOOST_FOREACH( MapAttributesType::value_type attribute, _cfgElem->getAttributes() )
+    for( MapAttributesType::value_type attribute :  _cfgElem->getAttributes() )
     {
         result->setAttributeValue( attribute.first, this->adaptField( attribute.second, fieldAdaptors ) );
     }
 
-    BOOST_FOREACH ( ::fwRuntime::ConfigurationElement::csptr subElem, _cfgElem->getElements())
+    for ( ::fwRuntime::ConfigurationElement::csptr subElem : _cfgElem->getElements())
     {
         result->addConfigurationElement( this->adaptConfig( subElem, fieldAdaptors ) );
     }
@@ -286,7 +285,7 @@ std::string AppConfig::adaptField( const std::string & _str, const FieldAdaptorT
     std::string newStr = _str;
     if(!_str.empty())
     {
-        BOOST_FOREACH(FieldAdaptorType::value_type fieldAdaptor, fieldAdaptors)
+        for(FieldAdaptorType::value_type fieldAdaptor :  fieldAdaptors)
         {
             std::stringstream sstr;
             sstr << "(.*)" << fieldAdaptor.first << "(.*)";

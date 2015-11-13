@@ -57,7 +57,7 @@ void SExportSeries::starting() throw(::fwTools::Failed)
 {
     this->actionServiceStarting();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    BOOST_FOREACH( ::fwMedData::Series::sptr series, seriesDB->getContainer() )
+    for( ::fwMedData::Series::sptr series :  seriesDB->getContainer() )
     {
         if(series == this->getSeries())
         {
@@ -75,7 +75,7 @@ void SExportSeries::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
     if ( seriesDBMsg && seriesDBMsg->hasEvent( ::fwComEd::SeriesDBMsg::ADDED_OBJECTS ) )
     {
         ::fwData::Vector::sptr addedObject = seriesDBMsg->getAddedSeries();
-        BOOST_FOREACH( ::fwData::Object::sptr obj, addedObject->getContainer() )
+        for( ::fwData::Object::sptr obj :  addedObject->getContainer() )
         {
             ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
             if(series == this->getSeries())
@@ -87,7 +87,7 @@ void SExportSeries::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
     if ( seriesDBMsg && seriesDBMsg->hasEvent( ::fwComEd::SeriesDBMsg::REMOVED_OBJECTS ) )
     {
         ::fwData::Vector::sptr removedObject = seriesDBMsg->getRemovedSeries();
-        BOOST_FOREACH( ::fwData::Object::sptr obj, removedObject->getContainer() )
+        for( ::fwData::Object::sptr obj :  removedObject->getContainer() )
         {
             ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
             if(series == this->getSeries())

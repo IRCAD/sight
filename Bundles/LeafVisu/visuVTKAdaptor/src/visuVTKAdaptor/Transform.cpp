@@ -4,7 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/Transform.hpp"
+
+#include <fwComEd/TransformationMatrix3DMsg.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkCommand.h>
 #include <vtkMatrix4x4.h>
@@ -13,21 +27,6 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Boolean.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-
-#include "visuVTKAdaptor/Transform.hpp"
 
 class TransformCallback : public ::vtkCommand
 {

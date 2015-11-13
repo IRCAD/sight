@@ -4,13 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwGui/IMenuBarSrv.hpp"
 
 #include <fwCore/base.hpp>
-#include <fwTools/fwID.hpp>
 #include <fwServices/Base.hpp>
-
-#include "fwGui/IMenuBarSrv.hpp"
+#include <fwTools/fwID.hpp>
 
 namespace fwGui
 {

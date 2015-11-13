@@ -4,17 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "ctrlSelection/MedicalImageSrv.hpp"
 
-#include <fwServices/macros.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Image.hpp>
+#include <fwComEd/ImageMsg.hpp>
 
 #include <fwData/Image.hpp>
 
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/helper/Image.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwServices/macros.hpp>
 
-#include "ctrlSelection/MedicalImageSrv.hpp"
 
 namespace ctrlSelection
 {

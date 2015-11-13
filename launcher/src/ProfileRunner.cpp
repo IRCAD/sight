@@ -8,23 +8,20 @@
 #include <windows.h>
 #endif
 
-#include <stdio.h>
-#include <ostream>
-#include <vector>
-#include <string>
+#include <fwRuntime/io/ProfileReader.hpp>
+#include <fwRuntime/operations.hpp>
+#include <fwRuntime/profile/Profile.hpp>
 
 #include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
-
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/positional_options.hpp>
 #include <boost/program_options/variables_map.hpp>
+#include <ostream>
 
-#include <fwRuntime/operations.hpp>
-#include <fwRuntime/profile/Profile.hpp>
-#include <fwRuntime/io/ProfileReader.hpp>
-
+#include <stdio.h>
+#include <string>
+#include <vector>
 
 #ifdef _WIN32
 # define CONSOLE_LOG false;
@@ -272,7 +269,7 @@ int main(int argc, char* argv[])
 #endif // _WIN32
     OSLM_ERROR_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
-    BOOST_FOREACH(const fs::path &bundlePath, bundlePaths )
+    for(const fs::path &bundlePath :  bundlePaths )
     {
         if ( fs::is_directory(bundlePath))
         {

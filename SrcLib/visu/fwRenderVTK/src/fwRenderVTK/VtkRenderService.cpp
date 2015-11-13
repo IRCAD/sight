@@ -29,7 +29,6 @@
 
 #include <fwVtkIO/vtk.hpp>
 
-#include <boost/foreach.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
 #include <functional>
@@ -531,10 +530,10 @@ void VtkRenderService::receiving( ::fwServices::ObjectMsg::csptr message ) throw
 
         assert ( m_sceneConfiguration );
 
-        BOOST_FOREACH( ::fwData::Composite::ContainerType::value_type objectId, objects)
+        for( ::fwData::Composite::ContainerType::value_type objectId :  objects)
         {
             std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId",objectId.first);
-            BOOST_FOREACH( ConfigurationType cfg, confVec )
+            for( ConfigurationType cfg :  confVec )
             {
                 this->configureObject(cfg);
             }
@@ -740,9 +739,9 @@ vtkTransform * VtkRenderService::getOrAddVtkTransform( const VtkObjectIdType& _i
 void VtkRenderService::connectAfterWait(::fwData::Composite::sptr composite)
 {
 
-    BOOST_FOREACH(::fwData::Composite::value_type element, *composite)
+    for(::fwData::Composite::value_type element :  *composite)
     {
-        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr connect, m_connect)
+        for(::fwRuntime::ConfigurationElement::sptr connect :  m_connect)
         {
             this->manageConnection(element.first, element.second, connect);
         }
@@ -781,7 +780,7 @@ void VtkRenderService::manageConnection(const std::string key, const ::fwTools::
 void VtkRenderService::disconnect(::fwData::Composite::sptr composite)
 {
 
-    BOOST_FOREACH(::fwData::Composite::value_type element, *composite)
+    for(::fwData::Composite::value_type element :  *composite)
     {
         std::string key = element.first;
         if(m_objectConnections.find(key) != m_objectConnections.end())

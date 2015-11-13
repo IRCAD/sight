@@ -4,13 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <map>
-
-#include <boost/foreach.hpp>
-#include <boost/assign/list_of.hpp>
-
 #include "fwDataTools/TransferFunction.hpp"
 
+#include <boost/assign/list_of.hpp>
+#include <map>
 
 namespace fwDataTools
 {

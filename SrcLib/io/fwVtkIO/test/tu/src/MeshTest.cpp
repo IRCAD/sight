@@ -41,7 +41,7 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }

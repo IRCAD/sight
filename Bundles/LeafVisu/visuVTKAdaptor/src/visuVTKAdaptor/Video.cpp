@@ -6,43 +6,39 @@
 
 #ifndef ANDROID
 
-#include <boost/foreach.hpp>
-
-#include <fwData/Video.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Boolean.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include "visuVTKAdaptor/Video.hpp"
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/VideoMsg.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/Video.hpp>
+
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
-#include <vtkOpenGLRenderWindow.h>
-#include <vtkOpenGLProperty.h>
-#include <vtkShaderProgram2.h>
-#include <vtkPlaneSource.h>
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
 #include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkRenderer.h>
-#include <vtkImageData.h>
-#include <vtkUnsignedCharArray.h>
-#include <vtkPointData.h>
-#include <vtkMatrix4x4.h>
-#include <vtkTransform.h>
 #include <vtkCamera.h>
-#include <vtkProperty.h>
 #include <vtkgl.h>
-
-#include "visuVTKAdaptor/Video.hpp"
-
-
+#include <vtkImageData.h>
+#include <vtkMatrix4x4.h>
+#include <vtkOpenGLProperty.h>
+#include <vtkOpenGLRenderWindow.h>
+#include <vtkPlaneSource.h>
+#include <vtkPointData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
+#include <vtkShaderProgram2.h>
+#include <vtkTransform.h>
+#include <vtkUnsignedCharArray.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Video, ::fwData::Video );
-
 
 namespace visuVTKAdaptor
 {

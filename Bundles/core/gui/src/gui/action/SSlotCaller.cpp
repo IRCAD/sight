@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
 #include <boost/regex.hpp>
 
 #include <fwCore/base.hpp>
@@ -70,7 +69,7 @@ void SSlotCaller::updating() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    BOOST_FOREACH(SlotInfoType info, m_slotInfos)
+    for(SlotInfoType info :  m_slotInfos)
     {
         HasSlotIDType HasSlotId = info.first;
         ::fwCom::Slots::SlotKeyType slotKey = info.second;
@@ -110,7 +109,7 @@ void SSlotCaller::configuring() throw( ::fwTools::Failed )
     ::boost::smatch match;
     std::string src, uid, key;
 
-    BOOST_FOREACH(ConfigurationType elem,  slotCfgs.getElements())
+    for(ConfigurationType elem :   slotCfgs.getElements())
     {
         src = elem->getValue();
         if( ::boost::regex_match(src, match, re) )

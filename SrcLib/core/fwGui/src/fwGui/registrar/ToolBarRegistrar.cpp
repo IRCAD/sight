@@ -4,16 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <utility>
-
-#include <boost/foreach.hpp>
+#include "fwGui/GuiRegistry.hpp"
+#include "fwGui/IActionSrv.hpp"
+#include "fwGui/registrar/ToolBarRegistrar.hpp"
 
 #include <fwTools/fwID.hpp>
 #include <fwServices/Base.hpp>
 
-#include "fwGui/GuiRegistry.hpp"
-#include "fwGui/IActionSrv.hpp"
-#include "fwGui/registrar/ToolBarRegistrar.hpp"
+#include <utility>
+
 
 namespace fwGui
 {
@@ -61,7 +60,7 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
     m_callbacks.clear();
     // initialize m_actionSids map with configuration
     std::vector < ConfigurationType > vectMenuItems = configuration->find("menuItem");
-    BOOST_FOREACH( ConfigurationType menuItem, vectMenuItems)
+    for( ConfigurationType menuItem :  vectMenuItems)
     {
         SLM_ASSERT("<menuItem> tag must have sid attribute", menuItem->hasAttribute("sid"));
         if(menuItem->hasAttribute("sid"))
@@ -92,7 +91,7 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
     index = 0;
     // initialize m_menuSids map with configuration
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
-    BOOST_FOREACH( ConfigurationType menu, vectMenus)
+    for( ConfigurationType menu :  vectMenus)
     {
         SLM_ASSERT("<menu> tag must have sid attribute", menu->hasAttribute("sid"));
         if(menu->hasAttribute("sid"))
@@ -116,7 +115,7 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
     index = 0;
     // initialize m_menuSids map with configuration
     std::vector < ConfigurationType > vectEditors = configuration->find("editor");
-    BOOST_FOREACH( ConfigurationType editor, vectEditors)
+    for( ConfigurationType editor :  vectEditors)
     {
         SLM_ASSERT("<editor> tag must have sid attribute", editor->hasAttribute("sid"));
         if(editor->hasAttribute("sid"))
@@ -143,7 +142,7 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
 void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems )
 {
     ::fwGui::container::fwMenuItem::sptr menuItem;
-    BOOST_FOREACH( SIDToolBarMapType::value_type sid, m_actionSids)
+    for( SIDToolBarMapType::value_type sid :  m_actionSids)
     {
         OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!",
                     sid.second.first < menuItems.size());
@@ -176,7 +175,7 @@ void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwMenuItem::sptr 
 void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > menus )
 {
     ::fwGui::container::fwMenu::sptr menu;
-    BOOST_FOREACH( SIDToolBarMapType::value_type sid, m_menuSids)
+    for( SIDToolBarMapType::value_type sid :  m_menuSids)
     {
         OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!",
                     sid.second.first < menus.size());
@@ -197,7 +196,7 @@ void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > me
 void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > containers )
 {
     ::fwGui::container::fwContainer::sptr container;
-    BOOST_FOREACH( SIDToolBarMapType::value_type sid, m_editorSids)
+    for( SIDToolBarMapType::value_type sid :  m_editorSids)
     {
         OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!",
                     sid.second.first < containers.size());
@@ -217,7 +216,7 @@ void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr
 
 void ToolBarRegistrar::unmanage()
 {
-    BOOST_FOREACH( SIDToolBarMapType::value_type sid, m_actionSids)
+    for( SIDToolBarMapType::value_type sid :  m_actionSids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -227,7 +226,7 @@ void ToolBarRegistrar::unmanage()
         }
         ::fwGui::GuiRegistry::unregisterActionSIDToParentSID(sid.first, m_sid);
     }
-    BOOST_FOREACH( SIDToolBarMapType::value_type sid, m_menuSids)
+    for( SIDToolBarMapType::value_type sid :  m_menuSids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -237,7 +236,7 @@ void ToolBarRegistrar::unmanage()
         }
         ::fwGui::GuiRegistry::unregisterSIDMenu(sid.first);
     }
-    BOOST_FOREACH( SIDToolBarMapType::value_type sid, m_editorSids)
+    for( SIDToolBarMapType::value_type sid :  m_editorSids)
     {
         if(sid.second.second) //service is auto started?
         {

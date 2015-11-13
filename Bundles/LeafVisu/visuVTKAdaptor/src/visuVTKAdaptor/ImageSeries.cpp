@@ -4,24 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/ImageSeries.hpp"
 
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Material.hpp>
 #include <fwData/Boolean.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwMedData/ImageSeries.hpp>
-
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
-
-#include "visuVTKAdaptor/ImageSeries.hpp"
-
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSeries, ::fwMedData::ImageSeries );
 

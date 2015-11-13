@@ -23,7 +23,7 @@ class vtkImageData;
 class vtkPolyDataMapper;
 class vtkPolyData;
 class vtkActor;
-
+class vtkImageBlend;
 
 namespace visuVTKAdaptor
 {

@@ -84,7 +84,7 @@ void ResectionDB::doUpdate() throw(fwTools::Failed)
 
     ::fwData::ResectionDB::sptr resecDB = this->getObject< ::fwData::ResectionDB >();
 
-    BOOST_FOREACH( ::fwData::Resection::sptr resection, resecDB->getResections() )
+    for( ::fwData::Resection::sptr resection :  resecDB->getResections() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
             ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > ( resection, "::visuVTKAdaptor::Resection" );

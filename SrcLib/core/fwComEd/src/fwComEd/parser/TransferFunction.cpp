@@ -11,9 +11,6 @@
 
 #include <fwServices/Base.hpp>
 
-#include <boost/foreach.hpp>
-
-
 fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::TransferFunction, ::fwData::TransferFunction );
 
 namespace fwComEd
@@ -44,7 +41,7 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
         const ::fwRuntime::ConfigurationElementContainer stepsConfig = colorCfg->findAllConfigurationElement("step");
         SLM_ASSERT("element 'step' is missing.", stepsConfig.size() != 0);
 
-        BOOST_FOREACH(ConfigurationType stepConfig, stepsConfig.getElements())
+        for(ConfigurationType stepConfig :  stepsConfig.getElements())
         {
             SLM_ASSERT("Missing attribute 'color'", stepConfig->hasAttribute("color"));
             SLM_ASSERT("Missing attribute 'value'", stepConfig->hasAttribute("value"));

@@ -115,7 +115,7 @@ void SModelSeriesReader::updating() throw(::fwTools::Failed)
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
         ::fwMedData::ModelSeries::ReconstructionVectorType recDB = modelSeries->getReconstructionDB();
-        BOOST_FOREACH(const ::fwData::location::ILocation::PathType& file, this->getFiles())
+        for(const ::fwData::location::ILocation::PathType& file :  this->getFiles())
         {
             ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
             this->loadMesh(file, mesh);

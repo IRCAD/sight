@@ -4,13 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "ctrlSelection/wrapper/MsgForwarderSrv.hpp"
 
 #include <fwData/Composite.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include "ctrlSelection/wrapper/MsgForwarderSrv.hpp"
 
 namespace ctrlSelection
 {
@@ -39,7 +38,7 @@ void MsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw 
     SLM_TRACE_FUNC();
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    BOOST_FOREACH( EventType item, m_managedEvents)
+    for( EventType item :  m_managedEvents)
     {
         std::string compositeKey = item.get<0>();
         std::string event        = item.get<1>();
@@ -102,7 +101,7 @@ void MsgForwarderSrv::configuring()  throw ( ::fwTools::Failed )
     SLM_ASSERT("Problem with configuration for MsgForwarderSrv type, missing element \"forward\"",
                handleEvents.size() != 0 );
     m_managedEvents.clear();
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElementContainer::Container::value_type item,handleEvents.getElements())
+    for( ::fwRuntime::ConfigurationElementContainer::Container::value_type item : handleEvents.getElements())
     {
         SLM_FATAL_IF( "Sorry, attribute \"compositeKey\" is missing", !item->hasAttribute("compositeKey") );
         std::string compositeKey = item->getExistingAttributeValue("compositeKey");

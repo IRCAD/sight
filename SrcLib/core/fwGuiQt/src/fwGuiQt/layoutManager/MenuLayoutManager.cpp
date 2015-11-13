@@ -4,23 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QAction>
-#include <QActionGroup>
-#include <QMenu>
-
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/function.hpp>
-#include <boost/foreach.hpp>
-#include <boost/assign/list_of.hpp>
-
-#include <fwGui/registry/macros.hpp>
-
 #include "fwGuiQt/ActionCallback.hpp"
 #include "fwGuiQt/container/QtMenuContainer.hpp"
 #include "fwGuiQt/container/QtMenuItemContainer.hpp"
 #include "fwGuiQt/layoutManager/MenuLayoutManager.hpp"
 
+#include <fwGui/registry/macros.hpp>
+
+#include <boost/assign/list_of.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <QAction>
+#include <QActionGroup>
+#include <QMenu>
 
 fwGuiRegisterMacro( ::fwGui::layoutManager::MenuLayoutManager,
                     ::fwGui::layoutManager::IMenuLayoutManager::REGISTRY_KEY );
@@ -55,7 +52,7 @@ void MenuLayoutManager::createLayout( ::fwGui::container::fwMenu::sptr parent )
 
     QActionGroup * actionGroup = 0;
     unsigned int menuItemIndex = 0;
-    BOOST_FOREACH ( ::fwGui::layoutManager::IMenuLayoutManager::ActionInfo actionInfo, m_actionInfo)
+    for ( ::fwGui::layoutManager::IMenuLayoutManager::ActionInfo actionInfo : m_actionInfo)
     {
         ::fwGuiQt::container::QtMenuItemContainer::sptr menuItem = ::fwGuiQt::container::QtMenuItemContainer::New();
 

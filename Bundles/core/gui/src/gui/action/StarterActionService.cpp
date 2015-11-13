@@ -4,21 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "gui/action/StarterActionService.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/fwID.hpp>
-
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Extension.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwRuntime/helper.hpp>
+#include <fwRuntime/Extension.hpp>
 
-#include "gui/action/StarterActionService.hpp"
+#include <fwTools/fwID.hpp>
 
 namespace gui
 {
@@ -52,7 +50,7 @@ void StarterActionService::starting() throw( ::fwTools::Failed )
 void StarterActionService::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    BOOST_FOREACH( VectPairIDActionType::value_type serviceUid, m_uuidServices)
+    for( VectPairIDActionType::value_type serviceUid :  m_uuidServices)
     {
         bool srv_exists = ::fwTools::fwID::exist(serviceUid.first );
         if (srv_exists &&  (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()) )
@@ -193,7 +191,7 @@ void StarterActionService::configuring() throw( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     this->initialize();
 
-    BOOST_FOREACH(ConfigurationType actionCfg, m_configuration->getElements() )
+    for(ConfigurationType actionCfg :  m_configuration->getElements() )
     {
         OSLM_INFO( "StarterActionService " << actionCfg->getName());
 

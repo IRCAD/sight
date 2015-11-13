@@ -4,10 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <QtGui>
-
 #include "fwGuiQt/highlighter/PythonHighlighter.hpp"
+
+#include <QtGui>
 
 namespace fwGuiQt
 {
@@ -31,7 +30,7 @@ PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter
                     << "raise" << "return" << "try" << "while" << "yield"
                     << "None" << "True" << "False";
     rule.nth = 0;
-    BOOST_FOREACH(const QString &pattern, keywordPatterns)
+    for(const QString &pattern :  keywordPatterns)
     {
         rule.pattern = QRegExp( "\\b" + pattern + "\\b");
         rule.format  = keywordFormat;
@@ -52,7 +51,7 @@ PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter
         // Bitwise
                       << "\\^" << "\\|" << "\\&" << "\\~" << ">>" << "<<";
     rule.nth = 0;
-    BOOST_FOREACH(const QString &pattern, operatorsPatterns)
+    for(const QString &pattern :  operatorsPatterns)
     {
         rule.pattern = QRegExp( pattern );
         rule.format  = operatorsFormat;
@@ -65,7 +64,7 @@ PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter
     QStringList bracesPatterns;
     bracesPatterns << "\\{" << "\\}" << "\\(" << "\\)" << "\\[" << "\\]";
     rule.nth = 0;
-    BOOST_FOREACH(const QString &pattern, bracesPatterns)
+    for(const QString &pattern :  bracesPatterns)
     {
         rule.pattern = QRegExp( pattern );
         rule.format  = bracesFormat;
@@ -138,7 +137,7 @@ PythonHighlighter::PythonHighlighter(QTextDocument *parent) : QSyntaxHighlighter
 
 void PythonHighlighter::highlightBlock(const QString &text)
 {
-    BOOST_FOREACH(const HighlightingRule &rule, highlightingRules)
+    for(const HighlightingRule &rule :  highlightingRules)
     {
         QRegExp expression(rule.pattern);
         int index = expression.indexIn(text, 0);

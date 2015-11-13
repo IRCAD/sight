@@ -4,17 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <exception>
 
-#include <boost/filesystem/path.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/foreach.hpp>
+#include "vtkGdcmIO/SeriesDBReader.hpp"
+#include "vtkGdcmIO/helper/GdcmHelper.hpp"
 
 #include <fwCore/base.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/fromIsoExtendedString.hpp>
 
 #include <fwData/Image.hpp>
 
@@ -26,6 +20,9 @@
 #include <fwMedData/Study.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
+
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/fromIsoExtendedString.hpp>
 
 #include <vtkImageWriter.h>
 
@@ -44,8 +41,12 @@
 #include <fwVtkIO/vtk.hpp>
 #include <fwVtkIO/helper/ProgressVtkToFw.hpp>
 
-#include "vtkGdcmIO/SeriesDBReader.hpp"
-#include "vtkGdcmIO/helper/GdcmHelper.hpp"
+
+#include <boost/filesystem/path.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+
+#include <exception>
 
 fwDataIOReaderRegisterMacro( ::vtkGdcmIO::SeriesDBReader );
 
@@ -333,7 +334,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
                     std::string seriesTime                       = ( seriesTimeStr ? seriesTimeStr : "" );
 
                     ::fwMedData::DicomValuesType seriesPhysicianNames;
-                    BOOST_FOREACH(const std::string &str, gdcmPhysicianNames)
+                    for(const std::string &str :  gdcmPhysicianNames)
                     {
                         ::fwMedData::DicomValuesType result;
                         ::boost::split( result, str, ::boost::is_any_of("\\"));
@@ -439,7 +440,7 @@ void SeriesDBReader::read()
     }
     else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
     {
-        BOOST_FOREACH(::boost::filesystem::path file, this->getFiles())
+        for(::boost::filesystem::path file :  this->getFiles())
         {
             filenames.push_back(file.string());
         }

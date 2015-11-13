@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <fwData/Vector.hpp>
 
 #include "fwActivities/IBuilder.hpp"
@@ -21,7 +19,7 @@ namespace fwActivities
     SLM_ASSERT("currentSelection not instanced", currentSelection);
 
     ::fwData::Vector::sptr subSelection = ::fwData::Vector::New();
-    BOOST_FOREACH(::fwData::Vector::value_type obj, *currentSelection)
+    for(::fwData::Vector::value_type obj :  *currentSelection)
     {
         OSLM_ASSERT("Object not instanced in selection", obj);
         if(obj->isA(type))

@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include "fwServices/registry/Proxy.hpp"
 
 namespace fwServices
@@ -63,7 +61,7 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
     ::fwCore::mt::WriteLock lock(sigslots->m_mutex);
     sigslots->m_signals.push_back(signal);
 
-    BOOST_FOREACH( ::fwCom::SlotBase::sptr slot, sigslots->m_slots )
+    for( ::fwCom::SlotBase::sptr slot :  sigslots->m_slots )
     {
         signal->connect( slot );
     }
@@ -95,7 +93,7 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
     ::fwCore::mt::WriteLock lock(sigslots->m_mutex);
     sigslots->m_slots.push_back(slot);
 
-    BOOST_FOREACH( ::fwCom::SignalBase::sptr signal, sigslots->m_signals )
+    for( ::fwCom::SignalBase::sptr signal :  sigslots->m_signals )
     {
         signal->connect( slot );
     }
@@ -113,7 +111,7 @@ void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
 
     ::fwCore::mt::WriteLock sigSlotLock(sigslots->m_mutex);
 
-    BOOST_FOREACH( ::fwCom::SlotBase::sptr slot, sigslots->m_slots )
+    for( ::fwCom::SlotBase::sptr slot :  sigslots->m_slots )
     {
         signal->disconnect( slot );
     }
@@ -142,7 +140,7 @@ void Proxy::disconnect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
 
     ::fwCore::mt::WriteLock sigSlotLock(sigslots->m_mutex);
 
-    BOOST_FOREACH( ::fwCom::SignalBase::sptr signal, sigslots->m_signals )
+    for( ::fwCom::SignalBase::sptr signal :  sigslots->m_signals )
     {
         signal->disconnect( slot );
     }

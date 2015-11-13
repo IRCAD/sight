@@ -4,12 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "fwActivities/builder/registry/macros.hpp"
+#include "fwActivities/builder/ActivitySeries.hpp"
 
 #include <fwData/Vector.hpp>
 #include <fwData/Composite.hpp>
+
+#include <fwDataCamp/getObject.hpp>
 
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
@@ -18,10 +19,7 @@
 #include <fwTools/UUID.hpp>
 #include <fwTools/dateAndTime.hpp>
 
-#include <fwDataCamp/getObject.hpp>
-
-#include "fwActivities/builder/registry/macros.hpp"
-#include "fwActivities/builder/ActivitySeries.hpp"
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace fwActivities
 {
@@ -54,7 +52,7 @@ ActivitySeries::~ActivitySeries()
 
     ActReg::ActivityRequirement::KeyType::const_iterator iter = req.keys.begin();
 
-    BOOST_FOREACH(const ::fwData::Object::sptr &obj, *vector)
+    for(const ::fwData::Object::sptr &obj :  *vector)
     {
         const ActReg::ActivityRequirementKey &keyTag = (*iter++);
         if(keyTag.path.empty())
@@ -79,7 +77,7 @@ ActivitySeries::~ActivitySeries()
     ::fwMedData::ActivitySeries::sptr actSeries = ::fwMedData::ActivitySeries::New();
 
     ::fwMedData::Series::sptr series;
-    BOOST_FOREACH(const ::fwData::Object::sptr& obj, *currentSelection)
+    for(const ::fwData::Object::sptr& obj :  *currentSelection)
     {
         series = ::fwMedData::Series::dynamicCast(obj);
         if(series)
@@ -108,7 +106,7 @@ ActivitySeries::~ActivitySeries()
     namespace ActReg = ::fwActivities::registry;
 
     ActReg::ActivityInfo::RequirementsType reqVect = activityInfo.requirements;
-    BOOST_FOREACH(const ActReg::ActivityRequirement& req, reqVect)
+    for(const ActReg::ActivityRequirement& req :  reqVect)
     {
         ::fwData::Vector::sptr vectorType = this->getType(currentSelection, req.type);
         // param is optional (minOccurs==0) or required (minOccurs==1), but is single (maxOccurs == 1)

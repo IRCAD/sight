@@ -74,7 +74,7 @@ void Composite::clear()
                     std::back_inserter(vectKey),
                     std::bind(&::fwData::Composite::value_type::first, std::placeholders::_1) );
 
-    BOOST_FOREACH(std::string key, vectKey)
+    for(std::string key :  vectKey)
     {
         this->remove(key);
     }

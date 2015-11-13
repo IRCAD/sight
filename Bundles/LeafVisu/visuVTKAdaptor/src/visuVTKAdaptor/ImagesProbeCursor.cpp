@@ -4,42 +4,40 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/format.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Image.hpp>
+#include "visuVTKAdaptor/ImageText.hpp"
+#include "visuVTKAdaptor/ImagesProbeCursor.hpp"
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/helper/Image.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/Base.hpp>
+#include <fwData/Composite.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
 
-#include <vtkRenderWindowInteractor.h>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
 #include <vtkAbstractPropPicker.h>
-#include <vtkInteractorStyleImage.h>
+
+#include <vtkActor.h>
+#include <vtkCellArray.h>
+#include <vtkCellData.h>
 #include <vtkCommand.h>
+#include <vtkInteractorStyleImage.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderWindowInteractor.h>
 
 #include <vtkTextActor.h>
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
-#include <vtkProperty.h>
-
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkPolyData.h>
-#include <vtkCellArray.h>
-#include <vtkCellData.h>
 #include <vtkTransform.h>
-
 
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
-#include "visuVTKAdaptor/ImageText.hpp"
-#include "visuVTKAdaptor/ImagesProbeCursor.hpp"
+#include <boost/format.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesProbeCursor, ::fwData::Composite );
 
@@ -211,7 +209,7 @@ void ImagesProbeCursor::configuring() throw(fwTools::Failed)
 
     std::vector< ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("image");
     SLM_ASSERT("Missing tag 'image' ", !configs.empty());
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr element, configs)
+    for(::fwRuntime::ConfigurationElement::sptr element :  configs)
     {
         SLM_ASSERT("Missing attribute 'objectId'", element->hasAttribute("objectId"));
         std::string objectId = element->getAttributeValue("objectId");
@@ -363,7 +361,7 @@ void ImagesProbeCursor::updateView( double world[3] )
         }
     }
 
-    BOOST_FOREACH(ImagesIdPair element, m_imagesId)
+    for(ImagesIdPair element :  m_imagesId)
     {
         if (composite->find(element.first) != composite->end())
         {

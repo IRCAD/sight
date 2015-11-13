@@ -4,18 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/assign/list_of.hpp>
-#include <boost/foreach.hpp>
-
-#include <QApplication>
-#include <QMessageBox>
-#include <QVector>
-#include <QPushButton>
+#include "fwGuiQt/dialog/MessageDialog.hpp"
 
 #include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/dialog/MessageDialog.hpp"
-
+#include <boost/assign/list_of.hpp>
+#include <QApplication>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVector>
 
 fwGuiRegisterMacro( ::fwGuiQt::dialog::MessageDialog, ::fwGui::dialog::IMessageDialog::REGISTRY_KEY );
 
@@ -111,7 +108,7 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
     QString text                         = QString::fromStdString(m_message);
     QMessageBox::StandardButtons buttons = QMessageBox::NoButton;
 
-    BOOST_FOREACH(MessageDialogQtButtonType::value_type button, messageDialogQtButton)
+    for(MessageDialogQtButtonType::value_type button :  messageDialogQtButton)
     {
         if ( m_buttons & button.first)
         {
@@ -141,7 +138,7 @@ void MessageDialog::setDefaultButton(::fwGui::dialog::IMessageDialog::Buttons bu
 
     box.exec();
 
-    BOOST_FOREACH(MessageDialogQtButtonType::value_type button, messageDialogQtButton)
+    for(MessageDialogQtButtonType::value_type button :  messageDialogQtButton)
     {
         if ( box.standardButton( box.clickedButton() ) == button.second)
         {

@@ -50,7 +50,7 @@ SWriter::SWriter() :
     m_context ("Undefined"),
     m_version ("Undefined")
 {
-    BOOST_FOREACH(SReader::FileExtension2NameType::value_type ext, SReader::s_EXTENSIONS)
+    for(SReader::FileExtension2NameType::value_type ext :  SReader::s_EXTENSIONS)
     {
         m_allowedExts.insert(m_allowedExts.end(), ext.first);
     }
@@ -81,7 +81,7 @@ void SWriter::configuring() throw(::fwTools::Failed)
     m_allowedExtLabels.clear();
 
     ConfigurationElementContainer customExtsList = m_configuration->find("archive");
-    BOOST_FOREACH(ConfigurationElement archive, customExtsList)
+    for(ConfigurationElement archive :  customExtsList)
     {
         const std::string& backend = archive->getAttributeValue("backend");
         SLM_ASSERT("No backend attribute given in archive tag", backend != "");
@@ -89,7 +89,7 @@ void SWriter::configuring() throw(::fwTools::Failed)
                    SReader::s_EXTENSIONS.find("." + backend) != SReader::s_EXTENSIONS.end());
 
         ConfigurationElementContainer exts = archive->find("extension");
-        BOOST_FOREACH(ConfigurationElement ext, exts)
+        for(ConfigurationElement ext :  exts)
         {
             const std::string& extension = ext->getValue();
             SLM_ASSERT("No extension given for backend '" + backend + "'", !extension.empty());
@@ -108,7 +108,7 @@ void SWriter::configuring() throw(::fwTools::Failed)
         m_allowedExts.clear();
 
         ConfigurationElementContainer extensions = extensionsList.at(0)->find("extension");
-        BOOST_FOREACH(ConfigurationElement extension, extensions)
+        for(ConfigurationElement extension :  extensions)
         {
             const std::string& ext = extension->getValue();
 
@@ -130,12 +130,12 @@ void SWriter::configuring() throw(::fwTools::Failed)
     {
         m_allowedExts.clear();
 
-        BOOST_FOREACH(FileExtension2NameType::value_type ext, m_customExts)
+        for(FileExtension2NameType::value_type ext :  m_customExts)
         {
             m_allowedExts.insert(m_allowedExts.end(), ext.first);
         }
 
-        BOOST_FOREACH(SReader::FileExtension2NameType::value_type ext, SReader::s_EXTENSIONS)
+        for(SReader::FileExtension2NameType::value_type ext :  SReader::s_EXTENSIONS)
         {
             m_allowedExts.insert(m_allowedExts.end(), ext.first);
             m_allowedExtLabels[ext.first] = ext.second;
@@ -303,13 +303,13 @@ void SWriter::updating() throw(::fwTools::Failed)
             OSLM_ERROR( e.what() );
             ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
                                                               e.what(),
-                                                              ::fwGui::dialog::MessageDialog::CRITICAL);
+                                                              ::fwGui::dialog::IMessageDialog::CRITICAL);
         }
         catch( ... )
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
                                                               "Writing process aborted",
-                                                              ::fwGui::dialog::MessageDialog::CRITICAL);
+                                                              ::fwGui::dialog::IMessageDialog::CRITICAL);
         }
         cursor.setDefaultCursor();
     }
@@ -338,7 +338,7 @@ void SWriter::configureWithIHM()
 
         dialogFile.addFilter("Medical data", "*" + ::boost::algorithm::join(m_allowedExts, " *"));
 
-        BOOST_FOREACH(const std::string& ext, m_allowedExts)
+        for(const std::string& ext :  m_allowedExts)
         {
             dialogFile.addFilter(m_allowedExtLabels[ext], "*" + ext);
         }

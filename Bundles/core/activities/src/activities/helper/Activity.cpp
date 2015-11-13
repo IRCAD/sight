@@ -117,7 +117,7 @@ namespace helper
     asConfigParam.replace = asUID;
     asConfigParam.by      = series->getID();
     params.push_back(asConfigParam);
-    BOOST_FOREACH(const ActiReg::ActivityAppConfigParam& param, params)
+    for(const ActiReg::ActivityAppConfigParam& param :  params)
     {
         if(!param.isSeshat())
         {

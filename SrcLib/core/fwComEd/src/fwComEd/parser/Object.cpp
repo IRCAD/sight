@@ -4,11 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Object.hpp>
+#include "fwComEd/parser/Object.hpp"
 
+#include <fwData/Object.hpp>
 #include <fwServices/macros.hpp>
 
-#include "fwComEd/parser/Object.hpp"
+
+#include <boost/foreach.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::Object, ::fwData::Object );
 
@@ -35,7 +37,7 @@ bool Object::refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgEl
 {
     bool isOk = true;
 
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, _cfgElement->getElements() )
+    for( ::fwRuntime::ConfigurationElement::csptr elem :  _cfgElement->getElements() )
     {
         std::string subElementName = elem->getName();
         if(     subElementName != "service" &&
@@ -71,7 +73,7 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
     ::fwData::Object::sptr associatedObject = ::fwData::Object::dynamicCast(_obj);
     SLM_ASSERT("associatedObject not instanced", associatedObject);
 
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
+    for( ::fwRuntime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
 
         if( elem->getName() == "item" )
@@ -124,7 +126,7 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
 
 void Object::startConfig()
 {
-    BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
+    for( ::fwServices::AppConfigManager::sptr ctm :  m_ctmContainer )
     {
         ctm->start();
     }
@@ -134,7 +136,7 @@ void Object::startConfig()
 
 void Object::updateConfig()
 {
-    BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
+    for( ::fwServices::AppConfigManager::sptr ctm :  m_ctmContainer )
     {
         ctm->update();
     }

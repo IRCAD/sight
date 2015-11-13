@@ -8,11 +8,7 @@
  * @file fwGui/layoutManager/IMenuBarLayoutManager.cpp
  * @brief This file defines the implementation of the base class for managing a menubar.
  *
- *
- * @date 2009-2010
  */
-
-#include <boost/foreach.hpp>
 
 #include "fwGui/layoutManager/IMenuBarLayoutManager.hpp"
 
@@ -45,7 +41,7 @@ void IMenuBarLayoutManager::initialize( ConfigurationType configuration)
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
     SLM_TRACE_IF("No menu define.", vectMenus.empty() );
     m_menus.clear();
-    BOOST_FOREACH (ConfigurationType menu, vectMenus)
+    for (ConfigurationType menu : vectMenus)
     {
         SLM_ASSERT("missing <name> attribute", menu->hasAttribute("name"));
         if( menu->hasAttribute("name") )
@@ -60,7 +56,7 @@ void IMenuBarLayoutManager::initialize( ConfigurationType configuration)
 
 void IMenuBarLayoutManager::destroyMenus()
 {
-    BOOST_FOREACH( ::fwGui::container::fwMenu::sptr menu, m_menus)
+    for( ::fwGui::container::fwMenu::sptr menu :  m_menus)
     {
         menu->destroyContainer();
     }

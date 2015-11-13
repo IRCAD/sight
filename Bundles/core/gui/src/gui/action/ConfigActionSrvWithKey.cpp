@@ -50,7 +50,7 @@ void ConfigActionSrvWithKey::starting() throw(::fwTools::Failed)
     ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );
     if( composite )
     {
-        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+        for( const KeyAdaptorType::value_type& elem :  m_keyAdaptors )
         {
             if ( elem.second != "self" )
             {
@@ -60,7 +60,7 @@ void ConfigActionSrvWithKey::starting() throw(::fwTools::Failed)
     }
     else
     {
-        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+        for( const KeyAdaptorType::value_type& elem :  m_keyAdaptors )
         {
             if ( elem.second != "self" )
             {
@@ -93,7 +93,7 @@ void ConfigActionSrvWithKey::configuring() throw(fwTools::Failed)
     {
         std::string adaptor("");
         std::string pattern("");
-        BOOST_FOREACH( ConfigurationType keyItem, keyTagsConfig)
+        for( ConfigurationType keyItem :  keyTagsConfig)
         {
             SLM_ASSERT("<key> tag must have one attribut val.", keyItem->hasAttribute("id"));
             adaptor = keyItem->getAttributeValue("id");
@@ -126,7 +126,7 @@ void ConfigActionSrvWithKey::receiving( ::fwServices::ObjectMsg::csptr _msg ) th
         if ( _msg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) ||
              _msg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS )  )
         {
-            BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+            for( const KeyAdaptorType::value_type& elem :  m_keyAdaptors )
             {
                 if ( elem.second != "self" )
                 {
@@ -141,7 +141,7 @@ void ConfigActionSrvWithKey::receiving( ::fwServices::ObjectMsg::csptr _msg ) th
         if ( _msg->hasEvent( ::fwServices::ObjectMsg::ADDED_FIELDS ) ||
              _msg->hasEvent( ::fwServices::ObjectMsg::REMOVED_FIELDS ) )
         {
-            BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+            for( const KeyAdaptorType::value_type& elem :  m_keyAdaptors )
             {
                 if ( elem.second != "self" )
                 {
@@ -171,7 +171,7 @@ void ConfigActionSrvWithKey::startConfig()
     ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast( obj );
     if( composite )
     {
-        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+        for( const KeyAdaptorType::value_type& elem :  m_keyAdaptors )
         {
             std::string key = elem.second;
             if ( key == "self" )
@@ -186,7 +186,7 @@ void ConfigActionSrvWithKey::startConfig()
     }
     else
     {
-        BOOST_FOREACH( const KeyAdaptorType::value_type& elem, m_keyAdaptors )
+        for( const KeyAdaptorType::value_type& elem :  m_keyAdaptors )
         {
             std::string key = elem.second;
             if ( key == "self" )

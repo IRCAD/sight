@@ -7,16 +7,14 @@
 #ifndef __FWTOOLS_DYNAMICATTRIBUTES_HXX__
 #define __FWTOOLS_DYNAMICATTRIBUTES_HXX__
 
-#include <map>
-#include <vector>
-
-#include <boost/ref.hpp>
-#include <boost/foreach.hpp>
+#include "fwTools/macros.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwCore/Demangler.hpp>
 
-#include "fwTools/macros.hpp"
+#include <boost/ref.hpp>
+#include <map>
+#include <vector>
 
 namespace fwTools
 {

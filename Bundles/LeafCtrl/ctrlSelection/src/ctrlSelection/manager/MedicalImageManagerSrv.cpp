@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <fwData/Composite.hpp>
@@ -72,7 +70,7 @@ void MedicalImageManagerSrv::convertImages( ::fwData::Composite::sptr _composite
             objectId != _composite->end();
             ++objectId )
     {
-        BOOST_FOREACH( std::string key, m_imageCompositeKeys )
+        for( std::string key :  m_imageCompositeKeys )
         {
             if( objectId->first == key )
             {

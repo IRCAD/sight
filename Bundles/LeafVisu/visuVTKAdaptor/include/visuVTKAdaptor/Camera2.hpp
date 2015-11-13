@@ -13,6 +13,8 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
+class vtkCommand;
+class vtkPerspectiveTransform;
 
 namespace visuVTKAdaptor
 {

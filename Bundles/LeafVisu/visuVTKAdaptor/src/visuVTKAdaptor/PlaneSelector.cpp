@@ -6,22 +6,20 @@
 
 #ifndef ANDROID
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/PlaneSelector.hpp"
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/PlaneListMsg.hpp>
 #include <fwComEd/PlaneMsg.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/macros.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Object.hpp>
 
-#include "visuVTKAdaptor/PlaneSelector.hpp"
-
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelector, ::fwData::Object );
 

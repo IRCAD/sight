@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwServices/helper/SigSlotConnection.hpp"
 
 #include <fwCom/SignalBase.hpp>
 
-#include "fwServices/helper/SigSlotConnection.hpp"
+#include <boost/foreach.hpp>
 
 namespace fwServices
 {
@@ -37,7 +37,7 @@ void SigSlotConnection::connect(::fwCom::HasSignals::sptr hasSignals,
                                 const KeyConnectionsType & keyConnections )
 {
     ::fwCom::Connection connection;
-    BOOST_FOREACH( KeyConnectionType keys, keyConnections )
+    for( KeyConnectionType keys : keyConnections )
     {
         connection = hasSignals->signal( keys.first )->connect( hasSlots->slot( keys.second ) );
         m_connections.push_back(connection);

@@ -4,29 +4,28 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/assign/list_of.hpp>
-
-#include <fwData/String.hpp>
-#include <fwData/Object.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwComEd/ImageMsg.hpp>
-
-#include <vtkActor.h>
-#include <vtkRenderer.h>
-#include <vtkCamera.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkInteractorStyleImage.h>
-
 #include "visuVTKAdaptor/Medical3DCamera.hpp"
 
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
+
+#include <fwComEd/ImageMsg.hpp>
+#include <fwData/Object.hpp>
+
+#include <fwData/String.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwServices/Base.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <boost/assign/list_of.hpp>
+
+#include <vtkActor.h>
+#include <vtkCamera.h>
+#include <vtkInteractorStyleImage.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Object );

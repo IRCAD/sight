@@ -4,18 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "SlotsTest.hpp"
 
-#include <fwTest/Exception.hpp>
-
-#include <fwThread/Worker.hpp>
+#include <fwCom/HasSlots.hpp>
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/HasSlots.hpp>
+#include <fwTest/Exception.hpp>
 
-#include "SlotsTest.hpp"
-
+#include <fwThread/Worker.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCom::ut::SlotsTest );
@@ -88,7 +85,7 @@ void SlotsTest::buildTest()
     slots.setWorker(worker);
 
     int count = 0;
-    BOOST_FOREACH(::fwCom::Slots::SlotKeyType key, slots.getSlotKeys())
+    for(::fwCom::Slots::SlotKeyType key :  slots.getSlotKeys())
     {
         ::fwCom::SlotBase::sptr slot = slots[key];
         CPPUNIT_ASSERT(worker == slot->getWorker());

@@ -4,18 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <QMainWindow>
-#include <QMenuBar>
+#include "fwGuiQt/builder/MenuBarBuilder.hpp"
+#include "fwGuiQt/container/QtContainer.hpp"
+#include "fwGuiQt/container/QtMenuBarContainer.hpp"
 
 #include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/container/QtContainer.hpp"
-#include "fwGuiQt/container/QtMenuBarContainer.hpp"
-#include "fwGuiQt/builder/MenuBarBuilder.hpp"
-
-
+#include <QMainWindow>
+#include <QMenuBar>
 
 fwGuiRegisterMacro(::fwGui::builder::MenuBarBuilder, ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY);
 

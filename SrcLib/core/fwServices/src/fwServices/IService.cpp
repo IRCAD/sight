@@ -4,22 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwServices/IService.hpp"
-#include "fwServices/registry/ObjectService.hpp"
-#include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/Base.hpp"
-
-#include <fwTools/fwID.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/Convert.hpp>
+#include "fwServices/IService.hpp"
+#include "fwServices/registry/ActiveWorkers.hpp"
+#include "fwServices/registry/ObjectService.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <boost/foreach.hpp>
+#include <fwRuntime/Convert.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
+
+#include <fwTools/fwID.hpp>
+
 #include <boost/property_tree/ptree.hpp>
 
 namespace fwServices
@@ -90,7 +89,7 @@ void displayPt(::boost::property_tree::ptree &pt, std::string indent = "")
 {
     OSLM_ERROR(indent << " data : '" << pt.data() << "'" );
 
-    BOOST_FOREACH( ::boost::property_tree::ptree::value_type &v, pt)
+    for( ::boost::property_tree::ptree::value_type &v :  pt)
     {
         OSLM_ERROR((indent + "  '") << v.first << "':" );
         displayPt(v.second, indent + "      ");

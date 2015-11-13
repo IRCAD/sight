@@ -4,21 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/InteractorStyle.hpp"
 
 #include <fwData/Object.hpp>
 
 #include <fwRenderVTK/IInteractorStyle.hpp>
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <vtkRenderWindowInteractor.h>
 #include <vtkInstantiator.h>
 #include <vtkInteractorStyleImage.h>
-
-#include "visuVTKAdaptor/InteractorStyle.hpp"
+#include <vtkRenderWindowInteractor.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::InteractorStyle, ::fwData::Object );
 

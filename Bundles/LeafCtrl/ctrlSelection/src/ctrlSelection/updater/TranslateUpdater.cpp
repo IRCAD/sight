@@ -15,6 +15,8 @@
 #include "ctrlSelection/updater/TranslateUpdater.hpp"
 
 #include <boost/property_tree/xml_parser.hpp>
+#include <boost/foreach.hpp>
+
 namespace ctrlSelection
 {
 
@@ -102,7 +104,7 @@ void TranslateUpdater::starting()  throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    BOOST_FOREACH( const ManagedTranslations::value_type & trans, m_managedTranslations )
+    for( const ManagedTranslations::value_type & trans :  m_managedTranslations )
     {
         const std::string &fwid    = trans.get<0>();
         const std::string &fromKey = trans.get<1>();
@@ -137,7 +139,7 @@ void TranslateUpdater::configuring()  throw ( ::fwTools::Failed )
 
     OSLM_DEBUG( "nb of translations = " << conf.count("translate") );
     m_managedTranslations.clear();
-    BOOST_FOREACH( const ::fwServices::IService::ConfigType::value_type &v, conf.equal_range("translate") )
+    BOOST_FOREACH( const ::fwServices::IService::ConfigType::value_type &v,  conf.equal_range("translate") )
     {
         const ::fwServices::IService::ConfigType &translate = v.second;
         const ::fwServices::IService::ConfigType xmlattr    = translate.get_child("<xmlattr>");

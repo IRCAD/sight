@@ -7,8 +7,6 @@
 #include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Sequence.hpp"
 
-#include <boost/foreach.hpp>
-
 #include <algorithm>
 #include <functional>
 

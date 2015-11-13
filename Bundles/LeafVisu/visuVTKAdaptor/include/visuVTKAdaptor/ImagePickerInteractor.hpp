@@ -10,6 +10,7 @@
 #include <vector>
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwComEd/InteractionMsg.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 

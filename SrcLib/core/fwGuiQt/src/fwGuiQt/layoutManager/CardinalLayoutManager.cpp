@@ -4,18 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGuiQt/layoutManager/CardinalLayoutManager.hpp"
+
+#include <fwCore/base.hpp>
+#include <fwGui/registry/macros.hpp>
+
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QBoxLayout>
 #include <QGroupBox>
 #include <QScrollArea>
-
-#include <boost/foreach.hpp>
-
-#include <fwCore/base.hpp>
-#include <fwGui/registry/macros.hpp>
-
-#include "fwGuiQt/layoutManager/CardinalLayoutManager.hpp"
 
 
 fwGuiRegisterMacro( ::fwGui::CardinalLayoutManager,
@@ -61,7 +59,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
 
     bool hasCentral = false;
 
-    BOOST_FOREACH ( ViewInfo viewInfo, views)
+    for ( ViewInfo viewInfo : views)
     {
         QWidget *insideWidget;
         QScrollArea *scrollArea;

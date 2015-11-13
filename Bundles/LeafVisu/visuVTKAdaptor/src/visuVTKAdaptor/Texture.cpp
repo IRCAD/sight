@@ -11,26 +11,25 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/MaterialMsg.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwMedData/ModelSeries.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <vtkTexture.h>
 #include <vtkRenderWindowInteractor.h>
-
-#include <boost/foreach.hpp>
+#include <vtkTexture.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Texture, ::fwData::Image );
 
@@ -99,7 +98,7 @@ void Texture::doStart() throw(fwTools::Failed)
 
 void Texture::doUpdate() throw(fwTools::Failed)
 {
-    BOOST_FOREACH(::fwData::Material::sptr material, m_materialSet)
+    for(::fwData::Material::sptr material :  m_materialSet)
     {
         applyTexture(material);
     }

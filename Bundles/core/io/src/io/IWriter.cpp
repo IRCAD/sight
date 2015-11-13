@@ -125,7 +125,7 @@ void IWriter::configuring() throw (fwTools::Failed)
         FW_RAISE_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & ::io::FILE );
         std::vector< ::fwRuntime::ConfigurationElement::sptr > config = m_configuration->find("file");
         ::io::LocationsType locations;
-        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, config)
+        for(::fwRuntime::ConfigurationElement::sptr elt :  config)
         {
             std::string location = elt->getValue();
             locations.push_back(::boost::filesystem::path(location));

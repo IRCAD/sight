@@ -50,7 +50,7 @@ void MsgWrapperSrv::configuring()  throw ( ::fwTools::Failed )
     SLM_ASSERT("Problem with configuration for ObjToCompositeMsgForwarderSrv type, missing element \"wrapper\"",
                handleEvents.size() != 0 );
     m_managedEvents.clear();
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElementContainer::Container::value_type item,handleEvents.getElements())
+    for( ::fwRuntime::ConfigurationElementContainer::Container::value_type item : handleEvents.getElements())
     {
         SLM_FATAL_IF( "Sorry, attribute \"onEvent\" is missing", !item->hasAttribute("onEvent") );
         std::string onEvent = item->getExistingAttributeValue("onEvent");
@@ -73,7 +73,7 @@ void MsgWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( 
 {
     SLM_TRACE_FUNC();
 
-    BOOST_FOREACH( EventType item, m_managedEvents)
+    for( EventType item :  m_managedEvents)
     {
         std::string onEvent = item.get<0>();
         std::string toEvent = item.get<1>();

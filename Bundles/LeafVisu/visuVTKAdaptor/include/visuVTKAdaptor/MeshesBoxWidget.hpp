@@ -18,7 +18,8 @@
 class vtkBoxWidget2;
 class vtkCommand;
 class vtkPolyData;
-
+class vtkAssembly;
+class vtkActor;
 
 namespace visuVTKAdaptor
 {

@@ -52,7 +52,7 @@ void SeriesDB::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCa
     this->fieldDeepCopy( other, cache );
     m_container.clear();
     m_container.reserve(other->m_container.size());
-    BOOST_FOREACH(const ValueType &series, other->m_container)
+    for(const ValueType &series :  other->m_container)
     {
         m_container.push_back(::fwData::Object::copy(series, cache));
     }

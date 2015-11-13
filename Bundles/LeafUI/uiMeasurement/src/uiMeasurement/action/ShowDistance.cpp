@@ -4,27 +4,24 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "uiMeasurement/action/ShowDistance.hpp"
 
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/ImageMsg.hpp>
 #include <fwCore/base.hpp>
-
-#include <exception>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwServices/ObjectMsg.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include "uiMeasurement/action/ShowDistance.hpp"
+#include <exception>
 
 
 namespace uiMeasurement

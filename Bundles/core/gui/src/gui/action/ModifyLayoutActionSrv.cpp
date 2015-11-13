@@ -4,11 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "gui/action/ModifyLayoutActionSrv.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/fwID.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/GuiRegistry.hpp>
+#include <fwGui/IGuiContainerSrv.hpp>
 
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Extension.hpp>
@@ -16,11 +18,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/GuiRegistry.hpp>
-#include <fwGui/IGuiContainerSrv.hpp>
-
-#include "gui/action/ModifyLayoutActionSrv.hpp"
+#include <fwTools/fwID.hpp>
 
 namespace gui
 {
@@ -70,7 +68,7 @@ void ModifyLayoutActionSrv::updating() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    BOOST_FOREACH(MoveSrvVectType::value_type elt, m_moveSrv )
+    for(MoveSrvVectType::value_type elt :  m_moveSrv )
     {
         std::string uid = elt.first;
         std::string wid = elt.second;
@@ -84,7 +82,7 @@ void ModifyLayoutActionSrv::updating() throw( ::fwTools::Failed )
         service->update();
     }
 
-    BOOST_FOREACH(EnableSrvVectType::value_type elt, m_enableSrv )
+    for(EnableSrvVectType::value_type elt :  m_enableSrv )
     {
         std::string uid = elt.first;
         bool isEnable   = elt.second;
@@ -107,7 +105,7 @@ void ModifyLayoutActionSrv::updating() throw( ::fwTools::Failed )
         }
     }
 
-    BOOST_FOREACH(ShowSrvVectType::value_type elt, m_showSrvWid)
+    for(ShowSrvVectType::value_type elt :  m_showSrvWid)
     {
         std::string wid = elt.first;
         ::boost::logic::tribool isVisible               = elt.second;
@@ -128,7 +126,7 @@ void ModifyLayoutActionSrv::updating() throw( ::fwTools::Failed )
         }
     }
 
-    BOOST_FOREACH(ShowSrvVectType::value_type elt, m_showSrvSid)
+    for(ShowSrvVectType::value_type elt :  m_showSrvSid)
     {
         std::string uid = elt.first;
         ::boost::logic::tribool isVisible = elt.second;
@@ -172,7 +170,7 @@ void ModifyLayoutActionSrv::configuring() throw( ::fwTools::Failed )
     if( !vectConfig.empty() )
     {
         ConfigurationType config = vectConfig.at(0);
-        BOOST_FOREACH(ConfigurationType actionCfg, config->getElements() )
+        for(ConfigurationType actionCfg :  config->getElements() )
         {
             if(actionCfg->getName() == "move")
             {

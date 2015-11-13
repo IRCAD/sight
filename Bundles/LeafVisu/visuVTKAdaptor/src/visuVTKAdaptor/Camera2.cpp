@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/Camera2.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -29,8 +29,6 @@
 #include <vtkCamera.h>
 #include <vtkCommand.h>
 #include <vtkPerspectiveTransform.h>
-
-#include "visuVTKAdaptor/Camera2.hpp"
 
 class Camera2Clallback : public ::vtkCommand
 {

@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <QTabWidget>
 #include <QBoxLayout>
 #include <QScrollArea>
@@ -56,7 +54,7 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
 
     const std::list< ViewInfo> &views = this->getViewsInfo();
 
-    BOOST_FOREACH ( ViewInfo viewInfo, views)
+    for ( ViewInfo viewInfo : views)
     {
         QWidget *widget = new QWidget(m_tabWidget);
 

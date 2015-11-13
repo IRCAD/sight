@@ -11,6 +11,7 @@
 #include <cstddef>
 #include <limits>
 #include <thread>
+#include <vector>
 
 namespace fwDataTools
 {

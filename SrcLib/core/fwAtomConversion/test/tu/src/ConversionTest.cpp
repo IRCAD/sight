@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ConversionTest.hpp"
+
 #include <fwCore/log/SpyLogger.hpp>
 #include <fwTools/UUID.hpp>
 
@@ -46,8 +48,7 @@
 #include <fwAtomConversion/exception/DuplicatedDataUUID.hpp>
 #include <fwAtomConversion/exception/ConversionNotManaged.hpp>
 
-#include "ConversionTest.hpp"
-
+#include <functional>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwAtomConversion::ut::ConversionTest );
 
@@ -77,7 +78,7 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
@@ -110,7 +111,7 @@ void ConversionTest::dataToAtomTest()
 
     ::fwAtoms::Object::sptr atom;
 
-    BOOST_FOREACH ( fwData::Object::sptr object, VALUES )
+    for ( fwData::Object::sptr object : VALUES )
     {
         atom = ::fwAtomConversion::convert(object);
 
@@ -121,7 +122,7 @@ void ConversionTest::dataToAtomTest()
                               atom->getMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO ) );
 
         //Test attribute type
-        BOOST_FOREACH( ::fwAtoms::Object::AttributesType::value_type elem, atom->getAttributes() )
+        for( ::fwAtoms::Object::AttributesType::value_type elem :  atom->getAttributes() )
         {
             std::string classname = atom->getMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO );
             if ( !(  classname == "::fwData::Graph" &&
@@ -251,7 +252,7 @@ void ConversionTest::graphConversionTest()
     // Test nodes
     const ::fwData::Graph::NodeContainer & nodes = newGraph->getCRefNodes();
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph nodes size",  (size_t)3, nodes.size() );
-    BOOST_FOREACH( ::fwData::Node::sptr node, nodes )
+    for( ::fwData::Node::sptr node :  nodes )
     {
         ::fwTools::UUID::UUIDType nodeID = ::fwTools::UUID::get(node);
         CPPUNIT_ASSERT_MESSAGE("Test node uuid",  nodeID == n1ID || nodeID == n2ID || nodeID == n3ID );
@@ -276,7 +277,7 @@ void ConversionTest::graphConversionTest()
     // Test edges
     const ::fwData::Graph::ConnectionContainer & connections = newGraph->getCRefConnections();
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph connections size",  (size_t)2, connections.size() );
-    BOOST_FOREACH( ::fwData::Graph::ConnectionContainer::value_type elem, connections )
+    for( ::fwData::Graph::ConnectionContainer::value_type elem  :  connections )
     {
         ::fwTools::UUID::UUIDType edgeID = ::fwTools::UUID::get(elem.first);
         CPPUNIT_ASSERT_MESSAGE("Test edge uuid",  edgeID == e12ID || edgeID == e23ID );

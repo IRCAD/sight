@@ -4,15 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
 #include "SignalsTest.hpp"
 
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCom::ut::SignalsTest );

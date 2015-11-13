@@ -11,8 +11,6 @@
 
 #include <fwComEd/ImageMsg.hpp>
 
-#include <boost/foreach.hpp>
-
 namespace fwCommand
 {
 
@@ -111,7 +109,7 @@ void PaintCommand::apply()
 
     // do each voxel modification
     ColorContainer::const_iterator indexC( m_commandColorContainer.begin() );
-    BOOST_FOREACH(::fwData::Image::BufferIndexType index, m_commandIndexContainer)
+    for(::fwData::Image::BufferIndexType index :  m_commandIndexContainer)
     {
         pixels[ index ] = indexC->second;
         ++indexC;
@@ -130,7 +128,7 @@ void PaintCommand::unapply()
 
     // do each voxel modification
     ColorContainer::const_iterator indexC( m_commandColorContainer.begin() );
-    BOOST_FOREACH(::fwData::Image::BufferIndexType index, m_commandIndexContainer)
+    for(::fwData::Image::BufferIndexType index :  m_commandIndexContainer)
     {
         pixels[ index ] = indexC->first;
         ++indexC;

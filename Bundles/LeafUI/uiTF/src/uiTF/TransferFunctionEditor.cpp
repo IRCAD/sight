@@ -83,7 +83,7 @@ void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
     }
 
     std::vector< ::fwRuntime::ConfigurationElement::sptr > pathsCfg = configuration->find("path");
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr cfg, pathsCfg)
+    for(::fwRuntime::ConfigurationElement::sptr cfg :  pathsCfg)
     {
         ::boost::filesystem::path path(cfg->getValue());
         m_paths.push_back(path);
@@ -499,7 +499,7 @@ void TransferFunctionEditor::initTransferFunctions()
     {
         // Parse all TF contained in uiTF Bundle's resources
         std::vector< ::boost::filesystem::path > paths;
-        BOOST_FOREACH(::boost::filesystem::path dirPath, m_paths)
+        for(::boost::filesystem::path dirPath :  m_paths)
         {
             for(::boost::filesystem::directory_iterator it(dirPath);
                 it != ::boost::filesystem::directory_iterator();
@@ -523,7 +523,7 @@ void TransferFunctionEditor::initTransferFunctions()
         ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
         srvCfg->addConfigurationElement(fileCfg);
 
-        BOOST_FOREACH( ::boost::filesystem::path file, paths )
+        for( ::boost::filesystem::path file :  paths )
         {
             fileCfg->setValue(file.string());
             reader->setConfiguration(srvCfg);
@@ -560,7 +560,7 @@ void TransferFunctionEditor::updateTransferFunctionPreset()
     const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
     // Manage TF preset
     m_pTransferFunctionPreset->clear();
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *poolTF)
+    for(::fwData::Composite::value_type elt :  *poolTF)
     {
         m_pTransferFunctionPreset->addItem( elt.first.c_str() );
     }

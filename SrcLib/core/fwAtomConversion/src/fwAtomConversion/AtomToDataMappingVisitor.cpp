@@ -286,7 +286,7 @@ void AtomToDataMappingVisitor::visit(const camp::ArrayProperty& property)
 
     ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast(atom);
     unsigned int index = 0;
-    BOOST_FOREACH( ::fwAtoms::Base::sptr elemAtom, seqAtom->getValue() )
+    for( ::fwAtoms::Base::sptr elemAtom :  seqAtom->getValue() )
     {
         if (!elemAtom)
         {
@@ -386,7 +386,7 @@ void AtomToDataMappingVisitor::visit(const camp::MapProperty& property)
 
     ::fwAtoms::Map::sptr mapAtom = ::fwAtoms::Map::dynamicCast(atom);
 
-    BOOST_FOREACH( ::fwAtoms::Map::ValueType elemAtom, mapAtom->getValue() )
+    for( ::fwAtoms::Map::ValueType elemAtom :  mapAtom->getValue() )
     {
         if (!elemAtom.second)
         {

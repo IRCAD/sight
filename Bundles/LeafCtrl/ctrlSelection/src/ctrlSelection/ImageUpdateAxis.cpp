@@ -6,18 +6,16 @@
 
 #include "ctrlSelection/ImageUpdateAxis.hpp"
 
-#include <fwServices/macros.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/Float.hpp>
-
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/FloatMsg.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwComEd/FloatMsg.hpp>
+#include <fwComEd/ImageMsg.hpp>
 
-#include <boost/foreach.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Image.hpp>
+
+#include <fwServices/macros.hpp>
+
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/case_conv.hpp>
 

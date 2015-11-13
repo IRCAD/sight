@@ -4,17 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QApplication>
-#include <QInputDialog>
-#include <QObject>
-
-#include <boost/assign/list_of.hpp>
-#include <boost/foreach.hpp>
-
-#include <fwGui/registry/macros.hpp>
 
 #include "fwGuiQt/dialog/InputDialog.hpp"
 
+#include <fwGui/registry/macros.hpp>
+
+#include <boost/assign/list_of.hpp>
+#include <QApplication>
+#include <QInputDialog>
+#include <QObject>
 
 fwGuiRegisterMacro( ::fwGuiQt::dialog::InputDialog, ::fwGui::dialog::IInputDialog::REGISTRY_KEY );
 

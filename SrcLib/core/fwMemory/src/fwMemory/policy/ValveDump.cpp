@@ -5,9 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include <boost/assign.hpp>
-#include <boost/foreach.hpp>
-
+#include "fwMemory/ByteSize.hpp"
+#include "fwMemory/exception/BadCast.hpp"
+#include "fwMemory/policy/registry/macros.hpp"
+#include "fwMemory/policy/ValveDump.hpp"
 
 #ifdef _WIN32
 #define MEMORYTOOLIMPL Win32MemoryMonitorTools
@@ -20,10 +21,7 @@
 #include "fwMemory/tools/PosixMemoryMonitorTools.hpp"
 #endif
 
-#include "fwMemory/exception/BadCast.hpp"
-#include "fwMemory/ByteSize.hpp"
-#include "fwMemory/policy/registry/macros.hpp"
-#include "fwMemory/policy/ValveDump.hpp"
+#include <boost/assign.hpp>
 
 
 namespace fwMemory
@@ -138,7 +136,7 @@ size_t ValveDump::dump(size_t nbOfBytes)
 
         BufferVectorType buffers;
 
-        BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, bufferInfos)
+        for(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt :  bufferInfos)
         {
             const ::fwMemory::BufferInfo &info = elt.second;
             if( !( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
@@ -148,7 +146,7 @@ size_t ValveDump::dump(size_t nbOfBytes)
         }
 
 
-        BOOST_FOREACH(const BufferVectorType::value_type &pair, bufferInfos)
+        for(const BufferVectorType::value_type &pair :  bufferInfos)
         {
             if(dumped < nbOfBytes)
             {

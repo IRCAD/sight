@@ -4,9 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fstream>
+#include "fwAtomsPatch/VersionsManager.hpp"
+#include "fwAtomsPatch/exceptions/MissingInformation.hpp"
+#include "fwAtomsPatch/exceptions/BadExtension.hpp"
+#include "fwAtomsPatch/types.hpp"
 
-#include <boost/foreach.hpp>
+#include <fwCore/spyLog.hpp>
+
 #include <boost/filesystem.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -14,14 +18,7 @@
 
 #include <camp/class.hpp>
 
-#include <fwCore/spyLog.hpp>
-
-#include "fwAtomsPatch/VersionsManager.hpp"
-#include "fwAtomsPatch/exceptions/MissingInformation.hpp"
-#include "fwAtomsPatch/exceptions/BadExtension.hpp"
-#include "fwAtomsPatch/types.hpp"
-
-
+#include <fstream>
 
 namespace fwAtomsPatch
 {
@@ -138,7 +135,7 @@ void VersionsManager::generateNewFile(const ::boost::filesystem::path& filePath,
     const std::string& context     = getValue(root, "context", filePath);
     const std::string& versionName = getValue(root, "version_name", filePath);
 
-    BOOST_FOREACH(pt::ptree::value_type &node, root.get_child("versions"))
+    for(pt::ptree::value_type &node :  root.get_child("versions"))
     {
         versionids[node.first] = std::string(node.second.data().c_str());
     }
@@ -172,9 +169,9 @@ void VersionsManager::generateNewFile(const ::boost::filesystem::path& filePath,
 
     const std::string& patcher = root.get("patcher", "DefaultPatcher");
 
-    BOOST_FOREACH(pt::ptree::value_type &child, root.get_child("links"))
+    for(pt::ptree::value_type &child :  root.get_child("links"))
     {
-        BOOST_FOREACH(pt::ptree::value_type &node, (child.second).get_child(""))
+        for(pt::ptree::value_type &node :  (child.second).get_child(""))
         {
             link.push_back(std::make_pair(node.first, node.second.data()));
         }
@@ -200,7 +197,7 @@ void VersionsManager::generateVersionsGraph()
     {
         ::fwCore::mt::ReadLock versionLock(m_versionMutex);
         //For every versions
-        BOOST_FOREACH(VersionsManager::ListPathType::value_type elt, m_versionTable)
+        for(VersionsManager::ListPathType::value_type elt :  m_versionTable)
         {
             ::fwAtomsPatch::VersionDescriptor version = VersionsManager::getVersion(elt);
 
@@ -216,7 +213,7 @@ void VersionsManager::generateVersionsGraph()
     {
         ::fwCore::mt::ReadLock linkLock(m_linkMutex);
         //For every links
-        BOOST_FOREACH(VersionsManager::ListPathType::value_type elt, m_linkTable)
+        for(VersionsManager::ListPathType::value_type elt :  m_linkTable)
         {
             ::fwAtomsPatch::LinkDescriptor link = VersionsManager::getLink(elt);
 

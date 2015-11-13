@@ -4,15 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QHBoxLayout>
-
-#include <boost/foreach.hpp>
+#include "monitorQt/action/ClassFactoryRegistryInfo.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
-#include "monitorQt/action/ClassFactoryRegistryInfo.hpp"
+#include <QHBoxLayout>
 
 namespace monitor
 {
@@ -43,7 +41,7 @@ void ClassFactoryRegistryInfo::updating( ) throw(::fwTools::Failed)
     typedef ::fwServices::registry::ServiceFactory ServiceRegistry;
     const ServiceRegistry::KeyVectorType& factoryKeys = ServiceRegistry::getDefault()->getFactoryKeys();
 
-    BOOST_FOREACH( ServiceRegistry::KeyVectorType::value_type key, factoryKeys )
+    for( ServiceRegistry::KeyVectorType::value_type key :  factoryKeys )
     {
         const std::string objImpl = ServiceRegistry::getDefault()->getObjectImplementation(key);
         QTreeWidgetItem* srvItem  = new QTreeWidgetItem();

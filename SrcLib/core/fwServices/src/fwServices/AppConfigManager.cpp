@@ -212,7 +212,7 @@ void AppConfigManager::processStartItems()
 {
     std::vector< ::fwServices::IService::SharedFutureType > futures;
 
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
+    for(::fwRuntime::ConfigurationElement::csptr elem :  m_cfgElem->getElements())
     {
         if (elem->getName() == "start")
         {
@@ -242,7 +242,7 @@ void AppConfigManager::processUpdateItems()
 {
     std::vector< ::fwServices::IService::SharedFutureType > futures;
 
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, m_cfgElem->getElements())
+    for(::fwRuntime::ConfigurationElement::csptr elem :  m_cfgElem->getElements())
     {
         if (elem->getName() == "update")
         {
@@ -255,7 +255,7 @@ void AppConfigManager::processUpdateItems()
 
                 OSLM_ASSERT("No services of type \"" << type << "\" found.", !servicesToUpdate.empty());
 
-                BOOST_FOREACH(::fwServices::IService::sptr srv, servicesToUpdate)
+                for(::fwServices::IService::sptr srv :  servicesToUpdate)
                 {
                     futures.push_back(srv->update());
                 }
@@ -357,7 +357,7 @@ void AppConfigManager::processUpdateItems()
 
 void AppConfigManager::createServices()
 {
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  m_cfgElem->getElements())
+    for(::fwRuntime::ConfigurationElement::csptr elem :   m_cfgElem->getElements())
     {
         if (elem->getName() == "service")
         {
@@ -374,7 +374,7 @@ void AppConfigManager::createServices()
 
 void AppConfigManager::createServices(::fwRuntime::ConfigurationElement::csptr cfgElem)
 {
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, cfgElem->getElements())
+    for(::fwRuntime::ConfigurationElement::csptr elem :  cfgElem->getElements())
     {
         if (elem->getName() == "service")
         {
@@ -493,7 +493,7 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
     }
 
     // Check if user did not bind a service to another service
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem, cfgElem->getElements())
+    for(::fwRuntime::ConfigurationElement::csptr elem :  cfgElem->getElements())
     {
         SLM_ASSERT("Cannot bind a service to another service.",
                    elem->getName() != "service" &&
@@ -605,7 +605,7 @@ void AppConfigManager::stopAndDestroy()
 
 void AppConfigManager::createConnections()
 {
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  m_cfgElem->getElements())
+    for(::fwRuntime::ConfigurationElement::csptr elem :   m_cfgElem->getElements())
     {
         if (elem->getName() == "connect")
         {
@@ -632,7 +632,7 @@ void AppConfigManager::createProxy(::fwRuntime::ConfigurationElement::csptr conf
     std::string channel = config->getAttributeValue("channel");
     ProxyConnections proxyCnt(channel);
 
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  config->getElements())
+    for(::fwRuntime::ConfigurationElement::csptr elem :   config->getElements())
     {
         src = elem->getValue();
         if( ::boost::regex_match(src, match, re) )
@@ -670,16 +670,16 @@ void AppConfigManager::createProxy(::fwRuntime::ConfigurationElement::csptr conf
 void AppConfigManager::destroyProxies()
 {
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
-    BOOST_FOREACH(ProxyConnectionsVectType::value_type proxyConnections,  m_vectProxyCtns)
+    for(ProxyConnectionsVectType::value_type proxyConnections :   m_vectProxyCtns)
     {
-        BOOST_FOREACH(ProxyConnections::ProxyEltType signalElt, proxyConnections.m_signals)
+        for(ProxyConnections::ProxyEltType signalElt :  proxyConnections.m_signals)
         {
             ::fwTools::Object::sptr obj          = ::fwTools::fwID::getObject(signalElt.first);
             ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
             ::fwCom::SignalBase::sptr sig        = hasSignals->signal(signalElt.second);
             proxy->disconnect(proxyConnections.m_channel, sig);
         }
-        BOOST_FOREACH(ProxyConnections::ProxyEltType slotElt, proxyConnections.m_slots)
+        for(ProxyConnections::ProxyEltType slotElt :  proxyConnections.m_slots)
         {
             ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotElt.first);
             ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);

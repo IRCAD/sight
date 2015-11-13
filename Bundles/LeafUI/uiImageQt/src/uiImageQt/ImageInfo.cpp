@@ -4,30 +4,27 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "uiImageQt/ImageInfo.hpp"
 
-#include <QHBoxLayout>
-#include <QWidget>
-#include <QLabel>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Image.hpp>
+#include <fwComEd/InteractionMsg.hpp>
 
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
 
+#include <fwGuiQt/container/QtContainer.hpp>
+
 #include <fwMath/IntrasecTypes.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include <fwComEd/InteractionMsg.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include "uiImageQt/ImageInfo.hpp"
-
+#include <QHBoxLayout>
+#include <QWidget>
+#include <QLabel>
 
 namespace uiImage
 {

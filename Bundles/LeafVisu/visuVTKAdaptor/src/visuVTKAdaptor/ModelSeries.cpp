@@ -4,33 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/Mesh.hpp"
+#include "visuVTKAdaptor/ModelSeries.hpp"
+#include "visuVTKAdaptor/Reconstruction.hpp"
+#include "visuVTKAdaptor/Texture.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+
+#include <fwComEd/ModelSeriesMsg.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
+#include <fwMedData/ModelSeries.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwMedData/ModelSeries.hpp>
-
-#include <fwComEd/ModelSeriesMsg.hpp>
-
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
-
-#include "visuVTKAdaptor/Reconstruction.hpp"
-#include "visuVTKAdaptor/Mesh.hpp"
-#include "visuVTKAdaptor/ModelSeries.hpp"
-#include "visuVTKAdaptor/Texture.hpp"
-
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ModelSeries, ::fwMedData::ModelSeries );
 
@@ -119,7 +115,7 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
                                ::visuVTKAdaptor::Texture::s_APPLY_TEXTURE_SLOT);
     }
 
-    BOOST_FOREACH( ::fwData::Reconstruction::sptr reconstruction, modelSeries->getReconstructionDB() )
+    for( ::fwData::Reconstruction::sptr reconstruction :  modelSeries->getReconstructionDB() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
             ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
@@ -184,7 +180,7 @@ void ModelSeries::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::
         bool showRec;
         showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
 
-        BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
+        for( ServiceVector::value_type service :  m_subServices)
         {
             if(!service.expired())
             {

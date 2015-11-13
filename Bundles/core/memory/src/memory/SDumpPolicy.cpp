@@ -79,7 +79,7 @@ void SDumpPolicy::starting() throw ( ::fwTools::Failed )
         if (policy)
         {
             bool success;
-            BOOST_FOREACH(const ParametersType::value_type &param, m_policyParams)
+            for(const ParametersType::value_type &param :  m_policyParams)
             {
                 success = policy->setParam(param.first, param.second);
                 OSLM_ERROR_IF( "[" << m_policy << "] Unable to set '"

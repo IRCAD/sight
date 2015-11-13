@@ -4,9 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKAdaptor/ImagePickerInteractor.hpp"
 
+#include <fwComEd/ImageMsg.hpp>
 
-#include <boost/foreach.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Composite.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
+
+#include <fwRenderVTK/vtk/Helpers.hpp>
 
 #include <vtkAbstractPropPicker.h>
 #include <vtkActor.h>
@@ -14,22 +24,6 @@
 #include <vtkCubeSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindowInteractor.h>
-
-#include <fwComEd/InteractionMsg.hpp>
-#include <fwComEd/ImageMsg.hpp>
-
-#include <fwData/Material.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Reconstruction.hpp>
-
-#include <fwRenderVTK/vtk/Helpers.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/macros.hpp>
-
-#include "visuVTKAdaptor/ImagePickerInteractor.hpp"
-
 
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent

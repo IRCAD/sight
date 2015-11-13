@@ -13,6 +13,8 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
+class vtkCamera;
+
 namespace visuVTKAdaptor
 {
 

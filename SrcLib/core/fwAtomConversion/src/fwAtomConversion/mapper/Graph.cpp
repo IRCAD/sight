@@ -41,7 +41,7 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
 
     typedef ::fwData::Graph::ConnectionContainer GraphConnections;
     ::fwAtoms::Object::sptr value;
-    BOOST_FOREACH( GraphConnections::value_type elem, graph->getCRefConnections() )
+    for( GraphConnections::value_type elem :  graph->getCRefConnections() )
     {
         value = ::fwAtoms::Object::New();
 
@@ -72,7 +72,7 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
     ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(data);
 
     ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast( atom->getAttribute("connections") );
-    BOOST_FOREACH( ::fwAtoms::Base::sptr elemAtom, seqAtom->getValue() )
+    for( ::fwAtoms::Base::sptr elemAtom  :  seqAtom->getValue() )
     {
         FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
                                    "sub atoms stored in fwAtom::Sequence 'connections' must be atom objects"),

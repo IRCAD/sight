@@ -4,23 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <utility>
-#include <string>
-#include <vector>
-
-#include <boost/regex.hpp>
-#include <boost/foreach.hpp>
+#include "fwServices/helper/Config.hpp"
+#include "fwServices/helper/SigSlotConnection.hpp"
+#include "fwServices/registry/Proxy.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
-
 #include <fwRuntime/ConfigurationElement.hpp>
-
 #include <fwTools/Object.hpp>
 
-#include "fwServices/helper/SigSlotConnection.hpp"
-#include "fwServices/helper/Config.hpp"
-
+#include <boost/regex.hpp>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace fwServices
 {
@@ -45,7 +41,7 @@ void Config::createConnections(
     ::boost::smatch match;
     std::string src, uid, key;
 
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  connectionCfg->getElements())
+    for(::fwRuntime::ConfigurationElement::csptr elem :   connectionCfg->getElements())
     {
         src = elem->getValue();
         if( ::boost::regex_match(src, match, re) )
@@ -86,7 +82,7 @@ void Config::createConnections(
     SLM_ASSERT("Signal source not found" << signalInfo.first, sigSource);
     SLM_ASSERT("invalid signal source " << signalInfo.first, hasSignals);
 
-    BOOST_FOREACH(SlotInfoType slotInfo,  slotInfos)
+    for(SlotInfoType slotInfo :   slotInfos)
     {
         ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(slotInfo.first);
         SLM_ASSERT("Failed to retrieve object '" + slotInfo.first + "'", obj);

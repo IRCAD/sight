@@ -96,7 +96,7 @@ void SeriesDBTest::testImportSeriesDB()
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(mesh1, mesh2);
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }

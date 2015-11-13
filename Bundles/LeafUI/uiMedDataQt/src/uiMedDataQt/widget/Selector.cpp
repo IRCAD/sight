@@ -116,7 +116,7 @@ Selector::SeriesVectorType Selector::getSeries( const QItemSelection & selection
 Selector::SeriesVectorType Selector::getSeries(const QModelIndexList& indexList)
 {
     SeriesVectorType vSeries;
-    BOOST_FOREACH(QModelIndex index, indexList)
+    for(QModelIndex index :  indexList)
     {
         std::string uid = index.data(SelectorModel::UID).toString().toStdString();
         ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
@@ -135,7 +135,7 @@ Selector::SeriesVectorType Selector::getSeries(const QModelIndexList& indexList)
 QModelIndexList Selector::getStudyIndexes(const QModelIndexList& indexList)
 {
     QModelIndexList studiesIndex;
-    BOOST_FOREACH(QModelIndex index, indexList)
+    for(QModelIndex index :  indexList)
     {
         if (index.data(SelectorModel::ITEM_TYPE)  == SelectorModel::STUDY)
         {
@@ -194,7 +194,7 @@ void Selector::deleteSelection()
 
     SeriesVectorType vSeries     = this->getSeries(selection);
     QModelIndexList studyIndexes = this->getStudyIndexes(selection);
-    BOOST_FOREACH(QModelIndex index, studyIndexes)
+    for(QModelIndex index :  studyIndexes)
     {
         SeriesVectorType series = getSeriesFromStudyIndex(index);
         std::copy(series.begin(), series.end(), std::back_inserter(vSeries));

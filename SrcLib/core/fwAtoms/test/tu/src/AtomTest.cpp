@@ -4,10 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <limits>
-
-#include <fwMemory/BufferObject.hpp>
+#include "AtomTest.hpp"
 
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Exception.hpp>
@@ -15,8 +12,9 @@
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Object.hxx>
 #include <fwAtoms/Sequence.hpp>
-#include "AtomTest.hpp"
+#include <fwMemory/BufferObject.hpp>
 
+#include <limits>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwAtoms::ut::AtomTest );
 

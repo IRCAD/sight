@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <QMenu>
 #include <QMenuBar>
 #include <QString>
@@ -47,7 +45,7 @@ void MenuBarLayoutManager::createLayout( ::fwGui::container::fwMenuBar::sptr par
 
     QMenuBar* menuBar = m_parent->getQtMenuBar();
 
-    BOOST_FOREACH ( std::string name, m_menuNames)
+    for ( std::string name : m_menuNames)
     {
         ::fwGuiQt::container::QtMenuContainer::sptr menu = ::fwGuiQt::container::QtMenuContainer::New();
         QMenu *qtMenu = menuBar->addMenu(QString::fromStdString( name ));

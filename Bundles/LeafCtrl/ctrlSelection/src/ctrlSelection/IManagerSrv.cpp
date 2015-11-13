@@ -39,7 +39,7 @@ void IManagerSrv::swapping() throw ( ::fwTools::Failed )
 void IManagerSrv::manageConnections(const std::string &objectId, ::fwData::Object::sptr object,
                                     ConfigurationType config)
 {
-    BOOST_FOREACH(ConfigurationType connectCfg, config->find("connect"))
+    for(ConfigurationType connectCfg :  config->find("connect"))
     {
         this->manageConnection(objectId, object, connectCfg);
     }
@@ -81,7 +81,7 @@ void IManagerSrv::removeConnections(const std::string &objectId)
 
 void IManagerSrv::manageProxies(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config)
 {
-    BOOST_FOREACH(ConfigurationType proxyCfg, config->find("proxy"))
+    for(ConfigurationType proxyCfg :  config->find("proxy"))
     {
         this->manageProxy(objectId, object, proxyCfg);
     }
@@ -100,7 +100,7 @@ void IManagerSrv::manageProxy(const std::string &objectId, ::fwData::Object::spt
     ::boost::regex re("(.*)/(.*)");
     ::boost::smatch match;
     std::string src, uid, key;
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::csptr elem,  config->getElements())
+    for(::fwRuntime::ConfigurationElement::csptr elem :   config->getElements())
     {
         src = elem->getValue();
         if( ::boost::regex_match(src, match, re) )
@@ -153,16 +153,16 @@ void IManagerSrv::disconnectProxies(const std::string &objectId)
 
         ProxyConnectionsVectType vectProxyConnections = iter->second;
 
-        BOOST_FOREACH(ProxyConnectionsVectType::value_type proxyConnections,  vectProxyConnections)
+        for(ProxyConnectionsVectType::value_type proxyConnections :   vectProxyConnections)
         {
-            BOOST_FOREACH(ProxyConnections::ProxyEltType signalElt, proxyConnections.m_signals)
+            for(ProxyConnections::ProxyEltType signalElt :  proxyConnections.m_signals)
             {
                 ::fwTools::Object::sptr obj          = ::fwTools::fwID::getObject(signalElt.first);
                 ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
                 ::fwCom::SignalBase::sptr sig        = hasSignals->signal(signalElt.second);
                 proxy->disconnect(proxyConnections.m_channel, sig);
             }
-            BOOST_FOREACH(ProxyConnections::ProxyEltType slotElt, proxyConnections.m_slots)
+            for(ProxyConnections::ProxyEltType slotElt :  proxyConnections.m_slots)
             {
                 ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotElt.first);
                 ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);

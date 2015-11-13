@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -83,7 +81,7 @@ void V1ToV2Test::applyPatchTest()
     v1Attributs.push_back("type_3D");
     v1Attributs.push_back("db_id");
 
-    BOOST_FOREACH(std::string attribut, v1Attributs)
+    for(std::string attribut :  v1Attributs)
     {
         helper.addAttribute(attribut, ::fwAtoms::String::New(""));
     }
@@ -107,7 +105,7 @@ void V1ToV2Test::applyPatchTest()
     CPPUNIT_ASSERT(recObjV2->getAttribute("image"));
     CPPUNIT_ASSERT(recObjV2->getAttribute("mesh"));
 
-    BOOST_FOREACH(std::string attribut, v1Attributs)
+    for(std::string attribut :  v1Attributs)
     {
         CPPUNIT_ASSERT_MESSAGE("'" + attribut + "' attribut must not exist", !recObjV2->getAttribute(attribut));
     }

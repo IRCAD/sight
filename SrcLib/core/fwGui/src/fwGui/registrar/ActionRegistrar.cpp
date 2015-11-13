@@ -6,8 +6,6 @@
 
 #include <utility>
 
-#include <boost/foreach.hpp>
-
 #include <fwTools/fwID.hpp>
 #include <fwServices/Base.hpp>
 

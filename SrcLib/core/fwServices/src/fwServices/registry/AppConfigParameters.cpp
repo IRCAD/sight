@@ -4,18 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
+#include "fwServices/registry/AppConfigParameters.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/helper.hpp>
-
+#include <fwData/Composite.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
-#include <fwData/Composite.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/helper.hpp>
+#include <fwRuntime/Runtime.hpp>
 
-#include "fwServices/registry/AppConfigParameters.hpp"
+#include <boost/regex.hpp>
 
 namespace fwServices
 {
@@ -43,7 +41,7 @@ void AppConfigParameters::parseBundleInformation()
 {
     std::vector< std::shared_ptr< ::fwRuntime::Extension > >  extensions = ::fwRuntime::getAllExtensionsForPoint(
         "::fwServices::registry::AppConfigParameters");
-    BOOST_FOREACH( std::shared_ptr< ::fwRuntime::Extension > ext, extensions )
+    for( std::shared_ptr< ::fwRuntime::Extension > ext :  extensions )
     {
         // Get id
         std::string extensionId = ext->findConfigurationElement("id")->getValue();
@@ -53,7 +51,7 @@ void AppConfigParameters::parseBundleInformation()
         // Get parmeters
         ::fwRuntime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
         ::fwRuntime::ConfigurationElement::Container elements     = parametersConfig->getElements();
-        BOOST_FOREACH( ::fwRuntime::ConfigurationElement::sptr paramConfig, elements )
+        for( ::fwRuntime::ConfigurationElement::sptr paramConfig :  elements )
         {
             std::string name = paramConfig->getExistingAttributeValue("name");
             std::string val  = paramConfig->getExistingAttributeValue("value");

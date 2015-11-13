@@ -40,7 +40,7 @@ void ServiceFactory::parseBundleInformation()
 
     std::vector< ExtensionType >  extElements;
     extElements = ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::ServiceFactory");
-    BOOST_FOREACH(ExtensionType extElt, extElements)
+    for(ExtensionType extElt :  extElements)
     {
         std::vector< ConfigurationType > cfgEltVec = extElt->getElements();
         SLM_ASSERT("extension element MUST have 3 or 4 elements", cfgEltVec.size() == 3 || cfgEltVec.size() == 4);
@@ -49,7 +49,7 @@ void ServiceFactory::parseBundleInformation()
         std::string object  = "";
         std::string desc    = "";
 
-        BOOST_FOREACH(ConfigurationType cfgElt, cfgEltVec)
+        for(ConfigurationType cfgElt :  cfgEltVec)
         {
             std::string elt = cfgElt->getName();
             if(elt == "type")
@@ -88,7 +88,7 @@ void ServiceFactory::parseBundleInformation()
         bundleInfoMap[ service] = info;
     }
     // Verify object
-    BOOST_FOREACH(SrvRegContainer::value_type bundle, bundleInfoMap)
+    for(SrvRegContainer::value_type bundle :  bundleInfoMap)
     {
         if ( bundle.second->objectImpl.empty() )
         {
@@ -107,7 +107,7 @@ void ServiceFactory::parseBundleInformation()
 
     ::fwCore::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
     // Merge data info
-    BOOST_FOREACH(SrvRegContainer::value_type bundle, bundleInfoMap)
+    for(SrvRegContainer::value_type bundle :  bundleInfoMap)
     {
 
         SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( bundle.first );
@@ -284,7 +284,7 @@ void ServiceFactory::printInfoMap( const SrvRegContainer & src ) const
     // not thread-safe
 
     //Print information
-    BOOST_FOREACH(SrvRegContainer::value_type srvReg, src)
+    for(SrvRegContainer::value_type srvReg :  src)
     {
         OSLM_DEBUG(" Service name = " << srvReg.first );
         OSLM_DEBUG("  - type   = " << srvReg.second->serviceType );
@@ -305,7 +305,7 @@ void ServiceFactory::checkServicesNotDeclaredInPluginXml() const
 {
     // not thread-safe
     //Print information
-    BOOST_FOREACH(SrvRegContainer::value_type srvReg, m_srvImplTosrvInfo)
+    for(SrvRegContainer::value_type srvReg :  m_srvImplTosrvInfo)
     {
         if ( !srvReg.second->bundle )
         {
@@ -330,7 +330,7 @@ std::vector< std::string > ServiceFactory::getImplementationIdFromObjectAndType(
     std::vector< std::string > serviceImpl;
 
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
-    BOOST_FOREACH(SrvRegContainer::value_type srv, m_srvImplTosrvInfo)
+    for(SrvRegContainer::value_type srv :  m_srvImplTosrvInfo)
     {
         ServiceInfo::sptr srvInfo = srv.second;
         if(srvInfo->serviceType == type
@@ -354,7 +354,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
     bool specificImplIsFound = false;
 
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
-    BOOST_FOREACH( SrvRegContainer::value_type srv, m_srvImplTosrvInfo )
+    for( SrvRegContainer::value_type srv :  m_srvImplTosrvInfo )
     {
         ServiceInfo::sptr srvInfo = srv.second;
         if ( srvInfo->serviceType == type )
@@ -461,7 +461,7 @@ bool ServiceFactory::support(const std::string & object, const std::string & srv
     else
     {
         ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
-        BOOST_FOREACH(SrvRegContainer::value_type srv, m_srvImplTosrvInfo)
+        for(SrvRegContainer::value_type srv :  m_srvImplTosrvInfo)
         {
             ServiceInfo::sptr srvInfo = srv.second;
             if(srvInfo->serviceType == srvType

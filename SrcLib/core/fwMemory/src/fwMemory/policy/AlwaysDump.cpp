@@ -4,11 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include "fwMemory/policy/registry/macros.hpp"
-#include "fwMemory/policy/BarrierDump.hpp"
 #include "fwMemory/policy/AlwaysDump.hpp"
+#include "fwMemory/policy/BarrierDump.hpp"
+#include "fwMemory/policy/registry/macros.hpp"
 
 
 namespace fwMemory
@@ -106,7 +104,7 @@ size_t AlwaysDump::dump()
     {
         const ::fwMemory::BufferManager::BufferInfoMapType bufferInfos = manager->getBufferInfos().get();
 
-        BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, bufferInfos)
+        for(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt :  bufferInfos)
         {
             const ::fwMemory::BufferInfo &info = elt.second;
             if( !( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )

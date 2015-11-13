@@ -78,7 +78,7 @@ void ActionNotifyService::updating() throw( ::fwTools::Failed )
 {
     if (this->confirmAction())
     {
-        BOOST_FOREACH(MsgEventType msg, m_vectMsg)
+        for(MsgEventType msg :  m_vectMsg)
         {
             const std::string msgType = msg.get<0>();
             const std::string event   = msg.get<1>();
@@ -108,7 +108,7 @@ void ActionNotifyService::configuring() throw( ::fwTools::Failed )
     m_vectMsg.clear();
     std::vector < ::fwRuntime::ConfigurationElement::sptr > notify = m_configuration->find("notify");
     SLM_ASSERT("Problem with configuration for ActionNotifyService, missing element \"notify\"", !notify.empty() );
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr msgConfig, notify)
+    for(::fwRuntime::ConfigurationElement::sptr msgConfig :  notify)
     {
         SLM_ASSERT("Missing attribute type", msgConfig->hasAttribute("type"));
         std::string type = msgConfig->getAttributeValue("type");

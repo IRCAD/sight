@@ -4,18 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <QBoxLayout>
-#include <QGroupBox>
-#include <QStyle>
-#include <QScrollArea>
+#include "fwGuiQt/layoutManager/LineLayoutManager.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/layoutManager/LineLayoutManager.hpp"
-
+#include <QBoxLayout>
+#include <QGroupBox>
+#include <QScrollArea>
+#include <QStyle>
 
 fwGuiRegisterMacro( ::fwGui::LineLayoutManager, ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY );
 
@@ -61,7 +58,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
     qtContainer->setLayout(layout);
 
     const std::list< ViewInfo> &views = this->getViewsInfo();
-    BOOST_FOREACH ( ViewInfo viewInfo, views)
+    for ( ViewInfo viewInfo : views)
     {
         if(viewInfo.m_isSpacer)
         {

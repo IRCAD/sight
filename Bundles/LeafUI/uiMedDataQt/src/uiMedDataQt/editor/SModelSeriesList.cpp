@@ -132,7 +132,7 @@ SModelSeriesList::SModelSeriesList() throw() : m_tree(new QTreeWidget()), m_enab
 
 SModelSeriesList::~SModelSeriesList() throw()
 {
-    BOOST_FOREACH(auto cIt, m_displayedInfo)
+    for(auto cIt :  m_displayedInfo)
     {
         delete cIt.second;
     }
@@ -326,10 +326,10 @@ void SModelSeriesList::fillTree()
     m_tree->clear();
 
     // Create items
-    BOOST_FOREACH(auto const& reconstruction, reconstructions)
+    for(auto const& reconstruction :  reconstructions)
     {
         QStringList info;
-        BOOST_FOREACH(auto const& cIt, m_displayedInfo)
+        for(auto const& cIt :  m_displayedInfo)
         {
             ::fwData::Object::sptr obj = ::fwDataCamp::getObject(reconstruction, cIt.first);
             OSLM_ASSERT("Invalid seshat path : '"<< cIt.first <<"'", obj);

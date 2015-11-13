@@ -4,15 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-#include <boost/lexical_cast.hpp>
-
-#include <fwTools/UUID.hpp>
-#include <fwMemory/BufferManager.hpp>
+#include "fwAtomsBoostIO/Writer.hpp"
 
 #include <fwAtoms/Base.hpp>
 #include <fwAtoms/Blob.hpp>
@@ -22,14 +14,18 @@
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
+#include <fwMemory/BufferManager.hpp>
 
 #include <fwMemory/BufferManager.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <fwZip/IWriteArchive.hpp>
 
-#include "fwAtomsBoostIO/Writer.hpp"
-
-
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/xml_parser.hpp>
 
 namespace fwAtomsBoostIO
 {
@@ -115,7 +111,7 @@ struct AtomVisitor
         this->cache(atom, ptpath);
         std::string path         = ptpath + (ptpath.empty() ? "" : ".") + "map";
         unsigned long long count = 0;
-        BOOST_FOREACH(const ::fwAtoms::Map::MapType::value_type& elt, atom->getValue())
+        for(const ::fwAtoms::Map::MapType::value_type& elt : atom->getValue())
         {
             const std::string nodeName = "item_" + ::boost::lexical_cast< std::string >(count++);
             ::boost::property_tree::ptree mapChild;
@@ -138,7 +134,7 @@ struct AtomVisitor
         std::string path = ptpath + (ptpath.empty() ? "" : ".") + "sequence";
 
         unsigned long long count = 0;
-        BOOST_FOREACH( const ::fwAtoms::Sequence::SequenceType::value_type& elt, atom->getValue())
+        for( const ::fwAtoms::Sequence::SequenceType::value_type& elt : atom->getValue())
         {
             const std::string nodeName = ::boost::lexical_cast< std::string >(count++);
             seq.add_child(nodeName, this->visit(elt, path + "." + nodeName));
@@ -159,7 +155,7 @@ struct AtomVisitor
         const ::fwAtoms::Object::MetaInfosType& metaInfos = atom->getMetaInfos();
         ::boost::property_tree::ptree metaInfosPt;
         unsigned long long count = 0;
-        BOOST_FOREACH(const ::fwAtoms::Object::MetaInfosType::value_type& info, metaInfos)
+        for(const ::fwAtoms::Object::MetaInfosType::value_type& info : metaInfos)
         {
             const std::string nodeName = "item_" + ::boost::lexical_cast< std::string >(count++);
             ::boost::property_tree::ptree item;
@@ -171,7 +167,7 @@ struct AtomVisitor
 
         const ::fwAtoms::Object::AttributesType& attributes = atom->getAttributes();
         ::boost::property_tree::ptree attributesPt;
-        BOOST_FOREACH(const ::fwAtoms::Object::AttributesType::value_type attr, attributes)
+        for(const ::fwAtoms::Object::AttributesType::value_type& attr : attributes)
         {
             ::boost::property_tree::ptree childAttributes =
                 this->visit(attr.second, path + ".attributes." + attr.first);

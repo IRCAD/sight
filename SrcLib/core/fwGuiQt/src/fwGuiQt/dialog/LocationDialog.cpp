@@ -4,22 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGuiQt/dialog/LocationDialog.hpp"
+
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/MultiFiles.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/dialog/ILocationDialog.hpp>
+#include <fwGui/registry/macros.hpp>
+
 #include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
+#include <functional>
+#include <QApplication>
 
 #include <QFileDialog>
 #include <QString>
-#include <QApplication>
-
-#include <fwGui/registry/macros.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/MultiFiles.hpp>
-
-#include <fwGui/dialog/ILocationDialog.hpp>
-
-#include "fwGuiQt/dialog/LocationDialog.hpp"
-
 
 
 fwGuiRegisterMacro( ::fwGuiQt::dialog::LocationDialog, ::fwGui::dialog::ILocationDialog::REGISTRY_KEY );
@@ -58,7 +58,7 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         {
             ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
             std::vector< ::boost::filesystem::path > paths;
-            BOOST_FOREACH (QString filename, files)
+            for (QString filename : files)
             {
                 ::boost::filesystem::path bpath( filename.toStdString() );
                 paths.push_back(bpath);

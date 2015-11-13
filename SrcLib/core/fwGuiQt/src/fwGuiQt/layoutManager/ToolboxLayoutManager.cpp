@@ -4,19 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <QScrollArea>
-#include <QVBoxLayout>
-#include <QStyle>
-
 #include <fwCore/base.hpp>
+
 #include <fwGui/registry/macros.hpp>
-
-
 #include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/layoutManager/ToolboxLayoutManager.hpp"
 
+#include <QScrollArea>
+#include <QStyle>
+#include <QVBoxLayout>
 
 fwGuiRegisterMacro( ::fwGui::ToolboxLayoutManager, ::fwGui::layoutManager::ToolboxLayoutManagerBase::REGISTRY_KEY );
 
@@ -62,7 +58,7 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
     sv->setWidgetResizable(true);
 
     const std::list< ViewInfo> &views = this->getViewsInfo();
-    BOOST_FOREACH ( ViewInfo viewInfo, views)
+    for ( ViewInfo viewInfo : views)
     {
         int border     = viewInfo.m_border;
         QWidget* panel = new QWidget();

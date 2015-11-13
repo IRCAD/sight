@@ -7,16 +7,15 @@
 #ifndef __FWMATH_MESHFUNCTIONS_HPP__
 #define __FWMATH_MESHFUNCTIONS_HPP__
 
-#include <cmath>
-#include <vector>
-#include <utility>
-
-#include <boost/unordered_map.hpp>
-#include <boost/foreach.hpp>
-
-#include <fwCore/base.hpp>
 #include "fwMath/IntrasecTypes.hpp"
 #include "fwMath/config.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <boost/unordered_map.hpp>
+#include <cmath>
+#include <utility>
+#include <vector>
 
 namespace fwMath
 {
@@ -111,7 +110,7 @@ bool isBorderlessSurface(T* cellDataBegin, T* cellDataEnd, U* cellDataOffsetsBeg
         }
     }
 
-    BOOST_FOREACH(const typename EdgeHistogram::value_type &histo, edgesHistogram)
+    for(const typename EdgeHistogram::value_type &histo : edgesHistogram)
     {
         if (histo.second != 2)
         {

@@ -9,6 +9,7 @@
 
 #include <vector>
 
+#include <fwComEd/InteractionMsg.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"

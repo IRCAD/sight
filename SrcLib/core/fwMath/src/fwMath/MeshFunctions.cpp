@@ -4,15 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <map>
-#include <list>
-#include <set>
-#include <boost/foreach.hpp>
-#include <boost/unordered_map.hpp>
-
 #include "fwMath/MeshFunctions.hpp"
 #include "fwMath/VectorFunctions.hpp"
 
+#include <boost/unordered_map.hpp>
+#include <list>
+#include <map>
+#include <set>
 
 namespace fwMath
 {
@@ -154,7 +152,7 @@ bool isBorderlessSurface(const fwVertexIndex &_vertexIndex)
     EdgeHistogram edgesHistogram;
     bool isBorderless = true;
 
-    BOOST_FOREACH(const fwVertexIndex::value_type &vertex, _vertexIndex)
+    for(const fwVertexIndex::value_type &vertex :  _vertexIndex)
     {
         OSLM_ASSERT("Invalid vertex size: "<< vertex.size(), vertex.size() > 2 );
         ++edgesHistogram[std::make_pair(std::min(vertex[0],vertex[1]), std::max(vertex[0],vertex[1]) )];
@@ -162,7 +160,7 @@ bool isBorderlessSurface(const fwVertexIndex &_vertexIndex)
         ++edgesHistogram[std::make_pair(std::min(vertex[2],vertex[1]), std::max(vertex[2],vertex[1]) )];
     }
 
-    BOOST_FOREACH(EdgeHistogram::value_type &histo, edgesHistogram)
+    for(EdgeHistogram::value_type &histo :  edgesHistogram)
     {
         if (histo.second<2)
         {

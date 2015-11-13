@@ -4,32 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/assign/list_of.hpp>
-#include <boost/foreach.hpp>
 
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/System.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
+#include "PatchTest.hpp"
 
 #include <fwData/Object.hpp>
+#include <fwDataTools/Image.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Study.hpp>
 #include <fwMedData/Equipment.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Study.hpp>
+
+#include <fwRuntime/EConfigurationElement.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/System.hpp>
 
-#include <fwDataTools/Image.hpp>
-
-#include <fwServices/registry/ServiceFactory.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-
-#include "PatchTest.hpp"
+#include <boost/assign/list_of.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::patchMedicalData::ut::PatchTest );
@@ -78,7 +75,7 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
 
 ::fwMedData::Series::sptr getACHSeries( const ::fwMedData::SeriesDB::sptr & sdb )
 {
-    BOOST_FOREACH( ::fwMedData::Series::sptr series, sdb->getContainer() )
+    for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
     {
         if ( series->getPatient()->getName() == "CHARNOZ ARNAUD" )
         {
@@ -94,7 +91,7 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
 std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::SeriesDB::sptr & sdb )
 {
     std::vector< ::fwMedData::Series::sptr > otherSeries;
-    BOOST_FOREACH( ::fwMedData::Series::sptr series, sdb->getContainer() )
+    for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
     {
         if ( series->getPatient()->getName() != "CHARNOZ ARNAUD" )
         {

@@ -7,12 +7,13 @@
 #ifndef __FWSERVICES_REGISTRY_SERVICECONFIG_HPP__
 #define __FWSERVICES_REGISTRY_SERVICECONFIG_HPP__
 
-#include <map>
+#include "fwServices/config.hpp"
 
+#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwTools/Object.hpp>
 #include <fwTools/macros.hpp>
 
-#include "fwServices/config.hpp"
+#include <map>
 
 namespace fwServices
 {

@@ -152,12 +152,12 @@ void Field::buildMessage(
         std::back_inserter(removed)
         );
 
-    BOOST_FOREACH(const ::fwData::Object::FieldNameVectorType::value_type &fieldName, added)
+    for(const ::fwData::Object::FieldNameVectorType::value_type &fieldName :  added)
     {
         m_objectMsg->appendAddedField(fieldName, newFields.find(fieldName)->second);
     }
 
-    BOOST_FOREACH(const ::fwData::Object::FieldNameVectorType::value_type &fieldName, changed)
+    for(const ::fwData::Object::FieldNameVectorType::value_type &fieldName :  changed)
     {
         m_objectMsg->appendChangedField(
             fieldName,
@@ -166,7 +166,7 @@ void Field::buildMessage(
             );
     }
 
-    BOOST_FOREACH(const ::fwData::Object::FieldNameVectorType::value_type &fieldName, changed)
+    for(const ::fwData::Object::FieldNameVectorType::value_type &fieldName :  changed)
     {
         m_objectMsg->appendRemovedField(fieldName, oldFields.find(fieldName)->second);
     }

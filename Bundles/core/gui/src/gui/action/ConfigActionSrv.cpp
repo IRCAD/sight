@@ -91,7 +91,7 @@ void ConfigActionSrv::configuring() throw(fwTools::Failed)
     std::vector < ConfigurationType > replaceTagsConfig = m_configuration->find("replace");
     std::string adaptor("");
     std::string pattern("");
-    BOOST_FOREACH( ConfigurationType replaceItem, replaceTagsConfig)
+    for( ConfigurationType replaceItem :  replaceTagsConfig)
     {
         SLM_ASSERT("<replace> tag must have one attribut val.", replaceItem->hasAttribute("val"));
         adaptor = replaceItem->getAttributeValue("val");

@@ -97,7 +97,7 @@ void SInitNewSeries::updating() throw(::fwTools::Failed)
 
     ::fwComEd::helper::SeriesDB helper(seriesDB);
 
-    BOOST_FOREACH(const ::fwMedData::Series::sptr& series, srcSeriesDB->getContainer())
+    for(const ::fwMedData::Series::sptr& series :  srcSeriesDB->getContainer())
     {
         helper.add(series);
     }
@@ -108,7 +108,7 @@ void SInitNewSeries::updating() throw(::fwTools::Failed)
     StudyToPatientType studyToPatient;
     StudyMapType studies;
 
-    BOOST_FOREACH(const ::fwMedData::Series::sptr& series, seriesDB->getContainer())
+    for(const ::fwMedData::Series::sptr& series :  seriesDB->getContainer())
     {
         const std::string& studyUID = series->getStudy()->getInstanceUID();
 
@@ -121,7 +121,7 @@ void SInitNewSeries::updating() throw(::fwTools::Failed)
     const std::string date = ::fwTools::getDate(now);
     const std::string time = ::fwTools::getTime(now);
 
-    BOOST_FOREACH(const StudyMapType::value_type& study, studies)
+    for(const StudyMapType::value_type& study :  studies)
     {
         ::fwMedData::Series::sptr newSeries = ::uiMedData::InsertSeries::New();
         newSeries->setDescription(s_INSERT_NEW_SERIES_TEXT);

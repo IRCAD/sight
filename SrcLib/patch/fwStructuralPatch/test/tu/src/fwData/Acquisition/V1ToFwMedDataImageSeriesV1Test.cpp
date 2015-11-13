@@ -4,22 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwData/Acquisition/V1ToFwMedDataImageSeriesV1Test.hpp"
 
 #include <fwAtoms/Base.hpp>
+#include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Object.hxx>
-#include <fwAtoms/Boolean.hpp>
 #include <fwAtoms/String.hpp>
-
-#include <fwAtomsPatch/helper/Object.hpp>
 #include <fwAtomsPatch/helper/functions.hpp>
+#include <fwAtomsPatch/helper/Object.hpp>
 
 #include <fwStructuralPatch/fwData/Acquisition/V1ToFwMedDataImageSeriesV1.hpp>
 
 #include <fwTest/Exception.hpp>
 
-#include "fwData/Acquisition/V1ToFwMedDataImageSeriesV1Test.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwStructuralPatch::ut::fwData::Acquisition::V1ToFwMedDataImageSeriesV1Test );

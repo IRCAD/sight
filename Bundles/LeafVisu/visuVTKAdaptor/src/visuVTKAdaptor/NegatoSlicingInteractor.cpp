@@ -4,20 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwData/Integer.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/String.hpp>
-#include <fwData/TransferFunction.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/String.hpp>
+#include <fwData/TransferFunction.hpp>
 
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkRenderWindowInteractor.h>

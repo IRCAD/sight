@@ -4,16 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-
-#include <boost/foreach.hpp>
-
-#include <vtkAbstractPropPicker.h>
-#include <vtkActor.h>
-#include <vtkCommand.h>
-#include <vtkCubeSource.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkRenderWindowInteractor.h>
+#include "visuVTKAdaptor/PointListInteractor.hpp"
 
 #include <fwComEd/PointListMsg.hpp>
 
@@ -24,11 +15,15 @@
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include "visuVTKAdaptor/PointListInteractor.hpp"
-
+#include <vtkAbstractPropPicker.h>
+#include <vtkActor.h>
+#include <vtkCommand.h>
+#include <vtkCubeSource.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderWindowInteractor.h>
 
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent

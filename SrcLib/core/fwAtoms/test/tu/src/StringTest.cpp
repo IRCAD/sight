@@ -4,11 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <limits>
+#include "StringTest.hpp"
 
 #include <fwAtoms/String.hpp>
-#include "StringTest.hpp"
+
+#include <limits>
+
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwAtoms::ut::StringTest );
@@ -36,7 +37,7 @@ void StringTest::conversion()
     const std::string VALUES[] = {"", "azerty"};
     fwAtoms::String::sptr metaString;
 
-    BOOST_FOREACH ( std::string str, VALUES )
+    for ( std::string str: VALUES )
     {
         metaString = ::fwAtoms::String::New(str);
 

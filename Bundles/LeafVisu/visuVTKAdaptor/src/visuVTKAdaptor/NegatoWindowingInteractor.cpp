@@ -4,30 +4,26 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwData/Integer.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
+#include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/TransferFunctionMsg.hpp>
+#include <fwData/Image.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/TransferFunction.hpp>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <vtkRenderWindowInteractor.h>
-#include <vtkInteractorStyleImage.h>
 #include <vtkCommand.h>
-
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
-
-#include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
+#include <vtkInteractorStyleImage.h>
+#include <vtkRenderWindowInteractor.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor,
                          ::fwData::Image );

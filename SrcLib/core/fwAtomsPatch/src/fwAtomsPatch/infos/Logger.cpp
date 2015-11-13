@@ -6,7 +6,6 @@
 
 #include "fwAtomsPatch/infos/Logger.hpp"
 
-#include <boost/foreach.hpp>
 #ifndef ANDROID
 #include <boost/log/attributes.hpp>
 #include <boost/log/expressions.hpp>

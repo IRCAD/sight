@@ -5,10 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwGui/IActionSrv.hpp"
 #include "fwGui/dialog/IMessageDialog.hpp"
 #include "fwGui/dialog/MessageDialog.hpp"
-
+#include "fwGui/IActionSrv.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -16,10 +15,9 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwCore/base.hpp>
-#include <fwTools/fwID.hpp>
-#include <fwServices/Base.hpp>
 
-#include <boost/foreach.hpp>
+#include <fwServices/Base.hpp>
+#include <fwTools/fwID.hpp>
 
 namespace fwGui
 {

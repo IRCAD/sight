@@ -4,10 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <algorithm>
-#include <string>
 
-#include <boost/foreach.hpp>
+#include "fwAtomsFilter/functions.hpp"
 
 #include <fwActivities/registry/Activities.hpp>
 
@@ -19,8 +17,8 @@
 
 #include <fwData/registry/detail.hpp>
 
-#include "fwAtomsFilter/functions.hpp"
-
+#include <algorithm>
+#include <string>
 
 namespace fwAtomsFilter
 {
@@ -46,7 +44,7 @@ bool isSeriesKnown(const SPTR(::fwAtoms::Object)& series)
             // Check if activity config id is known
             ::fwAtoms::String::sptr asId = series->getAttribute< ::fwAtoms::String >("activity_config_id");
 
-            BOOST_FOREACH(reg::ActivityInfo info, infos)
+            for(reg::ActivityInfo info :  infos)
             {
                 if(info.id == asId->getString())
                 {

@@ -4,33 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Mesh.hpp"
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
-
-#include <fwCom/Signal.hxx>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-
-#include <fwComEd/MaterialMsg.hpp>
-#include <fwComEd/MeshMsg.hpp>
-
-#include <fwVtkIO/vtk.hpp>
-#include <fwVtkIO/helper/Mesh.hpp>
-
 #include "visuVTKAdaptor/Material.hpp"
+#include "visuVTKAdaptor/Mesh.hpp"
 #include "visuVTKAdaptor/MeshNormals.hpp"
 
 #include "visuVTKAdaptor/Texture.hpp"
 #include "visuVTKAdaptor/Transform.hpp"
 
-#include <boost/foreach.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwComEd/MaterialMsg.hpp>
+#include <fwComEd/MeshMsg.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+
+#include <fwVtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
@@ -48,8 +44,8 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkProperty.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
 #include <vtkTransform.h>
 
 
@@ -179,7 +175,7 @@ public:
     {
         m_planeCollectionDst->RemoveAllItems();
 
-        BOOST_FOREACH( PlaneShifterCallback *psc, m_planeCallbacks )
+        for( PlaneShifterCallback *psc :  m_planeCallbacks )
         {
             psc->Stop();
             psc->Delete();
@@ -253,7 +249,7 @@ public:
 
     void Clear()
     {
-        BOOST_FOREACH( ::visuVTKAdaptor::Mesh::wptr adaptor, m_meshServices )
+        for( ::visuVTKAdaptor::Mesh::wptr adaptor :  m_meshServices )
         {
             if (!adaptor.expired())
             {
@@ -263,7 +259,7 @@ public:
         }
         m_meshServices.clear();
 
-        BOOST_FOREACH( PlaneShifterCallback *psc, m_planeCallbacks )
+        for( PlaneShifterCallback *psc :  m_planeCallbacks )
         {
             psc->Stop();
             psc->Delete();
@@ -271,7 +267,7 @@ public:
         }
         m_planeCallbacks.clear();
 
-        BOOST_FOREACH( vtkPlaneCollection *planeCol, m_planeCollections )
+        for( vtkPlaneCollection *planeCol :  m_planeCollections )
         {
             planeCol->Delete();
         }
@@ -340,7 +336,7 @@ public:
         }
         else if ( eventId == vtkCommand::UserEvent )
         {
-            BOOST_FOREACH( ::visuVTKAdaptor::Mesh::wptr adaptor, m_meshServices )
+            for( ::visuVTKAdaptor::Mesh::wptr adaptor :  m_meshServices )
             {
                 if (!adaptor.expired())
                 {

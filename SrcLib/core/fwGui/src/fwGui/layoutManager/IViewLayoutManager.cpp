@@ -12,8 +12,6 @@
  * @date 2009-2010
  */
 
-#include <boost/foreach.hpp>
-
 #include "fwGui/layoutManager/IViewLayoutManager.hpp"
 
 namespace fwGui
@@ -37,7 +35,7 @@ IViewLayoutManager::~IViewLayoutManager()
 
 void IViewLayoutManager::destroySubViews()
 {
-    BOOST_FOREACH( ::fwGui::container::fwContainer::sptr container, m_subViews)
+    for( ::fwGui::container::fwContainer::sptr container :  m_subViews)
     {
         container->clean();
         container->destroyContainer();

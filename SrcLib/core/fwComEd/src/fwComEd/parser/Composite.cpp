@@ -11,6 +11,8 @@
 
 #include "fwComEd/parser/Composite.hpp"
 
+#include <boost/foreach.hpp>
+
 fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::Composite, ::fwData::Composite );
 
 namespace fwComEd
@@ -61,7 +63,7 @@ void Composite::createConfig( ::fwTools::Object::sptr _obj )
     ::fwData::Composite::sptr dataComposite = ::fwData::Composite::dynamicCast(_obj);
     SLM_ASSERT("Sorry, object given in parameter is not a fwData::Composite",dataComposite);
 
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
+    for( ::fwRuntime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
         if( elem->getName() == "item" )
         {
@@ -114,7 +116,7 @@ void Composite::createConfig( ::fwTools::Object::sptr _obj )
 
 void Composite::startConfig()
 {
-    BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
+    for( ::fwServices::AppConfigManager::sptr ctm :  m_ctmContainer )
     {
         ctm->start();
     }
@@ -124,7 +126,7 @@ void Composite::startConfig()
 
 void Composite::updateConfig()
 {
-    BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
+    for( ::fwServices::AppConfigManager::sptr ctm :  m_ctmContainer )
     {
         ctm->update();
     }

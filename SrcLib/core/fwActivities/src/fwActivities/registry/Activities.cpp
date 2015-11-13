@@ -1,22 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2004-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <limits>
-
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Convert.hpp>
+#include "fwActivities/registry/Activities.hpp"
 
 #include <fwData/Vector.hpp>
 
-#include "fwActivities/registry/Activities.hpp"
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/Convert.hpp>
+#include <fwRuntime/helper.hpp>
+#include <fwRuntime/Runtime.hpp>
+
+#include <boost/foreach.hpp>
+#include <boost/regex.hpp>
+#include <limits>
 
 namespace fwActivities
 {
@@ -37,7 +36,7 @@ ActivityAppConfig::ActivityAppConfig(const ConfigType &config) :
     if(config.count("parameters") == 1 )
     {
         const ConfigType &configParameters = config.get_child("parameters");
-        BOOST_FOREACH( const ConfigType::value_type &v, configParameters.equal_range("parameter") )
+        BOOST_FOREACH( const ConfigType::value_type &v,  configParameters.equal_range("parameter") )
         {
             ActivityAppConfigParam parameter( v.second );
             parameters.push_back( parameter );
@@ -148,7 +147,7 @@ bool ActivityInfo::usableWith(DataCountType dataCounts) const
 
     if(ok)
     {
-        BOOST_FOREACH( const RequirementsMinMaxCount::value_type &reqCount, m_requirementCount )
+        for( const RequirementsMinMaxCount::value_type &reqCount :  m_requirementCount )
         {
             const MinMaxType &reqMinMax  = reqCount.second;
             DataCountType::iterator iter = dataCounts.find(reqCount.first);
@@ -170,7 +169,7 @@ bool ActivityInfo::usableWith(DataCountType dataCounts) const
 
         if(ok)
         {
-            BOOST_FOREACH( const DataCountType::value_type &dataCount, dataCounts )
+            for( const DataCountType::value_type &dataCount :  dataCounts )
             {
                 if(m_requirementCount.find(dataCount.first) == m_requirementCount.end())
                 {
@@ -216,7 +215,7 @@ void Activities::parseBundleInformation()
 void Activities::parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) > &extensions)
 {
 
-    BOOST_FOREACH( const SPTR( ::fwRuntime::Extension ) &ext, extensions )
+    for( const SPTR( ::fwRuntime::Extension ) &ext :  extensions )
     {
         OSLM_DEBUG("Parsing <" << ext->getBundle()->getIdentifier() << "> Activities");
         ActivityInfo info(ext);
@@ -259,7 +258,7 @@ std::vector< ActivityInfo > Activities::getInfos() const
 
     ::fwCore::mt::ReadLock lock(m_registryMutex);
 
-    BOOST_FOREACH( Registry::value_type val, m_reg )
+    for( Registry::value_type val :  m_reg )
     {
         infos.push_back( val.second );
     }
@@ -273,7 +272,7 @@ ActivityInfo::DataCountType Activities::getDataCount( const ::fwData::Vector::sp
 {
     ActivityInfo::DataCountType dataCount;
 
-    BOOST_FOREACH( const ::fwData::Object::sptr &obj, *data)
+    for( const ::fwData::Object::sptr &obj :  *data)
     {
         ++dataCount[obj->getClassname()];
     }
@@ -290,7 +289,7 @@ std::vector< ActivityInfo > Activities::getInfos( const ::fwData::Vector::sptr &
 
     ::fwCore::mt::ReadLock lock(m_registryMutex);
 
-    BOOST_FOREACH( const Registry::value_type &regValue, m_reg )
+    for( const Registry::value_type &regValue :  m_reg )
     {
         const ActivityInfo &activity = regValue.second;
         if (activity.usableWith(dataCount))
@@ -310,7 +309,7 @@ std::vector< std::string > Activities::getKeys() const
 
     ::fwCore::mt::ReadLock lock(m_registryMutex);
 
-    BOOST_FOREACH( Registry::value_type val, m_reg )
+    for( Registry::value_type val :  m_reg )
     {
         keys.push_back( val.first );
     }

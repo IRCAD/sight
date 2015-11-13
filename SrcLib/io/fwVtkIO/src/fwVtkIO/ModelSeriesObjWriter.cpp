@@ -92,7 +92,7 @@ void ModelSeriesObjWriter::write()
 
     ::fwMedData::ModelSeries::sptr modelSeries = getConcreteObject();
 
-    BOOST_FOREACH( ::fwData::Reconstruction::sptr rec, modelSeries->getReconstructionDB() )
+    for( ::fwData::Reconstruction::sptr rec :  modelSeries->getReconstructionDB() )
     {
         vtkSmartPointer< vtkRenderer > renderer = vtkSmartPointer< vtkRenderer >::New();
         vtkSmartPointer< vtkActor >  actor      = createActor(rec);

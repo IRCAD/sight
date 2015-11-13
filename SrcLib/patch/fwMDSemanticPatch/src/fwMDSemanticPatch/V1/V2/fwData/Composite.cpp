@@ -4,31 +4,28 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <string>
-#include <vector>
+#include "fwMDSemanticPatch/V1/V2/fwData/Composite.hpp"
 
-#include <boost/foreach.hpp>
-#include <boost/algorithm/string.hpp>
-
-#include <fwTools/UUID.hpp>
-
+#include <fwAtoms/Blob.hpp>
+#include <fwAtoms/Boolean.hpp>
+#include <fwAtoms/Map.hpp>
+#include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Object.hpp>
 #include <fwAtoms/Object.hxx>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/String.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/Map.hpp>
-
-#include <fwAtomsPatch/StructuralCreatorDB.hpp>
+#include <fwAtoms/String.hpp>
 #include <fwAtomsPatch/helper/functions.hpp>
+#include <fwAtomsPatch/StructuralCreatorDB.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 
 #include <fwMemory/BufferObject.hpp>
 
-#include "fwMDSemanticPatch/V1/V2/fwData/Composite.hpp"
+#include <fwTools/UUID.hpp>
+
+#include <boost/algorithm/string.hpp>
+#include <string>
+#include <vector>
 
 namespace fwMDSemanticPatch
 {
@@ -71,7 +68,7 @@ void processPlanning(
     ::fwAtoms::Object::sptr oldPlanningDB = ::fwAtoms::Object::dynamicCast( (*oldCompositeMap)["planningDB"] );
     ::fwAtoms::Map::sptr oldPlannings     = oldPlanningDB->getAttribute< ::fwAtoms::Map >("values");
 
-    BOOST_FOREACH( ::fwAtoms::Map::value_type oldPlanningAtom, oldPlannings->getValue() )
+    for( ::fwAtoms::Map::value_type oldPlanningAtom :  oldPlannings->getValue() )
     {
         ::fwAtoms::Map::sptr oldPlanning
             = ::fwAtoms::Object::dynamicCast(oldPlanningAtom.second)->getAttribute< ::fwAtoms::Map >("values");
@@ -202,14 +199,14 @@ void Composite::apply(
 
         ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
 
-        BOOST_FOREACH( ::fwAtoms::Base::sptr oldPatientAtom, oldPatients->getValue() )
+        for( ::fwAtoms::Base::sptr oldPatientAtom :  oldPatients->getValue() )
         {
             ::fwAtoms::Object::sptr oldPatient = ::fwAtoms::Object::dynamicCast( oldPatientAtom );
             ::fwAtoms::Object::sptr newPatient = newVersions[oldPatient];
 
             ::fwAtoms::Sequence::sptr oldStudies = oldPatient->getAttribute< ::fwAtoms::Sequence >("studies");
 
-            BOOST_FOREACH( ::fwAtoms::Base::sptr oldStudyAtom, oldStudies->getValue() )
+            for( ::fwAtoms::Base::sptr oldStudyAtom :  oldStudies->getValue() )
             {
                 ::fwAtoms::Object::sptr oldStudy = ::fwAtoms::Object::dynamicCast( oldStudyAtom );
                 ::fwAtoms::Object::sptr newStudy = newVersions[oldStudy];
@@ -217,7 +214,7 @@ void Composite::apply(
                 ::fwAtoms::Sequence::sptr oldAcquisitions =
                     oldStudy->getAttribute< ::fwAtoms::Sequence >("acquisitions");
 
-                BOOST_FOREACH( ::fwAtoms::Base::sptr oldAcqAtom, oldAcquisitions->getValue() )
+                for( ::fwAtoms::Base::sptr oldAcqAtom :  oldAcquisitions->getValue() )
                 {
                     ::fwAtoms::Object::sptr oldAcq = ::fwAtoms::Object::dynamicCast( oldAcqAtom );
 
@@ -293,7 +290,7 @@ void Composite::apply(
 
                         ::fwAtoms::Sequence::sptr newReconstructions =
                             newModelSeries->getAttribute< ::fwAtoms::Sequence >("reconstruction_db");
-                        BOOST_FOREACH( ::fwAtoms::Base::sptr oldRecAtom, oldReconstructions->getValue() )
+                        for( ::fwAtoms::Base::sptr oldRecAtom :  oldReconstructions->getValue() )
                         {
                             ::fwAtoms::Object::sptr oldRec = ::fwAtoms::Object::dynamicCast( oldRecAtom );
                             newReconstructions->push_back(newVersions[oldRec]);

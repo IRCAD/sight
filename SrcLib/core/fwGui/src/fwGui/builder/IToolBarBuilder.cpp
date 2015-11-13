@@ -12,10 +12,9 @@
  * @date 2009-2010
  */
 
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
-
 #include "fwGui/builder/IToolBarBuilder.hpp"
+
+#include <boost/lexical_cast.hpp>
 
 namespace fwGui
 {

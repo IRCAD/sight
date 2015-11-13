@@ -8,16 +8,14 @@
  * @file fwGui/layoutManager/ToolboxLayoutManagerBase.cpp
  * @brief This file defines the implementation of the class for managing a line layout geometry.
  *
- *
- * @date 2009-2010
  */
 
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
+#include "fwGui/layoutManager/ToolboxLayoutManagerBase.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwGui/layoutManager/ToolboxLayoutManagerBase.hpp"
+#include <boost/lexical_cast.hpp>
+
 
 namespace fwGui
 {
@@ -48,7 +46,7 @@ void ToolboxLayoutManagerBase::initialize( ConfigurationType configuration)
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
                 configuration->getName() == "layout");
     m_views.clear();
-    BOOST_FOREACH (ConfigurationType view, configuration->getElements())
+    for (ConfigurationType view : configuration->getElements())
     {
         if( view->getName() == "view" )
         {

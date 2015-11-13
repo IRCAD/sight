@@ -4,15 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <sstream>
-
-#include <boost/filesystem/operations.hpp>
-#include <boost/foreach.hpp>
-#include <boost/property_tree/json_parser.hpp>
-#include <boost/property_tree/xml_parser.hpp>
-
-
-#include <fwTools/UUID.hpp>
+#include "fwAtomsBoostIO/Writer.hpp"
+#include "fwAtomsBoostIO/Reader.hpp"
 
 #include <fwAtoms/Blob.hpp>
 #include <fwAtoms/Boolean.hpp>
@@ -23,10 +16,15 @@
 #include <fwAtoms/Sequence.hpp>
 #include <fwAtoms/String.hpp>
 
+#include <fwTools/UUID.hpp>
+
 #include <fwZip/IReadArchive.hpp>
 
-#include "fwAtomsBoostIO/Writer.hpp"
-#include "fwAtomsBoostIO/Reader.hpp"
+#include <boost/filesystem/operations.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+
+#include <sstream>
 
 namespace fwAtomsBoostIO
 {
@@ -99,7 +97,7 @@ struct PTreeVisitor
         ::fwAtoms::Sequence::sptr atom = ::fwAtoms::Sequence::New();
         this->cache(ptpath, atom);
 
-        BOOST_FOREACH( const ::boost::property_tree::ptree::value_type &val, pt.get_child("sequence") )
+        for( const ::boost::property_tree::ptree::value_type &val :  pt.get_child("sequence") )
         {
             std::string subPath           = ptpath + (ptpath.empty() ? "" : ".") + "sequence." + val.first;
             ::fwAtoms::Base::sptr subAtom = this->visit(val.second, subPath );
@@ -115,7 +113,7 @@ struct PTreeVisitor
         ::fwAtoms::Map::sptr atom = ::fwAtoms::Map::New();
         this->cache(ptpath, atom);
 
-        BOOST_FOREACH( const ::boost::property_tree::ptree::value_type &val, pt.get_child("map") )
+        for( const ::boost::property_tree::ptree::value_type &val :  pt.get_child("map") )
         {
             std::string subPath = ptpath + (ptpath.empty() ? "" : ".") + "map." + val.first + ".value";
 
@@ -142,7 +140,7 @@ struct PTreeVisitor
         const ptree& attributesTree = pt.get_child("object.attributes");
 
         ::fwAtoms::Object::MetaInfosType metaInfos;
-        BOOST_FOREACH( const ptree::value_type &val, metaInfosTree )
+        for( const ptree::value_type &val :  metaInfosTree )
         {
             ::boost::property_tree::ptree item = val.second;
 
@@ -154,7 +152,7 @@ struct PTreeVisitor
 
 
         ::fwAtoms::Object::AttributesType attributes;
-        BOOST_FOREACH( const ptree::value_type &val, attributesTree )
+        for( const ptree::value_type &val :  attributesTree )
         {
             std::string subPath           = ptpath + (ptpath.empty() ? "" : ".")+ "object.attributes." + val.first;
             ::fwAtoms::Base::sptr subAtom = this->visit(val.second, subPath );

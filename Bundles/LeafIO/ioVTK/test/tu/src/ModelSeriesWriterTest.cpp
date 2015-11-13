@@ -96,7 +96,7 @@ void runModelSeriesSrv(
 {
     ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
 
-    BOOST_FOREACH(std::string file, files)
+    for(std::string file :  files)
     {
         ::fwRuntime::EConfigurationElement::sptr cfg = ::fwRuntime::EConfigurationElement::New("file");
         cfg->setValue(file);

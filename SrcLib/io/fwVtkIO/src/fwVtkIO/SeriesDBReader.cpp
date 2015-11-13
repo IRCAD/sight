@@ -4,19 +4,45 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <numeric>
-#include <algorithm>
-#include <iosfwd>
+#include "fwVtkIO/helper/Mesh.hpp"
+#include "fwVtkIO/helper/ProgressVtkToFw.hpp"
+#include "fwVtkIO/SeriesDBReader.hpp"
+#include "fwVtkIO/vtk.hpp"
 
+#include <fwCore/base.hpp>
+
+#include <fwData/Image.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwDataIO/reader/registry/macros.hpp>
+
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Study.hpp>
+
+#include <fwMemory/BufferObject.hpp>
+#include <fwMemory/stream/in/IFactory.hpp>
+
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/UUID.hpp>
+
+#include <algorithm>
+
+#include <boost/algorithm/string/join.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/iostreams/categories.hpp>
-#include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
-#include <boost/foreach.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/algorithm/string/join.hpp>
+#include <boost/iostreams/stream.hpp>
 
+#include <iosfwd>
+#include <numeric>
+
+#include <vtkDataSetAttributes.h>
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
 #include <vtkInformation.h>
@@ -28,32 +54,6 @@
 #include <vtkStructuredPointsReader.h>
 #include <vtkXMLGenericDataObjectReader.h>
 #include <vtkXMLImageDataReader.h>
-#include <vtkDataSetAttributes.h>
-
-#include <fwCore/base.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-
-#include <fwTools/UUID.hpp>
-#include <fwTools/dateAndTime.hpp>
-
-#include <fwMemory/stream/in/IFactory.hpp>
-#include <fwMemory/BufferObject.hpp>
-
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/ImageSeries.hpp>
-
-#include <fwDataIO/reader/registry/macros.hpp>
-
-#include "fwVtkIO/vtk.hpp"
-#include "fwVtkIO/helper/Mesh.hpp"
-#include "fwVtkIO/helper/ProgressVtkToFw.hpp"
-#include "fwVtkIO/SeriesDBReader.hpp"
 
 fwDataIOReaderRegisterMacro( ::fwVtkIO::SeriesDBReader );
 
@@ -355,7 +355,7 @@ void SeriesDBReader::read()
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recs;
     std::vector< std::string > errorFiles;
-    BOOST_FOREACH(const ::fwData::location::ILocation::VectPathType::value_type& file, files)
+    for(const ::fwData::location::ILocation::VectPathType::value_type& file :  files)
     {
 
         vtkSmartPointer< vtkDataObject  > obj;

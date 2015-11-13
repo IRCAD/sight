@@ -6,26 +6,21 @@
 
 #ifndef ANDROID
 
-#include <boost/foreach.hpp>
-
-
-#include <fwData/Plane.hpp>
-
-#include <fwMath/PlaneFunctions.hpp>
+#include "visuVTKAdaptor/PlaneInteractor.hpp"
 
 #include <fwComEd/PlaneMsg.hpp>
 #include <fwComEd/PointMsg.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwData/Plane.hpp>
+
+#include <fwMath/PlaneFunctions.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkCommand.h>
-
-
-#include "visuVTKAdaptor/PlaneInteractor.hpp"
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwData::Object );
 

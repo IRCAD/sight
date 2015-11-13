@@ -351,7 +351,7 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
     {
 
         bool filtering = m_configuration->getAttributeValue("filter") == "true";
-        BOOST_FOREACH(::fwData::Object::sptr object, *distanceField)
+        for(::fwData::Object::sptr object :  *distanceField)
         {
             ::fwData::PointList::sptr distance    = ::fwData::PointList::dynamicCast(object);
             ::fwData::String::sptr relatedService = distance->getField< ::fwData::String >(

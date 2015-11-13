@@ -4,11 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+
+#include "fwTools/System.hpp"
+
+#include <fwCore/base.hpp>
+#ifdef ANDROID
+#include <fwRuntime/Runtime.hpp>
+#endif
+
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/regex.hpp>
-#include <boost/foreach.hpp>
-
 #include <boost/lexical_cast.hpp>
 
 // for PID
@@ -22,12 +28,7 @@
 #include <signal.h>
 #endif
 
-#include <fwCore/base.hpp>
-#ifdef ANDROID
-#include <fwRuntime/Runtime.hpp>
-#endif
 
-#include "fwTools/System.hpp"
 
 
 #define F4S_TMP_EXT "fw4spl-tmp"
@@ -280,7 +281,7 @@ void System::cleanZombies(const ::boost::filesystem::path &dir) throw()
     }
 
 
-    BOOST_FOREACH( const fs::path &foundTmpDir, allTempFolders)
+    for( const fs::path &foundTmpDir :  allTempFolders)
     {
         int pid = tempFolderPID(foundTmpDir);
 

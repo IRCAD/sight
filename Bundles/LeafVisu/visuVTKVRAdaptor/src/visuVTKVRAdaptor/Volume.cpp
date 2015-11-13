@@ -393,7 +393,7 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
         m_colorTransferFunction->AllowDuplicateScalarsOn();
         m_opacityTransferFunction->AllowDuplicateScalarsOn();
 
-        BOOST_FOREACH(const ::fwData::TransferFunction::TFDataType::value_type &tfPoint, pTF->getTFData())
+        for(const ::fwData::TransferFunction::TFDataType::value_type &tfPoint :  pTF->getTFData())
         {
             const ::fwData::TransferFunction::TFValueType &value = *valueIter;
             ::fwData::TransferFunction::TFValueType valuePrevious = *valueIter;
@@ -421,7 +421,7 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
     }
     else
     {
-        BOOST_FOREACH(const ::fwData::TransferFunction::TFDataType::value_type &tfPoint, pTF->getTFData())
+        for(const ::fwData::TransferFunction::TFDataType::value_type &tfPoint :  pTF->getTFData())
         {
             const ::fwData::TransferFunction::TFValueType &value = *(valueIter++);
             const ::fwData::TransferFunction::TFColor &color     = tfPoint.second;

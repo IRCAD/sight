@@ -110,14 +110,14 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
             replaceMap["WID_PARENT"]  = m_parentView;
             replaceMap["objectID"]    = obj->getID();
 
-            BOOST_FOREACH(const ReplaceValuesMapType::value_type &elt, info.extractValues)
+            for(const ReplaceValuesMapType::value_type &elt :  info.extractValues)
             {
                 ::fwData::Object::sptr object = ::fwDataCamp::getObject( obj, elt.second );
                 OSLM_ASSERT("Object from name "<< elt.second <<" not found", object);
                 replaceMap[elt.first] = object->getID();
             }
 
-            BOOST_FOREACH(const ReplaceValuesMapType::value_type &elt, info.parameters)
+            for(const ReplaceValuesMapType::value_type &elt :  info.parameters)
             {
                 SLM_ASSERT("Value '" << elt.first << "' already used in extracted values.",
                            replaceMap.find(elt.first) == replaceMap.end());
@@ -151,7 +151,7 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
     std::vector < ::fwRuntime::ConfigurationElement::sptr > config = configsCfg[0]->find("config");
     SLM_ASSERT("Missing tag 'config'", !config.empty());
 
-    BOOST_FOREACH(const ::fwRuntime::ConfigurationElement::sptr &elt, config)
+    for(const ::fwRuntime::ConfigurationElement::sptr &elt :  config)
     {
         SeriesConfigInfo info;
         info.configId = elt->getAttributeValue("id");
@@ -161,7 +161,7 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
         OSLM_ASSERT("Type " << seriesType << " is already defined.",
                     m_seriesConfigs.find(seriesType)== m_seriesConfigs.end() );
 
-        BOOST_FOREACH(const ::fwRuntime::ConfigurationElement::sptr &extractElt, elt->find("extract"))
+        for(const ::fwRuntime::ConfigurationElement::sptr &extractElt :  elt->find("extract"))
         {
             std::string path = extractElt->getAttributeValue("path");
             SLM_ASSERT("'path' attribute must not be empty", !path.empty());
@@ -170,7 +170,7 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
             info.extractValues[pattern] = path;
         }
 
-        BOOST_FOREACH(const ::fwRuntime::ConfigurationElement::sptr &param, elt->find("parameter"))
+        for(const ::fwRuntime::ConfigurationElement::sptr &param :  elt->find("parameter"))
         {
             std::string replace = param->getAttributeValue("replace");
             SLM_ASSERT("'replace' attribute must not be empty", !replace.empty());

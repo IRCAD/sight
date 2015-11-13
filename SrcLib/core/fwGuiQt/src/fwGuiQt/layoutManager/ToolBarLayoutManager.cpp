@@ -4,27 +4,24 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QAction>
-#include <QActionGroup>
-#include <QToolBar>
-#include <QMenu>
-#include <QToolButton>
-
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/function.hpp>
-#include <boost/foreach.hpp>
-#include <boost/assign/list_of.hpp>
+#include "fwGuiQt/ActionCallback.hpp"
+#include "fwGuiQt/container/QtContainer.hpp"
+#include "fwGuiQt/container/QtMenuContainer.hpp"
+#include "fwGuiQt/container/QtMenuItemContainer.hpp"
+#include "fwGuiQt/container/QtToolBarContainer.hpp"
+#include "fwGuiQt/layoutManager/ToolBarLayoutManager.hpp"
 
 #include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/ActionCallback.hpp"
-#include "fwGuiQt/container/QtToolBarContainer.hpp"
-#include "fwGuiQt/container/QtMenuContainer.hpp"
-#include "fwGuiQt/container/QtMenuItemContainer.hpp"
-#include "fwGuiQt/container/QtContainer.hpp"
-#include "fwGuiQt/layoutManager/ToolBarLayoutManager.hpp"
-
+#include <boost/assign/list_of.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <QAction>
+#include <QActionGroup>
+#include <QMenu>
+#include <QToolBar>
+#include <QToolButton>
 
 fwGuiRegisterMacro( ::fwGui::layoutManager::ToolBarLayoutManager,
                     ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
@@ -59,7 +56,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
 
     QActionGroup * actionGroup = 0;
     unsigned int menuItemIndex = 0;
-    BOOST_FOREACH ( ::fwGui::layoutManager::IToolBarLayoutManager::ActionInfo actionInfo, m_actionInfo)
+    for ( ::fwGui::layoutManager::IToolBarLayoutManager::ActionInfo actionInfo : m_actionInfo)
     {
         if (actionInfo.m_isSeparator)
         {

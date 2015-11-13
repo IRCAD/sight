@@ -7,8 +7,6 @@
 #ifndef __FWSERVICES_REGISTRY_OBJECTSERVICE_HXX__
 #define __FWSERVICES_REGISTRY_OBJECTSERVICE_HXX__
 
-#include <boost/foreach.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwServices/IService.hpp>
@@ -50,7 +48,7 @@ std::vector< SPTR(SERVICE) > ObjectService::getServices() const
 {
     std::vector< SPTR(SERVICE) > services;
     const ServiceContainerType::right_map &right = m_container.right;
-    BOOST_FOREACH( const ServiceContainerType::right_map::value_type &elt, right)
+    for( const ServiceContainerType::right_map::value_type &elt: right)
     {
         SPTR(SERVICE) service = std::dynamic_pointer_cast< SERVICE >( elt.first );
         if ( service )
@@ -93,7 +91,7 @@ ObjectService::ObjectVectorType ObjectService::getObjects() const
 {
     ObjectVectorType objects;
     const ServiceContainerType::right_map & right = m_container.right;
-    BOOST_FOREACH( const ServiceContainerType::right_map::value_type &elt, right)
+    for( const ServiceContainerType::right_map::value_type &elt : right)
     {
         SPTR(SERVICE) service = std::dynamic_pointer_cast< SERVICE >( elt.first );
         if ( service && std::find(objects.begin(), objects.end(), service->getObject()) == objects.end() )

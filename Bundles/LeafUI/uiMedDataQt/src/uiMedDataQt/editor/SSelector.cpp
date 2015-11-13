@@ -4,31 +4,28 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <QVBoxLayout>
+#include "uiMedDataQt/editor/SSelector.hpp"
+#include "uiMedDataQt/widget/Selector.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwComEd/helper/SeriesDB.hpp>
+#include <fwComEd/helper/Vector.hpp>
+#include <fwComEd/SeriesDBMsg.hpp>
+
 #include <fwCore/base.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwMedData/Series.hpp>
+#include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwComEd/helper/Vector.hpp>
-#include <fwComEd/helper/SeriesDB.hpp>
-#include <fwComEd/SeriesDBMsg.hpp>
-
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include "uiMedDataQt/editor/SSelector.hpp"
-#include "uiMedDataQt/widget/Selector.hpp"
-
+#include <QVBoxLayout>
 
 namespace uiMedData
 {
@@ -126,7 +123,7 @@ void SSelector::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools:
     if ( seriesDBMsg && seriesDBMsg->hasEvent( ::fwComEd::SeriesDBMsg::ADDED_OBJECTS ) )
     {
         ::fwData::Vector::sptr addedObject = seriesDBMsg->getAddedSeries();
-        BOOST_FOREACH( ::fwData::Object::sptr obj, addedObject->getContainer() )
+        for( ::fwData::Object::sptr obj :  addedObject->getContainer() )
         {
             ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
             if(series)
@@ -138,7 +135,7 @@ void SSelector::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools:
     if ( seriesDBMsg && seriesDBMsg->hasEvent( ::fwComEd::SeriesDBMsg::REMOVED_OBJECTS ) )
     {
         ::fwData::Vector::sptr removedObject = seriesDBMsg->getRemovedSeries();
-        BOOST_FOREACH( ::fwData::Object::sptr obj, removedObject->getContainer() )
+        for( ::fwData::Object::sptr obj :  removedObject->getContainer() )
         {
             ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
             if(series)
@@ -165,7 +162,7 @@ void SSelector::updating() throw(::fwTools::Failed)
 
     m_selectorWidget->clear();
 
-    BOOST_FOREACH(::fwMedData::Series::sptr series, seriesDB->getContainer())
+    for(::fwMedData::Series::sptr series :  seriesDB->getContainer())
     {
         m_selectorWidget->addSeries(series);
     }
@@ -250,7 +247,7 @@ void SSelector::configuring() throw(::fwTools::Failed)
 
         std::vector < ::fwRuntime::ConfigurationElement::sptr > cfg = iconsCfg.front()->find("icon");
 
-        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, cfg)
+        for(::fwRuntime::ConfigurationElement::sptr elt :  cfg)
         {
             std::string series = elt->getAttributeValue("series");
             SLM_ASSERT("'series' attribute is missing", !series.empty());
@@ -271,12 +268,12 @@ void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
     ::fwData::Vector::sptr selectionVector = this->getSelection();
     ::fwComEd::helper::Vector vectorHelper(selectionVector);
 
-    BOOST_FOREACH( ::fwMedData::Series::sptr series, deselection)
+    for( ::fwMedData::Series::sptr series :  deselection)
     {
         vectorHelper.remove(series);
     }
 
-    BOOST_FOREACH( ::fwMedData::Series::sptr series, selection)
+    for( ::fwMedData::Series::sptr series :  selection)
     {
         vectorHelper.add(series);
     }
@@ -323,7 +320,7 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
     std::set< ::fwMedData::Series::sptr > seriesSet;
     std::copy(selection.begin(), selection.end(), std::inserter(seriesSet, seriesSet.begin()));
 
-    BOOST_FOREACH( ::fwMedData::Series::sptr series, seriesSet)
+    for( ::fwMedData::Series::sptr series :  seriesSet)
     {
         seriesDBHelper.remove(series);
     }

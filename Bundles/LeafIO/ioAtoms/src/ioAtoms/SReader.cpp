@@ -65,7 +65,7 @@ SReader::SReader() :
     m_version ("Undefined"),
     m_filter  ("")
 {
-    BOOST_FOREACH(SReader::FileExtension2NameType::value_type ext, s_EXTENSIONS)
+    for(SReader::FileExtension2NameType::value_type ext :  s_EXTENSIONS)
     {
         m_allowedExts.insert(m_allowedExts.end(), ext.first);
     }
@@ -98,14 +98,14 @@ void SReader::configuring() throw(::fwTools::Failed)
     m_allowedExtLabels.clear();
 
     ConfigurationElementContainer customExtsList = m_configuration->find("archive");
-    BOOST_FOREACH(ConfigurationElement archive, customExtsList)
+    for(ConfigurationElement archive :  customExtsList)
     {
         const std::string& backend = archive->getAttributeValue("backend");
         SLM_ASSERT("No backend attribute given in archive tag", backend != "");
         SLM_ASSERT("Unsupported backend '" + backend + "'", s_EXTENSIONS.find("." + backend) != s_EXTENSIONS.end());
 
         ConfigurationElementContainer exts = archive->find("extension");
-        BOOST_FOREACH(ConfigurationElement ext, exts)
+        for(ConfigurationElement ext :  exts)
         {
             const std::string& extension = ext->getValue();
             SLM_ASSERT("No extension given for backend '" + backend + "'", !extension.empty());
@@ -124,7 +124,7 @@ void SReader::configuring() throw(::fwTools::Failed)
         m_allowedExts.clear();
 
         ConfigurationElementContainer extensions = extensionsList.at(0)->find("extension");
-        BOOST_FOREACH(ConfigurationElement extension, extensions)
+        for(ConfigurationElement extension :  extensions)
         {
             const std::string& ext = extension->getValue();
 
@@ -146,12 +146,12 @@ void SReader::configuring() throw(::fwTools::Failed)
     {
         m_allowedExts.clear();
 
-        BOOST_FOREACH(FileExtension2NameType::value_type ext, m_customExts)
+        for(FileExtension2NameType::value_type ext :  m_customExts)
         {
             m_allowedExts.insert(m_allowedExts.end(), ext.first);
         }
 
-        BOOST_FOREACH(SReader::FileExtension2NameType::value_type ext, SReader::s_EXTENSIONS)
+        for(SReader::FileExtension2NameType::value_type ext :  SReader::s_EXTENSIONS)
         {
             m_allowedExts.insert(m_allowedExts.end(), ext.first);
             m_allowedExtLabels[ext.first] = ext.second;
@@ -429,7 +429,7 @@ void SReader::configureWithIHM()
 
     dialogFile.addFilter("Medical data", "*" + ::boost::algorithm::join(m_allowedExts, " *"));
 
-    BOOST_FOREACH(const std::string& ext, m_allowedExts)
+    for(const std::string& ext :  m_allowedExts)
     {
         dialogFile.addFilter(m_allowedExtLabels[ext], "*" + ext);
     }

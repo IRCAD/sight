@@ -6,29 +6,28 @@
 
 #ifndef ANDROID
 
-#include <iterator>
-#include <algorithm>
-#include <functional>
+#include "visuVTKAdaptor/PointList.hpp"
 
-#include <boost/foreach.hpp>
-#include <boost/function.hpp>
+#include <fwComEd/PointListMsg.hpp>
 
 #include <fwData/PointList.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/Material.hpp>
-
-#include <fwComEd/PointListMsg.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
+#include <algorithm>
+#include <iterator>
+#include <functional>
+
 #include <vtkCubeSource.h>
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
 
-#include "visuVTKAdaptor/PointList.hpp"
+#include <boost/function.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList );
 
@@ -125,7 +124,7 @@ void PointList::doStop() throw(fwTools::Failed)
 void PointList::createServices(WeakPointListType &wPtList)
 {
 
-    BOOST_FOREACH( ::fwData::Point::wptr wpt, wPtList )
+    for( ::fwData::Point::wptr wpt :  wPtList )
     {
         SLM_ASSERT("Point Expired", !wpt.expired());
 
@@ -169,10 +168,10 @@ PointList::WeakPointListType PointList::getNewPoints()
 //            std::back_inserter(newPoints)
 //            );
     bool isFound;
-    BOOST_FOREACH(::fwData::Point::wptr point, m_weakPointList)
+    for(::fwData::Point::wptr point :  m_weakPointList)
     {
         isFound = false;
-        BOOST_FOREACH(::fwData::Point::wptr oldPoint, m_oldWeakPointList)
+        for(::fwData::Point::wptr oldPoint :  m_oldWeakPointList)
         {
             isFound = (point.lock() == oldPoint.lock());
             if(isFound)

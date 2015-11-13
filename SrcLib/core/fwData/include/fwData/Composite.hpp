@@ -19,10 +19,6 @@ namespace fwData
 class Composite;
 }
 
-inline boost::mpl::true_ * boost_foreach_is_noncopyable( ::fwData::Composite *&, BOOST_FOREACH_TAG_DEFAULT )
-{
-    return 0;
-}
 
 fwCampAutoDeclareDataMacro((fwData)(Composite), FWDATA_API);
 

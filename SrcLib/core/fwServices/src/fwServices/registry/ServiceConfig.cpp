@@ -4,13 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwServices/registry/ServiceConfig.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/helper.hpp>
+#include <fwRuntime/Runtime.hpp>
 
-#include "fwServices/registry/ServiceConfig.hpp"
 
 namespace fwServices
 {
@@ -43,7 +42,7 @@ void ServiceConfig::parseBundleInformation()
 
     std::vector< ExtensionType >  extElements;
     extElements = ::fwRuntime::getAllExtensionsForPoint(CONFIG_EXT_POINT);
-    BOOST_FOREACH(ExtensionType ext, extElements)
+    for(ExtensionType ext :  extElements)
     {
         // Get id
         SLM_ASSERT("Missing id element", ext->hasConfigurationElement("id"));
@@ -142,7 +141,7 @@ std::vector< std::string > ServiceConfig::getAllConfigForService( std::string se
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > configs;
 
-    BOOST_FOREACH(Registry::value_type srvCfg, m_reg)
+    for(Registry::value_type srvCfg :  m_reg)
     {
         ServiceConfigInfo::sptr info = srvCfg.second;
         if (info->service.empty() || info->service == serviceImpl)

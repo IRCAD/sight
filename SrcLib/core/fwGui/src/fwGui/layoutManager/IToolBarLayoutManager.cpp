@@ -12,7 +12,6 @@
  * @date 2009-2010
  */
 
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 
@@ -126,17 +125,17 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
 
 void IToolBarLayoutManager::destroyActions()
 {
-    BOOST_FOREACH( ::fwGui::container::fwMenuItem::sptr menuItem, m_menuItems)
+    for( ::fwGui::container::fwMenuItem::sptr menuItem :  m_menuItems)
     {
         menuItem->destroyContainer();
     }
     m_menuItems.clear();
-    BOOST_FOREACH( ::fwGui::container::fwMenu::sptr menu, m_menus)
+    for( ::fwGui::container::fwMenu::sptr menu :  m_menus)
     {
         menu->destroyContainer();
     }
     m_menus.clear();
-    BOOST_FOREACH( ::fwGui::container::fwContainer::sptr container, m_containers)
+    for( ::fwGui::container::fwContainer::sptr container :  m_containers)
     {
         container->destroyContainer();
     }

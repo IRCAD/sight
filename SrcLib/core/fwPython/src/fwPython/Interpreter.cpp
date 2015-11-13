@@ -4,14 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/python.hpp>
+#include "fwPython/bindings/base.hpp"
+#include "fwPython/Interpreter.hpp"
+#include "fwPython/python.hpp"
+
 #include <fwCore/base.hpp>
 
-#include "fwPython/python.hpp"
-#include "fwPython/bindings/base.hpp"
-
-#include "fwPython/Interpreter.hpp"
+#include <boost/python.hpp>
 
 namespace fwPython
 {

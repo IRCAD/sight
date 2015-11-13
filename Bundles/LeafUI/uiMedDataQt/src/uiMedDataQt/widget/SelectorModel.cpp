@@ -93,7 +93,7 @@ void SelectorModel::clear()
 ::fwData::Image::SpacingType roundSpacing(const ::fwData::Image::SpacingType& spacing)
 {
     ::fwData::Image::SpacingType roundSpacing;
-    BOOST_FOREACH(::fwData::Image::SpacingType::value_type val, spacing)
+    for(::fwData::Image::SpacingType::value_type val :  spacing)
     {
         ::fwData::Image::SpacingType::value_type roundVal = ::boost::math::round(val * 100.)/100.;
         roundSpacing.push_back(roundVal);
@@ -351,7 +351,7 @@ void SelectorModel::removeRows(const QModelIndexList indexes)
     QList<QStandardItem *> seriesItems;
     QList<QStandardItem *> studyItems;
 
-    BOOST_FOREACH(QModelIndex index, indexes)
+    for(QModelIndex index :  indexes)
     {
         SLM_ASSERT("Index must be in first column.", index.column() == 0);
         QStandardItem * item = this->itemFromIndex(index);
@@ -366,7 +366,7 @@ void SelectorModel::removeRows(const QModelIndexList indexes)
     }
 
     // Remove series items from selector
-    BOOST_FOREACH(QStandardItem *item, seriesItems)
+    for(QStandardItem *item :  seriesItems)
     {
         QStandardItem * studyItem = item->parent();
 
@@ -378,7 +378,7 @@ void SelectorModel::removeRows(const QModelIndexList indexes)
     }
 
     // Remove study items from selector
-    BOOST_FOREACH(QStandardItem *item, studyItems)
+    for(QStandardItem *item :  studyItems)
     {
         this->removeStudyItem(item);
     }

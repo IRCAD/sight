@@ -6,25 +6,23 @@
 
 #include "uiMeasurement/action/ShowLandmark.hpp"
 
-#include <fwCore/base.hpp>
-
-#include <exception>
-
-#include <fwData/Boolean.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <boost/foreach.hpp>
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/ImageMsg.hpp>
+#include <fwCore/base.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwServices/Base.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/ObjectMsg.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <exception>
 
 namespace uiMeasurement
 {

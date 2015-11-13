@@ -4,18 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "monitor/action/SDumpAll.hpp"
 
 #include <fwCore/base.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/BufferInfo.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include "monitor/action/SDumpAll.hpp"
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 namespace monitor
 {
@@ -47,7 +46,7 @@ void SDumpAll::updating( ) throw(::fwTools::Failed)
     {
         buffInfoMap = buffManager->getBufferInfos().get();
     }
-    BOOST_FOREACH(::fwMemory::BufferManager::BufferInfoMapType::value_type elt, buffInfoMap)
+    for(::fwMemory::BufferManager::BufferInfoMapType::value_type elt :  buffInfoMap)
     {
         ::fwMemory::BufferInfo dumpBuffInfo = elt.second;
         bool loaded = dumpBuffInfo.loaded;

@@ -6,7 +6,10 @@
 
 #ifndef ANDROID
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/Distance.hpp"
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/PointMsg.hpp>
 
 #include <fwData/PointList.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -15,9 +18,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/PointMsg.hpp>
 
 #include <vtkActor.h>
 #include <vtkCommand.h>
@@ -31,7 +31,6 @@
 #include <vtkProperty2D.h>
 #include <vtkRenderer.h>
 
-#include "visuVTKAdaptor/Distance.hpp"
 
 
 

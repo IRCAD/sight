@@ -4,15 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <utility>
-
-#include <boost/foreach.hpp>
+#include "fwGui/GuiRegistry.hpp"
+#include "fwGui/registrar/ViewRegistrar.hpp"
 
 #include <fwTools/fwID.hpp>
 #include <fwServices/Base.hpp>
 
-#include "fwGui/GuiRegistry.hpp"
-#include "fwGui/registrar/ViewRegistrar.hpp"
+#include <utility>
 
 namespace fwGui
 {
@@ -77,7 +75,7 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
     unsigned int index = 0;
     // initialize m_sids and m_wids map with configuration
     std::vector < ConfigurationType > vectViews = configuration->find("view");
-    BOOST_FOREACH( ConfigurationType view, vectViews)
+    for( ConfigurationType view :  vectViews)
     {
         SLM_ASSERT("<view> tag must have sid or wid attribute",
                    view->hasAttribute("sid") || view->hasAttribute("wid"));
@@ -148,7 +146,7 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
 void ViewRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > subViews )
 {
     ::fwGui::container::fwContainer::sptr container;
-    BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
+    for( SIDContainerMapType::value_type sid :  m_sids)
     {
         OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!",
                     sid.second.first < subViews.size());
@@ -164,7 +162,7 @@ void ViewRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > 
         }
     }
 
-    BOOST_FOREACH( WIDContainerMapType::value_type wid, m_wids)
+    for( WIDContainerMapType::value_type wid :  m_wids)
     {
         OSLM_ASSERT("Container index "<< wid.second <<" is bigger than subViews size!", wid.second < subViews.size());
         container = subViews.at( wid.second );
@@ -202,7 +200,7 @@ void ViewRegistrar::manageToolBar(::fwGui::container::fwToolBar::sptr toolBar )
 
 void ViewRegistrar::unmanage()
 {
-    BOOST_FOREACH( SIDContainerMapType::value_type sid, m_sids)
+    for( SIDContainerMapType::value_type sid :  m_sids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -214,7 +212,7 @@ void ViewRegistrar::unmanage()
         ::fwGui::GuiRegistry::unregisterSIDContainer(sid.first);
     }
 
-    BOOST_FOREACH( WIDContainerMapType::value_type wid, m_wids)
+    for( WIDContainerMapType::value_type wid :  m_wids)
     {
         ::fwGui::GuiRegistry::unregisterWIDContainer(wid.first);
     }

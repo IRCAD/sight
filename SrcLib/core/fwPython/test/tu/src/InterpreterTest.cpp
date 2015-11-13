@@ -4,23 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <exception>
-#include <vector>
-#include <ostream>
-#include <map>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/assign/std/vector.hpp>
-#include <boost/foreach.hpp>
-
-#include <fwData/String.hpp>
-#include <fwData/factory/new.hpp>
-
-#include "fwPython/python.hpp"
 #include "fwPython/bindings/base.hpp"
 #include "fwPython/Interpreter.hpp"
+#include "fwPython/python.hpp"
 #include "InterpreterTest.hpp"
 
+#include <fwData/factory/new.hpp>
+#include <fwData/String.hpp>
+
+#include <boost/assign/std/vector.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <exception>
+#include <iostream>
+#include <map>
+#include <ostream>
+#include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwPython::ut::InterpreterTest );
@@ -130,7 +128,7 @@ void InterpreterTest::testFwDataBindings()
 
 
     std::string base = "::fwData::";
-    BOOST_FOREACH(std::string name, classes)
+    for(std::string name :  classes)
     {
         std::string klass = base + name;
         interpreter.addObject(name, ::fwData::factory::New(klass) );

@@ -43,7 +43,7 @@ ActivitySeriesInitData::~ActivitySeriesInitData()
     namespace ActReg = ::fwActivities::registry;
 
     ActReg::ActivityInfo::RequirementsType reqVect = activityInfo.requirements;
-    BOOST_FOREACH(const ActReg::ActivityRequirement& req, reqVect)
+    for(const ActReg::ActivityRequirement& req :  reqVect)
     {
         if(req.maxOccurs == 0 && req.minOccurs == 0)
         {

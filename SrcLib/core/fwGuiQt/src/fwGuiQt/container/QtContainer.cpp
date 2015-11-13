@@ -4,15 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwGuiQt/container/QtContainer.hpp"
 
 #include <QDockWidget>
-#include <QWidget>
-#include <QList>
 #include <QLayout>
+#include <QList>
 #include <QMetaObject>
-
-#include "fwGuiQt/container/QtContainer.hpp"
+#include <QWidget>
 
 namespace fwGuiQt
 {

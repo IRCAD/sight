@@ -4,11 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <limits>
+#include "BooleanTest.hpp"
 
 #include <fwAtoms/Boolean.hpp>
-#include "BooleanTest.hpp"
+
+#include <limits>
+
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwAtoms::ut::BooleanTest );
@@ -37,7 +38,7 @@ void BooleanTest::conversion()
 
     ::fwAtoms::Boolean::sptr meta;
 
-    BOOST_FOREACH ( bool BOOL, VALUES )
+    for ( bool BOOL : VALUES )
     {
         std::string res = BOOL ? "true" : "false";
 

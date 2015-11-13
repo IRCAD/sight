@@ -4,35 +4,35 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vtkImageBlend.h>
-#include <vtkImageData.h>
-#include <vtkImageMapToColors.h>
-#include <vtkLookupTable.h>
+#include "visuVTKAdaptor/Image.hpp"
+#include "visuVTKAdaptor/ImagesBlend.hpp"
 
-#include <fwServices/Base.hpp>
-
-#include <fwData/Boolean.hpp>
-#include <fwData/Color.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/TransferFunction.hpp>
-
-#include <fwMath/Compare.hpp>
+#include <fwComEd/CompositeMsg.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/TransferFunctionMsg.hpp>
-#include <fwComEd/CompositeMsg.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Color.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/String.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
+#include <fwMath/Compare.hpp>
+#include <fwServices/Base.hpp>
+
 #include <fwVtkIO/vtk.hpp>
 
-#include "visuVTKAdaptor/Image.hpp"
-#include "visuVTKAdaptor/ImagesBlend.hpp"
-
+#include <boost/foreach.hpp>
+#include <vtkImageBlend.h>
+#include <vtkImageData.h>
+#include <vtkImageMapToColors.h>
+#include <vtkLookupTable.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite );
 
@@ -147,7 +147,7 @@ void ImagesBlend::configuring() throw(fwTools::Failed)
 
     std::vector< ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("image");
     SLM_ASSERT("Missing tag 'image' ", !configs.empty());
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr element, configs)
+    for(::fwRuntime::ConfigurationElement::sptr element :  configs)
     {
         SPTR(ImageInfo) info = std::shared_ptr< ImageInfo >(new ImageInfo());
         SLM_ASSERT("Missing attribute 'objectId'", element->hasAttribute("objectId"));
@@ -188,7 +188,7 @@ bool ImagesBlend::checkImageInformations()
 
     bool haveSameInfo = true;
 
-    BOOST_FOREACH(std::string id, m_imageIds)
+    for(std::string id :  m_imageIds)
     {
         if (composite->find(id) != composite->end())
         {
@@ -252,7 +252,7 @@ void ImagesBlend::addImageAdaptors()
 
     this->checkImageInformations();
 
-    BOOST_FOREACH(std::string id, m_imageIds)
+    for(std::string id :  m_imageIds)
     {
         if (composite->find(id) != composite->end())
         {

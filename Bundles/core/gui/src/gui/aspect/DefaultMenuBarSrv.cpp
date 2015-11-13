@@ -4,19 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "gui/aspect/DefaultMenuBarSrv.hpp"
 
 #include <fwTools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/helper.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
-
-#include "gui/aspect/DefaultMenuBarSrv.hpp"
-
+#include <fwRuntime/helper.hpp>
+#include <fwRuntime/Runtime.hpp>
 
 fwServicesRegisterMacro( ::fwGui::IMenuBarSrv, ::gui::aspect::DefaultMenuBarSrv, ::fwData::Object );
 

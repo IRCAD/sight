@@ -4,19 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <string>
-
-#include <boost/foreach.hpp>
-#include <boost/functional/hash.hpp>
-
-#include <fwCore/Exception.hpp>
-
-#include <fwData/camp/mapper.hpp>
-
-#include <fwMemory/BufferObject.hpp>
-
 #include "fwDataCamp/visitor/CompareObjects.hpp"
 
+#include <fwCore/Exception.hpp>
+#include <fwData/camp/mapper.hpp>
+#include <fwMemory/BufferObject.hpp>
+
+#include <boost/functional/hash.hpp>
+#include <string>
 
 namespace fwDataCamp
 {
@@ -276,7 +271,7 @@ throw (::fwCore::Exception)
     m_propsComp = ::boost::move(*m_props);
     m_props->clear();
 
-    BOOST_FOREACH(PropsMapType::value_type prop, m_propsComp)
+    for(PropsMapType::value_type prop :  m_propsComp)
     {
         if(m_propsRef.find(prop.first) != m_propsRef.end())
         {
@@ -291,7 +286,7 @@ throw (::fwCore::Exception)
         }
     }
 
-    BOOST_FOREACH(PropsMapType::value_type prop, m_propsRef)
+    for(PropsMapType::value_type prop :  m_propsRef)
     {
         if(m_propsComp.find(prop.first) == m_propsComp.end() && m_props->find(prop.first) == m_props->end())
         {

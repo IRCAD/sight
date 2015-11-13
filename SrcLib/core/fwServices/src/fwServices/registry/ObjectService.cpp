@@ -4,25 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <sstream>
-#include <utility>
+#include "fwServices/IService.hpp"
+#include "fwServices/registry/AppConfig.hpp"
 
-#include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
+#include "fwServices/registry/ObjectService.hpp"
 
+#include "fwServices/registry/ServiceConfig.hpp"
+#include "fwServices/registry/ServiceFactory.hpp"
 #include <fwCore/LogicStamp.hpp>
 #include <fwCore/util/LazyInstantiator.hpp>
 
 #include <fwTools/fwID.hpp>
 
-#include "fwServices/IService.hpp"
-
-#include "fwServices/registry/ServiceConfig.hpp"
-#include "fwServices/registry/ServiceFactory.hpp"
-#include "fwServices/registry/AppConfig.hpp"
-
-#include "fwServices/registry/ObjectService.hpp"
+#include <boost/filesystem.hpp>
+#include <iostream>
+#include <sstream>
+#include <utility>
 
 namespace fwServices
 {
@@ -182,7 +179,7 @@ ObjectService::ObjectVectorType ObjectService::getObjects() const
     ObjectVectorType objects;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
     const ServiceContainerType::right_map & right = m_container.right;
-    BOOST_FOREACH( const ServiceContainerType::right_map::value_type &elt, right)
+    for( const ServiceContainerType::right_map::value_type &elt :  right)
     {
         if ( std::find(objects.begin(), objects.end(), elt.first->getObject()) == objects.end() )
         {
@@ -200,7 +197,7 @@ std::string ObjectService::getRegistryInformation() const
     std::stringstream info;
     ::fwCore::LogicStamp::LogicStampType previousKey = -1;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
-    BOOST_FOREACH( const ServiceContainerType::left_map::value_type &objSrvMap, m_container.left)
+    for( const ServiceContainerType::left_map::value_type &objSrvMap :  m_container.left)
     {
         // TODO FIXME getObject() fail if there are expired object in OSR
         ::fwCore::LogicStamp::LogicStampType key = objSrvMap.first;
@@ -227,7 +224,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
     ServiceVectorType services;
 
     // Search should be optimized
-    BOOST_FOREACH(::fwServices::IService::sptr srv, allServices)
+    for(::fwServices::IService::sptr srv :  allServices)
     {
         if( srv->isA(serviceType) )
         {
@@ -244,7 +241,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( const std::string &
     ServiceVectorType services;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
     const ServiceContainerType::right_map right = m_container.right;
-    BOOST_FOREACH( ServiceContainerType::right_map::value_type elt, right)
+    for( ServiceContainerType::right_map::value_type elt :  right)
     {
         ::fwServices::IService::sptr service = elt.first;
         if ( service->isA(serviceType) )

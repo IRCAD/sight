@@ -510,7 +510,7 @@ std::string BufferManager::toStringImpl() const
          << "DumpStatus" << " "
          << "File" << " "
          << std::endl;
-    BOOST_FOREACH( BufferInfoMapType::value_type item, m_bufferInfos )
+    for( BufferInfoMapType::value_type item :  m_bufferInfos )
     {
         BufferInfo & info = item.second;
         sstr << std::setw(18) << item.first << "->" << std::setw(18) << *(item.first) << " "
@@ -563,7 +563,7 @@ BufferManager::BufferInfoMapType BufferManager::getBufferInfosImpl() const
 BufferManager::BufferStats BufferManager::computeBufferStats(const BufferInfoMapType& bufferInfo)
 {
     BufferStats stats = {0,0};
-    BOOST_FOREACH( const BufferInfoMapType::value_type &item, bufferInfo )
+    for( const BufferInfoMapType::value_type &item :  bufferInfo )
     {
         const BufferInfo & info = item.second;
         if ( !info.loaded )

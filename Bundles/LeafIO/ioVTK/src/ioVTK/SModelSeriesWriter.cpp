@@ -127,7 +127,7 @@ void SModelSeriesWriter::updating() throw(::fwTools::Failed)
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
         const ::fwMedData::ModelSeries::ReconstructionVectorType& recs = modelSeries->getReconstructionDB();
-        BOOST_FOREACH(const SPTR(::fwData::Reconstruction)& rec, recs)
+        for(const SPTR(::fwData::Reconstruction)& rec :  recs)
         {
             SLM_ASSERT("Reconstruction from model series is not instanced", rec);
             ::fwData::Mesh::sptr mesh = rec->getMesh();

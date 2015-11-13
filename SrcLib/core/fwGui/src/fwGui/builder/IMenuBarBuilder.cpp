@@ -12,8 +12,6 @@
  * @date 2009-2010
  */
 
-#include <boost/foreach.hpp>
-
 #include "fwGui/builder/IMenuBarBuilder.hpp"
 
 namespace fwGui

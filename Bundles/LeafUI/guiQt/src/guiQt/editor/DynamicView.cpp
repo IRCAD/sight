@@ -51,7 +51,7 @@ AppConfig::AppConfig(const DynamicView::ConfigType& config) :
     if(config.count("parameters") == 1 )
     {
         const ConfigType &configParameters = config.get_child("parameters");
-        BOOST_FOREACH( const ConfigType::value_type &v, configParameters.equal_range("parameter") )
+        BOOST_FOREACH( const ConfigType::value_type &v,  configParameters.equal_range("parameter") )
         {
             ParameterType parameter( v.second );
             parameters.push_back( parameter );
@@ -175,7 +175,7 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
 
     ::fwData::Object::sptr currentObj    = this->getObject();
     ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
-    BOOST_FOREACH(const AppConfig::ParametersType::value_type& param, appConfig.parameters)
+    for(const AppConfig::ParametersType::value_type& param :  appConfig.parameters)
     {
         if(!param.isSeshat())
         {

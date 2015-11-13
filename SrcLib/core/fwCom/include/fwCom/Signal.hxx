@@ -11,18 +11,16 @@
 #error fwCom/Signal.hpp not included
 #endif
 
-#include <boost/foreach.hpp>
-#include <boost/function_types/function_arity.hpp>
-
-#include "fwCom/exception/BadSlot.hpp"
 #include "fwCom/exception/AlreadyConnected.hpp"
-#include "fwCom/SlotConnection.hpp"
-#include "fwCom/SlotConnection.hxx"
+#include "fwCom/exception/BadSlot.hpp"
 #include "fwCom/Slot.hpp"
 #include "fwCom/Slot.hxx"
-#include "fwCom/util/remove_last_arg.hpp"
+#include "fwCom/SlotConnection.hpp"
+#include "fwCom/SlotConnection.hxx"
 #include "fwCom/util/log.hpp"
+#include "fwCom/util/remove_last_arg.hpp"
 
+#include <boost/function_types/function_arity.hpp>
 
 namespace fwCom
 {
@@ -76,7 +74,7 @@ void Signal< R (A ...) >::disconnectAll()
 
     ConnectionMapType connections = m_connections;
 
-    BOOST_FOREACH( const typename ConnectionMapType::value_type &conn, connections )
+    for( const typename ConnectionMapType::value_type &conn : connections )
     {
         SlotConnectionBase::sptr connection( conn.second.lock() );
 

@@ -4,24 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#ifndef ANDROID
+
+#include "visuVTKAdaptor/PlaneSelectionNotifier.hpp"
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/PlaneListMsg.hpp>
 #include <fwComEd/PlaneMsg.hpp>
 
+#include <fwData/Boolean.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
-#include <fwData/Boolean.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
-
-#ifndef ANDROID
-
-#include "visuVTKAdaptor/PlaneSelectionNotifier.hpp"
-
+#include <fwServices/registry/ObjectService.hpp>
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelectionNotifier,
@@ -79,7 +76,7 @@ void PlaneSelectionNotifier::doStart() throw(fwTools::Failed)
         m_plConnection = planeList->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
             this->slot(::fwServices::IService::s_RECEIVE_SLOT));
 
-        BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
+        for( ::fwData::Plane::sptr plane :  planeList->getPlanes() )
         {
             m_planeConnections[plane->getID()] = plane->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
                 this->slot(::fwServices::IService::s_RECEIVE_SLOT));
@@ -113,7 +110,7 @@ void PlaneSelectionNotifier::doStop() throw(fwTools::Failed)
     if(planeList)
     {
 
-        BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
+        for( ::fwData::Plane::sptr plane :  planeList->getPlanes() )
         {
             m_planeConnections[plane->getID()].disconnect();
         }

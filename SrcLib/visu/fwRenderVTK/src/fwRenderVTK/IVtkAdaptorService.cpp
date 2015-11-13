@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
@@ -233,7 +231,7 @@ vtkRenderWindowInteractor* IVtkAdaptorService::getInteractor()
         else
         {
             ::fwData::Object::sptr res;
-            BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
+            for( ServiceVector::value_type service :  m_subServices)
             {
                 if(!service.expired())
                 {
@@ -261,10 +259,7 @@ void IVtkAdaptorService::registerService( ::fwRenderVTK::IVtkAdaptorService::spt
 
 void IVtkAdaptorService::unregisterServices()
 {
-    BOOST_FOREACH(
-        ServiceVector::value_type service,
-        m_subServices
-        )
+    for(ServiceVector::value_type service : m_subServices)
     {
         if(!service.expired())
         {
@@ -312,7 +307,7 @@ void IVtkAdaptorService::getAllSubProps(vtkPropCollection *propc, int depth)
 
     if(depth != 0)
     {
-        BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
+        for( ServiceVector::value_type service :  m_subServices)
         {
             if(!service.expired())
             {

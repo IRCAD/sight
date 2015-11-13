@@ -270,7 +270,7 @@ void GuiRegistry::actionServiceStopping(std::string actionSid)
     {
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
 
-        BOOST_FOREACH(std::string parentSid, parentSids)
+        for(std::string parentSid :  parentSids)
         {
             bool service_exists = ::fwTools::fwID::exist(parentSid );
             OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
@@ -309,7 +309,7 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
 
 
-        BOOST_FOREACH(std::string parentSid, parentSids)
+        for(std::string parentSid :  parentSids)
         {
             bool service_exists = ::fwTools::fwID::exist(parentSid );
             OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
@@ -349,7 +349,7 @@ void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
 
 
-        BOOST_FOREACH(std::string parentSid, parentSids)
+        for(std::string parentSid :  parentSids)
         {
             bool service_exists = ::fwTools::fwID::exist(parentSid );
             OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
@@ -388,7 +388,7 @@ void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecu
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
 
 
-        BOOST_FOREACH(std::string parentSid, parentSids)
+        for(std::string parentSid :  parentSids)
         {
             bool service_exists = ::fwTools::fwID::exist(parentSid );
             OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );

@@ -309,7 +309,7 @@ void DictionaryReader::read()
     // File the dictionary Structure
     ::fwData::StructureTraitsDictionary::sptr structDico = getConcreteObject();
 
-    BOOST_FOREACH(::fwDataIO::line line, dicolines)
+    for(::fwDataIO::line line :  dicolines)
     {
         ::fwData::StructureTraits::sptr newOrgan = ::fwData::StructureTraits::New();
         newOrgan->setType(line.type);
@@ -327,7 +327,7 @@ void DictionaryReader::read()
         std::vector<std::string> categorylist;
         ::boost::algorithm::split( categorylist, line.catgegory, ::boost::algorithm::is_any_of(",") );
         ::fwData::StructureTraits::CategoryContainer categories;
-        BOOST_FOREACH(std::string category, categorylist)
+        for(std::string category :  categorylist)
         {
             std::string catReformated = reformatString(category);
             ::fwData::StructureTraitsHelper::CategoryTranslatorType::right_const_iterator strCategoryIter =

@@ -4,35 +4,32 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwData/Camera.hpp>
-#include <fwData/Video.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Boolean.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
-
-#include <vtkActor.h>
-#include <vtkRenderer.h>
-#include <vtkMatrix4x4.h>
-#include <vtkTransform.h>
-#include <vtkCamera.h>
-#include <vtkMath.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkInteractorStyleImage.h>
-
 #include "visuVTKAdaptor/SliceFollowerCamera.hpp"
 
+#include <fwComEd/Dictionary.hpp>
 
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/ImageMsg.hpp>
+#include <fwData/Boolean.hpp>
+
+#include <fwData/Camera.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/Video.hpp>
+#include <fwServices/Base.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <vtkActor.h>
+#include <vtkCamera.h>
+#include <vtkInteractorStyleImage.h>
+#include <vtkMath.h>
+#include <vtkMatrix4x4.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkTransform.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SliceFollowerCamera, ::fwData::Image );
 

@@ -72,7 +72,7 @@ void RemoveLandmark::info(std::ostream &_sstream )
     selections.push_back("ALL");
     std::map< std::string, ::fwData::Point::sptr > correspondance;
 
-    BOOST_FOREACH(::fwData::Point::sptr landmark, landmarksBackup->getRefPoints())
+    for(::fwData::Point::sptr landmark :  landmarksBackup->getRefPoints())
     {
         ::fwData::String::sptr name = landmark->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId);
         SLM_ASSERT("No Field LabelId", name);

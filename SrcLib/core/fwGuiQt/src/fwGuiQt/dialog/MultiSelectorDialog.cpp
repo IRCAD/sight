@@ -4,21 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-#include <QApplication>
-#include <QPushButton>
-#include <QListWidget>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QLabel>
-
-#include <boost/foreach.hpp>
+#include "fwGuiQt/dialog/MultiSelectorDialog.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/dialog/MultiSelectorDialog.hpp"
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QListWidget>
+#include <QPushButton>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 fwGuiRegisterMacro( ::fwGuiQt::dialog::MultiSelectorDialog, ::fwGui::dialog::IMultiSelectorDialog::REGISTRY_KEY );
 
@@ -65,7 +62,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
     dialog->setWindowTitle(QString::fromStdString(m_title));
 
     QListWidget *selectionList = new QListWidget(dialog);
-    BOOST_FOREACH( Selections::value_type selection, m_selections)
+    for( Selections::value_type selection :  m_selections)
     {
         QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(selection.first), selectionList);
         item->setCheckState( (selection.second ? Qt::Checked : Qt::Unchecked) );
@@ -100,7 +97,7 @@ void MultiSelectorDialog::setTitle(std::string _title)
     if(dialog->exec())
     {
         int indexItem = 0;
-        BOOST_FOREACH( Selections::value_type selection, m_selections)
+        for( Selections::value_type selection :  m_selections)
         {
             selections[selection.first] = (selectionList->item(indexItem)->checkState() == Qt::Checked);
             indexItem++;

@@ -4,29 +4,24 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <fstream>
-
-#include <boost/cstdint.hpp>
-#include <boost/foreach.hpp>
-
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/include/phoenix_bind.hpp>
-#include <boost/spirit/include/phoenix_statement.hpp>
-#include <boost/spirit/include/phoenix_stl.hpp>
-
-#include <fwData/Object.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/location/SingleFile.hpp>
-
-#include <fwComEd/helper/Mesh.hpp>
-#include <fwComEd/helper/Array.hpp>
-
 #include "fwDataIO/reader/MeshReader.hpp"
 #include "fwDataIO/reader/registry/macros.hpp"
 
+#include <fwComEd/helper/Array.hpp>
+#include <fwComEd/helper/Mesh.hpp>
+#include <fwData/location/SingleFile.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Object.hpp>
+
+#include <boost/cstdint.hpp>
+#include <boost/spirit/include/phoenix_bind.hpp>
+#include <boost/spirit/include/phoenix_core.hpp>
+#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/spirit/include/phoenix_statement.hpp>
+#include <boost/spirit/include/phoenix_stl.hpp>
+#include <boost/spirit/include/qi.hpp>
+#include <fstream>
+#include <iostream>
 
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::MeshReader );
 

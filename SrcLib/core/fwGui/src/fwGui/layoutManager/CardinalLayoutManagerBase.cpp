@@ -12,13 +12,12 @@
  * @date 2009-2010
  */
 
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/assign/list_of.hpp>
+#include "fwGui/layoutManager/CardinalLayoutManagerBase.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwGui/layoutManager/CardinalLayoutManagerBase.hpp"
+#include <boost/assign/list_of.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace fwGui
 {
@@ -61,7 +60,7 @@ void CardinalLayoutManagerBase::initialize( ConfigurationType configuration)
     std::vector < ConfigurationType > vectViews = configuration->find("view");
     SLM_TRACE_IF("No view define.", vectViews.empty() );
     m_views.clear();
-    BOOST_FOREACH (ConfigurationType view, vectViews)
+    for (ConfigurationType view : vectViews)
     {
         ViewInfo vi;
         if( view->hasAttribute("align") )

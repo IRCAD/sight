@@ -77,7 +77,7 @@ std::string distanceToStr(double dist)
         selections.push_back("ALL");
         std::map< std::string, ::fwData::PointList::sptr > correspondance;
 
-        BOOST_FOREACH(::fwData::Object::sptr obj, *vectDist)
+        for(::fwData::Object::sptr obj :  *vectDist)
         {
             ::fwData::PointList::sptr pl = ::fwData::PointList::dynamicCast(obj);
 

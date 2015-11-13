@@ -4,19 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <limits>
+#include "NumericTest.hpp"
 
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
-
+#include <fwAtoms/Exception.hpp>
 
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
 
-#include <fwAtoms/Exception.hpp>
-
-#include "NumericTest.hpp"
-
+#include <boost/lexical_cast.hpp>
+#include <limits>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwAtoms::ut::NumericTest );
 
@@ -186,7 +182,7 @@ void NumericTest::mixedTest()
 
     };
 
-    BOOST_FOREACH ( fwAtoms::Numeric::ValueType &v, values )
+    for( fwAtoms::Numeric::ValueType &v : values )
     {
         boost::apply_visitor( variant_visitor(), v );
     }

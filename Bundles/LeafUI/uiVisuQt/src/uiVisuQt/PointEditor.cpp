@@ -4,7 +4,23 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "uiVisuQt/PointEditor.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
+
+#include <fwComEd/InteractionMsg.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwMath/IntrasecTypes.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/IService.hpp>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -14,24 +30,6 @@
 #include <QLabel>
 #include <QPalette>
 #include <QSpacerItem>
-
-#include <fwCore/base.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IService.hpp>
-
-#include <fwComEd/InteractionMsg.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwMath/IntrasecTypes.hpp>
-
-#include "uiVisuQt/PointEditor.hpp"
 
 namespace uiVisu
 {

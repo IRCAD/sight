@@ -6,36 +6,30 @@
 
 #ifndef ANDROID
 
-#include <limits>
-
-#include <boost/foreach.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/Mesh.hpp>
+#include "visuVTKAdaptor/MeshesBoxWidget.hpp"
 
 #include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
-
-#include <fwServices/macros.hpp>
+#include <fwData/Composite.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwServices/Base.hpp>
-
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-
-#include <fwVtkIO/vtk.hpp>
 #include <fwVtkIO/helper/Mesh.hpp>
 
-#include <vtkPolyData.h>
-#include <vtkBoxRepresentation.h>
-#include <vtkBoxWidget2.h>
-#include <vtkTransform.h>
-#include <vtkCommand.h>
-#include <vtkPolyDataMapper.h>
+#include <fwVtkIO/vtk.hpp>
+
+#include <limits>
+
 #include <vtkActor.h>
 #include <vtkAssembly.h>
+#include <vtkBoxRepresentation.h>
+#include <vtkBoxWidget2.h>
+#include <vtkCommand.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkProp3DCollection.h>
-
-#include "visuVTKAdaptor/MeshesBoxWidget.hpp"
-
+#include <vtkTransform.h>
 
 class MeshesBoxClallback : public ::vtkCommand
 {
@@ -127,7 +121,7 @@ void MeshesBoxWidget::doUpdate() throw(fwTools::Failed)
     m_assembly->GetParts()->RemoveAllItems();
     if (!m_meshMap.empty())
     {
-        BOOST_FOREACH(MeshMapType::value_type elt, m_meshMap)
+        for(MeshMapType::value_type elt :  m_meshMap)
         {
             m_assembly->AddPart( elt.second );
         }
@@ -155,7 +149,7 @@ void MeshesBoxWidget::doStop() throw(fwTools::Failed)
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
+    for(::fwData::Composite::value_type elt :  *composite)
     {
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
@@ -183,7 +177,7 @@ void MeshesBoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwToo
     {
         if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS))
         {
-            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getRemovedKeys())
+            for(::fwData::Composite::value_type elt :  *compositeMsg->getRemovedKeys())
             {
                 ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
                 m_meshMap[elt.first]->Delete();
@@ -225,7 +219,7 @@ void MeshesBoxWidget::updateFromVtk()
     vtkTransform * boxTransform  = vtkTransform::New();
     boxRep->GetTransform(boxTransform);
 
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
+    for(::fwData::Composite::value_type elt :  *composite)
     {
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
@@ -267,7 +261,7 @@ void MeshesBoxWidget::updateFromVtk()
 
 void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr composite)
 {
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
+    for(::fwData::Composite::value_type elt :  *composite)
     {
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
         vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
@@ -313,7 +307,7 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
 void MeshesBoxWidget::updateMeshTransform()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
+    for(::fwData::Composite::value_type elt :  *composite)
     {
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
 

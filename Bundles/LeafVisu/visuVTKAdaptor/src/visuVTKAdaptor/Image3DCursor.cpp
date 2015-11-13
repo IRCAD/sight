@@ -4,9 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/format.hpp>
+#include "visuVTKAdaptor/Image3DCursor.hpp"
 
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/ImageMsg.hpp>
 
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
@@ -14,13 +16,13 @@
 #include <fwData/Float.hpp>
 #include <fwData/Color.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
+#include <fwRenderVTK/vtk/Helpers.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/Base.hpp>
+
+#include <boost/format.hpp>
 
 #include <vtkActor.h>
 #include <vtkParametricBoy.h>
@@ -31,10 +33,6 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSphereSource.h>
 #include <vtkTransform.h>
-
-#include "fwRenderVTK/vtk/Helpers.hpp"
-
-#include "visuVTKAdaptor/Image3DCursor.hpp"
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image );
 

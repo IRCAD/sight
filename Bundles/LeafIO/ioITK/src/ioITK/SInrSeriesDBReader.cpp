@@ -4,15 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "ioITK/SInrSeriesDBReader.hpp"
 
-#include <fwTools/UUID.hpp>
-#include <fwTools/dateAndTime.hpp>
-
-#include <fwServices/Base.hpp>
-
-#include <io/IReader.hpp>
+#include <fwComEd/helper/SeriesDB.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -21,22 +15,26 @@
 #include <fwData/location/MultiFiles.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Equipment.hpp>
-
-#include <fwComEd/helper/SeriesDB.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwItkIO/ImageReader.hpp>
 
-#include "ioITK/SInrSeriesDBReader.hpp"
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Study.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/UUID.hpp>
+
+#include <io/IReader.hpp>
+
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace ioITK
 {
@@ -151,7 +149,7 @@ void SInrSeriesDBReader::updating() throw(::fwTools::Failed)
 
         const std::string instanceUID = ::fwTools::UUID::generateUUID();
 
-        BOOST_FOREACH(const ::boost::filesystem::path &path, this->getFiles())
+        for(const ::boost::filesystem::path &path :  this->getFiles())
         {
             ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::New();
             this->initSeries(imgSeries, instanceUID);

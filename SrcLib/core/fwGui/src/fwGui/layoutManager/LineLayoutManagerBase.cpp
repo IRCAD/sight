@@ -8,11 +8,8 @@
  * @file fwGui/layoutManager/LineLayoutManagerBase.cpp
  * @brief This file defines the implementation of the class for managing a line layout geometry.
  *
- *
- * @date 2009-2010
  */
 
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <fwCore/base.hpp>
@@ -57,7 +54,7 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
     m_orientation = (orientation == "vertical") ? VERTICAL : HORIZONTAL;
 
     m_views.clear();
-    BOOST_FOREACH (ConfigurationType view, configuration->getElements())
+    for (ConfigurationType view : configuration->getElements())
     {
         if( view->getName() == "spacer" )
         {

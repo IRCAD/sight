@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2004-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -68,7 +68,7 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
     const std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( srv->getID() );
     replaceMap[ConfigLauncher::s_GENERIC_UID_KEY] = genericUidAdaptor;
 
-    BOOST_FOREACH(const AppConfig::ActivityAppConfigParamsType::value_type& param, m_appConfig.parameters)
+    for(const AppConfig::ActivityAppConfigParamsType::value_type& param :  m_appConfig.parameters)
     {
         if(!param.isSeshat())
         {
@@ -155,7 +155,7 @@ bool ConfigLauncher::isExecutable(::fwData::Object::sptr currentObj)
 {
     typedef ::fwActivities::registry::ActivityAppConfig AppConfig;
     bool executable = true;
-    BOOST_FOREACH(const AppConfig::ActivityAppConfigParamsType::value_type& param, m_appConfig.parameters)
+    for(const AppConfig::ActivityAppConfigParamsType::value_type& param :  m_appConfig.parameters)
     {
         if(param.isSeshat())
         {

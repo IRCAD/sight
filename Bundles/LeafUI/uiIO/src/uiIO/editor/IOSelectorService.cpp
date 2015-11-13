@@ -4,32 +4,30 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <string>
-#include <sstream>
+#include "uiIO/editor/IOSelectorService.hpp"
 
-#include <boost/foreach.hpp>
+#include <fwComEd/helper/Composite.hpp>
+#include <fwCore/base.hpp>
+
+#include <fwData/Composite.hpp>
+
+#include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/SelectorDialog.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 
-#include <fwCore/base.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwComEd/helper/Composite.hpp>
-
 #include <fwServices/Base.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
-#include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/macros.hpp>
-
-#include <fwGui/dialog/SelectorDialog.hpp>
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <io/IReader.hpp>
 #include <io/IWriter.hpp>
 
-#include "uiIO/editor/IOSelectorService.hpp"
+#include <string>
+#include <sstream>
 
 namespace uiIO
 {
@@ -169,7 +167,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
     std::vector< std::pair < std::string, std::string > > availableExtensionsMap;
     std::vector< std::string > availableExtensionsSelector;
 
-    BOOST_FOREACH( const std::string &serviceId, availableExtensionsId )
+    for( const std::string &serviceId :  availableExtensionsId )
     {
         bool serviceIsSelectedByUser =
             std::find( m_selectedServices.begin(), m_selectedServices.end(),
@@ -233,7 +231,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 bool extensionIdFound = false;
 
                 typedef std::pair < std::string, std::string > PairType;
-                BOOST_FOREACH(PairType pair, availableExtensionsMap)
+                for(PairType pair :  availableExtensionsMap)
                 {
                     if (pair.second == selection )
                     {

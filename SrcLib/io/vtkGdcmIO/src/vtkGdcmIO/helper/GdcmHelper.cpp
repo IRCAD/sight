@@ -4,7 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "vtkGdcmIO/helper/GdcmHelper.hpp"
+
+#include <fwCore/base.hpp>
+
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/classification.hpp>
@@ -22,10 +25,6 @@
 #include <gdcmFilenameGenerator.h>
 #include <gdcmAttribute.h>
 #include <gdcmFile.h>
-
-#include <fwCore/base.hpp>
-
-#include "vtkGdcmIO/helper/GdcmHelper.hpp"
 
 namespace vtkGdcmIO
 {

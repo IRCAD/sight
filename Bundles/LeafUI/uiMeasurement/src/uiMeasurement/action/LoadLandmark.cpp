@@ -4,33 +4,32 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vector>
-#include <exception>
-#include <boost/foreach.hpp>
+#include "uiMeasurement/action/LoadLandmark.hpp"
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/ImageMsg.hpp>
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwServices/registry/ServiceConfig.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-#include <fwServices/AppConfigManager.hpp>
-
-#include <fwData/String.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/Point.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/String.hpp>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
-#include "uiMeasurement/action/LoadLandmark.hpp"
+#include <fwServices/AppConfigManager.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/ObjectMsg.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
+
+#include <exception>
+#include <vector>
 
 namespace uiMeasurement
 {
@@ -160,7 +159,7 @@ void LoadLandmark::load(const ::boost::filesystem::path& path)
     helper->launch();
     helper->stopAndDestroy();
 
-    BOOST_FOREACH(::fwData::Point::sptr landmark, newLandmarks->getCRefPoints())
+    for(::fwData::Point::sptr landmark :  newLandmarks->getCRefPoints())
     {
         landmarks->getRefPoints().push_back( landmark );
     }

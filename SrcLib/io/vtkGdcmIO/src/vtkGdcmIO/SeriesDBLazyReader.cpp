@@ -4,28 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <algorithm>
-#include <iosfwd>
-
-#include <boost/iostreams/categories.hpp>
-
-#include <exception>
-
-#include <boost/filesystem/path.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/foreach.hpp>
+#include "vtkGdcmIO/SeriesDBLazyReader.hpp"
+#include "vtkGdcmIO/helper/GdcmHelper.hpp"
+#include "vtkGdcmIO/helper/ImageDicomStream.hpp"
 
 #include <fwCore/base.hpp>
 #if (SPYLOG_LEVEL >= 4 )
 #include <fwCore/HiResTimer.hpp>
 #endif
 
-#include <fwMemory/BufferObject.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/fromIsoExtendedString.hpp>
+#include <fwDataIO/reader/registry/macros.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -33,23 +21,30 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
+#include <fwVtkIO/helper/ProgressVtkToFw.hpp>
+#include <fwVtkIO/vtk.hpp>
 
-#include <fwDataIO/reader/registry/macros.hpp>
+#include <fwMemory/BufferObject.hpp>
 
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/fromIsoExtendedString.hpp>
+
+#include <algorithm>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/iostreams/categories.hpp>
+
+#include <exception>
 #include <gdcmImageHelper.h>
-#include <gdcmIPPSorter.h>
-#include <gdcmScanner.h>
-#include <gdcmReader.h>
 #include <gdcmImageReader.h>
 #include <gdcmIPPSorter.h>
+#include <gdcmIPPSorter.h>
+#include <gdcmReader.h>
 #include <gdcmRescaler.h>
-
-#include <fwVtkIO/vtk.hpp>
-#include <fwVtkIO/helper/ProgressVtkToFw.hpp>
-
-#include "vtkGdcmIO/SeriesDBLazyReader.hpp"
-#include "vtkGdcmIO/helper/GdcmHelper.hpp"
-#include "vtkGdcmIO/helper/ImageDicomStream.hpp"
+#include <gdcmScanner.h>
+#include <iosfwd>
 
 fwDataIOReaderRegisterMacro( ::vtkGdcmIO::SeriesDBLazyReader );
 
@@ -253,7 +248,7 @@ void SeriesDBLazyReader::fillSeries( ::gdcm::Scanner & scanner,
 
     ::fwMedData::DicomValuesType seriesPhysicianNames;
     ::gdcm::Scanner::ValuesType gdcmPhysicianNames = scanner.GetValues( seriesPhysicianNamesTag );
-    BOOST_FOREACH(const std::string &str, gdcmPhysicianNames)
+    for(const std::string &str :  gdcmPhysicianNames)
     {
         ::fwMedData::DicomValuesType result;
         ::boost::split( result, str, ::boost::is_any_of("\\"));
@@ -504,7 +499,7 @@ void SeriesDBLazyReader::addSeries(
         /// Build map series
         MapSeriesType mapSeries = buildMapSeriesFromScanner( scanner );
 
-        BOOST_FOREACH( MapSeriesType::value_type mapElem, mapSeries )
+        for( MapSeriesType::value_type mapElem :  mapSeries )
         {
             SeriesFilesType seriesFiles    = sortImageSeriesFiles( mapElem.second );
             const std::string & refDcmFile = seriesFiles[0];
@@ -561,7 +556,7 @@ void SeriesDBLazyReader::read()
     }
     else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
     {
-        BOOST_FOREACH(::boost::filesystem::path file, this->getFiles())
+        for(::boost::filesystem::path file :  this->getFiles())
         {
             filenames.push_back(file.string());
         }

@@ -115,7 +115,7 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
     SLM_ASSERT("Proxy connections must be empty", m_proxyCtns.empty());
 
 
-    BOOST_FOREACH(SubServicesMapType::value_type elt, m_objectsSubServices)
+    for(SubServicesMapType::value_type elt :  m_objectsSubServices)
     {
         SubServicesVecType subServices = elt.second;
         BOOST_REVERSE_FOREACH( SPTR(SubService) subSrv, subServices )
@@ -186,7 +186,7 @@ void SwapperSrv::starting()  throw ( ::fwTools::Failed )
 
 void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
 {
-    BOOST_FOREACH( ::fwData::Composite::ValueType addedObjectId, _composite->getContainer())
+    for( ::fwData::Composite::ValueType addedObjectId :  _composite->getContainer())
     {
         if(m_objectsSubServices.find(addedObjectId.first) != m_objectsSubServices.end())
         {
@@ -256,7 +256,7 @@ void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr 
                     objectType == object->getClassname());
         SubServicesVecType subVecSrv;
         std::vector< ConfigurationType > confVec = conf->find("service");
-        BOOST_FOREACH( ConfigurationType cfg, confVec )
+        for( ConfigurationType cfg :  confVec )
         {
             ::fwServices::IService::sptr srv = this->add( object, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);
@@ -314,7 +314,7 @@ void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr 
 
 void SwapperSrv::swapObjects( ::fwData::Composite::sptr _composite )
 {
-    BOOST_FOREACH( ::fwData::Composite::ValueType swappedObjectId, _composite->getContainer())
+    for( ::fwData::Composite::ValueType swappedObjectId :  _composite->getContainer())
     {
         this->swapObject(swappedObjectId.first, swappedObjectId.second);
     }
@@ -325,13 +325,13 @@ void SwapperSrv::swapObjects( ::fwData::Composite::sptr _composite )
 void SwapperSrv::swapObject(const std::string &objectId, ::fwData::Object::sptr object)
 {
     std::vector< ConfigurationType > confVec = m_managerConfiguration->find("object", "id", objectId);
-    BOOST_FOREACH( ConfigurationType cfg, confVec )
+    for( ConfigurationType cfg :  confVec )
     {
         this->removeConnections(objectId);
         this->disconnectProxies(objectId);
 
         SubServicesVecType subServices = m_objectsSubServices[objectId];
-        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
+        for( SPTR(SubService) subSrv :  subServices )
         {
             OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
             OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
@@ -367,7 +367,7 @@ void SwapperSrv::swapObject(const std::string &objectId, ::fwData::Object::sptr 
 
 void SwapperSrv::removeObjects( ::fwData::Composite::sptr _composite )
 {
-    BOOST_FOREACH( ::fwData::Composite::ValueType swappedObjectId, _composite->getContainer())
+    for( ::fwData::Composite::ValueType swappedObjectId :  _composite->getContainer())
     {
         this->removeObject(swappedObjectId.first);
     }
@@ -388,7 +388,7 @@ void SwapperSrv::removeObject( const std::string &objectId )
         SubServicesVecType subServices = m_objectsSubServices[objectId];
         ::fwData::Object::sptr dummyObj;
         dummyObj = ::fwData::factory::New(objectType);
-        BOOST_FOREACH( SPTR(SubService) subSrv, subServices )
+        for( SPTR(SubService) subSrv :  subServices )
         {
             OSLM_ASSERT("SubService on " << objectId <<" expired !", subSrv->getService() );
             OSLM_ASSERT( subSrv->getService()->getID() <<  " is not started ", subSrv->getService()->isStarted());
@@ -447,7 +447,7 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
         dummyObj = ::fwData::factory::New(objectType);
         SubServicesVecType subVecSrv;
         std::vector < ConfigurationType > confVec = conf->find("service");
-        BOOST_FOREACH( ConfigurationType cfg, confVec )
+        for( ConfigurationType cfg :  confVec )
         {
             ::fwServices::IService::sptr srv = this->add( dummyObj, cfg );
             OSLM_ASSERT("Instantiation Service failed on object "<<objectId, srv);

@@ -38,6 +38,7 @@
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
 
+#include <boost/foreach.hpp>
 #include <QApplication>
 #include <QDialog>
 #include <QPushButton>
@@ -127,7 +128,7 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
         if(config.count("parameters") == 1 )
         {
             const ::fwServices::IService::ConfigType &configParameters = config.get_child("parameters");
-            BOOST_FOREACH( const ConfigType::value_type &v, configParameters.equal_range("parameter") )
+            BOOST_FOREACH( const ConfigType::value_type &v,  configParameters.equal_range("parameter") )
             {
                 ParametersType::value_type parameter( v.second );
                 m_parameters.push_back( parameter );
@@ -145,7 +146,7 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
                         mode == "include" || mode == "exclude");
             m_filterMode = mode;
 
-            BOOST_FOREACH( const ConfigType::value_type &v, configFilter.equal_range("id") )
+            BOOST_FOREACH( const ConfigType::value_type &v,  configFilter.equal_range("id") )
             {
                 m_keys.push_back(v.second.get<std::string>(""));
             }
@@ -156,7 +157,7 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
         {
             m_quickLaunch.clear();
             const ::fwServices::IService::ConfigType &configQuickLaunch = config.get_child("quickLaunch");
-            BOOST_FOREACH( const ConfigType::value_type &v, configQuickLaunch.equal_range("association") )
+            BOOST_FOREACH( const ConfigType::value_type &v,  configQuickLaunch.equal_range("association") )
             {
                 const ::fwServices::IService::ConfigType &association = v.second;
                 const ::fwServices::IService::ConfigType xmlattr      = association.get_child("<xmlattr>");
@@ -185,7 +186,7 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
 
 
     QStandardItemModel *model = new QStandardItemModel(dialog);
-    BOOST_FOREACH( ::fwActivities::registry::ActivityInfo info, infos)
+    for( ::fwActivities::registry::ActivityInfo info :  infos)
     {
         std::string text;
         if(info.title.empty())
@@ -418,7 +419,7 @@ void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo
     ::fwActivities::IValidator::ValidationType validation;
     validation.first = true;
 
-    BOOST_FOREACH(auto const &validatorImpl, info.validatorsImpl)
+    for(auto const &validatorImpl :  info.validatorsImpl)
     {
         ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
         OSLM_ASSERT(validatorImpl << " instantiation failed", validator);
@@ -454,7 +455,7 @@ bool SActivityLauncher::launchAS(::fwData::Vector::sptr &selection)
     dataCount = ::fwActivities::registry::Activities::getDefault()->getDataCount(selection);
     if(dataCount.size() == 1)
     {
-        BOOST_FOREACH(::fwData::Object::sptr obj, *selection)
+        for(::fwData::Object::sptr obj :  *selection)
         {
             ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast(obj);
             if (!as)
@@ -523,7 +524,7 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
 {
     ParametersType transParams = parameters;
     ::fwData::Object::sptr workingObj = this->getObject();
-    BOOST_FOREACH(ParametersType::value_type& param, transParams)
+    for(ParametersType::value_type& param :  transParams)
     {
         if(param.isSeshat())
         {

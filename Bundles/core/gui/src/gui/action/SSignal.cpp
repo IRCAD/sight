@@ -4,12 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
+#include "gui/action/SSignal.hpp"
+
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/fwID.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Extension.hpp>
@@ -17,12 +19,7 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
-
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include "gui/action/SSignal.hpp"
+#include <fwTools/fwID.hpp>
 
 namespace gui
 {

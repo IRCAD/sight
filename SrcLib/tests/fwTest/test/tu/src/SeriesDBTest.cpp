@@ -70,7 +70,7 @@ void SeriesDBTest::generationTest()
 
     unsigned int count = 1;
     std::stringstream str;
-    BOOST_FOREACH(::fwMedData::Series::sptr series, seriesContainer)
+    for(::fwMedData::Series::sptr series :  seriesContainer)
     {
         str.str("");
         str.width(4);

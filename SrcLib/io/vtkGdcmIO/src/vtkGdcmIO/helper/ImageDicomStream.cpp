@@ -4,13 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "vtkGdcmIO/helper/ImageDicomStream.hpp"
+
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include <vtkStringArray.h>
-
-#include "vtkGdcmIO/helper/ImageDicomStream.hpp"
 
 namespace vtkGdcmIO
 {
@@ -50,7 +49,7 @@ bool ImageDicomSource::readImage()
 {
     vtkSmartPointer< vtkStringArray > fileArray = vtkSmartPointer< vtkStringArray >::New();
     fileArray->Initialize();
-    BOOST_FOREACH( std::string file, m_dcmInfo->m_seriesFiles )
+    for( std::string file :  m_dcmInfo->m_seriesFiles )
     {
         OSLM_TRACE("Add " << file << " to vtkGdcmReader");
         fileArray->InsertNextValue( file.c_str() );

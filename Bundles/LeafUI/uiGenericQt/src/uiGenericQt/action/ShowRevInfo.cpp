@@ -4,38 +4,32 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <fstream>
+#include "uiGenericQt/action/ShowRevInfo.hpp"
 
-#include <QApplication>
-#include <QTextBrowser>
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QFrame>
-
-#include <QTextDocumentWriter>
-#include <QTextBlockFormat>
-#include <QTextCharFormat>
-#include <QTextCursor>
-#include <QTextTableFormat>
+#include <fwCore/base.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwServices/macros.hpp>
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/operations.hpp>
-#include <boost/foreach.hpp>
+#include <fstream>
+#include <iostream>
 
-#include <fwCore/base.hpp>
-
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/location/Folder.hpp>
-
-#include <fwServices/macros.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-
-#include "uiGenericQt/action/ShowRevInfo.hpp"
+#include <QApplication>
+#include <QDialog>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QTextBlockFormat>
+#include <QTextBrowser>
+#include <QTextCharFormat>
+#include <QTextCursor>
+#include <QTextDocumentWriter>
+#include <QTextTableFormat>
+#include <QVBoxLayout>
 
 namespace uiGeneric
 {
@@ -192,19 +186,19 @@ QTextDocument* ShowRevInfo::generateReport()
     cursor.insertText(tr("Lib"), boldFormat);
     cursor.movePosition(QTextCursor::NextCell);
 
-    BOOST_FOREACH(RevMapType::value_type val, revMap)
+    for(RevMapType::value_type val :  revMap)
     {
         cursor.insertHtml(QString::fromStdString(val.first).replace("\n","<br/>"));
         cursor.movePosition(QTextCursor::NextCell);
         cursor.setBlockFormat(centerFormat);
-        BOOST_FOREACH(std::string name, val.second.first)
+        for(std::string name :  val.second.first)
         {
             cursor.insertHtml(QString::fromStdString("<br/>" + name));
         }
 
         cursor.movePosition(QTextCursor::NextCell);
         cursor.setBlockFormat(centerFormat);
-        BOOST_FOREACH(std::string name, val.second.second)
+        for(std::string name :  val.second.second)
         {
             cursor.insertHtml(QString::fromStdString("<br/>" + name));
         }
@@ -239,7 +233,7 @@ const ShowRevInfo::FindMapType ShowRevInfo::findRevInfo(const ::boost::filesyste
 
 void ShowRevInfo::getRevMap(const ShowRevInfo::FindMapType& findMap, ShowRevInfo::RevMapType& revMap, bool isBundle)
 {
-    BOOST_FOREACH(FindMapType::value_type val, findMap)
+    for(FindMapType::value_type val :  findMap)
     {
         size_t length;
         std::string buf;

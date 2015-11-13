@@ -6,14 +6,10 @@
 
 #include "fwComEd/helper/SeriesDB.hpp"
 
-#include <fwMedData/SeriesDB.hpp>
-
-#include <fwServices/IService.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include <boost/foreach.hpp>
+#include <fwMedData/SeriesDB.hpp>
+#include <fwServices/IService.hpp>
 
 namespace fwComEd
 {
@@ -84,7 +80,7 @@ void SeriesDB::clear()
 void SeriesDB::merge(::fwMedData::SeriesDB::sptr seriesDBIn)
 {
     ::fwMedData::SeriesDB::ContainerType& vectIn = seriesDBIn->getContainer();
-    BOOST_FOREACH(::fwMedData::Series::sptr series, vectIn)
+    for(::fwMedData::Series::sptr series :  vectIn)
     {
         this->add(series);
     }

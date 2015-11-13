@@ -193,7 +193,7 @@ void SOrganTransformation::refresh()
             SLM_ASSERT("Sorry, '"<< m_TMSUid <<"' object is not a composite", pComposite);
         }
 
-        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
+        for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
             m_reconstructionMap[ rec->getOrganName() ] = rec;
         }
@@ -275,7 +275,7 @@ void SOrganTransformation::onResetClick()
     ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
 
     //search the corresponding triangular mesh
-    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
+    for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
     {
         ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
 
@@ -299,7 +299,7 @@ void SOrganTransformation::onSaveClick()
 
     if(!series->getReconstructionDB().empty())
     {
-        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
+        for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
             ::fwData::Mesh::sptr pTmpTrMesh                = rec->getMesh();
             ::fwData::TransformationMatrix3D::sptr pTmpMat =
@@ -331,7 +331,7 @@ void SOrganTransformation::onLoadClick()
         ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
 
         //search the corresponding triangular mesh
-        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
+        for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
             ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
             if (matMap.find(pTmpTrMesh->getID()) != matMap.end())
@@ -364,7 +364,7 @@ void SOrganTransformation::onSelectAllChanged(int state)
 
             ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
 
-            BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
+            for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
             {
                 if(composite->find(rec->getOrganName()) == composite->end())
                 {
@@ -378,7 +378,7 @@ void SOrganTransformation::onSelectAllChanged(int state)
             m_reconstructionListBox->setEnabled(true);
 
             QList<QListWidgetItem*> itemList = m_reconstructionListBox->findItems("", Qt::MatchContains);
-            BOOST_FOREACH(QListWidgetItem* item, itemList)
+            for(QListWidgetItem* item :  itemList)
             {
                 if(item->checkState() == Qt::Unchecked)
                 {

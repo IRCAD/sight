@@ -41,4 +41,4 @@ public:
 } // namespace ut
 } // namespace ioAtoms
 
-#endif //__IOATOMS_UT_IOATOMSTEST_HPP__
+#endif // __IOATOMS_UT_IOATOMSTEST_HPP__

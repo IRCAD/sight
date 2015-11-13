@@ -4,39 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/lexical_cast.hpp>
-#include <boost/foreach.hpp>
-#include <boost/bind.hpp>
-
-#include <QComboBox>
-#include <QHeaderView>
-#include <QItemDelegate>
-#include <QStringList>
-#include <QTableWidgetItem>
-#include <QTimer>
-#include <QVBoxLayout>
-#include <QFuture>
-#include <QtConcurrentRun>
-
-#include <fwCore/base.hpp>
-
-#include <fwTools/fwID.hpp>
-#include <fwTools/Stringizer.hpp>
+#include "monitorQt/DumpEditor.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
-
-#include <fwMemory/BufferManager.hpp>
-#include <fwMemory/ByteSize.hpp>
-#include <fwMemory/tools/MemoryMonitorTools.hpp>
-#include <fwMemory/BufferManager.hpp>
-#include <fwMemory/IPolicy.hpp>
+#include <fwCore/base.hpp>
 
 #include <fwData/Object.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/IMessageDialog.hpp>
@@ -44,7 +18,32 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include "monitorQt/DumpEditor.hpp"
+#include <fwMemory/BufferManager.hpp>
+#include <fwMemory/BufferManager.hpp>
+#include <fwMemory/ByteSize.hpp>
+#include <fwMemory/IPolicy.hpp>
+#include <fwMemory/tools/MemoryMonitorTools.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
+
+#include <fwTools/fwID.hpp>
+#include <fwTools/Stringizer.hpp>
+
+#include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
+
+#include <QComboBox>
+#include <QFuture>
+#include <QHeaderView>
+#include <QItemDelegate>
+#include <QStringList>
+#include <QTableWidgetItem>
+#include <QtConcurrentRun>
+#include <QTimer>
+#include <QVBoxLayout>
+
 
 namespace monitor
 {
@@ -90,7 +89,7 @@ QWidget *PolicyComboBoxDelegate::createEditor(QWidget *parent,
     const ::fwMemory::policy::registry::Type::KeyVectorType &factories =
         ::fwMemory::policy::registry::get()->getFactoryKeys();
 
-    BOOST_FOREACH( const ::fwMemory::policy::registry::KeyType &policy, factories)
+    for( const ::fwMemory::policy::registry::KeyType &policy :  factories)
     {
         policyComboBox->addItem(QString::fromStdString(policy));
         if(value == policy)
@@ -585,7 +584,7 @@ void DumpEditor::onBufferInfo()
     m_list->setRowCount(static_cast<int>(m_bufferInfos.size()));
     m_list->setColumnCount(5);
     QColor backColor;
-    BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, m_bufferInfos)
+    for(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt :  m_bufferInfos)
     {
         m_objectsUID.push_back(elt.first);
 

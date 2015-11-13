@@ -12,8 +12,6 @@
  * @date 2009-2010
  */
 
-#include <boost/foreach.hpp>
-
 #include "fwGui/layoutManager/IMenuLayoutManager.hpp"
 
 namespace fwGui
@@ -133,12 +131,12 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
 
 void IMenuLayoutManager::destroyActions()
 {
-    BOOST_FOREACH( ::fwGui::container::fwMenuItem::sptr menuItem, m_menuItems)
+    for( ::fwGui::container::fwMenuItem::sptr menuItem :  m_menuItems)
     {
         menuItem->destroyContainer();
     }
     m_menuItems.clear();
-    BOOST_FOREACH( ::fwGui::container::fwMenu::sptr menu, m_menus)
+    for( ::fwGui::container::fwMenu::sptr menu :  m_menus)
     {
         menu->destroyContainer();
     }

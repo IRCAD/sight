@@ -4,15 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwTools/Type.hpp>
+#include "ImageTest.hpp"
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwTest/generator/Image.hpp>
-
-#include "ImageTest.hpp"
+#include <fwTools/Type.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTest::ut::ImageTest );
@@ -29,7 +25,7 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }

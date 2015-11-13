@@ -4,18 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <fwAtoms/Object.hpp>
 
-#include "fwAtomsPatch/infos/log.hpp"
-#include "fwAtomsPatch/VersionsManager.hpp"
-#include "fwAtomsPatch/VersionsGraph.hpp"
-#include "fwAtomsPatch/patcher/IPatcher.hpp"
-#include "fwAtomsPatch/exceptions/MissingInformation.hpp"
 #include "fwAtomsPatch/exceptions/ImpossibleConversion.hpp"
+#include "fwAtomsPatch/exceptions/MissingInformation.hpp"
+#include "fwAtomsPatch/infos/log.hpp"
+#include "fwAtomsPatch/patcher/IPatcher.hpp"
 #include "fwAtomsPatch/PatchingManager.hpp"
-
+#include "fwAtomsPatch/VersionsGraph.hpp"
+#include "fwAtomsPatch/VersionsManager.hpp"
 
 namespace fwAtomsPatch
 {
@@ -76,7 +73,7 @@ PatchingManager::~PatchingManager()
 
     SLM_TRACE("[PATCHING] Starting...");
 
-    BOOST_FOREACH(::fwAtomsPatch::VersionsGraph::VersionSeriesType::value_type elt, series)
+    for(::fwAtomsPatch::VersionsGraph::VersionSeriesType::value_type elt :  series)
     {
         ::fwAtomsPatch::VersionsGraph::NodeIDType targetVersionNode = elt;
 

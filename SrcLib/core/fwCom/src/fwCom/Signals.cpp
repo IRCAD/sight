@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #ifdef DEBUG
 #include "fwCore/spyLog.hpp"
 #endif
@@ -25,7 +23,7 @@ Signals::Signals()
 Signals::~Signals()
 {
 #ifdef DEBUG
-    BOOST_FOREACH( SignalMapType::value_type elem, m_signals )
+    for( SignalMapType::value_type elem :  m_signals )
     {
         OSLM_ASSERT( "Signal '"<< elem.first <<"' has connected slots", elem.second->getNumberOfConnections() == 0 );
     }
@@ -59,7 +57,7 @@ SignalBase::sptr Signals::operator[]( const SignalKeyType &key ) const
 Signals::SignalKeyContainerType Signals::getSignalKeys() const
 {
     Signals::SignalKeyContainerType SignalKeys;
-    BOOST_FOREACH( SignalMapType::value_type elem, m_signals )
+    for( SignalMapType::value_type elem :  m_signals )
     {
         SignalKeys.push_back(elem.first);
     }
@@ -83,7 +81,7 @@ Signals& Signals::operator=( const Signals& )
 #ifdef COM_LOG
 void Signals::setID( const std::string prefix )
 {
-    BOOST_FOREACH( SignalMapType::value_type elem, m_signals )
+    for( SignalMapType::value_type elem :  m_signals )
     {
         elem.second->setID( prefix + elem.first );
     }

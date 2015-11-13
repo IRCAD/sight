@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
@@ -83,7 +82,7 @@ void LockDumpManagerSrv::receiving( ::fwServices::ObjectMsg::csptr message ) thr
 void LockDumpManagerSrv::setDumpLockOnImages( LockMapType &lockMap, ::fwData::Composite::sptr _composite,
                                               bool _isLocked )
 {
-    BOOST_FOREACH( ::fwData::Composite::value_type objectId, *_composite )
+    for( ::fwData::Composite::value_type objectId :  *_composite )
     {
         if ( m_managedKeys.empty()
              || std::find(m_managedKeys.begin(), m_managedKeys.end(), objectId.first) != m_managedKeys.end() )

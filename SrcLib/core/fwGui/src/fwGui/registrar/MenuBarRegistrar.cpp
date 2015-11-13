@@ -4,15 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <utility>
-
-#include <boost/foreach.hpp>
+#include "fwGui/GuiRegistry.hpp"
+#include "fwGui/registrar/MenuBarRegistrar.hpp"
 
 #include <fwTools/fwID.hpp>
 #include <fwServices/Base.hpp>
 
-#include "fwGui/GuiRegistry.hpp"
-#include "fwGui/registrar/MenuBarRegistrar.hpp"
+#include <utility>
 
 namespace fwGui
 {
@@ -59,7 +57,7 @@ void MenuBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
     unsigned int index = 0;
     // initialize m_menuSids map with configuration
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
-    BOOST_FOREACH( ConfigurationType menu, vectMenus)
+    for( ConfigurationType menu :  vectMenus)
     {
         SLM_ASSERT("<menu> tag must have sid attribute", menu->hasAttribute("sid"));
 
@@ -85,7 +83,7 @@ void MenuBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
 void MenuBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > menus )
 {
     ::fwGui::container::fwMenu::sptr menu;
-    BOOST_FOREACH( SIDMenuMapType::value_type sid, m_menuSids)
+    for( SIDMenuMapType::value_type sid :  m_menuSids)
     {
         OSLM_ASSERT("Container index "<< sid.second.first <<" is bigger than subViews size!",
                     sid.second.first < menus.size());
@@ -112,7 +110,7 @@ void MenuBarRegistrar::manage(std::vector< ::fwGui::container::fwMenu::sptr > me
 
 void MenuBarRegistrar::unmanage()
 {
-    BOOST_FOREACH( SIDMenuMapType::value_type sid, m_menuSids)
+    for( SIDMenuMapType::value_type sid :  m_menuSids)
     {
         if(sid.second.second) //service is auto started?
         {

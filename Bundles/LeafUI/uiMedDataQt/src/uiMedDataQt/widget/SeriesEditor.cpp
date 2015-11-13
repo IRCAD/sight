@@ -194,7 +194,7 @@ void SeriesEditor::setSeries(SPTR(::fwMedData::Series)series)
     this->onDateChanged(m_date->text());
 
     m_physicians->getListWidget()->clear();
-    BOOST_FOREACH(::fwMedData::DicomValueType value, m_series->getPerformingPhysiciansName())
+    for(::fwMedData::DicomValueType value :  m_series->getPerformingPhysiciansName())
     {
         QListWidgetItem* newVal
             = new QListWidgetItem(QString::fromStdString(value).trimmed(), m_physicians->getListWidget());

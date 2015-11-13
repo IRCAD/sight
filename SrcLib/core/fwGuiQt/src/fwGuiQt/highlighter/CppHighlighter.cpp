@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
 #include <QtGui>
 
 #include "fwGuiQt/highlighter/CppHighlighter.hpp"
@@ -32,7 +31,7 @@ CppHighlighter::CppHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
                     << "template" << "typedef" << "typename"
                     << "union" << "unsigned" << "virtual"
                     << "void" << "volatile";
-    BOOST_FOREACH(const QString &pattern, keywordPatterns)
+    for(const QString &pattern :  keywordPatterns)
     {
         rule.pattern = QRegExp("\\b" + pattern + "\\b");
         rule.format  = keywordFormat;
@@ -75,7 +74,7 @@ CppHighlighter::CppHighlighter(QTextDocument *parent) : QSyntaxHighlighter(paren
 
 void CppHighlighter::highlightBlock(const QString &text)
 {
-    BOOST_FOREACH(const HighlightingRule &rule, highlightingRules)
+    for(const HighlightingRule &rule :  highlightingRules)
     {
         QRegExp expression(rule.pattern);
         int index = expression.indexIn(text);

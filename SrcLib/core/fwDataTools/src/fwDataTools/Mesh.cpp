@@ -40,7 +40,7 @@ bool Mesh::hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellType
     ::fwComEd::helper::Mesh meshHelper(mesh);
     ::fwData::Mesh::CellTypesMultiArrayType cellTypes = meshHelper.getCellTypes();
 
-    BOOST_FOREACH(::fwData::Mesh::CellTypes type, cellTypes)
+    for(::fwData::Mesh::CellTypes type :  cellTypes)
     {
         if(type != cell)
         {

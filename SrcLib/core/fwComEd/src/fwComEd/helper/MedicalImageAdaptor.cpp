@@ -4,23 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwComEd/helper/Composite.hpp"
+#include "fwComEd/helper/Image.hpp"
+#include "fwComEd/helper/MedicalImageAdaptor.hpp"
 
+#include <fwComEd/CompositeMsg.hpp>
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/ImageMsg.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
-
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/CompositeMsg.hpp>
-
-#include "fwComEd/helper/MedicalImageAdaptor.hpp"
-#include "fwComEd/helper/Image.hpp"
-#include "fwComEd/helper/Composite.hpp"
 
 namespace fwComEd
 {

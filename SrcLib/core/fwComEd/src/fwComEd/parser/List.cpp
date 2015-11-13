@@ -11,6 +11,8 @@
 
 #include "fwComEd/parser/List.hpp"
 
+#include <boost/foreach.hpp>
+
 fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::List, ::fwData::List );
 
 namespace fwComEd
@@ -61,7 +63,7 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
     ::fwData::List::sptr dataList = ::fwData::List::dynamicCast(_obj);
     SLM_ASSERT("Sorry, object given in parameter is not a fwData::List",dataList);
 
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
+    for( ::fwRuntime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
         if( elem->getName() == "item" )
         {
@@ -104,7 +106,7 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
 
 void List::startConfig()
 {
-    BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
+    for( ::fwServices::AppConfigManager::sptr ctm :  m_ctmContainer )
     {
         ctm->start();
     }
@@ -114,7 +116,7 @@ void List::startConfig()
 
 void List::updateConfig()
 {
-    BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
+    for( ::fwServices::AppConfigManager::sptr ctm :  m_ctmContainer )
     {
         ctm->update();
     }

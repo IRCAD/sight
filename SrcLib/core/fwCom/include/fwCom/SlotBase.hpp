@@ -7,22 +7,21 @@
 #ifndef __FWCOM_SLOTBASE_HPP__
 #define __FWCOM_SLOTBASE_HPP__
 
-#include <set>
-#include <queue>
+#include "fwCom/config.hpp"
+#include "fwCom/util/convert_function_type.hpp"
 
-#include <boost/foreach.hpp>
+#include <fwCore/BaseObject.hpp>
+#include <fwCore/mt/types.hpp>
+#include <fwCore/spyLog.hpp>
+
 #include <boost/thread/future.hpp>
 
 #ifdef COM_LOG
 #include <boost/lexical_cast.hpp>
 #endif
 
-#include <fwCore/mt/types.hpp>
-#include <fwCore/BaseObject.hpp>
-#include <fwCore/spyLog.hpp>
-
-#include "fwCom/config.hpp"
-#include "fwCom/util/convert_function_type.hpp"
+#include <queue>
+#include <set>
 
 fwCorePredeclare( (fwThread)(Worker) );
 

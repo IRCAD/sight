@@ -4,16 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <QMainWindow>
-#include <QWidget>
-#include <QVBoxLayout>
+#include "fwGuiQt/builder/ContainerBuilder.hpp"
+#include "fwGuiQt/container/QtContainer.hpp"
 
 #include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/container/QtContainer.hpp"
-#include "fwGuiQt/builder/ContainerBuilder.hpp"
+#include <QMainWindow>
+#include <QVBoxLayout>
+#include <QWidget>
 
 
 fwGuiRegisterMacro(::fwGui::builder::ContainerBuilder, ::fwGui::builder::IContainerBuilder::REGISTRY_KEY);

@@ -4,16 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
 
-#include <fwData/Composite.hpp>
+#include "ctrlSelection/wrapper/ObjToCompositeMsgForwarderSrv.hpp"
 
-
-#include <fwServices/Base.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 
-#include "ctrlSelection/wrapper/ObjToCompositeMsgForwarderSrv.hpp"
+#include <fwData/Composite.hpp>
+
+#include <fwServices/Base.hpp>
 
 namespace ctrlSelection
 {
@@ -46,7 +45,7 @@ void ObjToCompositeMsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr me
     {
         if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS))
         {
-            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getAddedKeys())
+            for(::fwData::Composite::value_type elt :  *compositeMsg->getAddedKeys())
             {
                 std::string key = elt.first;
                 ::fwData::Object::sptr obj = elt.second;
@@ -59,7 +58,7 @@ void ObjToCompositeMsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr me
         }
         else if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
         {
-            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getNewChangedKeys())
+            for(::fwData::Composite::value_type elt :  *compositeMsg->getNewChangedKeys())
             {
                 std::string key = elt.first;
                 ::fwData::Object::sptr obj = elt.second;
@@ -73,7 +72,7 @@ void ObjToCompositeMsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr me
         }
         else if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS))
         {
-            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getRemovedKeys())
+            for(::fwData::Composite::value_type elt :  *compositeMsg->getRemovedKeys())
             {
                 std::string key = elt.first;
 
@@ -86,7 +85,7 @@ void ObjToCompositeMsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr me
     {
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-        BOOST_FOREACH( EventType item, m_managedEvents)
+        for( EventType item :  m_managedEvents)
         {
             std::string fromKey = item.get<0>();
             std::string event   = item.get<1>();
@@ -138,7 +137,7 @@ void ObjToCompositeMsgForwarderSrv::starting()  throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
+    for(::fwData::Composite::value_type elt :  *composite)
     {
         std::string key = elt.first;
         ::fwData::Object::sptr obj = elt.second;
@@ -154,7 +153,7 @@ void ObjToCompositeMsgForwarderSrv::starting()  throw ( ::fwTools::Failed )
 
 void ObjToCompositeMsgForwarderSrv::stopping()  throw ( ::fwTools::Failed )
 {
-    BOOST_FOREACH(ObjConnectionMap::value_type elt, m_objConnections)
+    for(ObjConnectionMap::value_type elt :  m_objConnections)
     {
         m_objConnections[elt.first].disconnect();
     }
@@ -178,7 +177,7 @@ void ObjToCompositeMsgForwarderSrv::configuring()  throw ( ::fwTools::Failed )
     SLM_ASSERT("Problem with configuration for ObjToCompositeMsgForwarderSrv type, missing element \"forward\"",
                handleEvents.size() != 0 );
     m_managedEvents.clear();
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElementContainer::Container::value_type item,handleEvents.getElements())
+    for( ::fwRuntime::ConfigurationElementContainer::Container::value_type item : handleEvents.getElements())
     {
         SLM_FATAL_IF( "Sorry, attribute \"fromKey\" is missing", !item->hasAttribute("fromKey") );
         std::string fromKey = item->getExistingAttributeValue("fromKey");

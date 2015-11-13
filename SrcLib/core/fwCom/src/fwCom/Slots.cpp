@@ -4,14 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwThread/Worker.hpp>
-
 #include "fwCom/Slot.hpp"
 #include "fwCom/Slot.hxx"
 
 #include "fwCom/Slots.hpp"
+
+#include <fwThread/Worker.hpp>
 
 namespace fwCom
 {
@@ -25,7 +23,7 @@ Slots::Slots()
 Slots::~Slots()
 {
 #ifdef DEBUG
-    BOOST_FOREACH( SlotMapType::value_type elem, m_slots )
+    for( SlotMapType::value_type elem :  m_slots )
     {
         SLM_ASSERT( "Slot '"<< elem.first <<"' has connected signals", elem.second->getNumberOfConnections() == 0 );
     }
@@ -36,7 +34,7 @@ Slots::~Slots()
 
 void Slots::setWorker( const ::fwThread::Worker::sptr &worker )
 {
-    BOOST_FOREACH( SlotMapType::value_type elem, m_slots )
+    for( SlotMapType::value_type elem :  m_slots )
     {
         elem.second->setWorker(worker);
     }
@@ -69,7 +67,7 @@ SlotBase::sptr Slots::operator[]( const SlotKeyType &key ) const
 Slots::SlotKeyContainerType Slots::getSlotKeys() const
 {
     Slots::SlotKeyContainerType slotKeys;
-    BOOST_FOREACH( SlotMapType::value_type elem, m_slots )
+    for( SlotMapType::value_type elem :  m_slots )
     {
         slotKeys.push_back(elem.first);
     }
@@ -94,7 +92,7 @@ Slots& Slots::operator=( const Slots& )
 #ifdef COM_LOG
 void Slots::setID( const std::string prefix )
 {
-    BOOST_FOREACH( SlotMapType::value_type elem, m_slots )
+    for( SlotMapType::value_type elem :  m_slots )
     {
         elem.second->setID( prefix + elem.first );
     }

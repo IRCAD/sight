@@ -9,14 +9,13 @@
 #include "visuVTKAdaptor/Plane.hpp"
 #include "visuVTKAdaptor/PlaneList.hpp"
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Plane.hpp>
-#include <fwData/PlaneList.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwComEd/PlaneListMsg.hpp>
 #include <fwComEd/PlaneMsg.hpp>
-
-#include <fwCom/Signal.hxx>
+#include <fwData/Boolean.hpp>
+#include <fwData/Plane.hpp>
+#include <fwData/PlaneList.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
@@ -30,8 +29,6 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
-
-#include <boost/foreach.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList );
 
@@ -224,7 +221,7 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
     showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
     if(showPlanes)
     {
-        BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
+        for( ::fwData::Plane::sptr plane :  planeList->getPlanes() )
         {
             ::fwRenderVTK::IVtkAdaptorService::sptr servicePlane =
                 ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >

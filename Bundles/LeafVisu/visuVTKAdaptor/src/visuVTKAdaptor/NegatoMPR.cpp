@@ -4,27 +4,24 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/NegatoMPR.hpp"
+#include "visuVTKAdaptor/NegatoOneSlice.hpp"
+#include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
 
-#include <fwTools/fwID.hpp>
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/ImageMsg.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
+#include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
-#include <fwData/Boolean.hpp>
+#include <fwServices/Base.hpp>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
-#include "visuVTKAdaptor/NegatoOneSlice.hpp"
-#include "visuVTKAdaptor/NegatoMPR.hpp"
-
+#include <fwTools/fwID.hpp>
 
 #include <string>
 
@@ -85,7 +82,7 @@ void NegatoMPR::doSwap() throw(fwTools::Failed)
         }
         else
         {
-            BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
+            for( ServiceVector::value_type service :  m_subServices)
             {
                 OSLM_ASSERT("sub services expired in service : " << this->getSptr()->getID(), !service.expired());
                 service.lock()->swap(image);

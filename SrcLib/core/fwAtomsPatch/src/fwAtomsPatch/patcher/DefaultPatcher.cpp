@@ -4,22 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+
+#include "fwAtomsPatch/helper/functions.hpp"
+#include "fwAtomsPatch/infos/log.hpp"
+#include "fwAtomsPatch/IPatch.hpp"
+#include "fwAtomsPatch/ISemanticPatch.hpp"
+#include "fwAtomsPatch/IStructuralPatch.hpp"
+#include "fwAtomsPatch/patcher/DefaultPatcher.hpp"
+#include "fwAtomsPatch/patcher/registry/macros.hpp"
+#include "fwAtomsPatch/SemanticPatchDB.hpp"
+#include "fwAtomsPatch/StructuralPatchDB.hpp"
+#include "fwAtomsPatch/types.hpp"
+#include "fwAtomsPatch/VersionsManager.hpp"
 
 #include <fwAtoms/Numeric.hpp>
 #include <fwAtoms/Numeric.hxx>
 
-#include "fwAtomsPatch/infos/log.hpp"
-#include "fwAtomsPatch/types.hpp"
-#include "fwAtomsPatch/helper/functions.hpp"
-#include "fwAtomsPatch/VersionsManager.hpp"
-#include "fwAtomsPatch/IPatch.hpp"
-#include "fwAtomsPatch/IStructuralPatch.hpp"
-#include "fwAtomsPatch/StructuralPatchDB.hpp"
-#include "fwAtomsPatch/ISemanticPatch.hpp"
-#include "fwAtomsPatch/SemanticPatchDB.hpp"
-#include "fwAtomsPatch/patcher/registry/macros.hpp"
-#include "fwAtomsPatch/patcher/DefaultPatcher.hpp"
 
 namespace fwAtomsPatch
 {
@@ -99,7 +99,7 @@ DefaultPatcher::~DefaultPatcher()
         newAtomObject->setMetaInfos(current->getMetaInfos());
 
         // Fetch all attributes and affect them in the new object.
-        BOOST_FOREACH( ::fwAtoms::Object::AttributesType::value_type elem, current->getAttributes() )
+        for( ::fwAtoms::Object::AttributesType::value_type elem :  current->getAttributes() )
         {
             newAtomObject->setAttribute(elem.first, processBase(elem.second));
         }
@@ -126,7 +126,7 @@ DefaultPatcher::~DefaultPatcher()
         m_cache[current->getMetaInfo( ::fwAtomsPatch::s_OBJ_ID )] = m_newVersions[current];
 
         // Fetch all attributes and affect them in the new object.
-        BOOST_FOREACH( ::fwAtoms::Object::AttributesType::value_type elem, current->getAttributes() )
+        for( ::fwAtoms::Object::AttributesType::value_type elem :  current->getAttributes() )
         {
             if ( elem.second )
             {
@@ -216,7 +216,7 @@ DefaultPatcher::~DefaultPatcher()
     std::string key;
     ::fwAtoms::Base::sptr value;
 
-    BOOST_FOREACH( ::fwAtoms::Map::MapType::value_type elem, map->getValue() )
+    for( ::fwAtoms::Map::MapType::value_type elem :  map->getValue() )
     {
         key   = elem.first;
         value = elem.second;
@@ -234,7 +234,7 @@ DefaultPatcher::~DefaultPatcher()
     ::fwAtoms::Sequence::sptr newSeq = ::fwAtoms::Sequence::New();
 
     // Fetch all attributes and affect them in the new object
-    BOOST_FOREACH( ::fwAtoms::Base::sptr elem, seq->getValue() )
+    for( ::fwAtoms::Base::sptr elem :  seq->getValue() )
     {
         newSeq->push_back(this->processBase(elem));
     }

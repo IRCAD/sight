@@ -4,13 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <boost/foreach.hpp>
+#include "fwRuntime/Convert.hpp"
+#include "fwRuntime/helper.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwRuntime/helper.hpp"
-#include "fwRuntime/Convert.hpp"
+#include <iostream>
 
 namespace fwRuntime
 {
@@ -59,7 +58,7 @@ void ConfigurationElement2XML(::fwRuntime::ConfigurationElement::sptr _cfgElemen
                    xmlCharStrdup((iter_attr_cfe->second).c_str()) );
     }
     //ELEMENTS
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, _cfgElement->getElements())
+    for(::fwRuntime::ConfigurationElement::sptr elt :  _cfgElement->getElements())
     {
         xmlNodePtr child = xmlNewNode( NULL,  xmlCharStrdup( elt->getName().c_str() ) );
 
@@ -90,7 +89,7 @@ ConfigurationElement::sptr getCfgAsAnExtension( ConfigurationElement::sptr confi
 
         // Search for all matching contributions
         std::vector< ConfigurationElement::sptr > matchingCfg;
-        BOOST_FOREACH(ConfigurationElement::sptr elt, cfgs)
+        for(ConfigurationElement::sptr elt :  cfgs)
         {
             if( cfgContribution == elt->getExistingAttributeValue("id") )
             {
@@ -147,7 +146,7 @@ std::vector< std::string > getAllIdsForPoint( std::string _extension_pt  )
     ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt, inserter);
 
     // Creates all contributed action instances.
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, elements)
+    for(::fwRuntime::ConfigurationElement::sptr elt :  elements)
     {
         ids.push_back(elt->getAttributeValue("id"));
     }
@@ -171,7 +170,7 @@ std::string getInfoForPoint( std::string _extension_pt  )
         ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt, inserter);
 
         // Creates all contributed action instances.
-        BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, elements)
+        for(::fwRuntime::ConfigurationElement::sptr elt :  elements)
         {
             if( elt->getName() == "info" && elt->hasAttribute("text") )
             {
@@ -200,7 +199,7 @@ std::map< std::string,
     ::fwRuntime::getAllConfigurationElementsForPoint( _extension_pt, inserter);
 
     // Creates all contributed action instances.
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr elt, elements)
+    for(::fwRuntime::ConfigurationElement::sptr elt :  elements)
     {
         cfgElementMap[elt->getAttributeValue("id")] = elt;
     }
