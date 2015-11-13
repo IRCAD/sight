@@ -124,7 +124,8 @@ CSPTR(::extData::timeline::Object) BufferTL::getClosestObject(::fwCore::HiResClo
         return result;
     }
 
-    TimelineType::const_iterator iter = m_timeline.lower_bound(timestamp);
+    TimelineType::const_iterator iter =
+        (direction == PAST) ? m_timeline.upper_bound(timestamp) : m_timeline.lower_bound(timestamp);
     if (iter != m_timeline.begin())
     {
         if( iter == m_timeline.end() )

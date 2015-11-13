@@ -117,6 +117,12 @@ void RawBufferTLTest::getObjectTest()
     CPPUNIT_ASSERT(data2 == obj);
     obj = timeline->getClosestObject(1.8);
     CPPUNIT_ASSERT(data2 == obj);
+    obj = timeline->getClosestObject(2, ::extData::BufferTL::PAST);
+    CPPUNIT_ASSERT(data2 == obj);
+    obj = timeline->getClosestObject(2, ::extData::BufferTL::FUTURE);
+    CPPUNIT_ASSERT(data2 == obj);
+    obj = timeline->getClosestObject(2, ::extData::BufferTL::BOTH);
+    CPPUNIT_ASSERT(data2 == obj);
     obj = timeline->getClosestObject(2.2);
     CPPUNIT_ASSERT(data2 == obj);
 
