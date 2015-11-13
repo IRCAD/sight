@@ -79,7 +79,7 @@ public:
      * @brief Returns a boost::shared_future associated with the execution of Worker's loop
      * @warning Calling getFuture() may be blocking if it is required by a specific implementation (for example, the Qt implementation).
      */
-    FWTHREAD_API virtual FutureType getFuture()
+    virtual FutureType getFuture()
     {
         return m_future;
     }

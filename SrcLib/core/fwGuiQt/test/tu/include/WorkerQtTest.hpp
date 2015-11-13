@@ -9,29 +9,30 @@
 
 #include <fwCore/base.hpp>
 
+#include <fwThread/Worker.hpp>
+
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace fwGuiQt
 {
-
-struct WorkerQtInstanciator;
 
 namespace ut
 {
 
 class WorkerQtTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( WorkerQtTest );
+private:
+    CPPUNIT_TEST_SUITE( WorkerQtTest );
 
-CPPUNIT_TEST(initTest);
-CPPUNIT_TEST(twiceInitTest);
-CPPUNIT_TEST(basicTest);
-CPPUNIT_TEST(postFromInsideTest);
-CPPUNIT_TEST(postFromOutsideTest);
+    CPPUNIT_TEST(initTest);
+    CPPUNIT_TEST(twiceInitTest);
+    CPPUNIT_TEST(basicTest);
+    CPPUNIT_TEST(postFromInsideTest);
+    CPPUNIT_TEST(postFromOutsideTest);
 
-CPPUNIT_TEST(basicTimerTest);
+    CPPUNIT_TEST(basicTimerTest);
 
-CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface

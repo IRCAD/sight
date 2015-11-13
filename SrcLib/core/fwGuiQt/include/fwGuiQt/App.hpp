@@ -7,13 +7,11 @@
 #ifndef __FWGUIQT_APP_HPP__
 #define __FWGUIQT_APP_HPP__
 
-#include <QApplication>
+#include "fwGuiQt/config.hpp"
 
 #include <fwRuntime/profile/Profile.hpp>
 
-#include "fwGuiQt/config.hpp"
-
-
+#include <QApplication>
 
 namespace fwGuiQt
 {
@@ -21,24 +19,19 @@ namespace fwGuiQt
 /**
  * @brief   Defines the Qt application.
  * @class   App
- *
- * @date    2009.
  */
-
 class FWGUIQT_CLASS_API App : public QApplication
 {
 Q_OBJECT
 
 public:
-    FWGUIQT_API App(int & argc, char ** argv, bool GUIenabled);
+    FWGUIQT_API App(int & argc, char ** argv, bool guiEnabled);
 
 public Q_SLOTS:
     void aboutToQuit();
     void onExit();
 
 };
-
-
 
 } // namespace fwGuiQt
 

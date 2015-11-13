@@ -21,7 +21,11 @@ class Worker;
 namespace fwGuiQt
 {
 
-FWGUIQT_API SPTR(::fwThread::Worker) getQtWorker( int &argc, char **argv );
+//-----------------------------------------------------------------------------
+
+FWGUIQT_API SPTR(::fwThread::Worker) getQtWorker(int& argc, char **argv, bool guiEnabled = true);
+
+//-----------------------------------------------------------------------------
 
 } //namespace fwGui
 

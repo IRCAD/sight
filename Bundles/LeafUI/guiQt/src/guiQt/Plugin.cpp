@@ -11,16 +11,13 @@
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
+#include <fwGui/registry/worker.hpp>
 #include <fwGuiQt/App.hpp>
 #include <fwGuiQt/WorkerQt.hpp>
 
-#include <fwGui/registry/worker.hpp>
-
-#include <QDir>
-#include <QStringList>
 #include <QFile>
 #include <QString>
 #include <QTextStream>
@@ -30,7 +27,6 @@
 namespace guiQt
 {
 //-----------------------------------------------------------------------------
-
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::guiQt::Plugin");
 
@@ -44,8 +40,6 @@ Plugin::~Plugin() throw()
 
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
-    SLM_TRACE_FUNC();
-
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
     int &argc   = profile->getRawArgCount();
@@ -72,6 +66,8 @@ void setup()
     ::fwRuntime::profile::getCurrentProfile()->setup();
 }
 
+//-----------------------------------------------------------------------------
+
 int Plugin::run() throw()
 {
     m_workerQt->post( std::bind( &setup ) );
@@ -79,9 +75,11 @@ int Plugin::run() throw()
 
     ::fwRuntime::profile::getCurrentProfile()->cleanup();
     int result = ::boost::any_cast<int>(m_workerQt->getFuture().get());
-#ifdef _WIN32
+
+    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
+    ::fwGui::registry::worker::reset();
     m_workerQt.reset();
-#endif
+
     return result;
 }
 
@@ -104,5 +102,7 @@ void Plugin::loadStyleSheet()
         }
     }
 }
+
+//-----------------------------------------------------------------------------
 
 } // namespace guiQt

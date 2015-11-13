@@ -4,6 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "WorkerQtTest.hpp"
+
+#include <fwGuiQt/App.hpp>
+#include <fwGuiQt/config.hpp>
+#include <fwGuiQt/util/FuncSlot.hpp>
+#include <fwGuiQt/WorkerQt.hpp>
+
+#include <fwServices/registry/ActiveWorkers.hpp>
+
+#include <fwThread/Timer.hpp>
+#include <fwThread/Worker.hpp>
+#include <fwThread/Worker.hxx>
+
 #include <boost/type_traits/is_same.hpp>
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
@@ -15,17 +28,6 @@
 #include <QApplication>
 #include <QTimer>
 
-#include <fwThread/Timer.hpp>
-
-#include <fwThread/Worker.hpp>
-#include <fwThread/Worker.hxx>
-#include <fwGuiQt/config.hpp>
-
-#include "fwGuiQt/App.hpp"
-#include "fwGuiQt/util/FuncSlot.hpp"
-
-#include "WorkerQtTest.hpp"
-
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwGuiQt::ut::WorkerQtTest );
@@ -35,21 +37,6 @@ namespace fwGuiQt
 
 // Defined in WorkerQt.cpp
 class WorkerQt;
-struct FWGUIQT_CLASS_API WorkerQtInstanciator
-{
-
-    FWGUIQT_API WorkerQtInstanciator(bool reg = true );
-
-    FWGUIQT_API SPTR(::fwThread::Worker) getWorker();
-
-    SPTR(WorkerQt) m_qtWorker;
-
-    FWGUIQT_API static int s_argc;
-    FWGUIQT_API static char **s_argv;
-    FWGUIQT_API static bool s_GUIenabled;
-};
-
-
 
 namespace ut
 {
@@ -84,38 +71,37 @@ struct TestHandler
 
 //-----------------------------------------------------------------------------
 
-
-
 void WorkerQtTest::setUp()
 {
     // Set up context before running a test.
     char arg1[] = "fwGuiQtTest";
 #if defined(__linux)
-    char arg2[]        = "-platform";
-    char arg3[]        = "offscreen";
-    static char* arg[] = {arg1, arg2, arg3, 0};
-
-    WorkerQtInstanciator::s_argc = 3;
-
+    char arg2[]         = "-platform";
+    char arg3[]         = "offscreen";
+    static char* argv[] = {arg1, arg2, arg3, 0};
+    int argc            = 3;
 #else
-    static char* arg[] = {arg1, 0};
-    WorkerQtInstanciator::s_argc = 1;
+    static char* argv[] = {arg1, 0};
+    int argc            = 1;
 #endif
 
 #if QT_VERSION < 0x050000
-    WorkerQtInstanciator::s_GUIenabled = false;
+    bool guiEnabled = false;
+#else
+    bool guiEnabled = true;
 #endif
 
-    WorkerQtInstanciator::s_argv = arg;
     CPPUNIT_ASSERT(qApp == NULL);
-    WorkerQtInstanciator instanciator(false);
-    m_worker = instanciator.getWorker();
-
+    m_worker = ::fwGuiQt::getQtWorker(argc, argv, guiEnabled);
 }
+
+//-----------------------------------------------------------------------------
+
 void WorkerQtTest::tearDown()
 {
     // Clean up after the test run.
     m_worker.reset();
+    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
     CPPUNIT_ASSERT(qApp == NULL);
 }
 
@@ -137,22 +123,21 @@ void WorkerQtTest::twiceInitTest()
 
 void runBasicTest(TestHandler &handler, ::fwThread::Worker::sptr worker)
 {
-
     handler.setWorkerId(worker->getThreadId());
     worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
     worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
     worker->post( ::boost::bind( &TestHandler::nextStep, &handler) );
 
     worker->post( ::boost::bind( &QApplication::quit ) );
-
 }
 
+//-----------------------------------------------------------------------------
 
 #define RUN_BASIC_TEST_CHECKS(handler) \
     CPPUNIT_ASSERT_EQUAL(3, handler.m_step); \
     CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk)
 
-
+//-----------------------------------------------------------------------------
 
 void WorkerQtTest::basicTest()
 {
@@ -183,6 +168,8 @@ void doNothing()
 {
 }
 
+//-----------------------------------------------------------------------------
+
 void runFromOutsideTest(TestHandler &handler, ::fwThread::Worker::sptr worker)
 {
     //waiting for WorkerQt to start
@@ -190,6 +177,8 @@ void runFromOutsideTest(TestHandler &handler, ::fwThread::Worker::sptr worker)
 
     runBasicTest(handler, worker);
 }
+
+//-----------------------------------------------------------------------------
 
 void WorkerQtTest::postFromOutsideTest()
 {
@@ -221,17 +210,11 @@ void WorkerQtTest::postFromOutsideTest()
 
 static CppUnit::Exception exception;
 
-void echo()
-{
-}
+//-----------------------------------------------------------------------------
 
-
-
-void runBasicTimerTest(
-    TestHandler &handler,
-    const ::fwThread::Timer::sptr &timer,
-    ::fwThread::Timer::TimeDurationType duration
-    )
+void runBasicTimerTest( TestHandler &handler,
+                        const ::fwThread::Timer::sptr &timer,
+                        ::fwThread::Timer::TimeDurationType duration )
 {
     timer->start();
 
@@ -244,16 +227,14 @@ void runBasicTimerTest(
     QT_TEST_END
 }
 
+//-----------------------------------------------------------------------------
 
-void oneShotBasicTimerTest(
-    int &i,
-    TestHandler &handler,
-    const ::fwThread::Timer::sptr &timer,
-    ::fwThread::Timer::TimeDurationType duration,
-    const ::fwThread::Worker::sptr &worker
-    )
+void oneShotBasicTimerTest(int &i,
+                           TestHandler &handler,
+                           const ::fwThread::Timer::sptr &timer,
+                           ::fwThread::Timer::TimeDurationType duration,
+                           const ::fwThread::Worker::sptr &worker )
 {
-
     handler.nextStepNoSleep();
 
     QT_TEST_START
@@ -280,10 +261,11 @@ void oneShotBasicTimerTest(
     }
 }
 
+//-----------------------------------------------------------------------------
+
 void WorkerQtTest::basicTimerTest()
 {
     {
-
         TestHandler handler;
         handler.setWorkerId(m_worker->getThreadId());
 
@@ -305,20 +287,15 @@ void WorkerQtTest::basicTimerTest()
 
         m_worker->post( ::boost::bind(&runBasicTimerTest, ::boost::ref(handler), ::boost::ref(timer), duration) );
 
-
         ::fwThread::Worker::FutureType future = m_worker->getFuture();
         future.wait();
 
         CPPUNIT_ASSERT( future.has_value() );
         CPPUNIT_ASSERT_EQUAL( 0, boost::any_cast<int>( future.get() ) );
     }
-
-
 }
 
 //-----------------------------------------------------------------------------
-
-
 
 } //namespace ut
 } //namespace fwGuiQt

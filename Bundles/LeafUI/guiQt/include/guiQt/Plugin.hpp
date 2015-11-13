@@ -7,9 +7,10 @@
 #ifndef __GUIQT_PLUGIN_HPP__
 #define __GUIQT_PLUGIN_HPP__
 
+#include "guiQt/config.hpp"
+
 #include <fwRuntime/Plugin.hpp>
 
-#include "guiQt/config.hpp"
 
 namespace fwThread
 {
@@ -20,8 +21,8 @@ class Worker;
 namespace guiQt
 {
 /**
- *
- * @date    2009-2010.
+ * @brief   This class is called when the guiQt bundle is loaded.
+ * @class   Plugin
  */
 class GUIQT_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
