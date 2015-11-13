@@ -14,7 +14,7 @@
    height="131.71875"
    id="svg3005"
    version="1.1"
-   inkscape:version="0.48.3.1 r9886"
+   inkscape:version="0.48.4 r9939"
    sodipodi:docname="icon-Anonymization.svg">
   <defs
      id="defs3007">
@@ -39,6 +39,13 @@
          offset="0"
          id="stop3799" />
     </linearGradient>
+    <linearGradient
+       id="linearGradient5204">
+      <stop
+         offset="0"
+         style="stop-color:#0a1ba1;stop-opacity:1"
+         id="stop5206" />
+    </linearGradient>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -47,14 +54,14 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="-69.886733"
-     inkscape:cy="37.367914"
+     inkscape:zoom="1.4"
+     inkscape:cx="91.631134"
+     inkscape:cy="46.622321"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1680"
-     inkscape:window-height="967"
+     inkscape:window-width="1920"
+     inkscape:window-height="1104"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -98,18 +105,14 @@
        x="255.19417"
        y="126.94415"
        ry="9.9183826" />
-    <text
-       xml:space="preserve"
-       style="font-size:108.76456450999999959px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#81008a;fill-opacity:1;stroke:#000000;stroke-width:0.30863425000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans Bold"
-       x="313.28555"
-       y="212.3765"
-       id="text3025"
-       sodipodi:linespacing="125%"
-       transform="scale(0.9159612,1.0917493)"><tspan
-         sodipodi:role="line"
-         id="tspan3027"
-         x="313.28555"
-         y="212.3765"
-         style="font-weight:bold;fill:#81008a;stroke:#000000;stroke-width:0.30863425000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;-inkscape-font-specification:DejaVu Sans Bold;fill-opacity:1">?</tspan></text>
+    <g
+       id="layer1-7"
+       transform="matrix(0.34184662,0,0,0.35338962,264.2648,-164.66057)">
+      <path
+         inkscape:connector-curvature="0"
+         style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.382;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+         id="path3052"
+         d="m 58.552755,945.05674 c -16.62525,0.13664 -29.16344,4.36796 -38.21992,12.03757 -9.34866,7.91702 -14.97921,19.48588 -17.64199,33.9744 l 0,0.0325 0.0131,0.0435 c 8.86079,24.30879 20.43124,39.28389 33.34414,47.99829 12.91283,8.7146 27.15304,11.1558 41.30003,10.3987 14.14691,-0.7572 28.209925,-4.703 40.788835,-8.7379 12.55928,-4.0286 23.65729,-8.1426 31.86305,-9.2914 8.20576,1.1488 19.3038,5.2628 31.86304,9.2914 13.27578,4.6886 25.93073,7.8578 40.78886,8.7379 12.58563,0.6735 25.67811,-1.2329 40.42737,-10.3988 14.74926,-9.166 28.53184,-32.5328 34.21679,-47.99819 l 0.0131,-0.0435 0,-0.0325 c -2.71402,-12.39933 -4.44033,-19.47246 -12.94966,-29.33956 -6.58371,-7.54933 -15.58122,-12.72752 -27.35424,-15.1311 -23.5314,-4.80417 -58.12558,1.45769 -107.00526,21.86087 -38.10404,-15.90518 -67.523965,-23.22764 -89.795785,-23.40218 -0.009,-8e-5 -0.0176,6e-5 -0.0263,0 -0.54483,-0.005 -1.08898,-0.005 -1.62526,0 z m 16.04288,41.27943 c 19.03819,0.11805 31.687055,12.08737 47.040895,20.27613 -28.244275,3.2064 -66.540055,16.5701 -72.874725,-14.03481 9.94798,-4.52037 18.38412,-6.2875 25.83383,-6.24132 z m 148.685405,0 c 7.44975,-0.0461 15.8728,1.72095 25.82074,6.24132 -6.33465,30.60491 -44.6304,17.24121 -72.87473,14.03481 15.35386,-8.18876 28.01585,-20.15808 47.05399,-20.27613 z" />
+    </g>
   </g>
 </svg>
