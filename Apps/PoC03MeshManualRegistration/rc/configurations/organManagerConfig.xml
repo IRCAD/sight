@@ -3,6 +3,7 @@
     <type>parameters</type>
     <parameters>
         <param name="MODEL_SERIES_UID" />
+        <param name="ModelRepresentationChannel" />
     </parameters>
     <config>
 
@@ -51,6 +52,10 @@
                     <object id="reconstruction" type="::fwData::Reconstruction">
                         <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
                         <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                        
+                        <proxy channel="${ModelRepresentationChannel}">
+                            <signal>representationEditor/normalsModeModified</signal>
+                        </proxy>
                     </object>
                 </config>
             </service>

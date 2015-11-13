@@ -230,6 +230,7 @@
                                     <key id="self" pattern="ORGAN_MANAGER_MODELSERIES" />
                                     <replace pattern="ICON_PATH" val="${ICON_PATH}" />
                                     <replace pattern="GENERIC_UID" val="${GENERIC_UID}" />
+                                    <replace pattern="ModelRepresentationChannel" val="ModelRepresentationChannel" />
                                 </service>
                             </object>
                         </config>
@@ -261,7 +262,7 @@
                                 <config renderer="default" />
                             </adaptor>
 
-                            <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                            <adaptor id="modelSeriesAdaptor" uid="${GENERIC_UID}_modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                 <config renderer="default" picker="negato1default" autoresetcamera="no" />
                             </adaptor>
 
@@ -272,6 +273,10 @@
                             <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="CurrentViewPoint">
                                 <config renderer="default" picker="" />
                             </adaptor>
+                            
+                            <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
+                                <slot>${GENERIC_UID}_modelSeriesAdaptorUid/updateNormalMode</slot>
+                            </proxy>
 
                         </scene>
                     </service>

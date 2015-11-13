@@ -11,7 +11,6 @@
 
 #include <io/IReader.hpp>
 #include <zmqNetwork/Socket.hpp>
-#include <ioNetwork/ObjectUpdateNotifier.hpp>
 
 namespace ioZMQ
 {

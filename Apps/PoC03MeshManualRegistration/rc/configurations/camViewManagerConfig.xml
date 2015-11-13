@@ -3,6 +3,7 @@
     <type>parameters</type>
     <parameters>
         <param name="COMPOSITE_VISU_UID" />
+        <param name="ModelRepresentationChannel" />
     </parameters>
     <config>
         
@@ -39,7 +40,7 @@
                             <config renderer="default" picker="" transform="camPosMatrixTransform" />
                         </adaptor>
 
-                        <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                        <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                             <config renderer="default" picker="" />
                         </adaptor>
 
@@ -50,6 +51,10 @@
                         <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="camPosMatrix">
                             <config renderer="default" picker="" transform="camPosMatrixTransform" />
                         </adaptor>
+                        
+                        <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
+                            <slot>modelSeriesAdaptorUid/updateNormalMode</slot>
+                        </proxy>
 
                     </scene>
                 </service>

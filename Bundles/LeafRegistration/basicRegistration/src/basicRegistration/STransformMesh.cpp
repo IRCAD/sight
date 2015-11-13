@@ -4,28 +4,26 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "basicRegistration/STransformMesh.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/TransformationMatrix3DMsg.hpp>
+
 #include <fwCore/spyLog.hpp>
 
-// Service associated data
 #include <fwData/Composite.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
-#include <fwData/Mesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-
-
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-#include <fwComEd/MeshMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
 
 #include <fwDataTools/Mesh.hpp>
 
-#include <arlcore/PointsList.h>
-
-// Services tools
 #include <fwServices/Base.hpp>
-
-#include "basicRegistration/STransformMesh.hpp"
 
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
@@ -87,20 +85,9 @@ void STransformMesh::updating() throw ( ::fwTools::Failed )
     ::fwDataTools::Mesh::transform( mesh, transform );
 
     // Notify reading
-    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
-    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-    msg->setSource( this->getSptr());
-    msg->setSubject( mesh);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = mesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg );
-    }
-}
-
-void STransformMesh::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
+    ::fwData::Mesh::VertexModifiedSignalType::sptr sig;
+    sig = mesh->signal< ::fwData::Mesh::VertexModifiedSignalType >(::fwData::Mesh::s_VERTEX_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 void STransformMesh::swapping() throw ( ::fwTools::Failed )

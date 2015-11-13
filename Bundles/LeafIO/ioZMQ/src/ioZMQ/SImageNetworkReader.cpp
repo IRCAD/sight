@@ -81,7 +81,9 @@ void SImageNetworkReader::updating() throw (::fwTools::Failed)
         m_socket->receiveObject(obj);
         m_socket->sendObject(request);
         m_socket->stop();
-        ::ioNetwork::ObjectUpdateNotifier::notifyUpdate(this->getSptr());
+        ::fwData::Object::ModifiedSignalType::sptr sig;
+        sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
     }
     catch (std::exception &err)
     {

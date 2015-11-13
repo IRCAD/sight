@@ -69,6 +69,7 @@
             <appConfig id="organManagerConfig" >
                 <parameters>
                     <parameter replace="MODEL_SERIES_UID" by="modelSeriesUID"  />
+                    <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel"  />
                 </parameters>
             </appConfig>
         </config>
@@ -79,6 +80,7 @@
             <appConfig id="camViewManagerConfig" >
                 <parameters>
                     <parameter replace="COMPOSITE_VISU_UID" by="compositeVisuUID"  />
+                    <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel"  />
                 </parameters>
             </appConfig>
         </config>

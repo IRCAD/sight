@@ -6,33 +6,26 @@
 
 #include "basicRegistration/SPointListRegistration.hpp"
 
-#include <fwCore/spyLog.hpp>
-
-// Service associated data
-#include <fwData/Composite.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <arlcore/PointsList.h>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-#include <fwComEd/MeshMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
+#include <fwComEd/TransformationMatrix3DMsg.hpp>
+
+#include <fwCore/spyLog.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/String.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <arlcore/PointsList.h>
-
-// Services tools
 #include <fwServices/Base.hpp>
 
-
-#ifndef M_PI
-#define M_PI           3.14159265358979323846
-#endif
 
 using fwTools::fwID;
 

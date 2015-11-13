@@ -64,7 +64,7 @@
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
 
-                                <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                                <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                     <config renderer="default" picker="" autoresetcamera="no" />
                                 </adaptor>
                                 <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
@@ -88,6 +88,10 @@
                                 <adaptor id="MeshCompositeAdaptor" class="::visuVTKAdaptor::MeshesBoxWidget" objectId="meshDB">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
+                                
+                                <proxy channel="ModelRepresentationChannel">
+                                    <slot>modelSeriesAdaptorUid/updateNormalMode</slot>
+                                </proxy>
                             </scene>
                         </service>
                         
@@ -97,7 +101,7 @@
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
 
-                                <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                                <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid2" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                     <config renderer="default" picker="" autoresetcamera="no" />
                                 </adaptor>
 
@@ -119,6 +123,10 @@
                                 <adaptor id="MeshCompositeAdaptor" class="::visuVTKAdaptor::MeshesBoxWidget" objectId="meshDB">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
+                                
+                                <proxy channel="ModelRepresentationChannel">
+                                    <slot>modelSeriesAdaptorUid2/updateNormalMode</slot>
+                                </proxy>
                             </scene>
                         </service>
 

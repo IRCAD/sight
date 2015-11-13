@@ -6,8 +6,11 @@
 
 #include "ctrlComputeCPR/SComputeCPR3D.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwComEd/MeshMsg.hpp>
+
 #include <fwComEd/PointListMsg.hpp>
 
 #include <fwData/Image.hpp>
@@ -150,17 +153,9 @@ void SComputeCPR3D::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTool
 
         mesh->clear();
 
-        ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
-        msg->addEvent(::fwComEd::MeshMsg::NEW_MESH);
-        msg->addEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED);
-        msg->setSource(this->getSptr());
-        msg->setSubject( mesh);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = mesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-        {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
-        }
+        ::fwData::Object::ModifiedSignalType::sptr sig;
+        sig = mesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
     }
 }
 
@@ -200,17 +195,9 @@ void SComputeCPR3D::computeMesh()
     OSLM_DEBUG("Mesh nb points => " << mesh->getNumberOfPoints());
     OSLM_DEBUG("Mesh nb cells => " << mesh->getNumberOfCells());
 
-    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
-    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH);
-    msg->addEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( mesh);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = mesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = mesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 //----------------------------------------------------------------------------------------------------------

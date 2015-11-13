@@ -10,7 +10,6 @@
 #include "ioZMQ/config.hpp"
 
 #include <io/IReader.hpp>
-#include <ioNetwork/ObjectUpdateNotifier.hpp>
 #include <zmqNetwork/Socket.hpp>
 
 namespace ioZMQ

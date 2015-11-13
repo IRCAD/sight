@@ -7,7 +7,6 @@
 #ifndef __IONETWORK_INETWORKLISTENER_HPP__
 #define __IONETWORK_INETWORKLISTENER_HPP__
 
-#include "ioNetwork/ObjectUpdateNotifier.hpp"
 #include "ioNetwork/config.hpp"
 
 #include <fwCom/Signal.hpp>

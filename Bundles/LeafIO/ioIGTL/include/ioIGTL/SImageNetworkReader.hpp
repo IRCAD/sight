@@ -11,8 +11,6 @@
 
 #include <io/IReader.hpp>
 
-#include <ioNetwork/ObjectUpdateNotifier.hpp>
-
 #include <igtlNetwork/Client.hpp>
 
 #include <boost/type.hpp>

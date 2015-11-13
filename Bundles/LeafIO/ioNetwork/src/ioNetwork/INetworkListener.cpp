@@ -66,7 +66,10 @@ void INetworkListener::updating() throw (::fwTools::Failed)
 
 void INetworkListener::notifyObjectUpdated()
 {
-    ::ioNetwork::ObjectUpdateNotifier::notifyUpdate(this->getSptr());
+    ::fwData::Object::sptr obj = this->getObject();
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
