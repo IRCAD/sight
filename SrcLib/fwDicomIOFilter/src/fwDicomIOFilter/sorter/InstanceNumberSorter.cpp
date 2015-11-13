@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomIOFilter/sorter/InstanceNumberSorter.hpp"
+#include "fwDicomIOFilter/registry/macros.hpp"
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
+
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
-
-#include "fwDicomIOFilter/registry/macros.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
-#include "fwDicomIOFilter/sorter/InstanceNumberSorter.hpp"
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::sorter::InstanceNumberSorter );
 
@@ -55,7 +55,7 @@ std::string InstanceNumberSorter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-bool InstanceNumberSorter::isConfigurationRequired()
+bool InstanceNumberSorter::isConfigurationRequired() const
 {
     return false;
 }

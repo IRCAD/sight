@@ -7,10 +7,10 @@
 #ifndef __FWDICOMIOFILTERQT_SPLITTER_TAGVALUECONFIGURABLESPLITTER_HPP__
 #define __FWDICOMIOFILTERQT_SPLITTER_TAGVALUECONFIGURABLESPLITTER_HPP__
 
+#include "fwDicomIOFilterQt/config.hpp"
+
 #include <fwDicomData/DicomSeries.hpp>
 #include <fwDicomIOFilter/splitter/TagValueSplitter.hpp>
-
-#include "fwDicomIOFilterQt/config.hpp"
 
 namespace fwDicomIOFilterQt
 {
@@ -42,10 +42,10 @@ public:
     FWDICOMIOFILTERQT_API virtual std::string getDescription() const;
 
     /// Return true if a configuration is required
-    FWDICOMIOFILTERQT_API virtual bool isConfigurationRequired();
+    FWDICOMIOFILTERQT_API virtual bool isConfigurationRequired() const;
 
     /// Return true if the filter is configurable using GUI
-    FWDICOMIOFILTERQT_API virtual bool isConfigurableWithGUI();
+    FWDICOMIOFILTERQT_API virtual bool isConfigurableWithGUI() const;
 
     /// Configure the filter using GUI dialog
     FWDICOMIOFILTERQT_API virtual void configureWithGUI();

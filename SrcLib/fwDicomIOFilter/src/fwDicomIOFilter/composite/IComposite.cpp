@@ -30,7 +30,8 @@ IFilter::FilterType IComposite::getFilterType() const
 
 //-----------------------------------------------------------------------------
 
-IComposite::DicomSeriesContainerType IComposite::apply(::fwDicomData::DicomSeries::sptr series) const
+IComposite::DicomSeriesContainerType IComposite::apply(
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
 throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
@@ -42,7 +43,7 @@ throw(::fwDicomIOFilter::exceptions::FilterFailure)
         // For every serie
         for(const ::fwDicomData::DicomSeries::sptr& s :  result)
         {
-            DicomSeriesContainerType tempo = filter->apply(s);
+            DicomSeriesContainerType tempo = filter->apply(s, logger);
             filtered.reserve(filtered.size() + tempo.size());
             std::copy(tempo.begin(), tempo.end(), std::back_inserter(filtered));
         }
@@ -53,7 +54,8 @@ throw(::fwDicomIOFilter::exceptions::FilterFailure)
 
 //-----------------------------------------------------------------------------
 
-IComposite::DicomSeriesContainerType IComposite::forcedApply(::fwDicomData::DicomSeries::sptr series) const
+IComposite::DicomSeriesContainerType IComposite::forcedApply(
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
 {
     DicomSeriesContainerType result;
     result.push_back(series);
@@ -66,7 +68,7 @@ IComposite::DicomSeriesContainerType IComposite::forcedApply(::fwDicomData::Dico
         {
             try
             {
-                DicomSeriesContainerType tempo = filter->apply(s);
+                DicomSeriesContainerType tempo = filter->apply(s, logger);
                 filtered.reserve(filtered.size() + tempo.size());
                 std::copy(tempo.begin(), tempo.end(), std::back_inserter(filtered));
             }
@@ -83,14 +85,14 @@ IComposite::DicomSeriesContainerType IComposite::forcedApply(::fwDicomData::Dico
 
 //-----------------------------------------------------------------------------
 
-void IComposite::addChild(::fwDicomIOFilter::IFilter::sptr filter)
+void IComposite::addChild(const ::fwDicomIOFilter::IFilter::sptr& filter)
 {
     m_filterContainer.push_back(filter);
 }
 
 //-----------------------------------------------------------------------------
 
-void IComposite::removeChild(::fwDicomIOFilter::IFilter::sptr filter)
+void IComposite::removeChild(const ::fwDicomIOFilter::IFilter::sptr& filter)
 {
     FilterContainerType::iterator it = std::find(m_filterContainer.begin(), m_filterContainer.end(), filter);
     if(it != m_filterContainer.end())

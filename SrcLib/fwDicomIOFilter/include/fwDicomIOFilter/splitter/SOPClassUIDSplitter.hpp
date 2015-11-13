@@ -7,9 +7,10 @@
 #ifndef __FWDICOMIOFILTER_SPLITTER_SOPCLASSUIDSPLITTER_HPP__
 #define __FWDICOMIOFILTER_SPLITTER_SOPCLASSUIDSPLITTER_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
-#include "fwDicomIOFilter/splitter/TagValueSplitter.hpp"
 #include "fwDicomIOFilter/config.hpp"
+#include "fwDicomIOFilter/splitter/TagValueSplitter.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -34,7 +35,8 @@ public:
     FWDICOMIOFILTER_API virtual ~SOPClassUIDSplitter();
 
     /// Override
-    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(::fwDicomData::DicomSeries::sptr series) const
+    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
+        const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
     throw(::fwDicomIOFilter::exceptions::FilterFailure);
 
     /// Return the name of the filter
@@ -44,7 +46,7 @@ public:
     FWDICOMIOFILTER_API virtual std::string getDescription() const;
 
     /// Return true if a configuration is required
-    FWDICOMIOFILTER_API virtual bool isConfigurationRequired();
+    FWDICOMIOFILTER_API virtual bool isConfigurationRequired() const;
 
 protected:
     /// Filter name

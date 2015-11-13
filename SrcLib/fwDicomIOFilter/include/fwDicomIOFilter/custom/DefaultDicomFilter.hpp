@@ -7,9 +7,10 @@
 #ifndef __FWDICOMIOFILTER_CUSTOM_DEFAULTDICOMFILTER_HPP__
 #define __FWDICOMIOFILTER_CUSTOM_DEFAULTDICOMFILTER_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
-#include "fwDicomIOFilter/custom/ICustom.hpp"
 #include "fwDicomIOFilter/config.hpp"
+#include "fwDicomIOFilter/custom/ICustom.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -34,7 +35,8 @@ public:
     FWDICOMIOFILTER_API virtual ~DefaultDicomFilter();
 
     /// Override
-    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(::fwDicomData::DicomSeries::sptr series) const
+    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
+        const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
     throw(::fwDicomIOFilter::exceptions::FilterFailure);
 
     /// Return the name of the filter

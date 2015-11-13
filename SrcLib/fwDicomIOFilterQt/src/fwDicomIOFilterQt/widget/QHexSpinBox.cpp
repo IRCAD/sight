@@ -6,7 +6,6 @@
 
 #include "fwDicomIOFilterQt/widget/QHexSpinBox.hpp"
 
-
 namespace fwDicomIOFilterQt
 {
 namespace widget

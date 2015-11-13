@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomIOFilter/splitter/TagValueInstanceRemoveSplitter.hpp"
+#include "fwDicomIOFilter/registry/macros.hpp"
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
+
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
-
-#include "fwDicomIOFilter/registry/macros.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
-#include "fwDicomIOFilter/splitter/TagValueInstanceRemoveSplitter.hpp"
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::splitter::TagValueInstanceRemoveSplitter );
 
@@ -55,7 +55,7 @@ std::string TagValueInstanceRemoveSplitter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-bool TagValueInstanceRemoveSplitter::isConfigurationRequired()
+bool TagValueInstanceRemoveSplitter::isConfigurationRequired() const
 {
     return true;
 }
@@ -63,7 +63,8 @@ bool TagValueInstanceRemoveSplitter::isConfigurationRequired()
 //-----------------------------------------------------------------------------
 
 TagValueInstanceRemoveSplitter::DicomSeriesContainerType TagValueInstanceRemoveSplitter::apply(
-    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     if(m_tag == DCM_UndefinedTagKey)
     {
@@ -91,12 +92,16 @@ TagValueInstanceRemoveSplitter::DicomSeriesContainerType TagValueInstanceRemoveS
         dataset = fileFormat.getDataset();
 
         // Get the value of the instance
-        dataset->findAndGetOFString(m_tag,data);
+        dataset->findAndGetOFStringArray(m_tag,data);
         ::std::string value = data.c_str();
 
         if(value != m_tagValue)
         {
             instances.push_back(filename.c_str());
+        }
+        else
+        {
+            logger->warning("An instance has been removed from the series.");
         }
     }
 
@@ -108,7 +113,7 @@ TagValueInstanceRemoveSplitter::DicomSeriesContainerType TagValueInstanceRemoveS
     {
         series->addDicomPath(index++, file);
     }
-    series->setNumberOfInstances(series->getLocalDicomPaths().size());
+    series->setNumberOfInstances(static_cast<unsigned int>(series->getLocalDicomPaths().size()));
     result.push_back(series);
 
     return result;

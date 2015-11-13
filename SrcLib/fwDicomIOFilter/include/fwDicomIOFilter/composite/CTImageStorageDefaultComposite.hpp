@@ -7,9 +7,10 @@
 #ifndef __FWDICOMIOFILTER_COMPOSITE_CTIMAGESTORAGEDEFAULTCOMPOSITE_HPP__
 #define __FWDICOMIOFILTER_COMPOSITE_CTIMAGESTORAGEDEFAULTCOMPOSITE_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
 #include "fwDicomIOFilter/composite/IComposite.hpp"
 #include "fwDicomIOFilter/config.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {

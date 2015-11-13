@@ -7,9 +7,10 @@
 #ifndef __FWDICOMIOFILTER_SPLITTER_IMAGEPOSITIONPATIENTSPLITTER_HPP__
 #define __FWDICOMIOFILTER_SPLITTER_IMAGEPOSITIONPATIENTSPLITTER_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
-#include "fwDicomIOFilter/splitter/ISplitter.hpp"
 #include "fwDicomIOFilter/config.hpp"
+#include "fwDicomIOFilter/splitter/ISplitter.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -35,7 +36,8 @@ public:
     FWDICOMIOFILTER_API virtual ~ImagePositionPatientSplitter();
 
     /// Override
-    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(::fwDicomData::DicomSeries::sptr series) const
+    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
+        const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
     throw(::fwDicomIOFilter::exceptions::FilterFailure);
 
     /// Return the name of the filter

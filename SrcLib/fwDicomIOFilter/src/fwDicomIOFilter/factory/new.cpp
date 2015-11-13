@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwDicomIOFilter/IFilter.hpp"
-
 #include "fwDicomIOFilter/factory/new.hpp"
 
 

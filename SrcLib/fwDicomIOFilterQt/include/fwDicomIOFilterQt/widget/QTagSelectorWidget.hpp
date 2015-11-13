@@ -7,15 +7,14 @@
 #ifndef __FWDICOMIOFILTERQT_WIDGET_QTAGSELECTORWIDGET_HPP__
 #define __FWDICOMIOFILTERQT_WIDGET_QTAGSELECTORWIDGET_HPP__
 
+#include "fwDicomIOFilterQt/config.hpp"
+#include "fwDicomIOFilterQt/widget/QHexSpinBox.hpp"
+
 #include <QLabel>
 #include <QPointer>
 #include <QWidget>
 
 #include <dcmtk/dcmdata/dctagkey.h>
-
-#include "fwDicomIOFilterQt/widget/QHexSpinBox.hpp"
-
-#include "fwDicomIOFilterQt/config.hpp"
 
 namespace fwDicomIOFilterQt
 {

@@ -7,10 +7,10 @@
 #ifndef __FWDICOMIOFILTER_SORTER_INSTANCENUMBERSORTER_HPP__
 #define __FWDICOMIOFILTER_SORTER_INSTANCENUMBERSORTER_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
-
-#include "fwDicomIOFilter/sorter/TagValueSorter.hpp"
 #include "fwDicomIOFilter/config.hpp"
+#include "fwDicomIOFilter/sorter/TagValueSorter.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -41,7 +41,7 @@ public:
     FWDICOMIOFILTER_API virtual std::string getDescription() const;
 
     /// Return true if a configuration is required
-    FWDICOMIOFILTER_API virtual bool isConfigurationRequired();
+    FWDICOMIOFILTER_API virtual bool isConfigurationRequired() const;
 
 protected:
     /// Filter name

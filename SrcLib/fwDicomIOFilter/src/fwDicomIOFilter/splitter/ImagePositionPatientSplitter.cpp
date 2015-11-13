@@ -4,17 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomIOFilter/registry/macros.hpp"
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
+#include "fwDicomIOFilter/splitter/ImagePositionPatientSplitter.hpp"
+
+#include <fwMath/VectorFunctions.hpp>
+
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
-
-#include <fwMath/VectorFunctions.hpp>
-
-#include "fwDicomIOFilter/registry/macros.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
-#include "fwDicomIOFilter/splitter/ImagePositionPatientSplitter.hpp"
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::splitter::ImagePositionPatientSplitter );
 
@@ -57,7 +57,8 @@ std::string ImagePositionPatientSplitter::getDescription() const
 //-----------------------------------------------------------------------------
 
 ImagePositionPatientSplitter::DicomSeriesContainerType ImagePositionPatientSplitter::apply(
-    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
 
@@ -114,12 +115,12 @@ ImagePositionPatientSplitter::DicomSeriesContainerType ImagePositionPatientSplit
         }
 
         // First frame or volume detected: We create a new Series
-        if(!currentSeries || ((spacing-spacingBetweenSlices) > epsilon) )
+        if(!currentSeries || (fabs(spacing-spacingBetweenSlices) > epsilon) )
         {
             if(currentSeries)
             {
                 result.push_back(currentSeries);
-                currentSeries->setNumberOfInstances(currentSeries->getLocalDicomPaths().size());
+                currentSeries->setNumberOfInstances((unsigned int)(currentSeries->getLocalDicomPaths().size()));
             }
             instanceNumber = 0;
             currentSeries  = ::fwDicomData::DicomSeries::New();
@@ -135,7 +136,12 @@ ImagePositionPatientSplitter::DicomSeriesContainerType ImagePositionPatientSplit
 
     // Push last series created
     result.push_back(currentSeries);
-    currentSeries->setNumberOfInstances(currentSeries->getLocalDicomPaths().size());
+    currentSeries->setNumberOfInstances((unsigned int)(currentSeries->getLocalDicomPaths().size()));
+
+    if(result.size() > 1)
+    {
+        logger->warning("Series has been split according to slice positions.");
+    }
 
     return result;
 

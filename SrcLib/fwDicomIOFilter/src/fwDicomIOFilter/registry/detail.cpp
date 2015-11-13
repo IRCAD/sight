@@ -4,10 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/util/LazyInstantiator.hpp>
-
 #include "fwDicomIOFilter/registry/detail.hpp"
 
+#include <fwCore/util/LazyInstantiator.hpp>
 
 namespace fwDicomIOFilter
 {

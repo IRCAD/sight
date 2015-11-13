@@ -7,10 +7,10 @@
 #ifndef __FWDICOMIOFILTER_SORTER_ISORTER_HPP__
 #define __FWDICOMIOFILTER_SORTER_ISORTER_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
-
 #include "fwDicomIOFilter/IFilter.hpp"
 #include "fwDicomIOFilter/config.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {

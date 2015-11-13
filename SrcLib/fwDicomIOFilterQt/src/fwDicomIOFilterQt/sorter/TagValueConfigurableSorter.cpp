@@ -4,6 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomIOFilterQt/sorter/TagValueConfigurableSorter.hpp"
+#include "fwDicomIOFilterQt/widget/QTagSelectorWidget.hpp"
+
+#include <fwDicomIOFilter/registry/macros.hpp>
+
 #include <QApplication>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -12,11 +17,6 @@
 #include <QWidget>
 
 #include <dcmtk/dcmdata/dcdeftag.h>
-
-#include <fwDicomIOFilter/registry/macros.hpp>
-
-#include "fwDicomIOFilterQt/widget/QTagSelectorWidget.hpp"
-#include "fwDicomIOFilterQt/sorter/TagValueConfigurableSorter.hpp"
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilterQt::sorter::TagValueConfigurableSorter );
 
@@ -59,14 +59,14 @@ std::string TagValueConfigurableSorter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-bool TagValueConfigurableSorter::isConfigurationRequired()
+bool TagValueConfigurableSorter::isConfigurationRequired() const
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-bool TagValueConfigurableSorter::isConfigurableWithGUI()
+bool TagValueConfigurableSorter::isConfigurableWithGUI() const
 {
     return true;
 }

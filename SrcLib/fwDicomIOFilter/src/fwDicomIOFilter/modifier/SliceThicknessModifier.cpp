@@ -4,17 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomIOFilter/registry/macros.hpp"
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
+#include "fwDicomIOFilter/modifier/SliceThicknessModifier.hpp"
+
+#include <fwMath/VectorFunctions.hpp>
+
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
 
-#include <fwMath/VectorFunctions.hpp>
-
-#include "fwDicomIOFilter/registry/macros.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
-#include "fwDicomIOFilter/modifier/SliceThicknessModifier.hpp"
+#include <boost/lexical_cast.hpp>
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::modifier::SliceThicknessModifier );
 
@@ -57,14 +59,16 @@ std::string SliceThicknessModifier::getDescription() const
 //-----------------------------------------------------------------------------
 
 SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
-    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
 
     if(series->getLocalDicomPaths().size() < 2)
     {
-        const std::string msg = "Unable to compute the SliceThickness of the series: there is only one instance.";
-        throw ::fwDicomIOFilter::exceptions::FilterFailure(msg);
+        SLM_WARN("SliceThicknessModifier is being applied on a series containing only one slice.");
+        result.push_back(series);
+        return result;
     }
 
     // Retrieve the two first instances
@@ -75,8 +79,7 @@ SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
     // Compute the slice thickness between the 2 first slices.
     double firstIndex     = this->getInstanceZPosition(firstFile);
     double secondIndex    = this->getInstanceZPosition(secondFile);
-    double sliceThickness = secondIndex - firstIndex;
-    sliceThickness = std::abs(sliceThickness);
+    double sliceThickness = std::abs(secondIndex - firstIndex);
 
     // Check that the computed sliceThickness doesn't match the sliceThickness of the first instance
     double currentSliceThickness = this->getSliceThickness(firstFile);
@@ -86,11 +89,7 @@ SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
     // we add the computed value to the DicomSeries.
     if(std::abs(sliceThickness-currentSliceThickness) > epsilon)
     {
-        std::stringstream ss;
-        ss << sliceThickness;
-        series->addComputedTagValue("SliceThickness", ss.str());
-        OSLM_WARN("Slice Thickness Modified for series " << series->getInstanceUID() << " : " <<
-                  currentSliceThickness << " -> " << sliceThickness);
+        series->addComputedTagValue("SliceThickness", boost::lexical_cast<std::string>(sliceThickness));
     }
 
     result.push_back(series);

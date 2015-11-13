@@ -4,10 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwDicomIOFilter/registry/macros.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
-
 #include "fwDicomIOFilter/custom/NoFilter.hpp"
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
+#include "fwDicomIOFilter/registry/macros.hpp"
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::custom::NoFilter );
 
@@ -48,7 +47,8 @@ std::string NoFilter::getDescription() const
 //-----------------------------------------------------------------------------
 
 NoFilter::DicomSeriesContainerType NoFilter::apply(
-    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
     result.push_back(series);

@@ -5,19 +5,18 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <dcmtk/config/osconfig.h>
+
+#include "fwDicomIOFilter/composite/CTImageStorageDefaultComposite.hpp"
+#include "fwDicomIOFilter/composite/IComposite.hpp"
+#include "fwDicomIOFilter/custom/DefaultDicomFilter.hpp"
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
+#include "fwDicomIOFilter/registry/macros.hpp"
+#include "fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp"
+
 #include <dcmtk/dcmnet/diutil.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
-
-#include "fwDicomIOFilter/registry/macros.hpp"
-
-#include "fwDicomIOFilter/composite/CTImageStorageDefaultComposite.hpp"
-#include "fwDicomIOFilter/composite/IComposite.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
-#include "fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp"
-
-#include "fwDicomIOFilter/custom/DefaultDicomFilter.hpp"
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::custom::DefaultDicomFilter );
 
@@ -58,14 +57,15 @@ std::string DefaultDicomFilter::getDescription() const
 //-----------------------------------------------------------------------------
 
 DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
-    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
 
     //Split series depending on SOPClassUIDs
     ::fwDicomIOFilter::splitter::SOPClassUIDSplitter::sptr sopFilter =
         ::fwDicomIOFilter::splitter::SOPClassUIDSplitter::New();
-    DicomSeriesContainerType seriesContainer = sopFilter->apply(series);
+    DicomSeriesContainerType seriesContainer = sopFilter->apply(series, logger);
 
     // Apply default filters depending on SOPClassUIDs
     for(const ::fwDicomData::DicomSeries::sptr& s :  seriesContainer)
@@ -97,11 +97,11 @@ DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
         if(filter)
         {
             SLM_TRACE("Applying default filter for SOPClassUID: \""+sopClassUID+"\".");
-            tempo = filter->forcedApply(s);
+            tempo = filter->forcedApply(s, logger);
         }
         else
         {
-            SLM_WARN("Can't apply any filter : \""+sopClassUID+"\" SOPClassUID is not supported.");
+            logger->information("Can't apply any filter : \""+sopClassUID+"\" SOPClassUID is not supported.");
             tempo.push_back(s);
         }
 

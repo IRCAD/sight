@@ -7,14 +7,14 @@
 #ifndef __FWDICOMIOFILTER_FACTORY_NEW_HPP__
 #define __FWDICOMIOFILTER_FACTORY_NEW_HPP__
 
-#include <string>
-
-
-#include <fwTools/macros.hpp>
-#include <fwTools/DynamicAttributes.hxx>
-
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/registry/detail.hpp"
+
+#include <fwTools/DynamicAttributes.hxx>
+#include <fwTools/macros.hpp>
+
+
+#include <string>
 
 namespace fwDicomIOFilter
 {

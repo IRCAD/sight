@@ -7,12 +7,12 @@
 #ifndef __FWDICOMIOFILTER_REGISTRY_DETAIL_HPP__
 #define __FWDICOMIOFILTER_REGISTRY_DETAIL_HPP__
 
-#include <string>
+#include "fwDicomIOFilter/config.hpp"
 
 #include <fwCore/macros.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
 
-#include "fwDicomIOFilter/config.hpp"
+#include <string>
 
 namespace fwDicomIOFilter
 {

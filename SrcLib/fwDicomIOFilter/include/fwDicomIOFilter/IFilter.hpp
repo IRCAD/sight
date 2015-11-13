@@ -7,14 +7,14 @@
 #ifndef __FWDICOMIOFILTER_IFILTER_HPP__
 #define __FWDICOMIOFILTER_IFILTER_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
-#include <fwTools/Object.hpp>
-
+#include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
 #include "fwDicomIOFilter/factory/new.hpp"
 #include "fwDicomIOFilter/registry/detail.hpp"
 
-#include "fwDicomIOFilter/config.hpp"
+#include <fwDicomData/DicomSeries.hpp>
+#include <fwLog/Logger.hpp>
+#include <fwTools/Object.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -70,7 +70,8 @@ public:
      * @brief Apply the filter
      * @return Returns one or more Dicom Instance Group
      */
-    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(::fwDicomData::DicomSeries::sptr series) const
+    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
+        const ::fwDicomData::DicomSeries::sptr &series, const ::fwLog::Logger::sptr &logger) const
     throw(::fwDicomIOFilter::exceptions::FilterFailure) = 0;
 
     /// Return the name of the filter
@@ -83,10 +84,10 @@ public:
     FWDICOMIOFILTER_API virtual FilterType getFilterType() const = 0;
 
     /// Return true if a configuration is required
-    FWDICOMIOFILTER_API virtual bool isConfigurationRequired();
+    FWDICOMIOFILTER_API virtual bool isConfigurationRequired() const;
 
     /// Return true if the filter is configurable using GUI
-    FWDICOMIOFILTER_API virtual bool isConfigurableWithGUI();
+    FWDICOMIOFILTER_API virtual bool isConfigurableWithGUI() const;
 
     /// Configure the filter using GUI dialog
     FWDICOMIOFILTER_API virtual void configureWithGUI();

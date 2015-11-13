@@ -21,14 +21,14 @@ IFilter::~IFilter()
 
 //-----------------------------------------------------------------------------
 
-bool IFilter::isConfigurationRequired()
+bool IFilter::isConfigurationRequired() const
 {
     return false;
 }
 
 //-----------------------------------------------------------------------------
 
-bool IFilter::isConfigurableWithGUI()
+bool IFilter::isConfigurableWithGUI() const
 {
     return false;
 }

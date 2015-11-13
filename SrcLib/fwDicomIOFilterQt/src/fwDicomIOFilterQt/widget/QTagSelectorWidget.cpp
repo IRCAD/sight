@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomIOFilterQt/widget/QTagSelectorWidget.hpp"
+
+#include <fwCore/spyLog.hpp>
+#include <fwDcmtkTools/Dictionary.hpp>
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
 #include <dcmtk/dcmdata/dctag.h>
-
-#include <fwCore/spyLog.hpp>
-#include <fwDicomIOExt/dcmtk/helper/Dictionary.hpp>
-
-#include "fwDicomIOFilterQt/widget/QTagSelectorWidget.hpp"
 
 namespace fwDicomIOFilterQt
 {
@@ -25,7 +25,7 @@ namespace widget
 QTagSelectorWidget::QTagSelectorWidget(QWidget* parent) : QWidget(parent)
 {
     // Load dictionary
-    ::fwDicomIOExt::dcmtk::helper::Dictionary::loadDictionary();
+    ::fwDcmtkTools::Dictionary::loadDictionary();
 
     // Create main layout
     QVBoxLayout* mainLayout = new QVBoxLayout();

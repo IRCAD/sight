@@ -4,6 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomIOFilterQt/splitter/TagValueConfigurableSplitter.hpp"
+#include "fwDicomIOFilterQt/widget/QTagSelectorWidget.hpp"
+
+#include <fwDicomIOFilter/registry/macros.hpp>
+
 #include <QApplication>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -12,11 +17,6 @@
 #include <QWidget>
 
 #include <dcmtk/dcmdata/dcdeftag.h>
-
-#include <fwDicomIOFilter/registry/macros.hpp>
-
-#include "fwDicomIOFilterQt/widget/QTagSelectorWidget.hpp"
-#include "fwDicomIOFilterQt/splitter/TagValueConfigurableSplitter.hpp"
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilterQt::splitter::TagValueConfigurableSplitter );
 
@@ -59,14 +59,14 @@ std::string TagValueConfigurableSplitter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-bool TagValueConfigurableSplitter::isConfigurationRequired()
+bool TagValueConfigurableSplitter::isConfigurationRequired() const
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-bool TagValueConfigurableSplitter::isConfigurableWithGUI()
+bool TagValueConfigurableSplitter::isConfigurableWithGUI() const
 {
     return true;
 }

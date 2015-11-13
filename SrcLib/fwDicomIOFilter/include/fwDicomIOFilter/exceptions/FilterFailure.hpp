@@ -7,9 +7,9 @@
 #ifndef __FWDICOMIOFILTER_EXCEPTIONS_FILTERFAILURE_HPP__
 #define __FWDICOMIOFILTER_EXCEPTIONS_FILTERFAILURE_HPP__
 
-#include <fwCore/Exception.hpp>
-
 #include "fwDicomIOFilter/config.hpp"
+
+#include <fwCore/Exception.hpp>
 
 namespace fwDicomIOFilter
 {

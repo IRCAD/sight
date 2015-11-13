@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomIOFilter/registry/macros.hpp"
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
+#include "fwDicomIOFilter/splitter/TagValueSplitter.hpp"
+
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
-
-#include "fwDicomIOFilter/registry/macros.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
-#include "fwDicomIOFilter/splitter/TagValueSplitter.hpp"
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::splitter::TagValueSplitter );
 
@@ -54,7 +54,7 @@ std::string TagValueSplitter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-bool TagValueSplitter::isConfigurationRequired()
+bool TagValueSplitter::isConfigurationRequired() const
 {
     return true;
 }
@@ -62,7 +62,8 @@ bool TagValueSplitter::isConfigurationRequired()
 //-----------------------------------------------------------------------------
 
 TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
-    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     if(m_tag == DCM_UndefinedTagKey)
     {
@@ -91,7 +92,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
         dataset = fileFormat.getDataset();
 
         // Get the value of the instance
-        dataset->findAndGetOFString(m_tag,data);
+        dataset->findAndGetOFStringArray(m_tag,data);
         ::std::string value = data.c_str();
 
         // Add the instance to the group
@@ -114,9 +115,18 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
         }
 
         // Set number of instances
-        dicomSeries->setNumberOfInstances(dicomSeries->getLocalDicomPaths().size());
+        dicomSeries->setNumberOfInstances(static_cast<unsigned int>(dicomSeries->getLocalDicomPaths().size()));
 
         result.push_back(dicomSeries);
+    }
+
+    if(result.size() > 1)
+    {
+        std::stringstream ss;
+        ss << "Series has been split according to the tag value (" <<
+            std::hex << std::setfill('0') << std::setw(4) << m_tag.getGroup() << "," <<
+            std::hex << std::setfill('0') << std::setw(4) << m_tag.getElement() << ").";
+        logger->warning(ss.str());
     }
 
     return result;

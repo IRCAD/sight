@@ -4,17 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDicomIOFilter/sorter/ImagePositionPatientSorter.hpp"
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
+#include "fwDicomIOFilter/registry/macros.hpp"
+
+#include <fwMath/VectorFunctions.hpp>
+
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
-
-#include <fwMath/VectorFunctions.hpp>
-
-#include "fwDicomIOFilter/registry/macros.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
-#include "fwDicomIOFilter/sorter/ImagePositionPatientSorter.hpp"
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::sorter::ImagePositionPatientSorter );
 
@@ -57,7 +57,8 @@ std::string ImagePositionPatientSorter::getDescription() const
 //-----------------------------------------------------------------------------
 
 ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter::apply(
-    ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
 
@@ -125,6 +126,9 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
     }
 
     result.push_back(series);
+
+    logger->information("The instances have been sorted using the slices positions.");
+
     return result;
 
 }

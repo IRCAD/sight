@@ -7,11 +7,11 @@
 #ifndef __FWDICOMIOFILTERQT_WIDGET_QHEXSPINBOX_HPP__
 #define __FWDICOMIOFILTERQT_WIDGET_QHEXSPINBOX_HPP__
 
+#include "fwDicomIOFilterQt/config.hpp"
+
 #include <QRegExpValidator>
 #include <QSpinBox>
 #include <QWidget>
-
-#include "fwDicomIOFilterQt/config.hpp"
 
 namespace fwDicomIOFilterQt
 {
