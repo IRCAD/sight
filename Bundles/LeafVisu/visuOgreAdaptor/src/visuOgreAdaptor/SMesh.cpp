@@ -908,7 +908,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         }
 
         size_t width  = std::min(s_maxTextureSize, numIndicesTotal);
-        size_t height = std::ceil(numIndicesTotal / s_maxTextureSize);
+        size_t height = static_cast<size_t>( std::ceil(numIndicesTotal / s_maxTextureSize) );
 
         if(m_perPrimitiveColorTexture->getWidth() != width || m_perPrimitiveColorTexture->getHeight() != height )
         {
@@ -925,6 +925,8 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
             m_perPrimitiveColorTexture->setDepth(static_cast< ::Ogre::uint32>(1));
             m_perPrimitiveColorTexture->setTextureType(::Ogre::TEX_TYPE_2D);
             m_perPrimitiveColorTexture->setNumMipmaps(0);
+            // It would be better to use PF_BYTE_RGB when we have 3 components but for some reason it doesn't work
+            // Probably something related to alignment or a butg in Ogre
             m_perPrimitiveColorTexture->setFormat(::Ogre::PF_BYTE_RGBA);
             m_perPrimitiveColorTexture->setUsage(usage);
 
@@ -939,8 +941,6 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         }
     }
 
-    ::Ogre::RenderSystem* rs = ::Ogre::Root::getSingleton().getRenderSystem();
-
     if (hasVertexColor)
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
@@ -950,24 +950,25 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         ::Ogre::RGBA* pColor                       =
             static_cast< ::Ogre::RGBA* >( cbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD) );
 
-        auto colors          = meshHelper.getPointColors();
-        size_t numComponents = colors.shape()[1];
+        auto colors           = meshHelper.getPointColors();
+        std::uint8_t* icolors = reinterpret_cast<std::uint8_t*>(colors.data());
 
+        const size_t numComponents = colors.shape()[1];
+        const auto uiNumPoints     = mesh->getNumberOfPoints();
         if(numComponents == 3)
         {
-            for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+            for (unsigned int i = 0; i < uiNumPoints; ++i)
             {
-                rs->convertColourValue(::Ogre::ColourValue(colors[i][0] / 255.f, colors[i][1] / 255.f,
-                                                           colors[i][2] / 255.f), pColor++);
+                // Fastest way to copy tested so far, take 1.0 in alpha as default
+                ::Ogre::RGBA argb = 0xFF000000;
+                argb             |= *reinterpret_cast< ::Ogre::RGBA*>(icolors);
+                *pColor++         = argb;
+                icolors          += 3;
             }
         }
         else if(numComponents == 4)
         {
-            for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
-            {
-                rs->convertColourValue(::Ogre::ColourValue(colors[i][0] / 255.f, colors[i][1] / 255.f,
-                                                           colors[i][2] / 255.f, colors[i][3] / 255.f), pColor++);
-            }
+            memcpy(pColor, icolors, uiNumPoints * numComponents);
         }
         else
         {
@@ -986,39 +987,32 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
 
-        unsigned int* __restrict pColorDest = static_cast<unsigned int*>(pixelBox.data);
+        ::Ogre::RGBA* pColorDest = static_cast< ::Ogre::RGBA* >( pixelBox.data );
 
-        auto colors          = meshHelper.getCellColors();
-        size_t numComponents = colors.shape()[1];
+        auto colors           = meshHelper.getCellColors();
+        std::uint8_t* icolors = reinterpret_cast<std::uint8_t*>(colors.data());
 
+        const auto uiNumCells      = mesh->getNumberOfCells();
+        const size_t numComponents = colors.shape()[1];
         if(numComponents == 3)
         {
-            const auto uiNumCells = mesh->getNumberOfCells();
             for (unsigned int i = 0; i < uiNumCells; ++i)
             {
-                const auto color = colors[i];
-
-                rs->convertColourValue(::Ogre::ColourValue(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f),
-                                       pColorDest++);
+                // Fastest way to copy tested so far, take 1.0 in alpha as default
+                ::Ogre::RGBA argb = 0xFF000000;
+                argb             |= *reinterpret_cast< ::Ogre::RGBA*>(icolors);
+                *pColorDest++     = argb;
+                icolors          += 3;
             }
         }
         else if(numComponents == 4)
         {
-            const auto uiNumCells = mesh->getNumberOfCells();
-            for (unsigned int i = 0; i < uiNumCells; ++i)
-            {
-                const auto color = colors[i];
-
-                rs->convertColourValue(::Ogre::ColourValue(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f,
-                                                           color[3] / 255.f),
-                                       pColorDest++);
-            }
+            memcpy(pColorDest, icolors, uiNumCells * numComponents);
         }
         else
         {
             SLM_FATAL("We only support RGB or RGBA vertex color");
         }
-
 
         pixelBuffer->unlock();
     }

@@ -76,7 +76,7 @@ void main(void)
     int mod = gl_PrimitiveIDIn - int(u_colorPrimitiveTextureSize[0]) * div;
 
     vec2 uv = vec2(mod / u_colorPrimitiveTextureSize[0] , div/ u_colorPrimitiveTextureSize[1]);
-    ppcolor = texture(u_colorPrimitiveTexture, uv );
+    ppcolor = texture(u_colorPrimitiveTexture, uv ).bgra;
 #endif // PER_PRIMITIVE_COLOR
 
 #if defined(QUAD)
