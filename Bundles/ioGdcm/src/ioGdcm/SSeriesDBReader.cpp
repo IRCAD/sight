@@ -21,7 +21,6 @@
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>

@@ -16,7 +16,6 @@
 
 #include <fwDataIO/reader/MeshReader.hpp>
 
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwTools/UUID.hpp>

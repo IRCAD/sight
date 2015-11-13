@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "basicRegistration/SPointListRegistration.hpp"
+
 #include <fwCore/spyLog.hpp>
 
 // Service associated data
@@ -13,7 +15,8 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwServices/IEditionService.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 #include <fwComEd/MeshMsg.hpp>
@@ -26,7 +29,6 @@
 // Services tools
 #include <fwServices/Base.hpp>
 
-#include "basicRegistration/SPointListRegistration.hpp"
 
 #ifndef M_PI
 #define M_PI           3.14159265358979323846
@@ -129,27 +131,34 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
         T.RMS3D3D(regPoints, modelPoints, error_vector);
 
         // Convert Matrix
-        matrix->setCoefficient(0,0, T.get(0,0) ); matrix->setCoefficient(0,1, T.get(0,1) ); matrix->setCoefficient(0,2, T.get(
-                                                                                                                       0,
-                                                                                                                       2) );
+        matrix->setCoefficient(0,0, T.get(0,0) );
+        matrix->setCoefficient(0,1, T.get(0,1) );
+        matrix->setCoefficient(0,2, T.get(0,2) );
         matrix->setCoefficient(0,3, T.get(0,3) );
-        matrix->setCoefficient(1,0, T.get(1,0) ); matrix->setCoefficient(1,1, T.get(1,1) ); matrix->setCoefficient(1,2, T.get(
-                                                                                                                       1,
-                                                                                                                       2) );
+        matrix->setCoefficient(1,0, T.get(1,0) );
+        matrix->setCoefficient(1,1, T.get(1,1) );
+        matrix->setCoefficient(1,2, T.get(1,2) );
         matrix->setCoefficient(1,3, T.get(1,3) );
-        matrix->setCoefficient(2,0, T.get(2,0) ); matrix->setCoefficient(2,1, T.get(2,1) ); matrix->setCoefficient(2,2, T.get(
-                                                                                                                       2,
-                                                                                                                       2) );
+        matrix->setCoefficient(2,0, T.get(2,0) );
+        matrix->setCoefficient(2,1, T.get(2,1) );
+        matrix->setCoefficient(2,2, T.get(2,2) );
         matrix->setCoefficient(2,3, T.get(2,3) );
-        matrix->setCoefficient(3,0, T.get(3,0) ); matrix->setCoefficient(3,1, T.get(3,1) ); matrix->setCoefficient(3,2, T.get(
-                                                                                                                       3,
-                                                                                                                       2) );
+        matrix->setCoefficient(3,0, T.get(3,0) );
+        matrix->setCoefficient(3,1, T.get(3,1) );
+        matrix->setCoefficient(3,2, T.get(3,2) );
         matrix->setCoefficient(3,3, T.get(3,3) );
 
         // Notify Matrix modified
         ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
         msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-        ::fwServices::IEditionService::notify(this->getSptr(), matrix, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( matrix);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = matrix->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
     else
     {

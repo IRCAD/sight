@@ -4,7 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/IEditionService.hpp>
+#include "ctrlPointSelection/SUpdateNegato.hpp"
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -14,9 +15,11 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwComEd/ImageMsg.hpp>
 
-#include "ctrlPointSelection/SUpdateNegato.hpp"
 
 namespace ctrlPointSelection
 {
@@ -99,7 +102,14 @@ void SUpdateNegato::updateSlices(::fwData::Point::sptr selectedPoint)
     {
         ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->setSliceIndex(paramA, paramF, paramS);
-        ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( image);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 

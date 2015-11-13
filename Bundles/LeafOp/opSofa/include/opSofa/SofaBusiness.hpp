@@ -12,7 +12,6 @@
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/tree/GNode.h>
 
-#include <fwServices/IEditionService.hpp>
 
 #include "opSofa/SofaThread.hpp"
 

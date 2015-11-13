@@ -12,7 +12,6 @@
 #include <fwData/PointList.hpp>
 #include <fwData/Point.hpp>
 
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <boost/foreach.hpp>

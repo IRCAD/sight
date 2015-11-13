@@ -7,7 +7,6 @@
 #include <fwTools/UUID.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwComEd/MeshMsg.hpp>
 #include <fwVtkIO/vtk.hpp>
 

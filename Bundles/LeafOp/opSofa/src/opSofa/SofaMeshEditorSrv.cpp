@@ -138,7 +138,14 @@ void SofaMeshEditorSrv::onStrengthSlider(int value)
         // Notification
         ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
         msg->addEvent("EDITOR_MESH_SOFA", data);
-        ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( ms);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = ms->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 
@@ -189,7 +196,14 @@ void SofaMeshEditorSrv::moveOrgan(QKeyEvent* event)
     // Notification
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent("MOVE_MESH_SOFA", data);
-    ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( ms);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = ms->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 }

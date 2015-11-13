@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "devForum/tuto03/ImageReaderService.hpp"
+
 #include <fwData/Image.hpp>
 
 #include <fwServices/macros.hpp>
@@ -14,9 +16,9 @@
 #include <fwComEd/ImageMsg.hpp>
 
 // Management of notifications
-#include <fwServices/IEditionService.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
-#include "devForum/tuto03/ImageReaderService.hpp"
 
 namespace devForum
 {
@@ -66,7 +68,15 @@ void ImageReaderService::notifyMessage()
     msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
 
     // Notifies message to all service listeners
-    ::fwServices::IEditionService::notify( this->getSptr(), associatedImage, msg );
+    msg->setSource( this->getSptr());
+    msg->setSubject( associatedImage);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig =
+        associatedImage->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg );
+    }
 }
 
 //------------------------------------------------------------------------------

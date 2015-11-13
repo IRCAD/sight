@@ -10,7 +10,6 @@
 
 #include <fwData/Mesh.hpp>
 
-#include <fwServices/IEditionService.hpp>
 #include <fwTools/UUID.hpp>
 
 #include "opSofa/SofaThread.hpp"
@@ -79,7 +78,15 @@ void SofaThread::refreshVtk()
     int size = meshs->size();
     for (int i = 0; i<size; ++i)
     {
-        ::fwServices::IEditionService::notify(service, meshs->at(i), msg);
+        msg->setSource(service);
+        msg->setSubject( meshs->at(i));
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig =
+            meshs->at(i)->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 
     // wake thread sofa

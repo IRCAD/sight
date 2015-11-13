@@ -23,7 +23,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>

@@ -20,7 +20,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
 
 
@@ -180,7 +179,14 @@ void SFilterSelectorDialog::updating() throw( ::fwTools::Failed )
 
             ::fwComEd::StringMsg::sptr msg = ::fwComEd::StringMsg::New();
             msg->addEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED);
-            ::fwServices::IEditionService::notify(this->getSptr(),  obj, msg);
+            msg->setSource(this->getSptr());
+            msg->setSubject(  obj);
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = obj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( msg);
+            }
 
         }
     }

@@ -17,11 +17,14 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/op/Get.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <cpr/functions.hpp>
+
 #include <math.h>
 #include <vector>
 
@@ -179,7 +182,14 @@ void SComputeCPR2D::receiving(::fwServices::ObjectMsg::csptr msg) throw (::fwToo
 
         ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->addEvent(::fwComEd::ImageMsg::NEW_IMAGE);
-        ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( image);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 
@@ -221,7 +231,14 @@ void SComputeCPR2D::computeCPRImage()
     ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent(::fwComEd::ImageMsg::NEW_IMAGE);
     msg->addEvent(::fwComEd::ImageMsg::MODIFIED);
-    ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( image);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------
@@ -354,7 +371,15 @@ void SComputeCPR2D::addPointToVisualizePointList(
     // Notify
     ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
-    ::fwServices::IEditionService::notify(this->getSptr(), visualizePointList, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( visualizePointList);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = visualizePointList->signal< ::fwData::Object::ObjectModifiedSignalType >(
+        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------
@@ -376,7 +401,15 @@ void SComputeCPR2D::clearVisualizePointList()
 
             ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
             msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED, point);
-            ::fwServices::IEditionService::notify(this->getSptr(), visualizePointList, msg);
+            msg->setSource(this->getSptr());
+            msg->setSubject( visualizePointList);
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = visualizePointList->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( msg);
+            }
         }
 
         // Clear the pointList

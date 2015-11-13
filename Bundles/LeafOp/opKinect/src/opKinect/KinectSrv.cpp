@@ -11,7 +11,6 @@
 #include <fwTools/UUID.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 
 
 

@@ -14,7 +14,6 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/PointList.hpp>
 
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
@@ -154,7 +153,14 @@ void SComputeCPR3D::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTool
         ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
         msg->addEvent(::fwComEd::MeshMsg::NEW_MESH);
         msg->addEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED);
-        ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( mesh);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = mesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 
@@ -197,7 +203,14 @@ void SComputeCPR3D::computeMesh()
     ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
     msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH);
     msg->addEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED);
-    ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( mesh);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = mesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------

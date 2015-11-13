@@ -13,7 +13,6 @@
 
 #include <fwComEd/MeshMsg.hpp>
 
-#include <fwServices/IEditionService.hpp>
 
 #include "opSofa/SofaBusiness.hpp"
 

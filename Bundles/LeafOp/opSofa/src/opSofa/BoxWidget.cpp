@@ -189,7 +189,14 @@ void BoxWidget::updateFromVtk()
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
     ::fwServices::ObjectMsg::sptr msg2         = ::fwServices::ObjectMsg::New();
     msg2->addEvent("MOVE_MESH_SOFA", data);
-    ::fwServices::IEditionService::notify(this->getSptr(), trf, msg2);
+    msg2->setSource(this->getSptr());
+    msg2->setSubject( trf);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = trf->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg2);
+    }
 
 
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );

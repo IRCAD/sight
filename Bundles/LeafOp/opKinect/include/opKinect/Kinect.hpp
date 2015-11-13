@@ -7,7 +7,6 @@
 #ifndef __OPKINECT_KINECT_HPP__
 #define __OPKINECT_KINECT_HPP__
 
-#include <fwServices/IEditionService.hpp>
 #include <QThread>
 
 #include <XnVWaveDetector.h>

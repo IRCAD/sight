@@ -14,7 +14,6 @@
 
 // Services tools
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 // To manipulate QtContainer
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -128,7 +127,14 @@ void SStringEditor::notifyMessage()
     msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
 
     // Notifies message to all service listeners
-    ::fwServices::IEditionService::notify( this->getSptr(), associatedObj, msg );
+    msg->setSource( this->getSptr());
+    msg->setSubject( associatedObj);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = associatedObj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg );
+    }
 }
 } // namespace tuto03
 } // namespace beginnerTraining

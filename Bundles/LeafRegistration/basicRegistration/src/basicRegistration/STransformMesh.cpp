@@ -13,7 +13,6 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 #include <fwComEd/MeshMsg.hpp>
@@ -90,7 +89,14 @@ void STransformMesh::updating() throw ( ::fwTools::Failed )
     // Notify reading
     ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
     msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-    ::fwServices::IEditionService::notify( this->getSptr(), mesh, msg );
+    msg->setSource( this->getSptr());
+    msg->setSubject( mesh);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = mesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg );
+    }
 }
 
 void STransformMesh::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )

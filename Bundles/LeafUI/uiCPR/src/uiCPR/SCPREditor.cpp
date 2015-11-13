@@ -23,7 +23,6 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/ObjectMsg.hpp>
 

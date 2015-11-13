@@ -22,7 +22,6 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -182,7 +181,14 @@ void SSplinePointsEditor::updating() throw(::fwTools::Failed)
 
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
-    ::fwServices::IEditionService::notify(this->getSptr(), pointList, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( pointList);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = pointList->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 
     fwServicesNotifyMacro(this->getLightID(), m_sigIndexPointSelected, (m_numberOfPoints - 1));
 }
@@ -302,7 +308,14 @@ void SSplinePointsEditor::onClickRemovePoint()
 
     ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED, point);
-    ::fwServices::IEditionService::notify(this->getSptr(), pointList, msg );
+    msg->setSource(this->getSptr());
+    msg->setSubject( pointList);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = pointList->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg );
+    }
 
     if(m_numberOfPoints > 0)
     {
@@ -329,7 +342,14 @@ void SSplinePointsEditor::onClickRemoveAllPoints()
 
     ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED);
-    ::fwServices::IEditionService::notify(this->getSptr(), pointList, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( pointList);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = pointList->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 
     m_renamePointButton->setEnabled(false);
     m_removePointButton->setEnabled(false);
@@ -388,7 +408,15 @@ void SSplinePointsEditor::addPointToVisualizePointList(
 
     ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
-    ::fwServices::IEditionService::notify(this->getSptr(), visualizePointList, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( visualizePointList);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = visualizePointList->signal< ::fwData::Object::ObjectModifiedSignalType >(
+        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -409,7 +437,15 @@ void SSplinePointsEditor::clearVisualizePointList()
 
             ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
             msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED, point);
-            ::fwServices::IEditionService::notify(this->getSptr(),visualizePointList, msg);
+            msg->setSource(this->getSptr());
+            msg->setSubject(visualizePointList);
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = visualizePointList->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( msg);
+            }
         }
 
         // Clears the pointList
@@ -425,7 +461,14 @@ void SSplinePointsEditor::updatePointList()
 
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    ::fwServices::IEditionService::notify( this->getSptr(),pointList, msg );
+    msg->setSource( this->getSptr());
+    msg->setSubject(pointList);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = pointList->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg );
+    }
 }
 
 } // namespace uiSpline

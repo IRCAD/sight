@@ -235,7 +235,14 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
         ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
         ::fwData::String::sptr data       = ::fwData::String::New(scnFile);
         msg->addEvent( "NEW_SOFA_SCENE", data );
-        ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( ms);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = ms->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 

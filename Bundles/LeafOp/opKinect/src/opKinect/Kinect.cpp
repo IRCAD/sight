@@ -81,7 +81,14 @@ void XN_CALLBACK_TYPE Kinect::OnPointUpdate(const XnVHandPointContext* pContext,
     // Notification
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent("KINECT_NEW_POSITION_HAND", data);
-    ::fwServices::IEditionService::notify(g_service, g_modelSeries, msg);
+    msg->setSource(g_service);
+    msg->setSubject( g_modelSeries);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = g_modelSeries->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 void XN_CALLBACK_TYPE Kinect::onPush(XnFloat fVelocity,  XnFloat fAngle, void *cxt)

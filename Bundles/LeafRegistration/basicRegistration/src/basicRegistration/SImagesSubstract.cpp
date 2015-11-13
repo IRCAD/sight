@@ -16,7 +16,6 @@
 #include <fwData/String.hpp>
 #include <fwData/Image.hpp>
 
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>

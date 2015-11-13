@@ -16,7 +16,9 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 fwServicesRegisterMacro(
     ::fwServices::IController, ::ctrlSplineNavigation::SJumpToPointController, ::fwData::TransformationMatrix3D);
@@ -101,7 +103,14 @@ void SJumpToPointController::jumpToViewPoint    (::fwData::TransformationMatrix3
 
     ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
     msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
-    ::fwServices::IEditionService::notify(this->getSptr(), currentMatrix, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( currentMatrix);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = currentMatrix->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 }   // namespace ctrlSplineNavigation

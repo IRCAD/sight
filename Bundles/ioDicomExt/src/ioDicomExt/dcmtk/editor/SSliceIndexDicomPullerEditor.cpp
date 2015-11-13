@@ -26,7 +26,6 @@
 #include <fwMedData/SeriesDB.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -397,7 +396,15 @@ void SSliceIndexDicomPullerEditor::readImage(unsigned int selectedSliceIndex)
                 oldImage->setDataArray(newImage->getDataArray(), false);
                 ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
                 msg->addEvent(::fwComEd::ImageMsg::MODIFIED);
-                ::fwServices::IEditionService::notify(this->getSptr(),  oldImage, msg);
+                msg->setSource(this->getSptr());
+                msg->setSubject(  oldImage);
+                ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+                sig = oldImage->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                    ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+                {
+                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                    sig->asyncEmit( msg);
+                }
             }
             else
             {

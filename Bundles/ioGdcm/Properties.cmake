@@ -9,7 +9,8 @@ set( DEPENDENCIES
     fwData
     fwMedData
     gdcmIO 
-    fwComEd 
+    fwComEd
+    fwCom
     fwDataIO
     fwGui 
     fwDicomData

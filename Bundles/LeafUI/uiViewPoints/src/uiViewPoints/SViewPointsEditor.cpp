@@ -25,7 +25,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwCom/Signals.hpp>
 #include <fwCom/Signal.hxx>

@@ -11,7 +11,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwTools/ProgressToLogger.hpp>
 
@@ -191,7 +190,14 @@ void SDicomSeriesDBReader::notificationOfDBUpdate()
         msg->appendAddedSeries(s);
     }
 
-    ::fwServices::IEditionService::notify(this->getSptr(),  seriesDB, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject(  seriesDB);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = seriesDB->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //-----------------------------------------------------------------------------
