@@ -11,7 +11,6 @@
 #include <fwCom/Signals.hpp>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <fwCore/spyLog.hpp>
 

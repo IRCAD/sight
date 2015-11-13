@@ -6,33 +6,36 @@
 
 #include "ioDicomExt/dcmtk/editor/SSliceIndexDicomPullerEditor.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/Slot.hpp>
 
-#include <fwData/Composite.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Image.hpp>
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/helper/Array.hpp>
+#include <fwComEd/helper/Composite.hpp>
+#include <fwComEd/helper/SeriesDB.hpp>
+#include <fwComEd/ImageMsg.hpp>
+
 #include <fwData/Array.hpp>
+#include <fwData/Composite.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
 
 #include <fwDicomData/DicomSeries.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/ImageSeries.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwDicomIOExt/exceptions/Base.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
-#include <fwDicomIOExt/exceptions/Base.hpp>
 
-#include <fwComEd/helper/SeriesDB.hpp>
-#include <fwComEd/helper/Composite.hpp>
-#include <fwComEd/helper/Array.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/SeriesDB.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTools/System.hpp>
 

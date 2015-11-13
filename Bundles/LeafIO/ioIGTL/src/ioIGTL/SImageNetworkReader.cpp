@@ -6,16 +6,20 @@
 
 #include "ioIGTL/SImageNetworkReader.hpp"
 
-#include <fwData/Image.hpp>
-
-#include <fwServices/Base.hpp>
-
-#include <fwCore/HiResTimer.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwCore/HiResTimer.hpp>
+
+#include <fwData/Image.hpp>
+
 #include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwServices/Base.hpp>
 
 #include <boost/type.hpp>
 
@@ -99,19 +103,16 @@ void SImageNetworkReader::updating() throw (::fwTools::Failed)
 
         ::fwData::Object::ModifiedSignalType::sptr sig;
         sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
+        }
     }
     catch (std::exception &err)
     {
         msgDialog.showMessageDialog ("Error", err.what());
     }
 
-}
-
-//-----------------------------------------------------------------------------
-
-void SImageNetworkReader::receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed)
-{
 }
 
 //-----------------------------------------------------------------------------

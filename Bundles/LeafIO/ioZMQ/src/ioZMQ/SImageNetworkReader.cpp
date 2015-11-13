@@ -83,7 +83,10 @@ void SImageNetworkReader::updating() throw (::fwTools::Failed)
         m_socket->stop();
         ::fwData::Object::ModifiedSignalType::sptr sig;
         sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
+        }
     }
     catch (std::exception &err)
     {

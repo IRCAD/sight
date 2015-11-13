@@ -134,7 +134,7 @@ void SeriesDB::read()
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB, ::fwServices::IService::sptr notifier)
+void SeriesDB::readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB)
 {
     // Clear DicomSeries container
     m_dicomSeriesContainer.clear();
@@ -147,7 +147,7 @@ void SeriesDB::readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB, 
         m_dicomSeriesContainer.push_back(dicomSeries);
     }
 
-    this->convertDicomSeries(notifier);
+    this->convertDicomSeries(true);
 }
 
 //------------------------------------------------------------------------------
@@ -435,7 +435,7 @@ void SeriesDB::createSeries(const ::gdcm::Scanner& scanner, const std::string& f
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::convertDicomSeries(::fwServices::IService::sptr notifier)
+void SeriesDB::convertDicomSeries(bool notify)
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
@@ -459,9 +459,9 @@ void SeriesDB::convertDicomSeries(::fwServices::IService::sptr notifier)
                 ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
                 seriesDBHelper.add(series);
 
-                if(notifier)
+                if(notify)
                 {
-                    seriesDBHelper.notify(notifier);
+                    seriesDBHelper.notify();
                 }
             }
         }

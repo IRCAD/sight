@@ -4,12 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/macros.hpp>
-#include <fwComEd/SeriesDBMsg.hpp>
-#include <fwComEd/helper/SeriesDB.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-
 #include "ioDicomExt/common/action/SSeriesDBMerger.hpp"
+
+#include <fwComEd/helper/SeriesDB.hpp>
+#include <fwData/Vector.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwServices/macros.hpp>
+
 
 namespace ioDicomExt
 {
@@ -108,7 +109,7 @@ void SSeriesDBMerger::updating() throw(::fwTools::Failed)
             addedSeries.push_back(series);
         }
     }
-    sDBhelper.notify(this->getSptr());
+    sDBhelper.notify();
 
     // Display the informations
     ::fwGui::dialog::MessageDialog messageBox;

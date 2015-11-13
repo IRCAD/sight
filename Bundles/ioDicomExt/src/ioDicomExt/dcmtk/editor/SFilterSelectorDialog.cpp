@@ -4,24 +4,33 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ioDicomExt/dcmtk/editor/SFilterSelectorDialog.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwComEd/helper/Composite.hpp>
+
+#include <fwCore/base.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
+
+#include <fwDicomIOFilter/IFilter.hpp>
+
+#include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/SelectorDialog.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/helper.hpp>
+
+#include <fwServices/macros.hpp>
+
 #include <string>
 #include <sstream>
 
-#include <fwComEd/helper/Composite.hpp>
-#include <fwComEd/StringMsg.hpp>
-#include <fwCore/base.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
-#include <fwDicomIOFilter/IFilter.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
-#include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwServices/macros.hpp>
-
-
-#include "ioDicomExt/dcmtk/editor/SFilterSelectorDialog.hpp"
 
 namespace ioDicomExt
 {
@@ -175,15 +184,10 @@ void SFilterSelectorDialog::updating() throw( ::fwTools::Failed )
             SLM_ASSERT("The filter selector service must work on a ::fwData::String object.", obj);
             obj->setValue(filter->getClassname());
 
-            ::fwComEd::StringMsg::sptr msg = ::fwComEd::StringMsg::New();
-            msg->addEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED);
-            msg->setSource(this->getSptr());
-            msg->setSubject(  obj);
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            sig = obj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            auto sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( msg);
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sig->asyncEmit();
             }
 
         }

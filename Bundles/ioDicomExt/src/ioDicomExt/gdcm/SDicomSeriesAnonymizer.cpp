@@ -133,7 +133,7 @@ void SDicomSeriesAnonymizer::anonymize()
     }
 
     // Notify SeriesDB
-    sDBhelper.notify(this->getSptr());
+    sDBhelper.notify();
 }
 
 } // namespace gdcm

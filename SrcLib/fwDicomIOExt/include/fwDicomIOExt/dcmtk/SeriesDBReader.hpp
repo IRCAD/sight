@@ -12,8 +12,13 @@
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
+
 #include <fwDataIO/reader/GenericObjectReader.hpp>
+
+#include <fwMedData/SeriesDB.hpp>
+
 #include <fwServices/IService.hpp>
+
 #include <fwTools/ProgressAdviser.hpp>
 
 namespace fwMedData
@@ -71,10 +76,8 @@ public:
     /**
      * @brief Reads DICOM data from DicomSeries an fills SeriesDB object
      * @param[in] dicomSeriesDB SeriesDB containing DicomSeries that must be read
-     * @param[in] notifier Service used to notify changes in SeriesDB
      */
-    FWDICOMIOEXT_API void readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB,
-                                                ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
+    FWDICOMIOEXT_API void readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB);
 
     /// Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
     FWDICOMIOEXT_API void readDicomSeries();
@@ -168,10 +171,10 @@ private:
     /**
      * @brief Convert DicomSeries to Image or Model Series
      * @param[in] dicomSeries Dicom Series that must be converted
-     * @param[in] notifier Service used to notify the modification
+     * @param[in] notify if true, notify the seriesDB
      */
     void convertDicomSeries(SPTR(::fwDicomData::DicomSeries) dicomSeries,
-                            ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
+                            bool notify = false);
 
     ///Patient Map
     PatientMapType m_patientMap;

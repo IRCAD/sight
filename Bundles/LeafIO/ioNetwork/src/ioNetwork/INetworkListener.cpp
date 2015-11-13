@@ -69,7 +69,10 @@ void INetworkListener::notifyObjectUpdated()
     ::fwData::Object::sptr obj = this->getObject();
     ::fwData::Object::ModifiedSignalType::sptr sig;
     sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    sig->asyncEmit();
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
 }
 
 //-----------------------------------------------------------------------------

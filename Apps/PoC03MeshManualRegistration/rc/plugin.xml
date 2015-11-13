@@ -89,8 +89,12 @@
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
                                 
-                                <proxy channel="ModelRepresentationChannel">
+                                <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
                                     <slot>modelSeriesAdaptorUid/updateNormalMode</slot>
+                                </proxy>
+                                
+                                <proxy channel="ModelDisplayChannel" waitForKey="modelSeries">
+                                    <slot>modelSeriesAdaptorUid/showReconstructions</slot>
                                 </proxy>
                             </scene>
                         </service>
@@ -124,8 +128,12 @@
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
                                 
-                                <proxy channel="ModelRepresentationChannel">
+                                <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
                                     <slot>modelSeriesAdaptorUid2/updateNormalMode</slot>
+                                </proxy>
+                                
+                                <proxy channel="ModelDisplayChannel" waitForKey="modelSeries">
+                                    <slot>modelSeriesAdaptorUid2/showReconstructions</slot>
                                 </proxy>
                             </scene>
                         </service>

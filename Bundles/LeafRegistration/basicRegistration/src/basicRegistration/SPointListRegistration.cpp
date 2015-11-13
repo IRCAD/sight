@@ -12,7 +12,6 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <fwCore/spyLog.hpp>
 
@@ -142,15 +141,10 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
         matrix->setCoefficient(3,3, T.get(3,3) );
 
         // Notify Matrix modified
-        ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-        msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-        msg->setSource(this->getSptr());
-        msg->setSubject( matrix);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = matrix->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
         }
     }
     else

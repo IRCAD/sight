@@ -4,7 +4,23 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ioGdcm/SSeriesDBWriter.hpp"
+
+#include <fwComEd/helper/SeriesDB.hpp>
+
 #include <fwCore/base.hpp>
+
+#include <fwData/location/Folder.hpp>
+#include <fwData/Vector.hpp>
+
+#include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
+#include <fwGui/dialog/SelectorDialog.hpp>
+
+#include <fwMedData/Series.hpp>
+#include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
@@ -12,24 +28,11 @@
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <fwGui/dialog/ProgressDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
-#include <fwGui/Cursor.hpp>
-
-#include <io/IWriter.hpp>
-
-#include <fwData/location/Folder.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
-
-#include <fwComEd/helper/SeriesDB.hpp>
-
 #include <gdcmIO/helper/Fiducial.hpp>
 #include <gdcmIO/writer/SeriesDB.hpp>
 
-#include "ioGdcm/SSeriesDBWriter.hpp"
+#include <io/IWriter.hpp>
+
 
 
 namespace ioGdcm

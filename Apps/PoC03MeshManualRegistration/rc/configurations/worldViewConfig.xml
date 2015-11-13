@@ -4,6 +4,7 @@
     <parameters>
         <param name="COMPOSITE_VISU_UID" />
         <param name="GENERIC_UID" />
+        <param name="ModelDisplayChannel" />
     </parameters>
     <config>
         
@@ -38,7 +39,7 @@
                         <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
                         <vtkObject id="cam2PosMatrixTransform" class="vtkTransform" />
 
-                        <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                        <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                             <config renderer="default" picker="" autoresetcamera="no" />
                         </adaptor>
 
@@ -61,6 +62,10 @@
                         <adaptor id="cam2Axes" class="::visuVTKAdaptor::Axes" objectId="self">
                             <config renderer="default" transform="cam2PosMatrixTransform" length="5" label="no" />
                         </adaptor>
+                        
+                        <proxy channel="${ModelDisplayChannel}" waitForKey="modelSeries">
+                            <slot>modelSeriesAdaptorUid/showReconstructions</slot>
+                        </proxy>
 
                     </scene>
                 </service>

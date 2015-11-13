@@ -484,7 +484,7 @@ void SFilterSelectionEditor::applyFilters()
     messageBox.show();
 
     // Notify
-    sDBhelper.notify(this->getSptr());
+    sDBhelper.notify();
 
 
 }

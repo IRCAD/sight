@@ -6,7 +6,6 @@
 
 #include "ioDicomExt/dcmtk/action/SDicomSeriesConverter.hpp"
 
-#include <fwComEd/SeriesDBMsg.hpp>
 #include <fwDicomIOExt/dcmtk/SeriesDBReader.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
@@ -111,7 +110,7 @@ void SDicomSeriesConverter::updating() throw(::fwTools::Failed)
 
         myLoader->setObject(m_destinationSeriesDB);
         myLoader->addHandler( progressMeterGUI );
-        myLoader->readFromDicomSeriesDB(dicomSeriesDB, this->getSptr());
+        myLoader->readFromDicomSeriesDB(dicomSeriesDB);
 
         messageBox.setMessage( "DICOM series have been correctly read." );
     }

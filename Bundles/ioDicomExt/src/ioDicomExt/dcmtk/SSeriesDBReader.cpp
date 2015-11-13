@@ -24,8 +24,6 @@
 
 #include <io/IReader.hpp>
 
-#include <fwComEd/SeriesDBMsg.hpp>
-
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwDicomIOExt/dcmtk/SeriesDBReader.hpp>
@@ -246,20 +244,15 @@ void SSeriesDBReader::notificationOfDBUpdate()
     ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
-    ::fwComEd::SeriesDBMsg::sptr msg = ::fwComEd::SeriesDBMsg::New();
+    ::fwMedData::SeriesDB::ContainerType addedSeries;
     for(const ::fwMedData::Series::sptr& s :  seriesDB->getContainer() )
     {
-        msg->appendAddedSeries(s);
+        addedSeries.push_back(s);
     }
 
-    msg->setSource(this->getSptr());
-    msg->setSubject(  seriesDB);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = seriesDB->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    auto sig = seriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
+        ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+    sig->asyncEmit(addedSeries);
 }
 
 //-----------------------------------------------------------------------------

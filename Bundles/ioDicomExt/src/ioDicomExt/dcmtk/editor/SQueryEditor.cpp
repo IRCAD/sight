@@ -10,7 +10,6 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwDicomIOExt/dcmtk/helper/Series.hpp>
 #include <fwDicomIOExt/exceptions/Base.hpp>
-#include <fwComEd/SeriesDBMsg.hpp>
 #include <fwComEd/helper/SeriesDB.hpp>
 #include <fwDicomData/DicomSeries.hpp>
 
@@ -232,7 +231,7 @@ void SQueryEditor::updateSeriesDB(::fwMedData::SeriesDB::ContainerType series)
     }
 
     // Notify th SeriesDB
-    seriesDBHelper.notify(this->getSptr(),false);
+    seriesDBHelper.notify();
 
 }
 

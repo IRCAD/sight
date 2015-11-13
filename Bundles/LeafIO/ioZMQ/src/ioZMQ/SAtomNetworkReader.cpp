@@ -6,12 +6,18 @@
 
 #include "ioZMQ/SAtomNetworkReader.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwData/Object.hpp>
-#include <fwServices/Base.hpp>
 #include <fwData/String.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/ObjectMsg.hpp>
 
 fwServicesRegisterMacro (::io::IReader, ::ioZMQ::SAtomNetworkReader, ::fwData::Object);
 
@@ -83,7 +89,10 @@ void SAtomNetworkReader::updating() throw (::fwTools::Failed)
         m_socket->stop();
         ::fwData::Object::ModifiedSignalType::sptr sig;
         sig = obj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
+        }
     }
     catch (std::exception &err)
     {

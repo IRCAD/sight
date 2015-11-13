@@ -70,6 +70,7 @@
                 <parameters>
                     <parameter replace="MODEL_SERIES_UID" by="modelSeriesUID"  />
                     <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel"  />
+                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel"  />
                 </parameters>
             </appConfig>
         </config>
@@ -81,6 +82,7 @@
                 <parameters>
                     <parameter replace="COMPOSITE_VISU_UID" by="compositeVisuUID"  />
                     <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel"  />
+                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel"  />
                 </parameters>
             </appConfig>
         </config>
@@ -102,6 +104,7 @@
             <appConfig id="worldViewConfig" >
                 <parameters>
                     <parameter replace="COMPOSITE_VISU_UID" by="compositeVisuUID"  />
+                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel"  />
                 </parameters>
             </appConfig>
         </config>

@@ -4,6 +4,7 @@
     <parameters>
         <param name="COMPOSITE_VISU_UID" />
         <param name="ModelRepresentationChannel" />
+        <param name="ModelDisplayChannel" />
     </parameters>
     <config>
         
@@ -52,8 +53,12 @@
                             <config renderer="default" picker="" transform="camPosMatrixTransform" />
                         </adaptor>
                         
-                        <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
+                        <proxy channel="${ModelRepresentationChannel}" waitForKey="modelSeries">
                             <slot>modelSeriesAdaptorUid/updateNormalMode</slot>
+                        </proxy>
+                        
+                        <proxy channel="${ModelDisplayChannel}" waitForKey="modelSeries">
+                            <slot>modelSeriesAdaptorUid/showReconstructions</slot>
                         </proxy>
 
                     </scene>

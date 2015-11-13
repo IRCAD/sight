@@ -4,6 +4,7 @@
     <parameters>
         <param name="MODEL_SERIES_UID" />
         <param name="ModelRepresentationChannel" />
+        <param name="ModelDisplayChannel" />
     </parameters>
     <config>
 
@@ -42,8 +43,8 @@
                 </registry>
             </service>
 
-            <service uid="updaterReconst" impl="::ctrlSelection::updater::SReconstructionFromModelSeriesUpdater" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                <update compositeKey="reconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
+            <service uid="updaterReconst" impl="::ctrlSelection::updater::SObjFromSlot" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                <compositeKey>reconstruction</compositeKey>
             </service>
                         
             <service uid="managerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
@@ -74,6 +75,16 @@
                 <signal>${MODEL_SERIES_UID}/objectModified</signal>
                 <slot>updaterReconst/receive</slot>
             </connect>
+            
+            <connect>
+                <signal>listOrganEditor/reconstructionSelected</signal>
+                <slot>updaterReconst/addOrSwap</slot>
+            </connect>
+            
+            <proxy channel="${ModelDisplayChannel}">
+                <signal>listOrganEditor/recDisplayModified</signal>
+                <slot>listOrganEditor/showReconstructions</slot>
+            </proxy>
 
             <!-- START AND STOP SERVICES -->
             <start uid="organManagerFrame" />

@@ -117,15 +117,14 @@ void SeriesDBReader::read()
 
 //------------------------------------------------------------------------------
 
-void SeriesDBReader::readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB,
-                                           ::fwServices::IService::sptr notifier)
+void SeriesDBReader::readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB)
 {
     // Read series
     for(::fwMedData::Series::sptr series :  dicomSeriesDB->getContainer())
     {
         ::fwDicomData::DicomSeries::sptr dicomSeries = ::fwDicomData::DicomSeries::dynamicCast(series);
         OSLM_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
-        this->convertDicomSeries(dicomSeries, notifier);
+        this->convertDicomSeries(dicomSeries, true);
     }
 }
 
@@ -396,7 +395,7 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
 //------------------------------------------------------------------------------
 
 void SeriesDBReader::convertDicomSeries(SPTR(::fwDicomData::DicomSeries)dicomSeries,
-                                        ::fwServices::IService::sptr notifier)
+                                        bool notify)
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
     ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
@@ -425,9 +424,9 @@ void SeriesDBReader::convertDicomSeries(SPTR(::fwDicomData::DicomSeries)dicomSer
         OSLM_WARN("\""+sopClassUID+"\" SOPClassUID is not supported.");
     }
 
-    if(notifier)
+    if(notify)
     {
-        seriesDBHelper.notify(notifier);
+        seriesDBHelper.notify();
     }
 
 }

@@ -65,8 +65,7 @@ public:
      * @param[in] dicomSeriesDB SeriesDB containing DicomSeries that must be read
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
-    GDCMIO_API void readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB,
-                                          ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
+    GDCMIO_API void readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB);
 
     /**
      * @brief Reads DICOM data from configured path and fills SeriesDB object with DicomSeries
@@ -134,9 +133,9 @@ private:
 
     /**
      * @brief Convert DicomSeries to Image or Model Series
-     * @param[in] dicomSeries Dicom Series that must be converted
+     * @param[in] notify if true, notify the seriesDB
      */
-    void convertDicomSeries(::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
+    void convertDicomSeries(bool notify = false);
 
     /**
      * @brief Function used to sort DicomSeries

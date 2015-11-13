@@ -26,7 +26,6 @@
 #include <fwDicomIOExt/dcmtk/helper/Series.hpp>
 #include <fwDicomIOExt/exceptions/Base.hpp>
 
-#include <fwComEd/SeriesDBMsg.hpp>
 #include <fwComEd/helper/SeriesDB.hpp>
 
 #include <fwTools/System.hpp>
@@ -397,7 +396,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
             // Merge series
             ::fwComEd::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
             sDBhelper.merge(m_tempSeriesDB);
-            sDBhelper.notify(this->getSptr());
+            sDBhelper.notify();
         }
     }
 }

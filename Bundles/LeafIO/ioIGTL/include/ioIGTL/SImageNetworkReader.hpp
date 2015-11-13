@@ -60,9 +60,6 @@ protected:
     IOIGTL_API virtual void updating() throw (::fwTools::Failed);
 
     /// Overrides
-    IOIGTL_API virtual void receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed);
-
-    /// Overrides
     IOIGTL_API virtual void swapping() throw (::fwTools::Failed);
 
 private:

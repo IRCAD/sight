@@ -7,7 +7,6 @@
 #include "ctrlSplineNavigation/SJumpToPointController.hpp"
 
 #include <fwCom/Slots.hxx>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 // Services tools
 #include <fwServices/Base.hpp>
@@ -101,15 +100,10 @@ void SJumpToPointController::jumpToViewPoint    (::fwData::TransformationMatrix3
         }
     }
 
-    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( currentMatrix);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = currentMatrix->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = currentMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 
