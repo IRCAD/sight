@@ -70,7 +70,6 @@ void SAtomNetworkReader::updating() throw (::fwTools::Failed)
 {
     ::fwData::String::sptr request;
     ::fwGui::dialog::MessageDialog msgDialog;
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     ::fwData::Object::sptr obj;
 
     try

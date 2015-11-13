@@ -13,7 +13,6 @@
 #include <fwGuiQt/dialog/ProgressDialog.hpp>
 #include <fwCom/Slot.hpp>
 
-#include "ioDicomExt/common/data/ProgressMsg.hpp"
 #include "ioDicomExt/config.hpp"
 
 namespace ioDicomExt
@@ -37,9 +36,6 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SProgressBarController)( ::fwServices::IController ) );
 
-    IODICOMEXT_API static const ::fwCom::Slots::SlotKeyType s_PROGRESS_SLOT;
-    typedef ::fwCom::Slot<void (::ioDicomExt::common::data::ProgressMsg::sptr)> ProgressBarSlotType;
-
     /// Type of progress bar container
     typedef std::map< std::string, ::fwGuiQt::dialog::ProgressDialog::sptr > ProgressDialogContainerType;
 
@@ -52,12 +48,6 @@ public:
      * @brief destructor
      */
     IODICOMEXT_API virtual ~SProgressBarController() throw();
-
-    /**
-     * @brief Update progress bar slot
-     * @param[in] progressEvent Progress Event
-     */
-    IODICOMEXT_API void progressBar(::ioDicomExt::common::data::ProgressMsg::sptr progressEvent);
 
 protected:
 
@@ -85,8 +75,18 @@ protected:
     /// Override
     IODICOMEXT_API void info(std::ostream &_sstream );
 
-    /// Slot to call progressBar method
-    ProgressBarSlotType::sptr m_slotProgressBar;
+    /**
+     * @name Slots
+     * @{
+     */
+    void startProgress(std::string id);
+
+    void updateProgress(std::string id, float percentage, std::string message);
+
+    void stopProgress(std::string id);
+    /**
+     * @}
+     */
 
     /// Progress Dialog
     ProgressDialogContainerType m_progressDialogs;

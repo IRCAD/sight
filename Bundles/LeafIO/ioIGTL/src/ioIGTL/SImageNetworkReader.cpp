@@ -87,7 +87,6 @@ void SImageNetworkReader::stopping() throw (::fwTools::Failed)
 void SImageNetworkReader::updating() throw (::fwTools::Failed)
 {
     ::fwGui::dialog::MessageDialog msgDialog;
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     ::fwData::Object::sptr obj;
 
     try

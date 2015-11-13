@@ -5,40 +5,44 @@
         <param name="MODEL_SERIES_UID" />
         <param name="MESHDB_UID" />
         <param name="GENERIC_UID" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
     </parameters>
     <config>
-        
 
-    <object type="::fwData::Composite">
+        <object type="::fwData::Composite">
 
-        <!-- MAIN FRAME -->
-        <service uid="${GENERIC_UID}_registrationEditorFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
-            <window onclose="notify" />
-            <gui>
-                <frame>
-                    <name>Manual Rgistration Editor</name>
-                    <icon>Bundles/PoC03MeshManualRegistration_0-1/tuto.ico</icon>
-                    <minSize width="400" height="600" />
-                    <style mode="STAY_ON_TOP" />
-                </frame>
-            </gui>
-            <registry>
-                <view sid="${GENERIC_UID}_OrganTransformation" start="yes" />
-            </registry>
-        </service>
+            <!-- MAIN FRAME -->
+            <service uid="${GENERIC_UID}_registrationEditorFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>Manual Rgistration Editor</name>
+                        <icon>Bundles/PoC03MeshManualRegistration_0-1/tuto.ico</icon>
+                        <minSize width="400" height="600" />
+                        <style mode="STAY_ON_TOP" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_OrganTransformation" start="yes" />
+                </registry>
+            </service>
 
-        <item key="modelSeries">
-            <object uid="${MODEL_SERIES_UID}" src="ref" type="::fwMedData::ModelSeries">
-                <service uid="${GENERIC_UID}_OrganTransformation" impl="::uiMedData::editor::SOrganTransformation" type="::gui::editor::IEditor" autoConnect="yes">
-                    <TMSUid>${MESHDB_UID}</TMSUid>
-                </service>
-            </object>
-        </item>
+            <item key="modelSeries">
+                <object uid="${MODEL_SERIES_UID}" src="ref" type="::fwMedData::ModelSeries">
+                    <service uid="${GENERIC_UID}_OrganTransformation" impl="::uiMedData::editor::SOrganTransformation" type="::gui::editor::IEditor" autoConnect="yes">
+                        <TMSUid>${MESHDB_UID}</TMSUid>
+                    </service>
+                </object>
+            </item>
 
-        <!-- START AND STOP SERVICES -->
-        <start uid="${GENERIC_UID}_registrationEditorFrame" />
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>${GENERIC_UID}_registrationEditorFrame/closed</signal>
+            </proxy>
 
-    </object>
+            <!-- START AND STOP SERVICES -->
+            <start uid="${GENERIC_UID}_registrationEditorFrame" />
+
+        </object>
 
 
     </config>

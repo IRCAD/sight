@@ -66,11 +66,11 @@
 
     <service uid="action_manageOrgansColors" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
         <config>
-            <appConfig id="organManagerConfig" >
+            <appConfig id="organManagerConfig">
                 <parameters>
-                    <parameter replace="MODEL_SERIES_UID" by="modelSeriesUID"  />
-                    <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel"  />
-                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel"  />
+                    <parameter replace="MODEL_SERIES_UID" by="modelSeriesUID" />
+                    <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
                 </parameters>
             </appConfig>
         </config>
@@ -78,11 +78,11 @@
 
     <service uid="action_manageView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
         <config>
-            <appConfig id="camViewManagerConfig" >
+            <appConfig id="camViewManagerConfig">
                 <parameters>
-                    <parameter replace="COMPOSITE_VISU_UID" by="compositeVisuUID"  />
-                    <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel"  />
-                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel"  />
+                    <parameter replace="COMPOSITE_VISU_UID" by="compositeVisuUID" />
+                    <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
                 </parameters>
             </appConfig>
         </config>
@@ -90,10 +90,10 @@
 
     <service uid="action_manageRegistration" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
         <config>
-            <appConfig id="manualRegistrationEditorConfig" >
+            <appConfig id="manualRegistrationEditorConfig">
                 <parameters>
-                    <parameter replace="MODEL_SERIES_UID" by="modelSeriesUID"  />
-                    <parameter replace="MESHDB_UID" by="meshDBUid"  />
+                    <parameter replace="MODEL_SERIES_UID" by="modelSeriesUID" />
+                    <parameter replace="MESHDB_UID" by="meshDBUid" />
                 </parameters>
             </appConfig>
         </config>
@@ -101,10 +101,10 @@
 
     <service uid="action_worldView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
         <config>
-            <appConfig id="worldViewConfig" >
+            <appConfig id="worldViewConfig">
                 <parameters>
-                    <parameter replace="COMPOSITE_VISU_UID" by="compositeVisuUID"  />
-                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel"  />
+                    <parameter replace="COMPOSITE_VISU_UID" by="compositeVisuUID" />
+                    <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
                 </parameters>
             </appConfig>
         </config>

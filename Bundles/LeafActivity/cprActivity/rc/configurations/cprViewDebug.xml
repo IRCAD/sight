@@ -4,6 +4,7 @@
     <parameters>
         <param name="GENERIC_UID" />
         <param name="ICON_PATH" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!--  defined by SConfigLauncher -->
         <param name="imageUid" />
         <param name="CurrentViewPointUid"/>
         <param name="splinePointsListUid"/>
@@ -153,6 +154,10 @@
                 <signal>${cprEditorUid}/sliderProgressed</signal>
                 <slot>${GENERIC_UID}_ComputeCPR3D/changeAngle</slot>
             </connect> 
+
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>${GENERIC_UID}_viewDebugFrame/closed</signal>
+            </proxy>
 
             <start uid="${GENERIC_UID}_viewDebugFrame" />
             <start uid="${GENERIC_UID}_ComputeCPR3D" />

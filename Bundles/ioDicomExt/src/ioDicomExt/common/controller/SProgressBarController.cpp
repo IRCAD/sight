@@ -6,6 +6,8 @@
 
 #include "ioDicomExt/common/controller/SProgressBarController.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
@@ -28,16 +30,17 @@ namespace controller
 fwServicesRegisterMacro( ::fwServices::IController, ::ioDicomExt::common::controller::SProgressBarController,
                          ::fwData::Composite );
 
-const ::fwCom::Slots::SlotKeyType SProgressBarController::s_PROGRESS_SLOT = "progressBar";
+static const ::fwCom::Slots::SlotKeyType s_START_PROGRESS_SLOT  = "startProgress";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_PROGRESS_SLOT = "updateProgress";
+static const ::fwCom::Slots::SlotKeyType s_STOP_PROGRESS_SLOT   = "stopProgress";
 
 //------------------------------------------------------------------------------
 
 SProgressBarController::SProgressBarController() throw()
 {
-    m_slotProgressBar = ::fwCom::newSlot(&SProgressBarController::progressBar, this);
-    ::fwCom::HasSlots::m_slots(s_PROGRESS_SLOT, m_slotProgressBar);
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    newSlot(s_START_PROGRESS_SLOT, &SProgressBarController::startProgress, this);
+    newSlot(s_UPDATE_PROGRESS_SLOT, &SProgressBarController::updateProgress, this);
+    newSlot(s_STOP_PROGRESS_SLOT, &SProgressBarController::stopProgress, this);
 }
 //------------------------------------------------------------------------------
 
@@ -82,32 +85,31 @@ void SProgressBarController::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-
-void SProgressBarController::progressBar(::ioDicomExt::common::data::ProgressMsg::sptr progressEvent)
+void SProgressBarController::startProgress(std::string id)
 {
-    std::string id = progressEvent->getBarID();
-    if(progressEvent->hasEvent(::ioDicomExt::common::data::ProgressMsg::s_STOP_PROGRESS_BAR))
+    m_progressDialogs[id] = ::fwGuiQt::dialog::ProgressDialog::New();
+}
+
+//------------------------------------------------------------------------------
+
+void SProgressBarController::updateProgress(std::string id, float percentage, std::string message)
+{
+    if(m_progressDialogs.find(id) != m_progressDialogs.end())
     {
-        m_progressDialogs.erase(id);
+        (*m_progressDialogs[id])(percentage, message);
+        m_progressDialogs[id]->setMessage(message);
     }
     else
     {
-        if(progressEvent->hasEvent(::ioDicomExt::common::data::ProgressMsg::s_START_PROGRESS_BAR))
-        {
-            m_progressDialogs[id] = ::fwGuiQt::dialog::ProgressDialog::New();
-
-        }
-        if(m_progressDialogs.find(id) != m_progressDialogs.end())
-        {
-            (*m_progressDialogs[id])(progressEvent->getPercentage(),progressEvent->getMessage());
-            m_progressDialogs[id]->setMessage(progressEvent->getMessage());
-        }
-        else
-        {
-            SLM_WARN("Trying to update a progress bar which is not started !");
-        }
+        SLM_WARN("Trying to update a progress bar which is not started !");
     }
+}
 
+//------------------------------------------------------------------------------
+
+void SProgressBarController::stopProgress(std::string id)
+{
+    m_progressDialogs.erase(id);
 }
 
 //------------------------------------------------------------------------------

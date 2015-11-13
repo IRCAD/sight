@@ -78,7 +78,7 @@
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
 
-                                <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                                <adaptor id="modelSeriesAdaptor" uid="genericScene_modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                     <config renderer="default" picker="" autoresetcamera="no" />
                                 </adaptor>
                                 <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
@@ -104,11 +104,11 @@
                                 </adaptor>
                                 
                                 <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
-                                    <slot>modelSeriesAdaptorUid/updateNormalMode</slot>
+                                    <slot>genericScene_modelSeriesAdaptorUid/updateNormalMode</slot>
                                 </proxy>
                                 
                                 <proxy channel="ModelDisplayChannel" waitForKey="modelSeries">
-                                    <slot>modelSeriesAdaptorUid/showReconstructions</slot>
+                                    <slot>genericScene_modelSeriesAdaptorUid/showReconstructions</slot>
                                 </proxy>
                                 
                                 <connect>
@@ -134,7 +134,7 @@
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
 
-                                <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid2" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                                <adaptor id="modelSeriesAdaptor" uid="genericScene2_modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                     <config renderer="default" picker="" autoresetcamera="no" />
                                 </adaptor>
 
@@ -154,11 +154,11 @@
                                 </adaptor>
                                 
                                 <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
-                                    <slot>modelSeriesAdaptorUid2/updateNormalMode</slot>
+                                    <slot>genericScene2_modelSeriesAdaptorUid/updateNormalMode</slot>
                                 </proxy>
                                 
                                 <proxy channel="ModelDisplayChannel" waitForKey="modelSeries">
-                                    <slot>modelSeriesAdaptorUid2/showReconstructions</slot>
+                                    <slot>genericScene2_modelSeriesAdaptorUid/showReconstructions</slot>
                                 </proxy>
                             </scene>
                         </service>

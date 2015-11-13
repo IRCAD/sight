@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioDicomExt/common/data/ProgressMsg.hpp"
 #include "ioDicomExt/common/controller/SProgressBarController.hpp"
 #include "ioDicomExt/dcmtk/controller/SSeriesPuller.hpp"
 
@@ -51,7 +50,9 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ioDicomExt::dcmtk::control
 const ::fwCom::Slots::SlotKeyType SSeriesPuller::s_READ_SLOT    = "readDicom";
 const ::fwCom::Slots::SlotKeyType SSeriesPuller::s_DISPLAY_SLOT = "displayMessage";
 
-const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_PROGRESSED_SIG = "progressed";
+const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_PROGRESSED_SIG       = "progressed";
+const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_STARTED_PROGRESS_SIG = "startedProgress";
+const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_STOPPED_PROGRESS_SIG = "stoppedProgress";
 
 SSeriesPuller::SSeriesPuller() throw() :
     m_isPulling(false),
@@ -77,13 +78,9 @@ SSeriesPuller::SSeriesPuller() throw() :
     m_slotProgressCallback = ::fwCom::newSlot(&SSeriesPuller::progressCallback, this);
     ::fwCom::HasSlots::m_slots(::fwDicomIOExt::dcmtk::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT, m_slotProgressCallback);
 
-    m_sigProgressBar = ProgressBarSignalType::New();
-    m_signals( s_PROGRESSED_SIG, m_sigProgressBar);
-
-
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
+    m_sigProgressed      = newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
+    m_sigStartedProgress = newSignal<StartedProgressSignalType>(s_STARTED_PROGRESS_SIG);
+    m_sigStoppedProgress = newSignal<StoppedProgressSignalType>(s_STOPPED_PROGRESS_SIG);
 }
 //------------------------------------------------------------------------------
 
@@ -262,7 +259,7 @@ void SSeriesPuller::pullSeries()
         if(m_seriesCount > 0)
         {
             //Notify Progress Dialog
-            this->notifyProgressBar(::ioDicomExt::common::data::ProgressMsg::s_START_PROGRESS_BAR);
+            m_sigStartedProgress->asyncEmit(m_progressbarId);
         }
 
         // Pull series
@@ -311,7 +308,7 @@ void SSeriesPuller::pullSeries()
             }
 
             // Notify Progress Dialog
-            this->notifyProgressBar(::ioDicomExt::common::data::ProgressMsg::s_STOP_PROGRESS_BAR);
+            m_sigStoppedProgress->asyncEmit(m_progressbarId);
         }
 
         // Read series if there is no error
@@ -337,7 +334,7 @@ void SSeriesPuller::pullSeries()
         m_slotDisplayMessage->asyncRun(ss.str());
         SLM_WARN(exception.what());
         //Notify Progress Dialog
-        this->notifyProgressBar(::ioDicomExt::common::data::ProgressMsg::s_STOP_PROGRESS_BAR);
+        m_sigStoppedProgress->asyncEmit(m_progressbarId);
         m_isPulling = false;
     }
 }
@@ -405,7 +402,7 @@ void SSeriesPuller::storeInstanceCallback(const ::std::string& seriesInstanceUID
     ::std::stringstream ss;
     ss << "Series " << m_seriesIndex << "/" << m_seriesCount << " - Downloading file " << instanceNumber;
     float percentage = float(instanceNumber)/m_instanceCountMap[seriesInstanceUID];
-    this->notifyProgressBar(::ioDicomExt::common::data::ProgressMsg::s_UPDATE_PROGRESS_BAR, ss.str(), percentage);
+    m_sigProgressed->asyncEmit(m_progressbarId, percentage, ss.str());
 
 }
 
@@ -430,21 +427,8 @@ void SSeriesPuller::progressCallback(float percentage, bool error)
         m_slotDisplayMessage->asyncRun(ss.str());
 
         //Notify Progress Dialog
-        this->notifyProgressBar(::ioDicomExt::common::data::ProgressMsg::s_STOP_PROGRESS_BAR);
+        m_sigStoppedProgress->asyncEmit(m_progressbarId);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SSeriesPuller::notifyProgressBar(const ::std::string& actionId, const ::std::string& msg, float percentage) const
-{
-    //Notify Progress Dialog
-    ::ioDicomExt::common::data::ProgressMsg::sptr event = ::ioDicomExt::common::data::ProgressMsg::New();
-    event->setBarID(m_progressbarId);
-    event->addEvent(actionId);
-    event->setMessage(msg);
-    event->setPercentage(percentage);
-    m_sigProgressBar->asyncEmit(event);
 }
 
 //------------------------------------------------------------------------------

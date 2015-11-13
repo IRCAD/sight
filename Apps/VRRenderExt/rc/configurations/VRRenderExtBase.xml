@@ -156,7 +156,7 @@
             <service uid="dumpAll" impl="::monitor::action::SDumpAll" type="::fwGui::IActionSrv" autoConnect="no" />
 
             <proxy channel="dynamicView">
-                <slot>dynamicView/receive</slot>
+                <slot>dynamicView/createTab</slot>
             </proxy>
 
             <start uid="mainFrame" />

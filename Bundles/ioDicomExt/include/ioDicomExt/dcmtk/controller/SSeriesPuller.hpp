@@ -54,11 +54,17 @@ public:
     IODICOMEXT_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_SLOT;
     typedef ::fwCom::Slot<void (const std::string&)> DisplayMessageSlotType;
 
-    /// Type of signal m_sigProgressBar
-    typedef ::fwCom::Signal< void ( ::ioDicomExt::common::data::ProgressMsg::sptr ) > ProgressBarSignalType;
+    /// Signal to start the progress (bar id)
+    typedef ::fwCom::Signal< void ( std::string ) > StartedProgressSignalType;
+    /// Signal to update the progress (bar id, percentage, message)
+    typedef ::fwCom::Signal< void ( std::string, float, std::string ) > ProgressedSignalType;
+    /// Signal to stop the progress (bar id)
+    typedef ::fwCom::Signal< void ( std::string ) > StoppedProgressSignalType;
 
-    /// Key in m_signals map of signal m_sigProgressBar
+    /// Key in m_signals map of signal m_sigProgressed
     static const ::fwCom::Signals::SignalKeyType s_PROGRESSED_SIG;
+    static const ::fwCom::Signals::SignalKeyType s_STARTED_PROGRESS_SIG;
+    static const ::fwCom::Signals::SignalKeyType s_STOPPED_PROGRESS_SIG;
 
     /**
      * @brief Constructor
@@ -131,15 +137,6 @@ protected:
      */
     IODICOMEXT_API void progressCallback(float percentage, bool error);
 
-    /**
-     * @brief Notify progress bar
-     * @param[in] action Progress action
-     * @param[in] msg Progress bar message
-     * @param[in] percentage Percentage of the progress bar
-     */
-    IODICOMEXT_API void notifyProgressBar(const std::string &actionId, const std::string &msg = "",
-                                          float percentage = 0) const;
-
     /// Slot to call readLocalSeries method
     ReadDicomSlotType::sptr m_slotReadLocalSeries;
 
@@ -157,8 +154,15 @@ protected:
     /// Slot to call progressCallback method
     ::fwDicomIOExt::dcmtk::SeriesEnquirer::ProgressCallbackSlotType::sptr m_slotProgressCallback;
 
-    /// Signal that emits message when the bar is progressing
-    ProgressBarSignalType::sptr m_sigProgressBar;
+    /// Signal emitted when the bar is progressing
+    ProgressedSignalType::sptr m_sigProgressed;
+
+    /// Signal emitted when the bar is starting
+    StartedProgressSignalType::sptr m_sigStartedProgress;
+
+    /// Signal emitted when the bar is stopping
+    StoppedProgressSignalType::sptr m_sigStoppedProgress;
+
 
     /// Series enquirer
     ::fwDicomIOExt::dcmtk::SeriesEnquirer::sptr m_seriesEnquirer;

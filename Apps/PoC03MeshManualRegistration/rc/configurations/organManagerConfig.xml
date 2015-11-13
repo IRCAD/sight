@@ -3,6 +3,7 @@
     <type>parameters</type>
     <parameters>
         <param name="MODEL_SERIES_UID" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
         <param name="ModelRepresentationChannel" />
         <param name="ModelDisplayChannel" />
     </parameters>
@@ -46,41 +47,40 @@
             <service uid="updaterReconst" impl="::ctrlSelection::updater::SObjFromSlot" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                 <compositeKey>reconstruction</compositeKey>
             </service>
-                        
+
             <service uid="managerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
                 <mode type="dummy" />
                 <config>
                     <object id="reconstruction" type="::fwData::Reconstruction">
                         <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
                         <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
-                        
+
                         <proxy channel="${ModelRepresentationChannel}">
                             <signal>representationEditor/normalsModeModified</signal>
                         </proxy>
                     </object>
                 </config>
             </service>
-            
+
             <item key="modelSeries">
                 <object uid="${MODEL_SERIES_UID}" src="ref" type="::fwMedData::ModelSeries">
                     <service uid="listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes">
-                    <columns>
+                        <columns>
                             <organ_name>@organ_name</organ_name>
                         </columns>
                     </service>
                 </object>
             </item>
-            
-            <connect>
-                <signal>${MODEL_SERIES_UID}/objectModified</signal>
-                <slot>updaterReconst/receive</slot>
-            </connect>
-            
+ 
             <connect>
                 <signal>listOrganEditor/reconstructionSelected</signal>
                 <slot>updaterReconst/addOrSwap</slot>
             </connect>
-            
+
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>organManagerFrame/closed</signal>
+            </proxy>
+
             <proxy channel="${ModelDisplayChannel}">
                 <signal>listOrganEditor/recDisplayModified</signal>
                 <slot>listOrganEditor/showReconstructions</slot>

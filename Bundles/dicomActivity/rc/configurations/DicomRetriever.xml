@@ -190,7 +190,15 @@
 
         <connect>
             <signal>${GENERIC_UID}_pullSeriesController/progressed</signal>
-            <slot>${GENERIC_UID}_progressBarController/progressBar</slot>
+            <slot>${GENERIC_UID}_progressBarController/updateProgress</slot>
+        </connect>
+        <connect>
+            <signal>${GENERIC_UID}_pullSeriesController/startedProgress</signal>
+            <slot>${GENERIC_UID}_progressBarController/startProgress</slot>
+        </connect>
+        <connect>
+            <signal>${GENERIC_UID}_pullSeriesController/stoppedProgress</signal>
+            <slot>${GENERIC_UID}_progressBarController/stopProgress</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->

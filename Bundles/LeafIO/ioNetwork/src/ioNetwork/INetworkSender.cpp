@@ -91,20 +91,6 @@ void INetworkSender::sendData (::fwData::Object::sptr obj)
 
 //-----------------------------------------------------------------------------
 
-void INetworkSender::receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed)
-{
-    if (this->isStarted())
-    {
-        if (!_msg->hasEvent (::fwServices::ObjectMsg::NEW_OBJECT) &&
-            !_msg->hasEvent (::fwServices::ObjectMsg::DELETE_OBJECT))
-        {
-            this->sendObject(this->getObject());
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void INetworkSender::swapping() throw (::fwTools::Failed)
 {
     // Classic default approach to update service when oject change

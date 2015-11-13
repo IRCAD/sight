@@ -102,9 +102,6 @@ protected:
     /// Sends the object
     IONETWORK_API virtual void updating() throw (::fwTools::Failed);
 
-    /// called when object is updated and call sendData method
-    IONETWORK_API virtual void receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed);
-
     /// Calls stopping and starting
     IONETWORK_API virtual void swapping() throw (::fwTools::Failed);
 

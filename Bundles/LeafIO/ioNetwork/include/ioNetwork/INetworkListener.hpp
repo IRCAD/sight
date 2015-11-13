@@ -103,7 +103,7 @@ protected:
     IONETWORK_API virtual void swapping() throw (::fwTools::Failed);
 
     /**
-     * @brief notify application the object has updated use a UPDATE_OBJECT signal from ObjectMsg
+     * @brief notify application the object has updated use the s_MODIFIED_SIG signal from Object
      * You should use a service class to transform this signal to the signal you wanted
      *
      * @param[in] obj the new object
