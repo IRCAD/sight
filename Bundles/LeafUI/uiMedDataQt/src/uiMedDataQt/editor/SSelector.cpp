@@ -308,7 +308,7 @@ void SSelector::onDoubleClick(const QModelIndex &index)
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
         SLM_ASSERT("Object must be a '::fwMedData::Series'", series);
 
-        fwServicesNotifyMacro(this->getLightID(), m_sigSeriesDoubleClicked, (series));
+        m_sigSeriesDoubleClicked->asyncEmit (series);
     }
 }
 

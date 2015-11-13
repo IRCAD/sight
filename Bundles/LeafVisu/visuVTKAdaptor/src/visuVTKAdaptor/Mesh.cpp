@@ -905,7 +905,7 @@ void Mesh::updateMesh( ::fwData::Mesh::sptr mesh )
         ::fwData::Material::sptr material = this->getMaterial();
         SLM_ASSERT("Missing material", material);
 
-        fwServicesNotifyMacro( this->getLightID(), m_sigTextureApplied, (material));
+        m_sigTextureApplied->asyncEmit(material);
     }
 
     if (m_autoResetCamera)

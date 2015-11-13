@@ -98,11 +98,11 @@ void SSignal::updating() throw( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     if (this->confirmAction())
     {
-        fwServicesNotifyMacro(this->getLightID(), m_sigTriggered, (m_objects));
+        m_sigTriggered->asyncEmit(m_objects);
     }
     else
     {
-        fwServicesNotifyMacro(this->getLightID(), m_sigCancelled, (m_objects));
+        m_sigCancelled->asyncEmit(m_objects);
     }
 
 }

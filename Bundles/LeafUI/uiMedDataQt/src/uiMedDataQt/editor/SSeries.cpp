@@ -114,7 +114,7 @@ void SSeries::starting() throw(::fwTools::Failed)
     m_btnExport = new QPushButton(tr("Export series"));
     m_btnExport->setEnabled(false);
     m_btnExport->setVisible(m_sigCanExport->getNumberOfConnections() == 0);
-    fwServicesNotifyMacro(this->getLightID(), m_sigCanExport, (false));
+    m_sigCanExport->asyncEmit(false);
     QHBoxLayout* btnLayout = new QHBoxLayout();
     btnLayout->setAlignment(Qt::AlignRight);
     btnLayout->setSizeConstraint(QLayout::SetFixedSize);
@@ -158,12 +158,12 @@ void SSeries::updating() throw(::fwTools::Failed)
         m_equipmentEditor->setSeries(series);
         m_seriesEditor->setSeries(series);
         m_btnExport->setEnabled(true);
-        fwServicesNotifyMacro(this->getLightID(), m_sigCanExport, (true));
+        m_sigCanExport->asyncEmit(true);
     }
     else
     {
         m_btnExport->setEnabled(false);
-        fwServicesNotifyMacro(this->getLightID(), m_sigCanExport, (false));
+        m_sigCanExport->asyncEmit(false);
     }
 }
 
@@ -228,8 +228,7 @@ void SSeries::onExportClicked()
             helper.add(series);
             helper.notify(this->getSptr());
         }
-
-        fwServicesNotifyMacro(this->getLightID(), m_sigSeriesExported, ());
+        m_sigSeriesExported->asyncEmit();
     }
     else
     {

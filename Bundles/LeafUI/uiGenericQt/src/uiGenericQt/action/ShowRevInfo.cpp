@@ -31,7 +31,6 @@
 #include <fwData/location/Folder.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/macros.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>

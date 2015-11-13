@@ -29,7 +29,7 @@ namespace fwServices
  *
  */
 
-#define fwServicesRegisterMacro( ServiceType, ServiceImpl, ServiceObject )                        \
+#define fwServicesRegisterMacro( ServiceType, ServiceImpl, ServiceObject )                         \
     class BOOST_PP_CAT (  ServiceTypeConceptCheck, __LINE__ )                                      \
     {                                                                                              \
     public:                                                                                        \
@@ -49,18 +49,6 @@ namespace fwServices
     BOOST_PP_CAT( serviceRegistrar, __LINE__) ( #ServiceImpl, #ServiceType, #ServiceObject );
 
 //@}
-
-/// Signal async emit Parameters. Print SLM_COM with Sender string.
-#define fwServicesNotifyMacro( Sender, Signal, Parameters)                     \
-    OSLM_COM(Sender << " uses '" << Signal->getID() << "' sig to asyncEmit."); \
-    Signal->asyncEmit Parameters;
-
-/// Signal async emit Parameters and block given Slot connection. Print SLM_COM with Sender string.
-#define fwServicesBlockAndNotifyMacro( Sender, Signal, Parameters, Slot)    \
-    {                                                                       \
-        ::fwCom::Connection::Blocker block(Signal->getConnection(Slot));    \
-        fwServicesNotifyMacro(Sender, Signal, Parameters)                   \
-    }
 
 }
 

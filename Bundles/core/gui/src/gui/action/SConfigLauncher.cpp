@@ -80,7 +80,7 @@ void SConfigLauncher::setIsActive(bool isActive)
     if ( isActive )
     {
         m_configLauncher->startConfig(this->getSptr());
-        fwServicesNotifyMacro(this->getLightID(), m_sigLaunched, ());
+        m_sigLaunched->asyncEmit();
     }
     else
     {

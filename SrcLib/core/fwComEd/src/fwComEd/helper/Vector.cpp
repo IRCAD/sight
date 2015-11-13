@@ -85,7 +85,7 @@ void Vector::notify( ::fwServices::IService::sptr serviceSource, bool notifySour
         m_vectorMsg->setSource( serviceSource );
         m_vectorMsg->setSubject( m_vector.lock() );
         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = serviceSource->signal< ::fwData::Object::ObjectModifiedSignalType >(
+        sig = m_vector.lock()->signal< ::fwData::Object::ObjectModifiedSignalType >(
             ::fwData::Object::s_OBJECT_MODIFIED_SIG);
         if(notifySource)
         {

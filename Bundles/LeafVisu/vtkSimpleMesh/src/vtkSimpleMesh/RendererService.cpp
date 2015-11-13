@@ -4,22 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vtkCommand.h>
-#include <vtkCamera.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkProperty.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkCamera.h>
-#include <vtkMatrix4x4.h>
-#ifndef ANDROID
-#include <vtkInteractorStyleTrackballCamera.h>
-#else
-#include <vtkInteractorStyleMultiTouchCamera.h>
-#endif
-#include <vtkTransform.h>
+#include "vtkSimpleMesh/RendererService.hpp"
 
 #include <fwCore/HiResTimer.hpp>
 
@@ -41,7 +26,22 @@
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>
 
-#include "vtkSimpleMesh/RendererService.hpp"
+#include <vtkCommand.h>
+#include <vtkCamera.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkCamera.h>
+#include <vtkMatrix4x4.h>
+#ifndef ANDROID
+#include <vtkInteractorStyleTrackballCamera.h>
+#else
+#include <vtkInteractorStyleMultiTouchCamera.h>
+#endif
+#include <vtkTransform.h>
 
 fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleMesh::RendererService, ::fwData::Mesh );
 
@@ -286,9 +286,10 @@ void RendererService::notifyCamPositionUpdated()
     std::copy(camera->GetFocalPoint(), camera->GetFocalPoint()+3, focal.get());
     std::copy(camera->GetViewUp(), camera->GetViewUp()+3, viewUp.get());
 
-    fwServicesBlockAndNotifyMacro( this->getLightID(), m_sigCamUpdated,
-                                   (position, focal, viewUp),
-                                   m_slotUpdateCamPosition );
+    {
+        ::fwCom::Connection::Blocker block(m_sigCamUpdated->getConnection(m_slotUpdateCamPosition));
+        m_sigCamUpdated->asyncEmit (position, focal, viewUp);
+    }
 }
 
 //-----------------------------------------------------------------------------

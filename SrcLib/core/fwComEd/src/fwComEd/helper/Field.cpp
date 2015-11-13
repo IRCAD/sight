@@ -98,7 +98,7 @@ void Field::notify(fwServices::IService::sptr _serviceSource)
         m_objectMsg->setSource( _serviceSource );
         m_objectMsg->setSubject( m_object.lock() );
         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = _serviceSource->signal< ::fwData::Object::ObjectModifiedSignalType >(
+        sig = m_object.lock()->signal< ::fwData::Object::ObjectModifiedSignalType >(
             ::fwData::Object::s_OBJECT_MODIFIED_SIG);
         sig->asyncEmit(m_objectMsg);
     }

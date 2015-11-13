@@ -169,7 +169,7 @@ void ConfigActionSrv::startConfig()
     this->connectToConfigRoot();
 
     m_configIsRunning = true;
-    fwServicesNotifyMacro(this->getLightID(), m_sigLaunched, ());
+    m_sigLaunched->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

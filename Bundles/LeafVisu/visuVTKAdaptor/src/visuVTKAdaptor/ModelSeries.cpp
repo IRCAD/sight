@@ -154,7 +154,7 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
             ::fwData::Material::sptr material = meshAdaptor->getMaterial();
             SLM_ASSERT("Missing material", material);
 
-            fwServicesNotifyMacro( meshAdaptor->getLightID(), m_sigTextureApplied, (material));
+            m_sigTextureApplied->asyncEmit(material);
         }
     }
 }

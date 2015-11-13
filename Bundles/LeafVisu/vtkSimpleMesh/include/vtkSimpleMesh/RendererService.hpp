@@ -7,21 +7,23 @@
 #ifndef __VTKSIMPLEMESH_RENDERERSERVICE_HPP__
 #define __VTKSIMPLEMESH_RENDERERSERVICE_HPP__
 
-#include <boost/shared_array.hpp>
+#include "vtkSimpleMesh/config.hpp"
 
 #include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
-
-#include <vtkCommand.h>
 
 #include <fwRender/IRender.hpp>
 
 #include <fwServices/ObjectMsg.hpp>
 
-#include "vtkSimpleMesh/config.hpp"
+#include <boost/shared_array.hpp>
+
+#include <vtkCommand.h>
+#include <vtkSmartPointer.h>
 
 // VTK
 class vtkRenderer;
-class vtkPolyDataNormals;
+class vtkPolyData;
+class vtkPolyDataMapper;
 
 namespace vtkSimpleMesh
 {

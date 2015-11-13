@@ -307,9 +307,10 @@ void RendererService::notifyCamPositionUpdated()
     std::copy(camera->GetFocalPoint(), camera->GetFocalPoint()+3, focal.get());
     std::copy(camera->GetViewUp(), camera->GetViewUp()+3, viewUp.get());
 
-    fwServicesBlockAndNotifyMacro( this->getLightID(), m_sigCamUpdated,
-                                   (position, focal, viewUp),
-                                   m_slotUpdateCamPosition );
+    {
+        ::fwCom::Connection::Blocker block(m_sigCamUpdated->getConnection(m_slotUpdateCamPosition));
+        m_sigCamUpdated->asyncEmit(position, focal, viewUp);
+    }
 }
 
 }

@@ -21,7 +21,6 @@
 #include <boost/filesystem/operations.hpp>
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/macros.hpp>
 
 #include "uiGenericQt/action/SShowAbout.hpp"
 

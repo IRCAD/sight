@@ -116,7 +116,7 @@ void Composite::notify( ::fwServices::IService::sptr serviceSource, bool _allowL
         m_compositeMsg->setSource( serviceSource );
         m_compositeMsg->setSubject( m_composite.lock() );
         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = serviceSource->signal< ::fwData::Object::ObjectModifiedSignalType >(
+        sig = m_composite.lock()->signal< ::fwData::Object::ObjectModifiedSignalType >(
             ::fwData::Object::s_OBJECT_MODIFIED_SIG);
 
         if(_allowLoops)

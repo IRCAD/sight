@@ -14,7 +14,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
-#include <fwServices/macros.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/location/Folder.hpp>

@@ -146,7 +146,7 @@ void SReader2Test::updating() throw ( ::fwTools::Failed )
     // Emit object Modified
     SReader2Test::ChangedSignalType::sptr sig;
     sig = this->signal< SReader2Test::ChangedSignalType >( SReader2Test::s_CHANGED_SIG );
-    fwServicesNotifyMacro(this->getLightID(), sig, ());
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

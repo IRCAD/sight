@@ -99,7 +99,7 @@ void SeriesDB::notify( ::fwServices::IService::sptr serviceSource, bool notifySo
         m_seriesDBMsg->setSource( serviceSource );
         m_seriesDBMsg->setSubject( m_seriesDB.lock() );
         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = serviceSource->signal< ::fwData::Object::ObjectModifiedSignalType >(
+        sig = m_seriesDB.lock()->signal< ::fwData::Object::ObjectModifiedSignalType >(
             ::fwData::Object::s_OBJECT_MODIFIED_SIG);
         if(notifySource)
         {
