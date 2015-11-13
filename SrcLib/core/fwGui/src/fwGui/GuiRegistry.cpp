@@ -263,9 +263,6 @@ void GuiRegistry::unregisterActionSIDToParentSID(std::string actionSid, std::str
 
 void GuiRegistry::actionServiceStopping(std::string actionSid)
 {
-    //OSLM_ASSERT("Sorry, action for "<<actionSid<<" not exists in SID action map.",
-    //                m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
-
     if( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end() )
     {
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
@@ -301,9 +298,6 @@ void GuiRegistry::actionServiceStopping(std::string actionSid)
 
 void GuiRegistry::actionServiceStarting(std::string actionSid)
 {
-    //OSLM_ASSERT("Sorry, action for "<<actionSid<<" not exists in SID action map.",
-    //        m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
-
     if( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end() )
     {
         ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
@@ -339,9 +333,6 @@ void GuiRegistry::actionServiceStarting(std::string actionSid)
 
 void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
 {
-    //OSLM_ASSERT("Sorry, action for "<<actionSid<<" not exists in SID action map.",
-    //            m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
-
     if( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end() )
     {
 
@@ -379,9 +370,6 @@ void GuiRegistry::actionServiceSetActive(std::string actionSid, bool isActive)
 
 void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecutable)
 {
-    //OSLM_ASSERT("Sorry, action for "<<actionSid<<" not exists in SID action map.",
-    //            m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end());
-
     if( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end() )
     {
 
@@ -404,6 +392,40 @@ void GuiRegistry::actionServiceSetExecutable(std::string actionSid, bool isExecu
                 else if (toolbarSrv)
                 {
                     toolbarSrv->actionServiceSetExecutable(actionSid, isExecutable);
+                }
+                else
+                {
+                    SLM_FATAL("Unknown service");
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void GuiRegistry::actionServiceSetVisible(std::string actionSid, bool isVisible)
+{
+    if( m_actionSIDToParentSID.find(actionSid) != m_actionSIDToParentSID.end() )
+    {
+        ParentSidsType parentSids = m_actionSIDToParentSID[actionSid];
+
+        for(std::string parentSid :  parentSids)
+        {
+            bool service_exists = ::fwTools::fwID::exist(parentSid );
+            OSLM_INFO_IF("Service "<<parentSid <<" not exists.",!service_exists );
+            if(service_exists)
+            {
+                ::fwServices::IService::sptr service  = ::fwServices::get( parentSid );
+                ::fwGui::IMenuSrv::sptr menuSrv       = ::fwGui::IMenuSrv::dynamicCast(service);
+                ::fwGui::IToolBarSrv::sptr toolbarSrv = ::fwGui::IToolBarSrv::dynamicCast(service);
+                if (menuSrv)
+                {
+                    menuSrv->actionServiceSetVisible(actionSid, isVisible);
+                }
+                else if (toolbarSrv)
+                {
+                    toolbarSrv->actionServiceSetVisible(actionSid, isVisible);
                 }
                 else
                 {

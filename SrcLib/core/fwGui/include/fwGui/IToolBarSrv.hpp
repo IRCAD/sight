@@ -43,6 +43,9 @@ public:
     /// Method called when the action service is executable
     FWGUI_API void actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable);
 
+    /// Method called when the action service is visible
+    FWGUI_API void actionServiceSetVisible(std::string actionSrvSID, bool isVisible);
+
 protected:
 
     FWGUI_API IToolBarSrv();
@@ -58,7 +61,7 @@ protected:
      * @verbatim
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
            <gui>
-               <layout>
+               <layout hideAction="false">
                    <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                    <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                    <separator />
@@ -80,11 +83,13 @@ protected:
            </registry>
        </service>
        @endverbatim
-     *   - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
-     *   - \<registry\> \</registry\> : (mandatory) describe the service management.
-     *     - \<menuItem\> represents IActionSrv
-     *     - \<menu\> represents IMenuSrv
-     *     - \<editor\> represents container service (IEditor, IView, ...)
+     * - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
+     *   - \<layout\> \</layout\> : (mandatory) describe the layout of the service
+     *     - \b hideAction: (optional, default=false): if true, the actions are hidden when they are stopped.
+     * - \<registry\> \</registry\> : (mandatory) describe the service management.
+     *   - \<menuItem\> represents IActionSrv
+     *   - \<menu\> represents IMenuSrv
+     *   - \<editor\> represents container service (IEditor, IView, ...)
      *
      *   @warning
      *   - The number of item in the gui section must be EQUAL to the registry section.

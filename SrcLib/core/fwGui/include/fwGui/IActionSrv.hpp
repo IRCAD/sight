@@ -55,6 +55,22 @@ public:
      * @}
      */
 
+    /// Slot to show/hide the action
+    typedef ::fwCom::Slot< void (bool) >  SetVisibleSlotType;
+    static const ::fwCom::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
+
+    /// Slot to disable the action
+    typedef ::fwCom::Slot< void () >  ShowSlotType;
+    static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+
+    /// Slot to disable the action
+    typedef ::fwCom::Slot< void () >  HideSlotType;
+    static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
+
+    /**
+     * @}
+     */
+
     /// Method called when the action service is stopping
     FWGUI_API void actionServiceStopping();
 
@@ -91,6 +107,17 @@ public:
     /// Return action service is executable.
     FWGUI_API bool getIsExecutable();
 
+    /// Show or hide the action.
+    FWGUI_API void setVisible(bool isVisible);
+
+    /// Show the action.
+    FWGUI_API void show();
+
+    /// Hide the action.
+    FWGUI_API void hide();
+
+    FWGUI_API bool isVisible();
+
     /**
      * @brief Confirm that the action must be executed.
      *
@@ -115,7 +142,7 @@ protected:
      * Example of configuration
      * @verbatim
            <service uid="item" type="::fwGui::IActionSrv" impl="::gui::action::NothingActionSrv" autoConnect="no" >
-              <state active="false" executable="false" inverse="true" />
+              <state active="false" executable="false" inverse="true" visible="true" />
               <confirmation value="yes" message="..." />
            </service>
        @endverbatim
@@ -124,6 +151,8 @@ protected:
      *     If the action appears in the interface it will be enable/disable.
      *   - \b active not mandatory (Default value false ):
      *     If the action appears in the interface it will be check/uncheck.
+     *   - \b visible not mandatory (Default value true ):
+     *     If true, the action is visible in the interface (and if the action is associated to a menu and/or a toolbar).
      *   - \b inverse not mandatory (Default value true) : allow to invert the state of the action (if "check")
      * - \<confirmation value="yes" message="..." /\> : configure if the action must be confirm by user before to execute it.
      *   - \b value : if true the action will show a confirmation message before to be executed.
@@ -142,6 +171,7 @@ private:
     bool m_activeStateValue;
     bool m_isActive;
     bool m_isExecutable;
+    bool m_isVisible;
     bool m_confirmAction;
     std::string m_confirmMessage;
     std::string m_defaultButton;

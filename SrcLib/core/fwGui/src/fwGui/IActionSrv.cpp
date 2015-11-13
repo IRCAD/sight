@@ -28,11 +28,15 @@ const ::fwCom::Slots::SlotKeyType IActionSrv::s_DEACTIVATE_SLOT        = "deacti
 const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
 const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_EXECUTABLE_SLOT    = "setExecutable";
 const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
+const ::fwCom::Slots::SlotKeyType IActionSrv::s_SET_VISIBLE_SLOT       = "setVisible";
+const ::fwCom::Slots::SlotKeyType IActionSrv::s_SHOW_SLOT              = "show";
+const ::fwCom::Slots::SlotKeyType IActionSrv::s_HIDE_SLOT              = "hide";
 
 IActionSrv::IActionSrv() :
     m_activeStateValue(true),
     m_isActive(false),
     m_isExecutable(true),
+    m_isVisible(true),
     m_confirmAction(false)
 {
     newSlot(s_SET_IS_ACTIVE_SLOT, &IActionSrv::setIsActive, this);
@@ -41,6 +45,9 @@ IActionSrv::IActionSrv() :
     newSlot(s_SET_IS_EXECUTABLE_SLOT, &IActionSrv::setIsExecutable, this);
     newSlot(s_SET_EXECUTABLE_SLOT, &IActionSrv::setExecutable, this);
     newSlot(s_SET_INEXECUTABLE_SLOT, &IActionSrv::setInexecutable, this);
+    newSlot(s_SET_VISIBLE_SLOT, &IActionSrv::setVisible, this);
+    newSlot(s_SHOW_SLOT, &IActionSrv::show, this);
+    newSlot(s_HIDE_SLOT,&IActionSrv::hide, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -98,6 +105,14 @@ void IActionSrv::initialize()
                 SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'",
                            (isExecutable == "true") || (isExecutable == "false"));
                 m_isExecutable = (isExecutable == "true");
+            }
+
+            if( stateCfg->hasAttribute("visible") )
+            {
+                std::string isVisible = stateCfg->getExistingAttributeValue("visible");
+                SLM_ASSERT("Wrong attribute value : must be 'true' or 'false'",
+                           (isVisible == "true") || (isVisible == "false"));
+                m_isVisible = (isVisible == "true");
             }
         }
 
@@ -196,6 +211,35 @@ void IActionSrv::setInexecutable()
 bool IActionSrv::getIsExecutable()
 {
     return m_isExecutable;
+}
+
+//-----------------------------------------------------------------------------
+
+void IActionSrv::setVisible(bool isVisible)
+{
+    m_isVisible = isVisible;
+    this->m_registrar->actionServiceSetVisible(isVisible);
+}
+
+//-----------------------------------------------------------------------------
+
+void IActionSrv::show()
+{
+    this->setVisible(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void IActionSrv::hide()
+{
+    this->setVisible(false);
+}
+
+//-----------------------------------------------------------------------------
+
+bool IActionSrv::isVisible()
+{
+    return m_isVisible;
 }
 
 //-----------------------------------------------------------------------------

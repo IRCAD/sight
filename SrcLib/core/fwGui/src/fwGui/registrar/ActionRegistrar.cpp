@@ -59,5 +59,12 @@ void ActionRegistrar::actionServiceSetExecutable(bool isExecutable)
 
 //-----------------------------------------------------------------------------
 
+void ActionRegistrar::actionServiceSetVisible(bool isVisible)
+{
+    ::fwGui::GuiRegistry::actionServiceSetVisible(m_sid, isVisible);
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace registrar
 } //namespace fwGui

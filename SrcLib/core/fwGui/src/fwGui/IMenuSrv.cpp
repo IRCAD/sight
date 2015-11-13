@@ -56,6 +56,14 @@ void IMenuSrv::initialize()
         {
             m_layoutConfig = vectLayoutMng.at(0);
             this->initializeLayoutManager(m_layoutConfig);
+
+            if (m_layoutConfig->hasAttribute("hideAction"))
+            {
+                std::string hideActions = m_layoutConfig->getAttributeValue("hideActions");
+                SLM_ASSERT("'hideActions' attribute value must be 'true' or 'false'",
+                           hideActions == "true" || hideActions == "false");
+                m_hideActions = (hideActions == "true");
+            }
         }
     }
 }
@@ -136,6 +144,7 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
             {
                 m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
                 m_layoutManager->menuItemSetChecked(menuItem, actionSrv->getIsActive());
+                m_layoutManager->menuItemSetVisible(menuItem, actionSrv->isVisible());
             })).wait();
     }
 }
@@ -163,6 +172,19 @@ void IMenuSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isExecu
     ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
         {
             m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
+        })).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+void IMenuSrv::actionServiceSetVisible(std::string actionSrvSID, bool isVisible)
+{
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+                                                                               m_layoutManager->getMenuItems());
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->menuItemSetVisible(menuItem, isVisible);
         })).wait();
 }
 

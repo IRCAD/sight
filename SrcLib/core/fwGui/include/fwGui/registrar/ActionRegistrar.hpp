@@ -52,6 +52,9 @@ public:
     /// Method called when the action service is executable or not
     FWGUI_API void actionServiceSetExecutable(bool isExecutable);
 
+    /// Method called when the action service is visible or not
+    FWGUI_API void actionServiceSetVisible(bool isVisible);
+
 protected:
 
     /// Main service ID associate with this ActionRegistrar

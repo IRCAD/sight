@@ -205,6 +205,12 @@ public:
      * Call parent service actionServiceSetExecutable() method
      */
     FWGUI_API static void actionServiceSetExecutable(std::string actionSid, bool isExecutable);
+
+    /**
+     * @brief Method called when the action service is visible or not.
+     * Call parent service actionServiceSetVisible() method
+     */
+    FWGUI_API static void actionServiceSetVisible(std::string actionSid, bool isVisible);
     ///@}
 
 protected:

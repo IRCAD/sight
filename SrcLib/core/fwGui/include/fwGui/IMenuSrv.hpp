@@ -43,6 +43,9 @@ public:
     /// Method called when the action service is executable
     FWGUI_API void actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable);
 
+    /// Method called when the action service is visible
+    FWGUI_API void actionServiceSetVisible(std::string actionSrvSID, bool isVisible);
+
 protected:
 
     FWGUI_API IMenuSrv();
@@ -58,7 +61,7 @@ protected:
      * @verbatim
         <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
             <gui>
-                <layout>
+                <layout hideAction="false">
                     <menuItem name="My item 1" shortcut="1" style="check" />
                     <separator />
                     <menuItem name="My item 2" shortcut="2" style="radio" />
@@ -79,6 +82,8 @@ protected:
         </service>
        @endverbatim
      * - \<gui\> \</gui\> : (mandatory) describe the interface of the service. It must contain a layout section.
+     *   - \<layout\> \</layout\> : (mandatory) describe the layout of the service
+     *     - \b hideAction: (optional, default=false): if true, the actions are hidden when they are stopped.
      * - \<registry\> \</registry\> : (mandatory) describe the service management.
      *   - \<menuItem\> represents IActionSrv
      *   - \<menu\> represents IMenuSrv
