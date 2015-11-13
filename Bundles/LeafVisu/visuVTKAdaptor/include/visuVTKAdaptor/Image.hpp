@@ -85,7 +85,7 @@ protected:
 
     /// Slot: Update image opacity and visibility
     void updateImageOpacity();
-    void updateWindowing( ::fwData::Image::sptr image );
+    void updateWindowing();
     void updateImageTransferFunction( ::fwData::Image::sptr image );
 
     /// Called when transfer function points are modified.

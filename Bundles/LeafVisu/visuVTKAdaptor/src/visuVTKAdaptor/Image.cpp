@@ -104,7 +104,7 @@ void Image::doUpdate() throw(::fwTools::Failed)
         this->updateImage(image);
         this->buildPipeline();
         this->updateImageTransferFunction(image);
-        this->updateWindowing(image);
+        this->updateWindowing();
         this->updateImageOpacity();
     }
     else
@@ -129,7 +129,7 @@ void Image::updatingTFWindowing(double window, double level)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->setWindow(window);
     this->setLevel(level);
-    this->updateWindowing(image);
+    this->updateWindowing();
     this->requestRender();
 }
 
@@ -167,7 +167,7 @@ void Image::updateImage( ::fwData::Image::sptr image  )
 
 //------------------------------------------------------------------------------
 
-void Image::updateWindowing( ::fwData::Image::sptr image )
+void Image::updateWindowing()
 {
     m_lut->SetWindow(this->getWindow());
     m_lut->SetLevel(this->getLevel());
@@ -186,10 +186,7 @@ void Image::updateImageTransferFunction( ::fwData::Image::sptr image )
 
     m_lut->SetClamping( !tf->getIsClamped() );
 
-    this->setWindow(tf->getWindow());
-    this->setLevel(tf->getLevel());
-
-    this->updateWindowing(image);
+    this->updateWindowing();
 
     this->setVtkPipelineModified();
 }
