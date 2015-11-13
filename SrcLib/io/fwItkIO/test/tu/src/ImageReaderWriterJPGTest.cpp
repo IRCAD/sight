@@ -68,7 +68,7 @@ void ImageReaderWriterJPGTest::testImageWriter()
 void ImageReaderWriterJPGTest::testImageWriter2()
 {
     // create Image
-    ::boost::filesystem::path pathInr     = ::fwTest::Data::dir() / "rd/patient/mfo/cas01/0/0/patientImage.inr.gz";
+    ::boost::filesystem::path pathInr     = ::fwTest::Data::dir() / "fw4spl/image/inr/image.inr.gz";
     ::fwData::Image::sptr image           = ::fwData::Image::New();
     ::fwItkIO::ImageReader::sptr myReader = ::fwItkIO::ImageReader::New();
     myReader->setObject(image);
