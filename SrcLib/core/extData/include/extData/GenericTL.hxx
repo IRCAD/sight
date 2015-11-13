@@ -49,7 +49,7 @@ void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCo
     ::fwCore::mt::WriteLock writeLock(m_tlMutex);
     ::fwCore::mt::WriteLock readLock(other->m_tlMutex);
 
-    BOOST_FOREACH(TimelineType::value_type elt, other->m_timeline)
+    for(TimelineType::value_type elt : other->m_timeline)
     {
         SPTR(BufferType) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);

@@ -6,7 +6,6 @@
 
 #include "uiNetwork/ANetworkServiceWidget.hpp"
 
-#include <boost/foreach.hpp>
 #include <Qt>
 #include <QPushButton>
 

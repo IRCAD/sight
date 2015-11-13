@@ -68,7 +68,7 @@ DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
     DicomSeriesContainerType seriesContainer = sopFilter->apply(series);
 
     // Apply default filters depending on SOPClassUIDs
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::sptr& s, seriesContainer)
+    for(const ::fwDicomData::DicomSeries::sptr& s :  seriesContainer)
     {
         DicomSeriesContainerType tempo;
 
@@ -105,7 +105,7 @@ DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
             tempo.push_back(s);
         }
 
-        BOOST_FOREACH(::fwDicomData::DicomSeries::sptr filteredSeries, tempo)
+        for(::fwDicomData::DicomSeries::sptr filteredSeries :  tempo)
         {
             result.push_back(filteredSeries);
         }

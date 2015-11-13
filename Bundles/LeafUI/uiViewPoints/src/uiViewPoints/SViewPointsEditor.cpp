@@ -33,8 +33,6 @@
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <boost/foreach.hpp>
-
 #include "uiViewPoints/SViewPointsEditor.hpp"
 
 fwServicesRegisterMacro(::gui::editor::IEditor,::uiViewPoints::SViewPointsEditor, ::fwData::Vector);
@@ -113,7 +111,7 @@ void SViewPointsEditor::starting() throw(::fwTools::Failed)
     ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector>();
     SLM_ASSERT("Invalid vector object", vector);
 
-    BOOST_FOREACH(::fwData::Object::sptr object, vector->getContainer())
+    for(::fwData::Object::sptr object :  vector->getContainer())
     {
         ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::dynamicCast(object);
         SLM_ASSERT("Invalid matrix object", matrix);

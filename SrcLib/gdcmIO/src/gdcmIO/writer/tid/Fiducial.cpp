@@ -60,7 +60,7 @@ void Fiducial::createNodes(SPTR(::gdcmIO::container::sr::DicomSRNode)parent, boo
     if (pointList)
     {
         unsigned int id = 1;
-        BOOST_FOREACH(const ::fwData::Point::sptr& point, pointList->getRefPoints())
+        for(const ::fwData::Point::sptr& point :  pointList->getRefPoints())
         {
             this->createFiducial(parent, point, id++, useSCoord3D);
         }

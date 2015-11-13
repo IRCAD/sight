@@ -14,9 +14,6 @@
 #include <QComboBox>
 #include <QObject>
 
-#include <boost/foreach.hpp>
-
-
 namespace uiNetwork
 {
 
@@ -38,7 +35,7 @@ ObjectClassSelectorDialog::ObjectClassSelectorDialog() :
     m_classnameBox = new QComboBox();
 
     classnames = ::fwData::registry::get()->getFactoryKeys();
-    BOOST_FOREACH(std::string const &classname, classnames)
+    for(std::string const &classname :  classnames)
     {
         m_classnameBox->addItem(QString::fromStdString(classname));
     }

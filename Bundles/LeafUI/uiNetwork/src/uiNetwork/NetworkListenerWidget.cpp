@@ -9,7 +9,6 @@
 #include <fwServices/op/Add.hpp>
 
 #include <boost/integer_traits.hpp>
-#include <boost/foreach.hpp>
 
 namespace uiNetwork
 {
@@ -28,7 +27,7 @@ NetworkListenerWidget::NetworkListenerWidget (::fwData::Object::sptr obj,
     m_childLayout->addWidget(m_hostnameEditor);
     m_childLayout->addWidget(m_portEditor);
 
-    BOOST_FOREACH(std::string const &service, connectorModel.getRegisteredListeners())
+    for(std::string const &service :  connectorModel.getRegisteredListeners())
     {
         m_servicesBox->addItem(QString::fromStdString(service));
     }

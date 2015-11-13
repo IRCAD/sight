@@ -18,7 +18,6 @@
 #include <fwData/Float.hpp>
 #include <fwData/Integer.hpp>
 
-#include <boost/foreach.hpp>
 #include <boost/thread/mutex.hpp>
 
 #include <igtl/igtlStatusMessage.h>
@@ -60,7 +59,7 @@ throw (::igtlProtocol::exception::Conversion)
 {
     std::string classname = src->getClassname();
 
-    BOOST_FOREACH(converter::IConverter::sptr converter, m_converters)
+    for(converter::IConverter::sptr converter :  m_converters)
     {
         if (converter->getFwDataObjectType() == classname)
         {

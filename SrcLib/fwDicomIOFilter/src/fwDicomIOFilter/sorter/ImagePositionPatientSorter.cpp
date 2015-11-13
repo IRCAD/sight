@@ -68,8 +68,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
     OFCondition status;
     DcmDataset* dataset;
 
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file,
-                  series->getLocalDicomPaths())
+    for(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file :  series->getLocalDicomPaths())
     {
         const std::string& filename = file.second.string();
         status = fileFormat.loadFile(filename.c_str());
@@ -120,7 +119,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
     series->setLocalDicomPaths(dicomPathContainer);
 
     unsigned int index = 0;
-    BOOST_FOREACH(SortedFileMapType::value_type file, sortedFiles)
+    for(SortedFileMapType::value_type file :  sortedFiles)
     {
         series->addDicomPath(index++, file.second);
     }

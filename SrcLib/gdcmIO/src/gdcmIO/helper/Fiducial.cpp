@@ -25,7 +25,7 @@ namespace helper
 bool Fiducial::containsLandmarks(SPTR(::fwMedData::SeriesDB)seriesDB)
 {
     // Let's find if a series contains distances
-    BOOST_FOREACH(const ::fwMedData::Series::sptr& series, seriesDB->getContainer())
+    for(const ::fwMedData::Series::sptr& series :  seriesDB->getContainer())
     {
         ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
         if(imageSeries)
@@ -51,7 +51,7 @@ bool Fiducial::containsLandmarks(SPTR(::fwMedData::SeriesDB)seriesDB)
 bool Fiducial::containsDistances(SPTR(::fwMedData::SeriesDB)seriesDB)
 {
     // Let's find if a series contains distances
-    BOOST_FOREACH(const ::fwMedData::Series::sptr& series, seriesDB->getContainer())
+    for(const ::fwMedData::Series::sptr& series :  seriesDB->getContainer())
     {
         ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
         if(imageSeries)
@@ -77,7 +77,7 @@ bool Fiducial::containsDistances(SPTR(::fwMedData::SeriesDB)seriesDB)
 bool Fiducial::contains3DDistances(SPTR(::fwMedData::SeriesDB)seriesDB)
 {
     // Let's find if a series contains distances
-    BOOST_FOREACH(const ::fwMedData::Series::sptr& series, seriesDB->getContainer())
+    for(const ::fwMedData::Series::sptr& series :  seriesDB->getContainer())
     {
         ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
         if(imageSeries)
@@ -89,7 +89,7 @@ bool Fiducial::contains3DDistances(SPTR(::fwMedData::SeriesDB)seriesDB)
                     image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
                 if(distanceVector && !distanceVector->empty())
                 {
-                    BOOST_FOREACH(const ::fwData::Object::sptr& object, distanceVector->getContainer())
+                    for(const ::fwData::Object::sptr& object :  distanceVector->getContainer())
                     {
                         ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(object);
                         if(pointList && pointList->getCRefPoints().size() >= 2)

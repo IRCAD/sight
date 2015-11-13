@@ -7,8 +7,6 @@
 #include <string>
 #include <sstream>
 
-#include <boost/foreach.hpp>
-
 #include <fwComEd/helper/Composite.hpp>
 #include <fwComEd/StringMsg.hpp>
 #include <fwCore/base.hpp>
@@ -116,7 +114,7 @@ void SFilterSelectorDialog::updating() throw( ::fwTools::Failed )
 
     // Retrieve available filters
     std::vector< ::fwDicomIOFilter::IFilter::sptr > registredFilters;
-    BOOST_FOREACH(std::string key, ::fwDicomIOFilter::registry::get()->getFactoryKeys())
+    for(std::string key :  ::fwDicomIOFilter::registry::get()->getFactoryKeys())
     {
         ::fwDicomIOFilter::IFilter::sptr filter = ::fwDicomIOFilter::factory::New(key);
         registredFilters.push_back(filter);
@@ -126,7 +124,7 @@ void SFilterSelectorDialog::updating() throw( ::fwTools::Failed )
     std::map< std::string, ::fwDicomIOFilter::IFilter::sptr > availableFiltersMap;
     std::vector< std::string > availableFilterNames;
 
-    BOOST_FOREACH( ::fwDicomIOFilter::IFilter::sptr filter, registredFilters )
+    for( ::fwDicomIOFilter::IFilter::sptr filter :  registredFilters )
     {
         const bool filterIsSelectedByUser = std::find( m_selectedFilters.begin(), m_selectedFilters.end(),
                                                        filter->getClassname() ) != m_selectedFilters.end();

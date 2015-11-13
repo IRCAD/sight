@@ -7,16 +7,13 @@
 #include "extData/RawBufferTL.hpp"
 #include "extData/timeline/RawBuffer.hpp"
 
-#include <boost/foreach.hpp>
-#include <boost/pool/pool.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
 
+#include <boost/pool/pool.hpp>
 #include <functional>
-
 
 fwDataRegisterMacro( ::extData::RawBufferTL );
 
@@ -51,7 +48,7 @@ void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType
     ::fwCore::mt::WriteLock writeLock(m_tlMutex);
     ::fwCore::mt::WriteLock readLock(other->m_tlMutex);
 
-    BOOST_FOREACH(TimelineType::value_type elt, other->m_timeline)
+    for(TimelineType::value_type elt :  other->m_timeline)
     {
         SPTR(::extData::timeline::RawBuffer) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);

@@ -4,18 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGridLayout>
-#include <QLabel>
-#include <boost/foreach.hpp>
+#include "ioDicomExt/common/editor/SPacsConfigurationEditor.hpp"
 
 #include <fwServices/macros.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwDicomIOExt/exceptions/Base.hpp>
 
-#include "ioDicomExt/common/editor/SPacsConfigurationEditor.hpp"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
 
 namespace ioDicomExt
 {

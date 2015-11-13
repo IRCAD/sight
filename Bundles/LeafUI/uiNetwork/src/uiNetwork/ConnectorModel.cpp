@@ -34,7 +34,7 @@ ConnectorModel::~ConnectorModel()
 
 bool ConnectorModel::isRegisteredService(std::string const &serviceName) const
 {
-    BOOST_FOREACH(std::string const &registeredService, m_registeredListeners)
+    for(std::string const &registeredService :  m_registeredListeners)
     {
         if (registeredService == serviceName)
         {
@@ -42,7 +42,7 @@ bool ConnectorModel::isRegisteredService(std::string const &serviceName) const
         }
     }
 
-    BOOST_FOREACH(std::string const &registeredService, m_registeredSenders)
+    for(std::string const &registeredService :  m_registeredSenders)
     {
         if (registeredService == serviceName)
         {

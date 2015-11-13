@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <fwCore/spyLog.hpp>
 #include <fwDicomData/DicomSeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -154,7 +152,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 {
     InstanceUIDContainer result;
 
-    BOOST_FOREACH(const ::fwMedData::Series::sptr& s, series )
+    for(const ::fwMedData::Series::sptr& s :  series )
     {
         result.push_back(s->getInstanceUID());
     }

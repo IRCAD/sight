@@ -111,7 +111,7 @@ public:
         unsigned short z = 0;
 
         // Read every instances
-        BOOST_FOREACH(DicomPathContainerType::value_type file, instances)
+        for(DicomPathContainerType::value_type file : instances)
         {
             const std::string filename = file.second.string();
             status = fileFormat.loadFile(filename.c_str());

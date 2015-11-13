@@ -79,8 +79,7 @@ TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
     DcmFileFormat fileFormat;
     OFCondition status;
     DcmDataset* dataset;
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file,
-                  series->getLocalDicomPaths())
+    for(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file :  series->getLocalDicomPaths())
     {
         const std::string& filename = file.second.string();
         status = fileFormat.loadFile(filename.c_str());
@@ -103,7 +102,7 @@ TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
     ::fwDicomData::DicomSeries::DicomPathContainerType dicomPathContainer;
     series->setLocalDicomPaths(dicomPathContainer);
 
-    BOOST_FOREACH(SortedFileMapType::value_type file, sortedFiles)
+    for(SortedFileMapType::value_type file :  sortedFiles)
     {
         series->addDicomPath(file.first, file.second);
     }

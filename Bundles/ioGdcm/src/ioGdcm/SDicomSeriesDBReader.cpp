@@ -185,7 +185,7 @@ void SDicomSeriesDBReader::notificationOfDBUpdate()
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     ::fwComEd::SeriesDBMsg::sptr msg = ::fwComEd::SeriesDBMsg::New();
-    BOOST_FOREACH( ::fwMedData::Series::sptr s, seriesDB->getContainer() )
+    for( ::fwMedData::Series::sptr s :  seriesDB->getContainer() )
     {
         msg->appendAddedSeries(s);
     }

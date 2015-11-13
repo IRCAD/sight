@@ -33,10 +33,6 @@
 #include <QString>
 #include <QWidget>
 
-#include <boost/foreach.hpp>
-
-
-
 fwServicesRegisterMacro(::gui::editor::IEditor, ::uiSpline::SSplinePointsEditor, ::fwData::PointList);
 
 namespace uiSpline
@@ -119,7 +115,7 @@ void SSplinePointsEditor::starting() throw(::fwTools::Failed)
     ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
     SLM_ASSERT("Invalid pointList object", pointList);
 
-    BOOST_FOREACH(::fwData::Point::sptr point, pointList->getRefPoints())
+    for(::fwData::Point::sptr point :  pointList->getRefPoints())
     {
         SLM_ASSERT("Invalid point object", point);
         ::fwData::String::sptr text = ::fwData::String::dynamicCast(point->getField(s_FIELD_NAME));

@@ -9,7 +9,6 @@
 #include <fwServices/op/Add.hpp>
 
 #include <boost/integer_traits.hpp>
-#include <boost/foreach.hpp>
 #include <boost/integer_traits.hpp>
 
 namespace uiNetwork
@@ -27,7 +26,7 @@ NetworkSenderWidget::NetworkSenderWidget (::fwData::Object::sptr obj,
     m_portEditor->setMaximum(::boost::integer_traits< ::boost::uint16_t>::const_max);
     m_childLayout->addWidget(m_portEditor);
 
-    BOOST_FOREACH(std::string const &service, connectorModel.getRegisteredSenders())
+    for(std::string const &service :  connectorModel.getRegisteredSenders())
     {
         m_servicesBox->addItem(QString::fromStdString(service));
     }

@@ -3,6 +3,10 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+#include "navigation/functions.hpp"
+
+#include <fwData/Point.hpp>
+
 #include <cmath>
 
 #include <vtkPlane.h>
@@ -11,12 +15,6 @@
 #include <vtkPoints.h>
 #include <vtkMath.h>
 #include <vtkTransform.h>
-
-#include <boost/foreach.hpp>
-
-#include <fwData/Point.hpp>
-
-#include "navigation/functions.hpp"
 
 namespace navigation
 {
@@ -62,7 +60,7 @@ void updateSpline(
     int nbofPoints                        = 0;
     SLM_ASSERT("No valid point list", pointList);
 
-    BOOST_FOREACH(::fwData::Point::sptr point, pointList->getRefPoints())
+    for(::fwData::Point::sptr point :  pointList->getRefPoints())
     {
         tempPoints->InsertNextPoint(&point->getRefCoord()[0]);
         nbofPoints++;

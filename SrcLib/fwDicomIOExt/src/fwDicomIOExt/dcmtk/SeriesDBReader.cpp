@@ -80,7 +80,7 @@ SeriesDBReader::FilenameContainerType SeriesDBReader::getFilenames()
     }
     else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
     {
-        BOOST_FOREACH(::boost::filesystem::path file, this->getFiles())
+        for(::boost::filesystem::path file :  this->getFiles())
         {
             filenames.push_back(file.string());
         }
@@ -109,7 +109,7 @@ void SeriesDBReader::read()
     }
 
     // Read series
-    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr series, m_dicomSeriesContainer)
+    for(::fwDicomData::DicomSeries::sptr series :  m_dicomSeriesContainer)
     {
         this->convertDicomSeries(series);
     }
@@ -121,7 +121,7 @@ void SeriesDBReader::readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeri
                                            ::fwServices::IService::sptr notifier)
 {
     // Read series
-    BOOST_FOREACH(::fwMedData::Series::sptr series, dicomSeriesDB->getContainer())
+    for(::fwMedData::Series::sptr series :  dicomSeriesDB->getContainer())
     {
         ::fwDicomData::DicomSeries::sptr dicomSeries = ::fwDicomData::DicomSeries::dynamicCast(series);
         OSLM_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
@@ -144,7 +144,7 @@ void SeriesDBReader::readDicomSeries()
     this->addSeries(filenames);
 
     // Push Dicom Series
-    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr series, m_dicomSeriesContainer)
+    for(::fwDicomData::DicomSeries::sptr series :  m_dicomSeriesContainer)
     {
         seriesDBHelper.add(series);
     }
@@ -164,7 +164,7 @@ bool SeriesDBReader::isDicomDirAvailable()
 void SeriesDBReader::addSeries(const std::vector< std::string > &filenames)
 {
     DcmFileFormat fileFormat;
-    BOOST_FOREACH(std::string filename, filenames)
+    for(std::string filename :  filenames)
     {
         OFCondition status = fileFormat.loadFile(filename.c_str());
         FW_RAISE_IF("Unable to read the file: \""+filename+"\"", status.bad());
@@ -177,7 +177,7 @@ void SeriesDBReader::addSeries(const std::vector< std::string > &filenames)
     }
 
     // Fill series
-    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr series, m_dicomSeriesContainer)
+    for(::fwDicomData::DicomSeries::sptr series :  m_dicomSeriesContainer)
     {
         // Compute number of instances
         series->setNumberOfInstances(series->getLocalDicomPaths().size());
@@ -336,7 +336,7 @@ void SeriesDBReader::createSeries(DcmDataset* dataset, const std::string& filena
     std::string seriesInstanceUID = data.c_str();
 
     // Check if the series already exists
-    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr dicomSeries, m_dicomSeriesContainer)
+    for(::fwDicomData::DicomSeries::sptr dicomSeries :  m_dicomSeriesContainer)
     {
         if(dicomSeries->getInstanceUID() == seriesInstanceUID)
         {

@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
 
@@ -53,7 +51,7 @@ void ConnectPoints::connectAllSplinePoints(
     const ::fwCom::HasSlots::sptr& hasSlots,
     const ::fwCom::Slots::SlotKeyType& slotKey )
 {
-    BOOST_FOREACH(::fwData::Point::sptr point, pointList->getRefPoints())
+    for(::fwData::Point::sptr point :  pointList->getRefPoints())
     {
         this->connectPointToService(point, ::fwData::Object::s_OBJECT_MODIFIED_SIG, hasSlots, slotKey);
     }

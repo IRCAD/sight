@@ -19,7 +19,6 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <boost/lexical_cast.hpp>
-#include <boost/foreach.hpp>
 
 namespace ioNetwork
 {

@@ -68,7 +68,7 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
 {
     DicomSeriesContainerType result = ::fwDicomIOFilter::splitter::TagValueSplitter::apply(series);
 
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::sptr& s, result)
+    for(const ::fwDicomData::DicomSeries::sptr& s :  result)
     {
 
         DcmFileFormat fileFormat;

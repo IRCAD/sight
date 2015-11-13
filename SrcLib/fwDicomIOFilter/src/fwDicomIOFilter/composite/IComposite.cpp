@@ -36,11 +36,11 @@ throw(::fwDicomIOFilter::exceptions::FilterFailure)
     DicomSeriesContainerType result;
     result.push_back(series);
     // For every filter
-    BOOST_FOREACH(const ::fwDicomIOFilter::IFilter::sptr& filter, m_filterContainer)
+    for(const ::fwDicomIOFilter::IFilter::sptr& filter :  m_filterContainer)
     {
         DicomSeriesContainerType filtered;
         // For every serie
-        BOOST_FOREACH(const ::fwDicomData::DicomSeries::sptr& s, result)
+        for(const ::fwDicomData::DicomSeries::sptr& s :  result)
         {
             DicomSeriesContainerType tempo = filter->apply(s);
             filtered.reserve(filtered.size() + tempo.size());
@@ -58,11 +58,11 @@ IComposite::DicomSeriesContainerType IComposite::forcedApply(::fwDicomData::Dico
     DicomSeriesContainerType result;
     result.push_back(series);
     // For every filters
-    BOOST_FOREACH(const ::fwDicomIOFilter::IFilter::sptr& filter, m_filterContainer)
+    for(const ::fwDicomIOFilter::IFilter::sptr& filter :  m_filterContainer)
     {
         DicomSeriesContainerType filtered;
         // For every series
-        BOOST_FOREACH(const ::fwDicomData::DicomSeries::sptr& s, result)
+        for(const ::fwDicomData::DicomSeries::sptr& s :  result)
         {
             try
             {

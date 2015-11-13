@@ -240,7 +240,7 @@ SPTR(::gdcmIO::container::DicomInstance) Series::getSpatialFiducialsReferencedSe
 
     if(!seriesInstanceUID.empty())
     {
-        BOOST_FOREACH(SeriesContainerMapType::value_type v, m_seriesContainerMap)
+        for(SeriesContainerMapType::value_type v :  m_seriesContainerMap)
         {
             if(v.first->getSeriesInstanceUID() == seriesInstanceUID)
             {
@@ -310,7 +310,7 @@ SPTR(::gdcmIO::container::DicomInstance) Series::getStructuredReportReferencedSe
 
     if(!seriesInstanceUID.empty())
     {
-        BOOST_FOREACH(SeriesContainerMapType::value_type v, m_seriesContainerMap)
+        for(SeriesContainerMapType::value_type v :  m_seriesContainerMap)
         {
             if(v.first->getSeriesInstanceUID() == seriesInstanceUID)
             {

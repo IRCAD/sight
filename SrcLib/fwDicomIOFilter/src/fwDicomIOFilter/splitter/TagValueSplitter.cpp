@@ -83,8 +83,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     DcmDataset* dataset;
     OFString data;
 
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file,
-                  series->getLocalDicomPaths())
+    for(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file :  series->getLocalDicomPaths())
     {
         const std::string& filename = file.second.string();
         status = fileFormat.loadFile(filename.c_str());
@@ -99,7 +98,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
         groupContainer[value].push_back(filename.c_str());
     }
 
-    BOOST_FOREACH(InstanceGroupContainer::value_type group, groupContainer)
+    for(InstanceGroupContainer::value_type group :  groupContainer)
     {
         // Copy the series
         ::fwDicomData::DicomSeries::sptr dicomSeries = ::fwDicomData::DicomSeries::New();
@@ -109,7 +108,7 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
         unsigned int index = 0;
 
         // Add the paths to the series
-        BOOST_FOREACH(std::string file, group.second)
+        for(std::string file :  group.second)
         {
             dicomSeries->addDicomPath(index++, file);
         }

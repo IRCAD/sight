@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <fwComEd/helper/SeriesDB.hpp>
 
 #include <fwCore/base.hpp>
@@ -125,7 +123,7 @@ void SDicomSeriesAnonymizer::anonymize()
     ::fwGui::dialog::ProgressDialog progressMeterGUI("Anonymization ");
     anonymizer->addHandler( progressMeterGUI );
 
-    BOOST_FOREACH(::fwData::Composite::ContainerType::value_type value, composite->getContainer())
+    for(::fwData::Composite::ContainerType::value_type value :  composite->getContainer())
     {
         ::fwDicomData::DicomSeries::sptr dicomSeries           = ::fwDicomData::DicomSeries::dynamicCast(value.second);
         ::fwDicomData::DicomSeries::sptr anonymizedDicomSeries = ::fwDicomData::DicomSeries::New();

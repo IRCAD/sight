@@ -13,7 +13,6 @@
 #include <QMessageBox>
 #include <QFile>
 
-#include <boost/foreach.hpp>
 #include <boost/regex.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
@@ -165,7 +164,7 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     QString nodesData;
 
     // Travel each reconstructions
-    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, ms->getReconstructionDB())
+    for(::fwData::Reconstruction::sptr rec :  ms->getReconstructionDB())
     {
         // Get info organ
         QString organName = QString(rec->getOrganName().c_str());

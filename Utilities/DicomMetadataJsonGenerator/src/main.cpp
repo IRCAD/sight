@@ -112,7 +112,7 @@ int main(int argc, char** argv)
     // Add other Dicom test images
 
     // Read series
-    BOOST_FOREACH(std::string file, dicomVector)
+    for(std::string file :  dicomVector)
     {
         OSLM_WARN(input.string() << "/" << file);
         ::fwDicomIOExt::dcmtk::SeriesDBReader::sptr myLoader = ::fwDicomIOExt::dcmtk::SeriesDBReader::New();
@@ -126,7 +126,7 @@ int main(int argc, char** argv)
         outputFile.open(output.c_str(), std::ios::out | std::ios::app);
 
         // Write first instance of each series to the DICOMFILES file
-        BOOST_FOREACH(::fwDicomData::DicomSeries::sptr series, myLoader->getDicomSeries())
+        for(::fwDicomData::DicomSeries::sptr series :  myLoader->getDicomSeries())
         {
             outputFile << file << "/" << series->getLocalDicomPaths().begin()->second.filename().c_str() << "\n";
         }

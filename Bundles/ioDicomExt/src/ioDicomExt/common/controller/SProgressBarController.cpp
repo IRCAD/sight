@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "ioDicomExt/common/controller/SProgressBarController.hpp"
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
@@ -15,9 +15,6 @@
 #include <fwGuiQt/dialog/ProgressDialog.hpp>
 #include <fwData/Composite.hpp>
 
-
-
-#include "ioDicomExt/common/controller/SProgressBarController.hpp"
 
 namespace ioDicomExt
 {

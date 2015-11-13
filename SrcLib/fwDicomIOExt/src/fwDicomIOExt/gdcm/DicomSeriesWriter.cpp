@@ -50,7 +50,7 @@ DicomSeriesWriter::DicomSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
         longestPrefix = paths.begin()->second;
     }
 
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type &value, paths)
+    for(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type &value : paths)
     {
         std::pair< ::boost::filesystem::path::const_iterator, ::boost::filesystem::path::const_iterator > p
             = std::mismatch(longestPrefix.begin(), longestPrefix.end(), value.second.begin());
@@ -112,8 +112,8 @@ void DicomSeriesWriter::write()
 
     if(dicomSeries->getDicomAvailability() == ::fwDicomData::DicomSeries::BINARIES)
     {
-        BOOST_FOREACH(::fwDicomData::DicomSeries::DicomBinaryContainerType::value_type value,
-                      dicomSeries->getDicomBinaries())
+        for(::fwDicomData::DicomSeries::DicomBinaryContainerType::value_type value :
+            dicomSeries->getDicomBinaries())
         {
             ::fwData::Array::sptr array = value.second;
             ::fwComEd::helper::Array arrayHelper(array);
@@ -136,8 +136,8 @@ void DicomSeriesWriter::write()
         ::boost::filesystem::path longestPrefix = longestCommonPrefix(dicomSeries->getLocalDicomPaths()).parent_path();
         SLM_TRACE("Longest prefix :" + longestPrefix.string());
 
-        BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type &value,
-                      dicomSeries->getLocalDicomPaths())
+        for(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type &value :
+            dicomSeries->getLocalDicomPaths())
         {
             const ::boost::filesystem::path& src       = value.second;
             const ::boost::filesystem::path& dest_dir  = folder / removePathPrefix(src.parent_path(), longestPrefix);

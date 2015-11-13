@@ -31,7 +31,6 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/foreach.hpp>
 #include <boost/filesystem/operations.hpp>
 
 #include <sstream>
@@ -371,7 +370,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
     // Create temporary series helper
     ::fwComEd::helper::SeriesDB tempSDBhelper(m_tempSeriesDB);
 
-    BOOST_FOREACH(const ::fwMedData::Series::sptr& series, selectedSeries)
+    for(const ::fwMedData::Series::sptr& series :  selectedSeries)
     {
         ::fwDicomData::DicomSeries::sptr dicomSeries = ::fwDicomData::DicomSeries::dynamicCast(series);
         dicomSeries->setDicomAvailability(::fwDicomData::DicomSeries::PATHS);

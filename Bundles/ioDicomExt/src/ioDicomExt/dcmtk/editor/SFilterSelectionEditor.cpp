@@ -3,7 +3,18 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-#include <boost/foreach.hpp>
+
+#include "ioDicomExt/dcmtk/editor/SFilterSelectionEditor.hpp"
+
+#include <fwComEd/helper/SeriesDB.hpp>
+#include <fwData/Vector.hpp>
+#include <fwDicomIOFilter/composite/IComposite.hpp>
+#include <fwDicomIOFilter/exceptions/FilterFailure.hpp>
+#include <fwDicomIOFilter/registry/detail.hpp>
+#include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwServices/macros.hpp>
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -11,19 +22,6 @@
 #include <QMenu>
 #include <QVBoxLayout>
 #include <QSignalMapper>
-
-#include <fwComEd/helper/SeriesDB.hpp>
-#include <fwData/Vector.hpp>
-#include <fwServices/macros.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGuiQt/container/QtContainer.hpp>
-#include <fwDicomIOFilter/composite/IComposite.hpp>
-#include <fwDicomIOFilter/helper/Filter.hpp>
-
-#include <fwDicomIOFilter/exceptions/FilterFailure.hpp>
-#include <fwDicomIOFilter/registry/detail.hpp>
-
-#include "ioDicomExt/dcmtk/editor/SFilterSelectionEditor.hpp"
 
 namespace ioDicomExt
 {
@@ -178,7 +176,7 @@ void SFilterSelectionEditor::fillAvailableFilters()
 
 
     std::vector< ::fwDicomIOFilter::IFilter::sptr > sortedFilters;
-    BOOST_FOREACH(const std::string& key, ::fwDicomIOFilter::registry::get()->getFactoryKeys())
+    for(const std::string& key :  ::fwDicomIOFilter::registry::get()->getFactoryKeys())
     {
         ::fwDicomIOFilter::IFilter::sptr filter = ::fwDicomIOFilter::factory::New(key);
         sortedFilters.push_back(filter);
@@ -186,7 +184,7 @@ void SFilterSelectionEditor::fillAvailableFilters()
 
     std::sort(sortedFilters.begin(), sortedFilters.end(), SFilterSelectionEditor::sortFilters);
 
-    BOOST_FOREACH(const ::fwDicomIOFilter::IFilter::sptr& filter, sortedFilters)
+    for(const ::fwDicomIOFilter::IFilter::sptr& filter :  sortedFilters)
     {
         // If the filter doesn't have a configuration or if it is configurable using GUI
         if(!filter->isConfigurationRequired() || filter->isConfigurableWithGUI())
@@ -344,7 +342,7 @@ void SFilterSelectionEditor::splitFilter()
 
     // Add filters
     int position = currentIndex;
-    BOOST_FOREACH(const ::fwDicomIOFilter::IFilter::sptr& filter, composite->getChildren())
+    for(const ::fwDicomIOFilter::IFilter::sptr& filter :  composite->getChildren())
     {
         std::string id = filter->getID();
         m_filtersMap[id] = filter;
@@ -418,7 +416,7 @@ void SFilterSelectionEditor::applyFilters()
         FilterContainertype filterContainer;
 
         // Copy selected DicomSeries
-        BOOST_FOREACH(const ::fwData::Object::sptr& obj, vector->getContainer())
+        for(const ::fwData::Object::sptr& obj :  vector->getContainer())
         {
             ::fwDicomData::DicomSeries::sptr srcDicomSeries = ::fwDicomData::DicomSeries::dynamicCast(obj);
             SLM_ASSERT("The series should be a DicomSeries.", srcDicomSeries);
@@ -442,7 +440,7 @@ void SFilterSelectionEditor::applyFilters()
 
         ssFilters << "<b>Filters :</b><br />";
         // Let's apply all the filters
-        BOOST_FOREACH(const ::fwDicomIOFilter::IFilter::sptr& filter, filterContainer)
+        for(const ::fwDicomIOFilter::IFilter::sptr& filter :  filterContainer)
         {
             ssFilters << "- " << filter->getName() << " -> ";
             try
@@ -466,7 +464,7 @@ void SFilterSelectionEditor::applyFilters()
         if(forcedApply || ssInfos.str().empty())
         {
             // Add filtered series to SeriesDB
-            BOOST_FOREACH(const ::fwDicomData::DicomSeries::sptr& series, dicomSeriesContainer)
+            for(const ::fwDicomData::DicomSeries::sptr& series :  dicomSeriesContainer)
             {
                 sDBhelper.add(series);
             }

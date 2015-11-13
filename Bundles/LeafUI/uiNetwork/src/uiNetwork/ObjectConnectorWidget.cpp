@@ -15,8 +15,6 @@
 #include <Qt>
 #include <QPushButton>
 
-#include <boost/foreach.hpp>
-
 namespace uiNetwork
 {
 

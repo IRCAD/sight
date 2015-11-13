@@ -17,7 +17,6 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/foreach.hpp>
 
 #include <fwCore/base.hpp>
 #if (SPYLOG_LEVEL >= 4 )
@@ -241,7 +240,7 @@ void DicomSeriesDBReader::fillSeries( ::gdcm::Scanner & scanner,
 
     ::fwMedData::DicomValuesType seriesPhysicianNames;
     ::gdcm::Scanner::ValuesType gdcmPhysicianNames = scanner.GetValues( seriesPhysicianNamesTag );
-    BOOST_FOREACH(const std::string &str, gdcmPhysicianNames)
+    for(const std::string &str :  gdcmPhysicianNames)
     {
         ::fwMedData::DicomValuesType result;
         ::boost::split( result, str, ::boost::is_any_of("\\"));
@@ -335,7 +334,7 @@ void DicomSeriesDBReader::fillDicomSeries(
     series->setNumberOfInstances(seriesFiles.size());
     unsigned int count = 0;
     // Fill series
-    BOOST_FOREACH(const std::string &str, seriesFiles)
+    for(const std::string &str :  seriesFiles)
     {
         ::boost::filesystem::path path(str);
         series->addDicomPath(count,path.string());
@@ -371,7 +370,7 @@ void DicomSeriesDBReader::addSeries(
         /// Build map series
         MapSeriesType mapSeries = buildMapDicomSeriesFromScanner( scanner );
 
-        BOOST_FOREACH( MapSeriesType::value_type mapElem, mapSeries )
+        for( MapSeriesType::value_type mapElem :  mapSeries )
         {
             SeriesFilesType seriesFiles    = sortDicomSeriesFiles( mapElem.second );
             const std::string & refDcmFile = seriesFiles[0];
@@ -433,7 +432,7 @@ void DicomSeriesDBReader::read()
     }
     else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
     {
-        BOOST_FOREACH(::boost::filesystem::path file, this->getFiles())
+        for(::boost::filesystem::path file :  this->getFiles())
         {
             filenames.push_back(file.string());
         }

@@ -70,8 +70,7 @@ ImagePositionPatientSplitter::DicomSeriesContainerType ImagePositionPatientSplit
     double spacingBetweenSlices = 0;
     const double epsilon        = 1e-2; // Value used to find a gap
     ::fwDicomData::DicomSeries::sptr currentSeries;
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file,
-                  series->getLocalDicomPaths())
+    for(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file :  series->getLocalDicomPaths())
     {
         const std::string& filename = file.second.string();
         status = fileFormat.loadFile(filename.c_str());

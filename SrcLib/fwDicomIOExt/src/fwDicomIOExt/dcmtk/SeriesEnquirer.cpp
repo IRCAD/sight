@@ -6,7 +6,6 @@
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
-#include <boost/foreach.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -341,7 +340,7 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer inst
     DcmDataset dataset;
     OFCondition result;
 
-    BOOST_FOREACH( std::string seriesInstanceUID, instanceUIDContainer )
+    for( std::string seriesInstanceUID :  instanceUIDContainer )
     {
         dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
         dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID.c_str());
@@ -371,7 +370,7 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer insta
     DcmDataset dataset;
     OFCondition result;
 
-    BOOST_FOREACH( std::string seriesInstanceUID, instanceUIDContainer )
+    for( std::string seriesInstanceUID :  instanceUIDContainer )
     {
         dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
         dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID.c_str());

@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <fwComEd/helper/Array.hpp>
 
 #include <fwData/Mesh.hpp>
@@ -317,7 +315,7 @@ void SofaBusiness::fillSpringForceField(GNode *node, std::map<std::string, Stiff
 
 void SofaBusiness::fillMeshVector(::fwMedData::ModelSeries::sptr ms, std::vector<fwData::Mesh::sptr> *meshs)
 {
-    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, ms->getReconstructionDB())
+    for(::fwData::Reconstruction::sptr rec :  ms->getReconstructionDB())
     {
         // Info
         std::string organName = rec->getOrganName();

@@ -14,8 +14,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <navigation/functions.hpp>
 
 #include "visuNavigation/SSplineAdaptor.hpp"
@@ -50,7 +48,7 @@ void SSplineAdaptor::doStart() throw(fwTools::Failed)
     ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
     SLM_ASSERT("Invalid pointList object", pointList);
 
-    BOOST_FOREACH(::fwData::Point::sptr point, pointList->getRefPoints())
+    for(::fwData::Point::sptr point :  pointList->getRefPoints())
     {
         ::navigation::computeSpline(pointList, m_numberOfPoints, m_vtkpoints, m_parametricSpline, m_splineLength);
         this->doUpdate();

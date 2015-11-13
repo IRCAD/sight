@@ -4,10 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
-#include <boost/bind.hpp>           // for ProgessHandler
-#include <boost/lambda/lambda.hpp>  // for ProgessHandler
+#include "gdcmIO/writer/SeriesDB.hpp"
+
 #include <fwCore/base.hpp>
 
 #include <fwTools/Stringizer.hpp>
@@ -17,7 +15,9 @@
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include "gdcmIO/writer/SeriesDB.hpp"
+#include <boost/filesystem.hpp>
+#include <boost/bind.hpp>           // for ProgessHandler
+#include <boost/lambda/lambda.hpp>  // for ProgessHandler
 
 fwDataIOWriterRegisterMacro(::gdcmIO::writer::SeriesDB);
 
@@ -59,7 +59,7 @@ void SeriesDB::write()
     std::sort (seriesContainer.begin(), seriesContainer.end(), SeriesDB::seriesComparator);
 
     // Write all patients
-    BOOST_FOREACH( ::fwMedData::Series::sptr series, seriesContainer)
+    for( ::fwMedData::Series::sptr series :  seriesContainer)
     {
         // Create a new directory
         const ::boost::filesystem::path& seriesPath = this->getFolder() / series->getInstanceUID();

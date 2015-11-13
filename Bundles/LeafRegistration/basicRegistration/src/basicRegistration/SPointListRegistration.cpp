@@ -100,7 +100,7 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
         arlCore::vnl_rigid_matrix T; //declaration of a rigid transformation matrix
 
         // modelPoints is a point list that contains 4 points with a square shape
-        BOOST_FOREACH( ::fwData::Point::sptr point, referencePL->getPoints() )
+        for( ::fwData::Point::sptr point :  referencePL->getPoints() )
         {
             modelPoints->push_back(point->getCoord()[0],point->getCoord()[1],point->getCoord()[2]);
             OSLM_ERROR("referencePL : " << point->getField< ::fwData::String >(
@@ -111,7 +111,7 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
         }
 
         // regPoints is a point list that contains 4 noisy points with a square shape at a Z position = 100
-        BOOST_FOREACH( ::fwData::Point::sptr point, registeredPL->getPoints() )
+        for( ::fwData::Point::sptr point :  registeredPL->getPoints() )
         {
             regPoints->push_back(point->getCoord()[0],point->getCoord()[1],point->getCoord()[2]);
             OSLM_ERROR("registeredPL : " << point->getField< ::fwData::String >(

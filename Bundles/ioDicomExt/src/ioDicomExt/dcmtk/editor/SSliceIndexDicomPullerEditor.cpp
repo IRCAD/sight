@@ -42,7 +42,6 @@
 #include <QComboBox>
 
 #include <boost/asio/placeholders.hpp>
-#include <boost/foreach.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 

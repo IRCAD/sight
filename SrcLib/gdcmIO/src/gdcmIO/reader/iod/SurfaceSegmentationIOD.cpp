@@ -103,7 +103,7 @@ void SurfaceSegmentationIOD::read(::fwMedData::Series::sptr series) throw(::gdcm
 
     // Read each surface segmentation
     const ::gdcm::SegmentReader::SegmentVector &segmentContainer = reader->GetSegments();
-    BOOST_FOREACH(::gdcm::SmartPointer< ::gdcm::Segment > segment, segmentContainer)
+    for(::gdcm::SmartPointer< ::gdcm::Segment > segment :  segmentContainer)
     {
         try
         {

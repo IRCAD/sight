@@ -43,7 +43,7 @@ PointListConverter::~PointListConverter()
     ::fwData::PointList::csptr srcPoints = ::fwData::PointList::dynamicConstCast(src);
 
     dest = ::igtl::PointMessage::New();
-    BOOST_FOREACH(::fwData::Point::sptr const &srcPoint, srcPoints->getCRefPoints())
+    for(::fwData::Point::sptr const &srcPoint :  srcPoints->getCRefPoints())
     {
         std::transform(srcPoint->getCRefCoord().begin(), srcPoint->getCRefCoord().end(), pos,
                        ::boost::numeric_cast<double, float>);

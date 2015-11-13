@@ -4,11 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QLabel>
-#include <boost/foreach.hpp>
-#include <boost/filesystem/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -20,6 +15,11 @@
 #include <fwDicomData/DicomSeries.hpp>
 
 #include "ioDicomExt/dcmtk/editor/SQueryEditor.hpp"
+
+#include <boost/filesystem/operations.hpp>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
 
 namespace ioDicomExt
 {
@@ -225,7 +225,7 @@ void SQueryEditor::updateSeriesDB(::fwMedData::SeriesDB::ContainerType series)
     seriesDBHelper.clear();
 
     // Push new series in the SeriesDB
-    BOOST_FOREACH(const ::fwMedData::Series::sptr& s, series)
+    for(const ::fwMedData::Series::sptr& s :  series)
     {
         ::fwDicomData::DicomSeries::sptr dicomSeries = ::fwDicomData::DicomSeries::dynamicCast(s);
         seriesDBHelper.add(dicomSeries);

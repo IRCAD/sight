@@ -67,7 +67,7 @@ void Series::writeGeneralSeriesModule()
     {
         ::gdcm::String< > *physicians = new ::gdcm::String< >[performingPhysicians.size()];
         unsigned int count = 0;
-        BOOST_FOREACH(std::string physician, performingPhysicians)
+        for(std::string physician :  performingPhysicians)
         {
             physicians[count++] = ::gdcm::String<>(physician);
         }

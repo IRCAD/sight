@@ -6,7 +6,6 @@
 
 #include <iomanip>
 
-#include <boost/foreach.hpp>
 #include <boost/exception/all.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -66,7 +65,7 @@ void DicomAnonymizer::anonymize(const ::boost::filesystem::path &dirPath)
     std::string oldSOPInstanceUID;
 
     unsigned int fileIndex = 0;
-    BOOST_FOREACH(std::string file, dicomFiles)
+    for(std::string file :  dicomFiles)
     {
         // Create a scope for the GDCM Reader/Writer so the file is released when we want to rename it
         {
@@ -427,7 +426,7 @@ void DicomAnonymizer::anonymizeAndZip(const ::boost::filesystem::path &dirPath, 
     char bufferOut[bufferSize];
 
     unsigned int i = 0;
-    BOOST_FOREACH(std::string file, dicomFiles)
+    for(std::string file :  dicomFiles)
     {
         std::ifstream src(file.c_str(), std::ios::binary);
         src.rdbuf()->pubsetbuf(bufferIn, bufferSize);

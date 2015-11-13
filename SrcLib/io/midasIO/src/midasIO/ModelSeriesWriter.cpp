@@ -102,7 +102,7 @@ void ModelSeriesWriter::write()
 
     const ::fwData::StructureTraitsDictionary::StructureTypeNameContainer& names = structDico->getStructureTypeNames();
 
-    BOOST_FOREACH( ::fwData::Reconstruction::sptr rec, pModelSeries->getReconstructionDB() )
+    for( ::fwData::Reconstruction::sptr rec :  pModelSeries->getReconstructionDB() )
     {
         nbSerie++;
 

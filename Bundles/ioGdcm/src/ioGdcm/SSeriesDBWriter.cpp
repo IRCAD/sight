@@ -118,7 +118,7 @@ void SSeriesDBWriter::updating() throw(::fwTools::Failed)
         ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
         ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
 
-        BOOST_FOREACH(::fwData::Object::sptr object, vector->getContainer())
+        for(::fwData::Object::sptr object :  vector->getContainer())
         {
             ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(object);
             SLM_ASSERT("The container should only contain series.", series);
@@ -182,7 +182,7 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
     ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
 
-    BOOST_FOREACH(::fwData::Object::sptr object, vector->getContainer())
+    for(::fwData::Object::sptr object :  vector->getContainer())
     {
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(object);
         SLM_ASSERT("The container should only contain series.", series);

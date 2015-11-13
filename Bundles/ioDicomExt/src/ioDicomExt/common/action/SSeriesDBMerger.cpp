@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include <fwServices/macros.hpp>
 #include <fwComEd/SeriesDBMsg.hpp>
 #include <fwComEd/helper/SeriesDB.hpp>
@@ -100,7 +98,7 @@ void SSeriesDBMerger::updating() throw(::fwTools::Failed)
     std::vector< ::fwMedData::Series::sptr > addedSeries;
 
     // Loop through all selected series
-    BOOST_FOREACH(const ::fwData::Object::sptr& obj, selectedSeries->getContainer())
+    for(const ::fwData::Object::sptr& obj :  selectedSeries->getContainer())
     {
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
 
@@ -138,7 +136,7 @@ void SSeriesDBMerger::updating() throw(::fwTools::Failed)
             ss << addedSeries.size() << " series have been correctly pushed in the database:\n";
         }
 
-        BOOST_FOREACH(const ::fwMedData::Series::sptr& series, addedSeries)
+        for(const ::fwMedData::Series::sptr& series :  addedSeries)
         {
             std::string description = series->getDescription();
             description = (description.empty()) ? "[No description]" : description;

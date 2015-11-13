@@ -12,7 +12,6 @@
 #include <fwData/Exception.hpp>
 
 #include <boost/bind.hpp>
-#include <boost/foreach.hpp>
 #include <boost/pool/pool.hpp>
 
 #include <cmath>

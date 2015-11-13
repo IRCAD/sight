@@ -232,7 +232,7 @@ void Surface::writeSurfaceSegmentationModule(unsigned int segmentationNumber)
         const std::vector< std::string >& referencedSOPInstanceUIDContainer =
             m_imageInstance->getSOPInstanceUIDContainer();
 
-        BOOST_FOREACH(const std::string& sopInstanceUID, referencedSOPInstanceUIDContainer)
+        for(const std::string& sopInstanceUID :  referencedSOPInstanceUIDContainer)
         {
             // Create one item
             ::gdcm::Item imageSOPItem;

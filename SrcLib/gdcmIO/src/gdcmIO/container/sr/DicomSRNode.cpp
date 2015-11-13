@@ -111,7 +111,7 @@ void DicomSRNode::writeContentSequence(::gdcm::DataSet &dataset) const
     ::gdcm::SmartPointer< ::gdcm::SequenceOfItems > sequence = new ::gdcm::SequenceOfItems();
 
     // Write every node
-    BOOST_FOREACH(const SPTR(::gdcmIO::container::sr::DicomSRNode)& child, m_subNodeContainer)
+    for(const SPTR(::gdcmIO::container::sr::DicomSRNode)& child :  m_subNodeContainer)
     {
         ::gdcm::Item item;
         item.SetVLToUndefined();

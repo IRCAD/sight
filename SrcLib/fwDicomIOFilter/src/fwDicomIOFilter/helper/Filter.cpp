@@ -20,7 +20,7 @@ void Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, ::fwDic
     DicomSeriesContainerType result;
 
     // On every DicomSeries
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::sptr& dicomSeries, dicomSeriesContainer)
+    for(const ::fwDicomData::DicomSeries::sptr& dicomSeries :  dicomSeriesContainer)
     {
         // Apply filter and and copy result
         DicomSeriesContainerType tempo;

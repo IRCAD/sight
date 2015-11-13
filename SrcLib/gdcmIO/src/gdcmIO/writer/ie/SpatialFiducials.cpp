@@ -4,9 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <gdcmUIDGenerator.h>
+#include "gdcmIO/helper/DicomData.hpp"
+#include "gdcmIO/writer/ie/SpatialFiducials.hpp"
 
 #include <fwComEd/Dictionary.hpp>
 
@@ -18,8 +17,7 @@
 
 #include <fwTools/dateAndTime.hpp>
 
-#include "gdcmIO/helper/DicomData.hpp"
-#include "gdcmIO/writer/ie/SpatialFiducials.hpp"
+#include <gdcmUIDGenerator.h>
 
 namespace gdcmIO
 {
@@ -133,7 +131,7 @@ throw(::gdcmIO::exception::Failed)
     if (pointList)
     {
         unsigned int index = 0;
-        BOOST_FOREACH(const ::fwData::Point::sptr& point, pointList->getRefPoints())
+        for(const ::fwData::Point::sptr& point :  pointList->getRefPoints())
         {
             ::gdcm::Item fiducialItem;
             fiducialItem.SetVLToUndefined();

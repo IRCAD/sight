@@ -83,8 +83,7 @@ TagValueInstanceRemoveSplitter::DicomSeriesContainerType TagValueInstanceRemoveS
     DcmDataset* dataset;
     OFString data;
 
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file,
-                  series->getLocalDicomPaths())
+    for(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file :  series->getLocalDicomPaths())
     {
         const std::string& filename = file.second.string();
         status = fileFormat.loadFile(filename.c_str());
@@ -105,7 +104,7 @@ TagValueInstanceRemoveSplitter::DicomSeriesContainerType TagValueInstanceRemoveS
     ::fwDicomData::DicomSeries::DicomPathContainerType dicomPathContainer;
     series->setLocalDicomPaths(dicomPathContainer);
     unsigned int index = 0;
-    BOOST_FOREACH(std::string file, instances)
+    for(std::string file :  instances)
     {
         series->addDicomPath(index++, file);
     }

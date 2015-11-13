@@ -61,7 +61,7 @@ void Measurement::createNodes(SPTR(::gdcmIO::container::sr::DicomSRNode)parent, 
     if (distanceVector)
     {
         unsigned int id = 1;
-        BOOST_FOREACH(::fwData::Object::sptr object, distanceVector->getContainer())
+        for(::fwData::Object::sptr object :  distanceVector->getContainer())
         {
             ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(object);
             if(pointList)

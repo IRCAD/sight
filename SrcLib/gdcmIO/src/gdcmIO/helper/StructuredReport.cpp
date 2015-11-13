@@ -4,8 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
 #include "gdcmIO/container/sr/DicomSRCodeNode.hpp"
 #include "gdcmIO/container/sr/DicomSRContainerNode.hpp"
 #include "gdcmIO/container/sr/DicomSRNumNode.hpp"
@@ -15,7 +13,6 @@
 #include "gdcmIO/container/sr/DicomSRImageNode.hpp"
 #include "gdcmIO/container/sr/DicomSRUIDRefNode.hpp"
 #include "gdcmIO/helper/DicomData.hpp"
-
 #include "gdcmIO/helper/StructuredReport.hpp"
 
 namespace gdcmIO

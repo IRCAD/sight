@@ -21,7 +21,6 @@
 #include <QComboBox>
 #include <QProgressBar>
 
-#include <boost/foreach.hpp>
 #include <boost/filesystem.hpp>
 
 #include <json_spirit/json_spirit_writer_template.h>
@@ -100,8 +99,8 @@ ExportDialog::ExportDialog(
     m_cbPermission->addItem(QString::fromStdString("Parent"));
 
     m_cbLicense = new QComboBox();
-    BOOST_FOREACH(
-        ::midasIO::IConfiguration::LicenseContainerType::value_type it, ::midasIO::IConfiguration::s_LICENSES)
+    for(
+        ::midasIO::IConfiguration::LicenseContainerType::value_type it : ::midasIO::IConfiguration::s_LICENSES)
     {
         m_cbLicense->insertItem(it.first, QString::fromStdString(it.second));
     }
@@ -272,7 +271,7 @@ void ExportDialog::updateCommunityList(const ::midasIO::IResponseHandler::sptr& 
 
     m_lstCommunityList->clear();
 
-    BOOST_FOREACH( ::midasIO::IConfiguration::CommunityListType::value_type c, m_communityList)
+    for( ::midasIO::IConfiguration::CommunityListType::value_type c :  m_communityList)
     {
         m_lstCommunityList->addItem(QString::fromStdString(c.first));
     }

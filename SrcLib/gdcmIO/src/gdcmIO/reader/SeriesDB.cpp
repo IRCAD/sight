@@ -4,13 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/algorithm/string/split.hpp>
-#include <boost/foreach.hpp>
-
-#include <gdcmAttribute.h>
-#include <gdcmDirectory.h>
-#include <gdcmMediaStorage.h>
-#include <gdcmUIDs.h>
+#include "gdcmIO/reader/SeriesDB.hpp"
+#include "gdcmIO/reader/Series.hpp"
+#include "gdcmIO/helper/DicomData.hpp"
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -27,9 +23,13 @@
 #include <fwDicomIOFilter/helper/Filter.hpp>
 #include <fwDicomIOFilter/IFilter.hpp>
 
-#include "gdcmIO/reader/SeriesDB.hpp"
-#include "gdcmIO/reader/Series.hpp"
-#include "gdcmIO/helper/DicomData.hpp"
+#include <boost/algorithm/string/split.hpp>
+
+#include <gdcmAttribute.h>
+#include <gdcmDirectory.h>
+#include <gdcmMediaStorage.h>
+#include <gdcmUIDs.h>
+
 
 fwDataIOReaderRegisterMacro( ::gdcmIO::reader::SeriesDB );
 
@@ -100,7 +100,7 @@ SeriesDB::FilenameContainerType SeriesDB::getFilenames()
     }
     else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
     {
-        BOOST_FOREACH(::boost::filesystem::path file, this->getFiles())
+        for(::boost::filesystem::path file :  this->getFiles())
         {
             filenames.push_back(file.string());
         }
@@ -140,7 +140,7 @@ void SeriesDB::readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB, 
     m_dicomSeriesContainer.clear();
 
     // Read series
-    BOOST_FOREACH(::fwMedData::Series::sptr series, dicomSeriesDB->getContainer())
+    for(::fwMedData::Series::sptr series :  dicomSeriesDB->getContainer())
     {
         ::fwDicomData::DicomSeries::sptr dicomSeries = ::fwDicomData::DicomSeries::dynamicCast(series);
         SLM_ASSERT("Trying to read a series which is not a DicomSeries.", dicomSeries);
@@ -165,7 +165,7 @@ void SeriesDB::readDicomSeries()
     this->addSeries(filenames);
 
     // Push Dicom Series
-    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr series, m_dicomSeriesContainer)
+    for(::fwDicomData::DicomSeries::sptr series :  m_dicomSeriesContainer)
     {
         seriesDBHelper.add(series);
     }
@@ -225,7 +225,7 @@ void SeriesDB::addSeries(const std::vector< std::string > &filenames)
     attributeScanner.AddTag(s_SeriesInstanceUIDTag);
 
     // Fill series
-    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr series, m_dicomSeriesContainer)
+    for(::fwDicomData::DicomSeries::sptr series :  m_dicomSeriesContainer)
     {
         // Compute number of instances
         series->setNumberOfInstances(series->getLocalDicomPaths().size());
@@ -377,7 +377,7 @@ void SeriesDB::createSeries(const ::gdcm::Scanner& scanner, const std::string& f
     std::string seriesInstanceUID = SeriesDB::getStringValue( scanner, filename, s_SeriesInstanceUIDTag );
 
     // Check if the series already exists
-    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr dicomSeries, m_dicomSeriesContainer)
+    for(::fwDicomData::DicomSeries::sptr dicomSeries :  m_dicomSeriesContainer)
     {
         if(dicomSeries->getInstanceUID() == seriesInstanceUID)
         {
@@ -446,7 +446,7 @@ void SeriesDB::convertDicomSeries(::fwServices::IService::sptr notifier)
     ::gdcmIO::reader::Series seriesReader;
 
     // Read series
-    BOOST_FOREACH(::fwDicomData::DicomSeries::sptr dicomSeries, m_dicomSeriesContainer)
+    for(::fwDicomData::DicomSeries::sptr dicomSeries :  m_dicomSeriesContainer)
     {
         try
         {
