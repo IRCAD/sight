@@ -67,11 +67,6 @@ protected:
     GUI_API void updating() throw (fwTools::Failed);
 
     /**
-     * @brief This method is used to update services on notification. Do nothing.
-     */
-    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
-    /**
      * @brief This method is used to configure the service parameters: specifies which views to show/hide/mode.
      *
      * @verbatim

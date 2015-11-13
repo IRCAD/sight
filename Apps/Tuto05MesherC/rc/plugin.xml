@@ -197,15 +197,15 @@
                 <slot>RenderingMesh/updateCamPosition</slot>
             </connect>
 
-            <!-- Connect RenderingMesh 'receive' slot to receive 'objectModified' signal from myMesh1 and myMesh2 -->
+            <!-- Connect RenderingMesh 'update' slot to receive 'modified' signal from myMesh1 and myMesh2 -->
             <connect>
-                <signal>myMesh1/objectModified</signal>
-                <slot>RenderingMesh/receive</slot>
+                <signal>myMesh1/modified</signal>
+                <slot>RenderingMesh/updatePipeline</slot>
             </connect>
 
             <connect>
-                <signal>myMesh2/objectModified</signal>
-                <slot>RenderingMesh/receive</slot>
+                <signal>myMesh2/modified</signal>
+                <slot>RenderingMesh/updatePipeline</slot>
             </connect>
 
             <!--

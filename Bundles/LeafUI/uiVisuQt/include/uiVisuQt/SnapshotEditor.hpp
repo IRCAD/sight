@@ -7,13 +7,17 @@
 #ifndef __UIVISUQT_SNAPSHOTEDITOR_HPP__
 #define __UIVISUQT_SNAPSHOTEDITOR_HPP__
 
-#include <QObject>
-#include <QPointer>
+
+#include "uiVisuQt/config.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
 
 #include <fwTools/Failed.hpp>
 #include <gui/editor/IEditor.hpp>
 
-#include "uiVisuQt/config.hpp"
+#include <QObject>
+#include <QPointer>
 
 class QPushButton;
 
@@ -24,7 +28,8 @@ namespace uiVisu
  * @brief   SnapshotEditor service is represented by a button. It allows to snap shot a generic scene.
  * @class   SnapshotEditor
  *
- * @date    2010.
+ * Send a 'snapped' signal containing the filename used to save the snapshot.
+ * @note You need to connect the 'snapped' signal to one visuVTKAdaptor::Snapshot to save the file.
  */
 class UIVISUQT_CLASS_API SnapshotEditor : public QObject,
                                           public ::gui::editor::IEditor
@@ -57,9 +62,6 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Do nothing
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
-    /// Do nothing
     virtual void updating() throw(::fwTools::Failed);
 
     /// Do nothing
@@ -70,13 +72,8 @@ protected:
      *
      * Example of configuration
      * @verbatim
-       <service uid="snapshotEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-        <snap>
-            <scene uid="genericScene" />
-        </snap>
-       </service>
+       <service uid="snapshotEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
        @endverbatim
-       \b genericScene is the uid of the ::fwRenderVTK::VtkRenderService representing the generic scene which will be printed.
      */
     virtual void configuring() throw(fwTools::Failed);
 
@@ -92,7 +89,18 @@ protected Q_SLOTS:
 private:
     std::string requestFileName();
 
-    std::vector< std::string > m_scenesUID;
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Type of signal to snap shot
+    typedef ::fwCom::Signal< void (std::string) > SnappedSignalType;
+    static const ::fwCom::Signals::SignalKeyType s_SNAPPED_SIG;
+
+    SnappedSignalType::sptr m_sigSnapped; ///< snap shot signal
+    /**
+     * @}
+     */
 
     QPointer< QPushButton > m_snapButton;
 

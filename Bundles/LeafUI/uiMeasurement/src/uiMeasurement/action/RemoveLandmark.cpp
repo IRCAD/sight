@@ -11,7 +11,6 @@
 #include <exception>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwData/Image.hpp>
@@ -21,7 +20,6 @@
 #include <fwData/Vector.hpp>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -102,18 +100,10 @@ void RemoveLandmark::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void RemoveLandmark::notify( ::fwData::Image::sptr image, ::fwData::Object::sptr backup)
+void RemoveLandmark::notify( ::fwData::Image::sptr image, ::fwData::Point::sptr backup)
 {
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::LANDMARK, backup );
-    msg->setSource(this->getSptr());
-    msg->setSubject( image);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    auto sig = image->signal< ::fwData::Image::LandmarkRemovedSignalType >(::fwData::Image::s_LANDMARK_REMOVED_SIG);
+    sig->asyncEmit(backup);
 }
 
 //------------------------------------------------------------------------------
@@ -149,7 +139,7 @@ void RemoveLandmark::updating( ) throw(::fwTools::Failed)
             {
                 // backup
                 image->removeField( ::fwComEd::Dictionary::m_imageLandmarksId ); // erase field
-                this->notify(image, landmarks);
+                this->notify(image, landmarkToRemove);
             }
         }
     }
@@ -167,12 +157,6 @@ void RemoveLandmark::configuring() throw (::fwTools::Failed)
 void RemoveLandmark::starting() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
-}
-
-//------------------------------------------------------------------------------
-
-void RemoveLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------

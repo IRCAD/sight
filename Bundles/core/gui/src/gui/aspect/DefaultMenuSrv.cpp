@@ -66,13 +66,6 @@ void DefaultMenuSrv::updating() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuSrv::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------
-
 }
 
 }

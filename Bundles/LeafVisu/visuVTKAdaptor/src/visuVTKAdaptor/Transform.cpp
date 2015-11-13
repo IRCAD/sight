@@ -6,8 +6,6 @@
 
 #include "visuVTKAdaptor/Transform.hpp"
 
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
@@ -39,7 +37,7 @@ public:
         return cb;
     }
 
-    TransformCallback() : m_adaptor(NULL)
+    TransformCallback() : m_adaptor(nullptr)
     {
     }
     ~TransformCallback()
@@ -63,11 +61,10 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-Transform::Transform() throw()
+Transform::Transform() throw() :
+    m_transform(nullptr),
+    m_transformCommand(TransformCallback::New(this))
 {
-    m_transform        = 0;
-    m_transformCommand = TransformCallback::New(this);
-    //addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -78,15 +75,13 @@ Transform::~Transform() throw()
     {
         m_transformCommand->Delete();
     }
-    m_transformCommand = 0;
+    m_transformCommand = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
 void Transform::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     assert(m_configuration->getName() == "config");
     this->setTransformId( m_configuration->getAttributeValue("transform") );
 
@@ -103,7 +98,7 @@ void Transform::configuring() throw(fwTools::Failed)
 
         if(m_parentId.empty())
         {
-            OSLM_ERROR("Can't find vtkTransform '" << m_parentId << "'");
+            SLM_ERROR("Can't find vtkTransform '" + m_parentId + "'");
         }
     }
 }
@@ -134,7 +129,7 @@ void Transform::updateFromVtk()
     vtkTrf->RemoveObserver( m_transformCommand );
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
 
-    vtkMatrix4x4* mat = NULL;
+    vtkMatrix4x4* mat = nullptr;
 
     if(m_parentTransform)
     {
@@ -157,15 +152,10 @@ void Transform::updateFromVtk()
         }
     }
 
-    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-    msg->setSource(this->getSptr());
-    msg->setSubject( trf);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = trf->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = trf->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 
     vtkTrf->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
@@ -221,10 +211,9 @@ void Transform::setTransform(vtkTransform *t)
         }
         if(t)
         {
-            t->Register(NULL);
+            t->Register(nullptr);
         }
     }
-
     m_transform = t;
 }
 
@@ -241,6 +230,7 @@ vtkTransform * Transform::getTransform()
 }
 
 //------------------------------------------------------------------------------
+
 void Transform::doSwap() throw(fwTools::Failed)
 {
     this->doUpdate();
@@ -251,19 +241,6 @@ void Transform::doSwap() throw(fwTools::Failed)
 void Transform::doStop() throw(fwTools::Failed)
 {
     this->unregisterServices();
-}
-
-//------------------------------------------------------------------------------
-
-void Transform::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg =
-        ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
-    if (transfoMsg && transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED))
-    {
-
-        doUpdate();
-    }
 }
 
 } //namespace visuVTKAdaptor

@@ -78,18 +78,7 @@ protected:
      */
     FWTOOLS_API IDType getID( Policy policy = GENERATE ) const;
 
-#ifdef COM_LOG
-    /**
-     * @brief Returns a light version the id of the object. Used for log. This method calls getID and replaces id using
-     * pattern "::NS1::NS2::CLASSNAME-NUM" by a light version "CLASSNAME-NUM"
-     * \li EMPTY then an empty id is returned
-     * \li GENERATE (default) then a new ID will be generated (and recorded ) using the pattern "CLASSNAME-NUM". NUM is always increasing
-     * \li MUST_EXIST then an exception Failed is raised
-     * @note We consider an object be constant whatever if its id is generated.
-     * @note This method is thread-safe.
-     */
-    FWTOOLS_API IDType getLightID( Policy policy = GENERATE ) const;
-#endif
+
 
     /**
      * @brief Set a newID  for the object, (newID must not exist in fwID), the oldest one is released.

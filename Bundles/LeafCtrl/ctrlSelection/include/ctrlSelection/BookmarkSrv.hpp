@@ -19,9 +19,6 @@ namespace ctrlSelection
 /**
  * @class  BookmarkSrv
  * @brief  This service bookmark its object with the name given in configuration.
- *
-
- * @date   2011.
  */
 class CTRLSELECTION_CLASS_API BookmarkSrv : public ::fwServices::IController
 {
@@ -64,9 +61,6 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
-
-    /// Do nothing
-    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
 private:
     std::string m_bookmarkName;

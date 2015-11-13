@@ -4,6 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "vtkSimpleNegato/RendererService.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwData/Image.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <fwVtkIO/vtk.hpp>
+
 #include <vtkCellPicker.h>
 #include <vtkCommand.h>
 #include <vtkImageData.h>
@@ -12,17 +27,6 @@
 #include <vtkProperty.h>
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
-
-#include <fwData/Image.hpp>
-
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwServices/Base.hpp>
-
-#include <fwVtkIO/vtk.hpp>
-
-#include "vtkSimpleNegato/RendererService.hpp"
 
 //-----------------------------------------------------------------------------
 
@@ -33,14 +37,15 @@ fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleNegato::RendererService
 namespace vtkSimpleNegato
 {
 
+static const ::fwCom::Slots::SlotKeyType s_REFRESH_SLOT = "refresh";
+
 //-----------------------------------------------------------------------------
 
 RendererService::RendererService() throw()
     : m_render( 0 ), m_bPipelineIsInit(false)
 {
     SLM_TRACE_FUNC();
-    //this->addNewHandledEvent(::fwComEd::ImageMsg::NEW_IMAGE );
-    //this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER );
+    newSlot(s_REFRESH_SLOT, &RendererService::refresh, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -110,21 +115,6 @@ void RendererService::updating() throw(fwTools::Failed)
 
 //    m_interactorManager->getInteractor()->Render();
     refresh();
-}
-
-//-----------------------------------------------------------------------------
-
-void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
-{
-    // If message is a ImageMsg
-    ::fwComEd::ImageMsg::csptr pImageMsg = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
-    if (pImageMsg)
-    {
-        if( pImageMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) || pImageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
-        {
-            refresh();
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -239,6 +229,17 @@ void RendererService::updateVTKPipeline()
     m_negatoSagittal->SetInputData(vtk_img);
     m_negatoFrontal->SetInputData(vtk_img);
     m_negatoAxial->SetInputData(vtk_img);
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType RendererService::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_REFRESH_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_REFRESH_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

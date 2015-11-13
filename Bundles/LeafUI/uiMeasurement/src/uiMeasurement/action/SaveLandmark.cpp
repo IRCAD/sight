@@ -8,7 +8,6 @@
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -25,7 +24,6 @@
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
@@ -106,12 +104,6 @@ void SaveLandmark::configuring() throw (::fwTools::Failed)
 void SaveLandmark::starting() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
-}
-
-//------------------------------------------------------------------------------
-
-void SaveLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------

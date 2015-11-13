@@ -7,17 +7,18 @@
 #ifndef __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
 #define __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
 
-#include <fwTools/Failed.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
-
-#include <fwActivities/registry/Activities.hpp>
-
 #include "fwServices/AppConfigManager.hpp"
 #include "fwServices/helper/SigSlotConnection.hpp"
 #include "fwServices/registry/AppConfig.hpp"
 #include "fwServices/config.hpp"
+
+#include <fwActivities/registry/Activities.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
+
+#include <fwTools/Failed.hpp>
+
 
 namespace fwServices
 {
@@ -31,7 +32,6 @@ namespace helper
 /**
  * @class   ConfigLauncher
  * @brief   This class provides few methods to manage AppConfig (parsing, starting, stopping...).
- * @date    2013.
  */
 class FWSERVICES_CLASS_API ConfigLauncher : public ::fwCore::BaseObject
 {
@@ -82,6 +82,11 @@ public:
 
     /// Check if AppConfig can be launched.
     FWSERVICES_API virtual bool isExecutable(::fwData::Object::sptr currentObj);
+
+    virtual bool configIsRunning() const
+    {
+        return m_configIsRunning;
+    }
 
 protected:
 

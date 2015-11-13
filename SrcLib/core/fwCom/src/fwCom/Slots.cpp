@@ -89,15 +89,7 @@ Slots& Slots::operator=( const Slots& )
 
 //-----------------------------------------------------------------------------
 
-#ifdef COM_LOG
-void Slots::setID( const std::string prefix )
-{
-    for( SlotMapType::value_type elem :  m_slots )
-    {
-        elem.second->setID( prefix + elem.first );
-    }
-}
-#endif
+
 
 } // namespace fwCom
 

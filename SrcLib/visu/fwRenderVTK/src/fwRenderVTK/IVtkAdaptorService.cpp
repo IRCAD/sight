@@ -85,14 +85,6 @@ void IVtkAdaptorService::updating() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::receiving(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    doReceive(msg);
-    requestRender();
-}
-
-//------------------------------------------------------------------------------
-
 void IVtkAdaptorService::setRenderService( VtkRenderService::sptr service)
 {
     /// Preconditions
@@ -200,13 +192,13 @@ vtkTransform * IVtkAdaptorService::getTransform()
 
 //------------------------------------------------------------------------------
 
-vtkObject * IVtkAdaptorService::getVtkObject(VtkRenderService::VtkObjectIdType objectId)
+vtkObject * IVtkAdaptorService::getVtkObject(const VtkRenderService::VtkObjectIdType& objectId) const
 {
     if (!objectId.empty())
     {
         return m_renderService.lock()->getVtkObject(objectId);
     }
-    return NULL;
+    return nullptr;
 }
 
 //------------------------------------------------------------------------------

@@ -16,10 +16,6 @@
 
 #include <boost/thread/future.hpp>
 
-#ifdef COM_LOG
-#include <boost/lexical_cast.hpp>
-#endif
-
 #include <queue>
 #include <set>
 
@@ -213,10 +209,6 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
 
         SlotBase(unsigned int arity) : m_arity(arity)
         {
-#ifdef COM_LOG
-            ::fwCore::mt::ScopedLock lock(s_mutexCounter);
-            m_id = "Slot-" + ::boost::lexical_cast<std::string>(s_idCount++);
-#endif
         }
 
 
@@ -234,35 +226,6 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
 
         mutable ::fwCore::mt::ReadWriteMutex m_connectionsMutex;
         mutable ::fwCore::mt::ReadWriteMutex m_workerMutex;
-
-#ifdef COM_LOG
-
-    public:
-
-        /// Gets current m_id
-        IDType getID() const
-        {
-            return m_id;
-        }
-
-        /// Sets new m_id
-        void setID( IDType newId )
-        {
-            m_id = newId;
-        }
-
-    private:
-
-        /// Id of signal (not mandatory)
-        IDType m_id;
-
-        /// Id counter
-        FWCOM_API static size_t s_idCount;
-
-        /// Mutex to protect id counter
-        FWCOM_API static ::fwCore::mt::Mutex s_mutexCounter;
-
-#endif
 };
 
 } // namespace fwCom

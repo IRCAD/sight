@@ -21,9 +21,6 @@ namespace ctrlSelection
 /**
  * @class  ImageUpdateAxis
  * @brief  This service updates a fwData::Float given in configuration with the image axis.
- *
-
- * @date   2011.
  */
 class CTRLSELECTION_CLASS_API ImageUpdateAxis : public ::fwServices::IController
 {
@@ -35,6 +32,14 @@ public:
     CTRLSELECTION_API ImageUpdateAxis() throw();
 
     CTRLSELECTION_API virtual ~ImageUpdateAxis() throw();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
+     */
+    CTRLSELECTION_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -69,10 +74,17 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    /// Receives image event to change axis orientation.
-    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
 private:
+
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: update image slice type
+    void updateSliceType(int from, int to);
+    /**
+     * @}
+     */
 
     /// fwID of the float to update.
     std::string m_floatID;

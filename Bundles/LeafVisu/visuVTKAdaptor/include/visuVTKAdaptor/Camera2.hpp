@@ -7,11 +7,11 @@
 #ifndef __VISUVTKADAPTOR_CAMERA2_HPP__
 #define __VISUVTKADAPTOR_CAMERA2_HPP__
 
-#include <vector>
+#include "visuVTKAdaptor/config.hpp"
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
+#include <vector>
 
 class vtkCommand;
 class vtkPerspectiveTransform;
@@ -41,8 +41,6 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     // redraw all (stop then restart sub services)
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
 private:
     vtkCommand* m_cameraCommand;

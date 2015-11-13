@@ -25,10 +25,8 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-InteractorStyle::InteractorStyle() throw()
+InteractorStyle::InteractorStyle() throw() : m_interactorStyle(nullptr)
 {
-    m_interactorStyle = NULL;
-    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -82,23 +80,17 @@ void InteractorStyle::doSwap() throw(fwTools::Failed)
 
 void InteractorStyle::doStop() throw(fwTools::Failed)
 {
-    this->setInteractorStyle(NULL);
-}
-
-//------------------------------------------------------------------------------
-
-void InteractorStyle::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
+    this->setInteractorStyle(nullptr);
 }
 
 //------------------------------------------------------------------------------
 
 void InteractorStyle::setInteractorStyle(vtkInteractorStyle *interactor)
 {
-    if ( m_interactorStyle != NULL )
+    if ( m_interactorStyle != nullptr )
     {
         m_interactorStyle->Delete();
-        m_interactorStyle = NULL;
+        m_interactorStyle = nullptr;
     }
 
     ::fwRenderVTK::IInteractorStyle* fwInteractor = dynamic_cast< ::fwRenderVTK::IInteractorStyle* >(interactor);
@@ -110,7 +102,7 @@ void InteractorStyle::setInteractorStyle(vtkInteractorStyle *interactor)
     m_interactorStyle = interactor;
 
 
-    this->getInteractor()->SetInteractorStyle(NULL);
+    this->getInteractor()->SetInteractorStyle(nullptr);
     this->getInteractor()->SetInteractorStyle(m_interactorStyle);
     this->setVtkPipelineModified();
 }

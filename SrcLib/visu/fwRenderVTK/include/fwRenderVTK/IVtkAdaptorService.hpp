@@ -9,7 +9,7 @@
 
 #include <string>
 
-#include <fwServices/ObjectMsg.hpp>
+
 #include <fwServices/IService.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
 
@@ -59,7 +59,7 @@ public:
     FWRENDERVTK_API VtkRenderService::VtkObjectIdType getTransformId();
     FWRENDERVTK_API vtkTransform* getTransform();
 
-    FWRENDERVTK_API vtkObject * getVtkObject(VtkRenderService::VtkObjectIdType objectId);
+    FWRENDERVTK_API vtkObject * getVtkObject(const VtkRenderService::VtkObjectIdType& objectId) const;
 
     FWRENDERVTK_API vtkRenderWindowInteractor* getInteractor();
 
@@ -96,8 +96,6 @@ protected:
      */
     FWRENDERVTK_API virtual ~IVtkAdaptorService() throw();
 
-    ::fwServices::ObjectMsg::sptr m_message;
-
     /**
      * @name    Standard service methods
      */
@@ -108,7 +106,6 @@ protected:
     FWRENDERVTK_API void stopping() throw(fwTools::Failed);
     FWRENDERVTK_API void swapping() throw(fwTools::Failed);
     FWRENDERVTK_API void updating() throw(fwTools::Failed);
-    FWRENDERVTK_API void receiving(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     //@}
 
 
@@ -132,12 +129,10 @@ protected:
 
     bool m_autoRender;
 
-    FWRENDERVTK_API virtual void doStart()                                     = 0;
-    FWRENDERVTK_API virtual void doStop()                                      = 0;
-    FWRENDERVTK_API virtual void doSwap()                                      = 0;
-    FWRENDERVTK_API virtual void doUpdate()                                    = 0;
-    FWRENDERVTK_API virtual void doReceive(::fwServices::ObjectMsg::csptr msg) = 0;
-
+    FWRENDERVTK_API virtual void doStart()  = 0;
+    FWRENDERVTK_API virtual void doStop()   = 0;
+    FWRENDERVTK_API virtual void doSwap()   = 0;
+    FWRENDERVTK_API virtual void doUpdate() = 0;
 
     ServiceVector & getRegisteredServices()
     {
@@ -157,11 +152,8 @@ protected:
 
     FWRENDERVTK_API static void getProps(vtkPropCollection *propc, vtkProp *prop);
 
-
-private:
     /// notify a render request iff vtkPipeline is modified
-    void requestRender();
-
+    FWRENDERVTK_API void requestRender();
 };
 
 }

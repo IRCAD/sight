@@ -19,8 +19,6 @@ namespace action
 /**
  * @brief   This action moves the image slice on chosen landmark.
  * @class   FocusLandmark
- *
- * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API FocusLandmark : public ::fwGui::IActionSrv
 {
@@ -37,8 +35,6 @@ protected:
     UIMEASUREMENT_API void starting() throw ( ::fwTools::Failed );
 
     UIMEASUREMENT_API void stopping() throw ( ::fwTools::Failed );
-
-    UIMEASUREMENT_API void receiving( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
 
     UIMEASUREMENT_API void configuring() throw ( ::fwTools::Failed );
 

@@ -9,16 +9,6 @@
 
 namespace ctrlSelection
 {
-/**
- * @brief      The namespace ctrlSelection::manager contains the manager services.
- * @namespace  ctrlSelection::manager
- *
- * @date       2009-2010.
- *
- */
-namespace manager
-{
 
-}
 }
 #endif /* __CTRLSELECTION_MANAGER_NAMESPACE_HPP__ */

@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/adaptor/Grid2D.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
+
 #include <fwServices/Base.hpp>
 #include <fwData/Composite.hpp>
 
 #include <QGraphicsItemGroup>
 
-#include "scene2D/adaptor/Grid2D.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/ViewportMsg.hpp"
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Grid2D, ::fwData::Composite );
 
@@ -24,7 +24,6 @@ namespace adaptor
 
 Grid2D::Grid2D() throw() : m_xSpacing(10), m_ySpacing(10)
 {
-//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -184,18 +183,6 @@ float Grid2D::getYEndVal()
 void Grid2D::doUpdate() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
-void Grid2D::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-
-    if( _msg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED) )
-    {
-        doUpdate();
-    }
 }
 
 //---------------------------------------------------------------------------------------------------------------

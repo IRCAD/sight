@@ -7,14 +7,14 @@
 #ifndef __UITF_TRANSFERFUNCTIONEDITOR_HPP__
 #define __UITF_TRANSFERFUNCTIONEDITOR_HPP__
 
-#include <QObject>
+#include "uiTF/config.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
-#include "uiTF/config.hpp"
+#include <QObject>
 
 class QComboBox;
 class QPushButton;
@@ -44,6 +44,16 @@ public:
     /// Basic destructor, do nothing.
     UITF_API virtual ~TransferFunctionEditor() throw ();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     */
+    UITF_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     /**
@@ -71,9 +81,6 @@ protected:
 
     /// Update the TransferFunctionEditor, do nothing.
     UITF_API virtual void updating() throw( ::fwTools::Failed );
-
-    /// Update the TransferFunctionEditor when message.
-    UITF_API virtual void receiving(::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed );
 
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
     UITF_API virtual void stopping() throw( ::fwTools::Failed );
@@ -139,4 +146,4 @@ private:
 };
 
 }
-#endif //__UITF_TRANSFERFUNCTIONEDITOR_HPP__
+#endif // __UITF_TRANSFERFUNCTIONEDITOR_HPP__

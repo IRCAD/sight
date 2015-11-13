@@ -59,17 +59,16 @@ public:
         return new ImagesProbingCallback();
     }
 
-    ImagesProbingCallback()
-        : m_priority(-1),
-          m_mouseMoveObserved(false)
+    ImagesProbingCallback() :
+        m_priority(-1),
+        m_mouseMoveObserved(false)
     {
         m_picker = NULL;
         this->PassiveObserverOff();
     }
 
-    ~ImagesProbingCallback()
+    virtual ~ImagesProbingCallback()
     {
-
     }
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
@@ -159,15 +158,15 @@ protected:
 
 //------------------------------------------------------------------------------
 
-ImagesProbeCursor::ImagesProbeCursor() throw()
-    : m_priority(.6)
-      , m_textActor(vtkActor2D::New())
-      , m_textMapper(vtkTextMapper::New())
-      , m_cursorPolyData( vtkPolyData::New() )
-      , m_cursorMapper  ( vtkPolyDataMapper::New() )
-      , m_cursorActor(    vtkActor::New() )
+ImagesProbeCursor::ImagesProbeCursor() throw() :
+    m_priority(.6),
+    m_vtkObserver(nullptr),
+    m_textActor(vtkActor2D::New()),
+    m_textMapper(vtkTextMapper::New()),
+    m_cursorPolyData( vtkPolyData::New() ),
+    m_cursorMapper  ( vtkPolyDataMapper::New() ),
+    m_cursorActor(    vtkActor::New() )
 {
-    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -178,13 +177,14 @@ ImagesProbeCursor::~ImagesProbeCursor() throw()
     m_textActor->Delete();
 
     m_cursorActor->Delete();
-    m_cursorActor = NULL;
+    m_cursorActor = nullptr;
     m_cursorMapper->Delete();
-    m_cursorMapper = NULL;
+    m_cursorMapper = nullptr;
     m_cursorPolyData->Delete();
 }
 
 //------------------------------------------------------------------------------
+
 void ImagesProbeCursor::setVisibility( bool visibility )
 {
     m_textActor->SetVisibility(visibility);
@@ -296,12 +296,6 @@ void ImagesProbeCursor::doStop() throw(fwTools::Failed)
     m_vtkObserver->Delete();
     m_vtkObserver = NULL;
     this->removeAllPropFromRenderer();
-}
-
-//------------------------------------------------------------------------------
-
-void ImagesProbeCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------

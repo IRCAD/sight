@@ -7,18 +7,20 @@
 #ifndef __UIIMAGEQT_IMAGEINFO_HPP__
 #define __UIIMAGEQT_IMAGEINFO_HPP__
 
+#include "uiImageQt/config.hpp"
 
-#include <QObject>
-#include <QLineEdit>
-#include <QPointer>
-
-#include <fwTools/Failed.hpp>
+#include <fwComEd/PickingInfo.hpp>
 
 #include <fwData/Point.hpp>
 
+#include <fwTools/Failed.hpp>
+
 #include <gui/editor/IEditor.hpp>
 
-#include "uiImageQt/config.hpp"
+#include <QLineEdit>
+#include <QObject>
+#include <QPointer>
+
 
 namespace uiImage
 {
@@ -50,9 +52,6 @@ protected:
     /// Stops editor.
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Receive InteractionMsg and updates text informations
-    virtual void receiving( std::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
-
     virtual void updating() throw(::fwTools::Failed);
 
     virtual void swapping() throw(::fwTools::Failed);
@@ -63,6 +62,9 @@ protected:
 
 
 private:
+
+    /// Slot: get the picking information
+    void getInteraction(::fwComEd::PickingInfo info);
 
     QPointer< QLineEdit >   m_valueText;
 

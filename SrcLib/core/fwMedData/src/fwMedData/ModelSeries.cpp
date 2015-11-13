@@ -7,6 +7,10 @@
 
 #include "fwMedData/ModelSeries.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwData/Exception.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -17,8 +21,16 @@ fwDataRegisterMacro( ::fwMedData::ModelSeries );
 namespace fwMedData
 {
 
+const ::fwCom::Signals::SignalKeyType ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG   = "reconstructionsAdded";
+const ::fwCom::Signals::SignalKeyType ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG = "reconstructionsRemoved";
+
 ModelSeries::ModelSeries(::fwData::Object::Key key) : Series(key)
 {
+    m_sigReconstructionsAdded   = ReconstructionsAddedSignalType::New();
+    m_sigReconstructionsRemoved = ReconstructionsRemovedSignalType::New();
+
+    m_signals( s_RECONSTRUCTIONS_ADDED_SIG,  m_sigReconstructionsAdded)
+        ( s_RECONSTRUCTIONS_REMOVED_SIG,  m_sigReconstructionsRemoved);
 }
 
 //------------------------------------------------------------------------------

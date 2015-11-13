@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKAdaptor/Reconstruction.hpp"
+#include "visuVTKAdaptor/Resection.hpp"
+
 #include <fwData/Resection.hpp>
 #include <fwData/Reconstruction.hpp>
 
@@ -11,40 +14,28 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwComEd/ResectionMsg.hpp>
-
-#include "visuVTKAdaptor/Reconstruction.hpp"
-#include "visuVTKAdaptor/Resection.hpp"
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Resection, ::fwData::Resection );
 
 namespace visuVTKAdaptor
 {
 
-
-Resection::Resection() throw()
+Resection::Resection() throw() :
+    m_sharpEdgeAngle(50.),
+    m_autoResetCamera(true)
 {
-    m_clippingPlanes  = "";
-    m_sharpEdgeAngle  = 50;
-    m_autoResetCamera = true;
-    //addNewHandledEvent( ::fwComEd::ResectionMsg::VISIBILITY );
-    //addNewHandledEvent( ::fwComEd::ResectionMsg::MODIFIED );
 }
 
 //------------------------------------------------------------------------------
 
 Resection::~Resection() throw()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void Resection::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     assert(m_configuration->getName() == "config");
     this->setPickerId( m_configuration->getAttributeValue("picker") );
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
@@ -143,23 +134,16 @@ void Resection::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Resection::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+::fwServices::IService::KeyConnectionsType Resection::getObjSrvConnections() const
 {
-    ::fwComEd::ResectionMsg::csptr pResectionMsg = ::fwComEd::ResectionMsg::dynamicConstCast( msg );
-    if ( pResectionMsg)
-    {
-        if ( pResectionMsg->hasEvent(::fwComEd::ResectionMsg::VISIBILITY) )
-        {
-            this->doUpdate();
-        }
-        if ( pResectionMsg->hasEvent(::fwComEd::ResectionMsg::MODIFIED) )
-        {
-            this->doUpdate();
-        }
-    }
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Resection::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Resection::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Resection::s_RECONSTRUCTION_ADDED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
-
-
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

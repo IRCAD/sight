@@ -11,9 +11,11 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <fwData/Plane.hpp>
 
-#include <fwServices/ObjectMsg.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 
@@ -46,16 +48,49 @@ public:
 
     VISUVTKADAPTOR_API void setVtkPlaneCollection( vtkObject * col );
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Plane::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Plane::s_SELECTED_SIG to this::s_SELECT_PLANE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+    /**
+     * @Signals
+     * @{
+     */
+    /// Type of signal when plane interaction is started (store current plane)
+    typedef ::fwCom::Signal< void (::fwData::Plane::sptr) > InteractionStartedSignalType;
+    VISUVTKADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_INTERACTION_STARTED_SIG;
+    /**
+     * @}
+     */
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API virtual void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Update the plane from the points and notify planes is modified
+    void updatePoints();
+
+    /// Re-notify "startInteraction" for this service
+    void startInteraction();
+
+    /// Changes points color (red is selected, else white)
     void selectPlane(bool select);
+    /**
+     * @}
+     */
 
 private:
 

@@ -7,11 +7,10 @@
 #ifndef __VISUVTKADAPTOR_IMAGELANDMARKS_HPP__
 #define __VISUVTKADAPTOR_IMAGELANDMARKS_HPP__
 
+#include "visuVTKAdaptor/config.hpp"
 
-#include <fwServices/ObjectMsg.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
 
 class vtkCommand;
 
@@ -35,6 +34,16 @@ public:
 
     VISUVTKADAPTOR_API virtual void show(bool b = true);
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_LANDMARK_ADDED_SIG to this::s_UPDATE_LANDMARKS_SLOT
+     * Connect Image::s_LANDMARK_REMOVED_SIG to this::s_UPDATE_LANDMARKS_SLOT
+     * Connect Image::s_LANDMARK_DISPLAYED_SIG to this::s_UPDATE_LANDMARKS_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -43,13 +52,17 @@ protected:
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API virtual void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
 
     vtkCommand * m_rightButtonCommand;
 
     bool m_needSubservicesDeletion;
+
+private:
+
+    /// Slot: update landmarks sub-adaptors
+    void updateLandmaks();
 
 };
 

@@ -7,16 +7,14 @@
 #include "fwGui/Application.hpp"
 #include "fwGui/IFrameSrv.hpp"
 
-#include <fwCore/base.hpp>
-#include <fwTools/fwID.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <boost/lambda/lambda.hpp>
+#include <fwCore/base.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <fwTools/fwID.hpp>
 
 namespace fwGui
 {
@@ -24,6 +22,8 @@ namespace fwGui
 const std::string IFrameSrv::CLOSE_POLICY_EXIT    = "exit";
 const std::string IFrameSrv::CLOSE_POLICY_NOTIFY  = "notify";
 const std::string IFrameSrv::CLOSE_POLICY_MESSAGE = "message";
+
+const ::fwCom::Signals::SignalKeyType IFrameSrv::s_CLOSED_SIG = "closed";
 
 ::fwGui::container::fwContainer::wptr IFrameSrv::m_progressWidget =
     std::weak_ptr< ::fwGui::container::fwContainer >();
@@ -33,6 +33,7 @@ IFrameSrv::IFrameSrv() :
     m_hasToolBar(false),
     m_closePolicy("exit")
 {
+    m_sigClosed = newSignal< ClosedSignalType >(s_CLOSED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -233,17 +234,7 @@ void IFrameSrv::onCloseExit()
 void IFrameSrv::onCloseNotify()
 {
     SLM_TRACE_FUNC();
-    ::fwServices::ObjectMsg::sptr objectMsg = ::fwServices::ObjectMsg::New();
-    ::fwData::Object::sptr srvObj           = this->getObject();
-    objectMsg->addEvent( "WINDOW_CLOSED" );
-    objectMsg->setSource(this->getSptr());
-    objectMsg->setSubject( srvObj);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = srvObj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( objectMsg);
-    }
+    m_sigClosed->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

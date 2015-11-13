@@ -7,22 +7,18 @@
 #ifndef __VISUVTKADAPTOR_VECTORFIELD_HPP__
 #define __VISUVTKADAPTOR_VECTORFIELD_HPP__
 
-#include <vtkSmartPointer.h>
+#include "visuVTKAdaptor/config.hpp"
 
 #include <fwData/Image.hpp>
-
-
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
+#include <vtkSmartPointer.h>
 
 class vtkPolyDataAlgorithm;
 class vtkImageData;
 class vtkGlyph3D;
-
-
 
 namespace visuVTKAdaptor
 {
@@ -38,16 +34,23 @@ public:
 
     VISUVTKADAPTOR_API virtual ~VectorField() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
-    VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doStart() throw(::fwTools::Failed);
+    VISUVTKADAPTOR_API void doStop() throw(::fwTools::Failed);
 
-    VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-
+    VISUVTKADAPTOR_API void doUpdate() throw(::fwTools::Failed);
+    VISUVTKADAPTOR_API void configuring() throw(::fwTools::Failed);
+    VISUVTKADAPTOR_API void doSwap() throw(::fwTools::Failed);
 
     virtual void buildPipeline();
     virtual void destroyPipeline();
@@ -57,9 +60,6 @@ protected:
     vtkSmartPointer<vtkGlyph3D> glyphFilter;
 
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

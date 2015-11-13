@@ -58,11 +58,6 @@ protected:
     GUI_API virtual void stopping() throw( ::fwTools::Failed );
 
     /**
-     * @brief This method is used to update services on notification. Do nothing.
-     */
-    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
-    /**
      * @brief This method is used to update services. Do nothing.
      */
     GUI_API virtual void updating() throw(::fwTools::Failed);

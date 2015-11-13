@@ -11,9 +11,6 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 
-#include <fwComEd/CameraMsg.hpp>
-#include <fwComEd/MeshMsg.hpp>
-
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 #include <fwCom/Signals.hpp>
@@ -50,6 +47,8 @@ namespace vtkSimpleMesh
 {
 
 const ::fwCom::Slots::SlotKeyType RendererService::s_UPDATE_CAM_POSITION_SLOT = "updateCamPosition";
+const ::fwCom::Slots::SlotKeyType RendererService::s_UPDATE_PIPELINE_SLOT     = "updatePipeline";
+const ::fwCom::Slots::SlotKeyType RendererService::s_INIT_PIPELINE_SLOT       = "initPipeline";
 const ::fwCom::Signals::SignalKeyType RendererService::s_CAM_UPDATED_SIG      = "camUpdated";
 
 class vtkLocalCommand : public vtkCommand
@@ -84,20 +83,17 @@ private:
     bool m_isMousePressed;
 };
 
-RendererService::RendererService() throw()
-    : m_render( 0 ), m_bPipelineIsInit(false)
+RendererService::RendererService() throw() : m_render( 0 ), m_bPipelineIsInit(false)
 {
-    //this->addNewHandledEvent( ::fwComEd::MeshMsg::NEW_MESH );
-    //this->addNewHandledEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
-
-
     m_slotUpdateCamPosition = ::fwCom::newSlot( &RendererService::updateCamPosition, this );
-    ::fwCom::HasSlots::m_slots( s_UPDATE_CAM_POSITION_SLOT, m_slotUpdateCamPosition );
+    m_slotUpdatePipeline    = ::fwCom::newSlot( &RendererService::updatePipeline, this );
+    m_slotInitPipeline      = ::fwCom::newSlot( &RendererService::initPipeline, this );
+    ::fwCom::HasSlots::m_slots( s_UPDATE_CAM_POSITION_SLOT, m_slotUpdateCamPosition )
+        ( s_UPDATE_PIPELINE_SLOT, m_slotUpdatePipeline )
+        ( s_INIT_PIPELINE_SLOT, m_slotInitPipeline );
 
     m_sigCamUpdated = CamUpdatedSignalType::New();
-#ifdef COM_LOG
-    m_sigCamUpdated->setID( s_CAM_UPDATED_SIG );
-#endif
+
     // Register
     ::fwCom::HasSignals::m_signals( s_CAM_UPDATED_SIG,  m_sigCamUpdated);
 
@@ -174,47 +170,6 @@ void RendererService::stopping() throw(fwTools::Failed)
 void RendererService::updating() throw(fwTools::Failed)
 {
     m_interactorManager->getInteractor()->Render();
-}
-
-//-----------------------------------------------------------------------------
-
-void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
-{
-    ::fwComEd::MeshMsg::csptr meshMsg = ::fwComEd::MeshMsg::dynamicConstCast(_msg);
-    if ( meshMsg && meshMsg->hasEvent( ::fwComEd::MeshMsg::NEW_MESH ) )
-    {
-        if(!m_bPipelineIsInit)
-        {
-            this->initVTKPipeline();
-            m_bPipelineIsInit = true;
-        }
-        else
-        {
-            m_vtkPolyData             = vtkSmartPointer<vtkPolyData>::New();
-            ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
-            {
-                ::fwData::mt::ObjectReadLock lock(mesh);
-                ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, m_vtkPolyData );
-            }
-            m_mapper->SetInputData(m_vtkPolyData);
-        }
-        m_interactorManager->getInteractor()->Render();
-    }
-    else if ( meshMsg && meshMsg->hasEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED ) )
-    {
-        m_hiResTimer.reset();
-        m_hiResTimer.start();
-        this->updateVTKPipeline(false);
-        m_hiResTimer.stop();
-        OSLM_INFO("Vertex updating time (milli sec) = " << m_hiResTimer.getElapsedTimeInMilliSec());
-
-        m_hiResTimer.reset();
-        m_hiResTimer.start();
-        m_interactorManager->getInteractor()->Render();
-        m_hiResTimer.stop();
-        OSLM_INFO("Render time (milli sec) = " << m_hiResTimer.getElapsedTimeInMilliSec());
-    }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -308,4 +263,54 @@ void RendererService::updateCamPosition(SharedArray positionValue,
     m_interactorManager->getInteractor()->Render();
 }
 
+//-----------------------------------------------------------------------------
+
+void RendererService::initPipeline()
+{
+    if(!m_bPipelineIsInit)
+    {
+        this->initVTKPipeline();
+        m_bPipelineIsInit = true;
+    }
+    else
+    {
+        m_vtkPolyData             = vtkSmartPointer<vtkPolyData>::New();
+        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+        {
+            ::fwData::mt::ObjectReadLock lock(mesh);
+            ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, m_vtkPolyData );
+        }
+        m_mapper->SetInputData(m_vtkPolyData);
+    }
+    m_interactorManager->getInteractor()->Render();
+}
+
+//-----------------------------------------------------------------------------
+
+void RendererService::updatePipeline()
+{
+    m_hiResTimer.reset();
+    m_hiResTimer.start();
+    this->updateVTKPipeline(false);
+    m_hiResTimer.stop();
+    OSLM_INFO("Vertex updating time (milli sec) = " << m_hiResTimer.getElapsedTimeInMilliSec());
+
+    m_hiResTimer.reset();
+    m_hiResTimer.start();
+    m_interactorManager->getInteractor()->Render();
+    m_hiResTimer.stop();
+    OSLM_INFO("Render time (milli sec) = " << m_hiResTimer.getElapsedTimeInMilliSec());
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType RendererService::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_INIT_PIPELINE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_PIPELINE_SLOT ) );
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
 }

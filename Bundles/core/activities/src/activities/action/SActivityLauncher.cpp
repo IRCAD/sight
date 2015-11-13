@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "activities/helper/Activity.hpp"
 #include "activities/action/SActivityLauncher.hpp"
 
 #include <fwRuntime/Convert.hpp>
@@ -27,8 +26,6 @@
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 #include <fwMedData/ActivitySeries.hpp>
-
-#include <fwComEd/VectorMsg.hpp>
 
 #include <fwGui/dialog/SelectorDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -62,6 +59,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SActivityLau
 //------------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_SERIES_SLOT        = "launchSeries";
+const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_UPDATE_STATE_SLOT         = "updateState";
 const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
 
 //------------------------------------------------------------------------------
@@ -69,17 +67,12 @@ const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG
 SActivityLauncher::SActivityLauncher() throw() :
     m_mode("message")
 {
-    m_sigActivityLaunched = ActivityLaunchedSignalType::New();
-    m_signals( s_ACTIVITY_LAUNCHED_SIG,  m_sigActivityLaunched);
+    m_sigActivityLaunched = newSignal< ActivityLaunchedSignalType >(s_ACTIVITY_LAUNCHED_SIG);
 
-    m_slotLaunchSeries = ::fwCom::newSlot( &SActivityLauncher::launchSeries, this );
+    newSlot(s_LAUNCH_SERIES_SLOT, &SActivityLauncher::launchSeries, this);
+    newSlot(s_UPDATE_STATE_SLOT, &SActivityLauncher::updateState, this);
 
-    ::fwCom::HasSlots::m_slots( s_LAUNCH_SERIES_SLOT, m_slotLaunchSeries );
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
     this->setWorker( m_associatedWorker );
 }
 
@@ -316,13 +309,6 @@ void SActivityLauncher::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SActivityLauncher::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    this->updateState();
-}
-
-//------------------------------------------------------------------------------
-
 void SActivityLauncher::updateState()
 {
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
@@ -383,7 +369,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
     }
 
     ParametersType parameters = this->translateParameters(m_parameters);
-    ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(actSeries, info, parameters);
+    ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(actSeries, info, parameters);
 
     if( m_mode == "message" )
     {
@@ -392,13 +378,11 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
     else
     {
         ::fwGui::LockAction lock(this->getSptr());
-        ::fwData::String::csptr msgData = ::fwData::String::dynamicConstCast(msg->getDataInfo(
-                                                                                 "NEW_CONFIGURATION_HELPER"));
-        const std::string viewConfigFieldID = "VIEWCONFIGID";
-        const std::string fieldID           = "APPCONFIG";
 
-        std::string viewConfigID = msgData->getField(viewConfigFieldID, ::fwData::String::New(""))->value();
-        ::fwData::Composite::sptr replaceMap = msgData->getField(fieldID, ::fwData::Composite::New());
+        std::string viewConfigID = msg.getAppConfigID();
+        ::fwActivities::registry::ActivityMsg::ReplaceMapType replaceMap = msg.getReplaceMap();
+        replaceMap["GENERIC_UID"]                                        =
+            ::fwServices::registry::AppConfig::getUniqueIdentifier();
 
         ::fwRuntime::ConfigurationElement::csptr config =
             ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( viewConfigID, replaceMap);
@@ -468,7 +452,7 @@ bool SActivityLauncher::launchAS(::fwData::Vector::sptr &selection)
                 ::fwActivities::registry::ActivityInfo info;
                 info = ::fwActivities::registry::Activities::getDefault()->getInfo(as->getActivityConfigId());
                 ParametersType parameters = this->translateParameters(m_parameters);
-                ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(as, info, parameters);
+                ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(as, info, parameters);
 
                 m_sigActivityLaunched->asyncEmit(msg);
                 launchAS = true;
@@ -488,7 +472,7 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
         ::fwActivities::registry::ActivityInfo info;
         info = ::fwActivities::registry::Activities::getDefault()->getInfo(as->getActivityConfigId());
         ParametersType parameters = this->translateParameters(m_parameters);
-        ::fwServices::ObjectMsg::sptr msg = helper::buildActivityMsg(as, info, parameters);
+        ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(as, info, parameters);
 
         m_sigActivityLaunched->asyncEmit(msg);
     }
@@ -550,6 +534,19 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
     }
     return transParams;
 }
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SActivityLauncher::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_STATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_STATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 }
 }

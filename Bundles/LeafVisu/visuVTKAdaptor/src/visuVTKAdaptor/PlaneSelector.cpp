@@ -8,10 +8,6 @@
 
 #include "visuVTKAdaptor/PlaneSelector.hpp"
 
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/PlaneListMsg.hpp>
-#include <fwComEd/PlaneMsg.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
@@ -28,7 +24,6 @@ namespace visuVTKAdaptor
 
 PlaneSelector::PlaneSelector() throw()
 {
-    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -43,11 +38,6 @@ void PlaneSelector::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     assert(m_configuration->getName() == "config");
-    //assert(m_configuration->hasAttribute("planelist"));
-    //assert(m_configuration->hasAttribute("planeselection"));
-
-    //this->setPlaneListId( m_configuration->getAttributeValue("planelist") );
-    //this->setPlaneSelectionId( m_configuration->getAttributeValue("planeselection") );
 }
 
 //------------------------------------------------------------------------------
@@ -69,16 +59,13 @@ void PlaneSelector::doStart() throw(fwTools::Failed)
 
 void PlaneSelector::doUpdate() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-    SLM_ASSERT("NOT IMPLEMENTED",false);
+    SLM_ASSERT("NOT IMPLEMENTED", false);
 }
 
 //------------------------------------------------------------------------------
 
 void PlaneSelector::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     ::fwData::Object::sptr object = ::fwData::Object::dynamicCast(this->getObject());
     this->selectObject(object);
 }
@@ -87,61 +74,31 @@ void PlaneSelector::doSwap() throw(fwTools::Failed)
 
 void PlaneSelector::doStop() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     this->selectObject( ::fwData::Object::sptr() );
-}
-
-//------------------------------------------------------------------------------
-
-void PlaneSelector::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void PlaneSelector::selectObject( ::fwData::Object::sptr object )
 {
-    SLM_TRACE_FUNC();
-
     ::fwData::Object::sptr oldObject = m_currentObject.lock();
 
     if (oldObject != object)
     {
         if (oldObject)
         {
-            ::fwComEd::PlaneMsg::sptr deselectMsg = ::fwComEd::PlaneMsg::New();
-            deselectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
-            deselectMsg->setSource( this->getSptr());
-            deselectMsg->setSubject( oldObject);
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            sig = oldObject->signal< ::fwData::Object::ObjectModifiedSignalType >(
-                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-            {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( deselectMsg);
-            } //TODO: remove option
+            auto sig = oldObject->signal< ::fwData::Plane::SelectedSignalType >(
+                ::fwData::Plane::s_SELECTED_SIG);
+            sig->asyncEmit(false);
         }
 
         m_currentObject.reset();
 
         if (object)
         {
-            if ( object )
-            {
-                ::fwComEd::PlaneMsg::sptr selectMsg = ::fwComEd::PlaneMsg::New();
-                selectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );
-                selectMsg->setSource( this->getSptr());
-                selectMsg->setSubject( object);
-                ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-                sig = object->signal< ::fwData::Object::ObjectModifiedSignalType >(
-                    ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-                {
-                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                    sig->asyncEmit( selectMsg);
-                } //TODO: remove option
-            }
+            auto sig = object->signal< ::fwData::Plane::SelectedSignalType >(
+                ::fwData::Plane::s_SELECTED_SIG);
+            sig->asyncEmit(true);
             m_currentObject = object;
         }
     }

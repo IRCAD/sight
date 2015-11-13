@@ -7,12 +7,12 @@
 #ifndef __FWCOMED_HELPER_IMAGE_HPP__
 #define __FWCOMED_HELPER_IMAGE_HPP__
 
+#include "fwComEd/config.hpp"
+
 #include <fwData/Image.hpp>
 
 #include <fwServices/IService.hpp>
 
-#include "fwComEd/config.hpp"
-#include "fwComEd/ImageMsg.hpp"
 
 namespace fwComEd
 {
@@ -22,9 +22,6 @@ namespace helper
 /**
  * @brief   Defines an helper to modify an ::fwData::Image by adding few medical fields
  * and create in parallel the message to announce these modifications.
- * @struct  Image
- *
- * @date    2007-20012.
  */
 class FWCOMED_CLASS_API Image
 {
@@ -58,8 +55,7 @@ public:
      * If the image has not transfer functions, the pool is
      * created and a grey level transfer function is added.
      */
-    FWCOMED_API bool createTransferFunctionPool(
-        ::fwServices::IService::sptr serviceSource = ::fwServices::IService::sptr() );
+    FWCOMED_API bool createTransferFunctionPool();
 
     /**
      * @brief Create slice index if indexes are not present, NOT GENERATE MESSAGE.
@@ -94,8 +90,6 @@ public:
     FWCOMED_API ::fwMemory::BufferObject::Lock getLock() const;
 
 private:
-
-    ::fwComEd::ImageMsg::sptr m_imageMsg;
 
     ::fwData::Image::sptr m_image;
 

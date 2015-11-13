@@ -6,9 +6,13 @@
 
 #include "uiImageQt/ImageInfo.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/helper/Image.hpp>
-#include <fwComEd/InteractionMsg.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -31,10 +35,11 @@ namespace uiImage
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ImageInfo, ::fwData::Image );
 
+static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
 ImageInfo::ImageInfo() throw()
 {
-//    addNewHandledEvent(::fwComEd::InteractionMsg::MOUSE_MOVE);
+    newSlot(s_GET_INTERACTION_SLOT, &ImageInfo::getInteraction, this);
 }
 
 //------------------------------------------------------------------------------
@@ -103,28 +108,23 @@ void ImageInfo::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ImageInfo::getInteraction(::fwComEd::PickingInfo info)
 {
     SLM_TRACE_FUNC();
-    ::fwComEd::InteractionMsg::csptr interactionMsg = ::fwComEd::InteractionMsg::dynamicConstCast(_msg);
 
-    if (interactionMsg && _msg->hasEvent(::fwComEd::InteractionMsg::MOUSE_MOVE))
+    if (info.m_eventId == ::fwComEd::PickingInfo::Event::MOUSE_MOVE)
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
         bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
         m_valueText->setEnabled(imageIsValid);
         if (imageIsValid)
         {
-            ::fwData::Point::csptr point = interactionMsg->getEventPoint();
-            SLM_ASSERT("Sorry, the object is null", point);
-            if(point)
-            {
-                fwVec3d pointCoord = point->getCoord();
-                ::fwComEd::helper::Image imageHelper(image);
+            double *point = info.m_worldPos;
 
-                std::string intensity = imageHelper.getPixelAsString(pointCoord[0], pointCoord[1], pointCoord[2] );
-                m_valueText->setText(QString::fromStdString(intensity));
-            }
+            ::fwComEd::helper::Image imageHelper(image);
+
+            std::string intensity = imageHelper.getPixelAsString(point[0], point[1], point[2] );
+            m_valueText->setText(QString::fromStdString(intensity));
         }
     }
 }

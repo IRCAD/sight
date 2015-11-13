@@ -5,6 +5,7 @@ fwUseForwardInclude(
     fwMedData
     fwRuntime
     fwTools
+    fwDataCamp
 )
 
 find_package (Boost COMPONENTS regex REQUIRED)

@@ -13,8 +13,6 @@
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
-
 class vtkCommand;
 class vtkActor;
 class vtkActor2D;
@@ -66,7 +64,6 @@ protected:
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     void buildTextActor();
     void buildPolyData();
@@ -79,7 +76,7 @@ protected:
 
     vtkCommand *m_vtkObserver;
 
-    vtkActor2D * m_textActor; // rendering defect using a vtkTextActor
+    vtkActor2D    * m_textActor; // rendering defect using a vtkTextActor
     vtkTextMapper * m_textMapper;
 
     vtkPolyData         *m_cursorPolyData;

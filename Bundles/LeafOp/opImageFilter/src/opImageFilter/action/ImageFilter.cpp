@@ -13,7 +13,6 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
@@ -59,12 +58,6 @@ void ImageFilter::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
-}
-
-//-----------------------------------------------------------------------------
-
-void ImageFilter::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -132,18 +125,10 @@ void ImageFilter::updating() throw ( ::fwTools::Failed )
     ::fwTools::DynamicType type = param.imageIn->getPixelType();
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ThresholdFilter >::invoke( type, param );
 
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-//  msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ;
-
-    // Notify message to all service listeners
-    msg->setSource(this->getSptr());
-    msg->setSubject( param.imageOut);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = param.imageOut->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = param.imageOut->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

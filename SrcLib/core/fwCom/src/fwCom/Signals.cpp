@@ -78,16 +78,6 @@ Signals& Signals::operator=( const Signals& )
 }
 
 //-----------------------------------------------------------------------------
-#ifdef COM_LOG
-void Signals::setID( const std::string prefix )
-{
-    for( SignalMapType::value_type elem :  m_signals )
-    {
-        elem.second->setID( prefix + elem.first );
-    }
-}
-#endif
-//-----------------------------------------------------------------------------
 
 } // namespace fwCom
 

@@ -15,8 +15,6 @@
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-
 #include <fwServices/Base.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -32,7 +30,6 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::TransformationMatrixE
 
 TransformationMatrixEditor::TransformationMatrixEditor() throw()
 {
-//    addNewHandledEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -104,16 +101,6 @@ void TransformationMatrixEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrixEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    if(_msg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED))
-    {
-        this->updating();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void TransformationMatrixEditor::info( std::ostream &_sstream )
 {
 }
@@ -138,15 +125,10 @@ void TransformationMatrixEditor::onSliderChange( int angle  )
     tm3D->setCoefficient(3,0, 0);        tm3D->setCoefficient(3,1, 0);         tm3D->setCoefficient(3,2, 0);
     tm3D->setCoefficient(3,3, 1);
 
-    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-    msg->setSource(this->getSptr());
-    msg->setSubject( tm3D);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = tm3D->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = tm3D->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

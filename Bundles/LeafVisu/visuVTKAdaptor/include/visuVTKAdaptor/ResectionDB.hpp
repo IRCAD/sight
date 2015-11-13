@@ -7,15 +7,13 @@
 #ifndef __VISUVTKADAPTOR_RESECTIONDB_HPP__
 #define __VISUVTKADAPTOR_RESECTIONDB_HPP__
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
 
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
 namespace visuVTKAdaptor
 {
-
-
 
 class VISUVTKADAPTOR_CLASS_API ResectionDB : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -37,6 +35,16 @@ public:
         m_sharpEdgeAngle = angle;
     }
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect ResectionDB::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect ResectionDB::s_SAFE_PART_ADDED_SIG to this::s_UPDATE_SLOT
+     * Connect ResectionDB::s_RESECTION_ADDED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -46,14 +54,10 @@ protected:
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
-
 private:
     ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_clippingPlanes;
     double m_sharpEdgeAngle;
 };
-
-
 
 
 } //namespace visuVTKAdaptor

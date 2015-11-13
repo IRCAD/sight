@@ -8,7 +8,6 @@
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -24,7 +23,6 @@
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
@@ -92,16 +90,8 @@ void LoadLandmark::updating() throw(::fwTools::Failed)
         this->load(path);
 
         // notify
-        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-        msg->addEvent( ::fwComEd::ImageMsg::LANDMARK );
-        msg->setSource(this->getSptr());
-        msg->setSubject( image);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-        {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
-        }
+        auto sig = image->signal< ::fwData::Image::LandmarkAddedSignalType >(::fwData::Image::s_LANDMARK_ADDED_SIG);
+        sig->asyncEmit(::fwData::Point::sptr());
     }
 }
 
@@ -117,12 +107,6 @@ void LoadLandmark::configuring() throw (::fwTools::Failed)
 void LoadLandmark::starting() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
-}
-
-//------------------------------------------------------------------------------
-
-void LoadLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------

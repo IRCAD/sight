@@ -4,20 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/adaptor/HistogramValue.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+
 #include <fwServices/Base.hpp>
 
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
 
-#include <fwComEd/HistogramMsg.hpp>
-
 #include <QGraphicsEllipseItem>
 #include <QFont>
-
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/adaptor/HistogramValue.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/data/ViewportMsg.hpp"
 
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::HistogramValue, ::fwData::Histogram);
@@ -27,10 +24,9 @@ namespace scene2D
 namespace adaptor
 {
 
-HistogramValue::HistogramValue() throw()
-    : m_color(Qt::white), m_isInteracting(false), m_fontSize(8)
+HistogramValue::HistogramValue() throw() :
+    m_color(Qt::white), m_isInteracting(false),  m_text(nullptr), m_fontSize(8.f), m_layer(nullptr)
 {
-//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -98,8 +94,8 @@ void HistogramValue::doStart() throw( ::fwTools::Failed)
 
     m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
 
-    m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-        this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
+        this->slot(::fwServices::IService::s_UPDATE_SLOT));
 
     // Add the layer containing grid's lines to the scene
     this->getScene2DRender()->getScene()->addItem(m_layer);
@@ -109,8 +105,6 @@ void HistogramValue::doStart() throw( ::fwTools::Failed)
 
 void HistogramValue::doStop() throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     m_connection.disconnect();
 }
 
@@ -118,7 +112,8 @@ void HistogramValue::doStop() throw( ::fwTools::Failed)
 
 void HistogramValue::doUpdate() throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    this->initializeViewSize();
+    this->initializeViewportSize();
 
     ::fwData::Histogram::sptr histogram           = this->getObject< ::fwData::Histogram>();
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
@@ -177,40 +172,17 @@ void HistogramValue::doUpdate() throw( ::fwTools::Failed)
         m_text->setVisible( false );
     }
 }
-//---------------------------------------------------------------------------------------------------------------
-
-void HistogramValue::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    ::fwComEd::HistogramMsg::csptr histoMsg         = ::fwComEd::HistogramMsg::dynamicConstCast(_msg);
-    ::scene2D::data::ViewportMsg::csptr viewportMsg = ::scene2D::data::ViewportMsg::dynamicConstCast(_msg);
-
-    if (histoMsg && histoMsg->hasEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED))
-    {
-        this->doUpdate();
-    }
-    else if( viewportMsg && viewportMsg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED) )
-    {
-        this->initializeViewSize();
-        this->initializeViewportSize();
-
-        doUpdate();
-    }
-}
 
 //---------------------------------------------------------------------------------------------------------------
 
 void HistogramValue::doSwap() throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 void HistogramValue::processInteraction( ::scene2D::data::Event::sptr _event )
 {
-    SLM_TRACE_FUNC();
-
     this->initializeViewSize();
     this->initializeViewportSize();
 

@@ -8,6 +8,9 @@
 #include "fwData/Exception.hpp"
 #include "fwData/ResectionDB.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::ResectionDB );
@@ -15,10 +18,18 @@ fwDataRegisterMacro( ::fwData::ResectionDB );
 namespace fwData
 {
 
+const ::fwCom::Signals::SignalKeyType ResectionDB::s_RESECTION_ADDED_SIG = "resectionAdded";
+const ::fwCom::Signals::SignalKeyType ResectionDB::s_SAFE_PART_ADDED_SIG = "safePartAdded";
+
 //------------------------------------------------------------------------------
 
 ResectionDB::ResectionDB(::fwData::Object::Key key)
 {
+    m_sigResectionAdded = ResectionAddedSignalType::New();
+    m_sigSafePartAdded  = SafePartAddedSignalType::New();
+
+    m_signals( s_RESECTION_ADDED_SIG,  m_sigResectionAdded)
+        ( s_SAFE_PART_ADDED_SIG,  m_sigSafePartAdded);
 }
 
 //------------------------------------------------------------------------------

@@ -213,27 +213,22 @@ void ServiceTest::testCommunication()
     CPPUNIT_ASSERT(service1->isStarted());
     CPPUNIT_ASSERT(service2->isStarted());
 
-    // Create message
-    ::fwServices::ObjectMsg::sptr objMsg = ::fwServices::ObjectMsg::New();
-    objMsg->addEvent(EVENT);
-    CPPUNIT_ASSERT(objMsg->hasEvent(EVENT));
-
     // Register communication channel
     ::fwServices::helper::SigSlotConnection::sptr comHelper = ::fwServices::helper::SigSlotConnection::New();
     comHelper->connect( obj, service1, service1->getObjSrvConnections() );
     comHelper->connect( obj, service2, service2->getObjSrvConnections() );
+    comHelper->connect( service1, ::fwServices::ut::TestServiceImplementation::s_MSG_SENT_SIG,
+                        service2, ::fwServices::ut::TestServiceImplementation::s_RECEIVE_MSG_SLOT );
 
     // Service1 send notification
-    objMsg->setSource(service1);
-    objMsg->setSubject( obj);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = obj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    ::fwServices::ut::TestServiceImplementation::MsgSentSignalType::sptr sig;
+    sig = service1->signal< ::fwServices::ut::TestServiceImplementation::MsgSentSignalType >(
+        ::fwServices::ut::TestServiceImplementation::s_MSG_SENT_SIG);
     {
-        ::fwServices::IService::ReceiveSlotType::sptr slot;
-        slot = service1->slot< ::fwServices::IService::ReceiveSlotType >(
-            ::fwServices::IService::s_RECEIVE_SLOT );
+        ::fwCom::SlotBase::sptr slot;
+        slot = service1->slot( ::fwServices::IService::s_UPDATE_SLOT );
         ::fwCom::Connection::Blocker block(sig->getConnection(slot));
-        sig->asyncEmit( objMsg);
+        sig->asyncEmit(EVENT);
     }
 
     // Test if service2 has received the message

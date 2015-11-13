@@ -18,14 +18,9 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-class vtkImageActor;
 class fwVtkWindowLevelLookupTable;
 class vtkImageMapToColors;
 class vtkImageData;
-class vtkPolyDataMapper;
-class vtkPolyData;
-class vtkActor;
-
 
 namespace visuVTKAdaptor
 {
@@ -62,13 +57,23 @@ public:
         m_allowAlphaInTF = allow;
     }
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_IMAGE_OPACITY_SLOT
+     * Connect Image::s_TRANSPARENCY_MODIFIED_SIG to this::s_UPDATE_IMAGE_OPACITY_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
@@ -77,9 +82,19 @@ protected:
     virtual void destroyPipeline();
 
     void updateImage( ::fwData::Image::sptr image  );
+
+    /// Slot: Update image opacity and visibility
     void updateImageOpacity();
     void updateWindowing( ::fwData::Image::sptr image );
     void updateImageTransferFunction( ::fwData::Image::sptr image );
+
+    /// Called when transfer function points are modified.
+    VISUVTKADAPTOR_API virtual void updatingTFPoints();
+
+    /// Called when transfer function windowing is modified.
+    VISUVTKADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+
+private:
 
     std::string m_imageRegisterId;
     vtkObject  *m_imageRegister;
@@ -92,11 +107,7 @@ protected:
     vtkImageMapToColors *m_map2colors;
     vtkImageData *m_imageData;
 
-
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

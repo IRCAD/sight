@@ -4,16 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/adaptor/ViewportRangeSelector.hpp"
+#include "scene2D/data/Viewport.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwServices/Base.hpp>
 
-
-#include <scene2D/data/Viewport.hpp>
-#include <scene2D/data/ViewportMsg.hpp>
-
 #include <QGraphicsRectItem>
-
-#include "scene2D/adaptor/ViewportRangeSelector.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
 
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportRangeSelector,
@@ -25,10 +25,16 @@ namespace adaptor
 {
 
 
-ViewportRangeSelector::ViewportRangeSelector() throw()
-    : m_isLeftInteracting( false ), m_isRightInteracting( false ), m_isInteracting( false ), m_clickCatchRange( 15 )
+ViewportRangeSelector::ViewportRangeSelector() throw() :
+    m_shutter(nullptr),
+    m_isLeftInteracting( false ),
+    m_isRightInteracting( false ),
+    m_isInteracting( false ),
+    m_clickCatchRange( 15 ),
+    m_layer(nullptr),
+    m_initialX(0.f),
+    m_initialWidth(0.f)
 {
-//     this->handlingEventOff(); // This service no handling event
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -87,8 +93,6 @@ void ViewportRangeSelector::configuring() throw( ::fwTools::Failed)
 
 void ViewportRangeSelector::doStart() throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     ::scene2D::data::Viewport::sptr viewport = this->getObject< ::scene2D::data::Viewport>();
 
     QRectF sceneRect = this->getScene2DRender()->getScene()->sceneRect();
@@ -112,15 +116,11 @@ void ViewportRangeSelector::doStart() throw( ::fwTools::Failed)
     QRectF rect = m_shutter->rect();
     updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
 
-    ::scene2D::data::ViewportMsg::sptr msg = ::scene2D::data::ViewportMsg::New();
-    msg->addEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
-    msg->setSource( this->getSptr());
-    msg->setSubject( viewport);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = viewport->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = viewport->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg );
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 
@@ -140,13 +140,6 @@ void ViewportRangeSelector::doUpdate() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void ViewportRangeSelector::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
 void ViewportRangeSelector::doSwap() throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
@@ -156,8 +149,6 @@ void ViewportRangeSelector::doSwap() throw( ::fwTools::Failed)
 
 void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _event )
 {
-    SLM_TRACE_FUNC();
-
     // Event coordinates in scene
     ::scene2D::data::Coord coord;
     coord = this->getScene2DRender()->mapToScene( _event->getCoord() );
@@ -313,16 +304,13 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
 
             // Update object
             updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
-            ::scene2D::data::ViewportMsg::sptr msg = ::scene2D::data::ViewportMsg::New();
-            msg->addEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
-            msg->setSource( this->getSptr());
-            msg->setSubject( this->getObject< ::scene2D::data::Viewport>());
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            sig = this->getObject< ::scene2D::data::Viewport>()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+
+            ::fwData::Object::ModifiedSignalType::sptr sig;
+            sig = this->getObject< ::scene2D::data::Viewport>()->signal< ::fwData::Object::ModifiedSignalType >(
+                ::fwData::Object::s_MODIFIED_SIG);
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( msg );
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sig->asyncEmit();
             }
         }
     }

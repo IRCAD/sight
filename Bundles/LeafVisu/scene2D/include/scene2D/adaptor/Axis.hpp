@@ -7,8 +7,8 @@
 #ifndef __SCENE2D_ADAPTOR_AXIS_HPP__
 #define __SCENE2D_ADAPTOR_AXIS_HPP__
 
-#include <scene2D/config.hpp>
-#include <scene2D/adaptor/IAdaptor.hpp>
+#include "scene2D/config.hpp"
+#include "scene2D/adaptor/IAdaptor.hpp"
 
 namespace scene2D
 {
@@ -32,7 +32,6 @@ protected:
     void doStop() throw( ::fwTools::Failed);
     void doSwap() throw( ::fwTools::Failed);
     void doUpdate() throw( ::fwTools::Failed);
-    void doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed);
     void configuring() throw( ::fwTools::Failed);
 
     /// Manage the given events
@@ -90,9 +89,7 @@ private:
     ::fwCom::Connection m_connection;
 };
 
-
 }   // namespace adaptor
-
 }   // namespace scene2D
 
 #endif //__SCENE2D_ADAPTOR_AXIS_HPP__

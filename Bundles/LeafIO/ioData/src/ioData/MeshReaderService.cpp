@@ -4,29 +4,32 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <fstream>
-
-#include <boost/filesystem/operations.hpp>
+#include "ioData/MeshReaderService.hpp"
 
 #include <io/IReader.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwData/Mesh.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwCore/base.hpp>
+
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/Mesh.hpp>
+
+#include <fwDataIO/reader/MeshReader.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwCore/base.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwDataIO/reader/MeshReader.hpp>
+#include <boost/filesystem/operations.hpp>
 
-#include <fwComEd/MeshMsg.hpp>
-
-#include "ioData/MeshReaderService.hpp"
+#include <iostream>
+#include <fstream>
 
 fwServicesRegisterMacro( ::io::IReader, ::ioData::MeshReaderService, ::fwData::Mesh );
 
@@ -104,15 +107,11 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
             // Launch reading process
             reader->read();
             // Notify reading
-            ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
-            msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-            msg->setSource(this->getSptr());
-            msg->setSubject( mesh);
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            sig = mesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            ::fwData::Object::ModifiedSignalType::sptr sig;
+            sig = mesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( msg);
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sig->asyncEmit();
             }
         }
         catch (const std::exception & e)

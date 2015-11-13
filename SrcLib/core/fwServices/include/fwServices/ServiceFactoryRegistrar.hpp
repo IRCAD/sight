@@ -8,7 +8,6 @@
 #define __FWSERVICES_SERVICEFACTORYREGISTRAR_HPP__
 
 #include "fwServices/factory/new.hpp"
-
 #include "fwServices/registry/ServiceFactory.hpp"
 
 namespace fwServices

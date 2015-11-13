@@ -7,9 +7,11 @@
 #ifndef __UIMEASUREMENT_ACTION_SHOWLANDMARK_HPP__
 #define __UIMEASUREMENT_ACTION_SHOWLANDMARK_HPP__
 
-#include <fwGui/IActionSrv.hpp>
-#include <fwData/Image.hpp>
 #include "uiMeasurement/config.hpp"
+
+#include <fwData/Image.hpp>
+
+#include <fwGui/IActionSrv.hpp>
 
 namespace uiMeasurement
 {
@@ -19,8 +21,6 @@ namespace action
 /**
  * @brief   This action allows to show/hide image landmarks.
  * @class   ShowLandmark
- *
- * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API ShowLandmark : public ::fwGui::IActionSrv
 {
@@ -32,6 +32,14 @@ public:
 
     UIMEASUREMENT_API virtual ~ShowLandmark() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_LANDMARK_DISPLAYED_SIG to this::s_SHOW_LANDMARK_SLOT
+     */
+    UIMEASUREMENT_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     void configuring() throw (::fwTools::Failed);
@@ -40,16 +48,15 @@ protected:
 
     void updating() throw (::fwTools::Failed);
 
-    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed);
-
     void stopping() throw (::fwTools::Failed);
 
     UIMEASUREMENT_API void swapping() throw(::fwTools::Failed);
     UIMEASUREMENT_API void info(std::ostream &_sstream );
 
-protected:
+private:
 
-    ::fwData::Image::wptr m_observedImage;
+    /// Slot: show/hide landmark
+    void showLandmark(bool isShown);
 
 };
 

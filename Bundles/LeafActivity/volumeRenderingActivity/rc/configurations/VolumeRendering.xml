@@ -8,7 +8,7 @@
         <param name="AS_UID" />
         <param name="ICON_PATH" />
         <param name="imageUid" />
-        <param name="patient_name"  default="" />
+        <param name="patient_name" default="" />
         <param name="optionalModelSeriesCompositeUid" />
     </parameters>
     <config>
@@ -69,12 +69,12 @@
                         <menuItem name="Show mesh" icon="Bundles/media_0-1/icons/icon-3D.png" style="check" />
                         <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />
                         <separator />
-                        <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" />
+                        <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" style="check" />
                         <menuItem name="Reset box cropping" icon="Bundles/media_0-1/icons/icon-box-reset.png" />
                         <separator />
                         <menuItem name="Snapshot VR" icon="Bundles/media_0-1/icons/camera-photo.png" />
                         <separator />
-                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg"  />
+                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -135,17 +135,19 @@
                         <push src="${optionalModelSeriesCompositeUid}[optionalModelSeriesKey]" key="modelSeries" />
                     </service>
 
-                    <service uid="${GENERIC_UID}_managerModelSeries" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
+                    <service uid="${GENERIC_UID}_managerModelSeries" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
                         <mode type="stop" />
                         <config>
 
                             <object id="modelSeries" type="::fwMedData::ModelSeries">
                                 <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
                                     <config>
-                                        <appConfig id="OrganManagerWithSeries" >
+                                        <appConfig id="OrganManagerWithSeries">
                                             <parameters>
-                                                <parameter replace="ORGAN_MANAGER_MODELSERIES" by="self"  />
-                                                <parameter replace="ICON_PATH" by="${ICON_PATH}"  />
+                                                <parameter replace="ORGAN_MANAGER_MODELSERIES" by="self" />
+                                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                                                <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+                                                <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
                                             </parameters>
                                         </appConfig>
                                     </config>
@@ -154,11 +156,7 @@
                         </config>
                     </service>
 
-                    <service uid="${GENERIC_UID}_ActionSnapshotVR" impl="::uiVisu::action::SSnapshot" type="::fwGui::IActionSrv" autoConnect="no">
-                        <snap>
-                            <scene uid="${GENERIC_UID}_vr" />
-                        </snap>
-                    </service>
+                    <service uid="${GENERIC_UID}_ActionSnapshotVR" impl="::uiVisu::action::SSnapshot" type="::fwGui::IActionSrv" autoConnect="no" />
 
                     <!-- Generic Scene VR -->
                     <service uid="${GENERIC_UID}_vr" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
@@ -168,7 +166,7 @@
 
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                            <adaptor id="snapshot1" uid="${GENERIC_UID}_snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                 <config renderer="default" />
                             </adaptor>
 
@@ -180,17 +178,31 @@
                                 <config renderer="default" />
                             </adaptor>
 
-                            <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                            <adaptor id="modelSeriesAdaptor" uid="${GENERIC_UID}_modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                 <config renderer="default" picker="negato1default" autoresetcamera="no" />
                             </adaptor>
 
-                            <adaptor id="VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
+                            <adaptor id="VolumeScene3DA" uid="${GENERIC_UID}_VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
                                 <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${GENERIC_UID}_TFSelections" />
                             </adaptor>
 
                             <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="imageKey">
                                 <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
                             </adaptor>
+
+                            <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
+                                <slot>${GENERIC_UID}_modelSeriesAdaptorUid/updateNormalMode</slot>
+                            </proxy>
+
+                            <proxy channel="ModelDisplayChannel" waitForKey="modelSeries">
+                                <slot>${GENERIC_UID}_modelSeriesAdaptorUid/showReconstructions</slot>
+                            </proxy>
+
+                            <connect>
+                                <signal>${GENERIC_UID}_ActionSnapshotVR/snapped</signal>
+                                <slot>${GENERIC_UID}_snapshotUID/snap</slot>
+                            </connect>
+
                         </scene>
                     </service>
 
@@ -320,13 +332,14 @@
 
                             <service uid="${GENERIC_UID}_cfgNegato" impl="::fwServices::SConfigController" autoConnect="no">
                                 <config>
-                                    <appConfig id="2DNegatoWithTF" >
+                                    <appConfig id="2DNegatoWithTF">
                                         <parameters>
-                                            <parameter replace="imageUid" by="self"  />
-                                            <parameter replace="TFSelectionsUid" by="${GENERIC_UID}_TFSelections"  />
-                                            <parameter replace="selectedTFKey" by="SelectedTF"  />
+                                            <parameter replace="imageUid" by="self" />
+                                            <parameter replace="TFSelectionsUid" by="${GENERIC_UID}_TFSelections" />
+                                            <parameter replace="selectedTFKey" by="SelectedTF" />
                                             <parameter replace="patient_name" by="${patient_name}" />
-                                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato"  />
+                                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato" />
+                                            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
                                         </parameters>
                                     </appConfig>
                                 </config>
@@ -345,12 +358,17 @@
                                 <crossType>full</crossType>
                             </service>
 
-                            <service uid="${GENERIC_UID}_ActionShowHideBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::ActionNotifyService" autoConnect="no">
-                                <notify type="::fwServices::ObjectMsg" event="SHOWHIDE_BOX_WIDGET" />
+                            <service uid="${GENERIC_UID}_ActionShowHideBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::SBooleanSlotCaller" autoConnect="no">
+                                <slots>
+                                    <slot>${GENERIC_UID}_VolumeScene3DA/activateBoxClipping</slot>
+                                </slots>
+                                <state active="true" />
                             </service>
 
-                            <service uid="${GENERIC_UID}_ActionResetBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::ActionNotifyService" autoConnect="no">
-                                <notify type="::fwServices::ObjectMsg" event="RESET_BOX_WIDGET" />
+                            <service uid="${GENERIC_UID}_ActionResetBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+                                <slots>
+                                    <slot>${GENERIC_UID}_VolumeScene3DA/resetBoxWidget</slot>
+                                </slots>
                             </service>
 
                             <service uid="${GENERIC_UID}_FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
@@ -364,10 +382,16 @@
                                 </config>
                             </service>
 
-                            <service uid="${GENERIC_UID}_computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD" >
+                            <service uid="${GENERIC_UID}_computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
                                 <histogramId>${GENERIC_UID}_Histogram</histogramId>
                                 <binsWidth>5.0</binsWidth>
                             </service>
+
+                            <proxy channel="crossTypeChannel">
+                                <signal>${GENERIC_UID}_ActionHideCross/crossTypeModified</signal>
+                                <signal>${GENERIC_UID}_ActionShowNormalCross/crossTypeModified</signal>
+                                <signal>${GENERIC_UID}_ActionShowFullCross/crossTypeModified</signal>
+                            </proxy>
 
                         </object>
                     </item>

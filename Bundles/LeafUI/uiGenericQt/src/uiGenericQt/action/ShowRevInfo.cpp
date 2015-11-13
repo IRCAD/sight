@@ -110,12 +110,6 @@ void ShowRevInfo::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowRevInfo::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void ShowRevInfo::stopping() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStopping();

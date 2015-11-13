@@ -4,42 +4,46 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/format.hpp>
+#include "visuVTKAdaptor/ImageText.hpp"
+#include "visuVTKAdaptor/ProbeCursor.hpp"
 
-#include <fwData/Integer.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/helper/Image.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/TransferFunction.hpp>
+
+#include <fwRenderVTK/vtk/Helpers.hpp>
+
 #include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <vtkRenderWindowInteractor.h>
 #include <vtkAbstractPropPicker.h>
-#include <vtkInteractorStyleImage.h>
+#include <vtkActor.h>
+#include <vtkCellArray.h>
+#include <vtkCellData.h>
 #include <vtkCommand.h>
-
+#include <vtkInteractorStyleImage.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderWindowInteractor.h>
 #include <vtkTextActor.h>
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
-#include <vtkProperty.h>
-
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkPolyData.h>
-#include <vtkCellArray.h>
-#include <vtkCellData.h>
 #include <vtkTransform.h>
 
-#include "fwRenderVTK/vtk/Helpers.hpp"
-#include "visuVTKAdaptor/ImageText.hpp"
 
-#include "visuVTKAdaptor/ProbeCursor.hpp"
+#include <boost/format.hpp>
+
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image );
 
@@ -61,17 +65,16 @@ public:
         return new ProbingCallback();
     }
 
-    ProbingCallback()
-        : m_priority(-1),
-          m_mouseMoveObserved(false)
+    ProbingCallback() :
+        m_picker(nullptr),
+        m_priority(-1),
+        m_mouseMoveObserved(false)
     {
-        m_picker = NULL;
         this->PassiveObserverOff();
     }
 
     ~ProbingCallback()
     {
-
     }
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
@@ -94,7 +97,7 @@ public:
                     m_mouseMoveObserved = true;
                     SetAbortFlag(1);
                     m_adaptor->setVisibility(true);
-                    m_adaptor->StartProbeCursor();
+                    m_adaptor->startProbeCursor();
                     process();
                     m_adaptor->getInteractor()->AddObserver(vtkCommand::MouseMoveEvent, this, m_priority);
                 }
@@ -159,20 +162,20 @@ protected:
 
 };
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+
 //------------------------------------------------------------------------------
 
-ProbeCursor::ProbeCursor() throw()
-    : m_priority(.6)
-      , m_textActor(vtkActor2D::New())
-      , m_textMapper(vtkTextMapper::New())
-      , m_cursorPolyData( vtkPolyData::New() )
-      , m_cursorMapper  ( vtkPolyDataMapper::New() )
-      , m_cursorActor(    vtkActor::New() )
+ProbeCursor::ProbeCursor() throw() :
+    m_priority(.6),
+    m_vtkObserver(nullptr),
+    m_textActor(vtkActor2D::New()),
+    m_textMapper(vtkTextMapper::New()),
+    m_cursorPolyData( vtkPolyData::New() ),
+    m_cursorMapper(vtkPolyDataMapper::New() ),
+    m_cursorActor(vtkActor::New() )
 {
-    ////handlingEventOff();
-    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &ProbeCursor::updateSliceIndex, this);
 }
 
 //------------------------------------------------------------------------------
@@ -183,9 +186,9 @@ ProbeCursor::~ProbeCursor() throw()
     m_textActor->Delete();
 
     m_cursorActor->Delete();
-    m_cursorActor = NULL;
+    m_cursorActor = nullptr;
     m_cursorMapper->Delete();
-    m_cursorMapper = NULL;
+    m_cursorMapper = nullptr;
     m_cursorPolyData->Delete();
 }
 
@@ -195,7 +198,7 @@ void ProbeCursor::setVisibility( bool visibility )
     m_textActor->SetVisibility(visibility);
     m_cursorActor->SetVisibility(visibility);
     this->setVtkPipelineModified();
-    this->updating();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -271,6 +274,9 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
 
 void ProbeCursor::doUpdate() throw(fwTools::Failed)
 {
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
+    this->setVisibility(false);
 }
 
 //------------------------------------------------------------------------------
@@ -288,30 +294,22 @@ void ProbeCursor::doStop() throw(fwTools::Failed)
     this->getInteractor()->RemoveObservers(START_PROBE_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_PROBE_EVENT, m_vtkObserver);
     m_vtkObserver->Delete();
-    m_vtkObserver = NULL;
+    m_vtkObserver = nullptr;
     this->removeAllPropFromRenderer();
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void ProbeCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ProbeCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-    {
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-        this->updateImageInfos(image);
-        this->setVisibility(false);
-    }
-
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
-    {
-        ::fwComEd::ImageMsg::dynamicConstCast(msg)->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
-    }
+    m_axialIndex->value()    = axial;
+    m_frontalIndex->value()  = frontal;
+    m_sagittalIndex->value() = sagittal;
 }
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::StartProbeCursor( )
+void ProbeCursor::startProbeCursor( )
 {
 }
 
@@ -359,7 +357,7 @@ void ProbeCursor::updateView( double world[3] )
         m_cursorPolyData->Modified();
     }
     this->setVtkPipelineModified();
-    this->updating();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -431,5 +429,18 @@ void ProbeCursor::buildPolyData()
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ProbeCursor::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

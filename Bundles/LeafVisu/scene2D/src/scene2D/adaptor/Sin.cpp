@@ -4,11 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/adaptor/Sin.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+
 #include <fwServices/Base.hpp>
 #include <fwData/Composite.hpp>
 
-#include "scene2D/adaptor/Sin.hpp"
-#include "scene2D/data/InitQtPen.hpp"
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Sin, ::fwData::Composite );
 
@@ -18,18 +19,22 @@ namespace scene2D
 namespace adaptor
 {
 
-Sin::Sin() throw()
+Sin::Sin() throw() :
+    m_xMin(0.f),
+    m_xMax(0.f)
 {
 }
+
+//---------------------------------------------------------------------------------------------------------
 
 Sin::~Sin() throw()
 {
 }
 
+//---------------------------------------------------------------------------------------------------------
+
 void Sin::configuring() throw (::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     assert(m_configuration->getName() == "config");
 
     std::string xMinStr(m_configuration->getAttributeValue("xMinBound"));
@@ -44,31 +49,28 @@ void Sin::configuring() throw (::fwTools::Failed)
     m_xMax = xMax;
 }
 
+//---------------------------------------------------------------------------------------------------------
+
 void Sin::doStart()
 {
-    /*QGraphicsItemGroup* sinLayer = new QGraphicsItemGroup();
-       QEasingCurve* sinus = new QEasingCurve(QEasingCurve::InSine);
-       this->getScene2DRender->getScene()->addItem(sinLayer);*/
 }
+
+//---------------------------------------------------------------------------------------------------------
 
 void Sin::doUpdate()
 {
-
 }
 
-void Sin::doReceive( fwServices::ObjectMsg::csptr _msg)
-{
-
-}
+//---------------------------------------------------------------------------------------------------------
 
 void Sin::doSwap()
 {
-
 }
+
+//---------------------------------------------------------------------------------------------------------
 
 void Sin::doStop()
 {
-
 }
 
 } // namespace adaptor

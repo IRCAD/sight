@@ -7,14 +7,14 @@
 #ifndef __FWPYTHON_INTERPRETER_HPP__
 #define __FWPYTHON_INTERPRETER_HPP__
 
+#include "fwPython/config.hpp"
+
+#include <fwTools/Object.hpp>
+
 #include <boost/python.hpp>
 #undef tolower //defined by python, conflicting with std::lower
 
 #include <string>
-
-#include <fwTools/Object.hpp>
-
-#include "fwPython/config.hpp"
 
 namespace fwPython
 {

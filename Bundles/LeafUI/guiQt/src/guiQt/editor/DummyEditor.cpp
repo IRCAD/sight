@@ -107,13 +107,6 @@ void DummyEditor::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DummyEditor::receiving(::fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------
-
 void DummyEditor::info( std::ostream &_sstream )
 {
     SLM_TRACE_FUNC();

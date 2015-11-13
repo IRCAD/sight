@@ -7,6 +7,8 @@
 #ifndef __VISUVTKADAPTOR_IMAGESBLEND_HPP__
 #define __VISUVTKADAPTOR_IMAGESBLEND_HPP__
 
+#include "visuVTKAdaptor/config.hpp"
+
 #include <fwServices/helper/SigSlotConnection.hpp>
 
 #include <fwData/Image.hpp>
@@ -14,7 +16,6 @@
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
 
 class vtkImageActor;
 class vtkLookupTable;
@@ -42,10 +43,20 @@ public:
 
     VISUVTKADAPTOR_API virtual ~ImagesBlend() throw();
 
-    void setVtkImageRegisterId(std::string id)
+    void setVtkImageRegisterId(const std::string& id)
     {
         m_imageRegisterId = id;
     }
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -71,7 +82,6 @@ protected:
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
@@ -94,8 +104,6 @@ protected:
     std::string m_imageRegisterId;
 
 };
-
-
 
 
 } //namespace visuVTKAdaptor

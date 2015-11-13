@@ -3,6 +3,7 @@
     <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
         <param name="imageUid" />
     </parameters>
     <config>
@@ -24,6 +25,10 @@
 
             <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="${GENERIC_UID}_SecondView" autoConnect="yes">
             </service>
+
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>${GENERIC_UID}_BasicViewerFrame/closed</signal>
+            </proxy>
 
             <start uid="${GENERIC_UID}_BasicViewerFrame" />
             <start uid="${GENERIC_UID}_SecondView" />

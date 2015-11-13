@@ -52,22 +52,16 @@
         <service>::gui::action::SSlotCaller</service>
         <object>::fwData::Object</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::SBooleanSlotCaller</service>
+        <object>::fwData::Object</object>
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IToolBarSrv</type>
         <service>::gui::aspect::DefaultToolBarSrv</service>
-        <object>::fwData::Object</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
-        <service>::gui::action::ConfigActionSrv</service>
-        <object>::fwData::Object</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
-        <service>::gui::action::ConfigActionSrvWithKey</service>
         <object>::fwData::Object</object>
     </extension>
     
@@ -80,12 +74,6 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::gui::action::ModifyLayoutActionSrv</service>
-        <object>::fwData::Object</object>
-    </extension>
-    
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
-        <service>::gui::action::ActionNotifyService</service>
         <object>::fwData::Object</object>
     </extension>
 

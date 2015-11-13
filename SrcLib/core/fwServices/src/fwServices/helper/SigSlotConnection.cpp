@@ -44,6 +44,11 @@ void SigSlotConnection::connect(::fwCom::HasSignals::sptr hasSignals,
     }
 }
 
+void SigSlotConnection::addConnection( ::fwCom::Connection connection )
+{
+    m_connections.push_back(connection);
+}
+
 void SigSlotConnection::disconnect()
 {
     BOOST_REVERSE_FOREACH( ::fwCom::Connection & connection, m_connections )

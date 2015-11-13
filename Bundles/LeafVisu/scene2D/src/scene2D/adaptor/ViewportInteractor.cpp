@@ -4,12 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/adaptor/ViewportInteractor.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
+
 #include <fwServices/Base.hpp>
 
 #include <fwData/Composite.hpp>
 
-#include "scene2D/adaptor/ViewportInteractor.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportInteractor,  ::fwData::Composite );
 
@@ -23,7 +24,6 @@ namespace adaptor
 ViewportInteractor::ViewportInteractor() throw() :
     m_viewportIsTranslated(false)
 {
-//    this->handlingEventOff();
 }
 
 //-----------------------------------------------------------------------------
@@ -54,12 +54,6 @@ void ViewportInteractor::doStop() throw( ::fwTools::Failed)
 //-----------------------------------------------------------------------------
 
 void ViewportInteractor::doUpdate() throw( ::fwTools::Failed)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void ViewportInteractor::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
 {
 }
 

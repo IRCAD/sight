@@ -4,7 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/assign/list_of.hpp>
+#include "visuVTKAdaptor/MeshNormals.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwData/Mesh.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <fwVtkIO/helper/Mesh.hpp>
 
 #include <vtkCellCenters.h>
 #include <vtkActor.h>
@@ -15,14 +26,7 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 
-#include <fwData/Mesh.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwComEd/MeshMsg.hpp>
-
-#include <fwVtkIO/helper/Mesh.hpp>
-
-#include "visuVTKAdaptor/MeshNormals.hpp"
+#include <boost/assign/list_of.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshNormals, ::fwData::Mesh );
 
@@ -37,6 +41,15 @@ MeshNormals::m_normalRepresentationConversion
           (std::string("NONE"), NONE);
 
 
+//------------------------------------------------------------------------------
+
+const ::fwCom::Slots::SlotKeyType MeshNormals::s_UPDATE_VERTEX_SLOT        = "updateVertex";
+const ::fwCom::Slots::SlotKeyType MeshNormals::s_UPDATE_POINT_NORMALS_SLOT = "updatePointNormals";
+const ::fwCom::Slots::SlotKeyType MeshNormals::s_UPDATE_CELL_NORMALS_SLOT  = "updateCellNormals";
+const ::fwCom::Slots::SlotKeyType MeshNormals::s_SHOW_POINT_NORMALS_SLOT   = "showPointNormals";
+const ::fwCom::Slots::SlotKeyType MeshNormals::s_SHOW_CELL_NORMALS_SLOT    = "showCellNormals";
+const ::fwCom::Slots::SlotKeyType MeshNormals::s_HIDE_NORMALS_SLOT         = "hideNormals";
+const ::fwCom::Slots::SlotKeyType MeshNormals::s_UPDATE_NORMAL_MODE_SLOT   = "updateNormalMode";
 
 //------------------------------------------------------------------------------
 
@@ -44,14 +57,24 @@ MeshNormals::MeshNormals() throw() : m_normalRepresentation(CELL_NORMAL)
 {
     m_actor = vtkActor::New();
 
-    //addNewHandledEvent (::fwComEd::MeshMsg::NEW_MESH );
-    //addNewHandledEvent (::fwComEd::MeshMsg::VERTEX_MODIFIED );
-    //addNewHandledEvent (::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED );
-    //addNewHandledEvent (::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED );
+    m_slotUpdateVertex       = ::fwCom::newSlot(&MeshNormals::updateVertex, this);
+    m_slotUpdatePointNormals = ::fwCom::newSlot(&MeshNormals::updatePointNormals, this);
+    m_slotUpdateCellNormals  = ::fwCom::newSlot(&MeshNormals::updateCellNormals, this);
+    m_slotShowPointNormals   = ::fwCom::newSlot(&MeshNormals::showPointNormals, this);
+    m_slotShowCellNormals    = ::fwCom::newSlot(&MeshNormals::showCellNormals, this);
+    m_slotHideNormals        = ::fwCom::newSlot(&MeshNormals::hideNormals, this);
+    m_slotUpdateNormalMode   = ::fwCom::newSlot(&MeshNormals::updateNormalMode, this);
 
-    //addNewHandledEvent ("SHOW_CELL_NORMALS");
-    //addNewHandledEvent ("SHOW_POINT_NORMALS");
-    //addNewHandledEvent ("HIDE_NORMALS");
+    ::fwCom::HasSlots::m_slots(s_UPDATE_VERTEX_SLOT, m_slotUpdateVertex)
+        (s_UPDATE_POINT_NORMALS_SLOT, m_slotUpdatePointNormals)
+        (s_UPDATE_CELL_NORMALS_SLOT, m_slotUpdateCellNormals)
+        (s_SHOW_POINT_NORMALS_SLOT, m_slotShowPointNormals)
+        (s_SHOW_CELL_NORMALS_SLOT, m_slotShowCellNormals)
+        (s_HIDE_NORMALS_SLOT, m_slotHideNormals)
+        (s_UPDATE_NORMAL_MODE_SLOT, m_slotUpdateNormalMode)
+    ;
+
+    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
 
 //------------------------------------------------------------------------------
@@ -107,7 +130,7 @@ void MeshNormals::doUpdate() throw( ::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-vtkActor* MeshNormals::getActor()
+vtkActor* MeshNormals::getActor() const
 {
     return m_actor;
 }
@@ -153,22 +176,8 @@ void MeshNormals::updateMeshNormals()
 
         algo->SetInputData(m_polyData);
 
-        //vtkSmartPointer<vtkArrowSource> arrow = vtkSmartPointer<vtkArrowSource>::New();
         vtkSmartPointer<vtkGlyphSource2D> arrow = vtkSmartPointer<vtkGlyphSource2D>::New();
-
-        //arrow->SetGlyphTypeToVertex ();
-        //arrow->SetGlyphTypeToDash ();
-        //arrow->SetGlyphTypeToCross ();
-        //arrow->SetGlyphTypeToThickCross ();
-        //arrow->SetGlyphTypeToTriangle ();
-        //arrow->SetGlyphTypeToSquare ();
-        //arrow->SetGlyphTypeToCircle ();
-        //arrow->SetGlyphTypeToDiamond ();
         arrow->SetGlyphTypeToArrow ();
-        //arrow->SetGlyphTypeToThickArrow ();
-        //arrow->SetGlyphTypeToHookedArrow ();
-        //arrow->SetGlyphTypeToEdgeArrow ();
-
         arrow->FilledOff();
 
         vtkSmartPointer<vtkGlyph3D> glyph = vtkSmartPointer<vtkGlyph3D>::New();
@@ -190,59 +199,110 @@ void MeshNormals::updateMeshNormals()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    ::fwComEd::MeshMsg::csptr meshMsg = ::fwComEd::MeshMsg::dynamicConstCast(msg);
-    ::fwData::Mesh::sptr mesh         = this->getObject < ::fwData::Mesh >();
-
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::NEW_MESH))
-    {
-        this->updateMeshNormals();
-    }
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED) )
-    {
-        ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
-        ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
-        ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
-        this->setVtkPipelineModified();
-    }
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED))
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
-        this->setVtkPipelineModified();
-    }
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED))
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
-        this->setVtkPipelineModified();
-    }
-
-    if( meshMsg && meshMsg->hasEvent("SHOW_CELL_NORMALS"))
-    {
-        m_normalRepresentation = CELL_NORMAL;
-        this->updateMeshNormals();
-    }
-
-    if( meshMsg && meshMsg->hasEvent("SHOW_POINT_NORMALS"))
-    {
-        m_normalRepresentation = POINT_NORMAL;
-        this->updateMeshNormals();
-    }
-
-    if( meshMsg && meshMsg->hasEvent("HIDE_NORMALS"))
-    {
-        m_normalRepresentation = NONE;
-        this->updateMeshNormals();
-    }
-}
-
-//------------------------------------------------------------------------------
 void MeshNormals::doStop() throw( ::fwTools::Failed)
 {
     this->removeAllPropFromRenderer();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType MeshNormals::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_VERTEX_MODIFIED_SIG,
+                                           s_UPDATE_VERTEX_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_NORMALS_MODIFIED_SIG,
+                                           s_UPDATE_POINT_NORMALS_SLOT) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_CELL_NORMALS_MODIFIED_SIG,
+                                           s_UPDATE_CELL_NORMALS_SLOT) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void MeshNormals::updateVertex()
+{
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
+    ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+    ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void MeshNormals::updatePointNormals()
+{
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void MeshNormals::updateCellNormals()
+{
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void MeshNormals::showPointNormals()
+{
+    m_normalRepresentation = POINT_NORMAL;
+    this->updateMeshNormals();
+}
+
+//------------------------------------------------------------------------------
+
+void MeshNormals::showCellNormals()
+{
+    m_normalRepresentation = CELL_NORMAL;
+    this->updateMeshNormals();
+}
+
+//------------------------------------------------------------------------------
+
+void MeshNormals::hideNormals()
+{
+    m_normalRepresentation = NONE;
+    this->updateMeshNormals();
+}
+
+//------------------------------------------------------------------------------
+
+void MeshNormals::updateNormalMode(std::uint8_t mode)
+{
+    switch (mode)
+    {
+        case 0:
+        {
+            this->hideNormals();
+            break;
+        }
+        case 1:
+        {
+            this->showPointNormals();
+            break;
+        }
+        case 2:
+        {
+            this->showCellNormals();
+            break;
+        }
+        default:
+        {
+            OSLM_ERROR("mode " << mode << " is not allowed");
+            break;
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

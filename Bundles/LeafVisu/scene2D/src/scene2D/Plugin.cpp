@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 
+#include "scene2D/Plugin.hpp"
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include "scene2D/Plugin.hpp"
 
 namespace scene2D
 {

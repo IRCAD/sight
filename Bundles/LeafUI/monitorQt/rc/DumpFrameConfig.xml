@@ -1,56 +1,63 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>DumpFrameConfig</id>
     <type>parameters</type>
-    <parameters/>
-        <config>
-        
-    <object type="::fwData::Composite">
-        <!-- MAIN FRAME -->
-        <service uid="GENERIC_UID_dumpFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
-            <window onclose="notify" />
-            <gui>
-                <frame>
-                    <name>Dump editor</name>
-                    <minSize width="600" height="400" />
-                </frame>
-                <toolBar align="left" />
-            </gui>
-            <registry>
-                <toolBar sid="GENERIC_UID_toolBar" start="yes" />
-                <view sid="GENERIC_UID_dumpView_Frame" start="yes" />
-            </registry>
-        </service>
+    <parameters>
+        <param name="GENERIC_UID" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
+    </parameters>
+    <config>
 
-        <service uid="GENERIC_UID_dumpView_Frame" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="GENERIC_UID_dumpEditor" start="yes" />
-            </registry>
-        </service>
-        
-        <service uid="GENERIC_UID_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
-            <gui>
-                <layout>
-                    <menuItem name="Dump all" icon="Bundles/monitorQt_0-1/icon-dump.svg" />
-                </layout>
-            </gui>
-            <registry>
-                <menuItem sid="GENERIC_UID_dumpAll" start="yes" />
-            </registry>
-        </service>
-    
-        <service uid="GENERIC_UID_dumpEditor" impl="::monitor::DumpEditor" type="::gui::editor::IEditor" autoConnect="no" />
-        <service uid="GENERIC_UID_dumpAll" impl="::monitor::action::SDumpAll" type="::fwGui::IActionSrv" autoConnect="no" />
-        
-        
-        <start uid="GENERIC_UID_dumpFrame" />
-        
-    </object>
+        <object type="::fwData::Composite">
+            <!-- MAIN FRAME -->
+            <service uid="${GENERIC_UID}_dumpFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>Dump editor</name>
+                        <minSize width="600" height="400" />
+                    </frame>
+                    <toolBar align="left" />
+                </gui>
+                <registry>
+                    <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
+                    <view sid="${GENERIC_UID}_dumpView_Frame" start="yes" />
+                </registry>
+            </service>
 
-        </config>
-    </extension>
+            <service uid="${GENERIC_UID}_dumpView_Frame" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_dumpEditor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Dump all" icon="Bundles/monitorQt_0-1/icon-dump.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="${GENERIC_UID}_dumpAll" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_dumpEditor" impl="::monitor::DumpEditor" type="::gui::editor::IEditor" autoConnect="no" />
+            <service uid="${GENERIC_UID}_dumpAll" impl="::monitor::action::SDumpAll" type="::fwGui::IActionSrv" autoConnect="no" />
+
+
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>${GENERIC_UID}_dumpFrame/closed</signal>
+            </proxy>
+
+            <start uid="${GENERIC_UID}_dumpFrame" />
+
+        </object>
+
+    </config>
+</extension>

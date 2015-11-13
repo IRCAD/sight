@@ -12,10 +12,7 @@
 namespace fwCom
 {
 
-#ifdef COM_LOG
-size_t SignalBase::s_idCount = 0;
-::fwCore::mt::Mutex SignalBase::s_mutexCounter;
-#endif
+
 
 } // namespace fwCom
 

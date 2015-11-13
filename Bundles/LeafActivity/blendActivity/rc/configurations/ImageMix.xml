@@ -107,11 +107,7 @@
             <item key="myBlendSelectionComposite">
                 <object uid="${SELECTED_myBlendSelectionComposite}" src="ref" type="::fwData::Composite">
 
-                    <service uid="${GENERIC_UID}_snapshot" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-                        <snap>
-                            <scene uid="${GENERIC_UID}_blendGenericScene" />
-                        </snap>
-                    </service>
+                    <service uid="${GENERIC_UID}_snapshot" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no"/>
 
                     <service uid="${GENERIC_UID}_myManagerVisu" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes"> <!-- priority="0.6" -->
                         <mode type="stop" />
@@ -166,7 +162,7 @@
                             <adaptor id="frontImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
                                 <config renderer="default" picker="myPicker" />
                             </adaptor>
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                            <adaptor id="snapshot" uid="${GENERIC_UID}_snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                 <config renderer="default" />
                             </adaptor>
 
@@ -191,6 +187,11 @@
                                     <image objectId="frontImage" name="front" />
                                 </config>
                             </adaptor>
+                            
+                            <connect>
+                                <signal>${GENERIC_UID}_snapshot/snapped</signal>
+                                <slot>${GENERIC_UID}_snapshotUID/snap</slot>
+                            </connect>
                         </scene>
                     </service>
 

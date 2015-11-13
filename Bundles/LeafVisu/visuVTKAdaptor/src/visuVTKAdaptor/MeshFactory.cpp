@@ -4,6 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKAdaptor/MeshFactory.hpp"
+
+#include <fwData/Material.hpp>
+
+#include <fwVtkIO/vtk.hpp>
+
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyDataNormals.h>
@@ -12,42 +18,36 @@
 #include <vtkDepthSortPolyData.h>
 #include <vtkPlaneCollection.h>
 
-#include <fwData/Material.hpp>
-
-#include <fwVtkIO/vtk.hpp>
-
-#include "visuVTKAdaptor/MeshFactory.hpp"
-
 namespace visuVTKAdaptor
 {
 
 
 //------------------------------------------------------------------------------
 
-MeshFactory::MeshFactory()
+MeshFactory::MeshFactory() :
+    m_normals(vtkPolyDataNormals::New()),
+    m_clippingPlanes(nullptr),
+    m_actor(vtkActor::New()),
+    m_normalsFeatureAngle(180.)
 {
-    m_clippingPlanes      = 0;
-    m_actor               = vtkActor::New();
-    m_normals             = vtkPolyDataNormals::New();
-    m_normalsFeatureAngle = 180;
 }
 
 //------------------------------------------------------------------------------
 
 MeshFactory::~MeshFactory()
 {
-    m_clippingPlanes = 0;
+    m_clippingPlanes = nullptr;
 
     m_normals->Delete();
-    m_normals = 0;
+    m_normals = nullptr;
 
     m_actor->Delete();
-    m_actor = 0;
+    m_actor = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
-vtkActor* MeshFactory::getActor()
+vtkActor* MeshFactory::getActor() const
 {
     return m_actor;
 }
@@ -72,7 +72,7 @@ void MeshFactory::updateMaterial( ::fwData::Material::sptr material )
         property->SetAmbient(.05);
         property->SetDiffuse(1.);
         property->SetSpecular(1.);
-//        property->SetInterpolationToPhong();
+        //property->SetInterpolationToPhong();
 
 
         property->SetOpacity( color->alpha() );
@@ -110,7 +110,6 @@ void MeshFactory::updateMaterial( ::fwData::Material::sptr material )
         {
             m_actor->GetProperty()->SetInterpolationToFlat();
         }
-
     }
 }
 
@@ -126,13 +125,10 @@ void MeshFactory::updateVisibility( bool isVisible)
 
 //------------------------------------------------------------------------------
 
-
 void MeshFactory::setVtkClippingPlanes(vtkPlaneCollection *planes)
 {
     m_clippingPlanes = planes;
 }
-
-
 
 
 } //namespace visuVTKAdaptor

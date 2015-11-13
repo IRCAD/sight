@@ -9,14 +9,14 @@
 
 #ifndef ANDROID
 
+// Config include
+#include "visuVTKAdaptor/config.hpp"
+
 // FW4SPL Includes
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 // Boost Includes
 #include <boost/logic/tribool.hpp>
-
-// Config include
-#include "visuVTKAdaptor/config.hpp"
 
 // VTK Includes
 #include <vtkAxesActor.h>
@@ -41,7 +41,6 @@ protected:
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 

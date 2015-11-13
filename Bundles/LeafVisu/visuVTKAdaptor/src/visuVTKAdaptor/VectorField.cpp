@@ -4,11 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKAdaptor/VectorField.hpp"
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/TransferFunctionMsg.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -21,6 +20,8 @@
 #include <fwVtkIO/vtk.hpp>
 #include <fwVtkIO/helper/TransferFunction.hpp>
 
+#include <fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp>
+
 #include <vtkActor.h>
 #include <vtkArrowSource.h>
 #include <vtkAssignAttribute.h>
@@ -31,10 +32,6 @@
 #include <vtkMaskPoints.h>
 #include <vtkPointData.h>
 #include <vtkPolyDataMapper.h>
-
-#include <fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp>
-
-#include "visuVTKAdaptor/VectorField.hpp"
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::VectorField, ::fwData::Image );
@@ -48,12 +45,6 @@ namespace visuVTKAdaptor
 VectorField::VectorField() throw()
 {
     m_imageData = vtkImageData::New();
-
-
-    // Manage events
-    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
 }
 
 //------------------------------------------------------------------------------
@@ -95,34 +86,6 @@ void VectorField::doUpdate() throw(::fwTools::Failed)
     if (imageIsValid && image->getNumberOfComponents() == 3)
     {
         this->buildPipeline();
-    }
-    else
-    {
-        this->destroyPipeline();
-    }
-
-}
-
-//------------------------------------------------------------------------------
-
-void VectorField::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-
-    if (imageIsValid && image->getNumberOfComponents() == 3)
-    {
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-        {
-            this->doUpdate();
-        }
-
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::MODIFIED ) )
-        {
-            m_imageData->Modified();
-
-            this->setVtkPipelineModified();
-        }
     }
     else
     {
@@ -199,7 +162,7 @@ void VectorField::buildPipeline( )
     vectorMapper->OrientOn();
     vectorMapper->SetInputConnection(ptMask->GetOutputPort());
 
-    OSLM_WARN("USE_GPU");
+    SLM_WARN("USE_GPU");
 #endif
 
 
@@ -217,6 +180,17 @@ void VectorField::destroyPipeline( )
 {
     this->removeAllPropFromRenderer();
     this->setVtkPipelineModified();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType VectorField::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

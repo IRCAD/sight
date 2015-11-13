@@ -50,10 +50,6 @@ void fwMetrics::updating() throw(::fwTools::Failed)
     stream << ::fwData::registry::get()->getFactoryKeys().size();
     stream << std::endl;
 
-    stream << "ObjectMsg: ";
-    stream << ::fwServices::registry::message::get()->getFactoryKeys().size();
-    stream << std::endl;
-
     stream << "IService: ";
     stream << ::fwServices::registry::ServiceFactory::getDefault()->getFactoryKeys().size();
 

@@ -22,9 +22,6 @@ namespace action
 /**
  * @brief   This action tries to close the window and reset root object.
  * @class   StringRun
- *
-
- * @date    2009-2010.
  */
 class UIPYTHON_CLASS_API StringRun : public ::fwGui::IActionSrv
 {
@@ -44,11 +41,6 @@ public:
     UIPYTHON_API virtual ~StringRun() throw();
 
 protected:
-
-    /**
-     * @brief This method is used to update services on notification. Do nothing.
-     */
-    UIPYTHON_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to configure the service parameters: specifies which services must be started or stopped

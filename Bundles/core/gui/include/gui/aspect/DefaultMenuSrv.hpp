@@ -85,9 +85,6 @@ protected:
 
     /// Updating service, do nothing.
     GUI_API virtual void updating() throw(::fwTools::Failed);
-
-    /// Updating service on notification, do nothing.
-    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     ///@}
 
 };

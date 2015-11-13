@@ -5,22 +5,26 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include <boost/format.hpp>
+#include "visuVTKAdaptor/ImageText.hpp"
 
-#include <fwServices/macros.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Image.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/TransferFunctionMsg.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkRenderer.h>
 #include <vtkTextActor.h>
 
-#include "visuVTKAdaptor/ImageText.hpp"
+#include <boost/format.hpp>
 
 #include <sstream>
 
@@ -30,14 +34,14 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Im
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+
 //-----------------------------------------------------------------------------
 
 ImageText::ImageText() throw()
 {
-    //this->installTFSelectionEventHandler(this);
-    //this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
-    //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
+    this->installTFSlots(this);
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &ImageText::updateSliceIndex, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -53,8 +57,8 @@ void ImageText::doStart() throw(::fwTools::Failed)
     this->Text::doStart();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
-    this->updateTransferFunction(image, this->getSptr());
-    this->installTFObserver( this->getSptr() );
+    this->updateTransferFunction(image);
+    this->installTFConnections();
     this->doUpdate();
 }
 
@@ -62,7 +66,7 @@ void ImageText::doStart() throw(::fwTools::Failed)
 
 void ImageText::doStop() throw(fwTools::Failed)
 {
-    this->removeTFObserver();
+    this->removeTFConnections();
     this->Text::doStop();
 }
 
@@ -111,24 +115,13 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageText::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void ImageText::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    // update only if new LandMarks
-    ::fwComEd::ImageMsg::csptr imgMsg           = ::fwComEd::ImageMsg::dynamicConstCast( msg );
-    ::fwComEd::TransferFunctionMsg::csptr tfMsg = ::fwComEd::TransferFunctionMsg::dynamicConstCast( msg );
+    m_axialIndex->value()    = axial;
+    m_frontalIndex->value()  = frontal;
+    m_sagittalIndex->value() = sagittal;
 
-    if ( imgMsg )
-    {
-        if( imgMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ))
-        {
-            imgMsg->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
-        }
-        this->doUpdate();
-    }
-    else if ( tfMsg || this->upadteTFObserver(msg, this->getSptr()))
-    {
-        this->doUpdate();
-    }
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -136,12 +129,40 @@ void ImageText::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools:
 void ImageText::doSwap() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    this->removeTFObserver();
+    this->removeTFConnections();
     this->updateImageInfos(image);
-    this->updateTransferFunction(image, this->getSptr());
+    this->updateTransferFunction(image);
     this->doUpdate();
-    this->installTFObserver( this->getSptr() );
+    this->installTFConnections();
 }
+
+//------------------------------------------------------------------------------
+
+void ImageText::updatingTFPoints()
+{
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+void ImageText::updatingTFWindowing(double window, double level)
+{
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ImageText::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 
 } //namespace visuVTKAdaptor

@@ -6,11 +6,6 @@
 #ifndef __FWCOM_SIGNALBASE_HPP__
 #define __FWCOM_SIGNALBASE_HPP__
 
-#ifdef COM_LOG
-#include <boost/lexical_cast.hpp>
-#include <fwCore/mt/types.hpp>
-#endif
-
 #include <fwCore/BaseObject.hpp>
 
 #include "fwCom/config.hpp"
@@ -36,10 +31,6 @@ struct SignalBase : virtual fwCore::BaseObject
 
     SignalBase()
     {
-#ifdef COM_LOG
-        ::fwCore::mt::ScopedLock lock(s_mutexCounter);
-        m_id = "Signal-" + ::boost::lexical_cast<std::string>(s_idCount++);
-#endif
     }
 
     virtual ~SignalBase()
@@ -67,38 +58,6 @@ struct SignalBase : virtual fwCore::BaseObject
 
         /// Copy operator forbiden
         SignalBase& operator=( const SignalBase& );
-
-#ifdef COM_LOG
-
-    public:
-
-        typedef std::string IDType;
-
-        /// Gets current m_id
-        IDType getID() const
-        {
-            return m_id;
-        }
-
-        /// Sets new m_id
-        void setID( IDType newId )
-        {
-            m_id = newId;
-        }
-
-    private:
-
-        /// Id of signal (not mandatory)
-        IDType m_id;
-
-        /// Id counter
-        FWCOM_API static size_t s_idCount;
-
-        /// Mutex to protect id counter
-        FWCOM_API static ::fwCore::mt::Mutex s_mutexCounter;
-
-#endif
-
 };
 
 } // namespace fwCom

@@ -11,6 +11,8 @@
 
 #include "fwServices/config.hpp"
 
+#include <fwCore/base.hpp>
+
 namespace fwServices
 {
 
@@ -22,9 +24,7 @@ namespace factory
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
     SPTR(CLASSNAME) srv = std::make_shared< CLASSNAME >();
-#ifdef COM_LOG
-    srv->setID(srv->getID());
-#endif
+
     return srv;
 }
 

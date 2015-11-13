@@ -10,7 +10,6 @@
 #include <fwServices/IService.hpp>
 
 #include "fwComEd/config.hpp"
-#include "fwComEd/CompositeMsg.hpp"
 #include "fwData/Composite.hpp"
 
 
@@ -75,11 +74,19 @@ public:
      * @param _serviceSource service used to send the message
      * @param _allowLoops if true, the _serviceSource will receive the message
      */
-    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource, bool _allowLoops = true );
+    FWCOMED_API void notify();
 
 private:
 
-    ::fwComEd::CompositeMsg::sptr m_compositeMsg;
+    /// Map of added objects, send on notify
+    ::fwData::Composite::ContainerType m_addedObjects;
+    /// Map of new changed objects, send on notify
+    ::fwData::Composite::ContainerType m_newChangedObjects;
+    /// Map of old changed objects, send on notify
+    ::fwData::Composite::ContainerType m_oldChangedObjects;
+    /// Map of removed objects, send on notify
+    ::fwData::Composite::ContainerType m_removedObjects;
+    /// Composite to add/remove/change objects
     ::fwData::Composite::wptr m_composite;
 };
 

@@ -10,6 +10,9 @@
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 
 #include <fwTools/DynamicType.hpp>
@@ -30,6 +33,18 @@ fwDataRegisterMacro( ::fwData::Image );
 namespace fwData
 {
 
+const ::fwCom::Signals::SignalKeyType Image::s_BUFFER_MODIFIED_SIG       = "bufferModified";
+const ::fwCom::Signals::SignalKeyType Image::s_LANDMARK_ADDED_SIG        = "landmarkAdded";
+const ::fwCom::Signals::SignalKeyType Image::s_LANDMARK_REMOVED_SIG      = "landmarkRemoved";
+const ::fwCom::Signals::SignalKeyType Image::s_LANDMARK_DISPLAYED_SIG    = "landmarkDisplayed";
+const ::fwCom::Signals::SignalKeyType Image::s_DISTANCE_ADDED_SIG        = "distanceAdded";
+const ::fwCom::Signals::SignalKeyType Image::s_DISTANCE_REMOVED_SIG      = "distanceRemoved";
+const ::fwCom::Signals::SignalKeyType Image::s_DISTANCE_DISPLAYED_SIG    = "distanceDisplayed";
+const ::fwCom::Signals::SignalKeyType Image::s_SLICE_INDEX_MODIFIED_SIG  = "sliceIndexModified";
+const ::fwCom::Signals::SignalKeyType Image::s_SLICE_TYPE_MODIFIED_SIG   = "sliceTypeModified";
+const ::fwCom::Signals::SignalKeyType Image::s_VISIBILITY_MODIFIED_SIG   = "visibilityModified";
+const ::fwCom::Signals::SignalKeyType Image::s_TRANSPARENCY_MODIFIED_SIG = "transparencyModified";
+
 //------------------------------------------------------------------------------
 
 Image::Image(::fwData::Object::Key key) :
@@ -39,6 +54,17 @@ Image::Image(::fwData::Object::Key key) :
     m_numberOfComponents(1),
     m_dataArray( ::fwData::Array::New() )
 {
+    newSignal< BufferModifiedSignalType >(s_BUFFER_MODIFIED_SIG);
+    newSignal< LandmarkAddedSignalType >(s_LANDMARK_ADDED_SIG);
+    newSignal< LandmarkRemovedSignalType >(s_LANDMARK_REMOVED_SIG);
+    newSignal< LandmarkDisplayedSignalType >(s_LANDMARK_DISPLAYED_SIG);
+    newSignal< DistanceDisplayedSignalType >(s_DISTANCE_DISPLAYED_SIG);
+    newSignal< DistanceAddedSignalType >(s_DISTANCE_ADDED_SIG);
+    newSignal< DistanceRemovedSignalType >(s_DISTANCE_REMOVED_SIG);
+    newSignal< SliceIndexModifiedSignalType >(s_SLICE_INDEX_MODIFIED_SIG);
+    newSignal< SliceTypeModifiedSignalType >(s_SLICE_TYPE_MODIFIED_SIG);
+    newSignal< VisibilityModifiedSignalType >(s_VISIBILITY_MODIFIED_SIG);
+    newSignal< TransparencyModifiedSignalType >(s_TRANSPARENCY_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------

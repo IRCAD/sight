@@ -7,9 +7,12 @@
 #ifndef __FWDATA_IMAGE_HPP__
 #define __FWDATA_IMAGE_HPP__
 
-#include "fwData/Object.hpp"
 #include "fwData/Array.hpp"
 #include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
 
 #include <fwTools/Type.hpp>
 #include <fwTools/DynamicType.hpp>
@@ -24,6 +27,9 @@ fwCampAutoDeclareDataMacro((fwData)(Image), FWDATA_API);
 
 namespace fwData
 {
+
+class Point;
+class PointList;
 
 /**
  * @brief This class defines an image
@@ -171,6 +177,58 @@ public:
     FWDATA_API size_t getSizeInBytes() const;
     /// @brief return allocated image size in bytes
     size_t getAllocatedSizeInBytes() const;
+
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Type of signal when image's buffer is added
+    typedef ::fwCom::Signal< void () > BufferModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_BUFFER_MODIFIED_SIG;
+
+    /// Type of signal when a landmark is added
+    typedef ::fwCom::Signal< void (SPTR(::fwData::Point)) > LandmarkAddedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_LANDMARK_ADDED_SIG;
+
+    /// Type of signal when a landmark is removed
+    typedef ::fwCom::Signal< void (SPTR(::fwData::Point)) > LandmarkRemovedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_LANDMARK_REMOVED_SIG;
+
+    /// Type of signal when a distance is added
+    typedef ::fwCom::Signal< void (bool) > LandmarkDisplayedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_LANDMARK_DISPLAYED_SIG;
+
+    /// Type of signal when a distance is added
+    typedef ::fwCom::Signal< void (bool) > DistanceDisplayedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_DISPLAYED_SIG;
+
+    /// Type of signal when a distance is added
+    typedef ::fwCom::Signal< void (SPTR(::fwData::PointList)) > DistanceAddedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_ADDED_SIG;
+
+    /// Type of signal when a distance is removed
+    typedef ::fwCom::Signal< void (SPTR(::fwData::PointList)) > DistanceRemovedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_REMOVED_SIG;
+
+    /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
+    typedef ::fwCom::Signal< void (int, int, int) > SliceIndexModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_SLICE_INDEX_MODIFIED_SIG;
+
+    /// Type of signal when slice type is modified (from slice type, to slice type)
+    typedef ::fwCom::Signal< void (int, int) > SliceTypeModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_SLICE_TYPE_MODIFIED_SIG;
+
+    /// Type of signal when visibility is modified
+    typedef ::fwCom::Signal< void (bool) > VisibilityModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
+
+    /// Type of signal when visibility is modified
+    typedef ::fwCom::Signal< void () > TransparencyModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_TRANSPARENCY_MODIFIED_SIG;
+
+    /**
+     * @}
+     */
 
 protected:
 

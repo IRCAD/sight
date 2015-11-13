@@ -4,22 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "uiMedDataQt/SSeriesViewer.hpp"
+
 #include <fwCore/base.hpp>
 
-#include <fwData/Vector.hpp>
 #include <fwData/String.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-
-#include <fwComEd/VectorMsg.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwDataCamp/getObject.hpp>
 
 #include <fwMedData/Series.hpp>
 
-#include "uiMedDataQt/SSeriesViewer.hpp"
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
 
 
 namespace uiMedData
@@ -54,19 +53,6 @@ void SSeriesViewer::info(std::ostream &_sstream )
 void SSeriesViewer::starting() throw(::fwTools::Failed)
 {
     this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SSeriesViewer::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    ::fwComEd::VectorMsg::csptr vectorMsg = ::fwComEd::VectorMsg::dynamicConstCast(msg);
-
-    if ( vectorMsg && (vectorMsg->hasEvent( ::fwComEd::VectorMsg::ADDED_OBJECTS )
-                       || vectorMsg->hasEvent( ::fwComEd::VectorMsg::REMOVED_OBJECTS ) ))
-    {
-        this->updating();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -182,6 +168,17 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
         m_seriesConfigs[seriesType] = info;
     }
 
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SSeriesViewer::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

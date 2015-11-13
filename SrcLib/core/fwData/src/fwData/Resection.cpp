@@ -9,6 +9,9 @@
 #include "fwData/Exception.hpp"
 #include "fwData/Resection.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::Resection );
@@ -16,13 +19,21 @@ fwDataRegisterMacro( ::fwData::Resection );
 namespace fwData
 {
 
+const ::fwCom::Signals::SignalKeyType Resection::s_RECONSTRUCTION_ADDED_SIG = "reconstructionAdded";
+const ::fwCom::Signals::SignalKeyType Resection::s_VISIBILITY_MODIFIED_SIG  = "pointTexCoordsModified";
+
 //------------------------------------------------------------------------------
 
 Resection::Resection (::fwData::Object::Key key) : m_isSafePart(true),
                                                    m_isValid(false),
                                                    m_isVisible(true)
 {
-    m_planeList = ::fwData::PlaneList::New();
+    m_planeList              = ::fwData::PlaneList::New();
+    m_sigReconstructionAdded = ReconstructionAddedSignalType::New();
+    m_sigVisibilityModified  = VisibilityModifiedSignalType::New();
+
+    m_signals( s_RECONSTRUCTION_ADDED_SIG,  m_sigReconstructionAdded)
+        ( s_VISIBILITY_MODIFIED_SIG,  m_sigVisibilityModified);
 }
 
 //------------------------------------------------------------------------------

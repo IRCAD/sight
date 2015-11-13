@@ -7,7 +7,6 @@
 #include "scene2D/adaptor/ScaleValues.hpp"
 #include "scene2D/data/InitQtPen.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/ViewportMsg.hpp"
 
 #include <fwServices/Base.hpp>
 #include <fwData/Composite.hpp>
@@ -22,9 +21,11 @@ namespace scene2D
 namespace adaptor
 {
 
-ScaleValues::ScaleValues() throw() : m_interval(10), m_step(1), m_fontSize(8), m_displayedUnit(""), m_showUnit(true)
+ScaleValues::ScaleValues() throw() :
+    m_min(0.f), m_max(0.f),
+    m_interval(10.), m_step(1), m_fontSize(8.f),
+    m_showUnit(true), m_unit(nullptr), m_layer(nullptr)
 {
-//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -200,8 +201,8 @@ void ScaleValues::doStart() throw ( ::fwTools::Failed )
 
     m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
 
-    m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-        this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
+        this->slot(::fwServices::IService::s_UPDATE_SLOT));
 
     this->buildValues();
     this->doUpdate();
@@ -403,21 +404,9 @@ void ScaleValues::showHideScaleValues()
     {
         value = i * m_interval + startVal;  // compute the value at index 'i'
 
-        // Display this value or not according to the current step between two consecutives values
+        // Display this value or not according to the current step between two consecutive values
         // and in keeping the displaying of the value '0':
         m_values[i]->setVisible( fmod(value, (m_step * m_interval)) == 0.0 );
-    }
-}
-
-//---------------------------------------------------------------------------------------
-
-void ScaleValues::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-
-    if( _msg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED) )
-    {
-        doUpdate();
     }
 }
 
@@ -435,15 +424,12 @@ void ScaleValues::processInteraction( ::scene2D::data::Event::sptr _event)
 
 void ScaleValues::doSwap() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------
 
 void ScaleValues::doStop() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
-
     // Remove the layer (and therefore all its related items) from the scene
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 

@@ -60,13 +60,6 @@ void DefaultToolBarSrv::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DefaultToolBarSrv::receiving(::fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------
-
 void DefaultToolBarSrv::info( std::ostream &_sstream )
 {
     SLM_TRACE_FUNC();

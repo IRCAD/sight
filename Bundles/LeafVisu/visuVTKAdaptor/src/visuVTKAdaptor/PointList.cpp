@@ -8,23 +8,24 @@
 
 #include "visuVTKAdaptor/PointList.hpp"
 
-#include <fwComEd/PointListMsg.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
+#include <fwData/Material.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Reconstruction.hpp>
-#include <fwData/Material.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
-
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <algorithm>
 #include <iterator>
 #include <functional>
 
-#include <vtkCubeSource.h>
 #include <vtkActor.h>
+#include <vtkCubeSource.h>
 #include <vtkPolyDataMapper.h>
 
 #include <boost/function.hpp>
@@ -34,13 +35,15 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Po
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT     = "addPoint";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
+
 //------------------------------------------------------------------------------
 
 PointList::PointList() throw()
 {
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
+    newSlot(s_ADD_POINT_SLOT, &PointList::addPoint, this);
+    newSlot(s_UPDATE_SPLINE_SLOT, &PointList::updateSpline, this);
 }
 
 //------------------------------------------------------------------------------
@@ -53,9 +56,6 @@ PointList::~PointList() throw()
 
 void PointList::configuring() throw(fwTools::Failed)
 {
-
-    SLM_TRACE_FUNC();
-
     assert(m_configuration->getName() == "config");
     this->setPickerId( m_configuration->getAttributeValue("picker") );
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
@@ -80,26 +80,23 @@ void PointList::doUpdate() throw(fwTools::Failed)
     this->createServices( points );
 }
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
-void PointList::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PointList::addPoint(::fwData::Point::sptr /*point*/)
 {
-    SLM_TRACE_FUNC();
+    m_oldWeakPointList = m_weakPointList;
+    m_weakPointList    = this->getWeakPointList();
+    this->doUpdate();
+    this->setVtkPipelineModified();
+}
 
-    if ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED )
-         || ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED )) )
-    {
-        this->doStop();
-        this->doUpdate();
-        setVtkPipelineModified();
-    }
-    else if ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED ))
-    {
-        m_oldWeakPointList = m_weakPointList;
-        m_weakPointList    = this->getWeakPointList();
-        this->doUpdate();
-        setVtkPipelineModified();
-    }
+//----------------------------------------------------------------------------------------------------------------
+
+void PointList::updateSpline()
+{
+    this->doStop();
+    this->doUpdate();
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +120,6 @@ void PointList::doStop() throw(fwTools::Failed)
 
 void PointList::createServices(WeakPointListType &wPtList)
 {
-
     for( ::fwData::Point::wptr wpt :  wPtList )
     {
         SLM_ASSERT("Point Expired", !wpt.expired());
@@ -185,6 +181,17 @@ PointList::WeakPointListType PointList::getNewPoints()
         }
     }
     return newPoints;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType PointList::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SPLINE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

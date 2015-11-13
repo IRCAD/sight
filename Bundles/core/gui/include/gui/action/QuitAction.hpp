@@ -43,11 +43,6 @@ public:
 protected:
 
     /**
-     * @brief This method is used to update services on notification. Do nothing.
-     */
-    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
-    /**
      * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
      */
     GUI_API void configuring() throw( ::fwTools::Failed );

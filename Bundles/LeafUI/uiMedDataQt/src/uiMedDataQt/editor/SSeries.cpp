@@ -9,7 +9,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/VectorMsg.hpp>
 #include <fwComEd/helper/SeriesDB.hpp>
 
 #include <fwData/Vector.hpp>
@@ -64,11 +63,7 @@ SSeries::SSeries()
         (s_SERIES_EXPORTED_SIG, m_sigSeriesExported)
     ;
 
-#ifdef COM_LOG
-    m_slotExport->setID(s_EXPORT_SLOT);
-    m_sigCanExport->setID(s_CAN_EXPORT_SIG);
-    m_sigSeriesExported->setID(s_SERIES_EXPORTED_SIG);
-#endif
+
 
     // worker was set by IService
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
@@ -226,7 +221,7 @@ void SSeries::onExportClicked()
         else
         {
             helper.add(series);
-            helper.notify(this->getSptr());
+            helper.notify();
         }
         m_sigSeriesExported->asyncEmit();
     }
@@ -262,15 +257,13 @@ void SSeries::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeries::receiving(::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+::fwServices::IService::KeyConnectionsType SSeries::getObjSrvConnections() const
 {
-    ::fwComEd::VectorMsg::csptr vectorMsg = ::fwComEd::VectorMsg::dynamicConstCast(_msg);
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_UPDATE_SLOT ) );
 
-    if ( vectorMsg && (vectorMsg->hasEvent( ::fwComEd::VectorMsg::ADDED_OBJECTS )
-                       || vectorMsg->hasEvent( ::fwComEd::VectorMsg::REMOVED_OBJECTS ) ))
-    {
-        this->updating();
-    }
+    return connections;
 }
 
 //------------------------------------------------------------------------------

@@ -26,11 +26,10 @@ namespace fwServices
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType IService::s_START_SLOT   = "start";
-const ::fwCom::Slots::SlotKeyType IService::s_STOP_SLOT    = "stop";
-const ::fwCom::Slots::SlotKeyType IService::s_UPDATE_SLOT  = "update";
-const ::fwCom::Slots::SlotKeyType IService::s_RECEIVE_SLOT = "receive";
-const ::fwCom::Slots::SlotKeyType IService::s_SWAP_SLOT    = "swap";
+const ::fwCom::Slots::SlotKeyType IService::s_START_SLOT  = "start";
+const ::fwCom::Slots::SlotKeyType IService::s_STOP_SLOT   = "stop";
+const ::fwCom::Slots::SlotKeyType IService::s_UPDATE_SLOT = "update";
+const ::fwCom::Slots::SlotKeyType IService::s_SWAP_SLOT   = "swap";
 
 //-----------------------------------------------------------------------------
 
@@ -42,23 +41,17 @@ IService::IService() :
 {
     // by default a weak_ptr have a use_count == 0
 
-    m_slotStart   = ::fwCom::newSlot( &IService::start, this );
-    m_slotStop    = ::fwCom::newSlot( &IService::stop, this );
-    m_slotUpdate  = ::fwCom::newSlot( &IService::update, this );
-    m_slotReceive = ::fwCom::newSlot( &IService::receive, this );
-    m_slotSwap    = ::fwCom::newSlot( &IService::swap, this );
+    m_slotStart  = ::fwCom::newSlot( &IService::start, this );
+    m_slotStop   = ::fwCom::newSlot( &IService::stop, this );
+    m_slotUpdate = ::fwCom::newSlot( &IService::update, this );
+    m_slotSwap   = ::fwCom::newSlot( &IService::swap, this );
 
     ::fwCom::HasSlots::m_slots
         ( s_START_SLOT, m_slotStart   )
         ( s_STOP_SLOT, m_slotStop    )
         ( s_UPDATE_SLOT, m_slotUpdate  )
-        ( s_RECEIVE_SLOT, m_slotReceive )
         ( s_SWAP_SLOT, m_slotSwap    )
     ;
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -227,25 +220,6 @@ IService::SharedFutureType IService::stop() //throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void IService::receive( ::fwServices::ObjectMsg::csptr _msg )
-{
-    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
-    {
-        OSLM_COM("Receive " << _msg->getLightID() << "::" << _msg->getEventIds()[0] << " ( "<< this->getLightID() <<
-                 " )" );
-        OSLM_FATAL_IF(
-            "IService::receive : "<<this->getID()<<" is stopped and cannot manages messages.",
-            m_globalState != STARTED);
-        this->receiving( _msg );
-    }
-    else
-    {
-        m_slotReceive->asyncRun(_msg);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 IService::SharedFutureType IService::update() //throw( ::fwTools::Failed)
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
@@ -310,13 +284,6 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj ) //throw
 
 //-----------------------------------------------------------------------------
 
-void IService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-    SLM_FATAL("TODO : This method must be implemented");
-}
-
-//-----------------------------------------------------------------------------
-
 IService::GlobalStatus IService::getStatus() const throw()
 {
     return m_globalState;
@@ -370,27 +337,9 @@ void IService::setWorker( ::fwThread::Worker::sptr worker )
 IService::KeyConnectionsType IService::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Object::s_OBJECT_MODIFIED_SIG, s_RECEIVE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
     return connections;
 }
-
-//-----------------------------------------------------------------------------
-
-#ifdef COM_LOG
-void IService::setID( ::fwTools::fwID::IDType newID )
-{
-    if( !this->hasID() ||
-        this->getID( ::fwTools::fwID::MUST_EXIST ) != newID )
-    {
-        this->::fwTools::fwID::setID( newID );
-    }
-
-    std::string lightID = this->getLightID( ::fwTools::fwID::MUST_EXIST );
-
-    ::fwCom::HasSlots::m_slots.setID( lightID + "::" );
-    ::fwCom::HasSignals::m_signals.setID( lightID + "::" );
-}
-#endif
 
 //-----------------------------------------------------------------------------
 

@@ -165,7 +165,7 @@ void SInrSeriesDBReader::updating() throw(::fwTools::Failed)
 
         ::fwData::mt::ObjectWriteLock lock(seriesDB);
         sDBhelper.merge(localSeriesDB);
-        sDBhelper.notify(this->getSptr());
+        sDBhelper.notify();
 
         cursor.setDefaultCursor();
     }

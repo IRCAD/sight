@@ -7,14 +7,14 @@
 #ifndef __VISUVTKADAPTOR_MEDICAL3DCAMERA_HPP__
 #define __VISUVTKADAPTOR_MEDICAL3DCAMERA_HPP__
 
+#include "visuVTKAdaptor/config.hpp"
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-
-#include "visuVTKAdaptor/config.hpp"
 
 class vtkCamera;
 
@@ -25,8 +25,6 @@ namespace visuVTKAdaptor
  * @brief Update camera scene according to defined axes (axial, sagittal, frontal).
  *
  * The scene can be updated using adaptor slots setAxial, setFrontal, setSagittal.
- *
- * @deprecated This adaptor can react on ::fwComEd::ImageMsg messages having CAMERA_ORIENTATION event.
  */
 class VISUVTKADAPTOR_CLASS_API Medical3DCamera : public ::fwComEd::helper::MedicalImageAdaptor,
                                                  public ::fwRenderVTK::IVtkAdaptorService
@@ -77,7 +75,6 @@ protected:
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     /**  @} */
 
 private:
@@ -105,8 +102,6 @@ private:
     /// Update view when adaptor is started if true
     bool m_resetAtStart;
 };
-
-
 
 
 } //namespace visuVTKAdaptor

@@ -35,15 +35,11 @@ protected:
     void doUpdate() throw(fwTools::Failed)
     {
     }
-    void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-    {
-    }
     void configuring() throw(fwTools::Failed)
     {
     }
-
 };
 
-} //namespace visuVTKAdaptor
+#endif //__VISUVTKADAPTOR_CUBE_HPP__
 
-#endif // __VISUVTKADAPTOR_CUBE_HPP__
+} //namespace visuVTKAdaptor

@@ -7,12 +7,13 @@
 
 #include "fwComEd/helper/Field.hpp"
 
-#include <fwData/Composite.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
-#include <fwServices/IService.hpp>
+#include <fwData/Object.hpp>
 
 #include <algorithm>
-#include <boost/bind.hpp>
 #include <functional>
 
 namespace fwComEd
@@ -23,8 +24,7 @@ namespace helper
 //-----------------------------------------------------------------------------
 
 Field::Field( ::fwData::Object::sptr object )
-    :   m_objectMsg ( ::fwServices::ObjectMsg::New() ),
-      m_object ( object )
+    : m_object ( object )
 {
 }
 
@@ -43,11 +43,12 @@ void Field::setField(const fwData::Object::FieldNameType& name, fwData::Object::
     ::fwData::Object::sptr field  = object->getField(name);
     if (!field)
     {
-        m_objectMsg->appendAddedField(name, obj);
+        m_addedFields[name] = obj;
     }
     else
     {
-        m_objectMsg->appendChangedField(name, field, obj);
+        m_newChangedFields[name] = obj;
+        m_oldChangedFields[name] = field;
     }
     object->setField(name, obj);
 }
@@ -84,7 +85,7 @@ void Field::removeField(const fwData::Object::FieldNameType& name)
 
     if (field)
     {
-        m_objectMsg->appendRemovedField(name, field);
+        m_removedFields[name] = field;
     }
     object->removeField(name);
 }
@@ -94,16 +95,30 @@ void Field::removeField(const fwData::Object::FieldNameType& name)
 void Field::notify(fwServices::IService::sptr _serviceSource)
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
-    if ( m_objectMsg->getEventIds().size() > 0 )
+
+    if ( !m_addedFields.empty() )
     {
-        m_objectMsg->setSource( _serviceSource );
-        m_objectMsg->setSubject( m_object.lock() );
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = m_object.lock()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-        sig->asyncEmit(m_objectMsg);
+        auto sig = m_object.lock()->signal< ::fwData::Object::AddedFieldsSignalType >(
+            ::fwData::Object::s_ADDED_FIELDS_SIG);
+
+        sig->asyncEmit(m_addedFields);
     }
-    SLM_INFO_IF("The message will not by notified because it has no event.", m_objectMsg->getEventIds().size() == 0);
+    if ( !m_newChangedFields.empty() && !m_oldChangedFields.empty() )
+    {
+        auto sig = m_object.lock()->signal< ::fwData::Object::ChangedFieldsSignalType >(
+            ::fwData::Object::s_CHANGED_FIELDS_SIG);
+
+        sig->asyncEmit(m_newChangedFields, m_oldChangedFields);
+    }
+    if ( !m_removedFields.empty() )
+    {
+        auto sig = m_object.lock()->signal< ::fwData::Object::RemovedFieldsSignalType >(
+            ::fwData::Object::s_REMOVED_FIELDS_SIG);
+
+        sig->asyncEmit(m_removedFields);
+    }
+    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
+                m_addedFields.empty() && m_newChangedFields.empty() && m_removedFields.empty());
 }
 
 //-----------------------------------------------------------------------------
@@ -154,21 +169,18 @@ void Field::buildMessage(
 
     for(const ::fwData::Object::FieldNameVectorType::value_type &fieldName :  added)
     {
-        m_objectMsg->appendAddedField(fieldName, newFields.find(fieldName)->second);
+        m_addedFields[fieldName] = newFields.find(fieldName)->second;
     }
 
     for(const ::fwData::Object::FieldNameVectorType::value_type &fieldName :  changed)
     {
-        m_objectMsg->appendChangedField(
-            fieldName,
-            oldFields.find(fieldName)->second,
-            newFields.find(fieldName)->second
-            );
+        m_newChangedFields[fieldName] = newFields.find(fieldName)->second;
+        m_oldChangedFields[fieldName] = oldFields.find(fieldName)->second;
     }
 
     for(const ::fwData::Object::FieldNameVectorType::value_type &fieldName :  changed)
     {
-        m_objectMsg->appendRemovedField(fieldName, oldFields.find(fieldName)->second);
+        m_removedFields[fieldName] = oldFields.find(fieldName)->second;
     }
 }
 

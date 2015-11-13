@@ -93,9 +93,6 @@ protected:
     virtual void stopping() throw ( ::fwTools::Failed );
     virtual void swapping() throw ( ::fwTools::Failed );
     virtual void updating() throw ( ::fwTools::Failed );
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-    {
-    }
 };
 
 //------------------------------------------------------------------------------
@@ -125,9 +122,6 @@ protected:
     {
     }
     virtual void updating() throw ( ::fwTools::Failed );
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-    {
-    }
 };
 
 //------------------------------------------------------------------------------
@@ -159,9 +153,6 @@ protected:
     {
     }
     virtual void updating() throw ( ::fwTools::Failed );
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-    {
-    }
 
     ChangedSignalType::sptr m_sigChanged;
 };
@@ -200,10 +191,7 @@ protected:
     virtual void swapping() throw ( ::fwTools::Failed )
     {
     }
-    virtual void updating() throw ( ::fwTools::Failed )
-    {
-    }
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+    virtual void updating() throw ( ::fwTools::Failed );
 
     ChangeSlotType::sptr m_slotChange;
 
@@ -219,6 +207,7 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SShow2Test)(IBasicTest) );
 
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT;
 
     SShow2Test();
 
@@ -239,7 +228,9 @@ protected:
     {
     }
     virtual void updating() throw ( ::fwTools::Failed );
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
+
+    /// Slot to receive update
+    void updateBuffer();
 };
 
 //------------------------------------------------------------------------------

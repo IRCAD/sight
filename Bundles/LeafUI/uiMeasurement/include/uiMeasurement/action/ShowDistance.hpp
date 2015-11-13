@@ -32,12 +32,18 @@ public:
 
     UIMEASUREMENT_API virtual ~ShowDistance() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_DISTANCE_DISPLAYED_SIG to this::s_SHOW_DISTANCE_SLOT
+     */
+    UIMEASUREMENT_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
-    // update its show/hide flag according image ShowDistance field notification
-    UIMEASUREMENT_API void receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed);
 
-    UIMEASUREMENT_API void swapping() throw(::fwTools::Failed);
+    void swapping() throw(::fwTools::Failed);
 
     void configuring() throw (::fwTools::Failed);
 
@@ -47,12 +53,13 @@ protected:
 
     void stopping() throw (::fwTools::Failed);
 
-    UIMEASUREMENT_API void info(std::ostream &_sstream );
+    void info(std::ostream &_sstream );
 
 
-protected:
+private:
 
-    ::fwData::Image::wptr m_observedImage;
+    /// Slot: show/hide distance
+    void showDistance(bool isShown);
 
 };
 

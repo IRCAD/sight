@@ -7,11 +7,12 @@
 #ifndef __UIMEASUREMENT_ACTION_REMOVEDISTANCE_HPP__
 #define __UIMEASUREMENT_ACTION_REMOVEDISTANCE_HPP__
 
+#include "uiMeasurement/config.hpp"
+
 #include <fwData/Image.hpp>
+#include <fwData/PointList.hpp>
 
 #include <fwGui/IActionSrv.hpp>
-
-#include "uiMeasurement/config.hpp"
 
 
 namespace uiMeasurement
@@ -23,8 +24,6 @@ namespace action
 /**
  * @brief   This action removes distances.
  * @class   RemoveDistance
- *
- * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API RemoveDistance : public ::fwGui::IActionSrv
 {
@@ -43,16 +42,14 @@ protected:
 
     void updating() throw (::fwTools::Failed);
 
-    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed);
-
     void stopping() throw (::fwTools::Failed);
 
     UIMEASUREMENT_API void info(std::ostream &_sstream );
 
 private:
-    void notifyNewDistance(::fwData::Image::sptr image, ::fwData::Object::sptr backup);
+    void notifyNewDistance(::fwData::Image::sptr image, ::fwData::PointList::sptr distance);
 
-    void notifyDeleteDistance(::fwData::Image::sptr image, ::fwData::Object::sptr distance);
+    void notifyDeleteDistance(::fwData::Image::sptr image, ::fwData::PointList::sptr distance);
 };
 
 } // namespace action

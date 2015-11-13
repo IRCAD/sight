@@ -12,7 +12,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
+
 
 namespace fwComEd
 {
@@ -23,7 +23,6 @@ namespace ut
  * @brief   Test ProcessObject building from a ConfigurationElement and composite message.
  * @see     ICompositeParser
  * @see     CompositeEditor
- * @see     CompositeMsg
  */
 class FieldHelperTest : public CPPUNIT_NS::TestFixture
 {

@@ -4,11 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Composite.hpp>
-
 #include "scene2D/data/Size.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/Render.hpp"
+
+#include <fwData/Composite.hpp>
+
 
 #include <QMouseEvent>
 

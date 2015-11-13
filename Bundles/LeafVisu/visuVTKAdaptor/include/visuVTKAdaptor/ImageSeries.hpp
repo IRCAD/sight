@@ -7,14 +7,14 @@
 #ifndef __VISUVTKADAPTOR_IMAGESERIES_HPP__
 #define __VISUVTKADAPTOR_IMAGESERIES_HPP__
 
-#include <vector>
+#include "visuVTKAdaptor/config.hpp"
+#include "visuVTKAdaptor/NegatoMPR.hpp"
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/NegatoMPR.hpp"
+#include <vector>
 
 namespace visuVTKAdaptor
 {
@@ -65,9 +65,6 @@ protected:
 
     /// Stops and unregister image subservice.
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
-
-    /// Does nothing.
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     /// Sets adaptor slice mode (NO_SLICE, ONE_SLICE, THREE_SLICES)
     void setSliceMode(NegatoMPR::SliceMode sliceMode);

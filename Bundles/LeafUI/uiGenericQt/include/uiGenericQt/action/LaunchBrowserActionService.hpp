@@ -22,8 +22,6 @@ namespace action
 /**
  * @brief   This action launch a browser on the url given in configuration.
  * @class   LaunchBrowserActionService
- *
- * @date    2010.
  */
 class UIGENERICQT_CLASS_API LaunchBrowserActionService : public ::fwGui::IActionSrv
 {
@@ -53,9 +51,6 @@ protected:
 
     /// Starts action
     void starting() throw (::fwTools::Failed);
-
-    /// Does nothing
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Launch a browser on the url given in the configuration
     void updating() throw(::fwTools::Failed);

@@ -45,6 +45,14 @@ public:
     /// Destructor. Do nothing.
     GUIQT_API virtual ~Code() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Object::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    GUIQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
 
@@ -53,9 +61,6 @@ protected:
 
     /// Destroy the layout
     virtual void stopping() throw(::fwTools::Failed);
-
-    /// Management of observations ( overrides ). Update the value from the String object.
-    virtual void receiving( std::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /// Update the value from the String object.
     virtual void updating() throw(::fwTools::Failed);

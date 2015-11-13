@@ -7,30 +7,29 @@
 #ifndef __UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__
 #define __UIMEDDATAQT_EDITOR_SMODELSERIESLIST_HPP__
 
+#include "uiMedDataQt/config.hpp"
+
+#include <gui/editor/IEditor.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
+
+#include <fwData/Reconstruction.hpp>
+
+#include <fwTools/Failed.hpp>
+
+
 #include <QPointer>
 #include <QObject>
 #include <QPushButton>
 
-#include <fwTools/Failed.hpp>
-
-#include <gui/editor/IEditor.hpp>
-
-#include "uiMedDataQt/config.hpp"
 
 class QTreeWidget;
 class QCheckBox;
 class QListWidgetItem;
 class QTreeWidgetItem;
-
-namespace fwData
-{
-class Reconstruction;
-}
-
-namespace fwServices
-{
-class ObjectMsg;
-}
 
 namespace uiMedData
 {
@@ -59,6 +58,16 @@ public:
     /// Destructor. Do nothing.
     UIMEDDATAQT_API virtual ~SModelSeriesList() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect ModelSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
+     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
+     */
+    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     ///This method launches the IEditor::starting method.
@@ -66,9 +75,6 @@ protected:
 
     ///This method launches the IEditor::stopping method.
     virtual void stopping() throw(::fwTools::Failed);
-
-    /// Managment of observations ( overides )
-    virtual void receiving( SPTR(const ::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 
@@ -107,6 +113,14 @@ protected:
 
     void fillTree();
 
+    static const ::fwCom::Signals::SignalKeyType s_REC_DISPLAY_MODIFIED__SIG;
+    typedef ::fwCom::Signal< void (bool) > RecDisplayModifiedSignalType;
+    static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG;
+    typedef ::fwCom::Signal< void (::fwData::Object::sptr) > ReconstructionSelectedSignalType;
+    static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT;
+    typedef ::fwCom::Slot< void (bool) > ShowReconstructionsSlotType;
+
+
 protected Q_SLOTS:
 
     /// Slot called when new current item is setted in m_organChoice
@@ -123,6 +137,9 @@ protected Q_SLOTS:
 
 private:
 
+    /// SLOT: Show (or hide) reconstructions
+    void showReconstructions(bool show);
+
     void refreshVisibility();
 
     void onCheckAllBoxes(bool visible);
@@ -135,6 +152,15 @@ private:
     DisplayedInformation m_displayedInfo;
 
     bool m_enableHideAll;
+
+    /// Signal emitted when m_showCheckBox value changed
+    RecDisplayModifiedSignalType::sptr m_sigRecDisplayModified;
+
+    /// Signal emitted when a reconstruction is selected
+    ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;
+
+    /// Slot to show (or hide) reconstructions
+    ShowReconstructionsSlotType::sptr m_slotShowReconstuctions;
 };
 
 } // namespace editor

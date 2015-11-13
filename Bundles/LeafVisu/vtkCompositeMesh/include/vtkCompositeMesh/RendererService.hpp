@@ -7,19 +7,18 @@
 #ifndef __VTKCOMPOSITEMESH_RENDERERSERVICE_HPP__
 #define __VTKCOMPOSITEMESH_RENDERERSERVICE_HPP__
 
-#include <boost/shared_array.hpp>
-
-#include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
-
-#include <vtkCommand.h>
-
-#include <fwRender/IRender.hpp>
-
-#include <fwServices/ObjectMsg.hpp>
+#include "vtkCompositeMesh/config.hpp"
 
 #include <fwData/Image.hpp>
 
-#include "vtkCompositeMesh/config.hpp"
+#include <fwRender/IRender.hpp>
+#include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
+
+
+
+#include <vtkCommand.h>
+
+#include <boost/shared_array.hpp>
 
 
 // VTK
@@ -30,13 +29,9 @@ namespace vtkCompositeMesh
 {
 
 /**
- * @brief   Renderer service.
+ * @brief   Service rendering ::fwData::Mesh contained in a ::fwData::Composite using VTK.
  * @class   RendererService
- *
- * @date    2009.
- *
- * Service rendering ::fwData::Mesh contained in a ::fwData::Composite using VTK.
- *
+
  * Service registered details : \n
  * fwServicesRegisterMacro( ::fwRender::IRender , ::vtkCompositeMesh::RendererService , ::fwData::Composite)
  */
@@ -50,6 +45,10 @@ public:
 
     VTKCOMPOSITEMESH_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
     typedef ::fwCom::Slot<void (SharedArray, SharedArray, SharedArray)> UpdateCamPositionSlotType;
+
+    /// Slot to update pipeline
+    VTKCOMPOSITEMESH_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_PIPELINE_SLOT;
+    typedef ::fwCom::Slot<void ()> UpdatePipelineSlotType;
 
     VTKCOMPOSITEMESH_API static const ::fwCom::Signals::SignalKeyType s_CAM_UPDATED_SIG;
     typedef ::fwCom::Signal< void (SharedArray, SharedArray, SharedArray) > CamUpdatedSignalType;
@@ -68,10 +67,13 @@ public:
     /// This method is used to notify that the VTK camera position is updated.
     void notifyCamPositionUpdated();
 
-    /// Slot to receive new camera information (position, focal, viewUp). Update camera with new information.
-    VTKCOMPOSITEMESH_API virtual void updateCamPosition(SharedArray positionValue,
-                                                        SharedArray focalValue,
-                                                        SharedArray viewUpValue);
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect mesh::s_MODIFIED_SIG to this::s_UPDATE_PIPELINE_SLOT
+     */
+    VTKCOMPOSITEMESH_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -111,14 +113,6 @@ protected:
      */
     VTKCOMPOSITEMESH_API virtual void updating() throw(fwTools::Failed);
 
-    /**
-     * @brief Receiving method (react on data modifications).
-     * @param[in] _msg ::fwServices::ObjectMsg::csptr.
-     *
-     * This method is used to update the vtk pipeline when the mesh is modified.
-     */
-    VTKCOMPOSITEMESH_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
     /// @brief vtk renderer
     vtkRenderer * m_render;
 
@@ -137,6 +131,14 @@ private:
     void updateVTKPipeline();
 
 
+    /// Slot: receives new camera information (position, focal, viewUp). Update camera with new information.
+    void updateCamPosition(SharedArray positionValue,
+                           SharedArray focalValue,
+                           SharedArray viewUpValue);
+
+    /// Slot: update the pipeline
+    void updatePipeline();
+
 
     /// Contains the mesh, and allows to compute normals.
     vtkPolyDataNormals* m_normals;
@@ -151,6 +153,9 @@ private:
 
     /// Slot to call updateCamPosition method.
     UpdateCamPositionSlotType::sptr m_slotUpdateCamPosition;
+
+    /// Slot to call updatePipeline method
+    UpdatePipelineSlotType::sptr m_slotUpdatePipeline;
 
     /// Signal emitted when camera position is updated.
     CamUpdatedSignalType::sptr m_sigCamUpdated;

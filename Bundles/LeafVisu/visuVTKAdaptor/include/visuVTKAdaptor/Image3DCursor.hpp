@@ -7,14 +7,16 @@
 #ifndef __VISUVTKADAPTOR_IMAGE3DCURSOR_HPP__
 #define __VISUVTKADAPTOR_IMAGE3DCURSOR_HPP__
 
-#include <vtkSmartPointer.h>
+#include "visuVTKAdaptor/config.hpp"
 
-#include <fwData/TransferFunction.hpp>
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
+
+#include <fwData/Color.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
+#include <vtkSmartPointer.h>
 
 class vtkCommand;
 class vtkActor;
@@ -42,6 +44,14 @@ public:
 
     VISUVTKADAPTOR_API void setVisibility( bool visibility );
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -51,7 +61,6 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     // redraw all (stop then restart sub services)
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     void buildPolyData(float radius = 1.0);
 
@@ -61,7 +70,20 @@ protected:
     vtkSmartPointer<vtkPolyDataMapper> m_cursorMapper;
     vtkSmartPointer<vtkActor>          m_cursorActor;
 
+private:
 
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: update image slice index
+    void updateSliceIndex(int axial, int frontal, int sagittal);
+
+    /// Slot: update the sphere color and radius
+    void updateSphere(::fwData::Color::sptr color, float radius);
+    /**
+     * @}
+     */
 
 };
 

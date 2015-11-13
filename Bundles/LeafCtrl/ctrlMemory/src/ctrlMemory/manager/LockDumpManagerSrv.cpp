@@ -4,22 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ctrlMemory/manager/LockDumpManagerSrv.hpp"
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/ObjectLock.hpp>
 
-#include <fwComEd/CompositeMsg.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
-#include "ctrlMemory/manager/LockDumpManagerSrv.hpp"
 
 namespace ctrlMemory
 {
 
 namespace manager
 {
+
+static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 //-----------------------------------------------------------------------------
 
@@ -29,9 +36,9 @@ fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlMemory::manager::Lo
 
 LockDumpManagerSrv::LockDumpManagerSrv() throw()
 {
-//    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
-//    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
-//    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
+    newSlot(s_ADD_OBJECTS_SLOT, &LockDumpManagerSrv::addObjects, this);
+    newSlot(s_CHANGE_OBJECTS_SLOT, &LockDumpManagerSrv::changeObjects, this);
+    newSlot(s_REMOVE_OBJECTS_SLOT, &LockDumpManagerSrv::removeObjects, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -42,47 +49,10 @@ LockDumpManagerSrv::~LockDumpManagerSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void LockDumpManagerSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
-    if(compositeMsg)
-    {
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
-        {
-            ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
-            this->setDumpLockOnImages(m_lockedObjects, fields,true);
-        }
-
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
-        {
-            ::fwData::Composite::sptr fields;
-            LockMapType newLocks = m_lockedObjects;
-
-            fields = compositeMsg->getOldChangedKeys();
-            this->setDumpLockOnImages(newLocks, fields,false);
-
-            fields = compositeMsg->getNewChangedKeys();
-            this->setDumpLockOnImages(newLocks, fields,true);
-
-            m_lockedObjects = newLocks;
-        }
-
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
-        {
-            ::fwData::Composite::sptr fields = compositeMsg->getRemovedKeys();
-            this->setDumpLockOnImages(m_lockedObjects, fields,false);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void LockDumpManagerSrv::setDumpLockOnImages( LockMapType &lockMap, ::fwData::Composite::sptr _composite,
+void LockDumpManagerSrv::setDumpLockOnImages( LockMapType &lockMap, ::fwData::Composite::ContainerType objects,
                                               bool _isLocked )
 {
-    for( ::fwData::Composite::value_type objectId :  *_composite )
+    for( ::fwData::Composite::value_type objectId :  objects )
     {
         if ( m_managedKeys.empty()
              || std::find(m_managedKeys.begin(), m_managedKeys.end(), objectId.first) != m_managedKeys.end() )
@@ -106,7 +76,7 @@ void LockDumpManagerSrv::setDumpLockOnImages( LockMapType &lockMap, ::fwData::Co
 void LockDumpManagerSrv::starting()  throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    this->setDumpLockOnImages(m_lockedObjects, composite, true);
+    this->setDumpLockOnImages(m_lockedObjects, composite->getContainer(), true);
 }
 
 //-----------------------------------------------------------------------------
@@ -150,6 +120,45 @@ void LockDumpManagerSrv::updating() throw ( ::fwTools::Failed )
 
 void LockDumpManagerSrv::info( std::ostream &_sstream )
 {
+}
+
+//------------------------------------------------------------------------------
+
+void LockDumpManagerSrv::addObjects(::fwData::Composite::ContainerType objects)
+{
+    this->setDumpLockOnImages(m_lockedObjects, objects, true);
+}
+
+//------------------------------------------------------------------------------
+
+void LockDumpManagerSrv::changeObjects(::fwData::Composite::ContainerType newObjects,
+                                       ::fwData::Composite::ContainerType oldObjects)
+{
+    LockMapType newLocks = m_lockedObjects;
+
+    this->setDumpLockOnImages(newLocks, oldObjects, false);
+    this->setDumpLockOnImages(newLocks, newObjects, true);
+
+    m_lockedObjects = newLocks;
+}
+
+//------------------------------------------------------------------------------
+
+void LockDumpManagerSrv::removeObjects(::fwData::Composite::ContainerType objects)
+{
+    this->setDumpLockOnImages(m_lockedObjects, objects, false);
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType LockDumpManagerSrv::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHANGE_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

@@ -17,8 +17,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwComEd/MeshMsg.hpp>
-
 #include <fwDataTools/Mesh.hpp>
 
 #include <functional>
@@ -38,10 +36,7 @@ SSimpleMeshDeformation::SSimpleMeshDeformation() throw()
     ::fwCom::HasSlots::m_slots( s_START_DEFORMATION_SLOT, m_slotStartDeformation )
         ( s_STOP_DEFORMATION_SLOT, m_slotStopDeformation );
 
-#ifdef COM_LOG
-    m_slotStartDeformation->setID( s_START_DEFORMATION_SLOT );
-    m_slotStopDeformation->setID( s_STOP_DEFORMATION_SLOT );
-#endif
+
 
     this->setWorker( ::fwServices::registry::ActiveWorkers::getDefault()->
                      getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
@@ -140,8 +135,8 @@ void SSimpleMeshDeformation::computeDeformation (
             float val = ( yref - y ) / ( yref - ymin ) * currentStrafe;
             pointsTransform[i][1] = y - val;
             colorTransform[i][0]  = 255;
-            colorTransform[i][1]  = 255 - 255 * ( val / strafe );
-            colorTransform[i][2]  = 255 - 255 * ( val / strafe );
+            colorTransform[i][1]  = static_cast<fwData::Mesh::ColorValueType>(255 - 255 * ( val / strafe ));
+            colorTransform[i][2]  = static_cast<fwData::Mesh::ColorValueType>(255 - 255 * ( val / strafe ));
         }
         else
         {
@@ -220,24 +215,10 @@ void SSimpleMeshDeformation::updating() throw(fwTools::Failed)
         OSLM_INFO("Copy time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
         lock.downgrade();
 
-        ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
-        msg->addEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED );
-
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = mesh->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-
-        {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit(msg);
-        }
-
+        ::fwData::Mesh::VertexModifiedSignalType::sptr sig;
+        sig = mesh->signal< ::fwData::Mesh::VertexModifiedSignalType >( ::fwData::Mesh::s_VERTEX_MODIFIED_SIG );
+        sig->asyncEmit();
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void SSimpleMeshDeformation::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
-{
 }
 
 //-----------------------------------------------------------------------------

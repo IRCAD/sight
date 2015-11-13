@@ -8,11 +8,15 @@
 #include "visuVTKAdaptor/PointLabel.hpp"
 #include "visuVTKAdaptor/PointList.hpp"
 
+#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/PointListMsg.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
@@ -40,31 +44,25 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Im
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_LANDMARKS_SLOT = "updateLandmaks";
+
+
+//------------------------------------------------------------------------------
+
 void notifyRemoveLandMark( ::fwData::Image::sptr image, ::fwServices::IService* _service, ::fwData::Point::sptr point )
 {
     SLM_ASSERT("NULL Service", _service);
 
-    ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
-    msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
     ::fwData::PointList::sptr pointList = image->getField< ::fwData::PointList >(
         ::fwComEd::Dictionary::m_imageLandmarksId );
-    msgPointList->setSource( _service->getSptr());
-    msgPointList->setSubject( pointList);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
 
-    sig = pointList->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwServices::IService::ReceiveSlotType::sptr slot;
-        slot = _service->slot< ::fwServices::IService::ReceiveSlotType >(
-            ::fwServices::IService::s_RECEIVE_SLOT );
-        ::fwCom::Connection::Blocker block(sig->getConnection(slot));
-        sig->asyncEmit( msgPointList);
-    }
+    auto sig =
+        pointList->signal< ::fwData::PointList::PointRemovedSignalType >(::fwData::PointList::s_POINT_REMOVED_SIG);
+    sig->asyncEmit(point);
 
-    ::fwComEd::ImageMsg::sptr msgLandmark = ::fwComEd::ImageMsg::New();
-    msgLandmark->addEvent( ::fwComEd::ImageMsg::LANDMARK, point );
-    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-    sig->asyncEmit(msgLandmark);
+    auto sigImg = image->signal< ::fwData::Image::LandmarkRemovedSignalType >(
+        ::fwData::Image::s_LANDMARK_REMOVED_SIG );
+    sigImg->asyncEmit(point);
 }
 
 //------------------------------------------------------------------------------
@@ -198,10 +196,10 @@ protected:
 //------------------------------------------------------------------------------
 
 ImageLandmarks::ImageLandmarks() throw() :
-    m_rightButtonCommand(0),
+    m_rightButtonCommand(nullptr),
     m_needSubservicesDeletion(false)
 {
-    //addNewHandledEvent( ::fwComEd::ImageMsg::LANDMARK );
+    newSlot(s_UPDATE_LANDMARKS_SLOT, &ImageLandmarks::updateLandmaks, this);
 }
 
 //------------------------------------------------------------------------------
@@ -296,15 +294,10 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageLandmarks::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void ImageLandmarks::updateLandmaks()
 {
-    // update only if new LandMarks
-    ::fwComEd::ImageMsg::csptr imgMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
-    if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::LANDMARK ) )
-    {
-        m_needSubservicesDeletion = true; // to manage point deletion
-        doUpdate();
-    }
+    m_needSubservicesDeletion = true; // to manage point deletion
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -335,5 +328,18 @@ void ImageLandmarks::show(bool b)
     }
 }
 
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ImageLandmarks::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_LANDMARK_ADDED_SIG, s_UPDATE_LANDMARKS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_LANDMARK_REMOVED_SIG, s_UPDATE_LANDMARKS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_LANDMARK_DISPLAYED_SIG, s_UPDATE_LANDMARKS_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

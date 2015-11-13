@@ -11,6 +11,9 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <vector>
 
 fwCorePredeclare((fwData)(Vector))
@@ -107,6 +110,21 @@ public:
     /// Method to get a std::vector from ::fwData::Vector
     template< class DATATYPE >
     std::vector< SPTR(DATATYPE) > getDataContainer() const;
+
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Type of signal when objects are added
+    typedef ::fwCom::Signal< void (ContainerType) > AddedObjectsSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_OBJECTS_SIG;
+
+    /// Type of signal when objects are removed
+    typedef ::fwCom::Signal< void (ContainerType) > RemovedObjectsSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_OBJECTS_SIG;
+    /**
+     * @}
+     */
 
 protected:
 

@@ -4,22 +4,31 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/regex.hpp>
+#include "gui/action/PushObjectSrv.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwComEd/helper/Composite.hpp>
+
+#include <fwData/Composite.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
 #include <fwTools/fwID.hpp>
-#include <fwData/Composite.hpp>
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/helper/Composite.hpp>
 
-#include "gui/action/PushObjectSrv.hpp"
+#include <boost/regex.hpp>
 
 namespace gui
 {
 namespace action
 {
+
+
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_OBJECTS_SLOT = "updateObject";
 
 //------------------------------------------------------------------------------
 
@@ -29,8 +38,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::PushObjectSrv, ::fw
 
 PushObjectSrv::PushObjectSrv() throw()
 {
-//    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
-//    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
+    newSlot(s_UPDATE_OBJECTS_SLOT, &PushObjectSrv::updateObjects, this);
 }
 
 //------------------------------------------------------------------------------
@@ -121,15 +129,15 @@ void PushObjectSrv::updating() throw(::fwTools::Failed)
         key     = elt.first;
         src_uid = elt.second.first;
         src_key = elt.second.second;
-        OSLM_ASSERT( src_uid << " doesn't exist", ::fwTools::fwID::exist(src_uid) );
+        SLM_ASSERT( src_uid + " doesn't exist", ::fwTools::fwID::exist(src_uid) );
         ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject(
                                                                                         src_uid ) );
-        OSLM_ASSERT("fwData::Composite dynamicCast failed for "<<src_uid, composite_src);
+        SLM_ASSERT("fwData::Composite dynamicCast failed for "+src_uid, composite_src);
 
 
         ::fwData::Composite::const_iterator iter = composite_src->find(src_key);
 
-        OSLM_WARN_IF("'" << src_key << "' not found in composite '" << src_uid << "'",iter == composite_src->end());
+        SLM_WARN_IF("'" + src_key + "' not found in composite '" + src_uid + "'",iter == composite_src->end());
         if (iter != composite_src->end())
         {
             ::fwData::Object::sptr obj = composite_src->getContainer()[src_key];
@@ -145,35 +153,38 @@ void PushObjectSrv::updating() throw(::fwTools::Failed)
         }
     }
     // Notification of message
-    compositeHelper->notify( this->getSptr() );
+    compositeHelper->notify();
 }
 
 //------------------------------------------------------------------------------
 
-void PushObjectSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void PushObjectSrv::info( std::ostream &_sstream )
+{
+}
+
+//------------------------------------------------------------------------------
+
+void PushObjectSrv::updateObjects()
 {
     bool executable = !m_srcMap.empty();
-    ::fwData::Object::sptr subject = msg->getSubject().lock();
 
     std::string src_uid;
+    std::string src_key;
+    std::string key;
     for(const SrcKeyMapType::value_type& valElt :  m_srcMap )
     {
         src_uid = valElt.first;
-        SLM_TRACE("check : " + src_uid);
-        if( src_uid == subject->getID() &&
-            ( msg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) ||
-              msg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS))  )
+        SLM_ASSERT( src_uid + " doesn't exist", ::fwTools::fwID::exist(src_uid) );
+        ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject(
+                                                                                        src_uid ) );
+        SLM_ASSERT("fwData::Composite dynamicCast failed for "+ src_uid, composite_src);
+
+        for(SrcKeyMapType::key_type keyElt :  valElt.second )
         {
-            ::fwData::Composite::sptr composite_src = ::fwData::Composite::dynamicCast( subject );
-            OSLM_ASSERT("fwData::Composite dynamicCast failed for "<<src_uid, composite_src);
-            for(SrcKeyMapType::key_type keyElt :  valElt.second )
-            {
-                executable &= (composite_src->find(keyElt)!= composite_src->end());
-                OSLM_TRACE("check : " << src_uid << "[" << keyElt << "] : " <<
-                           (composite_src->find(keyElt)!= composite_src->end()) );
-            }
+            executable &= (composite_src->find(keyElt)!= composite_src->end());
         }
     }
+
     this->setIsExecutable( executable );
 
     //TODO managed active mode (objects already present in target composite)
@@ -181,8 +192,13 @@ void PushObjectSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTo
 
 //------------------------------------------------------------------------------
 
-void PushObjectSrv::info( std::ostream &_sstream )
+::fwServices::IService::KeyConnectionsType PushObjectSrv::getObjSrvConnections() const
 {
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_OBJECTS_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

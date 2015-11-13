@@ -73,11 +73,6 @@ protected:
     IODATA_API virtual void stopping() throw(::fwTools::Failed);
 
     /**
-     * @brief This method is used to update services on notification. Do nothing.
-     */
-    IODATA_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
-    /**
      * @brief Process the action: modifies the mesh using the selected functor.
      */
     IODATA_API virtual void updating() throw(::fwTools::Failed);

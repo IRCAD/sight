@@ -34,8 +34,6 @@
 
 fwCampAutoDeclareDataMacro((fwData)(Object), FWDATA_API);
 
-fwCorePredeclare( (fwServices)(ObjectMsg) );
-
 namespace fwData
 {
 
@@ -55,6 +53,10 @@ public:
 
     typedef ::fwData::factory::Key Key;
 
+    fwCoreNonInstanciableClassDefinitionsMacro( (Object)(::fwTools::Object) );
+    fwCoreAllowSharedFromThis();
+    fwCampMakeFriendDataMacro((fwData)(Object));
+
     /**
      * @brief Class used to register a class factory in factory registry.
      * This class defines also the object factory ( 'create' )
@@ -71,11 +73,32 @@ public:
         }
     };
 
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Type of signal m_sigModified
+    typedef ::fwCom::Signal< void () > ModifiedSignalType;
 
+    /// Key in m_signals map of signal m_sigModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_MODIFIED_SIG;
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (Object)(::fwTools::Object) );
-    fwCoreAllowSharedFromThis();
-    fwCampMakeFriendDataMacro((fwData)(Object));
+    typedef std::map<std::string, ::fwData::Object::sptr> FieldsContainerType;
+    /// Type of signal when objects are added
+    typedef ::fwCom::Signal< void (FieldsContainerType) > AddedFieldsSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_FIELDS_SIG;
+
+    /// Type of signal when objects are changed (newObjects, oldObjects)
+    typedef ::fwCom::Signal< void (FieldsContainerType, FieldsContainerType) > ChangedFieldsSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CHANGED_FIELDS_SIG;
+
+    /// Type of signal when objects are removed
+    typedef ::fwCom::Signal< void (FieldsContainerType) > RemovedFieldsSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_FIELDS_SIG;
+    /**
+     * @}
+     */
+
 
     typedef std::string FieldNameType;
     typedef std::vector<FieldNameType> FieldNameVectorType;
@@ -204,21 +227,6 @@ public:
 
     FWDATA_API virtual ~Object();
 
-    /// Type of signal m_sigObjectModified
-    typedef ::fwCom::Signal< void ( CSPTR( ::fwServices::ObjectMsg ) ) > ObjectModifiedSignalType;
-
-    /// Key in m_signals map of signal m_sigObjectModified
-    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_OBJECT_MODIFIED_SIG;
-
-#ifdef COM_LOG
-    /**
-     * @brief Set a newID  for the object, the oldest one is released.
-     * @warning Cannot set a empty ID.
-     * @note This method is thread-safe. This method is used to better trace communication between signals and slots
-     */
-    FWDATA_API void setID( ::fwTools::fwID::IDType newID );
-#endif
-
 protected:
 
     FWDATA_API Object();
@@ -241,9 +249,6 @@ protected:
 
     /// Mutex to protect object access.
     ::fwCore::mt::ReadWriteMutex m_mutex;
-
-    /// Signal that emits ObjectMsg when object is modified
-    ObjectModifiedSignalType::sptr m_sigObjectModified;
 };
 
 

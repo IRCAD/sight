@@ -7,9 +7,9 @@
 #ifndef __VISUVTKADAPTOR_MESHFACTORY_HPP__
 #define __VISUVTKADAPTOR_MESHFACTORY_HPP__
 
-#include <fwData/Material.hpp>
-
 #include "visuVTKAdaptor/config.hpp"
+
+#include <fwData/Material.hpp>
 
 class vtkActor;
 class vtkDepthSortPolyData;
@@ -31,7 +31,7 @@ public:
 
 protected:
 
-    VISUVTKADAPTOR_API vtkActor* getActor();
+    VISUVTKADAPTOR_API vtkActor* getActor() const;
 
     VISUVTKADAPTOR_API void updateMaterial( ::fwData::Material::sptr material );
 

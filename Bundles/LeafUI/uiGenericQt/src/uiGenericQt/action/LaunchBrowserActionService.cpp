@@ -88,12 +88,6 @@ void LaunchBrowserActionService::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void LaunchBrowserActionService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void LaunchBrowserActionService::starting() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStarting();

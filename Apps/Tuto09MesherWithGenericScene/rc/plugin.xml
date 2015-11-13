@@ -74,11 +74,7 @@
                 </service>
 
 
-                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-                    <snap>
-                        <scene uid="genericScene" />
-                    </snap>
-                </service>
+                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
 
                 <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
                     <gui>
@@ -115,23 +111,24 @@
                     <start uid="modelSeriesWriter" />
                 </service>
                 <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
-                
+
                 <item key="image">
-                    <object uid="imageUID"  type="::fwData::Image">
+                    <object uid="imageUID" type="::fwData::Image">
                         <service uid="imageReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>
                     </object>
                 </item>
-        
+
                 <!-- CompositeVisu description -->
                 <item key="myCompositeVisu">
                     <object uid="myCompositeVisu" type="::fwData::Composite">
-                       
-                       <service uid="updaterImageUID" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="image" onEvent="NEW_IMAGE" fromUID="imageUID" actionType="ADD_OR_SWAP"/>
+
+                        <service uid="updaterImageUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <uid>imageUID</uid>
+                            <compositeKey>image</compositeKey>
                         </service>
-                
+
                         <service uid="mesher50ServiceUID" impl="::opVTKMesh::SVTKMesher" type="::opVTKMesh::IMesher" autoConnect="no">
                             <config>
                                 <percentReduction>50</percentReduction>
@@ -139,7 +136,7 @@
                                 <modelSeries>modelSeries</modelSeries>
                             </config>
                         </service>
-                        
+
                         <service uid="mesher80ServiceUID" impl="::opVTKMesh::SVTKMesher" type="::opVTKMesh::IMesher" autoConnect="no">
                             <config>
                                 <percentReduction>80</percentReduction>
@@ -148,8 +145,8 @@
                             </config>
                         </service>
 
-                        <service uid="updaterReconstUID" impl="::ctrlSelection::updater::SReconstructionFromModelSeriesUpdater" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="reconstruction" onEvent="NEW_RECONSTRUCTION_SELECTED" fromUID="*" actionType="ADD_OR_SWAP" />
+                        <service uid="updaterReconstUID" impl="::ctrlSelection::updater::SObjFromSlot" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <compositeKey>reconstruction</compositeKey>
                         </service>
 
                         <service uid="managerUID" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
@@ -158,29 +155,60 @@
 
                                 <object id="image" type="::fwData::Image">
                                     <!-- This service convert a simple fwData::Image to medical Image -->
-                                    <service impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoConnect="yes" />
+                                    <service impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="yes" />
                                     <service uid="action_createMesh50" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no">
                                         <start_if_exists uid="mesher50ServiceUID" />
                                     </service>
                                     <service uid="action_createMesh80" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no">
                                         <start_if_exists uid="mesher80ServiceUID" />
                                     </service>
-                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
-                                        <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
+                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
+                                        <toolTip>Manage slice visibility</toolTip>
+                                        <selected>3</selected>
+                                        <items>
+                                            <item text="One slice" value="1" />
+                                            <item text="three slices" value="3" />
+                                        </items>
                                     </service>
-                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
-                                        <negatoAdaptor uid="MPRNegatoScene3D" />
+                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
+                                        <config>
+                                            <checkable>true</checkable>
+                                            <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
+                                            <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                                            <iconWidth>40</iconWidth>
+                                            <iconHeight>16</iconHeight>
+                                            <checked>true</checked>
+                                        </config>
                                     </service>
                                     <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
                                         <sliceIndex>axial</sliceIndex>
                                     </service>
+
+                                    <connect>
+                                        <signal>showScanEditor/toggled</signal>
+                                        <slot>sliceListEditor/setEnabled</slot>
+                                    </connect>
+                                    
+                                    <proxy channel="show_scan">
+                                        <signal>showScanEditor/toggled</signal>
+                                    </proxy>
+                                    
+                                    <proxy channel="slice_mode">
+                                        <signal>sliceListEditor/selected</signal>
+                                    </proxy>
+
                                 </object>
-                                
+
                                 <object id="reconstruction" type="::fwData::Reconstruction">
                                     <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
                                     <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
+
+                                    <connect>
+                                        <signal>representationEditor/normalsModeModified</signal>
+                                        <slot>modelSeriesAdaptorUid/updateNormalMode</slot>
+                                    </connect>
                                 </object>
-                                
+
                             </config>
                         </service>
 
@@ -189,19 +217,37 @@
 
                                 <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
-                                <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                                <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                     <config renderer="default" picker="" />
                                 </adaptor>
                                 <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
                                     <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
                                 </adaptor>
-                                <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                     <config renderer="default" />
                                 </adaptor>
 
+                                <connect>
+                                    <signal>listOrganEditor/recDisplayModified</signal>
+                                    <slot>modelSeriesAdaptorUid/showReconstructions</slot>
+                                </connect>
+
+                                <connect>
+                                    <signal>snapshotScene1Editor/snapped</signal>
+                                    <slot>snapshotUID/snap</slot>
+                                </connect>
+
+                                <proxy channel="show_scan" waitForKey="image">
+                                    <slot>MPRNegatoScene3D/showSlice</slot>
+                                </proxy>
+
+                                <proxy channel="slice_mode" waitForKey="image">
+                                    <slot>MPRNegatoScene3D/updateSliceMode</slot>
+                                </proxy>
+
                             </scene>
                         </service>
-                        
+
                         <item key="modelSeries">
                             <object uid="modelSeriesUID" type="::fwMedData::ModelSeries">
                                 <service uid="listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes">
@@ -214,17 +260,19 @@
                                 </service>
                             </object>
                         </item>
-                        
+
                         <connect>
-                            <signal>modelSeriesUID/objectModified</signal>
-                            <slot>updaterReconstUID/receive</slot>
+                            <signal>imageUID/modified</signal>
+                            <slot>updaterImageUID/addOrSwap</slot>
                         </connect>
+
                         <connect>
-                            <signal>imageUID/objectModified</signal>
-                            <slot>updaterImageUID/receive</slot>
+                            <signal>listOrganEditor/reconstructionSelected</signal>
+                            <slot>updaterReconstUID/addOrSwap</slot>
                         </connect>
+
                     </object>
-                    
+
                 </item>
 
                 <start uid="MyIHM" />

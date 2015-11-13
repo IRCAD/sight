@@ -79,11 +79,6 @@ protected:
     FWSERVICES_API virtual void configuring() throw(::fwTools::Failed);
 
     /**
-     * @brief Does nothing
-     */
-    FWSERVICES_API virtual void receiving( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
-    /**
      * @brief Parse the XML configuration
      * @note Should invoked ( this->::IXMLParser::updating() ) from specific XMLParsers updating method to support both specific compositions and this generic one
      */

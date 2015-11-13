@@ -7,11 +7,12 @@
 #ifndef __SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP__
 #define __SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP__
 
+#include "scene2D/adaptor/IAdaptor.hpp"
+
 #include <fwData/TransferFunction.hpp>
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
-#include <scene2D/adaptor/IAdaptor.hpp>
 
 namespace scene2D
 {
@@ -38,6 +39,15 @@ public:
 
     /// Basic destructor, do nothing.
     SCENE2D_API virtual ~TransferFunction() throw();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    SCENE2D_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
     /**
@@ -71,9 +81,6 @@ protected:
     ///  the circles vector, the lines and polygons vector, and to add'em all to the layer and add it to the scene.
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
 
-    /// If the message is TRANSFERFUNCTION or WINDOWING, call DoUpdate().
-    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
     /// @todo
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
 
@@ -84,6 +91,13 @@ protected:
     /// Iterate m_circles vector (and in parallel m_TFPoints map) and, as the case, call the function associated
     ///  to a specific event.
     SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );
+
+
+    /// Called when transfer function points are modified.
+    SCENE2D_API virtual void updatingTFPoints();
+
+    /// Called when transfer function windowing is modified.
+    SCENE2D_API virtual void updatingTFWindowing(double window, double level);
 
 private:
 

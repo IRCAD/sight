@@ -47,6 +47,17 @@ public:
     /// destructor
     UIMEDDATAQT_API virtual ~SOrganTransformation() throw();
 
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect ModelSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
+     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
+     */
+    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     /**
@@ -63,7 +74,6 @@ protected:
     UIMEDDATAQT_API virtual void stopping()    throw( ::fwTools::Failed );
     UIMEDDATAQT_API virtual void swapping()    throw( ::fwTools::Failed );
     UIMEDDATAQT_API virtual void updating()    throw( ::fwTools::Failed );
-    UIMEDDATAQT_API virtual void receiving( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed );
     UIMEDDATAQT_API virtual void info    ( ::std::ostream& stream );
 
 private Q_SLOTS:

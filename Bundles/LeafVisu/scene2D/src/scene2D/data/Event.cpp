@@ -22,12 +22,12 @@ fwDataRegisterMacro( ::scene2D::data::Event );
 
 //-----------------------------------------------------------------------------
 
-Event::Event(::fwData::Object::Key key)
-    :   m_type(NoType),
-      m_button(NoButton),
-      m_modifier(NoModifier),
-      m_accepted(false),
-      m_key(Qt::Key_unknown)
+Event::Event(::fwData::Object::Key key) :
+    m_type(NoType),
+    m_button(NoButton),
+    m_modifier(NoModifier),
+    m_accepted(false),
+    m_key(Qt::Key_unknown)
 {
 }
 
@@ -87,6 +87,7 @@ void Event::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCache
     m_oldSize.setHeight(other->m_oldSize.getHeight());
     m_oldSize.setWidth(other->m_oldSize.getWidth());
 }
+
 //-----------------------------------------------------------------------------
 
 } // namespace data

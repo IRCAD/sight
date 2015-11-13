@@ -29,12 +29,6 @@ LockDumpSrv::~LockDumpSrv() throw()
 
 //-----------------------------------------------------------------------------
 
-void LockDumpSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void LockDumpSrv::starting()  throw ( ::fwTools::Failed )
 {
     m_objLock = ::fwData::ObjectLock( this->getObject() );

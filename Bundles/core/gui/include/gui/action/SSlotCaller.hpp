@@ -7,15 +7,15 @@
 #ifndef __GUI_ACTION_SSLOTCALLER_HPP__
 #define __GUI_ACTION_SSLOTCALLER_HPP__
 
-#include <vector>
+#include "gui/config.hpp"
 
 #include <fwCom/Slots.hpp>
 
-#include <fwServices/IService.hpp>
-
 #include <fwGui/IActionSrv.hpp>
 
-#include "gui/config.hpp"
+#include <fwServices/IService.hpp>
+
+#include <vector>
 
 namespace gui
 {
@@ -64,11 +64,6 @@ protected:
     GUI_API void updating() throw (fwTools::Failed);
 
     /**
-     * @brief Do nothing.
-     */
-    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
-    /**
      * @brief This method is used to configure the service parameters: specifies which slots must be called.
      * @verbatim
        <service uid="..." type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
@@ -84,7 +79,6 @@ protected:
 
     GUI_API virtual void stopping() throw(::fwTools::Failed);
 
-private:
     // vector representing slots
     SlotInfoContainerType m_slotInfos;
 };

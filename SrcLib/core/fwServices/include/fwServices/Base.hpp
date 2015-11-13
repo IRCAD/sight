@@ -13,10 +13,6 @@
 // For declaring service to object association
 #include "fwServices/macros.hpp"
 
-// For communications
-#include "fwServices/ObjectMsg.hpp"
-
-
 // For adding/get/erasing/info (has/support/implementationIds)
 #include "fwServices/op/Add.hpp"
 #include "fwServices/op/Get.hpp"

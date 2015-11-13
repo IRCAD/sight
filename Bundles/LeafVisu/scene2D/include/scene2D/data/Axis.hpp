@@ -48,22 +48,22 @@ public:
     SCENE2D_API virtual ~Axis();
 
     /// Get m_origin attribute.
-    SCENE2D_API float getOrigin();
+    SCENE2D_API float getOrigin() const;
 
     /// Set m_origin attribute.
     SCENE2D_API void setOrigin (float _origin);
 
     /// Get m_scale attribute.
-    SCENE2D_API float getScale();
+    SCENE2D_API float getScale() const;
 
     /// Set m_scale attribute.
     SCENE2D_API void setScale (float _scale);
 
     /// Get m_scaleType attribute.
-    SCENE2D_API std::string getScaleType();
+    SCENE2D_API std::string getScaleType() const;
 
     /// Set m_scaleType attribute.
-    SCENE2D_API void setScaleType (std::string _scaleType);
+    SCENE2D_API void setScaleType(const std::string& _scaleType);
 
 private:
     /// The origin and scale.

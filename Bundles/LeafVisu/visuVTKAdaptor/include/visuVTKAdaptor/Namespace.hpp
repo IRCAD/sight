@@ -11,8 +11,6 @@
  * @brief       The namespace visuVTKAdaptor contains the list of adaptors available for the generic scene. .
  * @namespace   visuVTKAdaptor
  *
- * @date        2009-2010.
- *
  */
 namespace visuVTKAdaptor
 {

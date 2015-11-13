@@ -4,26 +4,32 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QGraphicsItemGroup>
-#include <QPoint>
-#include <QBitmap>
-#include <QPixmap>
+#include "scene2D/adaptor/Negato.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
 
-#include <fwData/Image.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/helper/Image.hpp>
+
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwServices/Base.hpp>
 
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/TransferFunctionMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/helper/Image.hpp>
-
-#include "scene2D/adaptor/Negato.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
+#include <QGraphicsItemGroup>
+#include <QPoint>
+#include <QBitmap>
+#include <QPixmap>
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Negato, ::fwData::Image );
 
@@ -33,18 +39,28 @@ namespace scene2D
 namespace adaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
+
 typedef ::fwComEd::helper::MedicalImageAdaptor MedicalImageAdaptor;
 
 //-----------------------------------------------------------------------------
 
-Negato::Negato() throw()
-    : m_pointIsCaptured (false),
-      m_orientation(MedicalImageAdaptor::Z_AXIS), m_changeSliceTypeAllowed(true)
+Negato::Negato() throw() :
+    m_qimg(nullptr),
+    m_pixmapItem(nullptr),
+    m_layer(nullptr),
+    m_pointIsCaptured (false),
+    m_orientation(MedicalImageAdaptor::Z_AXIS),
+    m_changeSliceTypeAllowed(true)
 {
-    this->installTFSelectionEventHandler(this);
-//    this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-//    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
-//    this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    this->installTFSlots(this);
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &Negato::updateSliceIndex, this);
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &Negato::updateSliceType, this);
+    newSlot(s_UPDATE_BUFFER_SLOT, &Negato::updateBuffer, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &Negato::updateVisibility, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -132,7 +148,7 @@ void Negato::updateBufferFromImage( QImage * qimg )
             for( size_t y = 0; y < size[1]; y++ )
             {
                 QRgb val = this->getQImageVal(zxOffset + y * size[0], imgBuff, wlMin, wlMax, window, tfMin, tfMax, tf);
-                qimg->setPixel(y, zPos, val);
+                qimg->setPixel(static_cast<int>(y), zPos, val);
             }
         }
     }
@@ -266,7 +282,7 @@ void Negato::doStart() throw ( ::fwTools::Failed )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos( image );
-    this->updateTransferFunction( image, this->getSptr() );
+    this->updateTransferFunction( image );
 
     m_pixmapItem = new QGraphicsPixmapItem();
     m_pixmapItem->setShapeMode( QGraphicsPixmapItem::BoundingRectShape );
@@ -283,7 +299,7 @@ void Negato::doStart() throw ( ::fwTools::Failed )
 
     this->getScene2DRender()->updateSceneSize( 1.f );
 
-    this->installTFObserver( this->getSptr() );
+    this->installTFConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -298,43 +314,30 @@ void Negato::doUpdate() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Negato::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Failed )
+void Negato::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    SLM_TRACE_FUNC();
-    if( msg->hasEvent( ::fwComEd::ImageMsg::VISIBILITY ))
+    m_axialIndex->value()    = axial;
+    m_frontalIndex->value()  = frontal;
+    m_sagittalIndex->value() = sagittal;
+
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos( image );
+    this->updateBufferFromImage( m_qimg );
+}
+
+//-----------------------------------------------------------------------------
+
+void Negato::updateSliceType(int from, int to)
+{
+    if (m_changeSliceTypeAllowed)
     {
-        ::fwData::Object::csptr dataInfo = msg->getDataInfo(::fwComEd::ImageMsg::VISIBILITY);
-        SLM_ASSERT("dataInfo is missing", dataInfo);
-
-        ::fwData::Boolean::csptr boolean = ::fwData::Boolean::dynamicConstCast(dataInfo);
-
-        SLM_ASSERT("dataInfo is missing", boolean);
-
-        if( boolean->getValue() ) // display the scene
+        if( to == static_cast< int > ( m_orientation ) )
         {
-            m_layer->setVisible(true);
+            m_orientation = static_cast< MedicalImageAdaptor::Orientation > ( from );
         }
-        else // remove the layer from the scene
+        else if(from == static_cast<int>(m_orientation))
         {
-            m_layer->setVisible(false);
-        }
-    }
-    if( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE) && m_changeSliceTypeAllowed )
-    {
-        ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-        ::fwData::Object::sptr objInfo   = std::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-        ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
-
-        ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] );
-        ::fwData::Integer::sptr toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] );
-
-        if( toSliceType->value() == static_cast< int > ( m_orientation ) )
-        {
-            m_orientation = static_cast< MedicalImageAdaptor::Orientation > ( fromSliceType->value() );
-        }
-        else if(fromSliceType->value() == static_cast<int>(m_orientation))
-        {
-            m_orientation = static_cast< MedicalImageAdaptor::Orientation >( toSliceType->value() );
+            m_orientation = static_cast< MedicalImageAdaptor::Orientation >( to );
         }
 
         // manages the modification of axes
@@ -349,28 +352,41 @@ void Negato::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Fai
 
         this->doUpdate();
     }
+}
 
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::MODIFIED ) )
+//-----------------------------------------------------------------------------
+
+void Negato::updateVisibility(bool isVisible)
+{
+    if( isVisible ) // display the scene
     {
-        this->updateBufferFromImage(m_qimg);
+        m_layer->setVisible(true);
     }
-
-    if ( this->upadteTFObserver(msg, this->getSptr() )
-         || msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING )
-         || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
+    else // remove the layer from the scene
     {
-        this->updateBufferFromImage( m_qimg );
+        m_layer->setVisible(false);
     }
+}
 
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
-    {
-        ::fwComEd::ImageMsg::csptr imgMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
-        imgMsg->getSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
+//-----------------------------------------------------------------------------
 
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-        this->updateImageInfos( image );
-        this->updateBufferFromImage( m_qimg );
-    }
+void Negato::updateBuffer()
+{
+    this->updateBufferFromImage(m_qimg);
+}
+
+//------------------------------------------------------------------------------
+
+void Negato::updatingTFPoints()
+{
+    this->updateBufferFromImage( m_qimg );
+}
+
+//------------------------------------------------------------------------------
+
+void Negato::updatingTFWindowing(double window, double level)
+{
+    this->updateBufferFromImage( m_qimg );
 }
 
 //-----------------------------------------------------------------------------
@@ -385,7 +401,7 @@ void Negato::doSwap() throw ( ::fwTools::Failed )
 
 void Negato::doStop() throw ( ::fwTools::Failed )
 {
-    this->removeTFObserver();
+    this->removeTFConnections();
 
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
@@ -512,14 +528,31 @@ void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2
     double newImgLevel  = imgLevel + level;
     double newImgWindow = imgWindow + imgWindow * window/100.0;
 
-    double newMin = newImgLevel - newImgWindow/2.0;
-    double newMax = newImgLevel + newImgWindow/2.0;
-
     this->doUpdate();
 
-    // Fire the message
-    this->setWindowLevel(newMin, newMax);
-    this->notifyTFWindowing(this->getSptr());
+    // Send signal
+    tf->setWindow(newImgWindow);
+    tf->setLevel(newImgLevel);
+    auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
+        ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+        sig->asyncEmit( newImgWindow, newImgLevel);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Negato::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

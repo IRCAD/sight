@@ -35,6 +35,15 @@ public:
     /// Destructor
     UIMEDDATAQT_API virtual ~SSeriesViewer() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     */
+    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     /// Calls updating on starting.
@@ -79,9 +88,6 @@ protected:
      * associated with the selected object.
      */
     virtual void updating() throw (::fwTools::Failed);
-
-    /// Listen Vector notification when objects are added or deleted.
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     virtual void info( std::ostream &_sstream );
 

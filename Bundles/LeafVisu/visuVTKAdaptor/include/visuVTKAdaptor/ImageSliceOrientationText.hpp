@@ -16,7 +16,6 @@
 #include <memory> //unique_ptr
 
 
-
 namespace visuVTKAdaptor
 {
 
@@ -36,6 +35,16 @@ public:
 
     VISUVTKADAPTOR_API ImageSliceOrientationText() throw();
     VISUVTKADAPTOR_API virtual ~ImageSliceOrientationText() throw();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -65,7 +74,6 @@ protected:
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     /// @}
 
@@ -81,6 +89,17 @@ protected:
 
     /// adaptor's private implementation
     std::unique_ptr< ImageSliceOrientationTextPImpl > m_pimpl;
+
+private:
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: update image slice type
+    void updateSliceType(int from, int to);
+    /**
+     * @}
+     */
 };
 
 

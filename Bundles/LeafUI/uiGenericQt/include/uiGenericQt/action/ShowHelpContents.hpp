@@ -21,8 +21,6 @@ namespace action
 /**
  * @brief   This action show the help contents.
  * @class   ShowHelpContents
- *
- * @date    2010.
  */
 class UIGENERICQT_CLASS_API ShowHelpContents : public ::fwGui::IActionSrv
 {
@@ -49,9 +47,6 @@ protected:
 
     /// Starts action
     void starting() throw (::fwTools::Failed);
-
-    /// Does nothing
-    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// Show the frame
     void updating() throw(::fwTools::Failed);

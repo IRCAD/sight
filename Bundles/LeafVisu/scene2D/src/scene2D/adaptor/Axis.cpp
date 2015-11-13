@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/data/ViewportMsg.hpp"
 #include "scene2D/adaptor/Axis.hpp"
 
 #include <fwServices/Base.hpp>
@@ -25,7 +24,6 @@ namespace adaptor
 
 Axis::Axis() throw() : m_showLine(true), m_tickSize(0.02f), m_color(Qt::white)
 {
-//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -41,8 +39,8 @@ void Axis::doStart() throw( ::fwTools::Failed)
 {
     m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
 
-    m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-        this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
+        this->slot(::fwServices::IService::s_UPDATE_SLOT));
 
     this->buildAxis();
     this->doUpdate();
@@ -281,16 +279,6 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
         }
 
         m_line->setLine(tickPos.first, min, tickPos.first, tickPos.second);
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Axis::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
-{
-    if( _msg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED) )
-    {
-        doUpdate();
     }
 }
 

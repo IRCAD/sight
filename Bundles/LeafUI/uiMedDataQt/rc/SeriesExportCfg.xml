@@ -4,15 +4,12 @@
     <parameters>
         <param name="SERIESDB_UID" />
         <param name="SERIES_UID" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
     </parameters>
 
     <config>
 
         <object type="::fwData::Composite">
-
-            <service uid="${GENERIC_UID}_notify_close" impl="::gui::action::ActionNotifyService" autoConnect="no">
-                <notify type="::fwServices::ObjectMsg" event="WINDOW_CLOSED" />
-            </service>
 
             <service uid="${GENERIC_UID}_seriesExportFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="yes">
                 <window onclose="notify" />
@@ -68,14 +65,12 @@
                 </object>
             </item>
 
-            <connect>
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
                 <signal>${GENERIC_UID}_selectedSeriesEditor/seriesExported</signal>
-                <slot>${GENERIC_UID}_notify_close/update</slot>
-            </connect>
+            </proxy>
 
             <start uid="${GENERIC_UID}_seriesExportFrame" />
             <start uid="${GENERIC_UID}_sdbInitializer" />
-            <start uid="${GENERIC_UID}_notify_close" />
 
             <update uid="${GENERIC_UID}_selector" />
             <update uid="${GENERIC_UID}_sdbInitializer" />

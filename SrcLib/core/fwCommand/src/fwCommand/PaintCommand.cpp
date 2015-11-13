@@ -9,8 +9,6 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwComEd/ImageMsg.hpp>
-
 namespace fwCommand
 {
 
@@ -150,19 +148,13 @@ void PaintCommand::notifyImageModification()
 {
     if ( !this->m_serviceNotifier.expired() )
     {
-        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-        msg->addEvent( fwComEd::ImageMsg::BUFFER );
-        msg->setSource( this->getNotifier());
-        msg->setSubject( m_image.lock());
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = m_image.lock()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig = m_image.lock()->signal< ::fwData::Image::BufferModifiedSignalType >(
+            ::fwData::Image::s_BUFFER_MODIFIED_SIG);
         {
-            ::fwServices::IService::ReceiveSlotType::sptr slot;
-            slot = this->m_serviceNotifier.lock()->slot< ::fwServices::IService::ReceiveSlotType >(
-                ::fwServices::IService::s_RECEIVE_SLOT );
+            auto slot = this->m_serviceNotifier.lock()->slot< ::fwServices::IService::UpdateSlotType >(
+                ::fwServices::IService::s_UPDATE_SLOT );
             ::fwCom::Connection::Blocker block(sig->getConnection(slot));
-            sig->asyncEmit( msg );
+            sig->asyncEmit();
         }
     }
 }

@@ -7,7 +7,9 @@
 #ifndef __SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP__
 #define __SCENE2D_ADAPTOR_CURVEDHISTOGRAM_HPP__
 
-#include <scene2D/adaptor/IAdaptor.hpp>
+#include "scene2D/adaptor/IAdaptor.hpp"
+
+#include <fwData/Histogram.hpp>
 
 namespace scene2D
 {
@@ -52,7 +54,6 @@ protected:
     SCENE2D_API void configuring()  throw ( ::fwTools::Failed );
     SCENE2D_API void doStart()      throw ( ::fwTools::Failed );
     SCENE2D_API void doUpdate()     throw ( ::fwTools::Failed );
-    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
     SCENE2D_API void doSwap()       throw ( ::fwTools::Failed );
     SCENE2D_API void doStop()       throw ( ::fwTools::Failed );
 
@@ -66,18 +67,18 @@ protected:
 
 private:
 
-    Points getControlPoints( ::fwData::Histogram::sptr _histogram );
+    Points getControlPoints(const ::fwData::Histogram::sptr& _histogram ) const;
 
-    Points getBSplinePoints( Points & _controlPoints );
+    Points getBSplinePoints( const Points & _controlPoints ) const;
 
-    Points getResampledBSplinePoints( Points & _bSplinePoints );
+    Points getResampledBSplinePoints( const Points & _bSplinePoints ) const;
 
     void buildBSplineFromPoints( Points & _bSplinePoints );
 
     void computePointToPathLengthMapFromBSplinePoints( Points & _bSplinePoints );
 
     /// Update the value of m_ordinateValueUID according to the value pointed by mouse cursor.
-    void updateCurrentPoint( ::scene2D::data::Event::sptr _event );
+    void updateCurrentPoint( const ::scene2D::data::Event::sptr& _event );
 
     /// Build and add a part of histogram's border, according to the given path.
     void addBorderItem( const QPainterPath & _path );

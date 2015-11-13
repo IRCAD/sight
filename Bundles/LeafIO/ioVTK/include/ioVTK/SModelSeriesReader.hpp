@@ -7,14 +7,16 @@
 #ifndef __IOVTK_SMODELSERIESREADER_HPP__
 #define __IOVTK_SMODELSERIESREADER_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
-
-#include <fwServices/ObjectMsg.hpp>
+#include "ioVTK/config.hpp"
 
 #include <io/IReader.hpp>
 
-#include "ioVTK/config.hpp"
+#include <fwData/Mesh.hpp>
+
+
+
+#include <boost/filesystem/path.hpp>
+#include <string>
 
 namespace ioVTK
 {

@@ -13,11 +13,6 @@
 
 #include "ctrlMemory/config.hpp"
 
-namespace fwServices
-{
-class ObjectMsg;
-}
-
 namespace ctrlMemory
 {
 
@@ -57,9 +52,6 @@ protected:
 
     /// Does nothing
     CTRLMEMORY_API virtual void configuring()  throw ( ::fwTools::Failed );
-
-    /// Does nothing
-    CTRLMEMORY_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw ( ::fwTools::Failed );
 
 private:
 

@@ -9,9 +9,9 @@
 
 #ifndef ANDROID
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
 #include "visuVTKAdaptor/config.hpp"
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -38,9 +38,6 @@ protected:
     {
     }
     void doUpdate() throw(fwTools::Failed)
-    {
-    }
-    void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
     {
     }
     /**  @} */

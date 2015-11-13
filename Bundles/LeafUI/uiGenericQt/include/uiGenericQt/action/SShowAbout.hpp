@@ -61,9 +61,6 @@ protected:
     /// Starts action
     void starting() throw (::fwTools::Failed);
 
-    /// Does nothing
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
     /// Shows the frame
     void updating() throw(::fwTools::Failed);
 

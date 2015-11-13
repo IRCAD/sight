@@ -9,6 +9,14 @@
 
 #include <fwServices/IService.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace fwServices
@@ -69,7 +77,6 @@ protected:
     bool m_isUpdatedMessage;
 };
 
-
 /**
  * @brief Service implementation for test
  */
@@ -78,8 +85,19 @@ class TestServiceImplementation : public TestService
 
 public:
     fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementation)(::fwServices::ut::TestService) );
+
+    /// Keys to register Signal
+    static const ::fwCom::Signals::SignalKeyType s_MSG_SENT_SIG;
+    /// Keys to register Slot
+    static const ::fwCom::Slots::SlotKeyType s_RECEIVE_MSG_SLOT;
+
+    /// Type os signal
+    typedef ::fwCom::Signal< void (std::string)> MsgSentSignalType;
+
     TestServiceImplementation() throw()
     {
+        newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
+        newSlot(s_RECEIVE_MSG_SLOT, &TestServiceImplementation::receiveMsg, this);
     }
     virtual ~TestServiceImplementation() throw()
     {
@@ -99,7 +117,7 @@ public:
         m_isUpdated = true;
     }
 
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+    virtual void receiveMsg(std::string msg)
     {
         m_isUpdatedMessage = true;
     }

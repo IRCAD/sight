@@ -4,52 +4,64 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/assign/list_of.hpp>
+#include "visuVTKAdaptor/SlicesCursor.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
-
-#include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
-
-#include <vtkPolyData.h>
-#include <vtkRenderer.h>
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkCellArray.h>
-#include <vtkCellData.h>
-#include <vtkLine.h> // CELL
-#include <vtkTransform.h>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwCore/base.hpp>
 
-#include <fwData/Image.hpp>
 #include <fwData/Float.hpp>
+#include <fwData/Image.hpp>
 #include <fwData/String.hpp>
 
-#include "visuVTKAdaptor/SlicesCursor.hpp"
+#include <fwServices/macros.hpp>
+
+#include <vtkActor.h>
+#include <vtkCellArray.h>
+#include <vtkCellData.h>
+#include <vtkLine.h> // CELL
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderer.h>
+#include <vtkTransform.h>
+
+#include <boost/assign/list_of.hpp>
+
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT       = "updateImage";
 
-SlicesCursor::SlicesCursor()  throw()
-    : m_cursorPolyData( vtkPolyData::New() )
-      , m_cursorMapper  ( vtkPolyDataMapper::New() )
-      , m_cursorActor(    vtkActor::New() )
-      , m_scale(0.5)
-      , m_isSelected(false)
+const ::fwCom::Slots::SlotKeyType SlicesCursor::s_SHOW_FULL_CROSS_SLOT   = "showFullCross";
+const ::fwCom::Slots::SlotKeyType SlicesCursor::s_SHOW_NORMAL_CROSS_SLOT = "showNormalCross";
+const ::fwCom::Slots::SlotKeyType SlicesCursor::s_SET_CROSS_SCALE_SLOT   = "setCrossScale";
+
+//-----------------------------------------------------------------------------
+
+SlicesCursor::SlicesCursor()  throw() :
+    m_cursorPolyData( vtkPolyData::New() ),
+    m_cursorMapper( vtkPolyDataMapper::New() ),
+    m_cursorActor( vtkActor::New() ),
+    m_scale(0.5f),
+    m_isSelected(false)
 {
-
-    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) ;
-    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    //addNewHandledEvent( "CROSS_TYPE" );
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SlicesCursor::updateSliceIndex, this);
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SlicesCursor::updateSliceType, this);
+    newSlot(s_UPDATE_IMAGE_SLOT, &SlicesCursor::updateImage, this);
+    newSlot(s_SHOW_FULL_CROSS_SLOT, &SlicesCursor::showFullCross, this);
+    newSlot(s_SHOW_NORMAL_CROSS_SLOT, &SlicesCursor::showNormalCross, this);
+    newSlot(s_SET_CROSS_SCALE_SLOT, &SlicesCursor::setCrossScale, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,6 +80,7 @@ SlicesCursor::~SlicesCursor()  throw()
 void SlicesCursor::setCrossScale(double scale)
 {
     m_scale = scale;
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
@@ -296,14 +309,14 @@ void SlicesCursor::doUpdate() throw(fwTools::Failed)
 
     if ( imageIsValid)
     {
-        this->updateSliceIndex(image);
+        this->updateImageSliceIndex(image);
         this->updateColors();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
+void SlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
 {
     float scale = m_isSelected ? 1.0 : m_scale;
     if (scale <= 0)
@@ -345,8 +358,6 @@ void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
             }
         }
 
-
-
         // Compute ABM & CDM
         computeCrossPoints( cursorPoints[0], cursorPoints[2], sliceWorld, scale, cursorPoints[4], cursorPoints[6] );
         // Compute BCM & ADM
@@ -366,64 +377,66 @@ void SlicesCursor::updateSliceIndex( ::fwData::Image::sptr image )
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void SlicesCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    m_isSelected                = false;
+    m_axialIndex->value()    = axial;
+    m_frontalIndex->value()  = frontal;
+    m_sagittalIndex->value() = sagittal;
+
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
-    if(imageIsValid && imageMsg)
+
+    this->updateImageSliceIndex(image);
+    this->updating();
+}
+//-----------------------------------------------------------------------------
+
+void SlicesCursor::showFullCross()
+{
+    m_isSelected = true;
+}
+
+//-----------------------------------------------------------------------------
+
+void SlicesCursor::showNormalCross()
+{
+    m_isSelected = false;
+}
+
+//-----------------------------------------------------------------------------
+
+void SlicesCursor::updateSliceType(int from, int to)
+{
+    if( to == static_cast<int>(m_orientation) )
     {
-
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-        {
-            this->updateImageInfos(image);
-            this->updating();
-        }
-        if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
-        {
-            ::fwData::Object::csptr dataInfo = imageMsg->getDataInfo(::fwComEd::ImageMsg::SLICE_INDEX);
-            imageMsg->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
-
-            if(dataInfo && dataInfo->getField("SLICE_MODE"))
-            {
-                ::fwData::String::sptr sliceMode = dataInfo->getField< ::fwData::String >("SLICE_MODE");
-                SLM_ASSERT("sceneID empty!", sliceMode);
-                m_isSelected = ( sliceMode->value() == "UPDATE_SLICING" );
-            }
-            this->updateSliceIndex(image);
-            this->updating();
-        }
-        if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) )
-        {
-
-            ::fwData::Object::csptr cObjInfo = imageMsg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-            ::fwData::Object::sptr objInfo   = std::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-            ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
-
-            int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
-            int toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
-
-            if( toSliceType == static_cast<int>(m_orientation) )
-            {
-                setOrientation( static_cast< Orientation >( fromSliceType ));
-            }
-            else if( fromSliceType == static_cast<int>(m_orientation) )
-            {
-                setOrientation( static_cast< Orientation >( toSliceType ));
-            }
-            this->updating();
-        }
-        if ( imageMsg->hasEvent( "CROSS_TYPE") )
-        {
-            ::fwData::Object::csptr dataInfo = imageMsg->getDataInfo("CROSS_TYPE");
-            SLM_ASSERT("dataInfo is missing", dataInfo);
-            ::fwData::Float::csptr scale = ::fwData::Float::dynamicConstCast(dataInfo);
-            SLM_ASSERT("dataInfo is missing", scale);
-            this->setCrossScale( scale->value() );
-            this->updating();
-        }
+        setOrientation( static_cast< Orientation >( from ));
     }
+    else if( from == static_cast<int>(m_orientation) )
+    {
+        setOrientation( static_cast< Orientation >( to ));
+    }
+    this->updating();
+}
+
+//-----------------------------------------------------------------------------
+
+void SlicesCursor::updateImage()
+{
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SlicesCursor::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

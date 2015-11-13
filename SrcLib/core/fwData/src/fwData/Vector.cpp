@@ -8,15 +8,23 @@
 #include "fwData/Exception.hpp"
 #include "fwData/Vector.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 fwDataRegisterMacro( ::fwData::Vector );
 
 namespace fwData
 {
 
+const ::fwCom::Signals::SignalKeyType Vector::s_ADDED_OBJECTS_SIG   = "addedObjects";
+const ::fwCom::Signals::SignalKeyType Vector::s_REMOVED_OBJECTS_SIG = "removedObjects";
+
 //------------------------------------------------------------------------------
 
 Vector::Vector(::fwData::Object::Key key)
 {
+    newSignal< AddedObjectsSignalType >(s_ADDED_OBJECTS_SIG);
+    newSignal< RemovedObjectsSignalType >(s_REMOVED_OBJECTS_SIG);
 }
 
 //------------------------------------------------------------------------------

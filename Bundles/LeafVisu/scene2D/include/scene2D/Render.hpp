@@ -10,24 +10,22 @@
 #include "scene2D/config.hpp"
 #include "scene2D/data/Event.hpp"
 #include "scene2D/data/Coord.hpp"
+#include "scene2D/data/Axis.hpp"
+#include "scene2D/data/Viewport.hpp"
+
+#include <fwData/Composite.hpp>
 
 #include <fwRender/IRender.hpp>
+
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
-
-#include <scene2D/data/Axis.hpp>
-#include <scene2D/data/Viewport.hpp>
 
 #include <Qt>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QResizeEvent>
 
-
-namespace  fwData
-{
-class Composite;
-} //namespace fwData
+//namespace fwData
 
 namespace scene2D
 {
@@ -67,16 +65,16 @@ public:
     SCENE2D_API virtual ~Render() throw();
 
     /// Get the scene.
-    SCENE2D_API QGraphicsScene* getScene();
+    SCENE2D_API QGraphicsScene* getScene() const;
 
     /// Get the view.
-    SCENE2D_API Scene2DGraphicsView* getView();
+    SCENE2D_API Scene2DGraphicsView* getView() const;
 
     /// Get the viewport.
     SCENE2D_API SPTR(::scene2D::data::Viewport) getViewport();
 
     /// Get the object referenced in m_objectID2Object by the key _objectID.
-    SCENE2D_API SPTR(::fwData::Object) getRegisteredObject(ObjectIDType _objectID);
+    SCENE2D_API SPTR(::fwData::Object) getRegisteredObject(ObjectIDType _objectID) const;
 
     /// Iterate on the m_zValue2AdaptorID map and, if the event hasn't been accepted yet, call the adaptor processInteraction function.
     SCENE2D_API void dispatchInteraction( SPTR(::scene2D::data::Event) _event );
@@ -85,12 +83,23 @@ public:
     SCENE2D_API ::scene2D::data::Coord mapToScene( const ::scene2D::data::Coord & coord ) const;
 
     /// Returns what happens to scene's aspect ratio on view resize events
-    SCENE2D_API Qt::AspectRatioMode getAspectRatioMode();
+    SCENE2D_API Qt::AspectRatioMode getAspectRatioMode() const;
 
     /// Update scene size from items bounding rect, this bounding can be enlarged with ratioPercent parameter
     SCENE2D_API void updateSceneSize( float ratioPercent = 0 );
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_ADD_OBJECTS_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_CHANGE_OBJECTS_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_REMOVE_OBJECTS_SLOT
+     */
+    SCENE2D_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
+
     /**
      * @brief Configuring the Render service.
      *
@@ -115,17 +124,17 @@ protected:
             </adaptor>
 
             <connect>
-                <signal>adaptorUID/objectModified</signal>
+                <signal>adaptorUID/modified</signal>
                 <slot>serviceUid/updateTM</slot>
             </connect>
 
             <connect waitForKey="myData">
-                <signal>adaptorUID/objectModified</signal>
+                <signal>adaptorUID/modified</signal>
                 <slot>serviceUid/updateTM</slot>
             </connect>
 
             <connect waitForKey="myData">
-                <signal>objectModified</signal><!-- signal for object "myData" -->
+                <signal>modified</signal><!-- signal for object "myData" -->
                 <slot>serviceUid/updateTM</slot>
             </connect>
 
@@ -193,11 +202,6 @@ protected:
     /// Do nothing.
     SCENE2D_API void updating()    throw ( ::fwTools::Failed );
 
-    /// If the message is ADDED_KEYS, call the startAdaptorsFromComposite function to start all the adaptors contained
-    //  in the message composite.
-    SCENE2D_API void receiving( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
-    /// ToDo IM
     SCENE2D_API void swapping()    throw ( ::fwTools::Failed );
 
     /// Stop all the adaptors attached to the render related composite, stop all those rattached to the objects contained
@@ -215,7 +219,7 @@ private:
 
     public:
 
-        /// Basic construtor, do nothing.
+        /// Basic constructor, do nothing.
         SceneAdaptor2D()
         {
         }
@@ -226,7 +230,7 @@ private:
         }
 
         /// Get the related service.
-        SPTR (adaptor::IAdaptor) getService()
+        SPTR (adaptor::IAdaptor) getService() const
         {
             return m_service.lock();
         }
@@ -268,30 +272,40 @@ private:
     void configureAdaptor ( ConfigurationType _conf );
 
     /// Get all the objects of the render related composite, and start all their related adaptors.
-    void startAdaptorsFromComposite( SPTR(::fwData::Composite) _composite);
+    void startAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects);
 
     /// Get all the objects of the render related composite, and stop all their related adaptors.
-    void stopAdaptorsFromComposite( SPTR(::fwData::Composite) _composite);
+    void stopAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects);
 
     /// Get all the objects of the render related composite, and swap all their related adaptors.
-    void swapAdaptorsFromComposite( SPTR(::fwData::Composite) _composite);
+    void swapAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects);
 
     /// Get the SceneAdaptor2D related to the _adaptorID key in the m_adaptorID2SceneAdaptor2D map, add a service corresponding to _object,
     ///  set its render, its configuration, configure it, star it, check if its zValue is unique, store it in the m_zValue2AdaptorID map.
-    void startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object) _object);
+    void startAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::Object)& _object);
 
     /// Swap the SceneAdaptor2D to _object.
-    void swapAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object) _object);
+    void swapAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::Object)& _object);
 
     /// Stops the adaptor service, unregister it, reset it and erase the SceneAdaptor2D in
     ////  the m_adaptorID2SceneAdaptor2D map.
-    void stopAdaptor(AdaptorIDType _adaptorID);
+    void stopAdaptor(const AdaptorIDType& _adaptorID);
 
     /// Creates the connection if the required key is contained in the composite
-    void connectAfterWait(SPTR(::fwData::Composite) composite);
+    void connectAfterWait(const ::fwData::Composite::ContainerType& objects);
 
     /// Disconnects the connection based on a object key
-    void disconnect(SPTR(::fwData::Composite) composite);
+    void disconnect(const ::fwData::Composite::ContainerType& objects);
+
+    /// Slot: add objects
+    void addObjects(::fwData::Composite::ContainerType objects);
+
+    /// Slot: change objects
+    void changeObjects(::fwData::Composite::ContainerType newObjects,
+                       ::fwData::Composite::ContainerType oldObjects);
+
+    /// Slot: remove objects
+    void removeObjects(::fwData::Composite::ContainerType objects);
 
     typedef std::map< ObjectIDType, std::vector<AdaptorIDType> > ObjectsID2AdaptorIDVector;
 
@@ -347,8 +361,6 @@ private:
     /// Map to register proxy connections
     ::fwServices::helper::Config::ProxyConnectionsMapType m_proxyMap;
 };
-
-
 
 } // namespace scene2D
 

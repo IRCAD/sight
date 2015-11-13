@@ -11,7 +11,6 @@
 #include <fwCore/base.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwData/Image.hpp>
@@ -20,7 +19,6 @@
 #include <fwData/Vector.hpp>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -126,34 +124,18 @@ std::string distanceToStr(double dist)
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::notifyDeleteDistance(::fwData::Image::sptr image, ::fwData::Object::sptr distance)
+void RemoveDistance::notifyDeleteDistance(::fwData::Image::sptr image, ::fwData::PointList::sptr distance)
 {
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE, distance );
-    msg->setSource(this->getSptr());
-    msg->setSubject( image);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    auto sig = image->signal< ::fwData::Image::DistanceRemovedSignalType >(::fwData::Image::s_DISTANCE_REMOVED_SIG);
+    sig->asyncEmit(distance);
 }
 
 //------------------------------------------------------------------------------
 
-void RemoveDistance::notifyNewDistance(::fwData::Image::sptr image, ::fwData::Object::sptr backup)
+void RemoveDistance::notifyNewDistance(::fwData::Image::sptr image, ::fwData::PointList::sptr distance)
 {
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::DISTANCE, backup );
-    msg->setSource(this->getSptr());
-    msg->setSubject( image);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    auto sig = image->signal< ::fwData::Image::DistanceAddedSignalType >(::fwData::Image::s_DISTANCE_ADDED_SIG);
+    sig->asyncEmit(distance);
 }
 
 //------------------------------------------------------------------------------
@@ -183,7 +165,8 @@ void RemoveDistance::updating( ) throw(::fwTools::Failed)
         if ( requestAll )
         {
             // backup
-            ::fwData::Object::sptr backupDistance = image->getField( ::fwComEd::Dictionary::m_imageDistancesId );
+            ::fwData::PointList::sptr backupDistance = image->getField< ::fwData::PointList >(
+                ::fwComEd::Dictionary::m_imageDistancesId );
 
             image->removeField( ::fwComEd::Dictionary::m_imageDistancesId );
             this->notifyNewDistance(image, backupDistance);
@@ -203,12 +186,6 @@ void RemoveDistance::configuring() throw (::fwTools::Failed)
 void RemoveDistance::starting() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
-}
-
-//------------------------------------------------------------------------------
-
-void RemoveDistance::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------

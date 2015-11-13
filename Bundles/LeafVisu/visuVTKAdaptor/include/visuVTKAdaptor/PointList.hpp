@@ -9,8 +9,6 @@
 
 #ifndef ANDROID
 
-#ifndef ANDROID
-
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
 
@@ -37,6 +35,17 @@ public:
 
     VISUVTKADAPTOR_API virtual ~PointList() throw();
 
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect PointList::s_MODIFIED_SIG to this::s_UPDATE_SPLINE_SLOT
+     * Connect PointList::s_POINT_ADDED_SIG to this::s_ADD_POINT_SLOT
+     * Connect PointList::s_POINT_REMOVED_SIG to this::s_REMOVE_POINT_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -45,7 +54,6 @@ protected:
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void createServices(WeakPointListType &wPtList);
     VISUVTKADAPTOR_API WeakPointListType getWeakPointList();
@@ -54,10 +62,24 @@ protected:
     WeakPointListType m_oldWeakPointList;
     WeakPointListType m_weakPointList;
 
-};
-} //namespace visuVTKAdaptor
+private:
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Adds a point into the spline
+    void addPoint(::fwData::Point::sptr point);
 
-#endif // ANDROID
+    /// Updates the spline's points
+    void updateSpline();
+    /**
+     * @}
+     */
+
+};
+
+
+} //namespace visuVTKAdaptor
 
 #endif // ANDROID
 

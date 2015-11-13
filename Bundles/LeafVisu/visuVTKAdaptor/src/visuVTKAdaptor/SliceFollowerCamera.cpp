@@ -6,20 +6,14 @@
 
 #include "visuVTKAdaptor/SliceFollowerCamera.hpp"
 
-#include <fwComEd/Dictionary.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwData/Boolean.hpp>
 
-#include <fwData/Camera.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Video.hpp>
 #include <fwServices/Base.hpp>
-
-#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkActor.h>
@@ -36,13 +30,16 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Sl
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
-SliceFollowerCamera::SliceFollowerCamera() throw()
+//------------------------------------------------------------------------------
+
+SliceFollowerCamera::SliceFollowerCamera() throw() : m_camera(nullptr)
 {
     m_comChannelPriority = 0.49;
-    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SliceFollowerCamera::updateSliceIndex, this);
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SliceFollowerCamera::updateSliceType, this);
 }
 
 //------------------------------------------------------------------------------
@@ -93,7 +90,9 @@ void SliceFollowerCamera::doStart() throw(fwTools::Failed)
 
 void SliceFollowerCamera::doUpdate() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
+    this->initializeCamera();
 }
 
 //------------------------------------------------------------------------------
@@ -102,7 +101,7 @@ void SliceFollowerCamera::doSwap() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
-    initializeCamera();
+    this->initializeCamera();
 }
 
 //------------------------------------------------------------------------------
@@ -112,46 +111,27 @@ void SliceFollowerCamera::doStop() throw(fwTools::Failed)
     this->unregisterServices();
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void SliceFollowerCamera::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void SliceFollowerCamera::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    this->updateCamera();
+}
 
-    if (imageIsValid)
+//-----------------------------------------------------------------------------
+
+void SliceFollowerCamera::updateSliceType(int from, int to)
+{
+    if( to == static_cast<int>(m_orientation) )
     {
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-        {
-            this->updateImageInfos(image);
-            initializeCamera();
-        }
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
-        {
-            updateCamera();
-        }
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ))
-        {
-            ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-            ::fwData::Object::sptr objInfo   = std::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-            ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
-
-            int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
-            int toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
-
-            if( toSliceType == static_cast<int>(m_orientation) )
-            {
-                setOrientation( static_cast< Orientation >( fromSliceType ));
-                initializeCamera();
-            }
-            else if(fromSliceType == static_cast<int>(m_orientation))
-            {
-                setOrientation( static_cast< Orientation >( toSliceType ));
-                initializeCamera();
-            }
-        }
-
+        setOrientation( static_cast< Orientation >( from ));
     }
+    else if(from == static_cast<int>(m_orientation))
+    {
+        setOrientation( static_cast< Orientation >( to ));
+    }
+    this->initializeCamera();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -183,7 +163,6 @@ void SliceFollowerCamera::initializeCamera()
 
 void SliceFollowerCamera::updateCamera(double distance, double size)
 {
-
     SLM_ASSERT("No Camera", m_camera );
 
     if (distance > 0)
@@ -224,6 +203,18 @@ void SliceFollowerCamera::updateCamera(double distance, double size)
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsType SliceFollowerCamera::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

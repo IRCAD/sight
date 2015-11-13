@@ -8,6 +8,7 @@
 #define __UIMEASUREMENT_ACTION_REMOVELANDMARK_HPP__
 
 #include <fwData/Image.hpp>
+#include <fwData/Point.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -44,14 +45,12 @@ protected:
 
     void updating() throw (::fwTools::Failed);
 
-    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed);
-
     void stopping() throw (::fwTools::Failed);
 
     void info(std::ostream &_sstream );
 
 private:
-    void notify( ::fwData::Image::sptr image, ::fwData::Object::sptr backup );
+    void notify( ::fwData::Image::sptr image, ::fwData::Point::sptr backup );
 
     ::fwData::Point::sptr  getLandmarkToRemove(::fwData::Image::sptr image, bool &removeAll);
 };

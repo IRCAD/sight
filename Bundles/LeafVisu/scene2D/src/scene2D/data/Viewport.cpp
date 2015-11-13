@@ -4,11 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/data/Viewport.hpp"
+
 #include <fwCore/base.hpp>
 #include <fwData/registry/macros.hpp>
 #include <fwData/Exception.hpp>
 
-#include "scene2D/data/Viewport.hpp"
 
 namespace scene2D
 {
@@ -19,11 +20,11 @@ fwDataRegisterMacro( ::scene2D::data::Viewport );
 
 //-----------------------------------------------------------------------------
 
-Viewport::Viewport(::fwData::Object::Key key)
-    : m_x (200),
-      m_y (200),
-      m_width (400),
-      m_height (400)
+Viewport::Viewport(::fwData::Object::Key key) :
+    m_x (200.f),
+    m_y (200.f),
+    m_width (400.f),
+    m_height (400.f)
 {
 }
 
@@ -67,7 +68,7 @@ void Viewport::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCa
 
 //------------------------------------------------------------------------------
 
-float Viewport::getX()
+float Viewport::getX() const
 {
     return m_x;
 }
@@ -81,7 +82,7 @@ void Viewport::setX (float _x)
 
 //-----------------------------------------------------------------------------
 
-float Viewport::getY()
+float Viewport::getY() const
 {
     return m_y;
 }
@@ -95,7 +96,7 @@ void Viewport::setY (float _y)
 
 //-----------------------------------------------------------------------------
 
-float Viewport::getWidth()
+float Viewport::getWidth() const
 {
     return m_width;
 }
@@ -109,7 +110,7 @@ void Viewport::setWidth (float _width)
 
 //-----------------------------------------------------------------------------
 
-float Viewport::getHeight()
+float Viewport::getHeight() const
 {
     return m_height;
 }

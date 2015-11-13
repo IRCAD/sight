@@ -16,8 +16,6 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwComEd/StringMsg.hpp>
-
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/highlighter/CppHighlighter.hpp>
 #include <fwGuiQt/highlighter/PythonHighlighter.hpp>
@@ -41,7 +39,6 @@ const std::string Code::CPP    = "Cpp";
 
 Code::Code() throw() : m_language(PYTHON)
 {
-    //addNewHandledEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -135,17 +132,6 @@ void Code::swapping() throw(::fwTools::Failed)
 {
     this->updating();
 }
-//------------------------------------------------------------------------------
-
-void Code::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    ::fwComEd::StringMsg::csptr stringMsg = ::fwComEd::StringMsg::dynamicConstCast(_msg);
-
-    if (stringMsg && stringMsg->hasEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED))
-    {
-        this->updating();
-    }
-}
 
 //------------------------------------------------------------------------------
 
@@ -169,18 +155,26 @@ void Code::onModifyValue()
     if ( oldValue->value() != stringObj->value() )
     {
         OSLM_TRACE( stringObj->getID() << " modified");
-        ::fwComEd::StringMsg::sptr msg = ::fwComEd::StringMsg::New();
-        msg->addEvent( ::fwComEd::StringMsg::VALUE_IS_MODIFIED );
-        msg->setSource(this->getSptr());
-        msg->setSubject( stringObj);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = stringObj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+
+        auto sig = stringObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
         }
     }
 }
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Code::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 
 } // namespace editor

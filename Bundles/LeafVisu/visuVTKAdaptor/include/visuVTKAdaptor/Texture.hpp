@@ -42,6 +42,15 @@ public:
     /// Destructor
     VISUVTKADAPTOR_API virtual ~Texture() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     /// Calls doUpdate()
@@ -57,7 +66,7 @@ protected:
      * With :
      *  - \b texture (mandatory) : the vtkTexture to associate to the adaptor
      *  - \b autoRender (optional, "true" by default): if autoRender=true,  the scene is automatically rendered after
-     *    doStart, doUpdate, doSwap, doReceive and doStop if m_vtkPipelineModified=true.
+     *    doStart, doUpdate, doSwap and doStop if m_vtkPipelineModified=true.
      *  - \b filtering (optional) : filtering of the texture, "nearest" or "linear"
      *  - \b wrapping (optional) : wrapping of the texture, "clamp" or "repeat"
      *  - \b lighting (optional) : enable the lighting, "yes" or "no" default yes
@@ -76,9 +85,6 @@ protected:
 
     /// Does nothing
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
-
-    /// Calls doUpdate() when it receives MATRIX_IS_MODIFIED event
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     /// Slot called when a texture must be applied on a material.
     void applyTexture( SPTR(::fwData::Material) _material);

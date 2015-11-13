@@ -307,6 +307,58 @@ public:
     /// Return all array names stock in the mesh array-map
     FWDATA_API std::vector<std::string> getDataArrayNames() const;
 
+
+    /***
+     * @name Signals
+     * @{
+     */
+
+    /// Type of signal when vertex are modified
+    typedef ::fwCom::Signal< void () > VertexModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigVertexModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VERTEX_MODIFIED_SIG;
+
+    /// Type of signal when point colors are modified
+    typedef ::fwCom::Signal< void () > PointColorsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigPointColorsModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_COLORS_MODIFIED_SIG;
+
+    /// Type of signal when cell colors are modified
+    typedef ::fwCom::Signal< void () > CellColorsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigCellColorsModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CELL_COLORS_MODIFIED_SIG;
+
+    /// Type of signal when point normals are modified
+    typedef ::fwCom::Signal< void () > PointNormalsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigPointNormalsModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_NORMALS_MODIFIED_SIG;
+
+    /// Type of signal when cell normals are modified
+    typedef ::fwCom::Signal< void () > CellNormalsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigCellNormalsModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CELL_NORMALS_MODIFIED_SIG;
+
+    /// Type of signal when point tex coords are modified
+    typedef ::fwCom::Signal< void () > PointTexCoordsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigPointTexCoorddModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_TEX_COORDS_MODIFIED_SIG;
+
+    /// Type of signal when cell tex coords are modified
+    typedef ::fwCom::Signal< void () > CellTexCoordsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigCellTexCoorddModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CELL_TEX_COORDS_MODIFIED_SIG;
+
+    /**
+     * @}
+     */
+
 protected:
 
     /**

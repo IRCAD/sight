@@ -7,13 +7,17 @@
 #ifndef __UIVISU_ACTION_CROSSTYPEACTION_HPP__
 #define __UIVISU_ACTION_CROSSTYPEACTION_HPP__
 
-#include <string>
-#include <map>
+#include "uiVisu/config.hpp"
 
-#include <fwTools/Failed.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <fwGui/IActionSrv.hpp>
 
-#include "uiVisu/config.hpp"
+#include <fwTools/Failed.hpp>
+
+#include <map>
+#include <string>
 
 namespace uiVisu
 {
@@ -23,8 +27,6 @@ namespace action
 /**
  * @brief   This action allows change the cross type
  * @class   CrossTypeAction
- *
- * @date    2010.
  */
 class UIVISU_CLASS_API CrossTypeAction : public ::fwGui::IActionSrv
 {
@@ -49,9 +51,6 @@ protected:
     /// Stops action
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Does nothing
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
     /// Notifies message to change cross type
     void updating() throw(::fwTools::Failed);
 
@@ -75,6 +74,9 @@ private:
 
     static std::map< std::string, float > m_scaleConversion;
     std::string m_crossType;
+
+    typedef ::fwCom::Signal< void (double) > CrossTypeModifiedSignalType;
+    CrossTypeModifiedSignalType::sptr m_sigCrossTypeModified; ///< Signal emitted when cross type is modified
 };
 
 } // action

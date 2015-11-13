@@ -40,7 +40,6 @@ protected:
     VISUVTKADAPTOR_API virtual void doStop()      throw( ::fwTools::Failed );
     VISUVTKADAPTOR_API virtual void doSwap()      throw( ::fwTools::Failed );
     VISUVTKADAPTOR_API virtual void doUpdate()    throw( ::fwTools::Failed );
-    VISUVTKADAPTOR_API virtual void doReceive( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed );
 
     vtkTransform* m_transform;
     WPTR(::visuVTKAdaptor::Transform) m_transformService;

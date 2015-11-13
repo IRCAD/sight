@@ -6,6 +6,10 @@
 
 #include "uiVisuQt/BasicFloatEditor.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwData/Float.hpp>
@@ -18,8 +22,6 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include <fwComEd/FloatMsg.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -35,7 +37,6 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::BasicFloatEditor, ::f
 
 BasicFloatEditor::BasicFloatEditor() throw()
 {
-//    addNewHandledEvent(::fwComEd::FloatMsg::VALUE_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -118,22 +119,6 @@ void BasicFloatEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void BasicFloatEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    ::fwComEd::FloatMsg::csptr floatMsg = ::fwComEd::FloatMsg::dynamicConstCast(_msg);
-
-    if (floatMsg)
-    {
-        if(floatMsg->hasEvent(::fwComEd::FloatMsg::VALUE_IS_MODIFIED))
-        {
-            this->updating();
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void BasicFloatEditor::info( std::ostream &_sstream )
 {
     _sstream << "Float Editor";
@@ -177,15 +162,11 @@ void BasicFloatEditor::onModifyValue(QString value)
     if ( *oldValue != *floatObj )
     {
         OSLM_TRACE(floatObj->getID() << " new value : " << *floatObj);
-        ::fwComEd::FloatMsg::sptr msg = ::fwComEd::FloatMsg::New();
-        msg->addEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
-        msg->setSource(this->getSptr());
-        msg->setSubject( floatObj);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = floatObj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+
+        auto sig = floatObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
         }
     }
 }

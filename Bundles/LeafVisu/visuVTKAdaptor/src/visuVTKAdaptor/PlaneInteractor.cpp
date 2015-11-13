@@ -8,14 +8,15 @@
 
 #include "visuVTKAdaptor/PlaneInteractor.hpp"
 
-#include <fwComEd/PlaneMsg.hpp>
-#include <fwComEd/PointMsg.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <fwData/Plane.hpp>
 
 #include <fwMath/PlaneFunctions.hpp>
+
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -86,11 +87,10 @@ protected:
 
 //------------------------------------------------------------------------------
 
-PlaneInteractor::PlaneInteractor() throw()
+PlaneInteractor::PlaneInteractor() throw() :
+    m_vtkObserver(nullptr),
+    m_priority(1.)
 {
-    m_priority    = 1;
-    m_vtkObserver = NULL;
-    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -114,7 +114,6 @@ void PlaneInteractor::configuring() throw(fwTools::Failed)
 
 void PlaneInteractor::doStart() throw(fwTools::Failed)
 {
-
     if (::fwData::Plane::dynamicCast(this->getObject()))
     {
         PlaneInteractorCallback *observer = PlaneInteractorCallback::New();
@@ -155,14 +154,8 @@ void PlaneInteractor::doStop() throw(fwTools::Failed)
         this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent, m_vtkObserver);
         this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver);
         m_vtkObserver->Delete();
-        m_vtkObserver = NULL;
+        m_vtkObserver = nullptr;
     }
-}
-
-//------------------------------------------------------------------------------
-
-void PlaneInteractor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------
@@ -180,16 +173,8 @@ void PlaneInteractor::switchPlaneNormal()
         {
             plane->setValue(pt0,pt2,pt1);
 
-            ::fwComEd::PlaneMsg::sptr modifiedMsg = ::fwComEd::PlaneMsg::New();
-            modifiedMsg->addEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
-            modifiedMsg->setSource( this->getSptr());
-            modifiedMsg->setSubject( plane);
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            sig = plane->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-            {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( modifiedMsg);
-            }
+            auto sig = plane->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
         }
         this->setVtkPipelineModified();
     }
@@ -227,36 +212,16 @@ void PlaneInteractor::pushPlane(double factor)
 
             normal = ::fwMath::getNormal(plane->getPlane());
 
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            ::fwComEd::PointMsg::sptr modifiedMsg = ::fwComEd::PointMsg::New();
-            modifiedMsg->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
-            modifiedMsg->setSource( this->getSptr());
-            modifiedMsg->setSubject( pt0);
-            sig = pt0->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-            {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( modifiedMsg);
-            }
+            ::fwData::Object::ModifiedSignalType::sptr sig;
+            sig = pt0->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
 
-            ::fwComEd::PointMsg::sptr modifiedMsg2 = ::fwComEd::PointMsg::New();
-            modifiedMsg2->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
-            modifiedMsg2->setSource( this->getSptr());
-            modifiedMsg2->setSubject( pt1);
-            sig = pt1->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-            {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( modifiedMsg2);
-            }
+            sig = pt1->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
 
-            ::fwComEd::PointMsg::sptr modifiedMsg3 = ::fwComEd::PointMsg::New();
-            modifiedMsg3->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
-            modifiedMsg3->setSource( this->getSptr());
-            modifiedMsg3->setSubject( pt2);
-            sig = pt2->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-            {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( modifiedMsg3);
-            }
+            sig = pt2->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
+
             this->setVtkPipelineModified();
         }
     }
@@ -269,16 +234,8 @@ void PlaneInteractor::deselectPlane()
     ::fwData::Plane::sptr plane ( ::fwData::Plane::dynamicCast( this->getObject() ) );
     if (plane)
     {
-        ::fwComEd::PlaneMsg::sptr deselectMsg = ::fwComEd::PlaneMsg::New();
-        deselectMsg->addEvent( ::fwComEd::PlaneMsg::DESELECT_PLANE );
-        deselectMsg->setSource( this->getSptr());
-        deselectMsg->setSubject( plane);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = plane->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-        {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( deselectMsg);
-        }
+        auto sig = plane->signal< ::fwData::Plane::SelectedSignalType >(::fwData::Plane::s_SELECTED_SIG);
+        sig->asyncEmit(false);
     }
 }
 

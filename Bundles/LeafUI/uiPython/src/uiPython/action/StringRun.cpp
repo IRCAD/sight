@@ -44,13 +44,6 @@ void StringRun::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void StringRun::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------
-
 void StringRun::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();

@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKAdaptor/Cube.hpp"
 
 #include <fwServices/macros.hpp>
 
@@ -12,14 +13,13 @@
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
 
-#include "visuVTKAdaptor/Cube.hpp"
-
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Cube, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
+
+//------------------------------------------------------------------------------
 
 void Cube::doStart() throw(fwTools::Failed)
 {
@@ -32,13 +32,13 @@ void Cube::doStart() throw(fwTools::Failed)
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
 
 void Cube::doStop() throw(fwTools::Failed)
 {
     this->removeAllPropFromRenderer();
 }
 
-
-
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

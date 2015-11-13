@@ -15,3 +15,13 @@
 
 fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation, ::fwData::Object );
 
+namespace fwServices
+{
+namespace ut
+{
+
+const ::fwCom::Signals::SignalKeyType TestServiceImplementation::s_MSG_SENT_SIG = "msgSent";
+const ::fwCom::Slots::SlotKeyType TestServiceImplementation::s_RECEIVE_MSG_SLOT = "receiveMsg";
+
+} // namespace ut
+} // namespace fwServices

@@ -46,31 +46,7 @@
 
                                 <viewport id="view1" x="-100" y="-100" width="200" height="200" />
 
-                                <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                                <!-- <axis id="axe1-5" origin="-5.0" scale="1.0" scaleType="LINEAR" />
-                                <axis id="axe1y" origin="5.0" scale="10.0" scaleType="LINEAR" />
-                                <axis id="axe2" origin="0.0" scale="50.0" scaleType="LOG" /> -->
-                                
-                                <!--
-                                <adaptor id="sin" class="::scene2D::adaptor::Sin" objectId="self">
-                                    <config xMin="-50" xMax="50" />
-                                </adaptor> 
-
-                                <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
-                                    <config xMin="-500" xMax="500" yMin="-500" yMax="500" xSpacing="10" ySpacing="10" color="green" xAxis="axe1" yAxis="axe1y"/>
-                                </adaptor>
-
-                                <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
-                                    <config x1="-1000" x2="1000" y1="0" y2="0" color="red" zValue="1" />
-                                </adaptor>
-
-                                <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
-                                    <config x1="0" x2="0" y1="-1000" y2="1000" color="red" zValue="1" />
-                                </adaptor>
-
-                                <adaptor id="grid2" class="::scene2D::adaptor::Grid2D" objectId="self">
-                                    <config xMin="-300" xMax="300" yMin="-300" yMax="300" xSpacing="10" ySpacing="10" color="blue" xAxis="axe1" yAxis="axe2" />
-                                </adaptor> -->
+                                <axis id="axe1" origin="0.0" scale="1.0" scaleType="LINEAR" />                               
                               
                                 <adaptor id="gridFromFloat" class="::scene2D::adaptor::GridFromFloat" objectId="data">
                                     <config xMin="-150" xMax="150" yMin="-150" yMax="150" xSpacing="10" ySpacing="10" color="green" zValue="2" xAxis="axe1" yAxis="axe1" />
@@ -105,7 +81,6 @@
                             </object>
 
                         </item>
-
 
                     </object>
 

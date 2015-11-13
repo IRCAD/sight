@@ -9,11 +9,13 @@
 
 #ifndef ANDROID
 
-#include <fwData/TransferFunction.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
 #include "visuVTKAdaptor/config.hpp"
+
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+
+#include <fwData/TransferFunction.hpp>
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 
 class vtkCommand;
@@ -48,7 +50,6 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     // redraw all (stop then restart sub services)
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     vtkCommand *m_vtkObserver;
     double m_priority;

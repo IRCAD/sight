@@ -6,6 +6,10 @@
 
 #include "fwComEd/helper/Composite.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwData/Composite.hpp>
 
 #include <fwServices/IService.hpp>
@@ -19,9 +23,8 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-Composite::Composite( ::fwData::Composite::wptr _composite )
-    :   m_compositeMsg ( ::fwComEd::CompositeMsg::New() ),
-      m_composite ( _composite )
+Composite::Composite( ::fwData::Composite::wptr _composite ) :
+    m_composite ( _composite )
 {
 }
 
@@ -41,8 +44,7 @@ void Composite::add( std::string _compositeKey, ::fwData::Object::sptr _newObjec
     // Modify composite
     m_composite.lock()->getContainer()[ _compositeKey ] = _newObject;
 
-    // Modify message
-    m_compositeMsg->appendAddedKey( _compositeKey, _newObject );
+    m_addedObjects[_compositeKey] = _newObject;
 
 }
 
@@ -59,8 +61,7 @@ void Composite::remove( std::string _compositeKey )
     // Modify composite
     m_composite.lock()->getContainer().erase( _compositeKey );
 
-    // Modify message
-    m_compositeMsg->appendRemovedKey( _compositeKey, objBackup );
+    m_removedObjects[_compositeKey] = objBackup;
 
 }
 
@@ -96,8 +97,8 @@ void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObje
         // Modify composite
         m_composite.lock()->getContainer()[ _compositeKey ] = _newObject;
 
-        // Modify message
-        m_compositeMsg->appendChangedKey( _compositeKey, objBackup, _newObject );
+        m_newChangedObjects[_compositeKey] = _newObject;
+        m_oldChangedObjects[_compositeKey] = objBackup;
     }
     else
     {
@@ -109,32 +110,31 @@ void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObje
 
 //-----------------------------------------------------------------------------
 
-void Composite::notify( ::fwServices::IService::sptr serviceSource, bool _allowLoops )
+void Composite::notify()
 {
-    if ( m_compositeMsg->getEventIds().size() > 0 )
+    if ( !m_addedObjects.empty() )
     {
-        m_compositeMsg->setSource( serviceSource );
-        m_compositeMsg->setSubject( m_composite.lock() );
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = m_composite.lock()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig = m_composite.lock()->signal< ::fwData::Composite::AddedObjectsSignalType >(
+            ::fwData::Composite::s_ADDED_OBJECTS_SIG);
 
-        if(_allowLoops)
-        {
-            sig->asyncEmit(m_compositeMsg);
-        }
-        else
-        {
-            ::fwServices::IService::ReceiveSlotType::sptr slot;
-            slot = serviceSource->slot< ::fwServices::IService::ReceiveSlotType >(
-                ::fwServices::IService::s_RECEIVE_SLOT );
-            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
-            sig->asyncEmit(m_compositeMsg);
-        }
+        sig->asyncEmit(m_addedObjects);
+    }
+    if ( !m_newChangedObjects.empty() && !m_oldChangedObjects.empty() )
+    {
+        auto sig = m_composite.lock()->signal< ::fwData::Composite::ChangedObjectsSignalType >(
+            ::fwData::Composite::s_CHANGED_OBJECTS_SIG);
 
+        sig->asyncEmit(m_newChangedObjects, m_oldChangedObjects);
+    }
+    if ( !m_removedObjects.empty() )
+    {
+        auto sig = m_composite.lock()->signal< ::fwData::Composite::RemovedObjectsSignalType >(
+            ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
+
+        sig->asyncEmit(m_removedObjects);
     }
     SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
-                m_compositeMsg->getEventIds().size() == 0);
+                m_addedObjects.empty() && m_newChangedObjects.empty() && m_removedObjects.empty());
 }
 
 //-----------------------------------------------------------------------------

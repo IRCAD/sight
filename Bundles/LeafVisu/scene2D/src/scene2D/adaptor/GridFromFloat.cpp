@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/adaptor/GridFromFloat.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+
 #include <fwServices/Base.hpp>
 #include <fwData/Float.hpp>
-#include <fwComEd/FloatMsg.hpp>
 
 #include <QGraphicsItemGroup>
 
-#include "scene2D/adaptor/GridFromFloat.hpp"
-#include "scene2D/data/InitQtPen.hpp"
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::GridFromFloat, ::fwData::Float );
 
@@ -21,16 +21,20 @@ namespace scene2D
 namespace adaptor
 {
 
-GridFromFloat::GridFromFloat() throw()
-    : m_xSpacing (10),
-      m_ySpacing (10)
+//------------------------------------------------------------------------------
+
+GridFromFloat::GridFromFloat() throw() : m_xSpacing (10.f),
+                                         m_ySpacing (10.f)
 {
-//    addNewHandledEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
 }
+
+//------------------------------------------------------------------------------
 
 GridFromFloat::~GridFromFloat() throw()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void GridFromFloat::configuring() throw ( ::fwTools::Failed )
 {
@@ -62,6 +66,8 @@ void GridFromFloat::configuring() throw ( ::fwTools::Failed )
         ::scene2D::data::InitQtPen::setPenColor(m_pen, m_configuration->getAttributeValue("color"));
     }
 }
+
+//------------------------------------------------------------------------------
 
 void GridFromFloat::draw()
 {
@@ -129,6 +135,8 @@ void GridFromFloat::draw()
     this->getScene2DRender()->getScene()->addItem(m_layer);
 }
 
+//------------------------------------------------------------------------------
+
 void GridFromFloat::doStart() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
@@ -141,36 +149,28 @@ void GridFromFloat::doStart() throw ( ::fwTools::Failed )
     this->draw();
 }
 
+//------------------------------------------------------------------------------
+
 void GridFromFloat::doUpdate() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
-}
-
-void GridFromFloat::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-
-    // Get and cast the ObjectMsg to FloatMsg
-    ::fwComEd::FloatMsg::csptr floatMsg = ::fwComEd::FloatMsg::dynamicConstCast(_msg);
-
-    // If the message is VALUE_IS_MODIFIED
-    if(floatMsg && floatMsg->hasEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED ) )
+    // Check if the float object isn't negative
+    if (this->getObject< ::fwData::Float >()->getValue() > 0)
     {
-        // Check if the float object isn't negative
-        if (this->getObject< ::fwData::Float >()->getValue() > 0)
-        {
-            // Set the xSpacing the float object value
-            m_xSpacing = this->getObject< ::fwData::Float >()->getValue();
-        }
-
-        this->draw();
+        // Set the xSpacing the float object value
+        m_xSpacing = this->getObject< ::fwData::Float >()->getValue();
     }
+
+    this->draw();
 }
+
+//------------------------------------------------------------------------------
 
 void GridFromFloat::doSwap() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
+
+//------------------------------------------------------------------------------
 
 void GridFromFloat::doStop() throw ( ::fwTools::Failed )
 {
@@ -181,6 +181,19 @@ void GridFromFloat::doStop() throw ( ::fwTools::Failed )
     // Remove the layer (and therefore all its related items) from the scene
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 }
+
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType GridFromFloat::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace adaptor
 } // namespace scene2D

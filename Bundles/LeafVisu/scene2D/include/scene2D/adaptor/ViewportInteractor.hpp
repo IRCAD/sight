@@ -7,7 +7,7 @@
 #ifndef __SCENE2D_ADAPTOR_VIEWPORTINTERACTOR_HPP__
 #define __SCENE2D_ADAPTOR_VIEWPORTINTERACTOR_HPP__
 
-#include <scene2D/adaptor/IAdaptor.hpp>
+#include "scene2D/adaptor/IAdaptor.hpp"
 
 namespace scene2D
 {
@@ -36,8 +36,6 @@ protected:
     SCENE2D_API void doStart()    throw ( ::fwTools::Failed );
 
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
-
-    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
 

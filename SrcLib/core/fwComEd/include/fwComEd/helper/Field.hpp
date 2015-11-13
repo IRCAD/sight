@@ -7,12 +7,11 @@
 #ifndef __FWCOMED_HELPER_FIELD_HPP__
 #define __FWCOMED_HELPER_FIELD_HPP__
 
-#include <fwServices/IService.hpp>
-#include <fwServices/ObjectMsg.hpp>
+#include "fwComEd/config.hpp"
 
 #include <fwData/Object.hpp>
 
-#include "fwComEd/config.hpp"
+#include <fwServices/IService.hpp>
 
 
 namespace fwComEd
@@ -22,8 +21,6 @@ namespace helper
 
 /**
  * @brief   Defines an helper to modify field on a ::fwData::Object and create a message notifying this modification.
- *
- * @date    2007-2009.
  */
 class FWCOMED_CLASS_API Field
 {
@@ -66,7 +63,7 @@ public:
     FWCOMED_API void removeField( const ::fwData::Object::FieldNameType &name );
 
     /// Send the built message
-    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource );
+    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource = ::fwServices::IService::sptr());
 
 protected:
     FWCOMED_API void buildMessage(
@@ -74,7 +71,15 @@ protected:
         const ::fwData::Object::FieldMapType &newFields
         );
 
-    ::fwServices::ObjectMsg::sptr m_objectMsg;
+    /// Map of added objects, send on notify
+    ::fwData::Object::FieldsContainerType m_addedFields;
+    /// Map of new changed objects, send on notify
+    ::fwData::Object::FieldsContainerType m_newChangedFields;
+    /// Map of old changed objects, send on notify
+    ::fwData::Object::FieldsContainerType m_oldChangedFields;
+    /// Map of removed objects, send on notify
+    ::fwData::Object::FieldsContainerType m_removedFields;
+    /// Composite to add/remove/change objects
 
     ::fwData::Object::wptr m_object;
 };
@@ -89,7 +94,7 @@ inline SPTR(DATA_TYPE) Field::setDefaultField(const fwData::Object::FieldNameTyp
     ::fwData::Object::sptr field  = object->getField(name);
     if (!field)
     {
-        m_objectMsg->appendAddedField(name, defaultValue);
+        m_addedFields[name] = defaultValue;
     }
     return object->setDefaultField(name, defaultValue);
 }

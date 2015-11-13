@@ -4,30 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QGraphicsItemGroup>
-#include <QPoint>
-#include <QColorDialog>
-
-#include <fwServices/Base.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/String.hpp>
-
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/TransferFunctionMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
 #include "scene2D/data/Viewport.hpp"
 #include "scene2D/adaptor/TransferFunction.hpp"
 #include "scene2D/data/InitQtPen.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/ViewportMsg.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Image.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/String.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <QGraphicsItemGroup>
+#include <QPoint>
+#include <QColorDialog>
 
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::TransferFunction, ::fwData::Image );
@@ -38,14 +37,15 @@ namespace scene2D
 namespace adaptor
 {
 
-TransferFunction::TransferFunction() throw() : m_pointSize(10)
+TransferFunction::TransferFunction() throw() :
+    m_layer(nullptr),
+    m_circleWidth(0.),
+    m_circleHeight(0.),
+    m_pointIsCaptured(false),
+    m_capturedCircle(nullptr),
+    m_pointSize(10.f)
 {
-    this->installTFSelectionEventHandler(this);
-//    this->addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
-//    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
-//    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
-//    this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-//    this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
+    this->installTFSlots(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -494,19 +494,12 @@ void TransferFunction::updateImageTF()
         selectedTF->setWLMinMax(::fwData::TransferFunction::TFValuePairType(max, min));
     }
 
-    ::fwComEd::TransferFunctionMsg::sptr msg = ::fwComEd::TransferFunctionMsg::New();
-    msg->addEvent(::fwComEd::TransferFunctionMsg::MODIFIED_POINTS);
-    msg->setSource( this->getSptr());
-    msg->setSubject( selectedTF);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = selectedTF->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = selectedTF->signal< ::fwData::TransferFunction::PointsModifiedSignalType >(
+        ::fwData::TransferFunction::s_POINTS_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg );
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFPoints));
+        sig->asyncEmit();
     }
-
-    // Update image window and level
-    this->notifyTFWindowing(this->getSptr());
 }
 
 //-----------------------------------------------------------------------------
@@ -524,11 +517,11 @@ void TransferFunction::doStart() throw ( ::fwTools::Failed )
 
     m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
 
-    m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-        this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
+        this->slot(::fwServices::IService::s_UPDATE_SLOT));
 
     this->doUpdate();
-    this->installTFObserver( this->getSptr() );
+    this->installTFConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -537,7 +530,7 @@ void TransferFunction::doUpdate() throw ( ::fwTools::Failed )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
-    this->updateTransferFunction(image, this->getSptr());
+    this->updateTransferFunction(image);
 
     // Build the tf map points, the circles vector, the lines and polygons vector, add the items to the layer and add it to the scene
     this->buildTFPoints();
@@ -546,35 +539,34 @@ void TransferFunction::doUpdate() throw ( ::fwTools::Failed )
     this->buildLayer();
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void TransferFunction::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Failed )
+void TransferFunction::updatingTFPoints()
 {
-    if(msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING )
-       || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS )
-       || msg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED)
-       || msg->hasEvent( ::fwComEd::ImageMsg::BUFFER)
-       || msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE)
-       || this->upadteTFObserver(msg, this->getSptr()))
-    {
-        this->doUpdate();
-    }
+    this->doUpdate();
+}
+
+//------------------------------------------------------------------------------
+
+void TransferFunction::updatingTFWindowing(double window, double level)
+{
+    this->doUpdate();
 }
 
 //-----------------------------------------------------------------------------
 
 void TransferFunction::doSwap() throw ( ::fwTools::Failed )
 {
-    this->removeTFObserver();
+    this->removeTFConnections();
     this->doUpdate();
-    this->installTFObserver( this->getSptr() );
+    this->installTFConnections();
 }
 
 //-----------------------------------------------------------------------------
 
 void TransferFunction::doStop() throw ( ::fwTools::Failed )
 {
-    this->removeTFObserver();
+    this->removeTFConnections();
     m_connection.disconnect();
 
     // Clear the items vectors and remove the layer (and all its children) from the scene
@@ -985,6 +977,20 @@ double TransferFunction::pointValue(QGraphicsEllipseItem* circle)
     ::scene2D::data::Coord scenePoint = this->getScene2DRender()->mapToScene( _coord );
     return scenePoint;
 }
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType TransferFunction::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 
 } // namespace adaptor
 } // namespace scene2D

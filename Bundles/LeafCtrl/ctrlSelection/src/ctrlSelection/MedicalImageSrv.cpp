@@ -8,7 +8,6 @@
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/helper/Image.hpp>
-#include <fwComEd/ImageMsg.hpp>
 
 #include <fwData/Image.hpp>
 
@@ -26,24 +25,12 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::MedicalImag
 
 MedicalImageSrv::MedicalImageSrv() throw()
 {
-    //addNewHandledEvent(::fwComEd::ImageMsg::BUFFER );
 }
 
 //-----------------------------------------------------------------------------
 
 MedicalImageSrv::~MedicalImageSrv() throw()
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void MedicalImageSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-    if(message->hasEvent(::fwComEd::ImageMsg::BUFFER))
-    {
-        this->convertImage();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -56,7 +43,7 @@ void MedicalImageSrv::convertImage()
         ::fwComEd::helper::Image helper ( pImg );
 
         helper.createLandmarks();
-        helper.createTransferFunctionPool(this->getSptr());
+        helper.createTransferFunctionPool();
         helper.createImageSliceIndex();
     }
 }
@@ -97,12 +84,24 @@ void MedicalImageSrv::reconfiguring()  throw ( ::fwTools::Failed )
 
 void MedicalImageSrv::updating() throw ( ::fwTools::Failed )
 {
+    this->convertImage();
 }
 
 //-----------------------------------------------------------------------------
 
 void MedicalImageSrv::info( std::ostream &_sstream )
 {
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType MedicalImageSrv::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

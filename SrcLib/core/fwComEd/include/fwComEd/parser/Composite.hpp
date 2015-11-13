@@ -7,16 +7,16 @@
 #ifndef __FWCOMED_PARSER_COMPOSITE_HPP__
 #define __FWCOMED_PARSER_COMPOSITE_HPP__
 
-#include <fwTools/Failed.hpp>
-#include <fwTools/Object.hpp>
+#include "fwComEd/config.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include <fwServices/AppConfigManager.hpp>
 #include <fwServices/IXMLParser.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
+#include <fwTools/Failed.hpp>
+#include <fwTools/Object.hpp>
 
-#include "fwComEd/config.hpp"
 
 namespace fwComEd
 {

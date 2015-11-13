@@ -27,9 +27,7 @@ Node::Node(::fwData::Object::Key key) :
 {
     m_signals( s_UPDATED_SIG,  m_sigUpdated);
 
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
+
 }
 
 //------------------------------------------------------------------------------

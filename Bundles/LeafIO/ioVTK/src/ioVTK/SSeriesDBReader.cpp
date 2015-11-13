@@ -12,8 +12,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwServices/ObjectMsg.hpp>
-
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/location/Folder.hpp>
 
@@ -155,7 +153,7 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
 
         ::fwData::mt::ObjectWriteLock lock(seriesDB);
         sDBhelper.merge(localSeriesDB);
-        sDBhelper.notify(this->getSptr());
+        sDBhelper.notify();
 
         cursor.setDefaultCursor();
     }

@@ -255,7 +255,6 @@
                         <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myReaderPathFile" autoConnect="no">
                             <type mode="reader" />
                         </service>
-                        <service impl="::ctrlSelection::wrapper::ImageWrapperSrv" type="::ctrlSelection::IWrapperSrv" uid="newOBject2newImage" autoConnect="yes" />
 
                         <!--
                             The other service (::gui::action::StarterActionService) is a generic action. In the configuration of this service, we specify the id of the services to be started and

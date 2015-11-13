@@ -8,6 +8,9 @@
 #include "fwData/Exception.hpp"
 #include "fwData/TransferFunction.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 #include <fwTools/Type.hpp>
 
@@ -22,10 +25,16 @@ namespace fwData
 
 const std::string TransferFunction::s_DEFAULT_TF_NAME = "CT-GreyLevel";
 
+const ::fwCom::Signals::SignalKeyType TransferFunction::s_POINTS_MODIFIED_SIG    = "pointsModified";
+const ::fwCom::Signals::SignalKeyType TransferFunction::s_WINDOWING_MODIFIED_SIG = "windowingModified";
+
 //------------------------------------------------------------------------------
 
 TransferFunction::TransferFunction(::fwData::Object::Key key)
 {
+    newSignal< PointsModifiedSignalType >(s_POINTS_MODIFIED_SIG);
+    newSignal< WindowingModifiedSignalType >(s_WINDOWING_MODIFIED_SIG);
+
     this->initTF();
 }
 

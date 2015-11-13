@@ -55,8 +55,8 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
                                     "myRenderingTuto");
     m_renderSrv->configure();
 
-    m_connection = m_image->signal( ::fwData::Object::s_OBJECT_MODIFIED_SIG)
-                   ->connect(m_renderSrv->slot( ::fwServices::IService::s_RECEIVE_SLOT));
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
+    m_connections->connect(m_image, m_renderSrv, m_renderSrv->getObjSrvConnections());
 
     // Frame service
     m_frameSrv = ::fwServices::add(m_image, "::fwGui::IFrameSrv", "::gui::frame::DefaultFrame");
@@ -91,7 +91,7 @@ void Plugin::stop() throw()
 
 void Plugin::uninitialize() throw()
 {
-    m_connection.disconnect();
+    m_connections->disconnect();
     m_readerSrv->stop();
     m_frameSrv->stop();
     ::fwServices::OSR::unregisterService( m_readerSrv );

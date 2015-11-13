@@ -12,8 +12,6 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwComEd/ModelSeriesMsg.hpp>
-
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
@@ -35,17 +33,25 @@ namespace visuVTKAdaptor
 
 const ::fwCom::Signals::SignalKeyType ModelSeries::s_TEXTURE_APPLIED_SIG = "textureApplied";
 
+const ::fwCom::Slots::SlotKeyType ModelSeries::s_UPDATE_NORMAL_MODE_SLOT   = "updateNormalMode";
+const ::fwCom::Slots::SlotKeyType ModelSeries::s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
+
+//------------------------------------------------------------------------------
+
 ModelSeries::ModelSeries() throw() :
-    m_sigTextureApplied(TextureAppliedSignalType::New())
+    m_sigTextureApplied(TextureAppliedSignalType::New()),
+    m_autoResetCamera(true)
 {
-    m_clippingPlanes  = "";
-    m_autoResetCamera = true;
+    m_clippingPlanes = "";
 
     ::fwCom::HasSignals::m_signals(s_TEXTURE_APPLIED_SIG, m_sigTextureApplied);
 
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
+    m_slotUpdateNormalMode    = ::fwCom::newSlot(&ModelSeries::updateNormalMode, this);
+    m_slotShowReconstructions = ::fwCom::newSlot(&ModelSeries::showReconstructions, this);
+    ::fwCom::HasSlots::m_slots(s_UPDATE_NORMAL_MODE_SLOT, m_slotUpdateNormalMode)
+        (s_SHOW_RECONSTRUCTIONS_SLOT, m_slotShowReconstructions);
+
+    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
 
 //------------------------------------------------------------------------------
@@ -172,39 +178,55 @@ void ModelSeries::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ModelSeries::updateNormalMode(std::uint8_t mode, std::string recID)
 {
-    if ( msg->hasEvent(::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS) )
+    for( ServiceVector::value_type service :  m_subServices)
     {
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
-        bool showRec;
-        showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
-
-        for( ServiceVector::value_type service :  m_subServices)
+        if(!service.expired())
         {
-            if(!service.expired())
+            ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor
+                = ::visuVTKAdaptor::Reconstruction::dynamicCast(service.lock());
+            if (renconstructionAdaptor && renconstructionAdaptor->getObject()->getID() == recID)
             {
-                ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor
-                    = ::visuVTKAdaptor::Reconstruction::dynamicCast(service.lock());
-                if (renconstructionAdaptor)
-                {
-                    renconstructionAdaptor->setForceHide( !showRec );
-                }
+                renconstructionAdaptor->updateNormalMode(mode);
+                break;
             }
         }
+    }
+}
 
-        OSLM_INFO( "Receive event ShowReconstruction : " << showRec );
-        this->setVtkPipelineModified();
-    }
-    else if ( msg->hasEvent(::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION) )
-    {
-        this->doUpdate();
-    }
-    else if ( msg->hasEvent(::fwComEd::ModelSeriesMsg::REMOVED_RECONSTRUCTIONS) )
-    {
-        this->doStop();
-    }
+//------------------------------------------------------------------------------
 
+void ModelSeries::showReconstructions(bool show)
+{
+    ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+
+    for( ServiceVector::value_type service :  m_subServices)
+    {
+        if(!service.expired())
+        {
+            ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor
+                = ::visuVTKAdaptor::Reconstruction::dynamicCast(service.lock());
+            if (renconstructionAdaptor)
+            {
+                renconstructionAdaptor->setForceHide( !show );
+            }
+        }
+    }
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ModelSeries::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

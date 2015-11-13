@@ -6,8 +6,6 @@
 
 #include "visuVTKAdaptor/Material.hpp"
 
-#include <fwComEd/MaterialMsg.hpp>
-
 #include <fwData/Material.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 
@@ -77,7 +75,7 @@ void Material::setVtkProperty(vtkProperty *property)
 
 //------------------------------------------------------------------------------
 
-vtkProperty *Material::getVtkProperty()
+vtkProperty *Material::getVtkProperty() const
 {
     return m_property;
 }
@@ -113,18 +111,7 @@ void Material::doUpdate() throw(fwTools::Failed)
 {
     ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
 
-    updateMaterial( material );
-}
-
-//------------------------------------------------------------------------------
-
-void Material::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    ::fwComEd::MaterialMsg::csptr materialMsg = ::fwComEd::MaterialMsg::dynamicConstCast(msg);
-    if( materialMsg && materialMsg->hasEvent(::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED) )
-    {
-        this->doUpdate();
-    }
+    this->updateMaterial( material );
 }
 
 //------------------------------------------------------------------------------
@@ -222,5 +209,17 @@ void Material::updateMaterial( SPTR(::fwData::Material)material )
     m_property->Modified();
     this->setVtkPipelineModified();
 }
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Material::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Material::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

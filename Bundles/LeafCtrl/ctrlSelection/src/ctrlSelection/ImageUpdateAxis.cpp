@@ -8,8 +8,6 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwComEd/FloatMsg.hpp>
-#include <fwComEd/ImageMsg.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/Image.hpp>
@@ -22,6 +20,8 @@
 namespace ctrlSelection
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT = "updateSliceType";
+
 //-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::ImageUpdateAxis, ::fwData::Image );
@@ -30,7 +30,6 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::ImageUpdate
 
 ImageUpdateAxis::ImageUpdateAxis() throw()
 {
-    //handlingEventOff ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
 }
 
 //-----------------------------------------------------------------------------
@@ -41,31 +40,18 @@ ImageUpdateAxis::~ImageUpdateAxis() throw()
 
 //-----------------------------------------------------------------------------
 
-void ImageUpdateAxis::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
+void ImageUpdateAxis::updateSliceType(int from, int to)
 {
-    SLM_TRACE_FUNC();
-    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(message);
-    if (imageMsg && imageMsg->hasEvent(::fwComEd::ImageMsg::CHANGE_SLICE_TYPE))
+    if( to == static_cast< int > ( m_orientation ) )
     {
-        ::fwData::Object::csptr cObjInfo = imageMsg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-        ::fwData::Object::sptr objInfo   = std::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-        ::fwData::Composite::sptr info   = ::fwData::Composite::dynamicCast ( objInfo );
-
-        ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] );
-        ::fwData::Integer::sptr toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] );
-
-        if( toSliceType->value() == static_cast< int > ( m_orientation ) )
-        {
-            m_orientation =
-                static_cast< ::fwComEd::helper::MedicalImageAdaptor::Orientation > ( fromSliceType->value() );
-        }
-        else if(fromSliceType->value() == static_cast<int>(m_orientation))
-        {
-            m_orientation = static_cast< ::fwComEd::helper::MedicalImageAdaptor::Orientation >( toSliceType->value() );
-        }
-
-        this->updating();
+        m_orientation =
+            static_cast< ::fwComEd::helper::MedicalImageAdaptor::Orientation > ( from );
     }
+    else if(from == static_cast<int>(m_orientation))
+    {
+        m_orientation = static_cast< ::fwComEd::helper::MedicalImageAdaptor::Orientation >( to );
+    }
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
@@ -137,22 +123,25 @@ void ImageUpdateAxis::updating() throw ( ::fwTools::Failed )
 
     dataFloat->value() = (float) m_orientation;
     OSLM_TRACE(dataFloat->getID() << " new value : " << *dataFloat);
-    ::fwComEd::FloatMsg::sptr msg = ::fwComEd::FloatMsg::New();
-    msg->addEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
-    msg->setSource(this->getSptr());
-    msg->setSubject( dataFloat);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = dataFloat->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+
+    auto sig = dataFloat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
 
 void ImageUpdateAxis::info( std::ostream &_sstream )
 {
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ImageUpdateAxis::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

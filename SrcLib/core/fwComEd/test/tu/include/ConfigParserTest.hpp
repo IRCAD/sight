@@ -12,10 +12,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/ImageMsg.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
@@ -29,7 +26,6 @@ namespace ut
  * @brief   Test ProcessObject building from a ConfigurationElement and composite message.
  * @see     ICompositeParser
  * @see     CompositeEditor
- * @see     CompositeMsg
  */
 class ConfigParserTest : public CPPUNIT_NS::TestFixture
 {

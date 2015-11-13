@@ -6,7 +6,6 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <fwComEd/CompositeMsg.hpp>
 #include <fwComEd/helper/Composite.hpp>
 
 #include "ctrlSelection/IUpdaterSrv.hpp"
@@ -154,7 +153,7 @@ void IUpdaterSrv::updateComposite(::fwData::Composite::sptr pComposite, ::fwData
         }
 
         // Notification of message
-        pCompositeHelper->notify( this->getSptr() );
+        pCompositeHelper->notify();
     }
     else
     {

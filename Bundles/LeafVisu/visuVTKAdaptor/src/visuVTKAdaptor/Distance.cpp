@@ -9,7 +9,6 @@
 #include "visuVTKAdaptor/Distance.hpp"
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/PointMsg.hpp>
 
 #include <fwData/PointList.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -32,8 +31,6 @@
 #include <vtkRenderer.h>
 
 
-
-
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Distance, ::fwData::PointList );
 
 namespace visuVTKAdaptor
@@ -41,23 +38,23 @@ namespace visuVTKAdaptor
 
 
 Distance::Distance() throw() :
-    m_distanceRepresentation( vtkDistanceRepresentation2D::New())
+    m_distanceRepresentation( vtkDistanceRepresentation2D::New()),
+    m_lineActor(vtkActor::New()),
+    m_lineSource(vtkLineSource::New())
 {
     m_distanceRepresentation->InstantiateHandleRepresentation();
     m_distanceRepresentation->SetLabelFormat("%-#6.3gmm");
-    vtkPolyDataMapper *LineMapper;
 
-    m_lineSource = vtkLineSource::New();
     m_lineSource->SetResolution(1);
-    LineMapper = vtkPolyDataMapper::New();
-    LineMapper->SetInputConnection(m_lineSource->GetOutputPort());
-    m_lineActor = vtkActor::New();
-    m_lineActor->SetMapper(LineMapper);
+    vtkPolyDataMapper* lineMapper = vtkPolyDataMapper::New();
+    lineMapper->SetInputConnection(m_lineSource->GetOutputPort());
+
+    m_lineActor->SetMapper(lineMapper);
     m_lineActor->GetProperty()->SetLineWidth(5.);
     m_lineActor->GetProperty()->SetColor(1.,1.,0.);
     m_lineActor->GetProperty()->SetOpacity(0.4);
 
-    LineMapper->Delete();
+    lineMapper->Delete();
     m_distanceRepresentation->GetAxis()->GetProperty()->SetColor(1.0,0.0,1.);
     m_distanceRepresentation->GetAxis()->SetTitlePosition(0.9);
 
@@ -65,8 +62,6 @@ Distance::Distance() throw() :
     //m_distanceRepresentation->GetAxis()->SizeFontRelativeToAxisOn();
     //m_distanceRepresentation->GetAxis()->GetMapper();
     //m_distanceRepresentation->GetAxis()->SetFontFactor(0.8);
-
-    //addNewHandledEvent(::fwComEd::PointMsg::POINT_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -88,7 +83,7 @@ void Distance::setAxisColor( ::fwData::Color::sptr newColor) throw()
     m_lineActor->GetProperty()->SetOpacity( newColor->alpha() * 0.4);
 
     m_distanceRepresentation->GetAxis()->GetTitleTextProperty()->SetColor(
-        newColor->red(),newColor->green(),newColor->blue() );
+        newColor->red(), newColor->green(), newColor->blue() );
     this->setVtkPipelineModified();
 }
 
@@ -111,10 +106,10 @@ void Distance::doStart()
     m_point1 = ptList->getPoints().front();
     m_point2 = ptList->getPoints().back();
 
-    m_point1Connection = m_point1.lock()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-        this->slot(::fwServices::IService::s_RECEIVE_SLOT));
-    m_point2Connection = m_point2.lock()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-        this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    m_point1Connection = m_point1.lock()->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
+        this->slot(::fwServices::IService::s_UPDATE_SLOT));
+    m_point2Connection = m_point2.lock()->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
+        this->slot(::fwServices::IService::s_UPDATE_SLOT));
 
     // set color to distance if Point List have Color Field
     if ( ptList->getField( ::fwComEd::Dictionary::m_colorId ) )
@@ -158,18 +153,6 @@ void Distance::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Distance::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    ::fwComEd::PointMsg::csptr pointMsg = ::fwComEd::PointMsg::dynamicConstCast( _msg );
-    SLM_ASSERT("Message received is not PointMsg",  pointMsg);
-    if ( pointMsg && pointMsg->hasEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED ) )
-    {
-        this->doUpdate();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void Distance::doSwap() throw(fwTools::Failed)
 {
     this->doStop();
@@ -190,6 +173,7 @@ void Distance::doStop()
     this->removeAllPropFromRenderer();
 }
 
+//------------------------------------------------------------------------------
 
 
 } //namespace visuVTKAdaptor

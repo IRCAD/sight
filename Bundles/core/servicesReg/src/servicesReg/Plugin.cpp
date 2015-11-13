@@ -8,7 +8,7 @@
 
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwComEd/BooleanMsg.hpp>
+#include <fwComEd/Dictionary.hpp>
 
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
@@ -28,7 +28,7 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 Plugin::~Plugin() throw()
 {
     //Force link with fwComEd
-    static const std::string forceLink = ::fwComEd::BooleanMsg::VALUE_IS_MODIFIED;
+    static const std::string forceLink = ::fwComEd::Dictionary::position;
 }
 
 //-----------------------------------------------------------------------------

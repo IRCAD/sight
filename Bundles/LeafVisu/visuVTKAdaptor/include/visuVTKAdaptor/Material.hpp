@@ -7,10 +7,10 @@
 #ifndef __VISUVTKADAPTOR_MATERIAL_HPP__
 #define __VISUVTKADAPTOR_MATERIAL_HPP__
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwServices/ObjectMsg.hpp>
-
 #include "visuVTKAdaptor/config.hpp"
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
 
 
 class VISUVTKADAPTOR_CLASS_API vtkProperty;
@@ -37,7 +37,15 @@ public:
 
     VISUVTKADAPTOR_API void setVtkProperty(vtkProperty *property);
 
-    VISUVTKADAPTOR_API vtkProperty *getVtkProperty();
+    VISUVTKADAPTOR_API vtkProperty *getVtkProperty() const;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Material::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -46,7 +54,6 @@ protected:
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     void updateMaterial( SPTR(::fwData::Material) material );
 

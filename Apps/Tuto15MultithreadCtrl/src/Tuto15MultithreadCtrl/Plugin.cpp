@@ -45,6 +45,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     SLM_TRACE_FUNC();
 
     ::fwRuntime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
+
 }
 
 //-----------------------------------------------------------------------------
@@ -70,7 +71,6 @@ void Plugin::uninitialize() throw()
 
 int Plugin::run() throw()
 {
-
     ::fwData::Array::sptr array = ::fwData::Array::New();
 
     ::fwServices::IService::sptr srvRead =
@@ -95,21 +95,16 @@ int Plugin::run() throw()
     ::fwThread::Worker::sptr worker2 = ::fwThread::Worker::New();
     ::fwThread::Worker::sptr worker3 = ::fwThread::Worker::New();
 
-    // ::fwServices::registry::ActiveWorkers::sptr workers = ::fwServices::registry::ActiveWorkers::getDefault();
-    // workers->addWorker("worker1", worker1);
-    // workers->addWorker("worker2", worker2);
-    // workers->addWorker("worker3", worker3);
-
     srvRead->setWorker(worker1);
     srvShow->setWorker(worker2);
     srvIncrement->setWorker(worker3);
 
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig
-        = array->signal< ::fwData::Object::ObjectModifiedSignalType>( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+    auto sig
+        = array->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
 
-    ::fwCom::Connection showConnection      = sig->connect(srvShow->slot( ::fwServices::IService::s_RECEIVE_SLOT) );
+    ::fwCom::Connection showConnection      = sig->connect(srvShow->slot( ::fwServices::IService::s_UPDATE_SLOT) );
     ::fwCom::Connection incrementConnection =
-        sig->connect(srvIncrement->slot( ::fwServices::IService::s_RECEIVE_SLOT) );
+        sig->connect(srvIncrement->slot( "startTimer" ) );
 
 
     srvRead->start().wait();

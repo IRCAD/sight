@@ -7,7 +7,14 @@
 #include "visuVTKAdaptor/ImageMultiDistances.hpp"
 #include "visuVTKAdaptor/Distance.hpp"
 
-#include <fwTools/fwID.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwComEd/Dictionary.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Color.hpp>
@@ -16,13 +23,9 @@
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
-
-#include <fwCom/Signal.hxx>
+#include <fwTools/fwID.hpp>
 
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
@@ -37,8 +40,8 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 
-
 #include <boost/assign/std/vector.hpp>
+
 #include <algorithm>
 #include <sstream>
 
@@ -118,14 +121,10 @@ public:
 
                     if(plist)
                     {
-                        ::fwData::Image::sptr image   = m_service->getObject< ::fwData::Image >();
-                        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-                        msg->addEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE, plist );
-
-                        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-                        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(
-                            ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-                        sig->asyncEmit(msg);
+                        ::fwData::Image::sptr image = m_service->getObject< ::fwData::Image >();
+                        auto sig = image->signal< ::fwData::Image::DistanceRemovedSignalType >(
+                            ::fwData::Image::s_DISTANCE_REMOVED_SIG );
+                        sig->asyncEmit(plist);
 
                         break;
                     }
@@ -144,15 +143,17 @@ protected:
 
 };
 
+static const ::fwCom::Slots::SlotKeyType s_CREATE_DISTANCE_SLOT = "createDistance";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_DISTANCE_SLOT = "removeDistance";
+
 //------------------------------------------------------------------------------
 
 ImageMultiDistances::ImageMultiDistances() throw() :
-    m_rightButtonCommand(0),
+    m_rightButtonCommand(nullptr),
     m_needSubservicesDeletion(false)
 {
-    //addNewHandledEvent( ::fwComEd::ImageMsg::DISTANCE );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_DISTANCE );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE );
+    newSlot(s_CREATE_DISTANCE_SLOT, &ImageMultiDistances::createDistance, this);
+    newSlot(s_REMOVE_DISTANCE_SLOT, &ImageMultiDistances::removeDistance, this);
 }
 
 //------------------------------------------------------------------------------
@@ -230,12 +231,6 @@ void ImageMultiDistances::doSwap() throw(fwTools::Failed)
         jaune->setRGBA( 1, 1, 0);
         colors.push_back( jaune );
 
-//        colors +=   Color::New( 1, 0, 1), // magenta
-//                    Color::New( 0, 1, 1), // cyan
-//                    Color::New( 1, 0.647, 0 ), // orange
-//                    Color::New( .5, 0.26, 1 ), // violet
-//                    Color::New( .65, 1 , 0), // vert pomme
-//                    Color::New( 1, 1, 0 ); // jaune
         current = colors.begin();
     }
 
@@ -288,7 +283,6 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
 
         this->registerService( serviceDistance );
         this->registerService( servicePointList );
-
     }
 }
 
@@ -375,7 +369,7 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove ) throw(::fwTools::Failed)
+void ImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->unregisterServices();
@@ -390,6 +384,14 @@ void ImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove ) 
     }
 
     this->doUpdate();
+}
+
+//------------------------------------------------------------------------------
+
+void ImageMultiDistances::createDistance()
+{
+    std::string sceneId = getRenderService()->getID();
+    this->createNewDistance(sceneId);
 }
 
 //------------------------------------------------------------------------------
@@ -420,59 +422,6 @@ void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwToo
 
     this->installSubServices(newPL);
     this->setVtkPipelineModified();
-}
-
-//------------------------------------------------------------------------------
-
-void ImageMultiDistances::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    // update only if new LandMarks
-    ::fwComEd::ImageMsg::csptr imgMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
-    ::fwData::Image::sptr image       = this->getObject< ::fwData::Image >();
-    std::string sceneId = getRenderService()->getID();
-
-    if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::NEW_DISTANCE ) )
-    {
-        ::fwData::String::csptr dataInfo;
-        dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::NEW_DISTANCE));
-        OSLM_FATAL_IF(" ImageMultiDistances::doUpdate with RenderService "
-                      <<  sceneId << "missing sceneId dataInfo !!!", !dataInfo);
-        if ( dataInfo->value() == sceneId )
-        {
-            this->createNewDistance( sceneId );
-            ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-            msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
-            msg->setSource( this->getSptr());
-            msg->setSubject( image);
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-            {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( msg );
-            }
-        }
-    }
-
-    if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DISTANCE ) )
-    {
-        ::fwData::String::csptr dataInfo;
-        dataInfo = ::fwData::String::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::DISTANCE));
-        // update only if the distance is added in this scene
-        // or if the service is not filtered
-        if ( !dataInfo || dataInfo->value() ==  this->getRenderService()->getID()
-             || m_configuration->getAttributeValue("filter") == "false")
-        {
-            this->doUpdate();
-        }
-    }
-
-    if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DELETE_DISTANCE ) )
-    {
-        ::fwData::PointList::csptr plToRemove;
-        plToRemove = ::fwData::PointList::dynamicConstCast(imgMsg->getDataInfo(::fwComEd::ImageMsg::DELETE_DISTANCE));
-        SLM_ASSERT( "No dataInfo for the PointList ",plToRemove );
-        this->removeDistance( std::const_pointer_cast< ::fwData::PointList>(plToRemove) );
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -510,5 +459,18 @@ void ImageMultiDistances::show(bool showDistances)
     }
 }
 
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ImageMultiDistances::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_DISTANCE_ADDED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

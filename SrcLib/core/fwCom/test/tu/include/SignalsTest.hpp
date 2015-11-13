@@ -16,13 +16,13 @@ namespace ut
 
 class SignalsTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( SignalsTest );
+private:
+    CPPUNIT_TEST_SUITE( SignalsTest );
 
-CPPUNIT_TEST( buildTest );
-CPPUNIT_TEST( hasSignalsTest );
-CPPUNIT_TEST( signalsIDTest );
+    CPPUNIT_TEST( buildTest );
+    CPPUNIT_TEST( hasSignalsTest );
 
-CPPUNIT_TEST_SUITE_END();
+    CPPUNIT_TEST_SUITE_END();
 
 public:
 
@@ -31,7 +31,6 @@ public:
 
     void buildTest();
     void hasSignalsTest();
-    void signalsIDTest();
 };
 
 } //namespace ut

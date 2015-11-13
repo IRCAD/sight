@@ -69,6 +69,15 @@ public:
     UIMEDDATAQT_API static const ::fwCom::Slots::SlotKeyType s_EXPORT_SLOT;
     /**  @} */
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect SeriesDB::s_ADDED_SERIES_SIG to this::s_UPDATE_SLOT
+     * Connect SeriesDB::s_REMOVED_SERIES_SIG to this::s_UPDATE_SLOT
+     */
+    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     /// Installs GUI : create container and add selector.
@@ -94,12 +103,6 @@ protected:
 
     /// Fill selector with the series contained in SeriesDB.
     virtual void updating() throw (::fwTools::Failed);
-
-    /**
-     * @brief Manages events (::fwComEd::SeriesDBMsg::ADDED_OBJECTS, ::fwComEd::SeriesDBMsg::REMOVED_OBJECTS)
-     *  This method adds/removes series in the selector widget.
-     */
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
 protected Q_SLOTS:
 

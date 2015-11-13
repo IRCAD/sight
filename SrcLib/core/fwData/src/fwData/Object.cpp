@@ -18,21 +18,20 @@ namespace fwData
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType Object::s_OBJECT_MODIFIED_SIG = "objectModified";
+const ::fwCom::Signals::SignalKeyType Object::s_MODIFIED_SIG       = "modified";
+const ::fwCom::Signals::SignalKeyType Object::s_ADDED_FIELDS_SIG   = "addedFields";
+const ::fwCom::Signals::SignalKeyType Object::s_CHANGED_FIELDS_SIG = "changedFields";
+const ::fwCom::Signals::SignalKeyType Object::s_REMOVED_FIELDS_SIG = "removedFields";
 
 //------------------------------------------------------------------------------
 
 Object::Object()
 {
-    // Init
-    m_sigObjectModified = ObjectModifiedSignalType::New();
+    newSignal< ModifiedSignalType >(s_MODIFIED_SIG);
+    newSignal< AddedFieldsSignalType >(s_ADDED_FIELDS_SIG);
+    newSignal< ChangedFieldsSignalType >(s_CHANGED_FIELDS_SIG);
+    newSignal< RemovedFieldsSignalType >(s_REMOVED_FIELDS_SIG);
 
-    // Register
-    m_signals( s_OBJECT_MODIFIED_SIG,  m_sigObjectModified);
-
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
 }
 
 //------------------------------------------------------------------------------
@@ -193,19 +192,6 @@ void Object::shallowCopy(const ::fwData::Object::csptr &source )
 
 //-----------------------------------------------------------------------------
 
-#ifdef COM_LOG
-void Object::setID( ::fwTools::fwID::IDType newID )
-{
-    if( !this->hasID() ||
-        this->getID( ::fwTools::fwID::MUST_EXIST ) != newID )
-    {
-        this->::fwTools::fwID::setID( newID );
-    }
 
-    std::string lightID = this->getLightID( ::fwTools::fwID::MUST_EXIST );
-
-    ::fwCom::HasSignals::m_signals.setID( lightID + "::" );
-}
-#endif
 
 } // namespace fwData

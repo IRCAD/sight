@@ -5,6 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 #ifndef ANDROID
 
+#include "visuVTKAdaptor/OrientationMarker.hpp"
+
 #include <fwServices/macros.hpp>
 
 #include <vtkCubeSource.h>
@@ -17,11 +19,6 @@
 #include <vtkPolyData.h>
 #include <vtkTransform.h>
 #include <vtkSmartPointer.h>
-
-
-
-#include "visuVTKAdaptor/OrientationMarker.hpp"
-
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::OrientationMarker, ::fwData::Object );
@@ -43,10 +40,8 @@ void OrientationMarker::doStart() throw(fwTools::Failed)
     vtkDataObject *obj = reader->GetOutput();
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
 
-    if(!obj)
-    {
-        SLM_WARN("Orientation marker load failed ");
-    }
+    SLM_WARN_IF("Orientation marker load failed", !obj);
+
 
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(mesh);
@@ -88,8 +83,7 @@ void OrientationMarker::configuring() throw(fwTools::Failed)
         m_hAlign = m_configuration->getAttributeValue("hAlign");
         SLM_ASSERT("'hAlign' value must be 'left', 'center' or 'right'",
                    m_hAlign == "left"
-                   || m_hAlign == "right"
-                   );
+                   || m_hAlign == "right");
     }
 }
 

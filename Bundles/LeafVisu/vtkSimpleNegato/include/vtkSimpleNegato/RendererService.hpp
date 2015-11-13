@@ -8,15 +8,15 @@
 #define __VTKSIMPLENEGATO_RENDERERSERVICE_HPP__
 
 
-#include  <vtkRenderer.h>
-#include  <vtkImagePlaneWidget.h>
-#include  <vtkOutlineFilter.h>
+#include "vtkSimpleNegato/config.hpp"
 
 #include <fwRender/IRender.hpp>
 
 #include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
-#include "vtkSimpleNegato/config.hpp"
+#include  <vtkRenderer.h>
+#include  <vtkImagePlaneWidget.h>
+#include  <vtkOutlineFilter.h>
 
 namespace vtkSimpleNegato
 {
@@ -24,8 +24,6 @@ namespace vtkSimpleNegato
 /**
  * @brief    Renderer service.
  * @class    RendererService
- *
- * @date 2009.
  *
  * Service rendering a ::fwData::Image using VTK.
  *
@@ -47,6 +45,14 @@ public:
      */
     VTKSIMPLENEGATO_API virtual ~RendererService() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_REFRESH_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_REFRESH_SLOT
+     */
+    VTKSIMPLENEGATO_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -80,14 +86,6 @@ protected:
      */
     VTKSIMPLENEGATO_API virtual void configuring() throw(::fwTools::Failed);
 
-    /**
-     * @brief Receiving method (react on data modifications).
-     * @param[in] _msg ::fwServices::ObjectMsg::csptr
-     *
-     * This method is used to update the service.
-     */
-    VTKSIMPLENEGATO_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
     /// @brief vtk renderer
     vtkRenderer * m_render;
 
@@ -103,6 +101,7 @@ private:
      */
     void initVTKPipeline();
 
+    /// Slot: refresh the scene
     void refresh();
     /**
      * @brief VTK pipeline updating method.

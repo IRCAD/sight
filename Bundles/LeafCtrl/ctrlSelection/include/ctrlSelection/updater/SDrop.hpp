@@ -54,10 +54,10 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
 private:
 
+    /// Slot: add the object defined by uid
+    void addObject(std::string uid);
 };
 
 } // updater

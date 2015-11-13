@@ -8,11 +8,11 @@
 #define __VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP__
 
 
+#include "visuVTKAdaptor/config.hpp"
+
 #include <fwData/PointList.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
 
 class vtkCommand;
 
@@ -39,18 +39,27 @@ public:
 
     VISUVTKADAPTOR_API virtual void show(bool showDistances = true);
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_DISTANCE_ADDED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_DISTANCE_REMOVED_SIG to this::s_REMOVE_DISTANCE_SLOT
+     * Connect Image::s_DISTANCE_DISPLAYED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API virtual void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     void installSubServices( ::fwData::PointList::sptr pl );
     ::fwData::Point::sptr screenToWorld(int X,int Y);
-    void removeDistance(  ::fwData::PointList::sptr plToRemove ) throw(::fwTools::Failed);
+
     void createNewDistance( std::string sceneId ) throw(::fwTools::Failed);
 
     std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
@@ -59,6 +68,20 @@ protected:
 
     bool m_needSubservicesDeletion;
 
+private:
+
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: remove distance
+    void removeDistance(::fwData::PointList::sptr pointList);
+
+    /// Slot: to create a new distance attached to this adaptor
+    void createDistance();
+    /**
+     * @}
+     */
 };
 
 

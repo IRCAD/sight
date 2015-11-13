@@ -8,6 +8,9 @@
 #include "fwData/Exception.hpp"
 #include "fwData/Composite.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <algorithm>
 
 
@@ -16,8 +19,17 @@ fwDataRegisterMacro( ::fwData::Composite );
 namespace fwData
 {
 
+const ::fwCom::Signals::SignalKeyType Composite::s_ADDED_OBJECTS_SIG   = "addedObjects";
+const ::fwCom::Signals::SignalKeyType Composite::s_CHANGED_OBJECTS_SIG = "changedObjects";
+const ::fwCom::Signals::SignalKeyType Composite::s_REMOVED_OBJECTS_SIG = "removedObjects";
+
+//------------------------------------------------------------------------------
+
 Composite::Composite( ::fwData::Object::Key key )
 {
+    newSignal< AddedObjectsSignalType >(s_ADDED_OBJECTS_SIG);
+    newSignal< ChangedObjectsSignalType >(s_CHANGED_OBJECTS_SIG);
+    newSignal< RemovedObjectsSignalType >(s_REMOVED_OBJECTS_SIG);
 }
 
 //------------------------------------------------------------------------------

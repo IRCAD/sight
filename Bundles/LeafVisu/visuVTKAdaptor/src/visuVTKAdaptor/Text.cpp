@@ -24,14 +24,17 @@ fwServicesRegisterMacro(::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Tex
 namespace visuVTKAdaptor
 {
 
-Text::Text() : m_fontSize(20), m_vAlign("bottom"), m_hAlign("left")
+Text::Text() :
+    m_actor(vtkActor2D::New()),
+    m_mapper(vtkTextMapper::New()),
+    m_fontSize(20),
+    m_vAlign("bottom"),
+    m_hAlign("left")
 {
-    m_mapper = vtkTextMapper::New();
     m_mapper->GetTextProperty()->SetFontFamilyToCourier(); // Fixed-width font
     m_mapper->GetTextProperty()->ShadowOn(); // better contrast
     m_mapper->GetTextProperty()->BoldOn();
 
-    m_actor = vtkActor2D::New();
     m_actor->SetMapper(m_mapper);
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
     m_actor->GetPosition2Coordinate()->SetCoordinateSystemToNormalizedViewport();
@@ -42,10 +45,10 @@ Text::Text() : m_fontSize(20), m_vAlign("bottom"), m_hAlign("left")
 Text::~Text() throw()
 {
     m_actor->Delete();
-    m_actor = 0;
+    m_actor = nullptr;
 
     m_mapper->Delete();
-    m_mapper = 0;
+    m_mapper = nullptr;
 }
 
 //-----------------------------------------------------------------------------

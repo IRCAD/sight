@@ -8,6 +8,7 @@
 #define __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
 
 #include <fwActivities/registry/Activities.hpp>
+#include <fwActivities/registry/ActivityMsg.hpp>
 
 #include <fwData/Vector.hpp>
 
@@ -39,10 +40,19 @@ public:
     ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
     typedef ::fwCom::Slot< void (SPTR( ::fwMedData::Series )) > LaunchSeriesSlotType;
 
-    typedef ::fwCom::Signal< void ( CSPTR(::fwServices::ObjectMsg) ) > ActivityLaunchedSignalType;
+    typedef ::fwCom::Signal< void ( ::fwActivities::registry::ActivityMsg ) > ActivityLaunchedSignalType;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
     ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
+     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
+     */
+    ACTIVITIES_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -51,12 +61,6 @@ protected:
 
     ///This method launches the IAction::stopping method.
     virtual void stopping() throw(::fwTools::Failed);
-
-    /**
-     * @brief This method is used to update services on notification. ( overrides ).
-     * Enable the action according to the available activities.
-     */
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Show activity selector.
@@ -109,10 +113,10 @@ protected:
 
     typedef std::map< std::string, std::string > QuickLaunchType;
 
-    /**
-     * @brief Updates action state (enable if activities are available for current selection).
-     */
+    //// SLOT: Updates action state (enable if activities are available for current selection).
     virtual void updateState();
+
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
 
     /**
      * @brief Interpret configuration parameters.
@@ -171,9 +175,6 @@ private:
 
     /// Id-s of activity configurations to be enabled or disabled, according to filter mode.
     KeysType m_keys;
-
-    /// Slot to call launchSeries method
-    LaunchSeriesSlotType::sptr m_slotLaunchSeries;
 
     /// Signal emitted when activity is launched. Send a message containing the activity information.
     ActivityLaunchedSignalType::sptr m_sigActivityLaunched;

@@ -4,6 +4,24 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "uiMedDataQt/editor/SOrganTransformation.hpp"
+
+#include <fwComEd/helper/Composite.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwDataTools/TransformationMatrix3D.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwTools/fwID.hpp>
+
 #include <QListWidget>
 #include <QListWidgetItem>
 #include <QStringList>
@@ -15,27 +33,6 @@
 #include <QCheckBox>
 
 #include <map>
-
-#include <fwTools/fwID.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwDataTools/TransformationMatrix3D.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwComEd/ModelSeriesMsg.hpp>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-#include <fwComEd/helper/Composite.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include "uiMedDataQt/editor/SOrganTransformation.hpp"
 
 namespace uiMedData
 {
@@ -51,7 +48,6 @@ SOrganTransformation::SOrganTransformation() throw() :
     m_reconstructionListBox( 0 ),
     m_saveCount( 0 )
 {
-    //addNewHandledEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION );
 }
 
 //------------------------------------------------------------------------------
@@ -151,18 +147,6 @@ void SOrganTransformation::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::receiving( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
-{
-    ::fwComEd::ModelSeriesMsg::csptr pMessage = ::fwComEd::ModelSeriesMsg::dynamicConstCast( msg );
-
-    if( pMessage && pMessage->hasEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION ) )
-    {
-        this->updating();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SOrganTransformation::info( ::std::ostream& sstream )
 {
 }
@@ -219,16 +203,8 @@ void SOrganTransformation::refresh()
 
 void SOrganTransformation::notitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat)
 {
-    ::fwComEd::TransformationMatrix3DMsg::sptr message = ::fwComEd::TransformationMatrix3DMsg::New();
-    message->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-    message->setSource( getSptr());
-    message->setSubject( aTransMat);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = aTransMat->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( message );
-    }
+    auto sig = aTransMat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
@@ -264,7 +240,7 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem *currentItem)
                 aCompositeHelper.remove(item_name);
             }
         }
-        aCompositeHelper.notify(this->getSptr());
+        aCompositeHelper.notify();
     }
 }
 
@@ -388,8 +364,20 @@ void SOrganTransformation::onSelectAllChanged(int state)
 
             this->refresh();
         }
-        compositeHelper.notify(this->getSptr());
+        compositeHelper.notify();
     }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SOrganTransformation::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

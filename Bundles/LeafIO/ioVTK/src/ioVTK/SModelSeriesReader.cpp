@@ -4,37 +4,38 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/operations.hpp>
+#include "ioVTK/MeshWriterService.hpp"
+#include "ioVTK/SModelSeriesReader.hpp"
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/ObjectMsg.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <fwCore/base.hpp>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
 #include <fwData/location/Folder.hpp>
-#include <fwData/location/MultiFiles.hpp>
 #include <fwData/location/ILocation.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
-
-#include <fwComEd/ModelSeriesMsg.hpp>
+#include <fwData/location/MultiFiles.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/Reconstruction.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/ILocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTools/UUID.hpp>
 
 #include <fwVtkIO/MeshReader.hpp>
 
-#include "ioVTK/MeshWriterService.hpp"
-#include "ioVTK/SModelSeriesReader.hpp"
+#include <boost/filesystem/operations.hpp>
 
 
 namespace ioVTK
@@ -115,6 +116,7 @@ void SModelSeriesReader::updating() throw(::fwTools::Failed)
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
         ::fwMedData::ModelSeries::ReconstructionVectorType recDB = modelSeries->getReconstructionDB();
+        ::fwMedData::ModelSeries::ReconstructionVectorType addedRecs;
         for(const ::fwData::location::ILocation::PathType& file :  this->getFiles())
         {
             ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
@@ -125,20 +127,16 @@ void SModelSeriesReader::updating() throw(::fwTools::Failed)
             rec->setIsVisible(true);
             rec->setOrganName(file.stem().string());
             recDB.push_back(rec);
+            addedRecs.push_back(rec);
         }
         cursor.setDefaultCursor();
         modelSeries->setReconstructionDB(recDB);
 
-        ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
-        msg->addEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION );
-        msg->setSource(this->getSptr());
-        msg->setSubject( modelSeries);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig =
-            modelSeries->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType >(
+            ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit(addedRecs);
         }
     }
 }

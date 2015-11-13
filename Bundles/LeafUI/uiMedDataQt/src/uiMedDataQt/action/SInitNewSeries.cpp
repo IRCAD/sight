@@ -71,12 +71,6 @@ void SInitNewSeries::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SInitNewSeries::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SInitNewSeries::stopping() throw(::fwTools::Failed)
 {
     this->actionServiceStopping();
@@ -156,7 +150,7 @@ void SInitNewSeries::updating() throw(::fwTools::Failed)
     newSeries->setTime(time);
 
     helper.add(newSeries);
-    helper.notify(this->getSptr());
+    helper.notify();
 }
 
 //------------------------------------------------------------------------------

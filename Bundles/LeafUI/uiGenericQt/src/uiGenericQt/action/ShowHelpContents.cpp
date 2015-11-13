@@ -148,12 +148,6 @@ void ShowHelpContents::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowHelpContents::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void ShowHelpContents::stopping() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStopping();

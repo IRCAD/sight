@@ -7,15 +7,16 @@
 #ifndef __VISUVTKQT_VTKRENDERWINDOWINTERACTORMANAGER_HPP__
 #define __VISUVTKQT_VTKRENDERWINDOWINTERACTORMANAGER_HPP__
 
-#include <string>
+#include "visuVTKQt/config.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
-
 #include <fwGui/container/fwContainer.hpp>
 
-#include "visuVTKQt/config.hpp"
+#include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
+
+#include <string>
+
 
 class vtkRenderWindowInteractor;
 
@@ -37,8 +38,6 @@ namespace visuVTKQt
 /**
  * @brief   Defines a class to manage vtkRenderWindowInteractor in a window.
  * @class   VtkRenderWindowInteractorManager
- *
- * @date    2009-2010.
  *
  */
 class VISUVTKQT_CLASS_API VtkRenderWindowInteractorManager : public ::fwRenderVTK::IVtkRenderWindowInteractorManager

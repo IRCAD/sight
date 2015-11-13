@@ -6,6 +6,11 @@
 
 #include "Tuto15MultithreadCtrl/SIncrementArray.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwComEd/helper/Array.hpp>
 
 #include <fwThread/Timer.hpp>
@@ -14,7 +19,6 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
 #include <fwCom/Signal.hxx>
 
@@ -27,9 +31,12 @@ fwServicesRegisterMacro( ::fwServices::IService, ::Tuto15MultithreadCtrl::SIncre
 namespace Tuto15MultithreadCtrl
 {
 
+static const ::fwCom::Slots::SlotKeyType s_START_TIMER_SLOT = "startTimer";
+
 SIncrementArray::SIncrementArray() throw() :
     m_periodInMillisec(500)
 {
+    newSlot(s_START_TIMER_SLOT, &SIncrementArray::startTimer, this);
 }
 
 SIncrementArray::~SIncrementArray() throw()
@@ -57,26 +64,23 @@ void SIncrementArray::updating() throw( ::fwTools::Failed )
     SLM_ASSERT("No array.", array);
     SLM_ASSERT("Array : bad number of dimensions.", array->getNumberOfDimensions() == 1 );
 
-    const int arraySize = array->getSize()[0];
+    const size_t arraySize = array->getSize()[0];
 
     ::fwComEd::helper::Array arrayHelper(array);
 
     unsigned int *buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
 
-    for (int i = 0; i < arraySize; i++)
+    for (size_t i = 0; i < arraySize; i++)
     {
         ++buffer[i];
     }
 
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig
-        = array->signal< ::fwData::Object::ObjectModifiedSignalType>( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+    ::fwData::Object::ModifiedSignalType::sptr sig
+        = array->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
 
-
-    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent("MODIFIED_EVENT");
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit(msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 
 }
@@ -86,7 +90,7 @@ void SIncrementArray::configuring() throw( ::fwTools::Failed )
 
 }
 
-void SIncrementArray::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
+void SIncrementArray::startTimer()
 {
     m_timer->start();
 }

@@ -7,24 +7,29 @@
 #ifndef __FWSERVICES_REGISTRY_OBJECTSERVICE_HPP__
 #define __FWSERVICES_REGISTRY_OBJECTSERVICE_HPP__
 
-#include <map>
-#include <vector>
+#include "fwServices/config.hpp"
+#include "fwServices/IService.hpp"
 
-#include <boost/static_assert.hpp>
-#include <boost/type_traits.hpp>
-#include <boost/bimap.hpp>
-#include <boost/bimap/unordered_set_of.hpp>
-#include <boost/bimap/multiset_of.hpp>
-
-#include <fwCore/mt/types.hpp>
 #include <fwCore/base.hpp>
 #include <fwCore/LogicStamp.hpp>
+#include <fwCore/mt/types.hpp>
 
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
 
-#include "fwServices/config.hpp"
-#include "fwServices/IService.hpp"
+#include <boost/bimap.hpp>
+#include <boost/bimap/multiset_of.hpp>
+#include <boost/bimap/unordered_set_of.hpp>
+#include <boost/static_assert.hpp>
+#include <boost/type_traits.hpp>
+
+#include <map>
+#include <vector>
+
+namespace fwData
+{
+class Object;
+}
 
 namespace fwServices
 {

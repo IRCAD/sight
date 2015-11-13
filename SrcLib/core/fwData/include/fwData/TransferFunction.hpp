@@ -11,6 +11,9 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <vector>
 #include <map>
 #include <limits>
@@ -188,6 +191,21 @@ public:
 
     /// Default transfer function name
     FWDATA_API static const std::string s_DEFAULT_TF_NAME;
+
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Type of signal when points are modified
+    typedef ::fwCom::Signal< void () > PointsModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINTS_MODIFIED_SIG;
+
+    /// Type of signal when window-level is modified (window, level)
+    typedef ::fwCom::Signal< void (double, double) > WindowingModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_WINDOWING_MODIFIED_SIG;
+    /**
+     * @}
+     */
 
 private:
 

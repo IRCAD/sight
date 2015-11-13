@@ -28,8 +28,6 @@ namespace action
 /**
  * @brief   This action show the revision info for bundle and lib.
  * @class   ShowRevInfo
- *
- * @date    2011.
  */
 class UIGENERICQT_CLASS_API ShowRevInfo : public QObject,
                                           public ::fwGui::IActionSrv
@@ -64,9 +62,6 @@ protected:
 
     /// Show the frame
     UIGENERICQT_API void updating() throw (::fwTools::Failed);
-
-    /// Does nothing
-    UIGENERICQT_API void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed);
 
     /// Stops action
     UIGENERICQT_API void stopping() throw (::fwTools::Failed);

@@ -9,7 +9,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwComEd/ImageMsg.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -152,20 +151,10 @@ void InrImageReaderService::notificationOfDBUpdate()
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
     SLM_ASSERT("pImage not instanced", pImage);
 
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    msg->addEvent( ::fwComEd::ImageMsg::BUFFER );
-    msg->addEvent( ::fwComEd::ImageMsg::REGION );
-    msg->addEvent( ::fwComEd::ImageMsg::SPACING );
-    msg->addEvent( ::fwComEd::ImageMsg::PIXELTYPE );
-
-    msg->setSource(this->getSptr());
-    msg->setSubject( pImage);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = pImage->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = pImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

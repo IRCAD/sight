@@ -12,9 +12,6 @@ namespace fwRenderVTK
 /*
  * @brief       The namespace fwRenderVTK::vtk provides several picker and interactor for the generic scene .
  * @namespace   fwRenderVTK::vtk
- *
- * @date        2009-2010.
- *
  */
 namespace vtk
 {

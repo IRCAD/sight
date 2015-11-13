@@ -66,10 +66,7 @@ public:
     /// Returns all SlotKeyType registered in m_slots
     FWCOM_API SlotKeyContainerType getSlotKeys() const;
 
-#ifdef COM_LOG
-    /// Set new id for all slots using their key in m_slots, a prefix can be added
-    FWCOM_API void setID( const std::string prefix = "" );
-#endif
+
 
 protected:
 

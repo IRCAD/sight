@@ -4,39 +4,38 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/operations.hpp>
+#include "uiTF/TransferFunctionEditor.hpp"
 
-#include <fwRuntime/EConfigurationElement.hpp>
-
-#include <QWidget>
-#include <QBoxLayout>
-#include <QComboBox>
-#include <QString>
-#include <QPushButton>
-#include <QIcon>
+#include <fwComEd/helper/Composite.hpp>
 
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/helper/Composite.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <io/IWriter.hpp>
-#include <io/IReader.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
 
-#include "uiTF/TransferFunctionEditor.hpp"
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <io/IReader.hpp>
+#include <io/IWriter.hpp>
+
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/operations.hpp>
+
+#include <QBoxLayout>
+#include <QComboBox>
+#include <QIcon>
+#include <QPushButton>
+#include <QString>
+#include <QWidget>
 
 namespace uiTF
 {
@@ -50,9 +49,6 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTF::TransferFunctionEditor,
 TransferFunctionEditor::TransferFunctionEditor() :
     m_selectedTFKey("")
 {
-//    this->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
-//    this->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
-//    this->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -174,21 +170,7 @@ void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
 
 void TransferFunctionEditor::updating() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------------------------------------------------------------------------------------
-
-void TransferFunctionEditor::receiving(::fwServices::ObjectMsg::csptr msg) throw( ::fwTools::Failed )
-{
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
-    if(compositeMsg &&
-       ( compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS) ||
-         compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS)   ||
-         compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS) ) )
-    {
-        this->updateTransferFunctionPreset();
-    }
+    this->updateTransferFunctionPreset();
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -255,7 +237,7 @@ void TransferFunctionEditor::deleteTF()
             ::fwComEd::helper::Composite compositeHelper(poolTF);
             OSLM_ASSERT("TF "<< m_selectedTFKey <<" missing in pool", this->hasTransferFunctionName(selectedTFKey));
             compositeHelper.remove(selectedTFKey);
-            compositeHelper.notify(this->getSptr());
+            compositeHelper.notify();
 
             m_pTransferFunctionPreset->removeItem(indexSelectedTF);
             std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
@@ -307,7 +289,7 @@ void TransferFunctionEditor::newTF()
             m_pTransferFunctionPreset->setCurrentIndex(m_pTransferFunctionPreset->count()-1);
             this->updateTransferFunction();
 
-            compositeHelper.notify(this->getSptr());
+            compositeHelper.notify();
         }
         else
         {
@@ -337,7 +319,7 @@ void TransferFunctionEditor::reinitializeTFPool()
 
         ::fwComEd::helper::Composite compositeHelper(tfPool);
         compositeHelper.clear();
-        compositeHelper.notify(this->getSptr());
+        compositeHelper.notify();
 
         this->initTransferFunctions();
 
@@ -383,7 +365,7 @@ void TransferFunctionEditor::renameTF()
             ::fwComEd::helper::Composite compositeHelper(tfPool);
             compositeHelper.remove(str);
             compositeHelper.add(newName, pTF);
-            compositeHelper.notify(this->getSptr());
+            compositeHelper.notify();
 
             m_pTransferFunctionPreset->setItemText(m_pTransferFunctionPreset->currentIndex(), QString(newName.c_str()));
             m_pTransferFunctionPreset->setCurrentIndex(m_pTransferFunctionPreset->findText(QString(newName.c_str())));
@@ -442,7 +424,7 @@ void TransferFunctionEditor::importTF()
         m_pTransferFunctionPreset->addItem(QString(tf->getName().c_str()));
         this->presetChoice(static_cast<int>((*tfPool).size()-1));
 
-        compositeHelper.notify(this->getSptr());
+        compositeHelper.notify();
     }
 }
 
@@ -546,7 +528,7 @@ void TransferFunctionEditor::initTransferFunctions()
         }
         ::fwServices::OSR::unregisterService(srv);
     }
-    compositeHelper.notify(this->getSptr());
+    compositeHelper.notify();
 
     this->updateTransferFunctionPreset();
 }
@@ -630,7 +612,7 @@ void TransferFunctionEditor::updateTransferFunction()
         {
             compositeHelper.add(m_selectedTFKey, newSelectedTF);
         }
-        compositeHelper.notify(this->getSptr());
+        compositeHelper.notify();
     }
 }
 
@@ -649,6 +631,18 @@ void TransferFunctionEditor::updateTransferFunction()
 {
     ::fwData::Composite::sptr tfSelection = this->getTFSelection();
     return ::fwData::TransferFunction::dynamicCast((*tfSelection)[m_selectedTFKey]);
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType TransferFunctionEditor::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------

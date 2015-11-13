@@ -4,27 +4,31 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "uiVisu/action/CrossTypeAction.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwCore/base.hpp>
 
-#include <boost/assign/list_of.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/trim.hpp>
-
-#include <fwData/Image.hpp>
 #include <fwData/Float.hpp>
-
-#include <fwComEd/ImageMsg.hpp>
+#include <fwData/Image.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include "uiVisu/action/CrossTypeAction.hpp"
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/trim.hpp>
+
+#include <boost/assign/list_of.hpp>
+
 
 namespace uiVisu
 {
@@ -33,6 +37,7 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::CrossTypeAction, ::fwData::Image );
 
+static const ::fwCom::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
 std::map< std::string, float >
 CrossTypeAction::m_scaleConversion
@@ -42,7 +47,7 @@ CrossTypeAction::m_scaleConversion
 
 CrossTypeAction::CrossTypeAction() throw()
 {
-    //handlingEventOff();
+    m_sigCrossTypeModified = newSignal< CrossTypeModifiedSignalType >(s_CROSS_TYPE_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -89,21 +94,7 @@ void CrossTypeAction::configuring() throw(fwTools::Failed)
 
 void CrossTypeAction::updating() throw(::fwTools::Failed)
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-
-    ::fwData::Float::sptr dataInfo = ::fwData::Float::New();
-    dataInfo->value()              = m_scaleConversion[m_crossType];
-
-    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
-    imageMsg->addEvent( "CROSS_TYPE", dataInfo );
-    imageMsg->setSource(this->getSptr());
-    imageMsg->setSubject( image);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( imageMsg);
-    }
+    m_sigCrossTypeModified->asyncEmit(m_scaleConversion[m_crossType]);
 }
 
 //------------------------------------------------------------------------------
@@ -111,11 +102,6 @@ void CrossTypeAction::updating() throw(::fwTools::Failed)
 void CrossTypeAction::swapping() throw(::fwTools::Failed)
 {
 
-}
-//------------------------------------------------------------------------------
-
-void CrossTypeAction::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------

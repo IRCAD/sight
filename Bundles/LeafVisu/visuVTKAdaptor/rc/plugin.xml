@@ -129,18 +129,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
-        <service>::visuVTKAdaptor::Video</service>
-        <object>::fwData::Video</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderVTK::IVtkAdaptorService</type>
-        <service>::visuVTKAdaptor::Camera</service>
-        <object>::fwData::Video</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderVTK::IVtkAdaptorService</type>
         <service>::visuVTKAdaptor::Camera2</service>
         <object>::fwData::TransformationMatrix3D</object>
     </extension>

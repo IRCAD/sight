@@ -4,38 +4,39 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKVRAdaptor/Volume.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/TransferFunctionMsg.hpp>
-#include <fwComEd/ImageMsg.hpp>
+
+#include <fwData/TransferFunction.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <fwData/TransferFunction.hpp>
-#include <fwData/Color.hpp>
-
 #include <fwVtkIO/vtk.hpp>
 
-#include <vtkCommand.h>
-#include <vtkPlaneCollection.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
-#include <vtkImageImport.h>
-#include <vtkVolumeProperty.h>
-#include <vtkVolume.h>
-#include <vtkSmartVolumeMapper.h>
-#include <vtkBoxWidget2.h>
 #include <vtkBoxRepresentation.h>
+#include <vtkBoxWidget2.h>
+#include <vtkColorTransferFunction.h>
+#include <vtkCommand.h>
+#include <vtkImageImport.h>
+#include <vtkImageResample.h>
 #include <vtkObjectFactory.h>
 #include <vtkPiecewiseFunction.h>
-#include <vtkColorTransferFunction.h>
-#include <vtkImageResample.h>
+#include <vtkPlaneCollection.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
+#include <vtkSmartVolumeMapper.h>
+#include <vtkVolume.h>
+#include <vtkVolumeProperty.h>
 
 //Required for proper object factory initialization
 #include <vtkAutoInit.h>
 VTK_MODULE_INIT(vtkRenderingVolumeOpenGL);
-
-
-#include "visuVTKVRAdaptor/Volume.hpp"
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKVRAdaptor::Volume, ::fwData::Image );
@@ -68,20 +69,26 @@ class AbortCallback : public vtkCommand
 
 public:
     //--------------------------------------------------------------------------
+
     static AbortCallback *New()
     {
         return new AbortCallback();
     }
 
     //--------------------------------------------------------------------------
+
     AbortCallback( )
     {
     }
 
+    virtual ~AbortCallback( )
+    {
+    }
+
     //--------------------------------------------------------------------------
+
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
     {
-
         vtkRenderWindow *win = vtkRenderWindow::SafeDownCast(caller);
         if ( win )
         {
@@ -102,21 +109,24 @@ public:
     //--------------------------------------------------------------------------
     static CroppingCallback *New(vtkAbstractMapper *mapper)
     {
-
         CroppingCallback *callback = new CroppingCallback();
         callback->mapper = vtkVolumeMapper::SafeDownCast(mapper);
         return callback;
     }
 
     //--------------------------------------------------------------------------
-    CroppingCallback( ) : mapper(NULL)
+
+    CroppingCallback( ) : mapper(nullptr)
+    {
+    }
+
+    virtual ~CroppingCallback( )
     {
     }
 
     //--------------------------------------------------------------------------
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
     {
-
         vtkBoxWidget2 *widget = vtkBoxWidget2::SafeDownCast( caller );
         mapper->SetCroppingRegionPlanes( widget->GetRepresentation()->GetBounds() );
     }
@@ -125,47 +135,39 @@ private:
     vtkVolumeMapper *mapper;
 };
 
+static const ::fwCom::Slots::SlotKeyType s_RESET_BOX_WIDGET_SLOT      = "resetBoxWidget";
+static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_BOX_CLIPPING_SLOT = "activateBoxClipping";
 
 //------------------------------------------------------------------------------
 
 Volume::Volume() throw() :
     ::fwComEd::helper::MedicalImageAdaptor(),
     ::fwRenderVTK::IVtkAdaptorService(),
-    m_bClippingBoxIsActivate(false),
-    m_autoResetCamera(true),
+    m_clippingPlanes(nullptr),
+    m_volumeMapper( vtkSmartVolumeMapper::New()),
+    m_volumeProperty(vtkVolumeProperty::New()),
+    m_volume(vtkVolume::New()),
+    m_opacityTransferFunction(vtkPiecewiseFunction::New()),
+    m_colorTransferFunction(vtkColorTransferFunction::New()),
+    m_abortCommand(AbortCallback::New()),
+    m_boxWidget(vtkBoxWidget2::New()),
+    m_croppingCommand(CroppingCallback::New(m_volumeMapper)),
     m_croppingBoxDefaultState(true),
+    m_autoResetCamera(true),
     m_reductionFactor(1.0)
 {
-    m_clippingPlanesId = "";
-    m_clippingPlanes   = 0;
-
-    m_volume         = vtkVolume::New();
-    m_volumeProperty = vtkVolumeProperty::New();
-    m_volumeMapper   = vtkSmartVolumeMapper::New();
-
-    m_abortCommand = AbortCallback::New();
-
-    m_opacityTransferFunction = vtkPiecewiseFunction::New();
-    m_colorTransferFunction   = vtkColorTransferFunction::New();
-
-    m_boxWidget = vtkBoxWidget2::New();
     m_boxWidget->KeyPressActivationOff();
     m_boxWidget->SetRotationEnabled(0);
     vtkBoxRepresentationHack *repr = vtkBoxRepresentationHack::New();
     m_boxWidget->SetRepresentation(repr);
     repr->Delete();
 
-    m_croppingCommand = CroppingCallback::New(m_volumeMapper);
     m_boxWidget->AddObserver(vtkCommand::InteractionEvent, m_croppingCommand);
 
-    // Manage events
-    this->installTFSelectionEventHandler(this);
-    //this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    //this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
-    //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
-    //this->addNewHandledEvent( "SHOWHIDE_BOX_WIDGET" );
-    //this->addNewHandledEvent( "RESET_BOX_WIDGET" );
+    newSlot(s_RESET_BOX_WIDGET_SLOT, &Volume::resetBoxWidget, this);
+    newSlot(s_ACTIVATE_BOX_CLIPPING_SLOT, &Volume::activateBoxClipping, this);
+
+    this->installTFSlots(this);
 }
 
 //------------------------------------------------------------------------------
@@ -173,25 +175,25 @@ Volume::Volume() throw() :
 Volume::~Volume() throw()
 {
     m_volumeMapper->Delete();
-    m_volumeMapper = NULL;
+    m_volumeMapper = nullptr;
 
     m_volume->Delete();
-    m_volume = NULL;
+    m_volume = nullptr;
 
     m_abortCommand->Delete();
-    m_abortCommand = NULL;
+    m_abortCommand = nullptr;
 
     if (m_clippingPlanes)
     {
         m_clippingPlanes->Delete();
-        m_clippingPlanes = NULL;
+        m_clippingPlanes = nullptr;
     }
 
     m_boxWidget->RemoveObserver(m_croppingCommand);
     m_boxWidget->Delete();
-    m_boxWidget = NULL;
+    m_boxWidget = nullptr;
     m_croppingCommand->Delete();
-    m_croppingCommand = NULL;
+    m_croppingCommand = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -216,20 +218,16 @@ void Volume::doStart() throw(fwTools::Failed)
 
     this->getInteractor()->GetRenderWindow()->AddObserver("AbortCheckEvent", m_abortCommand);
     this->doUpdate(); //TODO: remove me ?
-    this->installTFObserver( this->getSptr() );
+    this->installTFConnections();
 
-    if(!m_croppingBoxDefaultState)
-    {
-        m_bClippingBoxIsActivate = m_croppingBoxDefaultState;
-        this->activateBoxClipping( m_bClippingBoxIsActivate );
-    }
+    this->activateBoxClipping( m_croppingBoxDefaultState );
 }
 
 //------------------------------------------------------------------------------
 
 void Volume::doStop() throw(fwTools::Failed)
 {
-    this->removeTFObserver();
+    this->removeTFConnections();
     this->removeAllPropFromRenderer();
     this->getInteractor()->GetRenderWindow()->RemoveObserver(m_abortCommand);
 }
@@ -238,9 +236,9 @@ void Volume::doStop() throw(fwTools::Failed)
 
 void Volume::doSwap() throw(fwTools::Failed)
 {
-    this->removeTFObserver();
+    this->removeTFConnections();
     this->doUpdate();
-    this->installTFObserver( this->getSptr() );
+    this->installTFConnections();
 }
 
 //------------------------------------------------------------------------------
@@ -260,41 +258,20 @@ void Volume::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Volume::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void Volume::updatingTFPoints()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    this->updateVolumeTransferFunction(image);
+    this->requestRender();
+}
 
-    if (imageIsValid)
-    {
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-        {
-            this->doUpdate();
-        }
+//------------------------------------------------------------------------------
 
-        if (this->upadteTFObserver(msg,
-                                   this->getSptr()) ||
-            msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
-        {
-            this->updateVolumeTransferFunction(image);
-        }
-
-        if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
-        {
-            this->updateVolumeTransferFunction(image);
-        }
-
-        if ( msg->hasEvent( "SHOWHIDE_BOX_WIDGET" ) )
-        {
-            m_bClippingBoxIsActivate = !m_bClippingBoxIsActivate;
-            this->activateBoxClipping( m_bClippingBoxIsActivate );
-        }
-
-        if ( msg->hasEvent( "RESET_BOX_WIDGET" ) )
-        {
-            this->resetBoxWidget();
-        }
-    }
+void Volume::updatingTFWindowing(double window, double level)
+{
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateVolumeTransferFunction(image);
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -363,7 +340,6 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
     m_boxWidget->On();
     vtkVolumeMapper::SafeDownCast(m_volumeMapper)->CroppingOn();
     vtkVolumeMapper::SafeDownCast(m_volumeMapper)->SetCroppingRegionPlanes( m_volumeMapper->GetBounds() );
-    m_bClippingBoxIsActivate = m_croppingBoxDefaultState;
 
     imageImport->Delete();
 
@@ -379,7 +355,7 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
 
 void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
 {
-    this->updateTransferFunction(image, this->getSptr());
+    this->updateTransferFunction(image);
     ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
     SLM_ASSERT("TransferFunction null pointer", pTF);
 
@@ -479,6 +455,7 @@ void Volume::resetBoxWidget()
         this->getRenderer()->ResetCamera();
     }
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -494,6 +471,18 @@ void Volume::activateBoxClipping( bool activate )
         m_boxWidget->Off();
     }
     this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Volume::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

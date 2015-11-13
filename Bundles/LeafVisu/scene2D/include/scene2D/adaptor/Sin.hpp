@@ -7,8 +7,7 @@
 #ifndef __SCENE2D_ADAPTOR_SIN_HPP__
 #define __SCENE2D_ADAPTOR_SIN_HPP__
 
-#include <scene2D/adaptor/IAdaptor.hpp>
-
+#include "scene2D/adaptor/IAdaptor.hpp"
 #include "scene2D/config.hpp"
 
 namespace scene2D
@@ -30,7 +29,6 @@ protected:
     SCENE2D_API void configuring() throw (::fwTools::Failed);
     SCENE2D_API void doStart();
     SCENE2D_API void doUpdate();
-    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg );
     SCENE2D_API void doSwap();
     SCENE2D_API void doStop();
 

@@ -51,11 +51,6 @@ protected:
     IOVTKGDCM_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg)_msg ) throw(::fwTools::Failed)
-    {
-    }
-
-    /// Override
     IOVTKGDCM_API void info(std::ostream &_sstream );
 
     /// Override

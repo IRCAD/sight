@@ -13,6 +13,9 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Point.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(PointList), FWDATA_API);
@@ -60,6 +63,21 @@ public:
 
     void setPoints (const PointListContainer & _vPoints);
     /// @}
+
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Signal emitted when a Point is added
+    typedef ::fwCom::Signal< void (::fwData::Point::sptr) > PointAddedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_ADDED_SIG;
+
+    /// Signal emitted when a Point is removed
+    typedef ::fwCom::Signal< void (::fwData::Point::sptr) > PointRemovedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_REMOVED_SIG;
+    /**
+     * @}
+     */
 
 protected:
 

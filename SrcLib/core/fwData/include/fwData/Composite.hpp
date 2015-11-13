@@ -12,6 +12,9 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <map>
 
 namespace fwData
@@ -136,6 +139,26 @@ public:
      */
     template< class DATATYPE >
     CSPTR(DATATYPE) at(const std::string& key) const;
+
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Type of signal when objects are added
+    typedef ::fwCom::Signal< void (ContainerType) > AddedObjectsSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_OBJECTS_SIG;
+
+    /// Type of signal when objects are changed (newObjects, oldObjects)
+    typedef ::fwCom::Signal< void (ContainerType, ContainerType) > ChangedObjectsSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CHANGED_OBJECTS_SIG;
+
+    /// Type of signal when objects are removed
+    typedef ::fwCom::Signal< void (ContainerType) > RemovedObjectsSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_OBJECTS_SIG;
+    /**
+     * @}
+     */
+
 protected:
     ContainerType m_container;
 };

@@ -12,7 +12,6 @@
 #include <fwComEd/helper/Array.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
 #include <fwCom/Signal.hxx>
 
@@ -60,17 +59,10 @@ void SReadArray::updating() throw( ::fwTools::Failed )
         buffer[i] = i;
     }
 
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig
-        = array->signal< ::fwData::Object::ObjectModifiedSignalType>( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
+    ::fwData::Object::ModifiedSignalType::sptr sig
+        = array->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
 
-    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent("MODIFIED_EVENT");
-    sig->asyncEmit(msg);
-}
-
-void SReadArray::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-
+    sig->asyncEmit();
 }
 
 void SReadArray::swapping( ) throw( ::fwTools::Failed )

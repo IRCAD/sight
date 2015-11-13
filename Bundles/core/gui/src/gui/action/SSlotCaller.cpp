@@ -4,21 +4,25 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/regex.hpp>
+#include "gui/action/SSlotCaller.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/fwID.hpp>
-
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Extension.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include "gui/action/SSlotCaller.hpp"
+#include <fwRuntime/Extension.hpp>
+#include <fwRuntime/helper.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <fwTools/fwID.hpp>
+
+#include <boost/regex.hpp>
 
 namespace gui
 {
@@ -85,13 +89,6 @@ void SSlotCaller::updating() throw( ::fwTools::Failed )
             slot->asyncRun();
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void SSlotCaller::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

@@ -4,12 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "ctrlSelection/manager/SwapperSrv.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
-
-#include <fwTools/fwID.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
@@ -17,16 +19,21 @@
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
-#include <fwComEd/CompositeMsg.hpp>
+#include <fwTools/fwID.hpp>
+
 #include <fwData/Composite.hpp>
 
-#include "ctrlSelection/manager/SwapperSrv.hpp"
+#include <boost/foreach.hpp>
 
 namespace ctrlSelection
 {
 
 namespace manager
 {
+
+static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObjects";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObjects";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 //-----------------------------------------------------------------------------
 
@@ -36,44 +43,15 @@ fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager:
 
 SwapperSrv::SwapperSrv() throw() : m_dummyStopMode(false)
 {
-    //handlingEventOff ::fwComEd::CompositeMsg::ADDED_KEYS );
-    //handlingEventOff ::fwComEd::CompositeMsg::REMOVED_KEYS );
-    //handlingEventOff ::fwComEd::CompositeMsg::CHANGED_KEYS );
+    newSlot(s_ADD_OBJECTS_SLOT, &SwapperSrv::addObjects, this);
+    newSlot(s_CHANGE_OBJECTS_SLOT, &SwapperSrv::changeObjects, this);
+    newSlot(s_REMOVE_OBJECTS_SLOT, &SwapperSrv::removeObjects, this);
 }
 
 //-----------------------------------------------------------------------------
 
 SwapperSrv::~SwapperSrv() throw()
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void SwapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
-    if (compositeMsg)
-    {
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
-        {
-            ::fwData::Composite::sptr fields = compositeMsg->getAddedKeys();
-            this->addObjects( fields );
-        }
-
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
-        {
-            ::fwData::Composite::sptr fields = compositeMsg->getRemovedKeys();
-            this->removeObjects( fields );
-        }
-
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
-        {
-            ::fwData::Composite::sptr fields = compositeMsg->getNewChangedKeys();
-            this->swapObjects( fields );
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -182,16 +160,16 @@ void SwapperSrv::starting()  throw ( ::fwTools::Failed )
     }
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SwapperSrv::addObjects( ::fwData::Composite::sptr _composite )
+void SwapperSrv::addObjects(::fwData::Composite::ContainerType objects)
 {
-    for( ::fwData::Composite::ValueType addedObjectId :  _composite->getContainer())
+    for( ::fwData::Composite::ValueType addedObjectId :  objects)
     {
         if(m_objectsSubServices.find(addedObjectId.first) != m_objectsSubServices.end())
         {
             // Services are on dummyObject
-            this->swapObject(addedObjectId.first, addedObjectId.second);
+            this->changeObject(addedObjectId.first, addedObjectId.second);
         }
         else
         {
@@ -312,17 +290,18 @@ void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr 
 }
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::swapObjects( ::fwData::Composite::sptr _composite )
+void SwapperSrv::changeObjects(::fwData::Composite::ContainerType newObjects,
+                               ::fwData::Composite::ContainerType oldObjects)
 {
-    for( ::fwData::Composite::ValueType swappedObjectId :  _composite->getContainer())
+    for( ::fwData::Composite::ValueType swappedObjectId : newObjects)
     {
-        this->swapObject(swappedObjectId.first, swappedObjectId.second);
+        this->changeObject(swappedObjectId.first, swappedObjectId.second);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::swapObject(const std::string &objectId, ::fwData::Object::sptr object)
+void SwapperSrv::changeObject(const std::string &objectId, ::fwData::Object::sptr object)
 {
     std::vector< ConfigurationType > confVec = m_managerConfiguration->find("object", "id", objectId);
     for( ConfigurationType cfg :  confVec )
@@ -365,9 +344,9 @@ void SwapperSrv::swapObject(const std::string &objectId, ::fwData::Object::sptr 
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::removeObjects( ::fwData::Composite::sptr _composite )
+void SwapperSrv::removeObjects( ::fwData::Composite::ContainerType objects )
 {
-    for( ::fwData::Composite::ValueType swappedObjectId :  _composite->getContainer())
+    for( ::fwData::Composite::ValueType swappedObjectId : objects)
     {
         this->removeObject(swappedObjectId.first);
     }
@@ -468,6 +447,18 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
         }
         m_objectsSubServices[objectId] = subVecSrv;
     }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SwapperSrv::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHANGE_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

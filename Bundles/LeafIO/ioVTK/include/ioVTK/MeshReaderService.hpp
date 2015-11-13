@@ -10,7 +10,6 @@
 #include <string>
 #include <boost/filesystem/path.hpp>
 
-#include <fwServices/ObjectMsg.hpp>
 #include <fwData/Mesh.hpp>
 
 #include <io/IReader.hpp>
@@ -75,17 +74,6 @@ protected:
      * The image is read.
      */
     IOVTK_API void updating() throw(::fwTools::Failed);
-
-    /**
-     * @brief React on modifications : default does nothing.
-     *
-     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
-     *
-     * @param[in] _msg information message for modification
-     */
-    void receiving( CSPTR(::fwServices::ObjectMsg)_msg ) throw(::fwTools::Failed)
-    {
-    }
 
     /**
      * @brief Info method.

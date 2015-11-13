@@ -4,26 +4,27 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "uiMeasurement/action/SAddLabeledPoint.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwComEd/Dictionary.hpp>
+
 #include <fwCore/base.hpp>
 
-#include <exception>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
-
+#include <fwData/Boolean.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
-#include <fwData/Boolean.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/PointListMsg.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
-#include "uiMeasurement/action/SAddLabeledPoint.hpp"
+#include <fwServices/Base.hpp>
+
+#include <exception>
 
 namespace uiMeasurement
 {
@@ -102,15 +103,11 @@ void SAddLabeledPoint::updating() throw(::fwTools::Failed)
         newPoint->setField( ::fwComEd::Dictionary::m_labelId, label );
 
         // notify
-        ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
-        msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED, newPoint );
-        msgPointList->setSource( this->getSptr());
-        msgPointList->setSubject( landmarks);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = landmarks->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig =
+            landmarks->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_ADDED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msgPointList);
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit(newPoint);
         }
     }
 }
@@ -127,12 +124,6 @@ void SAddLabeledPoint::configuring() throw (::fwTools::Failed)
 void SAddLabeledPoint::starting() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
-}
-
-//------------------------------------------------------------------------------
-
-void SAddLabeledPoint::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------

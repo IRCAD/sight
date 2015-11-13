@@ -20,9 +20,8 @@ class SCENE2D_CLASS_API Size
 {
 public:
 
-    Size()
+    Size() : m_w(0.),  m_h(0.)
     {
-        m_w = 0; m_h = 0;
     }
     Size( double w, double h )
     {

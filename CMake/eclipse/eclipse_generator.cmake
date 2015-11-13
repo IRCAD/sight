@@ -3,10 +3,10 @@
 function(eclipseGenerator)
     foreach(PROJECT ${ARGV})
         message(STATUS "Generating ${PROJECT} Eclipse project")
-        #configure eclipse project template 
+        #configure eclipse project template
         set(BUILD_PATH ${CMAKE_BINARY_DIR})
         set(PROJECT_NAME ${PROJECT})
-        
+
         set(TYPE ${${PROJECT}_TYPE})
         if( TYPE STREQUAL "EXECUTABLE" )
             set(PROJECT_NAME_USER "exec-${PROJECT}")
@@ -35,6 +35,9 @@ function(eclipseGenerator)
                 string( REGEX REPLACE "\\\\" "/" SYS_INC ${SYS_INC} )
                 set(DEPS_INCLUDES "${DEPS_INCLUDES}\n<listOptionValue builtIn=\"false\" value=\"${SYS_INC}\"/>")
             endforeach()
+        elseif(APPLE)
+            set (OSX_INCLUDES_PATH "/usr/include/c++/4.2.1")
+            set(DEPS_INCLUDES "${DEPS_INCLUDES}\n<listOptionValue builtIn=\"false\" value=\"${OSX_INCLUDES_PATH}\"/>")
         endif()
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/eclipse/.cproject.in ${${PROJECT}_DIR}/.cproject @ONLY )
         configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/eclipse/.project.in ${${PROJECT}_DIR}/.project @ONLY )

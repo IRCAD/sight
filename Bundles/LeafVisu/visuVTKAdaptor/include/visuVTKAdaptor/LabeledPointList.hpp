@@ -7,18 +7,15 @@
 #ifndef __VISUVTKADAPTOR_LABELEDPOINTLIST_HPP__
 #define __VISUVTKADAPTOR_LABELEDPOINTLIST_HPP__
 
+#include "visuVTKAdaptor/config.hpp"
 
-#include <fwServices/ObjectMsg.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
 
 class vtkCommand;
 
 namespace visuVTKAdaptor
 {
-
-
 /**
  * @brief Adaptor to display a point list
  */
@@ -33,6 +30,16 @@ public:
 
     VISUVTKADAPTOR_API virtual ~LabeledPointList() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect PointList::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect PointList::s_POINT_ADDED_SIG to this::s_UPDATE_SLOT
+     * Connect PointList::s_POINT_REMOVED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -41,17 +48,11 @@ protected:
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API virtual void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
 
     vtkCommand * m_rightButtonCommand;
-
-    bool m_needSubservicesDeletion;
-
 };
-
-
 
 
 } //namespace visuVTKAdaptor

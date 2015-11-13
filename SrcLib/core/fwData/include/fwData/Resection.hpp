@@ -12,6 +12,9 @@
 #include "fwData/PlaneList.hpp"
 #include "fwData/Reconstruction.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(Resection), FWDATA_API);
@@ -117,6 +120,27 @@ public:
 
     /// @}
 
+    /***
+     * @name Signals
+     * @{
+     */
+
+    /// Type of signal when a reconstruction is added
+    typedef ::fwCom::Signal< void () > ReconstructionAddedSignalType;
+
+    /// Key in m_signals map of signal m_sigReconstructionAdded
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTION_ADDED_SIG;
+
+    /// Type of signal when the resection visibility is modified
+    typedef ::fwCom::Signal< void () > VisibilityModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigVisibilityModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
+
+    /**
+     * @}
+     */
+
 protected:
 
     //! Resection name
@@ -139,6 +163,21 @@ protected:
 
     //! flag if the resection is visible
     bool m_isVisible;
+
+private:
+
+    /**
+     * @name Signals attributes
+     * @{
+     */
+    /// Signal emitted when a reconstruction is added
+    ReconstructionAddedSignalType::sptr m_sigReconstructionAdded;
+
+    /// Signal emitted when the resection visibility is modified
+    VisibilityModifiedSignalType::sptr m_sigVisibilityModified;
+    /**
+     * @}
+     */
 
 }; // end class Resection
 

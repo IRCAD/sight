@@ -6,7 +6,15 @@
 
 #ifndef ANDROID
 
-#include <boost/lexical_cast.hpp>
+#include "visuVTKAdaptor/Transform.hpp"
+#include "visuVTKAdaptor/BoxWidget.hpp"
+
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwServices/Base.hpp>
+
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderWindow.h>
@@ -18,16 +26,7 @@
 #include <vtkBoxRepresentation.h>
 #include <vtkBoxWidget2.h>
 
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwServices/Base.hpp>
-
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>
-
-#include "visuVTKAdaptor/Transform.hpp"
-#include "visuVTKAdaptor/BoxWidget.hpp"
+#include <boost/lexical_cast.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -43,7 +42,7 @@ public:
         return cb;
     }
 
-    BoxClallback() : m_adaptor(NULL)
+    BoxClallback() : m_adaptor(nullptr)
     {
     }
     ~BoxClallback()
@@ -65,13 +64,15 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Bo
 
 //------------------------------------------------------------------------------
 
-BoxWidget::BoxWidget() throw()
-    : ::fwRenderVTK::IVtkAdaptorService(),
-      m_vtkBoxWidget( 0 ), m_scaleFactor(1.0), m_enableScaling(true)
+BoxWidget::BoxWidget() throw() :
+    ::fwRenderVTK::IVtkAdaptorService(),
+    m_transform(nullptr),
+    m_vtkBoxWidget(nullptr),
+    m_boxWidgetCommand(nullptr),
+    m_scaleFactor(1.0),
+    m_enableScaling(true)
 {
     m_boxWidgetCommand = BoxClallback::New(this);
-
-    //addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -174,15 +175,10 @@ void BoxWidget::updateFromVtk()
         }
     }
 
-    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-    msg->setSource(this->getSptr());
-    msg->setSubject( trf);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = trf->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = trf->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
@@ -210,19 +206,6 @@ void BoxWidget::doUpdate() throw( ::fwTools::Failed )
         this->setVtkPipelineModified();
     }
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
-}
-
-//------------------------------------------------------------------------------
-
-void BoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
-{
-    ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg =
-        ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
-    if (transfoMsg && transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED)
-        &&  m_vtkBoxWidget->HasObserver(::vtkCommand::InteractionEvent, m_boxWidgetCommand))
-    {
-        doUpdate();
-    }
 }
 
 //------------------------------------------------------------------------------

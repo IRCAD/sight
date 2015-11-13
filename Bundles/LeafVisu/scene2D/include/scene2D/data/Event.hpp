@@ -30,29 +30,35 @@ class SCENE2D_CLASS_API Event : public ::fwData::Object
 public:
 
     typedef enum
-    { NoType,
-      Resize,                   // change within the size of the widget/view
-      Viewport,                 // change within the size of the sene (contained into the widget/view)
-      MouseButtonDoubleClick,
-      MouseButtonPress,
-      MouseButtonRelease,
-      MouseMove,
-      MouseWheelUp,
-      MouseWheelDown,
-      KeyPress,
-      KeyRelease} Type;
+    {
+        NoType,
+        Resize,                   // change within the size of the widget/view
+        Viewport,                 // change within the size of the sene (contained into the widget/view)
+        MouseButtonDoubleClick,
+        MouseButtonPress,
+        MouseButtonRelease,
+        MouseMove,
+        MouseWheelUp,
+        MouseWheelDown,
+        KeyPress,
+        KeyRelease
+    } Type;
 
     typedef enum
-    {   NoButton,
+    {
+        NoButton,
         LeftButton,
         RightButton,
-        MidButton} Button;
+        MidButton
+    } Button;
 
     typedef enum
-    {  NoModifier,
-       ShiftModifier,
-       ControlModifier,
-       AltModifier} Modifier;
+    {
+        NoModifier,
+        ShiftModifier,
+        ControlModifier,
+        AltModifier
+    } Modifier;
 
 
     fwCoreClassDefinitionsWithFactoryMacro( (Event)(::fwData::Object), (()), ::fwData::factory::New< Event >);

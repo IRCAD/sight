@@ -9,7 +9,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
 #include <fwCore/base.hpp>
 

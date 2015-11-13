@@ -9,9 +9,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/CameraMsg.hpp>
-#include <fwComEd/MeshMsg.hpp>
-
 #include <fwData/Composite.hpp>
 #include <fwData/Material.hpp>
 
@@ -47,6 +44,7 @@ namespace vtkCompositeMesh
 {
 
 const ::fwCom::Slots::SlotKeyType RendererService::s_UPDATE_CAM_POSITION_SLOT = "updateCamPosition";
+const ::fwCom::Slots::SlotKeyType RendererService::s_UPDATE_PIPELINE_SLOT     = "updatePipeline";
 const ::fwCom::Signals::SignalKeyType RendererService::s_CAM_UPDATED_SIG      = "camUpdated";
 
 class vtkLocalCommand : public vtkCommand
@@ -84,21 +82,13 @@ private:
 RendererService::RendererService() throw()
     : m_render( 0 ), m_bPipelineIsInit(false)
 {
-//    this->IService::addNewHandledEvent( ::fwComEd::MeshMsg::NEW_MESH );
-//    this->IService::addNewHandledEvent( ::fwComEd::CameraMsg::CAMERA_MOVING );
-
-    m_slotUpdateCamPosition = ::fwCom::newSlot( &RendererService::updateCamPosition, this );
-    ::fwCom::HasSlots::m_slots( s_UPDATE_CAM_POSITION_SLOT, m_slotUpdateCamPosition );
+    m_slotUpdateCamPosition = newSlot( s_UPDATE_CAM_POSITION_SLOT, &RendererService::updateCamPosition, this );
+    newSlot(s_UPDATE_PIPELINE_SLOT, &RendererService::updatePipeline, this);
 
     m_sigCamUpdated = CamUpdatedSignalType::New();
-#ifdef COM_LOG
-    m_sigCamUpdated->setID( s_CAM_UPDATED_SIG );
-#endif
+
     // Register
     ::fwCom::HasSignals::m_signals( s_CAM_UPDATED_SIG,  m_sigCamUpdated);
-
-    this->setWorker( ::fwServices::registry::ActiveWorkers::getDefault()->
-                     getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
 
 }
 
@@ -158,26 +148,6 @@ void RendererService::stopping() throw(fwTools::Failed)
 void RendererService::updating() throw(fwTools::Failed)
 {
     m_interactorManager->getInteractor()->Render();
-}
-
-//-----------------------------------------------------------------------------
-
-void RendererService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(fwTools::Failed)
-{
-    ::fwComEd::MeshMsg::csptr meshMsg = ::fwComEd::MeshMsg::dynamicConstCast(_msg);
-    if ( meshMsg && meshMsg->hasEvent( ::fwComEd::MeshMsg::NEW_MESH ) )
-    {
-        if(!m_bPipelineIsInit)
-        {
-            initVTKPipeline();
-            m_bPipelineIsInit = true;
-        }
-        else
-        {
-            updateVTKPipeline();
-        }
-        m_interactorManager->getInteractor()->Render();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -295,6 +265,22 @@ void RendererService::updateVTKPipeline()
 
 //-----------------------------------------------------------------------------
 
+void RendererService::updatePipeline()
+{
+    if(!m_bPipelineIsInit)
+    {
+        this->initVTKPipeline();
+        m_bPipelineIsInit = true;
+    }
+    else
+    {
+        this->updateVTKPipeline();
+    }
+    m_interactorManager->getInteractor()->Render();
+}
+
+//-----------------------------------------------------------------------------
+
 void RendererService::notifyCamPositionUpdated()
 {
     vtkCamera* camera = m_render->GetActiveCamera();
@@ -311,6 +297,15 @@ void RendererService::notifyCamPositionUpdated()
         ::fwCom::Connection::Blocker block(m_sigCamUpdated->getConnection(m_slotUpdateCamPosition));
         m_sigCamUpdated->asyncEmit(position, focal, viewUp);
     }
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType RendererService::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_PIPELINE_SLOT ) );
+    return connections;
 }
 
 }

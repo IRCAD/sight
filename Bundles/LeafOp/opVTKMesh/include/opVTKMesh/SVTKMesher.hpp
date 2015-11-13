@@ -35,8 +35,6 @@ protected:
 
     OPVTKMESH_API virtual void stopping() throw ( ::fwTools::Failed );
 
-    OPVTKMESH_API virtual void receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
-
     /**
      * @brief Declare the configuration to define percent of reduction, image source and ModelSeries destination.
      *

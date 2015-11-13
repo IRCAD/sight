@@ -7,7 +7,7 @@
 #ifndef __SCENE2D_ADAPTOR_SCALEVALUES_HPP__
 #define __SCENE2D_ADAPTOR_SCALEVALUES_HPP__
 
-#include <scene2D/adaptor/IAdaptor.hpp>
+#include "scene2D/adaptor/IAdaptor.hpp"
 
 namespace scene2D
 {
@@ -79,9 +79,6 @@ protected:
 
     /// Do nothing.
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
-
-    /// Do nothing.
-    SCENE2D_API void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Do nothing.
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
@@ -163,6 +160,5 @@ private:
 
 } // namespace adaptor
 } // namespace scene2D
-
 
 #endif // __SCENE2D_ADAPTOR_SCALEVALUES_HPP__

@@ -9,7 +9,7 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
-#include <fwServices/ObjectMsg.hpp>
+
 
 #include <fwComEd/helper/Field.hpp>
 

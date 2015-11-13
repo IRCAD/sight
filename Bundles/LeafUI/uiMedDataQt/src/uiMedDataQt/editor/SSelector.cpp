@@ -7,11 +7,16 @@
 #include "uiMedDataQt/editor/SSelector.hpp"
 #include "uiMedDataQt/widget/Selector.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+
 #include <fwComEd/helper/SeriesDB.hpp>
 #include <fwComEd/helper/Vector.hpp>
-#include <fwComEd/SeriesDBMsg.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -40,6 +45,9 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SSelector,
 
 const ::fwCom::Signals::SignalKeyType SSelector::s_SERIES_DOUBLE_CLICKED_SIG = "seriesDoubleClicked";
 
+const ::fwCom::Slots::SlotKeyType SSelector::s_ADD_SERIES_SLOT    = "addSeries";
+const ::fwCom::Slots::SlotKeyType SSelector::s_REMOVE_SERIES_SLOT = "removeSeries";
+
 //------------------------------------------------------------------------------
 
 SSelector::SSelector() :
@@ -53,9 +61,10 @@ SSelector::SSelector() :
     // Register
     m_signals( s_SERIES_DOUBLE_CLICKED_SIG,  m_sigSeriesDoubleClicked);
 
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
+    newSlot(s_ADD_SERIES_SLOT, &SSelector::addSeries, this);
+    m_slotRemoveSeries = newSlot(s_REMOVE_SERIES_SLOT, &SSelector::removeSeries, this);
+
+
 }
 
 //------------------------------------------------------------------------------
@@ -112,38 +121,6 @@ void SSelector::starting() throw(::fwTools::Failed)
     }
 
     this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SSelector::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    ::fwComEd::SeriesDBMsg::csptr seriesDBMsg = ::fwComEd::SeriesDBMsg::dynamicConstCast(msg);
-
-    if ( seriesDBMsg && seriesDBMsg->hasEvent( ::fwComEd::SeriesDBMsg::ADDED_OBJECTS ) )
-    {
-        ::fwData::Vector::sptr addedObject = seriesDBMsg->getAddedSeries();
-        for( ::fwData::Object::sptr obj :  addedObject->getContainer() )
-        {
-            ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
-            if(series)
-            {
-                m_selectorWidget->addSeries(series);
-            }
-        }
-    }
-    if ( seriesDBMsg && seriesDBMsg->hasEvent( ::fwComEd::SeriesDBMsg::REMOVED_OBJECTS ) )
-    {
-        ::fwData::Vector::sptr removedObject = seriesDBMsg->getRemovedSeries();
-        for( ::fwData::Object::sptr obj :  removedObject->getContainer() )
-        {
-            ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
-            if(series)
-            {
-                m_selectorWidget->removeSeries(series);
-            }
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -278,7 +255,7 @@ void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
         vectorHelper.add(series);
     }
 
-    vectorHelper.notify(this->getSptr());
+    vectorHelper.notify();
 }
 
 //------------------------------------------------------------------------------
@@ -325,7 +302,12 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
         seriesDBHelper.remove(series);
     }
 
-    seriesDBHelper.notify(this->getSptr());
+    {
+        auto sig = seriesDB->signal< ::fwMedData::SeriesDB::RemovedSeriesSignalType >(
+            ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG );
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotRemoveSeries));
+        seriesDBHelper.notify();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -339,6 +321,37 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
     SLM_ASSERT("Object " << m_selectionId << " is not a '::fwData::Vector'", selection);
 
     return selection;
+}
+
+//------------------------------------------------------------------------------
+
+void SSelector::addSeries(::fwMedData::SeriesDB::ContainerType addedSeries)
+{
+    for( ::fwMedData::Series::sptr series :  addedSeries )
+    {
+        m_selectorWidget->addSeries(series);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SSelector::removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries)
+{
+    for( ::fwMedData::Series::sptr series :  removedSeries )
+    {
+        m_selectorWidget->removeSeries(series);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SSelector::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

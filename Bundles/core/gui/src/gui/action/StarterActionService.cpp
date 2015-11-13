@@ -179,13 +179,6 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void StarterActionService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------
-
 void StarterActionService::configuring() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();

@@ -10,14 +10,9 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwCore/base.hpp>
-#include <fwComEd/SeriesDBMsg.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/VectorMsg.hpp>
 
 namespace fwComEd
 {
@@ -32,8 +27,7 @@ class TestService : public ::fwServices::IService
 public:
     fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) );
     TestService() throw()
-        :   m_isUpdated(false),
-          m_isUpdatedMessage(false)
+        :   m_isUpdated(false)
     {
     }
 
@@ -46,24 +40,6 @@ public:
     {
         return m_isUpdated;
     }
-
-    /// return true if the service is updated with updating(msg) method
-    bool getIsUpdatedMessage()
-    {
-        return m_isUpdatedMessage;
-    }
-
-    /// return the message receiving in updating(msg) method
-    ::fwServices::ObjectMsg::sptr getMessage()
-    {
-        return m_compoMsg;
-    }
-
-    const std::string & getMessageEvent()
-    {
-        return m_messageEvent;
-    }
-
 
 protected:
     virtual void configuring() throw( ::fwTools::Failed )
@@ -84,9 +60,6 @@ protected:
     }
 
     bool m_isUpdated;
-    bool m_isUpdatedMessage;
-    std::string m_messageEvent;
-    ::fwServices::ObjectMsg::sptr m_compoMsg;
 };
 
 /**
@@ -118,30 +91,6 @@ public:
     {
         m_isUpdated = true;
     }
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-    {
-        ::fwComEd::CompositeMsg::csptr compositeMessage = ::fwComEd::CompositeMsg::dynamicConstCast( _msg );
-        m_messageEvent.clear();
-
-        if (compositeMessage)
-        {
-            if( compositeMessage->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS))
-            {
-                m_messageEvent += ::fwComEd::CompositeMsg::ADDED_KEYS;
-            }
-            if( compositeMessage->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
-            {
-                m_messageEvent += ::fwComEd::CompositeMsg::CHANGED_KEYS;
-            }
-            if( compositeMessage->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS))
-            {
-                m_messageEvent += ::fwComEd::CompositeMsg::REMOVED_KEYS;
-            }
-
-            m_isUpdatedMessage = true;
-            m_compoMsg         = std::const_pointer_cast< ::fwServices::ObjectMsg >( _msg );
-        }
-    }
 };
 
 /**
@@ -172,61 +121,8 @@ public:
     {
         m_isUpdated = true;
     }
-    virtual void receiving( std::shared_ptr< const ::fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed)
-    {
-        ::fwComEd::ImageMsg::csptr imageMessage = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
-        if (imageMessage && imageMessage->hasEvent(::fwComEd::ImageMsg::SLICE_INDEX))
-        {
-            // if receiving a imageMsg : tag service is updated
-            m_isUpdatedMessage = true;
-            m_compoMsg         = std::const_pointer_cast< ::fwServices::ObjectMsg >( _msg );
-        }
-    }
+
 };
-
-
-/**
- * @brief   Test service implementation for SeriesDBMsg
- */
-class SSeriesDBTest : public ::fwComEd::ut::TestService
-{
-
-public:
-    virtual ~SSeriesDBTest() throw()
-    {
-    }
-
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBTest)(::fwComEd::ut::TestService) );
-
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-    {
-        m_isUpdated   = true;
-        m_seriesDBMsg = ::fwComEd::SeriesDBMsg::dynamicConstCast( _msg );
-    }
-
-    ::fwComEd::SeriesDBMsg::csptr m_seriesDBMsg;
-};
-
-class SVectorTest : public ::fwComEd::ut::TestService
-{
-
-public:
-    virtual ~SVectorTest() throw()
-    {
-    }
-
-    fwCoreServiceClassDefinitionsMacro ( (SVectorTest)(::fwComEd::ut::TestService) );
-
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-    {
-        m_isUpdated = true;
-        m_vectMsg   = ::fwComEd::VectorMsg::dynamicConstCast( _msg );
-    }
-
-    ::fwComEd::VectorMsg::csptr m_vectMsg;
-};
-
-
 
 } //namespace ut
 } //namespace fwComEd

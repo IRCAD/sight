@@ -7,12 +7,12 @@
 #ifndef __VISUVTKADAPTOR_POINTLISTINTERACTOR_HPP__
 #define __VISUVTKADAPTOR_POINTLISTINTERACTOR_HPP__
 
-#include <vector>
+#include "visuVTKAdaptor/config.hpp"
+#include "visuVTKAdaptor/MeshFactory.hpp"
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/MeshFactory.hpp"
+#include <vector>
 
 class vtkCommand;
 
@@ -42,18 +42,10 @@ protected:
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-    {
-    }
-
-
 
     vtkCommand *m_interactionCommand;
     float m_priority;
-
 };
-
-
 
 
 } //namespace visuVTKAdaptor

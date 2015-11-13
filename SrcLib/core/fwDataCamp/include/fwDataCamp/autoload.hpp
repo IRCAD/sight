@@ -12,7 +12,6 @@
 
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
-#include <fwData/Camera.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Edge.hpp>
@@ -42,7 +41,6 @@
 #include <fwData/Tag.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
-#include <fwData/Video.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -96,14 +94,12 @@ struct runner
         localDeclarefwDataPlaneList();
         localDeclarefwDataResection();
         localDeclarefwDataResectionDB();
-        localDeclarefwDataCamera();
         localDeclarefwDataHistogram();
         localDeclarefwDataLine();
         localDeclarefwDataList();
         localDeclarefwDatalocationSingleFile();
         localDeclarefwDataProcessObject();
         localDeclarefwDataTag();
-        localDeclarefwDataVideo();
     }
 
     static runner r;

@@ -7,13 +7,13 @@
 #ifndef __VISUVTKADAPTOR_TRANSFORM_HPP__
 #define __VISUVTKADAPTOR_TRANSFORM_HPP__
 
-#include <vector>
+#include "visuVTKAdaptor/config.hpp"
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
-
 #include <vtkSmartPointer.h>
+
+#include <vector>
 
 class vtkTransform;
 
@@ -60,7 +60,7 @@ protected:
      * With :
      *  - \b transform (mandatory) : the vtkTransform to associate to the adaptor
      *  - \b autoRender (optional, "true" by default): if autoRender=true,  the scene is automatically rendered after
-     *    doStart, doUpdate, doSwap, doReceive and doStop if m_vtkPipelineModified=true.
+     *    doStart, doUpdate, doSwap and doStop if m_vtkPipelineModified=true.
      *  - \b parent (optional): id of the parent vtkTransform, it will be concatenated with this current vtkTransform.
      */
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
@@ -73,9 +73,6 @@ protected:
 
     /// Does nothing
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
-
-    /// Calls doUpdate() when it receives MATRIX_IS_MODIFIED event
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     /// Current vtkTransform
     vtkTransform* m_transform;

@@ -62,9 +62,6 @@ struct SignalsTestHasSignals : public HasSignals
     {
         SignalType::sptr signal = SignalType::New();
         HasSignals::m_signals("sig", signal);
-#ifdef COM_LOG
-        signal->setID("sig");
-#endif
     }
 };
 
@@ -76,10 +73,6 @@ struct SignalsTestHasSignals2 : public HasSignals
     {
         SignalType::sptr sig = this->newSignal< SignalType >("sig");
         CPPUNIT_ASSERT(sig);
-
-#ifdef COM_LOG
-        signal->setID("sig");
-#endif
     }
 };
 
@@ -122,31 +115,6 @@ void SignalsTest::hasSignalsTest()
         CPPUNIT_ASSERT( srv.m_val );
         obj.signal("sig")->disconnect( slot );
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void SignalsTest::signalsIDTest()
-{
-#ifdef COM_LOG
-    ::fwCom::Signals signals;
-
-    ::fwCom::Signal< void() >::sptr sig1 = ::fwCom::Signal< void() >::New();
-
-    typedef void Signature (int, float);
-    ::fwCom::Signal< Signature >::sptr sig2 = ::fwCom::Signal< Signature >::New();
-
-    signals("sig1", sig1)
-        ("sig2", sig2);
-
-    signals.setID();
-    CPPUNIT_ASSERT_EQUAL( std::string("sig1"), sig1->getID() );
-    CPPUNIT_ASSERT_EQUAL( std::string("sig2"), sig2->getID() );
-
-    signals.setID("prefix::");
-    CPPUNIT_ASSERT_EQUAL( std::string("prefix::sig1"), sig1->getID() );
-    CPPUNIT_ASSERT_EQUAL( std::string("prefix::sig2"), sig2->getID() );
-#endif
 }
 
 //-----------------------------------------------------------------------------

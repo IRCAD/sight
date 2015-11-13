@@ -6,9 +6,12 @@
 
 #include "uiMeasurement/action/FocusLandmark.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -22,7 +25,6 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
 namespace uiMeasurement
 {
@@ -62,14 +64,6 @@ void FocusLandmark::stopping() throw ( ::fwTools::Failed )
 void FocusLandmark::configuring() throw ( ::fwTools::Failed )
 {
     this->::fwGui::IActionSrv::initialize();
-}
-
-//------------------------------------------------------------------------------
-
-void FocusLandmark::receiving( fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
-{
-    // Do nothing. this method must be not used.
-    SLM_FATAL("Action should not receive a message, correct your configuration");
 }
 
 //------------------------------------------------------------------------------
@@ -165,17 +159,9 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
                     pImage->setField( ::fwComEd::Dictionary::m_sagittalSliceIndexId, paramS );
 
                     // notify
-                    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-                    msg->setSliceIndex( paramA, paramF, paramS );
-                    msg->setSource(this->getSptr());
-                    msg->setSubject( pImage);
-                    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-                    sig = pImage->signal< ::fwData::Object::ObjectModifiedSignalType >(
-                        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-                    {
-                        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                        sig->asyncEmit( msg);
-                    }
+                    auto sig = pImage->signal< ::fwData::Image::SliceIndexModifiedSignalType >(
+                        ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
+                    sig->asyncEmit(paramA->value(), paramF->value(), paramS->value());
                 }
                 else
                 {

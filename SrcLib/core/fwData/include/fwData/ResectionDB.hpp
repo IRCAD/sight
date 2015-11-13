@@ -11,6 +11,9 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Resection.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <boost/cstdint.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(ResectionDB), FWDATA_API);
@@ -76,11 +79,41 @@ public:
     void setSafeResection(const ::fwData::Resection::sptr& _safeResection);
     /// @}
 
+
+    /***
+     * @name Signals
+     * @{
+     */
+
+    /// Type of signal when the safe part is added
+    typedef ::fwCom::Signal< void () > SafePartAddedSignalType;
+
+    /// Key in m_signals map of signal m_sigSafePartAdded
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_SAFE_PART_ADDED_SIG;
+
+    /// Type of signal when a resection is added
+    typedef ::fwCom::Signal< void () > ResectionAddedSignalType;
+
+    /// Key in m_signals map of signal m_sigResectionAdded
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_RESECTION_ADDED_SIG;
+
+    /**
+     * @}
+     */
+
 protected:
 
     ::fwData::Resection::sptr m_safeResection;
 
     ResectionContainerType m_resections;
+
+private:
+
+    /// Signal emitted when the safe part is added
+    SafePartAddedSignalType::sptr m_sigSafePartAdded;
+
+    /// Signal emitted when a resection is added
+    ResectionAddedSignalType::sptr m_sigResectionAdded;
 };
 
 //-----------------------------------------------------------------------------

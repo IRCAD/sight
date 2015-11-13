@@ -7,14 +7,18 @@
 #ifndef __VISUVTKADAPTOR_IMAGESLICE_HPP__
 #define __VISUVTKADAPTOR_IMAGESLICE_HPP__
 
-#include <fwCom/Connection.hpp>
+#include "visuVTKAdaptor/config.hpp"
 
+#include <fwCom/Connection.hpp>
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+
+#include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
+#include <fwServices/helper/SigSlotConnection.hpp>
+
 
 class vtkImageActor;
 class vtkLookupTable;
@@ -74,13 +78,22 @@ public:
         m_useImageTF = use;
     }
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_CHECK_CTRL_IMAGE_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_CHECK_CTRL_IMAGE_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_CHECK_CTRL_IMAGE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     /**
      * @brief Configures the service
@@ -113,7 +126,7 @@ protected:
 
     void updateOutline();
     void updateImage( ::fwData::Image::sptr ImageSlice  );
-    void updateSliceIndex( ::fwData::Image::sptr ImageSlice );
+    void updateImageSliceIndex( ::fwData::Image::sptr ImageSlice );
 
 
     std::string m_ctrlImageId;
@@ -132,11 +145,27 @@ protected:
     vtkPolyDataMapper *m_planeOutlineMapper;
     vtkActor *m_planeOutlineActor;
 
-    ::fwCom::Connection m_connection;
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+
+private:
+
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: Check if ctrl image changed and update scene
+    void checkCtrlImage();
+
+    /// Slot: update image slice index
+    void updateSliceIndex(int axial, int frontal, int sagittal);
+
+    /// Slot: update image slice type
+    void updateSliceType(int from, int to);
+    /**
+     * @}
+     */
 
 };
-
-
 
 
 } //namespace visuVTKAdaptor

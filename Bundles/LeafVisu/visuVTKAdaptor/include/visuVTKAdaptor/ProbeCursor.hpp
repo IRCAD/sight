@@ -7,13 +7,14 @@
 #ifndef __VISUVTKADAPTOR_PROBECURSOR_HPP__
 #define __VISUVTKADAPTOR_PROBECURSOR_HPP__
 
+#include "visuVTKAdaptor/config.hpp"
+
 #include <fwData/TransferFunction.hpp>
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
 
 class vtkCommand;
 class vtkActor;
@@ -43,7 +44,17 @@ public:
 
     VISUVTKADAPTOR_API void setVisibility( bool visibility );
 
-    VISUVTKADAPTOR_API void StartProbeCursor();
+    VISUVTKADAPTOR_API void startProbeCursor();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -54,7 +65,6 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     // redraw all (stop then restart sub services)
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     void buildTextActor();
     void buildPolyData();
@@ -73,12 +83,18 @@ protected:
     vtkPolyDataMapper   *m_cursorMapper;
     vtkActor            *m_cursorActor;
 
-
+private:
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: update image slice index
+    void updateSliceIndex(int axial, int frontal, int sagittal);
+    /**
+     * @}
+     */
 
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

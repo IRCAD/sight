@@ -21,9 +21,6 @@ namespace view
 /**
  * @brief   Defines the generic layout for application.
  * @class   DefaultView
- *
-
- * @date    2009-2010.
  */
 class GUI_CLASS_API DefaultView : public ::gui::view::IView
 {
@@ -61,11 +58,6 @@ protected:
      * @see ::fwGui::IGuiContainerSrv::destroy()
      */
     GUI_API virtual void stopping() throw(::fwTools::Failed);
-
-    /**
-     * @brief This method is used to update services on notification. Do nothing.
-     */
-    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to update services. Do nothing.

@@ -7,12 +7,8 @@
 #include "visuVTKAdaptor/Image.hpp"
 #include "visuVTKAdaptor/ImagesBlend.hpp"
 
-#include <fwComEd/CompositeMsg.hpp>
-
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/TransferFunctionMsg.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Color.hpp>
@@ -39,28 +35,17 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Im
 namespace visuVTKAdaptor
 {
 
-
 //------------------------------------------------------------------------------
 
-ImagesBlend::ImagesBlend() throw()
+ImagesBlend::ImagesBlend() throw() : m_imageBlend(nullptr)
 {
-    SLM_TRACE_FUNC();
-
-    // Manage events
-    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
-    //addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS           );
-    //addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS         );
-    //addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS         );
 }
 
 //------------------------------------------------------------------------------
 
 ImagesBlend::~ImagesBlend() throw()
 {
-    SLM_TRACE_FUNC();
-
-    m_imageBlend = NULL;
+    m_imageBlend = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -98,40 +83,6 @@ void ImagesBlend::doUpdate() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     this->removeImageAdaptors();
     this->addImageAdaptors();
-}
-
-//------------------------------------------------------------------------------
-
-void ImagesBlend::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
-    ::fwComEd::ImageMsg::csptr imageMsg         = ::fwComEd::ImageMsg::dynamicConstCast(msg);
-
-    if (compositeMsg)
-    {
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS)
-            || compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS)
-            || compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
-        {
-            this->doUpdate();
-        }
-    }
-    else if (imageMsg)
-    {
-        SLM_ASSERT("msg subject is expired", !imageMsg->getSubject().expired() );
-        ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(imageMsg->getSubject().lock());
-
-        if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-        {
-            if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
-                || m_registeredImages.find(image->getID()) == m_registeredImages.end())
-            {
-                this->doUpdate();
-            }
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -269,7 +220,8 @@ void ImagesBlend::addImageAdaptors()
             }
 
             info->m_connections = ::fwServices::helper::SigSlotConnection::New();
-            info->m_connections->connect(img, this->getSptr(), this->getObjSrvConnections());
+            info->m_connections->connect(img, ::fwData::Image::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+            info->m_connections->connect(img, ::fwData::Image::s_BUFFER_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
 
             bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
@@ -314,6 +266,18 @@ void ImagesBlend::removeImageAdaptors()
         }
     }
     this->unregisterServices();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ImagesBlend::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

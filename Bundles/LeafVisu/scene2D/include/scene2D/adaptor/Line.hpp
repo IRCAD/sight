@@ -7,7 +7,7 @@
 #ifndef __SCENE2D_ADAPTOR_LINE_HPP__
 #define __SCENE2D_ADAPTOR_LINE_HPP__
 
-#include <scene2D/adaptor/IAdaptor.hpp>
+#include "scene2D/adaptor/IAdaptor.hpp"
 
 namespace scene2D
 {
@@ -71,9 +71,6 @@ protected:
 
     /// Do nothing.
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
-
-    /// Do nothing.
-    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Do nothing.
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );

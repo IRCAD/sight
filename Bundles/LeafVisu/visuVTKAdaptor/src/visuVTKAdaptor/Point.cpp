@@ -6,38 +6,41 @@
 
 #ifndef ANDROID
 
-#include <vtkCommand.h>
-#include <vtkHandleWidget.h>
-#include <vtkSphereHandleRepresentation.h>
-
-#include <fwData/Point.hpp>
-#include <fwData/Material.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-
-#include <fwComEd/PointMsg.hpp>
-
-#include <vtkSphereSource.h>
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkPicker.h>
-#include <vtkPropCollection.h>
-#include <vtkProperty.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkWidgetEventTranslator.h>
 
 #include "fwRenderVTK/vtk/Helpers.hpp"
 #include "fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp"
 #include "visuVTKAdaptor/Point.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
+#include <fwData/Point.hpp>
+#include <fwData/Material.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <vtkActor.h>
+#include <vtkCommand.h>
+#include <vtkHandleWidget.h>
+#include <vtkPicker.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPropCollection.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkSphereHandleRepresentation.h>
+#include <vtkSphereSource.h>
+#include <vtkWidgetEventTranslator.h>
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Point, ::fwData::Point );
 
 namespace visuVTKAdaptor
 {
+
+const ::fwCom::Signals::SignalKeyType Point::s_INTERACTION_STARTED_SIG = "interactionStarted";
+
+//------------------------------------------------------------------------------
 
 class vtkPointUpdateCallBack : public vtkCommand
 {
@@ -48,9 +51,9 @@ public:
         return new vtkPointUpdateCallBack(service);
     }
 
-    vtkPointUpdateCallBack( ::fwRenderVTK::IVtkAdaptorService *service )
-        : m_service(service),
-          m_pickLimiter (0)
+    vtkPointUpdateCallBack( ::fwRenderVTK::IVtkAdaptorService *service ) :
+        m_service(service),
+        m_pickLimiter (0)
     {
     }
 
@@ -80,8 +83,6 @@ public:
         SLM_ASSERT("handler not instanced", handler);
         double *world = representation->GetWorldPosition();
 
-        ::fwComEd::PointMsg::sptr msg = ::fwComEd::PointMsg::New();// (  new fwServices::ObjectMsg(point) );
-
         if ( (m_pickLimiter-- == 0 && eventId == vtkCommand::InteractionEvent)
              || eventId == vtkCommand::EndInteractionEvent )
         {
@@ -101,23 +102,18 @@ public:
         }
         else if (eventId == vtkCommand::StartInteractionEvent)
         {
-            msg->addEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION );
+            auto sig = m_service->signal< Point::InteractionStartedSignalType >(Point::s_INTERACTION_STARTED_SIG);
+            sig->asyncEmit();
         }
 
         std::copy( world, world+3, point->getRefCoord().begin() );
 
-        msg->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );//setAllModified();
-
-        msg->setSource( m_service->getSptr());
-        msg->setSubject( point);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = point->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig = point->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwServices::IService::ReceiveSlotType::sptr slot;
-            slot = m_service->slot< ::fwServices::IService::ReceiveSlotType >(
-                ::fwServices::IService::s_RECEIVE_SLOT );
+            ::fwCom::SlotBase::sptr slot;
+            slot = m_service->slot(::fwServices::IService::s_UPDATE_SLOT );
             ::fwCom::Connection::Blocker block(sig->getConnection(slot));
-            sig->asyncEmit( msg );
+            sig->asyncEmit();
         }
         m_service->update();
     }
@@ -133,12 +129,11 @@ protected:
 
 Point::Point() throw() :
     m_handle( vtkHandleWidget::New() ),
-//    m_representation( vtkSphereHandleRepresentation::New() ),
     m_representation( ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::New() ),
-    m_pointUpdateCommand(0)
+    m_pointUpdateCommand(nullptr)
 {
     m_handle->SetRepresentation(m_representation);
-    m_handle->SetPriority(0.8);
+    m_handle->SetPriority(0.8f);
 
     vtkWidgetEventTranslator *translator = m_handle->GetEventTranslator();
 
@@ -154,30 +149,25 @@ Point::Point() throw() :
     rep->GetMarkerProperty()->SetOpacity(.3);
     rep->SetHandleSize(7);
 
-    //addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
+    newSignal<InteractionStartedSignalType>(s_INTERACTION_STARTED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
 Point::~Point() throw()
 {
-    SLM_TRACE_FUNC();
-
     m_handle->SetRepresentation(0);
     m_handle->Delete();
-    m_handle = 0;
+    m_handle = nullptr;
 
     m_representation->Delete();
-    m_representation = 0;
-
+    m_representation = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
 void Point::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     assert(m_configuration->getName() == "config");
     this->setPickerId( m_configuration->getAttributeValue("picker") );
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
@@ -224,21 +214,9 @@ void Point::doUpdate() throw(fwTools::Failed)
     assert ( point->getCRefCoord().size()==3 );
     std::copy(point->getCRefCoord().begin(),point->getCRefCoord().end(), ps  );
     m_representation->SetWorldPosition( ps );
-//  getRenderService()->update();
+    //getRenderService()->update();
     getRenderer()->ResetCameraClippingRange();
     this->setVtkPipelineModified();
-}
-
-//------------------------------------------------------------------------------
-
-void Point::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_ASSERT("ACH : receive a msg that no concern his object", _msg->getSubject().lock() == this->getObject() );
-    ::fwComEd::PointMsg::csptr pointMsg = ::fwComEd::PointMsg::dynamicConstCast( _msg );
-    if ( pointMsg && pointMsg->hasEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED ) )
-    {
-        this->doUpdate();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -278,6 +256,16 @@ void Point::setSelectedColor(double red, double green, double blue, double alpha
     rep->GetSelectedProperty()->SetColor(red, green, blue);
     rep->GetSelectedProperty()->SetOpacity(alpha);
     this->setVtkPipelineModified();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Point::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

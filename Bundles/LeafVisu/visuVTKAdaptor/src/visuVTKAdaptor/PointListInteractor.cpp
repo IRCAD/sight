@@ -6,7 +6,13 @@
 
 #include "visuVTKAdaptor/PointListInteractor.hpp"
 
-#include <fwComEd/PointListMsg.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Material.hpp>
 #include <fwData/PointList.hpp>
@@ -42,17 +48,16 @@ public:
         return new PointListInteractorCallback();
     }
 
-    PointListInteractorCallback()
-        : m_priority(-1),
-          m_mouseMoveObserved(false)
+    PointListInteractorCallback() :
+        m_picker(nullptr),
+        m_priority(-1.f),
+        m_mouseMoveObserved(false)
     {
-        m_picker = NULL;
         this->PassiveObserverOff();
     }
 
     ~PointListInteractorCallback()
     {
-
     }
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
@@ -108,7 +113,7 @@ public:
 
     void process() // from
     {
-        double world[3] = {-1,0,0};
+        double world[3] = {-1, 0, 0};
         ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), world);
         OSLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
         m_adaptor->addPoint( world[0], world[1], world[2] );
@@ -140,10 +145,10 @@ protected:
 
 //------------------------------------------------------------------------------
 
-PointListInteractor::PointListInteractor() throw()
-    : m_priority(0.999)
+PointListInteractor::PointListInteractor() throw() :
+    m_interactionCommand(nullptr),
+    m_priority(0.999f)
 {
-    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -206,18 +211,15 @@ void PointListInteractor::doStop() throw(fwTools::Failed)
 void PointListInteractor::resetPointList()
 {
     ::fwData::PointList::sptr list = this->getObject< ::fwData::PointList >();
-    list->getRefPoints().clear();
 
-    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-    msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( list);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = list->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    for (auto point : list->getPoints())
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        auto sig =
+            list->signal< ::fwData::PointList::PointRemovedSignalType >(::fwData::PointList::s_POINT_REMOVED_SIG);
+        sig->asyncEmit(point);
     }
+
+    list->getRefPoints().clear();
 }
 
 //------------------------------------------------------------------------------
@@ -231,16 +233,8 @@ void PointListInteractor::addPoint(const double &x, const double &y, const doubl
 
     list->getRefPoints().push_back(p);
 
-    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-    msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( list);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = list->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    auto sig = list->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_ADDED_SIG);
+    sig->asyncEmit(p);
 }
 
 //------------------------------------------------------------------------------

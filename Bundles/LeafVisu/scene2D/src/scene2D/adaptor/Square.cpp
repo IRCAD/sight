@@ -4,12 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/adaptor/Square.hpp"
+
 #include <fwServices/Base.hpp>
 #include <fwData/Composite.hpp>
 
 #include <QGraphicsItemGroup>
 
-#include "scene2D/adaptor/Square.hpp"
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Square, ::fwData::Composite );
 
@@ -21,7 +22,11 @@ namespace adaptor
 
 //-----------------------------------------------------------------------------
 
-Square::Square() throw() : m_pointIsCaptured (false)
+Square::Square() throw() :
+    m_size(0),
+    m_layer(nullptr),
+    m_rec(nullptr),
+    m_pointIsCaptured (false)
 {
 }
 
@@ -76,13 +81,6 @@ void Square::doStart() throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void Square::doUpdate() throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------
-
-void Square::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

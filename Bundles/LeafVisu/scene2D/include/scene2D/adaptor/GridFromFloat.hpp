@@ -7,7 +7,7 @@
 #ifndef __SCENE2D_ADAPTOR_GRIDFROMFLOAT_HPP__
 #define __SCENE2D_ADAPTOR_GRIDFROMFLOAT_HPP__
 
-#include <scene2D/adaptor/IAdaptor.hpp>
+#include "scene2D/adaptor/IAdaptor.hpp"
 
 namespace scene2D
 {
@@ -36,6 +36,14 @@ public:
 
     /// Basic destructor, do nothing
     SCENE2D_API virtual ~GridFromFloat() throw();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Object::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    SCENE2D_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
     /**
@@ -80,9 +88,6 @@ protected:
 
     /// Do nothing.
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
-
-    /// If a VALUE_IS_MODIFIED message is catched, check if the float object isn't negative and if not, set the xSpacing its value.
-    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Do nothing.
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );

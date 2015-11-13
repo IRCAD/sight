@@ -6,14 +6,11 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/Video.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
-
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/ImageMsg.hpp>
 
 #include "TestServices.hpp"
 #include "ConfigParserTest.hpp"
@@ -88,7 +85,7 @@ void ConfigParserTest::testBuildComposite()
 {
     const std::string compositeUUID = "compositeUUID";
     const std::string objAUUID      = "imageUUID";
-    const std::string objBUUID      = "videoUUID";
+    const std::string objBUUID      = "meshUUID";
     const std::string serviceUUID1  = "myTestService1";
     const std::string objAType      = "::fwData::Image";
 
@@ -111,8 +108,8 @@ void ConfigParserTest::testBuildComposite()
 
     CPPUNIT_ASSERT_EQUAL(objAType, compo->getContainer()[objAUUID]->className());
 
-    ::fwData::Video::sptr video = ::fwData::Video::dynamicCast(compo->getContainer()[objBUUID]);
-    CPPUNIT_ASSERT_EQUAL(objBUUID, video->getID());
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(compo->getContainer()[objBUUID]);
+    CPPUNIT_ASSERT_EQUAL(objBUUID, mesh->getID());
 
     // test composite services
     ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(compo->getContainer()[objAUUID]);
@@ -196,14 +193,14 @@ void ConfigParserTest::testBuildComposite()
     imageService2->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationImage" );
 
     std::shared_ptr< ::fwRuntime::EConfigurationElement > itemB = cfg->addConfigurationElement("item");
-    itemB->setAttributeValue( "key", "videoUUID");
+    itemB->setAttributeValue( "key", "meshUUID");
 
 
-    // composite object : video
+    // composite object : mesh
     std::shared_ptr< ::fwRuntime::EConfigurationElement > objB = itemB->addConfigurationElement("object");
-    objB->setAttributeValue( "uid", "videoUUID");
-    //objB->setAttributeValue( "id" , "videoUUID") ;
-    objB->setAttributeValue( "type", "::fwData::Video");
+    objB->setAttributeValue( "uid", "meshUUID");
+    //objB->setAttributeValue( "id" , "meshUUID") ;
+    objB->setAttributeValue( "type", "::fwData::Mesh");
 
     // composite's service 1
     std::shared_ptr< ::fwRuntime::EConfigurationElement > service = cfg->addConfigurationElement("service");

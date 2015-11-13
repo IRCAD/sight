@@ -4,14 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/Base.hpp>
-
-#include <scene2D/Scene2DGraphicsView.hpp>
-
-#include <scene2D/data/Viewport.hpp>
-#include <scene2D/data/ViewportMsg.hpp>
-
 #include "scene2D/adaptor/ViewportUpdater.hpp"
+#include "scene2D/data/Viewport.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
+
+#include <fwServices/Base.hpp>
 
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportUpdater, ::scene2D::data::Viewport);
@@ -24,7 +21,6 @@ namespace adaptor
 
 ViewportUpdater::ViewportUpdater() throw()
 {
-//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //-----------------------------------------------------------------------------
@@ -37,8 +33,6 @@ ViewportUpdater::~ViewportUpdater() throw()
 
 void ViewportUpdater::configuring() throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     this->IAdaptor::configuring();
 
     doUpdate();
@@ -79,18 +73,6 @@ void ViewportUpdater::doUpdate() throw( ::fwTools::Failed)
     sceneViewport->setHeight( viewportObject->getHeight() );
 
     this->getScene2DRender()->getView()->updateFromViewport();
-}
-
-//-----------------------------------------------------------------------------
-
-void ViewportUpdater::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-
-    if( _msg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED) )
-    {
-        doUpdate();
-    }
 }
 
 //-----------------------------------------------------------------------------

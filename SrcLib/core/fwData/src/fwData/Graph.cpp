@@ -37,9 +37,7 @@ Graph::Graph(::fwData::Object::Key key) :
     // Register
     m_signals( s_UPDATED_SIG,  m_sigUpdated);
 
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
+
 
 }
 

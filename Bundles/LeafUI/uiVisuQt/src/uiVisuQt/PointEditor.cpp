@@ -6,12 +6,15 @@
 
 #include "uiVisuQt/PointEditor.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
-
-#include <fwComEd/InteractionMsg.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -36,10 +39,11 @@ namespace uiVisu
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::PointEditor, ::fwData::Composite );
 
+static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
 PointEditor::PointEditor() throw()
 {
-//        addNewHandledEvent(::fwComEd::InteractionMsg::MOUSE_MOVE);
+    newSlot(s_GET_INTERACTION_SLOT, &PointEditor::getInteraction, this);
 }
 
 //------------------------------------------------------------------------------
@@ -121,26 +125,13 @@ void PointEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void PointEditor::getInteraction(::fwComEd::PickingInfo info)
 {
-    SLM_TRACE_FUNC();
-    ::fwComEd::InteractionMsg::csptr interactionMsg = ::fwComEd::InteractionMsg::dynamicConstCast(_msg);
-
-    if (interactionMsg)
+    if ( info.m_eventId == ::fwComEd::PickingInfo::Event::MOUSE_MOVE )
     {
-        if ( interactionMsg->hasEvent( ::fwComEd::InteractionMsg::MOUSE_MOVE ) )
-        {
-            ::fwData::Point::csptr point = interactionMsg->getEventPoint();
-            SLM_ASSERT("Sorry, the object is null", point);
-            if(point)
-            {
-                fwVec3d pointCoord = point->getCoord();
-                m_textCtrl_x->setText(QString("%1").arg(pointCoord[0], 0, 'f', 0));
-                m_textCtrl_y->setText(QString("%1").arg(pointCoord[1], 0, 'f', 0));
-                m_textCtrl_z->setText(QString("%1").arg(pointCoord[2], 0, 'f', 0));
-            }
-            //        this->updating();
-        }
+        m_textCtrl_x->setText(QString("%1").arg(info.m_worldPos[0], 0, 'f', 0));
+        m_textCtrl_y->setText(QString("%1").arg(info.m_worldPos[1], 0, 'f', 0));
+        m_textCtrl_z->setText(QString("%1").arg(info.m_worldPos[2], 0, 'f', 0));
     }
 }
 

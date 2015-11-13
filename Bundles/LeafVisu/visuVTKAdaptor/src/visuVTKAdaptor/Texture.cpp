@@ -12,8 +12,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/MaterialMsg.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
@@ -49,9 +47,7 @@ Texture::Texture() throw() :
     ::fwCom::HasSlots::m_slots( s_APPLY_TEXTURE_SLOT, m_slotApplyTexture);
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 
- #ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
- #endif
+
 }
 
 //------------------------------------------------------------------------------
@@ -119,20 +115,6 @@ void Texture::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Texture::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    ::fwComEd::ImageMsg::csptr textureMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
-    if (textureMsg && (
-            textureMsg->hasEvent( ::fwComEd::ImageMsg::MODIFIED) ||
-            textureMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) ||
-            textureMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ) )
-    {
-        doUpdate();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void Texture::applyTexture( SPTR(::fwData::Material)_material )
 {
     if(m_materialSet.count(_material) == 0)
@@ -181,16 +163,26 @@ void Texture::applyTexture( SPTR(::fwData::Material)_material )
     }
     _material->setDiffuseTextureWrapping(wrapping);
 
-    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
-    msg->addEvent(::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( _material);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = _material->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = _material->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Texture::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 
 } //namespace visuVTKAdaptor

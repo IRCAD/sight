@@ -7,12 +7,12 @@
 #ifndef __VISUVTKADAPTOR_SLICESCURSOR_HPP__
 #define __VISUVTKADAPTOR_SLICESCURSOR_HPP__
 
+#include "visuVTKAdaptor/config.hpp"
+
 #include <fwData/Image.hpp>
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-
-#include "visuVTKAdaptor/config.hpp"
 
 
 class VISUVTKADAPTOR_CLASS_API vtkPolyData;
@@ -35,6 +35,28 @@ public:
 
     VISUVTKADAPTOR_API virtual ~SlicesCursor()  throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_IMAGE_SLOT
+     * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
+     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_IMAGE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+    /**
+     * @name Slots
+     * @{
+     */
+    static const ::fwCom::Slots::SlotKeyType s_SHOW_FULL_CROSS_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_SHOW_NORMAL_CROSS_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_SET_CROSS_SCALE_SLOT;
+    /**
+     * @}
+     */
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -42,14 +64,13 @@ protected:
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void reconfiguring() throw(fwTools::Failed);
 
-    /// set the scale for the cross : 1. means full cross, 0.5 half cross, 0. no cross
+    /// Slot: set the scale for the cross : 1. means full cross, 0.5 half cross, 0. no cross
     void setCrossScale(double scale);
 
-    void updateSliceIndex( ::fwData::Image::sptr image );
+    void updateImageSliceIndex( ::fwData::Image::sptr image );
     void buildPolyData();
     void updateColors();
     void buildColorAttribute();
@@ -62,6 +83,27 @@ protected:
 
 private:
 
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: update image slice index
+    void updateSliceIndex(int axial, int frontal, int sagittal);
+
+    /// Slot: update image slice type
+    void updateSliceType(int from, int to);
+
+    /// Slot: update image
+    void updateImage();
+
+    /// Slot: show full cross
+    void showFullCross();
+
+    /// Slot: show normal cross (use m_scale to "normal" size)
+    void showNormalCross();
+    /**
+     * @}
+     */
 
     /// Compute the barycenter : result = scale*ptA + (1-scale)*ptB
     static void barycenter( double ptA[3], double ptB[3], float scale, double result[3] );
@@ -71,6 +113,9 @@ private:
                                     double _ptBprime[3] );
 
 };
+
+
+
 
 } //namespace visuVTKAdaptor
 

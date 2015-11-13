@@ -11,7 +11,6 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/PointListMsg.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 
@@ -34,18 +33,6 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::La
 
 namespace visuVTKAdaptor
 {
-
-//------------------------------------------------------------------------------
-
-void notifyRemoveLandMark( ::fwData::Point::sptr point )
-{
-    ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
-    msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
-
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = point->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-    sig->asyncEmit(msgPointList);
-}
 
 //------------------------------------------------------------------------------
 
@@ -132,7 +119,9 @@ public:
             {
                 ::fwData::Point::sptr point = *itr;
                 m_pickedPointList.lock()->getRefPoints().erase(itr);
-                notifyRemoveLandMark( point );
+                auto sig = m_pickedPointList.lock()->signal< ::fwData::PointList::PointRemovedSignalType >(
+                    ::fwData::PointList::s_POINT_REMOVED_SIG );
+                sig->asyncEmit(point);
             }
         }
     }
@@ -177,12 +166,8 @@ protected:
 //------------------------------------------------------------------------------
 
 LabeledPointList::LabeledPointList() throw() :
-    m_rightButtonCommand(0),
-    m_needSubservicesDeletion(false)
+    m_rightButtonCommand(nullptr)
 {
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
 }
 
 //------------------------------------------------------------------------------
@@ -231,11 +216,7 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
     // get PointList in image Field then install distance service if required
     ::fwData::PointList::sptr landmarks = this->getObject< ::fwData::PointList >();
 
-    if ( m_needSubservicesDeletion )
-    {
-        this->unregisterServices();
-        m_needSubservicesDeletion = false;
-    }
+    this->unregisterServices();
 
     if ( !landmarks->getPoints().empty() )
     {
@@ -270,22 +251,6 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    // update only if new LandMarks
-    ::fwComEd::PointListMsg::csptr plMsg = ::fwComEd::PointListMsg::dynamicConstCast( msg );
-    if ( plMsg &&
-         ( plMsg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED ) ||
-           plMsg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED )||
-           plMsg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED ) ) )
-    {
-        m_needSubservicesDeletion = true; // to manage point deletion
-        doUpdate();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void LabeledPointList::doStop() throw(fwTools::Failed)
 {
     if ( m_rightButtonCommand ) // can be not instanciated (use of LabeledPointList::show() )
@@ -296,6 +261,18 @@ void LabeledPointList::doStop() throw(fwTools::Failed)
     }
 
     this->unregisterServices();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType LabeledPointList::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

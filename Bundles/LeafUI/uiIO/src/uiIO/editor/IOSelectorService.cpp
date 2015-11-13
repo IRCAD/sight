@@ -287,7 +287,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                         ::fwComEd::helper::Composite helper(composite);
                         helper.add(m_inject, object);
 
-                        helper.notify(this->getSptr());
+                        helper.notify();
                     }
                 }
 
@@ -351,13 +351,6 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             messageBox.show();
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-void IOSelectorService::receiving( ::fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

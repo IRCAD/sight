@@ -52,9 +52,6 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Do nothing
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
-    /// Do nothing
     virtual void updating() throw(::fwTools::Failed);
 
     /// Do nothing

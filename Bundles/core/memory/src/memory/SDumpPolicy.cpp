@@ -105,10 +105,6 @@ void SDumpPolicy::updating() throw ( ::fwTools::Failed )
 {
 }
 
-void SDumpPolicy::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-}
-
 //------------------------------------------------------------------------------
 
 void SDumpPolicy::swapping() throw ( ::fwTools::Failed )

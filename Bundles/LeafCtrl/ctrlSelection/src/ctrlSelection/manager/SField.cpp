@@ -6,8 +6,12 @@
 
 #include "ctrlSelection/manager/SField.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
@@ -24,6 +28,10 @@ namespace ctrlSelection
 namespace manager
 {
 
+static const ::fwCom::Slots::SlotKeyType s_ADD_FIELDS_SLOT    = "addFields";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_FIELDS_SLOT = "changeFields";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_FIELDS_SLOT = "removeFields";
+
 //-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager::SField, ::fwData::Object );
@@ -32,40 +40,15 @@ fwServicesRegisterMacro( ::ctrlSelection::IManagerSrv, ::ctrlSelection::manager:
 
 SField::SField() throw() : m_dummyStopMode(false)
 {
-    //this->addNewHandledEvent( ::fwServices::ObjectMsg::ADDED_FIELDS );
-    //this->addNewHandledEvent( ::fwServices::ObjectMsg::REMOVED_FIELDS );
-    //this->addNewHandledEvent( ::fwServices::ObjectMsg::CHANGED_FIELDS );
+    newSlot(s_ADD_FIELDS_SLOT, &SField::addFields, this);
+    newSlot(s_CHANGE_FIELDS_SLOT, &SField::changeFields, this);
+    newSlot(s_REMOVE_FIELDS_SLOT, &SField::removeFields, this);
 }
 
 //-----------------------------------------------------------------------------
 
 SField::~SField() throw()
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void SField::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-
-    ::fwServices::ObjectMsg::csptr fieldMsg = ::fwServices::ObjectMsg::dynamicConstCast(message);
-    SLM_FATAL_IF("Received message must be fieldMsg", fieldMsg == 0 );
-
-    if ( fieldMsg->hasEvent( ::fwServices::ObjectMsg::ADDED_FIELDS ) )
-    {
-        this->addFields( fieldMsg->getAddedFields() );
-    }
-
-    if ( fieldMsg->hasEvent( ::fwServices::ObjectMsg::REMOVED_FIELDS ) )
-    {
-        this->removeFields( fieldMsg->getRemovedFields() );
-    }
-
-    if ( fieldMsg->hasEvent( ::fwServices::ObjectMsg::CHANGED_FIELDS ) )
-    {
-        this->swapFields( fieldMsg->getNewChangedFields() );
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -176,9 +159,9 @@ void SField::starting()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SField::addFields( const ModifiedFieldsContainerType& fields )
+void SField::addFields( ::fwData::Object::FieldsContainerType fields )
 {
-    for( ModifiedFieldsContainerType::value_type addedObjectId :  fields)
+    for( auto addedObjectId :  fields)
     {
         if(m_fieldsSubServices.find(addedObjectId.first) != m_fieldsSubServices.end())
         {
@@ -305,9 +288,10 @@ void SField::addField( const FieldNameType& fieldName, ::fwData::Object::sptr fi
 }
 //-----------------------------------------------------------------------------
 
-void SField::swapFields( const ModifiedFieldsContainerType& fields )
+void SField::changeFields( ::fwData::Object::FieldsContainerType newfields,
+                           ::fwData::Object::FieldsContainerType oldFields )
 {
-    for( ModifiedFieldsContainerType::value_type swappedObjectId :  fields)
+    for( auto swappedObjectId :  newfields)
     {
         this->swapField(swappedObjectId.first, swappedObjectId.second);
     }
@@ -354,9 +338,9 @@ void SField::swapField(const FieldNameType& fieldName, ::fwData::Object::sptr fi
 
 //-----------------------------------------------------------------------------
 
-void SField::removeFields( const ModifiedFieldsContainerType& fields )
+void SField::removeFields( ::fwData::Object::FieldsContainerType fields )
 {
-    for( ModifiedFieldsContainerType::value_type swappedObjectId :  fields)
+    for( auto swappedObjectId :  fields)
     {
         this->removeField(swappedObjectId.first);
     }
@@ -458,6 +442,18 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
         }
         m_fieldsSubServices[fieldName] = subVecSrv;
     }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SField::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Object::s_ADDED_FIELDS_SIG, s_ADD_FIELDS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Object::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELDS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Object::s_REMOVED_FIELDS_SIG, s_REMOVE_FIELDS_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

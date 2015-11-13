@@ -6,6 +6,10 @@
 
 #include "uiReconstructionQt/RepresentationEditor.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
@@ -13,22 +17,16 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwComEd/MaterialMsg.hpp>
-#include <fwComEd/MeshMsg.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <QAbstractButton>
 #include <QRadioButton>
@@ -41,10 +39,16 @@ namespace uiReconstruction
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstruction::RepresentationEditor, ::fwData::Reconstruction );
 
+//------------------------------------------------------------------------------
+
+const ::fwCom::Signals::SignalKeyType RepresentationEditor::s_NORMALS_MODE_MODIFIED_SIG = "normalsModeModified";
+
+//------------------------------------------------------------------------------
 
 RepresentationEditor::RepresentationEditor() throw()
 {
-    //handlingEventOff();
+    m_sigNormalsModeModified = NormalsModeModifiedSignalType::New();
+    ::fwCom::HasSignals::m_signals(s_NORMALS_MODE_MODIFIED_SIG, m_sigNormalsModeModified);
 }
 
 //------------------------------------------------------------------------------
@@ -126,8 +130,8 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     QRadioButton* cellNormalsButton  = new QRadioButton(tr("Show cell normals"), container);
     QRadioButton* hideNormalsButton  = new QRadioButton(tr("Hide normals"), container);
 
-    m_normalsRadioBox->addButton(pointNormalsButton, 2);
-    m_normalsRadioBox->addButton(cellNormalsButton, 1);
+    m_normalsRadioBox->addButton(pointNormalsButton, 1);
+    m_normalsRadioBox->addButton(cellNormalsButton, 2);
     m_normalsRadioBox->addButton(hideNormalsButton, 0);
 
     layoutGroupBoxNormals->addWidget( pointNormalsButton);
@@ -198,12 +202,6 @@ void RepresentationEditor::updating() throw(::fwTools::Failed)
 void RepresentationEditor::swapping() throw(::fwTools::Failed)
 {
     this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void RepresentationEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------
@@ -365,41 +363,18 @@ void RepresentationEditor::refreshNormals()
 void RepresentationEditor::onShowNormals(int state )
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
-    ::fwComEd::MeshMsg::sptr meshMsg              = ::fwComEd::MeshMsg::New();
-    switch (state)
+
+    if (state == 0)
     {
-        case 0:
-            m_material->setOptionsMode( ::fwData::Material::MODE_STANDARD );
-            meshMsg->addEvent("HIDE_NORMALS");
-            break;
-        case 1:
-            m_material->setOptionsMode( ::fwData::Material::MODE_NORMALS );
-            meshMsg->addEvent("SHOW_CELL_NORMALS");
-            break;
-        case 2:
-            m_material->setOptionsMode( ::fwData::Material::MODE_NORMALS );
-            meshMsg->addEvent("SHOW_POINT_NORMALS");
-            break;
+        m_material->setOptionsMode( ::fwData::Material::MODE_STANDARD );
     }
-    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
-    msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
-    msg->setSource(this->getSptr());
-    msg->setSubject( reconstruction->getMesh());
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = reconstruction->getMesh()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    else
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        m_material->setOptionsMode( ::fwData::Material::MODE_NORMALS );
     }
-    meshMsg->setSource(this->getSptr());
-    meshMsg->setSubject( reconstruction->getMesh());
-    sig = reconstruction->getMesh()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( meshMsg);
-    }
+
+    this->notifyMaterial();
+    m_sigNormalsModeModified->asyncEmit(static_cast<std::uint8_t>(state), reconstruction->getID());
 }
 
 //------------------------------------------------------------------------------
@@ -408,36 +383,13 @@ void RepresentationEditor::notifyMaterial()
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
 
-    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
-    msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
-    msg->setSource(this->getSptr());
-    msg->setSubject( reconstruction->getMaterial());
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = reconstruction->getMaterial()->signal< ::fwData::Object::ModifiedSignalType >(
+        ::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::notifyMesh()
-{
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
-
-    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
-    msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
-    msg->setSource(this->getSptr());
-    msg->setSubject( reconstruction->getMesh());
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = reconstruction->getMesh()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
-}
 }
 

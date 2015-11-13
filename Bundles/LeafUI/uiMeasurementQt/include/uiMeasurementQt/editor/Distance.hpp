@@ -24,7 +24,8 @@ namespace editor
  * @brief   Distance service is represented by a button. It allows to show distances in a generic scene.
  * @class   Distance
  *
- * @date    2010.
+ * @note Sends a signal to request a distance. It should be conected to an ImageMultiDistance adaptor to create the
+ * distance.
  */
 class UIMEASUREMENTQT_CLASS_API Distance : public QObject,
                                            public ::gui::editor::IEditor
@@ -40,6 +41,15 @@ public:
     /// Destructor. Do nothing.
     UIMEASUREMENTQT_API virtual ~Distance() throw();
 
+    /**
+     * @name Signal
+     * @{
+     */
+    UIMEASUREMENTQT_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_REQUESTED_SIG;
+    typedef ::fwCom::Signal< void () > DistanceRequestedSignalType;
+    /**
+     * @}
+     */
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
@@ -57,9 +67,6 @@ protected:
      * This method launches the IEditor::stopping method.
      */
     virtual void stopping() throw(::fwTools::Failed);
-
-    /// Do nothing
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Do nothing
     virtual void updating() throw(::fwTools::Failed);
@@ -93,6 +100,8 @@ private:
 
     std::string m_scenesUID;
     QPointer< QPushButton > m_distButton;
+
+    DistanceRequestedSignalType::sptr m_sigDistanceRequested; /// signal emitted when a distance is requested
 
 
 

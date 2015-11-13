@@ -7,12 +7,12 @@
 #ifndef __SCENE2D_ADAPTOR_IADAPTOR_HPP__
 #define __SCENE2D_ADAPTOR_IADAPTOR_HPP__
 
-#include <fwServices/IService.hpp>
-
 #include "scene2D/config.hpp"
 #include "scene2D/Render.hpp"
 #include "scene2D/data/Axis.hpp"
 #include "scene2D/data/Event.hpp"
+
+#include <fwServices/IService.hpp>
 
 namespace scene2D
 {
@@ -45,16 +45,16 @@ public:
     SCENE2D_API void setZValue(float _zValue);
 
     /// Get the zValue.
-    SCENE2D_API float getZValue();
+    SCENE2D_API float getZValue() const;
 
     /// Set the render that manage the IAdaptor.
     SCENE2D_API void setScene2DRender( ::scene2D::Render::sptr _scene2DRender);
 
     /// Get the render that manage the IAdaptor.
-    SCENE2D_API SPTR(::scene2D::Render) getScene2DRender();
+    SCENE2D_API SPTR(::scene2D::Render) getScene2DRender() const;
 
     /// Get the object associated to the IAdaptor.
-    SCENE2D_API ::fwData::Object::sptr getRegisteredObject(::scene2D::Render::ObjectIDType _objectId);
+    SCENE2D_API ::fwData::Object::sptr getRegisteredObject(::scene2D::Render::ObjectIDType _objectId) const;
 
     /// Interact with the mouse events catched on the IAdaptor (virtual function, its behavior is only defined in the specific adaptors).
     SCENE2D_API virtual void processInteraction( ::scene2D::data::Event::sptr _event );
@@ -66,7 +66,6 @@ protected:
 
     /// Basic destructor, do nothing.
     SCENE2D_API virtual ~IAdaptor() throw();
-
 
     /// ToDo IM
     SCENE2D_API virtual void info(std::ostream &_sstream );
@@ -80,9 +79,6 @@ protected:
     /// Call DoUpdate() function.
     SCENE2D_API void updating() throw ( ::fwTools::Failed );
 
-    /// Call DoUpdate(_msg) function.
-    SCENE2D_API void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
     /// Start and stop the IAdaptor.
     SCENE2D_API void swapping() throw ( ::fwTools::Failed );
 
@@ -94,9 +90,6 @@ protected:
 
     /// Pure virtual -> implemented in the subclasses
     SCENE2D_API virtual void doUpdate() = 0;
-
-    /// Pure virtual -> implemented in the subclasses
-    SCENE2D_API virtual void doReceive( ::fwServices::ObjectMsg::csptr _msg ) = 0;
 
     /// Pure virtual -> implemented in the subclasses
     SCENE2D_API virtual void doSwap() = 0;
@@ -115,10 +108,10 @@ protected:
                                               ::scene2D::data::Axis::sptr _yAxis);
 
     /// Return the ratio between view's initial size and its current size
-    SCENE2D_API ViewSizeRatio getViewSizeRatio();
+    SCENE2D_API ViewSizeRatio getViewSizeRatio() const;
 
     /// Return the ratio between viewport's initial size and its current size
-    SCENE2D_API ViewportSizeRatio getViewportSizeRatio();
+    SCENE2D_API ViewportSizeRatio getViewportSizeRatio() const;
 
     /// Initialize the source values used for computing view's size ratio.
     SCENE2D_API void initializeViewSize();
@@ -126,7 +119,7 @@ protected:
     /// Initialize the source values used for computing viewport's size ratio.
     SCENE2D_API void initializeViewportSize();
 
-    SCENE2D_API Scene2DRatio getRatio();
+    SCENE2D_API Scene2DRatio getRatio() const;
 
     /// The x Axis.
     SPTR(::scene2D::data::Axis) m_xAxis;
@@ -152,7 +145,7 @@ protected:
     typedef std::vector< ::scene2D::adaptor::IAdaptor::wptr > ManagedAdaptorVector;
 
     /// Return all managed adaptor
-    SCENE2D_API ManagedAdaptorVector & getRegisteredServices()
+    ManagedAdaptorVector & getRegisteredServices()
     {
         return m_managedAdaptors;
     }

@@ -148,12 +148,6 @@ void SShowAbout::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShowAbout::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SShowAbout::stopping() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStopping();

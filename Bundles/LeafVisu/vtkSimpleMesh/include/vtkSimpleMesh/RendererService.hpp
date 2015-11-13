@@ -13,7 +13,7 @@
 
 #include <fwRender/IRender.hpp>
 
-#include <fwServices/ObjectMsg.hpp>
+
 
 #include <boost/shared_array.hpp>
 
@@ -48,6 +48,14 @@ public:
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
     typedef ::fwCom::Slot<void (SharedArray, SharedArray, SharedArray)> UpdateCamPositionSlotType;
 
+    /// Slot to initialize pipeline
+    VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_INIT_PIPELINE_SLOT;
+    typedef ::fwCom::Slot<void ()> InitPipelineSlotType;
+
+    /// Slot to update pipeline
+    VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_PIPELINE_SLOT;
+    typedef ::fwCom::Slot<void ()> UpdatePipelineSlotType;
+
     VTKSIMPLEMESH_API static const ::fwCom::Signals::SignalKeyType s_CAM_UPDATED_SIG;
     typedef ::fwCom::Signal< void (SharedArray, SharedArray, SharedArray) > CamUpdatedSignalType;
 
@@ -62,13 +70,17 @@ public:
     VTKSIMPLEMESH_API virtual ~RendererService() throw();
 
 
-    /// Slot to receive new camera information (position, focal, viewUp). Update camera with new information.
-    void updateCamPosition(SharedArray positionValue,
-                           SharedArray focalValue,
-                           SharedArray viewUpValue);
-
     /// This method is used to notify that the VTK camera position is updated.
     void notifyCamPositionUpdated();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect mesh::s_MODIFIED_SIG to this::s_INIT_PIPELINE_SLOT
+     * Connect mesh::s_VERTEX_MODIFIED_SIG to this::s_UPDATE_PIPELINE_SLOT
+     */
+    VTKSIMPLEMESH_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 
 protected:
@@ -109,14 +121,6 @@ protected:
      */
     VTKSIMPLEMESH_API virtual void updating() throw(fwTools::Failed);
 
-    /**
-     * @brief Updating method (react on data modifications).
-     * @param[in] _msg ::fwServices::ObjectMsg::csptr.
-     *
-     * This method is used to update the vtk pipeline when the mesh is modified.
-     */
-    VTKSIMPLEMESH_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
     /// @brief vtk renderer
     vtkRenderer * m_render;
 
@@ -134,6 +138,18 @@ private:
      */
     void updateVTKPipeline(bool resetCamera = true);
 
+
+    /// Slot: receives new camera information (position, focal, viewUp). Update camera with new information.
+    void updateCamPosition(SharedArray positionValue,
+                           SharedArray focalValue,
+                           SharedArray viewUpValue);
+
+    /// Slot: initialize the pipeline
+    void initPipeline();
+
+    /// Slot: update the pipeline
+    void updatePipeline();
+
     /**
      * @brief the m_bPipelineIsInit value is \b true
      * if the pipeline is initialized.
@@ -144,6 +160,12 @@ private:
 
     /// Slot to call updateCamPosition method
     UpdateCamPositionSlotType::sptr m_slotUpdateCamPosition;
+
+    /// Slot to call initPipeline method
+    InitPipelineSlotType::sptr m_slotInitPipeline;
+
+    /// Slot to call initPipeline method
+    UpdatePipelineSlotType::sptr m_slotUpdatePipeline;
 
     /// Signal emitted when camera position is updated.
     CamUpdatedSignalType::sptr m_sigCamUpdated;

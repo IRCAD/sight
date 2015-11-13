@@ -7,11 +7,14 @@
 #ifndef __VISUVTKADAPTOR_SNAPSHOT_HPP__
 #define __VISUVTKADAPTOR_SNAPSHOT_HPP__
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -37,15 +40,21 @@ protected:
     // redraw all (stop then restart sub services)
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
-
 private:
 
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Type of slot to snap shot
+    static const ::fwCom::Slots::SlotKeyType s_SNAP_SIG;
+
+    /// Slot: snap shot the generic scene.
     void snap(std::string filePath);
-
+    /**
+     * @}
+     */
 };
-
-
 
 
 } //namespace visuVTKAdaptor

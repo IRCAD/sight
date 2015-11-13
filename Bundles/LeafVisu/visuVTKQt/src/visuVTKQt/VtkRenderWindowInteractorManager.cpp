@@ -23,6 +23,7 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
+#include <fwRenderVTK/VtkRenderService.hpp>
 #include <fwRenderVTK/registry/macros.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -281,21 +282,10 @@ bool DropFilter::eventFilter(QObject *obj, QEvent *event)
     {
         QDropEvent* dropEvent = dynamic_cast< QDropEvent* >(event);
         QString data          = dropEvent->mimeData()->text();
-        ::fwServices::ObjectMsg::sptr message = ::fwServices::ObjectMsg::New();
-        message->addEvent("DROPPED_UUID", ::fwData::String::New(data.toStdString()));
         ::fwServices::IService::sptr service = m_service.lock();
-        message->setSource( service);
-        message->setSubject( service->getObject< ::fwData::Object >());
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = service->getObject< ::fwData::Object >()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-        {
-            ::fwServices::IService::ReceiveSlotType::sptr slot;
-            slot = service->slot< ::fwServices::IService::ReceiveSlotType >(
-                ::fwServices::IService::s_RECEIVE_SLOT );
-            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
-            sig->asyncEmit( message );
-        }
+        auto sig = service->signal< ::fwRenderVTK::VtkRenderService::DroppedSignalType >(
+            ::fwRenderVTK::VtkRenderService::s_DROPPED_SIG);
+        sig->asyncEmit( data.toStdString() );
     }
     else
     {

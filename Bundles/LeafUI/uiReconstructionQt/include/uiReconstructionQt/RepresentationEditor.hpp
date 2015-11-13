@@ -7,16 +7,20 @@
 #ifndef __UIRECONSTRUCTIONQT_REPRESENTATIONEDITOR_HPP__
 #define __UIRECONSTRUCTIONQT_REPRESENTATIONEDITOR_HPP__
 
-#include <QObject>
-#include <QPointer>
-
-#include <fwTools/Failed.hpp>
-#include <fwData/Material.hpp>
-
+#include "uiReconstructionQt/config.hpp"
 
 #include <gui/editor/IEditor.hpp>
 
-#include "uiReconstructionQt/config.hpp"
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
+#include <fwData/Material.hpp>
+
+#include <fwTools/Failed.hpp>
+
+#include <QObject>
+#include <QPointer>
+
 
 class QRadioButton;
 class QCheckBox;
@@ -47,6 +51,15 @@ public:
     /// Destructor. Do nothing.
     UIRECONSTRUCTIONQT_API virtual ~RepresentationEditor() throw();
 
+    /**
+     * @name Signals API
+     * @{
+     */
+    /// normals mode (0: none, 1: point, 2: cell), reconstruction fwID
+    typedef ::fwCom::Signal< void ( std::uint8_t, std::string ) > NormalsModeModifiedSignalType;
+    UIRECONSTRUCTIONQT_API static const ::fwCom::Signals::SignalKeyType s_NORMALS_MODE_MODIFIED_SIG;
+    /** @} */
+
 protected:
 
 
@@ -58,9 +71,6 @@ protected:
     ///This method launches the IEditor::stopping method.
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Management of observations ( overrides )
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
     virtual void updating() throw(::fwTools::Failed);
 
     virtual void swapping() throw(::fwTools::Failed);
@@ -71,7 +81,6 @@ protected:
     virtual void info( std::ostream &_sstream );
 
     void notifyMaterial();
-    void notifyMesh();
 
 protected Q_SLOTS:
 
@@ -91,6 +100,9 @@ private:
     QPointer<QButtonGroup> m_normalsRadioBox;
 
     ::fwData::Material::sptr m_material;
+
+    /// Signal emitted when normals mode changed (0: none, 1: point, 2: cell)
+    NormalsModeModifiedSignalType::sptr m_sigNormalsModeModified;
 
 };
 

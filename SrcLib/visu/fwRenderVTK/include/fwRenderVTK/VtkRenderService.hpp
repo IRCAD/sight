@@ -57,7 +57,9 @@ public:
     typedef std::string VtkObjectIdType;
 
     FWRENDERVTK_API static const ::fwCom::Slots::SlotKeyType s_RENDER_SLOT;
-    typedef ::fwCom::Slot<void ()> RenderSlotType;
+
+    FWRENDERVTK_API static const ::fwCom::Signals::SignalKeyType s_DROPPED_SIG;
+    typedef ::fwCom::Signal< void (std::string)> DroppedSignalType;
 
     FWRENDERVTK_API VtkRenderService() throw();
 
@@ -73,10 +75,10 @@ public:
     FWRENDERVTK_API vtkAbstractPropPicker * getPicker(PickerIdType pickerId);
 
     /// Returns the vtkObject with the given id
-    FWRENDERVTK_API vtkObject * getVtkObject(const VtkObjectIdType& objectId);
+    FWRENDERVTK_API vtkObject * getVtkObject(const VtkObjectIdType& objectId) const;
 
     /// Returns the adaptor with the given id
-    FWRENDERVTK_API SPTR (IVtkAdaptorService) getAdaptor(AdaptorIdType adaptorId);
+    FWRENDERVTK_API SPTR (IVtkAdaptorService) getAdaptor(const AdaptorIdType &adaptorId) const;
 
     /// Get a vtkTransform in the VtkRenderService, referenced by a key. Create it if it does not exist.
     FWRENDERVTK_API vtkTransform * getOrAddVtkTransform( const VtkObjectIdType& _id );
@@ -89,6 +91,16 @@ public:
     {
         m_pendingRenderRequest = b;
     }
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     */
+    FWRENDERVTK_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -118,12 +130,12 @@ protected:
             </adaptor>
 
             <connect>
-                <signal>adaptorUID/objectModified</signal>
+                <signal>adaptorUID/modified</signal>
                 <slot>serviceUid/updateTM</slot>
             </connect>
 
             <connect waitForKey="tm3dKey">
-                <signal>objectModified</signal><!-- signal for object "tm3dKey" -->
+                <signal>modified</signal><!-- signal for object "tm3dKey" -->
                 <slot>serviceUid/updateTM</slot>
             </connect>
 
@@ -169,22 +181,28 @@ protected:
      */
     FWRENDERVTK_API virtual void configuring() throw( ::fwTools::Failed);
 
-    /// Updates the scene's adaptors with the modified objects contained in the composite.
-    FWRENDERVTK_API void receiving( ::fwServices::ObjectMsg::csptr message ) throw( ::fwTools::Failed);
-
     /// Does nothing.
     FWRENDERVTK_API void updating() throw( ::fwTools::Failed);
 
     /// Add a vtk object in the VtkRenderService, referenced by a key.
     FWRENDERVTK_API void addVtkObject( const VtkObjectIdType& _id, vtkObject * _vtkObj );
 
-    /// Slot to call render method
-    RenderSlotType::sptr m_slotRender;
-
 private:
 
     /// Slot called when on each timer update
     void updateTimer();
+
+    /// Slot: add objects
+    void addObjects(::fwData::Composite::ContainerType objects);
+
+    /// Slot: change objects
+    void changeObjects(::fwData::Composite::ContainerType newObjects, ::fwData::Composite::ContainerType oldObjects);
+
+    /// Slot: remove objects
+    void removeObjects(::fwData::Composite::ContainerType objects);
+
+    /// Configure the objects
+    void configureObjects(::fwData::Composite::ContainerType objects);
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     ConfigurationType m_sceneConfiguration;
@@ -198,7 +216,7 @@ private:
 
     public:
 
-        SPTR (IVtkAdaptorService) getService()
+        SPTR (IVtkAdaptorService) getService() const
         {
             return m_service.lock();
         }
@@ -256,7 +274,7 @@ private:
     vtkTransform * createVtkTransform( ConfigurationType conf );
 
     /// Creates the connection if the required key is contained in the composite
-    void connectAfterWait(SPTR(::fwData::Composite) composite);
+    void connectAfterWait(::fwData::Composite::ContainerType objects);
 
     /// Creates the connection given by the configuration for obj associated with the key in the composite.
     void manageConnection(const std::string &key, const ::fwData::Object::sptr &obj,
@@ -267,7 +285,7 @@ private:
                      const ConfigurationType &config);
 
     /// Disconnects the connection based on a object key
-    void disconnect(SPTR(::fwData::Composite) composite);
+    void disconnect(::fwData::Composite::ContainerType objects);
 
     /// Signal/ Slot connection
     ::fwServices::helper::SigSlotConnection::sptr m_connections;

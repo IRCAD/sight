@@ -39,11 +39,12 @@ protected:
 
     virtual void swapping() throw ( ::fwTools::Failed );
 
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
     virtual void updating() throw(::fwTools::Failed);
 
     virtual void configuring() throw(fwTools::Failed);
+
+    /// Slot: starts the timer
+    void startTimer();
 
     //virtual void info( std::ostream &_sstream ) ;
 

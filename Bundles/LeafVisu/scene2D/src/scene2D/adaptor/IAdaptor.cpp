@@ -4,14 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QGraphicsItemGroup>
+#include "scene2D/adaptor/IAdaptor.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
+
 
 #include <fwData/Composite.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
 
-#include "scene2D/adaptor/IAdaptor.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
+#include <QGraphicsItemGroup>
 
 namespace scene2D
 {
@@ -47,7 +48,7 @@ void IAdaptor::setZValue(float _zValue)
 
 //-----------------------------------------------------------------------------
 
-float IAdaptor::getZValue()
+float IAdaptor::getZValue() const
 {
     return m_zValue;
 }
@@ -63,14 +64,14 @@ void IAdaptor::setScene2DRender( ::scene2D::Render::sptr _scene2DRender)
 
 //-----------------------------------------------------------------------------
 
-::scene2D::Render::sptr IAdaptor::getScene2DRender()
+::scene2D::Render::sptr IAdaptor::getScene2DRender() const
 {
     return m_scene2DRender.lock();
 }
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::ViewSizeRatio IAdaptor::getViewSizeRatio()
+IAdaptor::ViewSizeRatio IAdaptor::getViewSizeRatio() const
 {
     return ViewSizeRatio(
         (float) ( m_viewInitialSize.first / this->getScene2DRender()->getView()->width() ),
@@ -79,7 +80,7 @@ IAdaptor::ViewSizeRatio IAdaptor::getViewSizeRatio()
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio()
+IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio() const
 {
     return ViewportSizeRatio(
         (float) ( m_viewportInitialSize.first / this->getScene2DRender()->getViewport()->getWidth() ),
@@ -88,7 +89,7 @@ IAdaptor::ViewportSizeRatio IAdaptor::getViewportSizeRatio()
 
 //-----------------------------------------------------------------------------
 
-IAdaptor::Scene2DRatio IAdaptor::getRatio()
+IAdaptor::Scene2DRatio IAdaptor::getRatio() const
 {
     ViewSizeRatio ratioView         = this->getViewSizeRatio();
     ViewportSizeRatio ratioViewport = this->getViewportSizeRatio();
@@ -270,13 +271,6 @@ void IAdaptor::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
-{
-    doReceive(_msg);
-}
-
-//-----------------------------------------------------------------------------
-
 void IAdaptor::swapping() throw(fwTools::Failed)
 {
     m_connections->disconnect();
@@ -297,7 +291,7 @@ void IAdaptor::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr IAdaptor::getRegisteredObject(::scene2D::Render::ObjectIDType _objectId)
+::fwData::Object::sptr IAdaptor::getRegisteredObject(::scene2D::Render::ObjectIDType _objectId) const
 {
     ::fwData::Object::sptr obj;
     if (!_objectId.empty())

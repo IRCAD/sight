@@ -11,7 +11,6 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IManagerSrv.hpp"
@@ -38,6 +37,16 @@ public:
 
     /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~SField() throw();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Object::s_ADDED_FIELDS_SIG to this::s_ADD_FIELDS_SLOT
+     * Connect Object::s_CHANGED_FIELDS_SIG to this::s_CHANGE_FIELDS_SLOT
+     * Connect Object::s_REMOVED_FIELDS_SIG to this::s_REMOVE_FIELDS_SLOT
+     */
+    CTRLSELECTION_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -93,14 +102,8 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    /// Reacts on specifics event (ADDED_FIELDS, REMOVED_FIELDS and SWAPPED_FIELDS) and start, stop or swap the managed services
-    /// on the fields defined in the message or dummy fields
-    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
-
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef ::fwData::Object::FieldNameType FieldNameType;
-    typedef ::fwServices::ObjectMsg::ModifiedFieldsContainerType ModifiedFieldsContainerType;
 
     class SubService
     {
@@ -131,16 +134,23 @@ protected:
 
 
     void initOnDummyObject( const FieldNameType& fieldName );
-    void addFields( const ModifiedFieldsContainerType& fields );
     void addField( const FieldNameType& fieldName, ::fwData::Object::sptr field );
-    void swapFields( const ModifiedFieldsContainerType& fields );
     void swapField(const FieldNameType& fieldName, ::fwData::Object::sptr field);
-    void removeFields( const ModifiedFieldsContainerType& fields );
     void removeField( const FieldNameType& fieldName );
+    /// Slot: add objects
+    void addFields(::fwData::Object::FieldsContainerType fields);
+
+    /// Slot: change objects
+    void changeFields(::fwData::Object::FieldsContainerType newFields, ::fwData::Object::FieldsContainerType oldFields);
+
+    /// Slot: remove objects
+    void removeFields(::fwData::Object::FieldsContainerType fields);
 
     ::fwServices::IService::sptr add( ::fwData::Object::sptr obj, ::fwRuntime::ConfigurationElement::sptr _elt );
 
 private:
+
+
 
     std::string m_mode;
     bool m_dummyStopMode;

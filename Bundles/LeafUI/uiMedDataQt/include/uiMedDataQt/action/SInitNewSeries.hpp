@@ -21,8 +21,6 @@ namespace action
 /**
  * @brief   This action allows to update ::uiMedData::editor::SSelector UI in order to add new series.
  * @class   SInitNewSeries
- *
- * @date    2014.
  * @note The action adds an empty series in each patient/study group to select where the series must be added.
  */
 class UIMEDDATAQT_CLASS_API SInitNewSeries : public ::fwGui::IActionSrv
@@ -59,9 +57,6 @@ protected:
 
     /// Adds the fake series in series DB.
     virtual void updating() throw (::fwTools::Failed);
-
-    /// Override
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     virtual void info( std::ostream &_sstream );
 

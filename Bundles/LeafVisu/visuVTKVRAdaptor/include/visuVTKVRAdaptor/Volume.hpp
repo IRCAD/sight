@@ -9,24 +9,24 @@
 #ifndef __VISUVTKVRADAPTOR_VOLUME_HPP__
 #define __VISUVTKVRADAPTOR_VOLUME_HPP__
 
-#include <fwData/Image.hpp>
-
-#include <fwRenderVTK/VtkRenderService.hpp>
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include "visuVTKVRAdaptor/config.hpp"
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
-#include "visuVTKVRAdaptor/config.hpp"
+#include <fwData/Image.hpp>
 
-class vtkLookupTable;
-class vtkImageMapToColors;
-class vtkImageData;
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwRenderVTK/VtkRenderService.hpp>
+
+
 class vtkAbstractVolumeMapper;
-class vtkVolumeProperty;
-class vtkVolume;
-class vtkCommand;
-
 class vtkBoxWidget2;
+class vtkColorTransferFunction;
+class vtkCommand;
+class vtkPiecewiseFunction;
+class vtkPlaneCollection;
+class vtkVolume;
+class vtkVolumeProperty;
 
 namespace visuVTKVRAdaptor
 {
@@ -47,6 +47,15 @@ public:
 
     VISUVTKVRADAPTOR_API void setVtkClippingPlanes( vtkPlaneCollection *planes );
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKVRADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     VISUVTKVRADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -54,8 +63,6 @@ protected:
     VISUVTKVRADAPTOR_API void doStop() throw(fwTools::Failed);
 
     VISUVTKVRADAPTOR_API void doUpdate() throw(fwTools::Failed);
-
-    VISUVTKVRADAPTOR_API void doReceive( ::fwServices::ObjectMsg::csptr msg ) throw (fwTools::Failed);
 
     /**
      * @brief Configures the service
@@ -80,8 +87,16 @@ protected:
     VISUVTKVRADAPTOR_API void doSwap() throw(fwTools::Failed);
 
 
+    /// Called when transfer function points are modified.
+    VISUVTKVRADAPTOR_API virtual void updatingTFPoints();
+
+    /// Called when transfer function windowing is modified.
+    VISUVTKVRADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+
+    /// Slot: reset the clipping box widget around the volume
     void resetBoxWidget();
 
+    /// Slot: show/hide clipping box
     void activateBoxClipping( bool activate );
 
     void buildPipeline();
@@ -105,7 +120,6 @@ protected:
 
     vtkBoxWidget2 * m_boxWidget;
     vtkCommand    * m_croppingCommand;
-    bool m_bClippingBoxIsActivate;
 
     /// Croping box default state
     bool m_croppingBoxDefaultState;
@@ -116,6 +130,9 @@ private:
 
     double m_reductionFactor;
 };
+
+
+
 
 } //namespace visuVTKVRAdaptor
 

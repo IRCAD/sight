@@ -16,8 +16,6 @@ namespace scene2D
 namespace data
 {
 
-
-
 /**
  * @brief Manage the current viewport of the scene2D.
  */
@@ -41,13 +39,13 @@ public:
     /// Defines deep copy
     SCENE2D_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType &cache );
 
-    SCENE2D_API float getX();
+    SCENE2D_API float getX() const;
     SCENE2D_API void setX (float _x);
-    SCENE2D_API float getY();
+    SCENE2D_API float getY() const;
     SCENE2D_API void setY (float _y);
-    SCENE2D_API float getWidth();
+    SCENE2D_API float getWidth() const;
     SCENE2D_API void setWidth (float _width);
-    SCENE2D_API float getHeight();
+    SCENE2D_API float getHeight() const;
     SCENE2D_API void setHeight (float _height);
 
 private:

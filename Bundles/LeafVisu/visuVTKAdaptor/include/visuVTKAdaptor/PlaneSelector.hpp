@@ -10,12 +10,13 @@
 
 #ifndef ANDROID
 
+#include "visuVTKAdaptor/config.hpp"
+
 #include <fwData/Object.hpp>
 #include <fwData/PlaneList.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
 
 namespace visuVTKAdaptor
 {
@@ -45,7 +46,6 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     ::fwData::Object::wptr m_currentObject;
 };

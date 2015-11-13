@@ -11,6 +11,9 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 fwCampAutoDeclareDataMacro((fwData)(Reconstruction), FWDATA_API);
 
 namespace fwData
@@ -108,6 +111,26 @@ public:
     void setComputedMaskVolume (double val);
     /// @}
 
+    /***
+     * @name Signals
+     * @{
+     */
+
+    /// Type of signal when the mesh pointer has changed, mesh parameter is used to store old mesh
+    typedef ::fwCom::Signal< void (SPTR( ::fwData::Mesh ) ) > MeshChangedSignalType;
+
+    /// Key in m_signals map of signal m_sigMeshModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_MESH_CHANGED_SIG;
+
+    /// Type of signal when mesh is modified
+    typedef ::fwCom::Signal< void () > VisibilityModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigVisibilityModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
+    /**
+     * @}
+     */
+
 protected:
 
     //! true if this reconstruction is visible
@@ -133,6 +156,20 @@ protected:
 
     //! Reconstruction's mask volume
     double m_computedMaskVolume;
+
+    /**
+     * @name Signals
+     * @{
+     */
+
+    /// Signal emitted when mesh changed, mesh parameter is used to store old mesh
+    MeshChangedSignalType::sptr m_sigMeshChanged;
+
+    /// Signal emitted  when visibility is modified
+    VisibilityModifiedSignalType::sptr m_sigVisibilityModified;
+    /**
+     * @}
+     */
 
 };
 

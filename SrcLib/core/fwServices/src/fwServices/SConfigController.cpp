@@ -67,12 +67,6 @@ void SConfigController::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SConfigController::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SConfigController::info( std::ostream &_sstream )
 {
 }

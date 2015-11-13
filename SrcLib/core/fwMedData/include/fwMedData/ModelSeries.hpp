@@ -11,6 +11,9 @@
 #include "fwMedData/Series.hpp"
 #include "fwMedData/types.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <fwData/factory/new.hpp>
 
 #include <fwData/Object.hpp>
@@ -65,11 +68,45 @@ public:
     void setReconstructionDB(const ReconstructionVectorType &val);
     /**  @} */
 
+    /***
+     * @name Signals
+     * @{
+     */
+    /// Type of signal when reconstructions are added
+    typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsAddedSignalType;
+
+    /// Key in m_signals map of signal m_sigReconstructionsAdded
+    FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_ADDED_SIG;
+
+    /// Type of signal when reconstructions are removed
+    typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsRemovedSignalType;
+
+    /// Key in m_signals map of signal m_sigReconstructionsRemoved
+    FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_REMOVED_SIG;
+
+    /**
+     * @}
+     */
 
 protected:
 
     /// Model container
     ReconstructionVectorType m_reconstructionDB;
+
+private:
+
+    /***
+     * @name Signals attributes
+     * @{
+     */
+    /// Signal emitted when reconstructions are added
+    ReconstructionsAddedSignalType::sptr m_sigReconstructionsAdded;
+
+    /// Signal emitted when reconstructions are removed
+    ReconstructionsRemovedSignalType ::sptr m_sigReconstructionsRemoved;
+    /**
+     * @}
+     */
 
 };
 

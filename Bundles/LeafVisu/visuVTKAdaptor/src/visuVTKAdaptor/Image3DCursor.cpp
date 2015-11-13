@@ -6,9 +6,13 @@
 
 #include "visuVTKAdaptor/Image3DCursor.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
 
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
@@ -40,13 +44,16 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Im
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPHERE_SLOT      = "updateSphere";
+
 //------------------------------------------------------------------------------
 
 Image3DCursor::Image3DCursor() throw() : m_priority(.6)
 {
     ////handlingEventOff();
-    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    //addNewHandledEvent( "NEW_SPHERE_CONFIG" );
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &Image3DCursor::updateSliceIndex, this);
+    newSlot(s_UPDATE_SPHERE_SLOT, &Image3DCursor::updateSphere, this);
 }
 
 //------------------------------------------------------------------------------
@@ -148,37 +155,33 @@ void Image3DCursor::doStop() throw(fwTools::Failed)
     m_cursorActor    = 0;
 }
 
+//-----------------------------------------------------------------------------
+
+void Image3DCursor::updateSliceIndex(int axial, int frontal, int sagittal)
+{
+    m_axialIndex->value()    = axial;
+    m_frontalIndex->value()  = frontal;
+    m_sagittalIndex->value() = sagittal;
+
+    int index[3] = {sagittal, frontal, axial};
+    double center[3];
+    this->sliceIndexToWorld(index, center);
+    this->updateCursorPosition(center);
+    this->requestRender();
+}
+
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Image3DCursor::updateSphere(::fwData::Color::sptr color, float radius)
 {
-    SLM_TRACE_FUNC();
+    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
 
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
-    {
-        ::fwComEd::ImageMsg::dynamicConstCast(msg)->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
-        int index[3] = {
-            *m_sagittalIndex,
-            *m_frontalIndex,
-            *m_axialIndex
-        };
-        double center[3];
-        sliceIndexToWorld(index, center);
-        this->updateCursorPosition(center);
-    }
+    m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
+    this->buildPolyData(radius);
 
-    if ( msg->hasEvent( "NEW_SPHERE_CONFIG" ) )
-    {
-        ::fwData::Image::sptr img    = this->getObject< ::fwData::Image >();
-        ::fwData::Float::sptr radius = img->getField< ::fwData::Float >("IMAGE3DCURSOR_RADIUS");
-        ::fwData::Color::sptr color  = img->getField< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
-
-        m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
-        buildPolyData(radius->value());
-
-        m_cursorMapper->SetInputData( m_cursorPolyData );
-        this->setVtkPipelineModified();
-    }
+    m_cursorMapper->SetInputData( m_cursorPolyData );
+    this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -209,5 +212,16 @@ void Image3DCursor::buildPolyData(float radius)
     //this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Image3DCursor::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
+
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

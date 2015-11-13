@@ -7,13 +7,16 @@
 #ifndef __CTRLSELECTION_MANAGER_SWAPPERSRV_HPP__
 #define __CTRLSELECTION_MANAGER_SWAPPERSRV_HPP__
 
-#include <fwRuntime/ConfigurationElement.hpp>
-
-#include <fwServices/IService.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
-
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IManagerSrv.hpp"
+
+#include <fwData/Composite.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
+
+#include <fwServices/helper/SigSlotConnection.hpp>
+#include <fwServices/IService.hpp>
+
 
 namespace ctrlSelection
 {
@@ -37,6 +40,16 @@ public:
 
     /// Destructor. Do nothing.
     CTRLSELECTION_API virtual ~SwapperSrv() throw();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_ADD_OBJECTS_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_CHANGE_OBJECTS_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_REMOVE_OBJECTS_SLOT
+     */
+    CTRLSELECTION_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -102,11 +115,6 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    /// Reacts on specifics event (ADDED_KEYS, REMOVED_KEYS and CHANGED_KEYS) and start, stop or swap the managed services
-    /// on the objects defined in the message or dummy objects
-    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
-
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string ObjectIdType;
 
@@ -138,12 +146,18 @@ protected:
     typedef std::vector< SPTR(SubService) > SubServicesVecType;
     typedef std::map< ObjectIdType, SubServicesVecType > SubServicesMapType;
 
+    /// Slot: add objects
+    void addObjects(::fwData::Composite::ContainerType objects);
+
+    /// Slot: change objects
+    void changeObjects(::fwData::Composite::ContainerType newObjects, ::fwData::Composite::ContainerType oldObjects);
+
+    /// Slot: remove objects
+    void removeObjects(::fwData::Composite::ContainerType objects);
+
     void initOnDummyObject( std::string objectId );
-    void addObjects( ::fwData::Composite::sptr _composite );
     void addObject( const std::string &objectId, ::fwData::Object::sptr object );
-    void swapObjects( ::fwData::Composite::sptr _composite );
-    void swapObject(const std::string &objectId, ::fwData::Object::sptr object);
-    void removeObjects( ::fwData::Composite::sptr _composite );
+    void changeObject(const std::string &objectId, ::fwData::Object::sptr object);
     void removeObject( const std::string &objectId );
 
     ::fwServices::IService::sptr add( ::fwData::Object::sptr obj, ::fwRuntime::ConfigurationElement::sptr _elt );

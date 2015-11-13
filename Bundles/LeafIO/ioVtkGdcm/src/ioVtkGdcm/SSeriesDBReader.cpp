@@ -4,9 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/bind.hpp>
+#include "ioVtkGdcm/SSeriesDBReader.hpp"
 
 #include <fwCore/base.hpp>
+
+#include <fwGui/backend.hpp>
+#include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
+
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Series.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
@@ -14,21 +23,11 @@
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <fwGui/dialog/ProgressDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/Cursor.hpp>
-#include <fwGui/backend.hpp>
-
 #include <io/IReader.hpp>
-
-#include <fwComEd/SeriesDBMsg.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 #include <vtkGdcmIO/SeriesDBReader.hpp>
 
-#include "ioVtkGdcm/SSeriesDBReader.hpp"
+#include <boost/bind.hpp>
 
 
 namespace ioVtkGdcm
@@ -192,20 +191,15 @@ void SSeriesDBReader::notificationOfDBUpdate()
     ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
-    ::fwComEd::SeriesDBMsg::sptr msg = ::fwComEd::SeriesDBMsg::New();
+    ::fwMedData::SeriesDB::ContainerType addedSeries;
     for( ::fwMedData::Series::sptr s :  seriesDB->getContainer() )
     {
-        msg->appendAddedSeries(s);
+        addedSeries.push_back(s);
     }
 
-    msg->setSource(this->getSptr());
-    msg->setSubject(  seriesDB);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = seriesDB->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    auto sig = seriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
+        ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+    sig->asyncEmit(addedSeries);
 }
 
 //-----------------------------------------------------------------------------

@@ -6,6 +6,10 @@
 
 #include "fwComEd/helper/Vector.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwData/Vector.hpp>
 
 #include <fwServices/IService.hpp>
@@ -19,9 +23,8 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-Vector::Vector( ::fwData::Vector::wptr _vector )
-    :   m_vectorMsg ( ::fwComEd::VectorMsg::New() ),
-      m_vector ( _vector )
+Vector::Vector( ::fwData::Vector::wptr _vector ) :
+    m_vector ( _vector )
 {
 }
 
@@ -42,9 +45,7 @@ void Vector::add( ::fwData::Object::sptr _newObject )
     // Modify vector
     vector->getContainer().push_back(_newObject );
 
-    // Modify message
-    m_vectorMsg->appendAddedObject( _newObject );
-
+    m_addedObjects.push_back(_newObject);
 }
 
 //-----------------------------------------------------------------------------
@@ -59,8 +60,7 @@ void Vector::remove( ::fwData::Object::sptr _oldObject )
     // Modify vector
     vector->getContainer().erase( iter );
 
-    // Modify message
-    m_vectorMsg->appendRemovedObject( _oldObject );
+    m_removedObjects.push_back(_oldObject);
 
 }
 
@@ -78,30 +78,22 @@ void Vector::clear()
 
 //-----------------------------------------------------------------------------
 
-void Vector::notify( ::fwServices::IService::sptr serviceSource, bool notifySource )
+void Vector::notify()
 {
-    if ( m_vectorMsg->getEventIds().size() > 0 )
+    if ( !m_addedObjects.empty() )
     {
-        m_vectorMsg->setSource( serviceSource );
-        m_vectorMsg->setSubject( m_vector.lock() );
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = m_vector.lock()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-        if(notifySource)
-        {
-            sig->asyncEmit(m_vectorMsg);
-        }
-        else
-        {
-            ::fwServices::IService::ReceiveSlotType::sptr slot;
-            slot = serviceSource->slot< ::fwServices::IService::ReceiveSlotType >(
-                ::fwServices::IService::s_RECEIVE_SLOT );
-            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
-            sig->asyncEmit(m_vectorMsg);
-        }
+        auto sig = m_vector.lock()->signal< ::fwData::Vector::AddedObjectsSignalType >(
+            ::fwData::Vector::s_ADDED_OBJECTS_SIG);
+        sig->asyncEmit(m_addedObjects);
+    }
+    if ( !m_removedObjects.empty() )
+    {
+        auto sig = m_vector.lock()->signal< ::fwData::Vector::RemovedObjectsSignalType >(
+            ::fwData::Vector::s_REMOVED_OBJECTS_SIG);
+        sig->asyncEmit(m_removedObjects);
     }
     SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
-                m_vectorMsg->getEventIds().size() == 0);
+                m_addedObjects.empty() && m_removedObjects.empty());
 }
 
 //-----------------------------------------------------------------------------

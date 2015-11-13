@@ -9,17 +9,19 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
 #include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwServices/Base.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <exception>
@@ -31,12 +33,13 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowLandmark, ::fwData::Image);
 
+static const ::fwCom::Slots::SlotKeyType s_SHOW_LANDMARK_SLOT = "showLandmark";
 
 //------------------------------------------------------------------------------
 
 ShowLandmark::ShowLandmark( ) throw()
 {
-    //addNewHandledEvent( ::fwComEd::ImageMsg::LANDMARK );
+    newSlot(s_SHOW_LANDMARK_SLOT, &ShowLandmark::showLandmark, this);
 }
 
 //------------------------------------------------------------------------------
@@ -79,15 +82,10 @@ void ShowLandmark::updating() throw(::fwTools::Failed)
     this->::fwGui::IActionSrv::setIsActive(isShown);
 
     // notify
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::LANDMARK );
-    msg->setSource(this->getSptr());
-    msg->setSubject( image);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = image->signal< ::fwData::Image::LandmarkDisplayedSignalType >(::fwData::Image::s_LANDMARK_DISPLAYED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_SHOW_LANDMARK_SLOT)));
+        sig->asyncEmit(isShown);
     }
 }
 
@@ -106,13 +104,9 @@ void ShowLandmark::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowLandmark::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void ShowLandmark::showLandmark(bool isShown)
 {
-    ::fwComEd::ImageMsg::csptr imgMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
-    if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::LANDMARK ) )
-    {
-        this->swapping();
-    }
+    this->swapping();
 }
 
 //------------------------------------------------------------------------------
@@ -134,6 +128,16 @@ void ShowLandmark::starting() throw (::fwTools::Failed)
 void ShowLandmark::stopping() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ShowLandmark::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_LANDMARK_DISPLAYED_SIG, s_SHOW_LANDMARK_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

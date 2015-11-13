@@ -4,16 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/PointList.hpp>
-#include <fwData/TransferFunction.hpp>
-#include <fwData/Composite.hpp>
-
-
 #include "fwComEd/helper/Image.hpp"
 #include "fwComEd/helper/Field.hpp"
 #include "fwComEd/helper/Composite.hpp"
 #include "fwComEd/Dictionary.hpp"
 #include "fwComEd/fieldHelper/MedicalImageHelpers.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/TransferFunction.hpp>
+
 
 namespace fwComEd
 {
@@ -24,8 +28,7 @@ namespace helper
 //-----------------------------------------------------------------------------
 
 Image::Image( ::fwData::Image::sptr image )
-    : m_imageMsg(::fwComEd::ImageMsg::New()),
-      m_image(image)
+    : m_image(image)
 {
     if ( image )
     {
@@ -37,28 +40,6 @@ Image::Image( ::fwData::Image::sptr image )
 
 Image::~Image()
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void Image::notify( ::fwServices::IService::sptr serviceSource )
-{
-    if ( m_imageMsg->getEventIds().size() > 0 )
-    {
-        m_imageMsg->setSource( serviceSource);
-        m_imageMsg->setSubject( m_image);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = m_image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-        {
-            ::fwServices::IService::ReceiveSlotType::sptr slot;
-            slot = serviceSource->slot< ::fwServices::IService::ReceiveSlotType >(
-                ::fwServices::IService::s_RECEIVE_SLOT );
-            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
-            sig->asyncEmit(m_imageMsg);
-        }
-    }
-    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
-                m_imageMsg->getEventIds().empty());
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +62,7 @@ bool Image::createLandmarks()
 
 //------------------------------------------------------------------------------
 
-bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSource)
+bool Image::createTransferFunctionPool()
 {
     bool fieldIsCreated             = false;
     const std::string poolFieldName = ::fwComEd::Dictionary::m_transferFunctionCompositeId;
@@ -96,10 +77,8 @@ bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSourc
         // Set in selected image
         ::fwComEd::helper::Field fieldHelper(m_image);
         fieldHelper.setField(poolFieldName, tfPool);
-        if(serviceSource)
-        {
-            fieldHelper.notify(serviceSource);
-        }
+        fieldHelper.notify();
+
         // TF pool is modified
         fieldIsCreated = true;
     }
@@ -123,10 +102,7 @@ bool Image::createTransferFunctionPool(::fwServices::IService::sptr serviceSourc
         // Set in TFPool
         ::fwComEd::helper::Composite compositeHelper(tfPool);
         compositeHelper.add(defaultTFName, tf);
-        if(serviceSource)
-        {
-            compositeHelper.notify(serviceSource);
-        }
+        compositeHelper.notify();
     }
 
     return fieldIsCreated;

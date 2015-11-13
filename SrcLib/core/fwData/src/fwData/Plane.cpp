@@ -8,6 +8,9 @@
 #include "fwData/Exception.hpp"
 #include "fwData/Plane.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 #include <fwMath/PlaneFunctions.hpp>
 
@@ -18,6 +21,8 @@ fwDataRegisterMacro( ::fwData::Plane );
 namespace fwData
 {
 
+const ::fwCom::Signals::SignalKeyType Plane::s_SELECTED_SIG = "selected";
+
 //------------------------------------------------------------------------------
 
 Plane::Plane (::fwData::Object::Key key) : m_isIntersection(true)
@@ -25,6 +30,8 @@ Plane::Plane (::fwData::Object::Key key) : m_isIntersection(true)
     m_vPoints[0] = ::fwData::Point::New();
     m_vPoints[1] = ::fwData::Point::New();
     m_vPoints[2] = ::fwData::Point::New();
+
+    newSignal< SelectedSignalType >(s_SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------

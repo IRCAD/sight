@@ -4,6 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/bspline.h"
+
+#include "scene2D/adaptor/CurvedHistogram.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
+
 #include <fwServices/Base.hpp>
 
 #include <fwData/Float.hpp>
@@ -11,16 +17,9 @@
 #include <fwData/Point.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 
-#include <fwComEd/HistogramMsg.hpp>
-
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-#include "scene2D/bspline.h"    // test Alex
-
-#include "scene2D/adaptor/CurvedHistogram.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::CurvedHistogram, ::fwData::Histogram);
 
@@ -108,7 +107,7 @@ void CurvedHistogram::doStart() throw( ::fwTools::Failed)
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::getControlPoints( ::fwData::Histogram::sptr _histogram)
+CurvedHistogram::Points CurvedHistogram::getControlPoints(const ::fwData::Histogram::sptr& _histogram) const
 {
     ::fwData::Histogram::fwHistogramValues histogramValues = _histogram->getValues();
     const float binsWidth    = _histogram->getBinsWidth();
@@ -133,10 +132,9 @@ CurvedHistogram::Points CurvedHistogram::getControlPoints( ::fwData::Histogram::
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::getBSplinePoints( Points & _points )
+CurvedHistogram::Points CurvedHistogram::getBSplinePoints( const Points & _points ) const
 {
     Points bSplinePoints;
-    Points::iterator it;
     point_list list;        // see bspline.h
 
     // Add again the first point with a higher value in order to prevent B-Spline algorithm from removing
@@ -147,12 +145,12 @@ CurvedHistogram::Points CurvedHistogram::getBSplinePoints( Points & _points )
             (float) _points[0].second * 2) );
 
     // Add all the points
-    for( it = _points.begin(); it != _points.end(); ++it )
+    for(const auto& pt : _points )
     {
         list.add_point(
             new point(
-                (float)((*it).first),
-                (float)((*it).second)) );
+                (float)(pt.first),
+                (float)(pt.second)) );
     }
 
     // Add again the last point
@@ -164,12 +162,12 @@ CurvedHistogram::Points CurvedHistogram::getBSplinePoints( Points & _points )
 
     // Commpute the points of the B-Spline with external code from AHO (to be integrated here later).
     cat_curve curve( list );
-    curve.precision = static_cast<int>(_points.size() * 5);
+    curve.m_precision = static_cast<int>(_points.size() * 5);
     curve.compute();
 
-    for(int i = 0; i < curve.precision; ++i)
+    for(int i = 0; i < curve.m_precision; ++i)
     {
-        bSplinePoints.push_back( Point( curve.curve_point[i].x, curve.curve_point[i].y ) );
+        bSplinePoints.push_back( Point( curve.m_curve_point[i].x, curve.m_curve_point[i].y ) );
     }
 
     return bSplinePoints;
@@ -177,13 +175,9 @@ CurvedHistogram::Points CurvedHistogram::getBSplinePoints( Points & _points )
 
 //----------------------------------------------------------------------------------------------------------
 
-CurvedHistogram::Points CurvedHistogram::getResampledBSplinePoints( Points & _bSplinePoints )
+CurvedHistogram::Points CurvedHistogram::getResampledBSplinePoints(const Points & _bSplinePoints ) const
 {
-    SLM_TRACE_FUNC();
-
     Points points;
-    Points::iterator it;
-
     Point point = _bSplinePoints.front();
 
     double dx, dy;
@@ -192,7 +186,7 @@ CurvedHistogram::Points CurvedHistogram::getResampledBSplinePoints( Points & _bS
 
     points.push_back( point );
 
-    for(it = _bSplinePoints.begin() + 1; it != _bSplinePoints.end(); ++it)
+    for(Points::const_iterator it = _bSplinePoints.begin() + 1; it != _bSplinePoints.end(); ++it)
     {
         dx = abs((*it).first - point.first);    // theoretically positive
         dy = abs((*it).second - point.second);
@@ -289,7 +283,7 @@ void CurvedHistogram::doUpdate() throw( ::fwTools::Failed)
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::buildBSplineFromPoints( Points & _bSplinePoints )
+void CurvedHistogram::buildBSplineFromPoints(Points & _bSplinePoints )
 {
     ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
 
@@ -452,10 +446,8 @@ CurvedHistogram::Points CurvedHistogram::cubicInterpolation(
 
 //----------------------------------------------------------------------------------------------------------
 
-void CurvedHistogram::updateCurrentPoint( ::scene2D::data::Event::sptr _event )
+void CurvedHistogram::updateCurrentPoint(const ::scene2D::data::Event::sptr& _event )
 {
-    SLM_TRACE_FUNC();
-
     SLM_ASSERT("m_histogramPointUID must be defined in order to update the related ::fwData::Point data.",
                !m_histogramPointUID.empty());
 
@@ -506,17 +498,6 @@ CurvedHistogram::Points CurvedHistogram::linearInterpolation( const Point _p1, c
     }
 
     return points;
-}
-
-//----------------------------------------------------------------------------------------------------------
-
-void CurvedHistogram::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
-{
-    ::fwComEd::HistogramMsg::csptr histoMsg = ::fwComEd::HistogramMsg::dynamicConstCast(_msg);
-    if (histoMsg && histoMsg->hasEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED))
-    {
-        this->doUpdate();
-    }
 }
 
 //----------------------------------------------------------------------------------------------------------

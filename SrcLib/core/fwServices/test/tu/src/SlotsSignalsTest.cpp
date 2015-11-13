@@ -51,8 +51,13 @@ void SlotsSignalsTest::basicTest()
     ActiveWorkers::sptr activeWorkers = ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    activeWorkers->addWorker("test", worker);
+
     SBasicTest::sptr basicTestSrv = ::fwServices::factory::New<SBasicTest>();
     ::fwServices::OSR::registerService(buffer, basicTestSrv);
+
+    basicTestSrv->setWorker(worker);
 
     IService::SharedFutureType startFuture = basicTestSrv->start();
     CPPUNIT_ASSERT(basicTestSrv->getStatus() != IService::STARTED);
@@ -102,7 +107,7 @@ void SlotsSignalsTest::comObjectServiceTest()
         ::fwServices::OSR::registerService(buffer, showTestSrv);
         showTestSrv->setWorker(worker1);
 
-        buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         readerTestSrv->start();
         showTestSrv->start();
@@ -116,7 +121,7 @@ void SlotsSignalsTest::comObjectServiceTest()
 
         CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
-        buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         ::fwServices::OSR::unregisterService(readerTestSrv);
         ::fwServices::OSR::unregisterService(showTestSrv);
@@ -134,7 +139,7 @@ void SlotsSignalsTest::comObjectServiceTest()
         ::fwServices::OSR::registerService(buffer, showTestSrv);
         showTestSrv->setWorker(worker1);
 
-        buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         readerTestSrv->start();
         reader2TestSrv->start();
@@ -152,7 +157,7 @@ void SlotsSignalsTest::comObjectServiceTest()
         stopReader2Future.wait();
         stopShowFuture.wait();
 
-        buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         CPPUNIT_ASSERT_EQUAL(2, showTestSrv->m_receiveCount);
 
@@ -224,8 +229,8 @@ void SlotsSignalsTest::blockConnectionTest()
     showTestSrv->setWorker(worker1);
 
     ::fwCom::Connection connection;
-    connection = buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->
-                 connect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+    connection = buffer->signal(::fwData::Object::s_MODIFIED_SIG)->
+                 connect(showTestSrv->slot(SShow2Test::s_UPDATE_BUFFER_SLOT));
 
     readerTestSrv->start();
     showTestSrv->start();

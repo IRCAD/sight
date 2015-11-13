@@ -14,6 +14,7 @@
 #include <fwData/Image.hpp>
 
 #include <fwServices/IService.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include "Tuto02DataServiceBasicCtrl/config.hpp"
 
@@ -46,7 +47,7 @@ public:
 private:
     ::fwData::Image::sptr m_image;
 
-    ::fwCom::Connection m_connection;
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
 
     ::fwServices::IService::sptr m_frameSrv;
     ::fwServices::IService::sptr m_renderSrv;

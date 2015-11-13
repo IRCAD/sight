@@ -7,8 +7,6 @@
 #include <fwMedData/Series.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
@@ -96,7 +94,7 @@ void SSeriesDBMerger::updating( ) throw(::fwTools::Failed)
 
     ::fwComEd::helper::SeriesDB sDBhelper(seriesDB);
     sDBhelper.merge(localSeriesDB);
-    sDBhelper.notify(this->getSptr());
+    sDBhelper.notify();
 }
 
 //------------------------------------------------------------------------------
@@ -104,12 +102,6 @@ void SSeriesDBMerger::updating( ) throw(::fwTools::Failed)
 void SSeriesDBMerger::starting() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
-}
-
-//------------------------------------------------------------------------------
-
-void SSeriesDBMerger::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------

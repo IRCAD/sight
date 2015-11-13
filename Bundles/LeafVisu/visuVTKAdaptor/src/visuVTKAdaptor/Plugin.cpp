@@ -4,18 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKAdaptor/Plugin.hpp"
+
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
-#include "visuVTKAdaptor/Plugin.hpp"
-
 
 namespace visuVTKAdaptor
 {
-using namespace ::fwRuntime::utils;
-static GenericExecutableFactoryRegistrar<Plugin> registrar("visuVTKAdaptor::Plugin");
+
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("visuVTKAdaptor::Plugin");
 
 
 Plugin::~Plugin() throw()

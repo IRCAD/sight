@@ -7,25 +7,31 @@
 #ifndef __FWSERVICES_ISERVICE_HPP__
 #define __FWSERVICES_ISERVICE_HPP__
 
-#include <boost/property_tree/ptree.hpp>
+#include "fwServices/config.hpp"
+#include "fwServices/factory/new.hpp"
+#include "fwServices/helper/SigSlotConnection.hpp"
 
-#include <deque>
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/HasSlots.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
 
-#include <fwTools/Failed.hpp>
-#include <fwTools/Object.hpp>
+#include <fwCore/base.hpp>
+
+#include <fwData/Object.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwThread/Worker.hpp>
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwCom/HasSlots.hpp>
-#include <fwCom/HasSignals.hpp>
+#include <fwTools/Failed.hpp>
+#include <fwTools/fwID.hpp>
+#include <fwTools/macros.hpp>
+#include <fwTools/Object.hpp>
 
-#include "fwServices/config.hpp"
-#include "fwServices/ObjectMsg.hpp"
-#include "fwServices/factory/new.hpp"
-#include "fwServices/helper/SigSlotConnection.hpp"
+#include <boost/property_tree/ptree.hpp>
+
+#include <deque>
 
 namespace fwServices
 {
@@ -112,9 +118,6 @@ public:
 
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLOT;
     typedef ::fwCom::Slot<SharedFutureType()> UpdateSlotType;
-
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_RECEIVE_SLOT;
-    typedef ::fwCom::Slot<void (ObjectMsg::csptr)> ReceiveSlotType;
 
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SWAP_SLOT;
     typedef ::fwCom::Slot<SharedFutureType(::fwData::Object::sptr)> SwapSlotType;
@@ -312,14 +315,7 @@ public:
 
     //@}
 
-#ifdef COM_LOG
-    /**
-     * @brief Set a newID  for the service, the oldest one is released.
-     * @warning Cannot set a empty ID.
-     * @note This method is thread-safe. This method is used to better trace communication between signals and slots
-     */
-    FWSERVICES_API void setID( ::fwTools::fwID::IDType newID );
-#endif
+
 
 protected:
 
@@ -351,12 +347,6 @@ protected:
      */
 
     //@{
-
-    /**
-     * @brief Invoke receiving(fwServices::ObjectMsg::csptr) if m_globalState == STARTED. Does nothing otherwise. This method makes a service assimilable to an observer in the sense of the observer design pattern.
-     * @pre m_globalState == STARTED
-     */
-    FWSERVICES_API void receive( fwServices::ObjectMsg::csptr _msg );
 
     /**
      * @brief Initialize the service activity.
@@ -405,13 +395,6 @@ protected:
     FWSERVICES_API virtual void updating() throw ( ::fwTools::Failed ) = 0;
 
     /**
-     * @brief Perform some computations according to modifications specified in the _msg parameter. _msg generally indicates modification to occur (or having occured) on the object the service
-     * is attached to.
-     * @see receive(fwServices::ObjectMsg::csptr )
-     */
-    FWSERVICES_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
-    /**
      * @brief Write information in a stream.
      *
      * This method is used by operator<<(std::ostream & _sstream, IService& _service)
@@ -445,9 +428,6 @@ protected:
 
     /// Slot to call update method
     UpdateSlotType::sptr m_slotUpdate;
-
-    /// Slot to call receive method
-    ReceiveSlotType::sptr m_slotReceive;
 
     /// Slot to call swap method
     SwapSlotType::sptr m_slotSwap;

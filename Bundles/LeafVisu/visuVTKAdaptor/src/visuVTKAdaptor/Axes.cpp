@@ -6,7 +6,7 @@
 
 #ifndef ANDROID
 
-#include <boost/lexical_cast.hpp>
+#include "visuVTKAdaptor/Axes.hpp"
 
 /// FW4SPL Includes
 #include <fwServices/macros.hpp>
@@ -19,7 +19,7 @@
 #include <vtkTransform.h>
 #include <vtkProp3D.h>
 
-#include "visuVTKAdaptor/Axes.hpp"
+#include <boost/lexical_cast.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Axes, ::fwData::Object );
 
@@ -28,11 +28,11 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-Axes::Axes() throw()
+Axes::Axes() throw() :
+    m_axesActor(vtkAxesActor::New()),
+    m_length(1.),
+    m_labelOn(true)
 {
-    m_axesActor = vtkAxesActor::New();
-    m_length    = 1;
-    m_labelOn   = true;
 }
 
 //------------------------------------------------------------------------------
@@ -68,12 +68,6 @@ void Axes::doSwap() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void Axes::doUpdate() throw(::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Axes::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
 {
 }
 

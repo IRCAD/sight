@@ -14,6 +14,4 @@
 fwServicesRegisterMacro( ::fwComEd::ut::TestService, ::fwComEd::ut::TestServiceImplementationComposite,
                          ::fwData::Composite );
 fwServicesRegisterMacro( ::fwComEd::ut::TestService, ::fwComEd::ut::TestServiceImplementationImage, ::fwData::Image );
-fwServicesRegisterMacro( ::fwComEd::ut::TestService, ::fwComEd::ut::SSeriesDBTest, ::fwMedData::SeriesDB );
-fwServicesRegisterMacro( ::fwComEd::ut::TestService, ::fwComEd::ut::SVectorTest, ::fwData::Vector );
 

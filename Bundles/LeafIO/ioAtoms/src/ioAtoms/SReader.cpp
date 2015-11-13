@@ -368,7 +368,7 @@ void SReader::updating() throw(::fwTools::Failed)
 
                 ::fwComEd::helper::Composite helper(composite);
                 helper.add(m_inject, newData);
-                helper.notify(this->getSptr());
+                helper.notify();
             }
 
             this->notificationOfUpdate();
@@ -401,16 +401,11 @@ void SReader::updating() throw(::fwTools::Failed)
 
 void SReader::notificationOfUpdate()
 {
-    ::fwData::Object::sptr object     = this->getObject();
-    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT, object );
-    msg->setSource( this->getSptr());
-    msg->setSubject(  object);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = object->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    ::fwData::Object::sptr object = this->getObject();
+    auto sig = object->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg );
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

@@ -14,7 +14,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/Boolean.hpp>
 
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -43,10 +42,11 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurement::editor::Distance, ::fwData::Image );
 
+const ::fwCom::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
 
 Distance::Distance() throw()
 {
-    //handlingEventOff();
+    m_sigDistanceRequested = newSignal< DistanceRequestedSignalType >(s_DISTANCE_REQUESTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -123,11 +123,6 @@ void Distance::swapping() throw(::fwTools::Failed)
 {
 
 }
-//------------------------------------------------------------------------------
-
-void Distance::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-}
 
 //------------------------------------------------------------------------------
 
@@ -146,16 +141,7 @@ void Distance::onDistanceButton()
     // force distance to be shown
     image->setField("ShowDistances",  ::fwData::Boolean::New(true));
 
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::NEW_DISTANCE, ::fwData::String::New(m_scenesUID) );
-    msg->setSource(this->getSptr());
-    msg->setSubject( image);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    m_sigDistanceRequested->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

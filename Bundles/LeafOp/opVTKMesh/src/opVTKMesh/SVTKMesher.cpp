@@ -6,8 +6,11 @@
 
 #include "opVTKMesh/SVTKMesher.hpp"
 
-#include <fwTools/fwID.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
+#include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -16,8 +19,7 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/ModelSeriesMsg.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>
@@ -59,12 +61,6 @@ void SVTKMesher::starting() throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void SVTKMesher::stopping() throw ( ::fwTools::Failed )
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void SVTKMesher::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
 {
 }
 
@@ -178,16 +174,11 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
     modelSeries->setReconstructionDB(recs);
 
     /// Notification
-    ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
-    msg->addEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION );
-    msg->setSource( this->getSptr());
-    msg->setSubject( modelSeries);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = modelSeries->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg );
-    }
+    ::fwMedData::ModelSeries::ReconstructionVectorType addedRecs;
+    addedRecs.push_back(reconstruction);
+    auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType >(
+        ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
+    sig->asyncEmit(addedRecs);
 }
 
 //-----------------------------------------------------------------------------

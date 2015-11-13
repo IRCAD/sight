@@ -6,17 +6,19 @@
 
 #include "fwServices/IService.hpp"
 #include "fwServices/registry/AppConfig.hpp"
-
 #include "fwServices/registry/ObjectService.hpp"
-
 #include "fwServices/registry/ServiceConfig.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"
+
+#include <fwData/Object.hpp>
+
 #include <fwCore/LogicStamp.hpp>
 #include <fwCore/util/LazyInstantiator.hpp>
 
 #include <fwTools/fwID.hpp>
 
 #include <boost/filesystem.hpp>
+
 #include <iostream>
 #include <sstream>
 #include <utility>

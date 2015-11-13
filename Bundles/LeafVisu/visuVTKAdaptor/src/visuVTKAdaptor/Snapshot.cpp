@@ -4,33 +4,34 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem.hpp>
 
-#include <vtkWindowToImageFilter.h>
-#include <vtkImageWriter.h>
-#include <vtkJPEGWriter.h>
-#include <vtkBMPWriter.h>
-#include <vtkTIFFWriter.h>
-#include <vtkPNGWriter.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
+#include "visuVTKAdaptor/Snapshot.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwComEd/Dictionary.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/CompositeMsg.hpp>
-
 #include <vtkActor.h>
+#include <vtkBMPWriter.h>
+#include <vtkImageWriter.h>
+#include <vtkJPEGWriter.h>
+#include <vtkPNGWriter.h>
 #include <vtkRenderer.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
+#include <vtkTIFFWriter.h>
+#include <vtkWindowToImageFilter.h>
 
-
-#include "visuVTKAdaptor/Snapshot.hpp"
+#include <boost/filesystem.hpp>
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Snapshot, ::fwData::Composite );
@@ -38,9 +39,11 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Sn
 namespace visuVTKAdaptor
 {
 
+const ::fwCom::Slots::SlotKeyType Snapshot::s_SNAP_SIG = "snap";
+
 Snapshot::Snapshot() throw()
 {
-    //addNewHandledEvent("SNAP");
+    newSlot(s_SNAP_SIG, &Snapshot::snap, this);
 }
 
 //------------------------------------------------------------------------------
@@ -70,7 +73,6 @@ void Snapshot::doStart() throw(fwTools::Failed)
 
 void Snapshot::doUpdate() throw(fwTools::Failed)
 {
-
 }
 
 //------------------------------------------------------------------------------
@@ -84,32 +86,6 @@ void Snapshot::doSwap() throw(fwTools::Failed)
 
 void Snapshot::doStop() throw(fwTools::Failed)
 {
-
-}
-
-//------------------------------------------------------------------------------
-
-void Snapshot::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg );
-
-    if ( compositeMsg && compositeMsg->hasEvent( "SNAP"))
-    {
-        ::fwData::Object::csptr dataInfo = compositeMsg->getDataInfo("SNAP");
-
-        SLM_ASSERT("sceneID missing", dataInfo->getField("sceneID"));
-        ::fwData::String::sptr sceneID = dataInfo->getField< ::fwData::String >("sceneID");
-        SLM_ASSERT("sceneID empty!", sceneID);
-
-        SLM_ASSERT("filename missing", dataInfo->getField("filename"));
-        ::fwData::String::sptr filename = dataInfo->getField< ::fwData::String >("filename");
-        SLM_ASSERT("filename empty!", !filename->value().empty());
-
-        if( this->getRenderService()->getID() == sceneID->value())
-        {
-            this->snap(filename->value());
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -148,7 +124,6 @@ void Snapshot::snap(std::string filePath)
     vtkWindowToImageFilter* snapper = vtkWindowToImageFilter::New();
     snapper->SetMagnification( 1 );
     snapper->SetInput( this->getRenderer()->GetRenderWindow() );
-
 
     writer->SetInputConnection( snapper->GetOutputPort() );
     writer->SetFileName( pathImageSnap.string().c_str() );

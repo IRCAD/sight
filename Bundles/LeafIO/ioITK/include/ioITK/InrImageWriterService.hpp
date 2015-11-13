@@ -45,11 +45,6 @@ protected:
     IOITK_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-    {
-    }
-
-    /// Override
     IOITK_API void info(std::ostream &_sstream );
 
     /// Override

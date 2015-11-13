@@ -7,7 +7,7 @@
         <param name="TF_COMPOSITE_ID" />
         <param name="SELECTED_TF_KEY" />
         <param name="SELECTED_UID_myImage" />
-        <param name="patient_name"  default="" />
+        <param name="patient_name" default="" />
     </parameters>
 
 
@@ -57,11 +57,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_snapshotEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-                <snap>
-                    <scene uid="${GENERIC_UID}_genericScene" />
-                </snap>
-            </service>
+            <service uid="${GENERIC_UID}_snapshotEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
 
 
 
@@ -85,7 +81,7 @@
                 <scene>
                     <picker id="negato2default" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
-                    <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                    <adaptor id="snapshot1" uid="${GENERIC_UID}_snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                         <config renderer="default" />
                     </adaptor>
                     <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
@@ -108,6 +104,11 @@
                         <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
                     </adaptor>
 
+                    <connect>
+                        <signal>${GENERIC_UID}_snapshotEditor/snapped</signal>
+                        <slot>${GENERIC_UID}_snapshotUID/snap</slot>
+                    </connect>
+
                 </scene>
             </service>
 
@@ -125,8 +126,7 @@
                     <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
 
                     <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                        <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25"
-                            viewportUID="${GENERIC_UID}_Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                        <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" viewportUID="${GENERIC_UID}_Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
                     </adaptor>
 
                     <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
@@ -142,9 +142,7 @@
                     </adaptor>
 
                     <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="displayed_image">
-                        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7"
-                            viewportUID="${GENERIC_UID}_Viewport"
-                            selectedTFKey="${SELECTED_TF_KEY}" tfSelectionFwID="${TF_COMPOSITE_ID}" />
+                        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="${GENERIC_UID}_Viewport" selectedTFKey="${SELECTED_TF_KEY}" tfSelectionFwID="${TF_COMPOSITE_ID}" />
                     </adaptor>
 
                     <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="myViewport">
@@ -168,8 +166,7 @@
                     </adaptor>
 
                     <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="myHistogram">
-                        <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray"
-                            opacity="0.25" zValue="6" borderWidth="2.0" />
+                        <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" borderWidth="2.0" />
                     </adaptor>
 
                 </scene>
@@ -190,9 +187,7 @@
                     <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
 
                     <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                        <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2"
-                            viewportUID="${GENERIC_UID}_Viewport" color="darkGray" xAxis="xAxis"
-                            yAxis="yAxis" zValue="1" />
+                        <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="${GENERIC_UID}_Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
                     </adaptor>
 
                     <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
@@ -246,7 +241,7 @@
                         <sliceIndex>axial</sliceIndex>
                     </service>
 
-                    <service uid="${GENERIC_UID}_computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD" >
+                    <service uid="${GENERIC_UID}_computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
                         <histogramId>${GENERIC_UID}_Histogram</histogramId>
                         <binsWidth>5.0</binsWidth>
                     </service>

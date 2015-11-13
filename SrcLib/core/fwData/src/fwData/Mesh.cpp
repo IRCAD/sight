@@ -4,9 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwData/Mesh.hpp"
+
+#include <fwCom/Signal.hxx>
+
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-#include "fwData/Mesh.hpp"
 
 #include <functional>
 #include <cstdlib>
@@ -25,10 +28,28 @@ fwDataRegisterMacro( ::fwData::Mesh );
 
 //------------------------------------------------------------------------------
 
+const ::fwCom::Signals::SignalKeyType Mesh::s_VERTEX_MODIFIED_SIG           = "vertexModified";
+const ::fwCom::Signals::SignalKeyType Mesh::s_POINT_COLORS_MODIFIED_SIG     = "pointColorsModified";
+const ::fwCom::Signals::SignalKeyType Mesh::s_CELL_COLORS_MODIFIED_SIG      = "cellColorsModified";
+const ::fwCom::Signals::SignalKeyType Mesh::s_POINT_NORMALS_MODIFIED_SIG    = "pointNormalsModified";
+const ::fwCom::Signals::SignalKeyType Mesh::s_CELL_NORMALS_MODIFIED_SIG     = "cellNormalsModified";
+const ::fwCom::Signals::SignalKeyType Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG = "pointTexCoordsModified";
+const ::fwCom::Signals::SignalKeyType Mesh::s_CELL_TEX_COORDS_MODIFIED_SIG  = "cellTexCoordsModified";
+
+//------------------------------------------------------------------------------
+
 Mesh::Mesh(::fwData::Object::Key key) : m_nbPoints(0),
                                         m_nbCells(0),
                                         m_cellsDataSize(0)
 {
+    newSignal<VertexModifiedSignalType>(s_VERTEX_MODIFIED_SIG);
+    newSignal<PointColorsModifiedSignalType>(s_POINT_COLORS_MODIFIED_SIG);
+    newSignal<CellColorsModifiedSignalType>(s_CELL_COLORS_MODIFIED_SIG);
+    newSignal<PointNormalsModifiedSignalType>(s_POINT_NORMALS_MODIFIED_SIG);
+    newSignal<CellNormalsModifiedSignalType>(s_CELL_NORMALS_MODIFIED_SIG);
+    newSignal<PointTexCoordsModifiedSignalType>(s_POINT_TEX_COORDS_MODIFIED_SIG);
+    newSignal<CellTexCoordsModifiedSignalType>(s_CELL_TEX_COORDS_MODIFIED_SIG);
+
     this->initArrays();
 }
 

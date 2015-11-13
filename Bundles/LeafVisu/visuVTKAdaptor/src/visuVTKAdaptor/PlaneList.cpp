@@ -9,10 +9,13 @@
 #include "visuVTKAdaptor/Plane.hpp"
 #include "visuVTKAdaptor/PlaneList.hpp"
 
+#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
-#include <fwComEd/PlaneListMsg.hpp>
-#include <fwComEd/PlaneMsg.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
@@ -35,17 +38,20 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Pl
 namespace visuVTKAdaptor
 {
 
+const ::fwCom::Signals::SignalKeyType s_SELECTED_SIG = "selected";
+
+const ::fwCom::Slots::SlotKeyType s_UPDATE_SELECTION_SLOT = "updateSelection";
+const ::fwCom::Slots::SlotKeyType s_UPDATE_PLANES_SLOT    = "updatePlanes";
+const ::fwCom::Slots::SlotKeyType s_SHOW_PLANES_SLOT      = "showPlanes";
+
+//------------------------------------------------------------------------------
 
 
 void notifyDeletePlane( ::fwData::PlaneList::sptr planeList, ::fwData::Plane::sptr plane )
 {
-    ::fwComEd::PlaneListMsg::sptr msg = ::fwComEd::PlaneListMsg::New();
-    msg->addEvent( ::fwComEd::PlaneListMsg::DESELECT_ALL_PLANES );
-    msg->addEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE, plane );
-
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = planeList->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-    sig->asyncEmit(msg);
+    auto sig = planeList->signal< ::fwData::PlaneList::PlaneRemovedSignalType >(
+        ::fwData::PlaneList::s_PLANE_REMOVED_SIG );
+    sig->asyncEmit(plane);
 }
 
 class vtkPlaneDeleteCallBack : public vtkCommand
@@ -57,10 +63,10 @@ public:
         return new vtkPlaneDeleteCallBack(service);
     }
 
-    vtkPlaneDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService *service )
-        : m_service(service),
-          m_picker( vtkCellPicker::New() ),
-          m_propCollection( vtkPropCollection::New() )
+    vtkPlaneDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService *service ) :
+        m_service(service),
+        m_picker( vtkCellPicker::New() ),
+        m_propCollection( vtkPropCollection::New() )
     {
         m_lastPos[0] = -1;
         m_lastPos[1] = -1;
@@ -175,9 +181,11 @@ protected:
 
 PlaneList::PlaneList() throw()  : m_rightButtonCommand(nullptr), m_planeCollectionId("")
 {
-    //addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
-    //addNewHandledEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE );
-    //addNewHandledEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY );
+    newSlot(s_UPDATE_SELECTION_SLOT, &PlaneList::updateSelection, this);
+    newSlot(s_UPDATE_PLANES_SLOT, &PlaneList::updatePlanes, this);
+    newSlot(s_SHOW_PLANES_SLOT, &PlaneList::showPlanes, this);
+
+    newSignal< SelectedignalType >(s_SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -208,6 +216,8 @@ void PlaneList::doStart() throw(fwTools::Failed)
     this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
 
     this->doUpdate();
+
+    m_planeConnections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -239,6 +249,9 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
             }
             servicePlane->start();
 
+            m_planeConnections->connect(servicePlane, Plane::s_INTERACTION_STARTED_SIG, this->getSptr(),
+                                        s_UPDATE_SELECTION_SLOT);
+
             this->registerService(servicePlane);
         }
     }
@@ -246,33 +259,27 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PlaneList::updatePlanes()
 {
-    SLM_TRACE_FUNC();
-    ::fwComEd::PlaneListMsg::csptr planeListMsg = ::fwComEd::PlaneListMsg::dynamicConstCast( msg );
-    if ( planeListMsg )
-    {
-        if (planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::ADD_PLANE )
-            || planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE) )
-        {
-            this->doStop();
-            this->doStart();
-        }
-        else if ( planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY ) )
-        {
-            ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
+    this->doStop();
+    this->doStart();
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
 
-            this->doStop();
-            bool showPlanes;
-            showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
-            OSLM_INFO( "Receive event ShowPlanes : " << showPlanes );
-            if(showPlanes)
-            {
-                this->doStart();
-            }
-        }
+//------------------------------------------------------------------------------
+
+void PlaneList::showPlanes(bool visible)
+{
+    ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
+
+    this->doStop();
+    if(visible)
+    {
+        this->doStart();
     }
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -292,6 +299,14 @@ void PlaneList::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+void PlaneList::updateSelection(::fwData::Plane::sptr plane)
+{
+    auto sig = this->signal< SelectedignalType >(s_SELECTED_SIG);
+    sig->asyncEmit(plane);
+}
+
+//------------------------------------------------------------------------------
+
 void PlaneList::doStop() throw(fwTools::Failed)
 {
     if ( m_rightButtonCommand ) // can be not instanciated
@@ -300,6 +315,7 @@ void PlaneList::doStop() throw(fwTools::Failed)
         m_rightButtonCommand->Delete();
         m_rightButtonCommand = 0;
     }
+    m_planeConnections->disconnect();
 
     this->unregisterServices();
 }

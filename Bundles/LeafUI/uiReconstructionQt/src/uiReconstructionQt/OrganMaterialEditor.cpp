@@ -20,8 +20,6 @@
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 
-#include <fwComEd/MaterialMsg.hpp>
-
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
@@ -133,12 +131,6 @@ void OrganMaterialEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void OrganMaterialEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void OrganMaterialEditor::info( std::ostream &_sstream )
 {
 }
@@ -232,17 +224,10 @@ void OrganMaterialEditor::materialNotification( )
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
-    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
-    msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
-    msg->setSource(this->getSptr());
-    msg->setSubject( reconstruction->getMaterial());
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = reconstruction->getMaterial()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = reconstruction->getMaterial()->signal< ::fwData::Object::ModifiedSignalType >(
+        ::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

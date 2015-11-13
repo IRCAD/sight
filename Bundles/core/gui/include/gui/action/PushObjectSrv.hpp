@@ -7,17 +7,17 @@
 #ifndef __GUI_ACTION_PUSHOBJECTSRV_HPP__
 #define __GUI_ACTION_PUSHOBJECTSRV_HPP__
 
-#include <set>
-#include <map>
+#include "gui/config.hpp"
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/IActionSrv.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwGui/IActionSrv.hpp>
+#include <fwTools/Failed.hpp>
 
-#include "gui/config.hpp"
+#include <set>
+#include <map>
 
 namespace gui
 {
@@ -43,14 +43,21 @@ public:
     /// Destructor. Do nothing.
     GUI_API virtual ~PushObjectSrv() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     */
+    GUI_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
 
     virtual void starting() throw(::fwTools::Failed);
 
     virtual void stopping() throw(::fwTools::Failed);
-
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 
@@ -71,6 +78,12 @@ protected:
     virtual void info( std::ostream &_sstream );
 
 private:
+
+    /**
+     * @brief Slot: called when source composite objects are updated, enabled/disabled the action if the defined objects
+     * are present/not present.
+     */
+    void updateObjects();
 
     // [src_map]->[(src_key1, src_key2, ...)]
     typedef std::map< std::string, std::set< std::string > > SrcKeyMapType;

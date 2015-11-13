@@ -24,8 +24,6 @@ namespace action
 /**
  * @brief   This action show the acknowlegments frame.
  * @class   ShowAcknowledgments
- *
- * @date    2010.
  */
 class UIGENERICQT_CLASS_API ShowAcknowledgments : public QObject,
                                                   public ::fwGui::IActionSrv
@@ -54,9 +52,6 @@ protected:
 
     /// Show the frame
     void updating() throw (::fwTools::Failed);
-
-    /// Does nothing
-    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed);
 
     /// Stops action
     void stopping() throw (::fwTools::Failed);

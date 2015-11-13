@@ -19,7 +19,6 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <vtkActor.h>
 #include <vtkRenderer.h>
@@ -41,7 +40,7 @@ public:
         return cb;
     }
 
-    Camera2Clallback() : m_adaptor(NULL)
+    Camera2Clallback() : m_adaptor(nullptr)
     {
     }
     ~Camera2Clallback()
@@ -64,9 +63,10 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-Camera2::Camera2() throw()
+Camera2::Camera2() throw() :
+    m_cameraCommand(Camera2Clallback::New(this)),
+    m_transOrig(nullptr)
 {
-    m_cameraCommand = Camera2Clallback::New(this);
 }
 
 //------------------------------------------------------------------------------
@@ -111,6 +111,47 @@ void Camera2::doStart() throw(fwTools::Failed)
 
 void Camera2::doUpdate() throw(fwTools::Failed)
 {
+    vtkCamera* camera = this->getRenderer()->GetActiveCamera();
+    camera->RemoveObserver( m_cameraCommand );
+
+    ::fwData::TransformationMatrix3D::sptr transMat = this->getObject< ::fwData::TransformationMatrix3D >();
+
+    vtkMatrix4x4* mat = vtkMatrix4x4::New();
+
+    ::fwData::mt::ObjectReadLock lock(transMat);
+
+    for(int lt = 0; lt<4; lt++)
+    {
+        for(int ct = 0; ct<4; ct++)
+        {
+            mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
+        }
+    }
+
+    lock.unlock();
+
+    // Position camera on origin
+    vtkPerspectiveTransform* oldTrans = vtkPerspectiveTransform::New();
+    oldTrans->Identity();
+    oldTrans->SetupCamera(camera->GetPosition(), camera->GetFocalPoint(), camera->GetViewUp());
+    oldTrans->Inverse();
+    oldTrans->Concatenate(m_transOrig);
+    oldTrans->Inverse();
+
+    // Apply new transform
+    vtkTransform* trans = vtkTransform::New();
+    trans->SetMatrix(mat);
+    trans->Concatenate(oldTrans->GetMatrix());
+    camera->ApplyTransform(trans);
+
+    this->getRenderer()->ResetCameraClippingRange();
+    this->setVtkPipelineModified();
+
+    camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );
+
+    mat->Delete();
+    oldTrans->Delete();
+    trans->Delete();
 }
 
 //------------------------------------------------------------------------------
@@ -128,56 +169,6 @@ void Camera2::doStop() throw(fwTools::Failed)
     camera->RemoveObserver( m_cameraCommand );
     this->unregisterServices();
     m_transOrig->Delete();
-}
-
-//------------------------------------------------------------------------------
-
-void Camera2::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    if( msg->hasEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) )
-    {
-        vtkCamera* camera = this->getRenderer()->GetActiveCamera();
-        camera->RemoveObserver( m_cameraCommand );
-
-        ::fwData::TransformationMatrix3D::sptr transMat = this->getObject< ::fwData::TransformationMatrix3D >();
-
-        vtkMatrix4x4* mat = vtkMatrix4x4::New();
-
-        ::fwData::mt::ObjectReadLock lock(transMat);
-
-        for(int lt = 0; lt<4; lt++)
-        {
-            for(int ct = 0; ct<4; ct++)
-            {
-                mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
-            }
-        }
-
-        lock.unlock();
-
-        // Position camera on origin
-        vtkPerspectiveTransform* oldTrans = vtkPerspectiveTransform::New();
-        oldTrans->Identity();
-        oldTrans->SetupCamera(camera->GetPosition(), camera->GetFocalPoint(), camera->GetViewUp());
-        oldTrans->Inverse();
-        oldTrans->Concatenate(m_transOrig);
-        oldTrans->Inverse();
-
-        // Apply new transform
-        vtkTransform* trans = vtkTransform::New();
-        trans->SetMatrix(mat);
-        trans->Concatenate(oldTrans->GetMatrix());
-        camera->ApplyTransform(trans);
-
-        this->getRenderer()->ResetCameraClippingRange();
-        this->setVtkPipelineModified();
-
-        camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );
-
-        mat->Delete();
-        oldTrans->Delete();
-        trans->Delete();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -208,15 +199,10 @@ void Camera2::updateFromVtk()
 
     lock.unlock();
 
-    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-    msg->setSource(this->getSptr());
-    msg->setSubject( trf);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = trf->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = trf->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 
     camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );

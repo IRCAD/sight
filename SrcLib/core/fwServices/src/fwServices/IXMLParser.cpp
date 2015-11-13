@@ -31,10 +31,6 @@ void IXMLParser::configuring() throw(::fwTools::Failed)
 {
 }
 
-void IXMLParser::receiving( fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-}
-
 void IXMLParser::updating() throw(::fwTools::Failed)
 {
     ::fwRuntime::ConfigurationElement::Iterator configEltIter;

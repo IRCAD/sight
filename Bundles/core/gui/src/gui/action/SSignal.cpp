@@ -47,11 +47,7 @@ SSignal::SSignal() throw() :
     ::fwCom::HasSlots::m_slots
         ( SET_OBJECT_SLOT, m_slotSetObjects );
 
-#ifdef COM_LOG
-    m_sigTriggered->setID( TRIGERRED_SIG );
-    m_sigCancelled->setID( CANCELLED_SIG );
-    m_slotSetObjects->setID( SET_OBJECT_SLOT );
-#endif
+
 
     this->setWorker( m_associatedWorker );
 }
@@ -102,13 +98,6 @@ void SSignal::updating() throw( ::fwTools::Failed )
         m_sigCancelled->asyncEmit(m_objects);
     }
 
-}
-
-//-----------------------------------------------------------------------------
-
-void SSignal::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------

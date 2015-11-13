@@ -6,9 +6,13 @@
 
 #include "uiMeasurement/action/ShowDistance.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
 #include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
@@ -16,9 +20,6 @@
 #include <fwData/PointList.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <exception>
@@ -31,12 +32,13 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::ShowDistance, ::fwData::Image );
 
+static const ::fwCom::Slots::SlotKeyType s_SHOW_DISTANCE_SLOT = "showDistance";
 
 //------------------------------------------------------------------------------
 
 ShowDistance::ShowDistance( ) throw()
 {
-    //addNewHandledEvent( ::fwComEd::ImageMsg::DISTANCE );
+    newSlot(s_SHOW_DISTANCE_SLOT, &ShowDistance::showDistance, this);
 }
 
 //------------------------------------------------------------------------------
@@ -75,15 +77,11 @@ void ShowDistance::updating() throw(::fwTools::Failed)
         // auto manage hide/show : use Field Information instead let gui manage checking
         this->::fwGui::IActionSrv::setIsActive(!toShow);
 
-        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-        msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
-        msg->setSource(this->getSptr());
-        msg->setSubject( image);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig = image->signal< ::fwData::Image::DistanceDisplayedSignalType >(
+            ::fwData::Image::s_DISTANCE_DISPLAYED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
+            ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_SHOW_DISTANCE_SLOT)));
+            sig->asyncEmit(toShow);
         }
     }
 }
@@ -101,18 +99,13 @@ void ShowDistance::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void ShowDistance::showDistance(bool isShown)
 {
-    SLM_TRACE_FUNC();
-    ::fwComEd::ImageMsg::csptr imgMsg = ::fwComEd::ImageMsg::dynamicConstCast( msg );
-    if ( imgMsg && imgMsg->hasEvent( ::fwComEd::ImageMsg::DISTANCE ) )
-    {
-        ::fwData::Image::csptr img            = this->getObject< ::fwData::Image >();
-        ::fwData::Boolean::sptr showDistances = img->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(
-                                                                                       true));
+    ::fwData::Image::csptr img            = this->getObject< ::fwData::Image >();
+    ::fwData::Boolean::sptr showDistances =
+        img->getField< ::fwData::Boolean >("ShowDistances", ::fwData::Boolean::New(true));
 
-        this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
-    }
+    this->::fwGui::IActionSrv::setIsActive( !(showDistances->value()) );
 }
 
 //------------------------------------------------------------------------------
@@ -134,6 +127,16 @@ void ShowDistance::starting() throw (::fwTools::Failed)
 void ShowDistance::stopping() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ShowDistance::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

@@ -4,30 +4,30 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/operations.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include "ioVTK/MeshReaderService.hpp"
 
-#include <fwComEd/MeshMsg.hpp>
-
-#include <fwServices/ObjectMsg.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <fwCore/base.hpp>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
-
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
 #include <fwVtkIO/MeshReader.hpp>
 
-#include "ioVTK/MeshReaderService.hpp"
+#include <boost/filesystem/operations.hpp>
 
 
 namespace ioVTK
@@ -161,15 +161,11 @@ void MeshReaderService::notificationOfUpdate()
     ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();
     SLM_ASSERT("pMesh not instanced", pMesh);
 
-    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
-    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-    msg->setSource(this->getSptr());
-    msg->setSubject( pMesh);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = pMesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = pMesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

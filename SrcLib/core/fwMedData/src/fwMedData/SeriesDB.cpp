@@ -7,6 +7,9 @@
 #include "fwMedData/Series.hpp"
 #include "fwMedData/SeriesDB.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
 
@@ -16,8 +19,15 @@ fwDataRegisterMacro( ::fwMedData::SeriesDB );
 namespace fwMedData
 {
 
+const ::fwCom::Signals::SignalKeyType SeriesDB::s_ADDED_SERIES_SIG   = "addedSeries";
+const ::fwCom::Signals::SignalKeyType SeriesDB::s_REMOVED_SERIES_SIG = "removedSeries";
+
+//------------------------------------------------------------------------------
+
 SeriesDB::SeriesDB(::fwData::Object::Key key)
 {
+    newSignal< AddedSeriesSignalType >(s_ADDED_SERIES_SIG);
+    newSignal< RemovedSeriesSignalType >(s_REMOVED_SERIES_SIG);
 }
 
 //------------------------------------------------------------------------------

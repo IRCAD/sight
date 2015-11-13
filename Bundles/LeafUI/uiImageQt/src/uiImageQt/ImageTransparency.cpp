@@ -6,12 +6,15 @@
 
 #include "uiImageQt/ImageTransparency.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwComEd/ImageMsg.hpp>
 #include <fwCore/base.hpp>
-#include <fwData/Boolean.hpp>
 
+#include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -34,9 +37,6 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ImageTransparency, :
 
 ImageTransparency::ImageTransparency() throw()
 {
-//    addNewHandledEvent(::fwComEd::ImageMsg::TRANSPARENCY);
-//    addNewHandledEvent(::fwComEd::ImageMsg::VISIBILITY);
-//    addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
 }
 
 //------------------------------------------------------------------------------
@@ -169,23 +169,6 @@ void ImageTransparency::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageTransparency::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
-    if(imageMsg)
-    {
-        if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::TRANSPARENCY ) ||
-             imageMsg->hasEvent( ::fwComEd::ImageMsg::VISIBILITY )   ||
-             imageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) )
-        {
-            this->updating();
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void ImageTransparency::info( std::ostream &_sstream )
 {
     _sstream << "Image Features Editor";
@@ -198,15 +181,12 @@ void ImageTransparency::onModifyTransparency(int value)
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
     img->setField( "TRANSPARENCY",  ::fwData::Integer::New(value) );
-    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
-    imageMsg->addEvent( "TRANSPARENCY" );
-    imageMsg->setSource(this->getSptr());
-    imageMsg->setSubject( img);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = img->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+
+    auto sig = img->signal< ::fwData::Image::TransparencyModifiedSignalType >(
+        ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( imageMsg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 
@@ -235,16 +215,26 @@ void ImageTransparency::notifyVisibility(bool isVisible)
 {
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
     img->setField( "VISIBILITY",  ::fwData::Boolean::New(isVisible) );
-    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
-    imageMsg->addEvent( "VISIBILITY" );
-    imageMsg->setSource(this->getSptr());
-    imageMsg->setSubject( img);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = img->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+
+    auto sig = img->signal< ::fwData::Image::VisibilityModifiedSignalType >(::fwData::Image::s_VISIBILITY_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( imageMsg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit(isVisible);
     }
+}
+
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ImageTransparency::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

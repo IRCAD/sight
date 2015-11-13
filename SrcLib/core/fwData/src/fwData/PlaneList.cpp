@@ -8,6 +8,9 @@
 #include "fwData/Exception.hpp"
 #include "fwData/PlaneList.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::PlaneList );
@@ -15,11 +18,18 @@ fwDataRegisterMacro( ::fwData::PlaneList );
 namespace fwData
 {
 
+const ::fwCom::Signals::SignalKeyType PlaneList::s_PLANE_ADDED_SIG         = "planeAdded";
+const ::fwCom::Signals::SignalKeyType PlaneList::s_PLANE_REMOVED_SIG       = "planeRemoved";
+const ::fwCom::Signals::SignalKeyType PlaneList::s_VISIBILITY_MODIFIED_SIG = "visibilityModified";
+
 //------------------------------------------------------------------------------
 
 PlaneList::PlaneList(::fwData::Object::Key key)
 {
     SLM_TRACE_FUNC();
+    newSignal< PlaneAddedSignalType >(s_PLANE_ADDED_SIG);
+    newSignal< PlaneRemovedSignalType >(s_PLANE_REMOVED_SIG);
+    newSignal< VisibilityModifiedSignalType >(s_VISIBILITY_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------

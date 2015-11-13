@@ -13,7 +13,7 @@
 
 #include <fwThread/Timer.hpp>
 
-#include <fwServices/ObjectMsg.hpp>
+
 #include <fwServices/IController.hpp>
 
 
@@ -60,9 +60,6 @@ protected:
 
     /// Updating method. Deforms the mesh
     VTKSIMPLEMESH_API virtual void updating() throw(fwTools::Failed);
-
-    /// Receiving.
-    VTKSIMPLEMESH_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// Starts mesh deformation
     VTKSIMPLEMESH_API void startDeformation();

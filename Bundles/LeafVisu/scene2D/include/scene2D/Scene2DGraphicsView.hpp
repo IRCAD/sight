@@ -7,14 +7,15 @@
 #ifndef __SCENE2D_SCENE2DGRAPHICSVIEW_HPP__
 #define __SCENE2D_SCENE2DGRAPHICSVIEW_HPP__
 
+#include "scene2D/config.hpp"
+#include "scene2D/data/Viewport.hpp"
+#include "scene2D/data/Event.hpp"
+
 #include <QGraphicsView>
 #include <QResizeEvent>
 #include <QGraphicsScene>
 #include <QPaintEvent>
 
-#include "scene2D/config.hpp"
-#include "scene2D/data/Viewport.hpp"
-#include "scene2D/data/Event.hpp"
 
 namespace scene2D
 {

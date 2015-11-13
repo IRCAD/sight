@@ -7,17 +7,23 @@
 #ifndef __UIMEDDATAQT_EDITOR_SSELECTOR_HPP__
 #define __UIMEDDATAQT_EDITOR_SSELECTOR_HPP__
 
+
+#include "uiMedDataQt/config.hpp"
+#include "uiMedDataQt/widget/Selector.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
+
+#include <fwData/Vector.hpp>
+
+#include <fwMedData/SeriesDB.hpp>
+
+#include <gui/editor/IEditor.hpp>
+
 #include <QAbstractItemView>
 #include <QPointer>
 #include <QObject>
 #include <QVector>
-
-#include <fwData/Vector.hpp>
-
-#include <gui/editor/IEditor.hpp>
-
-#include "uiMedDataQt/config.hpp"
-#include "uiMedDataQt/widget/Selector.hpp"
 
 
 namespace uiMedData
@@ -28,8 +34,6 @@ namespace editor
  * @brief   This editor shows information about the medical data. It allows to manipulate
  *          (select, erase, ...) studies and series.
  * @class   SSelector
- *
- * @date    2013.
  */
 class UIMEDDATAQT_CLASS_API SSelector : public QObject,
                                         public ::gui::editor::IEditor
@@ -48,6 +52,15 @@ public:
 
     /// Key in m_signals map of signal m_sigSeriesDoubleClicked
     UIMEDDATAQT_API static const ::fwCom::Signals::SignalKeyType s_SERIES_DOUBLE_CLICKED_SIG;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect SeriesDB::s_ADDED_SERIES_SIG to this::s_ADD_SERIES_SLOT
+     * Connect SeriesDB::s_REMOVED_SERIES_SIG to this::s_REMOVE_SERIES_SLOT
+     */
+    UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 
 protected:
@@ -86,12 +99,6 @@ protected:
     /// Fill selector with the series contained in SeriesDB.
     virtual void updating() throw (::fwTools::Failed);
 
-    /**
-     * @brief Manages events (::fwComEd::SeriesDBMsg::ADDED_OBJECTS, ::fwComEd::SeriesDBMsg::REMOVED_OBJECTS)
-     *  This method adds/removes series in the selector widget.
-     */
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
     virtual void info( std::ostream &_sstream );
 
 
@@ -121,6 +128,25 @@ protected Q_SLOTS:
     void onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection);
 
 private:
+
+    /**
+     * @name Slots
+     * @{
+     */
+    static const ::fwCom::Slots::SlotKeyType s_ADD_SERIES_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_REMOVE_SERIES_SLOT;
+    typedef ::fwCom::Slot<void (::fwMedData::SeriesDB::ContainerType)> RemoveSeriesSlotType;
+
+    /// Slot: add series into the selector
+    void addSeries(::fwMedData::SeriesDB::ContainerType addedSeries);
+    /// Slot: remove series from the selector
+    void removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries);
+
+    /// Slot used to remove series from the selector
+    RemoveSeriesSlotType::sptr m_slotRemoveSeries;
+    /**
+     * @}
+     */
 
     /// Returns current selection vector given by its fwID m_selectionId.
     ::fwData::Vector::sptr getSelection();

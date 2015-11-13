@@ -6,14 +6,17 @@
 
 #include "scene2D/Render.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/adaptor/IAdaptor.hpp"
 
-#include <fwData/Composite.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwServices/Base.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/helper/Config.hpp>
 
-#include <fwComEd/CompositeMsg.hpp>
-#include <scene2D/adaptor/IAdaptor.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <QVBoxLayout>
@@ -24,16 +27,25 @@ fwServicesRegisterMacro( ::fwRender::IRender, ::scene2D::Render, ::fwData::Compo
 namespace scene2D
 {
 
+static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
+
+//-----------------------------------------------------------------------------
 
 Render::Render() throw() :
-    m_sceneStart (-100,-100),
-    m_sceneWidth (200,200),
-    m_antialiasing(false)
+    m_sceneStart(-100., -100.),
+    m_sceneWidth(200., 200.),
+    m_antialiasing(false),
+    m_scene(nullptr),
+    m_view(nullptr),
+    m_aspectRatioMode(Qt::IgnoreAspectRatio)
 {
     m_connections = ::fwServices::helper::SigSlotConnection::New();
-//    addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS );
-//    addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS );
-//    addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS );
+
+    newSlot(s_ADD_OBJECTS_SLOT, &Render::addObjects, this);
+    newSlot(s_CHANGE_OBJECTS_SLOT, &Render::changeObjects, this);
+    newSlot(s_REMOVE_OBJECTS_SLOT, &Render::removeObjects, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -44,19 +56,15 @@ Render::~Render() throw()
 
 //-----------------------------------------------------------------------------
 
-QGraphicsScene* Render::getScene()
+QGraphicsScene* Render::getScene() const
 {
-    SLM_TRACE_FUNC();
-
     return m_scene;
 }
 
 //-----------------------------------------------------------------------------
 
-Scene2DGraphicsView* Render::getView()
+Scene2DGraphicsView* Render::getView() const
 {
-    SLM_TRACE_FUNC();
-
     return m_view;
 }
 
@@ -64,20 +72,17 @@ Scene2DGraphicsView* Render::getView()
 
 SPTR(::scene2D::data::Viewport) Render::getViewport()
 {
-    SLM_TRACE_FUNC();
-
     return ::scene2D::data::Viewport::dynamicCast( m_objectID2Object["view1"] );
 }
 
 //-----------------------------------------------------------------------------
 
-SPTR(::fwData::Object) Render::getRegisteredObject(ObjectIDType _objectID)
+SPTR(::fwData::Object) Render::getRegisteredObject(ObjectIDType _objectID) const
 {
-    SLM_TRACE_FUNC();
-
+    ObjectID2Object::const_iterator iter = m_objectID2Object.find( _objectID );
     OSLM_ASSERT("Sorry, the object id '"<< _objectID <<"' does not exist in the registered objects map.",
-                m_objectID2Object.find( _objectID ) != m_objectID2Object.end() );
-    return m_objectID2Object[_objectID];
+                iter != m_objectID2Object.end() );
+    return iter->second;
 }
 
 //-----------------------------------------------------------------------------
@@ -104,8 +109,6 @@ void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
 
 ::scene2D::data::Coord Render::mapToScene( const ::scene2D::data::Coord & coord ) const
 {
-    SLM_TRACE_FUNC();
-
     /// Returns the viewport coordinate point mapped to scene coordinates.
     QPoint qp ( coord.getX(), coord.getY() );
     QPointF qps = m_view->mapToScene(qp);
@@ -182,7 +185,7 @@ void Render::starting() throw ( ::fwTools::Failed )
         }
     }
 
-    this->startAdaptorsFromComposite(composite);
+    this->startAdaptorsFromComposite(composite->getContainer());
 
     //Create connections when adaptors are started
 
@@ -200,15 +203,15 @@ void Render::starting() throw ( ::fwTools::Failed )
             ::fwServices::helper::Config::createProxy("self", proxy, m_proxyMap);
         }
     }
-    this->connectAfterWait(composite);
+    this->connectAfterWait(composite->getContainer());
 }
 
 //-----------------------------------------------------------------------------
 
-void Render::connectAfterWait(::fwData::Composite::sptr composite)
+void Render::connectAfterWait(const ::fwData::Composite::ContainerType& objects)
 {
 
-    for(const ::fwData::Composite::value_type& element : *composite)
+    for(const ::fwData::Composite::value_type& element : objects)
     {
         std::string key = element.first;
         for(const ::fwRuntime::ConfigurationElement::sptr& connect : m_connect)
@@ -250,10 +253,10 @@ void Render::connectAfterWait(::fwData::Composite::sptr composite)
 
 //-----------------------------------------------------------------------------
 
-void Render::disconnect(::fwData::Composite::sptr composite)
+void Render::disconnect(const ::fwData::Composite::ContainerType& objects)
 {
 
-    for(const ::fwData::Composite::value_type& element : *composite)
+    for(const ::fwData::Composite::value_type& element : objects)
     {
         std::string key = element.first;
         if(m_objectConnections.find(key) != m_objectConnections.end())
@@ -275,35 +278,6 @@ void Render::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Render::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(_msg);
-
-    if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
-    {
-        SPTR(::fwData::Composite) field = compositeMsg->getAddedKeys();
-        this->startAdaptorsFromComposite(field);
-        this->connectAfterWait(field);
-    }
-    else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
-    {
-        SPTR(::fwData::Composite) field = compositeMsg->getRemovedKeys();
-        this->disconnect(field);
-        this->stopAdaptorsFromComposite(field);
-    }
-    else if(compositeMsg && compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
-    {
-        // clean old connections
-        this->disconnect(compositeMsg->getOldChangedKeys());
-        this->swapAdaptorsFromComposite(compositeMsg->getNewChangedKeys());
-        this->connectAfterWait(compositeMsg->getNewChangedKeys());
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void Render::swapping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
@@ -319,7 +293,7 @@ void Render::stopping() throw ( ::fwTools::Failed )
 
     SPTR(::fwData::Composite) composite = this->getObject< ::fwData::Composite >();
 
-    this->disconnect(composite);
+    this->disconnect(composite->getContainer());
 
     ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( "self" );
     if ( objectIter != m_objectsID2AdaptorIDVector.end() )
@@ -330,7 +304,7 @@ void Render::stopping() throw ( ::fwTools::Failed )
         }
     }
 
-    this->stopAdaptorsFromComposite(composite);
+    this->stopAdaptorsFromComposite(composite->getContainer());
 
     m_adaptorID2SceneAdaptor2D.clear();
     m_objectID2Object.clear();
@@ -381,7 +355,7 @@ void Render::stopContext()
 
 //-----------------------------------------------------------------------------
 
-Qt::AspectRatioMode Render::getAspectRatioMode()
+Qt::AspectRatioMode Render::getAspectRatioMode() const
 {
     return m_aspectRatioMode;
 }
@@ -509,11 +483,11 @@ void Render::configureAdaptor( ConfigurationType _conf )
 
 //-----------------------------------------------------------------------------
 
-void Render::startAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
+void Render::startAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects)
 {
     SLM_TRACE_FUNC();
 
-    for(const ::fwData::Composite::value_type& elem : *_composite )
+    for(const ::fwData::Composite::value_type& elem : objects )
     {
         std::string compositeKey                       = elem.first;
         ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
@@ -531,9 +505,9 @@ void Render::startAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 
 //-----------------------------------------------------------------------------
 
-void Render::swapAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
+void Render::swapAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects)
 {
-    for(const ::fwData::Composite::value_type& elem : *_composite)
+    for(const ::fwData::Composite::value_type& elem : objects)
     {
         std::string compositeKey                       = elem.first;
         ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
@@ -542,9 +516,9 @@ void Render::swapAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
             for(const AdaptorIDType& adaptorId : objectIter->second )
             {
                 ::fwRuntime::ConfigurationElementContainer::Iterator iter;
-                for (iter = m_sceneConfiguration->begin(); iter != m_sceneConfiguration->end(); ++iter)
+                for (const auto& config : m_sceneConfiguration->getElements())
                 {
-                    if ((*iter)->getName() == "adaptor" && (*iter)->getAttributeValue("id") == adaptorId)
+                    if((config->getName() == "adaptor") && (config->getAttributeValue("id") == adaptorId))
                     {
                         this->swapAdaptor( adaptorId, elem.second );
                     }
@@ -556,9 +530,9 @@ void Render::swapAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 
 //-----------------------------------------------------------------------------
 
-void Render::stopAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
+void Render::stopAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects)
 {
-    for(const ::fwData::Composite::value_type& elem : *_composite )
+    for(const ::fwData::Composite::value_type& elem : objects)
     {
         std::string compositeKey                       = elem.first;
         ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
@@ -574,7 +548,7 @@ void Render::stopAdaptorsFromComposite( SPTR(::fwData::Composite)_composite)
 
 //-----------------------------------------------------------------------------
 
-void Render::startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object)_object)
+void Render::startAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::Object)& _object)
 {
     if (!m_adaptorID2SceneAdaptor2D[_adaptorID].m_uid.empty())
     {
@@ -604,7 +578,7 @@ void Render::startAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object)_objec
 
 //-----------------------------------------------------------------------------
 
-void Render::swapAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object)_object)
+void Render::swapAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::Object)& _object)
 {
     SLM_TRACE_FUNC();
 
@@ -613,7 +587,7 @@ void Render::swapAdaptor(AdaptorIDType _adaptorID, SPTR(::fwData::Object)_object
 
 //-----------------------------------------------------------------------------
 
-void Render::stopAdaptor(AdaptorIDType _adaptorID)
+void Render::stopAdaptor(const AdaptorIDType& _adaptorID)
 {
     SLM_TRACE_FUNC();
 
@@ -652,6 +626,44 @@ void Render::updateSceneSize( float ratioPercent )
     m_sceneWidth.setY( h );
 
     m_scene->setSceneRect( rec );
+}
+
+//------------------------------------------------------------------------------
+
+void Render::addObjects(::fwData::Composite::ContainerType objects)
+{
+    this->startAdaptorsFromComposite(objects);
+    this->connectAfterWait(objects);
+}
+
+//------------------------------------------------------------------------------
+
+void Render::changeObjects(::fwData::Composite::ContainerType newObjects,
+                           ::fwData::Composite::ContainerType oldObjects)
+{
+    this->disconnect(oldObjects);
+    this->swapAdaptorsFromComposite(newObjects);
+    this->connectAfterWait(newObjects);
+}
+
+//------------------------------------------------------------------------------
+
+void Render::removeObjects(::fwData::Composite::ContainerType objects)
+{
+    this->disconnect(objects);
+    this->stopAdaptorsFromComposite(objects);
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Render::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHANGE_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

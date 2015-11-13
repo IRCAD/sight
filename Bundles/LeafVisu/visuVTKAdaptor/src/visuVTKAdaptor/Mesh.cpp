@@ -17,8 +17,6 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/MaterialMsg.hpp>
-#include <fwComEd/MeshMsg.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 
@@ -59,8 +57,19 @@ namespace visuVTKAdaptor
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
-const ::fwCom::Signals::SignalKeyType Mesh::s_TEXTURE_APPLIED_SIG = "textureApplied";
+const ::fwCom::Signals::SignalKeyType Mesh::s_TEXTURE_APPLIED_SIG      = "textureApplied";
+const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_VISIBILITY_SLOT       = "updateVisibility";
+const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_POINT_COLORS_SLOT     = "updatepointColors";
+const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_CELL_COLORS_SLOT      = "updateCellColors";
+const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_VERTEX_SLOT           = "updateVertex";
+const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_POINT_NORMALS_SLOT    = "updatePointNormals";
+const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_CELL_NORMALS_SLOT     = "updateCellNormals";
+const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_POINT_TEX_COORDS_SLOT = "updatePointTexCoords";
+const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_CELL_TEX_COORDS_SLOT  = "updateCellTexCoords";
+const ::fwCom::Slots::SlotKeyType Mesh::s_SHOW_POINT_COLORS_SLOT       = "showPointColors";
+const ::fwCom::Slots::SlotKeyType Mesh::s_SHOW_CELL_COLORS_SLOT        = "showCellColors";
+const ::fwCom::Slots::SlotKeyType Mesh::s_HIDE_COLORS_SLOT             = "hideColors";
+const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_COLOR_MODE_SLOT       = "updateColorMode";
 
 //-----------------------------------------------------------------------------
 
@@ -148,13 +157,12 @@ public:
     }
 
     //--------------------------------------------------------------------------
-    PlaneCollectionShifterCallback(
-        vtkPlaneCollection *src,
-        vtkPlaneCollection *dst,
-        double factor)
-        : m_planeCollectionSrc(src),
-          m_planeCollectionDst(dst),
-          m_factor(factor)
+    PlaneCollectionShifterCallback( vtkPlaneCollection *src,
+                                    vtkPlaneCollection *dst,
+                                    double factor) :
+        m_planeCollectionSrc(src),
+        m_planeCollectionDst(dst),
+        m_factor(factor)
     {
         m_planeCollectionSrc->Register(this);
         m_planeCollectionDst->Register(this);
@@ -227,13 +235,12 @@ public:
     }
 
     //--------------------------------------------------------------------------
-    PlaneCollectionAdaptorStarter(
-        ::visuVTKAdaptor::Mesh::sptr service,
-        vtkPlaneCollection *src,
-        double factor)
-        : m_service(service),
-          m_planeCollectionSrc(src),
-          m_factor(factor)
+    PlaneCollectionAdaptorStarter( ::visuVTKAdaptor::Mesh::sptr service,
+                                   vtkPlaneCollection *src,
+                                   double factor) :
+        m_service(service),
+        m_planeCollectionSrc(src),
+        m_factor(factor)
     {
         m_planeCollectionSrc->Register(this);
         m_planeCollectionSrc->AddObserver(vtkCommand::ModifiedEvent, this);
@@ -364,66 +371,78 @@ protected:
 
 //------------------------------------------------------------------------------
 
-Mesh::Mesh() throw()
+Mesh::Mesh() throw() :
+    m_showClippedPart(false),
+    m_autoResetCamera(true),
+    m_polyData(nullptr),
+    m_mapper(vtkPolyDataMapper::New()),
+    m_actor(nullptr),
+    m_clippingPlanes(nullptr),
+    m_planeCollectionShifterCallback(nullptr),
+    m_servicesStarterCallback(nullptr),
+    m_transform(vtkTransform::New()),
+    m_uvgen(NONE)
 {
-    m_material              = ::fwData::Material::New();
     m_unclippedPartMaterial = ::fwData::Material::New();
+    m_material              = ::fwData::Material::New();
     m_unclippedPartMaterial->ambient()->setRGBA("#aaaaff44");
-
     m_clippingPlanesId = "";
-
-    m_showClippedPart = false;
-    m_clippingPlanes  = 0;
-    m_actor           = 0;
-
-    m_polyData = 0;
-    m_mapper   = vtkPolyDataMapper::New();
-
-    m_autoResetCamera = true;
-
-    m_planeCollectionShifterCallback = 0;
-    m_servicesStarterCallback        = 0;
-
-    m_transform = vtkTransform::New();
-
-    m_uvgen = NONE;
 
     m_sigTextureApplied = TextureAppliedSignalType::New();
     ::fwCom::HasSignals::m_signals(s_TEXTURE_APPLIED_SIG, m_sigTextureApplied);
 
-    m_slotUpdateVisibility = ::fwCom::newSlot(&Mesh::updateVisibility, this);
+    m_slotUpdateVisibility     = ::fwCom::newSlot(&Mesh::updateVisibility, this);
+    m_slotUpdatePointColors    = ::fwCom::newSlot(&Mesh::updatePointColors, this);
+    m_slotUpdateCellColors     = ::fwCom::newSlot(&Mesh::updateCellColors, this);
+    m_slotUpdateVertex         = ::fwCom::newSlot(&Mesh::updateVertex, this);
+    m_slotUpdatePointNormals   = ::fwCom::newSlot(&Mesh::updatePointNormals, this);
+    m_slotUpdateCellNormals    = ::fwCom::newSlot(&Mesh::updateCellNormals, this);
+    m_slotUpdatePointTexCoords = ::fwCom::newSlot(&Mesh::updatePointTexCoords, this);
+    m_slotUpdateCellTexCoords  = ::fwCom::newSlot(&Mesh::updateCellTexCoords, this);
+    m_slotShowPointColors      = ::fwCom::newSlot(&Mesh::showPointColors, this);
+    m_slotShowCellColors       = ::fwCom::newSlot(&Mesh::showCellColors, this);
+    m_slotHideColors           = ::fwCom::newSlot(&Mesh::hideColors, this);
+    m_slotUpdateColorMode      = ::fwCom::newSlot(&Mesh::updateColorMode, this);
 
-    ::fwCom::HasSlots::m_slots(s_UPDATE_VISIBILITY_SLOT, m_slotUpdateVisibility);
+    ::fwCom::HasSlots::m_slots(s_UPDATE_VISIBILITY_SLOT, m_slotUpdateVisibility)
+        (s_UPDATE_POINT_COLORS_SLOT, m_slotUpdatePointColors)
+        (s_UPDATE_CELL_COLORS_SLOT, m_slotUpdateCellColors)
+        (s_UPDATE_VERTEX_SLOT, m_slotUpdateVertex)
+        (s_UPDATE_POINT_NORMALS_SLOT, m_slotUpdatePointNormals)
+        (s_UPDATE_CELL_NORMALS_SLOT, m_slotUpdateCellNormals)
+        (s_UPDATE_POINT_TEX_COORDS_SLOT, m_slotUpdatePointTexCoords)
+        (s_UPDATE_CELL_TEX_COORDS_SLOT, m_slotUpdateCellTexCoords)
+        (s_SHOW_POINT_COLORS_SLOT, m_slotShowPointColors)
+        (s_SHOW_CELL_COLORS_SLOT, m_slotShowCellColors)
+        (s_HIDE_COLORS_SLOT, m_slotHideColors)
+        (s_UPDATE_COLOR_MODE_SLOT, m_slotUpdateColorMode)
+    ;
+
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
 }
 
 //------------------------------------------------------------------------------
 
 Mesh::~Mesh() throw()
 {
-    m_clippingPlanes = 0;
+    m_clippingPlanes = nullptr;
 
     m_mapper->Delete();
-    m_mapper = 0;
+    m_mapper = nullptr;
 
     m_transform->Delete();
-    m_transform = 0;
+    m_transform = nullptr;
 
     if(m_actor)
     {
         m_actor->Delete();
-        m_actor = 0;
+        m_actor = nullptr;
     }
 
     if (m_polyData)
     {
         m_polyData->Delete();
-        m_polyData = 0;
+        m_polyData = nullptr;
     }
 }
 
@@ -481,95 +500,6 @@ void Mesh::doUpdate() throw(fwTools::Failed)
 
     ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
     this->updateMesh( mesh );
-}
-
-//------------------------------------------------------------------------------
-
-void Mesh::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    ::fwComEd::MaterialMsg::csptr materialMsg = ::fwComEd::MaterialMsg::dynamicConstCast(msg);
-    ::fwComEd::MeshMsg::csptr meshMsg         = ::fwComEd::MeshMsg::dynamicConstCast(msg);
-
-    if( materialMsg && materialMsg->hasEvent(::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED) )
-    {
-        this->updateOptionsMode();
-    }
-
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::NEW_MESH) )
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        this->updateMesh( mesh );
-    }
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_COLORS_MODIFIED))
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        SLM_ASSERT("m_polyData not instanced", m_polyData);
-
-        ::fwVtkIO::helper::Mesh::updatePolyDataPointColor(m_polyData, mesh);
-        this->setVtkPipelineModified();
-    }
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_COLORS_MODIFIED))
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        SLM_ASSERT("m_polyData not instanced", m_polyData);
-
-        ::fwVtkIO::helper::Mesh::updatePolyDataCellColor(m_polyData, mesh);
-        this->setVtkPipelineModified();
-    }
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED) )
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        SLM_ASSERT("m_polyData not instanced", m_polyData);
-
-        ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
-
-        if (m_autoResetCamera)
-        {
-            this->getRenderer()->ResetCamera();
-        }
-        this->setVtkPipelineModified();
-    }
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_NORMALS_MODIFIED))
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
-        this->setVtkPipelineModified();
-    }
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_NORMALS_MODIFIED))
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
-        this->setVtkPipelineModified();
-    }
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::POINT_TEXCOORDS_MODIFIED))
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::fwVtkIO::helper::Mesh::updatePolyDataPointTexCoords(m_polyData, mesh);
-        this->setVtkPipelineModified();
-    }
-    if( meshMsg && meshMsg->hasEvent(::fwComEd::MeshMsg::CELL_TEXCOORDS_MODIFIED))
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
-        ::fwVtkIO::helper::Mesh::updatePolyDataCellTexCoords(m_polyData, mesh);
-        this->setVtkPipelineModified();
-    }
-    if (meshMsg && meshMsg->hasEvent("SHOW_POINT_COLORS"))
-    {
-        m_mapper->ScalarVisibilityOn();
-        m_mapper->SetScalarModeToUsePointData();
-        this->setVtkPipelineModified();
-    }
-    else if (meshMsg && meshMsg->hasEvent("SHOW_CELL_COLORS"))
-    {
-        m_mapper->ScalarVisibilityOn();
-        m_mapper->SetScalarModeToUseCellData();
-        this->setVtkPipelineModified();
-    }
-    else if (meshMsg && meshMsg->hasEvent("HIDE_COLORS"))
-    {
-        m_mapper->ScalarVisibilityOff();
-        this->setVtkPipelineModified();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -677,14 +607,14 @@ void Mesh::createTransformService()
 
 //------------------------------------------------------------------------------
 
-::fwData::Material::sptr Mesh::getMaterial()
+::fwData::Material::sptr Mesh::getMaterial() const
 {
     return m_material;
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Material::sptr Mesh::getUnclippedMaterial()
+::fwData::Material::sptr Mesh::getUnclippedMaterial() const
 {
     return m_unclippedPartMaterial;
 }
@@ -951,11 +881,12 @@ void Mesh::updateVisibility( bool isVisible)
         m_servicesStarterCallback->Execute(0, vtkCommand::UserEvent, &isVisible);
     }
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-bool Mesh::getVisibility()
+bool Mesh::getVisibility() const
 {
     bool visible = false;
     if (m_actor)
@@ -1015,6 +946,180 @@ void Mesh::removeServicesStarterCommand()
 void Mesh::setAutoResetCamera(bool autoResetCamera)
 {
     m_autoResetCamera = autoResetCamera;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Mesh::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_UPDATE_POINT_COLORS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_UPDATE_CELL_COLORS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_VERTEX_MODIFIED_SIG,
+                                           s_UPDATE_VERTEX_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_NORMALS_MODIFIED_SIG,
+                                           s_UPDATE_POINT_NORMALS_SLOT) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_CELL_NORMALS_MODIFIED_SIG,
+                                           s_UPDATE_CELL_NORMALS_SLOT) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG,
+                                           s_UPDATE_POINT_TEX_COORDS_SLOT) );
+    connections.push_back( std::make_pair( ::fwData::Mesh::s_CELL_TEX_COORDS_MODIFIED_SIG,
+                                           s_UPDATE_CELL_TEX_COORDS_SLOT) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::updatePointColors()
+{
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    SLM_ASSERT("m_polyData not instanced", m_polyData);
+
+    ::fwVtkIO::helper::Mesh::updatePolyDataPointColor(m_polyData, mesh);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::updateCellColors()
+{
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    SLM_ASSERT("m_polyData not instanced", m_polyData);
+
+    ::fwVtkIO::helper::Mesh::updatePolyDataCellColor(m_polyData, mesh);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::updateVertex()
+{
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    SLM_ASSERT("m_polyData not instanced", m_polyData);
+
+    ::fwVtkIO::helper::Mesh::updatePolyDataPoints(m_polyData, mesh);
+
+    if (m_autoResetCamera)
+    {
+        this->getRenderer()->ResetCamera();
+    }
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::updatePointNormals()
+{
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwVtkIO::helper::Mesh::updatePolyDataPointNormals(m_polyData, mesh);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::updateCellNormals()
+{
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwVtkIO::helper::Mesh::updatePolyDataCellNormals(m_polyData, mesh);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::updatePointTexCoords()
+{
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwVtkIO::helper::Mesh::updatePolyDataPointTexCoords(m_polyData, mesh);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::updateCellTexCoords()
+{
+    ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
+    ::fwVtkIO::helper::Mesh::updatePolyDataCellTexCoords(m_polyData, mesh);
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::showPointColors()
+{
+    m_mapper->ScalarVisibilityOn();
+    m_mapper->SetScalarModeToUsePointData();
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::showCellColors()
+{
+    m_mapper->ScalarVisibilityOn();
+    m_mapper->SetScalarModeToUseCellData();
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::hideColors()
+{
+    m_mapper->ScalarVisibilityOff();
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::updateColorMode(std::uint8_t mode)
+{
+    switch (mode)
+    {
+        case 0:
+        {
+            this->hideColors();
+            break;
+        }
+        case 1:
+        {
+            this->showPointColors();
+            break;
+        }
+        case 2:
+        {
+            this->showCellColors();
+            break;
+        }
+        default:
+        {
+            OSLM_ERROR("mode " << mode << " is not allowed");
+            break;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::updateNormalMode(std::uint8_t mode)
+{
+    this->updateOptionsMode();
+    if (!m_normalsService.expired())
+    {
+        ::visuVTKAdaptor::MeshNormals::sptr normalsAdaptor =
+            ::visuVTKAdaptor::MeshNormals::dynamicCast(m_normalsService.lock());
+        normalsAdaptor->updateNormalMode(mode);
+    }
 }
 
 //------------------------------------------------------------------------------

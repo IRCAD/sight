@@ -10,6 +10,9 @@
 #include "fwMedData/config.hpp"
 #include "fwMedData/types.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <fwData/factory/new.hpp>
 #include <fwData/Object.hpp>
 
@@ -107,6 +110,21 @@ public:
     /**  @} */
 
     /**  @} */
+
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Type of signal when series are added
+    typedef ::fwCom::Signal< void (ContainerType) > AddedSeriesSignalType;
+    FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_SERIES_SIG;
+
+    /// Type of signal when series are removed
+    typedef ::fwCom::Signal< void (ContainerType) > RemovedSeriesSignalType;
+    FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_SERIES_SIG;
+    /**
+     * @}
+     */
 
 protected:
 

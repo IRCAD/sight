@@ -9,10 +9,12 @@
 
 #ifndef ANDROID
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
+#include <fwServices/helper/SigSlotConnection.hpp>
 
 
 class vtkCommand;
@@ -37,12 +39,15 @@ public:
         m_planeCollectionId = id;
     }
 
-    ::fwRenderVTK::VtkRenderService::VtkObjectIdType getPlaneCollectionId()
+    ::fwRenderVTK::VtkRenderService::VtkObjectIdType getPlaneCollectionId() const
     {
         return m_planeCollectionId;
     }
 
 protected:
+
+    /// Type of signal emitted when plane selection changed
+    typedef  ::fwCom::Signal< void (::fwData::Plane::sptr) > SelectedignalType;
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
@@ -50,12 +55,29 @@ protected:
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
-
+    /// Slot: Update plane selection
+    void updateSelection(::fwData::Plane::sptr plane);
 
     vtkCommand * m_rightButtonCommand;
     ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_planeCollectionId;
+
+    /// Store connections to planes adaptors.
+    ::fwServices::helper::SigSlotConnection::sptr m_planeConnections;
+
+private:
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Update planes (call doStop-soStart())
+    void updatePlanes();
+
+    /// Show/hide planes
+    void showPlanes(bool visible);
+    /**
+     * @}
+     */
 };
 
 

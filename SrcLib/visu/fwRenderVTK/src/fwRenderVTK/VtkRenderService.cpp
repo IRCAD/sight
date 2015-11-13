@@ -9,12 +9,12 @@
 #include "fwRenderVTK/VtkRenderService.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/CompositeMsg.hpp>
 
 #include <fwData/Color.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
@@ -48,8 +48,12 @@ using namespace fwServices;
 
 namespace fwRenderVTK
 {
+const ::fwCom::Signals::SignalKeyType VtkRenderService::s_DROPPED_SIG = "dropped";
+const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT     = "render";
 
-const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT = "render";
+static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 //-----------------------------------------------------------------------------
 
@@ -60,12 +64,14 @@ VtkRenderService::VtkRenderService() throw() :
     m_height(720),
     m_offScreen(false)
 {
-    m_slotRender = ::fwCom::newSlot( &VtkRenderService::render, this);
-    m_slotRender->setWorker(m_associatedWorker);
-
     m_connections = ::fwServices::helper::SigSlotConnection::New();
 
-    ::fwCom::HasSlots::m_slots(s_RENDER_SLOT, m_slotRender);
+    newSignal<DroppedSignalType>(s_DROPPED_SIG);
+
+    newSlot(s_RENDER_SLOT, &VtkRenderService::render, this);
+    newSlot(s_ADD_OBJECTS_SLOT, &VtkRenderService::addObjects, this);
+    newSlot(s_CHANGE_OBJECTS_SLOT, &VtkRenderService::changeObjects, this);
+    newSlot(s_REMOVE_OBJECTS_SLOT, &VtkRenderService::removeObjects, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -160,7 +166,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
     SLM_ASSERT( "'adaptor' required attribute missing or empty", !adaptor.empty() );
 
-    const unsigned int compositeObjectCount = composite->getContainer().count(objectId);
+    const size_t compositeObjectCount = composite->getContainer().count(objectId);
 
     OSLM_TRACE_IF(objectId << " not found in composite. If it exist, associated Adaptor will be destroyed",
                   !(compositeObjectCount == 1 || objectId == compositeName) );
@@ -447,7 +453,7 @@ void VtkRenderService::starting() throw(fwTools::Failed)
                 {
                     this->manageProxy(key, iterComposite->second, *iter);
                 }
-                m_connect.push_back(*iter);
+                m_proxies.push_back(*iter);
             }
             else
             {
@@ -460,7 +466,7 @@ void VtkRenderService::starting() throw(fwTools::Failed)
         }
     }
 
-    m_interactorManager->getInteractor()->GetRenderWindow()->SetNumberOfLayers(m_renderers.size());
+    m_interactorManager->getInteractor()->GetRenderWindow()->SetNumberOfLayers(static_cast<int>(m_renderers.size()));
     for( RenderersMapType::iterator iter = m_renderers.begin(); iter != m_renderers.end(); ++iter )
     {
         vtkRenderer *renderer = (*iter).second;
@@ -492,6 +498,8 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
 
     m_connections->disconnect();
 
+    this->disconnect(this->getObject< ::fwData::Composite >()->getContainer());
+
     if(m_timer)
     {
         m_timer->stop();
@@ -519,44 +527,46 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
     m_sceneAdaptors.clear();
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void VtkRenderService::receiving( ::fwServices::ObjectMsg::csptr message ) throw(::fwTools::Failed)
+void VtkRenderService::configureObjects(::fwData::Composite::ContainerType objects)
 {
-    SLM_TRACE_FUNC();
+    SLM_ASSERT("Scene configuration is not defined",  m_sceneConfiguration );
 
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(message);
-
-    if( compositeMsg )
+    for( ::fwData::Composite::ContainerType::value_type objectId :  objects)
     {
-        ::fwData::Composite::ContainerType objects;
-
-        ::fwData::Composite::sptr modifiedKeys;
-
-        modifiedKeys = compositeMsg->getAddedKeys();
-        this->connectAfterWait(modifiedKeys);
-        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
-
-        modifiedKeys = compositeMsg->getNewChangedKeys();
-        this->disconnect(compositeMsg->getOldChangedKeys());
-        this->connectAfterWait(modifiedKeys);
-        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
-
-        modifiedKeys = compositeMsg->getRemovedKeys();
-        this->disconnect(modifiedKeys);
-        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
-
-        assert ( m_sceneConfiguration );
-
-        for( ::fwData::Composite::ContainerType::value_type objectId :  objects)
+        std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId",objectId.first);
+        for( ConfigurationType cfg :  confVec )
         {
-            std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId",objectId.first);
-            for( ConfigurationType cfg :  confVec )
-            {
-                this->configureObject(cfg);
-            }
+            this->configureObject(cfg);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void VtkRenderService::addObjects(::fwData::Composite::ContainerType objects)
+{
+    this->configureObjects(objects);
+    this->connectAfterWait(objects);
+}
+
+//------------------------------------------------------------------------------
+
+void VtkRenderService::changeObjects(::fwData::Composite::ContainerType newObjects,
+                                     ::fwData::Composite::ContainerType oldObjects)
+{
+    this->disconnect(oldObjects);
+    this->configureObjects(newObjects);
+    this->connectAfterWait(newObjects);
+}
+
+//------------------------------------------------------------------------------
+
+void VtkRenderService::removeObjects(::fwData::Composite::ContainerType objects)
+{
+    this->disconnect(objects);
+    this->configureObjects(objects);
 }
 
 //-----------------------------------------------------------------------------
@@ -590,15 +600,10 @@ void VtkRenderService::render()
             ::fwVtkIO::fromVTKImage(vtkImage, image);
         }
 
-        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-        msg->addEvent(::fwComEd::ImageMsg::NEW_IMAGE);
-        msg->setSource(this->getSptr());
-        msg->setSubject( image);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
         }
     }
     else
@@ -698,42 +703,42 @@ vtkRenderer * VtkRenderService::getRenderer(RendererIdType rendererId)
 
 vtkAbstractPropPicker * VtkRenderService::getPicker(PickerIdType pickerId)
 {
-    OSLM_ASSERT("Picker '" << pickerId << "' not found",
-                pickerId.empty() ||  ( !pickerId.empty() && m_pickers.count(pickerId) == 1));
-
-    if ( pickerId.empty() )
+    PickersMapType::const_iterator iter = m_pickers.find(pickerId);
+    if ( iter == m_pickers.end())
     {
-        return NULL;
+        SLM_WARN("Picker '" + pickerId + "' not found");
+        return nullptr;
     }
-    return m_pickers[pickerId];
+    return iter->second;
 }
 
 //-----------------------------------------------------------------------------
 
-vtkObject * VtkRenderService::getVtkObject(const VtkObjectIdType& objectId)
+vtkObject * VtkRenderService::getVtkObject(const VtkObjectIdType& objectId) const
 {
-    OSLM_WARN_IF("vtkObject '" << objectId << "' not found",
-                 !(objectId.empty() ||  ( !objectId.empty() && m_vtkObjects.count(objectId) == 1)));
-
-    if ( objectId.empty() || m_vtkObjects.count(objectId) == 0)
+    VtkObjectMapType::const_iterator iter = m_vtkObjects.find(objectId);
+    if ( iter == m_vtkObjects.end())
     {
-        return NULL;
+        SLM_WARN("vtkObject '" + objectId + "' not found");
+        return nullptr;
     }
-    return m_vtkObjects[objectId];
+    return iter->second;
 }
 
 //-----------------------------------------------------------------------------
 
-SPTR (IVtkAdaptorService) VtkRenderService::getAdaptor(VtkRenderService::AdaptorIdType adaptorId)
+SPTR (IVtkAdaptorService) VtkRenderService::getAdaptor(const VtkRenderService::AdaptorIdType& adaptorId) const
 {
     IVtkAdaptorService::sptr adaptor;
-    SceneAdaptorsMapType::iterator it = m_sceneAdaptors.find(adaptorId);
-
-    OSLM_WARN_IF("adaptor '" << adaptorId << "' not found", it == m_sceneAdaptors.end());
+    SceneAdaptorsMapType::const_iterator it = m_sceneAdaptors.find(adaptorId);
 
     if ( it != m_sceneAdaptors.end() )
     {
         adaptor = it->second.getService();
+    }
+    else
+    {
+        SLM_WARN("adaptor '" + adaptorId + "' not found");
     }
 
     return adaptor;
@@ -754,10 +759,10 @@ vtkTransform * VtkRenderService::getOrAddVtkTransform( const VtkObjectIdType& _i
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::connectAfterWait(::fwData::Composite::sptr composite)
+void VtkRenderService::connectAfterWait(::fwData::Composite::ContainerType objects)
 {
 
-    for(::fwData::Composite::value_type element :  *composite)
+    for(::fwData::Composite::value_type element :  objects)
     {
         for(::fwRuntime::ConfigurationElement::sptr connect :  m_connect)
         {
@@ -814,10 +819,10 @@ void VtkRenderService::manageProxy(const std::string &key, const ::fwData::Objec
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::disconnect(::fwData::Composite::sptr composite)
+void VtkRenderService::disconnect(::fwData::Composite::ContainerType objects)
 {
 
-    for(::fwData::Composite::value_type element :  *composite)
+    for(::fwData::Composite::value_type element :  objects)
     {
         std::string key = element.first;
         if(m_objectConnections.find(key) != m_objectConnections.end())
@@ -828,6 +833,19 @@ void VtkRenderService::disconnect(::fwData::Composite::sptr composite)
 
         ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
     }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType VtkRenderService::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHANGE_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT ) );
+
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

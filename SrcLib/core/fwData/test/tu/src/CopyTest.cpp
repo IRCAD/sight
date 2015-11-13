@@ -6,7 +6,6 @@
 
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
-#include <fwData/Camera.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Edge.hpp>
@@ -40,7 +39,6 @@
 #include <fwData/TransferFunction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
-#include <fwData/Video.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -103,7 +101,6 @@ void CopyTest::fieldCopyTest()
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Vector);
 
 //Not implemented !?
-//    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Camera);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Edge);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Node);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Object);
@@ -115,7 +112,6 @@ void CopyTest::fieldCopyTest()
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::StructureTraits);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::StructureTraitsDictionary);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Tag);
-//    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Video);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::location::MultiFiles);
 
 }

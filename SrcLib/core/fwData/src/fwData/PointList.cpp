@@ -8,6 +8,9 @@
 #include "fwData/Exception.hpp"
 #include "fwData/PointList.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::PointList );
@@ -15,10 +18,15 @@ fwDataRegisterMacro( ::fwData::PointList );
 namespace fwData
 {
 
+const ::fwCom::Signals::SignalKeyType PointList::s_POINT_ADDED_SIG   = "pointAdded";
+const ::fwCom::Signals::SignalKeyType PointList::s_POINT_REMOVED_SIG = "pointRemoved";
+
 //------------------------------------------------------------------------------
 
 PointList::PointList(::fwData::Object::Key key)
 {
+    newSignal<PointAddedSignalType>(s_POINT_ADDED_SIG);
+    newSignal<PointRemovedSignalType>(s_POINT_REMOVED_SIG);
 }
 
 //------------------------------------------------------------------------------

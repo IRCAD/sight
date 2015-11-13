@@ -69,13 +69,6 @@ protected:
      */
     IOVTK_API void updating() throw(::fwTools::Failed);
 
-    /**
-     * @brief React on modifications : here, this method does nothing.
-     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
-     * @param[in] _msg information message for modification
-     */
-    IOVTK_API void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw ( ::fwTools::Failed );
-
     /// Info method gives some informations on service.
     IOVTK_API void info(std::ostream &_sstream );
 

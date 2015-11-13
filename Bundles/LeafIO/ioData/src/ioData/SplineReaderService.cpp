@@ -6,11 +6,9 @@
 
 #include <io/IReader.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/SplineMsg.hpp>
 
 #include <fwData/Spline.hpp>
 #include <fstream>
@@ -124,21 +122,16 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
     spline->setIdSpline(m_idSpline);
 
     // Notify reading
-    ::fwComEd::SplineMsg::sptr msg = ::fwComEd::SplineMsg::New();
-    msg->addEvent( ::fwComEd::SplineMsg::NEW_SPLINE );
 
     if(isTransfo)
     {
         spline->setField( ::fwComEd::Dictionary::position, objectMatrix );
-        msg->addEvent( ::fwComEd::Dictionary::position );
     }
-    msg->setSource(this->getSptr());
-    msg->setSubject( spline);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = spline->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+
+    auto sig = spline->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

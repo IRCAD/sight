@@ -18,8 +18,6 @@
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
 
-#include <fwComEd/SeriesDBMsg.hpp>
-
 #include "uiMedDataQt/widget/Selector.hpp"
 
 namespace uiMedData

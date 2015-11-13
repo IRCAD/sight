@@ -27,9 +27,6 @@ namespace editor
  * @brief   Defines the service interface managing the basic editor service for object. Do nothing.
  * @class   DummyEditor
  *
-
- * @date    2009.
- *
  * @todo ACH: This class has been created in order to build test application. Do we remove it now ??
  */
 class GUIQT_CLASS_API DummyEditor : public ::gui::editor::IEditor
@@ -60,11 +57,6 @@ protected:
      * @brief This method launches the IEditor::stopping method.
      */
     GUIQT_API virtual void stopping() throw( ::fwTools::Failed );
-
-    /**
-     * @brief This method is used to update services on notification. Do nothing.
-     */
-    GUIQT_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief This method is used to update services. Do nothing.

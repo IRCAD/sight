@@ -19,8 +19,6 @@ namespace action
 /**
  * @brief   This action adds landmaks on image.
  * @class   SAddLabeledPoint
- *
- * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API SAddLabeledPoint : public ::fwGui::IActionSrv
 {
@@ -41,8 +39,6 @@ protected:
     UIMEASUREMENT_API void starting() throw (::fwTools::Failed);
 
     UIMEASUREMENT_API void updating() throw (::fwTools::Failed);
-
-    UIMEASUREMENT_API void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed);
 
     UIMEASUREMENT_API void stopping() throw (::fwTools::Failed);
 

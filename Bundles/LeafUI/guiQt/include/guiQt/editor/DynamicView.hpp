@@ -7,22 +7,24 @@
 #ifndef __GUIQT_EDITOR_DYNAMICVIEW_HPP__
 #define __GUIQT_EDITOR_DYNAMICVIEW_HPP__
 
-#include <map>
-#include <set>
+#include "guiQt/config.hpp"
 
-#include <QObject>
-#include <QPointer>
+#include <fwActivities/registry/Activities.hpp>
+#include <fwActivities/registry/ActivityMsg.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwServices/AppConfigManager.hpp>
 
 #include <fwTools/Failed.hpp>
 
 #include <gui/view/IView.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <QObject>
+#include <QPointer>
 
-#include <fwActivities/registry/Activities.hpp>
-
-#include "guiQt/config.hpp"
+#include <map>
+#include <set>
 
 
 class QTabWidget;
@@ -59,8 +61,6 @@ struct AppConfig
  * @class   DynamicView
  * @brief   This editor manages tabs. It receive message with NEW_CONFIGURATION_HELPER event containing the view config id.
  *
- * @date    2010.
- *
  * @note The ::activities::action::SActivityLauncher action sends message to be receive by the editor.
  */
 class GUIQT_CLASS_API DynamicView : public QObject,
@@ -89,12 +89,6 @@ protected:
      * @brief Destroy the container.
      */
     virtual void stopping() throw(::fwTools::Failed);
-
-    /**
-     * @brief Analyses received message with NEW_CONFIGURATION_HELPER helper.
-     * Creates the view defines by the config given in message.
-     */
-    virtual void receiving( std::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Update
@@ -131,6 +125,7 @@ protected:
     virtual void info( std::ostream &_sstream );
 
 
+    typedef std::map< std::string, std::string> ReplaceMapType;
     struct DynamicViewInfo
     {
         ::fwGuiQt::container::QtContainer::sptr container;
@@ -142,7 +137,7 @@ protected:
         std::string tooltip;
         std::string tabID;
         std::string viewConfigID;
-        SPTR(::fwData::Composite) replaceMap;
+        ReplaceMapType replaceMap;
     };
 
     typedef std::map< QWidget*, DynamicViewInfo > DynamicViewInfoMapType;
@@ -151,6 +146,9 @@ protected:
      * @brief Launch tab
      */
     void launchTab(DynamicViewInfo& info);
+
+    /// Slot: launch a new tab according to the receiving msg
+    void createTab(::fwActivities::registry::ActivityMsg info);
 
     /**
      * @brief Build a DynamicViewInfo from an AppConfig

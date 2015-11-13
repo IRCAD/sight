@@ -13,6 +13,9 @@
 
 #include <fwMath/IntrasecTypes.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(Plane), FWDATA_API);
@@ -83,6 +86,17 @@ public:
     const bool& getCRefIsIntersection () const;
     void setIsIntersection(bool _isIntersection);
     /// @}
+
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Signal emitted when plane is selected/deselected
+    typedef ::fwCom::Signal< void (bool) > SelectedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_SELECTED_SIG;
+    /**
+     * @}
+     */
 
 protected:
 

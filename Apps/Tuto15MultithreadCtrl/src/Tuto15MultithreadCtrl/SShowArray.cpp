@@ -41,11 +41,6 @@ void SShowArray::stopping() throw( ::fwTools::Failed )
 
 void SShowArray::updating() throw( ::fwTools::Failed )
 {
-
-}
-
-void SShowArray::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
     ::fwData::Array::sptr array = this->getObject< ::fwData::Array >();
     ::fwData::mt::ObjectReadLock readLock(array);
     SLM_ASSERT("No array.", array);

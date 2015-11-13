@@ -31,8 +31,6 @@ protected:
 
     virtual void swapping() throw ( ::fwTools::Failed );
 
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
     virtual void updating() throw(::fwTools::Failed);
 
     virtual void configuring() throw(fwTools::Failed);

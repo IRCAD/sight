@@ -5,12 +5,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
-        <service>::ioData::CameraReaderService</service>
-        <object>::fwData::Camera</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
         <service>::ioData::SplineReaderService</service>
         <object>::fwData::Spline</object>
     </extension>

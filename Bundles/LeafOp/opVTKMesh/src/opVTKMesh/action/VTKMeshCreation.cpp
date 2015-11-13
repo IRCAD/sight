@@ -6,17 +6,17 @@
 
 #include "opVTKMesh/action/VTKMeshCreation.hpp"
 
-#include <fwTools/fwID.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwComEd/MeshMsg.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>
@@ -70,12 +70,6 @@ void VTKMeshCreation::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
-}
-
-//-----------------------------------------------------------------------------
-
-void VTKMeshCreation::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -176,15 +170,11 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
 //    bool res = ::fwVtkIO::fromVTKMesh( polyData, pMesh);
 
     /// Notification
-    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
-    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-    msg->setSource( this->getSptr());
-    msg->setSubject( pMesh);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = pMesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = pMesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg );
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

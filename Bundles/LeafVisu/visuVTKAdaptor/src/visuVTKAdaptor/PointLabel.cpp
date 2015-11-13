@@ -13,7 +13,6 @@
 #include <fwData/String.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/PointMsg.hpp>
 
 #include <vtkRenderer.h>
 #include <vtkTextActor.h>
@@ -34,7 +33,6 @@ PointLabel::PointLabel() : Text()
 {
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToWorld();
     m_actor->GetPosition2Coordinate()->SetCoordinateSystemToWorld();
-    //addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -72,22 +70,19 @@ void PointLabel::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointLabel::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void PointLabel::doSwap() throw(fwTools::Failed)
 {
-    SLM_ASSERT("ACH : recieve a msg that no concern his object", _msg->getSubject().lock() == this->getObject() );
-
-    ::fwComEd::PointMsg::csptr pointMsg = ::fwComEd::PointMsg::dynamicConstCast( _msg );
-    if ( pointMsg && pointMsg->hasEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED ) )
-    {
-        this->doUpdate();
-    }
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void PointLabel::doSwap() throw(fwTools::Failed)
+::fwServices::IService::KeyConnectionsType PointLabel::getObjSrvConnections() const
 {
-    this->doUpdate();
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

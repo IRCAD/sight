@@ -7,16 +7,15 @@
 #ifndef __VISUVTKADAPTOR_INTERACTORSTYLE_HPP__
 #define __VISUVTKADAPTOR_INTERACTORSTYLE_HPP__
 
+#include "visuVTKAdaptor/config.hpp"
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
 
 class vtkInteractorStyle;
 
 namespace visuVTKAdaptor
 {
-
-
 
 /**
  * @brief Managing vtk interactor style
@@ -41,16 +40,12 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     // redraw all (stop then restart sub services)
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     void setInteractorStyle(vtkInteractorStyle *interactor);
 
     std::string m_configuredStyle;
     vtkInteractorStyle *m_interactorStyle;
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

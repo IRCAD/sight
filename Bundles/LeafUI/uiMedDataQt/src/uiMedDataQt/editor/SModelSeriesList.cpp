@@ -7,35 +7,37 @@
 #include "uiMedDataQt/editor/SModelSeriesList.hpp"
 
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwCore/base.hpp>
 
-#include <fwTools/fwID.hpp>
-
-#include <fwData/Reconstruction.hpp>
 #include <fwData/Boolean.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Integer.hpp>
 #include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/String.hpp>
 
 #include <fwDataCamp/getObject.hpp>
 
-#include <fwMedData/ModelSeries.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwComEd/ReconstructionMsg.hpp>
-#include <fwComEd/ModelSeriesMsg.hpp>
+#include <fwMedData/ModelSeries.hpp>
 
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
@@ -124,8 +126,19 @@ public:
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SModelSeriesList, ::fwMedData::ModelSeries);
 
+const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_REC_DISPLAY_MODIFIED__SIG   = "recDisplayModified";
+const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
+const ::fwCom::Slots::SlotKeyType SModelSeriesList::s_SHOW_RECONSTRUCTIONS_SLOT       = "showReconstructions";
+
 SModelSeriesList::SModelSeriesList() throw() : m_tree(new QTreeWidget()), m_enableHideAll(true)
 {
+    m_sigRecDisplayModified     = RecDisplayModifiedSignalType::New();
+    m_sigReconstructionSelected = ReconstructionSelectedSignalType::New();
+    m_signals(s_REC_DISPLAY_MODIFIED__SIG, m_sigRecDisplayModified)
+        (s_RECONSTRUCTION_SELECTED_SIG, m_sigReconstructionSelected);
+    m_slots(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeriesList::showReconstructions, this);
+
+    m_slots.setWorker(m_associatedWorker);
 }
 
 //------------------------------------------------------------------------------
@@ -195,8 +208,8 @@ void SModelSeriesList::stopping() throw(::fwTools::Failed)
         QObject::disconnect(m_showCheckBox, SIGNAL(stateChanged(int )), this, SLOT(onShowReconstructions(int)));
     }
 
-    QObject::disconnect(m_tree, SIGNAL(itemChanged (QTreeWidgetItem * )),
-                        this, SLOT(onOrganChoiceVisibility(QTreeWidgetItem *)));
+    QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem *, int )),
+                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, int )));
     QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
                         this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)));
 
@@ -250,14 +263,12 @@ void SModelSeriesList::configuring() throw(fwTools::Failed)
 
 void SModelSeriesList::updating() throw(::fwTools::Failed)
 {
-    QObject::disconnect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem *, int )),
-                        this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, int )));
+    m_tree->blockSignals(true);
 
     this->updateReconstructions();
     this->refreshVisibility();
 
-    QObject::connect(m_tree, SIGNAL(itemChanged(QTreeWidgetItem *, int )),
-                     this, SLOT(onCurrentItemChanged(QTreeWidgetItem *, int )));
+    m_tree->blockSignals(false);
 
 }
 
@@ -266,23 +277,6 @@ void SModelSeriesList::updating() throw(::fwTools::Failed)
 void SModelSeriesList::swapping() throw(::fwTools::Failed)
 {
     this->updating();
-}
-//------------------------------------------------------------------------------
-
-void SModelSeriesList::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    ::fwComEd::ModelSeriesMsg::csptr acquisitionMsg = ::fwComEd::ModelSeriesMsg::dynamicConstCast( msg );
-    if ( acquisitionMsg )
-    {
-        if ( acquisitionMsg->hasEvent(::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS) )
-        {
-            this->updating();
-        }
-        else if ( acquisitionMsg->hasEvent(::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION) )
-        {
-            this->updating();
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -353,19 +347,11 @@ void SModelSeriesList::fillTree()
 void SModelSeriesList::onCurrentItemChanged( QTreeWidgetItem * current, QTreeWidgetItem * previous )
 {
     SLM_ASSERT( "Current selected item is null", current );
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
-
     std::string id = current->data(0, Qt::UserRole).toString().toStdString();
-    ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
-    msg->addEvent( ::fwComEd::ModelSeriesMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New(id));
-    msg->setSource(this->getSptr());
-    msg->setSubject( modelSeries);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = modelSeries->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+
+    ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
+
+    m_sigReconstructionSelected->asyncEmit(rec);
 }
 
 //------------------------------------------------------------------------------
@@ -389,16 +375,10 @@ void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem * item, int colum
     {
         rec->setIsVisible(item->checkState(0));
 
-        ::fwComEd::ReconstructionMsg::sptr msg = ::fwComEd::ReconstructionMsg::New();
-        msg->addEvent( ::fwComEd::ReconstructionMsg::VISIBILITY );
-        msg->setSource(this->getSptr());
-        msg->setSubject( rec);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = rec->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-        {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
-        }
+        ::fwData::Reconstruction::VisibilityModifiedSignalType::sptr sig;
+        sig = rec->signal< ::fwData::Reconstruction::VisibilityModifiedSignalType >(
+            ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG);
+        sig->asyncEmit();
     }
 }
 
@@ -414,16 +394,8 @@ void SModelSeriesList::onShowReconstructions(int state )
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
     modelSeries->setField("ShowReconstructions",  ::fwData::Boolean::New(state == Qt::Unchecked) );
 
-    ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
-    msg->addEvent( ::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS );
-    msg->setSource(this->getSptr());
-    msg->setSubject( modelSeries);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = modelSeries->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    ::fwCom::Connection::Blocker block(m_sigRecDisplayModified->getConnection(m_slotShowReconstuctions));
+    m_sigRecDisplayModified->asyncEmit(state == Qt::Unchecked);
 }
 
 //------------------------------------------------------------------------------
@@ -437,6 +409,28 @@ void SModelSeriesList::refreshVisibility()
         ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
         item->setCheckState(0, rec->getIsVisible() ? Qt::Checked : Qt::Unchecked );
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeriesList::showReconstructions(bool show)
+{
+    if(m_showCheckBox)
+    {
+        m_showCheckBox->setCheckState(show ? Qt::Unchecked : Qt::Checked );
+    }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SModelSeriesList::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

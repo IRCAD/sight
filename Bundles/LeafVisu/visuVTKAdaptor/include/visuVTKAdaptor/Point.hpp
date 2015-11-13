@@ -5,24 +5,25 @@
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __VISUVTKADAPTOR_POINT_HPP__
+
+#ifndef __VISUVTKADAPTOR_POINT_HPP__
 #define __VISUVTKADAPTOR_POINT_HPP__
 
-#ifndef ANDROID
-
-#include <fwServices/ObjectMsg.hpp>
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
 
 class vtkHandleWidget;
 class vtkHandleRepresentation;
 class vtkCommand;
 
-
-
 namespace visuVTKAdaptor
 {
-
 
 class VISUVTKADAPTOR_CLASS_API Point : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -39,25 +40,46 @@ public:
 
     VISUVTKADAPTOR_API void setSelectedColor(double red, double green, double blue, double alpha = 1.0);
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Point::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+    /**
+     * @Signals
+     * @{
+     */
+    /// Type of signal when point interaction is started
+    typedef ::fwCom::Signal< void () > InteractionStartedSignalType;
+    VISUVTKADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_INTERACTION_STARTED_SIG;
+    /**
+     * @}
+     */
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API virtual void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
 
-
-protected:
+private:
     vtkHandleWidget         * m_handle;
     vtkHandleRepresentation * m_representation;
     vtkCommand              * m_pointUpdateCommand;
 
 };
+
+
+
+
 } //namespace visuVTKAdaptor
 
-#endif // ANDROID
+#endif // __VISUVTKADAPTOR_POINT_HPP__
 
 #endif // __VISUVTKADAPTOR_POINT_HPP__

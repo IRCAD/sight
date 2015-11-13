@@ -65,9 +65,6 @@ protected:
     /// Show the SeriesDB reader selector, load the new SeriesDB and merge it the the current SeriesDB
     void updating() throw (::fwTools::Failed);
 
-    /// Does nothing
-    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed);
-
     /// Stop action.
     void stopping() throw (::fwTools::Failed);
     void info(std::ostream &_sstream );

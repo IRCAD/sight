@@ -161,22 +161,7 @@ void SlotsTest::hasSlotsTest()
 
 void SlotsTest::slotsIDTest()
 {
-#ifdef COM_LOG
-    ::fwCom::Slot< int (int, int) >::sptr slot1             = ::fwCom::newSlot( &slotsTestSum );
-    ::fwCom::Slot< void (const std::string &) >::sptr slot2 = ::fwCom::newSlot( &slotsTestPrint );
 
-    ::fwCom::Slots slots;
-    slots( "sum", slot1 )
-        ( "print", slot2 );
-
-    slots.setID();
-    CPPUNIT_ASSERT_EQUAL( std::string("sum"), slot1->getID() );
-    CPPUNIT_ASSERT_EQUAL( std::string("print"), slot2->getID() );
-
-    slots.setID("prefix::");
-    CPPUNIT_ASSERT_EQUAL( std::string("prefix::sum"), slot1->getID() );
-    CPPUNIT_ASSERT_EQUAL( std::string("prefix::print"), slot2->getID() );
-#endif
 }
 
 //-----------------------------------------------------------------------------

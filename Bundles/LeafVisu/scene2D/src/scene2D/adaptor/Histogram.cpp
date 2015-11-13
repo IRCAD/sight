@@ -4,19 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/adaptor/Histogram.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
+
 #include <fwServices/Base.hpp>
 
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
 
-#include <fwComEd/HistogramMsg.hpp>
-
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 
-#include "scene2D/adaptor/Histogram.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Histogram, ::fwData::Histogram);
 
@@ -171,17 +170,6 @@ void Histogram::updateCurrentPoint( ::scene2D::data::Event::sptr _event )
 
         point->getRefCoord()[0] = sceneCoord.getX();
         point->getRefCoord()[1] = values.at( index / histogramBinsWidth ) * m_scale;
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------
-
-void Histogram::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
-{
-    ::fwComEd::HistogramMsg::csptr histoMsg = ::fwComEd::HistogramMsg::dynamicConstCast(_msg);
-    if (histoMsg && histoMsg->hasEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED))
-    {
-        this->doUpdate();
     }
 }
 

@@ -31,7 +31,7 @@ public:
     VISUVTKADAPTOR_API virtual ~Text() throw();
 
     VISUVTKADAPTOR_API virtual void setText(const std::string &str);
-    virtual const std::string& getText()
+    std::string getText() const
     {
         return m_text;
     }
@@ -44,9 +44,6 @@ protected:
     {
     }
     virtual void doUpdate() throw(fwTools::Failed)
-    {
-    }
-    virtual void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
     {
     }
 

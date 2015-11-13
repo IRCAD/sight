@@ -17,8 +17,6 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwComEd/ImageMsg.hpp>
-
 #include <io/IReader.hpp>
 
 #include <fwDataIO/reader/IObjectReader.hpp>
@@ -209,36 +207,16 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
 
 //------------------------------------------------------------------------------
 
-void ImageReaderService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-    // This method does nothing
-}
-
-//------------------------------------------------------------------------------
-
 void ImageReaderService::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
     SLM_ASSERT("pImage not instanced", pImage);
 
-    // Creation of an image message to say that image is an new image ( or all fields are modified (old version of msg ) )
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    msg->addEvent( ::fwComEd::ImageMsg::BUFFER );
-    msg->addEvent( ::fwComEd::ImageMsg::REGION );
-    msg->addEvent( ::fwComEd::ImageMsg::SPACING );
-    msg->addEvent( ::fwComEd::ImageMsg::PIXELTYPE );
-
-    // Notify message to all service listeners
-    msg->setSource(this->getSptr());
-    msg->setSubject( pImage);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = pImage->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = pImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

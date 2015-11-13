@@ -4,19 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/lexical_cast.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/Histogram.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-
-#include <fwServices/Base.hpp>
-
-#include <fwComEd/HistogramMsg.hpp>
 
 #include "scene2D/processing/SComputeHistogram.hpp"
 #include "scene2D/processing/ComputeHistogramFunctor.hxx"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwData/Histogram.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IController, ::scene2D::processing::SComputeHistogram, ::fwData::Image );
 
@@ -25,8 +28,7 @@ namespace scene2D
 namespace processing
 {
 
-SComputeHistogram::SComputeHistogram() throw() :
-    m_binsWidth(1.0)
+SComputeHistogram::SComputeHistogram() throw() : m_binsWidth(1.0f)
 {
 }
 
@@ -83,28 +85,11 @@ void SComputeHistogram::updating() throw ( ::fwTools::Failed )
         ::fwTools::DynamicType type = image->getPixelType();
         ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ComputeHistogramFunctor >::invoke( type, param );
 
-        ::fwComEd::HistogramMsg::sptr msg = ::fwComEd::HistogramMsg::New();
-        msg->addEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED);
-        msg->setSource(this->getSptr());
-        msg->setSubject( histogram);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = histogram->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig = histogram->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SComputeHistogram::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
-{
-    if(_msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE) ||
-       _msg->hasEvent(::fwComEd::ImageMsg::BUFFER) ||
-       _msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
-    {
-        this->updating();
     }
 }
 
@@ -132,6 +117,17 @@ void SComputeHistogram::stopping() throw ( ::fwTools::Failed )
     SLM_ASSERT("Object " << m_histogramId << " is not a '::fwData::Histogram'", histogram);
 
     return histogram;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SComputeHistogram::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

@@ -5,14 +5,16 @@
  * ****** END LICENSE BLOCK ****** */
 
 
-#include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
 #include "fwData/Image.hpp"
-#include "fwData/Mesh.hpp"
 #include "fwData/Material.hpp"
-
+#include "fwData/Mesh.hpp"
 #include "fwData/Reconstruction.hpp"
+#include "fwData/registry/macros.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -21,6 +23,9 @@ namespace fwData
 {
 
 const double Reconstruction::s_NO_COMPUTED_MASK_VOLUME = -1.;
+
+const ::fwCom::Signals::SignalKeyType Reconstruction::s_MESH_CHANGED_SIG        = "meshModified";
+const ::fwCom::Signals::SignalKeyType Reconstruction::s_VISIBILITY_MODIFIED_SIG = "visibilityModified";
 
 //------------------------------------------------------------------------------
 
@@ -31,7 +36,10 @@ Reconstruction::Reconstruction(::fwData::Object::Key key) :
     m_material( ::fwData::factory::New< ::fwData::Material>() ),
     m_computedMaskVolume(Reconstruction::s_NO_COMPUTED_MASK_VOLUME)
 {
-    SLM_TRACE_FUNC();
+    m_sigMeshChanged        = MeshChangedSignalType::New();
+    m_sigVisibilityModified = VisibilityModifiedSignalType::New();
+    m_signals(s_MESH_CHANGED_SIG, m_sigMeshChanged)
+        (s_VISIBILITY_MODIFIED_SIG, m_sigVisibilityModified);
 }
 
 //------------------------------------------------------------------------------

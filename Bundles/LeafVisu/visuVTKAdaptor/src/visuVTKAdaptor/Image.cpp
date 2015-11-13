@@ -4,30 +4,30 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKAdaptor/Image.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/TransferFunctionMsg.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/TransferFunction.hpp>
+
+#include <fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <fwData/Boolean.hpp>
-#include <fwData/Color.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/String.hpp>
-#include <fwData/TransferFunction.hpp>
-
-#include <fwVtkIO/vtk.hpp>
 #include <fwVtkIO/helper/TransferFunction.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkImageBlend.h>
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
-
-#include <fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp>
-
-#include "visuVTKAdaptor/Image.hpp"
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image );
@@ -35,30 +35,21 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Im
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
 
 //------------------------------------------------------------------------------
 
-Image::Image() throw()
+Image::Image() throw() :
+    m_imageRegister(nullptr),
+    m_imagePortId(-1),
+    m_imageOpacity(0.),
+    m_allowAlphaInTF(false),
+    m_lut(fwVtkWindowLevelLookupTable::New()),
+    m_map2colors(vtkImageMapToColors::New()),
+    m_imageData(vtkImageData::New())
 {
-    SLM_TRACE_FUNC();
-    m_lut        = fwVtkWindowLevelLookupTable::New();
-    m_map2colors = vtkImageMapToColors::New();
-    m_imageData  = vtkImageData::New();
-
-    m_imageRegister = NULL;
-
-    m_imagePortId    = -1;
-    m_allowAlphaInTF = false;
-
-    // Manage events
-    this->installTFSelectionEventHandler(this);
-    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED                   );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::TRANSPARENCY               );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::VISIBILITY                 );
-    //addNewHandledEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS );
-    //addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING       );
+    this->installTFSlots(this);
+    newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &Image::updateImageOpacity, this);
 }
 
 //------------------------------------------------------------------------------
@@ -81,14 +72,14 @@ Image::~Image() throw()
 void Image::doStart() throw(fwTools::Failed)
 {
     this->doUpdate();
-    this->installTFObserver( this->getSptr() );
+    this->installTFConnections();
 }
 
 //------------------------------------------------------------------------------
 
 void Image::doStop() throw(fwTools::Failed)
 {
-    this->removeTFObserver();
+    this->removeTFConnections();
     this->destroyPipeline();
 }
 
@@ -96,9 +87,9 @@ void Image::doStop() throw(fwTools::Failed)
 
 void Image::doSwap() throw(fwTools::Failed)
 {
-    this->removeTFObserver();
+    this->removeTFConnections();
     this->doUpdate();
-    this->installTFObserver( this->getSptr() );
+    this->installTFConnections();
 }
 
 //------------------------------------------------------------------------------
@@ -118,67 +109,28 @@ void Image::doUpdate() throw(::fwTools::Failed)
     }
     else
     {
-        this->updateTransferFunction(image, this->getSptr());
+        this->updateTransferFunction(image);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void Image::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void Image::updatingTFPoints()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    this->updateImageTransferFunction(image);
+    this->requestRender();
+}
 
-    if (imageIsValid)
-    {
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-        {
-            this->doUpdate();
+//------------------------------------------------------------------------------
 
-            // Hack to force imageSlice update until it is not able to detect a new image
-            ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-            msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
-            msg->setSource(this->getSptr());
-            msg->setSubject( image);
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-            {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( msg);
-            }
-        }
-
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::MODIFIED ) )
-        {
-            m_imageData->Modified();
-
-            this->setVtkPipelineModified();
-        }
-
-        if (this->upadteTFObserver(msg,
-                                   this->getSptr()) ||
-            msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
-        {
-            this->updateImageTransferFunction(image);
-        }
-
-        if ( msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ) )
-        {
-            ::fwComEd::TransferFunctionMsg::csptr tfmsg = ::fwComEd::TransferFunctionMsg::dynamicConstCast(msg);
-            this->setWindow(tfmsg->getWindow());
-            this->setLevel(tfmsg->getLevel());
-            updateWindowing(image);
-        }
-
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::TRANSPARENCY ) || msg->hasEvent( ::fwComEd::ImageMsg::VISIBILITY ) )
-        {
-            this->updateImageOpacity();
-        }
-    }
-    else
-    {
-        this->destroyPipeline();
-    }
+void Image::updatingTFWindowing(double window, double level)
+{
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->setWindow(window);
+    this->setLevel(level);
+    this->updateWindowing(image);
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -227,7 +179,7 @@ void Image::updateWindowing( ::fwData::Image::sptr image )
 
 void Image::updateImageTransferFunction( ::fwData::Image::sptr image )
 {
-    this->updateTransferFunction(image, this->getSptr());
+    this->updateTransferFunction(image);
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, m_lut, m_allowAlphaInTF, 256 );
@@ -264,6 +216,7 @@ void Image::updateImageOpacity()
         OSLM_TRACE(
             "vtkImageBlend " << this->m_imageRegisterId << " opacity :" << m_imagePortId << "," << m_imageOpacity );
         this->setVtkPipelineModified();
+        this->requestRender();
     }
 }
 
@@ -338,6 +291,19 @@ void Image::destroyPipeline( )
     }
 
     this->setVtkPipelineModified();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Image::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair(::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT));
+    connections.push_back( std::make_pair(::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
+    connections.push_back( std::make_pair(::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
+    connections.push_back( std::make_pair(::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT));
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

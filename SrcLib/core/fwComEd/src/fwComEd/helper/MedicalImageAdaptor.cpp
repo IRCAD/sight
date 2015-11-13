@@ -4,16 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwComEd/Dictionary.hpp"
+#include "fwComEd/fieldHelper/MedicalImageHelpers.hpp"
 #include "fwComEd/helper/Composite.hpp"
 #include "fwComEd/helper/Image.hpp"
 #include "fwComEd/helper/MedicalImageAdaptor.hpp"
 
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
+
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -23,6 +27,12 @@ namespace fwComEd
 
 namespace helper
 {
+
+static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT         = "addObject";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT      = "changeObject";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT      = "removeObjects";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_POINTS_SLOT    = "updateTFPoints";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_WINDOWING_SLOT = "updateTFWindowing";
 
 //------------------------------------------------------------------------------
 
@@ -254,7 +264,7 @@ void MedicalImageAdaptor::updateImageInfos( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image, ::fwServices::IService::sptr srv )
+void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image )
 {
     if ( !m_tfSelectionFwID.empty() )
     {
@@ -282,7 +292,7 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image, :
 
                 ::fwComEd::helper::Composite compositeHelper(tfSelection);
                 compositeHelper.add(m_selectedTFKey, tfGreyLevel);
-                compositeHelper.notify(srv);
+                compositeHelper.notify();
             }
             m_tfSelection = tfSelection;
         }
@@ -297,7 +307,7 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image, :
             const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
 
             ::fwComEd::helper::Image helper(image);
-            helper.createTransferFunctionPool(srv); // do nothing if image tf pool already exist
+            helper.createTransferFunctionPool(); // do nothing if image tf pool already exist
 
             tfSelection = image->getField< ::fwData::Composite >(poolFieldName);
 
@@ -423,108 +433,146 @@ void MedicalImageAdaptor::setLevel( double level )
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::installTFSelectionEventHandler( ::fwServices::IService* srv )
+void MedicalImageAdaptor::installTFConnections()
 {
-//   srv->addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
-//   srv->addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
-//   srv->addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
-}
+    SLM_ASSERT( "TF connections already exist",!m_tfSelectionConnections && !m_tfConnections);
 
-//------------------------------------------------------------------------------
+    ::fwData::Composite::sptr composite = this->getTransferFunctionSelection();
 
-void MedicalImageAdaptor::installTFObserver( ::fwServices::IService::sptr srv )
-{
-    SLM_ASSERT( "TF connections already exist", m_tfSelectionConnection.expired() && m_tfConnection.expired());
+    m_tfSelectionConnections = ::fwServices::helper::SigSlotConnection::New();
+    m_tfConnections          = ::fwServices::helper::SigSlotConnection::New();
 
-    m_tfSelectionConnection = this->getTransferFunctionSelection()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->
-                              connect(srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    ::fwCom::Connection connection;
+    connection = composite->signal(::fwData::Composite::s_ADDED_OBJECTS_SIG)->connect(m_slotAddedObjects);
+    m_tfSelectionConnections->addConnection(connection);
+    connection = composite->signal(::fwData::Composite::s_CHANGED_OBJECTS_SIG)->connect(m_slotChangedObjects);
+    m_tfSelectionConnections->addConnection(connection);
+    connection = composite->signal(::fwData::Composite::s_REMOVED_OBJECTS_SIG)->connect(m_slotRemovedObjects);
+    m_tfSelectionConnections->addConnection(connection);
 
-    m_tfConnection = this->getTransferFunction()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-        srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageAdaptor::removeTFObserver()
-{
-    m_tfSelectionConnection.disconnect();
-    m_tfConnection.disconnect();
-}
-
-//------------------------------------------------------------------------------
-
-bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg, ::fwServices::IService::sptr srv)
-{
-    bool needUpdate = false;
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
-    if(compositeMsg)
-    {
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS ) )
-        {
-            ::fwData::Composite::sptr fields   = compositeMsg->getAddedKeys();
-            ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
-            if( iter != fields->end())
-            {
-                if (!m_tfConnection.expired())
-                {
-                    m_tfConnection.disconnect();
-                }
-
-                m_tfConnection = this->getTransferFunction()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                    srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
-                needUpdate = true;
-            }
-        }
-
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS ) )
-        {
-            SLM_ASSERT( "Sorry, TF observer must exist", !m_tfConnection.expired() );
-            ::fwData::Composite::sptr fields   = compositeMsg->getRemovedKeys();
-            ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
-            if( iter != fields->end())
-            {
-                m_tfConnection.disconnect();
-                needUpdate = true;
-            }
-        }
-
-        if ( compositeMsg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS ) )
-        {
-            SLM_ASSERT( "Sorry, TF observer must exist", !m_tfConnection.expired() );
-            ::fwData::Composite::sptr fields   = compositeMsg->getNewChangedKeys();
-            ::fwData::Composite::iterator iter = fields->find(this->getSelectedTFKey());
-            if( iter != fields->end())
-            {
-                m_tfConnection.disconnect();
-                m_tfConnection = this->getTransferFunction()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                    srv->slot(::fwServices::IService::s_RECEIVE_SLOT));
-                needUpdate = true;
-            }
-        }
-    }
-    return needUpdate;
-}
-
-//------------------------------------------------------------------------------
-
-::fwComEd::TransferFunctionMsg::sptr MedicalImageAdaptor::notifyTFWindowing( ::fwServices::IService::sptr srv )
-{
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    connection                          = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(
+        m_slotUpdateTFPoints);
+    m_tfConnections->addConnection(connection);
+    connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(
+        m_slotUpdateTFWindowing);
+    m_tfConnections->addConnection(connection);
+}
 
-    // Fire the message
-    ::fwComEd::TransferFunctionMsg::sptr msg = ::fwComEd::TransferFunctionMsg::New();
-    msg->setWindowLevel( tf->getWindow(), tf->getLevel() );
-    msg->setSource( srv);
-    msg->setSubject( tf);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = tf->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::removeTFConnections()
+{
+    m_tfSelectionConnections->disconnect();
+    m_tfSelectionConnections.reset();
+
+    if (m_tfConnections)
     {
-        ::fwServices::IService::ReceiveSlotType::sptr slot;
-        slot = srv->slot< ::fwServices::IService::ReceiveSlotType >( ::fwServices::IService::s_RECEIVE_SLOT );
-        ::fwCom::Connection::Blocker block(sig->getConnection(slot));
-        sig->asyncEmit(msg);
+        m_tfConnections->disconnect();
+        m_tfConnections.reset();
     }
-    return msg;
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::addObjects(::fwData::Composite::ContainerType objects)
+{
+    ::fwData::Composite::iterator iter = objects.find(this->getSelectedTFKey());
+    if( iter != objects.end())
+    {
+        if (!m_tfConnections)
+        {
+            m_tfConnections = ::fwServices::helper::SigSlotConnection::New();
+        }
+
+        ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+        ::fwCom::Connection connection;
+        connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(
+            m_slotUpdateTFPoints);
+        m_tfConnections->addConnection(connection);
+        connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(
+            m_slotUpdateTFWindowing);
+        m_tfConnections->addConnection(connection);
+
+        this->updateTFPoints();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::changeObjects(::fwData::Composite::ContainerType newObjects,
+                                        ::fwData::Composite::ContainerType oldObjects)
+{
+    SLM_ASSERT( "Sorry, TF observer must exist", m_tfConnections );
+    ::fwData::Composite::iterator iter = newObjects.find(this->getSelectedTFKey());
+    if( iter != newObjects.end())
+    {
+        m_tfConnections->disconnect();
+        ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+        ::fwCom::Connection connection;
+        connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(
+            m_slotUpdateTFPoints);
+        m_tfConnections->addConnection(connection);
+        connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(
+            m_slotUpdateTFWindowing);
+        m_tfConnections->addConnection(connection);
+
+        this->updateTFPoints();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::removeObjects(::fwData::Composite::ContainerType objects)
+{
+    SLM_ASSERT( "Sorry, TF observer must exist", m_tfConnections );
+    ::fwData::Composite::iterator iter = objects.find(this->getSelectedTFKey());
+    if( iter != objects.end())
+    {
+        m_tfConnections->disconnect();
+        m_tfConnections.reset();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::installTFSlots(::fwCom::HasSlots* hasslots)
+{
+    m_slotAddedObjects      = hasslots->newSlot(s_ADD_OBJECTS_SLOT, &MedicalImageAdaptor::addObjects, this);
+    m_slotChangedObjects    = hasslots->newSlot(s_CHANGE_OBJECTS_SLOT, &MedicalImageAdaptor::changeObjects, this);
+    m_slotRemovedObjects    = hasslots->newSlot(s_REMOVE_OBJECTS_SLOT, &MedicalImageAdaptor::removeObjects, this);
+    m_slotUpdateTFPoints    = hasslots->newSlot(s_UPDATE_TF_POINTS_SLOT, &MedicalImageAdaptor::updateTFPoints, this);
+    m_slotUpdateTFWindowing =
+        hasslots->newSlot(s_UPDATE_TF_WINDOWING_SLOT, &MedicalImageAdaptor::updateTFWindowing, this);
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::updateTFPoints()
+{
+    this->updatingTFPoints();
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::updateTFWindowing(double window, double level)
+{
+    this->updatingTFWindowing(window, level);
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::updatingTFPoints()
+{
+    SLM_ASSERT("This methods (updatingTFPoints) must be reimplemented in subclass to manage TF modifications", false);
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::updatingTFWindowing(double window, double level)
+{
+    SLM_ASSERT("This methods (updatingTFWindowing) must be reimplemented in subclass to manage TF modifications",
+               false);
 }
 
 //------------------------------------------------------------------------------

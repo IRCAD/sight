@@ -72,11 +72,6 @@ protected:
     GUI_API void updating() throw (fwTools::Failed);
 
     /**
-     * @brief Do nothing.
-     */
-    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
-    /**
      * @brief Configures the service
      *
        @verbatim

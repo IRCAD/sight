@@ -166,12 +166,6 @@ void ImageSeries::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void ImageSeries::setSliceMode(NegatoMPR::SliceMode sliceMode)
 {
     if(m_sliceMode != sliceMode)

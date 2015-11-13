@@ -65,9 +65,6 @@ Slot< Slot< R ( A ... ) > >::Slot( SPTR( SlotRun< F > )slot )
 {
     BOOST_STATIC_ASSERT( (::boost::is_same<void, R>::value) );
     this->setWorker(slot->getWorker());
-#ifdef COM_LOG
-    this->setID("wrapped_"+ slot->getID());
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -81,9 +78,6 @@ Slot< Slot< R ( A ... ) > >::Slot( SPTR( Slot< F > )slot ) : Slot< FunctionType 
                                                                      >::wrap( &Slot< F >::call, slot.get() ) )
 {
     this->setWorker(slot->getWorker());
-#ifdef COM_LOG
-    this->setID("wrapped_"+ slot->getID());
-#endif
 }
 
 //-----------------------------------------------------------------------------

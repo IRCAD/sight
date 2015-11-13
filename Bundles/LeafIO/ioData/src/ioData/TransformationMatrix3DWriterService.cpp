@@ -15,9 +15,6 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
-
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <fwDataIO/writer/TransformationMatrix3DWriter.hpp>
 
@@ -123,16 +120,11 @@ void TransformationMatrix3DWriterService::updating() throw(::fwTools::Failed)
         writer->write();
 
         // Notify writing
-        ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-        msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-        msg->setSource(this->getSptr());
-        msg->setSubject( this->getObject());
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = this->getObject()->signal< ::fwData::Object::ObjectModifiedSignalType >(
-            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig = this->getObject()->signal< ::fwData::Object::ModifiedSignalType >(
+            ::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
         }
     }
 }

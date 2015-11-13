@@ -96,12 +96,6 @@ void BookmarkSrv::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void BookmarkSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void BookmarkSrv::info( std::ostream &_sstream )
 {
 }

@@ -119,12 +119,6 @@ void ShowAcknowledgments::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ShowAcknowledgments::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void ShowAcknowledgments::stopping() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStopping();

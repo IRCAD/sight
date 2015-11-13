@@ -13,6 +13,9 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Plane.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(PlaneList), FWDATA_API);
@@ -59,6 +62,25 @@ public:
     const PlaneListContainer & getCRefPlanes () const;
     void setPlanes (const PlaneListContainer& _vPlanes);
     /// @}
+
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Signal emitted when a plane is added
+    typedef ::fwCom::Signal< void (::fwData::Plane::sptr) > PlaneAddedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_PLANE_ADDED_SIG;
+
+    /// Signal emitted when a plane is removed
+    typedef ::fwCom::Signal< void (::fwData::Plane::sptr) > PlaneRemovedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_PLANE_REMOVED_SIG;
+
+    /// Signal emitted when the visibility changed
+    typedef ::fwCom::Signal< void (bool) > VisibilityModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
+    /**
+     * @}
+     */
 
 protected:
 

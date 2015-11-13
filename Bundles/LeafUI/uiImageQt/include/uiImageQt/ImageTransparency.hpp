@@ -28,8 +28,6 @@ namespace uiImage
 /**
  * @brief   ImageTransparency service allows to change image transparency.
  * @class   ImageTransparency
- *
- * @date    2011.
  */
 class UIIMAGEQT_CLASS_API ImageTransparency : public QObject,
                                               public ::gui::editor::IEditor
@@ -44,15 +42,23 @@ public:
 
     UIIMAGEQT_API virtual ~ImageTransparency() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_TRANSPARENCY_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    UIIMAGEQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
     /// Starts editor.
     virtual void starting() throw(::fwTools::Failed);
 
     /// Stops editor.
     virtual void stopping() throw(::fwTools::Failed);
-
-    /// Receive InteractionMsg and updates text informations
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     virtual void updating() throw(::fwTools::Failed);
 

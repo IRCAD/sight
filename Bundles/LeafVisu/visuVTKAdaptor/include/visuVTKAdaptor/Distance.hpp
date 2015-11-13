@@ -9,15 +9,15 @@
 
 #ifndef ANDROID
 
-#include <vector>
+#include "visuVTKAdaptor/config.hpp"
+#include "visuVTKAdaptor/MeshFactory.hpp"
 
 #include <fwData/Point.hpp>
 #include <fwData/Color.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/MeshFactory.hpp"
+#include <vector>
 
 class vtkDistanceRepresentation2D;
 class vtkActor;
@@ -45,26 +45,23 @@ protected:
     VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     VISUVTKADAPTOR_API void doStart();
     VISUVTKADAPTOR_API void doStop();
 
+private:
 
     vtkDistanceRepresentation2D * m_distanceRepresentation;
-//  typedef std::vector < ::fwRenderVTK::IVtkAdaptorService::wptr > ServiceVector;
-//  ServiceVector m_services;
 
     vtkActor          *m_lineActor;
-//      vtkPolyDataMapper *LineMapper;
     vtkLineSource     *m_lineSource;
 
     ::fwData::Point::wptr m_point1;
     ::fwData::Point::wptr m_point2;
 
-    /// Connection between point 1 objectModified and this service reveive
+    /// Connection between point 1 modified and this service reveive
     ::fwCom::Connection m_point1Connection;
 
-    /// Connection between point 2 objectModified and this service reveive
+    /// Connection between point 2 modified and this service reveive
     ::fwCom::Connection m_point2Connection;
 };
 

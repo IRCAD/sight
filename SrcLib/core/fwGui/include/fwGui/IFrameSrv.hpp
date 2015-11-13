@@ -7,15 +7,18 @@
 #ifndef __FWGUI_IFRAMESRV_HPP__
 #define __FWGUI_IFRAMESRV_HPP__
 
-#include <fwServices/IService.hpp>
 
 #include "fwGui/config.hpp"
 #include "fwGui/container/fwContainer.hpp"
-
 #include "fwGui/registrar/ViewRegistrar.hpp"
 #include "fwGui/layoutManager/IFrameLayoutManager.hpp"
 #include "fwGui/builder/IMenuBarBuilder.hpp"
 #include "fwGui/builder/IToolBarBuilder.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
+#include <fwServices/IService.hpp>
 
 namespace fwGui
 {
@@ -23,9 +26,6 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing a frame.
  * @class   IFrameSrv
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IFrameSrv : public ::fwServices::IService
 {
@@ -36,6 +36,18 @@ public:
 
     /// Get widget defined for progress bar
     FWGUI_API static ::fwGui::container::fwContainer::sptr getProgressWidget();
+
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Signal emitted when frame is closed and onclose policy is notify
+    static const ::fwCom::Signals::SignalKeyType s_CLOSED_SIG;
+    typedef ::fwCom::Signal< void ()> ClosedSignalType;
+    /**
+     * @}
+     */
+
 
 protected:
 
@@ -70,7 +82,7 @@ protected:
        @endverbatim
      * - \<window onclose="notify" /\> : defines what to do when the frame is closed
      *   - \b exit (by default) : the application is closed. Use it for the main frame.
-     *   - \b notify : notifies service's object with WINDOW_CLOSED event.
+     *   - \b notify : send signal 'closed'
      *   - \b message : a confirmation dialog appears asking user to confirm closing application
      * - \<frame\> : defines the frame name, icon, size and style.
      *   - \b style : defines frame style (modal, always on top, etc.), not mandatory.
@@ -119,6 +131,9 @@ private:
     bool m_hasToolBar;
 
     std::string m_closePolicy;
+
+    /// Signal emitted when frame is closed and onclose mode is message
+    ClosedSignalType::sptr m_sigClosed;
 };
 
 } // namespace fwGui

@@ -7,9 +7,10 @@
 #ifndef __VISUVTKADAPTOR_PLUGIN_HPP__
 #define __VISUVTKADAPTOR_PLUGIN_HPP__
 
+#include "visuVTKAdaptor/config.hpp"
+
 #include <fwRuntime/Plugin.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
 
 namespace visuVTKAdaptor
 {
@@ -17,8 +18,6 @@ namespace visuVTKAdaptor
 /**
  * @brief   This class is started when the bundles is loaded.
  * @class   Plugin
- *
- * @date    2009.
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
@@ -35,6 +34,6 @@ struct Plugin : public ::fwRuntime::Plugin
 
 };
 
-} // namespace visuVTK
+} // namespace visuVTKAdaptor
 
 #endif // __VISUVTKADAPTOR_PLUGIN_HPP__
