@@ -4,16 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <stdlib.h>
-#include <string>
-#include <iostream>
-#include <fstream>
+#include <fwGdcmIO/helper/DicomAnonymizer.hpp>
 
 #include <boost/program_options.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
-#include <fwDicomIOExt/gdcm/helper/DicomAnonymizer.hpp>
+#include <stdlib.h>
+#include <string>
+#include <iostream>
+#include <fstream>
 
 /** \file main.cpp
  *********************
@@ -79,8 +79,8 @@ int main(int argc, char** argv)
     }
 
     // Copy and anonymize
-    ::fwDicomIOExt::gdcm::helper::DicomAnonymizer::copyDirectory(input, output);
-    ::fwDicomIOExt::gdcm::helper::DicomAnonymizer anonymizer;
+    ::fwGdcmIO::helper::DicomAnonymizer::copyDirectory(input, output);
+    ::fwGdcmIO::helper::DicomAnonymizer anonymizer;
     anonymizer.anonymize(output);
 
     return EXIT_SUCCESS;
