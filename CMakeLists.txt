@@ -8,7 +8,7 @@ enable_testing()
 include(CheckVariableExists)
 include(CMakeParseArguments)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
-
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 
 set(BUILD_SHARED_LIBS ON)
 
@@ -212,12 +212,8 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
 endmacro()
 
 macro(createResourcesInstallTarget CONFIGURED_FILES_DIR DESTINATION)
-    file(GLOB_RECURSE RESOURCES_FILES "${CONFIGURED_FILES_DIR}/*")
+    file(GLOB_RECURSE RESOURCES_FILES ${CONFIGURED_FILES_DIR}/* )
 
-    # Add to target the generated profile.xml
-    if( ${FWPROJECT_NAME}_TYPE STREQUAL "APP" )
-        LIST (APPEND RESOURCES_FILES "${CONFIGURED_FILES_DIR}/profile.xml" )
-    endif()
     foreach(RESOURCE_FILE ${RESOURCES_FILES})
         get_filename_component(RESOURCE_NAME "${RESOURCE_FILE}" NAME)
         if (NOT "${RESOURCE_NAME}" MATCHES "${FWPROJECT_NAME}_${${FWPROJECT_NAME}_DASH_VERSION}*")
@@ -227,6 +223,11 @@ macro(createResourcesInstallTarget CONFIGURED_FILES_DIR DESTINATION)
             unset(RC_REL_DIR)
         endif()
     endforeach()
+
+    # Add to target the generated profile.xml
+    if( ${FWPROJECT_NAME}_TYPE STREQUAL "APP" )
+         install(FILES "${BUNDLE_DIR}/profile.xml" DESTINATION "${DESTINATION}" )
+    endif()
 endmacro()
 
 
@@ -258,7 +259,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/rc" "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/rc" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
         endif()
     endif()
 
@@ -305,7 +306,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/tu_exec_${DIRNAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/rc" "share/tu_exec_${DIRNAME}_${DASH_VERSION}" )
         endif()
     endif()
 
@@ -336,7 +337,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/rc" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
         endif()
 
     endif()
@@ -382,8 +383,6 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BUNDLE_DIR})
         set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${BUNDLE_DIR})
 
-        #install(DIRECTORY "${BUNDLE_DIR}" DESTINATION VRRender.app/Bundles COMPONENT Runtime)
-
         if(${FWPROJECT_NAME}_INSTALL)
             install(
                 TARGETS ${FWPROJECT_NAME}
@@ -409,7 +408,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${BUNDLE_DIR}" Bundles/${FWPROJECT_NAME}_${DASH_VERSION} )
+            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/rc" Bundles/${FWPROJECT_NAME}_${DASH_VERSION} )
         endif()
     endif()
 
@@ -566,16 +565,16 @@ function(findTests FWPROJECTS RESULT_VAR)
 endfunction()
 
 macro(loadProperties PROPERTIES_FILE)
-    set(NAME)
-    set(OPTIONS)
-    set(VERSION)
-    set(TYPE)
-    set(START)
-    set(DEPENDENCIES)
-    set(REQUIREMENTS)
-    set(CPPUNITTEST_OPTIONS)
-    set(UNIQUE)
-    set(PLATFORM)
+    unset(NAME)
+    unset(OPTIONS)
+    unset(VERSION)
+    unset(TYPE)
+    unset(START)
+    unset(DEPENDENCIES)
+    unset(REQUIREMENTS)
+    unset(CPPUNITTEST_OPTIONS)
+    unset(UNIQUE)
+    unset(PLATFORM)
 
     include("${PROPERTIES_FILE}")
 endmacro()
