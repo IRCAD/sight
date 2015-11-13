@@ -436,6 +436,24 @@ void VtkRenderService::starting() throw(fwTools::Failed)
                 ::fwServices::helper::Config::createConnections(*iter, m_connections);
             }
         }
+        else if((*iter)->getName() == "proxy")
+        {
+            if((*iter)->hasAttribute("waitForKey"))
+            {
+                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+                std::string key = (*iter)->getAttributeValue("waitForKey");
+                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
+                if(iterComposite != composite->end())
+                {
+                    this->manageProxy(key, iterComposite->second, *iter);
+                }
+                m_connect.push_back(*iter);
+            }
+            else
+            {
+                ::fwServices::helper::Config::createProxy("self", *iter, m_proxyMap);
+            }
+        }
         else
         {
             OSLM_ASSERT("Bad scene configurationType, unknown xml node : " << (*iter)->getName(), false);
@@ -745,13 +763,17 @@ void VtkRenderService::connectAfterWait(::fwData::Composite::sptr composite)
         {
             this->manageConnection(element.first, element.second, connect);
         }
+        for(::fwRuntime::ConfigurationElement::sptr proxy :  m_proxies)
+        {
+            this->manageProxy(element.first, element.second, proxy);
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::manageConnection(const std::string key, const ::fwTools::Object::sptr &obj,
-                                        ConfigurationType config)
+void VtkRenderService::manageConnection(const std::string &key, const ::fwData::Object::sptr &obj,
+                                        const ConfigurationType &config)
 {
     if(config->hasAttribute("waitForKey"))
     {
@@ -777,6 +799,21 @@ void VtkRenderService::manageConnection(const std::string key, const ::fwTools::
 
 //-----------------------------------------------------------------------------
 
+void VtkRenderService::manageProxy(const std::string &key, const ::fwData::Object::sptr &obj,
+                                   const ConfigurationType &config)
+{
+    if(config->hasAttribute("waitForKey"))
+    {
+        std::string waitForKey = config->getAttributeValue("waitForKey");
+        if(waitForKey == key)
+        {
+            ::fwServices::helper::Config::createProxy(key, config, m_proxyMap, obj);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void VtkRenderService::disconnect(::fwData::Composite::sptr composite)
 {
 
@@ -788,6 +825,8 @@ void VtkRenderService::disconnect(::fwData::Composite::sptr composite)
             m_objectConnections[key]->disconnect();
             m_objectConnections.erase(key);
         }
+
+        ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
     }
 }
 

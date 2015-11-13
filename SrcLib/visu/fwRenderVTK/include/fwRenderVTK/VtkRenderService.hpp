@@ -7,22 +7,21 @@
 #ifndef __FWRENDERVTK_VTKRENDERSERVICE_HPP__
 #define __FWRENDERVTK_VTKRENDERSERVICE_HPP__
 
+#include "fwRenderVTK/config.hpp"
+#include "fwRenderVTK/IVtkRenderWindowInteractorManager.hpp"
+
+#include <fwData/Composite.hpp>
+
+#include <fwRender/IRender.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwServices/helper/Config.hpp>
+#include <fwServices/helper/SigSlotConnection.hpp>
+
 #include <fwThread/Timer.hpp>
 
 #include <map>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-
-#include <fwRender/IRender.hpp>
-
-#include <fwData/Composite.hpp>
-
-#include "fwRenderVTK/config.hpp"
-#include "fwRenderVTK/IVtkRenderWindowInteractorManager.hpp"
-
-#include <fwThread/Timer.hpp>
 
 class vtkRenderWindow;
 class vtkRenderer;
@@ -127,6 +126,11 @@ protected:
                 <signal>objectModified</signal><!-- signal for object "tm3dKey" -->
                 <slot>serviceUid/updateTM</slot>
             </connect>
+
+            <proxy channel="myChannel">
+                <signal>adaptor2UID/modified</signal>
+                <slot>service2Uid/updateTM</slot>
+            </proxy>
         </scene>
         <fps>30</fps>
        </service>
@@ -157,7 +161,7 @@ protected:
      *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used
      *     when the adaptor works on the scene's composite.
      *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
-     *  - \b connect : not mandatory, connects signal to slot
+     *  - \b connect/proxy : not mandatory, connects signal to slot
      *    - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
      *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
      *         object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
@@ -255,8 +259,12 @@ private:
     void connectAfterWait(SPTR(::fwData::Composite) composite);
 
     /// Creates the connection given by the configuration for obj associated with the key in the composite.
-    void manageConnection(const std::string key, const ::fwTools::Object::sptr &obj,
-                          ConfigurationType config);
+    void manageConnection(const std::string &key, const ::fwData::Object::sptr &obj,
+                          const ConfigurationType &config);
+
+    /// Creates the proxy given by the configuration for obj associated with the key in the composite.
+    void manageProxy(const std::string &key, const ::fwData::Object::sptr &obj,
+                     const ConfigurationType &config);
 
     /// Disconnects the connection based on a object key
     void disconnect(SPTR(::fwData::Composite) composite);
@@ -264,9 +272,15 @@ private:
     /// Signal/ Slot connection
     ::fwServices::helper::SigSlotConnection::sptr m_connections;
 
+    /// Map to register proxy connections
+    ::fwServices::helper::Config::ProxyConnectionsMapType m_proxyMap;
+
     typedef std::vector< ConfigurationType > ConnectConfigType;
     /// vector containing all the connections configurations
     ConnectConfigType m_connect;
+
+    /// vector containing all the proxy configurations
+    ConnectConfigType m_proxies;
 
     typedef std::map< std::string, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
     /// map containing the object key/connection relation

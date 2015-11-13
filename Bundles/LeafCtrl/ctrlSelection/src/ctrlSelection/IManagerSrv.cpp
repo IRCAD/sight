@@ -83,96 +83,15 @@ void IManagerSrv::manageProxies(const std::string &objectId, ::fwData::Object::s
 {
     for(ConfigurationType proxyCfg :  config->find("proxy"))
     {
-        this->manageProxy(objectId, object, proxyCfg);
+        ::fwServices::helper::Config::createProxy(objectId, proxyCfg, m_proxyCtns, object);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void IManagerSrv::manageProxy(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config)
-{
-    ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
-
-    SLM_ASSERT("Missing 'channel' attribute", config->hasAttribute("channel"));
-    const std::string channel = config->getExistingAttributeValue("channel");
-    ProxyConnections proxyCnt(channel);
-
-    ::boost::regex re("(.*)/(.*)");
-    ::boost::smatch match;
-    std::string src, uid, key;
-    for(::fwRuntime::ConfigurationElement::csptr elem :   config->getElements())
-    {
-        src = elem->getValue();
-        if( ::boost::regex_match(src, match, re) )
-        {
-            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
-            uid.assign(match[1].first, match[1].second);
-            key.assign(match[2].first, match[2].second);
-
-            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName(),
-                        !uid.empty() && !key.empty());
-
-            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
-
-            if (elem->getName() == "signal")
-            {
-                ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
-                ::fwCom::SignalBase::sptr sig        = hasSignals->signal(key);
-                proxy->connect(channel, sig);
-                proxyCnt.addSignalConnection(uid, key);
-            }
-            else if (elem->getName() == "slot")
-            {
-                ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
-                ::fwCom::SlotBase::sptr slot     = hasSlots->slot(key);
-                proxy->connect(channel, slot);
-                proxyCnt.addSlotConnection(uid, key);
-            }
-        }
-        else
-        {
-            uid = object->getID();
-            key = src;
-            SLM_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
-            ::fwCom::SignalBase::sptr sig = object->signal(key);
-            proxy->connect(channel, sig);
-            proxyCnt.addSignalConnection(uid, key);
-        }
-    }
-    m_proxyCtns[objectId].push_back(proxyCnt);
 }
 
 //-----------------------------------------------------------------------------
 
 void IManagerSrv::disconnectProxies(const std::string &objectId)
 {
-    ProxyConnectionsMapType::iterator iter = m_proxyCtns.find(objectId);
-    if (iter != m_proxyCtns.end())
-    {
-        ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
-
-        ProxyConnectionsVectType vectProxyConnections = iter->second;
-
-        for(ProxyConnectionsVectType::value_type proxyConnections :   vectProxyConnections)
-        {
-            for(ProxyConnections::ProxyEltType signalElt :  proxyConnections.m_signals)
-            {
-                ::fwTools::Object::sptr obj          = ::fwTools::fwID::getObject(signalElt.first);
-                ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
-                ::fwCom::SignalBase::sptr sig        = hasSignals->signal(signalElt.second);
-                proxy->disconnect(proxyConnections.m_channel, sig);
-            }
-            for(ProxyConnections::ProxyEltType slotElt :  proxyConnections.m_slots)
-            {
-                ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotElt.first);
-                ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
-                ::fwCom::SlotBase::sptr slot     = hasSlots->slot(slotElt.second);
-                proxy->disconnect(proxyConnections.m_channel, slot);
-            }
-        }
-        vectProxyConnections.clear();
-    }
-    m_proxyCtns.erase(objectId);
+    ::fwServices::helper::Config::disconnectProxies(objectId, m_proxyCtns);
 }
 
 //-----------------------------------------------------------------------------

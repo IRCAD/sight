@@ -10,7 +10,12 @@
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
+#include <fwCom/SignalBase.hpp>
+
+#include <fwData/Object.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
+
 #include <fwTools/Object.hpp>
 
 #include <boost/regex.hpp>
@@ -92,6 +97,101 @@ void Config::createConnections(
         connections->connect(hasSignals, signalInfo.second, hasSlots, slotInfo.second);
     }
 }
+
+//-----------------------------------------------------------------------------
+
+void Config::createProxy(
+    const std::string &objectKey,
+    CSPTR(::fwRuntime::ConfigurationElement)cfg,
+    Config::ProxyConnectionsMapType &proxyMap,
+    const SPTR(::fwData::Object)& obj)
+{
+    ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+
+    SLM_ASSERT("Missing 'channel' attribute", cfg->hasAttribute("channel"));
+    const std::string channel = cfg->getExistingAttributeValue("channel");
+    ProxyConnections proxyCnt(channel);
+
+    ::boost::regex re("(.*)/(.*)");
+    ::boost::smatch match;
+    std::string src, uid, key;
+    for(::fwRuntime::ConfigurationElement::csptr elem :   cfg->getElements())
+    {
+        src = elem->getValue();
+        if( ::boost::regex_match(src, match, re) )
+        {
+            OSLM_ASSERT("Wrong value for attribute src: "<<src, match.size() >= 3);
+            uid.assign(match[1].first, match[1].second);
+            key.assign(match[2].first, match[2].second);
+
+            OSLM_ASSERT(src << " configuration is not correct for "<< elem->getName(),
+                        !uid.empty() && !key.empty());
+
+            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(uid);
+
+            if (elem->getName() == "signal")
+            {
+                ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+                ::fwCom::SignalBase::sptr sig        = hasSignals->signal(key);
+                proxy->connect(channel, sig);
+                proxyCnt.addSignalConnection(uid, key);
+            }
+            else if (elem->getName() == "slot")
+            {
+                ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                ::fwCom::SlotBase::sptr slot     = hasSlots->slot(key);
+                proxy->connect(channel, slot);
+                proxyCnt.addSlotConnection(uid, key);
+            }
+        }
+        else
+        {
+            uid = obj->getID();
+            key = src;
+            SLM_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
+            ::fwCom::SignalBase::sptr sig = obj->signal(key);
+            proxy->connect(channel, sig);
+            proxyCnt.addSignalConnection(uid, key);
+        }
+    }
+    proxyMap[objectKey].push_back(proxyCnt);
+}
+
+//-----------------------------------------------------------------------------
+
+void Config::disconnectProxies(const std::string &objectKey, Config::ProxyConnectionsMapType &proxyMap)
+{
+    ProxyConnectionsMapType::iterator iter = proxyMap.find(objectKey);
+    if (iter != proxyMap.end())
+    {
+        ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+
+        ProxyConnectionsVectType vectProxyConnections = iter->second;
+
+        for(ProxyConnectionsVectType::value_type proxyConnections :   vectProxyConnections)
+        {
+            for(ProxyConnections::ProxyEltType signalElt :  proxyConnections.m_signals)
+            {
+                ::fwTools::Object::sptr obj          = ::fwTools::fwID::getObject(signalElt.first);
+                ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
+                ::fwCom::SignalBase::sptr sig        = hasSignals->signal(signalElt.second);
+                proxy->disconnect(proxyConnections.m_channel, sig);
+            }
+            for(ProxyConnections::ProxyEltType slotElt :  proxyConnections.m_slots)
+            {
+                ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotElt.first);
+                ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+                ::fwCom::SlotBase::sptr slot     = hasSlots->slot(slotElt.second);
+                proxy->disconnect(proxyConnections.m_channel, slot);
+            }
+        }
+        vectProxyConnections.clear();
+        proxyMap.erase(objectKey);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 
 } // namespace helper
 } // namespace fwServices

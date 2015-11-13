@@ -147,6 +147,10 @@ void Render::configuring() throw ( ::fwTools::Failed )
         {
             m_connect.push_back(*iter);
         }
+        else if((*iter)->getName() == "proxy")
+        {
+            m_proxies.push_back(*iter);
+        }
         else
         {
             OSLM_ASSERT("Bad scene configurationType, unknown xml node : " << (*iter)->getName(), false);
@@ -189,6 +193,13 @@ void Render::starting() throw ( ::fwTools::Failed )
             ::fwServices::helper::Config::createConnections(connect, m_connections);
         }
     }
+    for(const ::fwRuntime::ConfigurationElement::sptr& proxy : m_proxies)
+    {
+        if(!proxy->hasAttribute("waitForKey"))
+        {
+            ::fwServices::helper::Config::createProxy("self", proxy, m_proxyMap);
+        }
+    }
     this->connectAfterWait(composite);
 }
 
@@ -222,6 +233,18 @@ void Render::connectAfterWait(::fwData::Composite::sptr composite)
                 }
             }
         }
+
+        for(const ::fwRuntime::ConfigurationElement::sptr& proxy : m_proxies)
+        {
+            if(proxy->hasAttribute("waitForKey"))
+            {
+                std::string waitForKey = proxy->getAttributeValue("waitForKey");
+                if(waitForKey == key)
+                {
+                    ::fwServices::helper::Config::createProxy(key, proxy, m_proxyMap, element.second);
+                }
+            }
+        }
     }
 }
 
@@ -238,6 +261,8 @@ void Render::disconnect(::fwData::Composite::sptr composite)
             m_objectConnections[key]->disconnect();
             m_objectConnections.erase(key);
         }
+
+        ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
     }
 }
 

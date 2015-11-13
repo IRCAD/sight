@@ -12,7 +12,9 @@
 #include "scene2D/data/Coord.hpp"
 
 #include <fwRender/IRender.hpp>
+#include <fwServices/helper/Config.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
+
 #include <scene2D/data/Axis.hpp>
 #include <scene2D/data/Viewport.hpp>
 
@@ -335,10 +337,15 @@ private:
     typedef std::vector< ::fwRuntime::ConfigurationElement::sptr > ConnectConfigType;
     /// vector containing all the connections configurations
     ConnectConfigType m_connect;
+    /// vector containing all the proxy configurations
+    ConnectConfigType m_proxies;
 
     typedef std::map< std::string, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
     /// map containing the object key/connection relation
     ObjectConnectionsMapType m_objectConnections;
+
+    /// Map to register proxy connections
+    ::fwServices::helper::Config::ProxyConnectionsMapType m_proxyMap;
 };
 
 
