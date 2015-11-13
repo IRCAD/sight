@@ -15,11 +15,7 @@
 
                 <xi:include href="configurations/frameAndViews.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-                    <snap>
-                        <scene uid="genericScene" />
-                    </snap>
-                </service>
+                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no"/>
 
                 <item key="image">
                     <object uid="imageUID"  type="::fwData::Image">
@@ -70,7 +66,7 @@
                                 <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
                                     <config renderer="default" picker="picker" slices="3" sliceIndex="axial" />
                                 </adaptor>
-                                <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                     <config renderer="default" />
                                 </adaptor>
 
@@ -96,6 +92,11 @@
                                 <proxy channel="ModelDisplayChannel" waitForKey="modelSeries">
                                     <slot>modelSeriesAdaptorUid/showReconstructions</slot>
                                 </proxy>
+                                
+                                <connect>
+                                    <signal>snapshotScene1Editor/snapped</signal>
+                                    <slot>snapshotUID/snap</slot>
+                                </connect>
                             </scene>
                         </service>
                         
@@ -107,10 +108,6 @@
 
                                 <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid2" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                     <config renderer="default" picker="" autoresetcamera="no" />
-                                </adaptor>
-
-                                <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                    <config renderer="default" />
                                 </adaptor>
 
                                 <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="view2">

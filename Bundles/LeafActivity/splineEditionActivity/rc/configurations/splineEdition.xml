@@ -347,22 +347,22 @@
                         <config>
 
                             <object id="modelSeries" type="::fwMedData::ModelSeries">
-                                <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKey" autoConnect="yes">
-                                    <config id="OrganManagerWithSeries" title="Organ manager" />
-                                    <key id="self" pattern="ORGAN_MANAGER_MODELSERIES" />
-                                    <replace pattern="ICON_PATH" val="${ICON_PATH}" />
-                                    <replace pattern="GENERIC_UID" val="${GENERIC_UID}" /> 
-                                    <replace pattern="ModelRepresentationChannel" val="ModelRepresentationChannel" /> 
+                                <service uid="${GENERIC_UID}_action_organManager" impl="::gui::action::SConfigLauncher" type="::fwGui::IActionSrv" autoConnect="yes">
+                                   <config>
+                                        <appConfig id="OrganManagerWithSeries" >
+                                            <parameters>
+                                                <parameter replace="ORGAN_MANAGER_MODELSERIES" by="self"  />
+                                                <parameter replace="ICON_PATH" by="${ICON_PATH}"  />
+                                                <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel"  />
+                                            </parameters>
+                                        </appConfig>
+                                    </config>
                                 </service>
                             </object>
                         </config>
                     </service>
 
-                    <service uid="${GENERIC_UID}_ActionSnapshotVR" impl="::uiVisu::action::SSnapshot" type="::fwGui::IActionSrv" autoConnect="no">
-                        <snap>
-                            <scene uid="${GENERIC_UID}_camView" />
-                        </snap>
-                    </service>
+                    <service uid="${GENERIC_UID}_ActionSnapshotVR" impl="::uiVisu::action::SSnapshot" type="::fwGui::IActionSrv" autoConnect="no"/>
 
                     <!-- Negato1-->
                     <service uid="${GENERIC_UID}_negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
@@ -371,10 +371,6 @@
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
 
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -406,10 +402,6 @@
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
 
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -443,10 +435,6 @@
 
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
-
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
                             </adaptor>
@@ -478,7 +466,7 @@
 
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                            <adaptor id="snapshot1" uid="${GENERIC_UID}_snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                 <config renderer="default" />
                             </adaptor>
 
@@ -505,6 +493,11 @@
                             <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
                                 <slot>${GENERIC_UID}_modelSeriesAdaptorUid/updateNormalMode</slot>
                             </proxy>
+                            
+                            <connect>
+                                <signal>${GENERIC_UID}_ActionSnapshotVR/snapped</signal>
+                                <slot>${GENERIC_UID}_snapshotUID/snap</slot>
+                            </connect>
 
                         </scene>
                     </service>
@@ -626,8 +619,9 @@
 
                     </service>
 
-                    <service uid="${GENERIC_UID}_translateUpdater" impl="::ctrlSelection::updater::TranslateUpdater" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <translate fromUID="${GENERIC_UID}_VRParam" fromKey="Lights" toKey="VisuLights" />
+                    <service uid="${GENERIC_UID}_translateUpdater" impl="::ctrlSelection::updater::STranslate" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <source>${GENERIC_UID}_VRParam</source>
+                        <translate fromKey="Lights" toKey="VisuLights" />
                     </service>
 
                     <service uid="${GENERIC_UID}_navigationEditor" type="::gui::editor::IEditor" impl="::uiNavigation::SNavigationEditor" autoConnect="yes">
@@ -758,11 +752,6 @@
                 <signal>${GENERIC_UID}_VisuComposite/objectModified</signal>
                 <slot>${GENERIC_UID}_splinePointsEditor/receive</slot>
             </connect> 
-
-            <connect>
-                <signal>${GENERIC_UID}_VRParam/objectModified</signal>
-                <slot>${GENERIC_UID}_translateUpdater/receive</slot>  
-            </connect>
 
             <connect>
                 <signal>${GENERIC_UID}_splinePointsEditor/pointSelected</signal>

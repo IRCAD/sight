@@ -45,10 +45,6 @@
 
                     <renderer id="default" background="0.0" />
 
-                    <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
-
                     <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                         <config renderer="default" style="InteractorStyle3DForNegato" />
                     </adaptor>

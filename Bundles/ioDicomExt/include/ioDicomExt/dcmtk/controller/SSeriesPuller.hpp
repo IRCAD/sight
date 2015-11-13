@@ -160,7 +160,7 @@ protected:
     /// Slot to call progressCallback method
     ::fwDicomIOExt::dcmtk::SeriesEnquirer::ProgressCallbackSlotType::sptr m_slotProgressCallback;
 
-    /// Signal that emits CompositeMsg when the bar is progressing
+    /// Signal that emits message when the bar is progressing
     ProgressBarSignalType::sptr m_sigProgressBar;
 
     /// Series enquirer

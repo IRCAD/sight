@@ -197,10 +197,6 @@
 
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
-
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
                             </adaptor> 
@@ -231,10 +227,6 @@
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
 
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -275,10 +267,6 @@
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
 
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />

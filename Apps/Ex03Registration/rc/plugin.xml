@@ -161,11 +161,7 @@ Detail of the ToolBar
                     <view sid="distanceNegato1Editor" start="yes" />
                 </registry>
             </service>
-            <service uid="snapshotNegato1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-                <snap>
-                    <scene uid="negato1" />
-                </snap>
-            </service>
+            <service uid="snapshotNegato1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no"/>
 
             <!-- Action to load an image in the Tab 1 (Point list 1)-->
             <service uid="actionOpenFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
@@ -215,7 +211,7 @@ Detail of the ToolBar
 
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                            <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                 <config renderer="default" />
                             </adaptor>
 
@@ -238,6 +234,11 @@ Detail of the ToolBar
                             <adaptor id="pl1" class="::visuVTKAdaptor::LabeledPointList" objectId="pointList1">
                                 <config renderer="default" picker="negato1default" />
                             </adaptor>
+                            
+                            <connect>
+                                <signal>snapshotNegato1Editor/snapped</signal>
+                                <slot>snapshotUID/snap</slot>
+                            </connect>
 
                         </scene>
                     </service>

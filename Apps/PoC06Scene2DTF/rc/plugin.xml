@@ -125,11 +125,7 @@
                     </registry>
                 </service>
 
-                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-                    <snap>
-                        <scene uid="genericScene" />
-                    </snap>
-                </service>
+                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
 
                 <!-- image description -->
                 <item key="image">
@@ -169,7 +165,7 @@
                                     <config xMin="-500" xMax="500" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" opacity="0.4" viewportUID="GENERIC_UID_Viewport" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="2" />
                                 </adaptor>
 
-                                <!-- <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self"> <config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" /> </adaptor> <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self"> <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" 
+                                <!-- <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self"> <config x1="-500" x2="500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" /> </adaptor> <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self"> <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis"
                                     zValue="3" /> </adaptor> -->
 
                                 <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
@@ -335,13 +331,18 @@
                                     <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                 </adaptor>
 
-                                <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                                <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                     <config renderer="default" />
                                 </adaptor>
 
                                 <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="image">
                                     <config renderer="default" picker="negato2default" text="" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                 </adaptor>
+
+                                <connect>
+                                    <signal>snapshotScene1Editor/snapped</signal>
+                                    <slot>snapshotUID/snap</slot>
+                                </connect>
 
                             </scene>
                         </service>
@@ -351,7 +352,7 @@
                         </item>
 
                         <!-- <item key="histogramPoint"> <object uid="GENERIC_UID_HistogramPoint" type="::fwData::Point" /> </item> -->
-                        <proxy channel="UPDATER_CHANNEL" >
+                        <proxy channel="UPDATER_CHANNEL">
                             <signal>imageUID/objectModified</signal>
                             <slot>updaterUID/receive</slot>
                         </proxy>
