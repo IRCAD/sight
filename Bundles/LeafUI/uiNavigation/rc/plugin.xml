@@ -1,4 +1,4 @@
-<plugin id="uiNavigation" class="::uiNavigation::Plugin">
+<plugin id="uiNavigation" class="::uiNavigation::Plugin" version="@DASH_VERSION@" >
 
     <library name="uiNavigation" />
 

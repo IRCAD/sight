@@ -1,4 +1,4 @@
-<plugin id="dicomPacsReaderActivity">
+<plugin id="dicomPacsReaderActivity" version="@DASH_VERSION@" >
 
     <requirement id="activities" />
     <requirement id="ctrlMemory" />

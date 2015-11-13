@@ -1,4 +1,4 @@
-<plugin id="opSofa" class="::opSofa::Plugin">
+<plugin id="opSofa" class="::opSofa::Plugin" version="@DASH_VERSION@" >
 
     <library name="opSofa" />
 

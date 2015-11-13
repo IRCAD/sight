@@ -30,7 +30,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
  -->
 
-<plugin id="Ex01VolumeRendering">
+<plugin id="Ex01VolumeRendering" version="@DASH_VERSION@" >
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex01VolumeRendering</id>

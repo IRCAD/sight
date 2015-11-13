@@ -1,4 +1,4 @@
-<plugin id="DemoComSofaConfiguration">
+<plugin id="DemoComSofaConfiguration" version="@DASH_VERSION@" >
     
     <extension implements="::fwServices::registry::AppConfig">
         <id>DemoComSofaConfigurationID</id>

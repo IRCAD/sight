@@ -1,4 +1,4 @@
-<plugin id="uiViewPoints" class="::uiViewPoints::Plugin">
+<plugin id="uiViewPoints" class="::uiViewPoints::Plugin" version="@DASH_VERSION@" >
 
     <library name="uiViewPoints" />
 

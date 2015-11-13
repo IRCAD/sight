@@ -1,4 +1,4 @@
-<plugin id="uiSpline" class="::uiSpline::Plugin">
+<plugin id="uiSpline" class="::uiSpline::Plugin" version="@DASH_VERSION@" >
 
     <library name="uiSpline" />
 

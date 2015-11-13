@@ -1,4 +1,4 @@
-﻿<plugin id="PoC07TimeLine" class="::PoC07TimeLine::Plugin">
+﻿<plugin id="PoC07TimeLine" class="::PoC07TimeLine::Plugin" version="@DASH_VERSION@" >
 
     <library name="PoC07TimeLine" />
 

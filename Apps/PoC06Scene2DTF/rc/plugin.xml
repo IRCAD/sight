@@ -1,4 +1,4 @@
-<plugin id="PoC06Scene2DTF">
+<plugin id="PoC06Scene2DTF" version="@DASH_VERSION@" >
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoScene2DTFConfig</id>

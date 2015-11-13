@@ -1,4 +1,4 @@
-<plugin id="extDataReg" class="::extDataReg::Plugin" version="0.1">
+<plugin id="extDataReg" class="::extDataReg::Plugin" version="@DASH_VERSION@" >
     
     <library name="extDataReg" />
 

@@ -1,4 +1,4 @@
-<plugin id="splineEditionActivity">
+<plugin id="splineEditionActivity" version="@DASH_VERSION@" >
 
     <requirement id="2DVisualizationActivity" />
     <requirement id="3DVisualizationActivity" />

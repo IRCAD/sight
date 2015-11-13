@@ -1,4 +1,4 @@
-<plugin id="PoC04SofaInteractive">
+<plugin id="PoC04SofaInteractive" version="@DASH_VERSION@" >
     
     <extension implements="::fwServices::registry::AppConfig">
         <id>PoC04SofaInteractive</id>

@@ -1,4 +1,4 @@
-<plugin id="ctrlCamp" class="::ctrlCamp::Plugin" version="0.1">
+<plugin id="ctrlCamp" class="::ctrlCamp::Plugin" version="@DASH_VERSION@" >
     
     <library name="ctrlCamp" />
 

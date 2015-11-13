@@ -1,4 +1,4 @@
-<plugin id="ctrlPointSelection" class="::ctrlPointSelection::Plugin">
+<plugin id="ctrlPointSelection" class="::ctrlPointSelection::Plugin" version="@DASH_VERSION@" >
 
     <library name="ctrlPointSelection" />
 

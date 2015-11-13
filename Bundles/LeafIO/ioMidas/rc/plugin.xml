@@ -1,4 +1,4 @@
-<plugin id="ioMidas" class="ioMidas::Plugin" >
+<plugin id="ioMidas" class="ioMidas::Plugin"  version="@DASH_VERSION@" >
     <library name="ioMidas" />
 
     <requirement id="io" />

@@ -1,4 +1,4 @@
-<plugin id="ioDicom" class="ioDicom::Plugin" >
+<plugin id="ioDicom" class="ioDicom::Plugin"  version="@DASH_VERSION@" >
     <library name="ioDicom" />
 
     <requirement id="dataReg"/>

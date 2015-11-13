@@ -1,4 +1,4 @@
-<plugin id="TutoDevForum">
+<plugin id="TutoDevForum" version="@DASH_VERSION@" >
 
     <xi:include href="configurations/config-00.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/config-01.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

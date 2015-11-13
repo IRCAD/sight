@@ -1,4 +1,4 @@
-<plugin id="PoC03MeshManualRegistration">
+<plugin id="PoC03MeshManualRegistration" version="@DASH_VERSION@" >
 
     <xi:include href="configurations/organManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/manualRegistrationEditorConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

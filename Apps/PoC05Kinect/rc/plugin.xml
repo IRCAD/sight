@@ -1,4 +1,4 @@
-<plugin id="PoC05Kinect">
+<plugin id="PoC05Kinect" version="@DASH_VERSION@" >
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>PoC05Kinect</id>

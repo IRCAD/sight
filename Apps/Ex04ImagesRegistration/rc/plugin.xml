@@ -51,7 +51,7 @@
     Step 2 : The user loads an image in the second Tab by using the button (openFile2).
     Step 3 : The user goes to the third tab and click on compute to see the result of the subtract between the two images.
 -->
-<plugin id="Ex04ImagesRegistration">
+<plugin id="Ex04ImagesRegistration" version="@DASH_VERSION@" >
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex04ImagesRegistrationConfig</id>

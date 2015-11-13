@@ -1,4 +1,4 @@
-<plugin id="opKinect" class="::opKinect::Plugin">
+<plugin id="opKinect" class="::opKinect::Plugin" version="@DASH_VERSION@" >
 
     <library name="opKinect" />
 

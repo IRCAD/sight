@@ -1,4 +1,4 @@
-<plugin id="basicRegistration" class="::basicRegistration::Plugin">
+<plugin id="basicRegistration" class="::basicRegistration::Plugin" version="@DASH_VERSION@" >
     
     <library name="basicRegistration" />
 

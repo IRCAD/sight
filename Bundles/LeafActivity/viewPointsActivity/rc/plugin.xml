@@ -1,4 +1,4 @@
-<plugin id="viewPointsActivity">
+<plugin id="viewPointsActivity" version="@DASH_VERSION@" >
 
     <requirement id="2DVisualizationActivity" />
     <requirement id="3DVisualizationActivity" />

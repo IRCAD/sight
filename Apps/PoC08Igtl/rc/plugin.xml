@@ -1,4 +1,4 @@
-<plugin id="PoC08Igtl">
+<plugin id="PoC08Igtl" version="@DASH_VERSION@" >
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>PoC08Igtl</id>

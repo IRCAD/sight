@@ -1,4 +1,4 @@
-<plugin id="visuNavigation" class="::visuNavigation::Plugin">
+<plugin id="visuNavigation" class="::visuNavigation::Plugin" version="@DASH_VERSION@" >
 
     <library name="visuNavigation" />
 

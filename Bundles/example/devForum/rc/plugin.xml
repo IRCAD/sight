@@ -1,4 +1,4 @@
-<plugin id="devForum" class="::devForum::Plugin" >
+<plugin id="devForum" class="::devForum::Plugin"  version="@DASH_VERSION@" >
 
     <library name="devForum" />
 

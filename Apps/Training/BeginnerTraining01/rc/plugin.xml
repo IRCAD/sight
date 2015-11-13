@@ -1,4 +1,4 @@
-<plugin id="BeginnerTraining01">
+<plugin id="BeginnerTraining01" version="@DASH_VERSION@" >
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>BeginnerTraining01Config</id>

@@ -1,4 +1,4 @@
-<plugin id="Ex02ImageMix">
+<plugin id="Ex02ImageMix" version="@DASH_VERSION@" >
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex02ImageMix</id>
