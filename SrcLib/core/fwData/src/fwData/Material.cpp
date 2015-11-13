@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/Material.hpp"
@@ -12,6 +15,13 @@ fwDataRegisterMacro( ::fwData::Material );
 
 namespace fwData
 {
+
+//------------------------------------------------------------------------------
+
+const ::fwCom::Signals::SignalKeyType Material::s_ADDED_TEXTURE_SIG   = "addedTexture";
+const ::fwCom::Signals::SignalKeyType Material::s_REMOVED_TEXTURE_SIG = "removedTexture";
+
+//------------------------------------------------------------------------------
 
 Material::Material(::fwData::Object::Key key) :
     m_shadingMode(MODE_PHONG),
@@ -23,6 +33,8 @@ Material::Material(::fwData::Object::Key key) :
     m_diffuseTextureWrapping(REPEAT),
     m_lighting(true)
 {
+    newSignal< AddedTextureSignalType >(s_ADDED_TEXTURE_SIG);
+    newSignal< RemovedTextureSignalType >(s_REMOVED_TEXTURE_SIG);
 }
 
 //------------------------------------------------------------------------------

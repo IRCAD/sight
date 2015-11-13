@@ -188,6 +188,21 @@ public:
     void setDiffuseTextureWrapping (WrappingType _diffuseTextureWrapping);
     /// @}
 
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Type of signal when a texture is added
+    typedef ::fwCom::Signal< void (::fwData::Image::sptr) > AddedTextureSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_TEXTURE_SIG;
+
+    /// Type of signal when a texture is removed
+    typedef ::fwCom::Signal< void (::fwData::Image::sptr) > RemovedTextureSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_TEXTURE_SIG;
+    /**
+     * @}
+     */
+
 protected:
 
     /// Shading mode (flat, Gouraud, Phong)
