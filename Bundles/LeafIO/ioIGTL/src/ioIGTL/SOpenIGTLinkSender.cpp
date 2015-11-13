@@ -108,12 +108,6 @@ void SOpenIGTLinkSender::stopping() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::updating() throw (::fwTools::Failed)
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void SOpenIGTLinkSender::startSending()
 {
     if(!m_isSending)

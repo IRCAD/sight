@@ -81,11 +81,6 @@ protected:
     IOIGTL_API virtual void stopping() throw ( ::fwTools::Failed );
 
     /**
-     * @brief update the server
-     */
-    IOIGTL_API virtual void updating() throw ( ::fwTools::Failed );
-
-    /**
      * @brief change the port of the server use it before start
      */
     IOIGTL_API void setPort(boost::uint16_t const port) throw (::fwTools::Failed);
