@@ -80,6 +80,10 @@
                     <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPointsKey">
                         <config renderer="default" picker="negatodefault" />
                     </adaptor>
+                    <connect>
+                        <signal>${GENERIC_UID}_sliceListNegatoEditor/selected</signal>
+                        <slot>${GENERIC_UID}_MPRNegato/updateSliceMode</slot>
+                    </connect>
 
                 </scene>
             </service>
@@ -87,10 +91,16 @@
             <item key="imageKey">
                 <object uid="${imageUid}" src="ref" type="::fwData::Image">
 
-                    <service uid="${GENERIC_UID}_sliceListNegatoEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor2" autoConnect="yes">
-                        <negatoAdaptor uid="${GENERIC_UID}_MPRNegato" slices="3" />
+                    <service uid="${GENERIC_UID}_sliceListNegatoEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
+                        <toolTip>Manage slice visibility</toolTip>
+                        <selected>3</selected>
+                        <items>
+                            <item text="No slice" value="0" />
+                            <item text="One slice" value="1" />
+                            <item text="three slices" value="3" />
+                        </items>
                     </service>
-
+                    
                 </object>
             </item>
 

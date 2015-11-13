@@ -8,7 +8,6 @@
 
 #include <fwCom/Slots.hxx>
 #include <fwComEd/PointListMsg.hpp>
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 
 #include <fwData/String.hpp>
@@ -180,15 +179,10 @@ void SComputeCPR2D::receiving(::fwServices::ObjectMsg::csptr msg) throw (::fwToo
 
         image->setSize(imageSize);
 
-        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-        msg->addEvent(::fwComEd::ImageMsg::NEW_IMAGE);
-        msg->setSource(this->getSptr());
-        msg->setSubject( image);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
         }
     }
 }
@@ -228,16 +222,10 @@ void SComputeCPR2D::computeCPRImage()
     OSLM_DEBUG("Number of pixels in height " << nbRow);
 
     // Notify
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent(::fwComEd::ImageMsg::NEW_IMAGE);
-    msg->addEvent(::fwComEd::ImageMsg::MODIFIED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( image);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

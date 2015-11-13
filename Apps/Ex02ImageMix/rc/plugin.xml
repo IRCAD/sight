@@ -150,16 +150,13 @@
                 <item key="compositeVisu">
                     <object uid="compositeVisu" type="::fwData::Composite">
 
-                        <service uid="updaterImgUID" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="backgroundImage" onEvent="NEW_IMAGE" fromUID="backgroundImageUID" actionType="ADD_OR_SWAP"/>
-                            <update compositeKey="frontImage" onEvent="NEW_IMAGE" fromUID="frontImageUID" actionType="ADD_OR_SWAP"/>
+                        <service uid="updaterBackImgUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <uid>backgroundImageUID</uid>
+                            <compositeKey>backgroundImage</compositeKey>
                         </service>
-                        
-                        <!-- Service to forward received message with specified event to the composite's object with specified key (frontImage)
-                             It is use to forward the slider changes from background image to front image. So the images slider are synchronized. -->
-                        <service uid="forwarderMsg" impl="::ctrlSelection::wrapper::MsgForwarderSrv" type="::ctrlSelection::IWrapperSrv" autoConnect="no">
-                            <forward compositeKey="frontImage" onEvent="SLICE_INDEX" fromUID="*" msgType="::fwComEd::ImageMsg" />
-                            <forward compositeKey="frontImage" onEvent="CHANGE_SLICE_TYPE" fromUID="*" msgType="::fwComEd::ImageMsg" />
+                        <service uid="updaterFrontImgUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <uid>frontImageUID</uid>
+                            <compositeKey>frontImage</compositeKey>
                         </service>
 
                         <!-- Manager to start/stop/swap services when background/front images are added/deleted/swapped -->
@@ -193,11 +190,6 @@
                                     <service uid="windowLevel" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes">
                                         <config selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
                                     </service>
-                                    
-                                    <connect>
-                                        <signal>objectModified</signal>
-                                        <slot>forwarderMsg/receive</slot>
-                                    </connect>
                                 </object>
 
                                 <object id="frontImage" type="::fwData::Image">
@@ -227,6 +219,14 @@
                                     <service uid="windowLevel2" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes" >
                                          <config selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
                                     </service>
+                                    
+                                    <!-- Service to forward signal from backgroundImage to front image -->
+                                    <service uid="forwarderMsg" impl="::ctrlSelection::wrapper::SImageSignalForwarder" type="::ctrlSelection::IWrapperSrv" autoConnect="no">
+                                        <fromKey>compositeVisu[backgroundImage]</fromKey>
+                                        <forward>sliceIndexModified</forward>
+                                        <forward>sliceTypeModified</forward>
+                                    </service>
+                                    
                                 </object>
 
                             </config>
@@ -315,24 +315,29 @@
                                 <adaptor id="imagePicker2" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
+                                
                             </scene>
                         </service>
                         <item key="TFSelectionsKey">
                             <object uid="TFSelections" type="::fwData::Composite" />
                         </item>
                         
-                        <proxy channel="UPDATER_CHANNEL">
-                            <signal>backgroundImageUID/objectModified</signal>
-                            <signal>frontImageUID/objectModified</signal>
-                            <slot>updaterImgUID/receive</slot>
-                        </proxy>
+                        <connect>
+                            <signal>backgroundImageUID/modified</signal>
+                            <slot>updaterBackImgUID/addOrSwap</slot>
+                        </connect>
+                        <connect>
+                            <signal>frontImageUID/modified</signal>
+                            <slot>updaterFrontImgUID/addOrSwap</slot>
+                        </connect>
+
                     </object>
                 </item>
 
                 <start uid="MainFrame" />
-                <start uid="updaterImgUID" />
+                <start uid="updaterBackImgUID" />
+                <start uid="updaterFrontImgUID" />
                 <start uid="manager" />
-                <start uid="forwarderMsg" />
 
             </object>
 

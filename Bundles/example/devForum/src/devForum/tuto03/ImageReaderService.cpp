@@ -12,9 +12,6 @@
 
 #include <fwVtkIO/ImageReader.hpp>
 
-// Management of Image Message
-#include <fwComEd/ImageMsg.hpp>
-
 // Management of notifications
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -63,19 +60,11 @@ void ImageReaderService::notifyMessage()
     ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
     assert( associatedImage );
 
-    // Creation of an image message to say that image is an new image
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-
-    // Notifies message to all service listeners
-    msg->setSource( this->getSptr());
-    msg->setSubject( associatedImage);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig =
-        associatedImage->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig =
+        associatedImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg );
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

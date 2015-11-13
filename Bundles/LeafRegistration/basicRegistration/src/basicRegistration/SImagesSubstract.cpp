@@ -17,7 +17,6 @@
 #include <fwData/Image.hpp>
 
 
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/helper/Composite.hpp>
 
@@ -143,7 +142,7 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
             {
                 compositeHelper.add(imageResultName, imageResult);
             }
-            compositeHelper.notify(this->getSptr());
+            compositeHelper.notify();
         }
         else
         {

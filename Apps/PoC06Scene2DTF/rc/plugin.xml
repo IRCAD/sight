@@ -279,8 +279,9 @@
 
                         </service>
 
-                        <service uid="updaterUID" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="image" onEvent="NEW_IMAGE" fromUID="imageUID" actionType="ADD_OR_SWAP" />
+                        <service uid="updaterUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <uid>imageUID</uid>
+                            <compositeKey>image</compositeKey>
                         </service>
 
                         <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
@@ -291,14 +292,24 @@
                                     <!-- This service convert a simple fwData::Image to medical Image -->
                                     <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
 
-                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
-                                        <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
+                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
+                                        <config>
+                                            <checkable>true</checkable>
+                                            <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
+                                            <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                                            <iconWidth>40</iconWidth>
+                                            <iconHeight>16</iconHeight>
+                                            <checked>true</checked>
+                                        </config>
                                     </service>
-
-                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
-                                        <negatoAdaptor uid="MPRNegatoScene3D" />
+                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
+                                        <toolTip>Manage slice visibility</toolTip>
+                                        <selected>3</selected>
+                                        <items>
+                                            <item text="One slice" value="1" />
+                                            <item text="three slices" value="3" />
+                                        </items>
                                     </service>
-
                                     <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
                                         <sliceIndex>axial</sliceIndex>
                                     </service>
@@ -313,6 +324,10 @@
                                             </field>
                                         </config>
                                     </service>
+                                    <connect>
+                                        <signal>showScanEditor/toggled</signal>
+                                        <slot>sliceListEditor/setEnabled</slot>
+                                    </connect>
 
                                     <!-- Compute the histogram of 'image' and stores it into 'histogram' -->
                                     <!-- <service uid="computeHistogramSrv" type="::fwServices::IController" impl="::scene2D::ComputeHistogramSrv" autoConnect="yes"> <config compositeUID="compositeVisu" histogramKey="histogram" binsWidth="5.0" /> </service> -->
@@ -344,6 +359,16 @@
                                     <slot>snapshotUID/snap</slot>
                                 </connect>
 
+                                <connect waitForKey="image">
+                                    <signal>showScanEditor/toggled</signal>
+                                    <slot>MPRNegatoScene3D/showSlice</slot>
+                                </connect>
+
+                                <connect waitForKey="image">
+                                    <signal>sliceListEditor/selected</signal>
+                                    <slot>MPRNegatoScene3D/updateSliceMode</slot>
+                                </connect>
+
                             </scene>
                         </service>
 
@@ -351,11 +376,10 @@
                             <object uid="GENERIC_UID_Viewport" type="::scene2D::data::Viewport" />
                         </item>
 
-                        <!-- <item key="histogramPoint"> <object uid="GENERIC_UID_HistogramPoint" type="::fwData::Point" /> </item> -->
-                        <proxy channel="UPDATER_CHANNEL">
-                            <signal>imageUID/objectModified</signal>
-                            <slot>updaterUID/receive</slot>
-                        </proxy>
+                        <connect>
+                            <signal>imageUID/modified</signal>
+                            <slot>updaterUID/addOrSwap</slot>
+                        </connect>
 
                     </object>
                 </item>

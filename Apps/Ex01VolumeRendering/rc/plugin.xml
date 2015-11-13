@@ -216,8 +216,9 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 <item key="compositeVisu">
                     <object uid="compositeVisu" type="::fwData::Composite">
 
-                        <service uid="updaterUID" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="image" onEvent="NEW_IMAGE" fromUID="imageUID" actionType="ADD_OR_SWAP"/>
+                        <service uid="updaterUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <uid>imageUID</uid>
+                            <compositeKey>image</compositeKey>
                         </service>
 
                         <!-- Manager to start/stop/swap services when  image is added/deleted/swapped -->
@@ -233,12 +234,24 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                         <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                     </service>
 
-                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
-                                        <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
+                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
+                                        <toolTip>Manage slice visibility</toolTip>
+                                        <selected>3</selected>
+                                        <items>
+                                            <item text="One slice" value="1" />
+                                            <item text="three slices" value="3" />
+                                        </items>
                                     </service>
 
-                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
-                                        <negatoAdaptor uid="MPRNegatoScene3D" />
+                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
+                                        <config>
+                                            <checkable>true</checkable>
+                                            <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
+                                            <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                                            <iconWidth>40</iconWidth>
+                                            <iconHeight>16</iconHeight>
+                                            <checked>true</checked>
+                                        </config>
                                     </service>
 
                                     <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes" >
@@ -256,6 +269,11 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                             </field>
                                         </config>
                                     </service>
+                                    
+                                    <connect>
+                                        <signal>showScanEditor/toggled</signal>
+                                        <slot>sliceListEditor/setEnabled</slot>
+                                    </connect>
                                 </object>
 
                             </config>
@@ -296,7 +314,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                 </adaptor>
 
                                 <!-- Adaptor to visualize the medical image (image) in a 3D multi-planar rendering -->
-                                <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                                <adaptor id="MPRNegato3D" uid="MPRNegatoScene3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
                                     <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
                                 </adaptor>
 
@@ -307,6 +325,16 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                 <adaptor id="cameraScene3DID" class="::visuVTKAdaptor::Medical3DCamera" objectId="image">
                                     <config renderer="default" sliceIndex="axial" />
                                 </adaptor>
+                                
+                                <connect waitForKey="image">
+                                    <signal>showScanEditor/toggled</signal>
+                                    <slot>MPRNegatoScene3D/showSlice</slot>
+                                </connect>
+                                
+                                <connect waitForKey="image">
+                                    <signal>sliceListEditor/selected</signal>
+                                    <slot>MPRNegatoScene3D/updateSliceMode</slot>
+                                </connect>
 
                             </scene>
                         </service>
@@ -466,10 +494,10 @@ Comment: Name inside the drawing are the uid of the service defined below.
                             <object uid="Viewport" type="::scene2D::data::Viewport" />
                         </item>
 
-                        <proxy channel="UPDATER_CHANNEL" >
-                            <signal>imageUID/objectModified</signal>
-                            <slot>updaterUID/receive</slot>
-                        </proxy>
+                        <connect>
+                            <signal>imageUID/modified</signal>
+                            <slot>updaterUID/addOrSwap</slot>
+                        </connect>
 
                     </object>
                 </item>

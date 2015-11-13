@@ -152,13 +152,11 @@ Detail of the ToolBar
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="30" />
                         <view proportion="1" />
-                        <view proportion="0" minWidth="30" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="snapshotNegato1Editor" start="yes" />
                     <view sid="slider_negato1" start="no" />
-                    <view sid="distanceNegato1Editor" start="yes" />
                 </registry>
             </service>
             <service uid="snapshotNegato1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no"/>
@@ -313,10 +311,6 @@ Detail of the ToolBar
                             <!-- Editors for Negato1 -->
                             <service uid="slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                 <sliceIndex>axial</sliceIndex>
-                            </service>
-
-                            <service uid="distanceNegato1Editor" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
-                                <placeInScene uid="negato1" />
                             </service>
 
                         </object>

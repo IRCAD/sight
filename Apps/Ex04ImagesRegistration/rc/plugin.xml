@@ -219,6 +219,7 @@
                         <view sid="slider_negato3" />
                     </registry>
                 </service>
+                <service uid="snapshotNegato3Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
                 <!-- ACTIONS -->
                 <!-- Action to load an image in the Tab 1 -->
                 <service uid="openFile1" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
@@ -250,7 +251,6 @@
                                     <service uid="slider_negato3" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                         <sliceIndex>axial</sliceIndex>
                                     </service>
-                                    <service uid="snapshotNegato3Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
                                     <!-- Action to save an image in the Tab 3 -->
                                     <service uid="saveFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                                         <start uid="writerFile" />

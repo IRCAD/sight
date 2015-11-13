@@ -10,9 +10,6 @@
 // Services tools
 #include <fwServices/Base.hpp>
 
-// Management of Image Message
-#include <fwComEd/ImageMsg.hpp>
-
 #include "devForum/tuto03/ImageViewerService.hpp"
 
 namespace devForum
@@ -31,7 +28,6 @@ fwServicesRegisterMacro( ::fwRender::IRender, ::devForum::tuto03::ImageViewerSer
 ImageViewerService::ImageViewerService() throw()
     : ::devForum::tuto02::ImageViewerService()
 {
-    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
 }
 
 //-----------------------------------------------------------------------------
@@ -47,17 +43,6 @@ void ImageViewerService::configuring() throw ( ::fwTools::Failed )
 }
 //-----------------------------------------------------------------------------
 
-void ImageViewerService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    // If message is a ImageMsg and if event is NEW IMAGE
-    ::fwComEd::ImageMsg::csptr pImageMsg = ::fwComEd::ImageMsg::dynamicConstCast( _msg );
-    if ( pImageMsg && pImageMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) )
-    {
-        updateVTKPipeline();
-    }
-}
-
-//-----------------------------------------------------------------------------
 void ImageViewerService::stopping() throw ( ::fwTools::Failed )
 {
     ::devForum::tuto02::ImageViewerService::stopping();

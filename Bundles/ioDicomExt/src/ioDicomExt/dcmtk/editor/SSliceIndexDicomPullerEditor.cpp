@@ -17,7 +17,6 @@
 #include <fwComEd/helper/Array.hpp>
 #include <fwComEd/helper/Composite.hpp>
 #include <fwComEd/helper/SeriesDB.hpp>
-#include <fwComEd/ImageMsg.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
@@ -395,16 +394,11 @@ void SSliceIndexDicomPullerEditor::readImage(unsigned int selectedSliceIndex)
             {
                 // Copy buffer
                 oldImage->setDataArray(newImage->getDataArray(), false);
-                ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-                msg->addEvent(::fwComEd::ImageMsg::MODIFIED);
-                msg->setSource(this->getSptr());
-                msg->setSubject(  oldImage);
-                ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-                sig = oldImage->signal< ::fwData::Object::ObjectModifiedSignalType >(
-                    ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+                auto sig = oldImage->signal< ::fwData::Object::ModifiedSignalType >(
+                    ::fwData::Object::s_MODIFIED_SIG);
                 {
-                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                    sig->asyncEmit( msg);
+                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    sig->asyncEmit();
                 }
             }
             else
@@ -421,7 +415,7 @@ void SSliceIndexDicomPullerEditor::readImage(unsigned int selectedSliceIndex)
         m_sagittalIndex->setValue(newSize[1]/2);
         newImage->setField(::fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
 
-        helper.notify(this->getSptr());
+        helper.notify();
     }
 
     ::boost::system::error_code ec;

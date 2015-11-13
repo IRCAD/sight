@@ -26,6 +26,7 @@ set( REQUIREMENTS
     uiMedDataQt
     appXml
     opVTKMesh
+    media
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES PoC03MeshManualRegistration)

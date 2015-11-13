@@ -9,7 +9,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
 #include <fwServices/Base.hpp>
-#include <fwComEd/ImageMsg.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/InputDialog.hpp>
 
@@ -66,7 +65,6 @@ void SImageNetworkReader::updating() throw (::fwTools::Failed)
     ::fwData::String::sptr request;
     ::fwGui::dialog::MessageDialog msgDialog;
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    ::fwComEd::ImageMsg::sptr msg;
     ::fwData::Object::sptr obj = this->getObject();
 
     try
@@ -76,7 +74,6 @@ void SImageNetworkReader::updating() throw (::fwTools::Failed)
         m_socket = ::zmqNetwork::Socket::sptr(new ::zmqNetwork::Socket(::zmqNetwork::Socket::Client,
                                                                        ::zmqNetwork::Socket::Request));
         m_socket->start(m_host);
-        msg = ::fwComEd::ImageMsg::New();
         m_socket->sendObject(request);
         m_socket->receiveObject(obj);
         m_socket->sendObject(request);

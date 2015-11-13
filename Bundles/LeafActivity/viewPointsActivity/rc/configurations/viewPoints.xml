@@ -140,9 +140,10 @@
             <!-- GENERIC SCENE DEFINITION -->
             <item key="visuConfig">
                 <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
-
-                    <service uid="${GENERIC_UID}_viewPointsUpdater" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <update compositeKey="vectorViewPoints" onEvent="NEW_OBJECT" fromUID="*" actionType="ADD_OR_SWAP"/>
+                   
+                    <service uid="${GENERIC_UID}_viewPointsUpdater" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <uid>${ViewPointsVectorUid}</uid>
+                        <compositeKey>vectorViewPoints</compositeKey>
                     </service>
 
                     <service uid="${GENERIC_UID}_ActionShowVR" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="yes">
@@ -173,6 +174,7 @@
                                                 <parameter replace="TFSelectionsUid" by="${GENERIC_UID}_TFSelections" />
                                                 <parameter replace="selectedTFKey" by="SelectedTF" />
                                                 <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato" />
+                                                <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
                                             </parameters>
                                         </appConfig>
                                     </config>
@@ -191,12 +193,17 @@
                                     <crossType>full</crossType>
                                 </service>
 
-                                <service uid="${GENERIC_UID}_ActionShowHideBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::ActionNotifyService" autoConnect="no">
-                                    <notify type="::fwServices::ObjectMsg" event="SHOWHIDE_BOX_WIDGET" />
+                                <service uid="${GENERIC_UID}_ActionShowHideBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::SBooleanSlotCaller" autoConnect="no">
+                                    <slots>
+                                        <slot>${GENERIC_UID}_VolumeScene3DA/activateBoxClipping</slot>
+                                    </slots>
+                                    <state active="true" />
                                 </service>
-
-                                <service uid="${GENERIC_UID}_ActionResetBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::ActionNotifyService" autoConnect="no">
-                                    <notify type="::fwServices::ObjectMsg" event="RESET_BOX_WIDGET" />
+    
+                                <service uid="${GENERIC_UID}_ActionResetBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+                                    <slots>
+                                        <slot>${GENERIC_UID}_VolumeScene3DA/resetBoxWidget</slot>
+                                    </slots>
                                 </service>
 
                                 <service uid="${GENERIC_UID}_FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
@@ -216,6 +223,11 @@
                                     <binsWidth>5.0</binsWidth>
                                 </service>
 
+                                <proxy channel="crossTypeChannel">
+                                    <signal>${GENERIC_UID}_ActionHideCross/crossTypeModified</signal>
+                                    <signal>${GENERIC_UID}_ActionShowNormalCross/crossTypeModified</signal>
+                                    <signal>${GENERIC_UID}_ActionShowFullCross/crossTypeModified</signal>
+                                </proxy>
                             </object>
                         </config>
                     </service>
@@ -232,6 +244,7 @@
                                                 <parameter replace="ORGAN_MANAGER_MODELSERIES" by="self"  />
                                                 <parameter replace="ICON_PATH" by="${ICON_PATH}"  />
                                                 <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel"  />
+                                                <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel"  />
                                             </parameters>
                                         </appConfig>
                                     </config>
@@ -266,7 +279,7 @@
                                 <config renderer="default" picker="negato1default" autoresetcamera="no" />
                             </adaptor>
 
-                            <adaptor id="VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="image">
+                            <adaptor id="VolumeScene3DA" uid="${GENERIC_UID}_VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="image">
                                 <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${GENERIC_UID}_TFSelections" />
                             </adaptor>
 
@@ -276,6 +289,10 @@
                             
                             <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
                                 <slot>${GENERIC_UID}_modelSeriesAdaptorUid/updateNormalMode</slot>
+                            </proxy>
+                                                                                    
+                            <proxy channel="ModelDisplayChannel" waitForKey="modelSeries">
+                                <slot>${GENERIC_UID}_modelSeriesAdaptorUid/showReconstructions</slot>
                             </proxy>
                                                         
                             <connect>
@@ -464,8 +481,8 @@
             </item>
 
             <connect>
-                <signal>${ViewPointsVectorUid}/objectModified</signal> 
-                <slot>${GENERIC_UID}_viewPointsUpdater/receive</slot>
+                <signal>${ViewPointsVectorUid}/modified</signal> 
+                <slot>${GENERIC_UID}_viewPointsUpdater/addOrSwap</slot>
             </connect>
 
             <connect>

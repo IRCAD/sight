@@ -10,8 +10,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwComEd/ImageMsg.hpp>
-
 #include <fwCore/HiResTimer.hpp>
 
 #include <fwData/Image.hpp>
@@ -90,13 +88,11 @@ void SImageNetworkReader::updating() throw (::fwTools::Failed)
 {
     ::fwGui::dialog::MessageDialog msgDialog;
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    ::fwComEd::ImageMsg::sptr msg;
     ::fwData::Object::sptr obj;
 
     try
     {
         m_client.connect (m_hostname, m_port);
-        msg = ::fwComEd::ImageMsg::New();
         obj = this->getObject();
         m_client.receiveObject(obj);
         m_client.disconnect();

@@ -30,8 +30,9 @@
                 <item key="compositeVisu">
                     <object uid="compositeVisuUID" type="::fwData::Composite">
 
-                        <service uid="updaterImageUID" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="image" onEvent="NEW_IMAGE" fromUID="imageUID" actionType="ADD_OR_SWAP"/>
+                        <service uid="updaterImageUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <uid>imageUID</uid>
+                            <compositeKey>image</compositeKey>
                         </service>                       
 
                         <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
@@ -40,15 +41,32 @@
                                 <object id="image" type="::fwData::Image">
                                     <!-- This service convert a simple fwData::Image to medical Image -->
                                     <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
-                                        <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
+                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
+                                        <toolTip>Manage slice visibility</toolTip>
+                                        <selected>3</selected>
+                                        <items>
+                                            <item text="One slice" value="1" />
+                                            <item text="three slices" value="3" />
+                                        </items>
                                     </service>
-                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
-                                        <negatoAdaptor uid="MPRNegatoScene3D" />
+                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
+                                        <config>
+                                            <checkable>true</checkable>
+                                            <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
+                                            <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                                            <iconWidth>40</iconWidth>
+                                            <iconHeight>16</iconHeight>
+                                            <checked>true</checked>
+                                        </config>
                                     </service>
                                     <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
                                         <sliceIndex>axial</sliceIndex>
                                     </service>
+                                    
+                                    <connect>
+                                        <signal>showScanEditor/toggled</signal>
+                                        <slot>sliceListEditor/setEnabled</slot>
+                                    </connect>
                                 </object>
                             </config>
                         </service>
@@ -96,6 +114,16 @@
                                 <connect>
                                     <signal>snapshotScene1Editor/snapped</signal>
                                     <slot>snapshotUID/snap</slot>
+                                </connect>
+                                
+                                <connect waitForKey="image">
+                                    <signal>showScanEditor/toggled</signal>
+                                    <slot>MPRNegatoScene3D/showSlice</slot>
+                                </connect>
+                                
+                                <connect waitForKey="image">
+                                    <signal>sliceListEditor/selected</signal>
+                                    <slot>MPRNegatoScene3D/updateSliceMode</slot>
                                 </connect>
                             </scene>
                         </service>
@@ -178,8 +206,8 @@
                         </item>
                         
                         <connect>
-                            <signal>imageUID/objectModified</signal>
-                            <slot>updaterImageUID/receive</slot>
+                            <signal>imageUID/modified</signal>
+                            <slot>updaterImageUID/addOrSwap</slot>
                         </connect>
                         
                     </object>

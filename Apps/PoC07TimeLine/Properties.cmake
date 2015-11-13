@@ -2,6 +2,7 @@
 set( NAME PoC07TimeLine )
 set( VERSION 0.1 )
 set( TYPE APP )
+set( PRIORITY 3 )
 set( DEPENDENCIES
     fwServices
     extData

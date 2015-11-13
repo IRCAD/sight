@@ -18,8 +18,6 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwComEd/ImageMsg.hpp>
-
 
 namespace ctrlPointSelection
 {
@@ -100,15 +98,10 @@ void SUpdateNegato::updateSlices(::fwData::Point::sptr selectedPoint)
        && image->getSize()[1] > paramF->value()
        && image->getSize()[2] > paramA->value())
     {
-        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-        msg->setSliceIndex(paramA, paramF, paramS);
-        msg->setSource(this->getSptr());
-        msg->setSubject( image);
-        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-            sig->asyncEmit( msg);
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
         }
     }
 }
