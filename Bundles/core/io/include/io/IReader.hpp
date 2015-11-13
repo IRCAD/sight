@@ -163,6 +163,13 @@ protected:
 
 private:
 
+    /// Slot to read folder
+    void readFolder(::boost::filesystem::path path);
+    /// Slot to read file
+    void readFile(::boost::filesystem::path path);
+    /// Slot to read files
+    void readFiles(::io::LocationsType files);
+
     /// Value to stock file or folder paths
     ::io::LocationsType m_locations;
 };

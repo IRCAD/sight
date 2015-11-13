@@ -6,6 +6,11 @@
 
 #include "io/IReader.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwCore/base.hpp>
 
 #include <fwRuntime/ConfigurationElementContainer.hpp>
@@ -18,8 +23,17 @@ using fwRuntime::ConfigurationElementContainer;
 namespace io
 {
 
+const ::fwCom::Slots::SlotKeyType s_READ_FOLDER_SLOT = "readFolder";
+const ::fwCom::Slots::SlotKeyType s_READ_FILE_SLOT   = "readFile";
+const ::fwCom::Slots::SlotKeyType s_READ_FILES_SLOT  = "readFiles";
+
+//-----------------------------------------------------------------------------
+
 IReader::IReader() throw()
 {
+    newSlot(s_READ_FOLDER_SLOT, &IReader::readFolder, this);
+    newSlot(s_READ_FILE_SLOT, &IReader::readFile, this);
+    newSlot(s_READ_FILES_SLOT, &IReader::readFiles, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -178,6 +192,30 @@ void IReader::configuring() throw (fwTools::Failed)
 bool IReader::hasLocationDefined() const
 {
     return m_locations.size() > 0;
+}
+
+//-----------------------------------------------------------------------------
+
+void IReader::readFolder(::boost::filesystem::path folder)
+{
+    this->setFolder(folder);
+    this->updating();
+}
+
+//-----------------------------------------------------------------------------
+
+void IReader::readFile(::boost::filesystem::path file)
+{
+    this->setFile(file);
+    this->updating();
+}
+
+//-----------------------------------------------------------------------------
+
+void IReader::readFiles(::io::LocationsType files)
+{
+    this->setFiles(files);
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------
