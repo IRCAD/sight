@@ -37,10 +37,6 @@ SProgressBarController::SProgressBarController() throw()
     m_slotProgressBar = ::fwCom::newSlot(&SProgressBarController::progressBar, this);
     ::fwCom::HasSlots::m_slots(s_PROGRESS_SLOT, m_slotProgressBar);
 
-#ifdef COM_LOG
-    m_slotProgressBar->setID( s_PROGRESS_SLOT );
-#endif
-
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
 //------------------------------------------------------------------------------

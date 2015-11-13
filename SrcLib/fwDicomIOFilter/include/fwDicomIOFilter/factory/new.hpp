@@ -52,10 +52,6 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
     ::fwTools::DynamicAttributesBase *dynAttr = obj.get();
     dynAttr->__FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME();
 
-#ifdef COM_LOG
-    obj->setID(obj->getID());
-#endif
-
     return obj;
 }
 

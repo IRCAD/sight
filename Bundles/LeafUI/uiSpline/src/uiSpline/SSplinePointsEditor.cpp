@@ -43,8 +43,7 @@ const ::fwCom::Signals::SignalKeyType SSplinePointsEditor::s_INDEX_POINT_SELECTE
 const ::fwCom::Slots::SlotKeyType SSplinePointsEditor::s_UPDATE_POINTLIST_SLOT        = "updatePointList";
 const std::string SSplinePointsEditor::s_FIELD_NAME                                   = "PointName";
 
-SSplinePointsEditor::SSplinePointsEditor() throw()
-    : m_numberOfPoints(0), m_countPoint(0)
+SSplinePointsEditor::SSplinePointsEditor() throw() : m_numberOfPoints(0), m_countPoint(0)
 {
     m_connectObj = ::navigation::ConnectPoints::New();
 
@@ -53,11 +52,6 @@ SSplinePointsEditor::SSplinePointsEditor() throw()
 
     ::fwCom::HasSignals::m_signals(s_POINT_SELECTED_SIG, m_sigPointSelected);
     ::fwCom::HasSignals::m_signals(s_INDEX_POINT_SELECTED_SIG, m_sigIndexPointSelected);
-
-#ifdef COM_LOG
-    m_sigPointSelected->setID( s_POINT_SELECTED_SIG );
-    m_sigIndexPointSelected->setID( s_INDEX_POINT_SELECTED_SIG );
-#endif
 
     m_slotUpdatePointList = ::fwCom::newSlot(&SSplinePointsEditor::updatePointList,this);
     ::fwCom::HasSlots::m_slots(s_UPDATE_POINTLIST_SLOT, m_slotUpdatePointList);

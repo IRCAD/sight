@@ -60,10 +60,7 @@ SMoveAlongSpline::SMoveAlongSpline() throw() :
     ::fwCom::HasSignals::m_signals(s_POINT_CHANGED_SIG, m_sigPointChanged);
     ::fwCom::HasSignals::m_signals(s_LENGTH_CHANGED_SIG,m_sigSplineLengthChanged);
 
-#ifdef COM_LOG
-    m_sigPointChanged->setID( s_POINT_CHANGED_SIG );
-    m_sigSplineLengthChanged->setID( s_LENGTH_CHANGED_SIG );
-#endif
+
 
     // Init slots
     m_slotChangeSliderValue = ::fwCom::newSlot(&SMoveAlongSpline::moveToPoint,this);

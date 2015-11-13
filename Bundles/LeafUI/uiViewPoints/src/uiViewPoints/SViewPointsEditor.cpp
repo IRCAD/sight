@@ -49,10 +49,6 @@ SViewPointsEditor::SViewPointsEditor() throw() : m_nbViewPoints(0)
 {
     m_sigDirectTargetChanged = DirectTargetChangedSignalType::New();
     ::fwCom::HasSignals::m_signals(s_DIRECT_TARGET_CHANGED_SIG, m_sigDirectTargetChanged);
-
-#ifdef COM_LOG
-    m_sigDirectTargetChanged->setID( s_DIRECT_TARGET_CHANGED_SIG );
-#endif
 }
 
 //------------------------------------------------------------------------------

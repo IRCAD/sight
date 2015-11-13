@@ -80,16 +80,7 @@ SSeriesPuller::SSeriesPuller() throw() :
     m_sigProgressBar = ProgressBarSignalType::New();
     m_signals( s_PROGRESSED_SIG, m_sigProgressBar);
 
-#ifdef COM_LOG
-    m_slotReadLocalSeries->setID( s_READ_SLOT );
-    m_slotDisplayMessage->setID( s_DISPLAY_SLOT );
-    m_slotStoreInstanceCallbackUsingMoveRequests->setID(
-        ::fwDicomIOExt::dcmtk::SeriesRetriever::s_STORE_INSTANCE_CALLBACK_SLOT );
-    m_slotStoreInstanceCallbackUsingGetRequests->setID(
-        ::fwDicomIOExt::dcmtk::SeriesEnquirer::s_STORE_INSTANCE_CALLBACK_SLOT );
-    m_slotProgressCallback->setID( ::fwDicomIOExt::dcmtk::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT );
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
+
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 
