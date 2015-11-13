@@ -83,13 +83,6 @@ void SSplineAdaptor::configuring() throw(fwTools::Failed)
     this->setRenderId(m_configuration->getAttributeValue("renderer"));
 }
 
-//-----------------------------------------------------------------------------------
-
-void SSplineAdaptor::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-
-}
-
 //----------------------------------------------------------------------------------------------------------------
 
 void SSplineAdaptor::addPoint(::fwData::Point::sptr /*point*/)

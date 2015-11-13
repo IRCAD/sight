@@ -60,11 +60,10 @@ protected:
      * @{ */
     VISUNAVIGATION_API void doStart() throw(fwTools::Failed);
     VISUNAVIGATION_API void doStop() throw(fwTools::Failed);
-    VISUNAVIGATION_API void doSwap() throw(fwTools::Failed)
+    void doSwap() throw(fwTools::Failed)
     {
     }
     VISUNAVIGATION_API void doUpdate() throw(fwTools::Failed);
-    VISUNAVIGATION_API void doReceive(CSPTR(::fwServices::ObjectMsg)) throw(fwTools::Failed);
     VISUNAVIGATION_API void configuring() throw(fwTools::Failed);
     /**  @} */
 
