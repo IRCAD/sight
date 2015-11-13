@@ -7,33 +7,24 @@
 #ifndef __FWRUNTIME_DL_LIBRARY_HPP__
 #define __FWRUNTIME_DL_LIBRARY_HPP__
 
-#include <boost/filesystem/path.hpp>
-
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/dl/Posix.hpp"
 #include "fwRuntime/dl/Win32.hpp"
-#include "fwRuntime/dl/Darwin.hpp"
 
+#include <boost/filesystem/path.hpp>
 
 namespace fwRuntime
 {
 
-
 struct Bundle;
-
 
 namespace dl
 {
 
-
 /**
  * @brief   Defines the module class.
  * @struct  LibraryBridge
- * @date    2004-2009
- *
  * This class is only a bridge to a native module implementor.
- *
- *
  */
 template< typename Implementor >
 struct LibraryBridge
@@ -144,7 +135,7 @@ struct LibraryBridge
         /**
          * @brief   Assignment operator.
          *
-         * @remark  Assignment is fobidden for this class.
+         * @remark  Assignment is forbidden for this class.
          */
         void operator=(const LibraryBridge&) throw()
         {
@@ -152,16 +143,10 @@ struct LibraryBridge
 };
 
 
-#if defined(linux) || defined(__linux)
+#if defined(linux) || defined(__linux) || defined(__MACOSX__)
 typedef struct LibraryBridge< Posix > Library;
 #else
-#   ifdef WIN32
 typedef struct LibraryBridge< Win32 > Library;
-#   else
-#       ifdef __MACOSX__
-typedef struct LibraryBridge< Darwin > Library;
-#       endif
-#   endif
 #endif
 
 

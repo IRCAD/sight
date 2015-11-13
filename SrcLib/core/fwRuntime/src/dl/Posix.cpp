@@ -4,13 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#if defined(linux) || defined(__linux)
-
+#if defined(linux) || defined(__linux) || defined (__MACOSX__)
 
 #include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/dl/Posix.hpp"
-#include "fwRuntime/dl/PosixNameDecorator.hpp"
-
 
 namespace fwRuntime
 {
@@ -18,24 +15,28 @@ namespace fwRuntime
 namespace dl
 {
 
+//------------------------------------------------------------------------------
 
-Posix::Posix( const boost::filesystem::path & modulePath ) throw()
-    : Native        ( modulePath, std::shared_ptr< INameDecorator >(new PosixNameDecorator()) ),
-      m_handle  ( 0 )
+Posix::Posix( const boost::filesystem::path & modulePath ) throw() :
+    Native(modulePath),
+    m_handle  ( 0 )
 {
 }
 
+//------------------------------------------------------------------------------
 
 Posix::~Posix() throw()
 {
 }
 
+//------------------------------------------------------------------------------
 
 bool Posix::isLoaded() const throw()
 {
     return m_handle != 0;
 }
 
+//------------------------------------------------------------------------------
 
 void * Posix::getSymbol( const std::string & name ) const throw(RuntimeException)
 {
@@ -56,6 +57,7 @@ void * Posix::getSymbol( const std::string & name ) const throw(RuntimeException
     return result;
 }
 
+//------------------------------------------------------------------------------
 
 void Posix::load() throw(RuntimeException)
 {
@@ -71,6 +73,7 @@ void Posix::load() throw(RuntimeException)
     }
 }
 
+//------------------------------------------------------------------------------
 
 void Posix::unload() throw(RuntimeException)
 {
@@ -87,10 +90,11 @@ void Posix::unload() throw(RuntimeException)
     }
 }
 
+//------------------------------------------------------------------------------
 
 } // namespace dl
 
 } // namespace fwRuntime
 
 
-#endif // #if defined(linux) || defined(__linux)
+#endif // #if defined(linux) || defined(__linux) || defined (__MACOSX__)

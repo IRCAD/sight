@@ -10,12 +10,10 @@
 #ifndef __FWRUNTIME_DL_WIN32_HPP__
 #define __FWRUNTIME_DL_WIN32_HPP__
 
-
-#include <windows.h>
-
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/dl/Native.hpp"
 
+#include <windows.h>
 
 namespace fwRuntime
 {
@@ -26,8 +24,6 @@ namespace dl
 /**
  * @brief   Implements a win32 native module.
  * @struct  Win32
- * @date    2004-2009
- *
  */
 struct Win32 : public Native
 {

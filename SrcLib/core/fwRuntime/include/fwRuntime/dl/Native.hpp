@@ -7,11 +7,11 @@
 #ifndef __FWRUNTIME_DL_NATIVE_HPP__
 #define __FWRUNTIME_DL_NATIVE_HPP__
 
-#include <boost/filesystem/path.hpp>
-
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
+#include <boost/filesystem/path.hpp>
+#include <boost/regex.hpp>
 
 namespace fwRuntime
 {
@@ -24,16 +24,9 @@ namespace dl
 {
 
 
-
-struct INameDecorator;
-
-
-
 /**
  * @brief   Defines the abstract class for native module implementors.
  * @struct  Native
- * @date    2004-2009
- *
  */
 struct Native
 {
@@ -46,7 +39,7 @@ struct Native
      * @param[in]   modulePath      a path to the module to manage
      * @param[in]   nameDecorator   a shared pointer to a name decorator to use to retrieve the native file name
      */
-    Native( const boost::filesystem::path & modulePath, const std::shared_ptr< INameDecorator > nameDecorator ) throw();
+    Native( const boost::filesystem::path & modulePath) throw();
 
     /**
      * @brief   Destructor : does nothing.
@@ -107,18 +100,25 @@ struct Native
      */
     void setBundle( const ::fwRuntime::Bundle * bundle ) throw();
 
+    /**
+     * @brief  Retrieves the pattern of the dynamic library file name given the host OS
+     * @return the boost::regex
+     */
+    const ::boost::regex getNativeName() const;
 
     private:
+
+        /**
+         * @brief  Returns the location of bundle library
+         * @note   For android, the bundle library are in the "<working_dir>/lib" directory.
+         * @return The path of bundle library.
+         */
+        const ::boost::filesystem::path getBundleLocation() const;
 
         /**
          * @brief   The path to the module to load.
          */
         const boost::filesystem::path m_modulePath;
-
-        /**
-         * @brief   a name decorator to use to retrieve the native path
-         */
-        const std::shared_ptr< INameDecorator > m_nameDecorator;
 
         /**
          * @brief   A pointer to the bundle the library is attached to.

@@ -8,13 +8,12 @@
 #define __FWRUNTIME_DL_POSIX_HPP__
 
 
-#if defined(linux) || defined(__linux)
+#if defined(linux) || defined(__linux) || defined (__MACOSX__)
 
-
-#include <dlfcn.h>
 
 #include "fwRuntime/dl/Native.hpp"
 
+#include <dlfcn.h>
 
 namespace fwRuntime
 {
@@ -26,8 +25,6 @@ namespace dl
 /**
  * @brief   Implements a posix native module.
  * @struct  Posix
- * @date    2004-2009
- *
  */
 struct Posix : public Native
 {

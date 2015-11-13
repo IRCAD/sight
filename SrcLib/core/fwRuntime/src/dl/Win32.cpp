@@ -6,12 +6,9 @@
 
 #ifdef _WIN32
 
-#include <fwCore/base.hpp>
-
 #include "fwRuntime/dl/Win32.hpp"
-#include "fwRuntime/dl/Win32NameDecorator.hpp"
 
-
+#include <fwCore/base.hpp>
 
 namespace fwRuntime
 {
@@ -21,9 +18,9 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Win32::Win32( const boost::filesystem::path & modulePath ) throw()
-    : Native        ( modulePath, std::shared_ptr< INameDecorator >(new Win32NameDecorator()) ),
-      m_handle  ( 0 )
+Win32::Win32( const boost::filesystem::path & modulePath ) throw() :
+    Native(modulePath),
+    m_handle  ( 0 )
 {
 }
 
