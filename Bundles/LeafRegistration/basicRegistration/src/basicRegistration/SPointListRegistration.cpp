@@ -6,14 +6,8 @@
 
 #include "basicRegistration/SPointListRegistration.hpp"
 
-#include <arlcore/PointsList.h>
-
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
 #include <fwComEd/Dictionary.hpp>
-
-#include <fwCore/spyLog.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Mesh.hpp>
@@ -25,8 +19,11 @@
 
 #include <fwServices/Base.hpp>
 
+#include <vtkPoints.h>
+#include <vtkMatrix4x4.h>
+#include <vtkSmartPointer.h>
+#include <vtkLandmarkTransform.h>
 
-using fwTools::fwID;
 
 fwServicesRegisterMacro( ::fwServices::IController, ::basicRegistration::SPointListRegistration, ::fwData::Composite );
 
@@ -80,65 +77,62 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
     ::fwData::TransformationMatrix3D::sptr matrix =
         ::fwData::TransformationMatrix3D::dynamicCast( (*composite)[ m_matrixKey ] );
 
-    if(     registeredPL->getPoints().size() >= 3 &&
-            registeredPL->getPoints().size() == referencePL->getPoints().size() )
+    if( registeredPL->getPoints().size() >= 3 &&
+        registeredPL->getPoints().size() == referencePL->getPoints().size() )
     {
-        // the points in modelPoints and regPoints are 3D points
-        arlCore::PointList::sptr modelPoints, regPoints;
+        vtkSmartPointer<vtkLandmarkTransform> landmarkTransform = vtkSmartPointer<vtkLandmarkTransform>::New();
 
-        modelPoints = arlCore::PointList::New( referencePL->getPoints().size() );
-        regPoints   = arlCore::PointList::New( registeredPL->getPoints().size() );
+        vtkPoints* sourcePts = vtkPoints::New();
+        vtkPoints* targetPts = vtkPoints::New();
 
-        arlCore::vnl_rigid_matrix T; //declaration of a rigid transformation matrix
-
-        // modelPoints is a point list that contains 4 points with a square shape
-        for( ::fwData::Point::sptr point :  referencePL->getPoints() )
+        // Match each point in both list according to the label
+        for( ::fwData::Point::sptr pointRef : referencePL->getPoints() )
         {
-            modelPoints->push_back(point->getCoord()[0],point->getCoord()[1],point->getCoord()[2]);
-            OSLM_ERROR("referencePL : " << point->getField< ::fwData::String >(
-                           ::fwComEd::Dictionary::m_labelId )->value() );
-            OSLM_ERROR(
-                "referencePL : " << point->getCoord()[0] << " " << point->getCoord()[1] << " " <<
-                point->getCoord()[2] );
+            const std::string& labelRef =
+                pointRef->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId )->value();
+
+            for( ::fwData::Point::sptr pointReg : registeredPL->getPoints() )
+            {
+                const std::string& labelReg =
+                    pointReg->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId )->value();
+
+                if(labelRef == labelReg)
+                {
+                    auto coord = pointRef->getRefCoord();
+                    sourcePts->InsertNextPoint(coord[0], coord[1], coord[2]);
+
+                    OSLM_ERROR("referencePL : " << pointRef->getField< ::fwData::String >(
+                                   ::fwComEd::Dictionary::m_labelId )->value() );
+                    OSLM_ERROR(
+                        "referencePL : " << pointRef->getCoord()[0] << " " << pointRef->getCoord()[1] << " " <<
+                        pointRef->getCoord()[2] );
+
+                    coord = pointReg->getRefCoord();
+                    targetPts->InsertNextPoint(coord[0], coord[1], coord[2]);
+                    OSLM_ERROR("registeredPL : " << pointReg->getField< ::fwData::String >(
+                                   ::fwComEd::Dictionary::m_labelId )->value() );
+                    OSLM_ERROR(
+                        "registeredPL : " << pointReg->getCoord()[0] << " " << pointReg->getCoord()[1] << " " <<
+                        pointReg->getCoord()[2] );
+                }
+            }
         }
 
-        // regPoints is a point list that contains 4 noisy points with a square shape at a Z position = 100
-        for( ::fwData::Point::sptr point :  registeredPL->getPoints() )
+        landmarkTransform->SetSourceLandmarks(sourcePts);
+        landmarkTransform->SetTargetLandmarks(targetPts);
+        landmarkTransform->SetModeToRigidBody();
+        landmarkTransform->Update();
+
+        // Get the resulting transformation matrix (this matrix takes the source points to the target points)
+        vtkSmartPointer<vtkMatrix4x4> m = landmarkTransform->GetMatrix();
+        m->Invert();
+        for(size_t l = 0; l < 4; ++l)
         {
-            regPoints->push_back(point->getCoord()[0],point->getCoord()[1],point->getCoord()[2]);
-            OSLM_ERROR("registeredPL : " << point->getField< ::fwData::String >(
-                           ::fwComEd::Dictionary::m_labelId )->value() );
-            OSLM_ERROR(
-                "registeredPL : " << point->getCoord()[0] << " " << point->getCoord()[1] << " " <<
-                point->getCoord()[2] );
+            for(size_t c = 0; c < 4; ++c)
+            {
+                matrix->setCoefficient(l, c, m->GetElement(l,c));
+            }
         }
-
-        // T will contain a rigid transformation matrix (rotation and translation) that fit regPoints on modelPoints
-        // so that T minimizes : sum_i || T * regPoints[i] - modelPoints[i] ||^2
-        // If you want to get the RMS error of the registration, the 3rd parameter should be set to "true"
-        T.register3D3D(regPoints, modelPoints, true);
-        std::cout << T.getString() << std::endl; //print the result
-
-        std::vector<double> error_vector;
-        T.RMS3D3D(regPoints, modelPoints, error_vector);
-
-        // Convert Matrix
-        matrix->setCoefficient(0,0, T.get(0,0) );
-        matrix->setCoefficient(0,1, T.get(0,1) );
-        matrix->setCoefficient(0,2, T.get(0,2) );
-        matrix->setCoefficient(0,3, T.get(0,3) );
-        matrix->setCoefficient(1,0, T.get(1,0) );
-        matrix->setCoefficient(1,1, T.get(1,1) );
-        matrix->setCoefficient(1,2, T.get(1,2) );
-        matrix->setCoefficient(1,3, T.get(1,3) );
-        matrix->setCoefficient(2,0, T.get(2,0) );
-        matrix->setCoefficient(2,1, T.get(2,1) );
-        matrix->setCoefficient(2,2, T.get(2,2) );
-        matrix->setCoefficient(2,3, T.get(2,3) );
-        matrix->setCoefficient(3,0, T.get(3,0) );
-        matrix->setCoefficient(3,1, T.get(3,1) );
-        matrix->setCoefficient(3,2, T.get(3,2) );
-        matrix->setCoefficient(3,3, T.get(3,3) );
 
         // Notify Matrix modified
         auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
@@ -150,7 +144,7 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
     else
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Error",
-                                                          "Sorry, you must put more than 3 points to do registration.",
+                                                          "Sorry, you must put more than 2 points to do registration.",
                                                           ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }

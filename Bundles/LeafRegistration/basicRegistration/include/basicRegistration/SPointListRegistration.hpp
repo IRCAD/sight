@@ -14,6 +14,12 @@
 namespace basicRegistration
 {
 
+/**
+ * @brief   Register a point list against a reference point list. Each point in the list to register is matched
+ *          with a point in the reference list according to its label.
+ *          The output is a transformation matrix.
+ * @class SLTagRegistration
+ */
 class BASICREGISTRATION_CLASS_API SPointListRegistration : public ::fwServices::IController
 {
 
@@ -27,7 +33,8 @@ public:
 
 protected:
 
-    /** Overrides
+    /**
+     * @brief Configure the service
      *
        @verbatim
        <registeredPoints compositeKey="pointList2" />
@@ -37,20 +44,17 @@ protected:
      **/
     BASICREGISTRATION_API virtual void configuring() throw ( ::fwTools::Failed );
 
-    /// Overrides
+    /// Do nothing
     BASICREGISTRATION_API virtual void starting() throw ( ::fwTools::Failed );
 
-    /// Overrides
+    /// Do nothing
     BASICREGISTRATION_API virtual void stopping() throw ( ::fwTools::Failed );
 
-    /// Overrides
+    /// Perform the registration
     BASICREGISTRATION_API virtual void updating() throw ( ::fwTools::Failed );
 
-    /// Overrides
+    /// Do nothing
     BASICREGISTRATION_API virtual void swapping() throw ( ::fwTools::Failed );
-
-
-
 
     /// Key source point list
     std::string m_registeredPointsKey;

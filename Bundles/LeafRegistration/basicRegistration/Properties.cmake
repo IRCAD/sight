@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwServices
     fwComEd
     fwCom
-    ARLcore
     fwDataTools
     fwGui
     fwGuiQt
