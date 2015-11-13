@@ -1,9 +1,10 @@
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/osx_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/win_install.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/linux_install.cmake)
 
 macro(generic_install)
     if(${FWPROJECT_NAME}_INSTALL)
-        
+
         #qt plugins setup
         if(QT_REQUIREMENTS) # set by helper.cmake -> qt_setup() macros
              foreach(QT_REQUIREMENT ${QT_REQUIREMENTS})
@@ -16,9 +17,9 @@ macro(generic_install)
             osx_install(${FWPROJECT_NAME})
         elseif(WIN32)
             win_install(${FWPROJECT_NAME})
+        elseif(UNIX)
+            linux_install(${FWPROJECT_NAME})
         endif()
     endif()
-    
+
 endmacro(generic_install)
-
-
