@@ -17,6 +17,7 @@ set( REQUIREMENTS
     monitorQt
     ctrlMemory
     launcher
+    io
     ioGdcm
     ioITK
     ioVTK
@@ -51,6 +52,12 @@ set( REQUIREMENTS
     cprActivity
     viewPointsActivity
     splineEditionActivity
+    scene2D
+    uiVisu
+    uiVisuQt
+    uiMeasurement
+    uiMeasurementQt
+    uiTF
 )
 
 bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderExtBase VRRenderExtAppBase)
