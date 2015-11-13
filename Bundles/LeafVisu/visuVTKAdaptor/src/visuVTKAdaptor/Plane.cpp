@@ -139,11 +139,13 @@ void Plane::doUpdate() throw(fwTools::Failed)
     ::fwData::Point::sptr pt0 = plane->getPoints()[0];
     ::fwData::Point::sptr pt1 = plane->getPoints()[1];
     ::fwData::Point::sptr pt2 = plane->getPoints()[2];
-    plane->computePlaneFromPoints();
+
+    fwPlane planeDesc;
+    ::fwMath::setValues(planeDesc, pt0->getCoord(), pt1->getCoord(), pt2->getCoord());
 
     if(m_vtkImplicitPlane)
     {
-        fwVec3d normal = ::fwMath::getNormal(plane->getPlane());
+        fwVec3d normal = ::fwMath::getNormal(planeDesc);
 
         m_vtkImplicitPlane->SetOrigin(pt0->getCoord()[0], pt0->getCoord()[1], pt0->getCoord()[2]);
         m_vtkImplicitPlane->SetNormal(normal[0], normal[1], normal[2]);

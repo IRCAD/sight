@@ -16,15 +16,18 @@ namespace ut
 
 class PlaneFunctionsTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( PlaneFunctionsTest );
-CPPUNIT_TEST( checkDistance );
-CPPUNIT_TEST( checkNormal );
-//  CPPUNIT_TEST( checkIntersect );
-CPPUNIT_TEST( checkIsInHalfSpace_fwMath_SoLib );
-CPPUNIT_TEST( checkOffset );
-CPPUNIT_TEST( checkTransform );
-CPPUNIT_TEST( checkIntersect_fwMath_SoLib);
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( PlaneFunctionsTest );
+    CPPUNIT_TEST( checkGetPlane );
+    CPPUNIT_TEST( checkSetValues );
+    CPPUNIT_TEST( checkDistance );
+    CPPUNIT_TEST( checkNormal );
+//    CPPUNIT_TEST( checkIntersect );
+    CPPUNIT_TEST( checkIsInHalfSpace );
+    CPPUNIT_TEST( checkOffset );
+    CPPUNIT_TEST( checkTransform );
+    CPPUNIT_TEST( checkOperator);
+    CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -32,13 +35,15 @@ public:
     void tearDown();
 
     // fonctions de tests
+    void checkSetValues();
+    void checkGetPlane();
     void checkDistance();
     void checkNormal();
     void checkIntersect();
-    void checkIsInHalfSpace_fwMath_SoLib();
+    void checkIsInHalfSpace();
     void checkOffset();
     void checkTransform();
-    void checkIntersect_fwMath_SoLib();
+    void checkOperator();
 };
 
 } //namespace ut

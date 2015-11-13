@@ -7,13 +7,14 @@
 #ifndef __FWMATH_PLANEFUNCTIONS_HPP__
 #define __FWMATH_PLANEFUNCTIONS_HPP__
 
-#include <fwCore/base.hpp>
 
 #include "fwMath/IntrasecTypes.hpp"
 #include "fwMath/VectorFunctions.hpp"
 #include "fwMath/LineFunctions.hpp"
 #include "fwMath/config.hpp"
 #include "fwMath/MatrixFunctions.hpp"
+
+#include <fwCore/base.hpp>
 
 namespace fwMath
 {
@@ -74,7 +75,7 @@ FWMATH_API void  setDistance(fwPlane& _plane, const double _distance);
  *  @param [out] _point intersection point.
  *  @return true if an intersection is found.
  */
-FWMATH_API bool intersect( const fwPlane& _fwPlane, const fwLine & _line, fwVec3d & _point);
+FWMATH_API bool intersect( const fwPlane& _fwPlane, const fwLine & _line, fwVec3d& _point);
 
 /**
  *  @brief Compute if a point is in a half plane.
@@ -100,5 +101,14 @@ FWMATH_API void transform(fwPlane& _plane, const fwMatrix4x4& _matrix);
  */
 FWMATH_API void offset(fwPlane& _plane, double _offset);
 
-}
+} // namespace fwMath
+
+/**
+ *  @brief Compares if two planes are equal
+ *  @param [in]  plane1
+ *  @param [in]  plane2
+ *  @return true if the planes are equal and false if they are not.
+ */
+FWMATH_API bool operator==(fwPlane& plane1, fwPlane& plane2);
+
 #endif /* __FWMATH_PLANEFUNCTIONS_HPP__ */

@@ -11,7 +11,7 @@
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 
-#include <fwMath/IntrasecTypes.hpp>
+#include <array>
 
 fwCampAutoDeclareDataMacro((fwData)(Point), FWDATA_API);
 
@@ -27,7 +27,7 @@ class FWDATA_CLASS_API Point : public Object
 public:
 
     typedef double PointCoordType;
-    typedef fwVec3d PointCoordArrayType;
+    typedef std::array<double, 3> PointCoordArrayType;
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Point)(::fwData::Object),
                                                ((::fwData::factory::New< Point >,() ))
@@ -56,10 +56,10 @@ public:
 
     /// @brief get/set point coordinates
     /// @{
-    const fwVec3d  getCoord () const;
-    fwVec3d& getRefCoord ();
-    const fwVec3d & getCRefCoord() const;
-    void setCoord(const fwVec3d & _vCoord);
+    const PointCoordArrayType  getCoord () const;
+    PointCoordArrayType& getRefCoord ();
+    const PointCoordArrayType & getCRefCoord() const;
+    void setCoord(const PointCoordArrayType& _vCoord);
     /// @}
 
 protected:
@@ -77,28 +77,28 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline const fwVec3d Point::getCoord () const
+inline const Point::PointCoordArrayType Point::getCoord () const
 {
     return m_vCoord;
 }
 
 //-----------------------------------------------------------------------------
 
-inline fwVec3d& Point::getRefCoord ()
+inline Point::PointCoordArrayType& Point::getRefCoord ()
 {
     return this->m_vCoord;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const fwVec3d & Point::getCRefCoord() const
+inline const Point::PointCoordArrayType & Point::getCRefCoord() const
 {
     return this->m_vCoord;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Point::setCoord(const fwVec3d & _vCoord)
+inline void Point::setCoord(const PointCoordArrayType & _vCoord)
 {
     this->m_vCoord = _vCoord;
 }

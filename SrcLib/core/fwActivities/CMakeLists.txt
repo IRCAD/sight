@@ -2,6 +2,7 @@ fwLoadProperties()
 
 fwUseForwardInclude(
     fwCore
+    fwMath
     fwMedData
     fwRuntime
     fwTools

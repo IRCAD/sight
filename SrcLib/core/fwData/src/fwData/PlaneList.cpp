@@ -70,32 +70,6 @@ void PlaneList::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &
     }
 }
 
-//------------------------------------------------------------------------------
-
-void PlaneList::deleteDuplicatedPlan()
-{
-    ::fwData::PlaneList::PlaneListContainer::iterator iter = this->m_vPlanes.begin();
-    ::fwData::PlaneList::PlaneListContainer::iterator iter2;
-    if(this->m_vPlanes.size() > 1)
-    {
-        for ( iter = this->m_vPlanes.begin(); iter != this->m_vPlanes.end(); ++iter )
-        {
-            PlaneList::PlaneListContainer::iterator iter2 = iter+1;
-            while(iter2 != this->m_vPlanes.end())
-            {
-                if(*(iter->get()) == *(iter2->get()))
-                {
-                    this->m_vPlanes.erase(iter2);
-                }
-                else
-                {
-                    ++iter2;
-                }
-            }
-        }
-    }
-}
-
 } // namespace fwData
 
 

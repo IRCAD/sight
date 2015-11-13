@@ -45,7 +45,7 @@ FWMATH_API void findBorderEdges( const fwVertexIndex &_vertexIndex, std::vector<
                                                                                                           int  > > > &contours);
 
 /**
- *  @brief Closes the surface if necessary
+ * @brief Closes the surface if necessary
  * @return True if container mesh is changed
  */
 FWMATH_API bool closeSurface( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex );
@@ -56,6 +56,7 @@ FWMATH_API bool closeSurface( fwVertexPosition &_vertex, fwVertexIndex &_vertexI
 FWMATH_API bool removeOrphanVertices( fwVertexPosition &_vertex, fwVertexIndex &_vertexIndex );
 
 //-----------------------------------------------------------------------------
+
 template <typename T, typename U>
 std::pair< T, U > makeOrderedPair(const T first, const U second)
 {
@@ -70,6 +71,7 @@ std::pair< T, U > makeOrderedPair(const T first, const U second)
 }
 
 //-----------------------------------------------------------------------------
+
 template <typename T, typename U, typename V>
 bool isBorderlessSurface(T* cellDataBegin, T* cellDataEnd, U* cellDataOffsetsBegin, U* cellDataOffsetsEnd,
                          V* cellTypesBegin)

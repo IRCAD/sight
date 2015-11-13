@@ -17,13 +17,15 @@ namespace ut
 
 class VectorFunctionsTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( VectorFunctionsTest );
-CPPUNIT_TEST( checkNormalize);
-CPPUNIT_TEST( checkDot );
-CPPUNIT_TEST( checkCross );
-CPPUNIT_TEST(checkNegate);
-CPPUNIT_TEST(checkVecLength);
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( VectorFunctionsTest );
+    CPPUNIT_TEST( checkNormalize);
+    CPPUNIT_TEST( checkDot );
+    CPPUNIT_TEST( checkCross );
+    CPPUNIT_TEST(checkNegate);
+    CPPUNIT_TEST(checkVecLength);
+    CPPUNIT_TEST(checkOperators);
+    CPPUNIT_TEST_SUITE_END();
 
 protected:
 
@@ -37,6 +39,8 @@ public:
     void checkNormalize();
     void checkNegate();
     void checkVecLength();
+    void checkOperators();
+
 
 };
 

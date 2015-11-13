@@ -191,7 +191,10 @@ void PlaneInteractor::pushPlane(double factor)
         ::fwData::Point::sptr pt1 = plane->getPoints()[1];
         ::fwData::Point::sptr pt2 = plane->getPoints()[2];
 
-        fwVec3d normal = ::fwMath::getNormal(plane->getPlane());
+        fwPlane planeDesc;
+        ::fwMath::setValues(planeDesc, pt0->getCoord(), pt1->getCoord(), pt2->getCoord());
+
+        fwVec3d normal = ::fwMath::getNormal(planeDesc);
         if ( pt0 && pt1 && pt2 )
         {
             fwVec3d vec0 = pt0->getCoord();
@@ -209,8 +212,8 @@ void PlaneInteractor::pushPlane(double factor)
             pt2->setCoord(vec2);
 
             plane->setValue(pt0,pt1,pt2);
-
-            normal = ::fwMath::getNormal(plane->getPlane());
+            ::fwMath::setValues(planeDesc, pt0->getCoord(), pt1->getCoord(), pt2->getCoord());
+            normal = ::fwMath::getNormal(planeDesc);
 
             ::fwData::Object::ModifiedSignalType::sptr sig;
             sig = pt0->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);

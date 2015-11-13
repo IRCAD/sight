@@ -4,10 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "CompareTest.hpp"
+
 #include <fwMath/Compare.hpp>
 #include <fwTools/random/Generator.hpp>
 
-#include "CompareTest.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMath::ut::CompareTest );
@@ -17,16 +18,21 @@ namespace fwMath
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void CompareTest::setUp()
 {
     // Set up context before running a test.
-
-
 }
+
+//------------------------------------------------------------------------------
+
 void CompareTest::tearDown()
 {
     // Clean up after the test run.
 }
+
+//------------------------------------------------------------------------------
 
 void CompareTest::checkEquality()
 {
@@ -39,6 +45,8 @@ void CompareTest::checkEquality()
     isEqual = ::fwMath::isEqual(x1, x2, 0.0000001f);
     CPPUNIT_ASSERT_EQUAL(false, isEqual);
 }
+
+//------------------------------------------------------------------------------
 
 void CompareTest::checkContainerEquality()
 {

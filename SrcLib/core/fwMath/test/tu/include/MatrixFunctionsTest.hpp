@@ -16,9 +16,12 @@ namespace ut
 
 class MatrixFunctionsTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( MatrixFunctionsTest );
-CPPUNIT_TEST( checkMultVecMatrix);
-CPPUNIT_TEST_SUITE_END();
+private:
+    CPPUNIT_TEST_SUITE( MatrixFunctionsTest );
+    CPPUNIT_TEST( checkMultVecMatrix);
+    CPPUNIT_TEST( checkRotationMatrix);
+    CPPUNIT_TEST( checkInverse);
+    CPPUNIT_TEST_SUITE_END();
 
 public:
 
@@ -27,6 +30,7 @@ public:
 
     void checkMultVecMatrix();
     void checkRotationMatrix();
+    void checkInverse();
 };
 
 } //namespace ut

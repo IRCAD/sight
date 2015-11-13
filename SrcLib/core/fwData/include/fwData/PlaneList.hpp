@@ -51,9 +51,6 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    // Looking for duplicate plan
-    FWDATA_API void deleteDuplicatedPlan(void);
-
     /** @{
      *  @brief get/set container of all planes
      */

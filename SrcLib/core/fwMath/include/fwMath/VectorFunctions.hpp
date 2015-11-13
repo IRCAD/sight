@@ -7,8 +7,6 @@
 #ifndef __FWMATH_VECTORFUNCTIONS_HPP__
 #define __FWMATH_VECTORFUNCTIONS_HPP__
 
-#include <cmath>
-
 #include <fwCore/base.hpp>
 
 #include "fwMath/IntrasecTypes.hpp"
@@ -23,7 +21,7 @@ namespace fwMath
 FWMATH_API double normalize(fwVec3d & vec);
 
 /**
- *  @brief Retrun a normalized vector
+ *  @brief Return a normalized vector
  *  @param [in] vec vector to normalize
  *  @return normalized vector
  */
@@ -75,6 +73,7 @@ FWMATH_API fwVec3d& operator*=(fwVec3d& vec1, double val);
  *  @return vec[0]/=val, vec[1]/=val, vec[2]/=val
  */
 FWMATH_API fwVec3d& operator/=(fwVec3d& vec, double val );
+
 /**
  *  @brief operator += for fwVec3d
  *  @param [in] vec1
@@ -82,6 +81,7 @@ FWMATH_API fwVec3d& operator/=(fwVec3d& vec, double val );
  *  @return  vec1 => vec1[0]+=vec2[0], vec1[1]+=vec2[1], vec1[2]+=vec2[2]
  */
 FWMATH_API fwVec3d& operator+=(fwVec3d& vec1, const fwVec3d& vec2);
+
 /**
  *  @brief
  *  @param [in] vec1
@@ -89,6 +89,7 @@ FWMATH_API fwVec3d& operator+=(fwVec3d& vec1, const fwVec3d& vec2);
  *  @return vec1[0]-=vec2[0], vec1[1]-=vec2[1], vec1[2]-=vec2[2]
  */
 FWMATH_API fwVec3d& operator-=(fwVec3d& vec1, const fwVec3d& vec2);
+
 /**
  *  @brief operator * between fwVec3d and value.
  *  @param [in] _vec
@@ -96,20 +97,23 @@ FWMATH_API fwVec3d& operator-=(fwVec3d& vec1, const fwVec3d& vec2);
  *  @return the result of the operation _vec*val
  */
 FWMATH_API fwVec3d operator*(const fwVec3d& _vec, double _val);
+
 /**
  *  @brief operator * between value and fwVec3d.
  *  @param [in] _val
  *  @param [in] _vec
- *  @return the resut of the operation _vec*val
+ *  @return the result of the operation _vec*val
  */
 FWMATH_API fwVec3d operator*(const double _val, const fwVec3d& _vec);
+
 /**
  *  @brief operator / between fwVec3d and value.
  *  @param [in] _vec
  *  @param [in] val
- *  @return the resut of the operation _vec/val
+ *  @return the result of the operation _vec/val
  */
 FWMATH_API fwVec3d operator/(const fwVec3d& _vec, double val);
+
 /**
  *  @brief operator + between two fwVec3d.
  *  @param [in] _vec1
@@ -117,20 +121,23 @@ FWMATH_API fwVec3d operator/(const fwVec3d& _vec, double val);
  *  @return the result of the operation _vec1 + _vec2
  */
 FWMATH_API fwVec3d operator+(const fwVec3d& _vec1, const fwVec3d& _vec2);
+
 /**
- *  @brief operator - between two fwVec3d datas.
+ *  @brief operator - between two fwVec3d data.
  *  @param [in] _vec1
  *  @param [in] _vec2
  *  @return the difference between two value.
  */
 FWMATH_API fwVec3d operator-(const fwVec3d& _vec1, const fwVec3d& _vec2);
+
 /**
- *  @brief Compare two fwVec3d datas.
+ *  @brief Compare two fwVec3d data.
  *  @param [in] _vec1
  *  @param [in] _vec2
  *  @return return 1 if equal 0 otherwise.
  */
 FWMATH_API int operator==(const fwVec3d& _vec1, const fwVec3d& _vec2);
+
 /**
  *  @brief Compare two fwVec3d data.
  *  @param [in] _vec1

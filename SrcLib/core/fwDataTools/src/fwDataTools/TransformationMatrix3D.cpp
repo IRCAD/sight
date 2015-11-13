@@ -92,7 +92,7 @@ void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::sp
     in[3] = 1;
 
     ::glm::dvec4 out = in * mat;
-    ::boost::array<double, 3> res = {{ out[0], out[1], out[2] }};
+    std::array<double, 3> res = {{ out[0], out[1], out[2] }};
     _output->setCoord(res);
 }
 

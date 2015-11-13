@@ -6,146 +6,199 @@
 
 #include "fwMath/PlaneFunctions.hpp"
 
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+
+
+#define EPSILON 0.00000001
+
 namespace fwMath
 {
 
 //------------------------------------------------------------------------------
 
-fwPlane getPlane(const fwVec3d & _point1, const fwVec3d & _point2, const fwVec3d & _point3)
+fwPlane getPlane(const fwVec3d & point1, const fwVec3d & point2, const fwVec3d & point3)
 {
-    SLM_TRACE_FUNC();
     fwPlane plane;
-    setValues(plane, _point1, _point2, _point3);
+    setValues(plane, point1, point2, point3);
 
     return plane;
 }
 
 //------------------------------------------------------------------------------
 
-void setValues(fwPlane& _plane, const fwVec3d & _point1, const fwVec3d & _point2, const fwVec3d & _point3)
+void setValues(fwPlane& plane, const fwVec3d & point1, const fwVec3d & point2, const fwVec3d & point3)
 {
-    SLM_TRACE_FUNC();
-    fwVec3d normalVec = cross(_point2 - _point1, _point3 -_point1);
-    if((float)(vecLength(normalVec)) <= 0.0F)
+    ::glm::dvec3 p1(point1[0], point1[1], point1[2]);
+    ::glm::dvec3 p2(point2[0], point2[1], point2[2]);
+    ::glm::dvec3 p3(point3[0], point3[1], point3[2]);
+
+    ::glm::dvec3 normal = ::glm::cross(p2 - p1, p3 - p1);
+    if(::glm::length(normal) <= 0.0)
     {
-        normalVec[0] = 0.0F;
-        normalVec[1] = 0.0F;
-        normalVec[2] = 1.0F;
+        normal[0] = 0.0;
+        normal[1] = 0.0;
+        normal[2] = 1.0;
     }
-    normalize(normalVec);
-    // Normal
-    setNormal(_plane, normalVec);
-    // Distance
-    double distance = normalVec[0]*_point1[0] + normalVec[1]*_point1[1] + normalVec[2]*_point1[2];
-    setDistance(_plane, distance);
-}
+    normal = ::glm::normalize(normal);
+    double distance = ::glm::dot(normal, p1);
 
-//------------------------------------------------------------------------------
-fwVec3d getNormal(const fwPlane& _plane)
-{
-    SLM_TRACE_FUNC();
-    fwVec3d normalVec;
-    normalVec[0] = _plane[0];
-    normalVec[1] = _plane[1];
-    normalVec[2] = _plane[2];
-
-    return normalVec;
-}
-
-//------------------------------------------------------------------------------
-void  setNormal(fwPlane& _plane, const fwVec3d& _normal)
-{
-    SLM_TRACE_FUNC();
-    fwVec3d normalNormalized(_normal);
-    normalize(normalNormalized);
-    _plane[0] = normalNormalized[0];
-    _plane[1] = normalNormalized[1];
-    _plane[2] = normalNormalized[2];
-}
-//------------------------------------------------------------------------------
-
-double getDistance(const fwPlane& _plane)
-{
-    SLM_TRACE_FUNC();
-    return _plane[3];
+    plane[0] = normal[0];
+    plane[1] = normal[1];
+    plane[2] = normal[2];
+    plane[3] = distance;
 }
 
 //------------------------------------------------------------------------------
 
-void  setDistance(fwPlane& _plane, const double _distance)
+fwVec3d getNormal(const fwPlane& plane)
 {
-    SLM_TRACE_FUNC();
-    _plane[3] = _distance;
+    return {{plane[0], plane[1], plane[2]}};
 }
 
 //------------------------------------------------------------------------------
-bool intersect( const fwPlane& _plane, const fwLine & _line,  fwVec3d & _point)
+
+void setNormal(fwPlane& plane, const fwVec3d& normal)
 {
-    SLM_TRACE_FUNC();
+    ::glm::dvec3 vecNormal(normal[0], normal[1], normal[2]);
+    vecNormal = ::glm::normalize(vecNormal);
 
-    const fwVec3d pos     = _line.first;
-    fwVec3d dirNormaliser = _line.second - _line.first;
-    ::fwMath::normalize(dirNormaliser);
+    plane[0] = vecNormal[0];
+    plane[1] = vecNormal[1];
+    plane[2] = vecNormal[2];
+}
 
-    fwVec3d normalVec = getNormal(_plane);
-    double d          = dot(normalVec, dirNormaliser);
-    if(abs((float)d) < 0.0F)
+//------------------------------------------------------------------------------
+
+double getDistance(const fwPlane& plane)
+{
+    return plane[3];
+}
+
+//------------------------------------------------------------------------------
+
+void  setDistance(fwPlane& plane, const double distance)
+{
+    plane[3] = distance;
+}
+
+//------------------------------------------------------------------------------
+
+bool intersect( const fwPlane& plane, const fwLine & line,  fwVec3d & point)
+{
+    ::glm::dvec3 normal(plane[0], plane[1], plane[2]);
+    normal = ::glm::normalize(normal);
+    ::glm::dvec3 lineDirection(line.second[0] - line.first[0],
+                               line.second[1] - line.first[1],
+                               line.second[2] - line.first[2]);
+    lineDirection = ::glm::normalize(lineDirection);
+    ::glm::dvec3 lineOrigin(line.first[0], line.first[1], line.first[2]);
+
+    double intersectionDistance = 0.;
+    double d                    = ::glm::dot(lineDirection, normal);
+
+    if(std::abs(d) < EPSILON)
     {
         return false;
     }
-    double distance = getDistance(_plane);
-    double t        = (distance - dot(normalVec, pos))/d;
-    _point = pos + (t * dirNormaliser);
+
+    intersectionDistance = (plane[3] - ::glm::dot(normal, lineOrigin)) / d;
+
+    lineOrigin += lineDirection * intersectionDistance;
+    point[0]    = lineOrigin[0];
+    point[1]    = lineOrigin[1];
+    point[2]    = lineOrigin[2];
 
     return true;
 }
 
 //------------------------------------------------------------------------------
 
-bool isInHalfSpace(const fwPlane& _plane, const fwVec3d& _point)
+bool isInHalfSpace(const fwPlane& plane, const fwVec3d& point)
 {
-    SLM_TRACE_FUNC();
-    fwVec3d normalVec = getNormal(_plane);
-    fwVec3d pos       = normalVec * getDistance(_plane);
-    return ((float)(dot(normalVec, _point-pos)) >= 0.0F ? true : false);
+    ::glm::dvec3 pointGlm(point[0], point[1], point[2]);
+    ::glm::dvec3 normal(plane[0], plane[1], plane[2]);
+    ::glm::normalize(normal);
+    ::glm::dvec3 pos = normal * plane[3];
+    return (::glm::dot(normal, pointGlm-pos) >= 0.0);
 }
 
 //------------------------------------------------------------------------------
 
-void transform(fwPlane& _plane, const fwMatrix4x4& _matrix)
+void transform(fwPlane& plane, const fwMatrix4x4& matrix)
 {
-    SLM_TRACE_FUNC();
-    fwVec3d normalVec = getNormal(_plane);
-    fwVec3d beg       = normalVec * getDistance(_plane);
-    fwVec3d end       = beg + normalVec;
-    multVecMatrix(_matrix,beg,beg);
-    multVecMatrix(_matrix,end,end);
-    normalVec = end - beg;
-    normalize(normalVec);
-    setNormal(_plane, normalVec);
-    setDistance(_plane, dot(normalVec, beg));
+    ::glm::dvec3 normal(plane[0], plane[1], plane[2]);
+    ::glm::dvec3 beg(normal * plane[3]);
+    ::glm::dvec3 end(beg + normal);
+    ::glm::dvec4 beg4(beg, 1.0);
+    ::glm::dvec4 end4(end, 1.0);
+    ::glm::dmat4x4 mat(matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0],
+                       matrix[0][1], matrix[1][1], matrix[2][1], matrix[3][1],
+                       matrix[0][2], matrix[1][2], matrix[2][2], matrix[3][2],
+                       matrix[0][3], matrix[1][3], matrix[2][3], matrix[3][3]);
 
+    beg4 = mat * beg4;
+    end4 = mat * end4;
+
+    end[0] = end4[0];
+    end[1] = end4[1];
+    end[2] = end4[2];
+
+    beg[0] = beg4[0];
+    beg[1] = beg4[1];
+    beg[2] = beg4[2];
+
+    normal = end - beg;
+    normal = ::glm::normalize(normal);
+
+    plane[0] = normal[0];
+    plane[1] = normal[1];
+    plane[2] = normal[2];
+    plane[3] = ::glm::dot(normal, beg);
 }
 
 //------------------------------------------------------------------------------
 
-void offset(fwPlane& _plane, double _offset)
+void offset(fwPlane& plane, double offset)
 {
-    SLM_TRACE_FUNC();
-    double distance = getDistance(_plane);
-    distance += _offset;
-    setDistance(_plane, distance);
-
+    double distance = getDistance(plane);
+    distance += offset;
+    setDistance(plane, distance);
 }
 
-fwPlane getPlane(const fwVec3d&  _normal,const fwVec3d& _point)
+//------------------------------------------------------------------------------
+
+fwPlane getPlane(const fwVec3d&  normal,const fwVec3d& point)
 {
-    SLM_TRACE_FUNC();
+    ::glm::dvec3 pointGlm(point[0], point[1], point[2]);
+    ::glm::dvec3 normalGlm(normal[0], normal[1], normal[2]);
+    normalGlm = ::glm::normalize(normalGlm);
     fwPlane plane;
-    fwVec3d normalVec = _normal;
-    normalize(normalVec);
-    setNormal(plane, normalVec);
-    setDistance(plane, normalVec[0]*_point[0] +normalVec[1]*_point[1] + normalVec[2]*_point[2]);
+    plane[0] = normalGlm[0];
+    plane[1] = normalGlm[1];
+    plane[2] = normalGlm[2];
+    plane[3] = ::glm::dot(normalGlm, pointGlm);
     return plane;
 }
+
+} // namespace fwMath
+
+//------------------------------------------------------------------------------
+
+bool operator==(fwPlane& plane1, fwPlane& plane2)
+{
+    ::glm::dvec4 pl1(plane1[0], plane1[1], plane1[2], plane1[3]);
+    ::glm::dvec4 pl2(plane2[0], plane2[1], plane2[2], plane2[3]);
+
+    double dx = pl1[0] - pl2[0];
+    double dy = pl1[1] - pl2[1];
+    double dz = pl1[2] - pl2[2];
+    double dd = pl1[3] - pl2[3];
+
+    return ( std::abs(dx) < EPSILON &&
+             std::abs(dy) < EPSILON &&
+             std::abs(dz) < EPSILON &&
+             std::abs(dd) < EPSILON );
 }
+
+//------------------------------------------------------------------------------

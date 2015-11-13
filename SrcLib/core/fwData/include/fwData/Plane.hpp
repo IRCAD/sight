@@ -11,8 +11,6 @@
 #include "fwData/factory/new.hpp"
 #include "fwData/Point.hpp"
 
-#include <fwMath/IntrasecTypes.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
@@ -33,7 +31,7 @@ public:
 
     fwCampMakeFriendDataMacro((fwData)(Plane));
 
-    typedef ::boost::array< ::fwData::Point::sptr, 3> PointContainer;
+    typedef std::array< ::fwData::Point::sptr, 3> PointContainer;
 
 
     /**
@@ -51,22 +49,9 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    /*
-     * @brief Compare method
-     *
-     * Compare plane normal and distance from origin
-     */
-    FWDATA_API bool operator==( const Plane & _plane );
-
-    /// get the plane coordinate
-    fwPlane getPlane() const;
-
     /// Re-initialize the plane with 3 points
     FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2,
                              ::fwData::Point::sptr _point3);
-
-    /// Compute plane normal and distance from points coordinates
-    FWDATA_API void computePlaneFromPoints();
 
     /** @{
      *  @brief get/set points container
@@ -100,7 +85,6 @@ public:
 
 protected:
 
-    fwPlane m_plane;
     //! Points container
     PointContainer m_vPoints;
 
@@ -108,13 +92,6 @@ protected:
     bool m_isIntersection;
 
 }; // end class Plane
-
-//-----------------------------------------------------------------------------
-
-inline fwPlane Plane::getPlane() const
-{
-    return m_plane;
-}
 
 //-----------------------------------------------------------------------------
 
