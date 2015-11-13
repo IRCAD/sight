@@ -120,12 +120,6 @@ void ImageViewerService::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageViewerService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void ImageViewerService::initVTKPipeline()
 {
     // Gets associated image

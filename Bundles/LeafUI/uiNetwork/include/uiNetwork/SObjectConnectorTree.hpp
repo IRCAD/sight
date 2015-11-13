@@ -81,9 +81,6 @@ public:
     UINETWORK_API void updating() throw (::fwTools::Failed);
 
     /// Overrides
-    UINETWORK_API void receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed);
-
-    /// Overrides
     UINETWORK_API void swapping() throw (::fwTools::Failed);
 
     /// Constructor

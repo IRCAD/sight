@@ -68,11 +68,6 @@ protected:
     /// Try to retrieve the guiContainerId defines in the service configuration
     DEVFORUM_API virtual void configuring() throw(::fwTools::Failed);
 
-    /// This method is called on msg notification, here does nothing
-    DEVFORUM_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
-
-
     /// Initialize image with a synthetic image which represents a sphere.
     DEVFORUM_API void createSyntheticImage( ::fwData::Image::sptr _pImage );
 

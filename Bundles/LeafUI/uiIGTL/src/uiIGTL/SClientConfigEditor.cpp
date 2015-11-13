@@ -114,12 +114,6 @@ void SClientConfigEditor::onValidate()
 
 //-----------------------------------------------------------------------------
 
-void SClientConfigEditor::receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed)
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void SClientConfigEditor::swapping() throw (::fwTools::Failed)
 {
     // Classic default approach to update service when oject change

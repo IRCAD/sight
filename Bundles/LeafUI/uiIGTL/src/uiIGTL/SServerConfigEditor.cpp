@@ -105,12 +105,6 @@ void SServerConfigEditor::onValidate()
 
 //-----------------------------------------------------------------------------
 
-void SServerConfigEditor::receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed)
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void SServerConfigEditor::swapping() throw (::fwTools::Failed)
 {
     // Classic default approach to update service when oject change

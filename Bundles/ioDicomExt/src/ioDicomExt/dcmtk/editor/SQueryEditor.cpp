@@ -140,13 +140,6 @@ void SQueryEditor::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
 void SQueryEditor::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();

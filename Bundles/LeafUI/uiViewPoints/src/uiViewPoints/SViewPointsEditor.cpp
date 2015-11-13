@@ -164,12 +164,6 @@ void SViewPointsEditor::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SViewPointsEditor::receiving(::fwServices::ObjectMsg::csptr msg) throw (::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SViewPointsEditor::onClickAddPoint()
 {
     m_nbViewPoints++;

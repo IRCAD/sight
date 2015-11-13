@@ -75,13 +75,6 @@ void SProgressBarController::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SProgressBarController::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
 void SProgressBarController::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();

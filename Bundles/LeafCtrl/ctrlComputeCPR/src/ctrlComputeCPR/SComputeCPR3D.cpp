@@ -18,7 +18,6 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/PointList.hpp>
 
-#include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>

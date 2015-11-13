@@ -113,13 +113,6 @@ void SPacsConfigurationInitializer::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPacsConfigurationInitializer::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
 void SPacsConfigurationInitializer::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();

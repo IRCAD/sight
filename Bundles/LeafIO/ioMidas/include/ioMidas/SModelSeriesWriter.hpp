@@ -80,10 +80,6 @@ protected:
     IOMIDAS_API virtual std::string getSelectorDialogTitle();
     IOMIDAS_API virtual void configureWithIHM();
 
-    virtual void updating( std::shared_ptr< const ::fwServices::ObjectMsg > _msg )
-    throw(::fwTools::Failed)
-    {
-    }
     /**  @} */
 
     /// Returns managed path type, here service manages only single file

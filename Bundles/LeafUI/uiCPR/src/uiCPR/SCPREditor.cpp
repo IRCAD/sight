@@ -24,7 +24,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
@@ -169,12 +168,6 @@ void SCPREditor::updating() throw(::fwTools::Failed)
     m_sigSpacingChanged->asyncEmit(m_spacing);
     m_sigHeightChanged->asyncEmit(m_height);
     m_sigSliderProgressed->asyncEmit(m_angle);
-}
-
-//------------------------------------------------------------------------------------------------------
-
-void SCPREditor::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------------------------------

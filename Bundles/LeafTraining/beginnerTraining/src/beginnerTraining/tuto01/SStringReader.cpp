@@ -86,11 +86,6 @@ void SStringReader::updating() throw ( ::fwTools::Failed )
     }
 }
 
-void SStringReader::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
 void SStringReader::swapping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();

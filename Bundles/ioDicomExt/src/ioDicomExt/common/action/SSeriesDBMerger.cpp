@@ -80,13 +80,6 @@ void SSeriesDBMerger::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
 void SSeriesDBMerger::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();

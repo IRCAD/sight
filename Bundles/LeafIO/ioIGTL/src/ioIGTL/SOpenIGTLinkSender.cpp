@@ -15,7 +15,6 @@
 
 #include <fwData/Object.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwCore/spyLog.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>

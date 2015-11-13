@@ -182,13 +182,6 @@ void SSeriesPuller::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
 void SSeriesPuller::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();

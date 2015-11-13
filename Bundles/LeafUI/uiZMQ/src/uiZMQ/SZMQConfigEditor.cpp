@@ -162,12 +162,6 @@ void SZMQConfigEditor::onValidate()
 
 //-----------------------------------------------------------------------------
 
-void SZMQConfigEditor::receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed)
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void SZMQConfigEditor::swapping() throw (::fwTools::Failed)
 {
     // Classic default approach to update service when oject change

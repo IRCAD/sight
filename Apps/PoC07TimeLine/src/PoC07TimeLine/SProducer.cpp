@@ -130,12 +130,6 @@ void SProducer::configuring() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SProducer::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SProducer::swapping( ) throw( ::fwTools::Failed )
 {
 

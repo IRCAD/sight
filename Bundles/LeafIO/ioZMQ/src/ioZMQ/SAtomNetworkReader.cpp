@@ -17,7 +17,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
 fwServicesRegisterMacro (::io::IReader, ::ioZMQ::SAtomNetworkReader, ::fwData::Object);
 
@@ -72,7 +71,6 @@ void SAtomNetworkReader::updating() throw (::fwTools::Failed)
     ::fwData::String::sptr request;
     ::fwGui::dialog::MessageDialog msgDialog;
     ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    ::fwServices::ObjectMsg::sptr objMsg;
     ::fwData::Object::sptr obj;
 
     try

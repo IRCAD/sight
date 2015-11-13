@@ -87,12 +87,6 @@ void SImageNetworkWriter::configureWithIHM()
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed)
-{
-}
-
-//-----------------------------------------------------------------------------
-
 ::io::IOPathType SImageNetworkWriter::getIOPathType() const
 {
     return ::io::TYPE_NOT_DEFINED;

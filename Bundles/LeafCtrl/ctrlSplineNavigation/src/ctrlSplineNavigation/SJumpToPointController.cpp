@@ -77,13 +77,6 @@ void SJumpToPointController::updating() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SJumpToPointController::receiving(::fwServices::ObjectMsg::csptr msg) throw (::fwTools::Failed)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
 void SJumpToPointController::jumpToViewPoint    (::fwData::TransformationMatrix3D::sptr matrix)
 {
     OSLM_TRACE(" DisplayMatrixReceived " << *(matrix));

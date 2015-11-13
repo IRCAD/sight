@@ -174,12 +174,6 @@ void SNavigationEditor::updating() throw(::fwTools::Failed)
 
 //-------------------------------------------------------------------------------------------------------------
 
-void SNavigationEditor::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------
-
 void SNavigationEditor::onChangeValue(int newValue)
 {
     m_resetButton->setEnabled(false);

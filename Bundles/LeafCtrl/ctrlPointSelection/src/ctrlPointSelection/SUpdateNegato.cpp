@@ -68,12 +68,6 @@ void SUpdateNegato::updating() throw (::fwTools::Failed)
 
 //-------------------------------------------------------------------------------------------------------------
 
-void SUpdateNegato::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
-{
-}
-
-//-------------------------------------------------------------------------------------------------------------
-
 void SUpdateNegato::updateSlices(::fwData::Point::sptr selectedPoint)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image>();

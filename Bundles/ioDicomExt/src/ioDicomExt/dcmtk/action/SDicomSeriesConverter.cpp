@@ -80,13 +80,6 @@ void SDicomSeriesConverter::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesConverter::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
 void SDicomSeriesConverter::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();

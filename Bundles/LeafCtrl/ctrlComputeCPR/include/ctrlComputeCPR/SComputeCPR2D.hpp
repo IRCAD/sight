@@ -26,11 +26,6 @@
 
 #include <string>
 
-namespace fwServices
-{
-class ObjectMsg;
-}
-
 namespace fwData
 {
 class PointList;

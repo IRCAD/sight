@@ -92,11 +92,6 @@ void SStringReader::updating() throw ( ::fwTools::Failed )
     this->notifyMessage();
 }
 
-void SStringReader::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
 void SStringReader::swapping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
@@ -121,18 +116,12 @@ void SStringReader::notifyMessage()
     SLM_TRACE_FUNC();
     ::fwData::String::sptr associatedObj = this->getObject< ::fwData::String >();
 
-    // Creation of an object message to say that data is modified
-    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
-
-    // Notifies message to all service listeners
-    msg->setSource( this->getSptr());
-    msg->setSubject( associatedObj);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = associatedObj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    // Notifies to all service listeners
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = associatedObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg );
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
 

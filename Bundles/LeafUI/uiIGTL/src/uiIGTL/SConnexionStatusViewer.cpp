@@ -112,12 +112,6 @@ void SConnexionStatusViewer::updating() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SConnexionStatusViewer::receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed)
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void SConnexionStatusViewer::connect()
 {
     if (m_connexionType == SConnexionStatusViewer::CLIENT)

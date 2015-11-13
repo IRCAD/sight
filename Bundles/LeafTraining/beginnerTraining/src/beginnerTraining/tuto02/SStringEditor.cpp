@@ -81,10 +81,6 @@ void SStringEditor::updating() throw ( ::fwTools::Failed )
     m_textEditor->setPlainText( myAssociatedData->getValue().c_str() );
 }
 
-void SStringEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-}
-
 void SStringEditor::swapping() throw ( ::fwTools::Failed )
 {
     // Classic default approach to update service when oject change

@@ -171,7 +171,6 @@ void SSplinePointsEditor::updating() throw(::fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void SSplinePointsEditor::getInteraction(::fwComEd::PickingInfo info)
-throw (::fwTools::Failed)
 {
     if (info.m_eventId == ::fwComEd::PickingInfo::Event::MOUSE_LEFT_UP &&
         info.m_modifierMask == ::fwComEd::PickingInfo::CTRL)

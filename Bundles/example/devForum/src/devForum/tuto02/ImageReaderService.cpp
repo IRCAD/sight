@@ -90,12 +90,6 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageReaderService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-}
-
-//-----------------------------------------------------------------------------
-
 } // end of namespace tuto02
 
 } // end of namespace devForum

@@ -206,13 +206,6 @@ void SFilterSelectorDialog::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SFilterSelectorDialog::receiving( ::fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
 void SFilterSelectorDialog::info( std::ostream &_sstream )
 {
     // Update message

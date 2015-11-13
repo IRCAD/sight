@@ -22,12 +22,6 @@
 
 #include <fwTools/Failed.hpp>
 
-
-namespace fwServices
-{
-class ObjectMsg;
-}
-
 namespace ctrlComputeCPR
 {
 

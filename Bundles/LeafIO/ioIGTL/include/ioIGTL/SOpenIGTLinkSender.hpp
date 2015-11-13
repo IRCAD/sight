@@ -13,7 +13,6 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 #include <fwData/Object.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <igtlNetwork/Client.hpp>
 #include <igtlNetwork/Server.hpp>
 #include <ioNetwork/INetworkSender.hpp>
@@ -144,4 +143,3 @@ private:
 } // namespace ioIGTL
 
 #endif /*__IOIGTL_SOPENIGTLINKSENDER_HPP__*/
-

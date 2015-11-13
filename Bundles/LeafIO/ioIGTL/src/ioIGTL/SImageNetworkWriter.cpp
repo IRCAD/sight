@@ -116,12 +116,6 @@ void SImageNetworkWriter::updating() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed)
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void SImageNetworkWriter::swapping() throw (::fwTools::Failed)
 {
     // Classic default approach to update service when object change

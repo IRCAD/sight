@@ -149,12 +149,6 @@ void SObjectConnectorTree::updating() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SObjectConnectorTree::receiving (::fwServices::ObjectMsg::csptr _msg) throw (::fwTools::Failed)
-{
-}
-
-//-----------------------------------------------------------------------------
-
 void SObjectConnectorTree::swapping() throw (::fwTools::Failed)
 {
     // Classic default approach to update service when oject change

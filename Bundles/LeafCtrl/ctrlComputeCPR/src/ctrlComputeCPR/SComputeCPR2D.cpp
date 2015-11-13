@@ -20,8 +20,6 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/op/Get.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwCom/Signal.hpp>

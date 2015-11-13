@@ -76,9 +76,6 @@ protected:
     /// Create a dialog box to provide the user different available filters for the FilterSelector associated objects. Then, the selected filter is applied.
     IODICOMEXT_API void updating() throw( ::fwTools::Failed );
 
-    /// SLM_FATAL require an implementation gui::editor::IEditor::updating(msg)
-    IODICOMEXT_API void receiving( ::fwServices::ObjectMsg::csptr ) throw( ::fwTools::Failed );
-
     /// Gives the name of the class. Do nothing.
     IODICOMEXT_API void info( std::ostream &_sstream );
 

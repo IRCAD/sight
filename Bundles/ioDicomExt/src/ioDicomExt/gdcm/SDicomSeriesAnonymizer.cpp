@@ -84,13 +84,6 @@ void SDicomSeriesAnonymizer::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesAnonymizer::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-
-}
-
-//------------------------------------------------------------------------------
-
 void SDicomSeriesAnonymizer::updating() throw(::fwTools::Failed)
 {
     ::fwGui::dialog::MessageDialog dialog;

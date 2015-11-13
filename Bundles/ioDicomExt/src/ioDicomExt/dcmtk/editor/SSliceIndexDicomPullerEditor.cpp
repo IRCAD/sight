@@ -238,13 +238,6 @@ void SSliceIndexDicomPullerEditor::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
 void SSliceIndexDicomPullerEditor::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();

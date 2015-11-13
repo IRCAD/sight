@@ -109,9 +109,6 @@ protected:
     IODICOMEXT_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IODICOMEXT_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
-    /// Override
     IODICOMEXT_API void info(std::ostream &_sstream );
 
     /// Function called when a new slice must be displayed

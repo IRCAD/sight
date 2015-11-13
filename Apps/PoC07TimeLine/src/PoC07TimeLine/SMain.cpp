@@ -57,12 +57,6 @@ void SMain::configuring() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SMain::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SMain::swapping( ) throw( ::fwTools::Failed )
 {
 

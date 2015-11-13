@@ -107,9 +107,6 @@ protected:
     IODICOMEXT_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IODICOMEXT_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
-    /// Override
     IODICOMEXT_API void info(std::ostream &_sstream );
 
     /// Fill the combobox with the list of available filters

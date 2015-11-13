@@ -157,12 +157,6 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
 
 // ----------------------------------------------------------------------------
 
-void SPointListRegistration::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-}
-
-// ----------------------------------------------------------------------------
-
 void SPointListRegistration::swapping() throw ( ::fwTools::Failed )
 {
     // Classic default approach to update service when object change

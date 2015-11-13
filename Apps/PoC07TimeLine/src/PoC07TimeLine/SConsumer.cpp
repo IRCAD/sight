@@ -86,12 +86,6 @@ void SConsumer::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SConsumer::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SConsumer::swapping( ) throw( ::fwTools::Failed )
 {
 

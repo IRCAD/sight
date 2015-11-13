@@ -39,9 +39,6 @@ protected:
     /// Does nothing.
     virtual void swapping() throw ( ::fwTools::Failed );
 
-    /// Does nothing.
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
     /// Contains one input instruction to block the main thread.
     virtual void updating() throw(::fwTools::Failed);
 
@@ -55,4 +52,3 @@ private:
 }  // namespace PoC07TimeLine
 
 #endif  // __POC07TIMELINE_SMAIN_HPP__
-
