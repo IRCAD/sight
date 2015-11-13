@@ -53,7 +53,7 @@ void ConnectPoints::connectAllSplinePoints(
 {
     for(::fwData::Point::sptr point :  pointList->getRefPoints())
     {
-        this->connectPointToService(point, ::fwData::Object::s_OBJECT_MODIFIED_SIG, hasSlots, slotKey);
+        this->connectPointToService(point, ::fwData::Object::s_MODIFIED_SIG, hasSlots, slotKey);
     }
 }
 

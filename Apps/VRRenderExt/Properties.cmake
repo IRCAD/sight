@@ -10,6 +10,7 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
+    visuVTKVRAdaptor
     gui
     guiQt
     memory

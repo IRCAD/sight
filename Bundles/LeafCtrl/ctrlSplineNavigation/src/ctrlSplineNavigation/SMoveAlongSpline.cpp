@@ -20,8 +20,6 @@
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 
-#include <fwComEd/PointListMsg.hpp>
-
 #include <vtkMath.h>
 
 // Library
@@ -36,6 +34,10 @@ const ::fwCom::Signals::SignalKeyType SMoveAlongSpline::s_LENGTH_CHANGED_SIG    
 const ::fwCom::Slots::SlotKeyType SMoveAlongSpline::s_CHANGE_SLIDER_VALUE_SLOT   = "changeSliderValue";
 const ::fwCom::Slots::SlotKeyType SMoveAlongSpline::s_CHANGE_SELECTED_POINT_SLOT = "changeSelectedPoint";
 const ::fwCom::Slots::SlotKeyType SMoveAlongSpline::s_CHANGE_ANGLE_SLOT          = "changeAngle";
+
+static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT     = "addPoint";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT  = "removePoint";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
 
 //-------------------------------------------------------------------------------------------------------------
 
@@ -52,29 +54,18 @@ SMoveAlongSpline::SMoveAlongSpline() throw() :
     // Create a vtkPoints object and store the points in it
     m_vtkPoints = vtkSmartPointer<vtkPoints>::New();
 
-    // Init signals
-    m_sigPointChanged        = PointChangedSignalType::New();
-    m_sigSplineLengthChanged = SplineLengthChangedSignalType::New();
+    // Signals
+    m_sigPointChanged        = newSignal<PointChangedSignalType>(s_POINT_CHANGED_SIG);
+    m_sigSplineLengthChanged = newSignal<SplineLengthChangedSignalType>(s_LENGTH_CHANGED_SIG);
 
-    // Register
-    ::fwCom::HasSignals::m_signals(s_POINT_CHANGED_SIG, m_sigPointChanged);
-    ::fwCom::HasSignals::m_signals(s_LENGTH_CHANGED_SIG,m_sigSplineLengthChanged);
+    // Slots
+    m_slotChangeSliderValue   = newSlot(s_CHANGE_SLIDER_VALUE_SLOT, &SMoveAlongSpline::moveToPoint,this);
+    m_slotChangeSelectedPoint = newSlot(s_CHANGE_SELECTED_POINT_SLOT, &SMoveAlongSpline::moveToSelectedPoint,this);
+    m_slotChangeAngle         = newSlot(s_CHANGE_ANGLE_SLOT, &SMoveAlongSpline::setCameraRotation, this );
 
-
-
-    // Init slots
-    m_slotChangeSliderValue = ::fwCom::newSlot(&SMoveAlongSpline::moveToPoint,this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_SLIDER_VALUE_SLOT, m_slotChangeSliderValue);
-
-    m_slotChangeSelectedPoint = ::fwCom::newSlot(&SMoveAlongSpline::moveToSelectedPoint,this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_SELECTED_POINT_SLOT, m_slotChangeSelectedPoint);
-
-    m_slotChangeAngle = ::fwCom::newSlot( &SMoveAlongSpline::setCameraRotation, this );
-    ::fwCom::HasSlots::m_slots(s_CHANGE_ANGLE_SLOT, m_slotChangeAngle);
-
-    // Set default worker to new slot
-    this->setWorker(::fwServices::registry::ActiveWorkers::getDefault()->
-                    getWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
+    newSlot(s_ADD_POINT_SLOT, &SMoveAlongSpline::addPoint, this);
+    newSlot(s_REMOVE_POINT_SLOT, &SMoveAlongSpline::removePoint, this);
+    newSlot(s_UPDATE_SPLINE_SLOT, &SMoveAlongSpline::updateSpline, this);
 
 }
 
@@ -123,49 +114,18 @@ void SMoveAlongSpline::updating() throw ( ::fwTools::Failed )
 {
 }
 
-//-------------------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
-void SMoveAlongSpline::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
+void SMoveAlongSpline::addPoint(::fwData::Point::sptr /*point*/)
 {
-    // if the pointList is modified update the spline and initialize the x, y and z axes of the camera
-    if( msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_ADDED) )
+    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    ::navigation::computeSpline(pointList,m_nbSplinePoints,m_vtkPoints,m_parametricSpline,m_splineLength);
+    m_sigSplineLengthChanged->asyncEmit(m_splineLength);
+    m_nbSplinePoints++;
+
+    if(m_nbSplinePoints>=2)
     {
-        ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-        ::navigation::computeSpline(pointList,m_nbSplinePoints,m_vtkPoints,m_parametricSpline,m_splineLength);
-        m_sigSplineLengthChanged->asyncEmit(m_splineLength);
-        m_nbSplinePoints++;
-
-        if(m_nbSplinePoints>=2)
-        {
-            ::navigation::initializeVectors(pointList,m_parametricSpline,&m_previousyVector[0],m_angle);
-        }
-    }
-
-    if( msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED) )
-    {
-        ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-        m_nbSplinePoints--;
-        ::navigation::updateSpline(pointList, m_vtkPoints,m_parametricSpline,m_splineLength);
-        m_sigSplineLengthChanged->asyncEmit(m_splineLength);
-
-        if(m_nbSplinePoints >= 2)
-        {
-            ::navigation::initializeVectors(pointList,m_parametricSpline,&m_previousyVector[0],m_angle);
-        }
-
-    }
-
-    if( msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_MODIFIED) )
-    {
-        ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-
-        ::navigation::updateSpline(pointList, m_vtkPoints, m_parametricSpline, m_splineLength);
-        m_sigSplineLengthChanged->asyncEmit(m_splineLength);
-
-        if (m_nbSplinePoints >= 2)
-        {
-            ::navigation::initializeVectors(pointList, m_parametricSpline, &m_previousyVector[0], m_angle);
-        }
+        ::navigation::initializeVectors(pointList,m_parametricSpline,&m_previousyVector[0],m_angle);
     }
 
     // Synchronize the position on the spline according to the slider position.
@@ -178,7 +138,58 @@ void SMoveAlongSpline::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( :
     {
         this->moveToPoint(0);
     }
+}
 
+//----------------------------------------------------------------------------------------------------------------
+
+void SMoveAlongSpline::removePoint(::fwData::Point::sptr /*point*/)
+{
+    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    m_nbSplinePoints--;
+    ::navigation::updateSpline(pointList, m_vtkPoints,m_parametricSpline,m_splineLength);
+    m_sigSplineLengthChanged->asyncEmit(m_splineLength);
+
+    if(m_nbSplinePoints >= 2)
+    {
+        ::navigation::initializeVectors(pointList,m_parametricSpline,&m_previousyVector[0],m_angle);
+    }
+
+    // Synchronize the position on the spline according to the slider position.
+    if(m_nbSplinePoints>1 && m_splineLength>0.0)
+    {
+        this->moveToPoint(m_currentSliderPosition);
+    }
+
+    else if(m_nbSplinePoints==1 || m_nbSplinePoints==0 )
+    {
+        this->moveToPoint(0);
+    }
+}
+
+//----------------------------------------------------------------------------------------------------------------
+
+void SMoveAlongSpline::updateSpline()
+{
+    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+
+    ::navigation::updateSpline(pointList, m_vtkPoints, m_parametricSpline, m_splineLength);
+    m_sigSplineLengthChanged->asyncEmit(m_splineLength);
+
+    if (m_nbSplinePoints >= 2)
+    {
+        ::navigation::initializeVectors(pointList, m_parametricSpline, &m_previousyVector[0], m_angle);
+    }
+
+    // Synchronize the position on the spline according to the slider position.
+    if(m_nbSplinePoints>1 && m_splineLength>0.0)
+    {
+        this->moveToPoint(m_currentSliderPosition);
+    }
+
+    else if(m_nbSplinePoints==1 || m_nbSplinePoints==0 )
+    {
+        this->moveToPoint(0);
+    }
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -322,6 +333,9 @@ void SMoveAlongSpline::computeTransformationMatrix (double position)
     m_sigPointChanged->asyncEmit(destMatrix);
 
 }
+
+//------------------------------------------------------------------------------
+
 void SMoveAlongSpline::moveToSelectedPoint (::fwData::Point::sptr point)
 {
     ::fwData::TransformationMatrix3D::sptr destMatrix =
@@ -362,12 +376,29 @@ void SMoveAlongSpline::moveToSelectedPoint (::fwData::Point::sptr point)
 
 }
 
+//------------------------------------------------------------------------------
+
 void SMoveAlongSpline::setCameraRotation (double angle)
 {
     m_angle                             = angle;
     ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
     ::navigation::initializeVectors(pointList,m_parametricSpline,&m_previousyVector[0],m_angle);
 }
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SMoveAlongSpline::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SPLINE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 
 } // ctrlSplineNavigation
 

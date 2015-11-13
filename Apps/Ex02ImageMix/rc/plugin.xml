@@ -190,6 +190,10 @@
                                     <service uid="windowLevel" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes">
                                         <config selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
                                     </service>
+                                    
+                                    <proxy channel="interaction_channel">
+                                        <slot>imageInfo/getInteraction</slot>
+                                    </proxy>
                                 </object>
 
                                 <object id="frontImage" type="::fwData::Image">
@@ -227,6 +231,10 @@
                                         <forward>sliceTypeModified</forward>
                                     </service>
                                     
+                                    <proxy channel="interaction_channel2">
+                                        <slot>imageInfo2/getInteraction</slot>
+                                    </proxy>
+                                    
                                 </object>
 
                             </config>
@@ -245,10 +253,10 @@
                                 <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                     <config renderer="default" style="InteractorStyle2DForNegato" />
                                 </adaptor>
-                                <adaptor id="bgImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
+                                <adaptor id="bgImagePicker" uid="bgImagePickerUID" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
-                                <adaptor id="frontImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
+                                <adaptor id="frontImagePicker" uid="frontImagePickerUID" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
                                 <adaptor id="snapshot" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
@@ -277,6 +285,15 @@
                                     <signal>snapshotBlendSceneEditor/snapped</signal>
                                     <slot>snapshotUID/snap</slot>
                                 </connect>
+                                
+                                <proxy channel="interaction_channel" waitForKey="backgroundImage">
+                                    <signal>bgImagePickerUID/picked</signal>
+                                </proxy>
+                                
+                                                                
+                                <proxy channel="interaction_channel2" waitForKey="frontImage">
+                                    <signal>frontImagePickerUID/picked</signal>
+                                </proxy>
                             </scene>
                         </service>
 
@@ -293,9 +310,13 @@
                                 <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                     <config renderer="default" style="InteractorStyle2DForNegato" />
                                 </adaptor>
-                                <adaptor id="imagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
+                                <adaptor id="imagePicker" uid="imagePickerUID" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
+                                
+                                <proxy channel="interaction_channel" waitForKey="backgroundImage">
+                                    <signal>imagePickerUID/picked</signal>
+                                </proxy>
                             </scene>
                         </service>
 
@@ -312,9 +333,13 @@
                                 <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                     <config renderer="default" style="InteractorStyle2DForNegato" />
                                 </adaptor>
-                                <adaptor id="imagePicker2" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
+                                <adaptor id="imagePicker2" uid="imagePickerUID2" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
+                                
+                                <proxy channel="interaction_channel2" waitForKey="frontImage">
+                                    <signal>imagePickerUID2/picked</signal>
+                                </proxy>
                                 
                             </scene>
                         </service>

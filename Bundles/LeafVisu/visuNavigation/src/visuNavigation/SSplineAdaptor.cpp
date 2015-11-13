@@ -4,19 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
+#include "visuNavigation/SSplineAdaptor.hpp"
 
-#include <fwComEd/PointListMsg.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/PointList.hpp>
-#include <fwData/Point.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <navigation/functions.hpp>
 
-#include "visuNavigation/SSplineAdaptor.hpp"
+#include <vtkActor.h>
+#include <vtkPolyDataMapper.h>
+
 
 fwServicesRegisterMacro(::fwRenderVTK::IVtkAdaptorService, ::visuNavigation::SSplineAdaptor, ::fwData::PointList);
 
@@ -24,6 +27,10 @@ namespace visuNavigation
 {
 
 vtkSmartPointer<vtkParametricFunctionSource> m_functionSource;
+
+static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT     = "addPoint";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT  = "removePoint";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
 
 //-----------------------------------------------------------------------------------
 
@@ -33,6 +40,10 @@ SSplineAdaptor::SSplineAdaptor() throw()
     m_parametricSpline = vtkSmartPointer<vtkParametricSpline>::New();
     m_vtkpoints        = vtkSmartPointer<vtkPoints>::New();
     m_functionSource   = vtkSmartPointer<vtkParametricFunctionSource>::New();
+
+    newSlot(s_ADD_POINT_SLOT, &SSplineAdaptor::addPoint, this);
+    newSlot(s_REMOVE_POINT_SLOT, &SSplineAdaptor::removePoint, this);
+    newSlot(s_UPDATE_SPLINE_SLOT, &SSplineAdaptor::updateSpline, this);
 }
 
 //-----------------------------------------------------------------------------------
@@ -76,31 +87,39 @@ void SSplineAdaptor::configuring() throw(fwTools::Failed)
 
 void SSplineAdaptor::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
 {
-    if( msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_ADDED) )
-    {
-        ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-        m_numberOfPoints                    = pointList->getRefPoints().size();
-        ::navigation::computeSpline(pointList, m_numberOfPoints - 1, m_vtkpoints, m_parametricSpline, m_splineLength);
 
-        this->doUpdate();
-    }
+}
 
-    if( msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED) )
-    {
-        ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-        m_numberOfPoints                    = pointList->getRefPoints().size();
-        ::navigation::updateSpline(pointList, m_vtkpoints, m_parametricSpline, m_splineLength);
+//----------------------------------------------------------------------------------------------------------------
 
-        this->doUpdate();
-    }
+void SSplineAdaptor::addPoint(::fwData::Point::sptr /*point*/)
+{
+    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    m_numberOfPoints                    = pointList->getRefPoints().size();
+    ::navigation::computeSpline(pointList, m_numberOfPoints - 1, m_vtkpoints, m_parametricSpline, m_splineLength);
 
-    if( msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_MODIFIED) )
-    {
-        ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-        ::navigation::updateSpline(pointList, m_vtkpoints, m_parametricSpline, m_splineLength);
+    this->updating();
+}
 
-        this->doUpdate();
-    }
+//----------------------------------------------------------------------------------------------------------------
+
+void SSplineAdaptor::removePoint(::fwData::Point::sptr /*point*/)
+{
+    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    m_numberOfPoints                    = pointList->getRefPoints().size();
+    ::navigation::updateSpline(pointList, m_vtkpoints, m_parametricSpline, m_splineLength);
+
+    this->updating();
+}
+
+//----------------------------------------------------------------------------------------------------------------
+
+void SSplineAdaptor::updateSpline()
+{
+    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    ::navigation::updateSpline(pointList, m_vtkpoints, m_parametricSpline, m_splineLength);
+
+    this->updating();
 }
 
 //-----------------------------------------------------------------------------------
@@ -124,6 +143,21 @@ void SSplineAdaptor::doUpdate() throw (fwTools::Failed)
     this->addToRenderer(actor);
     this->setVtkPipelineModified();
 }
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SSplineAdaptor::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SPLINE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 
 } //namespace visuNavigation
 

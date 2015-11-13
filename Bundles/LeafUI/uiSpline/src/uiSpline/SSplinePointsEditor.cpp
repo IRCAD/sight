@@ -7,9 +7,11 @@
 #include "uiSpline/SSplinePointsEditor.hpp"
 
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwComEd/InteractionMsg.hpp>
-#include <fwComEd/PointListMsg.hpp>
+
 #include <fwComEd/Dictionary.hpp>
 
 #include <fwData/PointList.hpp>
@@ -43,21 +45,17 @@ const ::fwCom::Signals::SignalKeyType SSplinePointsEditor::s_INDEX_POINT_SELECTE
 const ::fwCom::Slots::SlotKeyType SSplinePointsEditor::s_UPDATE_POINTLIST_SLOT        = "updatePointList";
 const std::string SSplinePointsEditor::s_FIELD_NAME                                   = "PointName";
 
+static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
+
 SSplinePointsEditor::SSplinePointsEditor() throw() : m_numberOfPoints(0), m_countPoint(0)
 {
     m_connectObj = ::navigation::ConnectPoints::New();
 
-    m_sigPointSelected      = PointSelectedSignalType::New();
-    m_sigIndexPointSelected = IndexPointSelectedSignalType::New();
+    m_sigPointSelected      = newSignal<PointSelectedSignalType>(s_POINT_SELECTED_SIG);
+    m_sigIndexPointSelected = newSignal<IndexPointSelectedSignalType>(s_INDEX_POINT_SELECTED_SIG);
 
-    ::fwCom::HasSignals::m_signals(s_POINT_SELECTED_SIG, m_sigPointSelected);
-    ::fwCom::HasSignals::m_signals(s_INDEX_POINT_SELECTED_SIG, m_sigIndexPointSelected);
-
-    m_slotUpdatePointList = ::fwCom::newSlot(&SSplinePointsEditor::updatePointList,this);
-    ::fwCom::HasSlots::m_slots(s_UPDATE_POINTLIST_SLOT, m_slotUpdatePointList);
-
-    this->setWorker(::fwServices::registry::ActiveWorkers::getDefault()->
-                    getWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
+    newSlot(s_UPDATE_POINTLIST_SLOT, &SSplinePointsEditor::updatePointList,this);
+    newSlot(s_GET_INTERACTION_SLOT, &SSplinePointsEditor::getInteraction, this);
 }
 
 //------------------------------------------------------------------------------
@@ -167,39 +165,25 @@ void SSplinePointsEditor::configuring() throw(::fwTools::Failed)
 
 void SSplinePointsEditor::updating() throw(::fwTools::Failed)
 {
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList >();
 
-    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( pointList);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = pointList->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
-
-    m_sigIndexPointSelected->asyncEmit (m_numberOfPoints - 1);
 }
 
 //------------------------------------------------------------------------------
 
-void SSplinePointsEditor::receiving(::fwServices::ObjectMsg::csptr msg)
+void SSplinePointsEditor::getInteraction(::fwComEd::PickingInfo info)
 throw (::fwTools::Failed)
 {
-    ::fwComEd::InteractionMsg::csptr interactionmsg = ::fwComEd::InteractionMsg::dynamicConstCast(msg);
-
-    if(interactionmsg && msg->hasEvent(::fwComEd::InteractionMsg::MOUSE_LEFT_UP) && interactionmsg->getControlStatus())
+    if (info.m_eventId == ::fwComEd::PickingInfo::Event::MOUSE_LEFT_UP &&
+        info.m_modifierMask == ::fwComEd::PickingInfo::CTRL)
     {
         ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
 
+        ::fwData::Point::sptr point = ::fwData::Point::New(info.m_worldPos[0], info.m_worldPos[1], info.m_worldPos[2]);
         // Add the point clicked on a negato in the PointList
-        pointList->getRefPoints().push_back(::fwData::Point::constCast(interactionmsg->getEventPoint()));
+        pointList->getRefPoints().push_back(point);
 
         // Connect point
-        ::fwData::Point::sptr point = ::fwData::Point::constCast(interactionmsg->getEventPoint());
-        m_connectObj->connectPointToService(point,"objectModified",this->getSptr(),"updatePointList");
+        m_connectObj->connectPointToService(point,"modified",this->getSptr(),"updatePointList");
 
         m_sigPointSelected->asyncEmit(point);
 
@@ -215,7 +199,12 @@ throw (::fwTools::Failed)
         point->setField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New(name.toStdString()));
 
         this->fillVisualizePointList(m_numberOfPoints - 1);
-        this->updating();
+
+        auto sig =
+            pointList->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_ADDED_SIG);
+        sig->asyncEmit(point);
+
+        m_sigIndexPointSelected->asyncEmit (m_numberOfPoints - 1);
     }
 }
 
@@ -296,17 +285,6 @@ void SSplinePointsEditor::onClickRemovePoint()
 
     this->clearVisualizePointList();
 
-    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-    msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED, point);
-    msg->setSource(this->getSptr());
-    msg->setSubject( pointList);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = pointList->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg );
-    }
-
     if(m_numberOfPoints > 0)
     {
         this->fillVisualizePointList(m_numberOfPoints - 1);
@@ -329,17 +307,6 @@ void SSplinePointsEditor::onClickRemoveAllPoints()
 
     pointList->getRefPoints().clear();
     m_list->clear();
-
-    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-    msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( pointList);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = pointList->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
 
     m_renamePointButton->setEnabled(false);
     m_removePointButton->setEnabled(false);
@@ -396,17 +363,9 @@ void SSplinePointsEditor::addPointToVisualizePointList(
     ::fwData::Point::sptr pointToAdd = pointList->getRefPoints()[selectedPointIndex];
     visualizePointList->getRefPoints().push_back(pointToAdd);
 
-    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-    msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( visualizePointList);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = visualizePointList->signal< ::fwData::Object::ObjectModifiedSignalType >(
-        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
-    }
+    auto sig = visualizePointList->signal< ::fwData::PointList::PointAddedSignalType >(
+        ::fwData::PointList::s_POINT_ADDED_SIG);
+    sig->asyncEmit(pointToAdd);
 }
 
 //------------------------------------------------------------------------------
@@ -425,17 +384,9 @@ void SSplinePointsEditor::clearVisualizePointList()
         {
             ::fwData::Point::sptr point = visualizePointList->getRefPoints()[i];
 
-            ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-            msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED, point);
-            msg->setSource(this->getSptr());
-            msg->setSubject(visualizePointList);
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            sig = visualizePointList->signal< ::fwData::Object::ObjectModifiedSignalType >(
-                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
-            {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( msg);
-            }
+            auto sig = visualizePointList->signal< ::fwData::PointList::PointRemovedSignalType >(
+                ::fwData::PointList::s_POINT_REMOVED_SIG);
+            sig->asyncEmit(point);
         }
 
         // Clears the pointList
@@ -449,17 +400,14 @@ void SSplinePointsEditor::updatePointList()
 {
     ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
 
-    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent(::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    msg->setSource( this->getSptr());
-    msg->setSubject(pointList);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = pointList->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = pointList->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg );
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace uiSpline
 

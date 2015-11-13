@@ -7,9 +7,12 @@
 #ifndef __CTRLCOMPUTECPR_SCOMPUTECPR3D_HPP__
 #define __CTRLCOMPUTECPR_SCOMPUTECPR3D_HPP__
 
+#include "ctrlComputeCPR/config.hpp"
+
+#include <cpr/ComputeCPRFunctor.hxx>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Mesh.hpp>
 
@@ -19,9 +22,6 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <cpr/ComputeCPRFunctor.hxx>
-
-#include "ctrlComputeCPR/config.hpp"
 
 namespace fwServices
 {
@@ -78,7 +78,6 @@ protected:
      * @{ */
     virtual void starting() throw(::fwTools::Failed);
     virtual void stopping() throw(::fwTools::Failed);
-    virtual void receiving(CSPTR(::fwServices::ObjectMsg) _msg) throw(::fwTools::Failed);
     virtual void updating() throw(::fwTools::Failed);
     /**  @} */
 
@@ -108,6 +107,9 @@ protected:
     /// Set rotation of CPR according to the slider value.
     void setNormalRotation(double angle);
 
+    /// Slot: Updates the spline's points
+    void updateSpline();
+
 private:
 
     /// Slot onHeightChange
@@ -127,7 +129,7 @@ private:
     /**  @} */
 
     /// Number of spline points.
-    int m_nbSplinePoints;
+    size_t m_nbSplinePoints;
 
     /**
      * @name CPR properties.

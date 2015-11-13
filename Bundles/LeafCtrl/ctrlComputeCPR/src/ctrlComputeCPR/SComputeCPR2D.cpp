@@ -6,8 +6,13 @@
 
 #include "ctrlComputeCPR/SComputeCPR2D.hpp"
 
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwComEd/PointListMsg.hpp>
+
+#include <fwCom/Slots.hxx>
 #include <fwComEd/Dictionary.hpp>
 
 #include <fwData/String.hpp>
@@ -37,6 +42,10 @@ const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_SPACING_SLOT = "change
 const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_ANGLE_SLOT   = "changeAngle";
 const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_SELECT_POINT_SLOT   = "selectPoint";
 
+static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT     = "addPoint";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT  = "removePoint";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
+
 //----------------------------------------------------------------------------------------------------------------
 
 SComputeCPR2D::SComputeCPR2D() throw ()
@@ -45,21 +54,13 @@ SComputeCPR2D::SComputeCPR2D() throw ()
       m_height(50.0),
       m_selectedPointIndex(0)
 {
-    m_slotChangeHeight = ::fwCom::newSlot(&SComputeCPR2D::setHeight, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_HEIGHT_SLOT, m_slotChangeHeight);
-
-    m_slotChangeSpacing = ::fwCom::newSlot(&SComputeCPR2D::setSpacing, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_SPACING_SLOT, m_slotChangeSpacing);
-
-    m_slotChangeAngle = ::fwCom::newSlot(&SComputeCPR2D::setNormalRotation, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_ANGLE_SLOT, m_slotChangeAngle);
-
-    m_slotSelectPoint = ::fwCom::newSlot(&SComputeCPR2D::fillVisualizePointList, this);
-    ::fwCom::HasSlots::m_slots(s_SELECT_POINT_SLOT, m_slotSelectPoint);
-
-    // Set default worker to new slots
-    this->setWorker( ::fwServices::registry::ActiveWorkers::getDefault()->
-                     getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
+    m_slotChangeHeight  = newSlot(s_CHANGE_HEIGHT_SLOT, &SComputeCPR2D::setHeight, this);
+    m_slotChangeSpacing = newSlot(s_CHANGE_SPACING_SLOT, &SComputeCPR2D::setSpacing, this);
+    m_slotChangeAngle   = newSlot(s_CHANGE_ANGLE_SLOT, &SComputeCPR2D::setNormalRotation, this);
+    m_slotSelectPoint   = newSlot(s_SELECT_POINT_SLOT, &SComputeCPR2D::fillVisualizePointList, this);
+    newSlot(s_ADD_POINT_SLOT, &SComputeCPR2D::addPoint, this);
+    newSlot(s_REMOVE_POINT_SLOT, &SComputeCPR2D::removePoint, this);
+    newSlot(s_UPDATE_SPLINE_SLOT, &SComputeCPR2D::updateSpline, this);
 }
 
 //----------------------------------------------------------------------------------------------------------------
@@ -128,46 +129,51 @@ void SComputeCPR2D::updating() throw (::fwTools::Failed)
 
 //----------------------------------------------------------------------------------------------------------------
 
-void SComputeCPR2D::receiving(::fwServices::ObjectMsg::csptr msg) throw (::fwTools::Failed)
+void SComputeCPR2D::addPoint(::fwData::Point::sptr /*point*/)
 {
-    if(msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_ADDED))
+    ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
+    OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
+    ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
+    OSLM_ASSERT("Failed to retrieve point list", pointList);
+
+    m_nbSplinePoints = pointList->getRefPoints().size();
+    this->updateSpline();
+}
+
+//----------------------------------------------------------------------------------------------------------------
+
+void SComputeCPR2D::removePoint(::fwData::Point::sptr /*point*/)
+{
+    ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
+    OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
+    ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
+    OSLM_ASSERT("Failed to retrieve point list", pointList);
+
+    m_nbSplinePoints = pointList->getRefPoints().size();
+    this->clearVisualizePointList();
+
+    // Visualize the last points
+    if (m_nbSplinePoints > 0)
     {
-        ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
-        OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
-        ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
-        OSLM_ASSERT("Failed to retrieve point list", pointList);
-
-        m_nbSplinePoints = pointList->getRefPoints().size();
-        //m_nbSplinePoints++;
+        this->fillVisualizePointList(m_nbSplinePoints - 1);
     }
+    this->updateSpline();
+}
 
-    if(msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED))
-    {
-        ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
-        OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
-        ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
-        OSLM_ASSERT("Failed to retrieve point list", pointList);
+//----------------------------------------------------------------------------------------------------------------
 
-        m_nbSplinePoints = pointList->getRefPoints().size();
-        this->clearVisualizePointList();
-
-        // Visualize the last points
-        if (m_nbSplinePoints > 0)
-        {
-            this->fillVisualizePointList(m_nbSplinePoints - 1);
-        }
-    }
-
-    if(msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_MODIFIED) && m_nbSplinePoints > 2)
+void SComputeCPR2D::updateSpline()
+{
+    if(m_nbSplinePoints == 2)
     {
         this->computeCPRImage();
         this->fillVisualizePointList(m_selectedPointIndex);
     }
-    else if(m_nbSplinePoints >= 3)
+    else if (m_nbSplinePoints > 2)
     {
         this->computeCPRImage();
     }
-    else if(m_nbSplinePoints < 3) // Set an empty image
+    if(m_nbSplinePoints < 3) // Set an empty image
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image>();
         SLM_ASSERT("Image not valid", image);
@@ -357,16 +363,11 @@ void SComputeCPR2D::addPointToVisualizePointList(
     visualizePointList->getRefPoints().push_back(destPoint);
 
     // Notify
-    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-    msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
-    msg->setSource(this->getSptr());
-    msg->setSubject( visualizePointList);
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = visualizePointList->signal< ::fwData::Object::ObjectModifiedSignalType >(
-        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    auto sig = visualizePointList->signal< ::fwData::PointList::PointAddedSignalType >(
+        ::fwData::PointList::s_POINT_ADDED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-        sig->asyncEmit( msg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));
+        sig->asyncEmit(destPoint);
     }
 }
 
@@ -387,16 +388,11 @@ void SComputeCPR2D::clearVisualizePointList()
         {
             ::fwData::Point::sptr point = visualizePointList->getRefPoints()[i];
 
-            ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-            msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED, point);
-            msg->setSource(this->getSptr());
-            msg->setSubject( visualizePointList);
-            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-            sig = visualizePointList->signal< ::fwData::Object::ObjectModifiedSignalType >(
-                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            auto sig = visualizePointList->signal< ::fwData::PointList::PointRemovedSignalType >(
+                ::fwData::PointList::s_POINT_REMOVED_SIG);
             {
-                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
-                sig->asyncEmit( msg);
+                ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
+                sig->asyncEmit(point);
             }
         }
 

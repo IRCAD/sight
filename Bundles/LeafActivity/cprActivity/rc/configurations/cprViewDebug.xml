@@ -127,8 +127,16 @@
             </item>
 
             <connect>
-                <signal>${splinePointsListUid}/objectModified</signal>
-                <slot>${GENERIC_UID}_ComputeCPR3D/receive</slot>
+                <signal>${splinePointsListUid}/modified</signal>
+                <slot>${GENERIC_UID}_ComputeCPR3D/updateSpline</slot>
+            </connect> 
+            <connect>
+                <signal>${splinePointsListUid}/pointAdded</signal>
+                <slot>${GENERIC_UID}_ComputeCPR3D/updateSpline</slot>
+            </connect> 
+            <connect>
+                <signal>${splinePointsListUid}/pointRemoved</signal>
+                <slot>${GENERIC_UID}_ComputeCPR3D/updateSpline</slot>
             </connect> 
 
             <connect>

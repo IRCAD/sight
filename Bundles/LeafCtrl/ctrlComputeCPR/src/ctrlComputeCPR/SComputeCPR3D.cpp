@@ -9,9 +9,10 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwComEd/PointListMsg.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
@@ -35,23 +36,18 @@ const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_HEIGHT_SLOT  = "change
 const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_SPACING_SLOT = "changeSpacing";
 const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_ANGLE_SLOT   = "changeAngle";
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLIPNE_SLOT = "updateSpline";
+
 //----------------------------------------------------------------------------------------------------------
 
 SComputeCPR3D::SComputeCPR3D() throw ()
     : m_nbSplinePoints(0), m_angle (0), m_height(50.0)
 {
-    m_slotChangeHeight = ::fwCom::newSlot(&SComputeCPR3D::setHeight, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_HEIGHT_SLOT, m_slotChangeHeight);
+    m_slotChangeHeight  = newSlot(s_CHANGE_HEIGHT_SLOT, &SComputeCPR3D::setHeight, this);
+    m_slotChangeSpacing = newSlot(s_CHANGE_SPACING_SLOT, &SComputeCPR3D::setSpacing, this);
+    m_slotChangeAngle   = newSlot(s_CHANGE_ANGLE_SLOT, &SComputeCPR3D::setNormalRotation, this);
+    newSlot(s_UPDATE_SPLIPNE_SLOT, &SComputeCPR3D::updateSpline, this);
 
-    m_slotChangeSpacing = ::fwCom::newSlot(&SComputeCPR3D::setSpacing, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_SPACING_SLOT, m_slotChangeSpacing);
-
-    m_slotChangeAngle = ::fwCom::newSlot(&SComputeCPR3D::setNormalRotation, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_ANGLE_SLOT, m_slotChangeAngle);
-
-    // Set default worker to new slots
-    this->setWorker(::fwServices::registry::ActiveWorkers::getDefault()->getWorker(
-                        ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
 }
 
 //----------------------------------------------------------------------------------------------------------
@@ -125,22 +121,14 @@ void SComputeCPR3D::updating() throw (::fwTools::Failed)
 
 //----------------------------------------------------------------------------------------------------------
 
-void SComputeCPR3D::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void SComputeCPR3D::updateSpline()
 {
-    if(msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_ADDED) || msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED))
-    {
-        ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
-        OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
-        ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
-        OSLM_ASSERT("Failed to retrieve point list", pointList);
+    ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
+    OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
+    ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
+    OSLM_ASSERT("Failed to retrieve point list", pointList);
 
-        m_nbSplinePoints = pointList->getRefPoints().size();
-    }
-
-    if(msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_MODIFIED) && m_nbSplinePoints > 2 )
-    {
-        this->computeMesh();
-    }
+    m_nbSplinePoints = pointList->getRefPoints().size();
 
     if(m_nbSplinePoints > 2)
     {

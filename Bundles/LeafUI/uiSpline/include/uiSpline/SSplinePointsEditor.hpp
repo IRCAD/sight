@@ -7,30 +7,31 @@
 #ifndef __UISPLINE_SSPLINEPOINTSEDITOR_HPP__
 #define __UISPLINE_SSPLINEPOINTSEDITOR_HPP__
 
-#include <vector>
-#include <string>
+#include "uiSpline/config.hpp"
+
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
+
+#include <fwComEd/PickingInfo.hpp>
+
+#include <fwData/Point.hpp>
+
+#include <fwThread/Timer.hpp>
+
+#include <fwTools/Failed.hpp>
+
+#include <gui/editor/IEditor.hpp>
+
+#include <navigation/ConnectPoints.hpp>
 
 #include <QObject>
 #include <QPointer>
 #include <QListWidget>
 #include <QPushButton>
 
-#include <fwTools/Failed.hpp>
-
-#include <gui/editor/IEditor.hpp>
-
-#include <fwData/Point.hpp>
-
-#include <fwThread/Timer.hpp>
-
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
-
-#include <navigation/ConnectPoints.hpp>
-
-#include "uiSpline/config.hpp"
+#include <vector>
+#include <string>
 
 class QListWidgetItem;
 
@@ -85,7 +86,6 @@ protected:
      * @{ */
     virtual void starting() throw(::fwTools::Failed);
     virtual void stopping() throw(::fwTools::Failed);
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg  ) throw(::fwTools::Failed);
     virtual void updating() throw(::fwTools::Failed);
     /**  @} */
 
@@ -128,6 +128,9 @@ protected:
 
     /// Updates the point list when a point is modified
     void updatePointList();
+
+    /// Slot: get the interaction information
+    void getInteraction(::fwComEd::PickingInfo info);
 
     /**
      * @name Slot type and key.
@@ -178,9 +181,6 @@ private:
 
     /// Helper to connect
     ::navigation::ConnectPoints::sptr m_connectObj;
-
-    /// Slot called to update the point list of view points.
-    UpdatePointListSlotType::sptr m_slotUpdatePointList;
 };
 
 } // uiSpline

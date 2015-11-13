@@ -70,6 +70,17 @@ public:
     typedef ::fwCom::Slot<void (double)> ChangeAngleSlotType;
     /**  @} */
 
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect PointList::s_MODIFIED_SIG to this::s_UPDATE_SPLINE_SLOT
+     * Connect PointList::s_POINT_ADDED_SIG to this::s_ADD_POINT_SLOT
+     * Connect PointList::s_POINT_REMOVED_SIG to this::s_REMOVE_POINT_SLOT
+     */
+    CTRLSPLINENAVIGATION_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     /**
@@ -79,7 +90,6 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
     virtual void configuring() throw(::fwTools::Failed);
     virtual void updating() throw(::fwTools::Failed);
-    virtual void receiving(::fwServices::ObjectMsg::csptr _msg) throw(::fwTools::Failed);
     /**  @} */
 
     /**
@@ -106,6 +116,15 @@ protected:
      */
     void setCameraRotation(double angle);
 
+    /// Slot: Adds a point into the spline
+    void addPoint(::fwData::Point::sptr point);
+
+    /// Slot: Removes a point from the spline
+    void removePoint(::fwData::Point::sptr point);
+
+    /// Slot: Updates the spline's points
+    void updateSpline();
+
     /// Signal emitted when the position on the spline changes
     PointChangedSignalType::sptr m_sigPointChanged;
 
@@ -131,7 +150,7 @@ private:
 
     double m_currentSliderPosition;
     double m_previousSliderPosition;
-    int m_nbSplinePoints;
+    size_t m_nbSplinePoints;
     double m_previousyVector[3];
     double m_splineLength;
     double m_angle;

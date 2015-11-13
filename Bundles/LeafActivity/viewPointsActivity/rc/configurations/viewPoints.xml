@@ -70,7 +70,7 @@
                         <menuItem name="Show volume rendering" icon="Bundles/media_0-1/icons/icon-VR.png" style="check" />
                         <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />
                         <separator />
-                        <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" />
+                        <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" style="check" />
                         <menuItem name="Reset box cropping" icon="Bundles/media_0-1/icons/icon-box-reset.png" />
                         <separator />
                         <menuItem name="Snapshot VR" icon="Bundles/media_0-1/icons/camera-photo.png" />

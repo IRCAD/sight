@@ -172,7 +172,7 @@
                         <menuItem name="Show volume rendering" icon="Bundles/media_0-1/icons/icon-VR.png" style="check" />
                         <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />
                         <separator />
-                        <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" />
+                        <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" style="check" />
                         <menuItem name="Reset box cropping" icon="Bundles/media_0-1/icons/icon-box-reset.png" />
                         <separator />
                         <menuItem name="Snapshot VR" icon="Bundles/media_0-1/icons/camera-photo.png" />
@@ -397,13 +397,17 @@
                                 <config renderer="default" picker="negatodefault" text="" />
                             </adaptor>
 
-                            <adaptor id="PickerInteractor" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                            <adaptor id="PickerInteractor" uid="${GENERIC_UID}_Picker1" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
                             <adaptor id="PointList" class="::visuVTKAdaptor::PointList" objectId="selectedPoints">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
+                            
+                            <proxy channel="interaction_channel">
+                                <signal>${GENERIC_UID}_Picker1/picked</signal>
+                            </proxy>
 
                         </scene>
                     </service>
@@ -428,13 +432,17 @@
                                 <config renderer="default" picker="negatodefault" text="" />
                             </adaptor>
 
-                            <adaptor id="Picker" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                            <adaptor id="Picker" uid="${GENERIC_UID}_Picker2" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
                             <adaptor id="PointList" class="::visuVTKAdaptor::PointList" objectId="selectedPoints">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
+                            
+                            <proxy channel="interaction_channel">
+                                <signal>${GENERIC_UID}_Picker2/picked</signal>
+                            </proxy>
 
                         </scene>
                     </service>
@@ -460,13 +468,17 @@
                                 <config renderer="default" picker="negatodefault" text="" />
                             </adaptor>
 
-                            <adaptor id="Picker" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                            <adaptor id="Picker" uid="${GENERIC_UID}_Picker3" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
                             <adaptor id="PointList" class="::visuVTKAdaptor::PointList" objectId="selectedPoints">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
+                            
+                            <proxy channel="interaction_channel">
+                                <signal>${GENERIC_UID}_Picker3/picked</signal>
+                            </proxy>
 
                         </scene>
                     </service>
@@ -754,14 +766,13 @@
             </connect>
 
             <connect>
-                <signal>${GENERIC_UID}_VisuComposite/objectModified</signal>
-                <slot>${GENERIC_UID}_splinePointsEditor/receive</slot>
-            </connect> 
-
-            <connect>
                 <signal>${GENERIC_UID}_splinePointsEditor/pointSelected</signal>
                 <slot>${GENERIC_UID}_updateNegato/selectNewPoint</slot>
             </connect>
+            
+            <proxy channel="interaction_channel">
+                <slot>${GENERIC_UID}_splinePointsEditor/getInteraction</slot>
+            </proxy>
 
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_translateUpdater" />

@@ -7,13 +7,15 @@
 #ifndef __CTRLCOMPUTECPR_SCOMPUTECPR2D_HPP__
 #define __CTRLCOMPUTECPR_SCOMPUTECPR2D_HPP__
 
-#include <string>
+#include "ctrlComputeCPR/config.hpp"
+
+#include <cpr/ComputeCPRFunctor.hxx>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
+#include <fwData/Point.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -22,9 +24,7 @@
 #include <fwTools/Failed.hpp>
 #include <fwTools/Type.hpp>
 
-#include <cpr/ComputeCPRFunctor.hxx>
-
-#include "ctrlComputeCPR/config.hpp"
+#include <string>
 
 namespace fwServices
 {
@@ -88,7 +88,6 @@ protected:
      * @{ */
     virtual void starting() throw(::fwTools::Failed);
     virtual void stopping() throw(::fwTools::Failed);
-    virtual void receiving(CSPTR(::fwServices::ObjectMsg) _msg) throw(::fwTools::Failed);
     virtual void updating() throw(::fwTools::Failed);
     /**  @} */
 
@@ -152,6 +151,15 @@ protected:
 
     /// Clears the visualization point list.
     void clearVisualizePointList();
+
+    /// Adds a point into the spline
+    void addPoint(::fwData::Point::sptr point);
+
+    /// Removes a point from the spline
+    void removePoint(::fwData::Point::sptr point);
+
+    /// Updates the spline's points
+    void updateSpline();
 
 private:
 
