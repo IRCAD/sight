@@ -25,9 +25,19 @@ namespace helper
 {
 typedef std::set<std::string> ExcludeSetType;
 
+/**
+ * @brief Returns true if given objects are equals, based on their Camp attribute values.
+ * The comparison can optionally omits some Camp attributes by giving their full name or a prefix.
+ *
+ * @param objRef Reference object to be compared
+ * @param objComp Object compared to reference object
+ * @param exclude Attributes omitted from comparison
+ * @param excludeByPrefix Attributes beginning with these prefixes are omitted from comparison
+ */
 FWTEST_API bool compare(SPTR(::fwData::Object) objRef,
                         SPTR(::fwData::Object) objComp,
-                        ExcludeSetType exclude = ExcludeSetType());
+                        ExcludeSetType exclude = ExcludeSetType(),
+                        ExcludeSetType excludeByPrefix = ExcludeSetType());
 
 } // namespace helper
 } // namespace fwTest
