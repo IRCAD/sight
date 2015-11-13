@@ -131,6 +131,7 @@ void SOpenIGTLinkListener::runClient() throw (::fwTools::Failed)
     catch (::fwCore::Exception &ex)
     {
         msgDialog.showMessageDialog ("Error", ex.what());
+        this->slot(s_STOP_SLOT)->asyncRun();
     }
 }
 

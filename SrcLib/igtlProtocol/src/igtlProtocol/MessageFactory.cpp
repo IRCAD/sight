@@ -13,6 +13,7 @@
 #include <igtl/igtlStringMessage.h>
 #include <igtl/igtlPositionMessage.h>
 #include <igtl/igtlPolyDataMessage.h>
+#include <igtl/igtlTrackingDataMessage.h>
 
 #include <boost/bind.hpp>
 
@@ -31,6 +32,7 @@ MessageFactory::CreatorContainer MessageFactory::initFactory()
     container["STRING"]    = &MessageMaker< ::igtl::StringMessage, false >::createMessage;
     container["POSITION"]  = &MessageMaker< ::igtl::PositionMessage, false >::createMessage;
     container["POLYDATA"]  = &MessageMaker< ::igtl::PolyDataMessage, false>::createMessage;
+    container["TDATA"]     = &MessageMaker< ::igtl::TrackingDataMessage, false>::createMessage;
     container["ATOMS"]     = ::boost::bind(&MessageMaker< RawMessage, true >::createMessage, "ATOMS");
     container["INTEGER"]   = ::boost::bind(&MessageMaker< RawMessage, true >::createMessage, "INTEGER");
     container["FLOAT"]     = ::boost::bind(&MessageMaker< RawMessage, true >::createMessage, "FLOAT");

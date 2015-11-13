@@ -31,5 +31,10 @@
        <desc>OpenIGTLink network image writer</desc>
    </extension>
 
+   <extension implements="::fwServices::registry::ServiceFactory">
+       <type>::ioNetwork::INetworkListener</type>
+       <service>::ioIGTL::STDataListener</service>
+       <object>::extData::MatrixTL</object>
+   </extension>
 
 </plugin>

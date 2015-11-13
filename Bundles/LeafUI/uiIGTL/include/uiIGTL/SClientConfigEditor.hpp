@@ -44,7 +44,7 @@ public:
      *
      * @brief ConfigurationUpdatedSignalType is stored and emitted when user confirm change
      */
-    typedef ::fwCom::Signal< void (std::string const, ::boost::uint16_t const) >      ConfigurationUpdatedSignalType;
+    typedef ::fwCom::Signal< void (std::string const, std::uint16_t const) >      ConfigurationUpdatedSignalType;
 
     fwCoreServiceClassDefinitionsMacro ( (SClientConfigEditor) (::gui::editor::IDialogEditor));
 
@@ -87,6 +87,10 @@ private:
 
     /// configuration updarte signal is emitted when user confirm change
     ConfigurationUpdatedSignalType::sptr m_configurationUpdatedSignal;
+
+    std::string m_defaultHostName;
+    std::uint16_t m_defaultPort;
+
 };
 
 

@@ -35,12 +35,15 @@ MeshConverter::MeshConverter()
 
 MeshConverter::~MeshConverter()
 {
+    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 ::igtl::MessageBase::Pointer MeshConverter::fromFwDataObject (::fwData::Object::csptr src) const
 {
+    SLM_TRACE_FUNC();
+
     ::fwData::Mesh::csptr meshSrc = ::fwData::Mesh::dynamicConstCast (src);
     ::igtl::PolyDataMessage::Pointer dest;
 
@@ -55,6 +58,8 @@ MeshConverter::~MeshConverter()
 
 void MeshConverter::copyCellsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest) const
 {
+    SLM_TRACE_FUNC();
+
     ::fwComEd::helper::Mesh meshHelper(::fwData::Mesh::constCast(meshSrc));
     long unsigned int nbCells = meshSrc->getNumberOfCells();
     ::fwData::Mesh::CellTypesMultiArrayType cellTypes             = meshHelper.getCellTypes();
@@ -74,7 +79,6 @@ void MeshConverter::copyCellsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::P
 
         switch (cellType)
         {
-
             case ::fwData::Mesh::EDGE:
                 cell[0] = cellData[offset];
                 cell[1] = cellData[offset + 1];
@@ -111,6 +115,8 @@ void MeshConverter::copyCellsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::P
 
 void MeshConverter::copyPointsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest) const
 {
+    SLM_TRACE_FUNC();
+
     ::fwComEd::helper::Mesh meshHelper(::fwData::Mesh::constCast(meshSrc));
     ::fwData::Mesh::Id nbPoints                 = meshSrc->getNumberOfPoints();
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
@@ -129,6 +135,7 @@ void MeshConverter::copyPointsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::
 void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
                                              ::igtl::PolyDataMessage::Pointer dest) const
 {
+    SLM_TRACE_FUNC();
 
     ::fwData::Array::sptr pointColorArray   = meshSrc->getPointColorsArray();
     ::fwData::Array::sptr cellColorArray    = meshSrc->getCellColorsArray();
@@ -253,28 +260,43 @@ void MeshConverter::fromIgtlMessage (::igtl::MessageBase::Pointer const src,
                                      ::fwData::Object::sptr &destObj) const
 throw (::igtlProtocol::exception::Conversion)
 {
+    SLM_TRACE_FUNC();
+
     FW_RAISE_EXCEPTION_IF(exception::Conversion("Incompatible destination object type must be a ::fwData::Mesh"),
                           destObj->getClassname() != MeshConverter::s_FWDATA_OBJECT_TYPE);
 
-    ::igtl::PolyDataMessage::Pointer meshMsg;
     ::fwData::Mesh::sptr mesh;
+
+    ::igtl::PolyDataMessage::Pointer meshMsg;
     std::size_t numberOfPoints;
     std::size_t numberOfCells;
     ::igtl::PolyDataPointArray *points;
     igtlFloat32 point[3];
     igtlUint32 cell[5];
 
-    meshMsg        = ::igtl::PolyDataMessage::Pointer(dynamic_cast< ::igtl::PolyDataMessage*>(src.GetPointer()));
-    mesh           = ::fwData::Mesh::dynamicCast(destObj);
-    numberOfPoints = meshMsg->GetPoints()->GetNumberOfPoints();
+    meshMsg = ::igtl::PolyDataMessage::Pointer(dynamic_cast< ::igtl::PolyDataMessage*>(src.GetPointer()));
+    mesh    = ::fwData::Mesh::dynamicCast(destObj);
+    mesh->clear();
 
-    numberOfCells = meshMsg->GetLines()->GetNumberOfCells() + meshMsg->GetVertices()->GetNumberOfCells()
-                    + meshMsg->GetTriangleStrips()->GetNumberOfCells();
+    numberOfPoints = meshMsg->GetPoints()->GetNumberOfPoints();
+    numberOfCells  = meshMsg->GetLines()->GetNumberOfCells() + meshMsg->GetVertices()->GetNumberOfCells()
+                     + meshMsg->GetTriangleStrips()->GetNumberOfCells();
+
+    size_t numberOfCellData = meshMsg->GetLines()->GetNumberOfCells() * 2 +
+                              meshMsg->GetTriangleStrips()->GetNumberOfCells() * 3 +
+                              meshMsg->GetVertices()->GetNumberOfCells() * 4;
+
+    if(numberOfCellData == 0)
+    {
+        numberOfCellData = numberOfPoints;
+    }
+    if (numberOfCells == 0)
+    {
+        numberOfCells = numberOfPoints;
+    }
 
     ::fwComEd::helper::Mesh meshHelper(mesh);
-    mesh->allocate(numberOfPoints, numberOfCells);
-
-
+    mesh->allocate(numberOfPoints, numberOfCells, numberOfCellData);
 
     points = meshMsg->GetPoints();
     unsigned int nbPoints = static_cast<unsigned int>(points->GetNumberOfPoints());
@@ -284,25 +306,40 @@ throw (::igtlProtocol::exception::Conversion)
         meshHelper.insertNextPoint(point[0], point[1], point[2]);
     }
 
-    for (unsigned int i = 0; i < meshMsg->GetLines()->GetNumberOfCells(); ++i)
+    if(numberOfCells != 0)
     {
-        meshMsg->GetLines()->GetCell(i, cell);
-        meshHelper.insertNextCell(cell[0], cell[1]);
+        for (unsigned int i = 0; i < meshMsg->GetLines()->GetNumberOfCells(); ++i)
+        {
+            meshMsg->GetLines()->GetCell(i, cell);
+            meshHelper.insertNextCell(cell[0], cell[1]);
+        }
+
+        for (unsigned int i = 0; i < meshMsg->GetTriangleStrips()->GetNumberOfCells(); ++i)
+        {
+            meshMsg->GetTriangleStrips()->GetCell(i, cell);
+            meshHelper.insertNextCell(cell[0], cell[1], cell[2]);
+        }
+
+        for (unsigned int i = 0; i < meshMsg->GetVertices()->GetNumberOfCells(); ++i)
+        {
+            meshMsg->GetVertices()->GetCell(i, cell);
+            meshHelper.insertNextCell(cell[0], cell[1], cell[2], cell[3]);
+        }
+    }
+    else
+    {
+        vtkIdType typeVtkCell;
+        for(unsigned int i = 0; i<nbPoints; ++i )
+        {
+
+            typeVtkCell = VTK_VERTEX;
+            meshHelper.insertNextCell( (::fwData::Mesh::CellValueType) i);
+        }
     }
 
-    for (unsigned int i = 0; i < meshMsg->GetTriangleStrips()->GetNumberOfCells(); ++i)
-    {
-        meshMsg->GetTriangleStrips()->GetCell(i, cell);
-        meshHelper.insertNextCell(cell[0], cell[1], cell[2]);
-    }
-
-    for (unsigned int i = 0; i < meshMsg->GetVertices()->GetNumberOfCells(); ++i)
-    {
-        meshMsg->GetVertices()->GetCell(i, cell);
-        meshHelper.insertNextCell(cell[0], cell[1], cell[2], cell[3]);
-    }
 
     mesh->adjustAllocatedMemory();
+
     this->copyAttributeFromPolyData(meshMsg, mesh);
 }
 
@@ -317,6 +354,8 @@ igtlUint8 MeshConverter::toIgtlUint8(igtlFloat32 colorComponent)
 
 void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer src, ::fwData::Mesh::sptr dest) const
 {
+    SLM_TRACE_FUNC();
+
     ::igtl::PolyDataAttribute::Pointer attr;
 
     ::fwComEd::helper::Mesh meshHelper(dest);
@@ -430,6 +469,8 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
 
 IConverter::sptr MeshConverter::New()
 {
+    SLM_TRACE_FUNC();
+
     return std::make_shared< MeshConverter >();
 }
 

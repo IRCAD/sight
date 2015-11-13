@@ -61,6 +61,8 @@ void INetworkSender::configuring() throw (::fwTools::Failed)
 
 void INetworkSender::starting() throw (::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
+
     m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
 }
 
@@ -68,6 +70,8 @@ void INetworkSender::starting() throw (::fwTools::Failed)
 
 void INetworkSender::stopping() throw (::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
+
     m_connections->disconnect();
 }
 
@@ -75,6 +79,7 @@ void INetworkSender::stopping() throw (::fwTools::Failed)
 
 void INetworkSender::updating() throw (::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
     this->sendObject(this->getObject());
 }
 
@@ -82,6 +87,8 @@ void INetworkSender::updating() throw (::fwTools::Failed)
 
 void INetworkSender::sendData (::fwData::Object::sptr obj)
 {
+    SLM_TRACE_FUNC();
+
     OSLM_WARN_IF("Service is stopped, object can not be send", !this->isStarted());
     if (this->isStarted())
     {
@@ -93,6 +100,8 @@ void INetworkSender::sendData (::fwData::Object::sptr obj)
 
 void INetworkSender::swapping() throw (::fwTools::Failed)
 {
+    SLM_TRACE_FUNC();
+
     // Classic default approach to update service when oject change
     this->stopping();
     this->starting();

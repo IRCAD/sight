@@ -24,6 +24,7 @@ CPPUNIT_TEST(pointListConverterTest);
 CPPUNIT_TEST(stringConverterTest);
 CPPUNIT_TEST(lineConverterTest);
 CPPUNIT_TEST(scalarConverterTest);
+CPPUNIT_TEST(compositeConverterTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -37,7 +38,7 @@ public:
     void lineConverterTest();
     void scalarConverterTest();
     void meshConverterTest();
-
+    void compositeConverterTest();
 };
 
 }

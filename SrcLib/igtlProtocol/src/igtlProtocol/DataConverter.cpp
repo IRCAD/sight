@@ -6,13 +6,6 @@
 
 #include "igtlProtocol/DataConverter.hpp"
 #include "igtlProtocol/converter/AtomConverter.hpp"
-#include "igtlProtocol/converter/ImageConverter.hpp"
-#include "igtlProtocol/converter/MatrixConverter.hpp"
-#include "igtlProtocol/converter/StringConverter.hpp"
-#include "igtlProtocol/converter/LineConverter.hpp"
-#include "igtlProtocol/converter/PointListConverter.hpp"
-#include "igtlProtocol/converter/MeshConverter.hpp"
-#include "igtlProtocol/converter/ScalarConverter.hpp"
 
 #include <fwCore/util/LazyInstantiator.hpp>
 #include <fwData/Float.hpp>
@@ -29,6 +22,8 @@ namespace igtlProtocol
 
 DataConverter::sptr DataConverter::getInstance()
 {
+    SLM_TRACE_FUNC();
+
     return ::fwCore::util::LazyInstantiator< DataConverter >::getInstance();
 }
 
@@ -36,6 +31,8 @@ DataConverter::sptr DataConverter::getInstance()
 
 void DataConverter::registerConverter(converter::IConverter::sptr c)
 {
+    SLM_TRACE_FUNC();
+
     (DataConverter::getInstance())->m_converters.push_back(c);
 }
 
@@ -43,6 +40,8 @@ void DataConverter::registerConverter(converter::IConverter::sptr c)
 
 DataConverter::DataConverter()
 {
+    SLM_TRACE_FUNC();
+
     m_defaultConverter = ::igtlProtocol::converter::AtomConverter::New();
 }
 
@@ -57,8 +56,9 @@ DataConverter::~DataConverter()
 ::igtl::MessageBase::Pointer DataConverter::fromFwObject(::fwData::Object::sptr src) const
 throw (::igtlProtocol::exception::Conversion)
 {
-    std::string classname = src->getClassname();
+    SLM_TRACE_FUNC();
 
+    std::string classname = src->getClassname();
     for(converter::IConverter::sptr converter :  m_converters)
     {
         if (converter->getFwDataObjectType() == classname)
@@ -75,6 +75,8 @@ throw (::igtlProtocol::exception::Conversion)
 void DataConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const &src,
                                     ::fwData::Object::sptr &dest) const throw (::igtlProtocol::exception::Conversion)
 {
+    SLM_TRACE_FUNC();
+
     std::string const deviceType = src->GetDeviceType();
 
     if (deviceType == "ATOMS")
@@ -101,6 +103,8 @@ void DataConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const &src,
                                                              int igtlSubCode,
                                                              std::string const &errMsg) const
 {
+    SLM_TRACE_FUNC();
+
     ::igtl::StatusMessage::Pointer statusMsg;
 
     statusMsg = ::igtl::StatusMessage::New();
@@ -114,6 +118,8 @@ void DataConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const &src,
 
 ::igtl::MessageBase::Pointer DataConverter::getCapabilitiesMessage() const
 {
+    SLM_TRACE_FUNC();
+
     ::igtl::CapabilityMessage::Pointer msg;
 
     msg = ::igtl::CapabilityMessage::New();

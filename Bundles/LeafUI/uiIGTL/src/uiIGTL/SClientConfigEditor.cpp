@@ -15,6 +15,7 @@
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QString>
 
 fwServicesRegisterMacro (::gui::editor::IDialogEditor, ::uiIGTL::SClientConfigEditor, ::fwData::Object);
 
@@ -25,7 +26,7 @@ const ::fwCom::Signals::SignalKeyType SClientConfigEditor::s_CONFIGURATION_UPDAT
 
 //-----------------------------------------------------------------------------
 
-SClientConfigEditor::SClientConfigEditor()
+SClientConfigEditor::SClientConfigEditor() : m_defaultHostName("127.0.0.1"),m_defaultPort(0)
 {
     m_configurationUpdatedSignal = ConfigurationUpdatedSignalType::New();
 
@@ -73,9 +74,10 @@ void SClientConfigEditor::configuring() throw (::fwTools::Failed)
     buttonsLayout->addWidget(validateButton);
     buttonsLayout->addWidget(cancelButton);
     m_port->setMinimum(0);
-    m_port->setMaximum(::boost::integer_traits< ::boost::uint16_t>::const_max);
+    m_port->setMaximum(::boost::integer_traits< std::uint16_t>::const_max);
     m_configDialog.setModal(true);
     m_configDialog.setLayout(mainLayout);
+
     QObject::connect(validateButton, SIGNAL(clicked()), this, SLOT(onValidate()));
     QObject::connect(cancelButton, SIGNAL(clicked()), &m_configDialog, SLOT(close()));
 }
@@ -96,6 +98,8 @@ void SClientConfigEditor::stopping() throw (::fwTools::Failed)
 
 void SClientConfigEditor::updating() throw (::fwTools::Failed)
 {
+    m_hostname->setText(QString::fromStdString(m_defaultHostName));
+    m_port->setValue(m_defaultPort);
     m_configDialog.show();
 }
 
@@ -103,11 +107,13 @@ void SClientConfigEditor::updating() throw (::fwTools::Failed)
 
 void SClientConfigEditor::onValidate()
 {
-    ::boost::uint16_t port;
+    std::uint16_t port;
     std::string hostname;
 
-    port     = m_port->value();
-    hostname = m_hostname->text().toStdString();
+    port              = m_port->value();
+    hostname          = m_hostname->text().toStdString();
+    m_defaultHostName = hostname;
+    m_defaultPort     = port;
     m_configurationUpdatedSignal->asyncEmit (hostname, port);
     m_configDialog.close();
 }
@@ -116,7 +122,7 @@ void SClientConfigEditor::onValidate()
 
 void SClientConfigEditor::swapping() throw (::fwTools::Failed)
 {
-    // Classic default approach to update service when oject change
+    // Classic default approach to update service when object change
     this->stopping();
     this->starting();
 }

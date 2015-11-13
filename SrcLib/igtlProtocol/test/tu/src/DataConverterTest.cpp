@@ -9,15 +9,17 @@
 #include <igtlProtocol/DataConverter.hpp>
 #include <igtlProtocol/RawMessage.hpp>
 
+#include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
-#include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
+#include <fwData/Integer.hpp>
 #include <fwData/Line.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwData/Object.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwComEd/helper/Mesh.hpp>
@@ -27,11 +29,12 @@
 #include <fwTest/generator/Mesh.hpp>
 #include <fwTest/helper/compare.hpp>
 
+#include <igtl/igtlImageMessage.h>
 #include <igtl/igtlPointMessage.h>
 #include <igtl/igtlPositionMessage.h>
 #include <igtl/igtlStringMessage.h>
 #include <igtl/igtlTransformMessage.h>
-#include <igtl/igtlImageMessage.h>
+#include <igtl/igtlTrackingDataMessage.h>
 
 #include <algorithm>
 #include <iostream>
@@ -339,6 +342,62 @@ void DataConverterTest::scalarConverterTest()
     converter->fromIgtlMessage(::igtl::MessageBase::Pointer(msg.GetPointer()), destObj);
     CPPUNIT_ASSERT(newDataFloat->getValue() == valueFloat);
 }
+
+//------------------------------------------------------------------------------
+
+void DataConverterTest::compositeConverterTest()
+{
+    DataConverter::sptr converter = DataConverter::getInstance();
+    ::igtl::TrackingDataMessage::Pointer trackingMsg;
+
+    ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
+    ::fwData::Composite::sptr composite           = ::fwData::Composite::New();
+    (*composite)["H_marker1_2_polaris"]           = matrix;
+
+    for (size_t i = 0; i < 4; ++i)
+    {
+        for (size_t j = 0; j < 4; ++j)
+        {
+            matrix->setCoefficient(i, j, i+j);
+        }
+    }
+    trackingMsg =
+        ::igtl::TrackingDataMessage::Pointer(dynamic_cast< ::igtl::TrackingDataMessage*>(converter->fromFwObject(
+                                                                                             composite).
+                                                                                         GetPointer()));
+    CPPUNIT_ASSERT(trackingMsg);
+    int nbTrckingElement = trackingMsg->GetNumberOfTrackingDataElements();
+    CPPUNIT_ASSERT_EQUAL(1, nbTrckingElement);
+
+    ::igtl::TrackingDataElement::Pointer trackElement = ::igtl::TrackingDataElement::New();
+    trackingMsg->GetTrackingDataElement(0, trackElement);
+    const std::string name = trackElement->GetName();
+
+    CPPUNIT_ASSERT_EQUAL(std::string("H_marker1_2_polaris"), name);
+
+    ::igtl::Matrix4x4 igtlMatrix;
+    trackElement->GetMatrix(igtlMatrix);
+    for (size_t i = 0; i < 4; ++i)
+    {
+        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->getCoefficients().begin() + i * 4));
+    }
+
+
+    ::fwData::Composite::sptr destComposite = ::fwData::Composite::New();
+    ::fwData::Object::sptr destObject       = destComposite;
+    converter->fromIgtlMessage(::igtl::MessageBase::Pointer(trackingMsg.GetPointer()), destObject);
+
+    ::fwData::Composite::iterator iter = destComposite->find("H_marker1_2_polaris");
+    CPPUNIT_ASSERT(iter != destComposite->end());
+
+    ::fwData::TransformationMatrix3D::sptr destMmatrix = ::fwData::TransformationMatrix3D::New();
+    destMmatrix                                        = ::fwData::TransformationMatrix3D::dynamicCast(iter->second);
+    for(size_t i = 0; i < 4; ++i)
+    {
+        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMmatrix->getCoefficients().begin() + i * 4));
+    }
+}
+
 
 } //namespace ut
 } //namespace OpenIGTLinkProtocol
