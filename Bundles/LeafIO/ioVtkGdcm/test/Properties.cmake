@@ -12,6 +12,8 @@ set( DEPENDENCIES
     fwComEd
     fwServices
     fwRuntime
+    fwThread
+    fwGui
 )
 set( REQUIREMENTS
     io

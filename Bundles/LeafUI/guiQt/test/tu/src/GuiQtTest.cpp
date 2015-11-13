@@ -78,6 +78,9 @@ void GuiQtTest::testDefaultFrame()
 
 void GuiQtTest::testTuto01()
 {
+    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
+    CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
+
     ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
     ::fwRuntime::ConfigurationElement::csptr config   =
         ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( "tutoBasicConfig" );
@@ -90,6 +93,9 @@ void GuiQtTest::testTuto01()
 
 void GuiQtTest::testTuto02()
 {
+    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
+    CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
+
     ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
     ::fwRuntime::ConfigurationElement::csptr config   =
         ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( "tutoDataServiceBasicConfig" );

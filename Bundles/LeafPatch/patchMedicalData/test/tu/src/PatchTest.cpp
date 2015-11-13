@@ -10,6 +10,8 @@
 #include <fwData/Object.hpp>
 #include <fwDataTools/Image.hpp>
 
+#include <fwGui/registry/worker.hpp>
+
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
@@ -17,12 +19,15 @@
 #include <fwMedData/Study.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
+#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
+
+#include <fwThread/Worker.hpp>
+
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
 
@@ -41,6 +46,8 @@ namespace ut
 void PatchTest::setUp()
 {
     // Set up context before running a test.
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    ::fwGui::registry::worker::init(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -48,6 +55,7 @@ void PatchTest::setUp()
 void PatchTest::tearDown()
 {
     // Clean up after the test run.
+    ::fwGui::registry::worker::reset();
 }
 
 //------------------------------------------------------------------------------

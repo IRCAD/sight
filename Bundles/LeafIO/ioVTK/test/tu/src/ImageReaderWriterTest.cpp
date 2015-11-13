@@ -4,38 +4,41 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fstream>
+#include "ImageReaderWriterTest.hpp"
 
-#include <boost/filesystem.hpp>
+#include <fwComEd/helper/Image.hpp>
 
-#include <boost/filesystem/operations.hpp>
+#include <fwData/Image.hpp>
+
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
+#include <fwDataTools/Image.hpp>
+
+#include <fwGui/registry/worker.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
-#include <fwTools/System.hpp>
-#include <fwTools/Type.hpp>
-
-#include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
+#include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwData/Image.hpp>
-
-
-#include <fwDataTools/Image.hpp>
-
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
-#include <fwComEd/helper/Image.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
+#include <fwTest/Data.hpp>
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
-#include <fwTest/Data.hpp>
 
-#include "ImageReaderWriterTest.hpp"
+#include <fwThread/Worker.hpp>
+
+#include <fwTools/System.hpp>
+#include <fwTools/Type.hpp>
+
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/operations.hpp>
+
+#include <fstream>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVTK::ut::ImageReaderWriterTest );
@@ -71,13 +74,13 @@ void runImageSrv(
     ::fwServices::OSR::unregisterService( srv );
 }
 
-
-
 //------------------------------------------------------------------------------
 
 void ImageReaderWriterTest::setUp()
 {
     // Set up context before running a test.
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    ::fwGui::registry::worker::init(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -85,8 +88,10 @@ void ImageReaderWriterTest::setUp()
 void ImageReaderWriterTest::tearDown()
 {
     // Clean up after the test run.
+    ::fwGui::registry::worker::reset();
 }
 
+//------------------------------------------------------------------------------
 
 ::fwRuntime::EConfigurationElement::sptr getIOConfiguration(const ::boost::filesystem::path &file)
 {

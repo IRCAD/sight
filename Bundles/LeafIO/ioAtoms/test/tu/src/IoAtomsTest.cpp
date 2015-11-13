@@ -4,26 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/operations.hpp>
+#include "IoAtomsTest.hpp"
 
-#include <fwTools/System.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <fwData/Composite.hpp>
 
 #include <fwData/Object.hpp>
-#include <fwData/Composite.hpp>
+
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
+#include <fwGui/registry/worker.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwServices/registry/ServiceFactory.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
+
 #include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwTest/Exception.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
+#include <fwTools/System.hpp>
 
-#include "IoAtomsTest.hpp"
+#include <boost/filesystem/operations.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioAtoms::ut::IoAtomsTest );
@@ -40,6 +43,8 @@ static ::fwTest::Exception fwTestException(""); // force link with fwTest
 void IoAtomsTest::setUp()
 {
     // Set up context before running a test.
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    ::fwGui::registry::worker::init(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -47,6 +52,7 @@ void IoAtomsTest::setUp()
 void IoAtomsTest::tearDown()
 {
     // Clean up after the test run.
+    ::fwGui::registry::worker::reset();
 }
 
 //------------------------------------------------------------------------------

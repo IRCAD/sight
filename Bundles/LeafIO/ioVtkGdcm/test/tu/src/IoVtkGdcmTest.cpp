@@ -4,32 +4,35 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/filesystem/operations.hpp>
+#include "IoVtkGdcmTest.hpp"
 
+#include <fwGui/registry/worker.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/Patient.hpp>
+
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Study.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
+#include <fwServices/AppConfigManager.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+#include <fwTest/Data.hpp>
+#include <fwTest/generator/Image.hpp>
+
+#include <fwTest/generator/SeriesDB.hpp>
+#include <fwTest/helper/compare.hpp>
+#include <fwThread/Worker.hpp>
 
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/AppConfigManager.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
-
-#include <fwTest/generator/SeriesDB.hpp>
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/helper/compare.hpp>
-#include <fwTest/Data.hpp>
-
-#include "IoVtkGdcmTest.hpp"
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/filesystem/operations.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVtkGdcm::ut::IoVtkGdcmTest );
@@ -45,6 +48,8 @@ namespace ut
 void IoVtkGdcmTest::setUp()
 {
     // Set up context before running a test.
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    ::fwGui::registry::worker::init(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -52,6 +57,7 @@ void IoVtkGdcmTest::setUp()
 void IoVtkGdcmTest::tearDown()
 {
     // Clean up after the test run.
+    ::fwGui::registry::worker::reset();
 }
 
 //-----------------------------------------------------------------------------

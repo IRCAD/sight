@@ -4,30 +4,34 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/assign/list_of.hpp>
-#include <boost/filesystem/operations.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/System.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
+#include "IoItkTest.hpp"
 
 #include <fwData/Object.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwDataTools/Image.hpp>
+
+#include <fwGui/registry/worker.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/SeriesDB.hpp>
+
+#include <fwRuntime/EConfigurationElement.hpp>
+
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
 
-#include <fwDataTools/Image.hpp>
+#include <fwThread/Worker.hpp>
 
-#include <fwServices/registry/ServiceFactory.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/System.hpp>
 
+#include <boost/assign/list_of.hpp>
+#include <boost/filesystem/operations.hpp>
 
-#include "IoItkTest.hpp"
 
 using namespace ::boost::assign;
 
@@ -47,6 +51,8 @@ static const double EPSILON = 0.00001;
 void IoItkTest::setUp()
 {
     // Set up context before running a test.
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    ::fwGui::registry::worker::init(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -54,6 +60,7 @@ void IoItkTest::setUp()
 void IoItkTest::tearDown()
 {
     // Clean up after the test run.
+    ::fwGui::registry::worker::reset();
 }
 
 //------------------------------------------------------------------------------
