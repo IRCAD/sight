@@ -911,7 +911,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         }
 
         size_t width  = std::min(s_maxTextureSize, numIndicesTotal);
-        size_t height = static_cast<size_t>( std::ceil(numIndicesTotal / s_maxTextureSize) );
+        size_t height = static_cast<size_t>( std::floor(numIndicesTotal / s_maxTextureSize) + 1 );
 
         if(m_perPrimitiveColorTexture->getWidth() != width || m_perPrimitiveColorTexture->getHeight() != height )
         {
@@ -1296,6 +1296,7 @@ void SMesh::modifyMesh()
     }
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
     this->updateMesh(mesh);
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
