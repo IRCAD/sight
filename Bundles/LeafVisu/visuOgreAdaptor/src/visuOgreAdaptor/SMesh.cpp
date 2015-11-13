@@ -616,7 +616,15 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
             auto subEntity = m_r2vbEntity->getSubEntity(i);
             auto subMesh   = subEntity->getSubMesh();
 
-            const std::string r2vbObjectName = this->getID() + "_r2vbObject";
+            const bool bQuad  = (subMesh == m_subMeshes[::fwData::Mesh::QUAD]);
+            const bool bTetra = (subMesh == m_subMeshes[::fwData::Mesh::TETRA]);
+
+            ::fwData::Mesh::CellTypesEnum cellType = bQuad ? ::fwData::Mesh::QUAD :
+                                                     bTetra ? ::fwData::Mesh::TETRA :
+                                                     ::fwData::Mesh::TRIANGLE;
+            const std::string name = std::to_string(cellType);
+
+            const std::string r2vbObjectName = this->getID() + "_r2vbObject" + name;
             ::fwRenderOgre::R2VBRenderable* r2vbObject;
 
             const auto& factoryName = ::fwRenderOgre::factory::R2VBRenderable::FACTORY_TYPE_NAME;
@@ -640,12 +648,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
             // Set material used to display the triangles output - thus it is the same than m_entity.
             r2vbObject->setMaterial(m_materialAdaptor->getMaterialName());
 
-            const bool bQuad  = (subMesh == m_subMeshes[::fwData::Mesh::QUAD]);
-            const bool bTetra = (subMesh == m_subMeshes[::fwData::Mesh::TETRA]);
-
-            ::fwData::Mesh::CellTypesEnum cellType = bQuad ? ::fwData::Mesh::QUAD :
-                                                     bTetra ? ::fwData::Mesh::TETRA :
-                                                     ::fwData::Mesh::TRIANGLE;
 
             if( !m_r2vbMaterialAdaptor[cellType] )
             {
@@ -694,7 +696,8 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbMtlAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
                 r2vbMtlAdaptor->setTextureAdaptor(m_texAdaptorUID);
 
-                r2vbMtlAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->asyncRun();
+                // Update the material synchronously otherwise the r2vb will be rendered before shader switch
+                r2vbMtlAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
             }
 
             if(r2vbObject->getBuffer().isNull())
@@ -1108,11 +1111,10 @@ void SMesh::clearMesh(const ::fwData::Mesh::sptr& mesh)
     // Destroy all the submeshes from the matching mesh but keep the two meshes alive
     for(size_t i = 0; i < s_numPrimitiveTypes; ++i)
     {
-        const ::fwData::Mesh::CellTypesEnum cellType = static_cast< ::fwData::Mesh::CellTypesEnum>(i);
-
         if(m_subMeshes[i])
         {
-            const std::string name = std::to_string(cellType);
+            const ::fwData::Mesh::CellTypesEnum cellType = static_cast< ::fwData::Mesh::CellTypesEnum>(i);
+            const std::string name                       = std::to_string(cellType);
             if ( (cellType == ::fwData::Mesh::TRIANGLE && m_hasPrimitiveColor) ||
                  (cellType == ::fwData::Mesh::TETRA || cellType == ::fwData::Mesh::QUAD))
             {
@@ -1124,6 +1126,19 @@ void SMesh::clearMesh(const ::fwData::Mesh::sptr& mesh)
             }
             m_subMeshes[i] = nullptr;
         }
+    }
+
+    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+    for(auto r2vbObject : m_r2vbObject)
+    {
+        sceneMgr->destroyMovableObject(r2vbObject);
+    }
+    m_r2vbObject.clear();
+
+    if(m_r2vbEntity)
+    {
+        sceneMgr->destroyEntity(m_r2vbEntity);
+        m_r2vbEntity = nullptr;
     }
 }
 

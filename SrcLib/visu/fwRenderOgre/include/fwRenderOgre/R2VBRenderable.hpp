@@ -29,31 +29,32 @@ namespace fwRenderOgre
 class FWRENDEROGRE_CLASS_API R2VBRenderable : public ::Ogre::SimpleRenderable
 {
 public:
-    FWRENDEROGRE_API R2VBRenderable();
+    FWRENDEROGRE_API R2VBRenderable(const ::Ogre::String& name);
     virtual FWRENDEROGRE_API ~R2VBRenderable()
     {
+        m_srcObject = nullptr;
     }
 
-    void setBuffer(::Ogre::RenderToVertexBufferSharedPtr r2vbObject);
+    void setBuffer(::Ogre::RenderToVertexBufferSharedPtr _r2vbObject);
     ::Ogre::RenderToVertexBufferSharedPtr getBuffer();
 
     FWRENDEROGRE_API void setSourceObject(::Ogre::SubEntity* _sourceObject);
     ::Ogre::SubEntity* getSourceObject() const;
 
     /** @copydoc SimpleRenderable::_updateRenderQueue. */
-    FWRENDEROGRE_API void _updateRenderQueue(::Ogre::RenderQueue* queue);
+    FWRENDEROGRE_API void _updateRenderQueue(::Ogre::RenderQueue* _queue);
 
     /** @copydoc SimpleRenderable::getMovableType. */
     FWRENDEROGRE_API const ::Ogre::String& getMovableType(void) const;
 
     /** @copydoc SimpleRenderable::getRenderOperation. */
-    FWRENDEROGRE_API void getRenderOperation(::Ogre::RenderOperation& op);
+    FWRENDEROGRE_API void getRenderOperation(::Ogre::RenderOperation& _op);
 
     /// Delegate to the subentity.
     ::Ogre::Real getBoundingRadius(void) const;
 
     /// @copydoc Renderable::getSquaredViewDepth
-    ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* cam) const;
+    ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const;
     /// Mark the output verex buffer as dirty, the r2vb process will be run on next update
     void setDirty();
 
@@ -81,9 +82,9 @@ inline void R2VBRenderable::setDirty()
 
 //-----------------------------------------------------------------------------
 
-inline void R2VBRenderable::setBuffer(Ogre::RenderToVertexBufferSharedPtr r2vbObject)
+inline void R2VBRenderable::setBuffer(Ogre::RenderToVertexBufferSharedPtr _r2vbObject)
 {
-    m_r2vbBuffer = r2vbObject;
+    m_r2vbBuffer = _r2vbObject;
 }
 
 //-----------------------------------------------------------------------------
@@ -109,9 +110,9 @@ inline Ogre::Real R2VBRenderable::getBoundingRadius() const
 
 //-----------------------------------------------------------------------------
 
-inline Ogre::Real R2VBRenderable::getSquaredViewDepth(const Ogre::Camera *cam) const
+inline Ogre::Real R2VBRenderable::getSquaredViewDepth(const Ogre::Camera *_cam) const
 {
-    return m_srcObject->getSquaredViewDepth(cam);
+    return m_srcObject->getSquaredViewDepth(_cam);
 }
 
 //-----------------------------------------------------------------------------

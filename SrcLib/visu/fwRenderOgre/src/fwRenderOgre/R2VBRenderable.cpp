@@ -14,7 +14,9 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
-fwRenderOgre::R2VBRenderable::R2VBRenderable() : m_dirty(false)
+fwRenderOgre::R2VBRenderable::R2VBRenderable(const ::Ogre::String& _name) :
+    SimpleRenderable(_name),
+    m_dirty(false)
 {
 }
 
@@ -27,7 +29,7 @@ const ::Ogre::String& R2VBRenderable::getMovableType(void) const
 
 //-----------------------------------------------------------------------------
 
-void R2VBRenderable::_updateRenderQueue(::Ogre::RenderQueue* queue)
+void R2VBRenderable::_updateRenderQueue(::Ogre::RenderQueue* _queue)
 {
     // Don't do anything if the object is not visible
     if(m_srcObject->getParent()->isVisible())
@@ -39,15 +41,15 @@ void R2VBRenderable::_updateRenderQueue(::Ogre::RenderQueue* queue)
             m_dirty = false;
         }
         // Add the output vertex buffer in the render queue
-        queue->addRenderable(this);
+        _queue->addRenderable(this);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void R2VBRenderable::getRenderOperation(::Ogre::RenderOperation& op)
+void R2VBRenderable::getRenderOperation(::Ogre::RenderOperation& _op)
 {
-    m_r2vbBuffer->getRenderOperation(op);
+    m_r2vbBuffer->getRenderOperation(_op);
 }
 
 //-----------------------------------------------------------------------------

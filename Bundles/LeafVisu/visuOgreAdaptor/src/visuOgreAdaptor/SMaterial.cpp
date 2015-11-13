@@ -887,6 +887,7 @@ void SMaterial::setShadingMode( int shadingMode  )
 
         shadingProgramSuffix   += shadingCfgs;
         shadingProgramSuffixGS += shadingCfgs;
+
         if(m_hasPrimitiveColor)
         {
             shadingProgramSuffixGS += "+PPColor";
