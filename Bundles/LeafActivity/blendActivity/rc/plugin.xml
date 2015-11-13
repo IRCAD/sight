@@ -1,4 +1,4 @@
-<plugin id="blendActivity">
+<plugin id="blendActivity" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="gui" />

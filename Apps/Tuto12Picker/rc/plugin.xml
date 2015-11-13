@@ -1,4 +1,4 @@
-<plugin id="Tuto12Picker">
+<plugin id="Tuto12Picker" version="@DASH_VERSION@" >
 
 <requirement id="servicesReg" />
 

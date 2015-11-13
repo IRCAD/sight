@@ -1,4 +1,4 @@
-<plugin id="Tuto05MesherB">
+<plugin id="Tuto05MesherB" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
     

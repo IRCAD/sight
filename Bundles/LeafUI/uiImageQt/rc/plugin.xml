@@ -1,4 +1,4 @@
-<plugin id="uiImageQt" class="::uiImage::Plugin">
+<plugin id="uiImageQt" class="::uiImage::Plugin" version="@DASH_VERSION@" >
     <library name="uiImageQt"/>
 
     <requirement id="dataReg"/>

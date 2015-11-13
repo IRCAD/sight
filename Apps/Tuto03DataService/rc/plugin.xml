@@ -1,5 +1,5 @@
 
-<plugin id="Tuto03DataService">
+<plugin id="Tuto03DataService" version="@DASH_VERSION@" >
     <requirement id="servicesReg" />
 
     <extension implements="::fwServices::registry::AppConfig">

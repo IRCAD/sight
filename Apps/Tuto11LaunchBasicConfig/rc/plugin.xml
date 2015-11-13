@@ -1,4 +1,4 @@
-<plugin id="Tuto11LaunchBasicConfig">
+<plugin id="Tuto11LaunchBasicConfig" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
 

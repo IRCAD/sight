@@ -1,4 +1,4 @@
-<plugin id="visuVTKQt" class="visuVTKQt::Plugin" >
+<plugin id="visuVTKQt" class="visuVTKQt::Plugin"  version="@DASH_VERSION@" >
     
     <library name="visuVTKQt" />
 

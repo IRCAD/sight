@@ -1,4 +1,4 @@
-<plugin id="TutoPython">
+<plugin id="TutoPython" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
 

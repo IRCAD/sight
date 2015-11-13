@@ -1,4 +1,4 @@
-<plugin id="visuVTKVRAdaptor" class="visuVTKAdaptor::Plugin">
+<plugin id="visuVTKVRAdaptor" class="visuVTKAdaptor::Plugin" version="@DASH_VERSION@" >
 
     <library name="visuVTKVRAdaptor" />
 

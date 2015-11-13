@@ -1,4 +1,4 @@
-<plugin id="guiQt" class="::guiQt::Plugin">
+<plugin id="guiQt" class="::guiQt::Plugin" version="@DASH_VERSION@" >
     <library name="guiQt" />
 
     <requirement id="dataReg" />

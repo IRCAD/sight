@@ -1,4 +1,4 @@
-<plugin id="ctrlSelection" class="::ctrlSelection::Plugin" >
+<plugin id="ctrlSelection" class="::ctrlSelection::Plugin"  version="@DASH_VERSION@" >
 
     <library name="ctrlSelection" />
 

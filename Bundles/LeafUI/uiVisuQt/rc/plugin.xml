@@ -1,4 +1,4 @@
-<plugin id="uiVisuQt" class="::uiVisuQt::Plugin">
+<plugin id="uiVisuQt" class="::uiVisuQt::Plugin" version="@DASH_VERSION@" >
     <library name="uiVisuQt"/>
 
     <requirement id="dataReg"/>

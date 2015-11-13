@@ -1,4 +1,4 @@
-<plugin id="uiGenericQt" class="::uiGenericQt::Plugin">
+<plugin id="uiGenericQt" class="::uiGenericQt::Plugin" version="@DASH_VERSION@" >
     <library name="uiGenericQt"/>
 
     <requirement id="dataReg"/>

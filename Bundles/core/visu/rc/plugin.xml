@@ -1,4 +1,4 @@
-<plugin id="visu" class="::visu::Plugin" version="0.1" >
+<plugin id="visu" class="::visu::Plugin" version="@DASH_VERSION@" >
 
     <library name="visu" />
 

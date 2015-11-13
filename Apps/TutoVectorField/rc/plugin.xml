@@ -1,4 +1,4 @@
-<plugin id="TutoVectorField">
+<plugin id="TutoVectorField" version="@DASH_VERSION@" >
 
 <requirement id="servicesReg" />
 

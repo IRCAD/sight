@@ -1,4 +1,4 @@
-<plugin id="volumeRenderingActivity">
+<plugin id="volumeRenderingActivity" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="2DVisualizationActivity" />

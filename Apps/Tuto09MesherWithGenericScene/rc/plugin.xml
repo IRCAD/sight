@@ -1,4 +1,4 @@
-<plugin id="Tuto09MesherWithGenericScene">
+<plugin id="Tuto09MesherWithGenericScene" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
 

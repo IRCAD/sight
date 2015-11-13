@@ -1,4 +1,4 @@
-﻿<plugin id="Tuto03DataServiceBis">
+﻿<plugin id="Tuto03DataServiceBis" version="@DASH_VERSION@" >
 
 <requirement id="servicesReg" />
     

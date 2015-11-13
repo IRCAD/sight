@@ -1,5 +1,5 @@
 
-<plugin id="Tuto05Mesher">
+<plugin id="Tuto05Mesher" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
 

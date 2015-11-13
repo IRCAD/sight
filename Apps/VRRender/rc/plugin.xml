@@ -1,4 +1,4 @@
-<plugin id="VRRender">
+<plugin id="VRRender" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
 

@@ -1,4 +1,4 @@
-<plugin id="Tuto07LoaderForExternalData">
+<plugin id="Tuto07LoaderForExternalData" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
 

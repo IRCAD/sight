@@ -1,4 +1,4 @@
-<plugin id="Tuto10MatrixTransformInGS">
+<plugin id="Tuto10MatrixTransformInGS" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
 

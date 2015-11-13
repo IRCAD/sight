@@ -1,4 +1,4 @@
-<plugin id="TutoGui">
+<plugin id="TutoGui" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
 

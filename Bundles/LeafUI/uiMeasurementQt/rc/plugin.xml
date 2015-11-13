@@ -1,4 +1,4 @@
-<plugin id="uiMeasurementQt" class="::uiMeasurementQt::Plugin">
+<plugin id="uiMeasurementQt" class="::uiMeasurementQt::Plugin" version="@DASH_VERSION@" >
     <library name="uiMeasurementQt"/>
     
     <requirement id="dataReg"/>

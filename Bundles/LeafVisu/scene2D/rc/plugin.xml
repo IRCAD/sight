@@ -1,4 +1,4 @@
-<plugin id="scene2D" class="::scene2D::Plugin">
+<plugin id="scene2D" class="::scene2D::Plugin" version="@DASH_VERSION@" >
 
     <library name="scene2D" />
 

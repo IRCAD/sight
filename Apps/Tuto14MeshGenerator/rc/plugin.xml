@@ -1,4 +1,4 @@
-<plugin id="Tuto14MeshGenerator">
+<plugin id="Tuto14MeshGenerator" version="@DASH_VERSION@" >
 
 <requirement id="servicesReg" />
 

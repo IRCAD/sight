@@ -1,4 +1,4 @@
-<plugin id="Tuto08GenericScene">
+<plugin id="Tuto08GenericScene" version="@DASH_VERSION@" >
 
 <requirement id="servicesReg" />
 

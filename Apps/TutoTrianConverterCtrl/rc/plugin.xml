@@ -1,4 +1,4 @@
-<plugin id="TutoTrianConverterCtrl" class="::TutoTrianConverterCtrl::Plugin" >
+<plugin id="TutoTrianConverterCtrl" class="::TutoTrianConverterCtrl::Plugin"  version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
     <library name="TutoTrianConverterCtrl" />

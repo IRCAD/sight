@@ -1,4 +1,4 @@
-<plugin id="appXml" class="::appXml::Plugin" version="0.1" >
+<plugin id="appXml" class="::appXml::Plugin" version="@DASH_VERSION@" >
 
     <library name="appXml" />
     <requirement id="servicesReg" />

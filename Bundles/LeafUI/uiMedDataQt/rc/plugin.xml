@@ -1,4 +1,4 @@
-<plugin id="uiMedDataQt" class="::uiMedDataQt::Plugin">
+<plugin id="uiMedDataQt" class="::uiMedDataQt::Plugin" version="@DASH_VERSION@" >
     <library name="uiMedDataQt" />
 
     <requirement id="dataReg" />

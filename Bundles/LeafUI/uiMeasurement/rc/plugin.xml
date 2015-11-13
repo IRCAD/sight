@@ -1,4 +1,4 @@
-<plugin id="uiMeasurement" class="::uiMeasurement::Plugin">
+<plugin id="uiMeasurement" class="::uiMeasurement::Plugin" version="@DASH_VERSION@" >
     <library name="uiMeasurement"/>
     
     <requirement id="dataReg"/>

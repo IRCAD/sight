@@ -1,4 +1,4 @@
-<plugin id="uiReconstructionQt" class="::uiReconstruction::Plugin">
+<plugin id="uiReconstructionQt" class="::uiReconstruction::Plugin" version="@DASH_VERSION@" >
     <library name="uiReconstructionQt"/>
 
     <requirement id="dataReg"/>

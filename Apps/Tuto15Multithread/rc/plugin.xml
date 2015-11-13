@@ -1,4 +1,4 @@
-﻿<plugin id="Tuto15Multithread">
+﻿<plugin id="Tuto15Multithread" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
 

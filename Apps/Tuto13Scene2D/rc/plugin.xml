@@ -1,5 +1,5 @@
 
-<plugin id="Tuto13Scene2D">
+<plugin id="Tuto13Scene2D" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
 

@@ -1,4 +1,4 @@
-<plugin id="servicesReg" class="::servicesReg::Plugin" version="0.1" >
+<plugin id="servicesReg" class="::servicesReg::Plugin" version="@DASH_VERSION@" >
 
     <library name="servicesReg" />
 

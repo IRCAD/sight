@@ -213,22 +213,7 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
 endmacro()
 
 macro(createResourcesInstallTarget CONFIGURED_FILES_DIR DESTINATION)
-    file(GLOB_RECURSE RESOURCES_FILES ${CONFIGURED_FILES_DIR}/* )
-
-    foreach(RESOURCE_FILE ${RESOURCES_FILES})
-        get_filename_component(RESOURCE_NAME "${RESOURCE_FILE}" NAME)
-        if (NOT "${RESOURCE_NAME}" MATCHES "${FWPROJECT_NAME}_${${FWPROJECT_NAME}_DASH_VERSION}*")
-            file(RELATIVE_PATH REL_PATH "${CONFIGURED_FILES_DIR}" "${RESOURCE_FILE}")
-            get_filename_component(RC_REL_DIR "${REL_PATH}" DIRECTORY)
-            install(FILES "${CONFIGURED_FILES_DIR}/${REL_PATH}" DESTINATION "${DESTINATION}/${RC_REL_DIR}" )
-            unset(RC_REL_DIR)
-        endif()
-    endforeach()
-
-    # Add to target the generated profile.xml
-    if( ${FWPROJECT_NAME}_TYPE STREQUAL "APP" )
-         install(FILES "${BUNDLE_DIR}/profile.xml" DESTINATION "${DESTINATION}" )
-    endif()
+    install(DIRECTORY "${CONFIGURED_FILES_DIR}/" DESTINATION "${DESTINATION}/")
 endmacro()
 
 
@@ -260,7 +245,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/rc" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
         endif()
     endif()
 
@@ -307,7 +292,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/rc" "share/tu_exec_${DIRNAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/tu_exec_${DIRNAME}_${DASH_VERSION}" )
         endif()
     endif()
 
@@ -338,7 +323,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/rc" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
+            createResourcesInstallTarget( "${${FWPROJECT_NAME}_RC_BUILD_DIR}" "share/${FWPROJECT_NAME}_${DASH_VERSION}" )
         endif()
 
     endif()
@@ -410,7 +395,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
 
         if(${FWPROJECT_NAME}_INSTALL)
-            createResourcesInstallTarget( "${PRJ_SOURCE_DIR}/rc" Bundles/${FWPROJECT_NAME}_${DASH_VERSION} )
+            createResourcesInstallTarget( "${BUNDLE_DIR}" Bundles/${FWPROJECT_NAME}_${DASH_VERSION} )
         endif()
     endif()
 

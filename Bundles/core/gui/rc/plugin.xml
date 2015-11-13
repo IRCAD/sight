@@ -1,4 +1,4 @@
-<plugin class="::gui::Plugin" id="gui" version="0.1">
+<plugin class="::gui::Plugin" id="gui" version="@DASH_VERSION@" >
 
     <library name="gui"/>
 

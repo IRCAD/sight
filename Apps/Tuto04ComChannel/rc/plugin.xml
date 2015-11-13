@@ -1,4 +1,4 @@
-﻿<plugin id="Tuto04ComChannel">
+<plugin id="Tuto04ComChannel" version="@DASH_VERSION@" >
     
     <requirement id="servicesReg" />
     <xi:include href="configurations/config-connect.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

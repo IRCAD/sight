@@ -1,4 +1,4 @@
-<plugin id="opImageFilter" class="::opImageFilter::Plugin">
+<plugin id="opImageFilter" class="::opImageFilter::Plugin" version="@DASH_VERSION@" >
     
     <library name="opImageFilter" />
 
