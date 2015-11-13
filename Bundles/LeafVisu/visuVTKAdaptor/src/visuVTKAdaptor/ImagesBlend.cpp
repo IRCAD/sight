@@ -9,7 +9,6 @@
 #include <vtkImageMapToColors.h>
 #include <vtkLookupTable.h>
 
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/Base.hpp>
 
 #include <fwData/Boolean.hpp>
@@ -209,7 +208,8 @@ bool ImagesBlend::checkImageInformations()
                     if (  size != img->getSize() ||
                           !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(spacing,
                                                                                             img->getSpacing()) ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(origin, img->getOrigin()) )
+                          !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(origin,
+                                                                                           img->getOrigin()) )
                     {
                         OSLM_ERROR("imgA size : " << size[0] << " / " << size[1] << " / "<< size[2] );
                         OSLM_ERROR("imgA spacing : " << spacing[0] << " / " << spacing[1] << " / "<< spacing[2] );
@@ -233,7 +233,7 @@ bool ImagesBlend::checkImageInformations()
                         errorMsg += ".\n Background image size, spacing and origin are use.";
                         ::fwGui::dialog::MessageDialog::showMessageDialog("Images blending",
                                                                           errorMsg,
-                                                                          ::fwGui::dialog::MessageDialog::WARNING);
+                                                                          ::fwGui::dialog::IMessageDialog::WARNING);
                         break;
                     }
                 }

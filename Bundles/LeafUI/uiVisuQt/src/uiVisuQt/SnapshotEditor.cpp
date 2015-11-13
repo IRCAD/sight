@@ -30,7 +30,6 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/op/Get.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -173,7 +172,15 @@ void SnapshotEditor::onSnapButton()
                 dataInfo->setField("filename", filename);
                 ::fwComEd::CompositeMsg::sptr compositeMsg = ::fwComEd::CompositeMsg::New();
                 compositeMsg->addEvent( "SNAP", dataInfo );
-                ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
+                compositeMsg->setSource(this->getSptr());
+                compositeMsg->setSubject( composite);
+                ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+                sig = composite->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                    ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+                {
+                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                    sig->asyncEmit( compositeMsg);
+                }
             }
         }
     }

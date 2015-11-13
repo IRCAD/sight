@@ -15,7 +15,6 @@
 
 
 #include "ctrlSelection/wrapper/GraphWrapperSrv.hpp"
-#include <fwServices/IEditionService.hpp>
 
 
 fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::GraphWrapperSrv, ::fwData::Graph );
@@ -52,7 +51,15 @@ void GraphWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw 
         assert( message->getDataInfo( ::fwServices::ObjectMsg::UPDATED_OBJECT   ) == this->getObject() );
         fwComEd::GraphMsg::sptr msg = fwComEd::GraphMsg::New();
         msg->addEvent( fwComEd::GraphMsg::NEW_GRAPH, this->getObject() );
-        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( this->getObject());
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = this->getObject()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
     //TODO other event
 }

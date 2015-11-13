@@ -7,7 +7,6 @@
 #include <fwData/String.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/ObjectMsg.hpp>

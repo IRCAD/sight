@@ -8,7 +8,6 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/MeshMsg.hpp>
 
@@ -152,7 +151,14 @@ void SMeshModifier::updating() throw( ::fwTools::Failed )
             ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
-    ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( mesh);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = mesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //-----------------------------------------------------------------------------

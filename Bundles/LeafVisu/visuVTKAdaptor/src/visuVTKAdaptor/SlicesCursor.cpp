@@ -13,7 +13,6 @@
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkRenderer.h>

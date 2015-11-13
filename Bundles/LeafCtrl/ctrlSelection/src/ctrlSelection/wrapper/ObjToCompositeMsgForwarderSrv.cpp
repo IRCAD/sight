@@ -10,7 +10,6 @@
 
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/CompositeMsg.hpp>
 
@@ -101,8 +100,15 @@ void ObjToCompositeMsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr me
                 {
                     if(event == "*"  )
                     {
-                        ::fwServices::IEditionService::notify(
-                            this->getSptr(), composite, ::fwServices::ObjectMsg::constCast(message) );
+                        ::fwServices::ObjectMsg::constCast(message)->setSource( this->getSptr());
+                        ::fwServices::ObjectMsg::constCast(message)->setSubject( composite);
+                        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+                        sig = composite->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+                        {
+                            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                            sig->asyncEmit( ::fwServices::ObjectMsg::constCast(message) );
+                        }
                     }
                     else if(message->hasEvent( event ))
                     {
@@ -110,7 +116,15 @@ void ObjToCompositeMsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr me
                         ::fwServices::ObjectMsg::sptr forwardMsg = ::fwServices::factory::message::New(msgType);
                         OSLM_ASSERT(msgType << " creation failed", forwardMsg);
                         forwardMsg->addEvent(event, message->getDataInfo(event));
-                        ::fwServices::IEditionService::notify( this->getSptr(), composite, forwardMsg);
+                        forwardMsg->setSource( this->getSptr());
+                        forwardMsg->setSubject( composite);
+                        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+                        sig = composite->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+                        {
+                            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                            sig->asyncEmit( forwardMsg);
+                        }
                     }
                 }
             }

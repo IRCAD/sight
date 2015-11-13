@@ -15,7 +15,6 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/PointMsg.hpp>
 
@@ -109,7 +108,17 @@ public:
 
         msg->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );//setAllModified();
 
-        ::fwServices::IEditionService::notify( m_service->getSptr(), point, msg );
+        msg->setSource( m_service->getSptr());
+        msg->setSubject( point);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = point->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwServices::IService::ReceiveSlotType::sptr slot;
+            slot = m_service->slot< ::fwServices::IService::ReceiveSlotType >(
+                ::fwServices::IService::s_RECEIVE_SLOT );
+            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+            sig->asyncEmit( msg );
+        }
         m_service->update();
     }
 

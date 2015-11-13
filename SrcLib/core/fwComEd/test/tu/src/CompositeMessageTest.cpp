@@ -4,13 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/chrono/duration.hpp>
+#include "TestServices.hpp"
+#include "ConfigParserTest.hpp"
+#include "CompositeMessageTest.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -20,9 +21,10 @@
 
 #include <fwTest/Exception.hpp>
 
-#include "TestServices.hpp"
-#include "ConfigParserTest.hpp"
-#include "CompositeMessageTest.hpp"
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
+#include <boost/chrono/duration.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwComEd::ut::CompositeMessageTest );
@@ -93,7 +95,17 @@ void CompositeMessageTest::testCompositeMessage()
     ::fwComEd::CompositeMsg::sptr compoMsg;
     compoMsg = ::fwComEd::CompositeMsg::New();
     compoMsg->appendAddedKey(objAUUID, image);
-    ::fwServices::IEditionService::notify(serviceCompo2, compo, compoMsg);
+    compoMsg->setSource(serviceCompo2);
+    compoMsg->setSubject( compo);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = compo->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwServices::IService::ReceiveSlotType::sptr slot;
+        slot = serviceCompo2->slot< ::fwServices::IService::ReceiveSlotType >(
+            ::fwServices::IService::s_RECEIVE_SLOT );
+        ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+        sig->asyncEmit( compoMsg);
+    }
 
     // Wait a little notification system
     ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(500) );
@@ -111,7 +123,16 @@ void CompositeMessageTest::testCompositeMessage()
     ::fwData::Object::sptr newImage = ::fwData::Image::New();
     compoMsg                        = ::fwComEd::CompositeMsg::New();
     compoMsg->appendChangedKey(objAUUID, image, newImage);
-    ::fwServices::IEditionService::notify(serviceCompo2, compo, compoMsg);
+    compoMsg->setSource(serviceCompo2);
+    compoMsg->setSubject( compo);
+    sig = compo->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwServices::IService::ReceiveSlotType::sptr slot;
+        slot = serviceCompo2->slot< ::fwServices::IService::ReceiveSlotType >(
+            ::fwServices::IService::s_RECEIVE_SLOT );
+        ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+        sig->asyncEmit( compoMsg);
+    }
 
     // Wait a little notification system
     ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(500) );
@@ -131,7 +152,16 @@ void CompositeMessageTest::testCompositeMessage()
 
     compoMsg = ::fwComEd::CompositeMsg::New();
     compoMsg->appendRemovedKey(objAUUID, image);
-    ::fwServices::IEditionService::notify(serviceCompo2, compo, compoMsg);
+    compoMsg->setSource(serviceCompo2);
+    compoMsg->setSubject( compo);
+    sig = compo->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwServices::IService::ReceiveSlotType::sptr slot;
+        slot = serviceCompo2->slot< ::fwServices::IService::ReceiveSlotType >(
+            ::fwServices::IService::s_RECEIVE_SLOT );
+        ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+        sig->asyncEmit( compoMsg);
+    }
 
     // Wait a little notification system
     ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(500) );

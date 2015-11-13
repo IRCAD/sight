@@ -19,7 +19,6 @@
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 

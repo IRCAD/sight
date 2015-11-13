@@ -15,7 +15,6 @@
 
 
 #include "ctrlSelection/wrapper/ImageWrapperSrv.hpp"
-#include <fwServices/IEditionService.hpp>
 
 
 fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::ImageWrapperSrv, ::fwData::Image );
@@ -53,7 +52,15 @@ void ImageWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw 
         fwComEd::ImageMsg::sptr msg = fwComEd::ImageMsg::New();
         msg->addEvent( fwComEd::ImageMsg::NEW_IMAGE, this->getObject() );
         msg->addEvent( fwComEd::ImageMsg::BUFFER, this->getObject() );
-        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( this->getObject());
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = this->getObject()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
     //TODO other event
 }

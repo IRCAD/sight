@@ -27,7 +27,6 @@
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/ModelSeriesMsg.hpp>
@@ -222,7 +221,14 @@ void SOrganTransformation::notitfyTransformationMatrix(::fwData::TransformationM
 {
     ::fwComEd::TransformationMatrix3DMsg::sptr message = ::fwComEd::TransformationMatrix3DMsg::New();
     message->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-    ::fwServices::IEditionService::notify( getSptr(), aTransMat, message );
+    message->setSource( getSptr());
+    message->setSubject( aTransMat);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = aTransMat->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( message );
+    }
 }
 
 //------------------------------------------------------------------------------

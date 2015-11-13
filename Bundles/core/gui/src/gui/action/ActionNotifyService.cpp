@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "gui/action/ActionNotifyService.hpp"
+
 #include <fwCore/base.hpp>
 
 #include <fwTools/fwID.hpp>
@@ -15,9 +17,9 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwServices/IEditionService.hpp>
 
-#include "gui/action/ActionNotifyService.hpp"
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 namespace gui
 {
@@ -85,7 +87,14 @@ void ActionNotifyService::updating() throw( ::fwTools::Failed )
 
             ::fwData::Object::sptr srvObj = this->getObject();
             objectMsg->addEvent( event );
-            ::fwServices::IEditionService::notify(this->getSptr(), srvObj, objectMsg);
+            objectMsg->setSource(this->getSptr());
+            objectMsg->setSubject( srvObj);
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = srvObj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( objectMsg);
+            }
         }
     }
 }

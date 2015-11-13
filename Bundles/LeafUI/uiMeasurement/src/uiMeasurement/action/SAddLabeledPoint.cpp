@@ -10,7 +10,6 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 
 #include <fwData/Point.hpp>
@@ -105,7 +104,14 @@ void SAddLabeledPoint::updating() throw(::fwTools::Failed)
         // notify
         ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
         msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED, newPoint );
-        ::fwServices::IEditionService::notify( this->getSptr(), landmarks, msgPointList);
+        msgPointList->setSource( this->getSptr());
+        msgPointList->setSubject( landmarks);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = landmarks->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msgPointList);
+        }
     }
 }
 

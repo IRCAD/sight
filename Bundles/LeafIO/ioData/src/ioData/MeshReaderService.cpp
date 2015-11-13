@@ -12,7 +12,6 @@
 #include <io/IReader.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/ObjectMsg.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -107,7 +106,14 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
             // Notify reading
             ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
             msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-            ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
+            msg->setSource(this->getSptr());
+            msg->setSubject( mesh);
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = mesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( msg);
+            }
         }
         catch (const std::exception & e)
         {

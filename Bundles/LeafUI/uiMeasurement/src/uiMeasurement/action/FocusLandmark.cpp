@@ -10,7 +10,6 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 
 #include <fwData/Point.hpp>
@@ -170,7 +169,15 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
                     // notify
                     ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
                     msg->setSliceIndex( paramA, paramF, paramS );
-                    ::fwServices::IEditionService::notify(this->getSptr(), pImage, msg);
+                    msg->setSource(this->getSptr());
+                    msg->setSubject( pImage);
+                    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+                    sig = pImage->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+                    {
+                        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                        sig->asyncEmit( msg);
+                    }
                 }
                 else
                 {

@@ -6,7 +6,6 @@
 
 #include <fwServices/Base.hpp>
 
-#include <fwServices/IEditionService.hpp>
 
 #include <scene2D/data/Viewport.hpp>
 #include <scene2D/data/ViewportMsg.hpp>
@@ -115,7 +114,14 @@ void ViewportRangeSelector::doStart() throw( ::fwTools::Failed)
 
     ::scene2D::data::ViewportMsg::sptr msg = ::scene2D::data::ViewportMsg::New();
     msg->addEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
-    ::fwServices::IEditionService::notify( this->getSptr(), viewport, msg );
+    msg->setSource( this->getSptr());
+    msg->setSubject( viewport);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = viewport->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg );
+    }
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -309,8 +315,15 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
             updateViewportFromShutter( rect.x(), rect.y(), rect.width(), rect.height() );
             ::scene2D::data::ViewportMsg::sptr msg = ::scene2D::data::ViewportMsg::New();
             msg->addEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
-            ::fwServices::IEditionService::notify( this->getSptr(), this->getObject< ::scene2D::data::Viewport>(),
-                                                   msg );
+            msg->setSource( this->getSptr());
+            msg->setSubject( this->getObject< ::scene2D::data::Viewport>());
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = this->getObject< ::scene2D::data::Viewport>()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( msg );
+            }
         }
     }
 }

@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <algorithm>
 
-#include <boost/bind.hpp>
+#include "fwComEd/helper/Field.hpp"
 
 #include <fwData/Composite.hpp>
 
-#include <fwServices/IEditionService.hpp>
+#include <fwServices/IService.hpp>
 
-#include "fwComEd/helper/Field.hpp"
+#include <boost/bind.hpp>
+#include <algorithm>
 
 namespace fwComEd
 {
@@ -95,7 +95,12 @@ void Field::notify(fwServices::IService::sptr _serviceSource)
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     if ( m_objectMsg->getEventIds().size() > 0 )
     {
-        ::fwServices::IEditionService::notify( _serviceSource, m_object.lock(), m_objectMsg, true );
+        m_objectMsg->setSource( _serviceSource );
+        m_objectMsg->setSubject( m_object.lock() );
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = _serviceSource->signal< ::fwData::Object::ObjectModifiedSignalType >(
+            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        sig->asyncEmit(m_objectMsg);
     }
     SLM_INFO_IF("The message will not by notified because it has no event.", m_objectMsg->getEventIds().size() == 0);
 }

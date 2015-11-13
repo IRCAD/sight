@@ -18,6 +18,7 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwZip
+    fwCom
     io
     )
 set( REQUIREMENTS  )

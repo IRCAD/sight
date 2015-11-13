@@ -12,7 +12,6 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/HistogramMsg.hpp>
 
@@ -86,7 +85,14 @@ void SComputeHistogram::updating() throw ( ::fwTools::Failed )
 
         ::fwComEd::HistogramMsg::sptr msg = ::fwComEd::HistogramMsg::New();
         msg->addEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED);
-        ::fwServices::IEditionService::notify(this->getSptr(), histogram, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( histogram);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = histogram->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 

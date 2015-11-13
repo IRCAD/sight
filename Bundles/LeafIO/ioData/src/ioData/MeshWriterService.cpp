@@ -8,7 +8,6 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/ObjectMsg.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwData/Mesh.hpp>

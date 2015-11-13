@@ -16,7 +16,6 @@
 #include <fwTools/fwID.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
 

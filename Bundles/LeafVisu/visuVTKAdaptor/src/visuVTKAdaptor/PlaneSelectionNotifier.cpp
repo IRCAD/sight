@@ -17,7 +17,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #ifndef ANDROID
 
@@ -224,7 +223,14 @@ void PlaneSelectionNotifier::selectPlane( ::fwData::Object::sptr plane )
         ::fwComEd::CompositeMsg::sptr compositeMsg = ::fwComEd::CompositeMsg::New();
         compositeMsg->appendChangedKey(m_planeSelectionId,oldPlane, plane);
         composite->getContainer()[m_planeSelectionId] = plane;
-        ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
+        compositeMsg->setSource(this->getSptr());
+        compositeMsg->setSubject( composite);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = composite->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( compositeMsg);
+        }
     }
 }
 
@@ -239,7 +245,14 @@ void PlaneSelectionNotifier::deselectPlane()
 
         composite->getContainer().erase(m_planeSelectionId);
 
-        ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
+        compositeMsg->setSource(this->getSptr());
+        compositeMsg->setSubject( composite);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = composite->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( compositeMsg);
+        }
     }
 }
 

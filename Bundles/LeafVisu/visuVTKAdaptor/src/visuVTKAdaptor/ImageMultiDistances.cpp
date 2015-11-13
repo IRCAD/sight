@@ -37,7 +37,6 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 
-#include <fwServices/IEditionService.hpp>
 
 #include <boost/assign/std/vector.hpp>
 #include <algorithm>
@@ -443,7 +442,14 @@ void ImageMultiDistances::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(
             this->createNewDistance( sceneId );
             ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
             msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
-            ::fwServices::IEditionService::notify( this->getSptr(), image, msg );
+            msg->setSource( this->getSptr());
+            msg->setSubject( image);
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( msg );
+            }
         }
     }
 

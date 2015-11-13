@@ -28,7 +28,6 @@
 #include <fwServices/macros.hpp>
 
 #include "visuVTKAdaptor/PointListInteractor.hpp"
-#include <fwServices/IEditionService.hpp>
 
 
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
@@ -216,7 +215,14 @@ void PointListInteractor::resetPointList()
 
     ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED);
-    ::fwServices::IEditionService::notify(this->getSptr(), list, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( list);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = list->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -232,7 +238,14 @@ void PointListInteractor::addPoint(const double &x, const double &y, const doubl
 
     ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
     msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
-    ::fwServices::IEditionService::notify(this->getSptr(), list, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( list);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = list->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------

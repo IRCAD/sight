@@ -4,11 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ioITK/InrImageReaderService.hpp"
+
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwComEd/ImageMsg.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <io/IReader.hpp>
 
@@ -24,9 +28,6 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwItkIO/ImageReader.hpp>
-
-#include "ioITK/InrImageReaderService.hpp"
-
 
 namespace ioITK
 {
@@ -158,7 +159,14 @@ void InrImageReaderService::notificationOfDBUpdate()
     msg->addEvent( ::fwComEd::ImageMsg::SPACING );
     msg->addEvent( ::fwComEd::ImageMsg::PIXELTYPE );
 
-    ::fwServices::IEditionService::notify(this->getSptr(), pImage, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( pImage);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = pImage->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -11,7 +11,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwGui/Cursor.hpp>
 

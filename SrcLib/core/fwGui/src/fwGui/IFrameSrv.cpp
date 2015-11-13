@@ -4,19 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
+#include "fwGui/Application.hpp"
+#include "fwGui/IFrameSrv.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwTools/fwID.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/ObjectMsg.hpp>
-#include <fwServices/IEditionService.hpp>
 
-#include "fwGui/Application.hpp"
-#include "fwGui/IFrameSrv.hpp"
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
+#include <boost/foreach.hpp>
+#include <boost/bind.hpp>
+#include <boost/lambda/lambda.hpp>
 
 namespace fwGui
 {
@@ -236,7 +238,14 @@ void IFrameSrv::onCloseNotify()
     ::fwServices::ObjectMsg::sptr objectMsg = ::fwServices::ObjectMsg::New();
     ::fwData::Object::sptr srvObj           = this->getObject();
     objectMsg->addEvent( "WINDOW_CLOSED" );
-    ::fwServices::IEditionService::notify(this->getSptr(), srvObj, objectMsg);
+    objectMsg->setSource(this->getSptr());
+    objectMsg->setSubject( srvObj);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = srvObj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( objectMsg);
+    }
 }
 
 //-----------------------------------------------------------------------------

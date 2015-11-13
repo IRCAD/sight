@@ -4,17 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-#include <QListWidgetItem>
-#include <QCheckBox>
-#include <QString>
-#include <QVBoxLayout>
-#include <QGroupBox>
+#include "uiMedDataQt/editor/SModelSeriesList.hpp"
 
-#include <boost/format.hpp>
-
-#include <boost/format.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -40,11 +31,23 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/op/Get.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiMedDataQt/editor/SModelSeriesList.hpp"
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QListWidgetItem>
+#include <QCheckBox>
+#include <QString>
+#include <QVBoxLayout>
+#include <QGroupBox>
+
+#include <boost/format.hpp>
+
+#include <boost/format.hpp>
 
 namespace uiMedData
 {
@@ -355,7 +358,14 @@ void SModelSeriesList::onCurrentItemChanged( QTreeWidgetItem * current, QTreeWid
     std::string id = current->data(0, Qt::UserRole).toString().toStdString();
     ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
     msg->addEvent( ::fwComEd::ModelSeriesMsg::NEW_RECONSTRUCTION_SELECTED, ::fwData::String::New(id));
-    ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( modelSeries);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = modelSeries->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -381,7 +391,14 @@ void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem * item, int colum
 
         ::fwComEd::ReconstructionMsg::sptr msg = ::fwComEd::ReconstructionMsg::New();
         msg->addEvent( ::fwComEd::ReconstructionMsg::VISIBILITY );
-        ::fwServices::IEditionService::notify(this->getSptr(), rec, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( rec);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = rec->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 
@@ -399,7 +416,14 @@ void SModelSeriesList::onShowReconstructions(int state )
 
     ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
     msg->addEvent( ::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS );
-    ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( modelSeries);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = modelSeries->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------

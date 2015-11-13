@@ -4,13 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "opVTKMesh/action/VTKMeshCreation.hpp"
+
 #include <fwTools/fwID.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwComEd/MeshMsg.hpp>
 
@@ -26,7 +30,6 @@
 #include <vtkSmartPointer.h>
 #include <vtkImageData.h>
 
-#include "opVTKMesh/action/VTKMeshCreation.hpp"
 
 namespace opVTKMesh
 {
@@ -175,7 +178,14 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
     /// Notification
     ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
     msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-    ::fwServices::IEditionService::notify( this->getSptr(), pMesh, msg );
+    msg->setSource( this->getSptr());
+    msg->setSubject( pMesh);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = pMesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg );
+    }
 }
 
 //-----------------------------------------------------------------------------

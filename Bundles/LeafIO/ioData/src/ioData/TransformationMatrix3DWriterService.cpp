@@ -4,10 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fstream>
-#include <iostream>
-
-#include <boost/filesystem/operations.hpp>
+#include "ioData/TransformationMatrix3DWriterService.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -19,13 +16,18 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/ObjectMsg.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <fwDataIO/writer/TransformationMatrix3DWriter.hpp>
 
-#include "ioData/TransformationMatrix3DWriterService.hpp"
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
+#include <fstream>
+#include <iostream>
+
+#include <boost/filesystem/operations.hpp>
 
 namespace ioData
 {
@@ -123,7 +125,15 @@ void TransformationMatrix3DWriterService::updating() throw(::fwTools::Failed)
         // Notify writing
         ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
         msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( this->getObject());
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = this->getObject()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 

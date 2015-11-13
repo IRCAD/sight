@@ -12,7 +12,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/Dictionary.hpp>
@@ -519,7 +518,16 @@ bool MedicalImageAdaptor::upadteTFObserver(::fwServices::ObjectMsg::csptr msg, :
     // Fire the message
     ::fwComEd::TransferFunctionMsg::sptr msg = ::fwComEd::TransferFunctionMsg::New();
     msg->setWindowLevel( tf->getWindow(), tf->getLevel() );
-    ::fwServices::IEditionService::notify( srv, tf, msg );
+    msg->setSource( srv);
+    msg->setSubject( tf);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = tf->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwServices::IService::ReceiveSlotType::sptr slot;
+        slot = srv->slot< ::fwServices::IService::ReceiveSlotType >( ::fwServices::IService::s_RECEIVE_SLOT );
+        ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+        sig->asyncEmit(msg);
+    }
     return msg;
 }
 

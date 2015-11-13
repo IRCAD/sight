@@ -8,7 +8,6 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 
 #include <fwCore/base.hpp>
@@ -132,7 +131,15 @@ void SModelSeriesReader::updating() throw(::fwTools::Failed)
 
         ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
         msg->addEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION );
-        ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( modelSeries);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig =
+            modelSeries->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 

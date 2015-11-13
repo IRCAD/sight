@@ -26,7 +26,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <vtkTexture.h>
 #include <vtkRenderWindowInteractor.h>
@@ -185,7 +184,14 @@ void Texture::applyTexture( SPTR(::fwData::Material)_material )
 
     ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
     msg->addEvent(::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED);
-    ::fwServices::IEditionService::notify(this->getSptr(), _material, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( _material);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = _material->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 } //namespace visuVTKAdaptor

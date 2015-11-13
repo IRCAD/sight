@@ -2,7 +2,8 @@
 set( NAME ioVtkGdcm )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-set( DEPENDENCIES 
+set( DEPENDENCIES
+    fwCom
     fwComEd
     fwCore
     fwData
@@ -16,4 +17,3 @@ set( DEPENDENCIES
     fwDataIO
 )
 set( REQUIREMENTS  )
-

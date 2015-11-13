@@ -30,7 +30,6 @@
 #include <fwServices/macros.hpp>
 
 #include "visuVTKAdaptor/PickerInteractor.hpp"
-#include <fwServices/IEditionService.hpp>
 
 
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
@@ -272,7 +271,15 @@ void PickerInteractor::doStop() throw(fwTools::Failed)
 
 void PickerInteractor::notifyEvent(::fwComEd::InteractionMsg::sptr msg)
 {
-    ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( this->getObject());
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = this->getObject()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------

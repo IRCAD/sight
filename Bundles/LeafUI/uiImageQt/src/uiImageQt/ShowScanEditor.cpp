@@ -29,7 +29,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/op/Get.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -162,7 +161,14 @@ void ShowScanEditor::onChangeScanMode()
         dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId,  ::fwData::String::New( m_adaptorUID ) );
         ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
         imageMsg->addEvent( "SCAN_SHOW", dataInfo );
-        ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
+        imageMsg->setSource(this->getSptr());
+        imageMsg->setSubject( image);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( imageMsg);
+        }
     }
     else
     {

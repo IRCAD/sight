@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ctrlSelection/wrapper/MsgWrapperSrv.hpp"
 
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
@@ -11,9 +12,8 @@
 
 #include <fwComEd/GraphMsg.hpp>
 
-
-#include "ctrlSelection/wrapper/MsgWrapperSrv.hpp"
-#include <fwServices/IEditionService.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 
 fwServicesRegisterMacro( ::ctrlSelection::IWrapperSrv, ::ctrlSelection::wrapper::MsgWrapperSrv, ::fwData::Object );
@@ -84,7 +84,15 @@ void MsgWrapperSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( 
             ::fwServices::ObjectMsg::sptr wrappedMsg = ::fwServices::factory::message::New(msgType);
             OSLM_ASSERT(msgType << " creation failed", wrappedMsg);
             wrappedMsg->addEvent(toEvent, message->getDataInfo(onEvent));
-            ::fwServices::IEditionService::notify( this->getSptr(), this->getObject(), wrappedMsg);
+            wrappedMsg->setSource( this->getSptr());
+            wrappedMsg->setSubject( this->getObject());
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = this->getObject()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( wrappedMsg);
+            }
         }
     }
 }

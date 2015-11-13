@@ -4,20 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
- * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
- * published by the Free Software Foundation.
- * ****** END LICENSE BLOCK ****** */
+#include "fwCommand/PaintCommand.hpp"
 
-#include <boost/foreach.hpp>
-
-#include <fwServices/IEditionService.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwComEd/ImageMsg.hpp>
 
-#include "fwCommand/PaintCommand.hpp"
-
+#include <boost/foreach.hpp>
 
 namespace fwCommand
 {
@@ -160,7 +154,18 @@ void PaintCommand::notifyImageModification()
     {
         ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->addEvent( fwComEd::ImageMsg::BUFFER );
-        ::fwServices::IEditionService::notify( this->getNotifier(), m_image.lock(), msg );
+        msg->setSource( this->getNotifier());
+        msg->setSubject( m_image.lock());
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = m_image.lock()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwServices::IService::ReceiveSlotType::sptr slot;
+            slot = this->m_serviceNotifier.lock()->slot< ::fwServices::IService::ReceiveSlotType >(
+                ::fwServices::IService::s_RECEIVE_SLOT );
+            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+            sig->asyncEmit( msg );
+        }
     }
 }
 

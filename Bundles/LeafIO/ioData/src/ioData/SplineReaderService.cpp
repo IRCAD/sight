@@ -7,7 +7,6 @@
 #include <io/IReader.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/ObjectMsg.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwComEd/Dictionary.hpp>
@@ -133,7 +132,14 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
         spline->setField( ::fwComEd::Dictionary::position, objectMatrix );
         msg->addEvent( ::fwComEd::Dictionary::position );
     }
-    ::fwServices::IEditionService::notify(this->getSptr(), spline, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( spline);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = spline->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //-----------------------------------------------------------------------------

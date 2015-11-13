@@ -15,7 +15,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
@@ -116,7 +115,15 @@ void PlaneSelector::selectObject( ::fwData::Object::sptr object )
         {
             ::fwComEd::PlaneMsg::sptr deselectMsg = ::fwComEd::PlaneMsg::New();
             deselectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
-            ::fwServices::IEditionService::notify( this->getSptr(), oldObject, deselectMsg); //TODO: remove option
+            deselectMsg->setSource( this->getSptr());
+            deselectMsg->setSubject( oldObject);
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = oldObject->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( deselectMsg);
+            } //TODO: remove option
         }
 
         m_currentObject.reset();
@@ -127,7 +134,15 @@ void PlaneSelector::selectObject( ::fwData::Object::sptr object )
             {
                 ::fwComEd::PlaneMsg::sptr selectMsg = ::fwComEd::PlaneMsg::New();
                 selectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );
-                ::fwServices::IEditionService::notify( this->getSptr(), object, selectMsg); //TODO: remove option
+                selectMsg->setSource( this->getSptr());
+                selectMsg->setSubject( object);
+                ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+                sig = object->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                    ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+                {
+                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                    sig->asyncEmit( selectMsg);
+                } //TODO: remove option
             }
             m_currentObject = object;
         }

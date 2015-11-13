@@ -16,7 +16,6 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/PointMsg.hpp>
 #include <fwComEd/PlaneMsg.hpp>
@@ -198,14 +197,30 @@ void Plane::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Fa
             this->doUpdate();
             ::fwComEd::PlaneMsg::sptr msg = ::fwComEd::PlaneMsg::New();
             msg->addEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
-            ::fwServices::IEditionService::notify( this->getSptr(), m_pPlane.lock(), msg );
+            msg->setSource( this->getSptr());
+            msg->setSubject( m_pPlane.lock());
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = m_pPlane.lock()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( msg );
+            }
         }
 
         if ( pointMsg->hasEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION ))
         {
             ::fwComEd::PlaneMsg::sptr msg = ::fwComEd::PlaneMsg::New();
             msg->addEvent( ::fwComEd::PlaneMsg::START_PLANE_INTERACTION );
-            ::fwServices::IEditionService::notify( this->getSptr(), m_pPlane.lock(), msg );
+            msg->setSource( this->getSptr());
+            msg->setSubject( m_pPlane.lock());
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = m_pPlane.lock()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( msg );
+            }
         }
     }
     else if (planeMsg)

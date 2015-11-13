@@ -27,7 +27,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include "visuVTKAdaptor/ImagePickerInteractor.hpp"
 
@@ -299,7 +298,15 @@ void ImagePickerInteractor::doStop() throw(fwTools::Failed)
 
 void ImagePickerInteractor::notifyEvent(::fwComEd::InteractionMsg::sptr msg)
 {
-    ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( this->getObject());
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = this->getObject()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------

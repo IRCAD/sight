@@ -12,7 +12,6 @@
 #include <fwData/Integer.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
@@ -225,7 +224,17 @@ void ServiceTest::testCommunication()
     comHelper->connect( obj, service2, service2->getObjSrvConnections() );
 
     // Service1 send notification
-    ::fwServices::IEditionService::notify(service1, obj, objMsg);
+    objMsg->setSource(service1);
+    objMsg->setSubject( obj);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = obj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwServices::IService::ReceiveSlotType::sptr slot;
+        slot = service1->slot< ::fwServices::IService::ReceiveSlotType >(
+            ::fwServices::IService::s_RECEIVE_SLOT );
+        ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+        sig->asyncEmit( objMsg);
+    }
 
     // Test if service2 has received the message
     service1->stop().wait();

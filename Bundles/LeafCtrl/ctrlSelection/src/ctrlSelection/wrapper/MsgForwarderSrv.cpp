@@ -9,7 +9,6 @@
 #include <fwData/Composite.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include "ctrlSelection/wrapper/MsgForwarderSrv.hpp"
 
@@ -58,8 +57,15 @@ void MsgForwarderSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw 
                 {
                     if(event == "*" || message->hasEvent( event ) )
                     {
-                        ::fwServices::IEditionService::notify(
-                            this->getSptr(), object, ::fwServices::ObjectMsg::constCast(message) );
+                        ::fwServices::ObjectMsg::constCast(message)->setSource( this->getSptr());
+                        ::fwServices::ObjectMsg::constCast(message)->setSubject( object);
+                        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+                        sig = object->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+                        {
+                            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                            sig->asyncEmit( ::fwServices::ObjectMsg::constCast(message) );
+                        }
                     }
                 }
             }

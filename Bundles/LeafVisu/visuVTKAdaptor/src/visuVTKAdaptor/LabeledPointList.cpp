@@ -12,7 +12,6 @@
 #include <fwData/PointList.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwComEd/Dictionary.hpp>

@@ -8,7 +8,6 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwComEd/ImageMsg.hpp>
 
 #include <io/IWriter.hpp>

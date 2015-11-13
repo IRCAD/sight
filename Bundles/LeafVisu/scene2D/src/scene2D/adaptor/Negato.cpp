@@ -16,7 +16,6 @@
 #include <fwData/TransferFunction.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/TransferFunctionMsg.hpp>

@@ -15,7 +15,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/location/Folder.hpp>
@@ -123,7 +122,15 @@ void TransformationMatrix3DReaderService::updating() throw(::fwTools::Failed)
         // Notify reading
         ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
         msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-        ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( this->getObject());
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = this->getObject()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 

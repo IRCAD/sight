@@ -8,7 +8,6 @@
 
 #include <fwData/Object.hpp>
 
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 

@@ -4,13 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/bind.hpp>
+#include "fwComEd/helper/Composite.hpp"
 
 #include <fwData/Composite.hpp>
 
-#include <fwServices/IEditionService.hpp>
+#include <fwServices/IService.hpp>
 
-#include "fwComEd/helper/Composite.hpp"
+#include <boost/bind.hpp>
 
 namespace fwComEd
 {
@@ -109,11 +109,29 @@ void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObje
 
 //-----------------------------------------------------------------------------
 
-void Composite::notify( ::fwServices::IService::sptr _serviceSource, bool _allowLoops )
+void Composite::notify( ::fwServices::IService::sptr serviceSource, bool _allowLoops )
 {
     if ( m_compositeMsg->getEventIds().size() > 0 )
     {
-        ::fwServices::IEditionService::notify( _serviceSource, m_composite.lock(), m_compositeMsg, _allowLoops );
+        m_compositeMsg->setSource( serviceSource );
+        m_compositeMsg->setSubject( m_composite.lock() );
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = serviceSource->signal< ::fwData::Object::ObjectModifiedSignalType >(
+            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+
+        if(_allowLoops)
+        {
+            sig->asyncEmit(m_compositeMsg);
+        }
+        else
+        {
+            ::fwServices::IService::ReceiveSlotType::sptr slot;
+            slot = serviceSource->slot< ::fwServices::IService::ReceiveSlotType >(
+                ::fwServices::IService::s_RECEIVE_SLOT );
+            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+            sig->asyncEmit(m_compositeMsg);
+        }
+
     }
     SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
                 m_compositeMsg->getEventIds().size() == 0);

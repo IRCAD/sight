@@ -4,11 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/data/Viewport.hpp"
-#include "scene2D/adaptor/TransferFunction.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/data/ViewportMsg.hpp"
+#include <QGraphicsItemGroup>
+#include <QPoint>
+#include <QColorDialog>
 
 #include <fwServices/Base.hpp>
 
@@ -22,11 +20,14 @@
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/helper/Image.hpp>
 
-#include <fwServices/IEditionService.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
-#include <QGraphicsItemGroup>
-#include <QPoint>
-#include <QColorDialog>
+#include "scene2D/data/Viewport.hpp"
+#include "scene2D/adaptor/TransferFunction.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/data/ViewportMsg.hpp"
 
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::TransferFunction, ::fwData::Image );
@@ -495,7 +496,14 @@ void TransferFunction::updateImageTF()
 
     ::fwComEd::TransferFunctionMsg::sptr msg = ::fwComEd::TransferFunctionMsg::New();
     msg->addEvent(::fwComEd::TransferFunctionMsg::MODIFIED_POINTS);
-    ::fwServices::IEditionService::notify( this->getSptr(), selectedTF, msg );
+    msg->setSource( this->getSptr());
+    msg->setSubject( selectedTF);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = selectedTF->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg );
+    }
 
     // Update image window and level
     this->notifyTFWindowing(this->getSptr());

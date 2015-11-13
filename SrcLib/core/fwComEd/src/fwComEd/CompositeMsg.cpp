@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwComEd/CompositeMsg.hpp"
+
 #include <fwCore/spyLog.hpp>
 
 #include <fwData/Object.hpp>
@@ -12,7 +14,6 @@
 
 #include <fwServices/registry/message/macros.hpp>
 
-#include "fwComEd/CompositeMsg.hpp"
 
 fwServicesMessageRegisterMacro( ::fwComEd::CompositeMsg );
 

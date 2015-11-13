@@ -25,7 +25,6 @@
 #include <fwServices/op/Get.hpp>
 
 #include "uiVisu/action/CrossTypeAction.hpp"
-#include "fwServices/IEditionService.hpp"
 
 namespace uiVisu
 {
@@ -97,7 +96,14 @@ void CrossTypeAction::updating() throw(::fwTools::Failed)
 
     ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "CROSS_TYPE", dataInfo );
-    ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
+    imageMsg->setSource(this->getSptr());
+    imageMsg->setSubject( image);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( imageMsg);
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
@@ -139,7 +138,14 @@ void Image::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Faile
             // Hack to force imageSlice update until it is not able to detect a new image
             ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
             msg->setSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
-            ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+            msg->setSource(this->getSptr());
+            msg->setSubject( image);
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( msg);
+            }
         }
 
         if ( msg->hasEvent( ::fwComEd::ImageMsg::MODIFIED ) )

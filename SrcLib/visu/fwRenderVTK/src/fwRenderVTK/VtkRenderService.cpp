@@ -4,6 +4,31 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwRenderVTK/IVtkAdaptorService.hpp"
+#include "fwRenderVTK/OffScreenInteractorManager.hpp"
+#include "fwRenderVTK/VtkRenderService.hpp"
+#include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
+
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwComEd/ImageMsg.hpp>
+#include <fwComEd/CompositeMsg.hpp>
+
+#include <fwData/Color.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/helper/Config.hpp>
+#include <fwServices/macros.hpp>
+#include <fwTools/fwID.hpp>
+
+#include <fwRuntime/ConfigurationElementContainer.hpp>
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
+#include <fwVtkIO/vtk.hpp>
+
 #include <boost/foreach.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
@@ -16,30 +41,6 @@
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
 #include <vtkWindowToImageFilter.h>
-
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/CompositeMsg.hpp>
-
-#include <fwData/Color.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/helper/Config.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwTools/fwID.hpp>
-
-#include <fwRuntime/ConfigurationElementContainer.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
-#include "fwRenderVTK/IVtkAdaptorService.hpp"
-#include "fwRenderVTK/OffScreenInteractorManager.hpp"
-#include "fwRenderVTK/VtkRenderService.hpp"
-#include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
-
-#include <fwVtkIO/vtk.hpp>
 
 fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::VtkRenderService, ::fwData::Composite );
 
@@ -574,7 +575,14 @@ void VtkRenderService::render()
 
         ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
         msg->addEvent(::fwComEd::ImageMsg::NEW_IMAGE);
-        ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( image);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
     else
     {

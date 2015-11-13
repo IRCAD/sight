@@ -4,9 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QHBoxLayout>
-#include <QDoubleValidator>
-#include <QApplication>
+#include "uiVisuQt/BasicFloatEditor.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -17,13 +15,17 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwComEd/FloatMsg.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiVisuQt/BasicFloatEditor.hpp"
+#include <QHBoxLayout>
+#include <QDoubleValidator>
+#include <QApplication>
 
 namespace uiVisu
 {
@@ -177,7 +179,14 @@ void BasicFloatEditor::onModifyValue(QString value)
         OSLM_TRACE(floatObj->getID() << " new value : " << *floatObj);
         ::fwComEd::FloatMsg::sptr msg = ::fwComEd::FloatMsg::New();
         msg->addEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
-        ::fwServices::IEditionService::notify(this->getSptr(), floatObj, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( floatObj);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = floatObj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 

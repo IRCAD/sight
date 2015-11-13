@@ -16,7 +16,6 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
@@ -104,7 +103,15 @@ void SSnapshot::updating() throw(::fwTools::Failed)
             dataInfo->setField("filename", filename);
             ::fwComEd::CompositeMsg::sptr compositeMsg = ::fwComEd::CompositeMsg::New();
             compositeMsg->addEvent( "SNAP", dataInfo );
-            ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
+            compositeMsg->setSource(this->getSptr());
+            compositeMsg->setSubject( composite);
+            ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+            sig = composite->signal< ::fwData::Object::ObjectModifiedSignalType >(
+                ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+                sig->asyncEmit( compositeMsg);
+            }
         }
     }
 }

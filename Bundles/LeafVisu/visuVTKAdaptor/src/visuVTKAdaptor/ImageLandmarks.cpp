@@ -33,7 +33,6 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 
-#include <fwServices/IEditionService.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -53,11 +52,21 @@ void notifyRemoveLandMark( ::fwData::Image::sptr image, ::fwServices::IService* 
     msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
     ::fwData::PointList::sptr pointList = image->getField< ::fwData::PointList >(
         ::fwComEd::Dictionary::m_imageLandmarksId );
-    ::fwServices::IEditionService::notify( _service->getSptr(), pointList, msgPointList);
+    msgPointList->setSource( _service->getSptr());
+    msgPointList->setSubject( pointList);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+
+    sig = pointList->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwServices::IService::ReceiveSlotType::sptr slot;
+        slot = _service->slot< ::fwServices::IService::ReceiveSlotType >(
+            ::fwServices::IService::s_RECEIVE_SLOT );
+        ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+        sig->asyncEmit( msgPointList);
+    }
 
     ::fwComEd::ImageMsg::sptr msgLandmark = ::fwComEd::ImageMsg::New();
     msgLandmark->addEvent( ::fwComEd::ImageMsg::LANDMARK, point );
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
     sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
     sig->asyncEmit(msgLandmark);
 }

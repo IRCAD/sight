@@ -4,13 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/bind.hpp>
+#include "fwComEd/helper/Vector.hpp"
 
 #include <fwData/Vector.hpp>
 
-#include <fwServices/IEditionService.hpp>
+#include <fwServices/IService.hpp>
 
-#include "fwComEd/helper/Vector.hpp"
+#include <boost/bind.hpp>
 
 namespace fwComEd
 {
@@ -78,11 +78,27 @@ void Vector::clear()
 
 //-----------------------------------------------------------------------------
 
-void Vector::notify( ::fwServices::IService::sptr _serviceSource, bool notifySource )
+void Vector::notify( ::fwServices::IService::sptr serviceSource, bool notifySource )
 {
     if ( m_vectorMsg->getEventIds().size() > 0 )
     {
-        ::fwServices::IEditionService::notify( _serviceSource, m_vector.lock(), m_vectorMsg, notifySource );
+        m_vectorMsg->setSource( serviceSource );
+        m_vectorMsg->setSubject( m_vector.lock() );
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = serviceSource->signal< ::fwData::Object::ObjectModifiedSignalType >(
+            ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        if(notifySource)
+        {
+            sig->asyncEmit(m_vectorMsg);
+        }
+        else
+        {
+            ::fwServices::IService::ReceiveSlotType::sptr slot;
+            slot = serviceSource->slot< ::fwServices::IService::ReceiveSlotType >(
+                ::fwServices::IService::s_RECEIVE_SLOT );
+            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+            sig->asyncEmit(m_vectorMsg);
+        }
     }
     SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
                 m_vectorMsg->getEventIds().size() == 0);

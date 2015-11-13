@@ -18,7 +18,6 @@
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -141,7 +140,14 @@ void TransformationMatrixEditor::onSliderChange( int angle  )
 
     ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
     msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-    ::fwServices::IEditionService::notify(this->getSptr(), tm3D, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( tm3D);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = tm3D->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------

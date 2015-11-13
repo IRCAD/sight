@@ -19,7 +19,6 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 

@@ -18,7 +18,6 @@
 #include <fwMath/IntrasecTypes.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -203,7 +202,14 @@ void ImageTransparency::onModifyTransparency(int value)
     img->setField( "TRANSPARENCY",  ::fwData::Integer::New(value) );
     ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "TRANSPARENCY" );
-    ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
+    imageMsg->setSource(this->getSptr());
+    imageMsg->setSubject( img);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = img->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( imageMsg);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -233,7 +239,14 @@ void ImageTransparency::notifyVisibility(bool isVisible)
     img->setField( "VISIBILITY",  ::fwData::Boolean::New(isVisible) );
     ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
     imageMsg->addEvent( "VISIBILITY" );
-    ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
+    imageMsg->setSource(this->getSptr());
+    imageMsg->setSubject( img);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = img->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( imageMsg);
+    }
 }
 
 //------------------------------------------------------------------------------

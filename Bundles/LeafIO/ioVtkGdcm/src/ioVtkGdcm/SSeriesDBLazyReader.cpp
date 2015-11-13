@@ -4,14 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/bind.hpp>
+#include "ioVtkGdcm/SSeriesDBLazyReader.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwTools/ProgressToLogger.hpp>
 
@@ -28,8 +30,7 @@
 
 #include <vtkGdcmIO/SeriesDBLazyReader.hpp>
 
-#include "ioVtkGdcm/SSeriesDBLazyReader.hpp"
-
+#include <boost/bind.hpp>
 
 namespace ioVtkGdcm
 {
@@ -183,7 +184,14 @@ void SSeriesDBLazyReader::notificationOfDBUpdate()
         msg->appendAddedSeries(s);
     }
 
-    ::fwServices::IEditionService::notify(this->getSptr(),  seriesDB, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject(  seriesDB);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = seriesDB->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //-----------------------------------------------------------------------------

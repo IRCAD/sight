@@ -4,17 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QWidget>
-#include <QString>
-#include <QMenu>
-#include <QAction>
-#include <QPushButton>
-#include <QVBoxLayout>
+#include "uiImageQt/SliceListEditor2.hpp"
 
 #include <fwCore/base.hpp>
-
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/convenience.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -32,11 +24,21 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiImageQt/SliceListEditor2.hpp"
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/convenience.hpp>
+
+#include <QWidget>
+#include <QString>
+#include <QMenu>
+#include <QAction>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 namespace uiImage
 {
@@ -221,7 +223,14 @@ void SliceListEditor2::onChangeSliceMode( bool checked )
         dataInfo->setField(::fwComEd::Dictionary::m_relatedServiceId,  ::fwData::String::New( m_adaptorUID ) );
         ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
         imageMsg->addEvent( "SLICE_MODE", dataInfo );
-        ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
+        imageMsg->setSource(this->getSptr());
+        imageMsg->setSubject( image);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( imageMsg);
+        }
     }
     else
     {

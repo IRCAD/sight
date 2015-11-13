@@ -4,13 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QVBoxLayout>
-#include <QIcon>
+#include "uiMeasurementQt/editor/Distance.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/convenience.hpp>
 
 #include <fwData/String.hpp>
 #include <fwData/Composite.hpp>
@@ -26,11 +23,17 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiMeasurementQt/editor/Distance.hpp"
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/convenience.hpp>
+
+#include <QVBoxLayout>
+#include <QIcon>
 
 
 namespace uiMeasurement
@@ -145,7 +148,14 @@ void Distance::onDistanceButton()
 
     ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::NEW_DISTANCE, ::fwData::String::New(m_scenesUID) );
-    ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( image);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------

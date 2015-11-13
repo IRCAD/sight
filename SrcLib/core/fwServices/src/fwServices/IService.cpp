@@ -4,8 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/property_tree/ptree.hpp>
+#include "fwServices/IService.hpp"
+#include "fwServices/registry/ObjectService.hpp"
+#include "fwServices/registry/ActiveWorkers.hpp"
+#include "fwServices/Base.hpp"
 
 #include <fwTools/fwID.hpp>
 
@@ -17,10 +19,8 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include "fwServices/IService.hpp"
-#include "fwServices/IEditionService.hpp"
-#include "fwServices/registry/ObjectService.hpp"
-#include "fwServices/Base.hpp"
+#include <boost/foreach.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 namespace fwServices
 {

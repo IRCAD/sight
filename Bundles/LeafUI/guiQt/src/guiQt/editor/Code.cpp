@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QHBoxLayout>
+#include "guiQt/editor/Code.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -12,7 +12,9 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwComEd/StringMsg.hpp>
 
@@ -20,7 +22,7 @@
 #include <fwGuiQt/highlighter/CppHighlighter.hpp>
 #include <fwGuiQt/highlighter/PythonHighlighter.hpp>
 
-#include "guiQt/editor/Code.hpp"
+#include <QHBoxLayout>
 
 namespace guiQt
 {
@@ -169,7 +171,14 @@ void Code::onModifyValue()
         OSLM_TRACE( stringObj->getID() << " modified");
         ::fwComEd::StringMsg::sptr msg = ::fwComEd::StringMsg::New();
         msg->addEvent( ::fwComEd::StringMsg::VALUE_IS_MODIFIED );
-        ::fwServices::IEditionService::notify(this->getSptr(), stringObj, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( stringObj);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = stringObj->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 

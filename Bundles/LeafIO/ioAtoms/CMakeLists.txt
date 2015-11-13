@@ -1,5 +1,6 @@
 fwLoadProperties()
 fwUseForwardInclude(
+    fwCom
     fwAtomsBoostIO
     fwRuntime
 

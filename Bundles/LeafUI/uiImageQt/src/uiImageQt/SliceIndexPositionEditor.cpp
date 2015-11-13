@@ -24,7 +24,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/ImageMsg.hpp>
@@ -262,7 +261,14 @@ void SliceIndexPositionEditor::sliceIndexNotification( unsigned int index)
     OSLM_ASSERT("Field "<<fieldID<<" is missing", image->getField( fieldID ));
     image->getField< ::fwData::Integer >( fieldID )->value() = index;
 
-    ::fwServices::IEditionService::notify(this->getSptr(),  image, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject(  image);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -290,7 +296,14 @@ void SliceIndexPositionEditor::sliceTypeNotification( int _type )
     ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE, info );
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwServices::IEditionService::notify(this->getSptr(),  image, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject(  image);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
     this->updateSliceIndex();
 }
 }

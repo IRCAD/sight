@@ -17,7 +17,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/TransformationMatrix3DMsg.hpp>
@@ -213,7 +212,14 @@ void Camera2::updateFromVtk()
 
     ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
     msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-    ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( trf);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = trf->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 
     camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );
 

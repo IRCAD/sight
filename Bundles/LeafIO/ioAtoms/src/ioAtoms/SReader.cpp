@@ -4,9 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/path.hpp>
-#include <boost/assign/list_of.hpp>
-#include <boost/algorithm/string/join.hpp>
+#include "ioAtoms/SReader.hpp"
 
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/types.hpp>
@@ -29,7 +27,9 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/ReadZipArchive.hpp>
@@ -42,7 +42,9 @@
 
 #include <fwAtomsPatch/PatchingManager.hpp>
 
-#include "ioAtoms/SReader.hpp"
+#include <boost/filesystem/path.hpp>
+#include <boost/assign/list_of.hpp>
+#include <boost/algorithm/string/join.hpp>
 
 namespace ioAtoms
 {
@@ -402,7 +404,14 @@ void SReader::notificationOfUpdate()
     ::fwData::Object::sptr object     = this->getObject();
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT, object );
-    ::fwServices::IEditionService::notify( this->getSptr(),  object, msg );
+    msg->setSource( this->getSptr());
+    msg->setSubject(  object);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = object->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg );
+    }
 }
 
 //-----------------------------------------------------------------------------

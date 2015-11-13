@@ -13,7 +13,6 @@
 #include <fwMath/MeshFunctions.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include "fwComEd/Dictionary.hpp"
 #include "fwComEd/fieldHelper/MedicalImageHelpers.hpp"

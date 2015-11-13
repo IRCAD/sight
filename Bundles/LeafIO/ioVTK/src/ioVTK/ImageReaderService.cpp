@@ -4,8 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/algorithm/string.hpp>
-#include <boost/filesystem/operations.hpp>
+#include "ioVTK/ImageReaderService.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -14,7 +13,9 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwComEd/ImageMsg.hpp>
 
@@ -30,7 +31,8 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
 
-#include "ioVTK/ImageReaderService.hpp"
+#include <boost/algorithm/string.hpp>
+#include <boost/filesystem/operations.hpp>
 
 namespace ioVTK
 {
@@ -230,7 +232,14 @@ void ImageReaderService::notificationOfDBUpdate()
     msg->addEvent( ::fwComEd::ImageMsg::PIXELTYPE );
 
     // Notify message to all service listeners
-    ::fwServices::IEditionService::notify(this->getSptr(), pImage, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( pImage);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = pImage->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 } // namespace ioVtk

@@ -9,7 +9,6 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/ObjectMsg.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwData/Camera.hpp>
@@ -67,7 +66,14 @@ void CameraReaderService::updating() throw(::fwTools::Failed)
         ::fwComEd::CameraMsg::sptr msg = ::fwComEd::CameraMsg::New();
         msg->addEvent( ::fwComEd::CameraMsg::NEW_CAMERA );
 
-        ::fwServices::IEditionService::notify(this->getSptr(), cam, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( cam);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = cam->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 

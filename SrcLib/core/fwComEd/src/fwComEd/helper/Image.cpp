@@ -8,7 +8,6 @@
 #include <fwData/TransferFunction.hpp>
 #include <fwData/Composite.hpp>
 
-#include <fwServices/IEditionService.hpp>
 
 #include "fwComEd/helper/Image.hpp"
 #include "fwComEd/helper/Field.hpp"
@@ -42,11 +41,21 @@ Image::~Image()
 
 //-----------------------------------------------------------------------------
 
-void Image::notify( ::fwServices::IService::sptr _serviceSource )
+void Image::notify( ::fwServices::IService::sptr serviceSource )
 {
     if ( m_imageMsg->getEventIds().size() > 0 )
     {
-        ::fwServices::IEditionService::notify( _serviceSource, m_image, m_imageMsg );
+        m_imageMsg->setSource( serviceSource);
+        m_imageMsg->setSubject( m_image);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = m_image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwServices::IService::ReceiveSlotType::sptr slot;
+            slot = serviceSource->slot< ::fwServices::IService::ReceiveSlotType >(
+                ::fwServices::IService::s_RECEIVE_SLOT );
+            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+            sig->asyncEmit(m_imageMsg);
+        }
     }
     SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
                 m_imageMsg->getEventIds().empty());

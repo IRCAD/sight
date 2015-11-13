@@ -28,7 +28,6 @@
 #include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
 
 #include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
-#include <fwServices/IEditionService.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor,
                          ::fwData::Image );

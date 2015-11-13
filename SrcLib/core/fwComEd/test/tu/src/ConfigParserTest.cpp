@@ -9,7 +9,6 @@
 #include <fwData/Video.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
 

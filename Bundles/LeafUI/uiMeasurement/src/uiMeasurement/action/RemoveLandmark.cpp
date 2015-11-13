@@ -11,7 +11,6 @@
 #include <exception>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 
@@ -107,7 +106,14 @@ void RemoveLandmark::notify( ::fwData::Image::sptr image, ::fwData::Object::sptr
 {
     ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::LANDMARK, backup );
-    ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( image);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------

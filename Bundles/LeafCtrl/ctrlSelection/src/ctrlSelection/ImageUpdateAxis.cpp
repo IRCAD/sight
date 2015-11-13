@@ -4,9 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/algorithm/string/trim.hpp>
-#include <boost/algorithm/string/case_conv.hpp>
+#include "ctrlSelection/ImageUpdateAxis.hpp"
 
 #include <fwServices/macros.hpp>
 
@@ -16,9 +14,12 @@
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/FloatMsg.hpp>
 
-#include <fwServices/IEditionService.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
-#include "ctrlSelection/ImageUpdateAxis.hpp"
+#include <boost/foreach.hpp>
+#include <boost/algorithm/string/trim.hpp>
+#include <boost/algorithm/string/case_conv.hpp>
 
 namespace ctrlSelection
 {
@@ -140,7 +141,14 @@ void ImageUpdateAxis::updating() throw ( ::fwTools::Failed )
     OSLM_TRACE(dataFloat->getID() << " new value : " << *dataFloat);
     ::fwComEd::FloatMsg::sptr msg = ::fwComEd::FloatMsg::New();
     msg->addEvent( ::fwComEd::FloatMsg::VALUE_IS_MODIFIED );
-    ::fwServices::IEditionService::notify(this->getSptr(), dataFloat, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( dataFloat);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = dataFloat->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //-----------------------------------------------------------------------------

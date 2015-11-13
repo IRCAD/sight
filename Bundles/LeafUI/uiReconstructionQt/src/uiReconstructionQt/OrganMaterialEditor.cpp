@@ -30,7 +30,6 @@
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/op/Get.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -235,7 +234,15 @@ void OrganMaterialEditor::materialNotification( )
 
     ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
     msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED );
-    ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMaterial(), msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( reconstruction->getMaterial());
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = reconstruction->getMaterial()->signal< ::fwData::Object::ObjectModifiedSignalType >(
+        ::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------

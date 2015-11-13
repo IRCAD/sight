@@ -9,7 +9,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/MeshMsg.hpp>
 
@@ -164,7 +163,14 @@ void MeshReaderService::notificationOfUpdate()
 
     ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
     msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH );
-    ::fwServices::IEditionService::notify(this->getSptr(), pMesh, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( pMesh);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = pMesh->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------

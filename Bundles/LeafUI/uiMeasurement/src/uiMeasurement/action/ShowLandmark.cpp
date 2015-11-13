@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "uiMeasurement/action/ShowLandmark.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -14,7 +14,6 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/ObjectMsg.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -22,9 +21,10 @@
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
-#include "uiMeasurement/action/ShowLandmark.hpp"
-
+#include <boost/foreach.hpp>
 
 namespace uiMeasurement
 {
@@ -83,7 +83,14 @@ void ShowLandmark::updating() throw(::fwTools::Failed)
     // notify
     ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
     msg->addEvent( ::fwComEd::ImageMsg::LANDMARK );
-    ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( image);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = image->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 //------------------------------------------------------------------------------
