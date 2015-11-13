@@ -350,15 +350,15 @@ void SComputeCPR2D::addPointToVisualizePointList(
     destPoint->setField(::fwComEd::Dictionary::m_labelId, text);
 
     // Compute destPoint coordinates
-    double yCoord   = floor(m_height/m_spacing) + 1;
-    double position = 0;
-    fwVec3d vec0    = destPoint->getCoord();
+    double yCoord   = floor(m_height/m_spacing) + 1.;
+    double position = 0.;
+    ::fwData::Point::PointCoordArrayType vec0 = destPoint->getCoord();
 
     ::cpr::computePositionOfPointOnSpline(pointList, indexSelectedPoint, position);
 
     vec0 [0] = position;
     vec0 [1] = yCoord * m_spacing;
-    vec0 [2] = 0;
+    vec0 [2] = 0.;
 
     destPoint->setCoord(vec0);
 
