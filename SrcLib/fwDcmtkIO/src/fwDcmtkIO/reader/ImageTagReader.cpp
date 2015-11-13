@@ -116,6 +116,25 @@ ImageTagReader::~ImageTagReader()
     {
         series->addComputedTagValue("IntensifierSize", std::string(intensifierSize.c_str()));
     }
+
+    OFString acqTime;
+    dataset->findAndGetOFString(DCM_AcquisitionTime,acqTime);
+    SLM_WARN_IF("Missing Tag (0008, 0032) 'DCM_AcquisitionTime'", !acqTime.empty());
+
+    if(!acqTime.empty())
+    {
+        series->addComputedTagValue("AcquisitionTime", std::string(acqTime.c_str()));
+    }
+
+    OFString acqDate;
+    dataset->findAndGetOFString(DCM_AcquisitionDate,acqDate);
+    SLM_WARN_IF("Missing Tag (0008, 0022) 'DCM_AcquisitionDate'", !acqDate.empty());
+
+    if(!acqTime.empty())
+    {
+        series->addComputedTagValue("AcquisitionDate", std::string(acqDate.c_str()));
+    }
+
     return series;
 }
 
