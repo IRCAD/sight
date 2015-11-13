@@ -7,18 +7,21 @@
 #ifndef __IODICOMEXT_DCMTK_CONTROLLER_SSERIESPULLER_HPP__
 #define __IODICOMEXT_DCMTK_CONTROLLER_SSERIESPULLER_HPP__
 
-#include <vector>
-#include <boost/filesystem/path.hpp>
+#include "ioDicomExt/config.hpp"
 
 #include <fwServices/IController.hpp>
 #include <fwMedData/SeriesDB.hpp>
+
 #include <fwDicomIOExt/dcmtk/SeriesEnquirer.hpp>
 #include <fwDicomIOExt/dcmtk/SeriesRetriever.hpp>
 #include <fwDicomIOExt/data/PacsConfiguration.hpp>
+#include <fwDicomData/DicomSeries.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <io/IReader.hpp>
 
-#include "ioDicomExt/config.hpp"
+#include <boost/filesystem/path.hpp>
+#include <vector>
 
 namespace ioDicomExt
 {

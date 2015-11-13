@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/bind.hpp>
+#include "ioDicomExt/dcmtk/SDicomSeriesDBReader.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -26,8 +26,6 @@
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwDicomIOExt/dcmtk/SeriesDBReader.hpp>
-
-#include "ioDicomExt/dcmtk/SDicomSeriesDBReader.hpp"
 
 
 namespace ioDicomExt

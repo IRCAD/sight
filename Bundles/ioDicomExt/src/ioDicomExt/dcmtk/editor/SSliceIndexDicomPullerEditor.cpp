@@ -4,43 +4,50 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iterator>
-
-#include <QApplication>
-#include <QHBoxLayout>
-#include <QMouseEvent>
-#include <QComboBox>
-#include <boost/asio/placeholders.hpp>
-#include <boost/foreach.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/fstream.hpp>
+#include "ioDicomExt/dcmtk/editor/SSliceIndexDicomPullerEditor.hpp"
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
+#include <fwCom/Slot.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Array.hpp>
+
 #include <fwDicomData/DicomSeries.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/ImageSeries.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwDicomIOExt/exceptions/Base.hpp>
-#include <fwMedData/ImageSeries.hpp>
+
 #include <fwComEd/helper/SeriesDB.hpp>
 #include <fwComEd/helper/Composite.hpp>
 #include <fwComEd/helper/Array.hpp>
 #include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
+
 #include <fwTools/System.hpp>
 
-#include <fwCom/Slot.hpp>
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QMouseEvent>
+#include <QComboBox>
 
-#include "ioDicomExt/dcmtk/editor/SSliceIndexDicomPullerEditor.hpp"
+#include <boost/asio/placeholders.hpp>
+#include <boost/foreach.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/fstream.hpp>
+
+#include <iterator>
+#include <functional>
 
 namespace ioDicomExt
 {
@@ -61,7 +68,7 @@ const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_DISPLAY_MESSAG
 
 SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() throw() :
     m_delayWork( m_delayService),
-    m_delayThread( ::boost::bind( &SSliceIndexDicomPullerEditor::runDelay, this)),
+    m_delayThread( std::bind( &SSliceIndexDicomPullerEditor::runDelay, this)),
     m_delayTimer( m_delayService),
     m_delay(500)
 {
@@ -166,10 +173,8 @@ void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
     m_seriesEnquirer = ::fwDicomIOExt::dcmtk::SeriesEnquirer::New();
 
     // Load a slice
-    m_delayTimer.expires_from_now( boost::posix_time::milliseconds( m_delay ));
-    m_delayTimer.async_wait( boost::bind( &SSliceIndexDicomPullerEditor::triggerNewSlice, this,
-                                          boost::asio::placeholders::error));
-
+    m_delayTimer.expires_from_now( ::boost::posix_time::milliseconds( m_delay ));
+    m_delayTimer.async_wait( std::bind( &SSliceIndexDicomPullerEditor::triggerNewSlice, this, std::placeholders::_1));
 }
 
 //------------------------------------------------------------------------------
@@ -258,15 +263,13 @@ void SSliceIndexDicomPullerEditor::changeSliceIndex(int value)
     m_sliceIndexLineEdit->setText(std::string(ss.str()).c_str());
 
     // Get the new slice if there is no change for X milliseconds
-    m_delayTimer.expires_from_now( boost::posix_time::milliseconds( m_delay ));
-    m_delayTimer.async_wait( boost::bind( &SSliceIndexDicomPullerEditor::triggerNewSlice, this,
-                                          boost::asio::placeholders::error));
-
+    m_delayTimer.expires_from_now( ::boost::posix_time::milliseconds( m_delay ));
+    m_delayTimer.async_wait( std::bind( &SSliceIndexDicomPullerEditor::triggerNewSlice, this, std::placeholders::_1));
 }
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::triggerNewSlice(const boost::system::error_code& e)
+void SSliceIndexDicomPullerEditor::triggerNewSlice(const ::boost::system::error_code& e)
 {
     if(e != ::boost::asio::error::operation_aborted)
     {
@@ -282,7 +285,7 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice(const boost::system::error_co
             if(m_pacsConfiguration)
             {
                 m_pullSeriesWorker->post(
-                    ::boost::bind(&::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor::pullInstance, this));
+                    std::bind(&::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor::pullInstance, this));
             }
             else
             {

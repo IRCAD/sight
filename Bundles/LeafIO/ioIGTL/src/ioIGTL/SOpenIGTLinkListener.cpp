@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ioIGTL/SOpenIGTLinkListener.hpp"
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
@@ -11,8 +13,6 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
-
-#include "ioIGTL/SOpenIGTLinkListener.hpp"
 
 #include <fwComEd/helper/Image.hpp>
 
@@ -23,13 +23,13 @@
 #include <extData/FrameTL.hpp>
 #include <extData/MatrixTL.hpp>
 
-
 #include <fwTools/Failed.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/Base.hpp>
 
 #include <string>
+#include <functional>
 
 fwServicesRegisterMacro (::ioNetwork::INetworkListener, ::ioIGTL::SOpenIGTLinkListener, ::fwData::Object);
 
@@ -146,7 +146,6 @@ void SOpenIGTLinkListener::setHost(std::string const &hostname, boost::uint16_t 
 
 void SOpenIGTLinkListener::starting() throw (::fwTools::Failed)
 {
-
     ::fwData::Object::sptr obj   = this->getObject();
     ::extData::TimeLine::sptr tl = ::extData::TimeLine::dynamicCast(obj);
 
@@ -168,15 +167,12 @@ void SOpenIGTLinkListener::starting() throw (::fwTools::Failed)
         {
             OSLM_WARN("This type of timeline is not managed !");
         }
-
     }
 
-    ::boost::function<void() > task = ::boost::bind (&SOpenIGTLinkListener::runClient, this);
+    std::function<void() > task = std::bind (&SOpenIGTLinkListener::runClient, this);
     m_clientWorker = ::fwThread::Worker::New();
 
     m_clientWorker->post(task);
-
-
 }
 
 //-----------------------------------------------------------------------------

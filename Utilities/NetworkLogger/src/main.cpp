@@ -18,6 +18,7 @@
 #include <stdexcept>
 #include <fstream>
 #include <sstream>
+#include <functional>
 
 using namespace networkLogger;
 
@@ -66,10 +67,10 @@ int main (int ac, char **av)
     std::ofstream fileStream;
     std::string socketType;
 
-    factoryRegistry.addFactory("igtl", ::boost::bind(&OpenIGTLinkLogger::create,
-                                                     &writeStream<OpenIGTLinkLogger::SocketType>));
-    factoryRegistry.addFactory("zmq", ::boost::bind(&ZeroMQLogger::create,
-                                                    &writeStream<ZeroMQLogger::SocketType>));
+    factoryRegistry.addFactory("igtl", std::bind(&OpenIGTLinkLogger::create,
+                                                 &writeStream<OpenIGTLinkLogger::SocketType>));
+    factoryRegistry.addFactory("zmq", std::bind(&ZeroMQLogger::create,
+                                                &writeStream<ZeroMQLogger::SocketType>));
     if (ac > 3)
     {
         filename = std::string (av[2]);

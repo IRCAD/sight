@@ -4,21 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ioZMQ/SZeroMQListener.hpp"
+#include "ioZMQ/ZeroMQConfigurationParser.hpp"
+#include "ioZMQ/Patterns.hpp"
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include "ioZMQ/SZeroMQListener.hpp"
-#include "ioZMQ/ZeroMQConfigurationParser.hpp"
-#include "ioZMQ/Patterns.hpp"
 
 #include <fwData/Object.hpp>
 #include <fwServices/Base.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <boost/function.hpp>
+#include <functional>
 #include <sstream>
 
 fwServicesRegisterMacro (::ioNetwork::INetworkListener, ::ioZMQ::SZeroMQListener, ::fwData::Object);
@@ -127,7 +127,7 @@ void SZeroMQListener::updateConfiguration(::zmqNetwork::Socket::PatternMode cons
 
 void SZeroMQListener::starting() throw (::fwTools::Failed)
 {
-    ::boost::function<void() > task = ::boost::bind (&SZeroMQListener::runReceiver, this);
+    std::function<void() > task = std::bind (&SZeroMQListener::runReceiver, this);
 
     m_socket        = ::zmqNetwork::Socket::sptr(new ::zmqNetwork::Socket(m_sockMode, m_patternMode));
     m_receiveWorker = ::fwThread::Worker::New();

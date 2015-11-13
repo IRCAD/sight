@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ioIGTL/SOpenIGTLinkSender.hpp"
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include "ioIGTL/SOpenIGTLinkSender.hpp"
 
 #include <fwData/Object.hpp>
 #include <fwServices/Base.hpp>
@@ -22,6 +22,8 @@
 
 #include <boost/lexical_cast.hpp>
 #include <boost/function.hpp>
+
+#include <functional>
 
 fwServicesRegisterMacro (::ioNetwork::INetworkSender, ::ioIGTL::SOpenIGTLinkSender, ::fwData::Object);
 
@@ -117,12 +119,10 @@ void SOpenIGTLinkSender::startSending()
 {
     if(!m_isSending)
     {
-        ::boost::function<void() > task = ::boost::bind (&::igtlNetwork::Server::runServer, m_server);
+        std::function<void() > task = std::bind(&::igtlNetwork::Server::runServer, m_server);
         try
         {
-
             m_server->start (m_port);
-
 
             m_serverWorker->post(task);
             m_sigServerStarted->asyncEmit();

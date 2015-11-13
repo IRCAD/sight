@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "PoC07TimeLine/SConsumer.hpp"
+#include "PoC07TimeLine/MessageTL.hpp"
+
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 #include <fwData/String.hpp>
@@ -11,8 +14,7 @@
 #include <fwThread/Timer.hpp>
 #include <fwTools/Object.hpp>
 
-#include "PoC07TimeLine/SConsumer.hpp"
-#include "PoC07TimeLine/MessageTL.hpp"
+#include <functional>
 
 fwServicesRegisterMacro( ::fwServices::IService, ::PoC07TimeLine::SConsumer, ::PoC07TimeLine::MessageTL );
 
@@ -51,7 +53,7 @@ void SConsumer::starting() throw( ::fwTools::Failed )
     if(m_period)
     {
         m_timer = m_associatedWorker->createTimer();
-        m_timer->setFunction( ::boost::bind(&SConsumer::updating, this) );
+        m_timer->setFunction( std::bind(&SConsumer::updating, this) );
         m_timer->setDuration( ::boost::chrono::milliseconds( m_period ) );
         m_timer->start();
     }

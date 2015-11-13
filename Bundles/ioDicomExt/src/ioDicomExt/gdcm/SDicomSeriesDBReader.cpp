@@ -30,8 +30,6 @@
 
 #include <fwDicomIOExt/gdcm/DicomSeriesDBReader.hpp>
 
-#include <boost/bind.hpp>
-
 
 namespace ioDicomExt
 {

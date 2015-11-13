@@ -4,11 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QWidget>
-#include <QPushButton>
-#include <QGridLayout>
-#include <QSlider>
-#include <QLineEdit>
+#include "uiNavigation/SNavigationEditor.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -27,8 +23,13 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiNavigation/SNavigationEditor.hpp"
+#include <QWidget>
+#include <QPushButton>
+#include <QGridLayout>
+#include <QSlider>
+#include <QLineEdit>
 
+#include <functional>
 
 fwServicesRegisterMacro(::gui::editor::IEditor, ::uiNavigation::SNavigationEditor, ::fwData::Object);
 
@@ -107,7 +108,7 @@ void SNavigationEditor::starting() throw(::fwTools::Failed)
     SLM_ASSERT("No valid worker for fly mode", m_associatedWorker);
     ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(m_timerDuration);
     m_timer                                      = m_associatedWorker->createTimer();
-    m_timer->setFunction(::boost::bind(&SNavigationEditor::callBackTimer, this));
+    m_timer->setFunction(std::bind(&SNavigationEditor::callBackTimer, this));
     m_timer->setDuration(duration);
 }
 

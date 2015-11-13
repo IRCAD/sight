@@ -4,9 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <sstream>
-#include <boost/foreach.hpp>
-#include <boost/filesystem/operations.hpp>
+#include "ioDicomExt/common/data/ProgressMsg.hpp"
+#include "ioDicomExt/common/controller/SProgressBarController.hpp"
+#include "ioDicomExt/dcmtk/controller/SSeriesPuller.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -16,19 +16,26 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
+
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwDicomData/DicomSeries.hpp>
+
 #include <fwDicomIOExt/dcmtk/helper/Series.hpp>
 #include <fwDicomIOExt/exceptions/Base.hpp>
+
 #include <fwComEd/SeriesDBMsg.hpp>
 #include <fwComEd/helper/SeriesDB.hpp>
+
 #include <fwTools/System.hpp>
 
-#include "ioDicomExt/common/data/ProgressMsg.hpp"
-#include "ioDicomExt/common/controller/SProgressBarController.hpp"
-#include "ioDicomExt/dcmtk/controller/SSeriesPuller.hpp"
+#include <boost/foreach.hpp>
+#include <boost/filesystem/operations.hpp>
+
+#include <sstream>
+#include <functional>
 
 namespace ioDicomExt
 {
@@ -222,7 +229,7 @@ void SSeriesPuller::updating() throw(::fwTools::Failed)
     }
     else
     {
-        m_pullSeriesWorker->post(::boost::bind(&::ioDicomExt::dcmtk::controller::SSeriesPuller::pullSeries, this));
+        m_pullSeriesWorker->post(std::bind(&::ioDicomExt::dcmtk::controller::SSeriesPuller::pullSeries, this));
     }
 
 }
@@ -310,7 +317,7 @@ void SSeriesPuller::pullSeries()
 
                 // Start Series Retriever
                 ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-                worker->post(::boost::bind(&::fwDicomIOExt::dcmtk::SeriesRetriever::start, seriesRetriever));
+                worker->post(std::bind(&::fwDicomIOExt::dcmtk::SeriesRetriever::start, seriesRetriever));
 
                 // Pull Selected Series
                 m_seriesEnquirer->connect();
@@ -393,12 +400,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
             sDBhelper.merge(m_tempSeriesDB);
             sDBhelper.notify(this->getSptr());
         }
-
     }
-
-
-
-
 }
 
 //------------------------------------------------------------------------------

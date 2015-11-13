@@ -7,12 +7,12 @@
 #ifndef __FWDICOMIOEXT_UT_SERIESENQUIRERTEST_HPP__
 #define __FWDICOMIOEXT_UT_SERIESENQUIRERTEST_HPP__
 
-#include <boost/filesystem.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <fwDicomIOExt/dcmtk/SeriesEnquirer.hpp>
 #include <fwDicomIOExt/dcmtk/SeriesRetriever.hpp>
+
+#include <boost/filesystem.hpp>
 
 namespace fwDicomIOExt
 {

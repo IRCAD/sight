@@ -11,6 +11,8 @@
 
 #include <fwData/Exception.hpp>
 
+#include <functional>
+
 namespace extData
 {
 

@@ -7,7 +7,6 @@
 #include "extData/RawBufferTL.hpp"
 #include "extData/timeline/RawBuffer.hpp"
 
-#include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 #include <boost/pool/pool.hpp>
 
@@ -15,6 +14,9 @@
 
 #include <fwData/Exception.hpp>
 #include <fwData/registry/macros.hpp>
+
+#include <functional>
+
 
 fwDataRegisterMacro( ::extData::RawBufferTL );
 

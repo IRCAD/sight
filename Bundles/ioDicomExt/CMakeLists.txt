@@ -1,8 +1,27 @@
 fwLoadProperties()
-
+fwUseForwardInclude(
+    gui
+    io
+    fwCore
+    fwCom
+    fwTools
+    fwData
+    fwServices
+    fwMedData
+    fwGui
+    fwGuiQt
+    fwDicomIOExt
+    fwDicomIOFilter
+    fwDicomIOFilterQt
+    fwDicomData
+    fwComEd
+    fwDataIO
+    fwZip
+    fwRuntime
+    fwThread
+)
+    
 find_package (Boost COMPONENTS thread date_time REQUIRED)
-fwInclude(${Boost_INCLUDE_DIRS})
-fwLink(${Boost_LIBRARIES})
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 fwForwardInclude(${QT_INCLUDE_DIR})

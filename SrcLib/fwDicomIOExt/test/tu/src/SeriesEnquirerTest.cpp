@@ -4,9 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <dcmtk/config/osconfig.h>
-#include <boost/thread/thread.hpp>
-#include <boost/chrono/chrono.hpp>
+#include "SeriesEnquirerTest.hpp"
 
 #include <fwDicomIOExt/dcmtk/helper/Series.hpp>
 
@@ -16,7 +14,10 @@
 
 #include <fwTools/System.hpp>
 
-#include "SeriesEnquirerTest.hpp"
+#include <boost/thread/thread.hpp>
+#include <boost/chrono/chrono.hpp>
+#include <dcmtk/config/osconfig.h>
+#include <functional>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDicomIOExt::ut::SeriesEnquirerTest );
 
@@ -74,7 +75,7 @@ void SeriesEnquirerTest::pullSeriesUsingMoveRetrieveMethod()
     m_seriesRetriever = ::fwDicomIOExt::dcmtk::SeriesRetriever::New();
     m_seriesRetriever->initialize(m_moveApplicationTitle, 11110);
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    worker->post(::boost::bind(&::fwDicomIOExt::dcmtk::SeriesRetriever::start, m_seriesRetriever));
+    worker->post(std::bind(&::fwDicomIOExt::dcmtk::SeriesRetriever::start, m_seriesRetriever));
 
     // Create the series enquirer
     m_seriesEnquirer = ::fwDicomIOExt::dcmtk::SeriesEnquirer::New();
@@ -129,7 +130,7 @@ void SeriesEnquirerTest::pullInstanceUsingMoveRetrieveMethod()
     m_seriesRetriever = ::fwDicomIOExt::dcmtk::SeriesRetriever::New();
     m_seriesRetriever->initialize(m_moveApplicationTitle, 11110);
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    worker->post(::boost::bind(&::fwDicomIOExt::dcmtk::SeriesRetriever::start, m_seriesRetriever));
+    worker->post(std::bind(&::fwDicomIOExt::dcmtk::SeriesRetriever::start, m_seriesRetriever));
 
     // Create the series enquirer
     m_seriesEnquirer = ::fwDicomIOExt::dcmtk::SeriesEnquirer::New();

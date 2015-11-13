@@ -12,6 +12,8 @@
 #include <fwThread/Timer.hpp>
 #include <fwTools/Object.hpp>
 
+#include <functional>
+
 fwServicesRegisterMacro( ::fwServices::IService, ::PoC07TimeLine::SProducer, ::PoC07TimeLine::MessageTL );
 
 namespace PoC07TimeLine
@@ -37,7 +39,7 @@ void SProducer::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     m_timer = m_associatedWorker->createTimer();
-    m_timer->setFunction( ::boost::bind(&SProducer::updating, this) );
+    m_timer->setFunction( std::bind(&SProducer::updating, this) );
     m_timer->setDuration( ::boost::chrono::milliseconds( m_period ) );
 
     m_timer->start();

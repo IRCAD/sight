@@ -11,7 +11,6 @@
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <boost/bind.hpp>
 #include <boost/lexical_cast.hpp>
 
 fwServicesRegisterMacro (::io::IWriter, ::ioIGTL::SImageNetworkWriter, ::fwData::Image);

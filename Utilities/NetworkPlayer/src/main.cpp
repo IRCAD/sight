@@ -12,13 +12,13 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <igtlNetwork/Server.hpp>
 
-#include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <algorithm>
 #include <fstream>
 #include <vector>
 #include <stdexcept>
+#include <functional>
 
 using namespace networkPlayer;
 
@@ -103,10 +103,10 @@ int     main (int ac, char **av)
     std::ifstream fileStream;
     INetworkPlayer::sptr player;
 
-    factoryRegistry.addFactory("igtl", ::boost::bind(&OpenIGTLinkPlayer::create,
-                                                     &readStream<OpenIGTLinkPlayer::SocketType>));
-    factoryRegistry.addFactory("zmq", ::boost::bind(&ZeroMQPlayer::create,
-                                                    &readStream<ZeroMQPlayer::SocketType>));
+    factoryRegistry.addFactory("igtl", std::bind(&OpenIGTLinkPlayer::create,
+                                                 &readStream<OpenIGTLinkPlayer::SocketType>));
+    factoryRegistry.addFactory("zmq", std::bind(&ZeroMQPlayer::create,
+                                                &readStream<ZeroMQPlayer::SocketType>));
     if (ac > 3)
     {
         socketType = std::string(av[1]);

@@ -115,7 +115,7 @@ protected:
     IODICOMEXT_API void info(std::ostream &_sstream );
 
     /// Function called when a new slice must be displayed
-    IODICOMEXT_API void triggerNewSlice(const boost::system::error_code& e);
+    IODICOMEXT_API void triggerNewSlice(const ::boost::system::error_code& e);
 
     /// Run the service used to delay the selection of the slice
     IODICOMEXT_API void runDelay();

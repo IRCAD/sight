@@ -4,6 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "igtlOSUtil.h"
+#include "igtlMessageHeader.h"
+#include "igtlMessageBase.h"
 
 #include <fwCore/spyLog.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
@@ -14,15 +17,12 @@
 #include <boost/date_time.hpp>
 #include <boost/type.hpp>
 
-
-#include "igtlOSUtil.h"
-#include "igtlMessageHeader.h"
-#include "igtlMessageBase.h"
-
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <map>
+#include <functional>
+
 
 /**
  * @brief Utility app to redirect IGTL message with specific device name to a specific port
@@ -148,7 +148,7 @@ std::map< std::string, configuration > initialize(std::string configFile)
         {
             config.server->start(config.port);
 
-            ::boost::function<void() > task = ::boost::bind (&::igtlNetwork::Server::runServer, config.server);
+            std::function<void() > task = std::bind (&::igtlNetwork::Server::runServer, config.server);
             config.worker->post(task);
         }
 
@@ -188,7 +188,7 @@ int main (int argc, char **argv)
     try
     {
         receiveServer->start(port);
-        ::boost::function<void() > task = ::boost::bind (&::igtlNetwork::Server::runServer, receiveServer);
+        std::function<void() > task = std::bind (&::igtlNetwork::Server::runServer, receiveServer);
         worker->post(task);
 
     }
