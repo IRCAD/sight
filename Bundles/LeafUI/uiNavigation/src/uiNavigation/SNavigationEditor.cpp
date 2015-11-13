@@ -190,7 +190,7 @@ void SNavigationEditor::onChangeValue(int newValue)
 
     m_progressText->setText(QString::fromStdString(ss.str()));
 
-    fwServicesNotifyMacro(this->getLightID(), m_sigSliderProgressed, (m_sliderPosition / (m_sliderLength * 1.0)));
+    m_sigSliderProgressed->asyncEmit(m_sliderPosition / (m_sliderLength * 1.0));
 
     if(m_sliderPosition >= m_sliderLength)
     {
@@ -235,7 +235,7 @@ void SNavigationEditor::onClickResetSlotType()
 {
     if(!m_timer->isRunning())
     {
-        fwServicesNotifyMacro( this->getLightID(), m_sigSliderProgressed, (0));
+        m_sigSliderProgressed->asyncEmit(0);
 
         m_sliderPosition = 0;
         m_slider->setValue(m_sliderPosition);
@@ -266,7 +266,7 @@ void SNavigationEditor::callBackTimer()
         m_playButton->setEnabled(false);
     }
 
-    fwServicesNotifyMacro(this->getLightID(), m_sigSliderProgressed, (m_sliderPosition / (m_sliderLength * 1.0)));
+    m_sigSliderProgressed->asyncEmit(m_sliderPosition / (m_sliderLength * 1.0));
     m_slider->setValue(static_cast<int>(m_sliderPosition));
 
     std::stringstream ss;

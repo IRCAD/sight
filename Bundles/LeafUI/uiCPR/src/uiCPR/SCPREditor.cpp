@@ -166,9 +166,9 @@ void SCPREditor::configuring() throw(fwTools::Failed)
 void SCPREditor::updating() throw(::fwTools::Failed)
 {
     // Send the signals to update the CPR mesh when the view debug is launched
-    fwServicesNotifyMacro(this->getLightID(), m_sigSpacingChanged, (m_spacing));
-    fwServicesNotifyMacro(this->getLightID(), m_sigHeightChanged, (m_height));
-    fwServicesNotifyMacro(this->getLightID(), m_sigSliderProgressed, (m_angle));
+    m_sigSpacingChanged->asyncEmit(m_spacing);
+    m_sigHeightChanged->asyncEmit(m_height);
+    m_sigSliderProgressed->asyncEmit(m_angle);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -185,7 +185,7 @@ void SCPREditor::onChangeSliderValue(int newSliderValue)
     std::stringstream ss;
     ss << " " << newSliderValue << " / " << MAX_ANGLE << " ";
     m_angleText->setText(QString::fromStdString(ss.str()));
-    fwServicesNotifyMacro( this->getLightID(), m_sigSliderProgressed, (newSliderValue));
+    m_sigSliderProgressed->asyncEmit(newSliderValue);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -204,7 +204,7 @@ void SCPREditor::onChangeHeightValue(double newHeight)
     }
 
     OSLM_DEBUG("Change Height : " << m_height);
-    fwServicesNotifyMacro(this->getLightID(), m_sigHeightChanged, (m_height));
+    m_sigHeightChanged->asyncEmit(m_height);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -226,9 +226,11 @@ void SCPREditor::onChangeSpacingValue(double newSpacing)
     m_computeButton->setEnabled(true);
 }
 
+//------------------------------------------------------------------------------------------------------
+
 void SCPREditor::onClickComputeSlotType()
 {
-    fwServicesNotifyMacro(this->getLightID(), m_sigSpacingChanged, (m_spacing));
+    m_sigSpacingChanged->asyncEmit(m_spacing);
     m_computeButton->setEnabled(false);
 }
 

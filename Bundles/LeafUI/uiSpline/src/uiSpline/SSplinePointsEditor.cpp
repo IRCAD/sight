@@ -190,7 +190,7 @@ void SSplinePointsEditor::updating() throw(::fwTools::Failed)
         sig->asyncEmit( msg);
     }
 
-    fwServicesNotifyMacro(this->getLightID(), m_sigIndexPointSelected, (m_numberOfPoints - 1));
+    m_sigIndexPointSelected->asyncEmit (m_numberOfPoints - 1);
 }
 
 //------------------------------------------------------------------------------
@@ -211,7 +211,7 @@ throw (::fwTools::Failed)
         ::fwData::Point::sptr point = ::fwData::Point::constCast(interactionmsg->getEventPoint());
         m_connectObj->connectPointToService(point,"objectModified",this->getSptr(),"updatePointList");
 
-        fwServicesNotifyMacro( this->getLightID(), m_sigPointSelected, (point));
+        m_sigPointSelected->asyncEmit(point);
 
         m_numberOfPoints++;
         m_countPoint++;
@@ -241,8 +241,8 @@ void SSplinePointsEditor::onClickItem(QListWidgetItem* item)
     ::fwData::Point::sptr point = pointList->getRefPoints()[index];
     this->fillVisualizePointList(index);
 
-    fwServicesNotifyMacro(this->getLightID(), m_sigPointSelected, (point));
-    fwServicesNotifyMacro(this->getLightID(), m_sigIndexPointSelected, (index));
+    m_sigPointSelected->asyncEmit (point);
+    m_sigIndexPointSelected->asyncEmit (index);
 }
 
 //------------------------------------------------------------------------------
@@ -253,7 +253,7 @@ void SSplinePointsEditor::onDoubleClickItem(QListWidgetItem * item)
     const int index = m_list->row(item);
     ::fwData::Point::sptr point = pointList->getRefPoints()[index];
 
-    fwServicesNotifyMacro(this->getLightID(), m_sigPointSelected, (point));
+    m_sigPointSelected->asyncEmit(point);
 }
 
 //------------------------------------------------------------------------------
@@ -280,7 +280,7 @@ void SSplinePointsEditor::onClickRenamePoint()
     }
 
     // Send the signal m_sigIndexPointSelected to update point Label on the CPR image.
-    fwServicesNotifyMacro(this->getLightID(), m_sigIndexPointSelected, (index));
+    m_sigIndexPointSelected->asyncEmit(index);
 
     m_renamePointButton->setEnabled(false);
     m_removePointButton->setEnabled(false);

@@ -94,7 +94,7 @@ void SZeroMQSender::starting() throw (::fwTools::Failed)
         ::ioNetwork::INetworkSender::starting();
         m_socket = ::zmqNetwork::Socket::sptr (new ::zmqNetwork::Socket (m_sockMode, m_patternMode));
         m_socket->start (m_hostStr);
-        fwServicesNotifyMacro (this->getLightID(), m_sigServerStarted, ());
+        m_sigServerStarted->asyncEmit();
     }
     catch (std::exception &err)
     {
@@ -119,7 +119,7 @@ void SZeroMQSender::stopping() throw (::fwTools::Failed)
 {
     m_socket->stop();
     ::ioNetwork::INetworkSender::stopping();
-    fwServicesNotifyMacro (this->getLightID(), m_sigServerStopped, ());
+    m_sigServerStopped->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

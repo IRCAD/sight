@@ -15,4 +15,4 @@ set( DEPENDENCIES
     gui
     guiQt
     cpr
-    )
+)

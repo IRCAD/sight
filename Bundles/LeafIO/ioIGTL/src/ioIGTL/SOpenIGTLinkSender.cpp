@@ -124,8 +124,8 @@ void SOpenIGTLinkSender::startSending()
             m_server->start (m_port);
 
 
-            m_serverWorker->post(task)
-            fwServicesNotifyMacro(this->getLightID(), m_sigServerStarted, ());
+            m_serverWorker->post(task);
+            m_sigServerStarted->asyncEmit();
             m_isSending = true;
         }
         catch (::fwCore::Exception &e)
@@ -149,7 +149,7 @@ void SOpenIGTLinkSender::stopSending()
         {
             m_server->stop();
             m_serverWorker->stop();
-            fwServicesNotifyMacro(this->getLightID(), m_sigServerStopped, ());
+            m_sigServerStopped->asyncEmit();
             m_isSending = false;
         }
         catch (::fwCore::Exception &e)

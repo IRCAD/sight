@@ -156,7 +156,7 @@ void SZMQConfigEditor::onValidate()
         stream << m_protocol << m_host->text().toStdString();
     }
     stream >> host;
-    fwServicesNotifyMacro(this->getLightID(), m_configurationUpdatedSig, (pattern, sockMode, host));
+    m_configurationUpdatedSig->asyncEmit(pattern, sockMode, host);
     m_dialog.close();
 }
 

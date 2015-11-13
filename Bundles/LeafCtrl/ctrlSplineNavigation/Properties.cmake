@@ -11,4 +11,4 @@ set( DEPENDENCIES
     fwTools
     fwCore
     navigation
-    )
+)

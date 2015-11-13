@@ -99,7 +99,7 @@ void SServerConfigEditor::updating() throw (::fwTools::Failed)
 
 void SServerConfigEditor::onValidate()
 {
-    fwServicesNotifyMacro(this->getLightID(), m_configurationUpdatedSignal, ((::boost::uint16_t)m_port->value()));
+    m_configurationUpdatedSignal->asyncEmit((::boost::uint16_t)m_port->value());
     m_configDialog.close();
 }
 

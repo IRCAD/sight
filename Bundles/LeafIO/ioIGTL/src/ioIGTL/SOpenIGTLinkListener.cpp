@@ -111,7 +111,7 @@ void SOpenIGTLinkListener::runClient() throw (::fwTools::Failed)
     try
     {
         m_client.connect (m_hostname, m_port);
-        fwServicesNotifyMacro(this->getLightID(), m_sigClientConnected, ());
+        m_sigClientConnected->asyncEmit();
         while (m_client.isConnected())
         {
             if (m_client.receiveObject(obj))
@@ -126,7 +126,7 @@ void SOpenIGTLinkListener::runClient() throw (::fwTools::Failed)
                 }
             }
         }
-        fwServicesNotifyMacro(this->getLightID(), m_sigClientDisconnected, ());
+        m_sigClientDisconnected->asyncEmit();
     }
     catch (::fwCore::Exception &ex)
     {

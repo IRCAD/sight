@@ -274,9 +274,9 @@ void SViewPointsEditor::onDoubleClickItem(QListWidgetItem * item)
     int pointIndex = m_viewPointsList->row(item);
 
     // Send the matrix with the signal m_sigDirectTargetChanged
-    fwServicesNotifyMacro( this->getLightID(), m_sigDirectTargetChanged,
-                           (::fwData::TransformationMatrix3D::dynamicCast(vector->getContainer()[pointIndex])));
-
+    ::fwData::TransformationMatrix3D::sptr trf;
+    trf = ::fwData::TransformationMatrix3D::dynamicCast(vector->getContainer()[pointIndex]);
+    m_sigDirectTargetChanged->asyncEmit(trf);
 }
 
 } // namespace uiViewPoints

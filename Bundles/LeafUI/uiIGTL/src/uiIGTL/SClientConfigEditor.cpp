@@ -108,7 +108,7 @@ void SClientConfigEditor::onValidate()
 
     port     = m_port->value();
     hostname = m_hostname->text().toStdString();
-    fwServicesNotifyMacro(this->getLightID(), m_configurationUpdatedSignal, (hostname, port));
+    m_configurationUpdatedSignal->asyncEmit (hostname, port);
     m_configDialog.close();
 }
 

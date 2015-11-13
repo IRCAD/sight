@@ -58,7 +58,7 @@ void ObjectUpdateNotifier::notifyUpdate (const ::fwServices::IService::sptr &ser
 
         ::fwData::Object::ObjectModifiedSignalType::sptr sig;
         sig = obj->signal< ::fwData::Object::ObjectModifiedSignalType> (::fwData::Object::s_OBJECT_MODIFIED_SIG);
-        fwServicesNotifyMacro(service->getLightID(), sig, (objMsg));
+        sig->asyncEmit(objMsg);
     }
 }
 

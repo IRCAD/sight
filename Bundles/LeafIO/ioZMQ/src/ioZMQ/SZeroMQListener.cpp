@@ -93,7 +93,7 @@ void SZeroMQListener::runReceiver()
     }
     m_socket->setReceiveTimeout(1000);
     obj = this->getObject();
-    fwServicesNotifyMacro(this->getLightID(), m_sigClientConnected, ());
+    m_sigClientConnected->asyncEmit();
     while (m_socket->isStarted())
     {
         try
@@ -109,7 +109,7 @@ void SZeroMQListener::runReceiver()
         }
     }
     m_socket->stop();
-    fwServicesNotifyMacro(this->getLightID(), m_sigClientDisconnected, ());
+    m_sigClientDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

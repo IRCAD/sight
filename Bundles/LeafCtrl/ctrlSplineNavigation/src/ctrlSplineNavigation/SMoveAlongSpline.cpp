@@ -105,7 +105,7 @@ void SMoveAlongSpline::starting()  throw ( ::fwTools::Failed )
     }
 
     ::navigation::computeSpline(pointList, m_nbSplinePoints - 1, m_vtkPoints, m_parametricSpline, m_splineLength);
-    fwServicesNotifyMacro(this->getLightID(), m_sigSplineLengthChanged,(m_splineLength));
+    m_sigSplineLengthChanged->asyncEmit (m_splineLength);
 
     if(m_nbSplinePoints>=2)
     {
@@ -135,7 +135,7 @@ void SMoveAlongSpline::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( :
     {
         ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
         ::navigation::computeSpline(pointList,m_nbSplinePoints,m_vtkPoints,m_parametricSpline,m_splineLength);
-        fwServicesNotifyMacro(this->getLightID(), m_sigSplineLengthChanged,(m_splineLength));
+        m_sigSplineLengthChanged->asyncEmit(m_splineLength);
         m_nbSplinePoints++;
 
         if(m_nbSplinePoints>=2)
@@ -149,7 +149,7 @@ void SMoveAlongSpline::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( :
         ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
         m_nbSplinePoints--;
         ::navigation::updateSpline(pointList, m_vtkPoints,m_parametricSpline,m_splineLength);
-        fwServicesNotifyMacro(this->getLightID(), m_sigSplineLengthChanged,(m_splineLength));
+        m_sigSplineLengthChanged->asyncEmit(m_splineLength);
 
         if(m_nbSplinePoints >= 2)
         {
@@ -163,7 +163,7 @@ void SMoveAlongSpline::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( :
         ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
 
         ::navigation::updateSpline(pointList, m_vtkPoints, m_parametricSpline, m_splineLength);
-        fwServicesNotifyMacro(this->getLightID(), m_sigSplineLengthChanged,(m_splineLength));
+        m_sigSplineLengthChanged->asyncEmit(m_splineLength);
 
         if (m_nbSplinePoints >= 2)
         {
@@ -237,7 +237,7 @@ void SMoveAlongSpline::moveToPoint (double sliderPosition)
             }
         }
 
-        fwServicesNotifyMacro(this->getLightID(), m_sigPointChanged,(destMatrix));
+        m_sigPointChanged->asyncEmit(destMatrix);
     }
 
     m_previousSliderPosition = m_currentSliderPosition;
@@ -322,7 +322,7 @@ void SMoveAlongSpline::computeTransformationMatrix (double position)
     }
 
     // Send the matrix to SJumpToPoint
-    fwServicesNotifyMacro(this->getLightID(), m_sigPointChanged, (destMatrix));
+    m_sigPointChanged->asyncEmit(destMatrix);
 
 }
 void SMoveAlongSpline::moveToSelectedPoint (::fwData::Point::sptr point)
@@ -361,7 +361,7 @@ void SMoveAlongSpline::moveToSelectedPoint (::fwData::Point::sptr point)
     }
 
     // Send the destination matrix to SJumpToPoint
-    fwServicesNotifyMacro(this->getLightID(), m_sigPointChanged,(destMatrix));
+    m_sigPointChanged->asyncEmit(destMatrix);
 
 }
 
