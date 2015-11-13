@@ -7,11 +7,14 @@
 #include "fwGui/IActionSrv.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/IToolBarSrv.hpp"
+#include "fwGui/registry/worker.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwServices/Base.hpp>
 #include <fwTools/fwID.hpp>
 
+#include <fwThread/Worker.hpp>
+#include <fwThread/Worker.hxx>
 
 namespace fwGui
 {
@@ -68,7 +71,11 @@ void IToolBarSrv::create()
 
     SLM_ASSERT("Parent toolBar is unknown.", toolBar);
     m_layoutManager->setCallbacks(callbacks);
-    m_layoutManager->createLayout(toolBar);
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->createLayout(toolBar);
+        })).wait();
 
     m_registrar->manage(m_layoutManager->getMenuItems());
     m_registrar->manage(m_layoutManager->getMenus());
@@ -80,7 +87,11 @@ void IToolBarSrv::create()
 void IToolBarSrv::destroy()
 {
     m_registrar->unmanage();
-    m_layoutManager->destroyLayout();
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->destroyLayout();
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -92,11 +103,17 @@ void IToolBarSrv::actionServiceStopping(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        m_layoutManager->menuItemSetVisible(menuItem, false);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetVisible(menuItem, false);
+            })).wait();
     }
     else
     {
-        m_layoutManager->menuItemSetEnabled(menuItem, false);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetEnabled(menuItem, false);
+            })).wait();
     }
 }
 
@@ -109,13 +126,20 @@ void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        m_layoutManager->menuItemSetVisible(menuItem, true);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetVisible(menuItem, true);
+            })).wait();
     }
     else
     {
         ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
         ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
-        m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
+
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
+            })).wait();
     }
 }
 
@@ -126,8 +150,10 @@ void IToolBarSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    m_layoutManager->menuItemSetChecked(menuItem, isActive);
-
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->menuItemSetChecked(menuItem, isActive);
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -137,8 +163,10 @@ void IToolBarSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isEx
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
-
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------

@@ -4,8 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
+#include "fwGui/registry/worker.hpp"
 #include "fwGui/dialog/ProgressDialog.hpp"
+
+#include <boost/function.hpp>
 
 namespace fwGui
 {
@@ -15,44 +17,62 @@ namespace dialog
 
 ProgressDialog::ProgressDialog(const std::string &title,const std::string &message)
 {
-    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IProgressDialog::REGISTRY_KEY);
-    m_implementation                    = ::fwGui::dialog::IProgressDialog::dynamicCast(guiObj);
-    if(m_implementation)
-    {
-        m_implementation->setTitle(title);
-        m_implementation->setMessage(message);
-    }
+    ::fwGui::registry::worker::get()->postTask<void>(
+        [&] {
+                ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IProgressDialog::REGISTRY_KEY);
+                m_implementation = ::fwGui::dialog::IProgressDialog::dynamicCast(guiObj);
+                if(m_implementation)
+                {
+                    m_implementation->setTitle(title);
+                    m_implementation->setMessage(message);
+                }
+            } ).wait();
+}
+
+//-----------------------------------------------------------------------------
+
+ProgressDialog::~ProgressDialog()
+{
+    ::fwGui::registry::worker::get()->postTask<void>( [&] { m_implementation.reset(); } ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void ProgressDialog::setTitle(const std::string &title)
 {
-    if(m_implementation)
-    {
-        m_implementation->setTitle(title);
-    }
+    ::fwGui::registry::worker::get()->postTask<void>(
+        [&] {
+                if(m_implementation)
+                {
+                    m_implementation->setTitle(title);
+                }
+            } ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void ProgressDialog::setMessage(const std::string &msg)
 {
-    if(m_implementation)
-    {
-        m_implementation->setMessage(msg);
-    }
+    ::fwGui::registry::worker::get()->postTask<void>(
+        [&] {
+                if(m_implementation)
+                {
+                    m_implementation->setMessage(msg);
+                }
+            } ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void ProgressDialog::operator()(float percent,std::string msg)
 {
-    if(m_implementation)
-    {
-
-        (*m_implementation)(percent,msg);
-    }
+    ::fwGui::registry::worker::get()->postTask<void>(
+        [&] {
+                if(m_implementation)
+                {
+                    (*m_implementation)(percent,msg);
+                }
+            } ).wait();
 }
 
 
@@ -60,11 +80,13 @@ void ProgressDialog::operator()(float percent,std::string msg)
 
 void ProgressDialog::setCancelCallback(CancelCallbackType callback)
 {
-    if(m_implementation)
-    {
-
-        m_implementation->setCancelCallback(callback);
-    }
+    ::fwGui::registry::worker::get()->postTask<void>(
+        [&] {
+                if(m_implementation)
+                {
+                    m_implementation->setCancelCallback(callback);
+                }
+            } ).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -78,7 +100,10 @@ void ProgressDialog::cancelPressed()
 
 void ProgressDialog::hideCancelButton()
 {
-    m_implementation->hideCancelButton();
+    ::fwGui::registry::worker::get()->postTask<void>(
+        [&] {
+                m_implementation->hideCancelButton();
+            } ).wait();
 }
 
 } //namespace dialog

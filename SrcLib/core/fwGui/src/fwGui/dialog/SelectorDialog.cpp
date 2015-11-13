@@ -6,11 +6,18 @@
 
 
 #include "fwGui/dialog/SelectorDialog.hpp"
+#include "fwGui/registry/worker.hpp"
+
+#include <boost/bind.hpp>
+
+#include <string>
 
 namespace fwGui
 {
 namespace dialog
 {
+
+
 //-----------------------------------------------------------------------------
 
 std::string SelectorDialog::showSelectorDialog(const std::string& title, const std::string& message,
@@ -25,47 +32,69 @@ std::string SelectorDialog::showSelectorDialog(const std::string& title, const s
 SelectorDialog::SelectorDialog(const std::string& title, const std::string& message,
                                std::vector< std::string > _selections)
 {
-    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ISelectorDialog::REGISTRY_KEY);
-    m_implementation                    = ::fwGui::dialog::ISelectorDialog::dynamicCast(guiObj);
-    m_implementation->setTitle(title);
-    m_implementation->setMessage( message );
-    m_implementation->setSelections( _selections );
+    create();
+    ::fwGui::registry::worker::get()->postTask<void>([&]
+            {
+                m_implementation->setTitle(title);
+                m_implementation->setMessage( message );
+                m_implementation->setSelections( _selections );
+            }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 SelectorDialog::SelectorDialog()
 {
-    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ISelectorDialog::REGISTRY_KEY);
-    m_implementation                    = ::fwGui::dialog::ISelectorDialog::dynamicCast(guiObj);
+    create();
+}
+
+void SelectorDialog::create()
+{
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ISelectorDialog::REGISTRY_KEY);
+                m_implementation = ::fwGui::dialog::ISelectorDialog::dynamicCast(guiObj);
+            })).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void SelectorDialog::setTitle(std::string title)
 {
-    m_implementation->setTitle(title);
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >( [&]
+            {
+                m_implementation->setTitle(title);
+            })).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 std::string SelectorDialog::show()
 {
-    return m_implementation->show();
+    ::boost::function< std::string() > f         = ::boost::bind(&ISelectorDialog::show, m_implementation);
+    ::boost::shared_future< std::string > future = ::fwGui::registry::worker::get()->postTask< std::string >(f);
+    future.wait();
+    return future.get();
 }
 
 //-----------------------------------------------------------------------------
 
 void SelectorDialog::setSelections(std::vector< std::string > _selections)
 {
-    m_implementation->setSelections( _selections );
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_implementation->setSelections( _selections );
+            })).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void SelectorDialog::setMessage(const std::string &msg)
 {
-    m_implementation->setMessage( msg );
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_implementation->setMessage( msg );
+            })).wait();
 }
 
 //-----------------------------------------------------------------------------

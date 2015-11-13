@@ -7,10 +7,14 @@
 #include "fwGui/IActionSrv.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/IMenuSrv.hpp"
+#include "fwGui/registry/worker.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwServices/Base.hpp>
 #include <fwTools/fwID.hpp>
+
+#include <fwThread/Worker.hpp>
+#include <fwThread/Worker.hxx>
 
 namespace fwGui
 {
@@ -65,7 +69,11 @@ void IMenuSrv::create()
 
     SLM_ASSERT("Parent menu is unknown.", menu);
     m_layoutManager->setCallbacks(callbacks);
-    m_layoutManager->createLayout(menu);
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->createLayout(menu);
+        })).wait();
 
     m_registrar->manage(m_layoutManager->getMenuItems());
     m_registrar->manage(m_layoutManager->getMenus());
@@ -76,7 +84,10 @@ void IMenuSrv::create()
 void IMenuSrv::destroy()
 {
     m_registrar->unmanage();
-    m_layoutManager->destroyLayout();
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->destroyLayout();
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -88,11 +99,17 @@ void IMenuSrv::actionServiceStopping(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        m_layoutManager->menuItemSetVisible(menuItem, false);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetVisible(menuItem, false);
+            })).wait();
     }
     else
     {
-        m_layoutManager->menuItemSetEnabled(menuItem, false);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetEnabled(menuItem, false);
+            })).wait();
     }
 }
 
@@ -105,14 +122,21 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        m_layoutManager->menuItemSetVisible(menuItem, true);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetVisible(menuItem, true);
+            })).wait();
     }
     else
     {
         ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
         ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
-        m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
-        m_layoutManager->menuItemSetChecked(menuItem, actionSrv->getIsActive());
+
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
+                m_layoutManager->menuItemSetChecked(menuItem, actionSrv->getIsActive());
+            })).wait();
     }
 }
 
@@ -123,8 +147,10 @@ void IMenuSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    m_layoutManager->menuItemSetChecked(menuItem, isActive);
-
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >( [&]
+        {
+            m_layoutManager->menuItemSetChecked(menuItem, isActive);
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -134,8 +160,10 @@ void IMenuSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isExecu
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
-
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------

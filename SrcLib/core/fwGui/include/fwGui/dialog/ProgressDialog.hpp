@@ -22,8 +22,6 @@ namespace dialog
  * The specific implementation are in fwGuiWX and fwGuiQT libraries
  * @class   ProgressDialog
  *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API ProgressDialog : public IProgressDialog
 {
@@ -35,6 +33,7 @@ public:
 
     /// will instanciate the concrete implementation
     FWGUI_API ProgressDialog( const std::string &title = std::string(),  const std::string &msg = std::string() );
+    FWGUI_API ~ProgressDialog();
 
     ///set the title for the dialog
     FWGUI_API void setTitle(const std::string &title);

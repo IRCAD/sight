@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGui/IGuiContainerSrv.hpp"
+#include "fwGui/registry/worker.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwServices/Base.hpp>
@@ -73,30 +74,43 @@ void IGuiContainerSrv::initialize()
 
 void IGuiContainerSrv::create()
 {
-    SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
     ::fwGui::container::fwContainer::sptr parent = m_viewRegistrar->getParent();
     SLM_ASSERT("Parent container is unknown.", parent);
 
-    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IContainerBuilder::REGISTRY_KEY);
-    m_containerBuilder                  = ::fwGui::builder::IContainerBuilder::dynamicCast(guiObj);
-
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IContainerBuilder::REGISTRY_KEY,
-                m_containerBuilder);
-    m_containerBuilder->createContainer(parent);
-
-    ::fwGui::container::fwContainer::sptr container = m_containerBuilder->getContainer();
-
-    if ( m_viewLayoutManagerIsCreated )
-    {
-        if (m_hasToolBar)
+    ::fwGui::registry::worker::get()->postTask< void >(::boost::function< void() >([this, &parent]
         {
-            m_toolBarBuilder->createToolBar(parent);
-            m_viewRegistrar->manageToolBar(m_toolBarBuilder->getToolBar());
-        }
+            SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
 
-        m_viewLayoutManager->createLayout(container);
-        m_viewRegistrar->manage(m_viewLayoutManager->getSubViews());
-    }
+            ::fwGui::GuiBaseObject::sptr guiObj =
+                ::fwGui::factory::New(::fwGui::builder::IContainerBuilder::REGISTRY_KEY);
+            m_containerBuilder = ::fwGui::builder::IContainerBuilder::dynamicCast(guiObj);
+
+            OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IContainerBuilder::REGISTRY_KEY,
+                        m_containerBuilder);
+            m_containerBuilder->createContainer(parent);
+
+            ::fwGui::container::fwContainer::sptr container = m_containerBuilder->getContainer();
+
+            if ( m_viewLayoutManagerIsCreated )
+            {
+                if (m_hasToolBar)
+                {
+                    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+                    {
+                        m_toolBarBuilder->createToolBar(parent);
+                    })).wait();
+
+                    m_viewRegistrar->manageToolBar(m_toolBarBuilder->getToolBar());
+                }
+
+                ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+                {
+                    m_viewLayoutManager->createLayout(container);
+                })).wait();
+
+                m_viewRegistrar->manage(m_viewLayoutManager->getSubViews());
+            }
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -111,12 +125,20 @@ void IGuiContainerSrv::destroy()
         {
             m_viewRegistrar->unmanageToolBar();
             SLM_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
-            m_toolBarBuilder->destroyToolBar();
+
+            ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+                {
+                    m_toolBarBuilder->destroyToolBar();
+                })).wait();
         }
 
         m_viewRegistrar->unmanage();
         SLM_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
-        m_viewLayoutManager->destroyLayout();
+
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_viewLayoutManager->destroyLayout();
+            })).wait();
     }
 
     m_containerBuilder->destroyContainer();
@@ -164,10 +186,13 @@ void IGuiContainerSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 
 void IGuiContainerSrv::setParent(std::string wid)
 {
-    m_viewRegistrar->setParent(wid);
-    ::fwGui::container::fwContainer::sptr parent = m_viewRegistrar->getParent();
-    SLM_ASSERT("Parent container is unknown.", parent);
-    m_containerBuilder->setParent(parent);
+    ::fwGui::registry::worker::get()->postTask< void >(::boost::function< void() >([this, &wid]
+        {
+            m_viewRegistrar->setParent(wid);
+            ::fwGui::container::fwContainer::sptr parent = m_viewRegistrar->getParent();
+            SLM_ASSERT("Parent container is unknown.", parent);
+            m_containerBuilder->setParent(parent);
+        } ));
 }
 
 //-----------------------------------------------------------------------------

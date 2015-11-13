@@ -21,9 +21,6 @@ namespace dialog
  * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
  * The specific implementation are in fwGuiWX and fwGuiQT libraries
  * @class   SelectorDialog
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API SelectorDialog : public ISelectorDialog
 {
@@ -46,6 +43,9 @@ public:
 
     /// will instanciate the concrete implementation
     FWGUI_API SelectorDialog();
+
+    /// Called by the constructor in the GUI thread.
+    FWGUI_API void create();
 
     /**
      * Constructor. Create a selector with the specified title, message and choices.

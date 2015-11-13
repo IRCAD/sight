@@ -7,14 +7,12 @@
 #ifndef __FWGUIQT_DIALOG_SELECTORDIALOG_HPP__
 #define __FWGUIQT_DIALOG_SELECTORDIALOG_HPP__
 
-#include <vector>
 
-#include <QDialog>
-#include <QString>
-#include <QWidget>
+#include "fwGuiQt/config.hpp"
 
 #include <fwGui/dialog/ISelectorDialog.hpp>
-#include "fwGuiQt/config.hpp"
+
+#include <vector>
 
 namespace fwGuiQt
 {
@@ -28,9 +26,7 @@ namespace dialog
  *
  * @date    2009.
  */
-
-class FWGUIQT_CLASS_API SelectorDialog : public ::fwGui::dialog::ISelectorDialog,
-                                         public QDialog
+class FWGUIQT_CLASS_API SelectorDialog : public ::fwGui::dialog::ISelectorDialog
 {
 public:
 
@@ -63,6 +59,7 @@ public:
 private:
 
     std::vector< std::string > m_selections;
+
     /// Dialog box message
     std::string m_message;
     std::string m_title;

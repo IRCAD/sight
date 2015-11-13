@@ -292,6 +292,8 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                 }
 
                 ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( object, extensionId );
+                reader->setWorker(m_associatedWorker);
+
                 if ( hasConfigForService )
                 {
                     reader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
@@ -311,6 +313,8 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
             else
             {
                 ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( this->getObject(), extensionId );
+                writer->setWorker(m_associatedWorker);
+
                 if ( hasConfigForService )
                 {
                     writer->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );

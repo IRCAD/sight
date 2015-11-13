@@ -4,8 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGui/Application.hpp"
 #include "fwGui/IFrameSrv.hpp"
+#include "fwGui/Application.hpp"
+#include "fwGui/registry/worker.hpp"
+
+#include <fwThread/Worker.hpp>
+#include <fwThread/Worker.hxx>
+
+#include <boost/foreach.hpp>
+#include <boost/bind.hpp>
+#include <boost/lambda/lambda.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -107,7 +115,12 @@ void IFrameSrv::initialize()
 void IFrameSrv::create()
 {
     SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
-    m_frameLayoutManager->createFrame();
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_frameLayoutManager->createFrame();
+        })).wait();
+
     ::fwGui::container::fwContainer::sptr frame = m_frameLayoutManager->getFrame();
     if ( m_progressWidget.expired() )
     {
@@ -140,13 +153,21 @@ void IFrameSrv::create()
 
     if (m_hasMenuBar)
     {
-        m_menuBarBuilder->createMenuBar(frame);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_menuBarBuilder->createMenuBar(frame);
+            })).wait();
+
         m_viewRegistrar->manageMenuBar(m_menuBarBuilder->getMenuBar());
     }
 
     if (m_hasToolBar)
     {
-        m_toolBarBuilder->createToolBar(frame);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_toolBarBuilder->createToolBar(frame);
+            })).wait();
+
         m_viewRegistrar->manageToolBar(m_toolBarBuilder->getToolBar());
     }
 }
@@ -161,19 +182,31 @@ void IFrameSrv::destroy()
     {
         m_viewRegistrar->unmanageToolBar();
         SLM_ASSERT("ToolBarBuilder must be initialized.",m_toolBarBuilder);
-        m_toolBarBuilder->destroyToolBar();
+
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_toolBarBuilder->destroyToolBar();
+            })).wait();
     }
 
     if (m_hasMenuBar)
     {
         m_viewRegistrar->unmanageMenuBar();
         SLM_ASSERT("MenuBarBuilder must be initialized.",m_menuBarBuilder);
-        m_menuBarBuilder->destroyMenuBar();
+
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_menuBarBuilder->destroyMenuBar();
+            })).wait();
     }
 
     m_viewRegistrar->unmanage();
     SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
-    m_frameLayoutManager->destroyFrame();
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_frameLayoutManager->destroyFrame();
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------

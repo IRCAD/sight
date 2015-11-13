@@ -4,8 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
+#include "fwGui/registry/worker.hpp"
 #include "fwGui/dialog/PulseProgressDialog.hpp"
+
+#include <boost/bind.hpp>
 
 namespace fwGui
 {
@@ -13,23 +15,29 @@ namespace dialog
 {
 //-----------------------------------------------------------------------------
 
-PulseProgressDialog::PulseProgressDialog( const std::string &title, ::fwGui::dialog::IPulseProgressDialog::Stuff stuff,
-                                          const std::string &msg,
-                                          ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
+PulseProgressDialog::PulseProgressDialog(
+    const std::string &title,
+    ::fwGui::dialog::IPulseProgressDialog::Stuff stuff,
+    const std::string &msg,
+    ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
 {
-    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IPulseProgressDialog::REGISTRY_KEY);
-    m_implementation                    = ::fwGui::dialog::IPulseProgressDialog::dynamicCast(guiObj);
-    if (m_implementation)
-    {
-        m_implementation->setStuff(stuff);
-        m_implementation->setTitle(title);
-        m_implementation->setMessage(msg);
-        m_implementation->setFrequence(frequenceRefresh);
-    }
-    else
-    {
-        this->setStuff(stuff);
-    }
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function<void()>(
+                                                         [&] {
+                ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IPulseProgressDialog::REGISTRY_KEY);
+                m_implementation = ::fwGui::dialog::IPulseProgressDialog::dynamicCast(guiObj);
+                if (m_implementation)
+                {
+                    m_implementation->setStuff(stuff);
+                    m_implementation->setTitle(title);
+                    m_implementation->setMessage(msg);
+                    m_implementation->setFrequence(frequenceRefresh);
+                }
+                else
+                {
+                    this->setStuff(stuff);
+                }
+            } )).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -58,7 +66,8 @@ void PulseProgressDialog::show()
 {
     if (m_implementation)
     {
-        m_implementation->show();
+        ::fwGui::registry::worker::get()->postTask<void>(
+            ::boost::bind(&IPulseProgressDialog::show, m_implementation)).wait();
     }
     else
     {

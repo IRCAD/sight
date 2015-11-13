@@ -68,8 +68,8 @@ std::string SelectorDialog::show()
     QListWidgetItem* firstItem = selectionList->item(0);
     selectionList->setCurrentItem(firstItem);
 
-    QPushButton* okButton     = new QPushButton(tr("Ok"));
-    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+    QPushButton* okButton     = new QPushButton(QObject::tr("Ok"));
+    QPushButton* cancelButton = new QPushButton(QObject::tr("Cancel"));
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addWidget(okButton);

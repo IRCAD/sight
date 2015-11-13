@@ -5,10 +5,13 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGui/IMenuBarSrv.hpp"
+#include "fwGui/registry/worker.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwServices/Base.hpp>
 #include <fwTools/fwID.hpp>
+#include <fwThread/Worker.hpp>
+#include <fwThread/Worker.hxx>
 
 namespace fwGui
 {
@@ -62,7 +65,11 @@ void IMenuBarSrv::create()
 {
     ::fwGui::container::fwMenuBar::sptr menuBar = m_registrar->getParent();
     SLM_ASSERT("Parent menuBar is unknown.", menuBar);
-    m_layoutManager->createLayout(menuBar);
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >( [&]
+        {
+            m_layoutManager->createLayout(menuBar);
+        }) ).wait();
 
     m_registrar->manage(m_layoutManager->getMenus());
 }
@@ -72,7 +79,11 @@ void IMenuBarSrv::create()
 void IMenuBarSrv::destroy()
 {
     m_registrar->unmanage();
-    m_layoutManager->destroyLayout();
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->destroyLayout();
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -83,11 +94,17 @@ void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
 
     if (m_hideMenus)
     {
-        m_layoutManager->menuIsVisible(menu, false);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >( [&]
+            {
+                m_layoutManager->menuIsVisible(menu, false);
+            }) ).wait();
     }
     else
     {
-        m_layoutManager->menuIsEnabled(menu, false);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >(
+                                                             [&] {
+                m_layoutManager->menuIsEnabled(menu, false);
+            })).wait();
     }
 }
 
@@ -99,11 +116,17 @@ void IMenuBarSrv::menuServiceStarting(std::string menuSrvSID)
 
     if (m_hideMenus)
     {
-        m_layoutManager->menuIsVisible(menu, true);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuIsVisible(menu, true);
+            })).wait();
     }
     else
     {
-        m_layoutManager->menuIsEnabled(menu, true);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuIsEnabled(menu, true);
+            }) ).wait();
     }
 }
 

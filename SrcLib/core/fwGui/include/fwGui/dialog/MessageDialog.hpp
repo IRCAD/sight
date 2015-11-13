@@ -20,16 +20,13 @@ namespace dialog
  * @brief   Defines the generic message box for IHM.
  * Use the Delegate design pattern.
  * @class   MessageDialog
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API MessageDialog : public ::fwGui::dialog::IMessageDialog
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (MessageDialog)(::fwGui::dialog::IMessageDialog), (()), new MessageDialog );
+    fwCoreClassDefinitionsWithFactoryMacro((MessageDialog)(::fwGui::dialog::IMessageDialog), (()), new MessageDialog);
 
     /**
      * Opens a default message box with the specified title, text and icon.
@@ -39,8 +36,8 @@ public:
      * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      * @return Returns the button enum value corresponding to the pressed button
      */
-    FWGUI_API static IMessageDialog::Buttons showMessageDialog(const std::string& title, const std::string& message,
-                                                               ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
+    FWGUI_API static IMessageDialog::Buttons showMessageDialog(
+        const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
 
     /// Constructor. Create the implementation of the specific message box
     FWGUI_API MessageDialog();
@@ -53,8 +50,8 @@ public:
      * @param message Message of the message box
      * @param icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      */
-    FWGUI_API MessageDialog(const std::string& title, const std::string& message,
-                            ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
+    FWGUI_API MessageDialog(
+        const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon = INFO);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~MessageDialog();
