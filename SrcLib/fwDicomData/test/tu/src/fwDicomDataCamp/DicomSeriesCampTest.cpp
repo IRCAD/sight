@@ -4,22 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fstream>
-#include <boost/assign/list_of.hpp>
-#include <boost/filesystem/operations.hpp>
-
-#include <fwTools/Type.hpp>
-#include <fwTools/System.hpp>
-#include <fwData/Array.hpp>
-
-#include <fwDicomData/DicomSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Equipment.hpp>
-
 #include "DataCampHelper.hpp"
 #include "fwDicomDataCamp/DicomSeriesCampTest.hpp"
 
+#include <fwData/Array.hpp>
+#include <fwDicomData/DicomSeries.hpp>
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Study.hpp>
+#include <fwTools/System.hpp>
+#include <fwTools/Type.hpp>
+
+#include <boost/assign/list_of.hpp>
+#include <boost/filesystem/operations.hpp>
+
+#include <fstream>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDicomDataCamp::ut::DicomSeriesCampTest );
@@ -69,7 +68,10 @@ void DicomSeriesCampTest::propertiesTest()
                                                               ("date")
                                                               ("time")
                                                               ("performing_physicians_name")
-                                                              ("description");
+                                                              ("description")
+                                                              ("sop_class_uids")
+                                                              ("computed_tag_values")
+                                                              ("first_instance_number");
 
 
     ::fwData::Array::sptr binary   = ::fwData::Array::New();
@@ -89,7 +91,9 @@ void DicomSeriesCampTest::propertiesTest()
     obj->setDicomAvailability(::fwDicomData::DicomSeries::PATHS);
     obj->addDicomPath(42, path);
     obj->addBinary(path.string(),binary);
-
+    obj->addSOPClassUID("1.2.840.10008.5.1.4.1.1.2");
+    obj->addComputedTagValue("(0020,0100)", "1664");
+    obj->setFirstInstanceNumber(1);
 
 
     ::DataCampHelper::visitProperties(obj->getClassname(), dataProperties);
@@ -118,7 +122,21 @@ void DicomSeriesCampTest::propertiesTest()
     // Dicom binaries
     ::DataCampHelper::compareObjectPropertyValue(obj, "@dicom_binaries.mypath", obj->getDicomBinaries().at("mypath"));
 
+    // SOP class UID
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@sop_class_uids.0", "1.2.840.10008.5.1.4.1.1.2");
+    // SOP class UID
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@sop_class_uids.0", "1.2.840.10008.5.1.4.1.1.2");
 
+    // Computed tag values
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@computed_tag_values.(0020,0100)", "1664");
+
+    // First instance number
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@first_instance_number", "1");
+    // Computed tag values
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@computed_tag_values.(0020,0100)", "1664");
+
+    // First instance number
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@first_instance_number", "1");
 }
 
 //------------------------------------------------------------------------------

@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vector>
-#include <boost/assign/std/vector.hpp>
+#include "DataCampHelper.hpp"
 
-#include <fwData/GenericFieldBase.hpp>
 #include <cppunit/extensions/HelperMacros.h>
-
+#include <fwData/GenericFieldBase.hpp>
 #include <fwDataCamp/getObject.hpp>
 
-#include "DataCampHelper.hpp"
+#include <boost/assign/std/vector.hpp>
+
+#include <vector>
 
 namespace DataCampHelper
 {

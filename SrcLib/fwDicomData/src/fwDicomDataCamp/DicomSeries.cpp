@@ -23,6 +23,7 @@ fwCampImplementDataMacro((fwDicomData)(DicomSeries))
     .property("dicom_binaries", &::fwDicomData::DicomSeries::m_dicomBinaries)
     .property("sop_class_uids", &::fwDicomData::DicomSeries::m_SOPClassUIDs)
     .property("computed_tag_values", &::fwDicomData::DicomSeries::m_computedTagValues)
+    .property("first_instance_number", &::fwDicomData::DicomSeries::m_firstInstanceNumber)
     ;
 }
 
@@ -33,5 +34,6 @@ fwCampImplementEnumMacro((fwDicomData)(DicomSeries)(DICOM_AVAILABILITY))
     .value("NONE",  ::fwDicomData::DicomSeries::NONE)
     .value("PATHS",  ::fwDicomData::DicomSeries::PATHS)
     .value("BINARIES",  ::fwDicomData::DicomSeries::BINARIES)
+    .value("BLOB",  ::fwDicomData::DicomSeries::BLOB)
     ;
 }

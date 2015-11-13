@@ -7,8 +7,8 @@
 #include "fwDicomData/DicomSeries.hpp"
 
 #include <fwData/Array.hpp>
-#include <fwData/registry/macros.hpp>
 #include <fwData/Exception.hpp>
+#include <fwData/registry/macros.hpp>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -19,7 +19,8 @@ namespace fwDicomData
 
 DicomSeries::DicomSeries(::fwData::Object::Key key) : Series(key),
                                                       m_dicomAvailability(NONE),
-                                                      m_numberOfInstances(0)
+                                                      m_numberOfInstances(0),
+                                                      m_firstInstanceNumber(0)
 {
 }
 
@@ -40,12 +41,13 @@ void DicomSeries::shallowCopy(const ::fwData::Object::csptr &_source)
 
     this->::fwMedData::Series::shallowCopy(_source);
 
-    m_dicomAvailability = other->m_dicomAvailability;
-    m_numberOfInstances = other->m_numberOfInstances;
-    m_localDicomPaths   = other->m_localDicomPaths;
-    m_dicomBinaries     = other->m_dicomBinaries;
-    m_SOPClassUIDs      = other->m_SOPClassUIDs;
-    m_computedTagValues = other->m_computedTagValues;
+    m_dicomAvailability   = other->m_dicomAvailability;
+    m_numberOfInstances   = other->m_numberOfInstances;
+    m_localDicomPaths     = other->m_localDicomPaths;
+    m_dicomBinaries       = other->m_dicomBinaries;
+    m_SOPClassUIDs        = other->m_SOPClassUIDs;
+    m_computedTagValues   = other->m_computedTagValues;
+    m_firstInstanceNumber = other->m_firstInstanceNumber;
 
 }
 
@@ -60,11 +62,12 @@ void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCop
 
     this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 
-    m_dicomAvailability = other->m_dicomAvailability;
-    m_numberOfInstances = other->m_numberOfInstances;
-    m_localDicomPaths   = other->m_localDicomPaths;
-    m_SOPClassUIDs      = other->m_SOPClassUIDs;
-    m_computedTagValues = other->m_computedTagValues;
+    m_dicomAvailability   = other->m_dicomAvailability;
+    m_numberOfInstances   = other->m_numberOfInstances;
+    m_localDicomPaths     = other->m_localDicomPaths;
+    m_SOPClassUIDs        = other->m_SOPClassUIDs;
+    m_computedTagValues   = other->m_computedTagValues;
+    m_firstInstanceNumber = other->m_firstInstanceNumber;
 
     m_dicomBinaries.clear();
     for(const DicomBinaryContainerType::value_type& array : other->m_dicomBinaries)
@@ -75,7 +78,7 @@ void DicomSeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCop
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::addDicomPath(unsigned int instanceIndex, ::boost::filesystem::path path)
+void DicomSeries::addDicomPath(std::size_t instanceIndex, ::boost::filesystem::path path)
 {
     m_localDicomPaths[instanceIndex] = path;
 }
@@ -89,7 +92,7 @@ void DicomSeries::addBinary(const std::string &filename, SPTR(::fwData::Array)bi
 
 //------------------------------------------------------------------------------
 
-bool DicomSeries::isInstanceAvailable(unsigned int instanceIndex)
+bool DicomSeries::isInstanceAvailable(std::size_t instanceIndex)
 {
     DicomPathContainerType::const_iterator localPathIter;
 
@@ -99,6 +102,7 @@ bool DicomSeries::isInstanceAvailable(unsigned int instanceIndex)
     {
         case NONE:
         case PATHS:
+        case BLOB:
             localPathIter = m_localDicomPaths.find(instanceIndex);
             available     = localPathIter != m_localDicomPaths.end() && ::boost::filesystem::exists(
                 localPathIter->second);

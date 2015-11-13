@@ -10,6 +10,9 @@
 #include "fwDicomData/DicomSeries.hpp"
 #include "fwDicomData/config.hpp"
 
+#include "fwDicomData/DicomSeries.hpp"
+#include "fwDicomData/config.hpp"
+
 #include <fwCamp/macros.hpp>
 #include <fwData/Array.hpp>
 
@@ -17,4 +20,4 @@ fwCampAutoDeclareEnumMacro((fwDicomData)(DicomSeries)(DICOM_AVAILABILITY));
 
 fwCampDeclareAccessor((fwDicomData)(DicomSeries), (fwData)(Array));
 
-#endif /* __FWDICOMDATACAMP_DICOMSERIES_HPP__ */
+#endif // __FWDICOMDATACAMP_DICOMSERIES_HPP__

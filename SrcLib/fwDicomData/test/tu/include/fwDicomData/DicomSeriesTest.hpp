@@ -7,9 +7,9 @@
 #ifndef __FWDICOMDATA_UT_FWDICOMDATA_DICOMSERIESTEST_HPP__
 #define __FWDICOMDATA_UT_FWDICOMDATA_DICOMSERIESTEST_HPP__
 
-#include <cppunit/extensions/HelperMacros.h>
-
 #include "fwDicomData/DicomSeries.hpp"
+
+#include <cppunit/extensions/HelperMacros.h>
 
 namespace fwDicomData
 {

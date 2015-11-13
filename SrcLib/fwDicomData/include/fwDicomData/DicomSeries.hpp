@@ -28,9 +28,7 @@ namespace fwDicomData
 
 
 /**
- * @class DicomSeries
  * @brief Holds DICOM data
- * @date  2013.
  */
 class FWDICOMDATA_CLASS_API DicomSeries : public ::fwMedData::Series
 {
@@ -41,7 +39,7 @@ public:
 
     fwCampMakeFriendDataMacro((fwDicomData)(DicomSeries));
 
-    typedef std::map < unsigned int, ::boost::filesystem::path > DicomPathContainerType;
+    typedef std::map < std::size_t, ::boost::filesystem::path > DicomPathContainerType;
 
     typedef std::map < std::string, SPTR(::fwData::Array) > DicomBinaryContainerType;
 
@@ -65,7 +63,7 @@ public:
     FWDICOMDATA_API void cachedDeepCopy( const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache );
 
     /// Add dicom path
-    FWDICOMDATA_API void addDicomPath(unsigned int instanceIndex, ::boost::filesystem::path path);
+    FWDICOMDATA_API void addDicomPath(std::size_t instanceIndex, ::boost::filesystem::path path);
 
     /// Add binary array
     FWDICOMDATA_API void addBinary(const std::string &filename, SPTR(::fwData::Array) binary);
@@ -74,7 +72,7 @@ public:
      * @brief Return true if the instance is available on the local computer
      * @todo This method could be constifiable but function std::map::at doesn't work on windows
      */
-    FWDICOMDATA_API bool isInstanceAvailable(unsigned int instanceIndex);
+    FWDICOMDATA_API bool isInstanceAvailable(std::size_t instanceIndex);
 
     /**
      * @brief Add a SOPClassUID that is used by this series.
@@ -103,7 +101,8 @@ public:
     {
         NONE     = 1,   /*! The DICOM files are not available on the local machine but may be available on the pacs. */
         PATHS    = 2,   /*! The paths to the DICOM files are saved in this DicomSeries. */
-        BINARIES = 3    /*! The binaries of the DICOM files are saved in this DicomSeries. */
+        BINARIES = 3,    /*! The binaries of the DICOM files are saved in this DicomSeries. */
+        BLOB     = 4    /*! A set of paths that has not yet been read. Those paths may not be DICOM files. */
     } DICOM_AVAILABILITY;
 
     /**
@@ -140,11 +139,11 @@ public:
     /**
      * @brief Number of instances in the series (0020,1009)
      * @{ */
-    unsigned int  getNumberOfInstances () const
+    size_t  getNumberOfInstances () const
     {
         return m_numberOfInstances;
     }
-    void setNumberOfInstances (unsigned int val)
+    void setNumberOfInstances (std::size_t val)
     {
         m_numberOfInstances = val;
     }
@@ -189,6 +188,21 @@ public:
     }
     /**  @} */
 
+    /**
+     * @brief First Instance Number (0 or 1) - Used for PACS preview
+     * @{ */
+    std::size_t getFirstInstanceNumber() const
+    {
+        return m_firstInstanceNumber;
+    }
+
+    void setFirstInstanceNumber(std::size_t firstInstanceNumber)
+    {
+        m_firstInstanceNumber = firstInstanceNumber;
+    }
+    /**  @} */
+
+
     /**  @} */
 
 
@@ -198,7 +212,7 @@ protected:
     DICOM_AVAILABILITY m_dicomAvailability;
 
     /// Number of instances in the series (0020,1209)
-    unsigned int m_numberOfInstances;
+    size_t m_numberOfInstances;
 
     /// Local paths of Dicom files
     DicomPathContainerType m_localDicomPaths;
@@ -211,6 +225,9 @@ protected:
 
     /// Computed tag values
     ComputedTagValueContainerType m_computedTagValues;
+
+    /// First instance number (0 or 1) - Used for PACS preview
+    std::size_t m_firstInstanceNumber;
 };
 
 }   //end namespace fwDicomData
