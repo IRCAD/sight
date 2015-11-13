@@ -18,4 +18,11 @@
         <desc>Dicom Series DB Reader (DCMTK)</desc>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioDcmtk::SDicomTagSeriesDBReader</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>Dicom Tag Series DB Reader (DCMTK)</desc>
+    </extension>
+
 </plugin>

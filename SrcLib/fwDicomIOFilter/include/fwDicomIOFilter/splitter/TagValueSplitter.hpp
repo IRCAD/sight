@@ -15,6 +15,8 @@
 
 #include <fwDicomData/DicomSeries.hpp>
 
+#include <dcmtk/dcmdata/dctagkey.h>
+
 namespace fwDicomIOFilter
 {
 namespace splitter
