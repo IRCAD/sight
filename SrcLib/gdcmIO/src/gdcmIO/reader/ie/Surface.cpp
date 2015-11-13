@@ -100,7 +100,7 @@ void Surface::readSurfaceMeshModule(::gdcm::SmartPointer< ::gdcm::Surface > surf
     const std::vector<float> RGB = ::gdcm::SurfaceHelper::RecommendedDisplayCIELabToRGB(CIELab, 1.);
 
     // Adapt color to material
-    ::boost::array<float, 4> rgba;
+    std::array<float, 4> rgba;
     ::boost::algorithm::clamp_range(RGB.begin(), RGB.end(), rgba.begin(), 0.f, 1.f);
 
     // Recommended Presentation Opacity

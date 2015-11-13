@@ -62,7 +62,6 @@ Surface::Surface(SPTR(::gdcm::Writer)writer,
     {
         SLM_ERROR(e.what());
     }
-
 }
 
 //------------------------------------------------------------------------------
@@ -310,7 +309,7 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
         OSLM_TRACE("Surface Processing : NO");
 
         // Get reconstruction's color
-        ::boost::array< float, 4 > rgba = material->ambient()->getRGBA();
+        std::array< float, 4 > rgba = material->ambient()->getRGBA();
         std::vector< float > rgb(3);
         rgb[0] = rgba[0];
         rgb[1] = rgba[1];
@@ -448,7 +447,6 @@ void Surface::writeSurfaceMeshModule(unsigned int segmentationNumber)
     // Algorithm Name (0x0066,0x0036) - Type 1
     std::string algorithName = (profile) ? (profile->getName()) : "Unknown";
     surface->SetAlgorithmName(algorithName.c_str());
-
 }
 
 //------------------------------------------------------------------------------
