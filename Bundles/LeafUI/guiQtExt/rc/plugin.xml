@@ -1,0 +1,6 @@
+<plugin id="guiQtExt" class="::guiQtExt::Plugin">
+    <library name="guiQtExt" />
+
+    <requirement id="gui" />
+
+</plugin>
