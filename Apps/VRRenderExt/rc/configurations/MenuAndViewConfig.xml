@@ -26,8 +26,9 @@
                 <menuItem name="2D visualization" icon="Bundles/media_0-1/icons/icon-2D.png" />
                 <menuItem name="3D visualization" icon="Bundles/media_0-1/icons/icon-3D.png" />
                 <menuItem name="Volume rendering" icon="Bundles/media_0-1/icons/icon-VR.png" />
-                <menuItem name="DICOM Retriever" icon="Bundles/mediaExt_0-1/icons/icon-DICOM.svg" />
-                <menuItem name="DICOM Reader" icon="Bundles/mediaExt_0-1/icons/icon-DICOM-Reader.svg" />
+                <menuItem name="DICOM PACS Reader" icon="Bundles/mediaExt_0-1/icons/Pull.svg" />
+                <menuItem name="DICOM PACS Writer" icon="Bundles/mediaExt_0-1/icons/Push.svg" />
+                <menuItem name="DICOM Filtering" icon="Bundles/mediaExt_0-1/icons/icon-DICOM-Filtering.svg" />
             </layout>
         </gui>
         <registry>
@@ -38,8 +39,9 @@
             <menuItem sid="${GENERIC_UID}_action_2DVisualization" start="yes" />
             <menuItem sid="${GENERIC_UID}_action_3DVisualization" start="yes" />
             <menuItem sid="${GENERIC_UID}_action_volumeRendering" start="yes" />
-            <menuItem sid="${GENERIC_UID}_action_DicomRetriever" start="yes" />
-            <menuItem sid="${GENERIC_UID}_action_DicomReader" start="yes" />
+            <menuItem sid="${GENERIC_UID}_action_DicomPacsReader" start="yes" />
+            <menuItem sid="${GENERIC_UID}_action_DicomPacsWriter" start="yes" />
+            <menuItem sid="${GENERIC_UID}_action_DicomFiltering" start="yes" />
         </registry>
     </service>
 
