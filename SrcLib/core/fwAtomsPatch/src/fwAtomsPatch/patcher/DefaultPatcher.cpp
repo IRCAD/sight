@@ -15,6 +15,7 @@
 #include "fwAtomsPatch/SemanticPatchDB.hpp"
 #include "fwAtomsPatch/StructuralPatchDB.hpp"
 #include "fwAtomsPatch/types.hpp"
+#include "fwAtomsPatch/VersionDescriptor.hpp"
 #include "fwAtomsPatch/VersionsManager.hpp"
 
 #include <fwAtoms/Numeric.hpp>
@@ -101,7 +102,11 @@ DefaultPatcher::~DefaultPatcher()
         // Fetch all attributes and affect them in the new object.
         for( ::fwAtoms::Object::AttributesType::value_type elem :  current->getAttributes() )
         {
-            newAtomObject->setAttribute(elem.first, processBase(elem.second));
+            ::fwAtoms::Base::sptr obj = this->processBase(elem.second);
+            if(this->isKnown(obj))
+            {
+                newAtomObject->setAttribute(elem.first, obj);
+            }
         }
 
         return this->applyStructuralPatch(current, newAtomObject);
@@ -221,7 +226,11 @@ DefaultPatcher::~DefaultPatcher()
         key   = elem.first;
         value = elem.second;
 
-        newMap->insert( key, this->processBase(value) );
+        ::fwAtoms::Base::sptr obj = this->processBase(value);
+        if (this->isKnown(obj))
+        {
+            newMap->insert( key,  obj);
+        }
     }
 
     return newMap;
@@ -236,7 +245,11 @@ DefaultPatcher::~DefaultPatcher()
     // Fetch all attributes and affect them in the new object
     for( ::fwAtoms::Base::sptr elem :  seq->getValue() )
     {
-        newSeq->push_back(this->processBase(elem));
+        ::fwAtoms::Base::sptr obj = this->processBase(elem);
+        if (this->isKnown(obj))
+        {
+            newSeq->push_back(obj);
+        }
     }
 
     return newSeq;
@@ -327,6 +340,33 @@ DefaultPatcher::~DefaultPatcher()
 
     return current;
 }
+
+//  ----------------------------------------------------------------------------
+
+bool DefaultPatcher::isKnown(const ::fwAtoms::Base::sptr& base)
+{
+    bool isKnown                             = false;
+    VersionsGraph::NodeType target           = m_versionsGraph->getNode(m_targetVersion);
+    VersionDescriptor::VersionsType versions = target.getVersions();
+    ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::dynamicCast(base);
+
+    if (!obj)
+    {
+        isKnown = true;
+    }
+    else
+    {
+        std::string classname = obj->getMetaInfo(::fwAtomsPatch::s_OBJ_CLASSNAME);
+
+        if (versions.find(classname) != versions.end())
+        {
+            isKnown = true;
+        }
+    }
+    return isKnown;
+}
+
+//  ----------------------------------------------------------------------------
 
 } //  namespace patcher
 

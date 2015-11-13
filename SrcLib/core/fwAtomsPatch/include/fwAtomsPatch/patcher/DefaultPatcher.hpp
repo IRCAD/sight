@@ -80,6 +80,8 @@ protected:
     /// Apply contextual patch.
     FWATOMSPATCH_API virtual ::fwAtoms::Object::sptr applyContextualPatch(::fwAtoms::Object::sptr previous,
                                                                           ::fwAtoms::Object::sptr current);
+    /// Return true if the object is known in the target version
+    FWATOMSPATCH_API bool isKnown(const ::fwAtoms::Base::sptr& base);
 
     /// Type of the pass
     enum PassType { Structural, Contextual };
