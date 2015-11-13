@@ -20,6 +20,8 @@
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 
+#include <fwData/mt/ObjectReadLock.hpp>
+
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
@@ -801,7 +803,11 @@ void Mesh::updateMesh( ::fwData::Mesh::sptr mesh )
         m_polyData = 0;
     }
     m_polyData = vtkPolyData::New();
-    ::fwVtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
+
+    {
+        ::fwData::mt::ObjectReadLock lock(mesh);
+        ::fwVtkIO::helper::Mesh::toVTKMesh(mesh, m_polyData);
+    }
 
     if(m_uvgen == SPHERE)
     {
