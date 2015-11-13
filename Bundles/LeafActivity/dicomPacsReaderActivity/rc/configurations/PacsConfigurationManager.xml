@@ -3,9 +3,9 @@
     <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" />
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
         <param name="PACS_CONFIGURATION" />
         <param name="ICON_PATH" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
     </parameters>
     <config>
 
@@ -40,13 +40,12 @@
             </service>
 
             <item key="pacsConfiguration">
-                <object type="::fwDicomIOExt::data::PacsConfiguration" uid="${PACS_CONFIGURATION}" src="ref">
-                    <service uid="${GENERIC_UID}_pacsConfigurationEditor" impl="::ioDicomExt::common::editor::SPacsConfigurationEditor" autoConnect="yes">
+                <object type="::fwPacsIO::data::PacsConfiguration" uid="${PACS_CONFIGURATION}" src="ref">
+                    <service uid="${GENERIC_UID}_pacsConfigurationEditor" impl="::ioPacs::SPacsConfigurationEditor" autoConnect="yes">
                     </service>
 
                 </object>
             </item>
-
 
             <proxy channel="${CLOSE_CONFIG_CHANNEL}">
                 <signal>${GENERIC_UID}_pacsConfigurationManagerFrame/closed</signal>

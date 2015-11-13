@@ -1,5 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
-    <id>DicomReader</id>
+    <id>DicomFiltering</id>
     <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
@@ -36,6 +36,10 @@
                     <menuItem name="Preview filtered DICOM series" icon="Bundles/mediaExt_0-1/icons/Preview.svg" style="check" />
                     <menuItem name="Read filtered DICOM series" icon="Bundles/mediaExt_0-1/icons/Apply.svg" />
                     <menuItem name="Push selected series to the main SeriesDB" icon="Bundles/mediaExt_0-1/icons/Push.svg" />
+
+                    <spacer />
+
+                    <menu name="Help"/>
                 </layout>
             </gui>
             <registry>
@@ -43,6 +47,8 @@
                 <menuItem sid="${GENERIC_UID}_action_previewFilteredDicomSeries" start="yes" />
                 <menuItem sid="${GENERIC_UID}_action_convertSeries" start="yes" />
                 <menuItem sid="${GENERIC_UID}_action_pushSeries" start="yes" />
+
+                <menu sid="${GENERIC_UID}_menuHelp" start="yes" />
             </registry>
         </service>
 
@@ -87,6 +93,21 @@
             </registry>
         </service>
 
+        <!--HELP -->
+        <service uid="${GENERIC_UID}_menuHelp" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <gui>
+                <layout>
+                    <menuItem name="Activity help" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="${GENERIC_UID}_activityHelp" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="${GENERIC_UID}_activityHelp" type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
+            <url>Bundles/dicomFilteringActivity_0-1/quickstart.pdf</url>
+        </service>
 
         <!-- MAIN -->
         <item key="mainSeriesDB">
@@ -120,7 +141,7 @@
                     </configs>
                 </service>
 
-                <service uid="${GENERIC_UID}_filterSelectionEditor" impl="::ioDicomExt::dcmtk::editor::SFilterSelectionEditor" autoConnect="yes">
+                <service uid="${GENERIC_UID}_filterSelectionEditor" impl="::ioDicom::SFilterSelectionEditor" autoConnect="yes">
                     <config destinationSeriesDBID="${GENERIC_UID}_filteredSeriesDB" />
                 </service>
 
@@ -142,7 +163,7 @@
                     </config>
                 </service>
 
-                <service uid="${GENERIC_UID}_action_convertSeries" impl="::ioDicomExt::dcmtk::action::SDicomSeriesConverter">
+                <service uid="${GENERIC_UID}_action_convertSeries" impl="::ioGdcm::SDicomSeriesConverter">
                     <config destinationSeriesDBID="${GENERIC_UID}_loadedSeriesDB" />
                 </service>
 
@@ -169,11 +190,22 @@
                     </configs>
                 </service>
 
-                <service uid="${GENERIC_UID}_action_pushSeries" impl="::ioDicomExt::common::action::SSeriesDBMerger">
+                <service uid="${GENERIC_UID}_action_pushSeries" impl="::ioDicom::SSeriesDBMerger">
                     <config destinationSeriesDBID="${SERIESDB}" />
                 </service>
             </object>
         </item>
+
+        <connect>
+            <signal>${GENERIC_UID}_action_readDicomSeries/jobCreated</signal>
+            <slot>progress_statusbar/showJob</slot>
+        </connect>
+
+        <connect>
+            <signal>${GENERIC_UID}_action_convertSeries/jobCreated</signal>
+            <slot>progress_statusbar/showJob</slot>
+        </connect>
+
 
         <!-- START AND STOP SERVICES -->
         <start uid="${GENERIC_UID}_mainView" />

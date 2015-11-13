@@ -1,11 +1,11 @@
 <extension implements="::fwServices::registry::AppConfig">
-        <id>2DPacsPreviewConfig</id>
+        <id>2DLocalPreviewConfig</id>
         <type>parameters</type>
         <parameters>
             <param name="GENERIC_UID" />
             <param name="WID_PARENT" />
             <param name="objectID" />
-            <param name="PACS_CONFIGURATION" />
+            <param name="FILE_CACHE" default="none" />
         </parameters>
         <config>
             <object type="::fwData::Composite" uid="${GENERIC_UID}_previewComposite">
@@ -27,7 +27,6 @@
                 <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                     <scene>
                         <picker id="picker" vtkclass="fwVtkCellPicker" />
-                        <vtkObject id="imageBlend" class="vtkImageBlend" />
                         <renderer id="default" background="0.0" />
                         <adaptor id="interactor4Negato" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                             <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -37,6 +36,9 @@
                         </adaptor>
                         <adaptor id="seriesAdaptor" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
                             <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" />
+                        </adaptor>
+                        <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="dicomSeries">
+                            <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
                         </adaptor>
                     </scene>
                 </service>
@@ -53,8 +55,16 @@
 
                 <item key="dicomSeries">
                     <object uid="${objectID}" src="ref">
-                        <service uid="${GENERIC_UID}_sliderIndexDicomPullerEditor" type="::gui::editor::IEditor" impl="::ioDicomExt::dcmtk::editor::SSliceIndexDicomPullerEditor" autoConnect="yes">
-                            <config compositeUID="${GENERIC_UID}_previewComposite" imageKey="image" dicomReader="::ioVtkGdcm::SSeriesDBReader" pacsConfigurationUID="${PACS_CONFIGURATION}" />
+                        <service uid="${GENERIC_UID}_sliderIndexDicomPullerEditor" type="::gui::editor::IEditor" impl="::ioDicom::SSliceIndexDicomEditor" autoConnect="yes">
+                            <config compositeUID="${GENERIC_UID}_previewComposite" imageKey="image" dicomReader="::ioGdcm::SSeriesDBReader" delay="200" cacheUID="${FILE_CACHE}">
+                                <dicomReaderConfig>
+                                    <config>
+                                        <showLogDialog>no</showLogDialog>
+                                        <enableBufferRotation>no</enableBufferRotation>
+                                        <dicomdirSupport>never</dicomdirSupport>
+                                    </config>
+                                </dicomReaderConfig>
+                            </config>
                         </service>
                     </object>
                 </item>

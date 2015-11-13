@@ -1,11 +1,12 @@
 <extension implements="::fwServices::registry::AppConfig">
-    <id>DicomRetriever</id>
+    <id>DicomPacsReader</id>
     <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
         <param name="SERIESDB" />
         <param name="AS_UID" />
+        <param name="APP_NAME" />
     </parameters>
     <config>
 
@@ -84,7 +85,7 @@
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_progressBarController" impl="::ioDicomExt::common::controller::SProgressBarController" autoConnect="no">
+        <service uid="${GENERIC_UID}_progressBarController" impl="::ioPacs::SProgressBarController" autoConnect="no">
         </service>
 
 
@@ -96,17 +97,19 @@
 
         <!-- PACS CONFIGURATION -->
         <item key="pacsConfiguration">
-            <object type="::fwDicomIOExt::data::PacsConfiguration" uid="${GENERIC_UID}_pacsConfiguration">
+            <object type="::fwPacsIO::data::PacsConfiguration" uid="${GENERIC_UID}_pacsConfiguration">
 
-                <service uid="${GENERIC_UID}_pacsConfigurationInitializer" impl="::ioDicomExt::common::controller::SPacsConfigurationInitializer" autoConnect="yes">
+                <service uid="${GENERIC_UID}_pacsConfigurationInitializer" impl="::ioPacs::SPacsConfigurationInitializer" autoConnect="yes">
                     <config
-                        localApplicationTitle="VRRender"
+                        localApplicationTitle="${APP_NAME}"
                         pacsHostName="mypacs.mycompany.com"
                         pacsApplicationTitle="PACSNAME"
                         pacsApplicationPort="11112"
                         moveApplicationTitle="MoveApplicationTitle"
                         moveApplicationPort="11110"
-                        retrieveMethod="GET" />
+                        retrieveMethod="GET"
+                        preferenceKey="PACS_CONFIGURATION"
+                        />
                 </service>
 
                 <service uid="${GENERIC_UID}_action_editPacsConfiguration" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
@@ -131,7 +134,7 @@
                     <selectionId>${GENERIC_UID}_previewSelections</selectionId>
                 </service>
 
-                <service uid="${GENERIC_UID}_queryEditor" impl="::ioDicomExt::dcmtk::editor::SQueryEditor" autoConnect="yes">
+                <service uid="${GENERIC_UID}_queryEditor" impl="::ioPacs::SQueryEditor" autoConnect="yes">
                     <config pacsConfigurationUID="${GENERIC_UID}_pacsConfiguration" />
                 </service>
 
@@ -146,8 +149,9 @@
                     </slots>
                 </service>
 
-                <service uid="${GENERIC_UID}_pullSeriesController" impl="::ioDicomExt::dcmtk::controller::SSeriesPuller">
-                    <config pacsConfigurationUID="${GENERIC_UID}_pacsConfiguration" dicomReader="::ioVtkGdcm::SSeriesDBReader" destinationSeriesDBUID="${GENERIC_UID}_localSeriesDB" />
+                <service uid="${GENERIC_UID}_pullSeriesController" impl="::ioPacs::SSeriesPuller">
+                    <config pacsConfigurationUID="${GENERIC_UID}_pacsConfiguration" dicomReader="::ioGdcm::SSeriesDBReader"
+                        dicomReaderSrvConfig="DicomPacsReaderConfig" destinationSeriesDBUID="${GENERIC_UID}_localSeriesDB" />
                 </service>
 
                 <service uid="${GENERIC_UID}_pacsViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
@@ -182,7 +186,7 @@
                     </configs>
                 </service>
 
-                <service uid="${GENERIC_UID}_action_pushSeries" impl="::ioDicomExt::common::action::SSeriesDBMerger">
+                <service uid="${GENERIC_UID}_action_pushSeries" impl="::ioDicom::SSeriesDBMerger">
                     <config destinationSeriesDBID="${SERIESDB}" />
                 </service>
             </object>
@@ -199,7 +203,7 @@
         <connect>
             <signal>${GENERIC_UID}_pullSeriesController/stoppedProgress</signal>
             <slot>${GENERIC_UID}_progressBarController/stopProgress</slot>
-        </connect>
+         </connect>
 
         <!-- START AND STOP SERVICES -->
         <start uid="${GENERIC_UID}_mainView" />
