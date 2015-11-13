@@ -7,7 +7,9 @@
 #ifndef __FWDATAIO_READER_IOBJECTREADER_HPP__
 #define __FWDATAIO_READER_IOBJECTREADER_HPP__
 
-#include <boost/filesystem/path.hpp>
+#include "fwDataIO/config.hpp"
+#include "fwDataIO/reader/factory/new.hpp"
+#include "fwDataIO/reader/registry/detail.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -15,9 +17,12 @@
 
 #include <fwData/location/ILocation.hpp>
 
-#include "fwDataIO/config.hpp"
-#include "fwDataIO/reader/factory/new.hpp"
-#include "fwDataIO/reader/registry/detail.hpp"
+#include <fwJobs/IJob.hpp>
+
+#include <boost/filesystem/path.hpp>
+
+#include <cstdint>
+#include <functional>
 
 namespace fwDataIO
 {
@@ -43,6 +48,9 @@ class FWDATAIO_CLASS_API IObjectReader : public ::fwCore::BaseObject
 public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IObjectReader) );
+
+    typedef std::function< void ( std::uint64_t /*progress*/) > ProgressCallback;
+    typedef std::function< void ( ) > CancelCallback;
 
     typedef ::fwDataIO::reader::factory::Key Key;
 
@@ -99,6 +107,18 @@ public:
     FWDATAIO_API virtual ::fwData::location::ILocation::sptr getLocation();
 
     FWDATAIO_API virtual std::string  extension() = 0;
+
+    /**
+     * @brief Requests reader abortion.
+     */
+    FWDATAIO_API void cancel();
+
+    /// Returns the internal job
+    FWDATAIO_API virtual SPTR(::fwJobs::IJob) getJob() const
+    {
+        return nullptr;
+    }
+
 
 protected:
 

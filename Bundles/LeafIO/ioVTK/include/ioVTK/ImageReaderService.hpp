@@ -7,11 +7,11 @@
 #ifndef __IOVTK_IMAGEREADERSERVICE_HPP__
 #define __IOVTK_IMAGEREADERSERVICE_HPP__
 
-#include <boost/filesystem/path.hpp> // Used to save the file system path of loaded image
+#include "ioVTK/config.hpp"  // Declaration of class and function export
 
 #include <io/IReader.hpp> // Definition of abstract reader class
 
-#include "ioVTK/config.hpp"  // Declaration of class and function export
+#include <boost/filesystem/path.hpp> // Used to save the file system path of loaded image
 
 // Pre-definition of ::fwData::Image to avoid inclusion file
 namespace fwData
@@ -19,6 +19,10 @@ namespace fwData
 class Image;
 }
 
+namespace fwJobs
+{
+class IJob;
+}
 
 namespace ioVTK
 {
@@ -42,14 +46,19 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)( ::io::IReader) );
 
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+
     /**
      * @brief Configure the image path with a dialogBox.
      *
      * This method is used to find the file path using a file selector.
      */
     IOVTK_API virtual void configureWithIHM();
-//    IOVTK_API virtual void setFile(const ::boost::filesystem::path &file);
 
+    /**
+     * @brief Constructor. Do nothing.
+     */
+    IOVTK_API ImageReaderService() throw();
 
 protected:
 
@@ -90,6 +99,8 @@ private:
 
     /// Image path, location of image on filesystem.
     ::boost::filesystem::path m_fsImgPath;
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 
 };
 

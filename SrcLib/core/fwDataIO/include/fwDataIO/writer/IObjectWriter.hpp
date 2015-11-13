@@ -7,7 +7,10 @@
 #ifndef __FWDATAIO_WRITER_IOBJECTWRITER_HPP__
 #define __FWDATAIO_WRITER_IOBJECTWRITER_HPP__
 
-#include <boost/filesystem/path.hpp>
+
+#include "fwDataIO/config.hpp"
+#include "fwDataIO/writer/factory/new.hpp"
+#include "fwDataIO/writer/registry/detail.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -15,9 +18,12 @@
 
 #include <fwData/location/ILocation.hpp>
 
-#include "fwDataIO/config.hpp"
-#include "fwDataIO/writer/factory/new.hpp"
-#include "fwDataIO/writer/registry/detail.hpp"
+#include <fwJobs/IJob.hpp>
+
+#include <boost/filesystem/path.hpp>
+
+#include <cstdint>
+
 
 namespace fwDataIO
 {
@@ -45,6 +51,8 @@ public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IObjectWriter) );
 
+    typedef std::function< void ( std::uint64_t /*progress*/) > ProgressCallback;
+    typedef std::function< void ( ) > CancelCallback;
 
     typedef ::fwDataIO::writer::factory::Key Key;
 
@@ -107,6 +115,17 @@ public:
      * by default be empty
      */
     FWDATAIO_API virtual std::string  extension() = 0;
+
+    /**
+     * @brief Requests writer abortion.
+     */
+    FWDATAIO_API virtual void cancel();
+
+    /// Returns the internal job, nullptr by default
+    FWDATAIO_API virtual SPTR(::fwJobs::IJob) getJob() const
+    {
+        return nullptr;
+    }
 
 protected:
 

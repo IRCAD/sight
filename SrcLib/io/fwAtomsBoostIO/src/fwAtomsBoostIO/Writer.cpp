@@ -45,9 +45,9 @@ struct AtomVisitor
     ::fwZip::IWriteArchive::sptr m_archive;
     const std::string m_dirPrefix;
 
-
-    AtomVisitor( ::fwZip::IWriteArchive::sptr archive, const std::string &dirPrefix ) :
-        m_archive(archive), m_dirPrefix(dirPrefix)
+    AtomVisitor(const ::fwZip::IWriteArchive::sptr& archive, const std::string &dirPrefix) :
+        m_archive(archive),
+        m_dirPrefix(dirPrefix)
     {
     }
 
@@ -269,23 +269,22 @@ struct AtomVisitor
                 pt = this->visit(::fwAtoms::Blob::dynamicCast(atom), ptpath);
                 break;
             default:
-                SLM_ASSERT("You shall not pass", 0);
+                FW_RAISE("Atome type '"<<atom->type()<<"' is not supported");
                 break;
         }
-
         return pt;
     }
-
 };
 
 //-----------------------------------------------------------------------------
 
-void Writer::write( ::fwZip::IWriteArchive::sptr archive,
+void Writer::write( const ::fwZip::IWriteArchive::sptr& archive,
                     const ::boost::filesystem::path& rootFilename,
                     FormatType format ) const
 {
     ::boost::property_tree::ptree root;
-    AtomVisitor visitor(archive, rootFilename.stem().string() + "-" + ((format==JSON) ? "json" : "xml") );
+    AtomVisitor visitor(archive, rootFilename.stem().string() + "-" + ((format==JSON) ? "json" : "xml"));
+
     root = visitor.visit(m_atom);
 
     ::boost::property_tree::ptree versions;
@@ -307,11 +306,9 @@ void Writer::write( ::fwZip::IWriteArchive::sptr archive,
             break;
         }
         default:
-            SLM_ASSERT("You shall not pass", 0);
+            FW_RAISE("Archive format '"<<format<<"' is not supported");
             break;
     }
 }
-
-
 
 }

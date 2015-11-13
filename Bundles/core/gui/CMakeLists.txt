@@ -1,4 +1,5 @@
 fwLoadProperties()
+
 fwUseForwardInclude(
     fwCom
     fwCore
@@ -6,6 +7,8 @@ fwUseForwardInclude(
     fwRuntime
     fwServices
     fwTools
+    fwThread
+    fwJobs
 )
 
 find_package (Boost COMPONENTS regex REQUIRED)

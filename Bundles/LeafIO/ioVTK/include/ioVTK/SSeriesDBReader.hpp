@@ -7,16 +7,25 @@
 #ifndef __IOVTK_SSERIESDBREADER_HPP__
 #define __IOVTK_SSERIESDBREADER_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
+#include "ioVTK/config.hpp"
 
 #include <fwData/Mesh.hpp>
+#include <fwData/location/ILocation.hpp>
 
 #include <io/IReader.hpp>
 
+#include <boost/filesystem/path.hpp>
+#include <string>
 
-#include "ioVTK/config.hpp"
+namespace fwMedData
+{
+class SeriesDB;
+}
 
+namespace fwJobs
+{
+class IJob;
+}
 
 namespace ioVTK
 {
@@ -24,7 +33,6 @@ namespace ioVTK
 /**
  * @brief   SeriesDB reader service.
  * @class   SSeriesDBReader
- * @date    2013.
  *
  * Service reading a VTK file (mesh or image) using the fwVtkIO lib.
  *
@@ -35,6 +43,13 @@ class IOVTK_CLASS_API SSeriesDBReader : public ::io::IReader
 {
 
 public:
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+
+    /**
+     * @brief Constructor. Do nothing.
+     */
+    IOVTK_API SSeriesDBReader() throw();
+
     ~SSeriesDBReader() throw()
     {
     }
@@ -96,7 +111,9 @@ private:
      * This method is used to load a mesh using the file path.
      */
     void loadSeriesDB( const ::fwData::location::ILocation::VectPathType& vtkFiles,
-                       ::fwMedData::SeriesDB::sptr seriesDB );
+                       const SPTR(::fwMedData::SeriesDB)& seriesDB );
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 
 };
 

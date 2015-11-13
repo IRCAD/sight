@@ -4,15 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ioVtkGdcm/SImageSeriesWriter.hpp"
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
 #include <fwCore/base.hpp>
+
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwTools/ProgressToLogger.hpp>
-
-#include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
@@ -25,18 +31,18 @@
 
 #include <vtkGdcmIO/ImageSeriesWriter.hpp>
 
-#include "ioVtkGdcm/SImageSeriesWriter.hpp"
-
-
 namespace ioVtkGdcm
 {
 
 fwServicesRegisterMacro( ::io::IWriter, ::ioVtkGdcm::SImageSeriesWriter, ::fwMedData::ImageSeries );
 
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
 //------------------------------------------------------------------------------
 
 SImageSeriesWriter::SImageSeriesWriter() throw()
 {
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
 
 //------------------------------------------------------------------------------
@@ -130,7 +136,6 @@ void SImageSeriesWriter::updating() throw(::fwTools::Failed)
     }
 }
 
-
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::saveImageSeries( const ::boost::filesystem::path folder,
@@ -143,20 +148,10 @@ void SImageSeriesWriter::saveImageSeries( const ::boost::filesystem::path folder
     loc->setFolder(folder);
     writer->setLocation(loc);
 
-    fwGui::dialog::ProgressDialog::sptr progressMeterGUI;
-
-    if(::fwGui::isBackendLoaded())
-    {
-        progressMeterGUI = fwGui::dialog::ProgressDialog::New();
-        progressMeterGUI->setTitle("Saving series...");
-    }
+    m_sigJobCreated->emit(writer->getJob());
 
     try
     {
-        if(progressMeterGUI)
-        {
-            writer->addHandler( *progressMeterGUI );
-        }
         writer->write();
     }
     catch (const std::exception & e)

@@ -7,14 +7,19 @@
 #ifndef __FWVTKIO_METAIMAGEREADER_HPP__
 #define __FWVTKIO_METAIMAGEREADER_HPP__
 
-#include <boost/filesystem/path.hpp>
+#include "fwVtkIO/config.hpp"
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/SingleFile.hpp>
-#include <fwTools/ProgressAdviser.hpp>
 #include <fwData/Image.hpp>
 
-#include "fwVtkIO/config.hpp"
+#include <boost/filesystem/path.hpp>
+
+namespace fwJobs
+{
+class Observer;
+class IJob;
+}
 
 namespace fwVtkIO
 {
@@ -23,13 +28,10 @@ namespace fwVtkIO
  * @brief   Read a MetaImage.
  * @class   MetaImageReader
  *
- * @date    2011.
- *
  * Read a MetaImage using the VTK lib
  */
 class MetaImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
-                        public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
-                        public ::fwTools::ProgressAdviser
+                        public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
@@ -53,6 +55,14 @@ public:
 
     /// @return ".mhd"
     FWVTKIO_API std::string extension();
+
+    /// @return internal job
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+
+private:
+
+    ///Internal job
+    SPTR(::fwJobs::Observer) m_job;
 };
 
 } // namespace fwVtkIO

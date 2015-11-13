@@ -20,11 +20,16 @@
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
 
+#include <fwCom/Signal.hxx>
+
 #include <fwComEd/helper/Composite.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwJobs/Aggregator.hpp>
+#include <fwJobs/Job.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -51,6 +56,8 @@ namespace ioAtoms
 
 fwServicesRegisterMacro( ::io::IReader, ::ioAtoms::SReader, ::fwData::Object );
 
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
 const SReader::FileExtension2NameType SReader::s_EXTENSIONS
     = ::boost::assign::map_list_of(".xml", "XML")
           (".xmlz", "Zipped XML")
@@ -65,6 +72,8 @@ SReader::SReader() :
     m_version ("Undefined"),
     m_filter  ("")
 {
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+
     for(SReader::FileExtension2NameType::value_type ext :  s_EXTENSIONS)
     {
         m_allowedExts.insert(m_allowedExts.end(), ext.first);
@@ -214,10 +223,10 @@ struct SetDumpPolicy
             {
                 ::fwMemory::policy::BarrierDump::sptr newDumpPolicy = ::fwMemory::policy::BarrierDump::New();
                 ::fwMemory::BufferManager::BufferStats stats        = manager->getBufferStats().get();
-                size_t aliveMemory                                  = stats.totalManaged - stats.totalDumped;
-                size_t freeMemory                                   =
-                    ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem() / 2;
-                size_t barrier =
+
+                size_t aliveMemory = stats.totalManaged - stats.totalDumped;
+                size_t freeMemory  = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem() / 2;
+                size_t barrier     =
                     std::max( aliveMemory, std::max( freeMemory, static_cast<size_t>(500L * 1024 * 1024) ) );
 
                 newDumpPolicy->setBarrier( barrier );
@@ -248,9 +257,10 @@ struct SetDumpPolicy
     ::fwCore::mt::WriteLock m_lock;
 };
 
+//-----------------------------------------------------------------------------
+
 void SReader::updating() throw(::fwTools::Failed)
 {
-
     if(this->hasLocationDefined())
     {
         SetDumpPolicy policy;
@@ -277,77 +287,131 @@ void SReader::updating() throw(::fwTools::Failed)
 
             ::fwAtoms::Object::sptr atom;
 
-            // Read atom
-            ::fwZip::IReadArchive::sptr readArchive;
-            ::boost::filesystem::path archiveRootName;
-            ::fwAtomsBoostIO::FormatType format = ::fwAtomsBoostIO::UNSPECIFIED;
+            const unsigned int progressBarOffset = 10;
 
-            if ( extension == ".json" )
-            {
-                readArchive     = ::fwZip::ReadDirArchive::New(folderPath.string());
-                archiveRootName = filename;
-                format          = ::fwAtomsBoostIO::JSON;
-            }
-            else if ( extension == ".jsonz" )
-            {
-                readArchive     = ::fwZip::ReadZipArchive::New(filePath.string());
-                archiveRootName = "root.json";
-                format          = ::fwAtomsBoostIO::JSON;
-            }
-            else if ( extension == ".xml" )
-            {
-                readArchive     = ::fwZip::ReadDirArchive::New(folderPath.string());
-                archiveRootName = filename;
-                format          = ::fwAtomsBoostIO::XML;
-            }
-            else if ( extension == ".xmlz" )
-            {
-                readArchive     = ::fwZip::ReadZipArchive::New(filePath.string());
-                archiveRootName = "root.xml";
-                format          = ::fwAtomsBoostIO::XML;
-            }
-            else
-            {
-                FW_RAISE( "This file extension '" << extension << "' is not managed" );
-            }
+            // Reading file : job 1
+            ::fwJobs::Job::sptr fileReadingJob = ::fwJobs::Job::New("Reading " + extension + " file",
+                                                                    [ =, &atom](::fwJobs::Job& runningJob)
+                {
+                    runningJob.doneWork(progressBarOffset);
 
-            ::fwAtomsBoostIO::Reader reader;
-            atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive, archiveRootName, format ) );
+                    // Read atom
+                    ::fwZip::IReadArchive::sptr readArchive;
+                    ::boost::filesystem::path archiveRootName;
+                    ::fwAtomsBoostIO::FormatType format = ::fwAtomsBoostIO::UNSPECIFIED;
 
-            FW_RAISE_IF( "Invalid atoms file :'" << filePath << "'", !atom );
+                    if ( extension == ".json" )
+                    {
+                        readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
+                        archiveRootName = filename;
+                        format = ::fwAtomsBoostIO::JSON;
+                    }
+                    else if ( extension == ".jsonz" )
+                    {
+                        readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
+                        archiveRootName = "root.json";
+                        format = ::fwAtomsBoostIO::JSON;
+                    }
+                    else if ( extension == ".xml" )
+                    {
+                        readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
+                        archiveRootName = filename;
+                        format = ::fwAtomsBoostIO::XML;
+                    }
+                    else if ( extension == ".xmlz" )
+                    {
+                        readArchive = ::fwZip::ReadZipArchive::New(filePath.string());
+                        archiveRootName = "root.xml";
+                        format = ::fwAtomsBoostIO::XML;
+                    }
+                    else
+                    {
+                        FW_RAISE( "This file extension '" << extension << "' is not managed" );
+                    }
 
-            /// patch atom
-            if ( m_useAtomsPatcher )
-            {
-                FW_RAISE_IF( "Unable to load data, found '" << atom->getMetaInfo("context")
-                                                            << "' context, but '" << m_context << "' was excepted.",
-                             atom->getMetaInfo("context") != m_context);
+                    ::fwAtomsBoostIO::Reader reader;
+                    atom = ::fwAtoms::Object::dynamicCast( reader.read( readArchive, archiveRootName, format ) );
 
-                ::fwAtomsPatch::PatchingManager globalPatcher(atom);
-                atom = globalPatcher.transformTo( m_version );
-            }
+                    FW_RAISE_IF( "Invalid atoms file :'" << filePath << "'", !atom );
 
-            if(!m_filter.empty())
-            {
-                ::fwAtomsFilter::IFilter::sptr filter = ::fwAtomsFilter::factory::New(m_filter);
-                OSLM_ASSERT("Failed to create IFilter implementation '" << m_filter << "'", filter);
-                filter->apply(atom);
-            }
+                    runningJob.doneWork(progressBarOffset);
 
+                    runningJob.done();
+
+                }, m_associatedWorker);
+
+
+            // patching atom : job 2
+            ::fwJobs::Job::sptr patchingJob = ::fwJobs::Job::New("Reading " + extension + " file",
+                                                                 [ =, &atom](::fwJobs::Job& runningJob)
+                {
+                    if(runningJob.cancelRequested())
+                    {
+                        return;
+                    }
+
+                    runningJob.doneWork(progressBarOffset);
+
+                    /// patch atom
+                    if ( m_useAtomsPatcher )
+                    {
+                        FW_RAISE_IF( "Unable to load data, found '" << atom->getMetaInfo("context")
+                                                                    << "' context, but '" << m_context <<
+                                     "' was excepted.",
+                                     atom->getMetaInfo("context") != m_context);
+
+                        ::fwAtomsPatch::PatchingManager globalPatcher(atom);
+                        atom = globalPatcher.transformTo( m_version );
+                    }
+
+                    if(!m_filter.empty())
+                    {
+                        ::fwAtomsFilter::IFilter::sptr filter = ::fwAtomsFilter::factory::New(m_filter);
+                        OSLM_ASSERT("Failed to create IFilter implementation '" << m_filter << "'", filter);
+                        filter->apply(atom);
+                    }
+                    runningJob.done();
+                }, m_associatedWorker);
 
             ::fwData::Object::sptr newData;
 
-            if("Strict" == m_uuidPolicy)
+            // convert to fwData : job 3
+            ::fwJobs::Job::sptr atomToDataJob = ::fwJobs::Job::New("Reading " + extension + " file",
+                                                                   [ =, &newData, &atom](::fwJobs::Job& runningJob)
+                {
+                    runningJob.doneWork(progressBarOffset);
+                    if(runningJob.cancelRequested())
+                    {
+                        return;
+                    }
+                    if("Strict" == m_uuidPolicy)
+                    {
+                        newData = ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::StrictPolicy());
+                    }
+                    else if("Reuse" == m_uuidPolicy)
+                    {
+                        newData = ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ReusePolicy());
+                    }
+                    else
+                    {
+                        newData = ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ChangePolicy());
+                    }
+
+                    runningJob.done();
+                }, m_associatedWorker);
+
+            ::fwJobs::Aggregator::sptr jobs = ::fwJobs::Aggregator::New(extension + " reader");
+            jobs->add(fileReadingJob);
+            jobs->add(patchingJob);
+            jobs->add(atomToDataJob);
+
+            m_sigJobCreated->emit(jobs);
+
+            jobs->run().get();
+
+            if(jobs->getState() == ::fwJobs::IJob::CANCELED)
             {
-                newData = ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::StrictPolicy());
-            }
-            else if("Reuse" == m_uuidPolicy)
-            {
-                newData = ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ReusePolicy());
-            }
-            else
-            {
-                newData = ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ChangePolicy());
+                return;
             }
 
             FW_RAISE_IF( "Unable to load '" << filePath << "' : invalid data.", !newData );

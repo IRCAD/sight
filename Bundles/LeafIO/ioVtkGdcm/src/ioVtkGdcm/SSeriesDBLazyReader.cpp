@@ -6,6 +6,9 @@
 
 #include "ioVtkGdcm/SSeriesDBLazyReader.hpp"
 
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
@@ -14,7 +17,6 @@
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Series.hpp>
@@ -35,11 +37,13 @@ namespace ioVtkGdcm
 {
 
 fwServicesRegisterMacro( ::io::IReader, ::ioVtkGdcm::SSeriesDBLazyReader, ::fwMedData::SeriesDB );
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
 SSeriesDBLazyReader::SSeriesDBLazyReader() throw()
 {
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
 
 //------------------------------------------------------------------------------
@@ -117,10 +121,10 @@ std::string SSeriesDBLazyReader::getSelectorDialogTitle()
     myLoader->setObject(dummy);
     myLoader->setFolder(dicomDir);
 
+    m_sigJobCreated->emit(myLoader->getJob());
+
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Dicom Image");
-        myLoader->addHandler( progressMeterGUI );
         myLoader->read();
     }
     catch (const std::exception & e)

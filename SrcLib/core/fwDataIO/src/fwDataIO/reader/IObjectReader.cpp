@@ -57,6 +57,18 @@ void IObjectReader::setLocation( const ::fwData::location::ILocation::sptr _loca
 
 //------------------------------------------------------------------------------
 
+void IObjectReader::cancel()
+{
+    auto job = this->getJob();
+    if ( job )
+    {
+        job->cancel();
+    }
+}
+
+
+//------------------------------------------------------------------------------
+
 } // namespace reader
 
 } // namespace fwDataIO

@@ -12,6 +12,10 @@
 
 #include <io/IReader.hpp>
 
+#include <fwCom/Signal.hpp>
+
+#include <fwJobs/IJob.hpp>
+
 #include "ioAtoms/config.hpp"
 
 namespace fwMemory
@@ -31,6 +35,9 @@ class IOATOMS_CLASS_API SReader : public ::io::IReader
 {
 
 public:
+
+    /// Signal type for job creation.
+    typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
 
     fwCoreServiceClassDefinitionsMacro( (SReader)(::io::IReader) );
 
@@ -145,6 +152,9 @@ private:
 
     /// Labels shown in file dialog for each allowed extension
     FileExtension2NameType m_allowedExtLabels;
+
+    /// Signal emitted when job created.
+    JobCreatedSignalType::sptr m_sigJobCreated;
 };
 
 } // namespace ioAtoms

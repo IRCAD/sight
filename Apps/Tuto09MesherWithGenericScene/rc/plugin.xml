@@ -73,6 +73,7 @@
                     </registry>
                 </service>
 
+                <service uid="progress_statusbar" impl="::gui::editor::SJobBar" autoConnect="no" />
 
                 <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
 
@@ -275,7 +276,13 @@
 
                 </item>
 
+                <connect>
+                    <signal>modelSeriesWriter/jobCreated</signal>
+                    <slot>progress_statusbar/showJob</slot>
+                </connect>
+
                 <start uid="MyIHM" />
+                <start uid="progress_statusbar" />
                 <start uid="updaterReconstUID" />
                 <start uid="updaterImageUID" />
                 <start uid="managerUID" />

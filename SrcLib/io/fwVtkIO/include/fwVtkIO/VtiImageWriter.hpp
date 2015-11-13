@@ -7,14 +7,18 @@
 #ifndef __FWVTKIO_VTIIMAGEWRITER_HPP__
 #define __FWVTKIO_VTIIMAGEWRITER_HPP__
 
-#include <boost/filesystem/path.hpp>
+#include "fwVtkIO/config.hpp"
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 #include <fwData/location/SingleFile.hpp>
-#include <fwTools/ProgressAdviser.hpp>
 #include <fwData/Image.hpp>
 
-#include "fwVtkIO/config.hpp"
+#include <boost/filesystem/path.hpp>
+
+namespace fwJobs
+{
+class Observer;
+}
 
 namespace fwVtkIO
 {
@@ -23,13 +27,10 @@ namespace fwVtkIO
  * @brief   Write an image.
  * @class   VtiImageWriter
  *
- * @date    2009.
- *
  * Write a VTK Image using the VTK lib
  */
 class VtiImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
-                       public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
-                       public ::fwTools::ProgressAdviser
+                       public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
@@ -52,6 +53,14 @@ public:
 
     /// @return ".vti"
     FWVTKIO_API std::string extension();
+
+    /// @return internal job
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+
+private:
+
+    ///Internal job
+    SPTR(::fwJobs::Observer) m_job;
 };
 
 } // namespace fwVtkIO

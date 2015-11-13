@@ -4,6 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "uiIO/action/SSeriesDBMerger.hpp"
+
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+#include <fwCom/Signal.hxx>
+
+#include <fwJobs/IJob.hpp>
+
 #include <fwMedData/Series.hpp>
 
 #include <fwServices/Base.hpp>
@@ -14,8 +22,6 @@
 
 #include <fwComEd/helper/SeriesDB.hpp>
 
-#include "uiIO/action/SSeriesDBMerger.hpp"
-
 namespace uiIO
 {
 namespace action
@@ -23,10 +29,16 @@ namespace action
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SSeriesDBMerger, ::fwMedData::SeriesDB );
 
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
+
 //------------------------------------------------------------------------------
 
-SSeriesDBMerger::SSeriesDBMerger( ) throw() : m_ioSelectorSrvConfig ("IOSelectorServiceConfigVRRenderReader")
+SSeriesDBMerger::SSeriesDBMerger( ) throw() :
+    m_ioSelectorSrvConfig ("IOSelectorServiceConfigVRRenderReader")
 {
+    m_sigJobCreated  = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_slotForwardJob = newSlot( FORWARD_JOB_SLOT, &SSeriesDBMerger::forwardJob, this );
 }
 
 //------------------------------------------------------------------------------
@@ -85,6 +97,15 @@ void SSeriesDBMerger::updating( ) throw(::fwTools::Failed)
     ioSelectorSrv = ::fwServices::add(localSeriesDB,
                                       "::gui::editor::IDialogEditor",
                                       "::uiIO::editor::IOSelectorService");
+
+    ioSelectorSrv->setWorker(m_associatedWorker);
+
+    auto jobCreatedSignal = ioSelectorSrv->signal("jobCreated");
+    if(jobCreatedSignal)
+    {
+        jobCreatedSignal->connect(m_slotForwardJob);
+    }
+
     ioSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) );
     ioSelectorSrv->configure();
     ioSelectorSrv->start();
@@ -113,5 +134,12 @@ void SSeriesDBMerger::stopping() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+void SSeriesDBMerger::forwardJob(::fwJobs::IJob::sptr iJob)
+{
+    m_sigJobCreated->emit(iJob);
+}
+
+//------------------------------------------------------------------------------
+//
 } // namespace action
 } // namespace uiIO

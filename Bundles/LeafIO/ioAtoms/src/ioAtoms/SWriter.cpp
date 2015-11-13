@@ -4,13 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/path.hpp>
-#include <boost/algorithm/string/join.hpp>
+#include "ioAtoms/SReader.hpp"
+#include "ioAtoms/SWriter.hpp"
 
 #include <fwAtomsBoostIO/types.hpp>
 #include <fwAtomsBoostIO/Writer.hpp>
 
 #include <fwAtomConversion/convert.hpp>
+
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -20,6 +22,10 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
+
+#include <fwJobs/Aggregator.hpp>
+#include <fwJobs/Job.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -32,8 +38,9 @@
 #include <fwAtomsPatch/VersionsGraph.hpp>
 #include <fwAtomsPatch/PatchingManager.hpp>
 
-#include "ioAtoms/SReader.hpp"
-#include "ioAtoms/SWriter.hpp"
+#include <boost/filesystem/path.hpp>
+#include <boost/algorithm/string/join.hpp>
+
 
 namespace ioAtoms
 {
@@ -41,6 +48,8 @@ namespace ioAtoms
 //-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::io::IWriter, ::ioAtoms::SWriter, ::fwData::Object );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //-----------------------------------------------------------------------------
 
@@ -50,6 +59,8 @@ SWriter::SWriter() :
     m_context ("Undefined"),
     m_version ("Undefined")
 {
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+
     for(SReader::FileExtension2NameType::value_type ext :  SReader::s_EXTENSIONS)
     {
         m_allowedExts.insert(m_allowedExts.end(), ext.first);
@@ -198,56 +209,91 @@ bool SWriter::versionSelection()
 
 void SWriter::updating() throw(::fwTools::Failed)
 {
-    if( this->hasLocationDefined() )
+    if(!this->hasLocationDefined())
     {
-        ::fwData::Object::sptr obj = this->getObject< ::fwData::Object >();
+        return;
+    }
 
-        ::fwGui::Cursor cursor;
-        cursor.setCursor(::fwGui::ICursor::BUSY);
-        try
+    ::fwData::Object::sptr obj = this->getObject< ::fwData::Object >();
+
+    ::fwGui::Cursor cursor;
+    cursor.setCursor(::fwGui::ICursor::BUSY);
+
+    const ::boost::filesystem::path& requestedFilePath = this->getFile();
+    ::boost::filesystem::path filePath = requestedFilePath;
+
+    if( ::boost::filesystem::exists( requestedFilePath ) )
+    {
+        FW_RAISE_IF( "can't write to : " << requestedFilePath << ", it is a directory.",
+                     ::boost::filesystem::is_directory(requestedFilePath)
+                     );
+
+        filePath.replace_extension("%%%%%%" + filePath.extension().string() );
+        filePath = ::boost::filesystem::unique_path(filePath);
+    }
+
+
+    const ::boost::filesystem::path folderPath = filePath.parent_path();
+    const ::boost::filesystem::path filename   = filePath.filename();
+    std::string extension                      = ::boost::filesystem::extension(filePath);
+
+    FW_RAISE_IF("The file extension '" << extension << "' is not managed",
+                m_allowedExts.find(extension) == m_allowedExts.end());
+
+    if(m_customExts.find(extension) != m_customExts.end())
+    {
+        extension = "." + m_customExts[extension];
+    }
+    FW_RAISE_IF( "Extension is empty", extension.empty() );
+
+    // Mutex data lock
+    ::fwDataCamp::visitor::RecursiveLock recursiveLock (obj);
+
+    ::fwAtoms::Object::sptr atom;
+    const unsigned int progressBarOffset = 10;
+
+    // Convert data to atom : job 1
+    ::fwJobs::Job::sptr convertJob = ::fwJobs::Job::New("Writing " + extension + " file",
+                                                        [ =, &atom](::fwJobs::Job& runningJob)
         {
-            const ::boost::filesystem::path& requestedFilePath = this->getFile();
-            ::boost::filesystem::path filePath = requestedFilePath;
+            runningJob.doneWork(progressBarOffset);
 
-            if( ::boost::filesystem::exists( requestedFilePath ) )
-            {
-                FW_RAISE_IF( "can't write to : " << requestedFilePath << ", it is a directory.",
-                             ::boost::filesystem::is_directory(requestedFilePath)
-                             );
+            atom = ::fwAtomConversion::convert(obj);
+            runningJob.done();
+        }, m_associatedWorker );
 
-                filePath.replace_extension("%%%%%%" + filePath.extension().string() );
-                filePath = ::boost::filesystem::unique_path(filePath);
-            }
+    // Path atom : job 2
+    ::fwJobs::Job::sptr patchingJob = ::fwJobs::Job::New("Writing " + extension + " file",
+                                                         [ =, &atom](::fwJobs::Job& runningJob)
+        {
 
-
-            const ::boost::filesystem::path folderPath = filePath.parent_path();
-            const ::boost::filesystem::path filename   = filePath.filename();
-            std::string extension                      = ::boost::filesystem::extension(filePath);
-
-            FW_RAISE_IF( "Extension is empty", extension.empty() );
-
-            // Mutex data lock
-            ::fwDataCamp::visitor::RecursiveLock recursiveLock (obj);
-
-            // Convert data to atom
-            ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert(obj);
-
-            // Path atom
             atom->setMetaInfo("context", m_context);
             atom->setMetaInfo("version_name", m_version);
+
+            if(runningJob.cancelRequested())
+            {
+                return;
+            }
+
+            runningJob.doneWork(progressBarOffset);
+
             if( m_useAtomsPatcher )
             {
                 ::fwAtomsPatch::PatchingManager globalPatcher( atom );
                 atom = globalPatcher.transformTo( m_exportedVersion );
             }
 
-            FW_RAISE_IF("The file extension '" << extension << "' is not managed",
-                        m_allowedExts.find(extension) == m_allowedExts.end());
+            runningJob.done();
+        },
+                                                         m_associatedWorker
+                                                         );
 
-            if(m_customExts.find(extension) != m_customExts.end())
-            {
-                extension = "." + m_customExts[extension];
-            }
+    // Writing file : job 3
+    ::fwJobs::Job::sptr writeJob = ::fwJobs::Job::New("Writing " + extension + " file",
+                                                      [ =, &atom](::fwJobs::Job& runningJob)
+        {
+
+            runningJob.doneWork(progressBarOffset);
 
             // Write atom
             ::fwZip::IWriteArchive::sptr writeArchive;
@@ -255,9 +301,9 @@ void SWriter::updating() throw(::fwTools::Failed)
             ::boost::filesystem::path archiveRootName;
             if ( extension == ".json" )
             {
-                writeArchive    = ::fwZip::WriteDirArchive::New(folderPath.string());
+                writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
                 archiveRootName = filename;
-                format          = ::fwAtomsBoostIO::JSON;
+                format = ::fwAtomsBoostIO::JSON;
             }
             else if ( extension == ".jsonz" )
             {
@@ -265,15 +311,15 @@ void SWriter::updating() throw(::fwTools::Failed)
                 {
                     ::boost::filesystem::remove( filePath );
                 }
-                writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
+                writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
                 archiveRootName = "root.json";
-                format          = ::fwAtomsBoostIO::JSON;
+                format = ::fwAtomsBoostIO::JSON;
             }
             else if ( extension == ".xml" )
             {
-                writeArchive    = ::fwZip::WriteDirArchive::New(folderPath.string());
+                writeArchive = ::fwZip::WriteDirArchive::New(folderPath.string());
                 archiveRootName = filename;
-                format          = ::fwAtomsBoostIO::XML;
+                format = ::fwAtomsBoostIO::XML;
             }
             else if ( extension == ".xmlz" )
             {
@@ -281,9 +327,9 @@ void SWriter::updating() throw(::fwTools::Failed)
                 {
                     ::boost::filesystem::remove( filePath );
                 }
-                writeArchive    = ::fwZip::WriteZipArchive::New(filePath.string());
+                writeArchive = ::fwZip::WriteZipArchive::New(filePath.string());
                 archiveRootName = "root.xml";
-                format          = ::fwAtomsBoostIO::XML;
+                format = ::fwAtomsBoostIO::XML;
             }
             else
             {
@@ -297,22 +343,37 @@ void SWriter::updating() throw(::fwTools::Failed)
             {
                 ::boost::filesystem::rename(filePath, requestedFilePath);
             }
-        }
-        catch( std::exception & e )
-        {
-            OSLM_ERROR( e.what() );
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                                                              e.what(),
-                                                              ::fwGui::dialog::IMessageDialog::CRITICAL);
-        }
-        catch( ... )
-        {
-            ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
-                                                              "Writing process aborted",
-                                                              ::fwGui::dialog::IMessageDialog::CRITICAL);
-        }
-        cursor.setDefaultCursor();
+
+            runningJob.done();
+        }, m_associatedWorker );
+
+    ::fwJobs::Aggregator::sptr jobs = ::fwJobs::Aggregator::New(extension + " writer");
+    jobs->add(convertJob);
+    jobs->add(patchingJob);
+    jobs->add(writeJob);
+    jobs->setCancelable(false);
+
+    m_sigJobCreated->emit(jobs);
+
+    try
+    {
+        jobs->run().get();
     }
+    catch( std::exception & e )
+    {
+        OSLM_ERROR( e.what() );
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
+                                                          e.what(),
+                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+    }
+    catch( ... )
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
+                                                          "Writing process aborted",
+                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+    }
+
+    cursor.setDefaultCursor();
 }
 
 //-----------------------------------------------------------------------------

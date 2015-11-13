@@ -6,6 +6,10 @@
 
 #include "uiIO/editor/IOSelectorService.hpp"
 
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+#include <fwCom/Signal.hxx>
+
 #include <fwComEd/helper/Composite.hpp>
 #include <fwCore/base.hpp>
 
@@ -39,14 +43,17 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IDialogEditor, ::uiIO::editor::IOSelectorService, ::fwData::Object );
 
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
+
 //------------------------------------------------------------------------------
 
 IOSelectorService::IOSelectorService() :
     m_mode                  ( READER_MODE ),
-    m_servicesAreExcluded   ( true ),
-    m_selectedServices      ( std::vector< std::string >() )
+    m_servicesAreExcluded   ( true )
 {
-    SLM_TRACE_FUNC();
+    m_sigJobCreated  = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_slotForwardJob = newSlot( FORWARD_JOB_SLOT, &IOSelectorService::forwardJob, this );
 }
 
 //------------------------------------------------------------------------------
@@ -299,6 +306,13 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                     reader->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
                     reader->configure();
                 }
+
+                auto jobCreatedSignal = reader->signal("jobCreated");
+                if(jobCreatedSignal)
+                {
+                    jobCreatedSignal->connect(m_slotForwardJob);
+                }
+
                 reader->start();
                 reader->configureWithIHM();
 
@@ -320,6 +334,13 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
                     writer->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(srvCfg) );
                     writer->configure();
                 }
+
+                auto jobCreatedSignal = writer->signal("jobCreated");
+                if(jobCreatedSignal)
+                {
+                    jobCreatedSignal->connect(m_slotForwardJob);
+                }
+
                 writer->start();
                 writer->configureWithIHM();
 
@@ -374,6 +395,12 @@ void IOSelectorService::setIOMode( IOMode _mode )
 
 //------------------------------------------------------------------------------
 
+void IOSelectorService::forwardJob(::fwJobs::IJob::sptr iJob)
+{
+    m_sigJobCreated->emit(iJob);
+}
+
+//------------------------------------------------------------------------------
 } // namespace editor
 
 } // namespace gui

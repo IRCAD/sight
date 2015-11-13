@@ -6,16 +6,9 @@
 
 #ifndef ANDROID
 
-#include <boost/filesystem.hpp>
-
-#include <vtkActor.h>
-#include <vtkPolyData.h>
-#include <vtkProperty.h>
-#include <vtkOBJExporter.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkSmartPointer.h>
+#include "fwVtkIO/helper/Mesh.hpp"
+#include "fwVtkIO/vtk.hpp"
+#include "fwVtkIO/ModelSeriesObjWriter.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -28,9 +21,19 @@
 
 #include <fwTools/UUID.hpp>
 
-#include "fwVtkIO/helper/Mesh.hpp"
-#include "fwVtkIO/vtk.hpp"
-#include "fwVtkIO/ModelSeriesObjWriter.hpp"
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Observer.hpp>
+
+#include <vtkActor.h>
+#include <vtkPolyData.h>
+#include <vtkProperty.h>
+#include <vtkOBJExporter.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkSmartPointer.h>
+
+#include <boost/filesystem.hpp>
 
 fwDataIOWriterRegisterMacro( ::fwVtkIO::ModelSeriesObjWriter );
 
@@ -39,8 +42,9 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-ModelSeriesObjWriter::ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key key)
-    : ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
+ModelSeriesObjWriter::ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+    m_job(::fwJobs::Observer::New("ModelSeries Writer"))
 {
     SLM_TRACE_FUNC();
 }
@@ -92,7 +96,9 @@ void ModelSeriesObjWriter::write()
 
     ::fwMedData::ModelSeries::sptr modelSeries = getConcreteObject();
 
-    for( ::fwData::Reconstruction::sptr rec :  modelSeries->getReconstructionDB() )
+    m_job->setTotalWorkUnits(modelSeries->getReconstructionDB().size());
+    std::uint64_t units = 0;
+    for(const ::fwData::Reconstruction::sptr& rec :  modelSeries->getReconstructionDB() )
     {
         vtkSmartPointer< vtkRenderer > renderer = vtkSmartPointer< vtkRenderer >::New();
         vtkSmartPointer< vtkActor >  actor      = createActor(rec);
@@ -107,9 +113,10 @@ void ModelSeriesObjWriter::write()
         exporter->SetRenderWindow(renderWindow);
         exporter->SetFilePrefix(filename.c_str());
         exporter->Write();
-
+        m_job->doneWork(++units);
         // can not observe progression, not a vtkAlgorithm ...
     }
+    m_job->finish();
 }
 
 //------------------------------------------------------------------------------
@@ -117,6 +124,13 @@ void ModelSeriesObjWriter::write()
 std::string ModelSeriesObjWriter::extension()
 {
     return ".obj";
+}
+
+//------------------------------------------------------------------------------
+
+::fwJobs::IJob::sptr ModelSeriesObjWriter::getJob() const
+{
+    return m_job;
 }
 
 } // namespace fwVtkIO

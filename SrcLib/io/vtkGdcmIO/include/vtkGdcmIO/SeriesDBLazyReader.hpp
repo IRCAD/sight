@@ -7,11 +7,9 @@
 #ifndef __VTKGDCMIO_SERIESDBLAZYREADER_HPP__
 #define __VTKGDCMIO_SERIESDBLAZYREADER_HPP__
 
-#include <gdcmScanner.h>
+#include "vtkGdcmIO/config.hpp"
 
 #include <fwCore/macros.hpp>
-
-#include <fwTools/ProgressAdviser.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
@@ -19,7 +17,7 @@
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
-#include "vtkGdcmIO/config.hpp"
+#include <gdcmScanner.h>
 
 namespace fwMedData
 {
@@ -32,6 +30,11 @@ class SeriesDB;
 class Study;
 }
 
+namespace fwJobs
+{
+class Observer;
+}
+
 namespace vtkGdcmIO
 {
 
@@ -42,8 +45,7 @@ namespace vtkGdcmIO
  */
 class SeriesDBLazyReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
                            public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
-                           public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
-                           public ::fwTools::ProgressAdviser
+                           public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
@@ -68,6 +70,9 @@ public:
 
     /// Reads DICOM data from configured path and fills SeriesDB object. Use lazy reading process to read images.
     VTKGDCMIO_API void read();
+
+    /// @return internal job
+    VTKGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
 
 private:
 
@@ -112,6 +117,9 @@ private:
 
     /// Select some dicom tags and scan information in all filenames
     void scanFiles( gdcm::Scanner & scanner, const std::vector< std::string > & filenames );
+
+    ///Internal job
+    SPTR(::fwJobs::Observer) m_job;
 };
 
 } // namespace vtkGdcmIO

@@ -7,15 +7,22 @@
 #ifndef __IOVTK_MESHWRITERSERVICE_HPP__
 #define __IOVTK_MESHWRITERSERVICE_HPP__
 
-#include <boost/filesystem/path.hpp>
+#include "ioVTK/config.hpp"
+
+#include <fwCom/Signal.hpp>
 
 #include <io/IWriter.hpp>
 
-#include "ioVTK/config.hpp"
+#include <boost/filesystem/path.hpp>
 
 namespace fwData
 {
 class Mesh;
+}
+
+namespace fwJobs
+{
+class IJob;
 }
 
 namespace ioVTK
@@ -40,6 +47,14 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (MeshWriterService)( ::io::IWriter) );
 
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+
+
+    /**
+     * @brief Constructor. Do nothing.
+     */
+    IOVTK_API MeshWriterService() throw();
+
     /**
      * @brief Configure the mesh path.
      *
@@ -47,17 +62,6 @@ public:
      * the file path  using a file selector.
      */
     IOVTK_API virtual void configureWithIHM();
-
-    /**
-     * @brief Save a VTK mesh.
-     * @param[in] meshFile \b const ::boost::filesystem::path.
-     * @param[out] mesh std::shared_ptr< ::fwData::Mesh >.
-     *
-     * This method is used to save a mesh using the file path.
-     */
-    IOVTK_API static void saveMesh( const ::boost::filesystem::path& meshFile, const SPTR(::fwData::Mesh)& mesh );
-
-
 
 protected:
 
@@ -105,6 +109,9 @@ private:
      * @brief Mesh path .
      */
     ::boost::filesystem::path m_fsMeshPath;
+
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 
 };
 

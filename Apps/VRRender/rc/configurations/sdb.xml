@@ -107,6 +107,16 @@
             </item>
 
             <connect>
+                <signal>${GENERIC_UID}_action_import/jobCreated</signal>
+                <slot>${GENERIC_UID}_progress_statusbar/showJob</slot>
+            </connect>
+
+            <connect>
+                <signal>SDBWriter/jobCreated</signal>
+                <slot>${GENERIC_UID}_progress_statusbar/showJob</slot>
+            </connect>
+
+            <connect>
                 <signal>${GENERIC_UID}_selector/seriesDoubleClicked</signal>
                 <slot>${GENERIC_UID}_action_newActivity/launchSeries</slot>
             </connect>
@@ -120,6 +130,8 @@
 
             <start uid="${GENERIC_UID}_mainview" />
             <start uid="${GENERIC_UID}_seriesViewer" />
+            <start uid="${GENERIC_UID}_progress_statusbar" />
+
         </object>
 
     </config>

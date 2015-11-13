@@ -7,9 +7,8 @@
 #ifndef __FWVTKIO_SERIESDBREADER_HPP__
 #define __FWVTKIO_SERIESDBREADER_HPP__
 
-#include <boost/filesystem/path.hpp>
+#include "fwVtkIO/config.hpp"
 
-#include <fwTools/ProgressAdviser.hpp>
 #include <fwMedData/Series.hpp>
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
@@ -17,7 +16,13 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
-#include "fwVtkIO/config.hpp"
+#include <boost/filesystem/path.hpp>
+
+
+namespace fwJobs
+{
+class Observer;
+}
 
 namespace fwVtkIO
 {
@@ -26,13 +31,10 @@ namespace fwVtkIO
  * @brief   Read a SeriesDB.
  * @class   SeriesDBReader
  *
- * @date    2011.
- *
  * Read VTK Mesh or Image files using the VTK lib, convert to ModelSeries or ImageSeries and push to SeriesDB.
  */
 class SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                       public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
-                       public ::fwTools::ProgressAdviser
+                       public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
@@ -61,7 +63,14 @@ public:
         m_lazyMode = lazyMode;
     }
 
-protected:
+    /// @return internal job
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+
+private:
+
+    ///Internal job
+    SPTR(::fwJobs::Observer) m_job;
+
     bool m_lazyMode;
 };
 

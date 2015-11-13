@@ -4,18 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vtkImageData.h>
-#include <vtkXMLImageDataWriter.h>
-#include <vtkZLibDataCompressor.h>
-#include <vtkSmartPointer.h>
+#include "fwVtkIO/vtk.hpp"
+#include "fwVtkIO/VtiImageWriter.hpp"
+#include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include "fwVtkIO/vtk.hpp"
-#include "fwVtkIO/VtiImageWriter.hpp"
-#include "fwVtkIO/helper/ProgressVtkToFw.hpp"
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Observer.hpp>
+
+#include <vtkImageData.h>
+#include <vtkXMLImageDataWriter.h>
+#include <vtkZLibDataCompressor.h>
+#include <vtkSmartPointer.h>
+
 
 fwDataIOWriterRegisterMacro( ::fwVtkIO::VtiImageWriter );
 
@@ -25,7 +29,8 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 VtiImageWriter::VtiImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+    m_job(::fwJobs::Observer::New("VTK Image Writer"))
 {
     SLM_TRACE_FUNC();
 }
@@ -41,6 +46,8 @@ VtiImageWriter::~VtiImageWriter()
 
 void VtiImageWriter::write()
 {
+    using namespace fwVtkIO::helper;
+
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
@@ -58,9 +65,21 @@ void VtiImageWriter::write()
     writer->SetCompressor( compressor );
     writer->EncodeAppendedDataOff();
 
-    Progressor progress(writer, this->getSptr(), this->getFile().string());
+    vtkSmartPointer<vtkLambdaCommand> progressCallback;
+    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
+    progressCallback->SetCallback([this](vtkObject* caller, long unsigned int, void* )
+        {
+            auto filter = static_cast<vtkXMLImageDataWriter*>(caller);
+            m_job->doneWork( filter->GetProgress()*100 );
+        });
 
+    writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+    m_job->addSimpleCancelHook( [&]()
+        {
+            writer->AbortExecuteOn();
+        });
     writer->Write();
+    m_job->finish();
 }
 
 //------------------------------------------------------------------------------
@@ -68,6 +87,13 @@ void VtiImageWriter::write()
 std::string VtiImageWriter::extension()
 {
     return ".vti";
+}
+
+//------------------------------------------------------------------------------
+
+::fwJobs::IJob::sptr VtiImageWriter::getJob() const
+{
+    return m_job;
 }
 
 } // namespace fwVtkIO

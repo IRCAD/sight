@@ -7,17 +7,23 @@
 #ifndef __IOVTKGDCM_SSERIESDBREADER_HPP__
 #define __IOVTKGDCM_SSERIESDBREADER_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
+#include "ioVtkGdcm/config.hpp"
 
 #include <io/IReader.hpp>
 
-#include "ioVtkGdcm/config.hpp"
+#include <boost/filesystem/path.hpp>
+#include <string>
+
 
 namespace fwMedData
 {
 class SeriesDB;
 class Patient;
+}
+
+namespace fwJobs
+{
+class IJob;
 }
 
 
@@ -30,6 +36,7 @@ class IOVTKGDCM_CLASS_API SSeriesDBReader : public ::io::IReader
 public:
     typedef std::string ExtensionType;
     typedef std::vector< ExtensionType > ExtensionsType;
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
     fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) );
     /**
@@ -74,6 +81,8 @@ private:
     void notificationOfDBUpdate();
 
     SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path& dicomDir);
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 
 };
 

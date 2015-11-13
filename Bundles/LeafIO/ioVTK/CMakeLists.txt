@@ -1,9 +1,12 @@
 fwLoadProperties()
+
 fwUseForwardInclude(
     fwData
     fwRuntime
     fwServices
-
+    fwJobs
+    fwThread
+    fwVtkIO
     io
 )
 
@@ -14,7 +17,7 @@ fwForwardInclude(
 )
 
 if (NOT ANDROID)
-fwLink(
-    vtkIOImport
-)
+    fwLink(
+        vtkIOImport
+    )
 endif()

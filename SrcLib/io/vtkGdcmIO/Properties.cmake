@@ -10,6 +10,7 @@ set( DEPENDENCIES
     fwMemory
     fwTools
     fwVtkIO
+    fwJobs
 )
 set( REQUIREMENTS  )
 

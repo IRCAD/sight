@@ -4,17 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vtkImageData.h>
-#include <vtkGenericDataObjectWriter.h>
-#include <vtkSmartPointer.h>
+#include "fwVtkIO/vtk.hpp"
+#include "fwVtkIO/ImageWriter.hpp"
+#include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include "fwVtkIO/vtk.hpp"
-#include "fwVtkIO/ImageWriter.hpp"
-#include "fwVtkIO/helper/ProgressVtkToFw.hpp"
+#include <fwJobs/Observer.hpp>
+
+#include <vtkImageData.h>
+#include <vtkGenericDataObjectWriter.h>
+#include <vtkSmartPointer.h>
+
 
 fwDataIOWriterRegisterMacro( ::fwVtkIO::ImageWriter );
 
@@ -24,7 +27,8 @@ namespace fwVtkIO
 //------------------------------------------------------------------------------
 
 ImageWriter::ImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+    m_job(::fwJobs::Observer::New("VTK Image Writer"))
 {
     SLM_TRACE_FUNC();
 }
@@ -40,6 +44,8 @@ ImageWriter::~ImageWriter()
 
 void ImageWriter::write()
 {
+    using namespace fwVtkIO::helper;
+
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
@@ -52,10 +58,21 @@ void ImageWriter::write()
     writer->SetFileName(this->getFile().string().c_str());
     writer->SetFileTypeToBinary();
 
-    //add progress observation
-    Progressor progress(writer, this->getSptr(), this->getFile().string());
+    vtkSmartPointer<vtkLambdaCommand> progressCallback;
+    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
+    progressCallback->SetCallback([this](vtkObject* caller, long unsigned int, void* )
+        {
+            auto filter = static_cast<vtkGenericDataObjectWriter*>(caller);
+            m_job->doneWork( filter->GetProgress()*100 );
+        });
 
+    writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+    m_job->addSimpleCancelHook( [&]()
+        {
+            writer->AbortExecuteOn();
+        });
     writer->Write();
+    m_job->finish();
 }
 
 //------------------------------------------------------------------------------
@@ -63,6 +80,13 @@ void ImageWriter::write()
 std::string ImageWriter::extension()
 {
     return ".vtk";
+}
+
+//------------------------------------------------------------------------------
+
+::fwJobs::IJob::sptr ImageWriter::getJob() const
+{
+    return m_job;
 }
 
 } // namespace fwVtkIO

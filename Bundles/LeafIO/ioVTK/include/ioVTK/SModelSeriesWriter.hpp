@@ -7,18 +7,25 @@
 #ifndef __IOVTK_SMODELSERIESWRITER_HPP__
 #define __IOVTK_SMODELSERIESWRITER_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
+#include "ioVTK/config.hpp"
 
 #include <fwData/Mesh.hpp>
 
 #include <io/IWriter.hpp>
 
-#include "ioVTK/config.hpp"
+#include <fwCom/Signal.hpp>
+
+#include <boost/filesystem/path.hpp>
+#include <string>
 
 namespace fwData
 {
 class Mesh;
+}
+
+namespace fwJobs
+{
+class IJob;
 }
 
 namespace ioVTK
@@ -34,11 +41,16 @@ class IOVTK_CLASS_API SModelSeriesWriter : public ::io::IWriter
 {
 
 public:
+
+    SModelSeriesWriter() throw();
+
     ~SModelSeriesWriter() throw()
     {
     }
 
     fwCoreServiceClassDefinitionsMacro ( (SModelSeriesWriter)( ::io::IWriter) );
+
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
     /**
      * @brief Configure the mesh path.
@@ -81,6 +93,8 @@ protected:
      * informations about the service.
      */
     IOVTK_API void info(std::ostream &_sstream );
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 
 };
 

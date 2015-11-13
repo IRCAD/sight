@@ -41,6 +41,15 @@ namespace ioVTK
 
 fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SModelSeriesObjWriter, ::fwMedData::ModelSeries );
 
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
+//------------------------------------------------------------------------------
+
+SModelSeriesObjWriter::SModelSeriesObjWriter() throw()
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
+
 //------------------------------------------------------------------------------
 
 ::io::IOPathType SModelSeriesObjWriter::getIOPathType() const
@@ -136,10 +145,8 @@ void SModelSeriesObjWriter::updating() throw(::fwTools::Failed)
 
         try
         {
-            ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving reconstructions...");
-            writer->addHandler( progressMeterGUI );
+            m_sigJobCreated->emit(writer->getJob());
             writer->write();
-
         }
         catch (const std::exception & e)
         {

@@ -7,9 +7,15 @@
 #ifndef __UIIO_EDITOR_IOSELECTORSERVICE_HPP__
 #define __UIIO_EDITOR_IOSELECTORSERVICE_HPP__
 
+#include "uiIO/config.hpp"
+
 #include <gui/editor/IDialogEditor.hpp>
 
-#include "uiIO/config.hpp"
+#include <fwCom/Signal.hpp>
+#include <fwCom/Slot.hpp>
+
+#include <fwJobs/IJob.hpp>
+
 
 namespace uiIO
 {
@@ -33,6 +39,9 @@ public:
     } IOMode;
 
     fwCoreServiceClassDefinitionsMacro ( (IOSelectorService)( ::gui::editor::IDialogEditor) );
+
+    typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
+    typedef ::fwCom::Slot< void ( ::fwJobs::IJob::sptr ) > ForwardJobSlotType;
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
@@ -96,6 +105,8 @@ protected:
 
 private:
 
+    void forwardJob(::fwJobs::IJob::sptr iJob);
+
     /// Configure the service as writer or reader.
     IOMode m_mode;
 
@@ -113,6 +124,10 @@ private:
     std::map< std::string, std::string > m_serviceToConfig;
 
     std::string m_inject;
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
+    SPTR(ForwardJobSlotType) m_slotForwardJob;
+
 };
 
 } // namespace editor

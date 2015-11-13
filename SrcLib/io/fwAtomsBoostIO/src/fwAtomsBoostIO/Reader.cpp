@@ -29,7 +29,30 @@
 namespace fwAtomsBoostIO
 {
 
+size_t countSubAtoms(const ::boost::property_tree::ptree &pt)
+{
+    size_t nb = 0;
+    for(const ::boost::property_tree::ptree::value_type &v : pt)
+    {
+        if(
+            (v.first == "numeric")  ||
+            (v.first == "string")   ||
+            (v.first == "boolean")  ||
+            (v.first == "sequence") ||
+            (v.first == "map")      ||
+            (v.first == "object")   ||
+            (v.first == "blob")
+            )
+        {
+            nb++;
+        }
+        nb += countSubAtoms(v.second);
+    }
+    return nb;
+}
+
 //-----------------------------------------------------------------------------
+
 struct PTreeVisitor
 {
 
@@ -39,8 +62,11 @@ struct PTreeVisitor
     const ::boost::property_tree::ptree &m_root;
     ::fwZip::IReadArchive::sptr m_archive;
 
-    PTreeVisitor(const ::boost::property_tree::ptree &pt, ::fwZip::IReadArchive::sptr archive) :
-        m_root(pt), m_archive(archive)
+//-----------------------------------------------------------------------------
+
+    PTreeVisitor(const ::boost::property_tree::ptree &pt, const ::fwZip::IReadArchive::sptr& archive) :
+        m_root(pt),
+        m_archive(archive)
     {
     }
 
@@ -189,7 +215,7 @@ struct PTreeVisitor
         }
 
         ::fwZip::IReadArchive::sptr m_archive;
-        boost::filesystem::path m_path;
+        ::boost::filesystem::path m_path;
     };
 
 
@@ -228,7 +254,6 @@ struct PTreeVisitor
         {
             FW_RAISE("Buffer type '" << bufType << "' unknown.");
         }
-
         return atom;
     }
 
@@ -284,7 +309,7 @@ struct PTreeVisitor
         }
         else
         {
-            SLM_ASSERT("You shall not pass", 0);
+            FW_RAISE("Unknown element found in archive.");
         }
 
         return atom;
@@ -301,7 +326,7 @@ struct PTreeVisitor
 
 //-----------------------------------------------------------------------------
 
-::fwAtoms::Base::sptr Reader::read( ::fwZip::IReadArchive::sptr archive,
+::fwAtoms::Base::sptr Reader::read( const ::fwZip::IReadArchive::sptr& archive,
                                     const ::boost::filesystem::path& rootFilename,
                                     FormatType format ) const
 {
@@ -319,7 +344,7 @@ struct PTreeVisitor
     }
     else
     {
-        SLM_ASSERT("You shall not pass", 0);
+        FW_RAISE("This kind of extension is not supported");
     }
 
     typedef ::boost::property_tree::ptree::const_assoc_iterator PtreeItType;

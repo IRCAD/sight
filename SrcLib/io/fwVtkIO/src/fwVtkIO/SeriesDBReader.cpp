@@ -5,11 +5,14 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwVtkIO/helper/Mesh.hpp"
-#include "fwVtkIO/helper/ProgressVtkToFw.hpp"
+#include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 #include "fwVtkIO/SeriesDBReader.hpp"
 #include "fwVtkIO/vtk.hpp"
 
 #include <fwCore/base.hpp>
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Observer.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
@@ -29,8 +32,6 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/UUID.hpp>
 
-#include <algorithm>
-
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -38,9 +39,6 @@
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
 #include <boost/iostreams/stream.hpp>
-
-#include <iosfwd>
-#include <numeric>
 
 #include <vtkDataSetAttributes.h>
 #include <vtkGenericDataObjectReader.h>
@@ -54,6 +52,10 @@
 #include <vtkStructuredPointsReader.h>
 #include <vtkXMLGenericDataObjectReader.h>
 #include <vtkXMLImageDataReader.h>
+
+#include <algorithm>
+#include <iosfwd>
+#include <numeric>
 
 fwDataIOReaderRegisterMacro( ::fwVtkIO::SeriesDBReader );
 
@@ -93,7 +95,8 @@ void  initSeries(::fwMedData::Series::sptr series, const std::string& instanceUI
 
 SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
     ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >(this),
-    m_lazyMode(true)
+    m_lazyMode(true),
+    m_job(::fwJobs::Observer::New("SeriesDB reader"))
 {
     SLM_TRACE_FUNC();
 }
@@ -107,20 +110,39 @@ SeriesDBReader::~SeriesDBReader()
 
 //------------------------------------------------------------------------------
 template <typename T, typename FILE>
-vtkSmartPointer< vtkDataObject  > getObj(FILE &file, SeriesDBReader *progressor)
+vtkSmartPointer< vtkDataObject  > getObj(FILE &file, const ::fwJobs::Observer::sptr& job)
 {
+    using namespace fwVtkIO::helper;
+
     vtkSmartPointer< T > reader = vtkSmartPointer< T >::New();
     reader->SetFileName(file.string().c_str());
-    if(progressor)
+
+    if(job)
     {
-        Progressor progress(reader, progressor->getSptr(), file.string());
+        vtkSmartPointer<vtkLambdaCommand> progressCallback;
+        progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
+        progressCallback->SetCallback([&](vtkObject* caller, long unsigned int, void* )
+            {
+                auto filter = static_cast<T*>(caller);
+                job->doneWork( filter->GetProgress()*100 );
+            });
+        reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+
+        job->addSimpleCancelHook( [&]()
+            {
+                reader->AbortExecuteOn();
+            } );
+        reader->Update();
+        job->finish();
     }
-    reader->Update();
+    else
+    {
+        reader->Update();
+    }
     return reader->GetOutput();
 }
 
 //------------------------------------------------------------------------------
-
 
 ::fwData::Object::sptr getDataObject(const vtkSmartPointer< vtkDataObject  > &obj, const boost::filesystem::path &file)
 {
@@ -221,7 +243,7 @@ protected:
         }
 
         vtkSmartPointer< vtkDataObject  > obj;
-        obj = getObj<READER>(m_path, NULL);
+        obj = getObj<READER>(m_path, nullptr);
 
         return ::fwData::Image::dynamicCast(getDataObject(obj, m_path));
     }
@@ -295,8 +317,8 @@ void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader > &reader, const 
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
-    buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkStructuredPointsReader> >(
-                                    file), imgObj->getSizeInBytes());
+    buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkStructuredPointsReader> >(file),
+                                imgObj->getSizeInBytes());
 }
 
 
@@ -314,7 +336,8 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader > &reader, con
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
-    buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkXMLImageDataReader> >(file), imgObj->getSizeInBytes());
+    buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkXMLImageDataReader> >(file),
+                                imgObj->getSizeInBytes());
 
 }
 
@@ -357,7 +380,6 @@ void SeriesDBReader::read()
     std::vector< std::string > errorFiles;
     for(const ::fwData::location::ILocation::VectPathType::value_type& file :  files)
     {
-
         vtkSmartPointer< vtkDataObject  > obj;
         ::fwData::Image::sptr img;
         ::fwData::Reconstruction::sptr rec;
@@ -370,7 +392,7 @@ void SeriesDBReader::read()
             }
             if (!img)
             {
-                obj = getObj<vtkGenericDataObjectReader>(file, this);
+                obj = getObj<vtkGenericDataObjectReader>(file, m_job);
             }
         }
         else if(file.extension().string() == ".vti")
@@ -381,16 +403,16 @@ void SeriesDBReader::read()
             }
             if (!img)
             {
-                obj = getObj<vtkXMLGenericDataObjectReader>(file, this);
+                obj = getObj<vtkXMLGenericDataObjectReader>(file, m_job);
             }
         }
         else if(file.extension().string() == ".mhd")
         {
-            obj = getObj<vtkMetaImageReader>(file, this);
+            obj = getObj<vtkMetaImageReader>(file, m_job);
         }
         else if(file.extension().string() == ".vtu")
         {
-            obj = getObj<vtkXMLGenericDataObjectReader>(file, this);
+            obj = getObj<vtkXMLGenericDataObjectReader>(file, m_job);
         }
 
         if (!img)
@@ -436,6 +458,13 @@ void SeriesDBReader::read()
 std::string SeriesDBReader::extension()
 {
     return ".vtk";
+}
+
+//------------------------------------------------------------------------------
+
+::fwJobs::IJob::sptr SeriesDBReader::getJob() const
+{
+    return m_job;
 }
 
 } // namespace fwVtkIO

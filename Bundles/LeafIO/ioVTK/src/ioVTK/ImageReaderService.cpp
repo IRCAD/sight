@@ -6,14 +6,18 @@
 
 #include "ioVTK/ImageReaderService.hpp"
 
-#include <fwCore/base.hpp>
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+#include <fwJobs/Aggregator.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
+#include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
@@ -24,13 +28,19 @@
 #include <fwVtkIO/MetaImageReader.hpp>
 #include <fwVtkIO/VtiImageReader.hpp>
 
-#include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
+#include <fwGui/registry/worker.hpp>
+
+#include <fwCore/base.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
+
+#include <cstdint>
+#include <thread>
+#include <chrono>
 
 namespace ioVTK
 {
@@ -39,6 +49,8 @@ namespace ioVTK
 
 // Register a new reader of ::fwData::Image
 fwServicesRegisterMacro( ::io::IReader, ::ioVTK::ImageReaderService, ::fwData::Image );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
@@ -51,7 +63,6 @@ fwServicesRegisterMacro( ::io::IReader, ::ioVTK::ImageReaderService, ::fwData::I
 
 void ImageReaderService::configureWithIHM()
 {
-    SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
@@ -79,18 +90,21 @@ void ImageReaderService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
+ImageReaderService::ImageReaderService() throw()
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
+
+//------------------------------------------------------------------------------
+
 void ImageReaderService::starting() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
-    // This method does nothing
 }
 
 //------------------------------------------------------------------------------
 
 void ImageReaderService::stopping() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
-    // This method does nothing
 }
 
 //------------------------------------------------------------------------------
@@ -104,8 +118,6 @@ void ImageReaderService::info( std::ostream &_sstream )
 
 void ImageReaderService::updating() throw ( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
-
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
@@ -120,7 +132,7 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
         {
             if ( this->loadImage( this->getFile(), pImage ) )
             {
-                notificationOfDBUpdate();
+                this->notificationOfDBUpdate();
             }
         }
         catch(::fwTools::Failed& e)
@@ -135,39 +147,34 @@ void ImageReaderService::updating() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
+template< typename READER > typename READER::sptr configureReader(const ::boost::filesystem::path &imgFile )
+{
+    typename READER::sptr reader = READER::New();
+    reader->setFile(imgFile);
+    return reader;
+}
+
+//------------------------------------------------------------------------------
+
 bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::fwData::Image::sptr _pImg )
 {
-    SLM_TRACE_FUNC();
     bool ok = true;
 
-    // Use a reader of fwVtkIO library to read an image
-    ::fwDataIO::reader::IObjectReader::sptr myReader;
-    // Create a progress bar and attach it to reader
-    ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Image ");
     std::string ext = ::boost::filesystem::extension(imgFile);
     ::boost::algorithm::to_lower(ext);
 
+    ::fwDataIO::reader::IObjectReader::sptr imageReader;
     if(ext == ".vtk")
     {
-        ::fwVtkIO::ImageReader::sptr vtkReader = ::fwVtkIO::ImageReader::New();
-        vtkReader->addHandler( progressMeterGUI );
-        // Set the file system path
-        vtkReader->setFile(imgFile);
-        myReader = vtkReader;
+        imageReader = configureReader< ::fwVtkIO::ImageReader >( imgFile );
     }
     else if(ext == ".vti")
     {
-        ::fwVtkIO::VtiImageReader::sptr vtiReader = ::fwVtkIO::VtiImageReader::New();
-        vtiReader->addHandler( progressMeterGUI );
-        vtiReader->setFile(imgFile);
-        myReader = vtiReader;
+        imageReader = configureReader< ::fwVtkIO::VtiImageReader >( imgFile );
     }
     else if(ext == ".mhd")
     {
-        ::fwVtkIO::MetaImageReader::sptr mhdReader = ::fwVtkIO::MetaImageReader::New();
-        mhdReader->addHandler( progressMeterGUI );
-        mhdReader->setFile(imgFile);
-        myReader = mhdReader;
+        imageReader = configureReader< ::fwVtkIO::MetaImageReader >( imgFile );
     }
     else
     {
@@ -175,12 +182,27 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
     }
 
     // Set the image (already created, but empty) that will be modified
-    myReader->setObject(_pImg);
+    ::fwData::mt::ObjectWriteLock lock(_pImg);
+    imageReader->setObject(_pImg);
+
+    m_sigJobCreated->emit(imageReader->getJob());
 
     try
     {
-        // Launch reading process
-        myReader->read();
+        imageReader->read();
+    }
+    catch(::fwTools::Failed& e)
+    {
+        std::stringstream ss;
+        ss << "Warning during loading : " << e.what();
+
+        ::fwGui::dialog::MessageDialog::showMessageDialog(
+            "Warning",
+            ss.str(),
+            ::fwGui::dialog::IMessageDialog::WARNING);
+        ok = false;
+        // Raise exception  for superior level
+        FW_RAISE_EXCEPTION(e);
     }
     catch (const std::exception & e)
     {
@@ -209,7 +231,6 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
 
 void ImageReaderService::notificationOfDBUpdate()
 {
-    SLM_TRACE_FUNC();
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
     SLM_ASSERT("pImage not instanced", pImage);
 

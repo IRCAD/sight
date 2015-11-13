@@ -7,6 +7,9 @@
 #include "ioVTK/MeshWriterService.hpp"
 #include "ioVTK/SModelSeriesReader.hpp"
 
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
@@ -42,6 +45,15 @@ namespace ioVTK
 {
 
 fwServicesRegisterMacro( ::io::IReader, ::ioVTK::SModelSeriesReader, ::fwMedData::ModelSeries );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
+//------------------------------------------------------------------------------
+
+SModelSeriesReader::SModelSeriesReader() throw()
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
 
 //------------------------------------------------------------------------------
 
@@ -150,10 +162,10 @@ void SModelSeriesReader::loadMesh( const ::boost::filesystem::path file, ::fwDat
     reader->setObject(mesh);
     reader->setFile(file);
 
+    m_sigJobCreated->emit(reader->getJob());
+
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Mesh");
-        reader->addHandler( progressMeterGUI );
         ::fwData::mt::ObjectWriteLock lock(mesh);
         reader->read();
     }

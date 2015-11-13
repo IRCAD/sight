@@ -7,19 +7,23 @@
 #ifndef __IOVTK_IMAGEWRITERSERVICE_HPP__
 #define __IOVTK_IMAGEWRITERSERVICE_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
+#include "ioVTK/config.hpp"
 
 #include <io/IWriter.hpp>
 
+#include <boost/filesystem/path.hpp>
 
-#include "ioVTK/config.hpp"
+#include <string>
 
 namespace fwData
 {
 class Image;
 }
 
+namespace fwJobs
+{
+class IJob;
+}
 
 namespace ioVTK
 {
@@ -37,11 +41,19 @@ class IOVTK_CLASS_API ImageWriterService : public ::io::IWriter
 {
 
 public:
+
+    /**
+     * @brief Constructor. Do nothing.
+     */
+    IOVTK_API ImageWriterService() throw();
+
     ~ImageWriterService() throw()
     {
     }
 
     fwCoreServiceClassDefinitionsMacro ( (ImageWriterService)( ::io::IWriter) );
+
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
     /**
      * @brief Configure the image path.
@@ -60,7 +72,9 @@ public:
      * This method is used to save an image using the file path.
      * Returns \b true if the image saving is a success and \b false if it fails
      */
-    IOVTK_API static bool saveImage( const ::boost::filesystem::path& imgFile, const SPTR(::fwData::Image)& image );
+    IOVTK_API static bool saveImage( const ::boost::filesystem::path& imgFile,
+                                     const SPTR(::fwData::Image)& image,
+                                     const SPTR(JobCreatedSignalType)& sigJobCreated);
 
 
 protected:
@@ -109,6 +123,7 @@ private:
      */
     ::boost::filesystem::path m_fsImgPath;
 
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 };
 
 } // namespace ioVTK

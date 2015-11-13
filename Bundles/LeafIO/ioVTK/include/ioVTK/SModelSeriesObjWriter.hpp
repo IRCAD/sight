@@ -23,6 +23,11 @@ namespace fwData
 class Mesh;
 }
 
+namespace fwJobs
+{
+class IJob;
+}
+
 namespace ioVTK
 {
 
@@ -36,6 +41,14 @@ class IOVTK_CLASS_API SModelSeriesObjWriter : public ::io::IWriter
 {
 
 public:
+
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+
+    /**
+     * @brief Constructor. Do nothing.
+     */
+    IOVTK_API SModelSeriesObjWriter() throw();
+
     ~SModelSeriesObjWriter() throw()
     {
     }
@@ -97,6 +110,8 @@ private:
      * @brief Mesh path.
      */
     ::boost::filesystem::path m_fsMeshPath;
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 
 };
 

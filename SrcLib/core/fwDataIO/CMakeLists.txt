@@ -1,8 +1,10 @@
 fwLoadProperties()
+
 fwUseForwardInclude(
     fwCore
     fwData
     fwTools
+    fwJobs
 )
 
 #racy compatibility

@@ -94,6 +94,8 @@
                     </registry>
                 </service>
 
+                <service uid="progress_statusbar" impl="::gui::editor::SJobBar" autoConnect="no" />
+
                 <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
                     <start uid="myReaderMesh" />
                 </service>
@@ -205,7 +207,18 @@
                     </object>
                 </item>
 
+                <connect>
+                    <signal>myWriterMesh/jobCreated</signal>
+                    <slot>progress_statusbar/showJob</slot>
+                </connect>
+
+                <connect>
+                    <signal>myReaderMesh/jobCreated</signal>
+                    <slot>progress_statusbar/showJob</slot>
+                </connect>
+
                 <start uid="MyIHM" />
+                <start uid="progress_statusbar" />
 
             </object>
 

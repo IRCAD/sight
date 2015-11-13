@@ -18,6 +18,11 @@
 #include <boost/filesystem/path.hpp>
 #include <string>
 
+namespace fwJobs
+{
+class IJob;
+}
+
 namespace ioVTK
 {
 
@@ -31,11 +36,18 @@ class IOVTK_CLASS_API SModelSeriesReader : public ::io::IReader
 {
 
 public:
+    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesReader)( ::io::IReader) );
+
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+
+    /**
+     * @brief Constructor. Do nothing.
+     */
+    IOVTK_API SModelSeriesReader() throw();
+
     ~SModelSeriesReader() throw()
     {
     }
-
-    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesReader)( ::io::IReader) );
 
     /**
      * @brief Configure the mesh path.
@@ -82,6 +94,8 @@ protected:
 private:
 
     IOVTK_API void loadMesh( const ::boost::filesystem::path file, ::fwData::Mesh::sptr mesh );
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 
 };
 

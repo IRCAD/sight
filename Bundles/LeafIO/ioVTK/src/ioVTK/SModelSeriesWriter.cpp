@@ -4,7 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/operations.hpp>
+#include "ioVTK/MeshWriterService.hpp"
+#include "ioVTK/SModelSeriesWriter.hpp"
+
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
+#include <fwJobs/IJob.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
@@ -27,14 +34,26 @@
 
 #include <fwVtkIO/MeshWriter.hpp>
 
-#include "ioVTK/MeshWriterService.hpp"
-#include "ioVTK/SModelSeriesWriter.hpp"
+#include <boost/filesystem/operations.hpp>
+
+#include <boost/filesystem/operations.hpp>
 
 
 namespace ioVTK
 {
 
 fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SModelSeriesWriter, ::fwMedData::ModelSeries );
+
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
+
+//------------------------------------------------------------------------------
+
+SModelSeriesWriter::SModelSeriesWriter() throw()
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
 
 //------------------------------------------------------------------------------
 
@@ -131,9 +150,34 @@ void SModelSeriesWriter::updating() throw(::fwTools::Failed)
             SLM_ASSERT("Reconstruction from model series is not instanced", rec);
             ::fwData::Mesh::sptr mesh = rec->getMesh();
             SLM_ASSERT("Mesh from reconstruction is not instanced", mesh);
-            MeshWriterService::saveMesh(
-                this->getFolder() / (rec->getOrganName() + "_" + ::fwTools::UUID::get(mesh) + ".vtk"),
-                mesh);
+
+            ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
+            m_sigJobCreated->emit(writer->getJob());
+
+            writer->setObject(mesh);
+            writer->setFile(this->getFolder() / (rec->getOrganName() + "_" + ::fwTools::UUID::get(mesh) + ".vtk"));
+
+            try
+            {
+                writer->write();
+            }
+            catch (const std::exception & e)
+            {
+                std::stringstream ss;
+                ss << "Warning during saving : " << e.what();
+
+                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    ss.str(),
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+            }
+            catch( ... )
+            {
+                ::fwGui::dialog::MessageDialog::showMessageDialog(
+                    "Warning",
+                    "Warning during saving",
+                    ::fwGui::dialog::IMessageDialog::WARNING);
+            }
         }
 
         cursor.setDefaultCursor();

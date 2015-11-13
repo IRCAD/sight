@@ -14,6 +14,8 @@ set( DEPENDENCIES
     fwTools
     fwVtkIO
     fwCom
+    fwThread
+    fwJobs
     io
 )
 set( REQUIREMENTS  )

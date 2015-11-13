@@ -7,6 +7,8 @@
 
 #include "fwDataIO/writer/IObjectWriter.hpp"
 
+#include <fwJobs/IJob.hpp>
+
 namespace fwDataIO
 {
 
@@ -60,6 +62,18 @@ std::string IObjectWriter::extension()
 {
     return std::string();
 }
+
+//------------------------------------------------------------------------------
+
+void IObjectWriter::cancel()
+{
+    auto job = this->getJob();
+    if ( job )
+    {
+        job->cancel();
+    }
+}
+
 
 //------------------------------------------------------------------------------
 

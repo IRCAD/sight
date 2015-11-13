@@ -7,17 +7,22 @@
 #ifndef __IOVTKGDCM_SSERIESDBLAZYREADER_HPP__
 #define __IOVTKGDCM_SSERIESDBLAZYREADER_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
+#include "ioVtkGdcm/config.hpp"
 
 #include <io/IReader.hpp>
 
-#include "ioVtkGdcm/config.hpp"
+#include <string>
+#include <boost/filesystem/path.hpp>
 
 namespace fwMedData
 {
 class SeriesDB;
 class Patient;
+}
+
+namespace fwJobs
+{
+class IJob;
 }
 
 namespace ioVtkGdcm
@@ -28,6 +33,7 @@ class IOVTKGDCM_CLASS_API SSeriesDBLazyReader : public ::io::IReader
 {
 
 public:
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
     typedef std::string ExtensionType;
     typedef std::vector< ExtensionType > ExtensionsType;
 
@@ -72,6 +78,8 @@ private:
 
     /// Creates ::fwMedData::SeriesDB from a path
     SPTR(::fwMedData::SeriesDB) createSeriesDB(const ::boost::filesystem::path& dicomDir);
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 
 };
 

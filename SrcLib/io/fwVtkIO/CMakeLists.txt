@@ -1,10 +1,12 @@
 fwLoadProperties()
+
 fwUseForwardInclude(
     fwCore
     fwData
     fwDataIO
     fwMedData
     fwTools
+    fwJobs
 )
 
 find_package(VTK REQUIRED)

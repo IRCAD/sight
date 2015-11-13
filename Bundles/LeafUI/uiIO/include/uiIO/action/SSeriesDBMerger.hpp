@@ -9,9 +9,17 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Slot.hpp>
+
 #include <fwGui/IActionSrv.hpp>
 
 #include "uiIO/config.hpp"
+
+namespace fwJobs
+{
+class IJob;
+}
 
 namespace uiIO
 {
@@ -50,6 +58,9 @@ class UIIO_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (SSeriesDBMerger)( ::fwGui::IActionSrv) );
 
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+    typedef ::fwCom::Slot< void ( SPTR(::fwJobs::IJob) ) > ForwardJobSlotType;
+
     UIIO_API SSeriesDBMerger() throw();
 
     UIIO_API virtual ~SSeriesDBMerger() throw();
@@ -70,7 +81,12 @@ protected:
     void info(std::ostream &_sstream );
 
 private:
+    void forwardJob(SPTR(::fwJobs::IJob) iJob);
+
     std::string m_ioSelectorSrvConfig;
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
+    SPTR(ForwardJobSlotType) m_slotForwardJob;
 
 };
 

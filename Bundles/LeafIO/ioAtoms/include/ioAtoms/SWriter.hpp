@@ -7,13 +7,17 @@
 #ifndef __IOATOMS_SWRITER_HPP__
 #define __IOATOMS_SWRITER_HPP__
 
-#include <set>
+#include "ioAtoms/config.hpp"
 
 #include <io/IWriter.hpp>
 
+#include <fwCom/Signal.hpp>
+
+#include <fwJobs/IJob.hpp>
+
 #include <fwAtomsBoostIO/Writer.hpp>
 
-#include "ioAtoms/config.hpp"
+#include <set>
 
 namespace ioAtoms
 {
@@ -29,6 +33,9 @@ class IOATOMS_CLASS_API SWriter : public ::io::IWriter
 public:
 
     fwCoreServiceClassDefinitionsMacro( (SWriter)(::io::IWriter) );
+
+    /// Signal type for job creation.
+    typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
 
     /// Does nothing
     IOATOMS_API SWriter();
@@ -125,6 +132,9 @@ protected:
 
     /// Labels shown in file dialog for each allowed extension
     FileExtension2NameType m_allowedExtLabels;
+
+    /// Signal emitted when job created.
+    JobCreatedSignalType::sptr m_sigJobCreated;
 };
 
 } // namespace ioAtoms

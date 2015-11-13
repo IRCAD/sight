@@ -8,9 +8,13 @@
 #include "vtkGdcmIO/SeriesDBReader.hpp"
 #include "vtkGdcmIO/helper/GdcmHelper.hpp"
 
+
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Observer.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -24,8 +28,10 @@
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/fromIsoExtendedString.hpp>
 
-#include <vtkImageWriter.h>
+#include <fwVtkIO/vtk.hpp>
+#include <fwVtkIO/helper/vtkLambdaCommand.hpp>
 
+#include <vtkImageWriter.h>
 #include <vtkGDCMImageReader.h>
 #include <vtkImageData.h>
 #include <vtkStringArray.h>
@@ -37,9 +43,6 @@
 #include <gdcmScanner.h>
 #include <gdcmReader.h>
 #include <gdcmIPPSorter.h>
-
-#include <fwVtkIO/vtk.hpp>
-#include <fwVtkIO/helper/ProgressVtkToFw.hpp>
 
 
 #include <boost/filesystem/path.hpp>
@@ -57,7 +60,8 @@ namespace vtkGdcmIO
 
 SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
     ::fwData::location::enableFolder< IObjectReader >(this),
-    ::fwData::location::enableMultiFiles< IObjectReader >(this)
+    ::fwData::location::enableMultiFiles< IObjectReader >(this),
+    m_job(::fwJobs::Observer::New("SeriesDB reader"))
 {
     SLM_TRACE_FUNC();
 }
@@ -177,7 +181,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
                 {
                     // Treatment of secondary capture dicom file.
                     std::string imageType(imageTypeStr);
-                    OSLM_TRACE("Image Type : " << imageType);
+                    SLM_TRACE("Image Type : " + imageType);
 
                     fileSetId += "_";
                     fileSetId += imageTypeStr;
@@ -273,7 +277,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
                 for(; filesIt != filesEnd; ++filesIt)
                 {
                     const std::string &f = *filesIt;
-                    OSLM_TRACE("Add " << f << " to vtkGdcmReader");
+                    SLM_TRACE("Add '" + f + "' to vtkGdcmReader");
                     fileArray->InsertNextValue( f.c_str() );
                 }
 
@@ -285,9 +289,23 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
                     reader->SetFileNames( fileArray );
                     try
                     {
-                        SLM_TRACE ( "Read all files" );
+                        SLM_TRACE("Read Series: " + iter->first);
+
+                        using namespace fwVtkIO::helper;
                         //add progress observation
-                        ::fwVtkIO::Progressor progress(reader, this->getSptr(), "Serie " + iter->first);
+                        vtkSmartPointer<vtkLambdaCommand> progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
+                        progressCallback->SetCallback([this](vtkObject* caller, long unsigned int, void* )
+                            {
+                                auto filter = static_cast<vtkGDCMImageReader*>(caller);
+                                m_job->doneWork( filter->GetProgress()*100 );
+                            });
+                        reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+
+                        m_job->addSimpleCancelHook( [&]()
+                            {
+                                reader->AbortExecuteOn();
+                            } );
+
                         reader->Update();
                         reader->UpdateInformation();
                         reader->PropagateUpdateExtent();
@@ -446,6 +464,13 @@ void SeriesDBReader::read()
         }
     }
     this->addSeries( seriesDB, filenames);
+}
+
+//------------------------------------------------------------------------------
+
+::fwJobs::IJob::sptr SeriesDBReader::getJob() const
+{
+    return m_job;
 }
 
 } //namespace vtkGdcmIO

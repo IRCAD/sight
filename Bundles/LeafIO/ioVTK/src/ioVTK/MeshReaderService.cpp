@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include "ioVTK/MeshReaderService.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -20,7 +19,8 @@
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
+
+#include <fwJobs/IJob.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -29,17 +29,25 @@
 
 #include <boost/filesystem/operations.hpp>
 
-
 namespace ioVTK
 {
 
 fwServicesRegisterMacro( ::io::IReader, ::ioVTK::MeshReaderService, ::fwData::Mesh );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
 ::io::IOPathType MeshReaderService::getIOPathType() const
 {
     return ::io::FILE;
+}
+
+//------------------------------------------------------------------------------
+
+MeshReaderService::MeshReaderService() throw()
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -98,17 +106,19 @@ void MeshReaderService::info(std::ostream &_sstream )
 void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
-    ::fwVtkIO::MeshReader::sptr myReader = ::fwVtkIO::MeshReader::New();
 
-    myReader->setObject(_pMesh);
-    myReader->setFile(vtkFile);
+    ::fwVtkIO::MeshReader::sptr reader = ::fwVtkIO::MeshReader::New();
+
+    m_sigJobCreated->emit(reader->getJob());
+
+    reader->setObject(_pMesh);
+    reader->setFile(vtkFile);
+
+    ::fwData::mt::ObjectWriteLock lock(_pMesh);
 
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Mesh");
-        myReader->addHandler( progressMeterGUI );
-        ::fwData::mt::ObjectWriteLock lock(_pMesh);
-        myReader->read();
+        reader->read();
     }
     catch (const std::exception & e)
     {

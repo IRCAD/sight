@@ -14,6 +14,7 @@ set( DEPENDENCIES
     fwData
     fwDataCamp
     fwGui
+    fwJobs
     fwMemory
     fwRuntime
     fwServices

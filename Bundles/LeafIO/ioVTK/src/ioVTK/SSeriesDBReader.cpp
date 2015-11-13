@@ -4,9 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/operations.hpp>
+#include "ioVTK/SSeriesDBReader.hpp"
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
+
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
@@ -24,13 +31,21 @@
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwVtkIO/SeriesDBReader.hpp>
 
-#include "ioVTK/SSeriesDBReader.hpp"
-
+#include <boost/filesystem/operations.hpp>
 
 namespace ioVTK
 {
 
 fwServicesRegisterMacro( ::io::IReader, ::ioVTK::SSeriesDBReader, ::fwMedData::SeriesDB );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
+//------------------------------------------------------------------------------
+
+SSeriesDBReader::SSeriesDBReader() throw()
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
 
 //------------------------------------------------------------------------------
 
@@ -99,16 +114,16 @@ void SSeriesDBReader::info(std::ostream &_sstream )
 //------------------------------------------------------------------------------
 
 void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPathType& vtkFiles,
-                                    ::fwMedData::SeriesDB::sptr seriesDB )
+                                    const ::fwMedData::SeriesDB::sptr& seriesDB )
 {
     ::fwVtkIO::SeriesDBReader::sptr reader = ::fwVtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
     reader->setFiles(vtkFiles);
 
+    m_sigJobCreated->emit(reader->getJob());
+
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading SeriesDB");
-        reader->addHandler( progressMeterGUI );
         reader->read();
     }
     catch (const std::exception & e)

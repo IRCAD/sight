@@ -6,13 +6,19 @@
 
 #include "ioVtkGdcm/SSeriesDBReader.hpp"
 
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 
 #include <fwGui/backend.hpp>
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Series.hpp>
@@ -35,10 +41,13 @@ namespace ioVtkGdcm
 
 fwServicesRegisterMacro( ::io::IReader, ::ioVtkGdcm::SSeriesDBReader, ::fwMedData::SeriesDB );
 
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
 //------------------------------------------------------------------------------
 
 SSeriesDBReader::SSeriesDBReader() throw()
 {
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
 
 //------------------------------------------------------------------------------
@@ -116,21 +125,10 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
     reader->setObject(dummy);
     reader->setFolder(dicomDir);
 
-    fwGui::dialog::ProgressDialog::sptr progressMeterGUI;
-
-    if(::fwGui::isBackendLoaded())
-    {
-        progressMeterGUI = fwGui::dialog::ProgressDialog::New();
-        progressMeterGUI->setTitle("Saving series...");
-    }
+    m_sigJobCreated->emit(reader->getJob());
 
     try
     {
-        if(progressMeterGUI)
-        {
-            reader->addHandler( *progressMeterGUI );
-        }
-
         reader->read();
     }
     catch (const std::exception & e)

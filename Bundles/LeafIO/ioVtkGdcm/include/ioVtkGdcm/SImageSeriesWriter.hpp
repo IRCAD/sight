@@ -7,18 +7,21 @@
 #ifndef __IOVTKGDCM_SIMAGESERIESWRITER_HPP__
 #define __IOVTKGDCM_SIMAGESERIESWRITER_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
-
+#include "ioVtkGdcm/config.hpp"
 #include <io/IWriter.hpp>
 
-#include "ioVtkGdcm/config.hpp"
+#include <boost/filesystem/path.hpp>
+#include <string>
 
 namespace fwMedData
 {
 class ImageSeries;
 }
 
+namespace fwJobs
+{
+class IJob;
+}
 
 namespace ioVtkGdcm
 {
@@ -32,6 +35,8 @@ class IOVTKGDCM_CLASS_API SImageSeriesWriter : public ::io::IWriter
 
 public:
     fwCoreServiceClassDefinitionsMacro ( (SImageSeriesWriter)( ::io::IWriter) );
+
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
     /**
      * @brief   constructor
@@ -64,6 +69,8 @@ protected:
 private:
 
     void saveImageSeries( const ::boost::filesystem::path folder, SPTR(::fwMedData::ImageSeries) series );
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 };
 
 } // namespace ioVtkGdcm

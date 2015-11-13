@@ -7,14 +7,18 @@
 #ifndef __FWVTKIO_IMAGEREADER_HPP__
 #define __FWVTKIO_IMAGEREADER_HPP__
 
-#include <boost/filesystem/path.hpp>
+#include "fwVtkIO/config.hpp"
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/SingleFile.hpp>
-#include <fwTools/ProgressAdviser.hpp>
 #include <fwData/Image.hpp>
 
-#include "fwVtkIO/config.hpp"
+#include <boost/filesystem/path.hpp>
+
+namespace fwJobs
+{
+class Observer;
+}
 
 namespace fwVtkIO
 {
@@ -23,13 +27,10 @@ namespace fwVtkIO
  * @brief   Read an image.
  * @class   ImageReader
  *
- * @date    2009.
- *
  * Read a VTK Image using the VTK lib
  */
 class ImageReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Image >,
-                    public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
-                    public ::fwTools::ProgressAdviser
+                    public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
@@ -51,6 +52,14 @@ public:
 
     /// @return ".vtk"
     FWVTKIO_API std::string extension();
+
+    /// @return internal job
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+
+private:
+
+    ///Internal job
+    SPTR(::fwJobs::Observer) m_job;
 };
 
 } // namespace fwVtkIO

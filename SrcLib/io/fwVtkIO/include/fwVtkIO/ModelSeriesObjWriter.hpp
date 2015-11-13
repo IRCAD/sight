@@ -9,13 +9,12 @@
 
 #ifndef ANDROID
 
-#include <boost/filesystem/path.hpp>
+#include "fwVtkIO/config.hpp"
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 #include <fwData/location/Folder.hpp>
-#include <fwTools/ProgressAdviser.hpp>
 
-#include "fwVtkIO/config.hpp"
+#include <boost/filesystem/path.hpp>
 
 namespace fwData
 {
@@ -27,6 +26,12 @@ namespace fwMedData
 class ModelSeries;
 }
 
+namespace fwJobs
+{
+class Observer;
+}
+
+
 namespace fwVtkIO
 {
 
@@ -37,8 +42,7 @@ namespace fwVtkIO
  * Write a ::fwData::Reconstruction as .obj file using the VTK lib and the obj format.
  */
 class ModelSeriesObjWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
-                             public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
-                             public ::fwTools::ProgressAdviser
+                             public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
 {
 
 public:
@@ -65,11 +69,17 @@ public:
      */
     FWVTKIO_API std::string extension();
 
+    /// @return internal job
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+
+private:
+
+    ///Internal job
+    SPTR(::fwJobs::Observer) m_job;
 };
 
 } // namespace fwVtkIO
 
-#endif //ANDROID
+#endif // ANDROID
 
-#endif // __FWVTKIO_MODELSERIESOBJWRITER_HPP__
-
+#endif //__FWVTKIO_MODELSERIESOBJWRITER_HPP__

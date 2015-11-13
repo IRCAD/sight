@@ -4,7 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/algorithm/string.hpp>
+#include "ioVTK/ImageWriterService.hpp"
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
 
 #include <fwTools/Failed.hpp>
 
@@ -31,12 +34,21 @@
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
 
-#include "ioVTK/ImageWriterService.hpp"
+#include <boost/algorithm/string.hpp>
 
 namespace ioVTK
 {
 
 fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::ImageWriterService, ::fwData::Image );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
+//------------------------------------------------------------------------------
+
+ImageWriterService::ImageWriterService() throw()
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
 
 //------------------------------------------------------------------------------
 
@@ -98,7 +110,9 @@ void ImageWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, const SPTR(::fwData::Image)& image )
+bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile,
+                                    const SPTR(::fwData::Image)& image,
+                                    const SPTR(JobCreatedSignalType)& sigJobCreated )
 {
     SLM_TRACE_FUNC();
     bool bValue = true;
@@ -111,7 +125,6 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, co
     if(ext == ".vtk")
     {
         ::fwVtkIO::ImageWriter::sptr vtkWriter = ::fwVtkIO::ImageWriter::New();
-        vtkWriter->addHandler( progressMeterGUI );
         // Set the file system path
         vtkWriter->setFile(imgFile);
         myWriter = vtkWriter;
@@ -119,14 +132,12 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, co
     else if(ext == ".vti")
     {
         ::fwVtkIO::VtiImageWriter::sptr vtiWriter = ::fwVtkIO::VtiImageWriter::New();
-        vtiWriter->addHandler( progressMeterGUI );
         vtiWriter->setFile(imgFile);
         myWriter = vtiWriter;
     }
     else if(ext == ".mhd")
     {
         ::fwVtkIO::MetaImageWriter::sptr mhdWriter = ::fwVtkIO::MetaImageWriter::New();
-        mhdWriter->addHandler( progressMeterGUI );
         mhdWriter->setFile(imgFile);
         myWriter = mhdWriter;
     }
@@ -136,6 +147,8 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile, co
     }
 
     myWriter->setObject(image);
+
+    sigJobCreated->emit(myWriter->getJob());
 
     try
     {
@@ -181,7 +194,7 @@ void ImageWriterService::updating() throw(::fwTools::Failed)
 
         try
         {
-            this->saveImage(this->getFile(),pImage);
+            this->saveImage(this->getFile(), pImage, m_sigJobCreated);
         }
         catch(::fwTools::Failed& e)
         {

@@ -4,6 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ioVTK/MeshWriterService.hpp"
+
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -19,15 +25,25 @@
 #include <fwGui/Cursor.hpp>
 
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <fwVtkIO/MeshWriter.hpp>
 
-#include "ioVTK/MeshWriterService.hpp"
+#include <fwJobs/IJob.hpp>
+
+#include <fwVtkIO/MeshWriter.hpp>
 
 
 namespace ioVTK
 {
 
 fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::MeshWriterService, ::fwData::Mesh );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
+//------------------------------------------------------------------------------
+
+MeshWriterService::MeshWriterService() throw()
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
 
 //------------------------------------------------------------------------------
 
@@ -87,42 +103,6 @@ void MeshWriterService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::saveMesh(const ::boost::filesystem::path& meshFile, const SPTR( ::fwData::Mesh)& mesh)
-{
-    SLM_TRACE_FUNC();
-    ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
-
-    writer->setObject(mesh);
-    writer->setFile(meshFile);
-
-    try
-    {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving mesh...");
-        writer->addHandler( progressMeterGUI );
-        writer->write();
-
-    }
-    catch (const std::exception & e)
-    {
-        std::stringstream ss;
-        ss << "Warning during saving : " << e.what();
-
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "Warning",
-            ss.str(),
-            ::fwGui::dialog::IMessageDialog::WARNING);
-    }
-    catch( ... )
-    {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "Warning",
-            "Warning during saving",
-            ::fwGui::dialog::IMessageDialog::WARNING);
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void MeshWriterService::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
@@ -136,7 +116,34 @@ void MeshWriterService::updating() throw(::fwTools::Failed)
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
-        this->saveMesh(this->getFile(),pMesh);
+        ::fwVtkIO::MeshWriter::sptr writer = ::fwVtkIO::MeshWriter::New();
+
+        m_sigJobCreated->emit(writer->getJob());
+
+        writer->setObject(pMesh);
+        writer->setFile(this->getFile());
+
+        try
+        {
+            writer->write();
+        }
+        catch (const std::exception & e)
+        {
+            std::stringstream ss;
+            ss << "Warning during saving : " << e.what();
+
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning",
+                ss.str(),
+                ::fwGui::dialog::IMessageDialog::WARNING);
+        }
+        catch( ... )
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Warning",
+                "Warning during saving",
+                ::fwGui::dialog::IMessageDialog::WARNING);
+        }
 
         cursor.setDefaultCursor();
     }

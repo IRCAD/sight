@@ -8,17 +8,21 @@
 #define __VTKGDCMIO_SERIESDBREADER_HPP__
 
 
-#include <fwTools/ProgressAdviser.hpp>
+#include "vtkGdcmIO/config.hpp"
+
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
 
-#include "vtkGdcmIO/config.hpp"
+
 namespace fwMedData
 {
 class SeriesDB;
 }
-
+namespace fwJobs
+{
+class Observer;
+}
 
 namespace vtkGdcmIO
 {
@@ -30,8 +34,7 @@ namespace vtkGdcmIO
  */
 class SeriesDBReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
                        public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
-                       public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >,
-                       public ::fwTools::ProgressAdviser
+                       public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >
 {
 
 public:
@@ -52,6 +55,9 @@ public:
      */
     VTKGDCMIO_API void read();
 
+    /// @return internal job
+    VTKGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
+
 private:
 
     /**
@@ -70,6 +76,9 @@ private:
      * @param filenames files to extract DICOM data from
      */
     void addSeries( const SPTR( ::fwMedData::SeriesDB ) &seriesDB, const std::vector< std::string > &filenames);
+
+    ///Internal job
+    SPTR(::fwJobs::Observer) m_job;
 
 };
 

@@ -4,20 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem.hpp>
+#include "vtkGdcmIO/ImageSeriesWriter.hpp"
 
-#include <iostream>
-#include <time.h>
-
-#include <vtkImageData.h>
-#include <vtkStringArray.h>
-#include <vtkSmartPointer.h>
-
-#include <vtkGDCMImageWriter.h>
-#include <vtkMedicalImageProperties.h>
-#include <gdcmFilenameGenerator.h>
-#include <gdcmDicts.h>
-#include <gdcmGlobal.h>
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Observer.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -34,11 +24,22 @@
 #include <fwDataIO/writer/registry/macros.hpp>
 
 #include <fwVtkIO/vtk.hpp>
-#include <fwVtkIO/helper/ProgressVtkToFw.hpp>
+#include <fwVtkIO/helper/vtkLambdaCommand.hpp>
 
-#include "vtkGdcmIO/ImageSeriesWriter.hpp"
+#include <vtkImageData.h>
+#include <vtkStringArray.h>
+#include <vtkSmartPointer.h>
 
+#include <vtkGDCMImageWriter.h>
+#include <vtkMedicalImageProperties.h>
+#include <gdcmFilenameGenerator.h>
+#include <gdcmDicts.h>
+#include <gdcmGlobal.h>
 
+#include <boost/filesystem.hpp>
+
+#include <iostream>
+#include <time.h>
 
 fwDataIOWriterRegisterMacro( ::vtkGdcmIO::ImageSeriesWriter );
 
@@ -62,7 +63,8 @@ void setValue(vtkMedicalImageProperties *medprop,
 //------------------------------------------------------------------------------
 
 ImageSeriesWriter::ImageSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
+    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
+    m_job(::fwJobs::Observer::New("VTK Image writer"))
 {
 }
 
@@ -219,7 +221,6 @@ void ImageSeriesWriter::write()
     vtkSmartPointer< vtkGDCMImageWriter > writer = vtkSmartPointer< vtkGDCMImageWriter >::New();
 
     //add progress observation
-    ::fwVtkIO::Progressor progress(writer, this->getSptr(), outputDirectory.string());
     writer->SetStudyUID(study->getInstanceUID().c_str());
     writer->SetSeriesUID(imgSeries->getInstanceUID().c_str());
     writer->SetInputData( vtkImage );
@@ -227,7 +228,25 @@ void ImageSeriesWriter::write()
     writer->SetFileDimensionality( 2 ); // test the 3D to 2D writing mode
     writer->SetMedicalImageProperties( medprop );
     writer->SetFileNames( filenames );
+
+    using namespace fwVtkIO::helper;
+    vtkSmartPointer<vtkLambdaCommand> progressCallback;
+    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
+    progressCallback->SetCallback([this](vtkObject* caller, long unsigned int, void* )
+        {
+            auto filter = static_cast<vtkGDCMImageWriter*>(caller);
+            m_job->doneWork( filter->GetProgress()*100 );
+        });
+    writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+
+    m_job->addSimpleCancelHook( [&]()
+        {
+            writer->AbortExecuteOn();
+        });
+
     writer->Write();
+
+    m_job->finish();
 
     filenames->Delete();
 }
@@ -237,6 +256,13 @@ void ImageSeriesWriter::write()
 std::string ImageSeriesWriter::extension()
 {
     return "";
+}
+
+//------------------------------------------------------------------------------
+
+::fwJobs::IJob::sptr ImageSeriesWriter::getJob() const
+{
+    return m_job;
 }
 
 } // namespace dicomIO

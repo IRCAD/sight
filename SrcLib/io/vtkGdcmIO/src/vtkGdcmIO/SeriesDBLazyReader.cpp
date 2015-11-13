@@ -13,6 +13,9 @@
 #include <fwCore/HiResTimer.hpp>
 #endif
 
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Observer.hpp>
+
 #include <fwDataIO/reader/registry/macros.hpp>
 
 #include <fwMedData/Equipment.hpp>
@@ -21,7 +24,8 @@
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
-#include <fwVtkIO/helper/ProgressVtkToFw.hpp>
+
+#include <fwVtkIO/helper/vtkLambdaCommand.hpp>
 #include <fwVtkIO/vtk.hpp>
 
 #include <fwMemory/BufferObject.hpp>
@@ -86,7 +90,8 @@ const ::gdcm::Tag windowWidthTag(0x0028,0x1051);
 
 SeriesDBLazyReader::SeriesDBLazyReader(::fwDataIO::reader::IObjectReader::Key key) :
     ::fwData::location::enableFolder< IObjectReader >(this),
-    ::fwData::location::enableMultiFiles< IObjectReader >(this)
+    ::fwData::location::enableMultiFiles< IObjectReader >(this),
+    m_job(::fwJobs::Observer::New("SeriesDB reader"))
 {
     SLM_TRACE_FUNC();
 }
@@ -365,15 +370,33 @@ void SeriesDBLazyReader::preprocessImage(
 
     switch( scalarType )
     {
-        case ::gdcm::PixelFormat::UINT8: imgType   = ::fwTools::Type::s_UINT8; break;
-        case ::gdcm::PixelFormat::INT8: imgType    = ::fwTools::Type::s_INT8; break;
-        case ::gdcm::PixelFormat::UINT16: imgType  = ::fwTools::Type::s_UINT16; break;
-        case ::gdcm::PixelFormat::INT16: imgType   = ::fwTools::Type::s_INT16; break;
-        case ::gdcm::PixelFormat::UINT32: imgType  = ::fwTools::Type::s_UINT32; break;
-        case ::gdcm::PixelFormat::INT32: imgType   = ::fwTools::Type::s_INT32; break;
-        case ::gdcm::PixelFormat::FLOAT32: imgType = ::fwTools::Type::s_FLOAT; break;
-        case ::gdcm::PixelFormat::FLOAT64: imgType = ::fwTools::Type::s_DOUBLE; break;
-        default: SLM_FATAL("Type not managed"); break;
+        case ::gdcm::PixelFormat::UINT8:
+            imgType = ::fwTools::Type::s_UINT8;
+            break;
+        case ::gdcm::PixelFormat::INT8:
+            imgType = ::fwTools::Type::s_INT8;
+            break;
+        case ::gdcm::PixelFormat::UINT16:
+            imgType = ::fwTools::Type::s_UINT16;
+            break;
+        case ::gdcm::PixelFormat::INT16:
+            imgType = ::fwTools::Type::s_INT16;
+            break;
+        case ::gdcm::PixelFormat::UINT32:
+            imgType = ::fwTools::Type::s_UINT32;
+            break;
+        case ::gdcm::PixelFormat::INT32:
+            imgType = ::fwTools::Type::s_INT32;
+            break;
+        case ::gdcm::PixelFormat::FLOAT32:
+            imgType = ::fwTools::Type::s_FLOAT;
+            break;
+        case ::gdcm::PixelFormat::FLOAT64:
+            imgType = ::fwTools::Type::s_DOUBLE;
+            break;
+        default:
+            SLM_FATAL("Type not managed");
+            break;
     }
 
     // Number of component
@@ -387,8 +410,7 @@ void SeriesDBLazyReader::preprocessImage(
 
 //------------------------------------------------------------------------------
 
-SeriesDBLazyReader::SeriesFilesType
-sortImageSeriesFiles( const SeriesDBLazyReader::SeriesFilesType & seriesFiles )
+SeriesDBLazyReader::SeriesFilesType sortImageSeriesFiles( const SeriesDBLazyReader::SeriesFilesType & seriesFiles )
 {
     SeriesDBLazyReader::SeriesFilesType sortedSeriesFiles = seriesFiles;
 
@@ -562,6 +584,13 @@ void SeriesDBLazyReader::read()
         }
     }
     this->addSeries( seriesDB, filenames);
+}
+
+//------------------------------------------------------------------------------
+
+::fwJobs::IJob::sptr SeriesDBLazyReader::getJob() const
+{
+    return m_job;
 }
 
 } //namespace vtkGdcmIO

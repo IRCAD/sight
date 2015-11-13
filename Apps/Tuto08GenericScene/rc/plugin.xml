@@ -22,6 +22,9 @@
                 <view sid="multiView_scene1" start="yes" />
             </registry>
         </service>
+
+        <service uid="progress_statusbar" impl="::gui::editor::SJobBar" autoConnect="no" />
+
         <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
             <gui>
                 <layout>
@@ -225,7 +228,18 @@
             </object>
         </item>
 
+        <connect>
+            <signal>meshReader/jobCreated</signal>
+            <slot>progress_statusbar/showJob</slot>
+        </connect>
+
+        <connect>
+            <signal>imageReader/jobCreated</signal>
+            <slot>progress_statusbar/showJob</slot>
+        </connect>
+
         <start uid="MyIHM" />
+        <start uid="progress_statusbar" />
         <start uid="updaterImageUID" />
         <start uid="updaterMeshUID" />
         <start uid="manager" />

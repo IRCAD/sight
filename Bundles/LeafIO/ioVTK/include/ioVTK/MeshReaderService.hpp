@@ -7,16 +7,19 @@
 #ifndef __IOVTK_MESHREADERSERVICE_HPP__
 #define __IOVTK_MESHREADERSERVICE_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
+#include "ioVTK/config.hpp"
 
 #include <fwData/Mesh.hpp>
 
 #include <io/IReader.hpp>
 
+#include <boost/filesystem/path.hpp>
+#include <string>
 
-#include "ioVTK/config.hpp"
-
+namespace fwJobs
+{
+class IJob;
+}
 
 namespace ioVTK
 {
@@ -34,11 +37,16 @@ class IOVTK_CLASS_API MeshReaderService : public ::io::IReader
 {
 
 public:
-    ~MeshReaderService() throw()
+    virtual ~MeshReaderService() throw()
     {
     }
 
     fwCoreServiceClassDefinitionsMacro ( (MeshReaderService)( ::io::IReader) );
+
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+
+    /// Constructor
+    IOVTK_API MeshReaderService() throw();
 
     /**
      * @brief Configure the image path.
@@ -115,6 +123,8 @@ private:
      */
     ::boost::filesystem::path m_fsMeshPath;
 
+    /// Signal triggered when job created
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 };
 
 } // namespace ioVTK

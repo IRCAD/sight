@@ -4,7 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/algorithm/string.hpp>
+#include "ioVTK/ImageWriterService.hpp"
+#include "ioVTK/SImageSeriesWriter.hpp"
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
 
 #include <fwTools/Failed.hpp>
 
@@ -15,6 +19,10 @@
 #include <io/IWriter.hpp>
 
 #include <fwCore/base.hpp>
+
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
@@ -33,13 +41,21 @@
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
 
-#include "ioVTK/ImageWriterService.hpp"
-#include "ioVTK/SImageSeriesWriter.hpp"
+#include <boost/algorithm/string.hpp>
 
 namespace ioVTK
 {
 
 fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SImageSeriesWriter, ::fwMedData::ImageSeries );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
+//------------------------------------------------------------------------------
+
+SImageSeriesWriter::SImageSeriesWriter() throw()
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
 
 //------------------------------------------------------------------------------
 
@@ -117,7 +133,7 @@ void SImageSeriesWriter::updating() throw(::fwTools::Failed)
 
         try
         {
-            ImageWriterService::saveImage(this->getFile(), imageSeries->getImage());
+            ImageWriterService::saveImage(this->getFile(), imageSeries->getImage(), m_sigJobCreated);
         }
         catch(::fwTools::Failed& e)
         {

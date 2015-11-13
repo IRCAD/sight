@@ -7,17 +7,22 @@
 #ifndef __IOVTK_SIMAGESERIESWRITER_HPP__
 #define __IOVTK_SIMAGESERIESWRITER_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
+#include "ioVTK/config.hpp"
 
 #include <io/IWriter.hpp>
 
+#include <boost/filesystem/path.hpp>
+#include <string>
 
-#include "ioVTK/config.hpp"
 
 namespace fwData
 {
 class Image;
+}
+
+namespace fwJobs
+{
+class IJob;
 }
 
 
@@ -34,6 +39,14 @@ class IOVTK_CLASS_API SImageSeriesWriter : public ::io::IWriter
 {
 
 public:
+
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+
+    /**
+     * @brief Constructor. Do nothing.
+     */
+    IOVTK_API SImageSeriesWriter() throw();
+
     ~SImageSeriesWriter() throw()
     {
     }
@@ -91,6 +104,8 @@ private:
      * @brief Image path.
      */
     ::boost::filesystem::path m_fsImgPath;
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 
 };
 

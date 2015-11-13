@@ -16,6 +16,7 @@
 #include <QPushButton>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QDialog>
 
 fwGuiRegisterMacro( ::fwGuiQt::dialog::SelectorDialog, ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY );
 
