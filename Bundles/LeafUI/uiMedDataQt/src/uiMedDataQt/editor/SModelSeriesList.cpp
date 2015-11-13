@@ -128,17 +128,16 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SModelSeri
 
 const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_REC_DISPLAY_MODIFIED__SIG   = "recDisplayModified";
 const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_RECONSTRUCTION_SELECTED_SIG = "reconstructionSelected";
+const ::fwCom::Signals::SignalKeyType SModelSeriesList::s_EMPTIED_SELECTION_SIG       = "emptiedSelection";
 const ::fwCom::Slots::SlotKeyType SModelSeriesList::s_SHOW_RECONSTRUCTIONS_SLOT       = "showReconstructions";
 
 SModelSeriesList::SModelSeriesList() throw() : m_tree(new QTreeWidget()), m_enableHideAll(true)
 {
-    m_sigRecDisplayModified     = RecDisplayModifiedSignalType::New();
-    m_sigReconstructionSelected = ReconstructionSelectedSignalType::New();
-    m_signals(s_REC_DISPLAY_MODIFIED__SIG, m_sigRecDisplayModified)
-        (s_RECONSTRUCTION_SELECTED_SIG, m_sigReconstructionSelected);
-    m_slots(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeriesList::showReconstructions, this);
+    m_sigRecDisplayModified     = newSignal< RecDisplayModifiedSignalType >( s_REC_DISPLAY_MODIFIED__SIG );
+    m_sigReconstructionSelected = newSignal< ReconstructionSelectedSignalType >( s_RECONSTRUCTION_SELECTED_SIG );
+    m_sigEmptiedSelection       = newSignal< EmptiedSelectionSignalType >( s_EMPTIED_SELECTION_SIG );
 
-    m_slots.setWorker(m_associatedWorker);
+    newSlot(s_SHOW_RECONSTRUCTIONS_SLOT, &SModelSeriesList::showReconstructions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -317,6 +316,11 @@ void SModelSeriesList::fillTree()
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
     auto& reconstructions = modelSeries->getReconstructionDB();
 
+    if(!m_tree->selectedItems().empty())
+    {
+        m_sigEmptiedSelection->asyncEmit();
+    }
+
     m_tree->clear();
 
     // Create items
@@ -451,8 +455,6 @@ void SModelSeriesList::onUnCheckAllCheckBox()
 
 void SModelSeriesList::onCheckAllBoxes( bool visible )
 {
-
-
     for( int i = 0; i < m_tree->topLevelItemCount(); ++i )
     {
         QTreeWidgetItem *item = m_tree->topLevelItem( i );

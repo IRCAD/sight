@@ -117,6 +117,8 @@ protected:
     typedef ::fwCom::Signal< void (bool) > RecDisplayModifiedSignalType;
     static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTION_SELECTED_SIG;
     typedef ::fwCom::Signal< void (::fwData::Object::sptr) > ReconstructionSelectedSignalType;
+    static const ::fwCom::Signals::SignalKeyType s_EMPTIED_SELECTION_SIG;
+    typedef ::fwCom::Signal< void () > EmptiedSelectionSignalType;
     static const ::fwCom::Slots::SlotKeyType s_SHOW_RECONSTRUCTIONS_SLOT;
     typedef ::fwCom::Slot< void (bool) > ShowReconstructionsSlotType;
 
@@ -158,6 +160,9 @@ private:
 
     /// Signal emitted when a reconstruction is selected
     ReconstructionSelectedSignalType::sptr m_sigReconstructionSelected;
+
+    /// Signal emitted when we clean the list
+    EmptiedSelectionSignalType::sptr m_sigEmptiedSelection;
 
     /// Slot to show (or hide) reconstructions
     ShowReconstructionsSlotType::sptr m_slotShowReconstuctions;
