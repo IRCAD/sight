@@ -52,8 +52,8 @@ Negato::Negato() throw() :
     m_qimg(nullptr),
     m_pixmapItem(nullptr),
     m_layer(nullptr),
-    m_pointIsCaptured (false),
     m_orientation(MedicalImageAdaptor::Z_AXIS),
+    m_pointIsCaptured (false),
     m_changeSliceTypeAllowed(true)
 {
     this->installTFSlots(this);
@@ -122,66 +122,77 @@ void Negato::updateBufferFromImage( QImage * qimg )
     // Window min/max
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
     const double wlMin = tf->getWLMinMax().first;
-    const double wlMax = tf->getWLMinMax().second;
 
     // Window max
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     ::fwComEd::helper::Image imgHelper(image);
     const ::fwData::Image::SizeType size = image->getSize();
-    signed short * imgBuff               = (signed short *) imgHelper.getBuffer();
-    const double window                  = tf->getWindow();
+    const short * imgBuff                = static_cast<const short *>(imgHelper.getBuffer());
     const size_t imageZOffset            = size[0] * size[1];
 
     const double tfMin = tf->getMinMaxTFValues().first;
     const double tfMax = tf->getMinMaxTFValues().second;
+    const double tfWin = (1. / tf->getWindow()) * ((tfMax - tfMin) + tfMin);
 
+    ::std::uint8_t* pDest = qimg->bits();
 
     // Fill image according to current slice type:
     if( m_orientation == MedicalImageAdaptor::X_AXIS ) // sagittal
     {
+        const size_t sagitalIndex = static_cast<size_t>(m_sagittalIndex->value());
+
         for( size_t z = 0; z < size[2]; ++z)
         {
-            const size_t zOffset  = z * imageZOffset;
-            const int zPos        = static_cast<int>(size[2] - 1 - z);
-            const size_t zxOffset = zOffset + m_sagittalIndex->value();
+            const size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
+            const size_t zxOffset = zOffset + sagitalIndex;
 
-            for( size_t y = 0; y < size[1]; y++ )
+            for( size_t y = 0; y < size[1]; ++y )
             {
-                QRgb val = this->getQImageVal(zxOffset + y * size[0], imgBuff, wlMin, wlMax, window, tfMin, tfMax, tf);
-                qimg->setPixel(static_cast<int>(y), zPos, val);
+                const QRgb val = this->getQImageVal(zxOffset + y * size[0], imgBuff, wlMin, tfWin, tf);
+
+                *pDest++ = static_cast<std::uint8_t>(qRed(val));
+                *pDest++ = static_cast<std::uint8_t>(qGreen(val));
+                *pDest++ = static_cast<std::uint8_t>(qBlue(val));
             }
         }
     }
     else if( m_orientation == MedicalImageAdaptor::Y_AXIS ) // frontal
     {
-        const double yOffset = m_frontalIndex->value() * size[0];
+        const size_t frontalIndex = static_cast<size_t>(m_frontalIndex->value());
+        const size_t yOffset      = frontalIndex * size[0];
 
-        for( ::boost::int32_t z = 0; z < size[2]; ++z)
+        for( size_t z = 0; z < size[2]; ++z)
         {
-            const double zOffset  = z * imageZOffset;
-            const double zPos     = size[2] - 1 - z;
-            const double zyOffset = zOffset + yOffset;
+            const size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
+            const size_t zyOffset = zOffset + yOffset;
 
-            for( ::boost::int32_t x = 0; x < size[0]; x++ )
+            for( size_t x = 0; x < size[0]; ++x )
             {
-                QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, wlMax, window, tfMin, tfMax, tf);
-                qimg->setPixel(x, zPos, val);
+                const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
+
+                *pDest++ = static_cast<std::uint8_t>(qRed(val));
+                *pDest++ = static_cast<std::uint8_t>(qGreen(val));
+                *pDest++ = static_cast<std::uint8_t>(qBlue(val));
             }
         }
     }
     else if( m_orientation == MedicalImageAdaptor::Z_AXIS ) // axial
     {
-        const double zOffset = m_axialIndex->value() * imageZOffset;
+        const size_t axialIndex = static_cast<size_t>(m_axialIndex->value());
+        const size_t zOffset    = axialIndex * imageZOffset;
 
-        for( ::boost::int32_t y = 0; y < size[1]; y++ )
+        for( size_t y = 0; y < size[1]; ++y )
         {
-            const unsigned int yOffset  = static_cast<unsigned int>(y * size[0]);
-            const unsigned int zyOffset = zOffset + yOffset;
+            const size_t yOffset  = y * size[0];
+            const size_t zyOffset = zOffset + yOffset;
 
-            for( ::boost::int32_t x = 0; x < size[0]; x++ )
+            for( size_t x = 0; x < size[0]; ++x )
             {
-                QRgb val = this->getQImageVal(x + zyOffset, imgBuff, wlMin, wlMax, window, tfMin, tfMax, tf);
-                qimg->setPixel(x, y, val);
+                const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
+
+                *pDest++ = static_cast<std::uint8_t>(qRed(val));
+                *pDest++ = static_cast<std::uint8_t>(qGreen(val));
+                *pDest++ = static_cast<std::uint8_t>(qBlue(val));
             }
         }
     }
@@ -192,19 +203,17 @@ void Negato::updateBufferFromImage( QImage * qimg )
 
 //-----------------------------------------------------------------------------
 
-QRgb Negato::getQImageVal(
-    const size_t index, signed short* buffer, const double wlMin, const double wlMax, const double window,
-    const double tfMin, const double tfMax, ::fwData::TransferFunction::sptr tf)
+QRgb Negato::getQImageVal(const size_t index, const short* buffer, double wlMin, double tfWin,
+                          const fwData::TransferFunction::sptr& tf)
 {
-    signed short val16 = buffer[index];
+    const short val16 = buffer[index];
 
-    double value = (val16 - wlMin) / window;
-    value = value * (tfMax - tfMin) + tfMin;
+    double value = (val16 - wlMin) * tfWin;
 
-    ::fwData::TransferFunction::TFColor color = tf->getInterpolatedColor(value);
+    const ::fwData::TransferFunction::TFColor color = tf->getInterpolatedColor(value);
 
     // use QImage::Format_RGBA8888 in QImage if you need alpha value
-    return qRgb(color.r*255, color.g*255, color.b*255);
+    return qRgb(static_cast<int>(color.r*255), static_cast<int>(color.g*255), static_cast<int>(color.b*255));
 }
 
 //---------------------------------------------------------------------------

@@ -229,9 +229,12 @@ TransferFunction::TFColorVectorType TransferFunction::getTFColors() const
 TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value ) const
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
-    std::pair<double, double> minMax = ::fwTools::Type::s_DOUBLE.minMax<double>();
-    double previousValue             = minMax.first;
-    double nextValue                 = minMax.second;
+
+    double min = std::numeric_limits<double>::min();
+    double max = std::numeric_limits<double>::max();
+
+    double previousValue = min;
+    double nextValue     = max;
 
     TFColor blackColor(0.0, 0.0, 0.0, 0.0);
     TFColor color;
@@ -252,7 +255,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
             previousColor = data.second;
         }
     }
-    if(previousValue == minMax.first)
+    if(previousValue == min)
     {
         if(m_isClamped)
         {
@@ -263,7 +266,7 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
             color = nextColor;
         }
     }
-    else if(nextValue == minMax.second)
+    else if(nextValue == max)
     {
         if(m_isClamped && (value != previousValue))
         {
@@ -294,9 +297,11 @@ TransferFunction::TFColor TransferFunction::getNearestColor( TFValueType value )
 TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) const
 {
     OSLM_ASSERT("It must have at least one value.", m_tfData.size()>= 1);
-    std::pair<double, double> minMax = ::fwTools::Type::s_DOUBLE.minMax<double>();
-    double previousValue             = minMax.first;
-    double nextValue                 = minMax.second;
+
+    double min           = std::numeric_limits<double>::min();
+    double max           = std::numeric_limits<double>::max();
+    double previousValue = min;
+    double nextValue     = max;
 
     TFColor blackColor(0.0, 0.0, 0.0, 0.0);
     TFColor color;
@@ -317,7 +322,7 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
             previousColor = data.second;
         }
     }
-    if(previousValue == minMax.first)
+    if(previousValue == min)
     {
         if(m_isClamped)
         {
@@ -328,7 +333,7 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
             color = nextColor;
         }
     }
-    else if(nextValue == minMax.second)
+    else if(nextValue == max)
     {
         if(m_isClamped && (value != previousValue))
         {
@@ -342,33 +347,16 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
     else
     {
         // Interpolate the color.
-        double distanceToNextValue     = nextValue - value;
-        double distanceToPreviousValue = value - previousValue;
-        double distance                = nextValue - previousValue;
-        double coefPrevious            = 1.0 - (distanceToPreviousValue/distance);
-        double coefNext                = 1.0 - (distanceToNextValue/distance);
+        const double distanceToNextValue     = nextValue - value;
+        const double distanceToPreviousValue = value - previousValue;
+        const double distance                = 1.0 / (nextValue - previousValue);
+        const double coefPrevious            = 1.0 - (distanceToPreviousValue * distance);
+        const double coefNext                = 1.0 - (distanceToNextValue * distance);
 
         color.r = coefPrevious*previousColor.r + coefNext*nextColor.r;
         color.g = coefPrevious*previousColor.g + coefNext*nextColor.g;
         color.b = coefPrevious*previousColor.b + coefNext*nextColor.b;
         color.a = coefPrevious*previousColor.a + coefNext*nextColor.a;
-    }
-    return color;
-}
-
-//------------------------------------------------------------------------------
-
-TransferFunction::TFColor TransferFunction::getInterpolatedColor( TFValueType value ) const
-{
-    TFColor color;
-
-    if(m_interpolationMode == LINEAR)
-    {
-        color = this->getLinearColor(value);
-    }
-    else if(m_interpolationMode == NEAREST)
-    {
-        color = this->getNearestColor(value);
     }
     return color;
 }

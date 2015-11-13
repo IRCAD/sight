@@ -239,6 +239,23 @@ private:
 
 //-----------------------------------------------------------------------------
 
+inline TransferFunction::TFColor TransferFunction::getInterpolatedColor( TFValueType value ) const
+{
+    TFColor color;
+
+    if(m_interpolationMode == LINEAR)
+    {
+        color = this->getLinearColor(value);
+    }
+    else if(m_interpolationMode == NEAREST)
+    {
+        color = this->getNearestColor(value);
+    }
+    return color;
+}
+
+//-----------------------------------------------------------------------------
+
 inline TransferFunction::InterpolationMode TransferFunction::getInterpolationMode () const
 {
     return m_interpolationMode;
