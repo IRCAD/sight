@@ -6,7 +6,6 @@
 
 #include "fwRenderOgre/Utils.hpp"
 
-#include <fwCore/Profiling.hpp>
 #include <fwCore/spyLog.hpp>
 
 #include <fwComEd/helper/Image.hpp>
@@ -320,8 +319,6 @@ void Utils::destroyOgreRoot()
 
 void Utils::loadOgreTexture(const ::fwData::Image::sptr& image, ::Ogre::TexturePtr texture, ::Ogre::TextureType texType)
 {
-    FW_PROFILE("loadOgreTexture");
-
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
 
     if(imageIsValid)

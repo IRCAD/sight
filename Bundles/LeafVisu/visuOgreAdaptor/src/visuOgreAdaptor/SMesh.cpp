@@ -6,7 +6,7 @@
 
 #include "visuOgreAdaptor/SMesh.hpp"
 
-//#define FW_PROFILING_DISABLED
+#define FW_PROFILING_DISABLED
 
 #include <fwCore/Profiling.hpp>
 
@@ -786,9 +786,11 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
     float yMax = -std::numeric_limits<float>::max();
     float zMax = -std::numeric_limits<float>::max();
 
+    const unsigned int numPoints = mesh->getNumberOfPoints();
+
     {
         FW_PROFILE_AVG("UPDATE BBOX", 5);
-        for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+        for (unsigned int i = 0; i < numPoints; ++i)
         {
             const auto& pt0 = points[i][0];
             xMin = std::min(xMin, pt0);
@@ -806,7 +808,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
     {
         PointValueType* __restrict pPos = static_cast< PointValueType* >( pVertex );
         FW_PROFILE_AVG("UPDATE POS", 5);
-        for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+        for (unsigned int i = 0; i < numPoints; ++i)
         {
             memcpy(pPos, &points[i][0], 3 * sizeof(PointValueType) );
 
@@ -820,7 +822,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
         ::fwData::Mesh::PointNormalsMultiArrayType normals = meshHelper.getPointNormals();
         NormalValueType* __restrict pNormal = static_cast< NormalValueType* >( pVertex ) + 3;
 
-        for (unsigned int i = 0; i < mesh->getNumberOfPoints(); ++i)
+        for (unsigned int i = 0; i < numPoints; ++i)
         {
             memcpy(pNormal, &normals[i][0], 3 * sizeof(NormalValueType) );
             pNormal += uiStrideFloat;
@@ -1397,13 +1399,12 @@ void SMesh::attachNode(Ogre::MovableObject *_node)
 
 void SMesh::requestRender()
 {
-    ::fwRenderOgre::IAdaptor::requestRender();
-
     for(auto r2vbObject : m_r2vbObject)
     {
         r2vbObject->setDirty();
     }
 
+    ::fwRenderOgre::IAdaptor::requestRender();
 }
 
 //-----------------------------------------------------------------------------
