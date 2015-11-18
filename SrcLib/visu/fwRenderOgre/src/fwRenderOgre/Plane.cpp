@@ -39,9 +39,10 @@ static bool isNegatoPass(const std::string _name, bool& _peelPass)
 
 Plane::Plane( const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
               ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, bool _is3D,
-              ::Ogre::TexturePtr _tex, float _entityOpacity) :
+              ::Ogre::TexturePtr _tex, FilteringEnumType _filtering, float _entityOpacity) :
     m_is3D( _is3D ),
     m_threshold(false),
+    m_filtering( _filtering ),
     m_orientation( _orientation ),
     m_originPosition(0.f, 0.f, 0.f),
     m_texture( _tex ),
@@ -134,7 +135,24 @@ void Plane::initializeMaterial()
 
             ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
             texState->setTexture(m_texture);
-            texState->setTextureFiltering(::Ogre::TFO_NONE);
+
+            ::Ogre::FilterOptions filterType;
+            switch(m_filtering)
+            {
+                case FilteringEnumType::NONE:
+                    filterType = ::Ogre::FO_NONE;
+                    break;
+                case FilteringEnumType::LINEAR:
+                    filterType = ::Ogre::FO_LINEAR;
+                    break;
+                case FilteringEnumType::ANISOTROPIC:
+                    filterType = ::Ogre::FO_ANISOTROPIC;
+                    break;
+            }
+
+            // Sets the texture filtering in the current texture unit state according to the negato's interpolation flag
+            texState->setTextureFiltering(::Ogre::FT_MAG, filterType);
+
             texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
             pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientationIndex);

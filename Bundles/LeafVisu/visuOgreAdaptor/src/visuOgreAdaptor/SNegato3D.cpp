@@ -19,7 +19,6 @@
 #include <fwData/Integer.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/Plane.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
@@ -46,7 +45,7 @@ SNegato3D::SNegato3D() throw() :
     m_autoResetCamera(true),
     m_activePlane(nullptr),
     m_negatoSceneNode(nullptr),
-    m_interpolation(true)
+    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::LINEAR )
 {
     this->installTFSlots(this);
 
@@ -82,13 +81,13 @@ void SNegato3D::doStart() throw(::fwTools::Failed)
     // Instanciation of the planes
     m_planes[0] = new ::fwRenderOgre::Plane(this->getID(), m_negatoSceneNode,
                                             getSceneManager(),
-                                            OrientationMode::X_AXIS, true, m_3DOgreTexture);
+                                            OrientationMode::X_AXIS, true, m_3DOgreTexture, m_filtering);
     m_planes[1] = new ::fwRenderOgre::Plane(this->getID(), m_negatoSceneNode,
                                             getSceneManager(),
-                                            OrientationMode::Y_AXIS, true, m_3DOgreTexture);
+                                            OrientationMode::Y_AXIS, true, m_3DOgreTexture, m_filtering);
     m_planes[2] = new ::fwRenderOgre::Plane(this->getID(), m_negatoSceneNode,
                                             getSceneManager(),
-                                            OrientationMode::Z_AXIS, true, m_3DOgreTexture);
+                                            OrientationMode::Z_AXIS, true, m_3DOgreTexture, m_filtering);
 
     this->setPlanesOpacity();
 
@@ -161,10 +160,21 @@ void SNegato3D::doConfigure() throw(::fwTools::Failed)
     {
         this->setTransformUID(m_configuration->getAttributeValue("tranform"));
     }
-    if(m_configuration->hasAttribute("interpolation"))
+    if(m_configuration->hasAttribute("filtering"))
     {
-        // Whatever you specify, yes by default, needs explicit "no" to remove interpolation.
-        this->setInterpolation(!(m_configuration->getAttributeValue("interpolation") == "no"));
+        std::string filteringValue = m_configuration->getAttributeValue("filtering");
+        ::fwRenderOgre::Plane::FilteringEnumType filtering(::fwRenderOgre::Plane::FilteringEnumType::LINEAR);
+
+        if(filteringValue == "none")
+        {
+            filtering = ::fwRenderOgre::Plane::FilteringEnumType::NONE;
+        }
+        else if(filteringValue == "anisotropic")
+        {
+            filtering = ::fwRenderOgre::Plane::FilteringEnumType::ANISOTROPIC;
+        }
+
+        this->setFiltering(filtering);
     }
 
     this->parseTFConfig(m_configuration);

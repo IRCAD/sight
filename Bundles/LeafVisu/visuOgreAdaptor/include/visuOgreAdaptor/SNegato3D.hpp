@@ -9,6 +9,7 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
+#include <fwRenderOgre/Plane.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -18,11 +19,6 @@
 #include <fwData/Float.hpp>
 
 #include "visuOgreAdaptor/config.hpp"
-
-namespace fwRenderOgre
-{
-class Plane;
-}
 
 namespace visuOgreAdaptor
 {
@@ -45,8 +41,8 @@ public:
     VISUOGREADAPTOR_API SNegato3D() throw();
     /// Destructor. Does nothing.
     VISUOGREADAPTOR_API virtual ~SNegato3D() throw();
-    /// Sets interpolation on / off
-    VISUOGREADAPTOR_API void setInterpolation(bool _interpolation);
+    /// Sets the filtering type
+    VISUOGREADAPTOR_API void setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering );
 
     /**
      * @name Slots API
@@ -73,7 +69,7 @@ protected:
      * @verbatim
         <adaptor uid="SNegato3D" class="::visuOgreAdaptor::SNegato3D" objectId="image">
              <config renderer="default" picker="negatodefault" sliceIndex="axial"
-                     imageSource="imageKey" interpolation="off"
+                     imageSource="imageKey" filtering="none"
                      opacity="opacityFloatUID" />
         </adaptor>
        @endverbatim
@@ -81,7 +77,7 @@ protected:
      *      renderer.
      * - \b picker (optional): identifier of the picker
      * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
-     * - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
+     * - \b filtering (optional, none/linear/anisotropic, default=linear): texture filter type of the negato
      * - \b opacity (optional): opacity ::fwData::Float uid
      */
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
@@ -131,16 +127,16 @@ private:
     /// The scene node allowing to move the entire negato
     ::Ogre::SceneNode* m_negatoSceneNode;
 
-    /// Defines if interpolation is On or Off
-    bool m_interpolation;
+    /// Defines the filtering type for this negato
+    ::fwRenderOgre::Plane::FilteringEnumType m_filtering;
 };
 
 //------------------------------------------------------------------------------
 // Inline functions
 
-inline void SNegato3D::setInterpolation(bool _interpolation)
+inline void SNegato3D::setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering )
 {
-    m_interpolation = _interpolation;
+    m_filtering = _filtering;
 }
 
 //------------------------------------------------------------------------------

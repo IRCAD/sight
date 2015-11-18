@@ -38,9 +38,16 @@ public:
 
     typedef ::fwComEd::helper::MedicalImageAdaptor::Orientation OrientationMode;
 
+    typedef enum FilteringEnum
+    {
+        NONE,
+        LINEAR,
+        ANISOTROPIC
+    } FilteringEnumType;
+
     FWRENDEROGRE_API Plane(const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _parentSceneNode,
                            ::Ogre::SceneManager* _sceneManager, OrientationMode _orientation, bool _is3D,
-                           ::Ogre::TexturePtr _tex, float _entityOpacity = 1.0f);
+                           ::Ogre::TexturePtr _tex, FilteringEnumType _filtering, float _entityOpacity = 1.0f);
 
     FWRENDEROGRE_API virtual ~Plane();
 
@@ -83,6 +90,9 @@ private:
 
     /// Indicates whether whe want to threshold instead of windowing
     bool m_threshold;
+
+    /// Defines the filtering type for this plane
+    FilteringEnumType m_filtering;
 
     /// Orientation mode of the plane
     OrientationMode m_orientation;

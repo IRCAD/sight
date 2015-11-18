@@ -8,14 +8,11 @@
 #define __VISUOGREADAPTOR_SNEGATO2D_HPP__
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
+
 #include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/Plane.hpp>
 
 #include "visuOgreAdaptor/config.hpp"
-
-namespace fwRenderOgre
-{
-class Plane;
-}
 
 namespace visuOgreAdaptor
 {
@@ -37,8 +34,8 @@ public:
     VISUOGREADAPTOR_API SNegato2D() throw();
     /// Destructor.
     VISUOGREADAPTOR_API virtual ~SNegato2D() throw();
-    /// Sets the interpolation to true or false.
-    VISUOGREADAPTOR_API void setInterpolation(bool _interpolation);
+    /// Sets the filtering type
+    VISUOGREADAPTOR_API void setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering );
 
 protected:
     /// Instanciates the texture, material, pass and texture unit state
@@ -54,14 +51,14 @@ protected:
      * @verbatim
         <adaptor uid="SNegato2D" class="::visuOgreAdaptor::SNegato2D" objectId="image">
              <config renderer="default" picker="negatodefault" sliceIndex="axial"
-                     imageSource="imageKey" interpolation="yes" />
+                     imageSource="imageKey" filtering="none" />
         </adaptor>
        @endverbatim
      * - \b renderer (optional): defines the renderer to show the arrow. It must be different from the 3D objects
      *      renderer.
      * - \b picker (optional): identifier of the picker
      * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
-     * - \b interpolation (optional, yes/no, default=yes): needs explicit "no" to disable interpolation
+     * - \b filtering (optional, none/linear/anisotropic, default=linear): texture filter type of the negato
      */
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
     /// Performs stop, start and update.
@@ -105,8 +102,8 @@ private:
     /// The scene node allowing to move the entire negato
     ::Ogre::SceneNode* m_negatoSceneNode;
 
-    /// Defines if the pixels between those defined by the texture must be interpolated or not.
-    bool m_interpolation;
+    /// Defines the filtering type for this negato
+    ::fwRenderOgre::Plane::FilteringEnumType m_filtering;
 
     /// Stores the current slice index for each axis.
     std::vector<float> m_currentSliceIndex;
@@ -118,9 +115,9 @@ private:
 //------------------------------------------------------------------------------
 // Inline functions
 
-inline void SNegato2D::setInterpolation(bool _interpolation)
+inline void SNegato2D::setFiltering( ::fwRenderOgre::Plane::FilteringEnumType _filtering )
 {
-    m_interpolation = _interpolation;
+    m_filtering = _filtering;
 }
 
 //------------------------------------------------------------------------------

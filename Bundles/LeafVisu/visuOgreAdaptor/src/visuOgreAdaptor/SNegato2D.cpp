@@ -14,7 +14,6 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwRenderOgre/Plane.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/Base.hpp>
@@ -42,7 +41,7 @@ SNegato2D::SNegato2D() throw() :
     ::fwComEd::helper::MedicalImageAdaptor(),
     m_plane(nullptr),
     m_negatoSceneNode(nullptr),
-    m_interpolation(true)
+    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::LINEAR )
 {
     SLM_TRACE_FUNC();
 
@@ -80,7 +79,7 @@ void SNegato2D::doStart() throw(::fwTools::Failed)
 
     // Plane's instanciation
     m_plane = new ::fwRenderOgre::Plane(this->getID(), m_negatoSceneNode, getSceneManager(),
-                                        OrientationMode::X_AXIS, false, m_3DOgreTexture);
+                                        OrientationMode::X_AXIS, false, m_3DOgreTexture, m_filtering);
 
     this->getSceneManager()->getCamera("PlayerCam")->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
 
@@ -139,10 +138,21 @@ void SNegato2D::doConfigure() throw(::fwTools::Failed)
         m_orientation = OrientationMode::Z_AXIS;
     }
 
-    if(m_configuration->hasAttribute("interpolation"))
+    if(m_configuration->hasAttribute("filtering"))
     {
-        // Whatever you specify, yes by default, needs explicit "no" to remove interpolation.
-        this->setInterpolation(!(m_configuration->getAttributeValue("interpolation") == "no"));
+        std::string filteringValue = m_configuration->getAttributeValue("filtering");
+        ::fwRenderOgre::Plane::FilteringEnumType filtering(::fwRenderOgre::Plane::FilteringEnumType::LINEAR);
+
+        if(filteringValue == "none")
+        {
+            filtering = ::fwRenderOgre::Plane::FilteringEnumType::NONE;
+        }
+        else if(filteringValue == "anisotropic")
+        {
+            filtering = ::fwRenderOgre::Plane::FilteringEnumType::ANISOTROPIC;
+        }
+
+        this->setFiltering(filtering);
     }
 
     this->parseTFConfig(m_configuration);
