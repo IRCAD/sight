@@ -107,7 +107,8 @@ private:
      * @brief Configures the adaptor
      * @verbatim
        <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
-        <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" textureAdaptor="texAdaptorUID" />
+        <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
+                textureAdaptor="texAdaptorUID" />
        </adaptor>
        @endverbatim
      * With :
@@ -115,10 +116,11 @@ private:
      *  - \b transform (optional) : the transformation matrix to associate to the adaptor
      * Either of the following (whether a material is configured in the XML scene or not) :
      *  - \b materialAdaptor (optional) : the name of the associated material adaptor
+     * Only if there is no material adaptor configured in the XML scene (in this case, it has to retrieve the material
+     * template, the texture adaptor and the shading mode) :
      *  - \b materialTemplate (optional) : the name of the base Ogre material for the created SMaterial
-     * Only if there is no material adaptor configured in the XML scene (in this case, it has to retrieve the texture
-     * adaptor) :
      *  - \b textureAdaptor (optional) : the texture adaptor that the material will be listening to
+     *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
      */
     void doConfigure() throw(fwTools::Failed);
     /// Manually creates a Mesh in the Default Ogre Ressource group
@@ -229,6 +231,11 @@ private:
     bool m_isReconstructionManaged;
     /// Indicates if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured
     bool m_useNewMaterialAdaptor;
+
+    /// Indicates if a shading mode (flat/gouraud/phong) will be used on the associated material
+    bool m_useLighting;
+    /// The configured shading mode
+    ::fwData::Material::SHADING_MODE m_shadingMode;
 
     /// Node containing inputs for the r2vb objects - it will never be inserted in the scene
     ::Ogre::Entity* m_r2vbEntity;

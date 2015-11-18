@@ -136,22 +136,22 @@ void Plane::initializeMaterial()
             ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
             texState->setTexture(m_texture);
 
-            ::Ogre::FilterOptions filterType;
+            ::Ogre::TextureFilterOptions filterType;
             switch(m_filtering)
             {
                 case FilteringEnumType::NONE:
-                    filterType = ::Ogre::FO_NONE;
+                    filterType = ::Ogre::TFO_NONE;
                     break;
                 case FilteringEnumType::LINEAR:
-                    filterType = ::Ogre::FO_LINEAR;
+                    filterType = ::Ogre::TFO_BILINEAR;
                     break;
                 case FilteringEnumType::ANISOTROPIC:
-                    filterType = ::Ogre::FO_ANISOTROPIC;
+                    filterType = ::Ogre::TFO_ANISOTROPIC;
                     break;
             }
 
             // Sets the texture filtering in the current texture unit state according to the negato's interpolation flag
-            texState->setTextureFiltering(::Ogre::FT_MAG, filterType);
+            texState->setTextureFiltering(filterType);
 
             texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 

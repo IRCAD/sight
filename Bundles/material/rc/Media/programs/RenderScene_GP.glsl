@@ -17,9 +17,9 @@ in VertexDataIn
 {
     vec3 oNormal;
 
-#ifdef VT
+#ifdef VERTEX_COLOR
     vec4 oColor;
-#endif // VT
+#endif // VERTEX_COLOR
 
 #ifdef DIFFUSE_TEX
     vec2 oTexCoord;
@@ -29,9 +29,9 @@ in VertexDataIn
 
 out vec3 oPos;
 out vec3 oNormal;
-#if defined(VT) || defined(PER_PRIMITIVE_COLOR)
+#if defined(VERTEX_COLOR) || defined(PER_PRIMITIVE_COLOR)
 out uint oColour;
-#endif // VT
+#endif // VERTEX_COLOR
 #ifdef DIFFUSE_TEX
 out vec2 oUv0;
 #endif // DIFFUSE_TEX
@@ -52,7 +52,7 @@ void emit(int index)
     oUv0 = vertexIn[index].oTexCoord;
 #endif // DIFFUSE_TEX
 
-#ifdef VT
+#ifdef VERTEX_COLOR
     vec4 color;
     color = vertexIn[index].oColor;
 #   ifdef PER_PRIMITIVE_COLOR
@@ -63,7 +63,7 @@ void emit(int index)
 #   ifdef PER_PRIMITIVE_COLOR
     oColour = packUnorm4x8(ppcolor);
 #   endif // PER_PRIMITIVE_COLOR
-#endif // VT
+#endif // VERTEX_COLOR
 
     EmitVertex();
 }

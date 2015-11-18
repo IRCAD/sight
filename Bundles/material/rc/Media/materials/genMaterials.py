@@ -80,6 +80,8 @@ dpTexParams = ['param_named u_texture int 1']
 ddpTexParams = ['param_named u_texture int 4']
 htwbTexParams = ['param_named u_texture int 2']
 
+texAlphaParams = ['param_named u_useTextureAlpha int 0']
+
 ## Parameters used for Negato.glsl
 negatoParams = [ 'param_named u_minValue float 0.0',
                  'param_named u_maxValue float 1.0',
@@ -92,6 +94,13 @@ diffuseColorParams = ['param_named_auto u_diffuse surface_diffuse_colour']
 ## Per primitive color
 ppColorParams = ['param_named u_colorPrimitiveTexture int 10',
                  'param_named u_colorPrimitiveTextureSize float2 0 0']
+
+cfgNone = ['None', 'NONE=1', '', '', '', {  'renderSceneVP' : [],
+                                            'defaultFP' : [],
+                                            'depthPeelingFP' : [],
+                                            'dualDepthPeelingFP' : [],
+                                            'HT_weight_blendFP' : [],
+                                            'weighted_blendFP' : [] } ]
 
 cfgFlat = ['Flat', 'FLAT=1', 'Lighting_VP', '', '', {  'renderSceneVP' : lightingParams,
                                                        'defaultFP' : [],
@@ -134,11 +143,11 @@ cfgVertexColor = ['VT', 'VERTEX_COLOR=1', '', '', '', { 'renderSceneVP' : [],
                                                         'weighted_blendFP' : [] } ]
 
 cfgDiffuseTex = ['DfsTex', 'DIFFUSE_TEX=1', '', '', '', { 'renderSceneVP' : [],
-                                                          'defaultFP' : texParams,
-                                                          'depthPeelingFP' : dpTexParams,
-                                                          'dualDepthPeelingFP' : ddpTexParams,
-                                                          'HT_weight_blendFP' : htwbTexParams,
-                                                          'weighted_blendFP' : dpTexParams } ]
+                                                          'defaultFP' : texParams + texAlphaParams,
+                                                          'depthPeelingFP' : dpTexParams + texAlphaParams,
+                                                          'dualDepthPeelingFP' : ddpTexParams + texAlphaParams,
+                                                          'HT_weight_blendFP' : htwbTexParams + texAlphaParams,
+                                                          'weighted_blendFP' : dpTexParams + texAlphaParams } ]
 
 cfgTriangles = ['Triangles', 'TRIANGLES=1', '', '', '', { 'renderSceneGP' : [], } ]
 cfgQuad = ['Quad', 'QUAD=1', '', '', '1', { 'renderSceneGP' : [], } ]
@@ -150,6 +159,7 @@ cfgPerPrimitiveColor = ['PPColor', 'PER_PRIMITIVE_COLOR=1', '', '', '', { 'rende
 ## Basis are the different lighting techniques, and optional are vertex color and diffuse texture
 configsListVP = []
 
+configsListVP += generatePermutations(cfgNone, cfgVertexColor, cfgDiffuseTex)
 configsListVP += generatePermutations(cfgFlat, cfgVertexColor, cfgDiffuseTex)
 configsListVP += generatePermutations(cfgGouraud, cfgVertexColor, cfgDiffuseTex)
 configsListVP += generatePermutations(cfgPixelLit, cfgVertexColor, cfgDiffuseTex)
@@ -158,6 +168,7 @@ configsListVP += generatePermutations(cfgPixelLit, cfgVertexColor, cfgDiffuseTex
 ## Base are the different lighting techniques, and optional are vertex color and diffuse texture
 configsListFP = []
 
+configsListFP += generatePermutations(cfgNone, cfgVertexColor, cfgDiffuseTex)
 configsListFP += generatePermutations(cfgFlat, cfgVertexColor, cfgDiffuseTex)
 configsListFP += generatePermutations(cfgGouraud, cfgVertexColor, cfgDiffuseTex)
 configsListFP += generatePermutations(cfgPixelLit, cfgVertexColor, cfgDiffuseTex)

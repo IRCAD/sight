@@ -51,6 +51,9 @@ public:
     VISUOGREADAPTOR_API std::string getTextureName() const;
     VISUOGREADAPTOR_API void setTextureName(std::string texName);
 
+    VISUOGREADAPTOR_API bool getUseAlpha() const;
+    VISUOGREADAPTOR_API void setUseAlpha(bool _useAlpha);
+
 protected:
 
     /// Creates the managed Ogre texture
@@ -60,13 +63,14 @@ protected:
      * @brief Configure the adaptor.
      * @verbatim
        <adaptor id="texAdaptor" class="::visuOgreAdaptor::STexture" objectId="imageKey" >
-        <config textureName="texName" filtering="linear" wrapping="repeat" />
+        <config textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
        </adaptor>
        @endverbatim
      * With :
      *  - \b textureName (optional) : the name of the ogre texture managed by the adaptor
-     *  - \b filtering (optional) : filtering of the texture, "nearest" or "linear"
-     *  - \b wrapping (optional) : wrapping of the texture, "clamp" or "repeat"
+     *  - \b filtering (optional nearest/linear, default=linear) : filtering of the texture
+     *  - \b wrapping (optional, clamp/repeat, default=repeat) : wrapping of the texture
+     *  - \b useAlpha (optional, true/false, default=true) : whether or not the texture has variable alpha
      */
     VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
@@ -95,11 +99,8 @@ private:
     /// How to wrap the texture
     std::string m_wrapping;
 
-    /// Store previous image size
-    size_t m_previousWidth;
-
-    /// Store previous image spacing
-    size_t m_previousHeight;
+    /// Used as a flag to know if we have to use 1.0 as the alpha value (no transparency) or another value
+    bool m_useAlpha;
 
     /// Signal emitted when the texture has to be changed on the associated material
     TextureSwappedSignalType::sptr m_sigTextureSwapped;
@@ -125,6 +126,20 @@ inline std::string STexture::getTextureName() const
 inline void STexture::setTextureName(std::string texName)
 {
     m_textureName = texName;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool STexture::getUseAlpha() const
+{
+    return m_useAlpha;
+}
+
+//------------------------------------------------------------------------------
+
+inline void STexture::setUseAlpha(bool _useAlpha)
+{
+    m_useAlpha = _useAlpha;
 }
 
 //------------------------------------------------------------------------------

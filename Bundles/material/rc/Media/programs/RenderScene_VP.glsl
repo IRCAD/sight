@@ -19,29 +19,41 @@ out VertexDataOut
 {
 #ifdef R2VB
     vec3 oNormal;
-#endif
+
+#   ifdef VERTEX_COLOR
+    vec4 oColor;
+#   endif // VERTEX_COLOR
+
+#else
     #ifdef PIXEL_LIT
     vec3 oPosition_WS;
     vec3 oNormal_WS;
     vec4 oColor;
+
     #else
+
     #   ifdef FLAT
     flat vec4 oColor;
     #   else
     vec4 oColor;
     #   endif // FLAT
 
-    #ifdef CEL_SHADING
+    #   ifdef CEL_SHADING
     vec3 normal_VS;
-    #endif
+    #   endif // CEL_SHADING
+
     #endif // PIXEL_LIT
 
-#ifdef DIFFUSE_TEX
+#endif // R2VB
+
+    #ifdef DIFFUSE_TEX
     vec2 oTexCoord;
-#endif // DIFFUSE_TEX
+    #endif // DIFFUSE_TEX
 } vertexOut;
 
+#ifndef NONE
 vec4 lighting(vec3 _normal, vec3 _position);
+#endif // NONE
 
 void main(void)
 {
@@ -80,9 +92,13 @@ void main(void)
 #       endif // VERTEX_COLOR
 
 #   else
+#       ifdef NONE
+    vertexOut.oColor = vec4(1.,1.,1.,1.);
+#       else
     vec3 position_WS = (u_world * position).xyz;
     vec3 normal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
     vertexOut.oColor = lighting(normal_WS, position_WS);
+#       endif // NONE
 
 #       ifdef VERTEX_COLOR
     vertexOut.oColor *= colour;

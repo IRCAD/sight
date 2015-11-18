@@ -38,8 +38,7 @@ STexture::STexture() throw() :
     m_textureName(""),
     m_filtering("linear"),
     m_wrapping("repeat"),
-    m_previousWidth(0),
-    m_previousHeight(0)
+    m_useAlpha(true)
 {
     m_sigTextureSwapped = newSignal< TextureSwappedSignalType >( s_TEXTURE_SWAPPED_SIG );
 }
@@ -71,6 +70,12 @@ void STexture::doConfigure() throw(fwTools::Failed)
     {
         m_wrapping = m_configuration->getAttributeValue("wrapping");
     }
+
+    if ( m_configuration->hasAttribute( "useAlpha" ) )
+    {
+        bool useAlpha = (m_configuration->getAttributeValue("useAlpha") == "true");
+        m_useAlpha = useAlpha;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -98,23 +103,12 @@ void STexture::doUpdate() throw(fwTools::Failed)
     {
         ::fwData::mt::ObjectReadLock lock(imageF4s);
 
-        ::fwData::Image::SizeType imageSize = imageF4s->getSize();
-        size_t width  = imageSize[0];
-        size_t height = (imageSize.size() >= 2) ? imageSize[1] : 0;
-
-        // Check if the image is the same as before
-        if ( width != m_previousWidth || height != m_previousHeight )
-        {
-            // Loads the new image
-            ::fwRenderOgre::Utils::loadOgreTexture(imageF4s, m_texture, ::Ogre::TEX_TYPE_2D);
-
-            m_sigTextureSwapped->asyncEmit();
-
-            m_previousWidth  = width;
-            m_previousHeight = height;
-        }
-
+        // Loads the new image
+        ::fwRenderOgre::Utils::loadOgreTexture(imageF4s, m_texture, ::Ogre::TEX_TYPE_2D);
         lock.unlock();
+
+        m_sigTextureSwapped->asyncEmit();
+
     }
 }
 

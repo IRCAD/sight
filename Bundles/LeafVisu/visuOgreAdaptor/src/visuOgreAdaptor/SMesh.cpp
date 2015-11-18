@@ -112,6 +112,8 @@ SMesh::SMesh() throw() :
     m_hasUV(false),
     m_isReconstructionManaged(false),
     m_useNewMaterialAdaptor(false),
+    m_useLighting(true),
+    m_shadingMode(::fwData::Material::SHADING_MODE::MODE_PHONG),
     m_r2vbEntity(nullptr),
     m_uiPrevNumCells(0)
 {
@@ -171,15 +173,45 @@ void SMesh::doConfigure() throw(fwTools::Failed)
     {
         m_materialAdaptorUID = m_configuration->getAttributeValue("materialAdaptor");
     }
-    else if ( m_configuration->hasAttribute("materialTemplate"))
+    else
     {
         // An existing Ogre material will be used for this mesh
-        m_materialTemplateName = m_configuration->getAttributeValue("materialTemplate");
+        if( m_configuration->hasAttribute("materialTemplate"))
+        {
+            m_materialTemplateName = m_configuration->getAttributeValue("materialTemplate");
+        }
 
         // The mesh adaptor will pass the texture adaptor to the created material adaptor
         if ( m_configuration->hasAttribute("textureAdaptor"))
         {
             m_texAdaptorUID = m_configuration->getAttributeValue("textureAdaptor");
+        }
+
+        if( m_configuration->hasAttribute("shadingMode"))
+        {
+            std::string shadingMode = m_configuration->getAttributeValue("shadingMode");
+
+            //TODO: Remove the flag "m_useShadingMode" and include the "MODE_NONE" as soon as it exists in
+            // ::fwData::Material::SHADING_MODE
+            if(shadingMode != "none")
+            {
+                if(shadingMode == "flat")
+                {
+                    m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_FLAT;
+                }
+                else if(shadingMode == "gouraud")
+                {
+                    m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_GOURAUD;
+                }
+                else
+                {
+                    m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_PHONG;
+                }
+            }
+            else
+            {
+                m_useLighting = false;
+            }
         }
     }
 
@@ -681,6 +713,9 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbMtlAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
                 r2vbMtlAdaptor->setTextureAdaptor(m_texAdaptorUID);
 
+                r2vbMtlAdaptor->setUseLighting(m_useLighting);
+                r2vbMtlAdaptor->setShadingMode(m_shadingMode);
+
                 r2vbMtlAdaptor->start();
                 r2vbMtlAdaptor->update();
 
@@ -1175,12 +1210,15 @@ void SMesh::updateNewMaterialAdaptor()
             m_materialAdaptor->setHasMeshNormal(m_hasNormal);
             m_materialAdaptor->setHasVertexColor(m_hasVertexColor);
 
-            m_materialAdaptor->start();
-
             if (!m_texAdaptorUID.empty())
             {
                 m_materialAdaptor->setTextureAdaptor(m_texAdaptorUID);
             }
+
+            m_materialAdaptor->setUseLighting(m_useLighting);
+            m_materialAdaptor->setShadingMode(m_shadingMode);
+
+            m_materialAdaptor->start();
 
             m_materialAdaptor->update();
             this->registerService(m_materialAdaptor);

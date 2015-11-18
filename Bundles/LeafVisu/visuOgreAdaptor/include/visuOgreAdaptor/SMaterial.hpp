@@ -95,6 +95,12 @@ public:
     /// Tells if there is a texture currently bound
     bool hasDiffuseTexture() const;
 
+    VISUOGREADAPTOR_API bool getUseLighting() const;
+    VISUOGREADAPTOR_API void setUseLighting(bool _useLighting);
+
+    VISUOGREADAPTOR_API ::fwData::Material::SHADING_MODE getShadingMode() const;
+    VISUOGREADAPTOR_API void setShadingMode(::fwData::Material::SHADING_MODE _shadingMode);
+
     /// Update fwData material parameters from Ogre material parameters
     VISUOGREADAPTOR_API void updateFromOgre();
 
@@ -107,13 +113,15 @@ protected:
      * @brief Configures the adaptor
      * @verbatim
        <adaptor id="materialAdaptor" class="::visuOgreAdaptor::SMaterial" objectId="materialKey">
-        <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureAdaptor="texAdaptorUID" />
+        <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureAdaptor="texAdaptorUID"
+                shadingMode="gouraud" />
        </adaptor>
        @endverbatim
      * With :
      *  - \b materialTemplate (mandatory) : name of the base Ogre material
      *  - \b materialName (optional) : name of the managed Ogre material
      *  - \b textureAdaptor (optional) : the texture adaptor listened by the material
+     *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
      */
     VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
@@ -156,8 +164,8 @@ private:
                                      std::string paramName,
                                      std::string shaderType);
 
-    /// Update material shading mode (gourand/phong/flat) in fixed function pipeline
-    void setShadingMode( int shadingMode );
+    /// Update material shading mode (flat/gouraud/phong) in fixed function pipeline
+    void updateShadingMode( int shadingMode );
 
     /// Update material color in fixed function pipeline
     void updateRGBAMode( ::fwData::Material::sptr fw_material );
@@ -168,7 +176,7 @@ private:
     void createTextureAdaptor();
 
     /// Slot called to remove the texture adaptor when the texture is removed from the material
-    void removeTextureAdaptor(::fwData::Image::sptr texture);
+    void removeTextureAdaptor();
 
     /// Checks support of technique's schemes
     void updateSchemeSupport();
@@ -205,6 +213,11 @@ private:
 
     /// Signal/Slot connections with texture adaptor
     ::fwServices::helper::SigSlotConnection::sptr m_textureConnection;
+
+    /// Indicates if a shading mode (flat/gouraud/phong) will be used on the associated material
+    bool m_useLighting;
+    /// The configured shading mode
+    ::fwData::Material::SHADING_MODE m_shadingMode;
 };
 
 //------------------------------------------------------------------------------
@@ -286,6 +299,34 @@ inline std::string SMaterial::getMaterialName() const
 inline bool SMaterial::hasDiffuseTexture() const
 {
     return (m_texAdaptor && !m_texAdaptor->getTexture().isNull());
+}
+
+//------------------------------------------------------------------------------
+
+inline bool SMaterial::getUseLighting() const
+{
+    return m_useLighting;
+}
+
+//------------------------------------------------------------------------------
+
+inline void SMaterial::setUseLighting(bool _useLighting)
+{
+    m_useLighting = _useLighting;
+}
+
+//------------------------------------------------------------------------------
+
+inline ::fwData::Material::SHADING_MODE SMaterial::getShadingMode() const
+{
+    return m_shadingMode;
+}
+
+//------------------------------------------------------------------------------
+
+inline void SMaterial::setShadingMode(::fwData::Material::SHADING_MODE _shadingMode)
+{
+    m_shadingMode = _shadingMode;
 }
 
 //------------------------------------------------------------------------------

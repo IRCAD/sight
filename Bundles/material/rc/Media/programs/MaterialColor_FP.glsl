@@ -1,5 +1,9 @@
 #version 150
 
+#ifdef DIFFUSE_TEX
+uniform int u_useTextureAlpha;
+#endif // DIFFUSE_TEX
+
 #ifdef NEGATO
 
 vec4 negato();
@@ -34,7 +38,6 @@ in PixelDataIn
 
 } pixelIn;
 
-
 #endif // NEGATO
 
 #ifdef DIFFUSE_TEX
@@ -53,10 +56,18 @@ vec4 getMaterialColor()
         vec4 colorOut = pixelIn.oColor;
 #   endif
 
-#ifdef DIFFUSE_TEX
-        colorOut *= texture(u_texture, pixelIn.oTexCoord);
-#endif // DIFFUSE_TEX
+#   ifdef DIFFUSE_TEX
+        vec4 colorTex = texture(u_texture, pixelIn.oTexCoord);
+
+        if(u_useTextureAlpha == 0)
+        {
+            colorTex.a = 1.0;
+        }
+
+        colorOut *= colorTex;
+#   endif // DIFFUSE_TEX
 
 #endif // NEGATO
+
     return colorOut;
 }
