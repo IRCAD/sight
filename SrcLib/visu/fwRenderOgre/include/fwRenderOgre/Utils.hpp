@@ -75,6 +75,14 @@ public:
     FWRENDEROGRE_API static void loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::TexturePtr _texture,
                                                  ::Ogre::TextureType _texType);
 
+    /**
+     * @brief convertImageForNegato
+     * @param _texture The target texture
+     * @param _image The FW4SPL Image to convert
+     * @return
+     */
+    FWRENDEROGRE_API static void convertImageForNegato(::Ogre::Texture* _texture,const ::fwData::Image::sptr& _image );
+
     FWRENDEROGRE_API static ::Ogre::OverlaySystem* getOverlaySystem();
 
 private:

@@ -244,7 +244,7 @@ void Utils::destroyOgreRoot()
         else if(pixelType == "signed short")
         {
             // int16
-            return ::Ogre::PF_R16_SINT;
+            return ::Ogre::PF_L16;
         }
     }
 
@@ -341,6 +341,65 @@ void Utils::loadOgreTexture(const ::fwData::Image::sptr& image, ::Ogre::TextureP
 
         // Copy image's pixel box into texture buffer
         texture->getBuffer(0,0)->blitFromMemory(ogreImage.getPixelBox(0,0));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image )
+{
+    auto srcType = _image->getType();
+
+    if(srcType == ::fwTools::Type::s_INT16)
+    {
+        if( _texture->getWidth()  != _image->getSize()[0] ||
+            _texture->getHeight() != _image->getSize()[1] ||
+            _texture->getDepth()  != _image->getSize()[2]    )
+        {
+            _texture->freeInternalResources();
+
+            _texture->setWidth(static_cast< ::Ogre::uint32>(_image->getSize()[0]));
+            _texture->setHeight(static_cast< ::Ogre::uint32>(_image->getSize()[1]));
+            _texture->setDepth(static_cast< ::Ogre::uint32>(_image->getSize()[2]));
+            _texture->setTextureType(::Ogre::TEX_TYPE_3D);
+            _texture->setNumMipmaps(0);
+            _texture->setFormat(::Ogre::PF_L16);
+            _texture->setUsage(::Ogre::TU_STATIC_WRITE_ONLY);
+
+            _texture->createInternalResources();
+        }
+
+        // Get the pixel buffer
+        ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
+
+        // Lock the pixel buffer and copy it
+        {
+            ::fwComEd::helper::Image srcImageHelper(_image);
+
+            const std::int16_t* __restrict srcBuffer = static_cast< const std::int16_t* >(srcImageHelper.getBuffer());
+            const ::Ogre::uint32 size                = _texture->getWidth() * _texture->getHeight() *
+                                                       _texture->getDepth();
+
+            pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
+
+            const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
+
+            std::uint16_t* __restrict pDest = static_cast<std::uint16_t*>(pixelBox.data);
+
+            const std::int16_t lowBound = std::numeric_limits< std::int16_t >::min();
+
+            for(::Ogre::uint32 i = 0; i < size; ++i)
+            {
+                *pDest++ = static_cast<std::uint16_t>(*srcBuffer++ - lowBound);
+            }
+
+            // Unlock the pixel buffer
+            pixelBuffer->unlock();
+        }
+    }
+    else
+    {
+        SLM_FATAL("Image format not supported.");
     }
 }
 
