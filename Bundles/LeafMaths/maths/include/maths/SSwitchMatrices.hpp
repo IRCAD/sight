@@ -22,7 +22,11 @@ namespace maths
 {
 
 /**
- * @brief   This service switch between several matrices
+ * @brief   This service switch between several matrices.
+ *
+ * Each time the slot s_SWITCH_SLOT is called the next matrix given in the configuration is copied on the matrix bound
+ * to the service. Is is also possible to give the index of the matrix to use with the slot s_SWITCH_TO_SLOT.
+ *
  * @class   SSwitchMatrices
  */
 class MATHS_CLASS_API SSwitchMatrices : public ::fwServices::IController
@@ -48,14 +52,14 @@ public:
     typedef ::fwCom::Slot< void () > SwitchSlotType;
 
     MATHS_API static const ::fwCom::Slots::SlotKeyType s_SWITCH_TO_SLOT;
-    typedef ::fwCom::Slot<void (int)> SwitchToSlotType;
+    typedef ::fwCom::Slot<void (size_t)> SwitchToSlotType;
 
 protected:
     /**
      * @brief This method is used to configure the service.
      *
      * @verbatim
-       <service impl="::maths::SConcatenateMatrices" type="::fwServices::IController">
+       <service impl="::maths::SSwitchMatrices" type="::fwServices::IController">
            <matrix>matrix1Uid</matrix>
            <matrix>matrix2Uid</matrix>
        </service>
@@ -77,12 +81,11 @@ protected:
     /// Does nothing.
     MATHS_API void updating() throw (fwTools::Failed);
 
-    ///Switch to next Matrix
+    /// Switch to next Matrix
     MATHS_API void switchMatrix() throw (fwTools::Failed);
 
-    ///Switch to Matrix "index"
-    MATHS_API void switchToMatrix(int index) throw (fwTools::Failed);
-
+    /// Switch to Matrix "index"
+    MATHS_API void switchToMatrix(size_t index) throw (fwTools::Failed);
 
 
 private:
@@ -92,8 +95,6 @@ private:
         ::fwData::TransformationMatrix3D::sptr m_matrix;
         std::string m_uid;
     };
-
-    ::fwData::TransformationMatrix3D::sptr m_OuputMatrix;
 
     typedef std::vector< TransformMatrix > MatrixVectorType;
 
