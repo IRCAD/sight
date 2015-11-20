@@ -125,7 +125,7 @@ void PatchTest::arPatchMedicalDataTest()
     //<patcher context="..." version="..." />
     ::fwRuntime::EConfigurationElement::sptr patcherCfg = ::fwRuntime::EConfigurationElement::New("patcher");
     patcherCfg->setAttributeValue("context","MedicalData");
-    patcherCfg->setAttributeValue("version","V09AR");
+    patcherCfg->setAttributeValue("version","V10AR");
     srvCfg->addConfigurationElement(patcherCfg);
 
     ::fwMedData::SeriesDB::sptr sdb = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader" );
