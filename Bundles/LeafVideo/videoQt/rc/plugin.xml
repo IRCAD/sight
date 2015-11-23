@@ -2,7 +2,6 @@
     
     <library name="videoQt" />
 
-    <requirement id="visu" />
        
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>

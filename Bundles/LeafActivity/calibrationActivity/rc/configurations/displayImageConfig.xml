@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>displayImageConfig</id>
-    <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" />
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
@@ -11,7 +10,7 @@
 
         <!-- <object uid="${imageUid}" src="ref" type="::fwData::Image"> -->
         <object uid="${GENERIC_UID}_composite" type="::fwData::Composite">
-            <service uid="${GENERIC_UID}_BasicViewerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="${GENERIC_UID}_BasicViewerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <window onclose="notify" />
                 <gui>
                     <frame>

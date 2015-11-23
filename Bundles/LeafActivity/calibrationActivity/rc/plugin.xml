@@ -1,7 +1,5 @@
 <plugin id="calibrationActivity" version="@DASH_VERSION@" >
 
-    <library name="calibrationActivity" />
-
     <requirement id="gui" />
     <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKARAdaptor" />

@@ -11,7 +11,6 @@ set( REQUIREMENTS
     gui
     guiQt
     servicesReg
-    visu
     launcher
     appXml
     visuVTK

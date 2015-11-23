@@ -1,5 +1,14 @@
-<plugin id="ARCalibration" version="@DASH_VERSION@" >
+<plugin id="ARCalibration" version="@DASH_VERSION@">
 
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="extDataReg" />
+    <requirement id="arDataReg" />
+    <requirement id="patchMedicalData" />
+    <requirement id="arPatchMedicalData" />
+    <requirement id="memory" />
+    <requirement id="preferences" />
+    
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
@@ -13,24 +22,23 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExportSelection</id>
-        <type>parameters</type>
         <parameters>
             <param name="selection" />
         </parameters>
         <config>
             <object uid="${selection}" src="ref">
-                <service uid="export_selection" impl="::uiIO::editor::IOSelectorService" autoConnect="yes">
+                <service uid="export_selection" impl="::uiIO::editor::SIOSelector" autoConnect="yes">
                     <type mode="writer" />
-                     <selection mode="include" /> 
-                     <addSelection service="::ioAtoms::SWriter" /> 
-                     <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
-                 </service>
+                    <selection mode="include" />
+                    <addSelection service="::ioAtoms::SWriter" />
+                    <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
+                </service>
                 <start uid="export_selection" />
                 <update uid="export_selection" />
             </object>
         </config>
     </extension>
-    
+
     <extension implements="::fwActivities::registry::Activities">
         <id>CameraSeriesExport</id>
         <title>CameraSeries Export</title>
@@ -49,7 +57,7 @@
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>SDBOpenIOSelectorConfig</id>
-        <service>::uiIO::editor::IOSelectorService</service>
+        <service>::uiIO::editor::SIOSelector</service>
         <desc>"Open" action's IOSelector config</desc>
         <config>
             <type mode="reader" />
@@ -63,8 +71,8 @@
         <id>MDAtomsConfig</id>
         <desc>reader/writer config to read/write an atom representing a medical data</desc>
         <config>
-            <patcher context="MedicalData" version="V09AR" /> 
-         </config>
-     </extension>
+            <patcher context="MedicalData" version="V09AR" />
+        </config>
+    </extension>
 
 </plugin>

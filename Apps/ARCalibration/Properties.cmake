@@ -23,7 +23,6 @@ set( REQUIREMENTS
     media
     mediaExt
     arMedia
-    visu
     visuVTK
     visuVTKQt
     videoQt

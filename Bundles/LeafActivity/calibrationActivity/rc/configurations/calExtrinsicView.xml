@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>calExtrinsicView</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
@@ -18,7 +17,7 @@
     <config>
 
         <object type="::fwData::Composite">
-            <service uid="${GENERIC_UID}_extrinsicView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_extrinsicView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view align="center" />
@@ -28,9 +27,9 @@
                     <parent wid="${WID_PARENT}" />
                     <view sid="${GENERIC_UID}_extrinsicCameraView" start="yes" />
                 </registry>
-            </service>            
-            
-            <service uid="${GENERIC_UID}_extrinsicCameraView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            </service>
+
+            <service uid="${GENERIC_UID}_extrinsicCameraView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view align="center" />
@@ -46,8 +45,8 @@
                     <view sid="${GENERIC_UID}_cameraInfoView" start="yes" />
                 </registry>
             </service>
-            
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Start camera" icon="Bundles/arMedia_0-1/icons/start-cam.svg" />
@@ -63,8 +62,8 @@
                     <menuItem sid="${GENERIC_UID}_LoopVideo" start="yes" />
                 </registry>
             </service>
-            
-            <service uid="${GENERIC_UID}_calibrationInfoView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+
+            <service uid="${GENERIC_UID}_calibrationInfoView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view align="center" />
@@ -79,7 +78,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_videoView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_videoView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -93,7 +92,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_camerasView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_camerasView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -106,8 +105,8 @@
                     <view sid="${GENERIC_UID}_camera2" start="yes" />
                 </registry>
             </service>
-            
-            <service uid="${GENERIC_UID}_extrinsicCamera" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+
+            <service uid="${GENERIC_UID}_extrinsicCamera" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <editor />
@@ -127,8 +126,8 @@
                     <menuItem sid="${GENERIC_UID}_ActionDisplayImage" start="yes" />
                 </registry>
             </service>
-            
-            <service uid="${GENERIC_UID}_cameraInfoView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+
+            <service uid="${GENERIC_UID}_cameraInfoView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -138,30 +137,30 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="${GENERIC_UID}_cameraInfo1" start="yes"/>
-                    <view sid="${GENERIC_UID}_cameraInfo2" start="yes"/>
+                    <view sid="${GENERIC_UID}_cameraInfo1" start="yes" />
+                    <view sid="${GENERIC_UID}_cameraInfo2" start="yes" />
                     <view sid="${GENERIC_UID}_cameraSeriesInfo" start="yes" />
                 </registry>
             </service>
-            
+
             <service uid="${GENERIC_UID}_ActionAdd" impl="::gui::action::SSlotCaller" autoConnect="no">
                 <slots>
                     <slot>${GENERIC_UID}_ChessboardDetector/detectPoints</slot>
                 </slots>
             </service>
-            
+
             <service uid="${GENERIC_UID}_ActionReset" impl="::gui::action::SSlotCaller" autoConnect="no">
                 <slots>
                     <slot>${GENERIC_UID}_ExtrinsicCalibrationInfoEditor/reset</slot>
                 </slots>
             </service>
-            
+
             <service uid="${GENERIC_UID}_ActionRemove" impl="::gui::action::SSlotCaller" autoConnect="no">
                 <slots>
                     <slot>${GENERIC_UID}_ExtrinsicCalibrationInfoEditor/remove</slot>
                 </slots>
             </service>
-            
+
             <service uid="${GENERIC_UID}_ActionGoOpenCV" impl="::gui::action::SSlotCaller" autoConnect="no">
                 <slots>
                     <slot>${GENERIC_UID}_openCVExtrinsicCal/update</slot>
@@ -174,7 +173,7 @@
                     <slot>${GENERIC_UID}_ExtrinsicCalibrationInfoEditor/getSelection</slot>
                 </slots>
             </service>
-            
+
             <service uid="${GENERIC_UID}_ActionStartCamera" impl="::gui::action::SSlotCaller" autoConnect="no">
                 <slots>
                     <slot>${GENERIC_UID}_VideoGrabber1/startCamera</slot>
@@ -188,7 +187,7 @@
                     <slot>${GENERIC_UID}_VideoGrabber2/stopCamera</slot>
                 </slots>
             </service>
-            
+
             <service uid="${GENERIC_UID}_PauseVideo" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
                 <slots>
                     <slot>${GENERIC_UID}_VideoGrabber1/pauseCamera</slot>
@@ -203,8 +202,8 @@
                 </slots>
             </service>
 
-            <service uid="${GENERIC_UID}_VideoSlider" impl="::videoQt::editor::SSlider" type="::gui::editor::IEditor" autoConnect="no"/>
-            
+            <service uid="${GENERIC_UID}_VideoSlider" impl="::videoQt::editor::SSlider" type="::gui::editor::IEditor" autoConnect="no" />
+
             <service uid="${GENERIC_UID}_synchronizer" impl="::videoTools::SFrameMatrixSynchronizer" autoConnect="no" worker="synchronizer">
                 <frames>
                     <frame from="timeline1" to="frame1" />
@@ -212,7 +211,7 @@
                 </frames>
                 <framerate>30</framerate>
             </service>
-                        
+
             <service uid="${GENERIC_UID}_camera1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                 <scene renderMode="timer">
                     <renderer id="default" background="0.0" />
@@ -224,7 +223,7 @@
                     </adaptor>
                 </scene>
             </service>
-            
+
             <service uid="${GENERIC_UID}_camera2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                 <scene renderMode="timer">
                     <renderer id="default" background="0.0" />
@@ -237,44 +236,44 @@
                 </scene>
             </service>
 
-             <service uid="${GENERIC_UID}_ExtrinsicCalibrationInfoEditor" impl="::uiCalibration::SCalibrationInfoEditor" type="::gui::editor::IEditor" autoConnect="yes">
+            <service uid="${GENERIC_UID}_ExtrinsicCalibrationInfoEditor" impl="::uiCalibration::SCalibrationInfoEditor" type="::gui::editor::IEditor" autoConnect="yes">
                 <CalInfo1>calInfo1</CalInfo1>
                 <CalInfo2>calInfo2</CalInfo2>
-             </service> 
+            </service>
 
             <service uid="${GENERIC_UID}_Status" impl="::uiTools::editor::SStatus" type="::gui::editor::IEditor" autoConnect="no">
                 <green>Point are visible</green>
-                <orange>Calibration in progress</orange>                                
+                <orange>Calibration in progress</orange>
                 <red>Points are NOT visible</red>
-            </service> 
-            
+            </service>
+
             <service uid="${GENERIC_UID}_ChessboardDetector" impl="::videoCalibration::SChessBoardDetector" type="::fwServices::IController" autoConnect="no" worker="extr_chess_checker">
-                <calibration timeline="timeline1" calInfo="calInfo1"/>
-                <calibration timeline="timeline2" calInfo="calInfo2"/>
+                <calibration timeline="timeline1" calInfo="calInfo1" />
+                <calibration timeline="timeline2" calInfo="calInfo2" />
                 <board width="${chessboardWidth}" height="${chessboardHeight}" />
             </service>
-            
+
             <service uid="${GENERIC_UID}_DisplayCalibrationInfo" impl="::uiCalibration::SDisplayCalibrationInfo" type="::fwServices::IController" autoConnect="no">
                 <CalInfo1>calInfo1</CalInfo1>
                 <CalInfo2>calInfo2</CalInfo2>
             </service>
 
             <item key="calInfo1">
-                <object uid="${calibrationInfo1Uid}" type="::arData::CalibrationInfo" src="ref"/>
-            </item> 
-            
+                <object uid="${calibrationInfo1Uid}" type="::arData::CalibrationInfo" src="ref" />
+            </item>
+
             <item key="calInfo2">
-                <object uid="${calibrationInfo2Uid}" type="::arData::CalibrationInfo" src="ref"/>
-            </item>  
-            
-           <item key="timeline1">
+                <object uid="${calibrationInfo2Uid}" type="::arData::CalibrationInfo" src="ref" />
+            </item>
+
+            <item key="timeline1">
                 <object uid="${GENERIC_UID}_Frame1TL" type="::extData::FrameTL">
                     <service uid="${GENERIC_UID}_VideoGrabber1" impl="::videoQt::SFrameGrabber" autoConnect="no">
                         <cameraFwId>${camera1Uid}</cameraFwId>
                     </service>
                 </object>
             </item>
-            
+
             <item key="timeline2">
                 <object uid="${GENERIC_UID}_Frame2TL" type="::extData::FrameTL">
                     <service uid="${GENERIC_UID}_VideoGrabber2" impl="::videoQt::SFrameGrabber" autoConnect="no">
@@ -282,41 +281,41 @@
                     </service>
                 </object>
             </item>
-            
+
             <item key="frame1">
                 <object uid="${GENERIC_UID}_Frame1" type="::fwData::Image" />
             </item>
-            
+
             <item key="frame2">
                 <object uid="${GENERIC_UID}_Frame2" type="::fwData::Image" />
             </item>
-            
+
             <item key="cameraSeries">
                 <object uid="${cameraSeriesUid}" type="::arData::CameraSeries" src="ref">
-                   <service uid="${GENERIC_UID}_openCVExtrinsicCal" impl="::videoCalibration::SOpenCVExtrinsic" worker="extr_chess_checker">
+                    <service uid="${GENERIC_UID}_openCVExtrinsicCal" impl="::videoCalibration::SOpenCVExtrinsic" worker="extr_chess_checker">
                         <calibrationInfo1ID>${calibrationInfo1Uid}</calibrationInfo1ID>
                         <calibrationInfo2ID>${calibrationInfo2Uid}</calibrationInfo2ID>
                         <camIndex>${camIndex}</camIndex>
-                        <board width="${chessboardWidth}" height="${chessboardHeight}" squareSize="${squareSizeChessboard}"/>
-                   </service>
-                   <service uid="${GENERIC_UID}_cameraSeriesInfo" type="::gui::editor::IEditor" impl="::uiCalibration::SCameraSeriesEditor" autoConnect="yes">
+                        <board width="${chessboardWidth}" height="${chessboardHeight}" squareSize="${squareSizeChessboard}" />
+                    </service>
+                    <service uid="${GENERIC_UID}_cameraSeriesInfo" type="::gui::editor::IEditor" impl="::uiCalibration::SCameraSeriesEditor" autoConnect="yes">
                         <camIndex>${camIndex}</camIndex>
-                   </service>
+                    </service>
                 </object>
             </item>
-            
+
             <item key="camera1">
                 <object uid="${camera1Uid}" type="::arData::Camera" src="ref">
                     <service uid="${GENERIC_UID}_cameraInfo1" type="::gui::editor::IEditor" impl="::uiCalibration::SCameraInformationEditor" autoConnect="yes" />
                 </object>
             </item>
-            
+
             <item key="camera2">
                 <object uid="${camera2Uid}" type="::arData::Camera" src="ref">
                     <service uid="${GENERIC_UID}_cameraInfo2" type="::gui::editor::IEditor" impl="::uiCalibration::SCameraInformationEditor" autoConnect="yes" />
                 </object>
             </item>
-            
+
             <connect>
                 <signal>${GENERIC_UID}_Frame1TL/objectPushed</signal>
                 <slot>${GENERIC_UID}_ChessboardDetector/checkPoints</slot>
@@ -325,12 +324,12 @@
                 <signal>${GENERIC_UID}_Frame2TL/objectPushed</signal>
                 <slot>${GENERIC_UID}_ChessboardDetector/checkPoints</slot>
             </connect>
-            
+
             <connect>
                 <signal>${GENERIC_UID}_ChessboardDetector/chessboardDetected</signal>
                 <slot>${GENERIC_UID}_Status/changeToGreen</slot>
             </connect>
-            
+
             <connect>
                 <signal>${GENERIC_UID}_ChessboardDetector/chessboardNotDetected</signal>
                 <slot>${GENERIC_UID}_Status/changeToRed</slot>
@@ -365,8 +364,8 @@
             </proxy>
 
             <proxy channel="${chessboardProxy}">
-                 <slot>${GENERIC_UID}_openCVExtrinsicCal/updateChessboardSize</slot>
-                 <slot>${GENERIC_UID}_ChessboardDetector/updateChessboardSize</slot>
+                <slot>${GENERIC_UID}_openCVExtrinsicCal/updateChessboardSize</slot>
+                <slot>${GENERIC_UID}_ChessboardDetector/updateChessboardSize</slot>
             </proxy>
 
             <start uid="${GENERIC_UID}_extrinsicView" />
