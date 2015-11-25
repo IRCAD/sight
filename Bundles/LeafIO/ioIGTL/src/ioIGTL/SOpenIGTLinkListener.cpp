@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -108,10 +108,34 @@ void SOpenIGTLinkListener::runClient() throw (::fwTools::Failed)
         obj = ::fwData::Image::New();
     }
 
+    // 1. Connection
     try
     {
         m_client.connect (m_hostname, m_port);
-        m_sigClientConnected->asyncEmit();
+    }
+    catch (::fwCore::Exception &ex)
+    {
+        // Only open a dialog if the service is started.
+        // connect may throw if we request the service to stop,
+        // in this case opening a dialog will result in a deadlock
+        if(this->getStatus() == STARTED)
+        {
+            msgDialog.showMessageDialog ("Connection error", ex.what());
+            this->slot(s_STOP_SLOT)->asyncRun();
+        }
+        else
+        {
+            // Only report the error on console (this normally happens only if we have requested the disconnection)
+            OSLM_ERROR(ex.what());
+        }
+        return;
+    }
+
+    m_sigClientConnected->asyncEmit();
+
+    // 2. Receive messages
+    try
+    {
         while (m_client.isConnected())
         {
             if (m_client.receiveObject(obj))
@@ -126,13 +150,24 @@ void SOpenIGTLinkListener::runClient() throw (::fwTools::Failed)
                 }
             }
         }
-        m_sigClientDisconnected->asyncEmit();
     }
     catch (::fwCore::Exception &ex)
     {
-        msgDialog.showMessageDialog ("Error", ex.what());
-        this->slot(s_STOP_SLOT)->asyncRun();
+        // Only open a dialog if the service is started.
+        // ReceiveObject may throw if we request the service to stop,
+        // in this case opening a dialog will result in a deadlock
+        if(this->getStatus() == STARTED)
+        {
+            msgDialog.showMessageDialog ("Error", ex.what());
+            this->slot(s_STOP_SLOT)->asyncRun();
+        }
+        else
+        {
+            // Only report the error on console (this normally happens only if we have requested the disconnection)
+            OSLM_ERROR(ex.what());
+        }
     }
+    m_sigClientDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

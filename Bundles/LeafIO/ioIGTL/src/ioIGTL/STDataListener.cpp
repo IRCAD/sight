@@ -110,10 +110,35 @@ void STDataListener::runClient() throw (::fwTools::Failed)
     ::fwGui::dialog::MessageDialog msgDialog;
 
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
+
+    // 1. Connection
     try
     {
         m_client.connect (m_hostname, m_port);
-        m_sigClientConnected->asyncEmit();
+    }
+    catch (::fwCore::Exception &ex)
+    {
+        // Only open a dialog if the service is started.
+        // connect may throw if we request the service to stop,
+        // in this case opening a dialog will result in a deadlock
+        if(this->getStatus() == STARTED)
+        {
+            msgDialog.showMessageDialog ("Connection error", ex.what());
+            this->slot(s_STOP_SLOT)->asyncRun();
+        }
+        else
+        {
+            // Only report the error on console (this normally happens only if we have requested the disconnection)
+            OSLM_ERROR(ex.what());
+        }
+        return;
+    }
+
+    m_sigClientConnected->asyncEmit();
+
+    // 2. Receive messages
+    try
+    {
         while (m_client.isConnected())
         {
             if (m_client.receiveObject(composite))
@@ -121,13 +146,24 @@ void STDataListener::runClient() throw (::fwTools::Failed)
                 this->manageTimeline(composite);
             }
         }
-        m_sigClientDisconnected->asyncEmit();
     }
     catch (::fwCore::Exception &ex)
     {
-        msgDialog.showMessageDialog ("Error", ex.what());
-        this->slot(s_STOP_SLOT)->asyncRun();
+        // Only open a dialog if the service is started.
+        // ReceiveObject may throw if we request the service to stop,
+        // in this case opening a dialog will result in a deadlock
+        if(this->getStatus() == STARTED)
+        {
+            msgDialog.showMessageDialog ("Error", ex.what());
+            this->slot(s_STOP_SLOT)->asyncRun();
+        }
+        else
+        {
+            // Only report the error on console (this normally happens only if we have requested the disconnection)
+            OSLM_ERROR(ex.what());
+        }
     }
+    m_sigClientDisconnected->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------
