@@ -5,14 +5,17 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoQt/player/VideoRegistry.hpp"
-#include "videoQt/player/QVideoPlayer.hpp"
-
-#include "videoQt/helper/preferences.hpp"
-
-#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwCore/spyLog.hpp>
 #include <fwCore/exceptionmacros.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include "videoQt/player/QVideoPlayer.hpp"
+#include "videoQt/player/QVideoSurface.hpp"
+#include "videoQt/helper/formats.hpp"
+#include "videoQt/helper/preferences.hpp"
+
 
 namespace videoQt
 {
@@ -107,13 +110,33 @@ QVideoPlayer* VideoRegistry::requestPlayer(const ::arData::Camera::sptr& camera)
                 break;
             }
             case ::arData::Camera::STREAM:
+            {
                 player->initCameraStream(camera->getStreamUrl());
                 break;
+            }
             case ::arData::Camera::DEVICE:
+            {
+                ::QVideoFrame::PixelFormat qtPixelFormat = QVideoFrame::PixelFormat::Format_Invalid;
+                ::arData::Camera::PixelFormat f4sFormat  = camera->getPixelFormat();
+
+                ::videoQt::helper::PixelFormatTranslatorType::right_const_iterator iter;
+                iter = ::videoQt::helper::pixelFormatTranslator.right.find(f4sFormat);
+
+                if(iter != ::videoQt::helper::pixelFormatTranslator.right.end())
+                {
+                    qtPixelFormat = iter->second;
+                }
+                else
+                {
+                    OSLM_ERROR("No compatible pixel format found");
+                }
+
                 player->initCameraDevice(camera->getCameraID(),
                                          camera->getWidth(), camera->getHeight(),
-                                         camera->getMaximumFrameRate());
+                                         camera->getMaximumFrameRate(),
+                                         qtPixelFormat);
                 break;
+            }
             default:
                 SLM_FATAL("Unknown camera source type");
         }
