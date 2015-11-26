@@ -5,6 +5,7 @@
         <param name="GENERIC_UID" />
         <param name="cameraUid" />
         <param name="timeLineUid" />
+        <param name="videoGrabberImpl" />
     </parameters>
     <config>
 
@@ -92,7 +93,7 @@
 
             <item key="frameTL">
                 <object uid="${timeLineUid}" type="::extData::FrameTL" src="ref">
-                    <service uid="${GENERIC_UID}_VideoGrabber" impl="::videoQt::SFrameGrabber" autoConnect="no">
+                    <service uid="${GENERIC_UID}_VideoGrabber" impl="${videoGrabberImpl}" autoConnect="no">
                         <cameraFwId>${cameraUid}</cameraFwId>
                     </service>
                 </object>

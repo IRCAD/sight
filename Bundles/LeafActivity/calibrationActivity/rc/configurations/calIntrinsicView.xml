@@ -9,6 +9,7 @@
         <param name="chessboardHeight" />
         <param name="squareSizeChessboard" />
         <param name="chessboardProxy" />
+        <param name="videoGrabberImpl" />
     </parameters>
     <config>
 
@@ -111,6 +112,7 @@
                             <parameter replace="WID_PARENT" by="${GENERIC_UID}_cameraView" />
                             <parameter replace="cameraUid" by="${cameraUid}" />
                             <parameter replace="timeLineUid" by="${GENERIC_UID}_FrameTL" />
+                            <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
                         </parameters>
                     </appConfig>
                 </config>

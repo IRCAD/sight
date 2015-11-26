@@ -13,6 +13,7 @@
         <param name="squareSizeChessboard" />
         <param name="camIndex" />
         <param name="chessboardProxy" />
+        <param name="videoGrabberImpl" />
     </parameters>
     <config>
 
@@ -268,7 +269,7 @@
 
             <item key="timeline1">
                 <object uid="${GENERIC_UID}_Frame1TL" type="::extData::FrameTL">
-                    <service uid="${GENERIC_UID}_VideoGrabber1" impl="::videoQt::SFrameGrabber" autoConnect="no">
+                    <service uid="${GENERIC_UID}_VideoGrabber1" impl="${videoGrabberImpl}" autoConnect="no">
                         <cameraFwId>${camera1Uid}</cameraFwId>
                     </service>
                 </object>
@@ -276,7 +277,7 @@
 
             <item key="timeline2">
                 <object uid="${GENERIC_UID}_Frame2TL" type="::extData::FrameTL">
-                    <service uid="${GENERIC_UID}_VideoGrabber2" impl="::videoQt::SFrameGrabber" autoConnect="no">
+                    <service uid="${GENERIC_UID}_VideoGrabber2" impl="${videoGrabberImpl}" autoConnect="no">
                         <cameraFwId>${camera2Uid}</cameraFwId>
                     </service>
                 </object>

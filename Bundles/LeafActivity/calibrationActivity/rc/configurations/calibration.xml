@@ -9,6 +9,7 @@
         <param name="chessboardWidth" default="11" />
         <param name="chessboardHeight" default="8" />
         <param name="squareSizeChessboard" default="20" />
+        <param name="videoGrabberImpl" default="::videoQt::SFrameGrabber" />
     </parameters>
     <config>
 
@@ -66,6 +67,7 @@
                                 <parameter replace="chessboardHeight" by="!values.chessboardParameters.values.chessboardHeight.value" />
                                 <parameter replace="squareSizeChessboard" by="!values.chessboardParameters.values.squareSizeChessboard.value" />
                                 <parameter replace="chessboardProxy" by="${GENERIC_UID}_chessboardProxy" />
+                                <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
                             </parameters>
                         </appConfig>
                     </intrinsic>
@@ -78,6 +80,7 @@
                                 <parameter replace="squareSizeChessboard" by="!values.chessboardParameters.values.squareSizeChessboard.value" />
                                 <parameter replace="cameraSeriesUid" by="${cameraSeriesUid}" />
                                 <parameter replace="chessboardProxy" by="${GENERIC_UID}_chessboardProxy" />
+                                <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
                             </parameters>
                         </appConfig>
                     </extrinsic>
