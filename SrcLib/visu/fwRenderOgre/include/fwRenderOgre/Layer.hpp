@@ -19,6 +19,7 @@
 #include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/compositor/CompositorChainManager.hpp>
 #include <fwRenderOgre/compositor/DefaultCompositor.hpp>
+#include <fwRenderOgre/compositor/SaoCompositorChainManager.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreSceneManager.h>
@@ -182,6 +183,12 @@ public:
     /// Checks if this layer has a default compositor
     FWRENDEROGRE_API ::fwRenderOgre::DefaultCompositor::sptr getDefaultCompositor();
 
+    // farid
+    // return the sao manager for this layer
+
+    FWRENDEROGRE_API ::fwRenderOgre::SaoCompositorChainManager::sptr getSaoManager();
+
+
     FWRENDEROGRE_API CompositorChainManager::CompositorChainType getCompositorChain();
 
     FWRENDEROGRE_API std::string getFinalChainCompositorName() const;
@@ -230,6 +237,7 @@ private:
     /// Ogre default compositor for this layer
     ::fwRenderOgre::DefaultCompositor::sptr m_defaultCompositor;
 
+
     /// Ogre default compositor default transparency technique
     transparencyTechnique m_defaultCompositorTransaprencyTechnique;
 
@@ -241,6 +249,12 @@ private:
     /// Manages the list of available compositors.
     /// The names are associated to a boolean value which indicates whether the compositor is enabled or not
     CompositorChainManager m_compositorChainManager;
+
+    // Farid
+
+    /// Ogre sao compositor manager for this layer
+    ::fwRenderOgre::SaoCompositorChainManager::sptr m_saoManager;
+
 
     /// Z Depth of this viewport
     int m_depth;

@@ -61,6 +61,7 @@ Layer::Layer() :
     m_defaultCompositorUseCelShading(false),
     m_nbPeel(8),
     m_compositorChainManager(),
+    m_saoManager(nullptr),
     m_depth(1),
     m_topColor("#333333"),
     m_bottomColor("#333333"),
@@ -127,7 +128,14 @@ void Layer::createScene()
     m_camera->setNearClipDistance(1);
 
     m_viewport = m_renderWindow->addViewport(m_camera, m_depth);
+
     m_compositorChainManager.setOgreViewport(m_viewport);
+
+    // Farid -> set the viewport for sao Chain Manager
+
+    m_saoManager = fwRenderOgre::SaoCompositorChainManager::New();
+    m_saoManager->setOgreViewport(m_viewport);
+
 
     if (m_depth != 0)
     {
@@ -212,11 +220,15 @@ void Layer::createScene()
 
     if(m_hasDefaultCompositor)
     {
+        // Farid -> to suppress
+        std::cout << "Scene has Default Compositor " << std::endl;
         this->setupDefaultCompositor();
     }
 
     if(m_hasCompositorChain)
     {
+        // Farid -> to suppress
+        std::cout << "Scene has Compositor chain " << std::endl;
         m_compositorChainManager.setCompositorChain(this->trimSemicolons(m_rawCompositorChain));
     }
 
@@ -225,6 +237,7 @@ void Layer::createScene()
     m_sceneCreated = true;
 
     this->signal<InitLayerSignalType>(s_INIT_LAYER_SIG)->asyncEmit(this->getSptr());
+
 }
 
 // ----------------------------------------------------------------------------
@@ -247,6 +260,7 @@ void Layer::clearAvailableCompositors()
 
 void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 {
+    std::cout << "The following compositor try to be enable " << compositorName << std::endl;
     m_renderService.lock()->makeCurrent();
     m_compositorChainManager.updateCompositorState(compositorName, isEnabled);
     m_renderService.lock()->requestRender();
@@ -546,8 +560,8 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         // Make sure near is not bigger than far
         maxNear = (maxNear >= minFar) ? (0.01f*minFar) : (maxNear);
 
-        m_camera->setNearClipDistance( maxNear );
-        m_camera->setFarClipDistance( minFar );
+        m_camera->setNearClipDistance( 1 );
+        m_camera->setFarClipDistance( 10000 );
     }
 }
 
@@ -637,6 +651,7 @@ void Layer::setDefaultCompositorEnabled(bool hasDefaultCompositor, std::string t
 
 void Layer::setCompositorChainEnabled(bool hasDefaultCompositorChain, std::string compositorChain)
 {
+
     m_hasCompositorChain = hasDefaultCompositorChain;
 
     if(m_hasCompositorChain)
@@ -712,6 +727,14 @@ std::vector< std::string > Layer::trimSemicolons(std::string input)
 }
 
 //-------------------------------------------------------------------------------------
+
+::fwRenderOgre::SaoCompositorChainManager::sptr Layer::getSaoManager()
+{
+    return m_saoManager;
+}
+
+//-------------------------------------------------------------------------------------
+
 
 CompositorChainManager::CompositorChainType Layer::getCompositorChain()
 {

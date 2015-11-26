@@ -201,6 +201,8 @@
                             </registry>
                         </service>
 
+                        <!-- Here should probably stay an other service to listen for SAO chain compositor -->
+
                         <service uid="compositorSelector" impl="::uiVisuOgre::SCompositorSelector" type="::gui::editor::IEditor" autoConnect="no" />
 
                         <service uid="defaultCompositorEditor" impl="::uiVisuOgre::SDefaultCompositorEditor" type="::gui::editor::IEditor" autoConnect="no" />

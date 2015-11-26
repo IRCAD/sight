@@ -1,0 +1,44 @@
+vertex_program stdPos_VP glsl
+{
+    source stdPos_VP.glsl
+    default_params
+    {
+        param_named_auto MVP worldviewproj_matrix
+    }
+}
+
+fragment_program Blend_FP glsl
+{
+    source Blend_FP.glsl
+    default_params
+    {
+        param_named_auto h viewport_height
+        param_named_auto w viewport_width
+    }
+}
+
+material BlendSaoScene
+{
+    technique
+    {
+        pass
+        {
+
+            vertex_program_ref stdPos_VP
+            {
+            }
+
+            fragment_program_ref Blend_FP
+            {
+            }
+
+            texture_unit Occlusion_map
+            {
+            }
+
+            texture_unit scene
+            {
+            }
+        }
+    }
+}
