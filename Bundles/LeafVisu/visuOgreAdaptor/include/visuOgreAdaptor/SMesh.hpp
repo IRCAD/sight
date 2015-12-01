@@ -232,8 +232,6 @@ private:
     /// Indicates if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured
     bool m_useNewMaterialAdaptor;
 
-    /// Indicates if a shading mode (flat/gouraud/phong) will be used on the associated material
-    bool m_useLighting;
     /// The configured shading mode
     ::fwData::Material::SHADING_MODE m_shadingMode;
 

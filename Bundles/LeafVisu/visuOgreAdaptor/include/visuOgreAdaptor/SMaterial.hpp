@@ -106,9 +106,6 @@ public:
 
     VISUOGREADAPTOR_API void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
 
-    /// Update fwData material parameters from Ogre material parameters
-    VISUOGREADAPTOR_API void updateFromOgre();
-
     /// Returns proposals to connect service slots to associated object signals
     ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
 
@@ -231,8 +228,6 @@ private:
     /// Signal/Slot connections with texture adaptor
     ::fwServices::helper::SigSlotConnection::sptr m_textureConnection;
 
-    /// Indicates if a shading mode (flat/gouraud/phong) will be used on the associated material
-    bool m_useLighting;
     /// The configured shading mode
     ::fwData::Material::SHADING_MODE m_shadingMode;
 };
@@ -316,20 +311,6 @@ inline std::string SMaterial::getMaterialName() const
 inline bool SMaterial::hasDiffuseTexture() const
 {
     return (m_texAdaptor && !m_texAdaptor->getTexture().isNull());
-}
-
-//------------------------------------------------------------------------------
-
-inline bool SMaterial::getUseLighting() const
-{
-    return m_useLighting;
-}
-
-//------------------------------------------------------------------------------
-
-inline void SMaterial::setUseLighting(bool _useLighting)
-{
-    m_useLighting = _useLighting;
 }
 
 //------------------------------------------------------------------------------

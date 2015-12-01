@@ -51,6 +51,8 @@ vertex_program RenderScene_None_VP_glsl glsl
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -66,6 +68,8 @@ vertex_program RenderScene_None+VT_VP_glsl glsl
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -81,6 +85,8 @@ vertex_program RenderScene_None+DfsTex_VP_glsl glsl
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -96,6 +102,8 @@ vertex_program RenderScene_None+VT+DfsTex_VP_glsl glsl
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -3136,6 +3144,8 @@ vertex_program CelShadingDepthPeelingRenderScene_None_VP_glsl glsl
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -3151,6 +3161,8 @@ vertex_program CelShadingDepthPeelingRenderScene_None+VT_VP_glsl glsl
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -3166,6 +3178,8 @@ vertex_program CelShadingDepthPeelingRenderScene_None+DfsTex_VP_glsl glsl
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 
@@ -3181,6 +3195,8 @@ vertex_program CelShadingDepthPeelingRenderScene_None+VT+DfsTex_VP_glsl glsl
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_ambient surface_ambient_colour
+        param_named_auto u_diffuse surface_diffuse_colour
     }
 }
 

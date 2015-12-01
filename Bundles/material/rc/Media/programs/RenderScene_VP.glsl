@@ -53,6 +53,9 @@ out VertexDataOut
 
 #ifndef NONE
 vec4 lighting(vec3 _normal, vec3 _position);
+#else
+uniform vec4 u_ambient;
+uniform vec4 u_diffuse;
 #endif // NONE
 
 void main(void)
@@ -93,7 +96,7 @@ void main(void)
 
 #   else
 #       ifdef NONE
-    vertexOut.oColor = vec4(1.,1.,1.,1.);
+    vertexOut.oColor = vec4(u_ambient.rgb + u_diffuse.rgb, u_diffuse.a);
 #       else
     vec3 position_WS = (u_world * position).xyz;
     vec3 normal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;

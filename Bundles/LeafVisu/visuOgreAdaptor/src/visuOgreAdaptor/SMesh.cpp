@@ -6,7 +6,7 @@
 
 #include "visuOgreAdaptor/SMesh.hpp"
 
-#define FW_PROFILING_DISABLED
+//#define FW_PROFILING_DISABLED
 
 #include <fwCore/Profiling.hpp>
 
@@ -112,7 +112,6 @@ SMesh::SMesh() throw() :
     m_hasUV(false),
     m_isReconstructionManaged(false),
     m_useNewMaterialAdaptor(false),
-    m_useLighting(true),
     m_shadingMode(::fwData::Material::SHADING_MODE::MODE_PHONG),
     m_r2vbEntity(nullptr),
     m_uiPrevNumCells(0)
@@ -157,7 +156,7 @@ void SMesh::doConfigure() throw(fwTools::Failed)
 
     if(m_material)
     {
-        m_material->ambient()->setRGBA(color.empty() ? "#ffffffff" : color);
+        m_material->diffuse()->setRGBA(color.empty() ? "#ffffffff" : color);
     }
 
     if(m_configuration->hasAttribute("autoresetcamera"))
@@ -191,26 +190,21 @@ void SMesh::doConfigure() throw(fwTools::Failed)
         {
             std::string shadingMode = m_configuration->getAttributeValue("shadingMode");
 
-            //TODO: Remove the flag "m_useShadingMode" and include the "MODE_NONE" as soon as it exists in
-            // ::fwData::Material::SHADING_MODE
-            if(shadingMode != "none")
+            if(shadingMode != "ambient")
             {
-                if(shadingMode == "flat")
-                {
-                    m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_FLAT;
-                }
-                else if(shadingMode == "gouraud")
-                {
-                    m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_GOURAUD;
-                }
-                else
-                {
-                    m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_PHONG;
-                }
+                m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_AMBIENT;
+            }
+            else if(shadingMode == "flat")
+            {
+                m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_FLAT;
+            }
+            else if(shadingMode == "gouraud")
+            {
+                m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_GOURAUD;
             }
             else
             {
-                m_useLighting = false;
+                m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_PHONG;
             }
         }
     }
@@ -675,6 +669,9 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
                 m_r2vbObject.push_back(r2vbObject);
 
+                // Set material used to display the triangles output - thus it is the same than m_entity.
+                r2vbObject->setMaterial(m_materialAdaptor->getMaterialName());
+
                 // Attach r2vb object in the scene graph
                 this->attachNode(r2vbObject);
             }
@@ -684,10 +681,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbObject = static_cast< ::fwRenderOgre::R2VBRenderable*>
                              (sceneMgr->getMovableObject(r2vbObjectName,factoryName));
             }
-
-            // Set material used to display the triangles output - thus it is the same than m_entity.
-            r2vbObject->setMaterial(m_materialAdaptor->getMaterialName());
-
 
             if( !m_r2vbMaterialAdaptor[cellType] )
             {
@@ -706,7 +699,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 }
 
                 const std::string meshName = this->getObject()->getID();
-                std::string primName       = std::to_string(cellType);
+                const std::string primName = std::to_string(cellType);
 
                 // These settings will no longer change
                 r2vbMtlAdaptor->setMaterialName(meshName + "_" + r2vbMtlAdaptor->getID() + "_Mtl_" + primName);
@@ -718,8 +711,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbMtlAdaptor->setHasVertexColor(m_hasVertexColor);
                 r2vbMtlAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
                 r2vbMtlAdaptor->setTextureAdaptor(m_texAdaptorUID);
-
-                r2vbMtlAdaptor->setUseLighting(m_useLighting);
                 r2vbMtlAdaptor->setShadingMode(m_shadingMode);
 
                 r2vbMtlAdaptor->start();
@@ -731,15 +722,16 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
             }
             else
             {
-                // Instantiate the material adaptor for the r2vb process for this primitive type
+                // Get the material adaptor for the r2vb process for this primitive type
                 auto r2vbMtlAdaptor = m_r2vbMaterialAdaptor[cellType];
 
                 r2vbMtlAdaptor->setHasMeshNormal(m_hasNormal);
                 r2vbMtlAdaptor->setHasVertexColor(m_hasVertexColor);
                 r2vbMtlAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
                 r2vbMtlAdaptor->setTextureAdaptor(m_texAdaptorUID);
+                r2vbMtlAdaptor->setShadingMode(m_shadingMode);
 
-                // Update the material synchronously otherwise the r2vb will be rendered before shader switch
+                // Update the material *synchronously* otherwise the r2vb will be rendered before the shader switch
                 r2vbMtlAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
             }
 
@@ -1221,7 +1213,6 @@ void SMesh::updateNewMaterialAdaptor()
                 m_materialAdaptor->setTextureAdaptor(m_texAdaptorUID);
             }
 
-            m_materialAdaptor->setUseLighting(m_useLighting);
             m_materialAdaptor->setShadingMode(m_shadingMode);
 
             m_materialAdaptor->start();

@@ -95,7 +95,6 @@ SMaterial::SMaterial() throw() :
     m_normalLengthFactor(0.1f),
     m_hasQuad(false),
     m_hasTetra(false),
-    m_useLighting(true),
     m_shadingMode(::fwData::Material::SHADING_MODE::MODE_PHONG)
 {
     m_textureConnection = ::fwServices::helper::SigSlotConnection::New();
@@ -517,26 +516,21 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
     {
         std::string shadingMode = m_configuration->getAttributeValue("shadingMode");
 
-        //TODO: Remove the flag "m_useShadingMode" and include the "MODE_NONE" as soon as it is implemented in
-        // ::fwData::Material::SHADING_MODE
-        if(shadingMode != "none")
+        if(shadingMode != "ambient")
         {
-            if(shadingMode == "flat")
-            {
-                m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_FLAT;
-            }
-            else if(shadingMode == "gouraud")
-            {
-                m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_GOURAUD;
-            }
-            else
-            {
-                m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_PHONG;
-            }
+            m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_AMBIENT;
+        }
+        else if(shadingMode == "flat")
+        {
+            m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_FLAT;
+        }
+        else if(shadingMode == "gouraud")
+        {
+            m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_GOURAUD;
         }
         else
         {
-            m_useLighting = false;
+            m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_PHONG;
         }
     }
 
@@ -553,12 +547,7 @@ void SMaterial::doStart() throw(fwTools::Failed)
 {
     ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
 
-    material->setLighting(m_useLighting);
-
-    if(m_useLighting)
-    {
-        material->setShadingMode(m_shadingMode);
-    }
+    material->setShadingMode(m_shadingMode);
 
     m_material = ::Ogre::MaterialManager::getSingleton().create(
         m_materialName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -724,82 +713,6 @@ void SMaterial::doStop() throw(fwTools::Failed)
 {
     m_textureConnection->disconnect();
     this->unregisterServices();
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::updateFromOgre()
-{
-    ::fwData::Material::sptr f4s_mat = this->getObject< ::fwData::Material >();
-    ::Ogre::Pass *pass               = m_material->getTechnique(0)->getPass(0);
-
-    // Updating Shading Mode
-    ::Ogre::ShadeOptions shadingMode = pass->getShadingMode();
-    ::fwData::Material::SHADING_MODE shadeOptions;
-    switch( shadingMode )
-    {
-        case ::Ogre::ShadeOptions::SO_FLAT:
-            shadeOptions = ::fwData::Material::SHADING_MODE::MODE_FLAT;
-            break;
-        case ::Ogre::ShadeOptions::SO_GOURAUD:
-            shadeOptions = ::fwData::Material::SHADING_MODE::MODE_GOURAUD;
-            break;
-        case ::Ogre::ShadeOptions::SO_PHONG:
-            shadeOptions = ::fwData::Material::SHADING_MODE::MODE_PHONG;
-            break;
-        default:
-            SLM_WARN("Unknown shading mode. ");
-    }
-    f4s_mat->setShadingMode(shadeOptions);
-
-    // Update color
-    // FIXME : It's dangerous to write in f4s' ambient, already used to define object's color
-
-    if(m_materialTemplateName == DEFAULT_MATERIAL_TEMPLATE_NAME && m_hasMeshNormal)
-    {
-        ::Ogre::ColourValue diffuse        = pass->getDiffuse();
-        ::fwData::Color::sptr diffuseColor = ::fwData::Color::New(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
-        f4s_mat->setAmbient(diffuseColor);
-    }
-    else
-    {
-        ::Ogre::ColourValue ambient        = pass->getAmbient();
-        ::fwData::Color::sptr ambientColor = ::fwData::Color::New(ambient.r, ambient.g, ambient.b, ambient.a);
-        f4s_mat->setAmbient(ambientColor);
-
-        ::Ogre::ColourValue diffuse        = pass->getDiffuse();
-        ::fwData::Color::sptr diffuseColor = ::fwData::Color::New(diffuse.r, diffuse.g, diffuse.b, diffuse.a);
-        f4s_mat->setDiffuse(diffuseColor);
-    }
-
-    // Update Polygon Mode
-    ::Ogre::PolygonMode polygonMode = pass->getPolygonMode();
-
-    ::fwData::Material::REPRESENTATION_MODE polygonOptions;
-    switch( polygonMode )
-    {
-        case ::Ogre::PM_SOLID:
-            polygonOptions = ::fwData::Material::MODE_SURFACE;
-            break;
-
-        case ::Ogre::PM_WIREFRAME:
-            polygonOptions = ::fwData::Material::MODE_WIREFRAME;
-            break;
-
-        case ::Ogre::PM_POINTS:
-            polygonOptions = ::fwData::Material::MODE_POINT;
-            break;
-        default:
-            polygonOptions = ::fwData::Material::MODE_SURFACE;
-            break;
-    }
-    f4s_mat->setRepresentationMode(polygonOptions);
-
-    auto sig = f4s_mat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-    {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        sig->asyncEmit();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -1037,32 +950,25 @@ void SMaterial::updateShadingMode( int shadingMode  )
 {
     if(m_materialTemplateName == DEFAULT_MATERIAL_TEMPLATE_NAME)
     {
-        ::fwData::Material::sptr f4sMaterial = this->getObject< ::fwData::Material >();
-
         // Choose the shading mode string
         ::Ogre::String shadingProgramSuffix;
 
-        // If the shading is disabled on this material, we have to specify it in the shader name
-        if(!f4sMaterial->getLighting())
+        switch(shadingMode)
         {
-            shadingProgramSuffix = s_NONE;
-        }
-        else
-        {
-            switch(shadingMode)
-            {
-                case ::fwData::Material::SHADING_MODE::MODE_FLAT:
-                    shadingProgramSuffix = s_FLAT;
-                    break;
-                case ::fwData::Material::SHADING_MODE::MODE_GOURAUD:
-                    shadingProgramSuffix = s_GOURAUD;
-                    break;
-                case ::fwData::Material::SHADING_MODE::MODE_PHONG:
-                    shadingProgramSuffix = s_PIXELLIGHTING;
-                    break;
-                default:
-                    SLM_ERROR("Unknown shading mode. ");
-            }
+            case ::fwData::Material::SHADING_MODE::MODE_AMBIENT:
+                shadingProgramSuffix = s_NONE;
+                break;
+            case ::fwData::Material::SHADING_MODE::MODE_FLAT:
+                shadingProgramSuffix = s_FLAT;
+                break;
+            case ::fwData::Material::SHADING_MODE::MODE_GOURAUD:
+                shadingProgramSuffix = s_GOURAUD;
+                break;
+            case ::fwData::Material::SHADING_MODE::MODE_PHONG:
+                shadingProgramSuffix = s_PIXELLIGHTING;
+                break;
+            default:
+                SLM_ERROR("Unknown shading mode. ");
         }
 
         ::Ogre::String shadingCfgs;
@@ -1201,35 +1107,14 @@ void SMaterial::updateShadingMode( int shadingMode  )
 void SMaterial::updateRGBAMode(fwData::Material::sptr fw_material)
 {
     //Set up Material colors
-    m_material->setLightingEnabled( true );
-    // TODO : Change fwData to store :
-    // - ambient color in the ambient parameter,
-    // - diffuse color in diffuse parameter
-    // - specular parameters
+    ::fwData::Color::sptr f4sAmbient = fw_material->ambient();
+    ::fwData::Color::sptr f4sDiffuse = fw_material->diffuse();
 
-    // FIXME : fwData's ambient can't be used without changing ::fwData::Material(::fwData::Object::Key key) m_ambient
-    //        default value
-    ::fwData::Color::sptr color_ambient = fw_material->ambient();
-    ::fwData::Color::sptr color_diffuse = fw_material->diffuse();
+    ::Ogre::ColourValue ambient(f4sAmbient->red(), f4sAmbient->green(), f4sAmbient->blue(), f4sAmbient->alpha());
+    m_material->setAmbient(ambient);
 
-    if(m_materialTemplateName == DEFAULT_MATERIAL_TEMPLATE_NAME && m_hasMeshNormal)
-    {
-        ::Ogre::ColourValue ambient(0.05f, 0.05f, 0.05f, 1.0f);
-        m_material->setAmbient(ambient);
-        ::Ogre::ColourValue diffuse(color_ambient->red(), color_ambient->green(),
-                                    color_ambient->blue(), color_ambient->alpha());
-        m_material->setDiffuse(diffuse);
-    }
-    else
-    {
-        ::Ogre::ColourValue ambient(color_ambient->red(), color_ambient->green(),
-                                    color_ambient->blue(), color_ambient->alpha());
-        m_material->setAmbient(ambient);
-        // Use the alpha from ambient (this is not a typo ;-) )
-        ::Ogre::ColourValue diffuse(color_diffuse->red(), color_diffuse->green(),
-                                    color_diffuse->blue(), color_ambient->alpha());
-        m_material->setDiffuse(diffuse);
-    }
+    ::Ogre::ColourValue diffuse(f4sDiffuse->red(), f4sDiffuse->green(), f4sDiffuse->blue(), f4sDiffuse->alpha());
+    m_material->setDiffuse(diffuse);
 
     ::Ogre::ColourValue specular(.2f, .2f, .2f, 1.f);
     m_material->setSpecular( specular );
