@@ -147,9 +147,6 @@ public:
     /// Sets m_depth
     FWRENDEROGRE_API void setDepth(int depth);
 
-    /// Returns m_oneLight
-    FWRENDEROGRE_API void setOneLight(bool oneLight);
-
     /// Sets the worker for slots
     FWRENDEROGRE_API void setWorker( const ::fwThread::Worker::sptr& _worker);
 
@@ -247,9 +244,6 @@ private:
 
     /// Z Depth of this viewport
     int m_depth;
-
-    /// This layer has one light only
-    bool m_oneLight;
 
     /// Top background color : specific to background Layer
     std::string m_topColor;

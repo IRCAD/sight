@@ -176,7 +176,6 @@ void SRender::starting() throw(fwTools::Failed)
         ogreLayer->setDepth(0);
         ogreLayer->setWorker(m_associatedWorker);
         ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
-        ogreLayer->setOneLight(true);
         ogreLayer->setBackgroundColor("#000000", "#000000");
         ogreLayer->setBackgroundScale(0, 0.5);
 
@@ -229,7 +228,6 @@ void SRender::configureLayer( ConfigurationType conf )
 {
     const std::string id                    = conf->getAttributeValue("id");
     const std::string layer                 = conf->getAttributeValue("layer");
-    const std::string oneLight              = conf->getAttributeValue("oneLight");
     const std::string background            = conf->getAttributeValue("background");
     const std::string compositors           = conf->getAttributeValue("compositors");
     const std::string transparencyTechnique = conf->getAttributeValue("transparencyTechnique");
@@ -248,7 +246,6 @@ void SRender::configureLayer( ConfigurationType conf )
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
-    ogreLayer->setOneLight(oneLight == "yes");
 
     ogreLayer->setDefaultCompositorEnabled(id == "default", transparencyTechnique, useCelShading, nbPeel);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);
@@ -268,7 +265,6 @@ void SRender::configureBackgroundLayer( ConfigurationType conf )
     ogreLayer->setDepth(0);
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
-    ogreLayer->setOneLight(true);
 
     if (conf)
     {

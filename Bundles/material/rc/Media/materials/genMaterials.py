@@ -68,7 +68,7 @@ template = env.get_template('Common.program.tpl')
 
 ## Common parameters used in Lighting.glsl, used both at Vertex and Fragment stages
 lightingParams = [ 'param_named_auto u_cameraPos camera_position',
-                   'param_named_auto u_lightDir light_position_array 2',
+                   'param_named_auto u_lightDir light_position_array 1',
                    'param_named_auto u_ambient surface_ambient_colour',
                    'param_named_auto u_diffuse surface_diffuse_colour',
                    'param_named_auto u_specular surface_specular_colour',

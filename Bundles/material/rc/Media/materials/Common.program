@@ -9,7 +9,7 @@
 vertex_program Lighting_VP glsl
 {
     source Lighting.glsl
-    preprocessor_defines NUM_LIGHTS=2
+    preprocessor_defines NUM_LIGHTS=1
 }
 
 //---------------------------------------------------------------------------
@@ -17,7 +17,7 @@ vertex_program Lighting_VP glsl
 fragment_program Lighting_FP glsl
 {
     source Lighting.glsl
-    preprocessor_defines NUM_LIGHTS=2
+    preprocessor_defines NUM_LIGHTS=1
 }
 
 //---------------------------------------------------------------------------
@@ -52,7 +52,7 @@ vertex_program RenderScene_Flat_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -73,7 +73,7 @@ vertex_program RenderScene_Flat+VT_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -94,7 +94,7 @@ vertex_program RenderScene_Flat+DfsTex_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -115,7 +115,7 @@ vertex_program RenderScene_Flat+VT+DfsTex_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -136,7 +136,7 @@ vertex_program RenderScene_Gouraud_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -157,7 +157,7 @@ vertex_program RenderScene_Gouraud+VT_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -178,7 +178,7 @@ vertex_program RenderScene_Gouraud+DfsTex_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -199,7 +199,7 @@ vertex_program RenderScene_Gouraud+VT+DfsTex_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -950,7 +950,7 @@ fragment_program Default_PixelLit_FP_glsl glsl
     default_params
     {
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -968,7 +968,7 @@ fragment_program Default_PixelLit+VT_FP_glsl glsl
     default_params
     {
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -986,7 +986,7 @@ fragment_program Default_PixelLit+DfsTex_FP_glsl glsl
     default_params
     {
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1005,7 +1005,7 @@ fragment_program Default_PixelLit+VT+DfsTex_FP_glsl glsl
     default_params
     {
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1204,7 +1204,7 @@ fragment_program DepthPeeling_peel_PixelLit_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1227,7 +1227,7 @@ fragment_program DepthPeeling_peel_PixelLit+VT_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1250,7 +1250,7 @@ fragment_program DepthPeeling_peel_PixelLit+DfsTex_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1274,7 +1274,7 @@ fragment_program DepthPeeling_peel_PixelLit+VT+DfsTex_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1509,7 +1509,7 @@ fragment_program DualDepthPeeling_peel_PixelLit_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1535,7 +1535,7 @@ fragment_program DualDepthPeeling_peel_PixelLit+VT_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1561,7 +1561,7 @@ fragment_program DualDepthPeeling_peel_PixelLit+DfsTex_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1588,7 +1588,7 @@ fragment_program DualDepthPeeling_peel_PixelLit+VT+DfsTex_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1802,7 +1802,7 @@ fragment_program HybridTransparency_peel_PixelLit_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1825,7 +1825,7 @@ fragment_program HybridTransparency_peel_PixelLit+VT_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1848,7 +1848,7 @@ fragment_program HybridTransparency_peel_PixelLit+DfsTex_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -1872,7 +1872,7 @@ fragment_program HybridTransparency_peel_PixelLit+VT+DfsTex_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2104,7 +2104,7 @@ fragment_program HybridTransparency_weight_blend_PixelLit_FP_glsl glsl
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2130,7 +2130,7 @@ fragment_program HybridTransparency_weight_blend_PixelLit+VT_FP_glsl glsl
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2156,7 +2156,7 @@ fragment_program HybridTransparency_weight_blend_PixelLit+DfsTex_FP_glsl glsl
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2183,7 +2183,7 @@ fragment_program HybridTransparency_weight_blend_PixelLit+VT+DfsTex_FP_glsl glsl
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2399,7 +2399,7 @@ fragment_program WeightedBlended_weight_blend_PixelLit_FP_glsl glsl
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2422,7 +2422,7 @@ fragment_program WeightedBlended_weight_blend_PixelLit+VT_FP_glsl glsl
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2445,7 +2445,7 @@ fragment_program WeightedBlended_weight_blend_PixelLit+DfsTex_FP_glsl glsl
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2469,7 +2469,7 @@ fragment_program WeightedBlended_weight_blend_PixelLit+VT+DfsTex_FP_glsl glsl
         param_named_auto u_near near_clip_distance
         param_named_auto u_far far_clip_distance
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2537,7 +2537,7 @@ vertex_program CelShadingDepthPeelingRenderScene_Flat_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2558,7 +2558,7 @@ vertex_program CelShadingDepthPeelingRenderScene_Flat+VT_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2579,7 +2579,7 @@ vertex_program CelShadingDepthPeelingRenderScene_Flat+DfsTex_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2600,7 +2600,7 @@ vertex_program CelShadingDepthPeelingRenderScene_Flat+VT+DfsTex_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2621,7 +2621,7 @@ vertex_program CelShadingDepthPeelingRenderScene_Gouraud_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2642,7 +2642,7 @@ vertex_program CelShadingDepthPeelingRenderScene_Gouraud+VT_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2663,7 +2663,7 @@ vertex_program CelShadingDepthPeelingRenderScene_Gouraud+DfsTex_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2684,7 +2684,7 @@ vertex_program CelShadingDepthPeelingRenderScene_Gouraud+VT+DfsTex_VP_glsl glsl
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2909,7 +2909,7 @@ fragment_program CelShadingDepthPeeling_peel_PixelLit_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2932,7 +2932,7 @@ fragment_program CelShadingDepthPeeling_peel_PixelLit+VT_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2955,7 +2955,7 @@ fragment_program CelShadingDepthPeeling_peel_PixelLit+DfsTex_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour
@@ -2979,7 +2979,7 @@ fragment_program CelShadingDepthPeeling_peel_PixelLit+VT+DfsTex_FP_glsl glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_lightDir light_position_array 2
+        param_named_auto u_lightDir light_position_array 1
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
         param_named_auto u_specular surface_specular_colour

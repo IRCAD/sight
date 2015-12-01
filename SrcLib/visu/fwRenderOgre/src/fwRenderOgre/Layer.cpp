@@ -62,7 +62,6 @@ Layer::Layer() :
     m_nbPeel(8),
     m_compositorChainManager(),
     m_depth(1),
-    m_oneLight(false),
     m_topColor("#333333"),
     m_bottomColor("#333333"),
     m_topScale(0.f),
@@ -185,15 +184,9 @@ void Layer::createScene()
     // Alter the camera aspect ratio to match the viewport
     m_camera->setAspectRatio(Ogre::Real(m_viewport->getActualWidth()) / ::Ogre::Real(m_viewport->getActualHeight()));
 
-    // We need two lights currently because of the meshes data we use
-    // Most of them do not have normals - when we generate them we rely on the point order to
-    // compute the normal orientation. Some are clockwise, others are anti-clockwise
-    // Thus we need to take that into account, even if it would be better to fix data
-    // A light pass is not free in a forward renderer !
-
     ::Ogre::Light* light = m_sceneManager->createLight("MainLight");
     light->setType(::Ogre::Light::LT_DIRECTIONAL);
-    light->setDirection(::Ogre::Vector3(0,0,1));
+    light->setDirection(::Ogre::Vector3(0,0,-1));
     light->setDiffuseColour(::Ogre::ColourValue());
     light->setSpecularColour(::Ogre::ColourValue());
 
@@ -205,16 +198,6 @@ void Layer::createScene()
     // Attach Camera and Headlight to fit vtk light
     cameraNode->attachObject(m_camera);
     cameraNode->attachObject(light);
-
-    if(!m_oneLight)
-    {
-        ::Ogre::Light* secondlight = m_sceneManager->createLight("SecondLight");
-        secondlight->setType(::Ogre::Light::LT_DIRECTIONAL);
-        secondlight->setDirection(::Ogre::Vector3(0,0,-1));
-        secondlight->setDiffuseColour(::Ogre::ColourValue());
-        secondlight->setSpecularColour(::Ogre::ColourValue());
-        cameraNode->attachObject(secondlight);
-    }
 
     // If there is any interactor adaptor in xml, m_moveInteractor will be overwritten by InteractorStyle adaptor
     ::fwRenderOgre::interactor::IMovementInteractor::sptr interactor =
@@ -329,13 +312,6 @@ int Layer::getDepth() const
 void Layer::setDepth(int depth)
 {
     m_depth = depth;
-}
-
-// ----------------------------------------------------------------------------
-
-void Layer::setOneLight(bool oneLight)
-{
-    m_oneLight = oneLight;
 }
 
 // ----------------------------------------------------------------------------
