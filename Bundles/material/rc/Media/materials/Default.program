@@ -42,6 +42,32 @@ fragment_program DepthPeeling_final_FP glsl
     }
 }
 
+//-----------------------------------------------------------------------------
+
+geometry_program DepthPeeling_depth_map_VerticesNormalsDisplay_GP glsl
+{
+    source NormalsDisplay_GP.glsl
+    preprocessor_defines POINT=1,DEPTH=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named u_normalLength float 10.
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+geometry_program DepthPeeling_depth_map_CellsNormalsDisplay_GP glsl
+{
+    source NormalsDisplay_GP.glsl
+    preprocessor_defines CELL=1,DEPTH=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named u_normalLength float 10.
+    }
+}
+
 //---------------------------------------------------------------------------
 
 fragment_program DualDepthPeeling_peel_init_FP_glsl glsl
@@ -49,7 +75,14 @@ fragment_program DualDepthPeeling_peel_init_FP_glsl glsl
     source DualDepthPeelingInit_FP.glsl
 }
 
-//------------------------------------------------------------------
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling_Edge_Normal_FP_glsl glsl
+{
+    source DualDepthPeelingInit_FP.glsl
+}
+
+//---------------------------------------------------------------------------
 
 fragment_program HybridTransparency_transmittance_blend_FP glsl
 {

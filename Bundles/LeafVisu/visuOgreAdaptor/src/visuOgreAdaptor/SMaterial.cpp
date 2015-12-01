@@ -34,8 +34,9 @@
 #include "visuOgreAdaptor/STexture.hpp"
 
 #include <boost/regex.hpp>
-#include <regex>
+#include <string>
 
+#include <OGRE/OgreVector3.h>
 #include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTextureManager.h>
@@ -90,6 +91,8 @@ SMaterial::SMaterial() throw() :
     m_hasMeshNormal(true),
     m_hasVertexColor(false),
     m_hasPrimitiveColor(false),
+    m_meshBoundingBox(::Ogre::Vector3::ZERO, ::Ogre::Vector3::ZERO),
+    m_normalLengthFactor(0.1f),
     m_hasQuad(false),
     m_hasTetra(false),
     m_useLighting(true),
@@ -536,6 +539,12 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
             m_useLighting = false;
         }
     }
+
+    if(m_configuration->hasAttribute("normalLength"))
+    {
+        std::string stringLength = m_configuration->getAttributeValue("normalLength");
+        m_normalLengthFactor = static_cast< ::Ogre::Real >(std::stof(stringLength));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -599,7 +608,8 @@ void SMaterial::doUpdate() throw(fwTools::Failed)
     ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
 
     // Set up representation mode
-    this->setPolygonMode( material->getRepresentationMode() );
+    this->updatePolygonMode( material->getRepresentationMode() );
+    this->updateOptionsMode( material->getOptionsMode() );
     this->updateShadingMode( material->getShadingMode() );
     this->updateRGBAMode( material );
     this->updateSchemeSupport();
@@ -623,6 +633,16 @@ void SMaterial::updateSchemeSupport()
         currentLayer->getDefaultCompositor()->updateTechniquesSupported(m_materialName, m_schemesSupported);
         currentLayer->getDefaultCompositor()->update();
     }
+}
+
+//------------------------------------------------------------------------------
+
+::Ogre::Real SMaterial::computeNormalLength()
+{
+    ::Ogre::Vector3 meshBBoxSize = m_meshBoundingBox.getSize();
+    ::Ogre::Real averageSize     = ( meshBBoxSize.x + meshBBoxSize.y + meshBBoxSize.z ) /
+                                   static_cast< ::Ogre::Real >(3.0);
+    return averageSize * m_normalLengthFactor;
 }
 
 //------------------------------------------------------------------------------
@@ -797,7 +817,110 @@ void SMaterial::updateFromOgre()
 
 //------------------------------------------------------------------------------
 
-void SMaterial::setPolygonMode(int polygonMode)
+void SMaterial::updateOptionsMode(int optionsMode)
+{
+    ::Ogre::Material::TechniqueIterator tech_iter = m_material->getSupportedTechniqueIterator();
+    ::Ogre::Real normalLength                     = this->computeNormalLength();
+
+    while( tech_iter.hasMoreElements())
+    {
+        ::Ogre::Technique* currentTechnique       = tech_iter.getNext();
+        ::Ogre::Technique::PassIterator pass_iter = currentTechnique->getPassIterator();
+
+        std::vector< ::Ogre::Pass* > normalPassVector;
+
+        while ( pass_iter.hasMoreElements() )
+        {
+            ::Ogre::Pass* ogrePass = pass_iter.getNext();
+            if(ogrePass->getName() == s_NORMALS_PASS)
+            {
+                normalPassVector.push_back(ogrePass);
+            }
+        }
+
+        // We have to remove the normal passes
+        for(auto normalPass : normalPassVector)
+        {
+            currentTechnique->removePass(normalPass->getIndex());
+        }
+
+        // If we are in standard mode (no normals), we don't have to create a normals pass
+        if( optionsMode == ::fwData::Material::OPTIONS_MODE::MODE_STANDARD)
+        {
+            continue;
+        }
+
+        // We need the first pass of the current technique in order to copy its rendering states in the normals pass
+        ::Ogre::Pass* firstPass = currentTechnique->getPass(0);
+
+        const bool peelPass           = std::regex_match(currentTechnique->getName(), s_PEEL_REGEX);
+        const bool weightBlend        = std::regex_match(currentTechnique->getName(), s_WEIGHT_BLEND_REGEX);
+        const bool transmittanceBlend = std::regex_match(currentTechnique->getName(), s_TRANSMITTANCE_BLEND_REGEX);
+        const bool depthMap           = std::regex_match(currentTechnique->getName(), s_DEPTH_MAP_REGEX);
+
+        if( (currentTechnique->getName() == "" || peelPass || weightBlend || transmittanceBlend || depthMap) )
+        {
+            // We copy the first pass, thus keeping all rendering states
+            ::Ogre::Pass* normalsPass = currentTechnique->createPass();
+            *normalsPass              = *firstPass;
+            normalsPass->setName(s_NORMALS_PASS);
+
+            // Vertex shader
+            normalsPass->setVertexProgram("Default_Normal_VP_glsl");
+
+            // Geometry shader (for point or cell normals)
+            if(optionsMode == ::fwData::Material::OPTIONS_MODE::MODE_NORMALS)
+            {
+                if(depthMap)
+                {
+                    normalsPass->setGeometryProgram("DepthPeeling_depth_map_VerticesNormalsDisplay_GP");
+                }
+                else
+                {
+                    normalsPass->setGeometryProgram("VerticesNormalsDisplay_GP");
+                }
+            }
+            else
+            {
+                if(depthMap)
+                {
+                    normalsPass->setGeometryProgram("DepthPeeling_depth_map_CellsNormalsDisplay_GP");
+                }
+                else
+                {
+                    normalsPass->setGeometryProgram("CellsNormalsDisplay_GP");
+                }
+            }
+
+            if(!depthMap)
+            {
+                auto fpName = normalsPass->getFragmentProgramName();
+
+                // Clear the suffix (+VT+...)
+                const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P_glsl)", ::boost::regex::extended);
+                fpName = ::boost::regex_replace(fpName, regexConcat, "$1");
+
+                // Fragment shader
+                // We use a specific version of this shader when we use an OIT technique
+                // (mainly to force the diffuse color because we don't manage to set uniforms with compositors usage)
+                const ::boost::regex regexShading("("+s_FLAT+")|("+s_GOURAUD+")|("+s_PIXELLIGHTING+")");
+                fpName = ::boost::regex_replace(fpName, regexShading, "Edge_Normal");
+
+                const ::boost::regex regexTech("(peel_init)|(transmittance_blend)");
+                fpName = ::boost::regex_replace(fpName, regexTech, "$&_Edge_Normal");
+
+                normalsPass->setFragmentProgram(fpName);
+            }
+
+            // Updates the normal length according to the bounding box's size
+            normalsPass->getGeometryProgramParameters()->setNamedConstant("u_normalLength", normalLength);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SMaterial::updatePolygonMode(int polygonMode)
 {
     // This is necessary to load and compile the material, otherwise the following technique iterator
     // is null when we call this method on the first time (from doStart() for instance)
@@ -805,19 +928,15 @@ void SMaterial::setPolygonMode(int polygonMode)
 
     ::Ogre::Material::TechniqueIterator tech_iter = m_material->getSupportedTechniqueIterator();
 
-    const std::regex regexPeel(".*_peel.*");
-    const std::regex regexWeightBlend(".*_weight_blend.*");
-    const std::regex regexTransmittanceBlend(".*_transmittance_blend.*");
-
     if(polygonMode == ::fwData::Material::MODE_EDGE)
     {
         while( tech_iter.hasMoreElements())
         {
             ::Ogre::Technique* tech = tech_iter.getNext();
 
-            const bool peelPass           = std::regex_match(tech->getName(), regexPeel);
-            const bool weightBlend        = std::regex_match(tech->getName(), regexWeightBlend);
-            const bool transmittanceBlend = std::regex_match(tech->getName(), regexTransmittanceBlend);
+            const bool peelPass           = std::regex_match(tech->getName(), s_PEEL_REGEX);
+            const bool weightBlend        = std::regex_match(tech->getName(), s_WEIGHT_BLEND_REGEX);
+            const bool transmittanceBlend = std::regex_match(tech->getName(), s_TRANSMITTANCE_BLEND_REGEX);
 
             if(tech->getName() == "" || peelPass || weightBlend || transmittanceBlend)
             {
@@ -826,13 +945,13 @@ void SMaterial::setPolygonMode(int polygonMode)
 
                 firstPass->setPolygonMode(::Ogre::PM_SOLID);
 
-                ::Ogre::Pass* edgePass = tech->getPass("EdgePass");
+                ::Ogre::Pass* edgePass = tech->getPass(s_EDGE_PASS);
                 if(!edgePass)
                 {
                     // We copy the first pass, thus keeping all rendering states
                     edgePass  = tech->createPass();
                     *edgePass = *firstPass;
-                    edgePass->setName("EdgePass");
+                    edgePass->setName(s_EDGE_PASS);
 
                     // We then switch the vertex shader...
                     edgePass->setVertexProgram("Default_Edge_VP_glsl");
@@ -846,11 +965,11 @@ void SMaterial::setPolygonMode(int polygonMode)
 
                     // For the latter, we use a specific version when we use an OIT technique
                     // (mainly to force the diffuse color because we don't manage to set uniforms with compositors usage)
-                    const ::boost::regex regexShading("(PixelLighting)|(Flat)|(Gouraud)");
+                    const ::boost::regex regexShading("("+s_FLAT+")|("+s_GOURAUD+")|("+s_PIXELLIGHTING+")");
                     fpName = ::boost::regex_replace(fpName, regexShading, "Edge_Normal" );
 
                     const ::boost::regex regexTech("(peel_init)|(transmittance_blend)");
-                    fpName = ::boost::regex_replace(fpName, regexTech, "$&_Edge" );
+                    fpName = ::boost::regex_replace(fpName, regexTech, "$&_Edge_Normal" );
 
                     edgePass->setFragmentProgram(fpName);
 
@@ -870,7 +989,7 @@ void SMaterial::setPolygonMode(int polygonMode)
             while ( pass_iter.hasMoreElements() )
             {
                 ::Ogre::Pass* ogrePass = pass_iter.getNext();
-                if(ogrePass->getName() == "EdgePass")
+                if(ogrePass->getName() == s_EDGE_PASS)
                 {
                     edgePassVector.push_back(ogrePass);
                     continue;
@@ -991,7 +1110,7 @@ void SMaterial::updateShadingMode( int shadingMode  )
                 ogrePass = pass_iter.getNext();
 
                 // Discard edge pass
-                if (ogrePass->getName() == "EdgePass")
+                if (ogrePass->getName() == s_EDGE_PASS || ogrePass->getName() == s_NORMALS_PASS )
                 {
                     continue;
                 }

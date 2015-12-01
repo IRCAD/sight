@@ -2,6 +2,7 @@
 
 //-----------------------------------------------------------------------------
 
+// Edge
 vertex_program Default_Edge_VP_glsl glsl
 {
     source DefaultEdge_VP.glsl
@@ -10,6 +11,42 @@ vertex_program Default_Edge_VP_glsl glsl
         param_named_auto u_worldView worldview_matrix
         param_named_auto u_proj projection_matrix
         param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+// Normal
+vertex_program Default_Normal_VP_glsl glsl
+{
+    source NormalsDisplay_VP.glsl
+}
+
+//-----------------------------------------------------------------------------
+
+geometry_program VerticesNormalsDisplay_GP glsl
+{
+    source NormalsDisplay_GP.glsl
+    preprocessor_defines POINT=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named u_normalLength float 10.
+        param_named u_normalColor float4 1. 0. 0. 1.
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+geometry_program CellsNormalsDisplay_GP glsl
+{
+    source NormalsDisplay_GP.glsl
+    preprocessor_defines CELL=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named u_normalLength float 10.
+        param_named u_normalColor float4 1. 1. 0. 1.
     }
 }
 

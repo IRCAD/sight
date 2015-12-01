@@ -171,9 +171,11 @@ void DefaultCompositor::setupTransparency()
         if(targetComp->getCompositor()->getName() == m_transparencyTechniqueName)
         {
             m_compositorInstance = targetComp;
+            break;
         }
     }
 
+    // If we didn't retrieve the good compositor
     if(m_compositorInstance == nullptr)
     {
         ::Ogre::CompositorManager* compositorManager = ::Ogre::CompositorManager::getSingletonPtr();
@@ -205,7 +207,7 @@ void DefaultCompositor::setupTransparency()
         {
             OSLM_ERROR(
                 "Compositor " + m_transparencyTechniqueName +
-                "script is missing in resources (check your resources' paths)");
+                " script is missing in resources (check your resources' paths)");
         }
     }
 }

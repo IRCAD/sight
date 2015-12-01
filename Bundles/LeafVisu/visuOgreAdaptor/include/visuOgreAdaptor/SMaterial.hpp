@@ -19,8 +19,11 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
+
+#include <regex>
 
 #include "visuOgreAdaptor/STexture.hpp"
 
@@ -101,6 +104,8 @@ public:
     VISUOGREADAPTOR_API ::fwData::Material::SHADING_MODE getShadingMode() const;
     VISUOGREADAPTOR_API void setShadingMode(::fwData::Material::SHADING_MODE _shadingMode);
 
+    VISUOGREADAPTOR_API void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
+
     /// Update fwData material parameters from Ogre material parameters
     VISUOGREADAPTOR_API void updateFromOgre();
 
@@ -114,7 +119,7 @@ protected:
      * @verbatim
        <adaptor id="materialAdaptor" class="::visuOgreAdaptor::SMaterial" objectId="materialKey">
         <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureAdaptor="texAdaptorUID"
-                shadingMode="gouraud" />
+                shadingMode="gouraud" normalLength="0.1" />
        </adaptor>
        @endverbatim
      * With :
@@ -122,6 +127,7 @@ protected:
      *  - \b materialName (optional) : name of the managed Ogre material
      *  - \b textureAdaptor (optional) : the texture adaptor listened by the material
      *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
+     *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals
      */
     VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
@@ -155,8 +161,11 @@ private:
     /// Updates material parameters from a specific template
     void loadShaderParameters(::Ogre::GpuProgramParametersSharedPtr params, std::string shaderType);
 
-    /// Updates material polygon mode (surface/point/wireframe) in fixed function pipeline
-    void setPolygonMode( int polygonMode );
+    /// Updates material options mode (standard, point normals or cells normals)
+    void updateOptionsMode( int optionMode );
+
+    /// Updates material polygon mode (surface, point or wireframe)
+    void updatePolygonMode( int polygonMode );
 
     /// Manages service associated to a shader parameter
     void setServiceOnShaderParameter(::fwRenderOgre::IAdaptor::sptr& srv,
@@ -180,6 +189,9 @@ private:
 
     /// Checks support of technique's schemes
     void updateSchemeSupport();
+
+    /// Generates a normal length according to the mesh's bounding box
+    ::Ogre::Real computeNormalLength();
 
     /// Associated Ogre material
     ::Ogre::MaterialPtr m_material;
@@ -208,6 +220,11 @@ private:
 
     /// Name of the texture used to store per-primitive color
     std::string m_perPrimitiveColorTextureName;
+
+    /// Bounding box of the mesh
+    ::Ogre::AxisAlignedBox m_meshBoundingBox;
+    /// Factor used to ease the normals length
+    ::Ogre::Real m_normalLengthFactor;
 
     std::vector< Ogre::String > m_schemesSupported;
 
@@ -327,6 +344,15 @@ inline ::fwData::Material::SHADING_MODE SMaterial::getShadingMode() const
 inline void SMaterial::setShadingMode(::fwData::Material::SHADING_MODE _shadingMode)
 {
     m_shadingMode = _shadingMode;
+}
+
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+inline void SMaterial::setMeshBoundingBox(const Ogre::AxisAlignedBox &_bbox)
+{
+    m_meshBoundingBox = _bbox;
 }
 
 //------------------------------------------------------------------------------

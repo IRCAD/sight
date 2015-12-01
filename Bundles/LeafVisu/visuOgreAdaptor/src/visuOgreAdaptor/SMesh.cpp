@@ -614,6 +614,12 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
     this->updateColors(mesh);
     this->updateTexCoords(mesh);
 
+    if(m_materialAdaptor)
+    {
+        // Sends the mesh's bounding box to the material (used for normals display)
+        m_materialAdaptor->setMeshBoundingBox(m_ogreMesh->getBounds());
+    }
+
     if (m_autoResetCamera)
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);

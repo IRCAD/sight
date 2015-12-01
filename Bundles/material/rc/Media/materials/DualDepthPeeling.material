@@ -2,17 +2,9 @@
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling_peel_init_Edge_FP_glsl glsl
+fragment_program DualDepthPeeling_peel_init_Edge_Normal_FP_glsl glsl
 {
-    source DepthPeelingPeel_FP.glsl
-    attach DepthPeelingCommon_FP
-    attach MaterialColor_Edge_FP
-    default_params
-    {
-        param_named u_fragData0 int 0
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
-    }
+    source DualDepthPeelingInit_FP.glsl
 }
 
 //---------------------------------------------------------------------------

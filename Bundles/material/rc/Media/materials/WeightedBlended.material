@@ -2,7 +2,7 @@
 
 //---------------------------------------------------------------------------
 
-fragment_program WeightedBlended_transmittance_blend_Edge_FP glsl
+fragment_program WeightedBlended_transmittance_blend_Edge_Normal_FP glsl
 {
     source WeightedBlended_Transmittance_Blend_FP.glsl
     default_params

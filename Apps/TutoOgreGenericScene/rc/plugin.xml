@@ -120,7 +120,7 @@
                                 </adaptor>
 
                                 <adaptor id="materialAdaptor" uid="materialAdaptorUID" class="::visuOgreAdaptor::SMaterial" objectId="materialKey">
-                                    <config renderer="default" materialTemplate="1 - Default" textureAdaptor="textureAdaptorUID" />
+                                    <config renderer="default" materialTemplate="1 - Default" textureAdaptor="textureAdaptorUID" normalLength="1.0" />
                                 </adaptor>
 
                                 <!-- 3D Negato -->
