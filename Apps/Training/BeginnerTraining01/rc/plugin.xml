@@ -6,7 +6,7 @@
 
             <object type="::fwData::String">
 
-                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>BeginnerTraining01 App</name>

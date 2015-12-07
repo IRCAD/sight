@@ -62,7 +62,7 @@ Detail of the ToolBar
         <config>
            <object type="::fwData::Composite">
 
-            <service uid="mainFrame" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+            <service uid="mainFrame" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Ex03Registration</name>
@@ -74,7 +74,7 @@ Detail of the ToolBar
                 </registry>
             </service>
 
-            <service uid="mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Negato1" align="center" />
@@ -87,7 +87,7 @@ Detail of the ToolBar
                 </registry>
             </service>
             <!-- service which create a toolbar -->
-            <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+            <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Load Image" icon="Bundles/Ex03Registration_0-1/icons/icon-load1.png" />
@@ -116,7 +116,7 @@ Detail of the ToolBar
             </service>
 
             <!-- service which create the three tabs of the application -->
-            <service uid="multiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="multiView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::TabLayoutManager" >
                         <view caption="Point List 1" selected="yes" />
@@ -132,7 +132,7 @@ Detail of the ToolBar
             </service>
 
             <!-- NEGATO 1 VIEW  (Content of the first Tab)-->
-            <service uid="multiView_negato1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="multiView_negato1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -145,7 +145,7 @@ Detail of the ToolBar
                     <view sid="multiView_negato1_bottom" start="yes" />
                 </registry>
             </service>
-            <service uid="multiView_negato1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="multiView_negato1_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -161,31 +161,31 @@ Detail of the ToolBar
             <service uid="snapshotNegato1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no"/>
 
             <!-- Action to load an image in the Tab 1 (Point list 1)-->
-            <service uid="actionOpenFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="actionOpenFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="readerPathFile" />
             </service>
 
             <!-- Action to load a mesh in the Tab 1 (Point list 1) -->
-            <service uid="actionOpenMesh1" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="actionOpenMesh1" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="meshReader1" />
             </service>
             <!-- Action to load a mesh in the Tab 2 (Point list 2)  -->
-            <service uid="actionOpenMesh2" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="actionOpenMesh2" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="meshReader2" />
             </service>
 
             <!-- Action to do a fixed translation/rotation on mesh in Point list 2 -->
-            <service uid="TransformAction" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="TransformAction" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="TransformMesh" />
             </service>
 
             <!-- Action to do the registration -->
-            <service uid="RegisterAction" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="RegisterAction" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="PLRegistration" />
             </service>
 
             <!-- Action to do Quit -->
-            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
 
             <!-- GENERIC SCENE DEFINITION -->

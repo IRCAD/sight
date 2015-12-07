@@ -11,7 +11,7 @@
 
     <object type="::fwData::Composite">
 
-        <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+        <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="top"/>
@@ -29,7 +29,7 @@
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+        <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
             <gui>
                 <layout>
                     <menuItem name="Edit pacs configuration" icon="Bundles/mediaExt_0-1/icons/Settings.svg" style="check" />
@@ -44,7 +44,7 @@
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_topView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+        <service uid="${GENERIC_UID}_topView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -56,7 +56,7 @@
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_centerView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+        <service uid="${GENERIC_UID}_centerView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -70,7 +70,7 @@
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_bottomView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+        <service uid="${GENERIC_UID}_bottomView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />

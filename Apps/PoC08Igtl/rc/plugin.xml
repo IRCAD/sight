@@ -6,7 +6,7 @@
 
         <object type="::fwData::Composite">
 
-            <service uid="MyIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+            <service uid="MyIHM" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                 <gui>
                     <frame>
                         <name>PoC08Igtl</name>
@@ -20,7 +20,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
+            <service uid="toolbar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
                 <gui>
                     <layout>
                     <editor />
@@ -72,11 +72,11 @@
                 </slots>
             </service>
 
-            <service uid="startClient" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="startClient" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <start uid="matrixNetworkListener"/>
             </service>
 
-            <service uid="stopClient" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="stopClient" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <stop uid="matrixNetworkListener"/>
             </service>
 

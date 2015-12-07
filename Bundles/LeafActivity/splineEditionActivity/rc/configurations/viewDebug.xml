@@ -22,7 +22,7 @@
 
 
             <!-- MAIN FRAME -->
-            <service uid="${GENERIC_UID}_viewDebugFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="${GENERIC_UID}_viewDebugFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <window onclose="notify" />
                 <gui>
                     <frame>

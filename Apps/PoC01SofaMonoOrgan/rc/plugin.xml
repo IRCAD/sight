@@ -24,7 +24,7 @@
         <object uid="myMesh" type="::fwData::Mesh">
 
             <!-- Mise en place de la fenetre pricipale  -->
-            <service uid="MyIHM" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="MyIHM" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Altran-Est - Medic@ : PoC 1 Demo integration SOFA-FW4SPL</name>
@@ -40,7 +40,7 @@
             </service>
 
             <!-- Mise en place de la partie visualisation  -->
-            <service uid="myDefaultView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="myDefaultView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -55,7 +55,7 @@
             <!-- ****************************************** -->
 
             <!-- Liste des menus -->
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menu name="Fichier" />
@@ -73,7 +73,7 @@
             <!-- ****************************************** -->
 
             <!-- Menu Fichier -->
-            <service uid="menuFile" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="menuFile" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Ouvrir"/>
@@ -88,7 +88,7 @@
             </service>
 
             <!-- Menu Sofa -->
-            <service uid="menuSofa" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="menuSofa" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Deformer" />
@@ -100,7 +100,7 @@
             </service>
 
             <!-- Menu Apropos -->
-            <service uid="menuAbout" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="menuAbout" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="A propos" />
@@ -114,12 +114,12 @@
             <!-- ****************************************** -->
 
             <!-- Action Ouvrir -->
-            <service uid="actionOpen" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="actionOpen" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="readerPathMeshFile" />
             </service>
 
             <!-- Action Quitter -->
-            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
             <!-- Action Deformer qui appelle SofaService -->
             <service uid="actionDeform" type="::fwGui::IActionSrv" impl="::opSofa::SofaTrianSrv" autoConnect="no">
@@ -127,7 +127,7 @@
             </service>
 
             <!-- Action Apropos -->
-            <service uid="actionAbout" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="actionAbout" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
             </service>
 
             <!-- ****************************************** -->

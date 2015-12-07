@@ -1,6 +1,6 @@
 <serviceList>
 
-    <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="yes">
+    <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="yes">
         <gui>
             <layout type="::fwGui::CardinalLayoutManager">
                 <view caption="Information" align="center" minWidth="200" />
@@ -16,7 +16,7 @@
         </registry>
     </service>
 
-    <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+    <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
         <gui>
             <layout>
                 <menuItem name="Import" icon="Bundles/media_0-1/icons/Import.svg" />

@@ -5,7 +5,7 @@
         <config>
             <object type="::fwData::Composite">
 
-                <service uid="MyIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                <service uid="MyIHM" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                     <gui>
                         <frame>
                             <name>Altran Est - Medic@ : PoC 4 - Principe de simulation interactive temps reel avec Sofa</name>
@@ -20,7 +20,7 @@
                     </registry>
                 </service>
 
-                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no" >
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -33,7 +33,7 @@
                     </registry>
                 </service>
 
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
                     <gui>
                         <layout>
                             <menuItem name="Load model series..." shortcut="Ctrl+O" />
@@ -47,7 +47,7 @@
                     </registry>
                 </service>
 
-                <service uid="menu_Sofa" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+                <service uid="menu_Sofa" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
                     <gui>
                         <layout>
                             <menuItem name="Start" shortcut="Ctrl+S" />
@@ -60,13 +60,13 @@
                     </registry>
                 </service>
 
-                <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <start uid="readerPathMeshFile" />
                 </service>
 
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
-                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                     <gui>
                         <layout type="::fwGui::CardinalLayoutManager">
                             <view align="center" minWidth="200"/>
@@ -118,7 +118,7 @@
                                         <useTempPath>yes</useTempPath>
                                     </service>
 
-                                    <service uid="mySofaWriterAction" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no" >
+                                    <service uid="mySofaWriterAction" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no" >
                                         <start uid="mySofaWriter"/>
                                     </service>
 

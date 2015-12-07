@@ -58,7 +58,7 @@
         <config>
             <object type="::fwData::Composite">
 
-                <service uid="mainFrame" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                <service uid="mainFrame" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                     <gui>
                         <frame>
                             <name>Ex04ImagesRegistration</name>
@@ -70,7 +70,7 @@
                     </registry>
                 </service>
 
-                <service uid="mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::CardinalLayoutManager">
                             <view caption="Main view" align="center" />
@@ -83,7 +83,7 @@
                     </registry>
                 </service>
                 <!-- service which create a toolbar -->
-                <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+                <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                     <gui>
                         <layout>
                             <menuItem name="Load Image" icon="Bundles/Ex04ImagesRegistration_0-1/icons/icon-load1.png" />
@@ -103,7 +103,7 @@
                 </service>
 
                 <!-- service which create the three tabs of the application -->
-                <service uid="multiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::TabLayoutManager">
                             <view caption="Image 1" selected="yes" />
@@ -119,7 +119,7 @@
                 </service>
 
                 <!-- NEGATO 1 VIEW (Content of the first Tab) -->
-                <service uid="multiView_negato1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_negato1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="vertical" />
@@ -132,7 +132,7 @@
                         <view sid="multiView_negato1_bottom" start="yes" />
                     </registry>
                 </service>
-                <service uid="multiView_negato1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_negato1_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="horizontal" />
@@ -147,7 +147,7 @@
                 </service>
                 <service uid="snapshotNegato1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
                 <!-- NEGATO 2 VIEW (Content of the second Tab) -->
-                <service uid="multiView_negato2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_negato2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="vertical" />
@@ -160,7 +160,7 @@
                         <view sid="multiView_negato2_bottom" start="yes" />
                     </registry>
                 </service>
-                <service uid="multiView_negato2_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_negato2_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="horizontal" />
@@ -175,7 +175,7 @@
                 </service>
                 <service uid="snapshotNegato2Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
                 <!-- NEGATO 3 VIEW (Content of the third Tab) -->
-                <service uid="registrationView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="registrationView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         s
                         <layout type="::fwGui::LineLayoutManager">
@@ -190,7 +190,7 @@
                     </registry>
                 </service>
 
-                <service uid="multiView_negato3" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_negato3" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         s
                         <layout type="::fwGui::LineLayoutManager">
@@ -204,7 +204,7 @@
                         <view sid="multiView_negato3_bottom" start="yes" />
                     </registry>
                 </service>
-                <service uid="multiView_negato3_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_negato3_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="horizontal" />
@@ -221,17 +221,17 @@
                 <service uid="snapshotNegato3Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
                 <!-- ACTIONS -->
                 <!-- Action to load an image in the Tab 1 -->
-                <service uid="openFile1" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <service uid="openFile1" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <start uid="readerFile1" />
                 </service>
 
                 <!-- Action to load an image in the Tab 2 -->
-                <service uid="openFile2" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <service uid="openFile2" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <start uid="readerFile2" />
                 </service>
 
                 <!-- Action to do Quit -->
-                <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
 
                 <!-- GENERIC SCENE DEFINITION -->
@@ -251,7 +251,7 @@
                                         <sliceIndex>axial</sliceIndex>
                                     </service>
                                     <!-- Action to save an image in the Tab 3 -->
-                                    <service uid="saveFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                                    <service uid="saveFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                                         <start uid="writerFile" />
                                     </service>
                                     <service uid="writerFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">

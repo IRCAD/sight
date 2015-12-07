@@ -10,7 +10,7 @@
 
     <object type="::fwData::Composite">
 
-        <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+        <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" minWidth="200" />
@@ -28,7 +28,7 @@
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+        <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
             <gui>
                 <layout>
                     <menuItem name="Read DICOM files" icon="Bundles/media_0-1/icons/Import.svg" />
@@ -52,7 +52,7 @@
         </service>
 
 
-        <service uid="${GENERIC_UID}_centerView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+        <service uid="${GENERIC_UID}_centerView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -66,7 +66,7 @@
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_bottomView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+        <service uid="${GENERIC_UID}_bottomView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -80,7 +80,7 @@
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_rightView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+        <service uid="${GENERIC_UID}_rightView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -93,7 +93,7 @@
         </service>
 
         <!--HELP -->
-        <service uid="${GENERIC_UID}_menuHelp" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+        <service uid="${GENERIC_UID}_menuHelp" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
             <gui>
                 <layout>
                     <menuItem name="Activity help" />

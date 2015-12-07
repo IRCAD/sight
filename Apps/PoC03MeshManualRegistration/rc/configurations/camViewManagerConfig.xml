@@ -12,7 +12,7 @@
         <object type="::fwData::Composite">
 
             <!-- MAIN FRAME -->
-            <service uid="camViewManagerConfigFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="camViewManagerConfigFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <window onclose="notify" />
                 <gui>
                     <frame>

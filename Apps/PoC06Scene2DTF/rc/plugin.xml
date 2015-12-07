@@ -7,7 +7,7 @@
 
             <object type="::fwData::Composite">
 
-                <service uid="IHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                <service uid="IHM" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                     <gui>
                         <frame>
                             <name>PoC06Scene2DTF</name>
@@ -21,7 +21,7 @@
                         <view sid="multiView" start="yes" />
                     </registry>
                 </service>
-                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -32,7 +32,7 @@
                     </registry>
                 </service>
 
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                     <gui>
                         <layout>
                             <menuItem name="Open file" shortcut="Ctrl+O" />
@@ -46,12 +46,12 @@
                     </registry>
                 </service>
 
-                <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <start uid="readerPathFile" />
                 </service>
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
-                <service uid="multiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::CardinalLayoutManager">
                             <view align="left" />
@@ -64,7 +64,7 @@
                     </registry>
                 </service>
 
-                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::CardinalLayoutManager">
                             <view align="center" />
@@ -77,7 +77,7 @@
                     </registry>
                 </service>
 
-                <service uid="multiView_tabScene" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_tabScene" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::TabLayoutManager">
                             <view caption="TF" selected="yes" />
@@ -90,7 +90,7 @@
                     </registry>
                 </service>
 
-                <service uid="multiView_scene2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_scene2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="vertical" />
@@ -106,7 +106,7 @@
                     </registry>
                 </service>
 
-                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="horizontal" />

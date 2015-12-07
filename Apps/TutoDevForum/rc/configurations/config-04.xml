@@ -4,7 +4,7 @@
 
         <object type="::fwData::Image">
 
-            <service uid="myMainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="myMainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Tuto 04</name>
@@ -19,7 +19,7 @@
                 </registry>
             </service>
 
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -30,7 +30,7 @@
                 </registry>
             </service>
 
-            <service uid="myMenu" impl="::gui::aspect::DefaultMenuSrv" type="::fwGui::IMenuSrv" autoConnect="no">
+            <service uid="myMenu" impl="::gui::aspect::SDefaultMenu" type="::fwGui::IMenuSrv" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="New VTK Image" shortcut="Ctrl+O" />
@@ -48,7 +48,7 @@
 
             <service uid="myViewer" impl="::devForum::tuto03::ImageViewerService" type="::fwRender::IRender" autoConnect="yes" />
 
-            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
             <start uid="myMainFrame" />
             <start uid="myViewer" />

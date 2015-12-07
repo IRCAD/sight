@@ -11,7 +11,7 @@
         <object type="::fwData::Composite">
 
             <!-- MAIN FRAME -->
-            <service uid="${GENERIC_UID}_worldViewConfigFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="${GENERIC_UID}_worldViewConfigFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <window onclose="notify" />
                 <gui>
                     <frame>

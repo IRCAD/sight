@@ -14,7 +14,7 @@
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="CameraView" align="left" minWidth="400" minHeight="100"/>
@@ -30,7 +30,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_tf" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_tf" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -42,7 +42,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_tfmTab" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_tfmTab" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="ViewPoints" />
@@ -57,7 +57,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Hide cross" icon="Bundles/media_0-1/icons/HideCross.png" style="radio" />
@@ -96,7 +96,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_TFScene2D" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_TFScene2D" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -145,15 +145,15 @@
                         <compositeKey>vectorViewPoints</compositeKey>
                     </service>
 
-                    <service uid="${GENERIC_UID}_ActionShowVR" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_ActionShowVR" impl="::gui::action::SPushObject" type="::fwGui::IActionSrv" autoConnect="yes">
                         <push src="${ImageSeriesCompositeUid}[OptionalImageKey]" key="image" />
                     </service>
 
-                    <service uid="${GENERIC_UID}_ActionShowMesh" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_ActionShowMesh" impl="::gui::action::SPushObject" type="::fwGui::IActionSrv" autoConnect="yes">
                         <push src="${ModelSeriesCompositeUid}[OptionalModelSeriesKey]" key="modelSeries" />
                     </service>
 
-                    <service uid="${GENERIC_UID}_ActionShowSliceCursor" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                    <service uid="${GENERIC_UID}_ActionShowSliceCursor" impl="::gui::action::SPushObject" type="::fwGui::IActionSrv" autoConnect="no">
                         <push src="${GENERIC_UID}_VisuComposite[image]" key="imageCursor" />
                     </service>
 
@@ -463,7 +463,7 @@
                     <item key="VRParam">
                         <object uid="${GENERIC_UID}_VRParam" type="::fwData::Composite">
 
-                            <service uid="${GENERIC_UID}_action_exportVRParam" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                            <service uid="${GENERIC_UID}_action_exportVRParam" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                                 <start uid="${GENERIC_UID}_writerVRParam" />
                             </service>
                             <service uid="${GENERIC_UID}_writerVRParam" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">

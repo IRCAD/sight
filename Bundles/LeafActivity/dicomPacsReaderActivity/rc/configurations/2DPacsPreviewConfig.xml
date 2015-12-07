@@ -9,7 +9,7 @@
         <config>
             <object type="::fwData::Composite" uid="${GENERIC_UID}_previewComposite">
 
-                <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::CardinalLayoutManager">
                             <view align="center" />
