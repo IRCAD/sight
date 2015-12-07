@@ -171,9 +171,9 @@ void SVideoAdapter::doUpdate() throw(fwTools::Failed)
         this->getRenderer()->GetActiveCamera()->ParallelProjectionOn();
         this->getRenderer()->ResetCamera();
         this->getRenderer()->GetActiveCamera()->SetParallelScale(size[1] / 2.0);
-
-        this->offsetOpticalCenter();
     }
+
+    this->offsetOpticalCenter();
 
     m_imageData->Modified();
     this->setVtkPipelineModified();
