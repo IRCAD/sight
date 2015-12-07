@@ -14,7 +14,6 @@
     <requirement id="uiGenericQt" />
     <requirement id="uiIO" />
     <requirement id="uiMedDataQt" />
-    <requirement id="visu" />
     <requirement id="visuVTK" />
     <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKQt" />

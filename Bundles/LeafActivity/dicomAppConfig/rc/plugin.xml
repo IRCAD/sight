@@ -7,7 +7,6 @@
     <requirement id="guiQt" />
     <requirement id="ioDicom" />
     <requirement id="ioGdcm" />
-    <requirement id="visu" />
     <requirement id="visuVTK" />
     <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKQt" />

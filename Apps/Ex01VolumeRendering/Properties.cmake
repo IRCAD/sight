@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( UNIQUE TRUE )
 set( DEPENDENCIES  )
-set( REQUIREMENTS 
+set( REQUIREMENTS
     dataReg
     ctrlSelection
     gui
@@ -21,7 +21,6 @@ set( REQUIREMENTS
     visuVTKQt
     visuVTKAdaptor
     visuVTKVRAdaptor
-    visu
     launcher
     appXml
     scene2D

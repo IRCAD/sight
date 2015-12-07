@@ -3,7 +3,7 @@ set( NAME Ex03Registration)
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
-set( REQUIREMENTS 
+set( REQUIREMENTS
     servicesReg
     dataReg
     gui
@@ -15,7 +15,6 @@ set( REQUIREMENTS
     visuVTKQt
     visuVTKAdaptor
     visuVTKVRAdaptor
-    visu
     ioVTK
     ioITK
     ioData

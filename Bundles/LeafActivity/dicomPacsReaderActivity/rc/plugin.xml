@@ -10,7 +10,6 @@
     <requirement id="media" />
     <requirement id="mediaExt" />
     <requirement id="uiMedDataQt" />
-    <requirement id="visu" />
     <requirement id="visuVTK" />
     <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKQt" />

@@ -15,9 +15,7 @@ set( REQUIREMENTS
     media
     mediaExt
     servicesReg
-    visu
     visuVTK
     visuVTKAdaptor
     visuVTKQt
     )
-

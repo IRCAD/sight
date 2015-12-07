@@ -19,9 +19,7 @@ set( REQUIREMENTS
     uiGenericQt
     uiIO
     uiMedDataQt
-    visu
     visuVTK
     visuVTKAdaptor
     visuVTKQt
     )
-

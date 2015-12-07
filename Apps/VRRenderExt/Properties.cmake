@@ -6,7 +6,6 @@ set( DEPENDENCIES )
 set( REQUIREMENTS
     servicesReg
     dataReg
-    visu
     visuVTK
     visuVTKQt
     visuVTKAdaptor

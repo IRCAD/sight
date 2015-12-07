@@ -4,7 +4,7 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( UNIQUE TRUE)
 set( DEPENDENCIES  )
-set( REQUIREMENTS 
+set( REQUIREMENTS
     servicesReg
     dataReg
     gui
@@ -15,7 +15,6 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
-    visu
     ioVTK
     ioData
     uiImageQt

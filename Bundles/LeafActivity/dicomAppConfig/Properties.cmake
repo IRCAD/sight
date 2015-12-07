@@ -12,9 +12,7 @@ set( REQUIREMENTS
     ioDicom
     ioGdcm
     servicesReg
-    visu
     visuVTK
     visuVTKAdaptor
     visuVTKQt
     )
-

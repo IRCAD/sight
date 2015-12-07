@@ -8,11 +8,9 @@ set( REQUIREMENTS servicesReg
                   gui
                   guiQt
                   io
-                  visu
                   visuVTK
                   visuVTKQt
                   launcher
                   appXml
                   devForum
                   )
-

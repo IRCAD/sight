@@ -3,7 +3,7 @@ set( NAME Ex04ImagesRegistration)
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
-set( REQUIREMENTS 
+set( REQUIREMENTS
     servicesReg
     dataReg
     gui
@@ -14,7 +14,6 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
-    visu
     ioVTK
     ioITK
     ioData
