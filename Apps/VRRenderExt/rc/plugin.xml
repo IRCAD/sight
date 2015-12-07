@@ -1,5 +1,10 @@
 <plugin id="VRRenderExt" version="@DASH_VERSION@" >
-    
+
+    <requirement id="servicesReg" />
+    <requirement id="dataReg" />
+    <requirement id="patchMedicalData" />
+    <requirement id="filterVRRender" />
+
     <xi:include href="configurations/VRRenderExtBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
@@ -86,9 +91,9 @@
         <id>MDAtomsConfig</id>
         <desc>reader/writer config to read/write an atom representing a medical data</desc>
         <config>
-            <patcher context="MedicalData" version="V08ALA" /> 
-         </config>
-     </extension>
+            <patcher context="MedicalData" version="V08ALA" />
+        </config>
+    </extension>
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExportSelection</id>
@@ -143,5 +148,5 @@
             </parameters>
         </appConfig>
     </extension>
-
+    
 </plugin>

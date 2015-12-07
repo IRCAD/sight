@@ -1,5 +1,9 @@
 <plugin id="PoC03MeshManualRegistration" version="@DASH_VERSION@" >
 
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+
     <xi:include href="configurations/organManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/manualRegistrationEditorConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/camViewManagerConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -23,8 +27,8 @@
                         </service>
                     </object>
                 </item>
-                
-                
+
+
                 <!-- CompositeVisu description -->
                 <item key="compositeVisu">
                     <object uid="compositeVisuUID" type="::fwData::Composite">
@@ -32,7 +36,7 @@
                         <service uid="updaterImageUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                             <uid>imageUID</uid>
                             <compositeKey>image</compositeKey>
-                        </service>                       
+                        </service>
 
                         <service uid="manager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
                             <mode type="stop" />
@@ -61,7 +65,7 @@
                                     <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
                                         <sliceIndex>axial</sliceIndex>
                                     </service>
-                                    
+
                                     <connect>
                                         <signal>showScanEditor/toggled</signal>
                                         <slot>sliceListEditor/setEnabled</slot>
@@ -101,32 +105,32 @@
                                 <adaptor id="MeshCompositeAdaptor" class="::visuVTKAdaptor::MeshesBoxWidget" objectId="meshDB">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
-                                
+
                                 <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
                                     <slot>genericScene_modelSeriesAdaptorUid/updateNormalMode</slot>
                                 </proxy>
-                                
+
                                 <proxy channel="ModelDisplayChannel" waitForKey="modelSeries">
                                     <slot>genericScene_modelSeriesAdaptorUid/showReconstructions</slot>
                                 </proxy>
-                                
+
                                 <connect>
                                     <signal>snapshotScene1Editor/snapped</signal>
                                     <slot>snapshotUID/snap</slot>
                                 </connect>
-                                
+
                                 <connect waitForKey="image">
                                     <signal>showScanEditor/toggled</signal>
                                     <slot>MPRNegatoScene3D/showSlice</slot>
                                 </connect>
-                                
+
                                 <connect waitForKey="image">
                                     <signal>sliceListEditor/selected</signal>
                                     <slot>MPRNegatoScene3D/updateSliceMode</slot>
                                 </connect>
                             </scene>
                         </service>
-                        
+
                         <service uid="genericScene2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
@@ -151,11 +155,11 @@
                                 <adaptor id="MeshCompositeAdaptor" class="::visuVTKAdaptor::MeshesBoxWidget" objectId="meshDB">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
-                                
+
                                 <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
                                     <slot>genericScene2_modelSeriesAdaptorUid/updateNormalMode</slot>
                                 </proxy>
-                                
+
                                 <proxy channel="ModelDisplayChannel" waitForKey="modelSeries">
                                     <slot>genericScene2_modelSeriesAdaptorUid/showReconstructions</slot>
                                 </proxy>
@@ -169,13 +173,13 @@
                                 </service>
                             </object>
                         </item>
-                
+
                         <!-- meshDB description -->
                         <item key="meshDB">
                             <object uid="meshDBUid" type="::fwData::Composite">
                             </object>
                         </item>
-                        
+
                         <item key="view1">
                             <object uid="view1" type="::fwData::TransformationMatrix3D">
                             </object>
@@ -203,12 +207,12 @@
                                 </service>
                             </object>
                         </item>
-                        
+
                         <connect>
                             <signal>imageUID/modified</signal>
                             <slot>updaterImageUID/addOrSwap</slot>
                         </connect>
-                        
+
                     </object>
                 </item>
 

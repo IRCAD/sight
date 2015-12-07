@@ -32,8 +32,13 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
 <plugin id="Ex01VolumeRendering" version="@DASH_VERSION@" >
 
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+    <requirement id="scene2D" />
+
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex01VolumeRendering</id>        
+        <id>Ex01VolumeRendering</id>
         <config>
 
             <object type="::fwData::Composite">   <!--  Root object of the application -->
@@ -268,7 +273,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                             </field>
                                         </config>
                                     </service>
-                                    
+
                                     <connect>
                                         <signal>showScanEditor/toggled</signal>
                                         <slot>sliceListEditor/setEnabled</slot>
@@ -324,12 +329,12 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                 <adaptor id="cameraScene3DID" class="::visuVTKAdaptor::Medical3DCamera" objectId="image">
                                     <config renderer="default" sliceIndex="axial" />
                                 </adaptor>
-                                
+
                                 <connect waitForKey="image">
                                     <signal>showScanEditor/toggled</signal>
                                     <slot>MPRNegatoScene3D/showSlice</slot>
                                 </connect>
-                                
+
                                 <connect waitForKey="image">
                                     <signal>sliceListEditor/selected</signal>
                                     <slot>MPRNegatoScene3D/updateSliceMode</slot>
@@ -410,8 +415,8 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                 </adaptor>
 
                                 <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
-                                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" 
-                                        yAxis="yAxis" zValue="5" pointSize="12" viewportUID="Viewport" 
+                                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis"
+                                        yAxis="yAxis" zValue="5" pointSize="12" viewportUID="Viewport"
                                         selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                 </adaptor>
 
@@ -478,7 +483,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                 <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
 
                                 <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
-                                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" 
+                                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis"
                                         yAxis="yAxis" zValue="5" pointSize="12" viewportUID="Viewport"
                                         selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                 </adaptor>

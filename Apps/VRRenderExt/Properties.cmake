@@ -63,6 +63,7 @@ set( REQUIREMENTS
     uiMeasurement
     uiMeasurementQt
     uiTF
+    filterVRRender
 )
 
 bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderExtBase VRRenderExtAppBase)

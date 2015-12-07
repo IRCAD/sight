@@ -56,7 +56,11 @@ Detail of the ToolBar
  Nota : The button with a blue point on it is for doing a fixed rotation and a translation on the mesh loaded in second tab (TransformAction).
  -->
 <plugin id="Ex03Registration" version="@DASH_VERSION@" >
-    
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex03RegistrationConfig</id>
         <config>

@@ -1,5 +1,9 @@
 <plugin id="Ex02ImageMix" version="@DASH_VERSION@" >
 
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex02ImageMix</id>
         <config>
@@ -135,7 +139,7 @@
                         </service>
                     </object>
                 </item>
-                
+
                 <!-- frontImage description -->
                 <item key="frontImage">
                     <object uid="frontImageUID" type="::fwData::Image">
@@ -163,7 +167,7 @@
                             <mode type="stop" />
                             <config>
                                 <object id="backgroundImage" type="::fwData::Image">
-  
+
                                     <service uid="bgImgEditorsView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                                         <gui>
                                             <layout type="::fwGui::LineLayoutManager">
@@ -179,17 +183,17 @@
                                     </service>
                                     <!-- This service convert a simple fwData::Image to medical Image -->
                                     <service uid="medicalImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-                                    
+
                                     <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
                                         <sliceIndex>axial</sliceIndex>
                                     </service>
-                                    
+
                                     <!-- Editors of background image -->
                                     <service uid="imageInfo" type="::gui::editor::IEditor" impl="::uiImage::ImageInfo" autoConnect="yes" />
                                     <service uid="windowLevel" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes">
                                         <config selectedTFKey="BgSelectedTF" tfSelectionFwID="TFSelections" />
                                     </service>
-                                    
+
                                     <proxy channel="interaction_channel">
                                         <slot>imageInfo/getInteraction</slot>
                                     </proxy>
@@ -213,7 +217,7 @@
                                     </service>
                                     <!-- This service convert a simple fwData::Image to medical Image -->
                                     <service uid="medicalImageConverter2" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-                                    
+
                                     <!-- Editors of front image -->
                                     <service uid="imageInfo2" type="::gui::editor::IEditor" impl="::uiImage::ImageInfo" autoConnect="yes" />
                                     <service uid="imageTransparency2" type="::gui::editor::IEditor" impl="::uiImage::ImageTransparency" autoConnect="yes">
@@ -222,30 +226,30 @@
                                     <service uid="windowLevel2" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes" >
                                          <config selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
                                     </service>
-                                    
+
                                     <!-- Service to forward signal from backgroundImage to front image -->
                                     <service uid="forwarderMsg" impl="::ctrlSelection::wrapper::SImageSignalForwarder" type="::ctrlSelection::IWrapperSrv" autoConnect="no">
                                         <fromKey>compositeVisu[backgroundImage]</fromKey>
                                         <forward>sliceIndexModified</forward>
                                         <forward>sliceTypeModified</forward>
                                     </service>
-                                    
+
                                     <proxy channel="interaction_channel2">
                                         <slot>imageInfo2/getInteraction</slot>
                                     </proxy>
-                                    
+
                                 </object>
 
                             </config>
                         </service>
-                        
+
                         <!-- Generic scene to show merging of backgroung and front images -->
                         <service uid="blendGenericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <vtkObject id="imageBlend" class="vtkImageBlend" />
                                 <renderer id="default" background="0.0" />
-                                
+
                                 <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="backgroundImage">
                                     <config renderer="default" picker="picker" mode="2D" slices="1" sliceIndex="axial" vtkimagesource="imageBlend" />
                                 </adaptor>
@@ -261,7 +265,7 @@
                                 <adaptor id="snapshot" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                     <config renderer="default" />
                                 </adaptor>
-                                
+
                                 <!-- Adaptor to show background and front image merge in the same view. -->
                                 <adaptor id="imagesBlendAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
                                     <config vtkimageregister="imageBlend">
@@ -271,7 +275,7 @@
                                             selectedTFKey="FrontSelectedTF" tfSelectionFwID="TFSelections" />
                                     </config>
                                 </adaptor>
-                                
+
                                 <!-- Adaptor to show the red cross and images pixel values informations in scene top left. -->
                                 <adaptor id="imagesProbeCursor" class="::visuVTKAdaptor::ImagesProbeCursor" objectId="self">
                                     <config renderer="default" picker="picker">
@@ -279,17 +283,17 @@
                                         <image objectId="frontImage" name="front" />
                                     </config>
                                 </adaptor>
-                                
+
                                 <connect>
                                     <signal>snapshotBlendSceneEditor/snapped</signal>
                                     <slot>snapshotUID/snap</slot>
                                 </connect>
-                                
+
                                 <proxy channel="interaction_channel" waitForKey="backgroundImage">
                                     <signal>bgImagePickerUID/picked</signal>
                                 </proxy>
-                                
-                                                                
+
+
                                 <proxy channel="interaction_channel2" waitForKey="frontImage">
                                     <signal>frontImagePickerUID/picked</signal>
                                 </proxy>
@@ -312,7 +316,7 @@
                                 <adaptor id="imagePicker" uid="imagePickerUID" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="backgroundImage">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
-                                
+
                                 <proxy channel="interaction_channel" waitForKey="backgroundImage">
                                     <signal>imagePickerUID/picked</signal>
                                 </proxy>
@@ -335,17 +339,17 @@
                                 <adaptor id="imagePicker2" uid="imagePickerUID2" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
                                     <config renderer="default" picker="picker" />
                                 </adaptor>
-                                
+
                                 <proxy channel="interaction_channel2" waitForKey="frontImage">
                                     <signal>imagePickerUID2/picked</signal>
                                 </proxy>
-                                
+
                             </scene>
                         </service>
                         <item key="TFSelectionsKey">
                             <object uid="TFSelections" type="::fwData::Composite" />
                         </item>
-                        
+
                         <connect>
                             <signal>backgroundImageUID/modified</signal>
                             <slot>updaterBackImgUID/addOrSwap</slot>
