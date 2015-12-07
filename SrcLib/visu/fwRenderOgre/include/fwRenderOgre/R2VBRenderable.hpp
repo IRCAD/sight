@@ -9,12 +9,14 @@
 
 #include "fwRenderOgre/config.hpp"
 
+#include <fwData/Mesh.hpp>
+
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreManualObject.h>
+#include <OGRE/OgreRenderToVertexBuffer.h>
 #include <OGRE/OgreSimpleRenderable.h>
 #include <OGRE/OgreSubEntity.h>
-#include <OGRE/OgreRenderToVertexBuffer.h>
-
+#include <OGRE/OgreSceneManager.h>
 
 namespace fwRenderOgre
 {
@@ -29,17 +31,17 @@ namespace fwRenderOgre
 class FWRENDEROGRE_CLASS_API R2VBRenderable : public ::Ogre::SimpleRenderable
 {
 public:
+    FWRENDEROGRE_API static R2VBRenderable* New(const std::string& _name, ::Ogre::SubEntity* _sourceObject,
+                                                Ogre::SceneManager* _sceneManager,
+                                                ::fwData::Mesh::CellTypesEnum _primitiveType,
+                                                const std::string& _mtlName );
     FWRENDEROGRE_API R2VBRenderable(const ::Ogre::String& name);
-    virtual FWRENDEROGRE_API ~R2VBRenderable()
-    {
-        m_srcObject = nullptr;
-    }
+    virtual FWRENDEROGRE_API ~R2VBRenderable();
 
-    void setBuffer(::Ogre::RenderToVertexBufferSharedPtr _r2vbObject);
-    ::Ogre::RenderToVertexBufferSharedPtr getBuffer();
-
-    FWRENDEROGRE_API void setSourceObject(::Ogre::SubEntity* _sourceObject);
-    ::Ogre::SubEntity* getSourceObject() const;
+    /// Set the maximum number of vertices in output, and adjust the size of the output buffer accordingly.
+    /// It also updates the vertex declaration of the outbut buffer
+    FWRENDEROGRE_API void setOutputSettings(size_t _vertexCount, bool _hasColor, bool _hasTexCoord,
+                                            const std::string& _mtlName);
 
     /** @copydoc SimpleRenderable::_updateRenderQueue. */
     FWRENDEROGRE_API void _updateRenderQueue(::Ogre::RenderQueue* _queue);
@@ -55,6 +57,7 @@ public:
 
     /// @copydoc Renderable::getSquaredViewDepth
     ::Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const;
+
     /// Mark the output verex buffer as dirty, the r2vb process will be run on next update
     void setDirty();
 
@@ -65,40 +68,26 @@ protected:
     /// Buffer used as output
     ::Ogre::RenderToVertexBufferSharedPtr m_r2vbBuffer;
 
-    /// Tells if the r2vb must be run on next update - typically we want this to be done only once per frame.
+    /// Tells if the r2vb must be run on next update - typically we want this to be done, at worst, only once per frame.
     /// Thus we use this flag, depending on the technique to enable the r2vb only on the first rendering pass.
     bool m_dirty;
+
+    /// Primitive type used as input
+    ::fwData::Mesh::CellTypesEnum m_inputPrimitiveType;
+
+    /// Maximum number of vertices in output buffer
+    size_t m_maxOutputVertexCount;
 };
 
 //-----------------------------------------------------------------------------
 // Inline functions
 
-//-----------------------------------------------------------------------------
-
-inline void R2VBRenderable::setDirty()
-{
-    m_dirty = true;
-}
 
 //-----------------------------------------------------------------------------
 
-inline void R2VBRenderable::setBuffer(Ogre::RenderToVertexBufferSharedPtr _r2vbObject)
+inline R2VBRenderable::~R2VBRenderable()
 {
-    m_r2vbBuffer = _r2vbObject;
-}
-
-//-----------------------------------------------------------------------------
-
-inline ::Ogre::RenderToVertexBufferSharedPtr R2VBRenderable::getBuffer()
-{
-    return m_r2vbBuffer;
-}
-
-//-----------------------------------------------------------------------------
-
-inline ::Ogre::SubEntity *R2VBRenderable::getSourceObject() const
-{
-    return m_srcObject;
+    m_srcObject = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -113,6 +102,13 @@ inline Ogre::Real R2VBRenderable::getBoundingRadius() const
 inline Ogre::Real R2VBRenderable::getSquaredViewDepth(const Ogre::Camera *_cam) const
 {
     return m_srcObject->getSquaredViewDepth(_cam);
+}
+
+//-----------------------------------------------------------------------------
+
+inline void R2VBRenderable::setDirty()
+{
+    m_dirty = true;
 }
 
 //-----------------------------------------------------------------------------

@@ -91,7 +91,7 @@ public:
     ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
 
     /// Ask the render service (SRender) to update - we also flag the r2vb objects as dirty
-    FWRENDEROGRE_API virtual void requestRender();
+    VISUOGREADAPTOR_API virtual void requestRender();
 
 private:
 
@@ -143,8 +143,9 @@ private:
     /// Updates the vertices texture coordinates.
     void updateTexCoords(const ::fwData::Mesh::sptr& mesh);
     /// Erase the mesh data, called when the configuration change (new layer, etc...), to simplify modifications.
-    void clearMesh(const ::fwData::Mesh::sptr& mesh);
-
+    void clearMesh();
+    /// Instantiates a new material adaptor
+    ::visuOgreAdaptor::SMaterial::sptr createMaterialService(const std::string& _materialSuffix = "");
     /// Associates a new SMaterial to the managed SMesh.
     /// With this method, SMesh is responsible for creating a SMaterial
     void updateNewMaterialAdaptor();
@@ -201,8 +202,6 @@ private:
     /// Pointers on submeshes needed for reallocation check.
     /// For QUADS and TETRAS primitives, they point to r2vb submeshes.
     ::Ogre::SubMesh* m_subMeshes[s_numPrimitiveTypes];
-    /// SMaterial adaptors attached to the r2vb objects
-    ::visuOgreAdaptor::SMaterial::sptr m_r2vbMaterialAdaptor[s_numPrimitiveTypes];
 
     /// Maximum size of a texture (TODO: get this from hardware instead)
     static const unsigned int s_maxTextureSize = 2048;
@@ -242,9 +241,9 @@ private:
     /// Name of the r2vb mesh
     std::string m_r2vbMeshName;
     /// List of r2vb objects - these objects triggers the r2vb process and render the output data
-    std::vector< ::fwRenderOgre::R2VBRenderable*> m_r2vbObject;
-    /// Previous number of cells
-    size_t m_uiPrevNumCells;
+    std::map< ::fwData::Mesh::CellTypes, ::fwRenderOgre::R2VBRenderable*> m_r2vbObject;
+    /// SMaterial adaptors attached to the r2vb objects
+    std::map< ::fwData::Mesh::CellTypes, ::visuOgreAdaptor::SMaterial::sptr> m_r2vbMaterialAdaptor;
 };
 
 //------------------------------------------------------------------------------

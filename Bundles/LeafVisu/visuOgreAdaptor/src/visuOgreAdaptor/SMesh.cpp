@@ -19,7 +19,6 @@
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwRenderOgre/R2VBRenderable.hpp>
-#include <fwRenderOgre/factory/R2VBRenderable.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
@@ -112,8 +111,7 @@ SMesh::SMesh() throw() :
     m_hasUV(false),
     m_isReconstructionManaged(false),
     m_useNewMaterialAdaptor(false),
-    m_r2vbEntity(nullptr),
-    m_uiPrevNumCells(0)
+    m_r2vbEntity(nullptr)
 {
     m_material = ::fwData::Material::New();
 
@@ -287,7 +285,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
     /// The values in this table refer to vertices in the above table
     size_t uiNumVertices = mesh->getNumberOfPoints();
-    size_t uiNumCells    = mesh->getNumberOfCells();
     OSLM_DEBUG("Vertices #" << uiNumVertices);
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
@@ -563,7 +560,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
     lock.unlock();
 
     //------------------------------------------
-    // Create entity and attach it
+    // Create entity and attach it in the scene graph
     //------------------------------------------
 
     if(!m_entity)
@@ -632,68 +629,20 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
             const bool bQuad  = (subMesh == m_subMeshes[::fwData::Mesh::QUAD]);
             const bool bTetra = (subMesh == m_subMeshes[::fwData::Mesh::TETRA]);
 
-            ::fwData::Mesh::CellTypesEnum cellType = bQuad ? ::fwData::Mesh::QUAD :
-                                                     bTetra ? ::fwData::Mesh::TETRA :
-                                                     ::fwData::Mesh::TRIANGLE;
-            const std::string name = std::to_string(cellType);
+            const ::fwData::Mesh::CellTypesEnum cellType = bQuad ? ::fwData::Mesh::QUAD :
+                                                           bTetra ? ::fwData::Mesh::TETRA :
+                                                           ::fwData::Mesh::TRIANGLE;
 
-            const std::string r2vbObjectName = this->getID() + "_r2vbObject" + name;
-            ::fwRenderOgre::R2VBRenderable* r2vbObject;
-
-            const auto& factoryName = ::fwRenderOgre::factory::R2VBRenderable::FACTORY_TYPE_NAME;
-            if(!sceneMgr->hasMovableObject(r2vbObjectName, factoryName) )
-            {
-                r2vbObject = static_cast< ::fwRenderOgre::R2VBRenderable*>
-                             (sceneMgr->createMovableObject(r2vbObjectName, factoryName));
-
-                m_r2vbObject.push_back(r2vbObject);
-
-                // Set material used to display the triangles output - thus it is the same than m_entity.
-                r2vbObject->setMaterial(m_materialAdaptor->getMaterialName());
-
-                // Attach r2vb object in the scene graph
-                this->attachNode(r2vbObject);
-            }
-            else
-            {
-                // Retrieve r2vb object in the scene graph
-                r2vbObject = static_cast< ::fwRenderOgre::R2VBRenderable*>
-                             (sceneMgr->getMovableObject(r2vbObjectName,factoryName));
-            }
-
-            if( !m_r2vbMaterialAdaptor[cellType] )
+            if(m_r2vbMaterialAdaptor.find(cellType) == m_r2vbMaterialAdaptor.end())
             {
                 // Instantiate a material adaptor for the r2vb process for this primitive type
-                auto matSrv = ::fwServices::add< ::fwRenderOgre::IAdaptor >(m_material, "::visuOgreAdaptor::SMaterial");
-                SLM_ASSERT("Material service not instantiated", matSrv);
-                auto r2vbMtlAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(matSrv);
-
-                r2vbMtlAdaptor->setID(this->getID() + "_" + r2vbMtlAdaptor->getID());
-                r2vbMtlAdaptor->setRenderService( this->getRenderService() );
-                r2vbMtlAdaptor->setLayerID(m_layerID);
-
-                if (!m_materialTemplateName.empty())
-                {
-                    r2vbMtlAdaptor->setMaterialTemplateName(m_materialTemplateName);
-                }
-
-                const std::string meshName = this->getObject()->getID();
                 const std::string primName = std::to_string(cellType);
+                auto r2vbMtlAdaptor        = this->createMaterialService(primName);
 
-                // These settings will no longer change
-                r2vbMtlAdaptor->setMaterialName(meshName + "_" + r2vbMtlAdaptor->getID() + "_Mtl_" + primName);
                 r2vbMtlAdaptor->setPrimitiveType(cellType);
-
-                // These settings may change
-                r2vbMtlAdaptor->setHasMeshNormal(m_hasNormal);
-                r2vbMtlAdaptor->setHasVertexColor(m_hasVertexColor);
                 r2vbMtlAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
-                r2vbMtlAdaptor->setTextureAdaptor(m_texAdaptorUID);
-                r2vbMtlAdaptor->setShadingMode(m_shadingMode);
 
                 r2vbMtlAdaptor->start();
-
-                this->registerService(r2vbMtlAdaptor);
 
                 m_r2vbMaterialAdaptor[cellType] = r2vbMtlAdaptor;
             }
@@ -712,50 +661,22 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbMtlAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->run();
             }
 
-            if(r2vbObject->getBuffer().isNull() || m_uiPrevNumCells < uiNumCells)
+            if(m_r2vbObject.find(cellType) == m_r2vbObject.end())
             {
-                // Generate the RenderToBufferObject.
-                ::Ogre::RenderToVertexBufferSharedPtr r2vb =
-                    ::Ogre::HardwareBufferManager::getSingleton().createRenderToVertexBuffer();
-                r2vb->setRenderToBufferMaterialName( m_r2vbMaterialAdaptor[cellType]->getMaterialName() );
+                const std::string name           = std::to_string(cellType);
+                const std::string r2vbObjectName = this->getID() + "_r2vbObject" + name;
+                const std::string mtlName        = m_materialAdaptor->getMaterialName();
+                m_r2vbObject[cellType] = ::fwRenderOgre::R2VBRenderable::New(r2vbObjectName, subEntity, sceneMgr,
+                                                                             cellType, mtlName);
 
-                r2vb->setOperationType(::Ogre::RenderOperation::OT_TRIANGLE_LIST);
-                r2vb->setResetsEveryUpdate(true);
-
-                // Bind the two together.
-                r2vbObject->setBuffer(r2vb);
-
-                // Define input
-                r2vbObject->setSourceObject(subEntity);
-
-                m_uiPrevNumCells = uiNumCells;
+                // Attach r2vb object in the scene graph
+                this->attachNode(m_r2vbObject[cellType]);
             }
 
-            auto r2vb                = r2vbObject->getBuffer();
-            const size_t numVertices = bQuad ? subMesh->indexData->indexCount * 2 :
-                                       bTetra ? subMesh->indexData->indexCount * 4 :
-                                       subMesh->indexData->indexCount;
-            r2vb->setMaxVertexCount(static_cast<unsigned int>(numVertices));
-
-
-            // Define feedback vertex declarations
-            ::Ogre::VertexDeclaration* vtxDecl = r2vb->getVertexDeclaration();
-            size_t ofst = 0;
-            ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION).getSize();
-            ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL).getSize();
-            if(m_hasPrimitiveColor || m_hasVertexColor)
-            {
-                ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_UBYTE4, ::Ogre::VES_DIFFUSE).getSize();
-            }
-            if(m_hasUV && m_materialAdaptor->hasDiffuseTexture())
-            {
-                ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT2,::Ogre::VES_TEXTURE_COORDINATES).getSize();
-            }
-
-            // Set bounds.
-            r2vbObject->setBoundingBox(m_r2vbEntity->getBoundingBox());
-            r2vbObject->setDirty();
-
+            m_r2vbObject[cellType]->setOutputSettings(static_cast<unsigned int>(subMesh->indexData->indexCount),
+                                                      m_hasPrimitiveColor || m_hasVertexColor,
+                                                      m_hasUV && m_materialAdaptor->hasDiffuseTexture(),
+                                                      m_r2vbMaterialAdaptor[cellType]->getMaterialName());
         }
     }
 }
@@ -796,7 +717,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
     float yMax = -std::numeric_limits<float>::max();
     float zMax = -std::numeric_limits<float>::max();
 
-    const unsigned int numPoints = mesh->getNumberOfPoints();
+    const unsigned int numPoints = static_cast<unsigned int>(mesh->getNumberOfPoints());
 
     {
         FW_PROFILE_AVG("UPDATE BBOX", 5);
@@ -1125,9 +1046,9 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::clearMesh(const ::fwData::Mesh::sptr& mesh)
+void SMesh::clearMesh()
 {
-    // Destroy all the submeshes from the matching mesh but keep the two meshes alive
+    // Destroy all the submeshes, but keep the two meshes alive
     for(size_t i = 0; i < s_numPrimitiveTypes; ++i)
     {
         if(m_subMeshes[i])
@@ -1150,7 +1071,7 @@ void SMesh::clearMesh(const ::fwData::Mesh::sptr& mesh)
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
     for(auto r2vbObject : m_r2vbObject)
     {
-        sceneMgr->destroyMovableObject(r2vbObject);
+        sceneMgr->destroyMovableObject(r2vbObject.second);
     }
     m_r2vbObject.clear();
 
@@ -1161,6 +1082,40 @@ void SMesh::clearMesh(const ::fwData::Mesh::sptr& mesh)
     }
 }
 
+
+//------------------------------------------------------------------------------
+
+::visuOgreAdaptor::SMaterial::sptr SMesh::createMaterialService(const std::string& _materialSuffix)
+{
+    auto matSrv = ::fwServices::add< ::fwRenderOgre::IAdaptor>(m_material, "::visuOgreAdaptor::SMaterial");
+    SLM_ASSERT("Material service not instantiated", matSrv);
+    auto materialAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(matSrv);
+
+    materialAdaptor->setID(this->getID() + "_" + materialAdaptor->getID());
+    materialAdaptor->setRenderService( this->getRenderService() );
+    materialAdaptor->setLayerID(m_layerID);
+
+    if (!m_materialTemplateName.empty())
+    {
+        materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
+    }
+
+    const std::string meshName = this->getObject()->getID();
+    const std::string mtlName  = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
+
+    materialAdaptor->setMaterialName(mtlName);
+
+    materialAdaptor->setHasMeshNormal(m_hasNormal);
+    materialAdaptor->setHasVertexColor(m_hasVertexColor);
+    materialAdaptor->setTextureAdaptor(m_texAdaptorUID);
+    materialAdaptor->setShadingMode(m_shadingMode);
+    materialAdaptor->setMeshBoundingBox(m_ogreMesh->getBounds());
+
+    this->registerService(materialAdaptor);
+
+    return materialAdaptor;
+}
+
 //------------------------------------------------------------------------------
 
 void SMesh::updateNewMaterialAdaptor()
@@ -1169,36 +1124,8 @@ void SMesh::updateNewMaterialAdaptor()
     {
         if(m_entity)
         {
-            auto materialService =
-                ::fwServices::add< ::fwRenderOgre::IAdaptor >(m_material, "::visuOgreAdaptor::SMaterial");
-            SLM_ASSERT("Material service not instantiated", materialService);
-            m_materialAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(materialService);
-
-            m_materialAdaptor->setID(this->getID() + "_" + m_materialAdaptor->getID());
-            m_materialAdaptor->setRenderService( this->getRenderService() );
-            m_materialAdaptor->setLayerID(m_layerID);
-
-            if (!m_materialTemplateName.empty())
-            {
-                m_materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
-            }
-
-            std::string meshName = this->getObject()->getID();
-            m_materialAdaptor->setMaterialName(meshName + "_" + m_materialAdaptor->getID() + "_Material");
-            m_materialAdaptor->setHasMeshNormal(m_hasNormal);
-            m_materialAdaptor->setHasVertexColor(m_hasVertexColor);
-
-            if (!m_texAdaptorUID.empty())
-            {
-                m_materialAdaptor->setTextureAdaptor(m_texAdaptorUID);
-            }
-
-            m_materialAdaptor->setShadingMode(m_shadingMode);
-            m_materialAdaptor->setMeshBoundingBox(m_ogreMesh->getBounds());
-
+            m_materialAdaptor = this->createMaterialService();
             m_materialAdaptor->start();
-
-            this->registerService(m_materialAdaptor);
 
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
         }
@@ -1223,6 +1150,8 @@ void SMesh::updateXMLMaterialAdaptor()
 
         m_materialAdaptor->setHasMeshNormal(m_hasNormal);
         m_materialAdaptor->setHasVertexColor(m_hasVertexColor);
+        m_materialAdaptor->setShadingMode(m_shadingMode);
+        m_materialAdaptor->setMeshBoundingBox(m_ogreMesh->getBounds());
 
         if(m_entity)
         {
@@ -1322,7 +1251,7 @@ void SMesh::modifyMesh()
 
     if(hasVertexColor != m_hasVertexColor || hasPrimitiveColor != m_hasPrimitiveColor)
     {
-        this->clearMesh(mesh);
+        this->clearMesh();
     }
     this->updateMesh(mesh);
     this->requestRender();
@@ -1347,7 +1276,7 @@ void SMesh::modifyPointColors()
 
     if(hasVertexColor != m_hasVertexColor || hasPrimitiveColor != m_hasPrimitiveColor)
     {
-        this->clearMesh(mesh);
+        this->clearMesh();
         this->updateMesh(mesh);
     }
     else
@@ -1416,7 +1345,7 @@ void SMesh::requestRender()
 {
     for(auto r2vbObject : m_r2vbObject)
     {
-        r2vbObject->setDirty();
+        r2vbObject.second->setDirty();
     }
 
     ::fwRenderOgre::IAdaptor::requestRender();
