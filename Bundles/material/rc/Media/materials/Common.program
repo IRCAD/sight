@@ -41,11 +41,11 @@ fragment_program Negato_FP glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_None_VP_glsl glsl
+vertex_program RenderScene_Ambient_VP_glsl glsl
 {
     source RenderScene_VP.glsl
     
-    preprocessor_defines NONE=1
+    preprocessor_defines AMBIENT=1
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
@@ -58,11 +58,11 @@ vertex_program RenderScene_None_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_None+VT_VP_glsl glsl
+vertex_program RenderScene_Ambient+VT_VP_glsl glsl
 {
     source RenderScene_VP.glsl
     
-    preprocessor_defines NONE=1,VERTEX_COLOR=1
+    preprocessor_defines AMBIENT=1,VERTEX_COLOR=1
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
@@ -75,11 +75,11 @@ vertex_program RenderScene_None+VT_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_None+DfsTex_VP_glsl glsl
+vertex_program RenderScene_Ambient+DfsTex_VP_glsl glsl
 {
     source RenderScene_VP.glsl
     
-    preprocessor_defines NONE=1,DIFFUSE_TEX=1
+    preprocessor_defines AMBIENT=1,DIFFUSE_TEX=1
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
@@ -92,11 +92,11 @@ vertex_program RenderScene_None+DfsTex_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_None+VT+DfsTex_VP_glsl glsl
+vertex_program RenderScene_Ambient+VT+DfsTex_VP_glsl glsl
 {
     source RenderScene_VP.glsl
     
-    preprocessor_defines NONE=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    preprocessor_defines AMBIENT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
@@ -338,38 +338,38 @@ vertex_program RenderScene_PixelLit+VT+DfsTex_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_None_VP_glsl glsl
+vertex_program RenderScene_R2VB_Ambient_VP_glsl glsl
 {
     source RenderScene_VP.glsl
 
-    preprocessor_defines R2VB=1, NONE=1
+    preprocessor_defines R2VB=1, AMBIENT=1
 }
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_None+VT_VP_glsl glsl
+vertex_program RenderScene_R2VB_Ambient+VT_VP_glsl glsl
 {
     source RenderScene_VP.glsl
 
-    preprocessor_defines R2VB=1, NONE=1,VERTEX_COLOR=1
+    preprocessor_defines R2VB=1, AMBIENT=1,VERTEX_COLOR=1
 }
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_None+DfsTex_VP_glsl glsl
+vertex_program RenderScene_R2VB_Ambient+DfsTex_VP_glsl glsl
 {
     source RenderScene_VP.glsl
 
-    preprocessor_defines R2VB=1, NONE=1,DIFFUSE_TEX=1
+    preprocessor_defines R2VB=1, AMBIENT=1,DIFFUSE_TEX=1
 }
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_None+VT+DfsTex_VP_glsl glsl
+vertex_program RenderScene_R2VB_Ambient+VT+DfsTex_VP_glsl glsl
 {
     source RenderScene_VP.glsl
 
-    preprocessor_defines R2VB=1, NONE=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    preprocessor_defines R2VB=1, AMBIENT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
 }
 
 //---------------------------------------------------------------------------
@@ -829,34 +829,34 @@ geometry_program RenderScene_Tetra+VT+DfsTex+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program MaterialColor_None_FP glsl
+fragment_program MaterialColor_Ambient_FP glsl
 {
     source MaterialColor_FP.glsl
-    preprocessor_defines NONE=1
+    preprocessor_defines AMBIENT=1
 }
 
 //---------------------------------------------------------------------------
 
-fragment_program MaterialColor_None+VT_FP glsl
+fragment_program MaterialColor_Ambient+VT_FP glsl
 {
     source MaterialColor_FP.glsl
-    preprocessor_defines NONE=1,VERTEX_COLOR=1
+    preprocessor_defines AMBIENT=1,VERTEX_COLOR=1
 }
 
 //---------------------------------------------------------------------------
 
-fragment_program MaterialColor_None+DfsTex_FP glsl
+fragment_program MaterialColor_Ambient+DfsTex_FP glsl
 {
     source MaterialColor_FP.glsl
-    preprocessor_defines NONE=1,DIFFUSE_TEX=1
+    preprocessor_defines AMBIENT=1,DIFFUSE_TEX=1
 }
 
 //---------------------------------------------------------------------------
 
-fragment_program MaterialColor_None+VT+DfsTex_FP glsl
+fragment_program MaterialColor_Ambient+VT+DfsTex_FP glsl
 {
     source MaterialColor_FP.glsl
-    preprocessor_defines NONE=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    preprocessor_defines AMBIENT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
 }
 
 //---------------------------------------------------------------------------
@@ -978,10 +978,10 @@ fragment_program MaterialColor_Negato_FP glsl
 
 //-----------------------------------------------------------------------------
 
-fragment_program Default_None_FP_glsl glsl
+fragment_program Default_Ambient_FP_glsl glsl
 {
     source Default_FP.glsl
-    attach MaterialColor_None_FP
+    attach MaterialColor_Ambient_FP
     
     default_params
     {
@@ -990,10 +990,10 @@ fragment_program Default_None_FP_glsl glsl
 
 //-----------------------------------------------------------------------------
 
-fragment_program Default_None+VT_FP_glsl glsl
+fragment_program Default_Ambient+VT_FP_glsl glsl
 {
     source Default_FP.glsl
-    attach MaterialColor_None+VT_FP
+    attach MaterialColor_Ambient+VT_FP
     
     default_params
     {
@@ -1002,10 +1002,10 @@ fragment_program Default_None+VT_FP_glsl glsl
 
 //-----------------------------------------------------------------------------
 
-fragment_program Default_None+DfsTex_FP_glsl glsl
+fragment_program Default_Ambient+DfsTex_FP_glsl glsl
 {
     source Default_FP.glsl
-    attach MaterialColor_None+DfsTex_FP
+    attach MaterialColor_Ambient+DfsTex_FP
     
     default_params
     {
@@ -1016,10 +1016,10 @@ fragment_program Default_None+DfsTex_FP_glsl glsl
 
 //-----------------------------------------------------------------------------
 
-fragment_program Default_None+VT+DfsTex_FP_glsl glsl
+fragment_program Default_Ambient+VT+DfsTex_FP_glsl glsl
 {
     source Default_FP.glsl
-    attach MaterialColor_None+VT+DfsTex_FP
+    attach MaterialColor_Ambient+VT+DfsTex_FP
     
     default_params
     {
@@ -1245,11 +1245,11 @@ fragment_program Default_Negato_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling_peel_None_FP_glsl glsl
+fragment_program DepthPeeling_peel_Ambient_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None_FP
+    attach MaterialColor_Ambient_FP
     
     default_params
     {
@@ -1262,11 +1262,11 @@ fragment_program DepthPeeling_peel_None_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling_peel_None+VT_FP_glsl glsl
+fragment_program DepthPeeling_peel_Ambient+VT_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+VT_FP
+    attach MaterialColor_Ambient+VT_FP
     
     default_params
     {
@@ -1279,11 +1279,11 @@ fragment_program DepthPeeling_peel_None+VT_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling_peel_None+DfsTex_FP_glsl glsl
+fragment_program DepthPeeling_peel_Ambient+DfsTex_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+DfsTex_FP
+    attach MaterialColor_Ambient+DfsTex_FP
     
     default_params
     {
@@ -1298,11 +1298,11 @@ fragment_program DepthPeeling_peel_None+DfsTex_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling_peel_None+VT+DfsTex_FP_glsl glsl
+fragment_program DepthPeeling_peel_Ambient+VT+DfsTex_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+VT+DfsTex_FP
+    attach MaterialColor_Ambient+VT+DfsTex_FP
     
     default_params
     {
@@ -1601,11 +1601,11 @@ fragment_program DepthPeeling_peel_Negato_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling_peel_None_FP_glsl glsl
+fragment_program DualDepthPeeling_peel_Ambient_FP_glsl glsl
 {
     source DualDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None_FP
+    attach MaterialColor_Ambient_FP
     
     default_params
     {
@@ -1621,11 +1621,11 @@ fragment_program DualDepthPeeling_peel_None_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling_peel_None+VT_FP_glsl glsl
+fragment_program DualDepthPeeling_peel_Ambient+VT_FP_glsl glsl
 {
     source DualDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+VT_FP
+    attach MaterialColor_Ambient+VT_FP
     
     default_params
     {
@@ -1641,11 +1641,11 @@ fragment_program DualDepthPeeling_peel_None+VT_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling_peel_None+DfsTex_FP_glsl glsl
+fragment_program DualDepthPeeling_peel_Ambient+DfsTex_FP_glsl glsl
 {
     source DualDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+DfsTex_FP
+    attach MaterialColor_Ambient+DfsTex_FP
     
     default_params
     {
@@ -1663,11 +1663,11 @@ fragment_program DualDepthPeeling_peel_None+DfsTex_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling_peel_None+VT+DfsTex_FP_glsl glsl
+fragment_program DualDepthPeeling_peel_Ambient+VT+DfsTex_FP_glsl glsl
 {
     source DualDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+VT+DfsTex_FP
+    attach MaterialColor_Ambient+VT+DfsTex_FP
     
     default_params
     {
@@ -2011,11 +2011,11 @@ fragment_program DualDepthPeeling_peel_Negato_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program HybridTransparency_peel_None_FP_glsl glsl
+fragment_program HybridTransparency_peel_Ambient_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None_FP
+    attach MaterialColor_Ambient_FP
     
     default_params
     {
@@ -2028,11 +2028,11 @@ fragment_program HybridTransparency_peel_None_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program HybridTransparency_peel_None+VT_FP_glsl glsl
+fragment_program HybridTransparency_peel_Ambient+VT_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+VT_FP
+    attach MaterialColor_Ambient+VT_FP
     
     default_params
     {
@@ -2045,11 +2045,11 @@ fragment_program HybridTransparency_peel_None+VT_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program HybridTransparency_peel_None+DfsTex_FP_glsl glsl
+fragment_program HybridTransparency_peel_Ambient+DfsTex_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+DfsTex_FP
+    attach MaterialColor_Ambient+DfsTex_FP
     
     default_params
     {
@@ -2064,11 +2064,11 @@ fragment_program HybridTransparency_peel_None+DfsTex_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program HybridTransparency_peel_None+VT+DfsTex_FP_glsl glsl
+fragment_program HybridTransparency_peel_Ambient+VT+DfsTex_FP_glsl glsl
 {
     source DepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+VT+DfsTex_FP
+    attach MaterialColor_Ambient+VT+DfsTex_FP
     
     default_params
     {
@@ -2364,11 +2364,11 @@ fragment_program HybridTransparency_peel_Negato_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program HybridTransparency_weight_blend_None_FP_glsl glsl
+fragment_program HybridTransparency_weight_blend_Ambient_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None_FP
+    attach MaterialColor_Ambient_FP
     
     preprocessor_defines HYBRID=1
     default_params
@@ -2384,11 +2384,11 @@ fragment_program HybridTransparency_weight_blend_None_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program HybridTransparency_weight_blend_None+VT_FP_glsl glsl
+fragment_program HybridTransparency_weight_blend_Ambient+VT_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+VT_FP
+    attach MaterialColor_Ambient+VT_FP
     
     preprocessor_defines HYBRID=1
     default_params
@@ -2404,11 +2404,11 @@ fragment_program HybridTransparency_weight_blend_None+VT_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program HybridTransparency_weight_blend_None+DfsTex_FP_glsl glsl
+fragment_program HybridTransparency_weight_blend_Ambient+DfsTex_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+DfsTex_FP
+    attach MaterialColor_Ambient+DfsTex_FP
     
     preprocessor_defines HYBRID=1
     default_params
@@ -2426,11 +2426,11 @@ fragment_program HybridTransparency_weight_blend_None+DfsTex_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program HybridTransparency_weight_blend_None+VT+DfsTex_FP_glsl glsl
+fragment_program HybridTransparency_weight_blend_Ambient+VT+DfsTex_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+VT+DfsTex_FP
+    attach MaterialColor_Ambient+VT+DfsTex_FP
     
     preprocessor_defines HYBRID=1
     default_params
@@ -2776,10 +2776,10 @@ fragment_program HybridTransparency_weight_blend_Negato_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program WeightedBlended_weight_blend_None_FP_glsl glsl
+fragment_program WeightedBlended_weight_blend_Ambient_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
-    attach MaterialColor_None_FP
+    attach MaterialColor_Ambient_FP
     
     default_params
     {
@@ -2793,10 +2793,10 @@ fragment_program WeightedBlended_weight_blend_None_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program WeightedBlended_weight_blend_None+VT_FP_glsl glsl
+fragment_program WeightedBlended_weight_blend_Ambient+VT_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
-    attach MaterialColor_None+VT_FP
+    attach MaterialColor_Ambient+VT_FP
     
     default_params
     {
@@ -2810,10 +2810,10 @@ fragment_program WeightedBlended_weight_blend_None+VT_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program WeightedBlended_weight_blend_None+DfsTex_FP_glsl glsl
+fragment_program WeightedBlended_weight_blend_Ambient+DfsTex_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
-    attach MaterialColor_None+DfsTex_FP
+    attach MaterialColor_Ambient+DfsTex_FP
     
     default_params
     {
@@ -2829,10 +2829,10 @@ fragment_program WeightedBlended_weight_blend_None+DfsTex_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program WeightedBlended_weight_blend_None+VT+DfsTex_FP_glsl glsl
+fragment_program WeightedBlended_weight_blend_Ambient+VT+DfsTex_FP_glsl glsl
 {
     source WeightedBlended_Weight_Blend_FP.glsl
-    attach MaterialColor_None+VT+DfsTex_FP
+    attach MaterialColor_Ambient+VT+DfsTex_FP
     
     default_params
     {
@@ -3134,11 +3134,11 @@ fragment_program WeightedBlended_weight_blend_Negato_FP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program CelShadingDepthPeelingRenderScene_None_VP_glsl glsl
+vertex_program CelShadingDepthPeelingRenderScene_Ambient_VP_glsl glsl
 {
     source RenderScene_VP.glsl
     
-    preprocessor_defines CEL_SHADING=1,NONE=1
+    preprocessor_defines CEL_SHADING=1,AMBIENT=1
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
@@ -3151,11 +3151,11 @@ vertex_program CelShadingDepthPeelingRenderScene_None_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program CelShadingDepthPeelingRenderScene_None+VT_VP_glsl glsl
+vertex_program CelShadingDepthPeelingRenderScene_Ambient+VT_VP_glsl glsl
 {
     source RenderScene_VP.glsl
     
-    preprocessor_defines CEL_SHADING=1,NONE=1,VERTEX_COLOR=1
+    preprocessor_defines CEL_SHADING=1,AMBIENT=1,VERTEX_COLOR=1
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
@@ -3168,11 +3168,11 @@ vertex_program CelShadingDepthPeelingRenderScene_None+VT_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program CelShadingDepthPeelingRenderScene_None+DfsTex_VP_glsl glsl
+vertex_program CelShadingDepthPeelingRenderScene_Ambient+DfsTex_VP_glsl glsl
 {
     source RenderScene_VP.glsl
     
-    preprocessor_defines CEL_SHADING=1,NONE=1,DIFFUSE_TEX=1
+    preprocessor_defines CEL_SHADING=1,AMBIENT=1,DIFFUSE_TEX=1
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
@@ -3185,11 +3185,11 @@ vertex_program CelShadingDepthPeelingRenderScene_None+DfsTex_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program CelShadingDepthPeelingRenderScene_None+VT+DfsTex_VP_glsl glsl
+vertex_program CelShadingDepthPeelingRenderScene_Ambient+VT+DfsTex_VP_glsl glsl
 {
     source RenderScene_VP.glsl
     
-    preprocessor_defines CEL_SHADING=1,NONE=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    preprocessor_defines CEL_SHADING=1,AMBIENT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
@@ -3432,11 +3432,11 @@ vertex_program CelShadingDepthPeelingRenderScene_PixelLit+VT+DfsTex_VP_glsl glsl
 
 //-----------------------------------------------------------------------------
 
-fragment_program CelShadingDepthPeeling_peel_None_FP_glsl glsl
+fragment_program CelShadingDepthPeeling_peel_Ambient_FP_glsl glsl
 {
     source CelShadingDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None_FP
+    attach MaterialColor_Ambient_FP
     
     default_params
     {
@@ -3449,11 +3449,11 @@ fragment_program CelShadingDepthPeeling_peel_None_FP_glsl glsl
 
 //-----------------------------------------------------------------------------
 
-fragment_program CelShadingDepthPeeling_peel_None+VT_FP_glsl glsl
+fragment_program CelShadingDepthPeeling_peel_Ambient+VT_FP_glsl glsl
 {
     source CelShadingDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+VT_FP
+    attach MaterialColor_Ambient+VT_FP
     
     default_params
     {
@@ -3466,11 +3466,11 @@ fragment_program CelShadingDepthPeeling_peel_None+VT_FP_glsl glsl
 
 //-----------------------------------------------------------------------------
 
-fragment_program CelShadingDepthPeeling_peel_None+DfsTex_FP_glsl glsl
+fragment_program CelShadingDepthPeeling_peel_Ambient+DfsTex_FP_glsl glsl
 {
     source CelShadingDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+DfsTex_FP
+    attach MaterialColor_Ambient+DfsTex_FP
     
     default_params
     {
@@ -3485,11 +3485,11 @@ fragment_program CelShadingDepthPeeling_peel_None+DfsTex_FP_glsl glsl
 
 //-----------------------------------------------------------------------------
 
-fragment_program CelShadingDepthPeeling_peel_None+VT+DfsTex_FP_glsl glsl
+fragment_program CelShadingDepthPeeling_peel_Ambient+VT+DfsTex_FP_glsl glsl
 {
     source CelShadingDepthPeelingPeel_FP.glsl
     attach DepthPeelingCommon_FP
-    attach MaterialColor_None+VT+DfsTex_FP
+    attach MaterialColor_Ambient+VT+DfsTex_FP
     
     default_params
     {

@@ -2,13 +2,6 @@
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling_peel_init_Edge_Normal_FP_glsl glsl
-{
-    source DualDepthPeelingInit_FP.glsl
-}
-
-//---------------------------------------------------------------------------
-
 fragment_program DualDepthPeeling_blend_FP glsl
 {
     source DualDepthPeelingBlend_FP.glsl

@@ -76,23 +76,6 @@ material HybridTransparency_Blend_Final
     }
 }
 
-//---------------------------------------------------------------------------
-
-fragment_program HybridTransparency_transmittance_blend_Edge_Normal_FP glsl
-{
-    source WeightedBlended_Transmittance_Blend_FP.glsl
-    preprocessor_defines HYBRID=1
-    attach DepthPeelingCommon_FP
-    default_params
-    {
-        param_named u_frontDepthBuffer int 0
-        param_named u_occlusionDepthBuffer int 1
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuse surface_diffuse_colour
-    }
-}
-
 //------------------------------------------------------------------
 
 /// WBOIT blended render

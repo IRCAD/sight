@@ -21,6 +21,7 @@
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
+#include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
@@ -33,7 +34,6 @@
 #include "visuOgreAdaptor/SShaderParameter.hpp"
 #include "visuOgreAdaptor/STexture.hpp"
 
-#include <boost/regex.hpp>
 #include <string>
 
 #include <OGRE/OgreVector3.h>
@@ -58,31 +58,6 @@ const std::string SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME = "1 - Default";
 static const std::string s_EDGE_PASS    = "EdgePass";
 static const std::string s_NORMALS_PASS = "NormalsPass";
 
-static const std::regex s_PEEL_REGEX(".*_peel.*");
-static const std::regex s_WEIGHT_BLEND_REGEX(".*_weight_blend.*");
-static const std::regex s_TRANSMITTANCE_BLEND_REGEX(".*_transmittance_blend.*");
-static const std::regex s_DEPTH_MAP_REGEX("(.*depth_map.*)|(.*back_depth.*)");
-
-static const std::string s_NONE          = "None";
-static const std::string s_FLAT          = "Flat";
-static const std::string s_GOURAUD       = "Gouraud";
-static const std::string s_PIXELLIGHTING = "PixelLit";
-
-//-----------------------------------------------------------------------------
-
-static bool isColorTechnique(const std::string _name, bool& _peelTech)
-{
-    const std::regex regexPeel(".*_peel.*");
-    const std::regex regexWeight(".*_weight_blend.*");
-    const std::regex regexDualPeelInit("Dual.*_peel_init.*");
-
-    _peelTech = std::regex_match(_name, regexPeel);
-    const bool weightPass   = std::regex_match(_name, regexWeight);
-    const bool peelInitPass = std::regex_match(_name, regexDualPeelInit);
-
-    return _name == "" || (_peelTech && !peelInitPass) || weightPass;
-}
-
 //------------------------------------------------------------------------------
 
 SMaterial::SMaterial() throw() :
@@ -91,11 +66,9 @@ SMaterial::SMaterial() throw() :
     m_hasMeshNormal(true),
     m_hasVertexColor(false),
     m_hasPrimitiveColor(false),
+    m_primitiveType(::fwData::Mesh::TRIANGLE),
     m_meshBoundingBox(::Ogre::Vector3::ZERO, ::Ogre::Vector3::ZERO),
-    m_normalLengthFactor(0.1f),
-    m_hasQuad(false),
-    m_hasTetra(false),
-    m_shadingMode(::fwData::Material::SHADING_MODE::MODE_PHONG)
+    m_normalLengthFactor(0.1f)
 {
     m_textureConnection = ::fwServices::helper::SigSlotConnection::New();
 
@@ -514,24 +487,7 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
 
     if(m_configuration->hasAttribute("shadingMode"))
     {
-        std::string shadingMode = m_configuration->getAttributeValue("shadingMode");
-
-        if(shadingMode != "ambient")
-        {
-            m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_AMBIENT;
-        }
-        else if(shadingMode == "flat")
-        {
-            m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_FLAT;
-        }
-        else if(shadingMode == "gouraud")
-        {
-            m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_GOURAUD;
-        }
-        else
-        {
-            m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_PHONG;
-        }
+        m_shadingMode = m_configuration->getAttributeValue("shadingMode");
     }
 
     if(m_configuration->hasAttribute("normalLength"))
@@ -545,9 +501,26 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
 
 void SMaterial::doStart() throw(fwTools::Failed)
 {
-    ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
+    if(!m_shadingMode.empty())
+    {
+        ::fwData::Material::ShadingType shadingMode = ::fwData::Material::PHONG;
+        if(m_shadingMode == "ambient")
+        {
+            shadingMode = ::fwData::Material::AMBIENT;
+        }
+        else if(m_shadingMode == "flat")
+        {
+            shadingMode = ::fwData::Material::FLAT;
+        }
+        else if(m_shadingMode == "gouraud")
+        {
+            shadingMode = ::fwData::Material::GOURAUD;
+        }
 
-    material->setShadingMode(m_shadingMode);
+        // Force the shading mode of the material if it has been set in the configuration of the adaptor
+        ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
+        material->setShadingMode(shadingMode);
+    }
 
     m_material = ::Ogre::MaterialManager::getSingleton().create(
         m_materialName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -578,7 +551,7 @@ void SMaterial::doStart() throw(fwTools::Failed)
         this->createTextureAdaptor();
     }
 
-    this->updateSchemeSupport();
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
@@ -610,10 +583,10 @@ void SMaterial::doUpdate() throw(fwTools::Failed)
 void SMaterial::updateSchemeSupport()
 {
     m_schemesSupported.clear();
-    ::Ogre::Material::TechniqueIterator tech_iter = m_material->getTechniqueIterator();
-    while( tech_iter.hasMoreElements())
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
+    while( techIt.hasMoreElements())
     {
-        ::Ogre::String techSchemeName = tech_iter.getNext()->getSchemeName();
+        ::Ogre::String techSchemeName = techIt.getNext()->getSchemeName();
         m_schemesSupported.push_back(techSchemeName);
     }
     ::fwRenderOgre::Layer::sptr currentLayer = this->getRenderService()->getLayer(m_layerID);
@@ -667,13 +640,13 @@ void SMaterial::swapTexture()
 
     bool bEmptyTexture = (currentTexture->getSrcWidth() == 0 && currentTexture->getSrcHeight() == 0);
 
-    ::Ogre::Material::TechniqueIterator tech_iter = m_material->getTechniqueIterator();
-    while( tech_iter.hasMoreElements())
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
+    while( techIt.hasMoreElements())
     {
-        ::Ogre::Technique* technique = tech_iter.getNext();
+        ::Ogre::Technique* technique = techIt.getNext();
+        SLM_ASSERT("Technique is not set", technique);
 
-        bool peelTech = false;
-        if(isColorTechnique(technique->getName(), peelTech ))
+        if(::fwRenderOgre::helper::Shading::isColorTechnique(*technique))
         {
             ::Ogre::Pass* pass                     = technique->getPass(0);
             ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
@@ -732,101 +705,52 @@ void SMaterial::doStop() throw(fwTools::Failed)
 
 void SMaterial::updateOptionsMode(int optionsMode)
 {
-    ::Ogre::Material::TechniqueIterator tech_iter = m_material->getSupportedTechniqueIterator();
-    ::Ogre::Real normalLength                     = this->computeNormalLength();
+    // First remove the normals pass if there is already one
+    this->removePass(s_NORMALS_PASS);
 
-    while( tech_iter.hasMoreElements())
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getSupportedTechniqueIterator();
+    const ::Ogre::Real normalLength = this->computeNormalLength();
+
+    if(optionsMode != ::fwData::Material::STANDARD)
     {
-        ::Ogre::Technique* currentTechnique       = tech_iter.getNext();
-        ::Ogre::Technique::PassIterator pass_iter = currentTechnique->getPassIterator();
-
-        std::vector< ::Ogre::Pass* > normalPassVector;
-
-        while ( pass_iter.hasMoreElements() )
+        while( techIt.hasMoreElements())
         {
-            ::Ogre::Pass* ogrePass = pass_iter.getNext();
-            if(ogrePass->getName() == s_NORMALS_PASS)
+            ::Ogre::Technique* currentTechnique = techIt.getNext();
+
+            // We need the first pass of the current technique in order to copy its rendering states in the normals pass
+            ::Ogre::Pass* firstPass = currentTechnique->getPass(0);
+            SLM_ASSERT("Pass is null", firstPass);
+
+            const bool depthOnly = ::fwRenderOgre::helper::Shading::isDepthOnlyTechnique(*currentTechnique);
+
+            if( ::fwRenderOgre::helper::Shading::isGeometricTechnique(*currentTechnique) || depthOnly )
             {
-                normalPassVector.push_back(ogrePass);
-            }
-        }
+                // We copy the first pass, thus keeping all rendering states
+                ::Ogre::Pass* normalsPass = currentTechnique->createPass();
+                *normalsPass              = *firstPass;
+                normalsPass->setName(s_NORMALS_PASS);
 
-        // We have to remove the normal passes
-        for(auto normalPass : normalPassVector)
-        {
-            currentTechnique->removePass(normalPass->getIndex());
-        }
+                // Vertex shader
+                normalsPass->setVertexProgram("Default_Normal_VP_glsl");
 
-        // If we are in standard mode (no normals), we don't have to create a normals pass
-        if( optionsMode == ::fwData::Material::OPTIONS_MODE::MODE_STANDARD)
-        {
-            continue;
-        }
+                std::string gpName = depthOnly ? "DepthPeeling_depth_map_" : "";
+                gpName += (optionsMode == ::fwData::Material::NORMALS) ?
+                          "VerticesNormalsDisplay_GP" :
+                          "CellsNormalsDisplay_GP";
 
-        // We need the first pass of the current technique in order to copy its rendering states in the normals pass
-        ::Ogre::Pass* firstPass = currentTechnique->getPass(0);
+                normalsPass->setGeometryProgram(gpName);
 
-        const bool peelPass           = std::regex_match(currentTechnique->getName(), s_PEEL_REGEX);
-        const bool weightBlend        = std::regex_match(currentTechnique->getName(), s_WEIGHT_BLEND_REGEX);
-        const bool transmittanceBlend = std::regex_match(currentTechnique->getName(), s_TRANSMITTANCE_BLEND_REGEX);
-        const bool depthMap           = std::regex_match(currentTechnique->getName(), s_DEPTH_MAP_REGEX);
-
-        if( (currentTechnique->getName() == "" || peelPass || weightBlend || transmittanceBlend || depthMap) )
-        {
-            // We copy the first pass, thus keeping all rendering states
-            ::Ogre::Pass* normalsPass = currentTechnique->createPass();
-            *normalsPass              = *firstPass;
-            normalsPass->setName(s_NORMALS_PASS);
-
-            // Vertex shader
-            normalsPass->setVertexProgram("Default_Normal_VP_glsl");
-
-            // Geometry shader (for point or cell normals)
-            if(optionsMode == ::fwData::Material::OPTIONS_MODE::MODE_NORMALS)
-            {
-                if(depthMap)
+                if(!depthOnly)
                 {
-                    normalsPass->setGeometryProgram("DepthPeeling_depth_map_VerticesNormalsDisplay_GP");
+                    auto fpName = normalsPass->getFragmentProgramName();
+
+                    fpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(fpName, "Edge_Normal");
+                    normalsPass->setFragmentProgram(fpName);
                 }
-                else
-                {
-                    normalsPass->setGeometryProgram("VerticesNormalsDisplay_GP");
-                }
+
+                // Updates the normal length according to the bounding box's size
+                normalsPass->getGeometryProgramParameters()->setNamedConstant("u_normalLength", normalLength);
             }
-            else
-            {
-                if(depthMap)
-                {
-                    normalsPass->setGeometryProgram("DepthPeeling_depth_map_CellsNormalsDisplay_GP");
-                }
-                else
-                {
-                    normalsPass->setGeometryProgram("CellsNormalsDisplay_GP");
-                }
-            }
-
-            if(!depthMap)
-            {
-                auto fpName = normalsPass->getFragmentProgramName();
-
-                // Clear the suffix (+VT+...)
-                const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P_glsl)", ::boost::regex::extended);
-                fpName = ::boost::regex_replace(fpName, regexConcat, "$1");
-
-                // Fragment shader
-                // We use a specific version of this shader when we use an OIT technique
-                // (mainly to force the diffuse color because we don't manage to set uniforms with compositors usage)
-                const ::boost::regex regexShading("("+s_FLAT+")|("+s_GOURAUD+")|("+s_PIXELLIGHTING+")");
-                fpName = ::boost::regex_replace(fpName, regexShading, "Edge_Normal");
-
-                const ::boost::regex regexTech("(peel_init)|(transmittance_blend)");
-                fpName = ::boost::regex_replace(fpName, regexTech, "$&_Edge_Normal");
-
-                normalsPass->setFragmentProgram(fpName);
-            }
-
-            // Updates the normal length according to the bounding box's size
-            normalsPass->getGeometryProgramParameters()->setNamedConstant("u_normalLength", normalLength);
         }
     }
 }
@@ -839,24 +763,25 @@ void SMaterial::updatePolygonMode(int polygonMode)
     // is null when we call this method on the first time (from doStart() for instance)
     m_material->touch();
 
-    ::Ogre::Material::TechniqueIterator tech_iter = m_material->getSupportedTechniqueIterator();
+    // First remove a previous normal pass if it exists
+    this->removePass(s_EDGE_PASS);
 
-    if(polygonMode == ::fwData::Material::MODE_EDGE)
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getSupportedTechniqueIterator();
+
+    if(polygonMode == ::fwData::Material::EDGE)
     {
-        while( tech_iter.hasMoreElements())
+        while( techIt.hasMoreElements())
         {
-            ::Ogre::Technique* tech = tech_iter.getNext();
+            ::Ogre::Technique* tech = techIt.getNext();
+            SLM_ASSERT("Technique is not set", tech);
 
-            const bool peelPass           = std::regex_match(tech->getName(), s_PEEL_REGEX);
-            const bool weightBlend        = std::regex_match(tech->getName(), s_WEIGHT_BLEND_REGEX);
-            const bool transmittanceBlend = std::regex_match(tech->getName(), s_TRANSMITTANCE_BLEND_REGEX);
-
-            if(tech->getName() == "" || peelPass || weightBlend || transmittanceBlend)
+            if( ::fwRenderOgre::helper::Shading::isGeometricTechnique(*tech) )
             {
-                ::Ogre::Technique::PassIterator pass_iter = tech->getPassIterator();
-                ::Ogre::Pass* firstPass                   = pass_iter.getNext();
+                ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
+                ::Ogre::Pass* firstPass                = passIt.getNext();
 
                 firstPass->setPolygonMode(::Ogre::PM_SOLID);
+                firstPass->setPointSpritesEnabled(false);
 
                 ::Ogre::Pass* edgePass = tech->getPass(s_EDGE_PASS);
                 if(!edgePass)
@@ -866,24 +791,12 @@ void SMaterial::updatePolygonMode(int polygonMode)
                     *edgePass = *firstPass;
                     edgePass->setName(s_EDGE_PASS);
 
-                    // We then switch the vertex shader...
+                    // Then we switch the vertex shader...
                     edgePass->setVertexProgram("Default_Edge_VP_glsl");
 
                     // ... and the fragment shader
                     auto fpName = edgePass->getFragmentProgramName();
-
-                    // Clear the suffix in shader names  (+VT+...)
-                    const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P_glsl)", ::boost::regex::extended);
-                    fpName = ::boost::regex_replace(fpName, regexConcat, "$1");
-
-                    // For the latter, we use a specific version when we use an OIT technique
-                    // (mainly to force the diffuse color because we don't manage to set uniforms with compositors usage)
-                    const ::boost::regex regexShading("("+s_FLAT+")|("+s_GOURAUD+")|("+s_PIXELLIGHTING+")");
-                    fpName = ::boost::regex_replace(fpName, regexShading, "Edge_Normal" );
-
-                    const ::boost::regex regexTech("(peel_init)|(transmittance_blend)");
-                    fpName = ::boost::regex_replace(fpName, regexTech, "$&_Edge_Normal" );
-
+                    fpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(fpName, "Edge_Normal");
                     edgePass->setFragmentProgram(fpName);
 
                     edgePass->setPolygonMode(::Ogre::PM_WIREFRAME);
@@ -893,52 +806,40 @@ void SMaterial::updatePolygonMode(int polygonMode)
     }
     else
     {
-        while( tech_iter.hasMoreElements())
+        while( techIt.hasMoreElements())
         {
-            ::Ogre::Technique* tech                   = tech_iter.getNext();
-            ::Ogre::Technique::PassIterator pass_iter = tech->getPassIterator();
-            std::vector< ::Ogre::Pass* > edgePassVector;
+            ::Ogre::Technique* tech = techIt.getNext();
+            SLM_ASSERT("Technique is not set", tech);
 
-            while ( pass_iter.hasMoreElements() )
+            ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
+
+            while ( passIt.hasMoreElements() )
             {
-                ::Ogre::Pass* ogrePass = pass_iter.getNext();
-                if(ogrePass->getName() == s_EDGE_PASS)
-                {
-                    edgePassVector.push_back(ogrePass);
-                    continue;
-                }
+                ::Ogre::Pass* ogrePass = passIt.getNext();
 
                 switch( polygonMode )
                 {
-
-                    case ::fwData::Material::MODE_SURFACE:
+                    case ::fwData::Material::SURFACE:
                         ogrePass->setPolygonMode(::Ogre::PM_SOLID );
                         ogrePass->setPointSpritesEnabled(false);
                         break;
 
-                    case ::fwData::Material::MODE_WIREFRAME:
+                    case ::fwData::Material::WIREFRAME:
                         ogrePass->setPolygonMode(::Ogre::PM_WIREFRAME);
                         break;
 
-                    case ::fwData::Material::MODE_POINT:
+                    case ::fwData::Material::POINT:
                         ogrePass->setPolygonMode(::Ogre::PM_POINTS);
                         ogrePass->setPointSpritesEnabled(false);
                         ogrePass->setPointSize(1.f);
                         break;
 
                     default:
-                        if( polygonMode != ::fwData::Material::MODE_EDGE )
+                        if( polygonMode != ::fwData::Material::EDGE )
                         {
-                            SLM_ASSERT("Unhandled material representation mode : "
-                                       << polygonMode, false );
+                            SLM_ASSERT("Unhandled material representation mode : " << polygonMode, false );
                         }
                 }
-            }
-
-            // We have to remove the edge passes
-            for(auto edgePass : edgePassVector)
-            {
-                tech->removePass(edgePass->getIndex());
             }
         }
     }
@@ -950,70 +851,29 @@ void SMaterial::updateShadingMode( int shadingMode  )
 {
     if(m_materialTemplateName == DEFAULT_MATERIAL_TEMPLATE_NAME)
     {
-        // Choose the shading mode string
-        ::Ogre::String shadingProgramSuffix;
+        ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(shadingMode);
 
-        switch(shadingMode)
-        {
-            case ::fwData::Material::SHADING_MODE::MODE_AMBIENT:
-                shadingProgramSuffix = s_NONE;
-                break;
-            case ::fwData::Material::SHADING_MODE::MODE_FLAT:
-                shadingProgramSuffix = s_FLAT;
-                break;
-            case ::fwData::Material::SHADING_MODE::MODE_GOURAUD:
-                shadingProgramSuffix = s_GOURAUD;
-                break;
-            case ::fwData::Material::SHADING_MODE::MODE_PHONG:
-                shadingProgramSuffix = s_PIXELLIGHTING;
-                break;
-            default:
-                SLM_ERROR("Unknown shading mode. ");
-        }
-
-        ::Ogre::String shadingCfgs;
-        if(m_hasVertexColor)
-        {
-            shadingCfgs += "+VT";
-        }
-        if(this->hasDiffuseTexture())
-        {
-            shadingCfgs += "+DfsTex";
-        }
-
-        std::string shadingProgramSuffixGS;
-        if(m_hasQuad)
-        {
-            shadingProgramSuffixGS = "Quad";
-        }
-        else if(m_hasTetra)
-        {
-            shadingProgramSuffixGS = "Tetra";
-        }
-        else
-        {
-            shadingProgramSuffixGS = "Triangles";
-        }
-
-        shadingProgramSuffix   += shadingCfgs;
-        shadingProgramSuffixGS += shadingCfgs;
-
-        if(m_hasPrimitiveColor)
-        {
-            shadingProgramSuffixGS += "+PPColor";
-        }
+        ::Ogre::String prgSuffix;
+        prgSuffix = ::fwRenderOgre::helper::Shading::getProgramSuffix(mode, this->hasDiffuseTexture(),
+                                                                      m_hasVertexColor);
+        ::Ogre::String r2vbGSName;
+        r2vbGSName = ::fwRenderOgre::helper::Shading::getR2VBGeometryProgramName(m_primitiveType,
+                                                                                 this->hasDiffuseTexture(),
+                                                                                 m_hasVertexColor,
+                                                                                 m_hasPrimitiveColor);
 
         // Iterate through each technique found in the material and switch the shading mode
-        ::Ogre::Material::TechniqueIterator tech_iter = m_material->getTechniqueIterator();
-        while( tech_iter.hasMoreElements())
+        ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
+        while( techIt.hasMoreElements())
         {
-            ::Ogre::Technique* tech                   = tech_iter.getNext();
-            ::Ogre::Technique::PassIterator pass_iter = tech->getPassIterator();
+            ::Ogre::Technique* tech = techIt.getNext();
+            SLM_ASSERT("Technique is not set", tech);
 
-            ::Ogre::Pass* ogrePass;
-            while ( pass_iter.hasMoreElements() )
+            ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
+
+            while ( passIt.hasMoreElements() )
             {
-                ogrePass = pass_iter.getNext();
+                ::Ogre::Pass* ogrePass = passIt.getNext();
 
                 // Discard edge pass
                 if (ogrePass->getName() == s_EDGE_PASS || ogrePass->getName() == s_NORMALS_PASS )
@@ -1021,44 +881,35 @@ void SMaterial::updateShadingMode( int shadingMode  )
                     continue;
                 }
 
-                std::string ogreVertexName   = ogrePass->getVertexProgramName();
-                std::string ogreFragmentName = ogrePass->getFragmentProgramName();
+                std::string vpName = ogrePass->getVertexProgramName();
+                std::string fpName = ogrePass->getFragmentProgramName();
 
                 // Check if we need a geometry shader (primitive generation and per-primitive color)
-                if(m_hasQuad || m_hasTetra || m_hasPrimitiveColor)
+                if(m_primitiveType != ::fwData::Mesh::TRIANGLE || m_hasPrimitiveColor)
                 {
-                    ogrePass->setVertexProgram("RenderScene_R2VB_" + shadingProgramSuffix + "_VP_glsl");
-                    ogrePass->setGeometryProgram("RenderScene_" + shadingProgramSuffixGS + "_GP_glsl");
+                    ogrePass->setVertexProgram("RenderScene_R2VB_" + prgSuffix + "_VP_glsl");
+                    ogrePass->setGeometryProgram(r2vbGSName);
                     ogrePass->setFragmentProgram("");
                 }
                 else
                 {
-                    // Clear the suffix in shader names (+VT+...)
-                    const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P_glsl)", ::boost::regex::extended);
-                    ogreVertexName   = ::boost::regex_replace(ogreVertexName, regexConcat, "$1");
-                    ogreFragmentName = ::boost::regex_replace(ogreFragmentName, regexConcat, "$1");
+                    vpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(vpName, prgSuffix);
+                    fpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(fpName, prgSuffix);
 
-                    // Replace the shading technique
-                    const ::boost::regex regexShading("("+s_NONE+")|("+s_FLAT+")|("+s_GOURAUD+")|("+s_PIXELLIGHTING+
-                                                      ")");
-                    ogreVertexName   = ::boost::regex_replace(ogreVertexName, regexShading, shadingProgramSuffix);
-                    ogreFragmentName = ::boost::regex_replace(ogreFragmentName, regexShading, shadingProgramSuffix);
+                    ogrePass->setVertexProgram(vpName);
+                    ogrePass->setFragmentProgram(fpName);
 
-                    ogrePass->setVertexProgram(ogreVertexName);
-                    ogrePass->setFragmentProgram(ogreFragmentName);
-                }
-
-                if(m_texAdaptor)
-                {
-                    bool peelPass;
-                    bool colorPass = isColorTechnique(static_cast<std::string>(tech->getName()), peelPass);
-
-                    // Updates the u_hasTextureAlpha flag uniform according to the configuration of the texture adaptor
-                    if(this->hasDiffuseTexture() && shadingProgramSuffix == s_NONE  && colorPass)
+                    if(m_texAdaptor)
                     {
-                        int useTextureAlpha = static_cast<int>(m_texAdaptor->getUseAlpha());
-                        ogrePass->getFragmentProgramParameters()->setNamedConstant("u_useTextureAlpha",
-                                                                                   useTextureAlpha);
+                        const bool colorPass = ::fwRenderOgre::helper::Shading::isColorTechnique(*tech);
+
+                        // Updates the u_hasTextureAlpha flag uniform according to the configuration of the texture adaptor
+                        if(this->hasDiffuseTexture() && colorPass)
+                        {
+                            int useTextureAlpha = static_cast<int>(m_texAdaptor->getUseAlpha());
+                            ogrePass->getFragmentProgramParameters()->setNamedConstant("u_useTextureAlpha",
+                                                                                       useTextureAlpha);
+                        }
                     }
                 }
 
@@ -1093,7 +944,7 @@ void SMaterial::updateShadingMode( int shadingMode  )
                                                                                    unitStateCount - 1);
                     }
 
-                    // Set outside the scope of texture creation because the size could vary
+                    // Set size outside the scope of texture creation because the size could vary
                     ::Ogre::Vector2 size(static_cast<float>(tex->getWidth()), static_cast<float>(tex->getHeight()));
                     ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTextureSize", size);
                 }
@@ -1165,14 +1016,13 @@ void SMaterial::removeTextureAdaptor()
 
     this->getRenderService()->makeCurrent();
 
-    ::Ogre::Material::TechniqueIterator tech_iter = m_material->getTechniqueIterator();
-    while( tech_iter.hasMoreElements())
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
+    while( techIt.hasMoreElements())
     {
-        ::Ogre::Technique* technique = tech_iter.getNext();
+        ::Ogre::Technique* technique = techIt.getNext();
+        SLM_ASSERT("Technique is not set", technique);
 
-        bool peelTech = false;
-
-        if(isColorTechnique(technique->getName(), peelTech))
+        if(::fwRenderOgre::helper::Shading::isColorTechnique(*technique))
         {
             ::Ogre::Pass* pass                     = technique->getPass(0);
             ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
@@ -1192,8 +1042,41 @@ void SMaterial::removeTextureAdaptor()
 
     // Update the shaders
     ::fwData::Material::sptr material = this->getObject< ::fwData::Material >();
-    this->setShadingMode( material->getShadingMode() );
+    this->updateShadingMode( material->getShadingMode() );
+}
 
+//-----------------------------------------------------------------------------
+
+void SMaterial::removePass(const std::string& _name)
+{
+    SLM_ASSERT("Material is not set", !m_material.isNull());
+
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getSupportedTechniqueIterator();
+
+    while( techIt.hasMoreElements())
+    {
+        ::Ogre::Technique* technique = techIt.getNext();
+        SLM_ASSERT("Technique is not set", technique);
+
+        ::Ogre::Technique::PassIterator passIt = technique->getPassIterator();
+        std::vector< ::Ogre::Pass* > removeEdgePassVector;
+
+        while ( passIt.hasMoreElements() )
+        {
+            ::Ogre::Pass* ogrePass = passIt.getNext();
+            if(ogrePass->getName() == _name)
+            {
+                removeEdgePassVector.push_back(ogrePass);
+                continue;
+            }
+        }
+
+        // We have to remove the edge passes
+        for(auto edgePass : removeEdgePassVector)
+        {
+            technique->removePass(edgePass->getIndex());
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

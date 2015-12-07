@@ -51,12 +51,12 @@ out VertexDataOut
     #endif // DIFFUSE_TEX
 } vertexOut;
 
-#ifndef NONE
+#ifndef AMBIENT
 vec4 lighting(vec3 _normal, vec3 _position);
 #else
 uniform vec4 u_ambient;
 uniform vec4 u_diffuse;
-#endif // NONE
+#endif // AMBIENT
 
 void main(void)
 {
@@ -95,13 +95,13 @@ void main(void)
 #       endif // VERTEX_COLOR
 
 #   else
-#       ifdef NONE
+#       ifdef AMBIENT
     vertexOut.oColor = vec4(u_ambient.rgb + u_diffuse.rgb, u_diffuse.a);
 #       else
     vec3 position_WS = (u_world * position).xyz;
     vec3 normal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
     vertexOut.oColor = lighting(normal_WS, position_WS);
-#       endif // NONE
+#       endif // AMBIENT
 
 #       ifdef VERTEX_COLOR
     vertexOut.oColor *= colour;

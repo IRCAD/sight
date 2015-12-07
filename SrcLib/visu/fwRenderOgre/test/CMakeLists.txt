@@ -10,18 +10,15 @@ fwUseForwardInclude(
     fwRuntime
     fwServices
     fwTools
+    fwRenderOgre
 )
+
+find_package(CppUnit)
 
 useOgre()
-    
-find_package (Boost COMPONENTS regex REQUIRED)
 
-fwForwardInclude(
-    ${OGRE_INCLUDE_DIRS}
-    ${OGRE_Overlay_INCLUDE_DIRS}
-)
-
+fwInclude(${CPPUNIT_INCLUDE_DIR})
 fwLink(
-    ${Boost_REGEX_LIBRARY}
-    )
+    ${CPPUNIT_LIBRARY}
+)
 

@@ -233,7 +233,7 @@ private:
     bool m_useNewMaterialAdaptor;
 
     /// The configured shading mode
-    ::fwData::Material::SHADING_MODE m_shadingMode;
+    std::string m_shadingMode;
 
     /// Node containing inputs for the r2vb objects - it will never be inserted in the scene
     ::Ogre::Entity* m_r2vbEntity;

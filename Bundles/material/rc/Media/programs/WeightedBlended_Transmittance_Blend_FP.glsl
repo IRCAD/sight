@@ -13,7 +13,9 @@ uniform vec4 u_diffuse;
 
 out vec4 FragColor;
 
+#ifdef HYBRID
 float unpackFloatFromVec4(vec4 value);
+#endif
 
 void main()
 {

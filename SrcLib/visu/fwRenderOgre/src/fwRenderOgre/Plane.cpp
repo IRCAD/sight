@@ -6,6 +6,7 @@
 
 #include "fwRenderOgre/Plane.hpp"
 
+#include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <OGRE/OgreEntity.h>
@@ -19,21 +20,6 @@
 
 namespace fwRenderOgre
 {
-
-//-----------------------------------------------------------------------------
-
-static bool isNegatoPass(const std::string _name, bool& _peelPass)
-{
-    const std::regex regexPeel(".*_peel.*");
-    const std::regex regexWeight(".*_weight_blend.*");
-    const std::regex regexDualPeelInit("Dual.*_peel_init.*");
-
-    _peelPass = std::regex_match(_name, regexPeel);
-    const bool weightPass   = std::regex_match(_name, regexWeight);
-    const bool peelInitPass = std::regex_match(_name, regexDualPeelInit);
-
-    return _name == "" || (_peelPass && !peelInitPass) || weightPass;
-}
 
 //-----------------------------------------------------------------------------
 
@@ -122,14 +108,14 @@ void Plane::initializeMaterial()
     // is null when we call this method on the first time (from doStart() for instance)
     m_texMaterial->touch();
 
-    ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
+    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
 
-    while( tech_iter.hasMoreElements())
+    while( techIt.hasMoreElements())
     {
-        ::Ogre::Technique* tech = tech_iter.getNext();
+        ::Ogre::Technique* tech = techIt.getNext();
+        SLM_ASSERT("Technique is not set", tech);
 
-        bool peelPass = false;
-        if(isNegatoPass(tech->getName(), peelPass))
+        if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
 
@@ -328,14 +314,14 @@ void Plane::setRelativePosition(float _relativePosition)
 
 void Plane::setWindowing(float _minValue, float _maxValue)
 {
-    ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
+    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
 
-    while( tech_iter.hasMoreElements())
+    while( techIt.hasMoreElements())
     {
-        ::Ogre::Technique* tech = tech_iter.getNext();
+        ::Ogre::Technique* tech = techIt.getNext();
+        SLM_ASSERT("Technique is not set", tech);
 
-        bool peelPass = false;
-        if(isNegatoPass(tech->getName(), peelPass))
+        if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
             SLM_ASSERT("Can't find Ogre pass", pass);
@@ -350,14 +336,14 @@ void Plane::setWindowing(float _minValue, float _maxValue)
 
 void Plane::switchThresholding(bool _threshold)
 {
-    ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
+    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
 
-    while( tech_iter.hasMoreElements())
+    while( techIt.hasMoreElements())
     {
-        ::Ogre::Technique* tech = tech_iter.getNext();
+        ::Ogre::Technique* tech = techIt.getNext();
+        SLM_ASSERT("Technique is not set", tech);
 
-        bool peelPass = false;
-        if(isNegatoPass(tech->getName(), peelPass))
+        if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
 
@@ -420,19 +406,20 @@ void Plane::setEntityOpacity(float _f)
     ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
 
-    ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
+    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
 
-    while( tech_iter.hasMoreElements())
+    while( techIt.hasMoreElements())
     {
-        ::Ogre::Technique* tech = tech_iter.getNext();
+        ::Ogre::Technique* tech = techIt.getNext();
+        SLM_ASSERT("Technique is not set", tech);
 
-        bool peelPass = false;
-        if(isNegatoPass(tech->getName(), peelPass) && !peelPass)
+        if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech) &&
+           !::fwRenderOgre::helper::Shading::isPeelTechnique(*tech))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
 
             // We don't want a depth check if we have non-OIT transparency
-            bool needDepthCheck = (m_entityOpacity == 1.f);
+            const bool needDepthCheck = (m_entityOpacity == 1.f);
             pass->setDepthCheckEnabled(needDepthCheck);
         }
     }
@@ -442,14 +429,14 @@ void Plane::setEntityOpacity(float _f)
 
 void Plane::changeSlice(float sliceIndex)
 {
-    ::Ogre::Material::TechniqueIterator tech_iter = m_texMaterial->getSupportedTechniqueIterator();
+    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
 
-    while( tech_iter.hasMoreElements())
+    while( techIt.hasMoreElements())
     {
-        ::Ogre::Technique* tech = tech_iter.getNext();
+        ::Ogre::Technique* tech = techIt.getNext();
+        SLM_ASSERT("Technique is not set", tech);
 
-        bool peelPass = false;
-        if(isNegatoPass(tech->getName(), peelPass))
+        if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
         {
             ::Ogre::Pass* pass = tech->getPass(0);
 

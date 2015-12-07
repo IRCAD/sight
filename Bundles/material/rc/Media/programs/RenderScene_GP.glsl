@@ -56,7 +56,7 @@ void emit(int index)
     vec4 color;
     color = vertexIn[index].oColor;
 #   ifdef PER_PRIMITIVE_COLOR
-    color = ppcolor * oColour;
+    color = ppcolor * color;
 #   endif // PER_PRIMITIVE_COLOR
     oColour = packUnorm4x8(color);
 #else

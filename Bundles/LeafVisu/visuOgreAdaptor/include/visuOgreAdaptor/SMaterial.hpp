@@ -14,6 +14,7 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
@@ -85,26 +86,15 @@ public:
     bool getHasPrimitiveColor() const;
     void setHasPrimitiveColor(bool hasMeshNormal, const std::string& textureName);
 
-    void setHasQuad(bool _quad)
-    {
-        m_hasQuad = _quad;
-    }
-
-    void setHasTetra(bool _Tetra)
-    {
-        m_hasTetra = _Tetra;
-    }
+    void setPrimitiveType(::fwData::Mesh::CellTypesEnum _type);
 
     /// Tells if there is a texture currently bound
     bool hasDiffuseTexture() const;
 
-    VISUOGREADAPTOR_API bool getUseLighting() const;
-    VISUOGREADAPTOR_API void setUseLighting(bool _useLighting);
+    const std::string &getShadingMode() const;
+    void setShadingMode(const std::string &_shadingMode);
 
-    VISUOGREADAPTOR_API ::fwData::Material::SHADING_MODE getShadingMode() const;
-    VISUOGREADAPTOR_API void setShadingMode(::fwData::Material::SHADING_MODE _shadingMode);
-
-    VISUOGREADAPTOR_API void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
+    void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
 
     /// Returns proposals to connect service slots to associated object signals
     ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
@@ -190,6 +180,9 @@ private:
     /// Generates a normal length according to the mesh's bounding box
     ::Ogre::Real computeNormalLength();
 
+    /// Remove a rendering pass in all techniques on the current material
+    void removePass(const std::string& _name);
+
     /// Associated Ogre material
     ::Ogre::MaterialPtr m_material;
     /// Material name. It is auto generated.
@@ -212,8 +205,8 @@ private:
     /// Defines if the associated mesh has a a per primitive color layer
     bool m_hasPrimitiveColor;
 
-    bool m_hasQuad;
-    bool m_hasTetra;
+    /// Primitive type of the associated mesh
+    ::fwData::Mesh::CellTypesEnum m_primitiveType;
 
     /// Name of the texture used to store per-primitive color
     std::string m_perPrimitiveColorTextureName;
@@ -229,7 +222,7 @@ private:
     ::fwServices::helper::SigSlotConnection::sptr m_textureConnection;
 
     /// The configured shading mode
-    ::fwData::Material::SHADING_MODE m_shadingMode;
+    std::string m_shadingMode;
 };
 
 //------------------------------------------------------------------------------
@@ -251,9 +244,9 @@ inline bool SMaterial::getHasMeshNormal() const
 
 //------------------------------------------------------------------------------
 
-inline void SMaterial::setHasMeshNormal(bool hasMeshNormal)
+inline void SMaterial::setHasMeshNormal(bool _hasMeshNormal)
 {
-    m_hasMeshNormal = hasMeshNormal;
+    m_hasMeshNormal = _hasMeshNormal;
 }
 
 //------------------------------------------------------------------------------
@@ -265,9 +258,9 @@ inline bool SMaterial::getHasVertexColor() const
 
 //------------------------------------------------------------------------------
 
-inline void SMaterial::setHasVertexColor(bool hasVertexColor)
+inline void SMaterial::setHasVertexColor(bool _hasVertexColor)
 {
-    m_hasVertexColor = hasVertexColor;
+    m_hasVertexColor = _hasVertexColor;
 }
 
 //------------------------------------------------------------------------------
@@ -279,24 +272,31 @@ inline bool SMaterial::getHasPrimitiveColor() const
 
 //------------------------------------------------------------------------------
 
-inline void SMaterial::setHasPrimitiveColor(bool hasPrimitiveColor, const std::string& textureName)
+inline void SMaterial::setHasPrimitiveColor(bool _hasPrimitiveColor, const std::string& _textureName)
 {
-    m_hasPrimitiveColor            = hasPrimitiveColor;
-    m_perPrimitiveColorTextureName = textureName;
+    m_hasPrimitiveColor            = _hasPrimitiveColor;
+    m_perPrimitiveColorTextureName = _textureName;
 }
 
 //------------------------------------------------------------------------------
 
-inline void SMaterial::setMaterialTemplateName(const std::string& materialName)
+inline void SMaterial::setPrimitiveType(::fwData::Mesh::CellTypesEnum _type)
 {
-    m_materialTemplateName = materialName;
+    m_primitiveType = _type;
 }
 
 //------------------------------------------------------------------------------
 
-inline void SMaterial::setMaterialName(const std::string& materialName)
+inline void SMaterial::setMaterialTemplateName(const std::string& _materialName)
 {
-    m_materialName = materialName;
+    m_materialTemplateName = _materialName;
+}
+
+//------------------------------------------------------------------------------
+
+inline void SMaterial::setMaterialName(const std::string& _materialName)
+{
+    m_materialName = _materialName;
 }
 
 //------------------------------------------------------------------------------
@@ -315,19 +315,17 @@ inline bool SMaterial::hasDiffuseTexture() const
 
 //------------------------------------------------------------------------------
 
-inline ::fwData::Material::SHADING_MODE SMaterial::getShadingMode() const
+inline const std::string& SMaterial::getShadingMode() const
 {
     return m_shadingMode;
 }
 
 //------------------------------------------------------------------------------
 
-inline void SMaterial::setShadingMode(::fwData::Material::SHADING_MODE _shadingMode)
+inline void SMaterial::setShadingMode(const std::string& _shadingMode)
 {
     m_shadingMode = _shadingMode;
 }
-
-//------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 

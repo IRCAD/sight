@@ -112,7 +112,6 @@ SMesh::SMesh() throw() :
     m_hasUV(false),
     m_isReconstructionManaged(false),
     m_useNewMaterialAdaptor(false),
-    m_shadingMode(::fwData::Material::SHADING_MODE::MODE_PHONG),
     m_r2vbEntity(nullptr),
     m_uiPrevNumCells(0)
 {
@@ -188,24 +187,7 @@ void SMesh::doConfigure() throw(fwTools::Failed)
 
         if( m_configuration->hasAttribute("shadingMode"))
         {
-            std::string shadingMode = m_configuration->getAttributeValue("shadingMode");
-
-            if(shadingMode != "ambient")
-            {
-                m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_AMBIENT;
-            }
-            else if(shadingMode == "flat")
-            {
-                m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_FLAT;
-            }
-            else if(shadingMode == "gouraud")
-            {
-                m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_GOURAUD;
-            }
-            else
-            {
-                m_shadingMode = ::fwData::Material::SHADING_MODE::MODE_PHONG;
-            }
+            m_shadingMode = m_configuration->getAttributeValue("shadingMode");
         }
     }
 
@@ -590,16 +572,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
         sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 
-    this->createTransformService();
-    if(m_useNewMaterialAdaptor)
-    {
-        this->updateNewMaterialAdaptor();
-    }
-    else
-    {
-        this->updateXMLMaterialAdaptor();
-    }
-
     //------------------------------------------
     // Update vertex attributes
     //------------------------------------------
@@ -608,10 +580,17 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
     this->updateColors(mesh);
     this->updateTexCoords(mesh);
 
-    if(m_materialAdaptor)
+    //------------------------------------------
+    // Create sub-services
+    //------------------------------------------
+    this->createTransformService();
+    if(m_useNewMaterialAdaptor)
     {
-        // Sends the mesh's bounding box to the material (used for normals display)
-        m_materialAdaptor->setMeshBoundingBox(m_ogreMesh->getBounds());
+        this->updateNewMaterialAdaptor();
+    }
+    else
+    {
+        this->updateXMLMaterialAdaptor();
     }
 
     if (m_autoResetCamera)
@@ -703,8 +682,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
                 // These settings will no longer change
                 r2vbMtlAdaptor->setMaterialName(meshName + "_" + r2vbMtlAdaptor->getID() + "_Mtl_" + primName);
-                r2vbMtlAdaptor->setHasQuad(bQuad);
-                r2vbMtlAdaptor->setHasTetra(bTetra);
+                r2vbMtlAdaptor->setPrimitiveType(cellType);
 
                 // These settings may change
                 r2vbMtlAdaptor->setHasMeshNormal(m_hasNormal);
@@ -714,7 +692,6 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbMtlAdaptor->setShadingMode(m_shadingMode);
 
                 r2vbMtlAdaptor->start();
-                r2vbMtlAdaptor->update();
 
                 this->registerService(r2vbMtlAdaptor);
 
@@ -871,6 +848,11 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
                                                                 ::Ogre::Math::Sqr(yMax - yMin) +
                                                                 ::Ogre::Math::Sqr(zMax - zMin)) /2);
 
+    if(m_materialAdaptor)
+    {
+        // Sends the mesh's bounding box to the material (used for normals display)
+        m_materialAdaptor->setMeshBoundingBox(m_ogreMesh->getBounds());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -881,10 +863,6 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
 
     const bool hasVertexColor    = (mesh->getPointColorsArray() != nullptr);
     const bool hasPrimitiveColor = (mesh->getCellColorsArray() != nullptr);
-
-    OSLM_ERROR_IF("Mesh " << mesh->getID() << " contains both per-cell and per-vertex color.\n"
-                  "Per-vertex color will be used.", hasVertexColor && hasPrimitiveColor);
-
 
     ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
     SLM_ASSERT("Invalid vertex buffer binding", bind);
@@ -931,7 +909,8 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
             m_perPrimitiveColorTextureName = "";
         }
     }
-    else if(hasPrimitiveColor)
+
+    if(hasPrimitiveColor)
     {
         unsigned int numIndicesTotal = 0;
         for(size_t i = 0; i < s_numPrimitiveTypes; ++i)
@@ -1019,7 +998,8 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
 
         cbuf->unlock();
     }
-    else if(hasPrimitiveColor)
+
+    if(hasPrimitiveColor)
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
         ::fwComEd::helper::Mesh meshHelper(mesh);
@@ -1214,10 +1194,10 @@ void SMesh::updateNewMaterialAdaptor()
             }
 
             m_materialAdaptor->setShadingMode(m_shadingMode);
+            m_materialAdaptor->setMeshBoundingBox(m_ogreMesh->getBounds());
 
             m_materialAdaptor->start();
 
-            m_materialAdaptor->update();
             this->registerService(m_materialAdaptor);
 
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());

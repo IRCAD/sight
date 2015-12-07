@@ -2,20 +2,6 @@
 
 //---------------------------------------------------------------------------
 
-fragment_program WeightedBlended_transmittance_blend_Edge_Normal_FP glsl
-{
-    source WeightedBlended_Transmittance_Blend_FP.glsl
-    default_params
-    {
-        param_named u_occlusionDepthBuffer int 0
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
-        param_named_auto u_diffuse surface_diffuse_colour
-    }
-}
-
-//---------------------------------------------------------------------------
-
 fragment_program WeightedBlended_blend_FP glsl
 {
         source WeightedBlended_Blend_FP.glsl

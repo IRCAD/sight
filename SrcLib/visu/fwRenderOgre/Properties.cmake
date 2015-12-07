@@ -15,7 +15,6 @@ set( DEPENDENCIES
     fwServices
     fwTools
     fwThread
-    gui
 )
 set( REQUIREMENTS  )
 
