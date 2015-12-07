@@ -173,6 +173,7 @@ void SCamera::updateFromVtk()
     vtkPerspectiveTransform* trans = vtkPerspectiveTransform::New();
     trans->Identity();
     trans->SetupCamera(camera->GetPosition(), camera->GetFocalPoint(), camera->GetViewUp());
+    this->calibrate();
 
     trans->Inverse();
     trans->Concatenate(m_transOrig);
