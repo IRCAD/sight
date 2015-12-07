@@ -35,7 +35,7 @@
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader</id>
-        <service>::uiIO::editor::IOSelectorService</service>
+        <service>::uiIO::editor::SIOSelector</service>
         <desc>IOSelectorService config for DICOM Filtering Activity</desc>
         <config>
             <type mode="reader" />

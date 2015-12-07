@@ -301,7 +301,7 @@ Detail of the ToolBar
 
                             <service uid="MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
 
-                            <service uid="readerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                            <service uid="readerPathFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                                 <type mode="reader" />
                                 <selection mode="exclude" />
                                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
@@ -318,7 +318,7 @@ Detail of the ToolBar
                     <item key="meshOnNegato1">
                          <!-- Object to store the mesh loading in the first tab -->
                         <object uid="meshOnNegato1" type="::fwData::Mesh">
-                            <service uid="meshReader1" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" >
+                            <service uid="meshReader1" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no" >
                                 <type mode="reader" />
                                 <selection mode="exclude" />
                                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
@@ -329,7 +329,7 @@ Detail of the ToolBar
                     <item key="meshOnNegato2">
                         <!-- Object to store the mesh loading in the second tab -->
                         <object uid="myToolMesh" type="::fwData::Mesh">
-                            <service uid="meshReader2" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" >
+                            <service uid="meshReader2" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no" >
                                 <type mode="reader" />
                                 <selection mode="exclude" />
                                 <addSelection service="::ioXML::FwXMLGenericReaderService" />

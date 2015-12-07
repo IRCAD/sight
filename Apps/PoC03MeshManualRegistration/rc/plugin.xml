@@ -18,7 +18,7 @@
 
                 <item key="image">
                     <object uid="imageUID"  type="::fwData::Image">
-                        <service uid="imageReaderUid" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                        <service uid="imageReaderUid" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>
                     </object>
@@ -164,7 +164,7 @@
 
                         <item key="modelSeries">
                             <object uid="modelSeriesUID"  type="::fwMedData::ModelSeries">
-                                <service uid="modelSeriesReaderUid" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                                <service uid="modelSeriesReaderUid" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                                     <type mode="reader" />
                                 </service>
                             </object>
@@ -189,7 +189,7 @@
                         <item key="cam2Mesh">
                             <object uid="cam2Mesh" type="::fwData::Mesh">
 
-                                <service uid="camReaderFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
+                                <service uid="camReaderFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no" />
                                 <service uid="cam2ReaderFile" impl="::ioData::MeshReaderService" type="::io::IReader" autoConnect="no">
                                     <file>Bundles/PoC03MeshManualRegistration_0-1/cam.trian</file>
                                 </service>

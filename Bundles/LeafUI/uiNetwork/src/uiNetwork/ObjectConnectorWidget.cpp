@@ -9,7 +9,7 @@
 #include "uiNetwork/NetworkSenderWidget.hpp"
 
 #include <gui/editor/IDialogEditor.hpp>
-#include <uiIO/editor/IOSelectorService.hpp>
+#include <uiIO/editor/SIOSelector.hpp>
 #include <fwServices/op/Add.hpp>
 
 #include <Qt>
@@ -56,14 +56,14 @@ ObjectConnectorWidget::ObjectConnectorWidget(QTreeWidget *root,
 
 void ObjectConnectorWidget::onLoadData()
 {
-    ::uiIO::editor::IOSelectorService::sptr selectorService;
+    ::uiIO::editor::SIOSelector::sptr selectorService;
 
     selectorService =
-        ::uiIO::editor::IOSelectorService::dynamicCast(::fwServices::add< ::gui::editor::IDialogEditor >(m_obj,
-                                                                                                         "::uiIO::editor::IOSelectorService"));
+        ::uiIO::editor::SIOSelector::dynamicCast(::fwServices::add< ::gui::editor::IDialogEditor >(m_obj,
+                                                                                                   "::uiIO::editor::SIOSelector"));
     if (selectorService != NULL)
     {
-        selectorService->setIOMode(::uiIO::editor::IOSelectorService::READER_MODE);
+        selectorService->setIOMode(::uiIO::editor::SIOSelector::READER_MODE);
         selectorService->configure();
         selectorService->start();
         selectorService->update();

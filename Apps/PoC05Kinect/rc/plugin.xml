@@ -81,7 +81,7 @@
 
                 <item key="modelSeries">
                     <object uid="modelSeriesUID" type="::fwMedData::ModelSeries">
-                        <service uid="readerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                        <service uid="readerPathFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>
                     </object>

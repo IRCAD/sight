@@ -130,7 +130,7 @@
                 <!-- backgroundImage description -->
                 <item key="backgroundImage">
                     <object uid="backgroundImageUID" type="::fwData::Image">
-                        <service uid="readerBackgroundImage" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                        <service uid="readerBackgroundImage" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>
                     </object>
@@ -139,7 +139,7 @@
                 <!-- frontImage description -->
                 <item key="frontImage">
                     <object uid="frontImageUID" type="::fwData::Image">
-                        <service uid="readerFrontImage" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                        <service uid="readerFrontImage" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>
                     </object>

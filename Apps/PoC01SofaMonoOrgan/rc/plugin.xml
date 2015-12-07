@@ -141,7 +141,7 @@
 
 
             <!-- Service de lecture du fichier -->
-            <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathMeshFile" autoConnect="no">
+            <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" uid="readerPathMeshFile" autoConnect="no">
                 <type mode="reader" />
             </service>
 

@@ -13,7 +13,7 @@
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>IOSelectorServiceConfigVRRenderExtSeriesDBReader</id>
-        <service>::uiIO::editor::IOSelectorService</service>
+        <service>::uiIO::editor::SIOSelector</service>
         <desc>IOSelectorService config for VRRenderExt SeriesDB reader</desc>
         <config>
             <type mode="reader" />
@@ -72,7 +72,7 @@
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>SDBOpenIOSelectorConfig</id>
-        <service>::uiIO::editor::IOSelectorService</service>
+        <service>::uiIO::editor::SIOSelector</service>
         <desc>"Open" action's IOSelector config</desc>
         <config>
             <type mode="reader" />
@@ -109,7 +109,7 @@
                 <item key="selection">
                     <!-- <object uid="${selection}" type="::fwData::Vector" src="ref"> -->
                     <object uid="${selection}" src="ref">
-                        <service uid="${GENERIC_UID}_export_selection" impl="::uiIO::editor::IOSelectorService" autoConnect="yes">
+                        <service uid="${GENERIC_UID}_export_selection" impl="::uiIO::editor::SIOSelector" autoConnect="yes">
                             <type mode="writer" />
                             <!-- <selection mode="include" /> -->
                             <!-- <addSelection service="::ioAtoms::SReader" /> -->

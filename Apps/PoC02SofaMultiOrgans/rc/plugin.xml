@@ -106,7 +106,7 @@
                 <item key="image">
                     <object uid="imageUID" type="::fwData::Image">
 
-                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoConnect="no">
+                        <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoConnect="no">
                             <type mode="reader" />
                         </service>
 
@@ -116,7 +116,7 @@
                 <item key="modelSeries">
                     <object uid="modelSeriesUID" type="::fwMedData::ModelSeries">
 
-                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"
+                        <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor"
                             uid="readerPathMeshFile" autoConnect="no">
                             <type mode="reader" />
                         </service>

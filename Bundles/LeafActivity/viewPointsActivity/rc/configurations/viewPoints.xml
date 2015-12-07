@@ -466,7 +466,7 @@
                             <service uid="${GENERIC_UID}_action_exportVRParam" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                                 <start uid="${GENERIC_UID}_writerVRParam" />
                             </service>
-                            <service uid="${GENERIC_UID}_writerVRParam" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
+                            <service uid="${GENERIC_UID}_writerVRParam" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector" autoConnect="no">
                                 <type mode="writer" />
                                 <selection mode="include" />
                                 <addSelection service="::ioXML::FwXMLGenericWriterService" />

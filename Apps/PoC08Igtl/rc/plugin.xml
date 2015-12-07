@@ -113,7 +113,7 @@
 
             <item key="objectMesh">
                 <object uid="objectMeshUid" type="::fwData::Mesh">
-                    <service uid="objectMeshReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
+                    <service uid="objectMeshReader" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no" />
                 </object>
             </item>
 
