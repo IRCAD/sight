@@ -33,8 +33,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
 <plugin id="Ex01VolumeRendering" version="@DASH_VERSION@" >
 
     <extension implements="::fwServices::registry::AppConfig">
-        <id>Ex01VolumeRendering</id>
-        <type>parameters</type>
+        <id>Ex01VolumeRendering</id>        
         <config>
 
             <object type="::fwData::Composite">   <!--  Root object of the application -->

@@ -1,8 +1,7 @@
-<plugin id="BeginnerTraining02" version="@DASH_VERSION@" >
+<plugin id="BeginnerTraining02" version="@DASH_VERSION@">
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>BeginnerTraining02Config</id>
-        <type>parameters</type>
         <config>
 
             <object type="::fwData::String">

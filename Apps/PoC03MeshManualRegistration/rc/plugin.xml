@@ -7,7 +7,6 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>PoC03MeshManualRegistration</id>
-        <type>parameters</type>
         <config>
 
 

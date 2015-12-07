@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>organManagerConfig</id>
-    <type>parameters</type>
     <parameters>
         <param name="MODEL_SERIES_UID" />
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
@@ -71,7 +70,7 @@
                     </service>
                 </object>
             </item>
- 
+
             <connect>
                 <signal>listOrganEditor/reconstructionSelected</signal>
                 <slot>updaterReconst/addOrSwap</slot>

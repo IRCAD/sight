@@ -2,7 +2,6 @@
     
     <extension implements="::fwServices::registry::AppConfig">
         <id>DemoComSofaConfigurationID</id>
-        <type>parameters</type>
         <config> <!-- /new -->
 
         <object uid="CompositeVisu" type="::fwData::Composite">

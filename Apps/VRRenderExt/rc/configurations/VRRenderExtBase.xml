@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>VRRenderExtBase</id>
-    <type>parameters</type>
     <parameters>
         <param name="appName" />
         <param name="appIconPath" />

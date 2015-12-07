@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>config02</id>
-    <type>parameters</type>
     <config>
 
         <object type="::fwData::Image">

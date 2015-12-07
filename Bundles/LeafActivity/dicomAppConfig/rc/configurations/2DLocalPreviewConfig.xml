@@ -1,14 +1,13 @@
 <extension implements="::fwServices::registry::AppConfig">
-        <id>2DLocalPreviewConfig</id>
-        <type>parameters</type>
-        <parameters>
-            <param name="GENERIC_UID" />
-            <param name="WID_PARENT" />
-            <param name="objectID" />
-            <param name="FILE_CACHE" default="none" />
-        </parameters>
-        <config>
-            <object type="::fwData::Composite" uid="${GENERIC_UID}_previewComposite">
+    <id>2DLocalPreviewConfig</id>
+    <parameters>
+        <param name="GENERIC_UID" />
+        <param name="WID_PARENT" />
+        <param name="objectID" />
+        <param name="FILE_CACHE" default="none" />
+    </parameters>
+    <config>
+        <object type="::fwData::Composite" uid="${GENERIC_UID}_previewComposite">
 
                 <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
                     <gui>

@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>manualRegistrationEditorConfig</id>
-    <type>parameters</type>
     <parameters>
         <param name="MODEL_SERIES_UID" />
         <param name="MESHDB_UID" />

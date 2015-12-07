@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>camViewManagerConfig</id>
-    <type>parameters</type>
     <parameters>
         <param name="COMPOSITE_VISU_UID" />
         <param name="ModelRepresentationChannel" />

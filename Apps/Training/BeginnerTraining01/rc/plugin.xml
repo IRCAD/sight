@@ -2,7 +2,6 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>BeginnerTraining01Config</id>
-        <type>parameters</type>
         <config>
 
             <object type="::fwData::String">

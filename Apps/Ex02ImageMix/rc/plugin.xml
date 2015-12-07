@@ -2,7 +2,6 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex02ImageMix</id>
-        <type>parameters</type>
         <config>
 
             <object type="::fwData::Composite">

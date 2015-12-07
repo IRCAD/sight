@@ -59,8 +59,7 @@ Detail of the ToolBar
     
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex03RegistrationConfig</id>
-        <type>parameters</type>
-       <config>
+        <config>
            <object type="::fwData::Composite">
 
             <service uid="mainFrame" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">

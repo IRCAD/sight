@@ -2,7 +2,6 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>DemoComSofaID</id>
-        <type>parameters</type>
         <config>
 
             <object type="::fwData::Composite">
@@ -209,4 +208,3 @@
         </config>
     </extension>
 </plugin>
-

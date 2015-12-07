@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>cprViewDebug</id>
-    <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" />
         <param name="ICON_PATH" />
