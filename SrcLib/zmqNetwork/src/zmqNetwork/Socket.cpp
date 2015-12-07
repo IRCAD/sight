@@ -38,23 +38,25 @@ Socket::~Socket()
 
 void Socket::deleteMessage(void *data, void *hint)
 {
-    igtl::MessageBase::Pointer *ptr = reinterpret_cast<igtl::MessageBase::Pointer*>(hint);
+    igtl::MessageBase::Pointer ptr = reinterpret_cast<igtl::MessageBase*>(hint);
 
-    delete ptr;
+    if(ptr)
+    {
+        ptr->UnRegister();
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void Socket::sendObject(::fwData::Object::sptr data) throw (::fwCore::Exception)
 {
-    ::igtl::MessageBase::Pointer    *igtlMsg;
+    ::igtl::MessageBase::Pointer igtlMsg = m_dataConverter->fromFwObject(data);
+    igtlMsg->SetDeviceName (m_deviceNameOut.c_str());
+    igtlMsg->Pack();
+    igtlMsg->Register();
 
-    igtlMsg = new ::igtl::MessageBase::Pointer(m_dataConverter->fromFwObject(data));
-    (*igtlMsg)->SetDeviceName (m_deviceNameOut.c_str());
-    (*igtlMsg)->Pack();
-
-    ::zmq::message_t zmqMsg((*igtlMsg)->GetPackPointer(), (*igtlMsg)->GetPackSize(),
-                            Socket::deleteMessage, igtlMsg);
+    ::zmq::message_t zmqMsg(igtlMsg->GetPackPointer(), igtlMsg->GetPackSize(),
+                            Socket::deleteMessage, igtlMsg.GetPointer());
 
     m_socket->send(zmqMsg);
 }
