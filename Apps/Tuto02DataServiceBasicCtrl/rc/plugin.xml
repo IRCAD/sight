@@ -1,6 +1,9 @@
 <plugin id="Tuto02DataServiceBasicCtrl" class="::Tuto02DataServiceBasicCtrl::Plugin"  version="@DASH_VERSION@" >
 
+    <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    <library name="Tuto02DataServiceBasicCtrl" />
+    <requirement id="visuVTKQt" />
 
+    <library name="Tuto02DataServiceBasicCtrl" />
+    
 </plugin>

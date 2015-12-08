@@ -1,6 +1,8 @@
 <plugin id="Tuto06Filter" version="@DASH_VERSION@">
 
+    <requirement id="dataReg" />
     <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>FilterConfig</id>

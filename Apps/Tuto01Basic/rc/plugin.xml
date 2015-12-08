@@ -2,7 +2,9 @@
     using the version defined in the Properties.cmake) -->
 <plugin id="Tuto01Basic" version="@DASH_VERSION@">
 
+    <requirement id="dataReg" />
     <requirement id="servicesReg" />
+    <requirement id="guiQt" />
 
     <!-- Defines the App-config -->
     <extension implements="::fwServices::registry::AppConfig">

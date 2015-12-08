@@ -1,6 +1,8 @@
 <plugin id="TutoVectorField" version="@DASH_VERSION@" >
 
-<requirement id="servicesReg" />
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>TutoVectorField</id>

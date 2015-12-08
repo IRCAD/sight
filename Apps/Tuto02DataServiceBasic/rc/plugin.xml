@@ -1,6 +1,8 @@
 <plugin id="Tuto02DataServiceBasic" version="@DASH_VERSION@">
 
+    <requirement id="dataReg" />
     <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoDataServiceBasicConfig</id>
@@ -31,7 +33,7 @@
 
                 <!--
                     Reading service:
-                    The <file> tag defines the path of the image to load. Here, it is a relative 
+                    The <file> tag defines the path of the image to load. Here, it is a relative
                     path from the repository in which you launch the application.
                 -->
                 <service uid="myReaderPathFile" impl="::ioVTK::SImageReader">
