@@ -37,6 +37,11 @@ InteractorStyle3DForNegato::~InteractorStyle3DForNegato()
 
 void InteractorStyle3DForNegato::OnChar()
 {
+    if(this->CurrentRenderer == nullptr)
+    {
+        return;
+    }
+
     vtkRenderWindowInteractor *rwi = this->Interactor;
 
     switch (rwi->GetKeyCode())
@@ -44,6 +49,7 @@ void InteractorStyle3DForNegato::OnChar()
         case 'r':
             this->FindPokedRenderer(rwi->GetEventPosition()[0],
                                     rwi->GetEventPosition()[1]);
+
             this->CurrentRenderer->ResetCamera();
             if (this->getAutoRender())
             {
