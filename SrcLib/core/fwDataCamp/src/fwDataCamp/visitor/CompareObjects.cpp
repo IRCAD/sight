@@ -59,12 +59,12 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
 
     PropType operator()(const std::string& value)
     {
-        return std::make_pair(m_prefix, ::boost::lexical_cast<std::string>(value));
+        return std::make_pair(m_prefix, value);
     }
 
     PropType operator()(const camp::EnumObject& value)
     {
-        return std::make_pair(value.name(), value.name());
+        return std::make_pair(m_prefix, value.name());
     }
 
     PropType operator()(const camp::UserObject& value)
@@ -129,6 +129,7 @@ CompareObjects::CompareObjects(
     : m_campObj(obj), m_prefix(prefix), m_props(props)
 {
 }
+
 //-----------------------------------------------------------------------------
 
 CompareObjects::~CompareObjects()
@@ -156,8 +157,15 @@ void CompareObjects::visit(const camp::SimpleProperty& property)
 void CompareObjects::visit(const camp::EnumProperty& property)
 {
     SLM_TRACE_FUNC();
-    m_props->insert(m_props->end(),
-                    std::make_pair(getPath(property.name()), ""));
+    const std::string name ( property.name() );
+    ::camp::Value elemValue = property.get(m_campObj);
+
+    PropertyVisitor visitor(getPath(name), m_props);
+    PropType pt = elemValue.visit(visitor);
+    if(!pt.first.empty())
+    {
+        m_props->insert(m_props->end(), pt);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -167,8 +175,6 @@ void CompareObjects::visit(const camp::MapProperty& property)
     SLM_TRACE_FUNC();
     const std::string name(property.name());
     OSLM_DEBUG("MapProperty name = " << name);
-
-    OSLM_DEBUG( "Ok MapProperty name =" << name );
 
     std::pair< ::camp::Value, ::camp::Value > value;
     std::string mapKey;

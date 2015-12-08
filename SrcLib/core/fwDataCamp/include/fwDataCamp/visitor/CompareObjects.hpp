@@ -58,11 +58,15 @@ public:
 
     /// Returns the reference object.
     SPTR(::fwData::Object) getReferenceObject() const
-    { return m_objRef; }
+    {
+        return m_objRef;
+    }
 
     /// Returns the compared object.
     SPTR(::fwData::Object) getComparedObject() const
-    { return m_objComp; }
+    {
+        return m_objComp;
+    }
 
     /// Returns reference object properties.
     const PropsMapType& getReferenceProps() const
@@ -83,7 +87,9 @@ public:
      * compared object as value.
      */
     SPTR(PropsMapType) getDifferences() const
-    { return m_props; }
+    {
+        return m_props;
+    }
 
     /**
      * @brief Process to the comparison between reference object and compared object.
@@ -97,9 +103,8 @@ public:
      *
      * @throw ::fwCore::Exception if classnames of reference and compared objects are different
      */
-    FWDATACAMP_API void compare(
-        SPTR(::fwData::Object) objRef, SPTR(::fwData::Object) objComp)
-    throw(::fwCore::Exception);
+    FWDATACAMP_API void compare(SPTR(::fwData::Object) objRef,
+                                SPTR(::fwData::Object) objComp) throw(::fwCore::Exception);
 
     /// Property value for differences map meaning a missing property.
     FWDATACAMP_API static const std::string s_MISSING_PROPERTY;
