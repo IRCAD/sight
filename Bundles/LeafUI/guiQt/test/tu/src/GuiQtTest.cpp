@@ -82,9 +82,8 @@ void GuiQtTest::testTuto01()
     CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
 
     ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
-    ::fwRuntime::ConfigurationElement::csptr config   =
-        ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( "tutoBasicConfig" );
-    appConfigMng->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
+    appConfigMng->setConfig( "tutoBasicConfig" );
+
     appConfigMng->launch();
     appConfigMng->stopAndDestroy();
 }
@@ -97,9 +96,8 @@ void GuiQtTest::testTuto02()
     CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
 
     ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
-    ::fwRuntime::ConfigurationElement::csptr config   =
-        ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( "tutoDataServiceBasicConfig" );
-    appConfigMng->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
+    appConfigMng->setConfig( "tutoDataServiceBasicConfig" );
+
     appConfigMng->launch();
     appConfigMng->stopAndDestroy();
 }

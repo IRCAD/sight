@@ -7,20 +7,26 @@
 #ifndef __FWSERVICES_APPCONFIGMANAGER_HPP__
 #define __FWSERVICES_APPCONFIGMANAGER_HPP__
 
+#include "fwServices/config.hpp"
+#include "fwServices/helper/SigSlotConnection.hpp"
+#include "fwServices/IService.hpp"
+#include "fwServices/IXMLParser.hpp"
+#include "fwServices/registry/AppConfig.hpp"
+
+#include <fwRuntime/ConfigurationElement.hpp>
+
+#include <fwTools/Object.hpp>
+
+#include <boost/tuple/tuple.hpp>
+
 #include <vector>
 #include <string>
 #include <utility>
 
-#include <boost/tuple/tuple.hpp>
-
-#include <fwTools/Object.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-
-#include "fwServices/config.hpp"
-#include "fwServices/IXMLParser.hpp"
-#include "fwServices/IService.hpp"
-#include "fwServices/helper/SigSlotConnection.hpp"
+namespace fwData
+{
+class Composite;
+}
 
 namespace fwServices
 {
@@ -43,6 +49,7 @@ protected:
     };
     typedef std::vector< ::fwServices::IService::wptr > ServiceContainer;
     typedef ::boost::tuple< std::string, bool > ConfigAttribute;
+    typedef registry::AppConfig::FieldAdaptorType FieldAdaptorType;
 
 public:
 
@@ -80,6 +87,21 @@ public:
         m_cfgElem = cfgElem;
     }
 
+    /**
+     * @brief Set configuration
+     * @param configId the identifier of the requested config.
+     * @param replaceFields the associations between the value and the pattern to replace in the config.
+     */
+    FWSERVICES_API void setConfig(const std::string& configId,
+                                  const FieldAdaptorType &replaceFields = FieldAdaptorType());
+
+    /**
+     * @brief Set configuration
+     * @param configId the identifier of the requested config.
+     * @param replaceFields composite of association between the value and the pattern to replace in the config.
+     */
+    FWSERVICES_API void setConfig(const std::string& configId, const ::fwData::Composite::csptr &replaceFields);
+
     /// Get config root
     ::fwData::Object::sptr getConfigRoot() const
     {
@@ -89,6 +111,13 @@ public:
     /// Get config root with autocast
     template < class ClassName >
     std::shared_ptr< ClassName > getConfigRoot() const;
+
+    /**
+     * @brief Starts the bundle associated to the config
+     * @note  Does nothing if the bundle is already started or if the config id is not specified (ie. if config is set
+     *        with setConfig(::fwRuntime::ConfigurationElement::csptr cfgElem) ).
+     */
+    FWSERVICES_API virtual void startBundle();
 
     /// Creates objects and services from config
     FWSERVICES_API virtual void create();
@@ -146,6 +175,8 @@ protected:
     ::fwServices::IXMLParser::sptr m_objectParser;
     ::fwRuntime::ConfigurationElement::csptr m_cfgElem;
     ProxyConnectionsVectType m_vectProxyCtns;
+
+    std::string m_configId;
 
     ConfigState m_state;
 

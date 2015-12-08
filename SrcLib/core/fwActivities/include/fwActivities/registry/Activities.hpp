@@ -182,6 +182,8 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     std::string tabInfo;
     RequirementsType requirements;
     std::string builderImpl;
+    std::string bundleId; ///< Identifier of the bundle containing the activity
+    std::string bundleVersion; ///< Version of the bundle containing the activity
 
     /// Validator implementations
     std::vector< std::string > validatorsImpl;

@@ -111,10 +111,8 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
             }
 
             // Init manager
-            ::fwRuntime::ConfigurationElement::csptr config =
-                ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceMap );
             m_configTemplateManager = ::fwServices::AppConfigManager::New();
-            m_configTemplateManager->setConfig( config );
+            m_configTemplateManager->setConfig( configId, replaceMap );
 
             // Launch config
             m_configTemplateManager->launch();

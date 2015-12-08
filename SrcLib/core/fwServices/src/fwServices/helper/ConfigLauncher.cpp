@@ -102,10 +102,8 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
     }
 
     // Init manager
-    ::fwRuntime::ConfigurationElement::csptr config =
-        ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_appConfig.id, replaceMap );
     m_appConfigManager = ::fwServices::AppConfigManager::New();
-    m_appConfigManager->setConfig( config );
+    m_appConfigManager->setConfig( m_appConfig.id, replaceMap );
 
     // Launch config
     m_appConfigManager->launch();
@@ -169,6 +167,5 @@ bool ConfigLauncher::isExecutable(::fwData::Object::sptr currentObj)
 
 //------------------------------------------------------------------------------
 
-} // helper
+}     // helper
 } // fwServices
-

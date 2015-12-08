@@ -6,7 +6,8 @@
 
 #include "activities/action/SActivityLauncher.hpp"
 
-#include <fwRuntime/Convert.hpp>
+#include <fwActivities/IBuilder.hpp>
+#include <fwActivities/IValidator.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -14,28 +15,31 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwTools/UUID.hpp>
-#include <fwTools/fwID.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/AppConfigManager.hpp>
-
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
-#include <fwMedData/ActivitySeries.hpp>
-
-#include <fwGui/dialog/SelectorDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwDataCamp/getObject.hpp>
 
-#include <fwActivities/IBuilder.hpp>
-#include <fwActivities/IValidator.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/SelectorDialog.hpp>
+
+#include <fwMedData/ActivitySeries.hpp>
+
+#include <fwRuntime/Bundle.hpp>
+#include <fwRuntime/Convert.hpp>
+#include <fwRuntime/operations.hpp>
+
+#include <fwServices/AppConfigManager.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+
+#include <fwTools/fwID.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <boost/foreach.hpp>
+
 #include <QApplication>
 #include <QDialog>
 #include <QPushButton>
@@ -384,11 +388,8 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
         replaceMap["GENERIC_UID"]                                        =
             ::fwServices::registry::AppConfig::getUniqueIdentifier();
 
-        ::fwRuntime::ConfigurationElement::csptr config =
-            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( viewConfigID, replaceMap);
-
         ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
-        helper->setConfig( config );
+        helper->setConfig( viewConfigID, replaceMap );
         helper->launch();
         helper->stopAndDestroy();
     }
@@ -398,6 +399,17 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
 
 void SActivityLauncher::sendConfig( const ::fwActivities::registry::ActivityInfo & info )
 {
+    // Start Bundle containing the activity if it is not started
+    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId, info.bundleVersion);
+    SLM_WARN_IF("Bundle '" + info.bundleId + "' used by activity '" + info.id + "' is already started.",
+                bundle->isStarted());
+    if (!bundle->isStarted())
+    {
+        SLM_DEBUG("Start bundle '" + info.bundleId + "' used by activity '" + info.id + "'");
+        bundle->start();
+    }
+
+
     ::fwData::Vector::sptr selection = this->getObject< ::fwData::Vector >();
 
     ::fwActivities::IValidator::ValidationType validation;

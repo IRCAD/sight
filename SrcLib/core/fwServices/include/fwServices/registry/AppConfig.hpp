@@ -7,19 +7,19 @@
 #ifndef __FWSERVICES_REGISTRY_APPCONFIG_HPP__
 #define __FWSERVICES_REGISTRY_APPCONFIG_HPP__
 
-#include <map>
-
-#include <fwTools/Object.hpp>
-#include <fwTools/macros.hpp>
+#include "fwServices/config.hpp"
 
 #include <fwCore/mt/types.hpp>
 
 #include <fwData/Composite.hpp>
 
-#include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
 
-#include "fwServices/config.hpp"
+#include <fwTools/macros.hpp>
+#include <fwTools/Object.hpp>
+
+#include <map>
 
 
 namespace fwServices
@@ -54,6 +54,8 @@ public:
     typedef std::map< std::string, std::string > ParamatersType;
     ParamatersType parameters;
     ::fwRuntime::ConfigurationElement::csptr config;
+    std::string bundleId; ///< Bundle identifier (used to start the bundle when the appConfig is launched)
+    std::string bundleVersion; ///< Bundle version (used to start the bundle when the appConfig is launched)
 };
 
 
@@ -99,7 +101,9 @@ public:
         const std::string & group,
         const std::string & desc,
         const AppInfo::ParamatersType & parameters,
-        ::fwRuntime::ConfigurationElement::csptr config);
+        ::fwRuntime::ConfigurationElement::csptr config,
+        const std::string bundleId,
+        const std::string bundleVersion);
 
     /**
      * @brief  Return the adapted config with the identifier configId.
@@ -120,6 +124,12 @@ public:
     FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId,
                                                                                       ::fwData::Composite::csptr replaceFields )
     const;
+
+    /**
+     * @brief Retrieves the bunble from the config id
+     * @param configId the config identifier
+     */
+    FWSERVICES_API std::shared_ptr< ::fwRuntime::Bundle > getBundle(const std::string & configId);
 
     /**
      * @brief Return all configurations ( standard and template ) register in the registry.

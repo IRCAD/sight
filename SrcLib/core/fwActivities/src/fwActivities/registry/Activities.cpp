@@ -87,6 +87,8 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
     icon(ext->findConfigurationElement("icon")->getValue()),
     tabInfo(title),
     builderImpl(ext->findConfigurationElement("builder")->getValue()),
+    bundleId(ext->getBundle()->getIdentifier()),
+    bundleVersion(ext->getBundle()->getVersion().string()),
     appConfig(::fwRuntime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")).get_child("appConfig"))
 {
     if(ext->findConfigurationElement("tabinfo"))

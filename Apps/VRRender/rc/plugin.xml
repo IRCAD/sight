@@ -1,6 +1,9 @@
 <plugin id="VRRender" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
+    <requirement id="dataReg" />
+    <requirement id="patchMedicalData" />
+    <requirement id="filterVRRender" />
 
     <xi:include href="configurations/VRRenderBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -52,12 +55,9 @@
             <param name="selection" />
         </parameters>
         <config>
-            <!-- <object uid="${selection}" type="::fwData::Vector" src="ref"> -->
             <object uid="${selection}" src="ref">
                 <service uid="${GENERIC_UID}_export_selection" impl="::uiIO::editor::SIOSelector" autoConnect="yes">
                     <type mode="writer" />
-                    <!-- <selection mode="include" /> -->
-                    <!-- <addSelection service="::ioAtoms::SReader" /> -->
                 </service>
                 <start uid="${GENERIC_UID}_export_selection" />
                 <update uid="${GENERIC_UID}_export_selection" />

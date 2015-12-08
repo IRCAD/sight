@@ -277,11 +277,8 @@ void DynamicView::launchTab(DynamicViewInfo& info)
     std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);
     info.replaceMap["GENERIC_UID"] = genericUidAdaptor;
 
-    ::fwRuntime::ConfigurationElement::csptr config =
-        ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( info.viewConfigID, info.replaceMap);
-
     ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
-    helper->setConfig( config );
+    helper->setConfig( info.viewConfigID, info.replaceMap );
 
     if (!m_dynamicConfigStartStop)
     {

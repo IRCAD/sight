@@ -39,6 +39,8 @@ void AppConfigTest::parametersConfigTest()
     const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
     const std::string group("parametersGroup");
     const std::string desc("Descritpion");
+    const std::string bundleId("mybundle");
+    const std::string bundleVersion("0-8");
     ::fwServices::registry::AppInfo::ParamatersType parameters;
 
     parameters["TEST_IMAGE"]   = "";
@@ -47,7 +49,7 @@ void AppConfigTest::parametersConfigTest()
 
     ::fwRuntime::ConfigurationElement::csptr config = this->buildParametersConfig();
 
-    currentAppConfig->addAppInfo(configId, group, desc, parameters, config);
+    currentAppConfig->addAppInfo(configId, group, desc, parameters, config, bundleId, bundleVersion);
 
     std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
     CPPUNIT_ASSERT( !allCconfigs.empty());
@@ -76,7 +78,6 @@ void AppConfigTest::parametersConfigTest()
 
     std::string serviceUid2 = servicesCfg.at(1)->getAttributeValue("uid");
     CPPUNIT_ASSERT_EQUAL( std::string("myTestService2"), serviceUid2);
-
 }
 
 //-----------------------------------------------------------------------------

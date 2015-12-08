@@ -4,21 +4,24 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwServices/AppConfigManager.hpp"
+#include "fwServices/Base.hpp"
+#include "fwServices/helper/Config.hpp"
+#include "fwServices/registry/ActiveWorkers.hpp"
+#include "fwServices/registry/ObjectService.hpp"
+#include "fwServices/registry/Proxy.hpp"
+#include "fwServices/registry/ServiceConfig.hpp"
+
+#include <fwData/Composite.hpp>
+#include <fwData/Object.hpp>
+
+#include <fwRuntime/Bundle.hpp>
+#include <fwRuntime/operations.hpp>
+
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 
-#include <fwRuntime/operations.hpp>
-
-#include <fwData/Object.hpp>
-
-#include "fwServices/Base.hpp"
-#include "fwServices/registry/ObjectService.hpp"
-#include "fwServices/registry/ServiceConfig.hpp"
-#include "fwServices/registry/Proxy.hpp"
-#include "fwServices/registry/ActiveWorkers.hpp"
-#include "fwServices/AppConfigManager.hpp"
-#include "fwServices/helper/Config.hpp"
 
 namespace fwServices
 {
@@ -142,21 +145,6 @@ void AppConfigManager::autoSigSlotConnection(
     ConfigAttribute priority)
 {
     m_connections->connect( obj, srv, srv->getObjSrvConnections() );
-
-//    // Add priority for the new comChannel, default is 0.5
-//    if (::boost::get<1>(priority))
-//    {
-//        double priorityValue = ::boost::lexical_cast<double>(::boost::get<0>(priority));
-//        if (priorityValue < 0.0)
-//        {
-//            priorityValue = 0.0;
-//        }
-//        else if (priorityValue > 1.0)
-//        {
-//            priorityValue = 1.0;
-//        }
-//        comChannel->setPriority(priorityValue);
-//    }
 }
 
 // ------------------------------------------------------------------------
@@ -588,6 +576,7 @@ void AppConfigManager::destroy()
 
 void AppConfigManager::launch()
 {
+    this->startBundle();
     this->create();
     this->start();
     this->update();
@@ -690,4 +679,38 @@ void AppConfigManager::destroyProxies()
     m_vectProxyCtns.clear();
 }
 
+// ------------------------------------------------------------------------
+
+void AppConfigManager::setConfig(const std::string &configId, const FieldAdaptorType &replaceFields)
+{
+    m_configId = configId;
+    m_cfgElem  = registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceFields );
 }
+
+
+// ------------------------------------------------------------------------
+
+void AppConfigManager::setConfig(const std::string& configId, const ::fwData::Composite::csptr &replaceFields)
+{
+    m_configId = configId;
+    m_cfgElem  = registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceFields );
+}
+
+// ------------------------------------------------------------------------
+
+void AppConfigManager::startBundle()
+{
+    SLM_WARN_IF("Bundle is not specified, it can not be started.", m_configId.empty());
+    if (!m_configId.empty())
+    {
+        std::shared_ptr< ::fwRuntime::Bundle > bundle = registry::AppConfig::getDefault()->getBundle(m_configId);
+        SLM_WARN_IF("Bundle '" + bundle->getIdentifier() + "' (used for '" + m_configId + "' is already started !",
+                    bundle->isStarted());
+        if (!bundle->isStarted())
+        {
+            bundle->start();
+        }
+    }
+}
+
+} // namespace fwServices

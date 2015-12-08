@@ -11,6 +11,7 @@
 #include <fwData/String.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/Extension.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Runtime.hpp>
 
@@ -86,8 +87,13 @@ void AppConfig::parseBundleInformation()
         // Get config
         ::fwRuntime::ConfigurationElement::csptr config = *(ext->findConfigurationElement("config")->begin());
 
+        // Get bundle
+        std::shared_ptr< ::fwRuntime::Bundle> bundle = ext->getBundle();
+        std::string bundleId                         = bundle->getIdentifier();
+        std::string bundleVersion                    = bundle->getVersion().string();
+
         // Add app info
-        this->addAppInfo( configId, group, desc, parameters, config );
+        this->addAppInfo( configId, group, desc, parameters, config, bundleId, bundleVersion );
     }
 }
 
@@ -98,7 +104,9 @@ void AppConfig::addAppInfo
     const std::string & group,
     const std::string & desc,
     const AppInfo::ParamatersType & parameters,
-    ::fwRuntime::ConfigurationElement::csptr config)
+    ::fwRuntime::ConfigurationElement::csptr config,
+    const std::string bundleId,
+    const std::string bundleVersion)
 {
     ::fwCore::mt::WriteLock lock(m_registryMutex);
 
@@ -109,11 +117,13 @@ void AppConfig::addAppInfo
     SLM_ASSERT("Sorry, app config id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
 
     AppInfo::sptr info = AppInfo::New();
-    info->group      = group;
-    info->desc       = desc;
-    info->config     = config;
-    info->parameters = parameters;
-    m_reg[configId]  = info;
+    info->group         = group;
+    info->desc          = desc;
+    info->config        = config;
+    info->parameters    = parameters;
+    info->bundleId      = bundleId;
+    info->bundleVersion = bundleVersion;
+    m_reg[configId]     = info;
 }
 
 //-----------------------------------------------------------------------------
@@ -290,6 +300,20 @@ std::string AppConfig::adaptField( const std::string & _str, const FieldAdaptorT
         }
     }
     return newStr;
+}
+
+//-----------------------------------------------------------------------------
+
+std::shared_ptr< ::fwRuntime::Bundle > AppConfig::getBundle(const std::string & configId)
+{
+    Registry::const_iterator iter = m_reg.find( configId );
+    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry",
+               iter != m_reg.end());
+
+    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(iter->second->bundleId,
+                                                                            iter->second->bundleVersion);
+
+    return bundle;
 }
 
 //-----------------------------------------------------------------------------
