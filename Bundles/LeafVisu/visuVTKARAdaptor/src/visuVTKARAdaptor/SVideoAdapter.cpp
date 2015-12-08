@@ -110,13 +110,8 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
         m_actor->RotateZ(180);
         m_actor->RotateY(180);
     }
-    this->setVtkPipelineModified();
-    this->doUpdate();
-    if (this->getPicker())
-    {
-        this->addToPicker(m_actor);
-    }
 
+    // Set camera pointer, it will be used if present in doUpdate()
     if (!m_cameraUID.empty())
     {
         ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_cameraUID);
@@ -125,6 +120,13 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
 
         m_connections->connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
                                this->getSptr(), s_CALIBRATE_SLOT);
+    }
+
+    this->doUpdate();
+
+    if (this->getPicker())
+    {
+        this->addToPicker(m_actor);
     }
 }
 
@@ -171,9 +173,8 @@ void SVideoAdapter::doUpdate() throw(fwTools::Failed)
         this->getRenderer()->GetActiveCamera()->ParallelProjectionOn();
         this->getRenderer()->ResetCamera();
         this->getRenderer()->GetActiveCamera()->SetParallelScale(size[1] / 2.0);
+        this->offsetOpticalCenter();
     }
-
-    this->offsetOpticalCenter();
 
     m_imageData->Modified();
     this->setVtkPipelineModified();
