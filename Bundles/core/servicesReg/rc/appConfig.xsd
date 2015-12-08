@@ -6,7 +6,6 @@
     <xs:complexType name="ExtensionType">
         <xs:sequence>
             <xs:element name="id" type="xs:string" />
-            <xs:element name="type" type="xs:string" minOccurs="1" maxOccurs="1"/>
             <xs:element name="parameters" type="ParametersType" minOccurs="0" maxOccurs="1"/>
             <xs:element name="group" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:element name="desc" type="xs:string" minOccurs="0" maxOccurs="1"/>
@@ -31,13 +30,6 @@
             <xs:element name="object" type="ObjectType" />
         </xs:sequence>
     </xs:complexType>
-
-    <xs:simpleType name="TypeType">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="standard" />
-            <xs:enumeration value="template" />
-        </xs:restriction>
-    </xs:simpleType>
 
     <!-- Object Type -->
     <xs:complexType name="ObjectType">

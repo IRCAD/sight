@@ -37,7 +37,6 @@ void AppConfigTest::parametersConfigTest()
     ::fwServices::registry::AppConfig::sptr currentAppConfig = ::fwServices::registry::AppConfig::getDefault();
 
     const std::string configId(::fwServices::registry::AppConfig::getUniqueIdentifier());
-    const ::fwServices::registry::AppInfo::ConfigType configType(::fwServices::registry::AppInfo::PARAMETERS);
     const std::string group("parametersGroup");
     const std::string desc("Descritpion");
     ::fwServices::registry::AppInfo::ParamatersType parameters;
@@ -48,7 +47,7 @@ void AppConfigTest::parametersConfigTest()
 
     ::fwRuntime::ConfigurationElement::csptr config = this->buildParametersConfig();
 
-    currentAppConfig->addAppInfo(configId, configType, group, desc, parameters, config);
+    currentAppConfig->addAppInfo(configId, group, desc, parameters, config);
 
     std::vector< std::string > allCconfigs = currentAppConfig->getAllConfigs();
     CPPUNIT_ASSERT( !allCconfigs.empty());

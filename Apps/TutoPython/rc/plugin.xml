@@ -4,7 +4,6 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoPythonConfig</id>
-        <type>parameters</type>
         <config>
             <object type="::fwData::Composite">
                 <item key="PythonString">

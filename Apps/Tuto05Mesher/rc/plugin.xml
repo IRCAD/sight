@@ -5,7 +5,6 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>MesherConfig</id>
-        <type>parameters</type>
         <config>
         
 

@@ -5,7 +5,6 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoScene2DConfig</id>
-        <type>parameters</type>
         <config>
             <object type="::fwData::Image">
 

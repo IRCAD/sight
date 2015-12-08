@@ -4,7 +4,6 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>FilterConfig</id>
-        <type>parameters</type>
         <config>
         
     <!-- Root object -->

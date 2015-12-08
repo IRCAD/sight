@@ -1,6 +1,5 @@
 ﻿<extension implements="::fwServices::registry::AppConfig">
     <id>tuto15MultithreadDynamicConfig</id>
-    <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" default="g"/>
     </parameters>

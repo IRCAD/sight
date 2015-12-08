@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>3DNegatoWithAcq</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />

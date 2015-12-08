@@ -4,7 +4,6 @@
 
 <extension implements="::fwServices::registry::AppConfig">
         <id>Tuto08GenericScene</id>
-        <type>parameters</type>
         <config>
 
 

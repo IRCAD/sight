@@ -4,7 +4,6 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoLoaderExternalDataConfig</id>
-        <type>parameters</type>
         <config>
 
 

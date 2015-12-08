@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>ImageMix</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_VIEW" />
         <param name="GENERIC_UID" />

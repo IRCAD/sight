@@ -1,6 +1,5 @@
 ﻿<extension implements="::fwServices::registry::AppConfig">
     <id>tutoComChannelConnectConfig</id>
-    <type>parameters</type>
     <config>
     
     <!-- In tutoComChannel, the main data object type is ::fwData::Mesh.-->

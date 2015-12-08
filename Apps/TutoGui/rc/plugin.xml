@@ -4,7 +4,6 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoGuiConfig</id>
-        <type>parameters</type>
         <config>
 
         <object type="::fwData::Image">

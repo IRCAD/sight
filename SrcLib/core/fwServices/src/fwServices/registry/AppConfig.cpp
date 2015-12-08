@@ -62,13 +62,6 @@ void AppConfig::parseBundleInformation()
             desc = ext->findConfigurationElement("desc")->getValue();
         }
 
-        // get type
-        OSLM_ASSERT("Sorry, xml element \"type\" must be equal to \"parameters\" (here = "
-                    << ext->findConfigurationElement("type")->getValue() << ") ",
-                    ext->findConfigurationElement("type")->getValue()=="parameters" );
-        AppInfo::ConfigType type = AppInfo::PARAMETERS;
-
-        // Get parameters
         AppInfo::ParamatersType parameters;
         if ( ext->hasConfigurationElement("parameters") )
         {
@@ -94,7 +87,7 @@ void AppConfig::parseBundleInformation()
         ::fwRuntime::ConfigurationElement::csptr config = *(ext->findConfigurationElement("config")->begin());
 
         // Add app info
-        this->addAppInfo( configId, type, group, desc, parameters, config );
+        this->addAppInfo( configId, group, desc, parameters, config );
     }
 }
 
@@ -102,7 +95,6 @@ void AppConfig::parseBundleInformation()
 
 void AppConfig::addAppInfo
     (   const std::string & configId,
-    AppInfo::ConfigType type,
     const std::string & group,
     const std::string & desc,
     const AppInfo::ParamatersType & parameters,
@@ -112,13 +104,11 @@ void AppConfig::addAppInfo
 
     OSLM_DEBUG( "New app config registering : "
                 << " configId =" << configId
-                << " type=" << type
                 );
 
     SLM_ASSERT("Sorry, app config id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
 
     AppInfo::sptr info = AppInfo::New();
-    info->type       = type;
     info->group      = group;
     info->desc       = desc;
     info->config     = config;
@@ -154,7 +144,6 @@ void AppConfig::clearRegistry()
 
     // Adapt config
     ::fwRuntime::ConfigurationElement::sptr newConfig;
-    SLM_ASSERT("Config has not good type, PARAMETERS type is required", iter->second->type == AppInfo::PARAMETERS );
 
     FieldAdaptorType fields;
     AppInfo::ParamatersType parameters = iter->second->parameters;

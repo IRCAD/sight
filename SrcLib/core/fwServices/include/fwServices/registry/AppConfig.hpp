@@ -37,13 +37,6 @@ class FWSERVICES_CLASS_API AppInfo : public ::fwCore::BaseObject
 {
 public:
 
-    enum ConfigType
-    {
-        TEMPLATE,
-        STANDARD,
-        PARAMETERS
-    };
-
     fwCoreClassDefinitionsWithFactoryMacro( (AppInfo)(::fwCore::BaseObject), (()), new AppInfo );
 
     /// Constructor, do nothing.
@@ -56,7 +49,6 @@ public:
     {
     }
 
-    ConfigType type;
     std::string group;
     std::string desc;
     typedef std::map< std::string, std::string > ParamatersType;
@@ -104,7 +96,6 @@ public:
      */
     FWSERVICES_API void addAppInfo
         (   const std::string & configId,
-        AppInfo::ConfigType type,
         const std::string & group,
         const std::string & desc,
         const AppInfo::ParamatersType & parameters,
