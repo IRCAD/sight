@@ -7,7 +7,7 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
-        <service>::opImageFilter::action::ImageFilter</service>
+        <service>::opImageFilter::action::SThreshold</service>
         <object>::fwData::Object</object>
     </extension>
     

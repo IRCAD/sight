@@ -4,22 +4,19 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    io
-    gui
-    guiQt
     dataReg
     servicesReg
+    gui
+    guiQt
+    io
+    ioVTK
     visuVTK
     visuVTKQt
-    launcher
-    ioVTK
-    ioData
+    uiIO
     vtkSimpleNegato
     vtkSimpleMesh
-    vtkCompositeMesh
-    uiIO
-    opVTKMesh
-    opImageFilter
+    opVTKMesh # provides services to generate a mesh from an image.
+    launcher
     appXml
 )
 

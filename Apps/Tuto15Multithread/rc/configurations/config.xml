@@ -104,11 +104,11 @@
             </service>
 
             <!-- Visualization service for the first window. -->
-            <service uid="${GENERIC_UID}_rendering1" impl="::vtkSimpleMesh::RendererService" autoConnect="yes" />
+            <service uid="${GENERIC_UID}_rendering1" impl="::vtkSimpleMesh::SRenderer" autoConnect="yes" />
 
 
             <!-- Visualization service for the second window -->
-            <service uid="${GENERIC_UID}_rendering2" impl="::vtkSimpleMesh::RendererService" autoConnect="yes" />
+            <service uid="${GENERIC_UID}_rendering2" impl="::vtkSimpleMesh::SRenderer" autoConnect="yes" />
 
             <!-- Mesh deformation service. -->
             <service uid="${GENERIC_UID}_meshDeformation" impl="::vtkSimpleMesh::SSimpleMeshDeformation"  worker="DEFORMATION_WORKER" />

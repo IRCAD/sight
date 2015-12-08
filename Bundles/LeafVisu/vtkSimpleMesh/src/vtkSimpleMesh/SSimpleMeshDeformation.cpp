@@ -31,15 +31,8 @@ const ::fwCom::Slots::SlotKeyType SSimpleMeshDeformation::s_STOP_DEFORMATION_SLO
 
 SSimpleMeshDeformation::SSimpleMeshDeformation() throw()
 {
-    m_slotStartDeformation = ::fwCom::newSlot( &SSimpleMeshDeformation::startDeformation, this );
-    m_slotStopDeformation  = ::fwCom::newSlot( &SSimpleMeshDeformation::stopDeformation, this );
-    ::fwCom::HasSlots::m_slots( s_START_DEFORMATION_SLOT, m_slotStartDeformation )
-        ( s_STOP_DEFORMATION_SLOT, m_slotStopDeformation );
-
-
-
-    this->setWorker( ::fwServices::registry::ActiveWorkers::getDefault()->
-                     getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
+    newSlot(s_START_DEFORMATION_SLOT, &SSimpleMeshDeformation::startDeformation, this);
+    newSlot(s_STOP_DEFORMATION_SLOT, &SSimpleMeshDeformation::stopDeformation, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -72,6 +65,70 @@ void SSimpleMeshDeformation::configuring() throw(::fwTools::Failed)
 void SSimpleMeshDeformation::stopping() throw(fwTools::Failed)
 {
     this->stopDeformation();
+}
+
+//-----------------------------------------------------------------------------
+
+void SSimpleMeshDeformation::updating() throw(fwTools::Failed)
+{
+    SLM_TRACE_FUNC();
+    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+
+    ::fwData::mt::ObjectReadToWriteLock lock(mesh);
+    if ( mesh->getNumberOfPoints() > 0 )
+    {
+        m_hiRestimer.reset();
+        m_hiRestimer.start();
+        this->computeDeformation(m_mesh,m_transformMesh);
+        m_hiRestimer.stop();
+        OSLM_INFO("Deformation time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
+
+        lock.upgrade();
+        m_hiRestimer.reset();
+        m_hiRestimer.start();
+        copyMesh(m_transformMesh,mesh);
+        m_hiRestimer.stop();
+        OSLM_INFO("Copy time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
+        lock.downgrade();
+
+        ::fwData::Mesh::VertexModifiedSignalType::sptr sig;
+        sig = mesh->signal< ::fwData::Mesh::VertexModifiedSignalType >( ::fwData::Mesh::s_VERTEX_MODIFIED_SIG );
+        sig->asyncEmit();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SSimpleMeshDeformation::startDeformation()
+{
+    bool meshIsLoaded;
+    {
+        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+        ::fwData::mt::ObjectReadLock lock(mesh);
+        meshIsLoaded = mesh->getNumberOfPoints() > 0;
+    }
+
+    if ( meshIsLoaded )
+    {
+        this->initMeshBackup();
+
+        if (!m_timer->isRunning())
+        {
+            m_timer->start();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SSimpleMeshDeformation::stopDeformation()
+{
+    if (m_timer->isRunning())
+    {
+        m_timer->stop();
+        m_transformMesh.reset();
+        m_mesh.reset();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -189,70 +246,6 @@ void SSimpleMeshDeformation::initMeshBackup()
     m_mesh = ::fwData::Object::copy( mesh );
 
     m_transformMesh = ::fwData::Object::copy( mesh );
-}
-
-//-----------------------------------------------------------------------------
-
-void SSimpleMeshDeformation::updating() throw(fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
-
-    ::fwData::mt::ObjectReadToWriteLock lock(mesh);
-    if ( mesh->getNumberOfPoints() > 0 )
-    {
-        m_hiRestimer.reset();
-        m_hiRestimer.start();
-        this->computeDeformation(m_mesh,m_transformMesh);
-        m_hiRestimer.stop();
-        OSLM_INFO("Deformation time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
-
-        lock.upgrade();
-        m_hiRestimer.reset();
-        m_hiRestimer.start();
-        copyMesh(m_transformMesh,mesh);
-        m_hiRestimer.stop();
-        OSLM_INFO("Copy time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
-        lock.downgrade();
-
-        ::fwData::Mesh::VertexModifiedSignalType::sptr sig;
-        sig = mesh->signal< ::fwData::Mesh::VertexModifiedSignalType >( ::fwData::Mesh::s_VERTEX_MODIFIED_SIG );
-        sig->asyncEmit();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SSimpleMeshDeformation::startDeformation()
-{
-    bool meshIsLoaded;
-    {
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
-        ::fwData::mt::ObjectReadLock lock(mesh);
-        meshIsLoaded = mesh->getNumberOfPoints() > 0;
-    }
-
-    if ( meshIsLoaded )
-    {
-        this->initMeshBackup();
-
-        if (!m_timer->isRunning())
-        {
-            m_timer->start();
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SSimpleMeshDeformation::stopDeformation()
-{
-    if (m_timer->isRunning())
-    {
-        m_timer->stop();
-        m_transformMesh.reset();
-        m_mesh.reset();
-    }
 }
 
 //-----------------------------------------------------------------------------

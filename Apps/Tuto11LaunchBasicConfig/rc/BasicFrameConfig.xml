@@ -22,7 +22,7 @@
                 </registry>
             </service>
 
-            <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="${GENERIC_UID}_SecondView" autoConnect="yes">
+            <service impl="::vtkSimpleNegato::SRenderer" type="::fwRender::IRender" uid="${GENERIC_UID}_SecondView" autoConnect="yes">
             </service>
 
             <proxy channel="${CLOSE_CONFIG_CHANNEL}">

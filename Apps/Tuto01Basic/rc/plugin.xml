@@ -1,14 +1,17 @@
-
-<plugin id="Tuto01Basic" version="@DASH_VERSION@" >
+    <!-- Application name and version (the version is automatically replaced by CMake
+    using the version defined in the Properties.cmake) -->
+<plugin id="Tuto01Basic" version="@DASH_VERSION@">
 
     <requirement id="servicesReg" />
 
+    <!-- Defines the App-config -->
     <extension implements="::fwServices::registry::AppConfig">
-        <id>tutoBasicConfig</id>
+        <id>tutoBasicConfig</id><!-- identifier of the configuration -->
         <config>
-            <object type="::fwData::Image">
+            <object type="::fwData::Image"><!-- Main object -->
 
-                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
+                <!-- Frame service -->
+                <service uid="myFrame" impl="::gui::frame::SDefaultFrame">
                     <gui>
                         <frame>
                             <name>tutoBasicApplicationName</name>
@@ -18,7 +21,7 @@
                     </gui>
                 </service>
 
-                <start uid="myFrame" />
+                <start uid="myFrame" /><!-- start the frame service -->
 
             </object>
         </config>

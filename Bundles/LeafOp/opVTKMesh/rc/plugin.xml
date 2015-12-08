@@ -7,7 +7,7 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
-        <service>::opVTKMesh::action::VTKMeshCreation</service>
+        <service>::opVTKMesh::action::SMeshCreation</service>
         <object>::fwData::Object</object>
     </extension>
 

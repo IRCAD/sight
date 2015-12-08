@@ -9,13 +9,18 @@
 
 /**
  * @brief       The namespace opVTKMesh contains interface class for mesh and an implementation of a VTK mesher.
- * @namespace   opVTKMesh
- *
- * @date        2009-2010.
- *
  */
 namespace opVTKMesh
 {
 
-}
+/**
+ * @brief       The namespace opVTKMesh::action contains operator to create mesh with VTK .
+ */
+namespace action
+{
+
+} // namespace action
+
+} // namespace opVTKMesh
+
 #endif /* __OPVTKMESH_NAMESPACE_HPP__ */

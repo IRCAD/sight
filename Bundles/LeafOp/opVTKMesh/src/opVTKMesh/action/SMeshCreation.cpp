@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "opVTKMesh/action/VTKMeshCreation.hpp"
+#include "opVTKMesh/action/SMeshCreation.hpp"
 
 
 #include <fwCom/Signal.hpp>
@@ -39,11 +39,11 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opVTKMesh::action::VTKMeshCreation, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opVTKMesh::action::SMeshCreation, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
-VTKMeshCreation::VTKMeshCreation() throw() :
+SMeshCreation::SMeshCreation() throw() :
     m_imageUID(""),
     m_meshUID(""),
     m_reduction(0)
@@ -52,13 +52,13 @@ VTKMeshCreation::VTKMeshCreation() throw() :
 
 //-----------------------------------------------------------------------------
 
-VTKMeshCreation::~VTKMeshCreation() throw()
+SMeshCreation::~SMeshCreation() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void VTKMeshCreation::starting() throw ( ::fwTools::Failed )
+void SMeshCreation::starting() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -66,7 +66,7 @@ void VTKMeshCreation::starting() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void VTKMeshCreation::stopping() throw ( ::fwTools::Failed )
+void SMeshCreation::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -74,7 +74,7 @@ void VTKMeshCreation::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void VTKMeshCreation::configuring() throw ( ::fwTools::Failed )
+void SMeshCreation::configuring() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -102,7 +102,7 @@ void VTKMeshCreation::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
+void SMeshCreation::updating() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
@@ -165,10 +165,6 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
         ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, pMesh);
     }
 
-
-//    OSLM_TRACE("final GetNumberOfCells = " << polyData->GetNumberOfCells());
-//    bool res = ::fwVtkIO::fromVTKMesh( polyData, pMesh);
-
     /// Notification
     ::fwData::Object::ModifiedSignalType::sptr sig;
     sig = pMesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
@@ -180,11 +176,6 @@ void VTKMeshCreation::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void VTKMeshCreation::info ( std::ostream &_sstream )
-{
-}
+} // namespace action
+} // namespace opVTKMesh
 
-//-----------------------------------------------------------------------------
-
-}
-}

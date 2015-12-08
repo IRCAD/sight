@@ -47,8 +47,6 @@ public:
 private:
     ::fwData::Image::sptr m_image;
 
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
-
     ::fwServices::IService::sptr m_frameSrv;
     ::fwServices::IService::sptr m_renderSrv;
     ::fwServices::IService::sptr m_readerSrv;

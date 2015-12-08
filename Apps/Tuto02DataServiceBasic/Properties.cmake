@@ -4,18 +4,17 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    io
-    appXml
-    gui
-    guiQt
     dataReg
     servicesReg
+    gui
+    guiQt
+    io # contains the interface for reader and writer.
+    ioVTK # contains the reader and writer for VTK files (image and mesh).
+    visuVTK # loads VTK rendering library (fwRenderVTK).
+    visuVTKQt # containsthe vtk Renderer window interactor manager using Qt.
+    vtkSimpleNegato # contains a visualization service of medical image.
     launcher
-    visuVTK
-    visuVTKQt
-    ioData
-    ioVTK
-    vtkSimpleNegato
+    appXml
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoDataServiceBasicConfig)

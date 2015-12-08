@@ -157,8 +157,6 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
         ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, mesh);
     }
 
-
-
     ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
 
     static unsigned int organNumber = 0;
@@ -173,18 +171,12 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
     recs.push_back(reconstruction);
     modelSeries->setReconstructionDB(recs);
 
-    /// Notification
+    // Notification
     ::fwMedData::ModelSeries::ReconstructionVectorType addedRecs;
     addedRecs.push_back(reconstruction);
     auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType >(
         ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
     sig->asyncEmit(addedRecs);
-}
-
-//-----------------------------------------------------------------------------
-
-void SVTKMesher::info ( std::ostream &_sstream )
-{
 }
 
 //-----------------------------------------------------------------------------

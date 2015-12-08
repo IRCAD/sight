@@ -22,10 +22,8 @@ namespace vtkSimpleMesh
 {
 
 /**
- * @brief   Service used to deform mesh
+ * @brief   Service used to deform a mesh
  * @class   SSimpleMeshDeformation
- *
- * @date    2012.
  */
 class VTKSIMPLEMESH_CLASS_API SSimpleMeshDeformation : public ::fwServices::IController
 {
@@ -33,11 +31,11 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SSimpleMeshDeformation)(::fwServices::IController) );
 
+    // Key used to register the 'startDeformation' slot
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_START_DEFORMATION_SLOT;
-    typedef ::fwCom::Slot<void ()> StartDeformationSlotType;
 
+    // Key used to register the 'stopDeformation' slot
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_STOP_DEFORMATION_SLOT;
-    typedef ::fwCom::Slot<void ()> StopDeformationSlotType;
 
     /// Constructor
     VTKSIMPLEMESH_API SSimpleMeshDeformation() throw();
@@ -68,12 +66,6 @@ protected:
     VTKSIMPLEMESH_API void stopDeformation();
 
 private:
-
-    /// Slot to call startDeformation method
-    StartDeformationSlotType::sptr m_slotStartDeformation;
-
-    /// Slot to call stopDeformation method
-    StopDeformationSlotType::sptr m_slotStopDeformation;
 
     /// Helper to copy quicly meshes ( only points, normals and point colors )
     void copyMesh( const ::fwData::Mesh::sptr & src, const ::fwData::Mesh::sptr & dest ) const;

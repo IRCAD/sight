@@ -71,7 +71,7 @@
                     </config>
                 </service>
 
-                <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="mainView" autoConnect="yes">
+                <service impl="::vtkSimpleNegato::SRenderer" type="::fwRender::IRender" uid="mainView" autoConnect="yes">
                 </service>
 
                 <start uid="myFrame" />

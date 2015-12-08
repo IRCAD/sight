@@ -4,18 +4,17 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    io
-    gui
-    guiQt
     dataReg
     servicesReg
+    gui
+    guiQt
+    io
+    ioVTK
+    uiIO # contains services to show dialogs for reader/writer selection
     visuVTK
     visuVTKQt
-    launcher
-    ioVTK
-    ioData
     vtkSimpleNegato
-    uiIO
+    launcher
     appXml
 )
 

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "vtkSimpleNegato/RendererService.hpp"
+#include "vtkSimpleNegato/SRenderer.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -30,7 +30,7 @@
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleNegato::RendererService, ::fwData::Image);
+fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleNegato::SRenderer, ::fwData::Image);
 
 //-----------------------------------------------------------------------------
 
@@ -41,23 +41,23 @@ static const ::fwCom::Slots::SlotKeyType s_REFRESH_SLOT = "refresh";
 
 //-----------------------------------------------------------------------------
 
-RendererService::RendererService() throw()
+SRenderer::SRenderer() throw()
     : m_render( 0 ), m_bPipelineIsInit(false)
 {
     SLM_TRACE_FUNC();
-    newSlot(s_REFRESH_SLOT, &RendererService::refresh, this);
+    newSlot(s_REFRESH_SLOT, &SRenderer::refresh, this);
 }
 
 //-----------------------------------------------------------------------------
 
-RendererService::~RendererService() throw()
+SRenderer::~SRenderer() throw()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void RendererService::configuring() throw(::fwTools::Failed)
+void SRenderer::configuring() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -65,7 +65,7 @@ void RendererService::configuring() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::starting() throw(fwTools::Failed)
+void SRenderer::starting() throw(fwTools::Failed)
 {
     this->create();
 
@@ -82,7 +82,7 @@ void RendererService::starting() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::stopping() throw(fwTools::Failed)
+void SRenderer::stopping() throw(fwTools::Failed)
 {
     if( m_render == 0 )
     {
@@ -110,7 +110,7 @@ void RendererService::stopping() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updating() throw(fwTools::Failed)
+void SRenderer::updating() throw(fwTools::Failed)
 {
 
 //    m_interactorManager->getInteractor()->Render();
@@ -119,7 +119,7 @@ void RendererService::updating() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::refresh()
+void SRenderer::refresh()
 {
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
@@ -137,9 +137,9 @@ void RendererService::refresh()
 
 
         //
-        unsigned int axialIndex    = img->getSize()[2]/2;
-        unsigned int frontalIndex  = img->getSize()[1]/2;
-        unsigned int sagittalIndex = img->getSize()[0]/2;
+        int axialIndex    = static_cast<int>(img->getSize()[2]/2);
+        int frontalIndex  = static_cast<int>(img->getSize()[1]/2);
+        int sagittalIndex = static_cast<int>(img->getSize()[0]/2);
 
         m_negatoAxial->SetSliceIndex( axialIndex );
         m_negatoFrontal->SetSliceIndex( frontalIndex );
@@ -150,7 +150,7 @@ void RendererService::refresh()
 
 //-----------------------------------------------------------------------------
 
-void RendererService::initVTKPipeline()
+void SRenderer::initVTKPipeline()
 {
     vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
     ::fwVtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
@@ -219,7 +219,7 @@ void RendererService::initVTKPipeline()
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updateVTKPipeline()
+void SRenderer::updateVTKPipeline()
 {
     assert(this->getObject< ::fwData::Image >());
     vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
@@ -233,7 +233,7 @@ void RendererService::updateVTKPipeline()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType RendererService::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsType SRenderer::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_REFRESH_SLOT ) );

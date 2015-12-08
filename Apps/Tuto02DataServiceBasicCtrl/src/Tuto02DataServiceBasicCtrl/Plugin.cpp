@@ -51,12 +51,9 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     m_readerSrv->configure();
 
     // Render service
-    m_renderSrv = ::fwServices::add(m_image, "::fwRender::IRender", "::vtkSimpleNegato::RendererService",
+    m_renderSrv = ::fwServices::add(m_image, "::fwRender::IRender", "::vtkSimpleNegato::SRenderer",
                                     "myRenderingTuto");
     m_renderSrv->configure();
-
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
-    m_connections->connect(m_image, m_renderSrv, m_renderSrv->getObjSrvConnections());
 
     // Frame service
     m_frameSrv = ::fwServices::add(m_image, "::fwGui::IFrameSrv", "::gui::frame::SDefaultFrame");
@@ -69,16 +66,18 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     frameConfig.put("service.gui.frame.minSize.<xmlattr>.height", "600");
 
     frameConfig.put("service.registry.view.<xmlattr>.sid", "myRenderingTuto");
-    frameConfig.put("service.registry.view.<xmlattr>.start", "yes");
 
     m_frameSrv->setConfiguration( frameConfig );
     m_frameSrv->configure();
 
     // Start app
-    m_readerSrv->start();
     m_frameSrv->start();
+    m_readerSrv->start();
+    m_renderSrv->start();
 
+    // Update
     m_readerSrv->update();
+    m_renderSrv->update();
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +90,7 @@ void Plugin::stop() throw()
 
 void Plugin::uninitialize() throw()
 {
-    m_connections->disconnect();
+    m_renderSrv->stop();
     m_readerSrv->stop();
     m_frameSrv->stop();
     ::fwServices::OSR::unregisterService( m_readerSrv );

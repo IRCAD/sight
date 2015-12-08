@@ -1,5 +1,5 @@
 
-set( NAME Tuto06Filter )
+set( NAME Tuto04SignalSlot )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
@@ -13,10 +13,9 @@ set( REQUIREMENTS
     uiIO
     visuVTK
     visuVTKQt
-    vtkSimpleNegato
-    opImageFilter # bundle containing the action to performs a threshold
+    vtkSimpleMesh # contains a visualization service of mesh.
     launcher
     appXml
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES FilterConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoSignalSlotConfig)

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VTKSIMPLENEGATO_RENDERERSERVICE_HPP__
-#define __VTKSIMPLENEGATO_RENDERERSERVICE_HPP__
+#ifndef __VTKSIMPLENEGATO_SRENDERER_HPP__
+#define __VTKSIMPLENEGATO_SRENDERER_HPP__
 
 
 #include "vtkSimpleNegato/config.hpp"
@@ -14,36 +14,33 @@
 
 #include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
-#include  <vtkRenderer.h>
 #include  <vtkImagePlaneWidget.h>
 #include  <vtkOutlineFilter.h>
+#include  <vtkRenderer.h>
 
 namespace vtkSimpleNegato
 {
 
 /**
- * @brief    Renderer service.
- * @class    RendererService
+ * @brief    Service rendering a ::fwData::Image using VTK.
+ * @class    SRenderer
  *
- * Service rendering a ::fwData::Image using VTK.
- *
- * Service registered details : \n
- * fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleNegato::RendererService , ::fwData::Image)
+ * This service displays a 3D image in a scene.
  */
-class VTKSIMPLENEGATO_CLASS_API RendererService : public fwRender::IRender
+class VTKSIMPLENEGATO_CLASS_API SRenderer : public fwRender::IRender
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro ( (SRenderer)(::fwRender::IRender) );
 
     /**
      * @brief    Constructor
      */
-    VTKSIMPLENEGATO_API RendererService() throw();
+    VTKSIMPLENEGATO_API SRenderer() throw();
 
     /**
      * @brief    Destructor
      */
-    VTKSIMPLENEGATO_API virtual ~RendererService() throw();
+    VTKSIMPLENEGATO_API virtual ~SRenderer() throw();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -80,9 +77,9 @@ protected:
     VTKSIMPLENEGATO_API virtual void updating() throw(fwTools::Failed);
 
     /**
-     * @brief Configuring method.
+     * @brief This method is used to configure the service.
      *
-     * This method is used to configure the service.
+     * It initializes the qt container.
      */
     VTKSIMPLENEGATO_API virtual void configuring() throw(::fwTools::Failed);
 
@@ -132,4 +129,4 @@ private:
 }
 
 
-#endif /* __VTKSIMPLENEGATO_RENDERERSERVICE_HPP__ */
+#endif /* __VTKSIMPLENEGATO_SRENDERER_HPP__ */

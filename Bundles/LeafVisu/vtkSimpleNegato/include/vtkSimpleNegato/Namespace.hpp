@@ -10,9 +10,6 @@
 /**
  * @brief       The namespace vtkSimpleNegato has a visualization service of medical image (::fwData::Image).
  * @namespace   vtkSimpleNegato
- *
- * @date        2009-2010.
- *
  */
 namespace vtkSimpleNegato
 {

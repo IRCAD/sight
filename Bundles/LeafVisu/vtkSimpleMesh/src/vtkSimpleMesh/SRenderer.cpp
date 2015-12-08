@@ -4,17 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "vtkSimpleMesh/RendererService.hpp"
+#include "vtkSimpleMesh/SRenderer.hpp"
+
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwCore/HiResTimer.hpp>
 
 #include <fwData/Mesh.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
-
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Signal.hxx>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
@@ -23,39 +23,39 @@
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>
 
-#include <vtkCommand.h>
 #include <vtkCamera.h>
+#include <vtkCamera.h>
+#include <vtkCommand.h>
+#include <vtkMatrix4x4.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkPolyDataNormals.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkCamera.h>
-#include <vtkMatrix4x4.h>
+#include <vtkTransform.h>
 #ifndef ANDROID
 #include <vtkInteractorStyleTrackballCamera.h>
 #else
 #include <vtkInteractorStyleMultiTouchCamera.h>
 #endif
-#include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleMesh::RendererService, ::fwData::Mesh );
-
+fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleMesh::SRenderer, ::fwData::Mesh );
 
 namespace vtkSimpleMesh
 {
 
-const ::fwCom::Slots::SlotKeyType RendererService::s_UPDATE_CAM_POSITION_SLOT = "updateCamPosition";
-const ::fwCom::Slots::SlotKeyType RendererService::s_UPDATE_PIPELINE_SLOT     = "updatePipeline";
-const ::fwCom::Slots::SlotKeyType RendererService::s_INIT_PIPELINE_SLOT       = "initPipeline";
-const ::fwCom::Signals::SignalKeyType RendererService::s_CAM_UPDATED_SIG      = "camUpdated";
+const ::fwCom::Slots::SlotKeyType SRenderer::s_UPDATE_CAM_POSITION_SLOT = "updateCamPosition";
+const ::fwCom::Slots::SlotKeyType SRenderer::s_UPDATE_PIPELINE_SLOT     = "updatePipeline";
+const ::fwCom::Slots::SlotKeyType SRenderer::s_INIT_PIPELINE_SLOT       = "initPipeline";
+const ::fwCom::Signals::SignalKeyType SRenderer::s_CAM_UPDATED_SIG      = "camUpdated";
 
+// vtkCommand used to catch the user interactions and notify the new camera position
 class vtkLocalCommand : public vtkCommand
 {
 public:
 
-    vtkLocalCommand(::vtkSimpleMesh::RendererService* _service)
+    vtkLocalCommand(::vtkSimpleMesh::SRenderer* _service)
     {
         m_service              = _service;
         this->m_isMousePressed = false;
@@ -79,37 +79,28 @@ public:
         }
     }
 private:
-    ::vtkSimpleMesh::RendererService* m_service;
+    ::vtkSimpleMesh::SRenderer* m_service;
     bool m_isMousePressed;
 };
 
-RendererService::RendererService() throw() : m_render( 0 ), m_bPipelineIsInit(false)
+SRenderer::SRenderer() throw() : m_render( 0 ), m_bPipelineIsInit(false)
 {
-    m_slotUpdateCamPosition = ::fwCom::newSlot( &RendererService::updateCamPosition, this );
-    m_slotUpdatePipeline    = ::fwCom::newSlot( &RendererService::updatePipeline, this );
-    m_slotInitPipeline      = ::fwCom::newSlot( &RendererService::initPipeline, this );
-    ::fwCom::HasSlots::m_slots( s_UPDATE_CAM_POSITION_SLOT, m_slotUpdateCamPosition )
-        ( s_UPDATE_PIPELINE_SLOT, m_slotUpdatePipeline )
-        ( s_INIT_PIPELINE_SLOT, m_slotInitPipeline );
+    m_slotUpdateCamPosition = newSlot(s_UPDATE_CAM_POSITION_SLOT, &SRenderer::updateCamPosition, this);
+    m_slotUpdatePipeline    = newSlot(s_UPDATE_PIPELINE_SLOT, &SRenderer::updatePipeline, this);
+    m_slotInitPipeline      = newSlot(s_INIT_PIPELINE_SLOT, &SRenderer::initPipeline, this);
 
-    m_sigCamUpdated = CamUpdatedSignalType::New();
-
-    // Register
-    ::fwCom::HasSignals::m_signals( s_CAM_UPDATED_SIG,  m_sigCamUpdated);
-
-    this->setWorker( ::fwServices::registry::ActiveWorkers::getDefault()->
-                     getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
+    m_sigCamUpdated = newSignal<CamUpdatedSignalType>(s_CAM_UPDATED_SIG);
 }
 
 //-----------------------------------------------------------------------------
 
-RendererService::~RendererService() throw()
+SRenderer::~SRenderer() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void RendererService::starting() throw(fwTools::Failed)
+void SRenderer::starting() throw(fwTools::Failed)
 {
     this->create();
 
@@ -139,14 +130,14 @@ void RendererService::starting() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::configuring() throw(::fwTools::Failed)
+void SRenderer::configuring() throw(::fwTools::Failed)
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void RendererService::stopping() throw(fwTools::Failed)
+void SRenderer::stopping() throw(fwTools::Failed)
 {
     if( m_render == 0 )
     {
@@ -167,14 +158,14 @@ void RendererService::stopping() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updating() throw(fwTools::Failed)
+void SRenderer::updating() throw(fwTools::Failed)
 {
     m_interactorManager->getInteractor()->Render();
 }
 
 //-----------------------------------------------------------------------------
 
-void RendererService::initVTKPipeline()
+void SRenderer::initVTKPipeline()
 {
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
     m_vtkPolyData             = vtkSmartPointer<vtkPolyData>::New();
@@ -208,7 +199,7 @@ void RendererService::initVTKPipeline()
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updateVTKPipeline(bool resetCamera)
+void SRenderer::updateVTKPipeline(bool resetCamera)
 {
     ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
 
@@ -229,7 +220,7 @@ void RendererService::updateVTKPipeline(bool resetCamera)
 
 //-----------------------------------------------------------------------------
 
-void RendererService::notifyCamPositionUpdated()
+void SRenderer::notifyCamPositionUpdated()
 {
     vtkCamera* camera = m_render->GetActiveCamera();
 
@@ -249,9 +240,9 @@ void RendererService::notifyCamPositionUpdated()
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updateCamPosition(SharedArray positionValue,
-                                        SharedArray focalValue,
-                                        SharedArray viewUpValue)
+void SRenderer::updateCamPosition(SharedArray positionValue,
+                                  SharedArray focalValue,
+                                  SharedArray viewUpValue)
 {
     vtkCamera* camera = m_render->GetActiveCamera();
 
@@ -265,7 +256,7 @@ void RendererService::updateCamPosition(SharedArray positionValue,
 
 //-----------------------------------------------------------------------------
 
-void RendererService::initPipeline()
+void SRenderer::initPipeline()
 {
     if(!m_bPipelineIsInit)
     {
@@ -287,7 +278,7 @@ void RendererService::initPipeline()
 
 //-----------------------------------------------------------------------------
 
-void RendererService::updatePipeline()
+void SRenderer::updatePipeline()
 {
     m_hiResTimer.reset();
     m_hiResTimer.start();
@@ -304,7 +295,7 @@ void RendererService::updatePipeline()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType RendererService::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsType SRenderer::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_INIT_PIPELINE_SLOT ) );

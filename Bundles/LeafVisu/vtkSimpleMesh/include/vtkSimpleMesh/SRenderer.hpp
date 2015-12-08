@@ -4,16 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VTKSIMPLEMESH_RENDERERSERVICE_HPP__
-#define __VTKSIMPLEMESH_RENDERERSERVICE_HPP__
+#ifndef __VTKSIMPLEMESH_SRENDERER_HPP__
+#define __VTKSIMPLEMESH_SRENDERER_HPP__
 
 #include "vtkSimpleMesh/config.hpp"
 
-#include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
-
 #include <fwRender/IRender.hpp>
 
-
+#include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
 #include <boost/shared_array.hpp>
 
@@ -29,19 +27,21 @@ namespace vtkSimpleMesh
 {
 
 /**
- * @brief   Renderer service.
- * @class   RendererService
+ * @brief   Service rendering a ::fwData::Mesh using VTK.
+ * @class   SRenderer
  *
- * Service rendering a ::fwData::Mesh using VTK.
+ * This service displays a mesh in a scene.
  *
- * Service registered details : \n
- * fwServicesRegisterMacro( ::fwRender::IRender , ::vtkSimpleMesh::RendererService , ::fwData::Mesh)
+ * The scene owns a 3D camera that can be moved by the user on clicking in the scene.
+ *   - When the camera moved, a signal 'camUpdated' is emitted with the new camera information (position, focal and
+ *     view up).
+ *  - To update the camera without clicking, you could called the slot 'updateCamPosition'.
  */
-class VTKSIMPLEMESH_CLASS_API RendererService : public fwRender::IRender
+class VTKSIMPLEMESH_CLASS_API SRenderer : public fwRender::IRender
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (RendererService)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro ( (SRenderer)(::fwRender::IRender) );
 
     typedef ::boost::shared_array< double > SharedArray;
 
@@ -62,12 +62,12 @@ public:
     /**
      * @brief    Constructor
      */
-    VTKSIMPLEMESH_API RendererService() throw();
+    VTKSIMPLEMESH_API SRenderer() throw();
 
     /**
      * @brief    Destructor
      */
-    VTKSIMPLEMESH_API virtual ~RendererService() throw();
+    VTKSIMPLEMESH_API virtual ~SRenderer() throw();
 
 
     /// This method is used to notify that the VTK camera position is updated.
@@ -95,13 +95,12 @@ protected:
 
 
     /**
-     * @brief Configuring method.
+     * @brief This method is used to configure the service. Initialize the qt container.
      *
      * XML configuration sample:
      * @verbatim
-       <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" autoConnect="yes" />
+       <service impl="::vtkSimpleMesh::SRenderer" type="::fwRender::IRender" autoConnect="yes" />
        @endverbatim
-     * This method is used to configure the service. Initialize qt container.
      */
     VTKSIMPLEMESH_API virtual void configuring() throw(::fwTools::Failed);
 
@@ -109,7 +108,7 @@ protected:
     /**
      * @brief Stopping method.
      *
-     * Destroy VTK renderer and qt containers
+     * Destroy the VTK renderer and the qt container
      */
     VTKSIMPLEMESH_API virtual void stopping() throw(fwTools::Failed);
 
@@ -182,4 +181,4 @@ private:
 
 }
 
-#endif /* __VTKSIMPLEMESH_RENDERERSERVICE_HPP__ */
+#endif /* __VTKSIMPLEMESH_SRENDERER_HPP__ */

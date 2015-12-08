@@ -4,7 +4,7 @@
 
 <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRender::IRender</type>
-        <service>::vtkSimpleNegato::RendererService</service>
+        <service>::vtkSimpleNegato::SRenderer</service>
         <object>::fwData::Image</object>
     </extension>
 

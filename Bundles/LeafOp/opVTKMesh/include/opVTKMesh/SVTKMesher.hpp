@@ -16,7 +16,10 @@ namespace opVTKMesh
 {
 
 /**
- * @brief Service  to generate mesh with VTK
+ * @brief This service generates meshes from an image using VTK library.
+ *
+ * This service works on a composite containing a ::fwData::Image and a ::fwMedData::ModelSeries.
+ * The generated meshes are stored in the given ModelSeries.
  */
 class OPVTKMESH_CLASS_API SVTKMesher : public ::opVTKMesh::IMesher
 {
@@ -48,12 +51,14 @@ protected:
             </config>
        </service>
         @endverbatim
+     * - \b percentReduction: Specify the desired reduction in the total number of polygons (e.g., if
+     *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)
+     * - \b image: key of the source image into the composite
+     * - \b modelSeries: key of the target ModelSeries into the composite
      */
     OPVTKMESH_API virtual void configuring() throw ( ::fwTools::Failed );
 
     OPVTKMESH_API virtual void updating() throw ( ::fwTools::Failed );
-
-    OPVTKMESH_API virtual void info ( std::ostream &_sstream );
 
 private:
 

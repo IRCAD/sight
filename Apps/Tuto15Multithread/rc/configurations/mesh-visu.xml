@@ -14,7 +14,7 @@
                 <object uid="${meshUid}" type="::fwData::Mesh" src="ref">
 
                     <!-- Visualization service for the first window. -->
-                    <service uid="${GENERIC_UID}_rendering" impl="::vtkSimpleMesh::RendererService" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_rendering" impl="::vtkSimpleMesh::SRenderer" autoConnect="yes">
                         <registry>
                             <parent wid="${parentViewId}" />
                         </registry>
