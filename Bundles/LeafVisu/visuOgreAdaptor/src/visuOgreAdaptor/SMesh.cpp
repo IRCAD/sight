@@ -838,7 +838,15 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         {
             if(m_subMeshes[i])
             {
-                numIndicesTotal += m_subMeshes[i]->indexData->indexCount;
+                const ::fwData::Mesh::CellTypesEnum cellType = static_cast< ::fwData::Mesh::CellTypesEnum>(i);
+                if ( cellType == ::fwData::Mesh::TRIANGLE)
+                {
+                    numIndicesTotal += m_subMeshes[i]->indexData->indexCount / 3;
+                }
+                else
+                {
+                    numIndicesTotal += m_subMeshes[i]->indexData->indexCount >> 2;
+                }
             }
         }
 

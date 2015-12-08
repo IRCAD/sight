@@ -922,7 +922,8 @@ void SMaterial::updateShadingMode( int shadingMode  )
                         }
 
                         // Set size outside the scope of texture creation because the size could vary
-                        ::Ogre::Vector2 size(static_cast<float>(tex->getWidth()), static_cast<float>(tex->getHeight()));
+                        ::Ogre::Vector2 size(static_cast<float>(tex->getWidth()),
+                                             static_cast<float>(tex->getHeight() - 1));
                         ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTextureSize", size);
                     }
                 }
