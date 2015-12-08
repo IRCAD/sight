@@ -48,8 +48,9 @@ using namespace fwServices;
 
 namespace fwRenderVTK
 {
-const ::fwCom::Signals::SignalKeyType VtkRenderService::s_DROPPED_SIG = "dropped";
-const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT     = "render";
+const ::fwCom::Signals::SignalKeyType VtkRenderService::s_DROPPED_SIG     = "dropped";
+const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT         = "render";
+const ::fwCom::Slots::SlotKeyType VtkRenderService::s_REQUEST_RENDER_SLOT = "requestRender";
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
 static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
@@ -69,6 +70,7 @@ VtkRenderService::VtkRenderService() throw() :
     newSignal<DroppedSignalType>(s_DROPPED_SIG);
 
     newSlot(s_RENDER_SLOT, &VtkRenderService::render, this);
+    newSlot(s_REQUEST_RENDER_SLOT, &VtkRenderService::requestRender, this);
     newSlot(s_ADD_OBJECTS_SLOT, &VtkRenderService::addObjects, this);
     newSlot(s_CHANGE_OBJECTS_SLOT, &VtkRenderService::changeObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &VtkRenderService::removeObjects, this);
@@ -386,7 +388,7 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
         m_timer = m_associatedWorker->createTimer();
 
         ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(timeStep);
-        m_timer->setFunction( std::bind( &VtkRenderService::updateTimer, this)  );
+        m_timer->setFunction( std::bind( &VtkRenderService::requestRender, this)  );
         m_timer->setDuration(duration);
     }
 }
@@ -605,6 +607,9 @@ void VtkRenderService::render()
             ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
             sig->asyncEmit();
         }
+
+        // If we don't do explicitly, the filter is not destroyed and this leads to a huge memory leak
+        windowToImageFilter->Delete();
     }
     else
     {
@@ -630,7 +635,7 @@ bool VtkRenderService::isShownOnScreen()
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::updateTimer()
+void VtkRenderService::requestRender()
 {
     if ( !this->getPendingRenderRequest())
     {

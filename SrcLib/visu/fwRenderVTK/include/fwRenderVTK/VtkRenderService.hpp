@@ -57,6 +57,7 @@ public:
     typedef std::string VtkObjectIdType;
 
     FWRENDERVTK_API static const ::fwCom::Slots::SlotKeyType s_RENDER_SLOT;
+    FWRENDERVTK_API static const ::fwCom::Slots::SlotKeyType s_REQUEST_RENDER_SLOT;
 
     FWRENDERVTK_API static const ::fwCom::Signals::SignalKeyType s_DROPPED_SIG;
     typedef ::fwCom::Signal< void (std::string)> DroppedSignalType;
@@ -190,7 +191,7 @@ protected:
 private:
 
     /// Slot called when on each timer update
-    void updateTimer();
+    void requestRender();
 
     /// Slot: add objects
     void addObjects(::fwData::Composite::ContainerType objects);
