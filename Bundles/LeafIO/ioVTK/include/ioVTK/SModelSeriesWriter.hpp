@@ -9,11 +9,11 @@
 
 #include "ioVTK/config.hpp"
 
+#include <fwCom/Signal.hpp>
+
 #include <fwData/Mesh.hpp>
 
 #include <io/IWriter.hpp>
-
-#include <fwCom/Signal.hpp>
 
 #include <boost/filesystem/path.hpp>
 #include <string>
@@ -32,7 +32,7 @@ namespace ioVTK
 {
 
 /**
- * @brief   Model series writer service.
+ * @brief   VTK Model series writer.
  * @class   SModelSeriesWriter
  *
  * Service writing a model series as .vtk files using the fwVtkIO lib.

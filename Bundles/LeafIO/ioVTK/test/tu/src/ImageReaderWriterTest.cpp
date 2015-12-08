@@ -129,7 +129,7 @@ void ImageReaderWriterTest::testVtkImageReader()
     sizeExpected[1] = 170;
     sizeExpected[2] = 58;
 
-    runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image);
+    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), image);
 
     // Data read.
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
@@ -161,7 +161,7 @@ void ImageReaderWriterTest::testVtiImageReader()
     const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/image/vti/BostonTeapot.vti";
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image);
+    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), image);
 
     // Data expected
     const size_t dim = 3;
@@ -214,7 +214,7 @@ void ImageReaderWriterTest::testMhdImageReader()
     const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd";
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), image);
+    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), image);
 
     // Data expected
     const size_t dim = 3;
@@ -275,7 +275,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
 
     {
         const std::string srvtype("::io::IReader");
-        const std::string srvname("::ioVTK::ImageReaderService");
+        const std::string srvname("::ioVTK::SImageReader");
 
 
         ::fwServices::IService::sptr srv;
@@ -321,12 +321,12 @@ void ImageReaderWriterTest::testVtkImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vtk";
 
-    runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image);
+    runImageSrv("::io::IWriter","::ioVTK::SImageWriter",getIOConfiguration(file), image);
 
 
     // Read image from disk
     ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
+    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), imageFromDisk);
 
     ::boost::filesystem::remove(file);
 
@@ -381,7 +381,7 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
 
     // Read image series
     ::fwData::Image::sptr newImage = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::ImageReaderService", getIOConfiguration(file), newImage);
+    runImageSrv("::io::IReader","::ioVTK::SImageReader", getIOConfiguration(file), newImage);
 
     ::fwTest::helper::ExcludeSetType exclude;
     exclude.insert("window_center");
@@ -416,12 +416,12 @@ void ImageReaderWriterTest::testVtiImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vti";
 
-    runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image);
+    runImageSrv("::io::IWriter","::ioVTK::SImageWriter",getIOConfiguration(file), image);
 
 
     // Read image from disk
     ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
+    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), imageFromDisk);
 
     // Data read
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
@@ -482,11 +482,11 @@ void ImageReaderWriterTest::testMhdImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.mhd";
 
-    runImageSrv("::io::IWriter","::ioVTK::ImageWriterService",getIOConfiguration(file), image);
+    runImageSrv("::io::IWriter","::ioVTK::SImageWriter",getIOConfiguration(file), image);
 
     // Read image from disk
     ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::ImageReaderService",getIOConfiguration(file), imageFromDisk);
+    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), imageFromDisk);
 
     // Data read
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
@@ -550,7 +550,7 @@ void ImageReaderWriterTest::testImageWriterExtension()
 
     {
         const std::string srvtype("::io::IWriter");
-        const std::string srvname("::ioVTK::ImageWriterService");
+        const std::string srvname("::ioVTK::SImageWriter");
 
 
         ::fwServices::IService::sptr srv;

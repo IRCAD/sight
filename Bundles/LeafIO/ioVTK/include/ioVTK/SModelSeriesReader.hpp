@@ -9,11 +9,9 @@
 
 #include "ioVTK/config.hpp"
 
-#include <io/IReader.hpp>
-
 #include <fwData/Mesh.hpp>
 
-
+#include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 #include <string>
@@ -27,7 +25,7 @@ namespace ioVTK
 {
 
 /**
- * @brief   Model series reader service.
+ * @brief   VTK Model series reader.
  * @class   SModelSeriesReader
  *
  * Service reading a model series as .vtk files using the fwVtkIO lib.

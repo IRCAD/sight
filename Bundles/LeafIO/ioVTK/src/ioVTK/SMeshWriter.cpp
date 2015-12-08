@@ -4,29 +4,28 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioVTK/MeshWriterService.hpp"
+#include "ioVTK/SMeshWriter.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
 #include <fwCore/base.hpp>
 
-#include <fwData/Mesh.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/Mesh.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
-
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwJobs/IJob.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwVtkIO/MeshWriter.hpp>
 
@@ -34,27 +33,27 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::MeshWriterService, ::fwData::Mesh );
+fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SMeshWriter, ::fwData::Mesh );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-MeshWriterService::MeshWriterService() throw()
+SMeshWriter::SMeshWriter() throw()
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType MeshWriterService::getIOPathType() const
+::io::IOPathType SMeshWriter::getIOPathType() const
 {
     return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::configureWithIHM()
+void SMeshWriter::configureWithIHM()
 {
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath("");
@@ -82,28 +81,28 @@ void MeshWriterService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::starting() throw(::fwTools::Failed)
+void SMeshWriter::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::stopping() throw(::fwTools::Failed)
+void SMeshWriter::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::info(std::ostream &_sstream )
+void SMeshWriter::info(std::ostream &_sstream )
 {
-    _sstream << "MeshWriterService::info";
+    _sstream << "SMeshWriter::info";
 }
 
 //------------------------------------------------------------------------------
 
-void MeshWriterService::updating() throw(::fwTools::Failed)
+void SMeshWriter::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

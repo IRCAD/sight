@@ -4,43 +4,44 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioVTK/ImageReaderService.hpp"
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Job.hpp>
-#include <fwJobs/Aggregator.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
+#include "ioVTK/SImageReader.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <io/IReader.hpp>
+#include <fwCore/base.hpp>
+
+#include <fwData/Image.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataIO/reader/IObjectReader.hpp>
+
+#include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/registry/worker.hpp>
+
+#include <fwJobs/Aggregator.hpp>
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+
 #include <fwVtkIO/ImageReader.hpp>
 #include <fwVtkIO/MetaImageReader.hpp>
 #include <fwVtkIO/VtiImageReader.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/Cursor.hpp>
-#include <fwGui/registry/worker.hpp>
-
-#include <fwCore/base.hpp>
+#include <io/IReader.hpp>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/operations.hpp>
 
+#include <chrono>
 #include <cstdint>
 #include <thread>
-#include <chrono>
 
 namespace ioVTK
 {
@@ -48,20 +49,20 @@ namespace ioVTK
 //------------------------------------------------------------------------------
 
 // Register a new reader of ::fwData::Image
-fwServicesRegisterMacro( ::io::IReader, ::ioVTK::ImageReaderService, ::fwData::Image );
+fwServicesRegisterMacro( ::io::IReader, ::ioVTK::SImageReader, ::fwData::Image );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType ImageReaderService::getIOPathType() const
+::io::IOPathType SImageReader::getIOPathType() const
 {
     return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderService::configureWithIHM()
+void SImageReader::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
 
@@ -90,33 +91,33 @@ void ImageReaderService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-ImageReaderService::ImageReaderService() throw()
+SImageReader::SImageReader() throw()
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderService::starting() throw ( ::fwTools::Failed )
+void SImageReader::starting() throw ( ::fwTools::Failed )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderService::stopping() throw ( ::fwTools::Failed )
+void SImageReader::stopping() throw ( ::fwTools::Failed )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderService::info( std::ostream &_sstream )
+void SImageReader::info( std::ostream &_sstream )
 {
-    _sstream << "ImageReaderService::info";
+    _sstream << "SImageReader::info";
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderService::updating() throw ( ::fwTools::Failed )
+void SImageReader::updating() throw ( ::fwTools::Failed )
 {
     if( this->hasLocationDefined() )
     {
@@ -156,7 +157,7 @@ template< typename READER > typename READER::sptr configureReader(const ::boost:
 
 //------------------------------------------------------------------------------
 
-bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::fwData::Image::sptr _pImg )
+bool SImageReader::loadImage( const ::boost::filesystem::path imgFile, ::fwData::Image::sptr _pImg )
 {
     bool ok = true;
 
@@ -229,7 +230,7 @@ bool ImageReaderService::loadImage( const ::boost::filesystem::path imgFile, ::f
 
 //------------------------------------------------------------------------------
 
-void ImageReaderService::notificationOfDBUpdate()
+void SImageReader::notificationOfDBUpdate()
 {
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
     SLM_ASSERT("pImage not instanced", pImage);

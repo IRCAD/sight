@@ -4,37 +4,34 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioVTK/MeshWriterService.hpp"
+#include "ioVTK/SMeshWriter.hpp"
 #include "ioVTK/SModelSeriesWriter.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwJobs/IJob.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
 #include <fwCore/base.hpp>
-
+#include <fwData/location/Folder.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
-#include <fwData/location/Folder.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/ILocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwJobs/IJob.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTools/UUID.hpp>
 
 #include <fwVtkIO/MeshWriter.hpp>
-
-#include <boost/filesystem/operations.hpp>
 
 #include <boost/filesystem/operations.hpp>
 

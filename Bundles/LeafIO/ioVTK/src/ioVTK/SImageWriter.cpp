@@ -4,18 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioVTK/ImageWriterService.hpp"
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Job.hpp>
-
-#include <fwTools/Failed.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <io/IWriter.hpp>
+#include "ioVTK/SImageWriter.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -23,43 +12,54 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/Cursor.hpp>
+#include <fwDataIO/reader/IObjectReader.hpp>
 
+#include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
-#include <fwDataIO/reader/IObjectReader.hpp>
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <fwTools/Failed.hpp>
+
 #include <fwVtkIO/ImageWriter.hpp>
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
+
+#include <io/IWriter.hpp>
 
 #include <boost/algorithm/string.hpp>
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::ImageWriterService, ::fwData::Image );
+fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SImageWriter, ::fwData::Image );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-ImageWriterService::ImageWriterService() throw()
+SImageWriter::SImageWriter() throw()
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 }
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType ImageWriterService::getIOPathType() const
+::io::IOPathType SImageWriter::getIOPathType() const
 {
     return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
 
-void ImageWriterService::configureWithIHM()
+void SImageWriter::configureWithIHM()
 {
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath("");
@@ -89,30 +89,30 @@ void ImageWriterService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void ImageWriterService::starting() throw(::fwTools::Failed)
+void SImageWriter::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageWriterService::stopping() throw(::fwTools::Failed)
+void SImageWriter::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageWriterService::info(std::ostream &_sstream )
+void SImageWriter::info(std::ostream &_sstream )
 {
-    _sstream << "ImageWriterService::info";
+    _sstream << "SImageWriter::info";
 }
 
 //------------------------------------------------------------------------------
 
-bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile,
-                                    const SPTR(::fwData::Image)& image,
-                                    const SPTR(JobCreatedSignalType)& sigJobCreated )
+bool SImageWriter::saveImage( const ::boost::filesystem::path& imgFile,
+                              const SPTR(::fwData::Image)& image,
+                              const SPTR(JobCreatedSignalType)& sigJobCreated )
 {
     SLM_TRACE_FUNC();
     bool bValue = true;
@@ -179,7 +179,7 @@ bool ImageWriterService::saveImage( const ::boost::filesystem::path& imgFile,
 
 //------------------------------------------------------------------------------
 
-void ImageWriterService::updating() throw(::fwTools::Failed)
+void SImageWriter::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 

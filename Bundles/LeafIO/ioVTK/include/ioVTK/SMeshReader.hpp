@@ -4,21 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTK_IMAGEWRITERSERVICE_HPP__
-#define __IOVTK_IMAGEWRITERSERVICE_HPP__
+#ifndef __IOVTK_SMESHREADER_HPP__
+#define __IOVTK_SMESHREADER_HPP__
 
 #include "ioVTK/config.hpp"
 
-#include <io/IWriter.hpp>
+#include <fwData/Mesh.hpp>
+
+#include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
-
 #include <string>
-
-namespace fwData
-{
-class Image;
-}
 
 namespace fwJobs
 {
@@ -29,31 +25,24 @@ namespace ioVTK
 {
 
 /**
- * @brief   VTK image writer service.
- * @class   ImageWriterService
+ * @brief   VTK Mesh Reader.
  *
- * Service writing a VTK Image using the fwVtkIO lib.
- *
- * Service registered details : \n
- * fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::ImageWriterService , ::fwData::Image )
+ * Service reading a VTK mesh using the fwVtkIO lib.
  */
-class IOVTK_CLASS_API ImageWriterService : public ::io::IWriter
+class IOVTK_CLASS_API SMeshReader : public ::io::IReader
 {
 
 public:
-
-    /**
-     * @brief Constructor. Do nothing.
-     */
-    IOVTK_API ImageWriterService() throw();
-
-    ~ImageWriterService() throw()
+    virtual ~SMeshReader() throw()
     {
     }
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageWriterService)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro ( (SMeshReader)( ::io::IReader) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+
+    /// Constructor
+    IOVTK_API SMeshReader() throw();
 
     /**
      * @brief Configure the image path.
@@ -62,19 +51,6 @@ public:
      * the file path  using a file selector.
      */
     IOVTK_API virtual void configureWithIHM();
-
-    /**
-     * @brief Save a VTK image.
-     * @param[in] imgFile ::boost::filesystem::path.
-     * @param[out] image std::shared_ptr< ::fwData::Image >.
-     * @return bool.
-     *
-     * This method is used to save an image using the file path.
-     * Returns \b true if the image saving is a success and \b false if it fails
-     */
-    IOVTK_API static bool saveImage( const ::boost::filesystem::path& imgFile,
-                                     const SPTR(::fwData::Image)& image,
-                                     const SPTR(JobCreatedSignalType)& sigJobCreated);
 
 
 protected:
@@ -111,21 +87,42 @@ protected:
      */
     IOVTK_API void info(std::ostream &_sstream );
 
+
 private:
+
+    /**
+     * @brief Load a VTK mesh.
+     * @param[in] _vtkFile ::boost::filesystem::path.
+     * @param[out] _pMesh std::shared_ptr< ::fwData::Mesh >.
+     * @return bool.
+     *
+     * This method is used to load a mesh using the file path.
+     */
+    void loadMesh( const ::boost::filesystem::path _vtkFile, ::fwData::Mesh::sptr _pMesh );
+
+    /**
+     * @brief Notification method.
+     *
+     * This method is used to notify
+     * the mesh services.
+     */
+    void notificationOfUpdate();
+
     /**
      * @brief the m_bServiceIsConfigured value is \b true
-     * if the image path is known.
+     * if the mesh path is known.
      */
     bool m_bServiceIsConfigured;
 
     /**
-     * @brief Image path.
+     * @brief Mesh path.
      */
-    ::boost::filesystem::path m_fsImgPath;
+    ::boost::filesystem::path m_fsMeshPath;
 
+    /// Signal triggered when job created
     SPTR(JobCreatedSignalType) m_sigJobCreated;
 };
 
 } // namespace ioVTK
 
-#endif //__IOVTK_IMAGEWRITERSERVICE_HPP__
+#endif //__IOVTK_SMESHREADER_HPP__

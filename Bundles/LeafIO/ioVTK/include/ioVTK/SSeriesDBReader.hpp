@@ -31,13 +31,9 @@ namespace ioVTK
 {
 
 /**
- * @brief   SeriesDB reader service.
- * @class   SSeriesDBReader
+ * @brief   VTK File Reader.
  *
  * Service reading a VTK file (mesh or image) using the fwVtkIO lib.
- *
- * Service registered details : \n
- * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::SSeriesDBReader , ::fwMedData::SeriesDB )
  */
 class IOVTK_CLASS_API SSeriesDBReader : public ::io::IReader
 {

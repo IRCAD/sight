@@ -6,29 +6,28 @@
 
 #include "ioVTK/SSeriesDBReader.hpp"
 
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
+#include <fwComEd/helper/SeriesDB.hpp>
+
+#include <fwData/location/Folder.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
+
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/location/Folder.hpp>
-
-#include <fwComEd/helper/SeriesDB.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/Cursor.hpp>
-
-#include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwVtkIO/SeriesDBReader.hpp>
 
 #include <boost/filesystem/operations.hpp>

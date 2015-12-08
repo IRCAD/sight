@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioVTK/MeshReaderService.hpp"
+#include "ioVTK/SMeshReader.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -32,27 +32,27 @@
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IReader, ::ioVTK::MeshReaderService, ::fwData::Mesh );
+fwServicesRegisterMacro( ::io::IReader, ::ioVTK::SMeshReader, ::fwData::Mesh );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-::io::IOPathType MeshReaderService::getIOPathType() const
+::io::IOPathType SMeshReader::getIOPathType() const
 {
     return ::io::FILE;
 }
 
 //------------------------------------------------------------------------------
 
-MeshReaderService::MeshReaderService() throw()
+SMeshReader::SMeshReader() throw()
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::configureWithIHM()
+void SMeshReader::configureWithIHM()
 {
     SLM_TRACE_FUNC();
 
@@ -82,28 +82,28 @@ void MeshReaderService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::starting() throw(::fwTools::Failed)
+void SMeshReader::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::stopping() throw(::fwTools::Failed)
+void SMeshReader::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::info(std::ostream &_sstream )
+void SMeshReader::info(std::ostream &_sstream )
 {
-    _sstream << "MeshReaderService::info";
+    _sstream << "SMeshReader::info";
 }
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
+void SMeshReader::loadMesh( const ::boost::filesystem::path vtkFile, ::fwData::Mesh::sptr _pMesh )
 {
     SLM_TRACE_FUNC();
 
@@ -143,7 +143,7 @@ void MeshReaderService::loadMesh( const ::boost::filesystem::path vtkFile, ::fwD
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::updating() throw(::fwTools::Failed)
+void SMeshReader::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -165,7 +165,7 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void MeshReaderService::notificationOfUpdate()
+void SMeshReader::notificationOfUpdate()
 {
     SLM_TRACE_FUNC();
     ::fwData::Mesh::sptr pMesh = this->getObject< ::fwData::Mesh >();

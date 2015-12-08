@@ -32,8 +32,7 @@ namespace ioVTK
 {
 
 /**
- * @brief   Model series .obj writer service.
- * @class   SModelSeriesObjWriter
+ * @brief   Wavefront OBJ files.
  *
  * Service writing a model series as .obj files using the fwVtkIO lib.
  */

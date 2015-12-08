@@ -30,8 +30,7 @@ namespace ioVTK
 {
 
 /**
- * @brief   Image series writer service.
- * @class   SImageSeriesWriter
+ * @brief   VTK Image Writer.
  *
  * Service writing an image series using the fwVtkIO lib.
  */

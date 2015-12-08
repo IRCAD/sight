@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTK_MESHWRITERSERVICE_HPP__
-#define __IOVTK_MESHWRITERSERVICE_HPP__
+#ifndef __IOVTK_SMESHWRITER_HPP__
+#define __IOVTK_SMESHWRITER_HPP__
 
 #include "ioVTK/config.hpp"
 
@@ -29,23 +29,19 @@ namespace ioVTK
 {
 
 /**
- * @brief   VTK mesh writer service.
- * @class   MeshWriterService
+ * @brief  VTK Mesh Writer.
  *
  * Service writing a VTK Mesh using the fwVtkIO lib.
- *
- * Service registered details : \n
- * fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::MeshWriterService , ::fwData::Mesh )
  */
-class IOVTK_CLASS_API MeshWriterService : public ::io::IWriter
+class IOVTK_CLASS_API SMeshWriter : public ::io::IWriter
 {
 
 public:
-    ~MeshWriterService() throw()
+    ~SMeshWriter() throw()
     {
     }
 
-    fwCoreServiceClassDefinitionsMacro ( (MeshWriterService)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro ( (SMeshWriter)( ::io::IWriter) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -53,7 +49,7 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    IOVTK_API MeshWriterService() throw();
+    IOVTK_API SMeshWriter() throw();
 
     /**
      * @brief Configure the mesh path.
@@ -117,5 +113,5 @@ private:
 
 } // namespace ioVTK
 
-#endif //__IOVTK_MESHWRITERSERVICE_HPP__
+#endif //__IOVTK_SMESHWRITER_HPP__
 

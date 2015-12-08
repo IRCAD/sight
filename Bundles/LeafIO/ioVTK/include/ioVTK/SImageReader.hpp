@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTK_IMAGEREADERSERVICE_HPP__
-#define __IOVTK_IMAGEREADERSERVICE_HPP__
+#ifndef __IOVTK_SIMAGEREADER_HPP__
+#define __IOVTK_SIMAGEREADER_HPP__
 
 #include "ioVTK/config.hpp"  // Declaration of class and function export
 
@@ -28,23 +28,19 @@ namespace ioVTK
 {
 
 /**
- * @brief   Image reader service.
- * @class   ImageReaderService
+ * @brief VTK Image Reader
  *
  * Service reading a VTK Image using the fwVtkIO lib.
- *
- * Service registered details : \n
- * fwServicesRegisterMacro( ::io::IReader , ::ioVTK::ImageReaderService , ::fwData::Image )
  */
-class IOVTK_CLASS_API ImageReaderService : public ::io::IReader
+class IOVTK_CLASS_API SImageReader : public ::io::IReader
 {
 
 public:
-    ~ImageReaderService() throw()
+    ~SImageReader() throw()
     {
     }
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro ( (SImageReader)( ::io::IReader) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -58,7 +54,7 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    IOVTK_API ImageReaderService() throw();
+    IOVTK_API SImageReader() throw();
 
 protected:
 
@@ -106,4 +102,4 @@ private:
 
 } // namespace ioVTK
 
-#endif //__IOVTK_IMAGEREADERSERVICE_HPP__
+#endif // __IOVTK_SIMAGEREADER_HPP__

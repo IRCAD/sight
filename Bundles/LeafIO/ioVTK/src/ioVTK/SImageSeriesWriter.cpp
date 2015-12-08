@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioVTK/ImageWriterService.hpp"
+#include "ioVTK/SImageWriter.hpp"
 #include "ioVTK/SImageSeriesWriter.hpp"
 
 #include <fwJobs/IJob.hpp>
@@ -133,7 +133,7 @@ void SImageSeriesWriter::updating() throw(::fwTools::Failed)
 
         try
         {
-            ImageWriterService::saveImage(this->getFile(), imageSeries->getImage(), m_sigJobCreated);
+            SImageWriter::saveImage(this->getFile(), imageSeries->getImage(), m_sigJobCreated);
         }
         catch(::fwTools::Failed& e)
         {

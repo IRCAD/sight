@@ -16,7 +16,7 @@
         Furthermore, in the filename tag, an attribut (id) allows also to clarify the location of the 3D medical image file. 
         In our case, the image must be stored in the MyInstallDir directory, in a sub-directory named TutoData.
 --> 
-        <service impl="::ioVTK::ImageReaderService" type="::io::IReader" uid="myReaderPathFile" autoConnect="no" >
+        <service impl="::ioVTK::SImageReader" type="::io::IReader" uid="myReaderPathFile" autoConnect="no" >
             <file>./TutoData/patient1.vtk</file>
         </service>
      

@@ -8,7 +8,7 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
-        <service>::ioVTK::ImageWriterService</service>
+        <service>::ioVTK::SImageWriter</service>
         <object>::fwData::Image</object>
         <desc>VTK Image Writer (VTK)</desc>
     </extension>
@@ -22,21 +22,21 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
-        <service>::ioVTK::ImageReaderService</service>
+        <service>::ioVTK::SImageReader</service>
         <object>::fwData::Image</object>
         <desc>VTK Image Reader (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>
-        <service>::ioVTK::MeshReaderService</service>
+        <service>::ioVTK::SMeshReader</service>
         <object>::fwData::Mesh</object>
         <desc>VTK Mesh Reader (VTK)</desc>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IWriter</type>
-        <service>::ioVTK::MeshWriterService</service>
+        <service>::ioVTK::SMeshWriter</service>
         <object>::fwData::Mesh</object>
         <desc>VTK Mesh Writer (VTK)</desc>
     </extension>

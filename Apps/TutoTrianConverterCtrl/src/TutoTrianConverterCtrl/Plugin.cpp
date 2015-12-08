@@ -94,7 +94,7 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     m_readerSrv->configure();
 
     m_writerSrv = ::fwServices::add(m_mesh, "::io::IWriter",
-                                    "::ioVTK::MeshWriterService");
+                                    "::ioVTK::SMeshWriter");
     ::fwRuntime::EConfigurationElement::sptr writerCfg         = ::fwRuntime::EConfigurationElement::New( "service" );
     ::fwRuntime::EConfigurationElement::sptr writerFilenameCfg = ::fwRuntime::EConfigurationElement::New( "file" );
     writerFilenameCfg->setValue(vtkMeshPath);
