@@ -19,6 +19,7 @@
 #include <fwDataTools/Mesh.hpp>
 
 #include <fwRenderOgre/R2VBRenderable.hpp>
+#include <fwRenderOgre/helper/Mesh.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
@@ -765,9 +766,9 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
     lock.unlock();
 
     m_ogreMesh->_setBounds( ::Ogre::AxisAlignedBox( xMin, yMin, zMin, xMax, yMax, zMax) );
-    m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt(   ::Ogre::Math::Sqr(xMax - xMin) +
-                                                                ::Ogre::Math::Sqr(yMax - yMin) +
-                                                                ::Ogre::Math::Sqr(zMax - zMin)) /2);
+    m_ogreMesh->_setBoundingSphereRadius( ::Ogre::Math::Sqrt( ::Ogre::Math::Sqr(xMax - xMin) +
+                                                              ::Ogre::Math::Sqr(yMax - yMin) +
+                                                              ::Ogre::Math::Sqr(zMax - zMin)) /2);
 
     if(m_materialAdaptor)
     {
@@ -804,8 +805,8 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
 
         ::Ogre::HardwareVertexBufferSharedPtr cbuf;
 
-        size_t uiNumVertices     = mesh->getNumberOfPoints();
-        size_t uiPrevNumVertices = 0;
+        const size_t uiNumVertices = mesh->getNumberOfPoints();
+        size_t uiPrevNumVertices   = 0;
         if(bind->isBufferBound(m_binding[COLOUR]))
         {
             cbuf              = bind->getBuffer(m_binding[COLOUR]);
@@ -857,8 +858,8 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
                 m_perPrimitiveColorTextureName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
         }
 
-        size_t width  = std::min(s_maxTextureSize, numIndicesTotal);
-        size_t height = static_cast<size_t>( std::floor(numIndicesTotal / s_maxTextureSize) + 1 );
+        const size_t width  = std::min(s_maxTextureSize, numIndicesTotal);
+        const size_t height = static_cast<size_t>( std::floor(numIndicesTotal / s_maxTextureSize) + 1 );
 
         if(m_perPrimitiveColorTexture->getWidth() != width || m_perPrimitiveColorTexture->getHeight() != height )
         {
@@ -876,7 +877,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
             m_perPrimitiveColorTexture->setTextureType(::Ogre::TEX_TYPE_2D);
             m_perPrimitiveColorTexture->setNumMipmaps(0);
             // It would be better to use PF_BYTE_RGB when we have 3 components but for some reason it doesn't work
-            // Probably something related to alignment or a butg in Ogre
+            // Probably something related to alignment or a bug in Ogre
             m_perPrimitiveColorTexture->setFormat(::Ogre::PF_BYTE_RGBA);
             m_perPrimitiveColorTexture->setUsage(usage);
 
@@ -891,39 +892,23 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         }
     }
 
+    // 2 - Copy of vertices
     if (hasVertexColor)
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
         ::fwComEd::helper::Mesh meshHelper(mesh);
 
+        // Source points
         ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
         ::Ogre::RGBA* pColor                       =
             static_cast< ::Ogre::RGBA* >( cbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD) );
 
-        auto colors           = meshHelper.getPointColors();
-        std::uint8_t* icolors = reinterpret_cast<std::uint8_t*>(colors.data());
+        // Destination
+        const auto colors           = meshHelper.getPointColors();
+        const std::uint8_t* icolors = reinterpret_cast<const std::uint8_t*>(colors.data());
 
-        const size_t numComponents = colors.shape()[1];
-        const auto uiNumPoints     = mesh->getNumberOfPoints();
-        if(numComponents == 3)
-        {
-            for (unsigned int i = 0; i < uiNumPoints; ++i)
-            {
-                // Fastest way to copy tested so far, take 1.0 in alpha as default
-                ::Ogre::RGBA argb = 0xFF000000;
-                argb             |= *reinterpret_cast< ::Ogre::RGBA*>(icolors);
-                *pColor++         = argb;
-                icolors          += 3;
-            }
-        }
-        else if(numComponents == 4)
-        {
-            memcpy(pColor, icolors, uiNumPoints * numComponents);
-        }
-        else
-        {
-            SLM_FATAL("We only support RGB or RGBA vertex color");
-        }
+        // Copy points
+        ::fwRenderOgre::helper::Mesh::copyColors(pColor, icolors, mesh->getNumberOfPoints(), colors.shape()[1]);
 
         cbuf->unlock();
     }
@@ -933,37 +918,18 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         ::fwData::mt::ObjectReadLock lock(mesh);
         ::fwComEd::helper::Mesh meshHelper(mesh);
 
+        // Source cells
         ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
-
         pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-
         ::Ogre::RGBA* pColorDest = static_cast< ::Ogre::RGBA* >( pixelBox.data );
 
+        // Destination
         auto colors           = meshHelper.getCellColors();
         std::uint8_t* icolors = reinterpret_cast<std::uint8_t*>(colors.data());
 
-        const auto uiNumCells      = mesh->getNumberOfCells();
-        const size_t numComponents = colors.shape()[1];
-        if(numComponents == 3)
-        {
-            for (unsigned int i = 0; i < uiNumCells; ++i)
-            {
-                // Fastest way to copy tested so far, take 1.0 in alpha as default
-                ::Ogre::RGBA argb = 0xFF000000;
-                argb             |= *reinterpret_cast< ::Ogre::RGBA*>(icolors);
-                *pColorDest++     = argb;
-                icolors          += 3;
-            }
-        }
-        else if(numComponents == 4)
-        {
-            memcpy(pColorDest, icolors, uiNumCells * numComponents);
-        }
-        else
-        {
-            SLM_FATAL("We only support RGB or RGBA vertex color");
-        }
+        // Copy cells
+        ::fwRenderOgre::helper::Mesh::copyColors(pColorDest, icolors, mesh->getNumberOfCells(), colors.shape()[1]);
 
         pixelBuffer->unlock();
     }
@@ -972,8 +938,11 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
     {
         // The r2vb pipeline outputs per-vertex color if we have per-primitive color
         // Thus for the "regular" pipeline it is only viewed as per-vertex color
-        m_materialAdaptor->setHasVertexColor(hasVertexColor || hasPrimitiveColor);
-        m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->asyncRun();
+        if(m_materialAdaptor)
+        {
+            m_materialAdaptor->setHasVertexColor(hasVertexColor || hasPrimitiveColor);
+            m_materialAdaptor->slot(::visuOgreAdaptor::SMaterial::s_UPDATE_SLOT)->asyncRun();
+        }
 
         m_hasVertexColor    = hasVertexColor;
         m_hasPrimitiveColor = hasPrimitiveColor;
