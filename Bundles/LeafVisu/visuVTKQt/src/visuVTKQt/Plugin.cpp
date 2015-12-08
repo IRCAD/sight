@@ -10,11 +10,6 @@
 
 #include <fwCore/spyLog.hpp>
 
-//Required for proper object factory initialization
-#include <vtkAutoInit.h>
-
-VTK_MODULE_INIT(vtkRenderingOpenGL);
-
 namespace visuVTKQt
 {
 

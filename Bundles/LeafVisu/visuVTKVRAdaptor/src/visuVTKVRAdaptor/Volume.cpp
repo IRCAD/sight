@@ -36,11 +36,6 @@
 #include <vtkVolume.h>
 #include <vtkVolumeProperty.h>
 
-//Required for proper object factory initialization
-#include <vtkAutoInit.h>
-VTK_MODULE_INIT(vtkRenderingVolumeOpenGL);
-
-
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKVRAdaptor::Volume, ::fwData::Image );
 
 namespace visuVTKVRAdaptor

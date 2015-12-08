@@ -17,6 +17,7 @@ find_package(VTK
     vtkCommonCore
     REQUIRED
 )
+include(${VTK_USE_FILE})
 
 fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
