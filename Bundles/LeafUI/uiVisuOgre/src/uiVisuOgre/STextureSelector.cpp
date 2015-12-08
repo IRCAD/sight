@@ -204,6 +204,10 @@ void STextureSelector::onDeleteButton()
         auto sig = material->signal< ::fwData::Material::RemovedTextureSignalType >(
             ::fwData::Material::s_REMOVED_TEXTURE_SIG);
         sig->emit(image);
+
+        image->getDataArray()->clear();
+        auto imgSig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        imgSig->emit();
     }
 }
 

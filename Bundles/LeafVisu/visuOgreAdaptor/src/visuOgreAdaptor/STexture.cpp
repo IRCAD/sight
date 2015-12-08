@@ -99,7 +99,7 @@ void STexture::doUpdate() throw(fwTools::Failed)
 
     SLM_ASSERT("Failed object dynamic cast", imageF4s);
 
-    if(imageF4s->getSizeInBytes() != 0)
+    if(imageF4s->getAllocatedSizeInBytes() != 0)
     {
         ::fwData::mt::ObjectReadLock lock(imageF4s);
 
@@ -108,7 +108,6 @@ void STexture::doUpdate() throw(fwTools::Failed)
         lock.unlock();
 
         m_sigTextureSwapped->asyncEmit();
-
     }
 }
 
@@ -123,7 +122,8 @@ void STexture::doSwap() throw(fwTools::Failed)
 
 void STexture::doStop() throw(fwTools::Failed)
 {
-
+    // This is necessary, otherwise we have "ghost" textures later we reload a new texture
+    m_texture->freeInternalResources();
 }
 
 //-----------------------------------------------------------------------------

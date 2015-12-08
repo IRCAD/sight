@@ -1039,8 +1039,6 @@ void SMaterial::removeTextureAdaptor()
         }
     }
 
-    this->requestRender();
-
     m_textureConnection->disconnect();
     this->unregisterServices("::visuOgreAdaptor::STexture");
     m_texAdaptor.reset();
@@ -1048,6 +1046,8 @@ void SMaterial::removeTextureAdaptor()
     // Update the shaders
     ::fwData::Material::sptr material = this->getObject< ::fwData::Material >();
     this->updateShadingMode( material->getShadingMode() );
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
