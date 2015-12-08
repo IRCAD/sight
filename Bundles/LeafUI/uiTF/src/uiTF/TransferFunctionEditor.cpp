@@ -483,6 +483,7 @@ void TransferFunctionEditor::initTransferFunctions()
         std::vector< ::boost::filesystem::path > paths;
         for(::boost::filesystem::path dirPath :  m_paths)
         {
+            SLM_ASSERT("Invalid directory path '"+dirPath.string()+"'", ::boost::filesystem::exists(dirPath));
             for(::boost::filesystem::directory_iterator it(dirPath);
                 it != ::boost::filesystem::directory_iterator();
                 ++it )
