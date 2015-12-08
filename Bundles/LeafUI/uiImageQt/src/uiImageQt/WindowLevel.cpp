@@ -162,10 +162,10 @@ void WindowLevel::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
     QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this,
                         SLOT(onWindowLevelWidgetChanged( double, double )));
-    QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished( QString )), this,
-                        SLOT(onTextEditingFinished( QString )));
-    QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( QString )), this,
-                        SLOT(onTextEditingFinished( QString )));
+    QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished( )), this,
+                        SLOT(onTextEditingFinished( )));
+    QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( )), this,
+                        SLOT(onTextEditingFinished( )));
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
