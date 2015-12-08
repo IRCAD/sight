@@ -21,7 +21,7 @@ IRenderWindowInteractorManager::sptr IRenderWindowInteractorManager::createManag
     IRenderWindowInteractorManager::sptr manager = ::fwRenderOgre::factory::New(
         ::fwRenderOgre::IRenderWindowInteractorManager::REGISTRY_KEY );
     SLM_ASSERT(
-        "Sorry, The factory process to create an IRenderWindowInteractorManager, failed. Missing Qt or Wx component ?",
+        "The factory process to create an IRenderWindowInteractorManager, failed. Missing Qt or Wx component ?",
         manager );
     return manager;
 }

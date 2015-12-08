@@ -190,7 +190,7 @@ void SShaderParameter::updateValue()
     if(objClass == "::fwData::Integer")
     {
         ::fwData::Integer::sptr intValue = ::fwData::Integer::dynamicCast(obj);
-        SLM_ASSERT("Sorry, the object is null", intValue);
+        SLM_ASSERT("The given integer object is null", intValue);
 
         m_paramValues  = new float;
         *m_paramValues = static_cast<float>(intValue->value());
@@ -201,7 +201,7 @@ void SShaderParameter::updateValue()
     else if(objClass == "::fwData::Float")
     {
         ::fwData::Float::sptr floatValue = ::fwData::Float::dynamicCast(obj);
-        SLM_ASSERT("Sorry, the object is null", floatValue);
+        SLM_ASSERT("The given float object is null", floatValue);
 
         m_paramValues  = new float;
         *m_paramValues = floatValue->value();
@@ -212,7 +212,7 @@ void SShaderParameter::updateValue()
     else if(objClass == "::fwData::Boolean")
     {
         ::fwData::Boolean::sptr booleanValue = ::fwData::Boolean::dynamicCast(obj);
-        SLM_ASSERT("Sorry, the object is null", booleanValue);
+        SLM_ASSERT("The given boolean object is null", booleanValue);
 
         m_paramValues  = new float;
         *m_paramValues = booleanValue->value();
@@ -223,7 +223,7 @@ void SShaderParameter::updateValue()
     else if(objClass == "::fwData::Color")
     {
         ::fwData::Color::sptr colorValue = ::fwData::Color::dynamicCast(obj);
-        SLM_ASSERT("Sorry, the object is null", colorValue);
+        SLM_ASSERT("The given color object is null", colorValue);
 
         m_paramValues = new float[4];
 
@@ -259,7 +259,7 @@ void SShaderParameter::updateValue()
     else if(objClass == "::fwData::PointList")
     {
         ::fwData::PointList::sptr pointListValue = ::fwData::PointList::dynamicCast(obj);
-        SLM_ASSERT("Sorry, the object is null", pointListValue);
+        SLM_ASSERT("The given pointList object is null", pointListValue);
 
         std::vector< ::fwData::Point::sptr > points = pointListValue->getPoints();
         int nbPoints                                = static_cast<int>(points.size());
@@ -286,7 +286,7 @@ void SShaderParameter::updateValue()
     else if(objClass == "::fwData::TransformationMatrix3D")
     {
         ::fwData::TransformationMatrix3D::sptr transValue = ::fwData::TransformationMatrix3D::dynamicCast(obj);
-        SLM_ASSERT("Sorry, the object is null", transValue);
+        SLM_ASSERT("The given TransformationMatrix3D object is null", transValue);
 
         m_paramValues = new float[4 * 4];
 
@@ -320,7 +320,7 @@ void SShaderParameter::updateValue()
     else if(objClass == "::fwData::Vector")
     {
         ::fwData::Vector::sptr vectorValue = ::fwData::Vector::dynamicCast(obj);
-        SLM_ASSERT("Sorry, the object is null", vectorValue);
+        SLM_ASSERT("The given vector object is null", vectorValue);
         OSLM_ERROR("This Type  " << objClass << " isn't supported yet.");
     }
     else
