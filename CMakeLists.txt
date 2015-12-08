@@ -13,6 +13,14 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
 
 set(BUILD_SHARED_LIBS ON)
+set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Choose the type of build.")
+if(CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE} CACHE STRING "List of supported configurations." FORCE)
+endif()
+
+#Use solution folders.
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
 
@@ -61,6 +69,12 @@ if(UNIX)
     endif()
 endif()
 
+# Building with all your cores on Visual Studio IDE
+if(MSVC_IDE)
+    set(CMAKE_C_FLAG "${CMAKE_C_FLAGS} /MP")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
+endif()
+
 set(LIBRARY_OUTPUT_DIR lib)
 
 set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
@@ -75,7 +89,13 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIBRARY_OUTPUT_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/${LIBRARY_OUTPUT_DIR})
-
+# Fixed path for multi-config builds (e.g. msvc)
+foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
+    string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
+    set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/bin )
+    set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIR} )
+    set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIR} )
+endforeach()
 
 set(SPYLOG_LEVEL "error" CACHE STRING "Log level")
 set(SPYLOG_LEVEL_VALUES "fatal;error;warning;info;debug;trace" CACHE INTERNAL
@@ -95,6 +115,22 @@ if(NOT WIN32)
        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --stdlib=libc++")
     endif(APPLE)
 endif()
+
+macro(groupMaker FWPROJECT_NAME)
+    file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
+    foreach(SRC ${PRJ_SOURCES})
+        string(REGEX REPLACE ${${FWPROJECT_NAME}_DIR} "" REL_DIR "${SRC}")
+        string(REGEX REPLACE "[\\\\/][^\\\\/]*$" "" REL_DIR "${REL_DIR}")
+        string(REGEX REPLACE "^[\\\\/]" "" REL_DIR "${REL_DIR}")
+        string(REPLACE "/" "\\" REL_DIR "${REL_DIR}")
+        source_group("${REL_DIR}" FILES ${SRC})
+    endforeach()
+
+    file(GLOB_RECURSE PRJ_BUILD_SOURCES "${${FWPROJECT_NAME}_BUILD_DIR}/*.cpp" "${${FWPROJECT_NAME}_BUILD_DIR}/*.hpp")
+    foreach(SRC ${PRJ_BUILD_SOURCES})
+        source_group("genFiles" FILES ${SRC})
+    endforeach()
+endmacro()
 
 macro(initProject PRJNAME )
     if(CREATE_SUBPROJECTS)
@@ -126,10 +162,26 @@ macro(initProject PRJNAME )
 
     set (${FWPROJECT_NAME}_INCLUDE_DIR ${${FWPROJECT_NAME}_INCLUDE_DIR} PARENT_SCOPE)
     set (${FWPROJECT_NAME}_DIR     ${CMAKE_CURRENT_SOURCE_DIR}  PARENT_SCOPE)
-
+    set (${FWPROJECT_NAME}_BUILD_DIR ${CMAKE_BINARY_DIR}/${FWPROJECT_NAME})
+    set (${FWPROJECT_NAME}_BUILD_DIR ${${FWPROJECT_NAME}_BUILD_DIR} PARENT_SCOPE)
+ 
     set (${FWPROJECT_NAME}_HEADERS ${${FWPROJECT_NAME}_HEADERS} PARENT_SCOPE)
     set (${FWPROJECT_NAME}_SOURCES ${${FWPROJECT_NAME}_SOURCES} PARENT_SCOPE)
 
+    file(GLOB_RECURSE ${FWPROJECT_NAME}_RC_FILES "${PRJ_SOURCE_DIR}/rc/*" "${PRJ_SOURCE_DIR}/tu/rc/*")
+    set(${FWPROJECT_NAME}_RC_FILES ${${FWPROJECT_NAME}_RC_FILES} PARENT_SCOPE)
+    set_source_files_properties(${${FWPROJECT_NAME}_RC_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
+
+    file(GLOB ${FWPROJECT_NAME}_CMAKE_FILES "${PRJ_SOURCE_DIR}/*.txt" "${PRJ_SOURCE_DIR}/*.cmake")
+    set(${FWPROJECT_NAME}_CMAKE_FILES ${${FWPROJECT_NAME}_CMAKE_FILES} PARENT_SCOPE)
+    set_source_files_properties(${${FWPROJECT_NAME}_CMAKE_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
+
+    if (APPLE)
+        set_source_files_properties(${${FWPROJECT_NAME}_RC_FILES} PROPERTIES XCODE_LAST_KNOWN_FILE_TYPE YES)
+        set_source_files_properties(${${FWPROJECT_NAME}_CMAKE_FILES} PROPERTIES XCODE_LAST_KNOWN_FILE_TYPE YES)
+    endif()
+
+    groupMaker(${FWPROJECT_NAME})
 endmacro(initProject)
 
 
@@ -210,6 +262,9 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
     
     add_custom_target("${TARGET}" ALL DEPENDS ${CREATED_RESOURCES_LIST} )
 
+    # Adds project into folder rc
+    set_target_properties("${TARGET}" PROPERTIES FOLDER "rc")
+
     unset(CREATED_RESOURCES_LIST)
 endmacro()
 
@@ -236,7 +291,11 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         add_definitions(-D_CONSOLE)
     endif()
 
-    add_executable(${FWPROJECT_NAME} ${GUI_TYPE} ${${FWPROJECT_NAME}_HEADERS} ${${FWPROJECT_NAME}_SOURCES} )
+    add_executable(${FWPROJECT_NAME} ${GUI_TYPE} 
+        ${${FWPROJECT_NAME}_HEADERS}
+        ${${FWPROJECT_NAME}_SOURCES}
+        ${${FWPROJECT_NAME}_RC_FILES}
+        ${${FWPROJECT_NAME}_CMAKE_FILES})
 
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
@@ -258,7 +317,8 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
             )
     endif()
 
-
+    # Adds project into folder exec
+    set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "exec")
 endmacro(fwExec)
 
 macro(fwCppunitTest FWPROJECT_NAME)
@@ -267,6 +327,11 @@ macro(fwCppunitTest FWPROJECT_NAME)
     set(multiValueArgs)
     cmake_parse_arguments(fwCppunitTest "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
+    configure_file(
+        "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
+        "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/src/cppunit_main.cpp"
+        IMMEDIATE @ONLY)
+        
     initProject( ${FWPROJECT_NAME} tu )
 
     set(${FWPROJECT_NAME}_TYPE "TEST")
@@ -277,9 +342,10 @@ macro(fwCppunitTest FWPROJECT_NAME)
         ${fwCppunitTest_UNPARSED_ARGUMENTS}
         ${${FWPROJECT_NAME}_HEADERS}
         ${${FWPROJECT_NAME}_SOURCES}
-        ${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp
-        )
-
+        ${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/src/cppunit_main.cpp
+        ${${FWPROJECT_NAME}_RC_FILES}
+        ${${FWPROJECT_NAME}_CMAKE_FILES})
+    
     if(fwCppunitTest_BUNDLE)
         add_definitions(-DBUNDLE_TEST_PROFILE=\"share/tu_exec_${fwCppunitTest_BUNDLE}_0-0/profile.xml\")
     endif()
@@ -304,6 +370,30 @@ macro(fwCppunitTest FWPROJECT_NAME)
     set(${FWPROJECT_NAME}_EXECUTABLE "$<TARGET_FILE:${FWPROJECT_NAME}>")
     add_test(NAME ${FWPROJECT_NAME} ${fwCppunitTest_WORKING_DIRECTORY} COMMAND ${${FWPROJECT_NAME}_EXECUTABLE} )
 
+    # Adds project into folder test
+    set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "test")
+  
+    if(MSVC_IDE)
+        # create the launch config for the current test
+        set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/${FWPROJECT_NAME}")
+        set(PROFILE "")
+        set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
+        include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
+        if(NOT DEBUGGER_ENVIRONMENT)
+            findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
+            set(DEBUGGER_ENVIRONMENT ${EXTERNAL_LIBRARIES_DIRECTORIES} 
+                CACHE INTERNAL "List of all folders containing external libraries")
+        endif()
+        if(CMAKE_CL_64)
+            set(PLATFORM "x64")
+        else()
+            set(PLATFORM "Win32")
+        endif()
+        configure_file(
+            "${CMAKE_SOURCE_DIR}/CMake/build/project.vcxproj.user.in"
+            "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
+            IMMEDIATE @ONLY)
+    endif()
 endmacro(fwCppunitTest)
 
 macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
@@ -314,7 +404,10 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
-    add_library(${FWPROJECT_NAME} ${ARGN} ${${FWPROJECT_NAME}_HEADERS} ${${FWPROJECT_NAME}_SOURCES} )
+    add_library(${FWPROJECT_NAME} ${ARGN} ${${FWPROJECT_NAME}_HEADERS}
+               ${${FWPROJECT_NAME}_SOURCES}
+               ${${FWPROJECT_NAME}_RC_FILES}
+               ${${FWPROJECT_NAME}_CMAKE_FILES})
 
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
@@ -348,10 +441,12 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
 
+    # Adds project into folder lib
+    set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
+    
     fwLibExtra()
 
 endmacro(fwLib)
-
 
 macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     initProject( ${FWPROJECT_NAME} )
@@ -362,14 +457,25 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/Bundles/${FWPROJECT_NAME}_${DASH_VERSION}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
-        add_library( ${FWPROJECT_NAME} SHARED ${ARGN} ${${FWPROJECT_NAME}_HEADERS} ${${FWPROJECT_NAME}_SOURCES})
+        add_library( ${FWPROJECT_NAME} SHARED ${ARGN} 
+            ${${FWPROJECT_NAME}_HEADERS} 
+            ${${FWPROJECT_NAME}_SOURCES}
+            ${${FWPROJECT_NAME}_RC_FILES}
+            ${${FWPROJECT_NAME}_CMAKE_FILES})
 
         configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
         set_target_properties(${FWPROJECT_NAME} PROPERTIES OUTPUT_NAME ${FWPROJECT_NAME}_${DASH_VERSION})
         set_target_properties(${FWPROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BUNDLE_DIR})
         set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${BUNDLE_DIR})
-
+        # Fixed path for multi-config builds (e.g. msvc)
+        foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
+            string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )            
+            set_target_properties(${FWPROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${BUNDLE_DIR})
+            set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${BUNDLE_DIR})
+            set_target_properties(${FWPROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${BUNDLE_DIR})
+        endforeach()
+        
         if(${FWPROJECT_NAME}_INSTALL)
             qt_plugins_setup() # search and setup qt plugins for each bundles
             install(
@@ -388,9 +494,39 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
     else()
-        add_custom_target(${FWPROJECT_NAME})
+        add_custom_target(${FWPROJECT_NAME} SOURCES 
+            ${${FWPROJECT_NAME}_RC_FILES}
+            ${${FWPROJECT_NAME}_CMAKE_FILES})
     endif()
 
+    # Adds project into folder bundle or apps
+    if(TYPE STREQUAL "APP")
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "app")
+        if(MSVC_IDE)
+            # create the launch config for the current app
+            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/launcher.exe")
+            set(PROFILE "${CMAKE_BINARY_DIR}/Bundles/${FWPROJECT_NAME}_${DASH_VERSION}/profile.xml")
+            set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
+            include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
+            if(NOT DEBUGGER_ENVIRONMENT)
+                findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
+                set(DEBUGGER_ENVIRONMENT ${EXTERNAL_LIBRARIES_DIRECTORIES} 
+                    CACHE INTERNAL "List of all folders containing external libraries")
+            endif()
+            if(CMAKE_CL_64)
+                set(PLATFORM "x64")
+            else()
+                set(PLATFORM "Win32")
+            endif()
+            configure_file(
+                "${CMAKE_SOURCE_DIR}/CMake/build/project.vcxproj.user.in"
+                "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
+                IMMEDIATE @ONLY)
+        endif()
+    else()
+        set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "bundle")
+    endif()
+        
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${BUNDLE_DIR}" )
         add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc ) 
@@ -399,7 +535,6 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         createResourcesInstallTarget( "${BUNDLE_DIR}" Bundles/${FWPROJECT_NAME}_${DASH_VERSION} )
     endif()
     fwBundleExtra()
-
 endmacro(fwBundle)
 
 # Include the projects in parameter and their public dependencies and export them.
