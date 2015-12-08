@@ -149,7 +149,7 @@
         OSL_LOG(log, DEBUG, message);                           \
         )
 #  define SL_DEBUG_IF(log, message, cond) __FWCORE_DEBUG_IF_ENABLED(  \
-        __FWCORE_IF(cond, log.trace(message, __FILE__, __LINE__); )      \
+        __FWCORE_IF(cond, log.debug(message, __FILE__, __LINE__); )      \
         )
 #define OSL_DEBUG_IF(log, message, cond) __FWCORE_DEBUG_IF_ENABLED(   \
         __FWCORE_IF(cond, OSL_LOG(log, DEBUG, message); )                \
@@ -163,7 +163,7 @@
         OSL_LOG(log, INFO, message);                            \
         )
 #define SL_INFO_IF(log, message, cond) __FWCORE_INFO_IF_ENABLED(      \
-        __FWCORE_IF(cond, log.trace(message, __FILE__, __LINE__); )      \
+        __FWCORE_IF(cond, log.info(message, __FILE__, __LINE__); )      \
         )
 #define OSL_INFO_IF(log, message, cond) __FWCORE_INFO_IF_ENABLED(     \
         __FWCORE_IF(cond, OSL_LOG(log, INFO, message); )                 \
@@ -177,7 +177,7 @@
         OSL_LOG(log, WARN, message);                            \
         )
 #define SL_WARN_IF(log, message, cond) __FWCORE_WARN_IF_ENABLED(      \
-        __FWCORE_IF(cond, log.trace(message, __FILE__, __LINE__); )      \
+        __FWCORE_IF(cond, log.warn(message, __FILE__, __LINE__); )      \
         )
 #define OSL_WARN_IF(log, message, cond) __FWCORE_WARN_IF_ENABLED(     \
         __FWCORE_IF(cond, OSL_LOG(log, WARN, message); )                 \
@@ -191,7 +191,7 @@
         OSL_LOG(log, ERROR, message);                           \
         )
 #define SL_ERROR_IF(log, message, cond) __FWCORE_ERROR_IF_ENABLED(    \
-        __FWCORE_IF(cond, log.trace(message, __FILE__, __LINE__); )      \
+        __FWCORE_IF(cond, log.error(message, __FILE__, __LINE__); )      \
         )
 #define OSL_ERROR_IF(log, message, cond) __FWCORE_ERROR_IF_ENABLED(   \
         __FWCORE_IF(cond, OSL_LOG(log, ERROR, message); )              \
