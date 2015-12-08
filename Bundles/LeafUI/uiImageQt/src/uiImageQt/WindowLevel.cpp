@@ -257,7 +257,7 @@ void WindowLevel::swapping() throw(::fwTools::Failed)
 
 void WindowLevel::updatingTFPoints()
 {
-    // Does nothing
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
