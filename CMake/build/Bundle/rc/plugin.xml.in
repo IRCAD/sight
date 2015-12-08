@@ -1,4 +1,4 @@
-<plugin id="@BUNDLE_NAME@" class="::@BUNDLE_NAME@::Plugin" >
+<plugin id="@BUNDLE_NAME@" class="::@BUNDLE_NAME@::Plugin" version="@DASH_VERSION@">
     
     <library name="@BUNDLE_NAME@" />
 

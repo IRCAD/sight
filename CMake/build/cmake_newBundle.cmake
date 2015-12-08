@@ -6,6 +6,8 @@ else()
     include("${CMAKE_BINARY_DIR}/argsBundle.cmake")
 endif()
 
+set(DASH_VERSION @DASH_VERSION@)
+
 #check required parameters
 if(NOT DEFINED BUNDLE_NAME)
     message( FATAL_ERROR "BUNDLE_NAME parameter is not defined, please specify.")

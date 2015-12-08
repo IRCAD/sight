@@ -3,10 +3,9 @@ set( NAME @BUNDLE_NAME@ )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES
-        fwComEd
-        fwRuntime 
+        fwCore
         fwServices 
-        fwTools
+        fwRuntime
 )
 set( REQUIREMENTS  )
 
