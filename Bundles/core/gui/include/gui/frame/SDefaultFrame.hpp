@@ -4,13 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_FRAME_DEFAULTFRAME_HPP__
-#define __GUI_FRAME_DEFAULTFRAME_HPP__
-
-#include <fwTools/Failed.hpp>
-#include <fwGui/IFrameSrv.hpp>
+#ifndef __GUI_FRAME_SDEFAULTFRAME_HPP__
+#define __GUI_FRAME_SDEFAULTFRAME_HPP__
 
 #include "gui/config.hpp"
+
+#include <fwGui/IFrameSrv.hpp>
+
+#include <fwTools/Failed.hpp>
 
 namespace gui
 {
@@ -18,21 +19,20 @@ namespace frame
 {
 
 /**
- * @brief   Defines the default frame for standard application.
- * @class   DefaultFrame
+ * @brief Defines the default frame for standard application.
  */
-class GUI_CLASS_API DefaultFrame : public ::fwGui::IFrameSrv
+class GUI_CLASS_API SDefaultFrame : public ::fwGui::IFrameSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultFrame)(::fwGui::IFrameSrv) );
+    fwCoreServiceClassDefinitionsMacro ( (SDefaultFrame)(::fwGui::IFrameSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API DefaultFrame() throw();
+    GUI_API SDefaultFrame() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~DefaultFrame() throw();
+    GUI_API virtual ~SDefaultFrame() throw();
 
 protected:
 
@@ -76,4 +76,4 @@ protected:
 } // namespace gui
 
 
-#endif /*__GUI_FRAME_DEFAULTFRAME_HPP__*/
+#endif /*__GUI_FRAME_SDEFAULTFRAME_HPP__*/

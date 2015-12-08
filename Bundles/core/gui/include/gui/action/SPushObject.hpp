@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_ACTION_PUSHOBJECTSRV_HPP__
-#define __GUI_ACTION_PUSHOBJECTSRV_HPP__
+#ifndef __GUI_ACTION_SPUSHOBJECT_HPP__
+#define __GUI_ACTION_SPUSHOBJECT_HPP__
 
 #include "gui/config.hpp"
 
@@ -25,23 +25,20 @@ namespace action
 {
 
 /**
- * @class   PushObjectSrv
  * @brief   To add or remove object in composite with specific key.
- *
- * @date    2011.
  */
-class GUI_CLASS_API PushObjectSrv : public ::fwGui::IActionSrv
+class GUI_CLASS_API SPushObject : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PushObjectSrv)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro ( (SPushObject)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API PushObjectSrv() throw();
+    GUI_API SPushObject() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~PushObjectSrv() throw();
+    GUI_API virtual ~SPushObject() throw();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -67,7 +64,7 @@ protected:
      *
      * Example of this service configuration
      * @verbatim
-       <service impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv">
+       <service impl="::gui::action::SPushObject" type="::fwGui::IActionSrv">
            <push src="COMPOSITE_UID[KEY]" key="KEY_IN_COMPOSITE" />
        </service>
         @endverbatim
@@ -100,6 +97,6 @@ private:
 } // GUI
 
 
-#endif // __GUI_ACTION_PUSHOBJECTSRV_HPP__
+#endif // __GUI_ACTION_SPUSHOBJECT_HPP__
 
 

@@ -32,7 +32,7 @@
         The ::gui::frame::MainFrame service automaticly positions the different containers in the application main window.
         In our tutorial, this service does not need to receive information about its linked data. Therefore the autoConnect is set to no.
         Remember we will see in details the use of communications in the tutoComChannel tutorial.-->
-        <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+        <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
             <gui>
                 <frame>
                     <name>tutoDataServiceBasic</name>

@@ -4,34 +4,35 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/fwID.hpp>
+#include "gui/frame/SDefaultFrame.hpp"
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
-#include "gui/frame/DefaultFrame.hpp"
+#include <fwTools/fwID.hpp>
+
 
 namespace gui
 {
 namespace frame
 {
 
-fwServicesRegisterMacro( ::fwGui::IFrameSrv, ::gui::frame::DefaultFrame, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IFrameSrv, ::gui::frame::SDefaultFrame, ::fwData::Object );
 
 
-DefaultFrame::DefaultFrame() throw()
+SDefaultFrame::SDefaultFrame() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-DefaultFrame::~DefaultFrame() throw()
+SDefaultFrame::~SDefaultFrame() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::configuring() throw( ::fwTools::Failed )
+void SDefaultFrame::configuring() throw( ::fwTools::Failed )
 {
     SLM_ASSERT( "<service> tag is required.", m_configuration->getName() == "service" );
     this->initialize();
@@ -39,7 +40,7 @@ void DefaultFrame::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::starting() throw(::fwTools::Failed)
+void SDefaultFrame::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -47,7 +48,7 @@ void DefaultFrame::starting() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::stopping() throw(::fwTools::Failed)
+void SDefaultFrame::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->destroy();
@@ -55,14 +56,14 @@ void DefaultFrame::stopping() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::info(std::ostream &_sstream )
+void SDefaultFrame::info(std::ostream &_sstream )
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultFrame::updating() throw(::fwTools::Failed)
+void SDefaultFrame::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }

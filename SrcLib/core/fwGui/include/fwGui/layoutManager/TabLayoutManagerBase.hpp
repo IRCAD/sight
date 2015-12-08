@@ -71,7 +71,7 @@ public:
      *
      * Example of configuration with Tab layout.
      * @verbatim
-       <service uid="subView3" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+       <service uid="subView3" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
            <gui>
                <layout type="::fwGui::TabLayoutManager" >
                    <view caption="TabView1" />

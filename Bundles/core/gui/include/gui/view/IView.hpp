@@ -7,11 +7,11 @@
 #ifndef __GUI_VIEW_IVIEW_HPP__
 #define __GUI_VIEW_IVIEW_HPP__
 
-#include <fwServices/IService.hpp>
+#include "gui/config.hpp"
 
 #include <fwGui/IGuiContainerSrv.hpp>
 
-#include "gui/config.hpp"
+#include <fwServices/IService.hpp>
 
 namespace gui
 {
@@ -20,7 +20,6 @@ namespace view
 
 /**
  * @brief   Defines the service interface managing a view placed in main frame.
- * @class   IView
  *
  */
 class GUI_CLASS_API IView : public ::fwGui::IGuiContainerSrv

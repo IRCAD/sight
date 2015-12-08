@@ -13,7 +13,6 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/Proxy.hpp>

@@ -4,17 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "gui/action/StarterActionService.hpp"
+#include "gui/action/SStarter.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-
-#include <fwRuntime/helper.hpp>
 #include <fwRuntime/Extension.hpp>
+#include <fwRuntime/helper.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -23,23 +23,23 @@ namespace gui
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::StarterActionService, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SStarter, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
-StarterActionService::StarterActionService() throw()
+SStarter::SStarter() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-StarterActionService::~StarterActionService() throw()
+SStarter::~SStarter() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void StarterActionService::starting() throw( ::fwTools::Failed )
+void SStarter::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -47,7 +47,7 @@ void StarterActionService::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void StarterActionService::stopping() throw( ::fwTools::Failed )
+void SStarter::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     for( VectPairIDActionType::value_type serviceUid :  m_uuidServices)
@@ -68,14 +68,14 @@ void StarterActionService::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void StarterActionService::info(std::ostream &_sstream )
+void SStarter::info(std::ostream &_sstream )
 {
     _sstream << "Starter Action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
-void StarterActionService::updating() throw( ::fwTools::Failed )
+void SStarter::updating() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
@@ -179,14 +179,14 @@ void StarterActionService::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void StarterActionService::configuring() throw( ::fwTools::Failed )
+void SStarter::configuring() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->initialize();
 
     for(ConfigurationType actionCfg :  m_configuration->getElements() )
     {
-        OSLM_INFO( "StarterActionService " << actionCfg->getName());
+        OSLM_INFO( "SStarter " << actionCfg->getName());
 
         std::string actionType = actionCfg->getName();
         ActionType action;
@@ -212,7 +212,7 @@ void StarterActionService::configuring() throw( ::fwTools::Failed )
         }
         else
         {
-            OSLM_WARN("Sorry this type of \"actionType\":" << actionType <<" is not managed by StarterActionService");
+            OSLM_WARN("Sorry this type of \"actionType\":" << actionType <<" is not managed by SStarter");
             continue;
         }
         SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));

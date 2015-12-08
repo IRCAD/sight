@@ -10,7 +10,7 @@
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_seriesExportFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="yes">
+            <service uid="${GENERIC_UID}_seriesExportFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="yes">
                 <window onclose="notify" />
                 <gui>
                     <frame>
@@ -23,7 +23,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_seriesExportView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_seriesExportView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />

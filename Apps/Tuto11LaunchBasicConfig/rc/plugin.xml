@@ -9,7 +9,7 @@
         <config>
             <object uid="myImage" type="::fwData::Image">
 
-                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>Tuto 11 : Launch basic config</name>
@@ -24,7 +24,7 @@
                     </registry>
                 </service>
 
-                <service uid="mainMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+                <service uid="mainMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -35,7 +35,7 @@
                     </registry>
                 </service>
 
-                <service uid="menuFile" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <service uid="menuFile" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                     <gui>
                         <layout>
                             <menuItem name="Open file" shortcut="Ctrl+O" />
@@ -53,11 +53,11 @@
                 </service>
 
 
-                <service uid="actionOpenFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <service uid="actionOpenFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <start uid="myReaderPathFile" />
                 </service>
 
-                <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
                 <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
 

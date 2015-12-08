@@ -4,17 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_ACTION_MODIFYLAYOUTACTIONSRV_HPP__
-#define __GUI_ACTION_MODIFYLAYOUTACTIONSRV_HPP__
+#ifndef __GUI_ACTION_SMODIFYLAYOUT_HPP__
+#define __GUI_ACTION_SMODIFYLAYOUT_HPP__
 
-#include <boost/logic/tribool.hpp>
-
-#include <vector>
-#include <fwServices/IService.hpp>
+#include "gui/config.hpp"
 
 #include <fwGui/IActionSrv.hpp>
 
-#include "gui/config.hpp"
+#include <fwServices/IService.hpp>
+
+#include <boost/logic/tribool.hpp>
+#include <vector>
+
 
 namespace gui
 {
@@ -23,25 +24,25 @@ namespace action
 
 /**
  * @brief This action is used to modify the layout configuration.
- * @class   ModifyLayoutActionSrv
+ * @class   SModifyLayout
  */
-class GUI_CLASS_API ModifyLayoutActionSrv : public ::fwGui::IActionSrv
+class GUI_CLASS_API SModifyLayout : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ModifyLayoutActionSrv)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro ( (SModifyLayout)(::fwGui::IActionSrv) );
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API ModifyLayoutActionSrv() throw();
+    GUI_API SModifyLayout() throw();
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~ModifyLayoutActionSrv() throw();
+    GUI_API virtual ~SModifyLayout() throw();
 
 protected:
 
@@ -123,4 +124,4 @@ private:
 } // namespace gui
 
 
-#endif /*__GUI_ACTION_MODIFYLAYOUTACTIONSRV_HPP__*/
+#endif /*__GUI_ACTION_SMODIFYLAYOUT_HPP__*/

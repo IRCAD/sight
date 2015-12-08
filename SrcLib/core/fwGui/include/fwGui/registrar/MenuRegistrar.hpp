@@ -59,7 +59,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-        <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+        <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
             <gui>
                 <layout>
                     <menuItem name="My item 1" shortcut="1" style="check" />

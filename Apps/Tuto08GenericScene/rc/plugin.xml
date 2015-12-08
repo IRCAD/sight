@@ -8,7 +8,7 @@
 
 
     <object type="::fwData::Composite">
-        <service uid="MyIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+        <service uid="MyIHM" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
             <gui>
                 <frame>
                     <name>Tuto08GenericScene</name>
@@ -24,7 +24,7 @@
 
         <service uid="progress_statusbar" impl="::gui::editor::SJobBar" autoConnect="no" />
 
-        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+        <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no" >
             <gui>
                 <layout>
                     <menu name="File" />
@@ -35,7 +35,7 @@
             </registry>
         </service>
 
-        <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+        <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
             <gui>
                 <layout>
                     <menuItem name="Open image" shortcut="Ctrl+I" />
@@ -53,18 +53,18 @@
             </registry>
         </service>
 
-        <service uid="action_openImage" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+        <service uid="action_openImage" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
             <start uid="imageReader" />
         </service>
-        <service uid="action_openMesh" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+        <service uid="action_openMesh" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
             <start uid="meshReader" />
         </service>
-        <service uid="action_openTexture" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+        <service uid="action_openTexture" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
             <start uid="textureReader" />
         </service>
-        <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+        <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
-        <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+        <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager" >
                     <view align="center" />
@@ -78,7 +78,7 @@
         </service>
 
 
-        <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+        <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />

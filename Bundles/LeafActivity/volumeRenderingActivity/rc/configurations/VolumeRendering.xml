@@ -14,7 +14,7 @@
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="VR" align="center" />
@@ -30,7 +30,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_tf" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_tf" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -44,7 +44,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_tfmTab" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_tfmTab" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="TF-Negato" />
@@ -57,7 +57,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Hide cross" icon="Bundles/media_0-1/icons/HideCross.png" style="radio" />
@@ -94,7 +94,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_TFScene2D" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_TFScene2D" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -126,11 +126,11 @@
             <item key="visuConfig">
                 <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
 
-                    <service uid="${GENERIC_UID}_ActionShowSliceCursor" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                    <service uid="${GENERIC_UID}_ActionShowSliceCursor" impl="::gui::action::SPushObject" type="::fwGui::IActionSrv" autoConnect="no">
                         <push src="${GENERIC_UID}_VisuComposite[imageKey]" key="imageKeyCursor" />
                     </service>
 
-                    <service uid="${GENERIC_UID}_ActionShowMesh" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                    <service uid="${GENERIC_UID}_ActionShowMesh" impl="::gui::action::SPushObject" type="::fwGui::IActionSrv" autoConnect="no">
                         <push src="${optionalModelSeriesCompositeUid}[optionalModelSeriesKey]" key="modelSeries" />
                     </service>
 

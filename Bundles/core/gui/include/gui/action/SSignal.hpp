@@ -7,18 +7,17 @@
 #ifndef __GUI_ACTION_SSIGNAL_HPP__
 #define __GUI_ACTION_SSIGNAL_HPP__
 
-#include <vector>
-
-#include <fwCom/Slots.hpp>
-
-#include <fwServices/IService.hpp>
-
-#include <fwGui/IActionSrv.hpp>
+#include "gui/config.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
+#include <fwCom/Slots.hpp>
 
-#include "gui/config.hpp"
+#include <fwGui/IActionSrv.hpp>
+
+#include <fwServices/IService.hpp>
+
+#include <vector>
 
 namespace gui
 {
@@ -27,7 +26,6 @@ namespace action
 
 /**
  * @brief   Simple Signal service
- * @class   SSignal
  *
  * Triggers a signal when the action is triggered.
  * If the action uses a confirmation, different signals are emitted depending on the confirmation result.

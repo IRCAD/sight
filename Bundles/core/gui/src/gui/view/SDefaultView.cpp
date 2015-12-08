@@ -4,46 +4,44 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/macros.hpp>
+#include "gui/view/SDefaultView.hpp"
+
+#include <fwData/Object.hpp>
+
 #include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwTools/fwID.hpp>
 
-#include "gui/aspect/DefaultMenuSrv.hpp"
-
-
-fwServicesRegisterMacro( ::fwGui::IMenuSrv, ::gui::aspect::DefaultMenuSrv, ::fwData::Object );
 
 namespace gui
 {
-
-namespace aspect
+namespace view
 {
 
-//-----------------------------------------------------------------------------
+fwServicesRegisterMacro( ::gui::view::IView, ::gui::view::SDefaultView, ::fwData::Object );
 
-DefaultMenuSrv::DefaultMenuSrv() throw()
-{
-}
 
-//-----------------------------------------------------------------------------
-
-DefaultMenuSrv::~DefaultMenuSrv() throw()
+SDefaultView::SDefaultView() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuSrv::configuring() throw( ::fwTools::Failed )
+SDefaultView::~SDefaultView() throw()
+{
+}
+
+//-----------------------------------------------------------------------------
+
+void SDefaultView::configuring() throw( ::fwTools::Failed )
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuSrv::starting() throw( ::fwTools::Failed )
+void SDefaultView::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -51,7 +49,7 @@ void DefaultMenuSrv::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuSrv::stopping() throw( ::fwTools::Failed )
+void SDefaultView::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->destroy();
@@ -59,7 +57,14 @@ void DefaultMenuSrv::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuSrv::updating() throw(::fwTools::Failed)
+void SDefaultView::info(std::ostream &_sstream )
+{
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void SDefaultView::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
@@ -67,5 +72,5 @@ void DefaultMenuSrv::updating() throw(::fwTools::Failed)
 //-----------------------------------------------------------------------------
 
 }
-
 }
+

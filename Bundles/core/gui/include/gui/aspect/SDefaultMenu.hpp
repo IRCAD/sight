@@ -4,12 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_ASPECT_DEFAULTMENUSRV_HPP__
-#define __GUI_ASPECT_DEFAULTMENUSRV_HPP__
-
-#include <fwGui/IMenuSrv.hpp>
+#ifndef __GUI_ASPECT_SDEFAULTMENU_HPP__
+#define __GUI_ASPECT_SDEFAULTMENU_HPP__
 
 #include "gui/config.hpp"
+
+#include <fwGui/IMenuSrv.hpp>
 
 namespace gui
 {
@@ -18,20 +18,19 @@ namespace aspect
 
 /**
  * @brief   Defines the default menu for standard application
- * @class   DefaultMenuSrv
  */
-class GUI_CLASS_API DefaultMenuSrv : public ::fwGui::IMenuSrv
+class GUI_CLASS_API SDefaultMenu : public ::fwGui::IMenuSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultMenuSrv)(::fwGui::IMenuSrv) );
+    fwCoreServiceClassDefinitionsMacro ( (SDefaultMenu)(::fwGui::IMenuSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API DefaultMenuSrv() throw();
+    GUI_API SDefaultMenu() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~DefaultMenuSrv() throw();
+    GUI_API virtual ~SDefaultMenu() throw();
 
 protected:
 
@@ -44,7 +43,7 @@ protected:
 
      * Example of configuration
      * @verbatim
-       <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+       <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no" >
           <gui>
               <layout>
                   <menu name="My Menu"/>
@@ -93,4 +92,4 @@ protected:
 
 }
 
-#endif // __GUI_ASPECT_DEFAULTMENUSRV_HPP__
+#endif // __GUI_ASPECT_SDEFAULTMENU_HPP__

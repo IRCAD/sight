@@ -10,7 +10,7 @@
             <service uid="action_open" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
                 <IOSelectorSrvConfig name="SDBOpenIOSelectorConfig" />
             </service>
-            <service uid="action_save" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="action_save" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="SDBWriter" />
             </service>
             <service uid="SDBWriter" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
@@ -21,7 +21,7 @@
             </service>
 
 
-            <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <gui>
                     <frame>
                         <name>${appName}</name>
@@ -36,7 +36,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+            <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -51,7 +51,7 @@
                 </registry>
             </service>
 
-            <service uid="menu_file" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="menu_file" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Open" shortcut="Ctrl+O" />
@@ -66,7 +66,7 @@
                 </registry>
             </service>
 
-            <service uid="menu_monitor" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+            <service uid="menu_monitor" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
                 <gui>
                     <layout>
                         <menuItem name="ClassFactoryRegistry information"/>
@@ -93,7 +93,7 @@
                  </registry>
             </service>
 
-            <service uid="menu_help" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="menu_help" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="About" specialAction="ABOUT" />
@@ -109,7 +109,7 @@
                 </registry>
             </service>
 
-            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
             <service uid="action_about" type="::fwGui::IActionSrv" impl="::uiGeneric::action::SShowAbout" autoConnect="no">
                 <filename id="Bundles/VRRender_0-9/about/about.html" />

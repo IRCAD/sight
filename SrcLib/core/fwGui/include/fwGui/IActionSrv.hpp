@@ -141,7 +141,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-           <service uid="item" type="::fwGui::IActionSrv" impl="::gui::action::NothingActionSrv" autoConnect="no" >
+           <service uid="item" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no" >
               <state active="false" executable="false" inverse="true" visible="true" />
               <confirmation value="yes" message="..." />
            </service>

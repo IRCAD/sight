@@ -4,71 +4,76 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/fwID.hpp>
+#include "gui/action/SQuit.hpp"
 
-#include <fwServices/Base.hpp>
+#include <fwCore/base.hpp>
+
+#include <fwGui/Application.hpp>
+#include <fwGui/Cursor.hpp>
+
 #include <fwServices/macros.hpp>
-#include <fwData/Object.hpp>
-
-#include "gui/view/DefaultView.hpp"
 
 namespace gui
 {
-namespace view
+namespace action
 {
 
-fwServicesRegisterMacro( ::gui::view::IView, ::gui::view::DefaultView, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SQuit, ::fwData::Object );
 
+//-----------------------------------------------------------------------------
 
-DefaultView::DefaultView() throw()
+SQuit::SQuit() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-DefaultView::~DefaultView() throw()
+SQuit::~SQuit() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultView::configuring() throw( ::fwTools::Failed )
+void SQuit::configuring() throw( ::fwTools::Failed )
 {
+    SLM_TRACE_FUNC();
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultView::starting() throw(::fwTools::Failed)
+void SQuit::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->create();
+    this->actionServiceStarting();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultView::stopping() throw(::fwTools::Failed)
+void SQuit::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->destroy();
+    this->actionServiceStopping();
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultView::info(std::ostream &_sstream )
+void SQuit::info(std::ostream &_sstream )
 {
-    SLM_TRACE_FUNC();
+    _sstream << "Quit Action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultView::updating() throw(::fwTools::Failed)
+void SQuit::updating() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
+    ::fwGui::Cursor cursor;
+    cursor.setCursor(::fwGui::ICursor::BUSY);
+    ::fwGui::Application::New()->exit(0);
+    cursor.setDefaultCursor();
 }
 
 //-----------------------------------------------------------------------------
 
 }
 }
-

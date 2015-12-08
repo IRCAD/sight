@@ -13,11 +13,11 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwRuntime/helper.hpp>
 #include <fwRuntime/Extension.hpp>
+#include <fwRuntime/helper.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwTools/fwID.hpp>
 

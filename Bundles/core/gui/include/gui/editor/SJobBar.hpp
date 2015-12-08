@@ -10,14 +10,14 @@
 #include "gui/config.hpp"
 #include "gui/editor/IDialogEditor.hpp"
 
-#include <fwCom/Slots.hpp>
 #include <fwCom/Signal.hpp>
+#include <fwCom/Slots.hpp>
+
+#include <fwGui/IActionSrv.hpp>
+
 #include <fwJobs/IJob.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/IController.hpp>
-
-#include <fwGui/IActionSrv.hpp>
 
 #include <set>
 
@@ -36,7 +36,6 @@ namespace editor
 
 /**
  * @brief   Service diplaying a progress bar.
- * @class   SJobBar
  */
 
 class GUI_CLASS_API SJobBar : public ::gui::editor::IDialogEditor

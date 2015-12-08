@@ -4,14 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_VIEW_DEFAULTVIEW_HPP__
-#define __GUI_VIEW_DEFAULTVIEW_HPP__
-
-#include <fwTools/Failed.hpp>
+#ifndef __GUI_VIEW_SDEFAULTVIEW_HPP__
+#define __GUI_VIEW_SDEFAULTVIEW_HPP__
 
 #include "gui/view/IView.hpp"
-
 #include "gui/config.hpp"
+
+#include <fwTools/Failed.hpp>
 
 namespace gui
 {
@@ -19,20 +18,19 @@ namespace view
 {
 
 /**
- * @brief   Defines the generic layout for application.
- * @class   DefaultView
+ * @brief Defines the generic layout for application.
  */
-class GUI_CLASS_API DefaultView : public ::gui::view::IView
+class GUI_CLASS_API SDefaultView : public ::gui::view::IView
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultView)(::gui::view::IView) );
+    fwCoreServiceClassDefinitionsMacro ( (SDefaultView)(::gui::view::IView) );
 
     /// Constructor. Do nothing.
-    GUI_API DefaultView() throw();
+    GUI_API SDefaultView() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~DefaultView() throw();
+    GUI_API virtual ~SDefaultView() throw();
 
 protected:
 
@@ -77,4 +75,4 @@ protected:
 } // namespace gui
 
 
-#endif /*__GUI_VIEW_DEFAULTVIEW_HPP__*/
+#endif /*__GUI_VIEW_SDEFAULTVIEW_HPP__*/

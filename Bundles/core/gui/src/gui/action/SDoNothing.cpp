@@ -4,45 +4,42 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "gui/action/SDoNothing.hpp"
+
 #include <fwCore/base.hpp>
 
+#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwGui/Application.hpp>
-#include <fwGui/Cursor.hpp>
 
-#include "gui/action/QuitAction.hpp"
 
 namespace gui
 {
 namespace action
 {
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SDoNothing, ::fwData::Object );
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::QuitAction, ::fwData::Object );
 
-//-----------------------------------------------------------------------------
-
-QuitAction::QuitAction() throw()
+SDoNothing::SDoNothing() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-QuitAction::~QuitAction() throw()
+SDoNothing::~SDoNothing() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void QuitAction::configuring() throw( ::fwTools::Failed )
+void SDoNothing::configuring() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void QuitAction::starting() throw( ::fwTools::Failed )
+void SDoNothing::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -50,7 +47,7 @@ void QuitAction::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void QuitAction::stopping() throw( ::fwTools::Failed )
+void SDoNothing::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -58,22 +55,18 @@ void QuitAction::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void QuitAction::info(std::ostream &_sstream )
+void SDoNothing::updating() throw( ::fwTools::Failed )
 {
-    _sstream << "Quit Action" << std::endl;
+    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void QuitAction::updating() throw( ::fwTools::Failed )
+void SDoNothing::info(std::ostream &_sstream )
 {
-    ::fwGui::Cursor cursor;
-    cursor.setCursor(::fwGui::ICursor::BUSY);
-    ::fwGui::Application::New()->exit(0);
-    cursor.setDefaultCursor();
+    _sstream << "Nothing Action" << std::endl;
 }
 
-//-----------------------------------------------------------------------------
+}
+}
 
-}
-}

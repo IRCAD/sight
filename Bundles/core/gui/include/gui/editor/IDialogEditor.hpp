@@ -7,12 +7,14 @@
 #ifndef __GUI_EDITOR_IDIALOGEDITOR_HPP__
 #define __GUI_EDITOR_IDIALOGEDITOR_HPP__
 
-#include <fwTools/Failed.hpp>
-#include <fwServices/IService.hpp>
+#include "gui/config.hpp"
 
 #include <fwGui/IGuiContainerSrv.hpp>
 
-#include "gui/config.hpp"
+#include <fwServices/IService.hpp>
+
+#include <fwTools/Failed.hpp>
+
 
 namespace gui
 {
@@ -20,8 +22,7 @@ namespace editor
 {
 
 /**
- * @brief   Defines the service interface managing the editor service which create their own container.
- * @class   IDialogEditor
+ * @brief Defines the service interface managing the editor service which create their own container.
  */
 
 class GUI_CLASS_API IDialogEditor : public ::fwServices::IService

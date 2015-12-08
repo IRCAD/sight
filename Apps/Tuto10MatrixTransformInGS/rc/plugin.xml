@@ -9,7 +9,7 @@
 
         <object type="::fwData::Composite" >
         
-            <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no" >
+            <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no" >
                 <gui>
                     <frame>
                         <name>Tuto10MatrixTransformInGS</name>
@@ -24,7 +24,7 @@
                 </registry>
             </service>
 
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no" >
                 <gui>
                     <layout>
                         <menu name="File"/>
@@ -35,7 +35,7 @@
                 </registry>
             </service>
 
-            <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="OpenFile" shortcut="Ctrl+O" />
@@ -49,14 +49,14 @@
                 </registry>
             </service>
 
-            <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="myReaderPathFile" />
             </service>
 
-            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
 
-            <service uid="multiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+            <service uid="multiView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager" >
                         <view align="center" />

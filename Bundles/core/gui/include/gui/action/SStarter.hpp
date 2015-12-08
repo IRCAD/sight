@@ -4,15 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_ACTION_STARTERACTIONSERVICE_HPP__
-#define __GUI_ACTION_STARTERACTIONSERVICE_HPP__
+#ifndef __GUI_ACTION_SSTARTER_HPP__
+#define __GUI_ACTION_SSTARTER_HPP__
 
-#include <vector>
-#include <fwServices/IService.hpp>
+#include "gui/config.hpp"
 
 #include <fwGui/IActionSrv.hpp>
 
-#include "gui/config.hpp"
+#include <fwServices/IService.hpp>
+
+#include <vector>
 
 namespace gui
 {
@@ -21,13 +22,13 @@ namespace action
 
 /**
  * @brief   Apply an action (start, stop, ...) on a service specify by uid.
- * @class   StarterActionService
+ * @class   SStarter
  *
  * This action works on a ::fwData::Object. It does the action specify by the specify config.
  * This action can be :
  *   - Start a service :
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
               <start uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -35,7 +36,7 @@ namespace action
  *
  *   - Start a service if exists :
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
               <start_if_exists uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -43,7 +44,7 @@ namespace action
  *
  *   - Stop a service :
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
               <stop uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -51,7 +52,7 @@ namespace action
  *
  *   - Stop a service if exists :  Test if the service exist before stopping it
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
               <stop_if_exists uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -59,7 +60,7 @@ namespace action
  *
  *   - Start or stop the service:
  * @verbatim
-           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+           <service uid="actionUid" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
               <start_or_stop uid="Uid_of_the_service" />
            </service>
    @endverbatim
@@ -68,23 +69,23 @@ namespace action
  * To notice : when the starterActionService is stopped, it stops all the associated services which have been started by itself.
  */
 
-class GUI_CLASS_API StarterActionService : public ::fwGui::IActionSrv
+class GUI_CLASS_API SStarter : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (StarterActionService)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro ( (SStarter)(::fwGui::IActionSrv) );
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API StarterActionService() throw();
+    GUI_API SStarter() throw();
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~StarterActionService() throw();
+    GUI_API virtual ~SStarter() throw();
 
 protected:
 
@@ -137,4 +138,4 @@ private:
 } // namespace gui
 
 
-#endif /*__GUI_ACTION_STARTERACTIONSERVICE_HPP__*/
+#endif /*__GUI_ACTION_SSTARTER_HPP__*/

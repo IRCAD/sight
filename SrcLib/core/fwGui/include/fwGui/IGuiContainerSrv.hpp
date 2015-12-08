@@ -51,7 +51,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-        <service uid="subView1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+        <service uid="subView1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />

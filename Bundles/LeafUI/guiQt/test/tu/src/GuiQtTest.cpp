@@ -54,7 +54,7 @@ void GuiQtTest::testDefaultFrame()
 
     ::fwServices::IService::sptr srv;
     srv = ::fwServices::registry::ServiceFactory::getDefault()->create(  "::fwGui::IFrameSrv",
-                                                                         "::gui::frame::DefaultFrame" );
+                                                                         "::gui::frame::SDefaultFrame" );
     CPPUNIT_ASSERT(srv);
 
     ::fwServices::OSR::registerService( object, srv );

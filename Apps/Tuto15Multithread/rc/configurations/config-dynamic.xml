@@ -9,7 +9,7 @@
         <!-- In tutoComChannel, the main data object type is ::fwData::Mesh. -->
         <object type="::fwData::Mesh">
 
-            <service uid="${GENERIC_UID}_frame" impl="::gui::frame::DefaultFrame" >
+            <service uid="${GENERIC_UID}_frame" impl="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Tuto15Multithread (dynamic version)</name>
@@ -24,7 +24,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_menuBar" impl="::gui::aspect::DefaultMenuBarSrv" >
+            <service uid="${GENERIC_UID}_menuBar" impl="::gui::aspect::SDefaultMenuBar" >
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -41,7 +41,7 @@
 
             <!-- The application contains three different views. The different views are characterized by their 
             associated service uid. Furthermore, a minimum window height and a width are given to the last two views.-->
-            <service uid="${GENERIC_UID}_view" impl="::gui::view::DefaultView" >
+            <service uid="${GENERIC_UID}_view" impl="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -55,7 +55,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_fileMenu" impl="::gui::aspect::DefaultMenuSrv" >
+            <service uid="${GENERIC_UID}_fileMenu" impl="::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Open file" shortcut="Ctrl+O" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_deformationMenu" impl="::gui::aspect::DefaultMenuSrv" >
+            <service uid="${GENERIC_UID}_deformationMenu" impl="::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Start deformation" shortcut="Ctrl+D" />
@@ -82,7 +82,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_viewMenu" impl="::gui::aspect::DefaultMenuSrv" >
+            <service uid="${GENERIC_UID}_viewMenu" impl="::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
                         <menuItem name="Render A" style="check" />
@@ -95,11 +95,11 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_openFileAction" impl="::gui::action::StarterActionService" >
+            <service uid="${GENERIC_UID}_openFileAction" impl="::gui::action::SStarter" >
                 <start uid="${GENERIC_UID}_reader" />
             </service>
 
-            <service uid="${GENERIC_UID}_quitAction" impl="::gui::action::QuitAction"  />
+            <service uid="${GENERIC_UID}_quitAction" impl="::gui::action::SQuit"  />
 
             <service uid="${GENERIC_UID}_startDeformationAction" impl="::gui::action::SSlotCaller" >
                 <slots>

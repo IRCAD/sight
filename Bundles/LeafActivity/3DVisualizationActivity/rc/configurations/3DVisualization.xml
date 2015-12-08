@@ -14,7 +14,7 @@
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Negato1" align="center" />
@@ -32,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="3D MPR Axial view" icon="Bundles/media_0-1/icons/icon-axial.png" />
@@ -84,7 +84,7 @@
             </service>
 
 
-            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="Bundles/media_0-1/icons/ManageOrgan.png" />
@@ -233,7 +233,7 @@
                         <config>
                             <object id="OptionalInputImageKey" type="::fwData::Image">
 
-                                <service uid="${GENERIC_UID}_ModifyLayout" type="::fwGui::IActionSrv" impl="::gui::action::ModifyLayoutActionSrv" autoConnect="no">
+                                <service uid="${GENERIC_UID}_ModifyLayout" type="::fwGui::IActionSrv" impl="::gui::action::SModifyLayout" autoConnect="no">
                                     <config>
                                         <show wid="${GENERIC_UID}_view_negato2" />
                                         <show wid="${GENERIC_UID}_view_negato3" />

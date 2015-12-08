@@ -15,7 +15,7 @@
                     different menus. In this tutorial, only one service (::gui::aspect::IMenu type) is created. This application have 2 menu one to open/save image and one to load/save extra data.
                     There are FW4SPL identifiers.
                 -->
-                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>Tuto07LoaderForExternalData</name>
@@ -29,7 +29,7 @@
                     </registry>
                 </service>
 
-                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -43,7 +43,7 @@
                 </service>
 
                 <!-- This service define the file menu -->
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                     <gui>
                         <layout>
                             <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -63,7 +63,7 @@
                 </service>
 
                 <!-- This service define the External menu -->
-                <service uid="menu_ExternalData" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <service uid="menu_ExternalData" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                     <gui>
                         <layout>
                             <menuItem name="Import External data (*.us file)" />
@@ -79,14 +79,14 @@
                 </service>
 
                 <!--
-                    This service (::gui::action::QuitAction) is a generic action that will close the application when the user click on the menuItem "Quit". It's possible to associate with this kind
+                    This service (::gui::action::SQuit) is a generic action that will close the application when the user click on the menuItem "Quit". It's possible to associate with this kind
                     of service (::fwGui::IActionSrv) specific attributes to configure their style, shortcut... (Note: In this tutorial, there is an attribute specialAction with the value "QUIT". On MS
                     Windows, there's no impact. But on Mac OS, this value installs the menuItem in the system menu bar, and on Linux this value installs the default 'Quit' system icon in the
                     menuItem.) The attribute "shortcut" is set with the value "Ctrl+Q" to close the application with this specific shortcut.
                 -->
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
-                <service uid="action_SaveAll" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <service uid="action_SaveAll" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <start uid="saveAllData" />
                 </service>
 
@@ -100,11 +100,11 @@
                 <item key="tutoLoaderExternalDataImage">
                     <object type="::fwData::Image">
                         <!--
-                            The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service, we specify the id of the services to be started and
-                            updated (start and update methods) when user click on the menuItem "Open image". In this tutorial, ::gui::action::StarterActionService service starts and updates the
+                            The first service (::gui::action::SStarter) is a generic action. In the configuration of this service, we specify the id of the services to be started and
+                            updated (start and update methods) when user click on the menuItem "Open image". In this tutorial, ::gui::action::SStarter service starts and updates the
                             service with the uid "myReaderPathFile".
                         -->
-                        <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                        <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="myReaderPathFile" />
                         </service>
                         <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myReaderPathFile" autoConnect="no">
@@ -112,11 +112,11 @@
                         </service>
 
                         <!--
-                            The other service (::gui::action::StarterActionService) is a generic action. In the configuration of this service, we specify the id of the services to be started and
-                            updated (start and update methods) when user click on the menuItem "save image". In this tutorial, ::gui::action::StarterActionService service starts and updates the
+                            The other service (::gui::action::SStarter) is a generic action. In the configuration of this service, we specify the id of the services to be started and
+                            updated (start and update methods) when user click on the menuItem "save image". In this tutorial, ::gui::action::SStarter service starts and updates the
                             service with the uid "myWriterPathFile".
                         -->
-                        <service uid="action_SaveFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                        <service uid="action_SaveFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="myWriterPathFile" />
                         </service>
                         <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myWriterPathFile" autoConnect="no">
@@ -145,14 +145,14 @@
                             <addSelection service="::ioAtoms::SWriter" />
                         </service>
 
-                        <service uid="ActionLoadExternalData" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                        <service uid="ActionLoadExternalData" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="loadExternalData" />
                         </service>
 
-                        <service uid="ActionSaveExternalData" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                        <service uid="ActionSaveExternalData" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="saveExternalData" />
                         </service>
-                        <service uid="ActionLoadExternalDataNative" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                        <service uid="ActionLoadExternalDataNative" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="loadExternalDataNative" />
                         </service>
                     </object>
@@ -188,7 +188,7 @@
                     There are FW4SPL identifiers.
                 -->
 
-                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>Tuto07LoaderForExternalData</name>
@@ -202,7 +202,7 @@
                     </registry>
                 </service>
 
-                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -214,7 +214,7 @@
                 </service>
 
                 <!-- This service define the file menu -->
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                     <gui>
                         <layout>
                             <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -232,23 +232,23 @@
 
 
                 <!--
-                    This service (::gui::action::QuitAction) is a generic action that will close the application when the user click on the menuItem "Quit". It's possible to associate with this kind
+                    This service (::gui::action::SQuit) is a generic action that will close the application when the user click on the menuItem "Quit". It's possible to associate with this kind
                     of service (::fwGui::IActionSrv) specific attributes to configure their style, shortcut... (Note: In this tutorial, there is an attribute specialAction with the value "QUIT". On MS
                     Windows, there's no impact. But on Mac OS, this value installs the menuItem in the system menu bar, and on Linux this value installs the default 'Quit' system icon in the
                     menuItem.) The attribute "shortcut" is set with the value "Ctrl+Q" to close the application with this specific shortcut.
                 -->
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
 
                 <!--  a ::fwData::Image. -->
                 <item key="tutoLoaderExternalDataImage">
                     <object type="::fwData::Image">
                         <!--
-                            The first service (::gui::action::StarterActionService) is a generic action. In the configuration of this service, we specify the id of the services to be started and
-                            updated (start and update methods) when user click on the menuItem "Open image". In this tutorial, ::gui::action::StarterActionService service starts and updates the
+                            The first service (::gui::action::SStarter) is a generic action. In the configuration of this service, we specify the id of the services to be started and
+                            updated (start and update methods) when user click on the menuItem "Open image". In this tutorial, ::gui::action::SStarter service starts and updates the
                             service with the uid "myReaderPathFile".
                         -->
-                        <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                        <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="myReaderPathFile" />
                         </service>
                         <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myReaderPathFile" autoConnect="no">
@@ -256,11 +256,11 @@
                         </service>
 
                         <!--
-                            The other service (::gui::action::StarterActionService) is a generic action. In the configuration of this service, we specify the id of the services to be started and
-                            updated (start and update methods) when user click on the menuItem "save image". In this tutorial, ::gui::action::StarterActionService service starts and updates the
+                            The other service (::gui::action::SStarter) is a generic action. In the configuration of this service, we specify the id of the services to be started and
+                            updated (start and update methods) when user click on the menuItem "save image". In this tutorial, ::gui::action::SStarter service starts and updates the
                             service with the uid "myWriterPathFile".
                         -->
-                        <service uid="action_SaveFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                        <service uid="action_SaveFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="myWriterPathFile" />
                         </service>
                         <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myWriterPathFile" autoConnect="no">

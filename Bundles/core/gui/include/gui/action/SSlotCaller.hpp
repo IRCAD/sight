@@ -24,7 +24,6 @@ namespace action
 
 /**
  * @brief   Run a slot given by HasSlot id and slot key.
- * @class   SSlotCaller
  *
  * This action works on a ::fwData::Object. It does the action specify by the specify config.
  */

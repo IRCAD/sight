@@ -9,7 +9,7 @@
                 <item key="PythonString">
                     <object type="::fwData::String">
 
-                        <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                        <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                             <gui>
                                 <frame>
                                     <name>TutoPython</name>
@@ -26,7 +26,7 @@
                             </registry>
                         </service>
 
-                        <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+                        <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                             <gui>
                                 <layout>
                                     <menuItem name="Test" icon="Bundles/TutoPython_0-1/icons/python.png" />
@@ -49,7 +49,7 @@
                             <!--</pyobjects> -->
                         </service>
 
-                        <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                        <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
                         <service uid="codeEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::Code" autoConnect="yes" />
 
@@ -93,7 +93,7 @@ if image.buffer is not None:
                             <type mode="writer" />
                         </service>
 
-                        <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                        <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="anImageReader" />
                         </service>
 

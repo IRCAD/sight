@@ -4,68 +4,67 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
+#include "gui/aspect/SDefaultMenu.hpp"
 
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/helper.hpp>
+#include <fwRuntime/Runtime.hpp>
 #include <fwServices/Base.hpp>
+
 #include <fwServices/macros.hpp>
 
-
-#include "gui/action/NothingActionSrv.hpp"
+fwServicesRegisterMacro( ::fwGui::IMenuSrv, ::gui::aspect::SDefaultMenu, ::fwData::Object );
 
 namespace gui
 {
-namespace action
+
+namespace aspect
 {
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::NothingActionSrv, ::fwData::Object );
 
+//-----------------------------------------------------------------------------
 
-NothingActionSrv::NothingActionSrv() throw()
+SDefaultMenu::SDefaultMenu() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-NothingActionSrv::~NothingActionSrv() throw()
+SDefaultMenu::~SDefaultMenu() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void NothingActionSrv::configuring() throw( ::fwTools::Failed )
+void SDefaultMenu::configuring() throw( ::fwTools::Failed )
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void NothingActionSrv::starting() throw( ::fwTools::Failed )
+void SDefaultMenu::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->actionServiceStarting();
+    this->create();
 }
 
 //-----------------------------------------------------------------------------
 
-void NothingActionSrv::stopping() throw( ::fwTools::Failed )
+void SDefaultMenu::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->actionServiceStopping();
+    this->destroy();
 }
 
 //-----------------------------------------------------------------------------
 
-void NothingActionSrv::updating() throw( ::fwTools::Failed )
+void SDefaultMenu::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void NothingActionSrv::info(std::ostream &_sstream )
-{
-    _sstream << "Nothing Action" << std::endl;
 }
 
 }
-}
-

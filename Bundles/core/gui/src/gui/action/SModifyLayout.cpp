@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "gui/action/ModifyLayoutActionSrv.hpp"
+#include "gui/action/SModifyLayout.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -25,23 +25,23 @@ namespace gui
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::ModifyLayoutActionSrv, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SModifyLayout, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
-ModifyLayoutActionSrv::ModifyLayoutActionSrv() throw()
+SModifyLayout::SModifyLayout() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ModifyLayoutActionSrv::~ModifyLayoutActionSrv() throw()
+SModifyLayout::~SModifyLayout() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ModifyLayoutActionSrv::starting() throw( ::fwTools::Failed )
+void SModifyLayout::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -49,7 +49,7 @@ void ModifyLayoutActionSrv::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ModifyLayoutActionSrv::stopping() throw( ::fwTools::Failed )
+void SModifyLayout::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -57,14 +57,14 @@ void ModifyLayoutActionSrv::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ModifyLayoutActionSrv::info(std::ostream &_sstream )
+void SModifyLayout::info(std::ostream &_sstream )
 {
     _sstream << "Starter Action" << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
-void ModifyLayoutActionSrv::updating() throw( ::fwTools::Failed )
+void SModifyLayout::updating() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
@@ -155,7 +155,7 @@ void ModifyLayoutActionSrv::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ModifyLayoutActionSrv::configuring() throw( ::fwTools::Failed )
+void SModifyLayout::configuring() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->initialize();

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "gui/action/PushObjectSrv.hpp"
+#include "gui/action/SPushObject.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -32,24 +32,24 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_OBJECTS_SLOT = "updateObject";
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::PushObjectSrv, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SPushObject, ::fwData::Composite );
 
 //------------------------------------------------------------------------------
 
-PushObjectSrv::PushObjectSrv() throw()
+SPushObject::SPushObject() throw()
 {
-    newSlot(s_UPDATE_OBJECTS_SLOT, &PushObjectSrv::updateObjects, this);
+    newSlot(s_UPDATE_OBJECTS_SLOT, &SPushObject::updateObjects, this);
 }
 
 //------------------------------------------------------------------------------
 
-PushObjectSrv::~PushObjectSrv() throw()
+SPushObject::~SPushObject() throw()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PushObjectSrv::starting() throw(::fwTools::Failed)
+void SPushObject::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -75,7 +75,7 @@ void PushObjectSrv::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PushObjectSrv::stopping() throw(::fwTools::Failed)
+void SPushObject::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -83,7 +83,7 @@ void PushObjectSrv::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PushObjectSrv::configuring() throw( ::fwTools::Failed)
+void SPushObject::configuring() throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -116,7 +116,7 @@ void PushObjectSrv::configuring() throw( ::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PushObjectSrv::updating() throw(::fwTools::Failed)
+void SPushObject::updating() throw(::fwTools::Failed)
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     std::shared_ptr< ::fwComEd::helper::Composite > compositeHelper ( new ::fwComEd::helper::Composite( composite ) );
@@ -158,13 +158,13 @@ void PushObjectSrv::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PushObjectSrv::info( std::ostream &_sstream )
+void SPushObject::info( std::ostream &_sstream )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void PushObjectSrv::updateObjects()
+void SPushObject::updateObjects()
 {
     bool executable = !m_srcMap.empty();
 
@@ -192,7 +192,7 @@ void PushObjectSrv::updateObjects()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType PushObjectSrv::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsType SPushObject::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_OBJECTS_SLOT ) );

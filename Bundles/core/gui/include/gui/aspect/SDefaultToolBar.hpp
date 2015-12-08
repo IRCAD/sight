@@ -4,14 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_ASPECT_DEFAULTTOOLBARSRV_HPP__
-#define __GUI_ASPECT_DEFAULTTOOLBARSRV_HPP__
+#ifndef __GUI_ASPECT_SDEFAULTTOOLBAR_HPP__
+#define __GUI_ASPECT_SDEFAULTTOOLBAR_HPP__
+
+#include "gui/config.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwGui/IToolBarSrv.hpp>
 
-#include "gui/config.hpp"
 
 namespace gui
 {
@@ -20,20 +21,19 @@ namespace aspect
 
 /**
  * @brief   Defines the default toolbar for standard application
- * @class   DefaultToolBarSrv
  */
-class GUI_CLASS_API DefaultToolBarSrv : public ::fwGui::IToolBarSrv
+class GUI_CLASS_API SDefaultToolBar : public ::fwGui::IToolBarSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DefaultToolBarSrv)(::fwGui::IToolBarSrv) );
+    fwCoreServiceClassDefinitionsMacro ( (SDefaultToolBar)(::fwGui::IToolBarSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API DefaultToolBarSrv() throw();
+    GUI_API SDefaultToolBar() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~DefaultToolBarSrv() throw();
+    GUI_API virtual ~SDefaultToolBar() throw();
 
 protected:
 
@@ -67,7 +67,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-       <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
+       <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
                <layout>
                    <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
@@ -119,4 +119,4 @@ protected:
 
 }
 
-#endif // __GUI_ASPECT_DEFAULTTOOLBARSRV_HPP__
+#endif // __GUI_ASPECT_SDEFAULTTOOLBAR_HPP__

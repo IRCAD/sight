@@ -61,7 +61,7 @@ protected:
      *
      * Example of configuration
      * @verbatim
-        <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+        <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
             <window onclose="notify" />
             <gui>
                 <frame>

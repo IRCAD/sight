@@ -4,15 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_ACTION_NOTHINGACTIONSRV_HPP__
-#define __GUI_ACTION_NOTHINGACTIONSRV_HPP__
+#ifndef __GUI_ACTION_SQUIT_HPP__
+#define __GUI_ACTION_SQUIT_HPP__
 
 
-#include <fwServices/IService.hpp>
+#include "gui/config.hpp"
 
 #include <fwGui/IActionSrv.hpp>
 
-#include "gui/config.hpp"
+#include <fwServices/IService.hpp>
 
 namespace gui
 {
@@ -20,52 +20,45 @@ namespace action
 {
 
 /**
- * @brief   This action does nothing.
- * @class   NothingActionSrv
+ * @brief   This action tries to close the window and reset root object.
  */
-class GUI_CLASS_API NothingActionSrv : public ::fwGui::IActionSrv
+class GUI_CLASS_API SQuit : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NothingActionSrv)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro ( (SQuit)(::fwGui::IActionSrv) );
 
     /**
      * @brief Constructor. Do nothing.
      */
-    GUI_API NothingActionSrv() throw();
+    GUI_API SQuit() throw();
 
     /**
      * @brief Destructor. Do nothing.
      */
-    GUI_API virtual ~NothingActionSrv() throw();
+    GUI_API virtual ~SQuit() throw();
 
 protected:
 
-    /** @name Service methods ( override from ::fwServices::IService )
-     * @{
-     */
-
     /**
-     * @brief This method is used to configure the action.
+     * @brief This method is used to configure the service parameters: specifies which services must be started or stopped
      */
-    GUI_API virtual void configuring() throw( ::fwTools::Failed );
+    GUI_API void configuring() throw( ::fwTools::Failed );
 
     GUI_API virtual void starting() throw(::fwTools::Failed);
 
     GUI_API virtual void stopping() throw(::fwTools::Failed);
 
     /**
-     * @brief Process the action. Do nothing.
+     * @brief This method tries to close the window and reset root object.
      */
     GUI_API virtual void updating() throw(::fwTools::Failed);
 
-    /**
+    /*
      * @brief This method gives information about the class.
      */
     GUI_API virtual void info(std::ostream &_sstream );
-
-    ///@}
 
 };
 
@@ -74,4 +67,4 @@ protected:
 } // namespace gui
 
 
-#endif /*__GUI_ACTION_NOTHINGACTIONSRV_HPP__*/
+#endif /*__GUI_ACTION_SQUIT_HPP__*/

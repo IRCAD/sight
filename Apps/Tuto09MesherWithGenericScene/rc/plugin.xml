@@ -8,7 +8,7 @@
 
             <object type="::fwData::Composite">
 
-                <service uid="MyIHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                <service uid="MyIHM" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                     <gui>
                         <frame>
                             <name>Tuto09MesherWithGenericScene</name>
@@ -22,7 +22,7 @@
                     </registry>
                 </service>
 
-                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -36,7 +36,7 @@
                 </service>
 
 
-                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::CardinalLayoutManager">
                             <view align="center" minWidth="200" />
@@ -54,7 +54,7 @@
                         <view sid="multiView_scene1_bottom" start="yes" />
                     </registry>
                 </service>
-                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="horizontal" />
@@ -76,7 +76,7 @@
 
                 <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
 
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                     <gui>
                         <layout>
                             <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -91,7 +91,7 @@
                         <menuItem sid="action_quit" start="yes" />
                     </registry>
                 </service>
-                <service uid="menu_Mesher" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+                <service uid="menu_Mesher" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                     <gui>
                         <layout>
                             <menuItem name="Create Mesh 50" />
@@ -104,13 +104,13 @@
                     </registry>
                 </service>
 
-                <service uid="action_openImage" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <service uid="action_openImage" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <start uid="imageReader" />
                 </service>
-                <service uid="action_saveModelSeries" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <service uid="action_saveModelSeries" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <start uid="modelSeriesWriter" />
                 </service>
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
                 <item key="image">
                     <object uid="imageUID" type="::fwData::Image">
@@ -156,10 +156,10 @@
                                 <object id="image" type="::fwData::Image">
                                     <!-- This service convert a simple fwData::Image to medical Image -->
                                     <service impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="yes" />
-                                    <service uid="action_createMesh50" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no">
+                                    <service uid="action_createMesh50" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
                                         <start_if_exists uid="mesher50ServiceUID" />
                                     </service>
-                                    <service uid="action_createMesh80" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no">
+                                    <service uid="action_createMesh80" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
                                         <start_if_exists uid="mesher80ServiceUID" />
                                     </service>
                                     <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">

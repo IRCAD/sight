@@ -4,18 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "gui/aspect/DefaultMenuBarSrv.hpp"
+#include "gui/aspect/SDefaultToolBar.hpp"
 
-#include <fwTools/fwID.hpp>
+#include <fwData/Object.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Runtime.hpp>
 
-fwServicesRegisterMacro( ::fwGui::IMenuBarSrv, ::gui::aspect::DefaultMenuBarSrv, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IToolBarSrv, ::gui::aspect::SDefaultToolBar, ::fwData::Object );
 
 namespace gui
 {
@@ -23,29 +19,19 @@ namespace gui
 namespace aspect
 {
 
-
-//-----------------------------------------------------------------------------
-
-DefaultMenuBarSrv::DefaultMenuBarSrv() throw()
+SDefaultToolBar::SDefaultToolBar() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-DefaultMenuBarSrv::~DefaultMenuBarSrv() throw()
+SDefaultToolBar::~SDefaultToolBar() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::configuring() throw( ::fwTools::Failed )
-{
-    this->initialize();
-}
-
-//-----------------------------------------------------------------------------
-
-void DefaultMenuBarSrv::starting() throw( ::fwTools::Failed )
+void SDefaultToolBar::starting()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -53,7 +39,7 @@ void DefaultMenuBarSrv::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::stopping() throw( ::fwTools::Failed )
+void SDefaultToolBar::stopping()  throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->destroy();
@@ -61,12 +47,25 @@ void DefaultMenuBarSrv::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DefaultMenuBarSrv::updating() throw(::fwTools::Failed)
+void SDefaultToolBar::configuring()  throw ( ::fwTools::Failed )
+{
+    SLM_TRACE_FUNC();
+    this->initialize();
+}
+
+//-----------------------------------------------------------------------------
+
+void SDefaultToolBar::updating() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
+
+void SDefaultToolBar::info( std::ostream &_sstream )
+{
+    SLM_TRACE_FUNC();
+}
 
 }
 

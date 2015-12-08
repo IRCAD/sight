@@ -59,7 +59,7 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     m_connections->connect(m_image, m_renderSrv, m_renderSrv->getObjSrvConnections());
 
     // Frame service
-    m_frameSrv = ::fwServices::add(m_image, "::fwGui::IFrameSrv", "::gui::frame::DefaultFrame");
+    m_frameSrv = ::fwServices::add(m_image, "::fwGui::IFrameSrv", "::gui::frame::SDefaultFrame");
 
     ::fwServices::IService::ConfigType frameConfig;
 

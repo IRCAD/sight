@@ -17,7 +17,7 @@
                 Service associated to the Composite data :
                 main window creation.
             -->
-            <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Mesher</name>
@@ -32,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="myDefaultView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="myDefaultView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -50,7 +50,7 @@
             <!-- Menu Bar, Menus & Actions -->
 
 
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
+            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -64,7 +64,7 @@
             </service>
 
 
-            <service uid="menuFile" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="menuFile" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Open image file" shortcut="Ctrl+O" />
@@ -86,7 +86,7 @@
             </service>
 
 
-            <service uid="menuMesher" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="menuMesher" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Compute Mesh (VTK)" />
@@ -97,7 +97,7 @@
                 </registry>
             </service>
 
-            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
 
 
@@ -106,19 +106,19 @@
                 menu services creation.
                 Actions in relationship with images and meshe
             -->
-            <service uid="actionOpenImageFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="actionOpenImageFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="readerPathImageFile" />
             </service>
 
-            <service uid="actionSaveImageFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="actionSaveImageFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="writerImageFile" />
             </service>
 
-            <service uid="actionOpenMeshFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="actionOpenMeshFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="readerPathMeshFile" />
             </service>
 
-            <service uid="actionSaveMeshFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="actionSaveMeshFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="writerMeshFile" />
             </service>
 

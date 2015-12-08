@@ -8,14 +8,51 @@
 #define __GUI_NAMESPACE_HPP__
 
 /**
- * @brief       The namespace gui contains the basic services to build the application IHM.
- * @namespace   gui
- *
- * @date        2009-2010.
- *
+ * @brief The namespace gui contains the basic services to build the application IHM.
  */
 namespace gui
 {
 
+/**
+ * @brief The namespace gui::action contains basic services managing action.
+ */
+namespace action
+{
+
+} // namespace action
+
+/**
+ * @brief The namespace gui::aspect contains basic services for basic widgets like menuBar, menu, toolBar....
+ */
+namespace aspect
+{
+
+} // namespace aspect
+
+/**
+ * @brief The namespace gui::editor contains basic services managing editor.
+ */
+namespace editor
+{
+
 }
+
+/**
+ * @brief The namespace gui::frame contains basic services managing frame.
+ */
+namespace frame
+{
+
+}
+
+/**
+ * @brief The namespace gui::view contains basic services managing view.
+ */
+namespace view
+{
+
+}
+
+} // namespace gui
+
 #endif /* __GUI_NAMESPACE_HPP__ */
