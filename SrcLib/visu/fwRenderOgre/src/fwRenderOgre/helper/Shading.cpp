@@ -30,7 +30,7 @@ static const std::string s_PIXELLIGHTING = "PixelLit";
 
 //-----------------------------------------------------------------------------
 
-bool Shading::isColorTechnique(::Ogre::Technique& _tech)
+bool Shading::isColorTechnique(const ::Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
     const std::regex regexDualPeelInit("Dual.*_peel_init.*");
@@ -44,7 +44,7 @@ bool Shading::isColorTechnique(::Ogre::Technique& _tech)
 
 //-----------------------------------------------------------------------------
 
-bool Shading::isPeelTechnique(::Ogre::Technique& _tech)
+bool Shading::isPeelTechnique(const ::Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
     const bool peelTech     = std::regex_match(name, s_PEEL_REGEX);
@@ -54,7 +54,7 @@ bool Shading::isPeelTechnique(::Ogre::Technique& _tech)
 
 //-----------------------------------------------------------------------------
 
-bool Shading::isGeometricTechnique(::Ogre::Technique& _tech)
+bool Shading::isGeometricTechnique(const ::Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
 
@@ -67,7 +67,7 @@ bool Shading::isGeometricTechnique(::Ogre::Technique& _tech)
 
 //-----------------------------------------------------------------------------
 
-bool Shading::isDepthOnlyTechnique(::Ogre::Technique& _tech)
+bool Shading::isDepthOnlyTechnique(const ::Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
     const bool depth        = std::regex_match(name, s_DEPTH_MAP_REGEX);
@@ -150,7 +150,7 @@ std::string Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellTypesEnum _p
 
 //-----------------------------------------------------------------------------
 
-std::string Shading::replaceProgramSuffix(const std::string& _prgName, const std::string _suffix)
+std::string Shading::replaceProgramSuffix(const std::string& _prgName, const std::string& _suffix)
 {
     std::string prgName;
 

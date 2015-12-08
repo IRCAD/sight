@@ -29,25 +29,25 @@ public:
      * @brief Returns true if the given technique computes a pixel color.
      * @param _tech[in] Ogre technique
      */
-    FWRENDEROGRE_API static bool isColorTechnique(::Ogre::Technique& _tech);
+    FWRENDEROGRE_API static bool isColorTechnique(const ::Ogre::Technique& _tech);
 
     /**
      * @brief Returns true if the given technique is used for a peel pass in a depth peeling.
      * @param _tech[in] Ogre technique
      */
-    FWRENDEROGRE_API static bool isPeelTechnique(::Ogre::Technique& _tech);
+    FWRENDEROGRE_API static bool isPeelTechnique(const ::Ogre::Technique& _tech);
 
     /**
      * @brief Returns true if the given technique is used in a geometric pass (as opposed to a fullscreen pass).
      * @param _tech[in] Ogre technique
      */
-    FWRENDEROGRE_API static bool isGeometricTechnique(::Ogre::Technique& _tech);
+    FWRENDEROGRE_API static bool isGeometricTechnique(const ::Ogre::Technique& _tech);
 
     /**
      * @brief Returns true if the given technique is used in a depth-only pass.
      * @param _tech[in] Ogre technique
      */
-    FWRENDEROGRE_API static bool isDepthOnlyTechnique(::Ogre::Technique& _tech);
+    FWRENDEROGRE_API static bool isDepthOnlyTechnique(const ::Ogre::Technique& _tech);
 
     /**
      * @brief Constructs a suffix to use in vertex and fragment programs names.
@@ -75,7 +75,7 @@ public:
      * @param _prgName[in] name of the program
      * @param _suffix[in] new suffix to use
      */
-    FWRENDEROGRE_API static std::string replaceProgramSuffix(const std::string& _prgName, const std::string _suffix);
+    FWRENDEROGRE_API static std::string replaceProgramSuffix(const std::string& _prgName, const std::string& _suffix);
 
 };
 
