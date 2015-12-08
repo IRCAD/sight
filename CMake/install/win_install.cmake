@@ -12,6 +12,7 @@ function(findExtLibDir EXTERNAL_LIBRARIES_DIRECTORIES)
     set(${EXTERNAL_LIBRARIES_DIRECTORIES} ${FOLDERS} PARENT_SCOPE)
 endfunction()
 
+#Windows install
 macro(win_install PRJ_NAME)
     findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
     
@@ -24,14 +25,12 @@ macro(win_install PRJ_NAME)
     set(LAUNCHER_PATH "bin/launcher.exe")
     set(PROFILE_PATH "${${PRJ_NAME}_BUNDLE_DIR}/profile.xml")
 
-    list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/install/NSIS/)
+    list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/)
 
-    install(CODE "
-            file(GLOB_RECURSE LIBS \${CMAKE_INSTALL_PREFIX}/*${CMAKE_SHARED_LIBRARY_SUFFIX})
-            include(BundleUtilities)
-            fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/bin/launcher.exe\" \"\${LIBS}\" \"${EXTERNAL_LIBRARIES_DIRECTORIES}\")"
-            )
-
+    #configure the 'fixup' script
+    configure_file(${FWCMAKE_RESOURCE_PATH}/install/windows/windows_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake @ONLY)
+    install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/windows_fixup.cmake)
+    
     if(CMAKE_CL_64)
         set(CPACK_NSIS_INSTALL_DIR "$PROGRAMFILES64")
     endif()
@@ -39,8 +38,8 @@ macro(win_install PRJ_NAME)
     set(CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL ON)
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
 
-    set(CPACK_PACKAGE_VENDOR "IRCAD")
-    set(CPACK_NSIS_URL_INFO_ABOUT "http://www.ircad.fr/")
+    set(CPACK_PACKAGE_VENDOR "FW4SPL")
+    set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/fw4spl-org")
     set(CPACK_NSIS_CONTACT "fw4spl@gmail.com")
 
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
@@ -48,7 +47,7 @@ macro(win_install PRJ_NAME)
     set(CPACK_NSIS_DISPLAY_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_VERSION "${VERSION}")
     
-    set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/NSIS/rc/")
+    set(DEFAULT_NSIS_RC_PATH "${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/rc/")
     
     find_file(CPACK_PACKAGE_ICON "banner_nsis.bmp" PATHS 
               "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" ${DEFAULT_NSIS_RC_PATH}

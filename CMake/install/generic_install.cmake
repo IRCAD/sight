@@ -1,6 +1,10 @@
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/osx_install.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/win_install.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/linux_install.cmake)
+if(APPLE)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/osx_install.cmake)
+elseif(WIN32)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/win_install.cmake)
+elseif(UNIX)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/linux_install.cmake)
+endif()
 
 macro(generic_install)
     if(${FWPROJECT_NAME}_INSTALL)
