@@ -11,7 +11,6 @@ set( REQUIREMENTS
     dataReg
     servicesReg
     launcher
-    visu
     visuVTK
     visuVTKQt
     ioData

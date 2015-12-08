@@ -19,9 +19,8 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
-    visu
     launcher
-    appXml 
+    appXml
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES TutoVectorField)

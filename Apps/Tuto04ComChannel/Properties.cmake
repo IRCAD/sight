@@ -8,8 +8,7 @@ set( REQUIREMENTS
     gui
     guiQt
     dataReg
-    servicesReg 
-    visu
+    servicesReg
     visuVTK
     visuVTKQt
     launcher

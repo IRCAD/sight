@@ -14,5 +14,4 @@ set( DEPENDENCIES
     fwTools
     fwCom
 )
-set( REQUIREMENTS visu visuVTK )
-
+set( REQUIREMENTS visuVTK )

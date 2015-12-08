@@ -8,18 +8,17 @@
 
     <activate id="io" version="0-1" />
     <activate id="ioVTK" version="0-1" />
-    
-    <activate id="visu" version="0-1" />
+
     <activate id="visuVTK" version="0-1" />
     <activate id="visuVTKQt" version="0-1" />
     <activate id="vtkSimpleNegato" version="0-1" />
-    
+
     <activate id="Tuto01Basic" />
     <activate id="Tuto02DataServiceBasic" />
 
     <start id="dataReg" />
     <start id="servicesReg" />
     <start id="visuVTKQt" />
-    <start id="guiQt" />  
-    
+    <start id="guiQt" />
+
 </profile>

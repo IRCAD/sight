@@ -19,7 +19,6 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
-    visu
     launcher
     appXml
 )

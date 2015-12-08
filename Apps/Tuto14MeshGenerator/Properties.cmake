@@ -15,10 +15,9 @@ set( REQUIREMENTS
     servicesReg
     uiVisuQt
     uiIO
-    visuVTK 
+    visuVTK
     visuVTKQt
     visuVTKAdaptor
-    visu
     launcher
     appXml
 )

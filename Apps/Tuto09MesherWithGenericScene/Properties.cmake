@@ -11,7 +11,6 @@ set( REQUIREMENTS
     gui
     guiQt
     io
-    visu
     ioData
     ioVTK
     uiVisuQt

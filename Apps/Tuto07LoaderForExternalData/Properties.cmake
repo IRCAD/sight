@@ -3,13 +3,12 @@ set( NAME Tuto07LoaderForExternalData )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
-set( REQUIREMENTS 
+set( REQUIREMENTS
     io
     gui
     guiQt
     dataReg
     servicesReg
-    visu
     visuVTK
     visuVTKQt
     launcher

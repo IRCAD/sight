@@ -9,10 +9,9 @@ set( REQUIREMENTS
     guiQt
     dataReg
     servicesReg
-    visu
     visuVTK
     visuVTKQt
-    launcher 
+    launcher
     ioVTK
     ioData
     vtkSimpleNegato

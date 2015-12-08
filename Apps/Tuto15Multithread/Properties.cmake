@@ -9,7 +9,6 @@ set( REQUIREMENTS
     guiQt
     dataReg
     servicesReg
-    visu
     visuVTK
     visuVTKQt
     ioVTK
