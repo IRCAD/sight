@@ -7,14 +7,15 @@
 #ifndef __UIIO_ACTION_SSERIESDBMERGER_HPP__
 #define __UIIO_ACTION_SSERIESDBMERGER_HPP__
 
-#include <fwMedData/SeriesDB.hpp>
+#include "uiIO/config.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
-#include "uiIO/config.hpp"
+#include <fwMedData/SeriesDB.hpp>
+
 
 namespace fwJobs
 {
@@ -28,8 +29,6 @@ namespace action
 
 /**
  * @brief   This action allows to load a new SeriesDB and merge it with the current SeriesDB
- * @class   SSeriesDBMerger
- * @date    2013.
  *
  * The available reader can be configured
  * @verbatim
@@ -38,12 +37,12 @@ namespace action
     </service>
    @endverbatim
  * With :
- *  - \b seriesDBImporterConfig : the id of a configuration for IOSelectorService
+ *  - \b seriesDBImporterConfig : the id of a configuration for SIOSelector
  *  for example
  *  @verbatim
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>seriesDBImporterConfig</id>
-        <service>::uiIO::editor::IOSelectorService</service>
+        <service>::uiIO::editor::SIOSelector</service>
         <desc>IOSelector config to import SeriesDB</desc>
         <config>
             <type mode="reader" />
@@ -67,7 +66,16 @@ public:
 
 protected:
 
-    /// Configure action. Retrieves the IOSelector config
+    /**
+     * @brief Configure action. Retrieves the IOSelector config.
+     *
+     * @verbatim
+        <service impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
+            <IOSelectorSrvConfig name="myConfig" />
+        </service>
+       @endverbatim
+     * - \b IOSelectorSrvConfig: identifier of the ServiceConfig used for SIOSelector
+     */
     void configuring() throw( ::fwTools::Failed );
 
     /// Start action.

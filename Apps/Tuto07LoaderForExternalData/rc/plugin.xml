@@ -90,7 +90,7 @@
                     <start uid="saveAllData" />
                 </service>
 
-                <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="saveAllData" autoConnect="no">
+                <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" uid="saveAllData" autoConnect="no">
                     <type mode="writer" />
                     <selection mode="include" />
                     <addSelection service="::ioAtoms::SWriter" />
@@ -107,7 +107,7 @@
                         <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="myReaderPathFile" />
                         </service>
-                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myReaderPathFile" autoConnect="no">
+                        <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" uid="myReaderPathFile" autoConnect="no">
                             <type mode="reader" />
                         </service>
 
@@ -119,7 +119,7 @@
                         <service uid="action_SaveFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="myWriterPathFile" />
                         </service>
-                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myWriterPathFile" autoConnect="no">
+                        <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" uid="myWriterPathFile" autoConnect="no">
                             <type mode="writer" />
                         </service>
 
@@ -134,12 +134,12 @@
                     <object type="::fwData::Composite">
                         <service impl="::ioTuto::ExternalDataReaderService" type="::io::IReader" uid="loadExternalData" autoConnect="no">
                         </service>
-                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="loadExternalDataNative" autoConnect="no">
+                        <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" uid="loadExternalDataNative" autoConnect="no">
                             <type mode="reader" />
                             <selection mode="include" />
                             <addSelection service="::ioAtoms::SReader" />
                         </service>
-                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="saveExternalData" autoConnect="no">
+                        <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" uid="saveExternalData" autoConnect="no">
                             <type mode="writer" />
                             <selection mode="include" />
                             <addSelection service="::ioAtoms::SWriter" />
@@ -251,7 +251,7 @@
                         <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="myReaderPathFile" />
                         </service>
-                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myReaderPathFile" autoConnect="no">
+                        <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" uid="myReaderPathFile" autoConnect="no">
                             <type mode="reader" />
                         </service>
 
@@ -263,7 +263,7 @@
                         <service uid="action_SaveFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                             <start uid="myWriterPathFile" />
                         </service>
-                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="myWriterPathFile" autoConnect="no">
+                        <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" uid="myWriterPathFile" autoConnect="no">
                             <type mode="writer" />
                         </service>
 

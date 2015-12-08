@@ -114,7 +114,7 @@
 
                 <item key="image">
                     <object uid="imageUID" type="::fwData::Image">
-                        <service uid="imageReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                        <service uid="imageReader" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>
                     </object>
@@ -255,7 +255,7 @@
                                         <organ_name>@organ_name</organ_name>
                                     </columns>
                                 </service>
-                                <service uid="modelSeriesWriter" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                                <service uid="modelSeriesWriter" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                                     <type mode="writer" />
                                 </service>
                             </object>

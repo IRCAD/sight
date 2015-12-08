@@ -117,14 +117,14 @@
                 
                 <item key="mesh">
                     <object uid="meshUID" type="::fwData::Mesh">
-                        <service uid="meshReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                        <service uid="meshReader" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>
                     </object>
                 </item>
                 <item key="image">
                     <object uid="imageUID" type="::fwData::Image">
-                        <service uid="imageReader" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                        <service uid="imageReader" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>
                     </object>

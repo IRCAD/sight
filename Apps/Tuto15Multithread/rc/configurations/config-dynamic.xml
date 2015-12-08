@@ -113,7 +113,7 @@
                 </slots>
             </service>
 
-            <service uid="${GENERIC_UID}_reader" impl="::uiIO::editor::IOSelectorService" >
+            <service uid="${GENERIC_UID}_reader" impl="::uiIO::editor::SIOSelector" >
                 <type mode="reader" />
             </service>
 

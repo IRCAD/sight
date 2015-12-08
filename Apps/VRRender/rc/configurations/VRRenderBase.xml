@@ -13,7 +13,7 @@
             <service uid="action_save" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="SDBWriter" />
             </service>
-            <service uid="SDBWriter" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
+            <service uid="SDBWriter" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector" autoConnect="no">
                 <type mode="writer" />
                 <selection mode="include" />
                 <addSelection service="::ioAtoms::SWriter" />

@@ -4,13 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "uiIO/editor/IOSelectorService.hpp"
+#include "uiIO/editor/SIOSelector.hpp"
 
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/Signal.hxx>
 
 #include <fwComEd/helper/Composite.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
@@ -41,31 +42,31 @@ namespace editor
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::gui::editor::IDialogEditor, ::uiIO::editor::IOSelectorService, ::fwData::Object );
+fwServicesRegisterMacro( ::gui::editor::IDialogEditor, ::uiIO::editor::SIOSelector, ::fwData::Object );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
 
 //------------------------------------------------------------------------------
 
-IOSelectorService::IOSelectorService() :
+SIOSelector::SIOSelector() :
     m_mode                  ( READER_MODE ),
     m_servicesAreExcluded   ( true )
 {
     m_sigJobCreated  = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
-    m_slotForwardJob = newSlot( FORWARD_JOB_SLOT, &IOSelectorService::forwardJob, this );
+    m_slotForwardJob = newSlot( FORWARD_JOB_SLOT, &SIOSelector::forwardJob, this );
 }
 
 //------------------------------------------------------------------------------
 
-IOSelectorService::~IOSelectorService()  throw()
+SIOSelector::~SIOSelector()  throw()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void IOSelectorService::configuring() throw( ::fwTools::Failed )
+void SIOSelector::configuring() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
@@ -78,7 +79,7 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
     ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
     for(; iter != this->m_configuration->end(); ++iter )
     {
-        OSLM_INFO( "IOSelectorService " << (*iter)->getName());
+        OSLM_INFO( "SIOSelector " << (*iter)->getName());
 
         if( (*iter)->getName() == "selection" )
         {
@@ -137,21 +138,21 @@ void IOSelectorService::configuring() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void IOSelectorService::starting() throw( ::fwTools::Failed )
+void SIOSelector::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void IOSelectorService::stopping() throw( ::fwTools::Failed )
+void SIOSelector::stopping() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void IOSelectorService::updating() throw( ::fwTools::Failed )
+void SIOSelector::updating() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
@@ -356,7 +357,7 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
     }
     else
     {
-        SLM_WARN("IOSelectorService::load : availableExtensions is empty.");
+        SLM_WARN("SIOSelector::load : availableExtensions is empty.");
         if ( m_mode == READER_MODE )
         {
             ::fwGui::dialog::MessageDialog messageBox;
@@ -380,22 +381,22 @@ void IOSelectorService::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void IOSelectorService::info( std::ostream &_sstream )
+void SIOSelector::info( std::ostream &_sstream )
 {
     // Update message
-    _sstream << "IOSelectorService";
+    _sstream << "SIOSelector";
 }
 
 //------------------------------------------------------------------------------
 
-void IOSelectorService::setIOMode( IOMode _mode )
+void SIOSelector::setIOMode( IOMode _mode )
 {
     m_mode = _mode;
 }
 
 //------------------------------------------------------------------------------
 
-void IOSelectorService::forwardJob(::fwJobs::IJob::sptr iJob)
+void SIOSelector::forwardJob(::fwJobs::IJob::sptr iJob)
 {
     m_sigJobCreated->emit(iJob);
 }

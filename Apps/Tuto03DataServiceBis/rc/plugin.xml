@@ -75,15 +75,15 @@
         <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
 
-        <!-- The service ::uiIO::editor::IOSelectorService is started (start and update methods) by the service ::gui::action::SStarter. 
-        Indeed, the uid of the service ::uiIO::editor::IOSelectorService is the same as the uid 
+        <!-- The service ::uiIO::editor::SIOSelector is started (start and update methods) by the service ::gui::action::SStarter. 
+        Indeed, the uid of the service ::uiIO::editor::SIOSelector is the same as the uid 
         defined in the service configuration ::gui::action::SStarter ( "myReaderPathFile").
         This service lists all services available to read a data Mesh and
         it displays a dialog box to select the appropriate service.
         (Note: 
               if there is only one reading service, it's directly selected without dialog box.)
-        When the service was chosen, it is started by the ::uiIO::editor::IOSelectorService service. -->
-        <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"  autoConnect="no" />
+        When the service was chosen, it is started by the ::uiIO::editor::SIOSelector service. -->
+        <service uid="myReaderPathFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor"  autoConnect="no" />
 
         <!-- This service (::vtkSimpleMesh::RendererService) is a 3D visualization service of medical meshes. -->
         <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="myRenderingTuto" autoConnect="yes" >

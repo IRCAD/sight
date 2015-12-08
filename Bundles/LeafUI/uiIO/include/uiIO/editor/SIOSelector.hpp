@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIIO_EDITOR_IOSELECTORSERVICE_HPP__
-#define __UIIO_EDITOR_IOSELECTORSERVICE_HPP__
+#ifndef __UIIO_EDITOR_SIOSELECTOR_HPP__
+#define __UIIO_EDITOR_SIOSELECTOR_HPP__
 
 #include "uiIO/config.hpp"
 
@@ -24,9 +24,8 @@ namespace editor
 
 /**
  * @brief   Defines the service interface managing the editor service for object.
- * @class   IOSelectorService
  */
-class UIIO_CLASS_API IOSelectorService : public ::gui::editor::IDialogEditor
+class UIIO_CLASS_API SIOSelector : public ::gui::editor::IDialogEditor
 {
 
 public:
@@ -38,7 +37,7 @@ public:
         WRITER_MODE  /**< this mode allows to configure the service as a writer */
     } IOMode;
 
-    fwCoreServiceClassDefinitionsMacro ( (IOSelectorService)( ::gui::editor::IDialogEditor) );
+    fwCoreServiceClassDefinitionsMacro ( (SIOSelector)( ::gui::editor::IDialogEditor) );
 
     typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
     typedef ::fwCom::Slot< void ( ::fwJobs::IJob::sptr ) > ForwardJobSlotType;
@@ -46,17 +45,17 @@ public:
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
      *
-     * By default, the IOSelectorService::m_mode is defined as READER_MODE, and IOSelectorService::m_servicesAreExcluded as true.
+     * By default, the SIOSelector::m_mode is defined as READER_MODE, and SIOSelector::m_servicesAreExcluded as true.
      */
-    UIIO_API IOSelectorService();
+    UIIO_API SIOSelector();
 
     /// Destructor. Do nothing.
-    UIIO_API virtual ~IOSelectorService() throw();
+    UIIO_API virtual ~SIOSelector() throw();
 
     /**
-     * @brief This method allows to configure the service in reader or writer mode (set IOSelectorService::m_mode).
+     * @brief This method allows to configure the service in reader or writer mode (set SIOSelector::m_mode).
      *
-     *@param[in] _mode the value can be IOSelectorService::READER_MODE or IOSelectorService::WRITER_MODE.
+     *@param[in] _mode the value can be SIOSelector::READER_MODE or SIOSelector::WRITER_MODE.
      */
     UIIO_API void setIOMode( IOMode _mode );
 
@@ -72,11 +71,11 @@ protected:
      * @brief   This method initializes class member parameters from configuration elements.
      *
      * The method verifies if the configuration is well written and retrieves user parameter values.
-     * Thanks to this method, IOSelectorService::m_selectedServices value is up to date (cleared before reconfiguring).
+     * Thanks to this method, SIOSelector::m_selectedServices value is up to date (cleared before reconfiguring).
      *
      * Sample of configuration :
      * @verbatim
-          <service uid="GENERIC_UID_writer" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
+          <service uid="GENERIC_UID_writer" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector" autoConnect="no">
               <type mode="writer" />
               <selection mode="include" />
               <addSelection service="::ioAtoms::SWriter" />
@@ -116,7 +115,7 @@ private:
     /**
      * @brief List of services to be included or excluded.
      *
-     * @see IOSelectorService::m_servicesAreExcluded.
+     * @see SIOSelector::m_servicesAreExcluded.
      */
     std::vector< std::string > m_selectedServices;
 
@@ -134,5 +133,5 @@ private:
 
 } // namespace uiIO
 
-#endif // __UIIO_EDITOR_IOSELECTORSERVICE_HPP__
+#endif // __UIIO_EDITOR_SIOSELECTOR_HPP__
 

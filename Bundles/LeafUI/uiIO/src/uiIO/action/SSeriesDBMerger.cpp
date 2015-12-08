@@ -6,9 +6,13 @@
 
 #include "uiIO/action/SSeriesDBMerger.hpp"
 
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/Signal.hxx>
+
+#include <fwComEd/helper/SeriesDB.hpp>
+
+#include <fwGui/Cursor.hpp>
 
 #include <fwJobs/IJob.hpp>
 
@@ -17,10 +21,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
-
-#include <fwGui/Cursor.hpp>
-
-#include <fwComEd/helper/SeriesDB.hpp>
 
 namespace uiIO
 {
@@ -87,16 +87,16 @@ void SSeriesDBMerger::updating( ) throw(::fwTools::Failed)
     // Get the config
     ::fwRuntime::ConfigurationElement::csptr ioCfg;
     ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
-                                                                                  "::uiIO::editor::IOSelectorService");
+                                                                                  "::uiIO::editor::SIOSelector");
     SLM_ASSERT("Sorry, there is not service configuration "
                << m_ioSelectorSrvConfig
-               << " for ::uiIO::editor::IOSelectorService", ioCfg);
+               << " for ::uiIO::editor::SIOSelector", ioCfg);
 
     // Init and execute the service
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add(localSeriesDB,
                                       "::gui::editor::IDialogEditor",
-                                      "::uiIO::editor::IOSelectorService");
+                                      "::uiIO::editor::SIOSelector");
 
     ioSelectorSrv->setWorker(m_associatedWorker);
 

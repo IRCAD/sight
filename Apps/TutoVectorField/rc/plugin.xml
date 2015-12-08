@@ -133,11 +133,11 @@
 
                             <object uid="image" type="::fwData::Image">
 
-                                <service uid="readerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                                <service uid="readerPathFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                                     <type mode="reader" />
                                 </service>
 
-                                <service uid="writerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                                <service uid="writerPathFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                                     <type mode="writer" />
                                 </service>
 

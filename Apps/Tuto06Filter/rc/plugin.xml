@@ -89,7 +89,7 @@
         <item key="myImage1">
             <object uid="myImage1" type="::fwData::Image">
                 <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage1" autoConnect="yes" />
-                <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoConnect="no" >
+                <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoConnect="no" >
                     <type mode="reader"/>
                 </service>
             </object>

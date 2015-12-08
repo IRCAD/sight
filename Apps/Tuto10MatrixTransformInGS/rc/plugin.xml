@@ -216,7 +216,7 @@
 
             <item key="mesh">
                 <object uid="mesh" type="::fwData::Mesh">
-                    <service uid="myReaderPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no" />
+                    <service uid="myReaderPathFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no" />
                 </object>
             </item>
             

@@ -9,13 +9,25 @@
 
 /**
  * @brief       The namespace uiIO contains a simple service to manipulate IO with IHM..
- * @namespace   uiIO
- *
- * @date        2009-2010.
- *
  */
 namespace uiIO
 {
+
+/**
+ * @brief       The namespace uiIO::editor contains a simple IO selector service.
+ */
+namespace editor
+{
+
+}
+
+/**
+ * @brief       The namespace uiIO::action contains action to manipulate Reader/Writer.
+ */
+namespace editor
+{
+
+}
 
 }
 #endif /* __UIIO_NAMESPACE_HPP__ */
