@@ -15,11 +15,9 @@
 // FW4SPL Includes
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-// Boost Includes
-#include <boost/logic/tribool.hpp>
-
 // VTK Includes
-#include <vtkAxesActor.h>
+#include <vtkSmartPointer.h>
+#include <fwRenderVTK/vtk/fwVtkAxesActor.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -46,9 +44,15 @@ protected:
 
     void buildPipeline();
 
-    vtkAxesActor * m_axesActor;
+    fwVtkAxesActor * m_axesActor;
     double m_length;
     bool m_labelOn;
+    vtkSmartPointer< vtkTransform> m_transformAxes;
+
+    ///X,Y and Z Labels
+    std::string m_xLabel;
+    std::string m_yLabel;
+    std::string m_zLabel;
 };
 
 } // namespace visuVTKAdaptor

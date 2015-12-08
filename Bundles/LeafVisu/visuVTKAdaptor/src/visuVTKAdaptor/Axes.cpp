@@ -18,6 +18,7 @@
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 #include <vtkProp3D.h>
+#include <vtkCommand.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -29,10 +30,16 @@ namespace visuVTKAdaptor
 //------------------------------------------------------------------------------
 
 Axes::Axes() throw() :
-    m_axesActor(vtkAxesActor::New()),
+    m_axesActor(fwVtkAxesActor::New()),
     m_length(1.),
-    m_labelOn(true)
+    m_labelOn(true),
+    m_transformAxes(vtkTransform::New()),
+    m_xLabel("x"),
+    m_yLabel("y"),
+    m_zLabel("z")
+
 {
+
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +74,7 @@ void Axes::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Axes::doUpdate() throw(::fwTools::Failed)
+void Axes::doUpdate() throw(fwTools::Failed)
 {
 }
 
@@ -93,24 +100,41 @@ void Axes::configuring() throw(fwTools::Failed)
         std::transform( value.begin(), value.end(), value.begin(), tolower );
         m_labelOn = ( value == "yes" );
     }
+    if(m_configuration->hasAttribute( "xLabel" ))
+    {
+        m_xLabel = m_configuration->getAttributeValue( "xLabel" );
+    }
+    if(m_configuration->hasAttribute( "yLabel" ))
+    {
+        m_yLabel = m_configuration->getAttributeValue( "yLabel" );
+    }
+    if(m_configuration->hasAttribute( "zLabel" ))
+    {
+        m_zLabel = m_configuration->getAttributeValue( "zLabel" );
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void Axes::buildPipeline()
 {
+    vtkTransform* transform = m_renderService.lock()->getOrAddVtkTransform(m_transformId);
     m_axesActor->SetTotalLength( m_length, m_length, m_length );
     m_axesActor->SetShaftTypeToCylinder();
     m_axesActor->SetTipTypeToCone();
+    m_axesActor->SetXAxisLabelText( m_xLabel.c_str() );
+    m_axesActor->SetYAxisLabelText( m_yLabel.c_str() );
+    m_axesActor->SetZAxisLabelText( m_zLabel.c_str() );
 
     if (!m_labelOn)
     {
-        m_axesActor->SetXAxisLabelText( "x" );
-        m_axesActor->SetYAxisLabelText( "y" );
-        m_axesActor->SetZAxisLabelText( "z" );
         m_axesActor->AxisLabelsOff();
     }
-    m_axesActor->SetUserTransform( this->getTransform() );
+
+    m_axesActor->SetUserTransform(transform);
+
+    this->setVtkPipelineModified();
+
 }
 
 //------------------------------------------------------------------------------

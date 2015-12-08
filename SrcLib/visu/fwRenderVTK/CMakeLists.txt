@@ -16,12 +16,15 @@ fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
 )
 
+
 if(NOT ANDROID)
     fwLink(
         vtkInteractionWidgets
         vtkInteractionStyle
+        vtkRenderingCore
         vtkRenderingFreeTypeOpenGL
         vtkRenderingVolumeOpenGL
+        vtkRenderingAnnotation
     )
 else()
     fwLink(
