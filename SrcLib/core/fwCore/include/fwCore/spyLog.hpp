@@ -216,6 +216,16 @@
 // -----------------------------------------------------------------------------
 
 # ifdef _DEBUG
+#  ifdef WIN32
+#  define SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(                                            \
+        __FWCORE_IF(!(cond),                                                                            \
+                    std::stringstream oslStr1;                                                          \
+                    oslStr1 << "Assertion '" <<                                                         \
+                    #cond << "' failed.\n" << message;                                                  \
+                    log.fatal(oslStr1.str(), __FILE__, __LINE__);                                       \
+                    _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, NULL, "%s", oslStr1.str().c_str());  \
+                    ))
+#  else
 #  define SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(            \
         __FWCORE_IF(!(cond),                                            \
                     std::stringstream oslStr1;                          \
@@ -224,6 +234,7 @@
                     log.fatal(oslStr1.str(), __FILE__, __LINE__);       \
                     SPYLOG_ABORT();                                     \
                     ))
+#  endif
 
 #  define OSL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(   \
         __FWCORE_IF(!(cond),                                    \
