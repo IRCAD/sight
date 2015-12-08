@@ -4,27 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-
-#include <vtkPolyData.h>
-#include <vtkSphereSource.h>
-#include <vtkSmartPointer.h>
-
-#include <fwTools/System.hpp>
+#include "MeshTest.hpp"
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwComEd/helper/Array.hpp>
 
-#include <fwTest/generator/Mesh.hpp>
 #include <fwDataTools/Mesh.hpp>
 
-#include <fwVtkIO/MeshWriter.hpp>
-#include <fwVtkIO/MeshReader.hpp>
 #include <fwVtkIO/helper/Mesh.hpp>
+#include <fwVtkIO/MeshReader.hpp>
+#include <fwVtkIO/MeshWriter.hpp>
 
-#include "MeshTest.hpp"
+#include <fwTools/NumericRoundCast.hxx>
+#include <fwTools/System.hpp>
+
+#include <fwTest/generator/Mesh.hpp>
+
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+
+#include <vtkPolyData.h>
+#include <vtkSphereSource.h>
+#include <vtkSmartPointer.h>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::MeshTest );
@@ -53,6 +55,8 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
 void MeshTest::setUp()
 {
     // Set up context before running a test.
+
+    std::srand(::fwTools::numericRoundCast<unsigned int>(std::time(NULL)));
 }
 
 //------------------------------------------------------------------------------
@@ -153,6 +157,45 @@ void MeshTest::testExportImportSyntheticMesh()
     bool suppr = ::boost::filesystem::remove(testFile);
     CPPUNIT_ASSERT(suppr);
 }
+
+//------------------------------------------------------------------------------
+
+
+void MeshTest::testPointCloud()
+{
+    const std::uint64_t NB_POINTS = (100 + rand()%1000);
+
+    ::fwData::Mesh::sptr mesh1 = ::fwData::Mesh::New();
+
+    mesh1->allocate(NB_POINTS, NB_POINTS, NB_POINTS);
+
+    ::fwComEd::helper::Mesh helper(mesh1);
+
+    for (std::uint64_t i = 0; i < NB_POINTS; ++i)
+    {
+        ::fwData::Mesh::PointValueType point[3];
+        point[0] = (rand()%1000 - 500.f) / 3.f;
+        point[1] = (rand()%1000 - 500.f) / 3.f;
+        point[2] = (rand()%1000 - 500.f) / 3.f;
+        helper.insertNextPoint(point);
+        helper.insertNextCell(i);
+    }
+    mesh1->adjustAllocatedMemory();
+
+    vtkSmartPointer< vtkPolyData > poly = vtkSmartPointer< vtkPolyData >::New();
+    ::fwVtkIO::helper::Mesh::toVTKMesh( mesh1, poly);
+    CPPUNIT_ASSERT( poly );
+
+    ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::New();
+    ::fwVtkIO::helper::Mesh::fromVTKMesh(poly, mesh2);
+
+    CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->getNumberOfPoints());
+    CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->getNumberOfCells());
+    CPPUNIT_ASSERT_EQUAL(NB_POINTS, mesh2->getCellDataSize());
+    compare(mesh1, mesh2);
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace ut
 } // namespace fwVtkIO

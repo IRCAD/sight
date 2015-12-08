@@ -63,6 +63,10 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
 
             switch (cellType)
             {
+                case VTK_VERTEX:
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==1);
+                    meshHelper.insertNextCell( idList->GetId(0));
+                    break;
                 case VTK_LINE:
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==2);
                     meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1));
@@ -232,6 +236,10 @@ void Mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, ::fwData::Mesh
 
             switch (cellType)
             {
+                case VTK_VERTEX:
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==1);
+                    meshHelper.insertNextCell( idList->GetId(0));
+                    break;
                 case VTK_LINE:
                     SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==2);
                     meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1));
@@ -398,6 +406,11 @@ void Mesh::toVTKMesh( ::fwData::Mesh::sptr mesh, vtkSmartPointer<vtkPolyData> po
         ::fwData::Mesh::Id offset          = cellDataOffsets[i];
         switch( cellType )
         {
+            case ::fwData::Mesh::POINT:
+                typeVtkCell = VTK_VERTEX;
+                cell[0]     = cellData[offset];
+                polyData->InsertNextCell( typeVtkCell, 1, cell );
+                break;
             case ::fwData::Mesh::EDGE:
                 typeVtkCell = VTK_LINE;
                 cell[0]     = cellData[offset];

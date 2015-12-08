@@ -26,6 +26,7 @@ CPPUNIT_TEST_SUITE( MeshTest );
 CPPUNIT_TEST( testMeshToVtk );
 CPPUNIT_TEST( testSyntheticMesh );
 CPPUNIT_TEST( testExportImportSyntheticMesh );
+CPPUNIT_TEST( testPointCloud );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -36,6 +37,7 @@ public:
     void testMeshToVtk();
     void testSyntheticMesh();
     void testExportImportSyntheticMesh();
+    void testPointCloud();
 
 };
 
