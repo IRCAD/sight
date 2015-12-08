@@ -56,6 +56,15 @@ public:
      */
     VISUVTKVRADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
 
+    /// Apply the cropping on volume rendering
+    VISUVTKVRADAPTOR_API void crop();
+
+    /// Update associated transform adaptor with CropBox transform
+    VISUVTKVRADAPTOR_API void updateTransform();
+
+    /// Update CropBox transform with transform adaptor
+    VISUVTKVRADAPTOR_API void updateCropBoxTransform();
+
 protected:
 
     VISUVTKVRADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -120,6 +129,7 @@ protected:
 
     vtkBoxWidget2 * m_boxWidget;
     vtkCommand    * m_croppingCommand;
+    vtkCommand    * m_transformCommand;
 
     /// Croping box default state
     bool m_croppingBoxDefaultState;

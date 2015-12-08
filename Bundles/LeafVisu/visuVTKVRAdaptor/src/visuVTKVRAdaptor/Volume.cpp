@@ -19,6 +19,7 @@
 
 #include <fwVtkIO/vtk.hpp>
 
+#include <vtkBoundingBox.h>
 #include <vtkBoxRepresentation.h>
 #include <vtkBoxWidget2.h>
 #include <vtkColorTransferFunction.h>
@@ -31,6 +32,7 @@
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkSmartVolumeMapper.h>
+#include <vtkTransform.h>
 #include <vtkVolume.h>
 #include <vtkVolumeProperty.h>
 
@@ -44,48 +46,37 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKVRAdaptor::
 namespace visuVTKVRAdaptor
 {
 
-class vtkBoxRepresentationHack : public vtkBoxRepresentation
+class TransformCallback : public ::vtkCommand
 {
-// Hack to disable box rotation, since SetRotationEnable is ineffective...
 public:
 
-    static vtkBoxRepresentationHack *New();
-
-    vtkTypeMacro(vtkBoxRepresentationHack,vtkWidgetRepresentation);
-
-    int ComputeInteractionState(int X, int Y, int modify)
+    static TransformCallback* New(Volume* adaptor)
     {
-        return vtkBoxRepresentation::ComputeInteractionState(X,Y,1);
+        TransformCallback *cb = new TransformCallback;
+        cb->m_adaptor = adaptor;
+        return cb;
     }
 
+    virtual void Execute( ::vtkObject* caller, unsigned long, void* )
+    {
+        m_adaptor->updateCropBoxTransform();
+        m_adaptor->crop();
+    }
+
+private:
+    Volume* m_adaptor;
 };
 
-vtkStandardNewMacro(vtkBoxRepresentationHack);
-
-
+//------------------------------------------------------------------------------
 
 class AbortCallback : public vtkCommand
 {
-
 public:
-    //--------------------------------------------------------------------------
 
     static AbortCallback *New()
     {
         return new AbortCallback();
     }
-
-    //--------------------------------------------------------------------------
-
-    AbortCallback( )
-    {
-    }
-
-    virtual ~AbortCallback( )
-    {
-    }
-
-    //--------------------------------------------------------------------------
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
     {
@@ -104,35 +95,23 @@ public:
 
 class CroppingCallback : public vtkCommand
 {
-
 public:
-    //--------------------------------------------------------------------------
-    static CroppingCallback *New(vtkAbstractMapper *mapper)
+
+    static CroppingCallback *New(Volume* adaptor)
     {
         CroppingCallback *callback = new CroppingCallback();
-        callback->mapper = vtkVolumeMapper::SafeDownCast(mapper);
+        callback->m_adaptor = adaptor;
         return callback;
     }
 
-    //--------------------------------------------------------------------------
-
-    CroppingCallback( ) : mapper(nullptr)
-    {
-    }
-
-    virtual ~CroppingCallback( )
-    {
-    }
-
-    //--------------------------------------------------------------------------
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
     {
-        vtkBoxWidget2 *widget = vtkBoxWidget2::SafeDownCast( caller );
-        mapper->SetCroppingRegionPlanes( widget->GetRepresentation()->GetBounds() );
+        m_adaptor->crop();
+        m_adaptor->updateTransform();
     }
 
 private:
-    vtkVolumeMapper *mapper;
+    Volume* m_adaptor;
 };
 
 static const ::fwCom::Slots::SlotKeyType s_RESET_BOX_WIDGET_SLOT      = "resetBoxWidget";
@@ -151,18 +130,17 @@ Volume::Volume() throw() :
     m_colorTransferFunction(vtkColorTransferFunction::New()),
     m_abortCommand(AbortCallback::New()),
     m_boxWidget(vtkBoxWidget2::New()),
-    m_croppingCommand(CroppingCallback::New(m_volumeMapper)),
+    m_croppingCommand(nullptr),
+    m_transformCommand(nullptr),
     m_croppingBoxDefaultState(true),
     m_autoResetCamera(true),
     m_reductionFactor(1.0)
 {
     m_boxWidget->KeyPressActivationOff();
     m_boxWidget->SetRotationEnabled(0);
-    vtkBoxRepresentationHack *repr = vtkBoxRepresentationHack::New();
+    vtkBoxRepresentation *repr = vtkBoxRepresentation::New();
     m_boxWidget->SetRepresentation(repr);
     repr->Delete();
-
-    m_boxWidget->AddObserver(vtkCommand::InteractionEvent, m_croppingCommand);
 
     newSlot(s_RESET_BOX_WIDGET_SLOT, &Volume::resetBoxWidget, this);
     newSlot(s_ACTIVATE_BOX_CLIPPING_SLOT, &Volume::activateBoxClipping, this);
@@ -189,11 +167,8 @@ Volume::~Volume() throw()
         m_clippingPlanes = nullptr;
     }
 
-    m_boxWidget->RemoveObserver(m_croppingCommand);
     m_boxWidget->Delete();
     m_boxWidget = nullptr;
-    m_croppingCommand->Delete();
-    m_croppingCommand = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -221,6 +196,16 @@ void Volume::doStart() throw(fwTools::Failed)
     this->installTFConnections();
 
     this->activateBoxClipping( m_croppingBoxDefaultState );
+
+    vtkTransform* transform = this->getTransform();
+    if(transform)
+    {
+        m_transformCommand = TransformCallback::New(this);
+        transform->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
+    }
+
+    m_croppingCommand = CroppingCallback::New(this);
+    m_boxWidget->AddObserver(vtkCommand::InteractionEvent, m_croppingCommand);
 }
 
 //------------------------------------------------------------------------------
@@ -230,6 +215,18 @@ void Volume::doStop() throw(fwTools::Failed)
     this->removeTFConnections();
     this->removeAllPropFromRenderer();
     this->getInteractor()->GetRenderWindow()->RemoveObserver(m_abortCommand);
+    m_boxWidget->RemoveObserver(m_croppingCommand);
+
+    m_croppingCommand->Delete();
+    m_croppingCommand = nullptr;
+
+    vtkTransform* transform = this->getTransform();
+    if(transform)
+    {
+        transform->RemoveObserver( m_transformCommand );
+        m_transformCommand->Delete();
+        m_transformCommand = nullptr;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -300,6 +297,11 @@ void Volume::configuring() throw(fwTools::Failed)
     if(m_configuration->hasAttribute("reductionFactor"))
     {
         m_reductionFactor = std::stod(m_configuration->getAttributeValue("reductionFactor"));
+    }
+
+    if(m_configuration->hasAttribute("transform"))
+    {
+        this->setTransformId( m_configuration->getAttributeValue("transform") );
     }
 }
 
@@ -483,6 +485,61 @@ void Volume::activateBoxClipping( bool activate )
     connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
 
     return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void Volume::crop()
+{
+    vtkVolumeMapper* mapper      = vtkVolumeMapper::SafeDownCast(m_volumeMapper);
+    double* croppingRegionPlanes = m_boxWidget->GetRepresentation()->GetBounds();
+
+    vtkBoundingBox boundingBoxCrop(croppingRegionPlanes);
+    vtkBoundingBox boundingBoxVolume(mapper->GetBounds());
+
+    if(boundingBoxCrop.Intersects(boundingBoxVolume))
+    {
+        mapper->SetCroppingRegionPlanes( croppingRegionPlanes );
+    }
+    else
+    {
+        mapper->SetCroppingRegionPlanes(0.,0.,0.,0.,0.,0.);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Volume::updateTransform()
+{
+    vtkTransform* transform = this->getTransform();
+    if(transform)
+    {
+        vtkBoxRepresentation *repr = vtkBoxRepresentation::SafeDownCast( m_boxWidget->GetRepresentation() );
+        if( repr )
+        {
+            transform->RemoveObserver(m_transformCommand);
+            repr->GetTransform(transform);
+            transform->Modified();
+            transform->AddObserver(vtkCommand::ModifiedEvent, m_transformCommand);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Volume::updateCropBoxTransform()
+{
+    vtkTransform* transform = this->getTransform();
+    if(transform)
+    {
+        vtkBoxRepresentation *repr = vtkBoxRepresentation::SafeDownCast( m_boxWidget->GetRepresentation() );
+        if( repr )
+        {
+            m_boxWidget->RemoveObserver(m_croppingCommand);
+            repr->SetTransform(transform);
+            m_boxWidget->AddObserver(vtkCommand::InteractionEvent, m_croppingCommand);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
