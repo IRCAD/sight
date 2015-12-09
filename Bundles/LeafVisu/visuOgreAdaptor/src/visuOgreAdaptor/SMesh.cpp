@@ -489,7 +489,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 bool createIndexBuffer = ibuf.isNull();
                 if( !ibuf.isNull())
                 {
-                    // realocate if new mesh has more indexes or IndexType change
+                    // reallocate if new mesh has more indexes or IndexType change
                     createIndexBuffer = (ibuf->getNumIndexes() < numIndices[i]) || (indicesPrev32Bits != indices32Bits);
                 }
                 if(createIndexBuffer)
@@ -535,18 +535,14 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
     if(indices32Bits)
     {
-        copyIndices< std::uint32_t >( indexBuffer[::fwData::Mesh::TRIANGLE],
-                                      indexBuffer[::fwData::Mesh::QUAD],
-                                      indexBuffer[::fwData::Mesh::EDGE],
-                                      indexBuffer[::fwData::Mesh::TETRA],
+        copyIndices< std::uint32_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
+                                      indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
                                       meshHelper, mesh->getNumberOfCells() );
     }
     else
     {
-        copyIndices< std::uint16_t >( indexBuffer[::fwData::Mesh::TRIANGLE],
-                                      indexBuffer[::fwData::Mesh::QUAD],
-                                      indexBuffer[::fwData::Mesh::EDGE],
-                                      indexBuffer[::fwData::Mesh::TETRA],
+        copyIndices< std::uint16_t >( indexBuffer[::fwData::Mesh::TRIANGLE], indexBuffer[::fwData::Mesh::QUAD],
+                                      indexBuffer[::fwData::Mesh::EDGE], indexBuffer[::fwData::Mesh::TETRA],
                                       meshHelper, mesh->getNumberOfCells() );
     }
 
@@ -838,9 +834,15 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
     if(hasVertexColor)
     {
         bindLayer(mesh, COLOUR, ::Ogre::VES_DIFFUSE, Ogre::VET_UBYTE4);
-
-        m_perPrimitiveColorTexture.setNull();
-        m_perPrimitiveColorTextureName = "";
+    }
+    else
+    {
+        // Unbind vertex color if it was previously enabled
+        if(bind->isBufferBound(m_binding[COLOUR]))
+        {
+            bind->unsetBinding(m_binding[COLOUR]);
+            m_binding[COLOUR] = 0xFFFF;
+        }
     }
 
     if(hasPrimitiveColor)
@@ -882,13 +884,16 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
                                                    ::Ogre::PF_BYTE_RGBA, ::Ogre::TEX_TYPE_2D,
                                                    (m_isDynamic || m_isDynamicVertices));
 
-            // Unbind vertex color if it was previously enabled
-            if(bind->isBufferBound(m_binding[COLOUR]))
-            {
-                bind->unsetBinding(m_binding[COLOUR]);
-                m_binding[COLOUR] = 0xFFFF;
-            }
         }
+    }
+    else
+    {
+        if(!m_perPrimitiveColorTexture.isNull())
+        {
+            m_perPrimitiveColorTexture->freeInternalResources();
+        }
+        m_perPrimitiveColorTexture.setNull();
+        m_perPrimitiveColorTextureName = "";
     }
 
     // 2 - Copy of vertices

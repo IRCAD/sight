@@ -65,7 +65,7 @@ void main(void)
     vertexOut.oNormal = normal;
 
 #   ifdef VERTEX_COLOR
-    vertexOut.oColor = colour;
+    vertexOut.oColor = colour/255.f;
 #   endif // VERTEX_COLOR
 
 #   ifdef DIFFUSE_TEX
@@ -104,7 +104,7 @@ void main(void)
 #       endif // AMBIENT
 
 #       ifdef VERTEX_COLOR
-    vertexOut.oColor *= colour;
+    vertexOut.oColor *= colour/255.f;
 #       endif // VERTEX_COLOR
 
 #   endif // PIXEL_LIT
