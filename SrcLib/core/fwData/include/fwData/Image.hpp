@@ -176,7 +176,7 @@ public:
     /// @brief return image size in bytes
     FWDATA_API size_t getSizeInBytes() const;
     /// @brief return allocated image size in bytes
-    size_t getAllocatedSizeInBytes() const;
+    FWDATA_API size_t getAllocatedSizeInBytes() const;
 
     /**
      * @name Signals
