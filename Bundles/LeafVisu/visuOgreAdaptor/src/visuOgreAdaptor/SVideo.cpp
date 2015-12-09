@@ -130,17 +130,8 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
         std::string entityName    = thisID + "_VideoEntity";
         std::string nodeName      = thisID + "_VideoSceneNode";
 
-        m_texture->freeInternalResources();
-
-        m_texture->setWidth(imageOgre.getWidth());
-        m_texture->setHeight(imageOgre.getHeight());
-        m_texture->setTextureType(::Ogre::TEX_TYPE_2D);
-        m_texture->setFormat(::Ogre::PF_X8R8G8B8);
-        m_texture->setDepth(1);
-        m_texture->setNumMipmaps(0);
-        m_texture->setUsage(::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
-
-        m_texture->createInternalResources();
+        ::fwRenderOgre::Utils::allocateTexture(m_texture.get(), imageOgre.getWidth(), imageOgre.getHeight(),
+                                               1, ::Ogre::PF_X8R8G8B8, ::Ogre::TEX_TYPE_2D, true);
 
         // Create Ogre Plane
         ::Ogre::MovablePlane plane( ::Ogre::Vector3::UNIT_Z, 0 );

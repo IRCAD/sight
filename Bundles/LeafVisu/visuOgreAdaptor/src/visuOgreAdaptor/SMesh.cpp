@@ -777,59 +777,70 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
     }
 }
 
+
+//-----------------------------------------------------------------------------
+
+void SMesh::bindLayer(const ::fwData::Mesh::sptr& _mesh, BufferBinding _binding,
+                      ::Ogre::VertexElementSemantic _semantic, ::Ogre::VertexElementType _type)
+{
+    ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
+    SLM_ASSERT("Invalid vertex buffer binding", bind);
+
+    ::Ogre::VertexDeclaration* vtxDecl = m_ogreMesh->sharedVertexData->vertexDeclaration;
+    size_t offset = 0;
+
+    if(!vtxDecl->findElementBySemantic(_semantic))
+    {
+        m_binding[_binding] = static_cast<unsigned short>(bind->getBindings().size());
+
+        vtxDecl->addElement(m_binding[_binding], offset, _type, _semantic);
+        offset += ::Ogre::VertexElement::getTypeSize(_type);
+    }
+
+    ::Ogre::HardwareVertexBufferSharedPtr cbuf;
+
+    const size_t uiNumVertices = _mesh->getNumberOfPoints();
+    size_t uiPrevNumVertices   = 0;
+    if(bind->isBufferBound(m_binding[_binding]))
+    {
+        cbuf              = bind->getBuffer(m_binding[_binding]);
+        uiPrevNumVertices = cbuf->getNumVertices();
+    }
+
+    if(!bind->isBufferBound(m_binding[_binding]) || uiPrevNumVertices < uiNumVertices )
+    {
+        FW_PROFILE_AVG("REALLOC LAYER", 5);
+
+        // Allocate color buffer of the requested number of vertices (vertexCount) and bytes per vertex (offset)
+        ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices) ?
+                                              ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
+                                              ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
+
+        ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
+        cbuf                               = mgr.createVertexBuffer(offset, uiNumVertices, usage, false);
+        bind->setBinding(m_binding[_binding], cbuf);
+    }
+}
+
 //-----------------------------------------------------------------------------
 
 void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
 {
     FW_PROFILE_AVG("UPDATE COLORS", 5);
 
-    const bool hasVertexColor    = (mesh->getPointColorsArray() != nullptr);
-    const bool hasPrimitiveColor = (mesh->getCellColorsArray() != nullptr);
-
     ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
     SLM_ASSERT("Invalid vertex buffer binding", bind);
+
+    const bool hasVertexColor    = (mesh->getPointColorsArray() != nullptr);
+    const bool hasPrimitiveColor = (mesh->getCellColorsArray() != nullptr);
 
     // 1 - Initialization
     if(hasVertexColor)
     {
-        size_t offsetColor = 0;
-        ::Ogre::VertexDeclaration* vtxDecl = m_ogreMesh->sharedVertexData->vertexDeclaration;
+        bindLayer(mesh, COLOUR, ::Ogre::VES_DIFFUSE, Ogre::VET_UBYTE4);
 
-        if(!vtxDecl->findElementBySemantic(::Ogre::VES_DIFFUSE))
-        {
-            m_binding[COLOUR] = bind->getBindings().size();
-
-            vtxDecl->addElement(m_binding[COLOUR], offsetColor, ::Ogre::VET_UBYTE4, ::Ogre::VES_DIFFUSE);
-            offsetColor += ::Ogre::VertexElement::getTypeSize(Ogre::VET_UBYTE4);
-        }
-
-        ::Ogre::HardwareVertexBufferSharedPtr cbuf;
-
-        const size_t uiNumVertices = mesh->getNumberOfPoints();
-        size_t uiPrevNumVertices   = 0;
-        if(bind->isBufferBound(m_binding[COLOUR]))
-        {
-            cbuf              = bind->getBuffer(m_binding[COLOUR]);
-            uiPrevNumVertices = cbuf->getNumVertices();
-        }
-
-        if(!bind->isBufferBound(m_binding[COLOUR]) || uiPrevNumVertices < uiNumVertices )
-        {
-            FW_PROFILE_AVG("REALLOC COLORS_VERTEX", 5);
-
-            // Allocate color buffer of the requested number of vertices (vertexCount) and bytes per vertex (offset)
-            ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices) ?
-                                                  ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
-                                                  ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
-
-            ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
-
-            cbuf = mgr.createVertexBuffer(offsetColor, uiNumVertices, usage, false);
-            bind->setBinding(m_binding[COLOUR], cbuf);
-
-            m_perPrimitiveColorTexture.setNull();
-            m_perPrimitiveColorTextureName = "";
-        }
+        m_perPrimitiveColorTexture.setNull();
+        m_perPrimitiveColorTextureName = "";
     }
 
     if(hasPrimitiveColor)
@@ -865,23 +876,11 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         {
             FW_PROFILE_AVG("REALLOC COLORS_CELL", 5);
 
-            auto usage = (m_isDynamic || m_isDynamicVertices) ?
-                         ::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
-                         ::Ogre::TU_STATIC_WRITE_ONLY;
-
-            m_perPrimitiveColorTexture->freeInternalResources();
-
-            m_perPrimitiveColorTexture->setWidth(static_cast< ::Ogre::uint32>(width));
-            m_perPrimitiveColorTexture->setHeight(static_cast< ::Ogre::uint32>(height));
-            m_perPrimitiveColorTexture->setDepth(static_cast< ::Ogre::uint32>(1));
-            m_perPrimitiveColorTexture->setTextureType(::Ogre::TEX_TYPE_2D);
-            m_perPrimitiveColorTexture->setNumMipmaps(0);
             // It would be better to use PF_BYTE_RGB when we have 3 components but for some reason it doesn't work
             // Probably something related to alignment or a bug in Ogre
-            m_perPrimitiveColorTexture->setFormat(::Ogre::PF_BYTE_RGBA);
-            m_perPrimitiveColorTexture->setUsage(usage);
-
-            m_perPrimitiveColorTexture->createInternalResources();
+            ::fwRenderOgre::Utils::allocateTexture(m_perPrimitiveColorTexture.get(), width, height, 1,
+                                                   ::Ogre::PF_BYTE_RGBA, ::Ogre::TEX_TYPE_2D,
+                                                   (m_isDynamic || m_isDynamicVertices));
 
             // Unbind vertex color if it was previously enabled
             if(bind->isBufferBound(m_binding[COLOUR]))
@@ -958,46 +957,8 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
     // . UV Buffer - By now, we just use one UV coordinates set for each mesh
     if (m_hasUV)
     {
-        ::Ogre::VertexBufferBinding* bind = m_ogreMesh->sharedVertexData->vertexBufferBinding;
-        SLM_ASSERT("Invalid vertex buffer binding", bind);
+        bindLayer(mesh, TEXCOORD, ::Ogre::VES_TEXTURE_COORDINATES, Ogre::VET_FLOAT2);
 
-        ::Ogre::VertexDeclaration* declUV = m_ogreMesh->sharedVertexData->vertexDeclaration;
-        size_t offsetUV = 0;
-
-        if(!declUV->findElementBySemantic(::Ogre::VES_TEXTURE_COORDINATES))
-        {
-            m_binding[TEXCOORD] = bind->getBindings().size();
-
-            declUV->addElement(m_binding[TEXCOORD], offsetUV, ::Ogre::VET_FLOAT2, ::Ogre::VES_TEXTURE_COORDINATES);
-            offsetUV += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT2);
-
-        }
-
-        ::Ogre::HardwareVertexBufferSharedPtr uvbuf;
-
-        size_t uiNumVertices     = mesh->getNumberOfPoints();
-        size_t uiPrevNumVertices = 0;
-        if(bind->isBufferBound(m_binding[TEXCOORD]))
-        {
-            uvbuf             = bind->getBuffer(m_binding[TEXCOORD]);
-            uiPrevNumVertices = uvbuf->getNumVertices();
-        }
-
-        if(!bind->isBufferBound(m_binding[TEXCOORD]) || uiPrevNumVertices < uiNumVertices )
-        {
-            // Allocate color buffer of the requested number of vertices (vertexCount) and bytes per vertex (offset)
-            ::Ogre::HardwareBuffer::Usage usage = (m_isDynamic || m_isDynamicVertices) ?
-                                                  ::Ogre::HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE :
-                                                  ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY;
-
-            ::Ogre::HardwareBufferManager& mgr = ::Ogre::HardwareBufferManager::getSingleton();
-            uvbuf                              = mgr.createVertexBuffer(offsetUV, uiNumVertices, usage, false);
-            bind->setBinding(m_binding[TEXCOORD], uvbuf);
-        }
-    }
-
-    if (m_hasUV)
-    {
         FW_PROFILE_AVG("UPDATE TexCoords", 5);
 
         ::fwData::mt::ObjectReadLock lock(mesh);

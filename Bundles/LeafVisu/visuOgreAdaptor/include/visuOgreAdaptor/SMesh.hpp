@@ -134,6 +134,10 @@ private:
 
     ::Ogre::Entity* newEntity();
 
+    /// Bind a vertex layer
+    void bindLayer(const ::fwData::Mesh::sptr& _mesh, BufferBinding _binding, ::Ogre::VertexElementSemantic _semantic,
+                   ::Ogre::VertexElementType _type);
+
     /// Updates the Mesh, checks if color, number of vertices have changed, and updates them.
     void updateMesh(const ::fwData::Mesh::sptr& mesh);
     /// Updates the vertices position

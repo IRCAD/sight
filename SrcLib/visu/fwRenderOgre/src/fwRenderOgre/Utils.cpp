@@ -317,30 +317,31 @@ void Utils::destroyOgreRoot()
 
 //------------------------------------------------------------------------------
 
-void Utils::loadOgreTexture(const ::fwData::Image::sptr& image, ::Ogre::TexturePtr texture, ::Ogre::TextureType texType)
+void Utils::loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::TexturePtr _texture,
+                            ::Ogre::TextureType _texType)
 {
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
+    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
 
     if(imageIsValid)
     {
-        ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( image );
+        ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( _image );
 
         // Conversion from fwData::Image to ::Ogre::Image
-        ::Ogre::Image ogreImage = ::fwRenderOgre::Utils::convertFwDataImageToOgreImage(image);
-        texture->freeInternalResources();
+        ::Ogre::Image ogreImage = ::fwRenderOgre::Utils::convertFwDataImageToOgreImage(_image);
+        _texture->freeInternalResources();
 
-        texture->setWidth(ogreImage.getWidth());
-        texture->setHeight(ogreImage.getHeight());
-        texture->setTextureType(texType);
-        texture->setDepth(ogreImage.getDepth());
-        texture->setNumMipmaps(0);
-        texture->setFormat(pixelFormat);
-        texture->setUsage(::Ogre::TU_STATIC_WRITE_ONLY);
+        _texture->setWidth(ogreImage.getWidth());
+        _texture->setHeight(ogreImage.getHeight());
+        _texture->setTextureType(_texType);
+        _texture->setDepth(ogreImage.getDepth());
+        _texture->setNumMipmaps(0);
+        _texture->setFormat(pixelFormat);
+        _texture->setUsage(::Ogre::TU_STATIC_WRITE_ONLY);
 
-        texture->createInternalResources();
+        _texture->createInternalResources();
 
         // Copy image's pixel box into texture buffer
-        texture->getBuffer(0,0)->blitFromMemory(ogreImage.getPixelBox(0,0));
+        _texture->getBuffer(0,0)->blitFromMemory(ogreImage.getPixelBox(0,0));
     }
 }
 
@@ -356,17 +357,9 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
             _texture->getHeight() != _image->getSize()[1] ||
             _texture->getDepth()  != _image->getSize()[2]    )
         {
-            _texture->freeInternalResources();
+            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize()[0], _image->getSize()[1],
+                                                   _image->getSize()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
 
-            _texture->setWidth(static_cast< ::Ogre::uint32>(_image->getSize()[0]));
-            _texture->setHeight(static_cast< ::Ogre::uint32>(_image->getSize()[1]));
-            _texture->setDepth(static_cast< ::Ogre::uint32>(_image->getSize()[2]));
-            _texture->setTextureType(::Ogre::TEX_TYPE_3D);
-            _texture->setNumMipmaps(0);
-            _texture->setFormat(::Ogre::PF_L16);
-            _texture->setUsage(::Ogre::TU_STATIC_WRITE_ONLY);
-
-            _texture->createInternalResources();
         }
 
         // Get the pixel buffer
@@ -401,6 +394,28 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
     {
         SLM_FATAL("Image format not supported.");
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Utils::allocateTexture(::Ogre::Texture* _texture, size_t _width, size_t _height, size_t _depth,
+                            ::Ogre::PixelFormat _format, ::Ogre::TextureType _texType, bool _dynamic)
+{
+
+    auto usage = _dynamic ? ::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE : ::Ogre::TU_STATIC_WRITE_ONLY;
+
+    _texture->freeInternalResources();
+
+    _texture->setWidth(static_cast< ::Ogre::uint32>(_width));
+    _texture->setHeight(static_cast< ::Ogre::uint32>(_height));
+    _texture->setDepth(static_cast< ::Ogre::uint32>(_depth));
+    _texture->setTextureType(_texType);
+    _texture->setNumMipmaps(0);
+
+    _texture->setFormat(_format);
+    _texture->setUsage(usage);
+
+    _texture->createInternalResources();
 }
 
 //------------------------------------------------------------------------------

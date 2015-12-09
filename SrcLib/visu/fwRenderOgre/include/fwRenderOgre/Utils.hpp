@@ -77,11 +77,27 @@ public:
 
     /**
      * @brief convertImageForNegato
-     * @param _texture The target texture
-     * @param _image The FW4SPL Image to convert
+     * @param[out] _textureThe target texture
+     * @param[in] _image The FW4SPL Image to convert
      * @return
      */
-    FWRENDEROGRE_API static void convertImageForNegato(::Ogre::Texture* _texture,const ::fwData::Image::sptr& _image );
+    FWRENDEROGRE_API static void convertImageForNegato(::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image );
+
+    /**
+     * @brief allocateTexture
+     *
+     * @param[out] _texture The target texture
+     * @param[in] _width width of the texture
+     * @param[in] _height height of the texture
+     * @param[in] _depth depth of the texture
+     * @param[in] _format pixel format
+     * @param[in] _texType texture type (::OGRE::TEX_TYPE_2D, TEX_TYPE_3D, ...)
+     * @param[in] _dynamic true if the image has to be modified frequently
+     * @return
+     */
+    FWRENDEROGRE_API static void allocateTexture(::Ogre::Texture* _texture, size_t _width, size_t _height,
+                                                 size_t _depth, ::Ogre::PixelFormat _format,
+                                                 ::Ogre::TextureType _texType, bool _dynamic);
 
     FWRENDEROGRE_API static ::Ogre::OverlaySystem* getOverlaySystem();
 
