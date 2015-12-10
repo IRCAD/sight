@@ -103,7 +103,7 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
         layout->addWidget(labelRadius);
         // add Double Spin Box
         m_SAORadius = new QDoubleSpinBox(m_container);
-        m_SAORadius->setRange(0.10,3.00);
+        m_SAORadius->setRange(0.01,3.00);
 //        m_SAORadius->setValue(m_saoChainManager->getSaoRadius());
         m_SAORadius->setValue(0.85);
         m_SAORadius->setSingleStep(0.05);

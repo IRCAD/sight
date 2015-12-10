@@ -63,6 +63,8 @@ compositor SAO_complet
 
             pass render_quad
             {
+                identifier 41
+
                 material Mip1_mat
                 input 0 mip0
             }
@@ -76,6 +78,8 @@ compositor SAO_complet
 
             pass render_quad
             {
+                identifier 42
+
                 material Mip1_mat
                 input 0 mip1
             }
@@ -87,6 +91,8 @@ compositor SAO_complet
 
             pass render_quad
             {
+                identifier 43
+
                 material Mip1_mat
                 input 0 mip2
             }
@@ -99,6 +105,8 @@ compositor SAO_complet
 
             pass render_quad
             {
+                identifier 44
+
                 material Mip1_mat
                 input 0 mip3
             }
@@ -111,6 +119,8 @@ compositor SAO_complet
 
             pass render_quad
             {
+                identifier 45
+
                 material Mip1_mat
                 input 0 mip4
             }
@@ -122,6 +132,8 @@ compositor SAO_complet
 
             pass render_quad
             {
+                identifier 46
+
                 material Mip1_mat
                 input 0 mip5
             }
@@ -134,6 +146,8 @@ compositor SAO_complet
 
             pass render_quad
             {
+                identifier 47
+
                 material Mip1_mat
                 input 0 mip6
             }
@@ -145,6 +159,8 @@ compositor SAO_complet
 
             pass render_quad
             {
+                identifier 48
+
                 material Mip1_mat
                 input 0 mip7
             }

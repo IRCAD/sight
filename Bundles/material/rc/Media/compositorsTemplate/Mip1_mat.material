@@ -13,8 +13,8 @@ fragment_program Mip_FP_def glsl
     source Mip_FP_def.glsl
     default_params
     {
-        param_named_auto u_vpWidth viewport_width
-        param_named_auto u_vpHeight viewport_height
+        param_named u_vpWidth float 0
+        param_named u_vpHeight float 0
     }
 }
 

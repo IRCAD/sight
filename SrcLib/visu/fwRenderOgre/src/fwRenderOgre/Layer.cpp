@@ -135,6 +135,7 @@ void Layer::createScene()
 
     m_saoManager = fwRenderOgre::SaoCompositorChainManager::New();
     m_saoManager->setOgreViewport(m_viewport);
+    m_saoManager->setSceneCamera(m_camera);
 
 
     if (m_depth != 0)

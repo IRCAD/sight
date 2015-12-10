@@ -43,7 +43,7 @@ void main()
         if (r!=0)
         {
             // horizontal = vec2(1,0)
-            vec2 uv =  (vec2(gl_FragCoord.xy) + vec2(1,0) * (r * scale))/vec2(u_vpWidth,u_vpHeight) ;
+            vec2 uv =  (gl_FragCoord.xy + vec2(1,0) * (r * scale))/vec2(u_vpWidth,u_vpHeight) ;
             tmp = texture(AO_map,uv);
             float tapKey = tmp.g * (256.0 / 257.0) + tmp.b * (1.0 / 257.0);
             float value = tmp.r;

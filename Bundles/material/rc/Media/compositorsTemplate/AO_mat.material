@@ -16,9 +16,9 @@ fragment_program Ao_compute_FP glsl
     {
         param_named_auto h viewport_height
         param_named_auto w viewport_width
-        param_named_auto MVP worldviewproj_matrix
         param_named_auto VerticalFieldOfView fov
         param_named_auto FAR_PLANE far_clip_distance
+        param_named u_projInfo float4 0 0 0 0
 
     }
 }
@@ -37,10 +37,10 @@ material AO_mat
 
             fragment_program_ref Ao_compute_FP
             {
-                param_named s int 11
+                param_named u_numSamples int 11
                 // we will change this value if s change, the best value is 7 for s = 9
                 // param_named tau int 7
-                param_named r float 0.85
+                param_named u_radius float 0.85
                 param_named MAX_MIP int 8
                 param_named q int 5
 

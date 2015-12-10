@@ -10,17 +10,15 @@ out float profondeur;
 void main()
 {
     // appliquer la formule en question pour définir la position de pnew en x et y
-//    vec2 pnew;
-//    pnew.x = (2*gl_FragCoord.x + (int(gl_FragCoord.y) & int(1) ^ int(1)));
-//    pnew.y = (2*gl_FragCoord.y + (int(gl_FragCoord.x) & int(1) ^ int(1)));
+    vec2 pnew;
+    pnew.x = (2*gl_FragCoord.x + (int(gl_FragCoord.y) & int(1) ^ int(1)));
+    pnew.y = (2*gl_FragCoord.y + (int(gl_FragCoord.x) & int(1) ^ int(1)));
 
     // récupérer la valeur de Mip_prev pour p_new
     // normalisation
 
-//    vec2 texCoord = pnew.xy/vec2(u_vpWidth,u_vpHeight);
-
+    pnew = pnew.xy/vec2(u_vpWidth,u_vpHeight);
 
     // optimisation
-    profondeur = texture(Mip_prev,
-                         vec2( 2*gl_FragCoord.x + (int(gl_FragCoord.y) & int(1)), 2*gl_FragCoord.y + (int(gl_FragCoord.x) & int(1) )).r;
+    profondeur = texture(Mip_prev, pnew).r;
 }

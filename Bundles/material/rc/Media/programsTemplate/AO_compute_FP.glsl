@@ -4,16 +4,21 @@
 const float PI = 3.141592653589793238462643383;
 in vec4 vertex;
 uniform sampler2D MipMap_tex; // MIP MAP texture
-uniform mat4 MVP; // modelViewProj matrix
 uniform float h; // height
 uniform float w; // width
-uniform int s; // samples number
-uniform float r; // radius (spiral)
+uniform int u_numSamples; // samples number
+uniform float u_radius; // radius (spiral)
 //uniform int tau; // number spiral turn
 uniform int MAX_MIP; // max mip level
 uniform float VerticalFieldOfView; // fov computed by ogre
 uniform float FAR_PLANE; //z far
 
+// we need here to use the Projection matrix
+/**  vec4(-2.0f / (width*P[0][0]),
+          -2.0f / (height*P[1][1]),
+          ( 1.0f - P[0][2]) / P[0][0],
+          ( 1.0f + P[1][2]) / P[1][1]) */
+uniform vec4 u_projInfo;
 
 uniform int q; // = log(q') in the paper
 
@@ -33,16 +38,47 @@ uniform float beta;
 // test
 out vec4 fragColor;
 
+/** Reconstruct camera-space P.xyz from screen-space S = (x, y) in
+    pixels and camera-space z < 0.  Assumes that the upper-left pixel center
+    is at (0.5, 0.5) [but that need not be the location at which the sample tap
+    was placed!]
+
+    Costs 3 MADD.  Error is on the order of 10^3 at the far plane, partly due to z precision.
+  */
+vec3 reconstructCSPosition(vec2 S, float z)
+{
+    // compute the postion from the Projection Matrix
+    return vec3 ((S.xy * u_projInfo.xy + u_projInfo.zw) * z, z);
+}
+
+/** Read the camera-space position of the point at screen-space pixel ssP */
+vec3 getPosition(ivec2 ssP, float z)
+{
+    // Offset to pixel center
+    vec3 P = reconstructCSPosition(vec2(ssP) + vec2(0.5), z);
+    return P;
+}
+
 void main()
 {
 
     // we must stay with the unit model
-    float r_fake = r;
+    float r_fake = u_radius *10;
 
 
     // best value for tau is 7 when s = 9
     // cast in float for best precision
-    int tau = int(floor(float(s) * float(7)/float(9)));
+    int tau = int(floor(float(u_numSamples) * float(7)/float(9)));
+
+
+    // compute the screen-Space location of C
+    ivec2 ssC = ivec2(gl_FragCoord.xy);
+
+
+    //-------------------------------------
+    // Calcul de fi, invariant dans la boucle
+    //-------------------------------------
+    float randomPatternRotationAngle = (3 * ssC.x ^ ssC.y + ssC.x * ssC.y) * 10;
 
 
     // get the texture coordinate
@@ -54,19 +90,15 @@ void main()
 
 
     //-------------------------
-    // Calcul de xc, yc
+    // Calcul de C (xc,yc,zc)
     //-------------------------
 
-    vec2 c_ = zc * vec2 ( ((1.0f - MVP[0][2])/MVP[0][0]) - ((2.0f*(gl_FragCoord.x +0.5f)) / (w* MVP[0][0])) ,
-                        ((1.0f + MVP[1][2])/MVP[1][1]) - ((-2.0f*(gl_FragCoord.y +0.5f)) / (h* MVP[1][1])) );
+    vec3 c = getPosition(ivec2(gl_FragCoord.xy),zc);
 
 
     //--------------------------------------------------------------------------
     // Calcul de nc -> dérivation du point c en x et y puis dot et normalize
     //--------------------------------------------------------------------------
-
-    vec3 c = vec3(c_,zc);
-    // we can use dFdx function instead of doing the calcul directly
 
     vec3 nc = normalize(cross(dFdy(c),dFdx(c)));
 
@@ -92,9 +124,6 @@ void main()
     float r_ = -r_fake * S / zc;
 
 
-    //-------------------------------------
-    // Calcul de fi, invariant dans la boucle
-    //-------------------------------------
     int fi = ((int(30) * int(gl_FragCoord.x)) ^ int(gl_FragCoord.y)) + (10*int(gl_FragCoord.x)*int(gl_FragCoord.y));
 
 
@@ -106,21 +135,19 @@ void main()
     int i;
     float sum=0.0f; // experimental
 
-    for (i=0; i < s; ++i)
+    for (i=0; i < u_numSamples; ++i)
     {
-        float alpha_i = (float(i)+0.5)/s;
+        float alpha_i = (float(i)+0.5)/u_numSamples;
         float h_i = r_ * alpha_i;
 
 
-        float theta_i = 2 * PI * alpha_i * tau + float(fi); // radian
+        float theta_i = 2 * PI * alpha_i * tau + float(randomPatternRotationAngle); // radian
 
         vec2 u_i = vec2(cos(theta_i),sin(theta_i));
 
-//         int m = clamp (findMSB(int (h)) - log_q);
 
-        // On préfèrera une implémentation directe plutôt que l'utilisation de clamp, find MSB , etc
-        int m_i = int (clamp(int(floor(log(h_i))) - q,0,MAX_MIP)); // à prendre avec des précautions!
-
+//        int m_i = int (clamp(int(floor(log(h_i))) - q,0,MAX_MIP)); // à prendre avec des précautions!
+        int m_i = clamp(findMSB(int(h_i)) - q, 0, MAX_MIP);
 
         // screen-space pixel with the correct size pow(2.0,m_i)
         vec2 pixel_i = vec2(vec2(gl_FragCoord.xy) + vec2(h_i*u_i));
@@ -128,10 +155,8 @@ void main()
 //        vec2 pixel_i_tmp = vec2(int(pixel_i.x) >> m_i, int(pixel_i.y) >> m_i);
 
 
-        // convert in texture coordinate -> normalisation par
-        float viewport_h_i = h/pow(2.0,m_i);
-        float viewport_w_i = w/pow(2.0,m_i);
-        vec2 pixel_coord_i = pixel_i/vec2(viewport_w_i,viewport_h_i);
+        // convert in texture coordinate -> normalisation
+        vec2 pixel_coord_i = pixel_i/vec2(w,h);
 
 //        vec2 uv_i = clamp (pixel_coord_i,vec2(0),textureSize(MipMap_tex,m_i) - vec2(1));
 
@@ -139,19 +164,21 @@ void main()
         float z_i = textureLod(MipMap_tex, pixel_coord_i ,m_i).r;
 
         // compute the location of the q[i]
+        vec3 qi = getPosition(ivec2(pixel_i.xy + vec2(0.5)),z_i);
 
-        vec2 q_ = z_i * vec2( ((1.0f - MVP[0][2])/MVP[0][0]) - ((2.0f*(pixel_i.x+0.5f)) / (w* MVP[0][0])) ,
-                            ((1.0f + MVP[1][2])/MVP[1][1]) - ((-2.0f*(pixel_i.y+0.5f)) / (h* MVP[1][1])) );
-
-        vec3 qi = vec3(q_,z_i);
         // vector Vi = vector from point C to point Qi
 
         vec3 vi = qi - c;
 
 //        sum += (max(0.0f,(dot (vi,nc) + zc* beta)/(dot(vi,vi)+epsilon)));
 
-        float f = max (pow(r_fake,2.0) - dot(vi,vi),0.0);
-        sum += (f*f*f* max( ( (dot(vi,nc)-0.01) / (0.01+dot(vi,vi)) ) ,
+        const float espilon = 0.01;
+        const float bias = 0.15;
+
+        float vv = dot (vi,vi);
+
+        float f = max (r_fake * r_fake - vv,0.0);
+        sum += (f*f*f* max( ( (dot(vi,nc)-bias) / (epsilon+vv) ) ,
                                     0.0 ));
 
     }
@@ -167,7 +194,8 @@ void main()
 
     // here we take sigma = 1, epsilon = 0.0001, Beta = 10⁻⁴ and k = 1
 //    float a = pow (max (0.0, 1.0f-(2.0f* sigma *sum)/s),k);
-    float a = max (0.0,1.0 - sum * (1.0/ pow(r_fake,6.0)) *(5.0 / s));
+    const float intensity = 2.0;
+    float a = max (0.0,1.0 - sum * (intensity/ pow(r_fake,6.0)) *(5.0 / u_numSamples));
 
 
     // 2*2 bilateral reconstruction filter
