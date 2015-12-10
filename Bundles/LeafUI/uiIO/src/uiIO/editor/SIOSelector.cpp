@@ -315,16 +315,24 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
                     jobCreatedSignal->connect(m_slotForwardJob);
                 }
 
-                reader->start();
-                reader->configureWithIHM();
+                try
+                {
+                    reader->start();
+                    reader->configureWithIHM();
 
-                ::fwGui::Cursor cursor;
-                cursor.setCursor(::fwGui::ICursor::BUSY);
-                reader->update();
-                cursor.setDefaultCursor();
+                    ::fwGui::Cursor cursor;
+                    cursor.setCursor(::fwGui::ICursor::BUSY);
+                    reader->update();
+                    cursor.setDefaultCursor();
 
-                reader->stop();
-                ::fwServices::OSR::unregisterService(reader);
+                    reader->stop();
+                    ::fwServices::OSR::unregisterService(reader);
+                }
+                catch (std::exception &e)
+                {
+                    std::string msg = "Failed to read : \n" + std::string(e.what());
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Reader Error", msg);
+                }
             }
             else
             {
@@ -343,16 +351,24 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
                     jobCreatedSignal->connect(m_slotForwardJob);
                 }
 
-                writer->start();
-                writer->configureWithIHM();
+                try
+                {
+                    writer->start();
+                    writer->configureWithIHM();
 
-                ::fwGui::Cursor cursor;
-                cursor.setCursor(::fwGui::ICursor::BUSY);
-                writer->update();
-                cursor.setDefaultCursor();
+                    ::fwGui::Cursor cursor;
+                    cursor.setCursor(::fwGui::ICursor::BUSY);
+                    writer->update();
+                    cursor.setDefaultCursor();
 
-                writer->stop();
-                ::fwServices::OSR::unregisterService(writer);
+                    writer->stop();
+                    ::fwServices::OSR::unregisterService(writer);
+                }
+                catch (std::exception &e)
+                {
+                    std::string msg = "Failed to write : \n" +  std::string(e.what());
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Writer Error", msg);
+                }
             }
         }
     }

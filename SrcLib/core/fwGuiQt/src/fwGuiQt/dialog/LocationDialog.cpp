@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -49,11 +49,34 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     QString filter                              = this->fileFilters();
     ::fwData::location::ILocation::sptr location;
 
+    QFileDialog dialog;
+    dialog.setDirectory(path);
+    dialog.setNameFilter(filter);
+    dialog.setWindowTitle(caption);
+
+    if (m_style & ::fwGui::dialog::ILocationDialog::READ)
+    {
+        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
+    }
+    else
+    {
+        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptSave);
+    }
+
+
     if (m_type == ::fwGui::dialog::ILocationDialog::MULTI_FILES)
     {
         SLM_ASSERT("MULTI_FILES type must have a READ style", m_style & ::fwGui::dialog::ILocationDialog::READ);
 
-        QStringList files = QFileDialog::getOpenFileNames( parent, caption, path, filter);
+        dialog.setFilter(QDir::Filter::Files);
+        dialog.setFileMode(QFileDialog::FileMode::ExistingFiles);
+        QStringList files;
+        if (dialog.exec())
+        {
+            files      = dialog.selectedFiles();
+            m_wildcard = dialog.selectedNameFilter().toStdString();
+
+        }
         if(!files.isEmpty())
         {
             ::fwData::location::MultiFiles::sptr multifiles = ::fwData::location::MultiFiles::New();
@@ -73,12 +96,20 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
         if ( (m_style & ::fwGui::dialog::ILocationDialog::READ) ||
              (m_style & ::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST) )
         {
-            fileName = QFileDialog::getOpenFileName(parent, caption, path, filter);
-
+            dialog.setFileMode(QFileDialog::FileMode::ExistingFile);
+            if (dialog.exec() && !dialog.selectedFiles().empty())
+            {
+                fileName   = dialog.selectedFiles()[0];
+                m_wildcard = dialog.selectedNameFilter().toStdString();
+            }
         }
         else if ( m_style & ::fwGui::dialog::ILocationDialog::WRITE )
         {
-            fileName = QFileDialog::getSaveFileName(parent, caption,  path,  filter);
+            if (dialog.exec() && !dialog.selectedFiles().empty())
+            {
+                fileName   = dialog.selectedFiles()[0];
+                m_wildcard = dialog.selectedNameFilter().toStdString();
+            }
 
         }
         if(!fileName.isNull())
@@ -89,8 +120,16 @@ LocationDialog::LocationDialog(::fwGui::GuiBaseObject::Key key) :
     }
     else if (m_type == ::fwGui::dialog::ILocationDialog::FOLDER)
     {
-        QString dir = QFileDialog::getExistingDirectory(parent, caption, path,
-                                                        QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+        dialog.setFilter(QDir::Filter::Dirs);
+        dialog.setAcceptMode(QFileDialog::AcceptMode::AcceptOpen);
+        dialog.setFileMode(QFileDialog::FileMode::Directory);
+
+        QString dir;
+        if (dialog.exec() && !dialog.selectedFiles().empty())
+        {
+            dir = dialog.selectedFiles()[0];
+        }
+
         if(!dir.isNull())
         {
             ::boost::filesystem::path bpath( dir.toStdString()  );
@@ -158,6 +197,27 @@ QString LocationDialog::fileFilters()
         result += filterName +" (" +  rawWildcards +")";
     }
     return QString::fromStdString(result);
+}
+
+//------------------------------------------------------------------------------
+
+std::string LocationDialog::getCurrentSelection() const
+{
+    std::string extension;
+    std::vector< std::pair < std::string, std::string > >::const_iterator iter;
+    for ( iter = m_filters.begin(); iter != m_filters.end(); ++iter)
+    {
+        const std::string& filterName       = iter->first;
+        const std::string& rawWildcards     = iter->second;
+        const std::string& availableFilters = filterName + " (" +  rawWildcards + ")";
+        if (!m_wildcard.compare(availableFilters) && iter != m_filters.begin())
+        {
+            extension = &rawWildcards[1];
+            break;
+        }
+    }
+
+    return extension;
 }
 
 //------------------------------------------------------------------------------

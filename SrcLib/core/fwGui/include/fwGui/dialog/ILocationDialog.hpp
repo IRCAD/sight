@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -96,6 +96,9 @@ public:
      * @return the ILocation selected or null sptr if user cancel the operation
      */
     FWGUI_API virtual ::fwData::location::ILocation::sptr show() = 0;
+
+    /// Gets the current extension file selection
+    FWGUI_API virtual std::string getCurrentSelection() const = 0;
 
 protected:
 
