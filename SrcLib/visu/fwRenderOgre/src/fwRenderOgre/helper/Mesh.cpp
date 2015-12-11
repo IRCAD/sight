@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwRenderOgre/helper/Mesh.hpp"
+#include <cstdint>
 
+#include "fwRenderOgre/helper/Mesh.hpp"
 #include "fwCore/spyLog.hpp"
 
 namespace fwRenderOgre
