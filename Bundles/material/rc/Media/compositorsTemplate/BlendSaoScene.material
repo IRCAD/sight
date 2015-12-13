@@ -14,6 +14,9 @@ fragment_program Blend_FP glsl
     {
         param_named_auto h viewport_height
         param_named_auto w viewport_width
+        param_named Occlusion_Map int 0
+        param_named scene int 1
+        param_named u_blend bool true
     }
 }
 
@@ -32,12 +35,16 @@ material BlendSaoScene
             {
             }
 
-            texture_unit Occlusion_map
+            texture_unit
             {
+                tex_address_mode clamp
+                filtering none
             }
 
-            texture_unit scene
+            texture_unit
             {
+                tex_address_mode clamp
+                filtering none
             }
         }
     }

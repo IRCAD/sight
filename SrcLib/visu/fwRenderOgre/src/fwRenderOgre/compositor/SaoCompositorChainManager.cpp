@@ -207,7 +207,6 @@ public:
 
         if (pass_id  >= 41)
         {
-            std::cout << "pass id :" << pass_id << std::endl;
             ::Ogre::CompositorChain* compChain =
                 ::Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_VP);
 
@@ -217,7 +216,12 @@ public:
 
             mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_vpWidth", static_cast<float>(prevMip.get()->getWidth()));
            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_vpHeight", static_cast<float>(prevMip.get()->getHeight()));
+        }
 
+        if (pass_id == 4)
+        {
+            // change the blend state
+            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_blend", this->getParent()->getBlend());
         }
     }
 
@@ -233,7 +237,7 @@ private:
 
 
 
-SaoCompositorChainManager::SaoCompositorChainManager(): m_ogreViewport(0),m_SaoRadius(0.85),m_SaoSamples(11)
+SaoCompositorChainManager::SaoCompositorChainManager(): m_ogreViewport(0),m_SaoRadius(0.85),m_SaoSamples(11),m_blend(false)
 {
 //    m_saoChain.push_back("Test");
 //    m_saoChain.push_back("MipMap");
@@ -248,11 +252,11 @@ SaoCompositorChainManager::SaoCompositorChainManager(): m_ogreViewport(0),m_SaoR
 
     // test with the only compositor doing all the work
     m_saoChain.push_back("SAO_complet");
-    m_saoChain.push_back("FinalChainCompositor");
+//    m_saoChain.push_back("FinalChainCompositor");
 
 }
 
-SaoCompositorChainManager::SaoCompositorChainManager(::Ogre::Viewport* viewport): m_ogreViewport(viewport),m_SaoRadius(0.85),m_SaoSamples(11)
+SaoCompositorChainManager::SaoCompositorChainManager(::Ogre::Viewport* viewport): m_ogreViewport(viewport),m_SaoRadius(0.85),m_SaoSamples(11),m_blend(false)
 {
     // create the chain
 //    m_saoChain.push_back("Test");
@@ -268,7 +272,7 @@ SaoCompositorChainManager::SaoCompositorChainManager(::Ogre::Viewport* viewport)
 
     // test with only one compositor
     m_saoChain.push_back("SAO_complet");
-    m_saoChain.push_back("FinalChainCompositor");
+//    m_saoChain.push_back("FinalChainCompositor");
 
 }
 
@@ -343,7 +347,18 @@ void SaoCompositorChainManager::setSaoState(bool state)
 
         // FINAL VERSION (for the moment)
 
-        // one compositor
+
+        // add final compositor but disable
+
+        const std::string FINAL_CHAIN_COMPOSITOR = "FinalChainCompositor";
+        bool needFinalCompositorSwap(false);
+        // if not present in the chain add it and disable it
+        if(!(compositorManager->getByName(FINAL_CHAIN_COMPOSITOR)).isNull())
+        {
+            compositorManager->setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, false);
+            compositorManager->removeCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
+            needFinalCompositorSwap = true;
+        }
 
 
         if (compChain->getCompositor("SAO_complet") != nullptr)
@@ -354,10 +369,10 @@ void SaoCompositorChainManager::setSaoState(bool state)
         compositorManager->addCompositor(m_ogreViewport,"SAO_complet");
         compChain->getCompositor("SAO_complet")->addListener(new SaoListener(m_ogreViewport,this));
 
-        // add the Final in the chain if not present
-        if (compChain->getCompositor("FinalChainCompositor") == nullptr)
+        if (needFinalCompositorSwap)
         {
-            compositorManager->addCompositor(m_ogreViewport,"FinalChainCompositor"); // suppression pour ajout à la fin de la chaine
+            compositorManager->addCompositor(m_ogreViewport,FINAL_CHAIN_COMPOSITOR);
+            compositorManager->setCompositorEnabled(m_ogreViewport,FINAL_CHAIN_COMPOSITOR,true);
         }
 
 
@@ -452,6 +467,20 @@ int SaoCompositorChainManager::getSaoSamples()
 void SaoCompositorChainManager::setSaoSamples(int newSamplesNumber)
 {
     m_SaoSamples = newSamplesNumber;
+}
+
+//-----------------------------------------------------------------------------
+
+bool SaoCompositorChainManager::getBlend()
+{
+    return m_blend;
+}
+
+//-----------------------------------------------------------------------------
+
+void SaoCompositorChainManager::enableBlend(bool state)
+{
+    m_blend = state;
 }
 
 

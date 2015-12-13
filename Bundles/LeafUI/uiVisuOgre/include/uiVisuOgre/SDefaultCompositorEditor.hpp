@@ -99,6 +99,8 @@ protected Q_SLOTS:
     void onSaoRadiusChange(double value);
     // slot to change the number of samples used to do the SAO
     void onSaoSampleChange(int value);
+    // slot to change the blend state
+    void onSaoBlendChange(int state);
 
 private:
     QWidget* m_container;
@@ -111,6 +113,7 @@ private:
     QPointer<QCheckBox> m_useCelShadingCheckBox;
     // Farid
     QPointer<QCheckBox> m_SAOCheckBox;
+    QPointer<QCheckBox> m_SAOBlend;
     QPointer<QDoubleSpinBox> m_SAORadius;
     QPointer<QSpinBox> m_SAOSamples;
     // end Farid

@@ -96,6 +96,16 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
         m_SAOCheckBox->setCheckState(Qt::CheckState(false));
         layout->addWidget(m_SAOCheckBox);
 
+        // ajout d'un bouton pour activer/desactiver le blend
+        // add Label
+        QLabel* labelBlend = new QLabel(tr("Blend"),m_container);
+        layout->addWidget(labelBlend);
+        // add CheckBox
+        m_SAOBlend = new QCheckBox(m_container);
+        m_SAOBlend->setCheckState(Qt::CheckState(false)); // the blend is enable by default
+        m_SAOBlend->setCheckable(false);
+        layout->addWidget(m_SAOBlend);
+
          // ajout d'un doubleSpinBox pour pouvoir modifier la valeur du rayon directement depuis l'interface
 
         // radius label
@@ -220,6 +230,9 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
 
     // same for the samples number
     QObject::connect(m_SAOSamples,SIGNAL(valueChanged(int)),this,SLOT(onSaoSampleChange(int)));
+
+    // connection blend checkbox - slot
+    QObject::connect(m_SAOBlend,SIGNAL(stateChanged(int)),this,SLOT(onSaoBlendChange(int)));
 
 
 }
@@ -415,13 +428,6 @@ void SDefaultCompositorEditor::onEditTransparency(int index)
 
 void SDefaultCompositorEditor::onSaoCheck(int state)
 {
-    // try to hard launch the MipMap compositor -> fail..
-    /*
-    ::Ogre::CompositorManager::getSingletonPtr()->removeCompositorChain(m_currentLayer->getViewport());
-    ::Ogre::CompositorManager::getSingletonPtr()->addCompositor(m_currentLayer->getViewport(), "MipMap");
-    ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled(m_currentLayer->getViewport(), "MipMap", true);
-    */
-
 
     // need to change the behaviour of the 3D layer selector -> when selected a good layer, set enable the sao Button
     m_saoChainManager = m_currentLayer->getSaoManager();
@@ -430,7 +436,8 @@ void SDefaultCompositorEditor::onSaoCheck(int state)
     m_SAORadius->setEnabled(state);
     // same for the samples number
     m_SAOSamples->setEnabled(state);
-
+    // same for the blend state
+    m_SAOBlend->setCheckable(state);
     this->update();
 }
 
@@ -455,6 +462,20 @@ void SDefaultCompositorEditor::onSaoSampleChange(int value)
 }
 
 //------------------------------------------------------------------------------
+
+void SDefaultCompositorEditor::onSaoBlendChange(int state)
+{
+
+    if (state == Qt::Checked)
+        std::cout << "Blend state active" << std::endl;
+    else
+        std::cout << "Blend state disable" << std::endl;
+    m_saoChainManager->enableBlend(state == Qt::Checked);
+    this->update();
+}
+
+//------------------------------------------------------------------------------
+
 
 
 } // namespace uiVisuOgre

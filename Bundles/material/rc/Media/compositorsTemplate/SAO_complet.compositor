@@ -28,7 +28,6 @@ compositor SAO_complet
 
         // blur texture targets
         texture AO_map_blur target_width target_height PF_A8R8G8B8
-        texture AO_map_blur2 target_width target_height PF_A8R8G8B8
 
         // final Occlusion Map
         texture Occlusion_map target_width target_height PF_A8R8G8B8
@@ -198,7 +197,7 @@ compositor SAO_complet
         }
 
 
-        target AO_map_blur2
+        target Occlusion_map
         {
             input none
             pass render_quad
@@ -210,7 +209,7 @@ compositor SAO_complet
             }
         }
 
-        // ---- Horizontal flip
+
 
         target_output
         {
@@ -218,23 +217,11 @@ compositor SAO_complet
             pass render_quad
             {
                 identifier 4
-
-                material render_scene
-                input 0 AO_map_blur2
+                material BlendSaoScene
+                input 0 Occlusion_map 0
+                input 1 scene 0
             }
         }
-
-
-//        target_output
-//        {
-//            input none
-//            pass render_quad
-//            {
-//                material BlendSaoScene
-//                input 0 Occlusion_map
-//                input 0 scene
-//            }
-//        }
 
 
     }

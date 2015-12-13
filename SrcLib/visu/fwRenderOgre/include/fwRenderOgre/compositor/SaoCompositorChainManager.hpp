@@ -57,6 +57,13 @@ public:
     // get the Samples number
     FWRENDEROGRE_API int getSaoSamples();
 
+    // Enable/disable the blend
+    FWRENDEROGRE_API void enableBlend(bool state);
+
+    // get the blend state
+    FWRENDEROGRE_API bool getBlend();
+
+
     // get/set the camera used to render the scene
     FWRENDEROGRE_API const ::Ogre::Camera* getSceneCamera() const;
     FWRENDEROGRE_API void setSceneCamera(const ::Ogre::Camera* camera);
@@ -81,6 +88,10 @@ private :
     double m_SaoRadius;
     // samples number
     int m_SaoSamples;
+
+    // blend or not the scene
+    bool m_blend;
+
 
     /// Camera used to render the 3D scene
     const ::Ogre::Camera* m_camera;
