@@ -63,6 +63,12 @@ public:
     // get the blend state
     FWRENDEROGRE_API bool getBlend();
 
+    // change the aoIntensity
+    FWRENDEROGRE_API void setAoIntensity(double new_intensity);
+
+    // get the ao Intensity
+    FWRENDEROGRE_API double getAoIntensity();
+
 
     // get/set the camera used to render the scene
     FWRENDEROGRE_API const ::Ogre::Camera* getSceneCamera() const;
@@ -92,6 +98,9 @@ private :
     // blend or not the scene
     bool m_blend;
 
+
+    // aoIntensity value
+    double m_AoIntensity;
 
     /// Camera used to render the 3D scene
     const ::Ogre::Camera* m_camera;

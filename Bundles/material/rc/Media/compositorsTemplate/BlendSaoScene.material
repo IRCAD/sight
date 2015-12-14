@@ -16,7 +16,8 @@ fragment_program Blend_FP glsl
         param_named_auto w viewport_width
         param_named Occlusion_Map int 0
         param_named scene int 1
-        param_named u_blend bool true
+        param_named u_blend int 1
+        param_named aoIntensity float 1
     }
 }
 

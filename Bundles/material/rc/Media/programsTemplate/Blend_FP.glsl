@@ -5,10 +5,10 @@ uniform float w;
 uniform float h;
 uniform sampler2D Occlusion_Map;
 uniform sampler2D scene;
-uniform bool u_blend;
+uniform int u_blend;
+uniform float aoIntensity;
 
 
-const float aoIntensity = 1.0f;
 
 
 out vec4 FragColor;
@@ -27,7 +27,7 @@ void main()
     ao = (clamp(1.0 - (1.0 - ao) * aoIntensity, 0.0, 1.0) + MIN_AMBIENT_LIGHT) /  (1.0 + MIN_AMBIENT_LIGHT);
 
 
-    if(u_blend)
+    if(u_blend == 0)
     {
         // get the color of the scene for the current pixel
         vec4 color = texture(scene,texCoord);

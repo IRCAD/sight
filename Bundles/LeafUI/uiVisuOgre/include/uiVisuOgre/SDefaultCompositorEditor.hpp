@@ -101,6 +101,8 @@ protected Q_SLOTS:
     void onSaoSampleChange(int value);
     // slot to change the blend state
     void onSaoBlendChange(int state);
+    // slot to change the AO Intensity
+    void onAoIntensityChange(double value);
 
 private:
     QWidget* m_container;
@@ -116,6 +118,7 @@ private:
     QPointer<QCheckBox> m_SAOBlend;
     QPointer<QDoubleSpinBox> m_SAORadius;
     QPointer<QSpinBox> m_SAOSamples;
+    QPointer<QDoubleSpinBox> m_AoIntensity;
     // end Farid
     QRadioButton* m_buttonDefault;
     QRadioButton* m_buttonDepthPeeling;

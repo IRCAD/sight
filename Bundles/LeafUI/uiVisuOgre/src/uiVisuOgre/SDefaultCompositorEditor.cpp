@@ -135,6 +135,16 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
         m_SAOSamples->setEnabled(false);
         layout->addWidget(m_SAOSamples);
 
+        // AO Intensity
+        QLabel* labelAoIntensity = new QLabel(tr("Intensity(AO)"),m_container);
+        layout->addWidget(labelAoIntensity);
+        // Double Spin Box
+        m_AoIntensity = new QDoubleSpinBox(m_container);
+        m_AoIntensity->setValue(1.0);
+        m_AoIntensity->setRange(0.1,5.0);
+        m_AoIntensity->setSingleStep(0.1);
+        m_AoIntensity->setEnabled(false);
+        layout->addWidget(m_AoIntensity);
 
     }
 
@@ -233,6 +243,9 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
 
     // connection blend checkbox - slot
     QObject::connect(m_SAOBlend,SIGNAL(stateChanged(int)),this,SLOT(onSaoBlendChange(int)));
+
+    // connection AoIntensity DoubleSpinBox - SaoCompositor Class
+    QObject::connect(m_AoIntensity,SIGNAL(valueChanged(double)),this,SLOT(onAoIntensityChange(double)));
 
 
 }
@@ -432,12 +445,12 @@ void SDefaultCompositorEditor::onSaoCheck(int state)
     // need to change the behaviour of the 3D layer selector -> when selected a good layer, set enable the sao Button
     m_saoChainManager = m_currentLayer->getSaoManager();
     m_saoChainManager->setSaoState(state == Qt::Checked);
-    // here we can enable/disable the SAO_radius Spin box
+    // here we can enable/disable the parameters
     m_SAORadius->setEnabled(state);
-    // same for the samples number
     m_SAOSamples->setEnabled(state);
-    // same for the blend state
     m_SAOBlend->setCheckable(state);
+    m_AoIntensity->setEnabled(state);
+
     this->update();
 }
 
@@ -466,13 +479,19 @@ void SDefaultCompositorEditor::onSaoSampleChange(int value)
 void SDefaultCompositorEditor::onSaoBlendChange(int state)
 {
 
-    if (state == Qt::Checked)
-        std::cout << "Blend state active" << std::endl;
-    else
-        std::cout << "Blend state disable" << std::endl;
     m_saoChainManager->enableBlend(state == Qt::Checked);
     this->update();
 }
+
+//------------------------------------------------------------------------------
+
+void SDefaultCompositorEditor::onAoIntensityChange(double value)
+{
+    // change the value of the radius in the SAO Chain Manager class
+    m_saoChainManager->setAoIntensity(value);
+    this->update();
+}
+
 
 //------------------------------------------------------------------------------
 

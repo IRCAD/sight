@@ -220,8 +220,21 @@ public:
 
         if (pass_id == 4)
         {
+            // Change the Blend State
+
+            // setNamedConstant doesn't work with bool value
+            int state;
+            if (this->getParent()->getBlend())
+                state = 0;
+            else
+                state = 1;
+
             // change the blend state
-            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_blend", this->getParent()->getBlend());
+            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_blend", state);
+
+            // Change the AO Intensity value
+
+            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("aoIntensity",static_cast<float>(this->getParent()->getAoIntensity()));
         }
     }
 
@@ -237,7 +250,7 @@ private:
 
 
 
-SaoCompositorChainManager::SaoCompositorChainManager(): m_ogreViewport(0),m_SaoRadius(0.85),m_SaoSamples(11),m_blend(false)
+SaoCompositorChainManager::SaoCompositorChainManager(): m_ogreViewport(0),m_SaoRadius(0.85),m_SaoSamples(11),m_blend(false),m_AoIntensity(1.0)
 {
 //    m_saoChain.push_back("Test");
 //    m_saoChain.push_back("MipMap");
@@ -256,7 +269,7 @@ SaoCompositorChainManager::SaoCompositorChainManager(): m_ogreViewport(0),m_SaoR
 
 }
 
-SaoCompositorChainManager::SaoCompositorChainManager(::Ogre::Viewport* viewport): m_ogreViewport(viewport),m_SaoRadius(0.85),m_SaoSamples(11),m_blend(false)
+SaoCompositorChainManager::SaoCompositorChainManager(::Ogre::Viewport* viewport): m_ogreViewport(viewport),m_SaoRadius(0.85),m_SaoSamples(11),m_blend(false),m_AoIntensity(1.0)
 {
     // create the chain
 //    m_saoChain.push_back("Test");
@@ -483,6 +496,19 @@ void SaoCompositorChainManager::enableBlend(bool state)
     m_blend = state;
 }
 
+//-----------------------------------------------------------------------------
+
+double SaoCompositorChainManager::getAoIntensity()
+{
+    return m_AoIntensity;
+}
+
+//-----------------------------------------------------------------------------
+
+void SaoCompositorChainManager::setAoIntensity(double new_intensity)
+{
+    m_AoIntensity = new_intensity;
+}
 
 
 }// namespace fwRenderOgre
