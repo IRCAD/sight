@@ -38,11 +38,11 @@ out VertexDataOut
     vec4 oColor;
     #   endif // FLAT
 
-    #   ifdef CEL_SHADING
-    vec3 normal_VS;
-    #   endif // CEL_SHADING
-
     #endif // PIXEL_LIT
+
+#   ifdef CEL_SHADING
+    vec3 normal_VS;
+#   endif // CEL_SHADING
 
 #endif // R2VB
 
@@ -78,7 +78,7 @@ void main(void)
 
 #   ifdef CEL_SHADING
     // TODO: merge with oNormal_WS
-    normal_VS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
+    vertexOut.normal_VS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
 #   endif
 
 #   ifdef PIXEL_LIT
