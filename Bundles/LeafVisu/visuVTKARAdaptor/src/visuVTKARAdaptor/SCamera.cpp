@@ -33,7 +33,6 @@
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::SCamera,
                          ::fwData::TransformationMatrix3D );
 
-
 namespace visuVTKARAdaptor
 {
 //------------------------------------------------------------------------------
@@ -70,6 +69,8 @@ static const double s_farPlane  = 10000;
 
 //------------------------------------------------------------------------------
 
+const ::fwCom::Signals::SignalKeyType SCamera::s_POSITION_MODIFIED_SIG = "positionModified";
+
 const ::fwCom::Slots::SlotKeyType SCamera::s_CALIBRATE_SLOT = "calibrate";
 
 //------------------------------------------------------------------------------
@@ -78,6 +79,7 @@ SCamera::SCamera() throw() :
     m_transOrig(nullptr),
     m_cameraCommand(CameraCallback::New(this))
 {
+    newSignal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
     m_slotCalibrate = newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
 }
 
@@ -243,6 +245,10 @@ void SCamera::updateFromTMatrix3D()
     trans->Delete();
 
     this->requestRender();
+
+    // notify that the camera position is modified
+    auto sig = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+    sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

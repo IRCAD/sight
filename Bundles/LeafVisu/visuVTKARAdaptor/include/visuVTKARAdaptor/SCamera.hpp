@@ -47,8 +47,21 @@ public:
     /// Destructor
     virtual ~SCamera() throw();
 
+    /**
+     * @name Signals API
+     * @{
+     */
+    VISUVTKARADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
+    typedef ::fwCom::Signal<void ()> PositionModifiedSignalType;
+    ///@}
+
+    /**
+     * @name Slots API
+     * @{
+     */
     VISUVTKARADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT;
     typedef ::fwCom::Slot<void ()> CalibrateSlotType;
+    ///@}
 
     /// Update Camera position from VTK.
     VISUVTKARADAPTOR_API void updateFromVtk();
