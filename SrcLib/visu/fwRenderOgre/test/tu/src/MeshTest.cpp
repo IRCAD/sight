@@ -6,6 +6,8 @@
 
 #include "MeshTest.hpp"
 
+#include <cstdint>
+
 #include <fwTest/helper/compare.hpp>
 #include <fwTest/Data.hpp>
 
