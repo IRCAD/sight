@@ -203,7 +203,7 @@ void WriterReaderTest::writeReadSeriesDBTest()
     // gdcm only manage ambient color in reconstruction
     ::fwData::Material::sptr material = ::fwData::Material::New();
     ::fwData::Color::sptr color       = ::fwTest::generator::Object::randomizeColor();
-    material->setAmbient(color);
+    material->setDiffuse(color);
     rec->setMaterial(material);
     rec->setImage(::fwData::Image::sptr()); // not managed
 

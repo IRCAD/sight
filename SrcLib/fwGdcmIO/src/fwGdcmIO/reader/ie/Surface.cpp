@@ -124,7 +124,7 @@ void Surface::readSurfaceMeshModule(::gdcm::SmartPointer< ::gdcm::Surface > surf
     // Set reconstruction's color
     ::fwData::Color::sptr color = ::fwData::Color::New();
     color->setRGBA( rgba );
-    material->setAmbient(color);
+    material->setDiffuse(color);
     OSLM_TRACE("RGBA color : " << rgba[0]<<" "<< rgba[1]<<" "<< rgba[2]<<" "<< rgba[3]);
 
     // Recommended Presentation Type

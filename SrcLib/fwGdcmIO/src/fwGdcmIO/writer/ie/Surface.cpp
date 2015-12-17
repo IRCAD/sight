@@ -309,7 +309,7 @@ void Surface::writeSurfaceMeshModule(unsigned short segmentationNumber)
         OSLM_TRACE("Surface Processing : NO");
 
         // Get reconstruction's color
-        std::array< float, 4 > rgba = material->ambient()->getRGBA();
+        std::array< float, 4 > rgba = material->diffuse()->getRGBA();
         std::vector< float > rgb(3);
         rgb[0] = rgba[0];
         rgb[1] = rgba[1];

@@ -144,17 +144,17 @@ const gdcm::PhotometricInterpretation DicomData::getPhotometricInterpretation(co
 //------------------------------------------------------------------------------
 
 ::gdcm::Surface::VIEWType DicomData::convertToPresentationType(
-    ::fwData::Material::REPRESENTATION_MODE representationMode)
+    ::fwData::Material::RepresentationType representationMode)
 {
     switch (representationMode)
     {
-        case ::fwData::Material::MODE_SURFACE:
+        case ::fwData::Material::SURFACE:
             return ::gdcm::Surface::SURFACE;
             break;
-        case ::fwData::Material::MODE_POINT:
+        case ::fwData::Material::POINT:
             return ::gdcm::Surface::POINTS;
             break;
-        case ::fwData::Material::MODE_WIREFRAME:
+        case ::fwData::Material::WIREFRAME:
             return ::gdcm::Surface::WIREFRAME;
             break;
         default:
@@ -165,39 +165,39 @@ const gdcm::PhotometricInterpretation DicomData::getPhotometricInterpretation(co
 
 //------------------------------------------------------------------------------
 
-::fwData::Material::REPRESENTATION_MODE DicomData::convertToRepresentationMode(
+::fwData::Material::RepresentationType DicomData::convertToRepresentationMode(
     ::gdcm::Surface::VIEWType presentationType)
 {
     switch (presentationType)
     {
         case ::gdcm::Surface::SURFACE:
-            return ::fwData::Material::MODE_SURFACE;
+            return ::fwData::Material::SURFACE;
             break;
         case ::gdcm::Surface::WIREFRAME:
-            return ::fwData::Material::MODE_WIREFRAME;
+            return ::fwData::Material::WIREFRAME;
             break;
         case ::gdcm::Surface::POINTS:
-            return ::fwData::Material::MODE_POINT;
+            return ::fwData::Material::POINT;
             break;
         default:
             SLM_WARN("Presentation type not handle (changed to : SURFACE)");
-            return ::fwData::Material::MODE_SURFACE;
+            return ::fwData::Material::SURFACE;
     }
 }
 
 //------------------------------------------------------------------------------
 
-const char* DicomData::convertToPresentationTypeString(::fwData::Material::REPRESENTATION_MODE representationMode)
+const char* DicomData::convertToPresentationTypeString(::fwData::Material::RepresentationType representationMode)
 {
     switch (representationMode)
     {
-        case ::fwData::Material::MODE_SURFACE:
+        case ::fwData::Material::SURFACE:
             return "SURFACE";
             break;
-        case ::fwData::Material::MODE_POINT:
+        case ::fwData::Material::POINT:
             return "POINTS";
             break;
-        case ::fwData::Material::MODE_WIREFRAME:
+        case ::fwData::Material::WIREFRAME:
             return "WIREFRAME";
             break;
         default:

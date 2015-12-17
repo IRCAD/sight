@@ -122,7 +122,7 @@ void ModelSeriesWriter::write()
 
         // retrieves reconstruction color
         ::fwData::Material::sptr material = rec->getMaterial();
-        ::fwData::Color::sptr color       = material->ambient();
+        ::fwData::Color::sptr color       = material->diffuse();
         double red   = color->red();
         double green = color->green();
         double blue  = color->blue();
@@ -179,16 +179,19 @@ vtkActor * ModelSeriesWriter::createActor( ::fwData::Reconstruction::sptr pRecon
     mapper->SetInputData(polyData);
     actor->SetMapper(mapper);
 
-    ::fwData::Color::sptr color = material->ambient();
     vtkProperty *property = actor->GetProperty();
-    property->SetColor( color->red(), color->green(), color->blue());
+
+    ::fwData::Color::sptr diffuse = material->diffuse();
+    property->SetDiffuseColor(diffuse->red(), diffuse->green(), diffuse->blue());
+    property->SetOpacity( diffuse->alpha() );
+
+    ::fwData::Color::sptr ambient = material->ambient();
+    property->SetAmbientColor(ambient->red(), ambient->green(), ambient->blue());
+
     property->SetSpecularColor(1.,1.,1.);
     property->SetSpecularPower(100.); //Shininess
-    property->SetAmbient(.05);
-    property->SetDiffuse(1.);
-    property->SetSpecular(1.);
+
     property->SetInterpolationToPhong();
-    property->SetOpacity( color->alpha() );
 
     return actor;
 }

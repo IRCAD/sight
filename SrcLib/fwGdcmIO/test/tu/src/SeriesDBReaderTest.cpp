@@ -579,7 +579,7 @@ void SeriesDBReaderTest::readSEGSeries()
 
     // Check material
     ::fwData::Material::sptr material = reconstruction->getMaterial();
-    ::fwData::Color::sptr color       = material->ambient();
+    ::fwData::Color::sptr color       = material->diffuse();
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.8 ), color->red(), delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.2 ), color->green(), delta);
     CPPUNIT_ASSERT_DOUBLES_EQUAL( double( 0.2 ), color->blue(), delta);

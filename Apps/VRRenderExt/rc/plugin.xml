@@ -91,7 +91,7 @@
         <id>MDAtomsConfig</id>
         <desc>reader/writer config to read/write an atom representing a medical data</desc>
         <config>
-            <patcher context="MedicalData" version="V08ALA" />
+            <patcher context="MedicalData" version="V09ALA" />
         </config>
     </extension>
 

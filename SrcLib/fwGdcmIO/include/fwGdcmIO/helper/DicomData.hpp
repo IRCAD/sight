@@ -265,14 +265,14 @@ public:
      * @return Corresponding recommended presentation type.
      */
     FWGDCMIO_API static ::gdcm::Surface::VIEWType convertToPresentationType(
-        ::fwData::Material::REPRESENTATION_MODE representationMode);
+        ::fwData::Material::RepresentationType representationMode);
 
     /**
      * @brief Convert a surface recommended presentation type (DICOM) into representation mode (FW4SPL).
      * @param[in] presentationType Surface recommended presentation type.
      * @return Corresponding representation mode
      */
-    FWGDCMIO_API static ::fwData::Material::REPRESENTATION_MODE convertToRepresentationMode(
+    FWGDCMIO_API static ::fwData::Material::RepresentationType convertToRepresentationMode(
         ::gdcm::Surface::VIEWType presentationType);
 
     /**
@@ -281,7 +281,7 @@ public:
      * @param[in] representationMode Reconstruction's material representation mode (eg : SURFACE, POINT, ...).
      */
     FWGDCMIO_API static const char* convertToPresentationTypeString(
-        ::fwData::Material::REPRESENTATION_MODE representationMode);
+        ::fwData::Material::RepresentationType representationMode);
 
     /***
      * @brief Convert a 3D point to the closest frame number index
