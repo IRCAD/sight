@@ -20,9 +20,21 @@ macro(linux_install PRJ_NAME)
     string(TOLOWER ${PRJ_NAME} LOWER_PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 
-    set(LAUNCHER_PATH "bin/launcher-0.1")
-    set(LAUNCHER "launcher-0.1")
-    set(PROFILE_PATH "${PRJ_NAME}_${DASH_VERSION}/profile.xml")
+    if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
+
+        set(LAUNCHER_PATH "bin/launcher-${launcher_VERSION}")
+        set(LAUNCHER "launcher-${launcher_VERSION}")
+        set(PROFILE_PATH "${PRJ_NAME}_${DASH_VERSION}/profile.xml")
+
+    elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
+
+        set(LAUNCHER_PATH "bin/${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
+        set(LAUNCHER "${PRJ_NAME}-${${PRJ_NAME}_VERSION}")
+        set(PROFILE_PATH "")
+
+    else()
+        message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${${PRJ_NAME}_TYPE})")
+    endif()
 
     #configure the 'fixup' script
     configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
@@ -34,8 +46,11 @@ macro(linux_install PRJ_NAME)
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_VERSION "${VERSION}")
 
-    configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh @ONLY)
-    install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh DESTINATION ${CMAKE_INSTALL_PREFIX} )
+    if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh @ONLY)
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh DESTINATION ${CMAKE_INSTALL_PREFIX} )
+    endif()
+
     #Copy the qt font directory inside install/libs
     install( DIRECTORY "${EXTERNAL_LIBRARIES}/lib/fonts" DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
 
