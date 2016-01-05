@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -93,8 +93,12 @@ protected:
         </service>
        @endverbatim
      * With:
-     * @li \b mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached object is
-     * deleted but swap it on a dummy object.
+     * @li \b mode : must be "stop", "dummy" or "startAndUpdate".
+     *     - The mode "stop", used by default, starts the services when their attached object is added in the compsite
+     *       and stop and unregister the services when the object is deleted.
+     *     - The mode "dummy" doesn't stop the services when its attached object is deleted but swap it on a dummy
+     *       object.
+     *     - The mode "startAndUpdate" start and update the services when its attached object is added in the composite.
      * @li the objects and services tags are defined as same as the configuration of objects and services.
      * @li \b autoConnect: optional (default value = false), if true allows to listen signals from the associated object.
      * @li \b worker: optional, allows to manage the service in another thread.

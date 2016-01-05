@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,6 +24,15 @@ namespace activities
 namespace action
 {
 
+/**
+ * @brief This action launchs an activity according to the selected data
+ *
+ * This action works on a ::fwData::Vector. It proposes all the available activity according to the selected data and
+ * the given configuration. And then, send a signal with all the activity information.
+ *
+ * This action should be followed by the service '::guiQt::editor::DynamicView' : this service listens the action
+ * signals and launchs the activity in a new tab.
+ */
 class ACTIVITIES_CLASS_API SActivityLauncher : public ::fwGui::IActionSrv
 {
 
@@ -101,6 +110,36 @@ protected:
          </config>
        </service>
        @endverbatim
+     *
+     * - \b mode (optional): there are two mode: "message" and "immediate"
+     *    - \b message (used by défaut): the action send a signal containing the information needed to launch the
+     *      choosen activity. The service '::guiQt::editor::DynamicView' allows to launch the activity in a new tab. For
+     *      that, it must listen the action signal.
+     *    - \b immediate: the activity is automatically started et stopped by this action. It is used to run a process
+     *      without creating a new tab, for example, to save the selected data.
+     * - \b parameters (optional): list of the parameters used to launch the activity, it is the parameters for the
+     *   AppConfig associated to the activity.
+     *    - \b parameter: defines a parameter
+     *        - \b replace: name of the parameter as defined in the AppConfig
+     *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
+     *          frontal) or define a sesh@ path (ex. @values.myImage). The root object of the sesh@ path if the
+     *          composite contained in the ActivitySeries.
+     * - \b filter (optional): it allows to filter the activity that can be proposed.
+     *    - \b mode: 'include' or 'exclude'. Defines if the activity in the following list are proposed (include) or not
+     *      (exclude).
+     *    - \b id: id of the activity
+     * - \b quickLaunch (optional): defines the activity that will be launched on a double-click on a series. The
+     *   launched activity depends of the series type (ImageSeries, ModelSeries, ...).
+     *    - \b association: allows to associate an activity to launch with a type of series
+     *       - \b type: type of series (::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ....)
+     *       - \b id: identifier of the activity.
+     *
+     *
+     * @note A sesh@ path is a path used to browse an object (and sub-object) using the introspection (see fwDataCamp).
+     *       The path begins with a '@' or a '!'.
+     *          - '@' : the returned string is the fwID of the sub-object defined by the path.
+     *          - '!' : the returned string is the value of the sub-object, it works only on String, Integer, Float and
+     *            Boolean object.
      */
     virtual void configuring() throw(fwTools::Failed);
 
