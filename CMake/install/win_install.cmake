@@ -22,9 +22,16 @@ macro(win_install PRJ_NAME)
     string(TOLOWER ${PRJ_NAME} LOWER_PRJ_NAME)    
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
     
-    set(LAUNCHER_PATH "bin/launcher.exe")
-    set(PROFILE_PATH "${${PRJ_NAME}_BUNDLE_DIR}/profile.xml")
-
+    if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
+        set(LAUNCHER_PATH "bin/launcher.exe")
+        set(PROFILE_PATH "${${PRJ_NAME}_BUNDLE_DIR}/profile.xml")
+    elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
+        set(LAUNCHER_PATH "bin/${PRJ_NAME}.exe")
+        set(PROFILE_PATH "")
+    else()
+        message(FATAL_ERROR "'${PRJ_NAME}' is not a installable (type : ${${PRJ_NAME}_TYPE})")
+    endif()
+    
     list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/install/windows/NSIS/)
 
     #configure the 'fixup' script
