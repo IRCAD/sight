@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -78,15 +78,15 @@ void ModelSeriesTest::createReconstructionFromMesh()
         const std::string structureType = "Liver";
 
         auto rec = ::fwMedDataTools::ModelSeries::createReconstructionFromMesh( mesh, organName, structureType, color,
-                                                                                ::fwData::Material::MODE_SURFACE);
+                                                                                ::fwData::Material::SURFACE);
 
         CPPUNIT_ASSERT_EQUAL(rec->getMesh(), mesh);
         CPPUNIT_ASSERT_EQUAL(rec->getOrganName(), organName);
         CPPUNIT_ASSERT_EQUAL(rec->getStructureType(), structureType);
         CPPUNIT_ASSERT_EQUAL(rec->getIsVisible(), true);
-        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::MODE_SURFACE);
+        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::SURFACE);
 
-        auto ambient = rec->getMaterial()->ambient();
+        auto ambient = rec->getMaterial()->diffuse();
         CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0f);
         CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3f);
         CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7f);
@@ -98,16 +98,16 @@ void ModelSeriesTest::createReconstructionFromMesh()
         const std::string structureType = "Foofoo";
 
         auto rec = ::fwMedDataTools::ModelSeries::createReconstructionFromMesh( mesh, organName, structureType, color,
-                                                                                ::fwData::Material::MODE_WIREFRAME,
+                                                                                ::fwData::Material::WIREFRAME,
                                                                                 false);
 
         CPPUNIT_ASSERT_EQUAL(rec->getMesh(), mesh);
         CPPUNIT_ASSERT_EQUAL(rec->getOrganName(), organName);
         CPPUNIT_ASSERT_EQUAL(rec->getStructureType(), structureType);
         CPPUNIT_ASSERT_EQUAL(rec->getIsVisible(), false);
-        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::MODE_WIREFRAME);
+        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::WIREFRAME);
 
-        auto ambient = rec->getMaterial()->ambient();
+        auto ambient = rec->getMaterial()->diffuse();
         CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0f);
         CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3f);
         CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7f);
@@ -129,7 +129,7 @@ void ModelSeriesTest::addMesh()
         const std::string structureType = "Liver";
 
         ::fwMedDataTools::ModelSeries::addMesh( modelSeries, mesh, organName, structureType, color,
-                                                ::fwData::Material::MODE_SURFACE);
+                                                ::fwData::Material::SURFACE);
 
         auto rec = recDB[0];
 
@@ -137,9 +137,9 @@ void ModelSeriesTest::addMesh()
         CPPUNIT_ASSERT_EQUAL(rec->getOrganName(), organName);
         CPPUNIT_ASSERT_EQUAL(rec->getStructureType(), structureType);
         CPPUNIT_ASSERT_EQUAL(rec->getIsVisible(), true);
-        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::MODE_SURFACE);
+        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::SURFACE);
 
-        auto ambient = rec->getMaterial()->ambient();
+        auto ambient = rec->getMaterial()->diffuse();
         CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0f);
         CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3f);
         CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7f);
@@ -154,7 +154,7 @@ void ModelSeriesTest::addMesh()
         const std::string structureType = "Foofoo";
 
         ::fwMedDataTools::ModelSeries::addMesh( modelSeries, mesh, organName, structureType, color,
-                                                ::fwData::Material::MODE_WIREFRAME,
+                                                ::fwData::Material::WIREFRAME,
                                                 false);
         auto rec = recDB[1];
 
@@ -162,9 +162,9 @@ void ModelSeriesTest::addMesh()
         CPPUNIT_ASSERT_EQUAL(rec->getOrganName(), organName);
         CPPUNIT_ASSERT_EQUAL(rec->getStructureType(), structureType);
         CPPUNIT_ASSERT_EQUAL(rec->getIsVisible(), false);
-        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::MODE_WIREFRAME);
+        CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(),  ::fwData::Material::WIREFRAME);
 
-        auto ambient = rec->getMaterial()->ambient();
+        auto ambient = rec->getMaterial()->diffuse();
         CPPUNIT_ASSERT_EQUAL(ambient->red(), 0.1f);
         CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3f);
         CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7f);

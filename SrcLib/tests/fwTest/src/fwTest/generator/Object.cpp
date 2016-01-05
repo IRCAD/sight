@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -292,7 +292,7 @@ namespace generator
 
 ::fwData::Material::sptr Object::createMaterial()
 {
-    // use the default value MODE_PHONG,MODE_SURFACE, MODE_STANDARD
+    // use the default value PHONG,SURFACE, STANDARD
 
     ::fwData::Color::sptr ambient = ::fwData::Color::New();
     ambient->setRGBA(0.5f,0.5f,0.5f,0.5f);

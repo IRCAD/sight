@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -143,9 +143,9 @@ void OrganMaterialEditor::onColorButton()
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
-    int red   = material->ambient()->red()*255;
-    int green = material->ambient()->green()*255;
-    int blue  = material->ambient()->blue()*255;
+    int red   = material->diffuse()->red()*255;
+    int green = material->diffuse()->green()*255;
+    int blue  = material->diffuse()->blue()*255;
 
     // Create Color choice dialog.
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -157,9 +157,9 @@ void OrganMaterialEditor::onColorButton()
     QColor color = QColorDialog::getColor(oldColor, container);
     if(color.isValid())
     {
-        material->ambient()->red()   = color.redF();
-        material->ambient()->green() = color.greenF();
-        material->ambient()->blue()  = color.blueF();
+        material->diffuse()->red()   = color.redF();
+        material->diffuse()->green() = color.greenF();
+        material->diffuse()->blue()  = color.blueF();
         this->materialNotification();
         refreshMaterial();
     }
@@ -174,7 +174,7 @@ void OrganMaterialEditor::onOpacitySlider(int value )
     SLM_ASSERT("No Reconstruction!", reconstruction);
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
-    material->ambient()->alpha()      = value/100.0;
+    material->diffuse()->alpha()      = value/100.0;
     std::stringstream ss;
     ss << value << "%";
     m_transparencyValue->setText(QString::fromStdString(ss.str()));
@@ -198,10 +198,10 @@ void OrganMaterialEditor::refreshMaterial( )
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
     QColor materialColor = QColor (
-        material->ambient()->red()*255,
-        material->ambient()->green()*255,
-        material->ambient()->blue()*255,
-        material->ambient()->alpha()*255
+        material->diffuse()->red()*255,
+        material->diffuse()->green()*255,
+        material->diffuse()->blue()*255,
+        material->diffuse()->alpha()*255
         );
 
     int iconSize = m_colourButton->style()->pixelMetric(QStyle::PM_LargeIconSize);
@@ -210,7 +210,7 @@ void OrganMaterialEditor::refreshMaterial( )
 
     m_colourButton->setIcon(QIcon(pix));
 
-    int a = material->ambient()->alpha()*100;
+    int a = material->diffuse()->alpha()*100;
     m_opacitySlider->setValue( a );
     std::stringstream ss;
     ss << a << "%";

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -121,7 +121,7 @@ public:
 
     VISUVTKADAPTOR_API bool getVisibility() const;
 
-    /// Creates normals adaptor if material has MODE_NORMALS, else remove normals adaptor.
+    /// Creates normals adaptor if material has NORMALS, else remove normals adaptor.
     VISUVTKADAPTOR_API void updateOptionsMode();
 
     /// Used to update normal mode (0: none, 1: point, 2: cell)

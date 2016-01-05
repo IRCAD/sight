@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -82,47 +82,36 @@ public:
     FWDATA_API void setDiffuseTexture(const Image::sptr& diffuseTexture);
 
     /**
-     * @brief Setter for lighting
-     *
-     * @param boolean lighting
-     */
-    FWDATA_API void setLighting(bool lighting);
-
-    /**
-     * @brief return lighting
-     *
-     */
-    FWDATA_API bool getLighting() const;
-
-    /**
      * @brief Options
      */
     typedef enum
     {
-        MODE_STANDARD = 1,
-        MODE_NORMALS  = 2,
-    } OPTIONS_MODE;
+        STANDARD      = 1,
+        NORMALS       = 2,
+        CELLS_NORMALS = 3,
+    } OptionsType;
 
     /**
      * @brief Shading models
      */
     typedef enum
     {
-        MODE_FLAT    = 1,
-        MODE_GOURAUD = 2, //MODE_FLAT<<1 -> 10
-        MODE_PHONG   = 4, //MODE_FLAT<<2 -> 100
-    } SHADING_MODE;
+        AMBIENT = 0,
+        FLAT    = 1,
+        GOURAUD = 2, //FLAT<<1 -> 10
+        PHONG   = 4, //FLAT<<2 -> 100
+    } ShadingType;
 
     /**
      * @brief Representation models
      */
     typedef enum
     {
-        MODE_SURFACE   = 1, //1
-        MODE_POINT     = 2, //MODE_SURFACE<<1 -> 10
-        MODE_WIREFRAME = 4, //MODE_SURFACE<<2 -> 100
-        MODE_EDGE      = 5, //MODE_SURFACE|MODE_WIREFRAME -> 101
-    } REPRESENTATION_MODE;
+        SURFACE   = 1, //1
+        POINT     = 2, //SURFACE<<1 -> 10
+        WIREFRAME = 4, //SURFACE<<2 -> 100
+        EDGE      = 5, //SURFACE|WIREFRAME -> 101
+    } RepresentationType;
 
 
     /**
@@ -146,28 +135,28 @@ public:
     /** @{
      *  @brief get/set the shading models(flat, gouraud, phong)
      */
-    const SHADING_MODE getShadingMode() const;
-    SHADING_MODE& getRefShadingMode();
-    const SHADING_MODE & getCRefShadingMode() const;
-    void setShadingMode(SHADING_MODE _shadingMode);
+    const ShadingType getShadingMode() const;
+    ShadingType& getRefShadingMode();
+    const ShadingType & getCRefShadingMode() const;
+    void setShadingMode(ShadingType _shadingMode);
     /// @}
 
     /** @{
      *  @brief get/set the representation models (edge, point, wireframe, surface)
      */
-    const REPRESENTATION_MODE getRepresentationMode() const;
-    REPRESENTATION_MODE& getRefRepresentationMode();
-    const REPRESENTATION_MODE& getCRefRepresentationMode() const;
-    void setRepresentationMode(REPRESENTATION_MODE _representationMode);
+    const RepresentationType getRepresentationMode() const;
+    RepresentationType& getRefRepresentationMode();
+    const RepresentationType& getCRefRepresentationMode() const;
+    void setRepresentationMode(RepresentationType _representationMode);
     /// @}
 
     /** @{
      *  @brief get/set the option representation (Standard, normals)
      */
-    const OPTIONS_MODE  getOptionsMode () const;
-    OPTIONS_MODE& getRefOptionsMode ();
-    const OPTIONS_MODE& getCRefOptionsMode () const;
-    void setOptionsMode (OPTIONS_MODE _optionsMode);
+    const OptionsType  getOptionsMode () const;
+    OptionsType& getRefOptionsMode ();
+    const OptionsType& getCRefOptionsMode () const;
+    void setOptionsMode (OptionsType _optionsMode);
     /// @}
 
     /** @{
@@ -206,13 +195,13 @@ public:
 protected:
 
     /// Shading mode (flat, Gouraud, Phong)
-    SHADING_MODE m_shadingMode;
+    ShadingType m_shadingMode;
 
     /// Fill mode (flat, wireframe, point)
-    REPRESENTATION_MODE m_representationMode;
+    RepresentationType m_representationMode;
 
     /// Options mode (display normals or not)
-    OPTIONS_MODE m_optionsMode;
+    OptionsType m_optionsMode;
 
     /// Ambient color
     Color::sptr m_ambient;
@@ -228,91 +217,88 @@ protected:
 
     /// Wrapping for diffuse texture
     WrappingType m_diffuseTextureWrapping;
-
-    /// Enable or not the lighting on material (true by default)
-    bool m_lighting;
 };
 
 //-----------------------------------------------------------------------------
 
-inline const Material::SHADING_MODE Material::getShadingMode() const
+inline const Material::ShadingType Material::getShadingMode() const
 {
     return m_shadingMode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline Material::SHADING_MODE& Material::getRefShadingMode()
+inline Material::ShadingType& Material::getRefShadingMode()
 {
     return this->m_shadingMode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Material::SHADING_MODE & Material::getCRefShadingMode() const
+inline const Material::ShadingType & Material::getCRefShadingMode() const
 {
     return this->m_shadingMode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Material::setShadingMode(SHADING_MODE _shadingMode)
+inline void Material::setShadingMode(ShadingType _shadingMode)
 {
     this->m_shadingMode = _shadingMode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Material::REPRESENTATION_MODE Material::getRepresentationMode() const
+inline const Material::RepresentationType Material::getRepresentationMode() const
 {
     return m_representationMode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline Material::REPRESENTATION_MODE& Material::getRefRepresentationMode()
+inline Material::RepresentationType& Material::getRefRepresentationMode()
 {
     return this->m_representationMode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Material::REPRESENTATION_MODE& Material::getCRefRepresentationMode() const
+inline const Material::RepresentationType& Material::getCRefRepresentationMode() const
 {
     return this->m_representationMode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Material::setRepresentationMode(REPRESENTATION_MODE _representationMode)
+inline void Material::setRepresentationMode(RepresentationType _representationMode)
 {
     this->m_representationMode = _representationMode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Material::OPTIONS_MODE Material::getOptionsMode () const
+inline const Material::OptionsType Material::getOptionsMode () const
 {
     return m_optionsMode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline Material::OPTIONS_MODE& Material::getRefOptionsMode ()
+inline Material::OptionsType& Material::getRefOptionsMode ()
 {
     return this->m_optionsMode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const Material::OPTIONS_MODE& Material::getCRefOptionsMode () const
+inline const Material::OptionsType& Material::getCRefOptionsMode () const
 {
     return this->m_optionsMode;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Material::setOptionsMode (OPTIONS_MODE _optionsMode)
+inline void Material::setOptionsMode (OptionsType _optionsMode)
 {
     this->m_optionsMode = _optionsMode;
 }

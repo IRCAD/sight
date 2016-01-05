@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -103,20 +103,26 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     groupBoxShading->setLayout(layoutGroupBoxShading);
     m_buttonGroupShading = new QButtonGroup(groupBoxShading);
 
+    QRadioButton *buttonAmbient = new QRadioButton ( tr("Ambient"), groupBoxShading );
+    buttonAmbient->setMinimumSize(buttonAmbient->sizeHint());
+    m_buttonGroupShading->addButton(buttonAmbient, 0);
+    layoutGroupBoxShading->addWidget(buttonAmbient);
+    buttonAmbient->setChecked(true);
+
     QRadioButton *buttonFlat = new QRadioButton ( tr("Flat"), groupBoxShading );
     buttonFlat->setMinimumSize(buttonFlat->sizeHint());
-    m_buttonGroupShading->addButton(buttonFlat, 0);
+    m_buttonGroupShading->addButton(buttonFlat, 1);
     layoutGroupBoxShading->addWidget(buttonFlat);
     buttonFlat->setChecked(true);
 
     QRadioButton *buttonGouraud = new QRadioButton ( tr("Gouraud"), groupBoxShading );
     buttonGouraud->setMinimumSize(buttonGouraud->sizeHint());
-    m_buttonGroupShading->addButton(buttonGouraud, 1);
+    m_buttonGroupShading->addButton(buttonGouraud, 2);
     layoutGroupBoxShading->addWidget(buttonGouraud);
 
     QRadioButton *buttonPhong = new QRadioButton ( tr("Phong"), groupBoxShading );
     buttonPhong->setMinimumSize(buttonPhong->sizeHint());
-    m_buttonGroupShading->addButton(buttonPhong, 2);
+    m_buttonGroupShading->addButton(buttonPhong, 3);
     layoutGroupBoxShading->addWidget(buttonPhong);
 
     layout->addWidget( groupBox);
@@ -215,28 +221,28 @@ void RepresentationEditor::info( std::ostream &_sstream )
 void RepresentationEditor::onChangeRepresentation( int id )
 {
 
-    ::fwData::Material::REPRESENTATION_MODE selectedMode = ::fwData::Material::MODE_SURFACE;
+    ::fwData::Material::RepresentationType selectedMode = ::fwData::Material::SURFACE;
 
     switch(id)
     {
         case 0:
         {
-            selectedMode = ::fwData::Material::MODE_SURFACE;
+            selectedMode = ::fwData::Material::SURFACE;
             break;
         }
         case 1:
         {
-            selectedMode = ::fwData::Material::MODE_POINT;
+            selectedMode = ::fwData::Material::POINT;
             break;
         }
         case 2:
         {
-            selectedMode = ::fwData::Material::MODE_WIREFRAME;
+            selectedMode = ::fwData::Material::WIREFRAME;
             break;
         }
         case 3:
         {
-            selectedMode = ::fwData::Material::MODE_EDGE;
+            selectedMode = ::fwData::Material::EDGE;
             break;
         }
     }
@@ -249,23 +255,28 @@ void RepresentationEditor::onChangeRepresentation( int id )
 
 void RepresentationEditor::onChangeShading(  int id )
 {
-    ::fwData::Material::SHADING_MODE selectedMode = ::fwData::Material::MODE_PHONG;
+    ::fwData::Material::ShadingType selectedMode = ::fwData::Material::PHONG;
 
     switch(id)
     {
         case 0:
         {
-            selectedMode = ::fwData::Material::MODE_FLAT;
+            selectedMode = ::fwData::Material::AMBIENT;
             break;
         }
         case 1:
         {
-            selectedMode = ::fwData::Material::MODE_GOURAUD;
+            selectedMode = ::fwData::Material::FLAT;
             break;
         }
         case 2:
         {
-            selectedMode = ::fwData::Material::MODE_PHONG;
+            selectedMode = ::fwData::Material::GOURAUD;
+            break;
+        }
+        case 3:
+        {
+            selectedMode = ::fwData::Material::PHONG;
             break;
         }
     }
@@ -283,25 +294,25 @@ void RepresentationEditor::refreshRepresentation()
 
     switch(representationMode)
     {
-        case ::fwData::Material::MODE_SURFACE:
+        case ::fwData::Material::SURFACE:
         {
             button = m_buttonGroup->button(0);
             button->setChecked(true);
             break;
         }
-        case ::fwData::Material::MODE_POINT:
+        case ::fwData::Material::POINT:
         {
             button = m_buttonGroup->button(1);
             button->setChecked(true);
             break;
         }
-        case ::fwData::Material::MODE_WIREFRAME:
+        case ::fwData::Material::WIREFRAME:
         {
             button = m_buttonGroup->button(2);
             button->setChecked(true);
             break;
         }
-        case ::fwData::Material::MODE_EDGE:
+        case ::fwData::Material::EDGE:
         {
             button = m_buttonGroup->button(3);
             button->setChecked(true);
@@ -322,21 +333,27 @@ void RepresentationEditor::refreshShading()
 
     switch(shadingMode)
     {
-        case ::fwData::Material::MODE_FLAT:
+        case ::fwData::Material::AMBIENT:
         {
             button = m_buttonGroupShading->button(0);
             button->setChecked(true);
             break;
         }
-        case ::fwData::Material::MODE_GOURAUD:
+        case ::fwData::Material::FLAT:
         {
             button = m_buttonGroupShading->button(1);
             button->setChecked(true);
             break;
         }
-        case ::fwData::Material::MODE_PHONG:
+        case ::fwData::Material::GOURAUD:
         {
             button = m_buttonGroupShading->button(2);
+            button->setChecked(true);
+            break;
+        }
+        case ::fwData::Material::PHONG:
+        {
+            button = m_buttonGroupShading->button(3);
             button->setChecked(true);
             break;
         }
@@ -352,9 +369,9 @@ void RepresentationEditor::refreshNormals()
 {
 #ifdef _DEBUG
     QAbstractButton *buttonHide = m_normalsRadioBox->button(0);
-    buttonHide->setChecked(m_material->getOptionsMode() == ::fwData::Material::MODE_STANDARD);
+    buttonHide->setChecked(m_material->getOptionsMode() == ::fwData::Material::STANDARD);
     QAbstractButton *buttonNormals = m_normalsRadioBox->button(1);
-    buttonNormals->setChecked(m_material->getOptionsMode() == ::fwData::Material::MODE_NORMALS);
+    buttonNormals->setChecked(m_material->getOptionsMode() == ::fwData::Material::NORMALS);
 #endif
 }
 
@@ -364,13 +381,17 @@ void RepresentationEditor::onShowNormals(int state )
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
 
-    if (state == 0)
+    switch(state)
     {
-        m_material->setOptionsMode( ::fwData::Material::MODE_STANDARD );
-    }
-    else
-    {
-        m_material->setOptionsMode( ::fwData::Material::MODE_NORMALS );
+        case 0:
+            m_material->setOptionsMode( ::fwData::Material::STANDARD );
+            break;
+        case 1:
+            m_material->setOptionsMode( ::fwData::Material::NORMALS );
+            break;
+        case 2:
+            m_material->setOptionsMode( ::fwData::Material::CELLS_NORMALS );
+            break;
     }
 
     this->notifyMaterial();

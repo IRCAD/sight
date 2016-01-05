@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,14 +24,13 @@ const ::fwCom::Signals::SignalKeyType Material::s_REMOVED_TEXTURE_SIG = "removed
 //------------------------------------------------------------------------------
 
 Material::Material(::fwData::Object::Key key) :
-    m_shadingMode(MODE_PHONG),
-    m_representationMode(MODE_SURFACE),
-    m_optionsMode(MODE_STANDARD),
-    m_ambient( Color::New() ),
+    m_shadingMode(PHONG),
+    m_representationMode(SURFACE),
+    m_optionsMode(STANDARD),
+    m_ambient( Color::New(0.05f, 0.05f, 0.05f, 1.f) ),
     m_diffuse( Color::New() ),
     m_diffuseTextureFiltering(NEAREST),
-    m_diffuseTextureWrapping(REPEAT),
-    m_lighting(true)
+    m_diffuseTextureWrapping(REPEAT)
 {
     newSignal< AddedTextureSignalType >(s_ADDED_TEXTURE_SIG);
     newSignal< RemovedTextureSignalType >(s_REMOVED_TEXTURE_SIG);
@@ -125,20 +124,6 @@ void Material::setDiffuse(const Color::sptr& diffuse)
 void Material::setDiffuseTexture(const Image::sptr& diffuseTexture)
 {
     m_diffuseTexture = diffuseTexture;
-}
-
-//------------------------------------------------------------------------------
-
-void Material::setLighting(bool lighting)
-{
-    m_lighting = lighting;
-}
-
-//------------------------------------------------------------------------------
-
-bool Material::getLighting() const
-{
-    return m_lighting;
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -387,7 +387,7 @@ Mesh::Mesh() throw() :
 {
     m_unclippedPartMaterial = ::fwData::Material::New();
     m_material              = ::fwData::Material::New();
-    m_unclippedPartMaterial->ambient()->setRGBA("#aaaaff44");
+    m_unclippedPartMaterial->diffuse()->setRGBA("#aaaaff44");
     m_clippingPlanesId = "";
 
     m_sigTextureApplied = TextureAppliedSignalType::New();
@@ -457,9 +457,9 @@ void Mesh::configuring() throw(fwTools::Failed)
     std::string color          = m_configuration->getAttributeValue("color");
     std::string unclippedColor = m_configuration->getAttributeValue("unclippedcolor");
 
-    m_material->ambient()->setRGBA(color.empty() ? "#ffffffff" : color );
+    m_material->diffuse()->setRGBA(color.empty() ? "#ffffffff" : color );
 
-    m_unclippedPartMaterial->ambient()->setRGBA(unclippedColor.empty() ? "#aaaaff44" : unclippedColor );
+    m_unclippedPartMaterial->diffuse()->setRGBA(unclippedColor.empty() ? "#aaaaff44" : unclippedColor );
 
     if (m_configuration->hasAttribute("autoresetcamera") )
     {
@@ -697,7 +697,7 @@ void Mesh::setUnclippedPartMaterial(::fwData::Material::sptr material)
 
 void Mesh::updateOptionsMode()
 {
-    if (m_material->getOptionsMode() == ::fwData::Material::MODE_NORMALS)
+    if (m_material->getOptionsMode() == ::fwData::Material::NORMALS)
     {
         this->createNormalsService();
     }

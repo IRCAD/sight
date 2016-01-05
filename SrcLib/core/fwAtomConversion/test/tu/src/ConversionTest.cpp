@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -185,7 +185,7 @@ void ConversionTest::materialConversionTest()
 {
     ::fwData::Color::sptr color       = ::fwData::Color::New(0.2f, 1.2f, 1.3f, 0.9f);
     ::fwData::Material::sptr material = ::fwData::Material::New();
-    material->setAmbient(color);
+    material->setDiffuse(color);
 
     // Create Atom
     ::fwData::Material::sptr materialTmp;

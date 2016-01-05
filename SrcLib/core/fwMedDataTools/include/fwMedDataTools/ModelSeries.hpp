@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,7 +52,7 @@ public:
                                   const std::string& _organName,
                                   const std::string& _structureType,
                                   const ::fwData::Color::sptr& _color = ::fwData::Color::New(),
-                                  ::fwData::Material::REPRESENTATION_MODE _mode = ::fwData::Material::MODE_SURFACE,
+                                  ::fwData::Material::RepresentationType _mode = ::fwData::Material::SURFACE,
                                   bool _visible = true);
 
     /**
@@ -70,7 +70,7 @@ public:
              const ::fwData::Mesh::sptr& _mesh,
              const std::string& _organName, const std::string& _structureType,
              const ::fwData::Color::sptr& _color = ::fwData::Color::New(),
-             ::fwData::Material::REPRESENTATION_MODE _mode = ::fwData::Material::MODE_SURFACE,
+             ::fwData::Material::RepresentationType _mode = ::fwData::Material::SURFACE,
              bool _visible = true);
 };
 

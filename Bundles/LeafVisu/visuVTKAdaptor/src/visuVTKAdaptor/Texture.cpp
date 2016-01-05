@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -130,7 +130,10 @@ void Texture::applyTexture( SPTR(::fwData::Material)_material )
     }
 
     _material->setDiffuseTexture(image);
-    _material->setLighting(m_lighting);
+    if(m_lighting == false)
+    {
+        _material->setShadingMode(::fwData::Material::AMBIENT);
+    }
 
     ::fwData::Material::FilteringType filtering = ::fwData::Material::LINEAR;
     ::fwData::Material::WrappingType wrapping   = ::fwData::Material::REPEAT;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@ namespace fwMedDataTools
 
 void ModelSeries::addMesh(::fwMedData::ModelSeries::sptr &_modelSeries, const ::fwData::Mesh::sptr& _mesh,
                           const std::string& _organName, const std::string& _structureType,
-                          const ::fwData::Color::sptr& _colour, ::fwData::Material::REPRESENTATION_MODE _mode,
+                          const ::fwData::Color::sptr& _colour, ::fwData::Material::RepresentationType _mode,
                           bool _visible)
 {
     //reconstruction creation
@@ -39,13 +39,13 @@ void ModelSeries::addMesh(::fwMedData::ModelSeries::sptr &_modelSeries, const ::
                                                                           const std::string& _organName,
                                                                           const std::string& _structureType,
                                                                           const ::fwData::Color::sptr& _color,
-                                                                          ::fwData::Material::REPRESENTATION_MODE _mode,
+                                                                          ::fwData::Material::RepresentationType _mode,
                                                                           bool _visible)
 {
-    ::fwData::Color::sptr ambient = ::fwData::Color::New();
-    ambient->setRGBA(_color->red(), _color->green(), _color->blue(), _color->alpha());
+    ::fwData::Color::sptr diffuse = ::fwData::Color::New();
+    diffuse->setRGBA(_color->red(), _color->green(), _color->blue(), _color->alpha());
     ::fwData::Material::sptr pMaterial = ::fwData::Material::New();
-    pMaterial->setAmbient(ambient);
+    pMaterial->setDiffuse(diffuse);
     pMaterial->setRepresentationMode(_mode);
 
     ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();

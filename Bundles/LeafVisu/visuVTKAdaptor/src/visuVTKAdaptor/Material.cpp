@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -126,19 +126,20 @@ void Material::doStop() throw(fwTools::Failed)
 
 void Material::updateMaterial( SPTR(::fwData::Material)material )
 {
-    ::fwData::Color::sptr color = material->ambient();
-    m_property->SetColor( color->red(),
-                          color->green(),
-                          color->blue());
-
     //3DVSP-like rendering
-    m_property->SetLighting(material->getLighting());
+    m_property->SetLighting(material->getShadingMode() > 0);
+
+    ::fwData::Color::sptr diffuse = material->diffuse();
+    m_property->SetDiffuseColor(diffuse->red(), diffuse->green(), diffuse->blue());
+
+    // Use alpha from the diffuse color
+    m_property->SetOpacity( diffuse->alpha() );
+
+    ::fwData::Color::sptr ambient = material->ambient();
+    m_property->SetAmbientColor(ambient->red(), ambient->green(), ambient->blue());
+
     m_property->SetSpecularColor(1.,1.,1.);
     m_property->SetSpecularPower(100.); //Shininess
-    m_property->SetAmbient(.05);
-    m_property->SetDiffuse(1.);
-    m_property->SetSpecular(1.);
-    m_property->SetOpacity( color->alpha() );
 
     // set texture
     ::fwData::Image::sptr diffTex = material->getDiffuseTexture();
@@ -165,21 +166,21 @@ void Material::updateMaterial( SPTR(::fwData::Material)material )
 
     switch(material->getRepresentationMode())
     {
-        case ::fwData::Material::MODE_SURFACE:
+        case ::fwData::Material::SURFACE:
             m_property->SetRepresentationToSurface();
             m_property->EdgeVisibilityOff();
             break;
 
-        case ::fwData::Material::MODE_EDGE:
+        case ::fwData::Material::EDGE:
             m_property->SetRepresentationToSurface();
             m_property->EdgeVisibilityOn();
             break;
 
-        case ::fwData::Material::MODE_WIREFRAME:
+        case ::fwData::Material::WIREFRAME:
             m_property->SetRepresentationToWireframe();
             break;
 
-        case ::fwData::Material::MODE_POINT:
+        case ::fwData::Material::POINT:
             m_property->SetRepresentationToPoints();
             break;
 
@@ -190,15 +191,17 @@ void Material::updateMaterial( SPTR(::fwData::Material)material )
     switch(material->getShadingMode())
     {
         /// Sets ShadingMode
-        case ::fwData::Material::MODE_PHONG:
+        case ::fwData::Material::AMBIENT:
+            break;
+        case ::fwData::Material::PHONG:
             m_property->SetInterpolationToPhong();
             break;
 
-        case ::fwData::Material::MODE_GOURAUD:
+        case ::fwData::Material::GOURAUD:
             m_property->SetInterpolationToGouraud();
             break;
 
-        case ::fwData::Material::MODE_FLAT:
+        case ::fwData::Material::FLAT:
             m_property->SetInterpolationToFlat();
             break;
 

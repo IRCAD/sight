@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -71,16 +71,20 @@ vtkSmartPointer< vtkActor > createActor( const ::fwData::Reconstruction::sptr & 
     mapper->SetInputData(polyData);
     actor->SetMapper(mapper);
 
-    ::fwData::Color::sptr color = material->ambient();
     vtkProperty *property = actor->GetProperty();
-    property->SetColor( color->red(), color->green(), color->blue());
+
+    ::fwData::Color::sptr diffuse = material->diffuse();
+    property->SetDiffuseColor(diffuse->red(), diffuse->green(), diffuse->blue());
+    property->SetOpacity( diffuse->alpha() );
+
+    ::fwData::Color::sptr ambient = material->ambient();
+    property->SetAmbientColor(ambient->red(), ambient->green(), ambient->blue());
+
     property->SetSpecularColor(1.,1.,1.);
     property->SetSpecularPower(100.); //Shininess
-    property->SetAmbient(.05);
-    property->SetDiffuse(1.);
-    property->SetSpecular(1.);
+
     property->SetInterpolationToPhong();
-    property->SetOpacity( color->alpha() );
+
 
     return actor;
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -237,8 +237,8 @@ void RendererService::createAndAddActorToRender()
             {
                 // Material exists
                 ::fwData::Material::sptr matObjPtr = myMesh->getField< ::fwData::Material >( "MaterialMesh" );
-                actor->GetProperty()->SetColor (matObjPtr->ambient()->red(),
-                                                matObjPtr->ambient()->green(), matObjPtr->ambient()->blue());
+                actor->GetProperty()->SetColor (matObjPtr->diffuse()->red(),
+                                                matObjPtr->diffuse()->green(), matObjPtr->diffuse()->blue());
             }
             mapper->Delete();
             elementNumber++;
