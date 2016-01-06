@@ -1,0 +1,355 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>toolsCalibration</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="GENERIC_UID" />
+        <param name="SERIESDB" />
+        <param name="AS_UID" />
+        <param name="camera1Uid" />
+        <param name="camera2Uid" />
+        <param name="cameraExtrinsicUid" />
+    </parameters>
+    <config>
+
+    <object type="::fwData::Composite">
+
+
+        <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view caption="Tools Calibration" align="center" />
+                    <view caption="Infos" align="bottom" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="${GENERIC_UID}_camerasView"  start="yes"/>
+                <view sid="${GENERIC_UID}_infosView"  start="yes"/>
+                <toolBar sid="${GENERIC_UID}_toolbar" start="yes" />
+            </registry>
+        </service>
+
+
+        <!-- Toolbar : Play, stop, pause videos -->
+        <service uid="${GENERIC_UID}_toolbar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
+            <gui>
+                <layout>
+                    <editor />
+                    <separator />
+                    <menuItem name="start" icon="Bundles/arMedia_0-1/icons/start-cam.svg" />
+                    <menuItem name="stop"  icon="Bundles/arMedia_0-1/icons/stop-cam.svg" />
+                    <menuItem name="pause" icon="Bundles/arMedia_0-1/icons/pause-cam.svg" />
+                    <separator />
+                    <editor />
+                    <separator/>
+                    <menuItem name="Check" icon="Bundles/media_0-1/icons/Import.svg" />
+                    <separator/>
+                    <menuItem name="Compute Registration" icon="Bundles/arMedia_0-1/icons/CheckButton.svg" />
+                    <separator/>
+                    <menuItem name="Save" icon="Bundles/arMedia_0-1/icons/save.svg" />
+                    <menuItem name="Show/Hide" icon="Bundles/arMedia_0-1/icons/show.svg" icon2="Bundles/arMedia_0-1/icons/hide.svg" style="check" />
+                </layout>
+            </gui>
+            <registry>
+                <editor sid="${GENERIC_UID}_CameraSelector1" start="yes" />
+                <menuItem sid="${GENERIC_UID}_ActionStartCamera" start="yes" />
+                <menuItem sid="${GENERIC_UID}_ActionStopCamera" start="yes" />
+                <menuItem sid="${GENERIC_UID}_PauseVideo" start="yes" />
+                <editor sid="${GENERIC_UID}_CameraSelector2" start="yes" />
+                <menuItem sid="${GENERIC_UID}_DetectPoint" start="yes" />
+                <menuItem sid="${GENERIC_UID}_ActionRegistrate" start="yes" />
+                <menuItem sid="${GENERIC_UID}_ActionSaveMatrix" start="yes" />
+                <menuItem sid="${GENERIC_UID}_ActionShowHideAxes" start="yes" />
+            </registry>
+        </service>
+
+
+
+        <service uid="${GENERIC_UID}_ActionStartCamera" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+            <slots>
+                <slot>${GENERIC_UID}_frameGrabber1/startCamera</slot>
+                <slot>${GENERIC_UID}_frameGrabber2/startCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="${GENERIC_UID}_ActionStopCamera"  type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+            <slots>
+                <slot>${GENERIC_UID}_frameGrabber1/stopCamera</slot>
+                <slot>${GENERIC_UID}_frameGrabber2/stopCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="${GENERIC_UID}_PauseVideo" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+            <slots>
+                <slot>${GENERIC_UID}_frameGrabber1/pauseCamera</slot>
+                <slot>${GENERIC_UID}_frameGrabber2/pauseCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="${GENERIC_UID}_DetectPoint" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+            <slots>
+                <slot>${GENERIC_UID}_markerToPoint/addMarker</slot>
+            </slots>
+        </service>
+
+        <service uid="${GENERIC_UID}_ActionRegistrate" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+            <slots>
+                <slot>${GENERIC_UID}_toolRegistration/update</slot>
+            </slots>
+        </service>
+
+        <service uid="${GENERIC_UID}_ActionSaveMatrix" impl="::gui::action::SSlotCaller" autoConnect="no">
+            <slots>
+                <slot>${GENERIC_UID}_calibWriter/update</slot>
+            </slots>
+        </service>
+
+
+        <service uid="${GENERIC_UID}_ActionShowHideAxes" impl="::gui::action::SBooleanSlotCaller" autoConnect="no">
+            <state active="true" />
+            <slots>
+                <slot>${GENERIC_UID}_sphereCenter/updateVisibility</slot>
+            </slots>
+        </service>
+
+
+        <!-- Parent view of cameras -->
+        <service uid="${GENERIC_UID}_camerasView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+             <gui>
+                 <layout type="::fwGui::LineLayoutManager">
+                     <orientation value="horizontal" />
+                     <view caption="Video 1" proportion="1" />
+                     <view caption="Video 2" proportion="1" />
+                 </layout>
+             </gui>
+             <registry>
+                 <view sid="${GENERIC_UID}_camera1View" start="yes" />
+                 <view sid="${GENERIC_UID}_camera2View" start="yes" />
+             </registry>
+         </service>
+
+        <service uid="${GENERIC_UID}_infosView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+             <gui>
+                 <layout type="::fwGui::LineLayoutManager">
+                     <orientation value="horizontal" />
+                     <view caption="3D" proportion="1" />
+                 </layout>
+             </gui>
+             <registry>
+                 <view sid="${GENERIC_UID}_3DScene" start="yes" />
+             </registry>
+         </service>
+
+        <!-- View for the first camera -->
+        <service uid="${GENERIC_UID}_camera1View" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <scene>
+                <renderer id="default" background="0.0" />
+                <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="image1">
+                    <config renderer="default" />
+                </adaptor>
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+            </scene>
+        </service>
+
+        <!-- View for the second camera -->
+        <service uid="${GENERIC_UID}_camera2View" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <scene>
+                <renderer id="default" background="0.0" />
+                <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="image2">
+                    <config renderer="default" />
+                </adaptor>
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+            </scene>
+        </service>
+
+        <!-- View for the 3D Scene -->
+        <service uid="${GENERIC_UID}_3DScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <scene>
+                <renderer id="default" background="0.3" />
+
+                <vtkObject id="calib" class="vtkTransform" />
+
+                <adaptor id="TransformMatrixAdaptor" class="::visuVTKAdaptor::Transform" objectId="toolCalibration">
+                    <config renderer="default" picker="" transform="calib" />
+                </adaptor>
+
+                <adaptor id="pointListAdaptor" class="::visuVTKARAdaptor::SPointList3D" objectId="markersPL">
+                    <config renderer="default" color="#ff0000" radius="3"/>
+                </adaptor>
+                <adaptor uid="${GENERIC_UID}_sphereCenter" id="sphereCenter" class="::visuVTKAdaptor::Axes" objectId="self">
+                    <config renderer="default" transform="calib" />
+                </adaptor>
+
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle3DForNegato" />
+                </adaptor>
+
+            </scene>
+        </service>
+
+        <!-- Trackers -->
+        <service uid="${GENERIC_UID}_tracker1" impl="::trackerAruco::SArucoTracker" autoConnect="no" worker="tracking">
+            <config>
+                <timelineVideo>frameTL1</timelineVideo>
+                <camera>camera1</camera>
+                <track>
+                    <marker id="101" timeline="tagTL1" />
+                </track>
+                <threshold>
+                    <method>ADPT_THRES</method>
+                    <blockSize>7</blockSize>
+                    <constant>7</constant>
+                </threshold>
+                <patternWidth>30</patternWidth>
+                <debugMarkers>yes</debugMarkers>
+            </config>
+        </service>
+
+        <service uid="${GENERIC_UID}_tracker2" impl="::trackerAruco::SArucoTracker" autoConnect="no" worker="tracking2">
+            <config>
+                <timelineVideo>frameTL2</timelineVideo>
+                <camera>camera2</camera>
+                <track>
+                    <marker id="101" timeline="tagTL2" />
+                </track>
+                <threshold>
+                    <method>ADPT_THRES</method>
+                    <blockSize>7</blockSize>
+                    <constant>7</constant>
+                </threshold>
+                <patternWidth>30</patternWidth>
+                <debugMarkers>yes</debugMarkers>
+            </config>
+        </service>
+        <!-- Synchronizer -->
+        <service uid="${GENERIC_UID}_synchronizer" impl="::videoTools::SFrameMatrixSynchronizer" autoConnect="no" worker="videoWorker">
+            <frames>
+                <frame from="frameTL1" to="image1" />
+                <frame from="frameTL2" to="image2" />
+            </frames>
+            <framerate>30</framerate>
+        </service>
+
+        <service uid="${GENERIC_UID}_markerRegistration" impl="::tracker::SHomography" autoConnect="no" worker="registration">
+            <config>
+                <markerTL>
+                    <key>tagTL1</key>
+                    <key>tagTL2</key>
+                </markerTL>
+                <camera>
+                    <key>camera1</key>
+                    <key>camera2</key>
+                </camera>
+                <extrinsic>extrinsic</extrinsic>
+                <matrixTL>matrixTL</matrixTL>
+                <patternWidth>60</patternWidth>
+            </config>
+        </service>
+
+        <!-- Cameras object (from calibration or selector) -->
+        <item key="camera1">
+            <object uid="${camera1Uid}" type="::arData::Camera" src="ref">
+                <service uid="${GENERIC_UID}_CameraSelector1" impl="::videoQt::editor::SCamera" type="::gui::editor::IEditor" autoConnect="no">
+                    <videoSupport>yes</videoSupport>
+                </service>
+            </object>
+        </item>
+
+        <item key="camera2">
+            <object uid="${camera2Uid}" type="::arData::Camera" src="ref">
+                <service uid="${GENERIC_UID}_CameraSelector2" impl="::videoQt::editor::SCamera" type="::gui::editor::IEditor" autoConnect="no">
+                    <videoSupport>yes</videoSupport>
+                </service>
+            </object>
+        </item>
+
+        <item key="extrinsic">
+            <object uid="${cameraExtrinsicUid}" type="::fwData::TransformationMatrix3D" src="ref">
+            </object>
+        </item>
+
+        <item key="toolCalibration">
+            <object uid="${GENERIC_UID}_toolCalibration" type="::fwData::TransformationMatrix3D">
+                <service uid="${GENERIC_UID}_toolRegistration" impl="::videoCalibration::SFixedPointRegistration" autoConnect="no">
+                    <pointList>${GENERIC_UID}_markersPL</pointList>
+                </service>
+
+                <service uid="${GENERIC_UID}_calibWriter" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
+                    <type mode="writer" />
+                    <selection mode="include" />
+                    <addSelection service="::ioData::TransformationMatrix3DWriterService" />
+                </service>
+
+            </object>
+        </item>
+
+        <!-- FrameTimeLines -->
+        <item key="frameTL1">
+            <object uid="${GENERIC_UID}_frame1TLUid" type="::extData::FrameTL">
+                <service uid="${GENERIC_UID}_frameGrabber1" impl="::videoQt::SFrameGrabber" autoConnect="no" >
+                    <cameraFwId>${camera1Uid}</cameraFwId>
+                </service>
+                <value>100</value>
+            </object>
+        </item>
+
+        <item key="frameTL2">
+            <object uid="${GENERIC_UID}_frame2TLUid" type="::extData::FrameTL">
+                <service uid="${GENERIC_UID}_frameGrabber2" impl="::videoQt::SFrameGrabber" autoConnect="no" >
+                    <cameraFwId>${camera2Uid}</cameraFwId>
+                </service>
+                <value>100</value>
+            </object>
+        </item>
+
+        <item key="markersPL">
+            <object uid="${GENERIC_UID}_markersPL" type="::fwData::PointList">
+                <service uid="${GENERIC_UID}_markerToPoint" impl="::videoCalibration::SMarkerToPoint" autoConnect="no" >
+                    <matrixTL>${GENERIC_UID}_matrixTLUid</matrixTL>
+                </service>
+            </object>
+        </item>
+
+        <!-- MarkerTimelines -->
+        <item key="tagTL1">
+            <object uid="${GENERIC_UID}_tagTL1Uid" type="::arData::MarkerTL" />
+        </item>
+
+        <item key="tagTL2">
+            <object uid="${GENERIC_UID}_tagTL2Uid" type="::arData::MarkerTL" />
+        </item>
+
+        <!-- Matrix TL -->
+        <item key="matrixTL">
+            <object uid="${GENERIC_UID}_matrixTLUid" type="::extData::MatrixTL"/>
+        </item>
+
+        <!-- images -->
+        <item key="image1">
+            <object uid="${GENERIC_UID}_image1Uid" type="::fwData::Image" />
+        </item>
+
+        <item key="image2">
+            <object uid="${GENERIC_UID}_image2Uid" type="::fwData::Image" />
+        </item>
+
+        <start uid="${GENERIC_UID}_mainView" />
+        <start uid="${GENERIC_UID}_tracker1" />
+        <start uid="${GENERIC_UID}_tracker2" />
+        <start uid="${GENERIC_UID}_frameGrabber1" />
+        <start uid="${GENERIC_UID}_frameGrabber2" />
+        <start uid="${GENERIC_UID}_synchronizer" />
+        <start uid="${GENERIC_UID}_markerRegistration" />
+        <start uid="${GENERIC_UID}_markerToPoint" />
+        <start uid="${GENERIC_UID}_toolRegistration" />
+        <start uid="${GENERIC_UID}_calibWriter" />
+
+    </object>
+    </config>
+</extension>
+

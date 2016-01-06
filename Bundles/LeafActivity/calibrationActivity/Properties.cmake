@@ -2,21 +2,27 @@
 set( NAME calibrationActivity )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
+set( START ON)
 set( DEPENDENCIES
+    fwRuntime
+    fwActivities
+    arData
 )
-set( REQUIREMENTS 
-        servicesReg 
+set( REQUIREMENTS
+        servicesReg
         dataReg
         extDataReg
         arDataReg
-        gui 
+        gui
+        ioData
         visuVTKAdaptor
         visuVTKARAdaptor
-        media 
+        media
         arMedia
         videoQt
+        videoVLC
         uiTools
+        uiIO
         uiCalibration
         videoCalibration
         )
-

@@ -29,4 +29,10 @@
         <object>::fwData::Object</object>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKARAdaptor::SPointList3D</service>
+        <object>::fwData::PointList</object>
+    </extension>
+
 </plugin>
