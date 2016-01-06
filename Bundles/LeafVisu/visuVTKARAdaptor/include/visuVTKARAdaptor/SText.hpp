@@ -138,7 +138,7 @@ protected:
      *       (not mandatory, default value is set to 1.0)
      *     - shadow : enable/disable text shadow (not mandatory, default value is set to false)
      */
-    VISUVTKARADAPTOR_API virtual void configuring() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API virtual void doConfigure() throw(fwTools::Failed);
 
 
 private:

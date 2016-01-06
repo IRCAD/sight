@@ -65,7 +65,7 @@ protected:
      * - \b cameraUID (optional) : defines the uid of the camera used to place video plane.
      * - \b reverse (optional)(default: true) : if true, the actor is rotated in z and y axis.
      */
-    VISUVTKARADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     /// Calls doUpdate()
     VISUVTKARADAPTOR_API void doSwap() throw(fwTools::Failed);

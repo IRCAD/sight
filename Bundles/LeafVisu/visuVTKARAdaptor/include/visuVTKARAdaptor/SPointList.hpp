@@ -60,7 +60,7 @@ protected:
      * - \b imageId : Id of the image used to extract the resolution of the source image.
      * - \b color(optional) : color used to display the points.
      */
-    VISUVTKARADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     /// Restart the service (stop-start)
     VISUVTKARADAPTOR_API void doSwap() throw(fwTools::Failed);

@@ -4,6 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include "visuVTKARAdaptor/SPointList3D.hpp"
 
 #include <fwData/PointList.hpp>
@@ -47,7 +53,7 @@ SPointList3D::~SPointList3D() throw()
 
 //------------------------------------------------------------------------------
 
-void SPointList3D::configuring() throw(fwTools::Failed)
+void SPointList3D::doConfigure() throw(fwTools::Failed)
 {
 
     SLM_TRACE_FUNC();

@@ -80,7 +80,7 @@ protected:
      * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
      * - \b cameraUID (optional): defines the uid of the camera (used to calibrate the vtk camera)
      */
-    VISUVTKARADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     /// Calls doStop() and doStart()
     VISUVTKARADAPTOR_API void doSwap() throw(fwTools::Failed);

@@ -39,7 +39,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_view_image1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <service uid="${GENERIC_UID}_view_image1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                 <scene>
                     <renderer id="default" background="0.0" />
                     <adaptor id="interactor2D" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
@@ -54,7 +54,7 @@
                 </scene>
             </service>
 
-            <service uid="${GENERIC_UID}_view_image2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <service uid="${GENERIC_UID}_view_image2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                 <scene>
                     <renderer id="default" background="0.0" />
                     <adaptor id="interactor2D" class="::visuVTKAdaptor::InteractorStyle" objectId="self">

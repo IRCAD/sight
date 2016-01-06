@@ -4,6 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef __VISUVTKARADAPTOR_SPOINTLIST3D_HPP__
 #define __VISUVTKARADAPTOR_SPOINTLIST3D_HPP__
 
@@ -67,7 +73,7 @@ protected:
      * - \b radius (optional) : point sphere radius.
      * - \b transform (optional) : transform used to display the points.
      */
-    VISUVTKARADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     /// Restart the service (stop-start)
     VISUVTKARADAPTOR_API void doSwap() throw(fwTools::Failed);

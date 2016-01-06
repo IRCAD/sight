@@ -143,7 +143,7 @@
          </service>
 
         <!-- View for the first camera -->
-        <service uid="${GENERIC_UID}_camera1View" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+        <service uid="${GENERIC_UID}_camera1View" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
             <scene>
                 <renderer id="default" background="0.0" />
                 <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="image1">
@@ -156,7 +156,7 @@
         </service>
 
         <!-- View for the second camera -->
-        <service uid="${GENERIC_UID}_camera2View" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+        <service uid="${GENERIC_UID}_camera2View" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
             <scene>
                 <renderer id="default" background="0.0" />
                 <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="image2">
@@ -169,7 +169,7 @@
         </service>
 
         <!-- View for the 3D Scene -->
-        <service uid="${GENERIC_UID}_3DScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+        <service uid="${GENERIC_UID}_3DScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
             <scene>
                 <renderer id="default" background="0.3" />
 
