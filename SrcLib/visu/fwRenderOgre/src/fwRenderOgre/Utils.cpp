@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -318,7 +318,7 @@ void Utils::destroyOgreRoot()
 //------------------------------------------------------------------------------
 
 void Utils::loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::TexturePtr _texture,
-                            ::Ogre::TextureType _texType)
+                            ::Ogre::TextureType _texType, bool _dynamic)
 {
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
 
@@ -328,17 +328,17 @@ void Utils::loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::Texture
 
         // Conversion from fwData::Image to ::Ogre::Image
         ::Ogre::Image ogreImage = ::fwRenderOgre::Utils::convertFwDataImageToOgreImage(_image);
-        _texture->freeInternalResources();
 
-        _texture->setWidth(ogreImage.getWidth());
-        _texture->setHeight(ogreImage.getHeight());
-        _texture->setTextureType(_texType);
-        _texture->setDepth(ogreImage.getDepth());
-        _texture->setNumMipmaps(0);
-        _texture->setFormat(pixelFormat);
-        _texture->setUsage(::Ogre::TU_STATIC_WRITE_ONLY);
+        if( _texture->getWidth()  != ogreImage.getWidth() ||
+            _texture->getHeight() != ogreImage.getHeight() ||
+            _texture->getDepth()  != ogreImage.getDepth() ||
+            _texture->getTextureType() != _texType ||
+            _texture->getFormat() != pixelFormat )
+        {
 
-        _texture->createInternalResources();
+            ::fwRenderOgre::Utils::allocateTexture(_texture.get(), _image->getSize()[0], _image->getSize()[1],
+                                                   _image->getSize()[2], pixelFormat, _texType, _dynamic);
+        }
 
         // Copy image's pixel box into texture buffer
         _texture->getBuffer(0,0)->blitFromMemory(ogreImage.getPixelBox(0,0));
