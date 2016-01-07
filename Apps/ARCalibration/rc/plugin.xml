@@ -21,7 +21,7 @@
     </extension>
 
     <extension implements="::fwServices::registry::AppConfig">
-        <id>ExportSelection</id>
+        <id>CameraExportSelection</id>
         <parameters>
             <param name="selection" />
         </parameters>
@@ -31,7 +31,7 @@
                     <type mode="writer" />
                     <selection mode="include" />
                     <addSelection service="::ioAtoms::SWriter" />
-                    <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
+                    <config id="ARMDAtomsConfig" service="::ioAtoms::SWriter" />
                 </service>
                 <start uid="export_selection" />
                 <update uid="export_selection" />
@@ -48,7 +48,7 @@
             <requirement name="series" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
-        <appConfig id="ExportSelection">
+        <appConfig id="CameraExportSelection">
             <parameters>
                 <parameter replace="selection" by="@values.series" />
             </parameters>
@@ -56,22 +56,22 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceConfig">
-        <id>SDBOpenIOSelectorConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
-        <desc>"Open" action's IOSelector config</desc>
+        <id>ARMDAtomsConfig</id>
+        <desc>reader/writer config to read/write an atom representing a medical data</desc>
         <config>
-            <type mode="reader" />
-            <selection mode="include" />
-            <addSelection service="::ioAtoms::SReader" />
-            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
+            <patcher context="MedicalData" version="V10AR" />
         </config>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceConfig">
-        <id>MDAtomsConfig</id>
-        <desc>reader/writer config to read/write an atom representing a medical data</desc>
+        <id>ARSDBAtomsReaderIOSelectorConfig</id>
+        <service>::uiIO::editor::SIOSelector</service>
+        <desc>Atoms seriesDB reader for arData.</desc>
         <config>
-            <patcher context="MedicalData" version="V10AR" />
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SReader" />
+            <config id="ARMDAtomsConfig" service="::ioAtoms::SReader" />
         </config>
     </extension>
 

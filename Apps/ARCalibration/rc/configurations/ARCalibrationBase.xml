@@ -8,7 +8,7 @@
         <object uid="seriesDB" type="::fwMedData::SeriesDB">
 
             <service uid="action_open" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
-                <IOSelectorSrvConfig name="SDBOpenIOSelectorConfig" />
+                <IOSelectorSrvConfig name="ARSDBAtomsReaderIOSelectorConfig" />
             </service>
             <service uid="action_save" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <start uid="SDBWriter" />
@@ -17,7 +17,7 @@
                 <type mode="writer" />
                 <selection mode="include" />
                 <addSelection service="::ioAtoms::SWriter" />
-                <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
+                <config id="ARMDAtomsConfig" service="::ioAtoms::SWriter" />
             </service>
 
 
