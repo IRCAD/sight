@@ -4,6 +4,8 @@ set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( START ON)
 set( DEPENDENCIES
+    fwCore
+    fwData
     fwRuntime
     fwActivities
     arData
@@ -18,6 +20,7 @@ set( REQUIREMENTS
         visuVTKAdaptor
         visuVTKARAdaptor
         media
+        mediaExt
         arMedia
         videoQt
         videoVLC
