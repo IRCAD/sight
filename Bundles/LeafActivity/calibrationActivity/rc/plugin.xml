@@ -44,13 +44,14 @@
         <requirements>
              <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
+        <builder>::calibrationActivity::builder::ToolCalibrationBuilder</builder>
         <validator>::calibrationActivity::validator::ToolsCalibration</validator>
         <appConfig id="toolsCalibration">
             <parameters>
                 <parameter replace="camera1Uid" by="@values.cameraSeries.cameras.0" />
                 <parameter replace="camera2Uid" by="@values.cameraSeries.cameras.1" />
                 <parameter replace="cameraExtrinsicUid" by="@values.cameraSeries.extrinsic_matrices.1" />
+                <parameter replace="tagsId" by="!values.tagsIdString" />
             </parameters>
         </appConfig>
     </extension>

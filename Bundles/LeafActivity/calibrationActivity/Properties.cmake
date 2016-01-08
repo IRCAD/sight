@@ -8,6 +8,7 @@ set( DEPENDENCIES
     fwData
     fwRuntime
     fwActivities
+    fwGui
     arData
 )
 set( REQUIREMENTS

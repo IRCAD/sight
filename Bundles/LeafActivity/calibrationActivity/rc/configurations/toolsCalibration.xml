@@ -8,6 +8,7 @@
         <param name="camera1Uid" />
         <param name="camera2Uid" />
         <param name="cameraExtrinsicUid" />
+        <param name="tagsId" />
     </parameters>
     <config>
 
@@ -198,7 +199,8 @@
                 <timelineVideo>frameTL1</timelineVideo>
                 <camera>camera1</camera>
                 <track>
-                    <marker id="101" timeline="tagTL1" />
+                    <!--<marker id="101" timeline="tagTL1" />-->
+                    <marker id="${tagsId}" timeline="tagTL1" />
                 </track>
                 <threshold>
                     <method>ADPT_THRES</method>
@@ -215,7 +217,8 @@
                 <timelineVideo>frameTL2</timelineVideo>
                 <camera>camera2</camera>
                 <track>
-                    <marker id="101" timeline="tagTL2" />
+                <!--<marker id="101" timeline="tagTL2" />-->
+                <marker id="${tagsId}" timeline="tagTL2" />
                 </track>
                 <threshold>
                     <method>ADPT_THRES</method>
