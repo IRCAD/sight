@@ -23,7 +23,6 @@ set( REQUIREMENTS
         mediaExt
         arMedia
         videoQt
-        videoVLC
         uiTools
         uiIO
         uiCalibration
