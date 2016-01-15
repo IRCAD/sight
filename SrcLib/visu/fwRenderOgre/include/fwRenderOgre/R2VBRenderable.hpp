@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,14 +32,14 @@ class FWRENDEROGRE_CLASS_API R2VBRenderable : public ::Ogre::SimpleRenderable
 {
 public:
     FWRENDEROGRE_API static R2VBRenderable* New(const std::string& _name, ::Ogre::SubEntity* _sourceObject,
-                                                Ogre::SceneManager* _sceneManager,
+                                                ::Ogre::SceneManager* _sceneManager,
                                                 ::fwData::Mesh::CellTypesEnum _primitiveType,
                                                 const std::string& _mtlName );
     FWRENDEROGRE_API R2VBRenderable(const ::Ogre::String& name);
     virtual FWRENDEROGRE_API ~R2VBRenderable();
 
     /// Set the maximum number of vertices in output, and adjust the size of the output buffer accordingly.
-    /// It also updates the vertex declaration of the outbut buffer
+    /// It also updates the vertex declaration of the output buffer
     FWRENDEROGRE_API void setOutputSettings(size_t _vertexCount, bool _hasColor, bool _hasTexCoord,
                                             const std::string& _mtlName);
 

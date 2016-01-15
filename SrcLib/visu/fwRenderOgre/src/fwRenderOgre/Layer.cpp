@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -448,7 +448,7 @@ void Layer::resetCameraCoordinates() const
             ::Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0 ?
                                              worldCoordBoundingBox.getSize().length() : 0;
 
-            float coeffZoom = boundingBoxLength * 1.2;
+            float coeffZoom = boundingBoxLength * 1.2f;
             OSLM_DEBUG("Zoom coefficient : " << coeffZoom);
 
             // Set the direction of the camera
