@@ -75,8 +75,6 @@ void SPointList3D::configuring() throw(fwTools::Failed)
 
 void SPointList3D::doStart() throw(fwTools::Failed)
 {
-
-    m_connections                = ::fwServices::helper::SigSlotConnection::New();
     ::fwData::PointList::sptr pl = this->getObject< ::fwData::PointList >();
 
     if (pl)
@@ -117,10 +115,10 @@ void SPointList3D::doStart() throw(fwTools::Failed)
 
 void SPointList3D::doUpdate() throw(fwTools::Failed)
 {
+    m_points->Reset();
     ::fwData::PointList::sptr pl = this->getObject< ::fwData::PointList >();
     for( ::fwData::Point::sptr pt : pl->getPoints() )
     {
-        //conversion from qt 2D coordinates to vtk 3D coordinates
         ::fwData::Point::PointCoordArrayType coord = pt->getCoord();
         m_points->InsertNextPoint(coord[0], coord[1], coord[2]);
     }
