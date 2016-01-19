@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -88,7 +88,7 @@ public:
     VISUOGREADAPTOR_API void setIsReconstructionManaged(bool _isReconstructionManaged);
 
     /// Returns proposals to connect service slots to associated object signals
-    ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
 
     /// Ask the render service (SRender) to update - we also flag the r2vb objects as dirty
     VISUOGREADAPTOR_API virtual void requestRender();

@@ -464,6 +464,12 @@ void SMaterial::setTextureAdaptor(const std::string& textureAdaptorUID)
     }
 }
 
+//------------------------------------------------------------------------------
+
+int SMaterial::getStartPriority()
+{
+    return -10;
+}
 
 //------------------------------------------------------------------------------
 

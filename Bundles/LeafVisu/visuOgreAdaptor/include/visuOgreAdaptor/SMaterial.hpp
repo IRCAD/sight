@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -70,6 +70,9 @@ public:
 
     /// Retrieves the associated texture adaptor
     VISUOGREADAPTOR_API void setTextureAdaptor(const std::string& textureAdaptorId);
+
+    /// Returns the priority of the adaptor
+    VISUOGREADAPTOR_API virtual int getStartPriority();
 
     /// Set material name
     void setMaterialName(const std::string &materialName);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -58,15 +58,16 @@ protected:
     /**
      * @brief Configure the ShaderParameter adaptor
      *
-     * Actually can just send parameters to vertex and fragment shaders
+     * Send parameters to vertex and fragment shaders
      *
      * @verbatim
-        <service uid="ShaderParameterInstance"
-                 impl="::visuOgreAdaptor::SShaderParameter" type="::fwRenderOgre::IAdaptor">
-             <parameter>param</parameter>
+        <service uid="paramAdaptor" impl="::visuOgreAdaptor::SShaderParameter">
+            <config materialAdaptor="mtlAdaptorUID" parameter="u_value" shaderType="fragment" />
         </service>
        @endverbatim
-     * - \b Parameter : parameter description.
+     *  - \b materialName (mandatory) : the name of the associated Ogre material
+     *  - \b parameter (mandatory) : name of the shader parameter to set
+     *  - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to vertex.
      */
     VISUOGREADAPTOR_API virtual void doConfigure()  throw ( ::fwTools::Failed );
     /// Does Nothing

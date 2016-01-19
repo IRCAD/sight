@@ -194,7 +194,7 @@ private:
     {
     public:
 
-        SPTR (IAdaptor) getService()
+        SPTR (IAdaptor) getService() const
         {
             return m_service.lock();
         }

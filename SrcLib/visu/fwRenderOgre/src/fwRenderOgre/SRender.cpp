@@ -128,42 +128,6 @@ void SRender::starting() throw(fwTools::Failed)
         else if (iter->getName() == "adaptor")
         {
             this->configureObject(iter);
-        } // Configure connections
-        else if(iter->getName() == "connect")
-        {   // Selected movable object
-            if(iter->hasAttribute("waitForKey"))
-            {
-                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-                std::string key = iter->getAttributeValue("waitForKey");
-                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
-                if(iterComposite != composite->end())
-                {
-                    this->manageConnection(key, iterComposite->second, iter);
-                }
-                m_connect.push_back(iter);
-            }
-            else
-            {
-                ::fwServices::helper::Config::createConnections(iter, m_connections);
-            }
-        }
-        else if(iter->getName() == "proxy")
-        {
-            if(iter->hasAttribute("waitForKey"))
-            {
-                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-                std::string key = iter->getAttributeValue("waitForKey");
-                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
-                if(iterComposite != composite->end())
-                {
-                    this->manageProxy(key, iterComposite->second, iter);
-                }
-                m_proxies.push_back(iter);
-            }
-            else
-            {
-                ::fwServices::helper::Config::createProxy("self", iter, m_proxyMap);
-            }
         }
         else if(iter->getName() == "background")
         {
@@ -171,7 +135,10 @@ void SRender::starting() throw(fwTools::Failed)
             this->configureBackgroundLayer(iter);
             bHasBackground = true;
         }
-        // Unknown node, throw an error
+        else if(iter->getName() == "connect" || iter->getName() == "proxy")
+        {
+            // Connect later in startObject() slot
+        }
         else
         {
             OSLM_ASSERT("Bad scene configurationType, unknown xml node : " << iter->getName(), false);
@@ -201,7 +168,7 @@ void SRender::stopping() throw(fwTools::Failed)
     SLM_TRACE_FUNC();
 
     // Stop associated adaptors
-    for ( auto adaptorIter : m_sceneAdaptors )
+    for ( auto& adaptorIter : m_sceneAdaptors )
     {
         SLM_ASSERT("SceneAdaptor expired", adaptorIter.second.getService());
         if(adaptorIter.second.getService()->isStarted())
@@ -413,13 +380,68 @@ void SRender::startObject()
     // Everything is started now, we can safely create connections and thus receive interactions from the widget
     m_interactorManager->connectToContainer();
 
+
+    // Instantiate ogre object, class...
     if (this->isStarted())
     {
-        for(auto adaptor = m_sceneAdaptors.begin(); adaptor != m_sceneAdaptors.end(); ++adaptor)
+        std::vector< WPTR(IAdaptor) > startAdaptors;
+
+        for(auto& sceneAdaptor : m_sceneAdaptors)
         {
-            adaptor->second.getService()->start();
+            startAdaptors.emplace_back(sceneAdaptor.second.getService());
+        }
+
+        std::sort(startAdaptors.begin(), startAdaptors.end(), [](const WPTR(IAdaptor)& a, const WPTR(IAdaptor)& b)
+            {
+                return b.lock()->getStartPriority() > a.lock()->getStartPriority();
+            });
+
+        for(auto& adaptor : startAdaptors)
+        {
+            adaptor.lock()->start();
         }
         m_startAdaptor = true;
+    }
+
+    // Configure connections
+    for (auto iter : *m_sceneConfiguration)
+    {
+        if(iter->getName() == "connect")
+        {   // Selected movable object
+            if(iter->hasAttribute("waitForKey"))
+            {
+                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+                std::string key = iter->getAttributeValue("waitForKey");
+                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
+                if(iterComposite != composite->end())
+                {
+                    this->manageConnection(key, iterComposite->second, iter);
+                }
+                m_connect.push_back(iter);
+            }
+            else
+            {
+                ::fwServices::helper::Config::createConnections(iter, m_connections);
+            }
+        }
+        else if(iter->getName() == "proxy")
+        {
+            if(iter->hasAttribute("waitForKey"))
+            {
+                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+                std::string key = iter->getAttributeValue("waitForKey");
+                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
+                if(iterComposite != composite->end())
+                {
+                    this->manageProxy(key, iterComposite->second, iter);
+                }
+                m_proxies.push_back(iter);
+            }
+            else
+            {
+                ::fwServices::helper::Config::createProxy("self", iter, m_proxyMap);
+            }
+        }
     }
 }
 

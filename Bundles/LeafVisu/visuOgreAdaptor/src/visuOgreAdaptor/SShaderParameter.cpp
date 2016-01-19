@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,8 +40,6 @@ SShaderParameter::SShaderParameter() throw() :
     m_paramValues(nullptr),
     m_paramNbElem(0),
     m_paramElemMultiple(1),
-    m_materialName(SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_paramName("defaultParam"),
     m_shaderType(VERTEX)
 {
 }
@@ -121,15 +119,13 @@ void SShaderParameter::doSwap() throw(::fwTools::Failed)
 
 void SShaderParameter::doConfigure() throw(::fwTools::Failed)
 {
-    if ( m_configuration->hasAttribute("material"))
-    {
-        m_materialName = m_configuration->getAttributeValue("material");
-    }
+    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
 
-    if ( m_configuration->hasAttribute("parameterName"))
-    {
-        m_paramName = m_configuration->getAttributeValue("parameterName");
-    }
+    m_materialName = m_configuration->getAttributeValue("materialName");
+    OSLM_ERROR_IF("material attribute not set", m_materialName.empty());
+
+    m_paramName = m_configuration->getAttributeValue("parameter");
+    OSLM_ERROR_IF("parameter attribute not set", m_paramName.empty());
 
     if ( m_configuration->hasAttribute("shaderType"))
     {
@@ -328,7 +324,6 @@ void SShaderParameter::updateValue()
         OSLM_ERROR("This Type  " << objClass << " isn't supported yet.");
     }
 }
-
 //------------------------------------------------------------------------------
 
 } // namespace visuOgreAdaptor
