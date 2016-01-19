@@ -404,10 +404,7 @@ void SRender::startObject()
 
     if (this->isStarted())
     {
-        // Erm... We start scene adaptors from the back because of texture adaptors
-        // We want them to be started first because of texture resources creation that must be done before meshes.
-        // We could handle this with sig/slots but this is simpler like that... if you are aware of it. ;-)
-        for(auto adaptor = m_sceneAdaptors.rbegin(); adaptor != m_sceneAdaptors.rend(); ++adaptor)
+        for(auto adaptor = m_sceneAdaptors.begin(); adaptor != m_sceneAdaptors.end(); ++adaptor)
         {
             adaptor->second.getService()->start();
         }

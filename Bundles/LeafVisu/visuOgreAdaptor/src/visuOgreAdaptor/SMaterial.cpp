@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -91,6 +91,8 @@ void SMaterial::loadMaterialParameters()
 {
     // We retrieve the parameters of the base material in a temporary material
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialTemplateName);
+
+    OSLM_ASSERT( "Material '" << m_materialTemplateName << "'' not found", !material.isNull() );
 
     // Then we copy these parameters in m_material.
     // We can now alter this new instance without changing the default material
@@ -544,7 +546,10 @@ void SMaterial::doStart() throw(fwTools::Failed)
         m_textureConnection->connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
                                      ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
 
-        this->swapTexture();
+        if(m_texAdaptor->isStarted())
+        {
+            this->swapTexture();
+        }
     }
     else
     {
