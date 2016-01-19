@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,7 +50,8 @@ void RenderWindowInteractorManager::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr _parent, bool showOverlay )
+void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr _parent, bool showOverlay,
+                                                     bool renderOnDemand)
 {
     SLM_ASSERT("Invalid parent.", _parent );
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
@@ -59,6 +60,7 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
 
     m_qOgreWidget = new ::visuOgreQt::Window();
     m_qOgreWidget->showOverlay(showOverlay);
+    m_qOgreWidget->setAnimating(!renderOnDemand);
     QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
     renderingContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
 

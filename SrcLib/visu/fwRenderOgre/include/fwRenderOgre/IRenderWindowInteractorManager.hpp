@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -103,8 +103,8 @@ public:
     FWRENDEROGRE_API virtual void requestRender() = 0;
 
     /// Creates an interactor and installs it in window.
-    FWRENDEROGRE_API virtual void createContainer( ::fwGui::container::fwContainer::sptr _parent,
-                                                   bool showOverlay = false ) = 0;
+    FWRENDEROGRE_API virtual void createContainer( ::fwGui::container::fwContainer::sptr _parent, bool showOverlay,
+                                                   bool renderOnDemand ) = 0;
 
     /// Connects widget and SRender signals and slots.
     FWRENDEROGRE_API virtual void connectToContainer() = 0;

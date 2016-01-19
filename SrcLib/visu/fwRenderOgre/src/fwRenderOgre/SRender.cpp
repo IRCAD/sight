@@ -51,7 +51,8 @@ static const char* s_ogreBackgroundId = "ogreBackground";
 SRender::SRender() throw() :
     m_interactorManager(nullptr),
     m_showOverlay(false),
-    m_startAdaptor(false)
+    m_startAdaptor(false),
+    m_renderOnDemand(true)
 {
     m_connections = ::fwServices::helper::SigSlotConnection::New();
 
@@ -93,6 +94,16 @@ void SRender::configuring() throw(fwTools::Failed)
         {
             m_showOverlay = true;
         }
+    }
+
+    std::string renderMode = m_sceneConfiguration->getAttributeValue("renderMode");
+    if (renderMode == "auto")
+    {
+        m_renderOnDemand = true;
+    }
+    else if (renderMode == "always")
+    {
+        m_renderOnDemand = false;
     }
 }
 
@@ -479,7 +490,7 @@ void SRender::startContext()
 {
     m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
     m_interactorManager->setRenderService(this->getSptr());
-    m_interactorManager->createContainer( this->getContainer(), m_showOverlay );
+    m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand );
 }
 
 //-----------------------------------------------------------------------------
