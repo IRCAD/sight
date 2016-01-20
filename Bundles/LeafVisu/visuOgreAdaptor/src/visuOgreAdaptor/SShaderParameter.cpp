@@ -127,6 +127,8 @@ void SShaderParameter::doConfigure() throw(::fwTools::Failed)
     m_paramName = m_configuration->getAttributeValue("parameter");
     OSLM_ERROR_IF("parameter attribute not set", m_paramName.empty());
 
+    m_techniqueName = m_configuration->getAttributeValue("technique");
+
     if ( m_configuration->hasAttribute("shaderType"))
     {
         std::string shaderType = m_configuration->getAttributeValue("shaderType");
@@ -164,18 +166,29 @@ void SShaderParameter::updateValue()
     // Retrieves the associated material
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialName);
 
-    // Loads the shader containing the parameter
+    ::Ogre::Technique* tech = nullptr;
+    if(m_techniqueName.empty())
+    {
+        tech = material->getTechnique(0);
+    }
+    else
+    {
+        tech = material->getTechnique(m_techniqueName);
+        OSLM_FATAL_IF("Can't find technique" << m_techniqueName, m_techniqueName.empty());
+    }
+
+    // Get the parameters
     if (m_shaderType == VERTEX)
     {
-        m_params = material->getTechnique(0)->getPass(0)->getVertexProgramParameters();
+        m_params = tech->getPass(0)->getVertexProgramParameters();
     }
     else if (m_shaderType == FRAGMENT)
     {
-        m_params = material->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+        m_params = tech->getPass(0)->getFragmentProgramParameters();
     }
     else if (m_shaderType == GEOMETRY)
     {
-        m_params = material->getTechnique(0)->getPass(0)->getGeometryProgramParameters();
+        m_params = tech->getPass(0)->getGeometryProgramParameters();
     }
 
     // Set shader parameters

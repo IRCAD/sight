@@ -67,6 +67,7 @@ protected:
        @endverbatim
      *  - \b materialName (mandatory) : the name of the associated Ogre material
      *  - \b parameter (mandatory) : name of the shader parameter to set
+     *  - \b technique (optional) : name of the technique, default to the first in the material
      *  - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to vertex.
      */
     VISUOGREADAPTOR_API virtual void doConfigure()  throw ( ::fwTools::Failed );
@@ -101,10 +102,12 @@ private:
     /// Indicates by what multiple are grouped the values of the shader parameter
     int m_paramElemMultiple;
 
-    /// Material's name
+    /// Material name
     std::string m_materialName;
-    /// Parameter's name
+    /// Parameter name
     std::string m_paramName;
+    /// Technique name
+    std::string m_techniqueName;
     /// Stores the value of the enum representing the shader's type.
     ShaderEnumType m_shaderType;
 
