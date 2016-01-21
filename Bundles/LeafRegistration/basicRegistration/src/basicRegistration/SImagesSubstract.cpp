@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -96,8 +96,8 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
     ::fwData::Image::sptr image2            = ::fwData::Image::dynamicCast(::fwTools::fwID::getObject(image2Name));
     ::fwData::Image::sptr imageResult       = ::fwData::Image::New();
 
-    OSLM_ASSERT("Sorry, " << image1Name << " object is not an image", image1);
-    OSLM_ASSERT("Sorry, " << image2Name << " object is not an image", image2);
+    OSLM_ASSERT("The object " << image1Name << " is not an image", image1);
+    OSLM_ASSERT("The object " << image2Name << " is not an image", image2);
 
     // Test if the both images have the same type and it is signed short.
     bool isSameType =
@@ -147,14 +147,14 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
         else
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                              "Sorry, Image must have the same size.",
+                                                              "Both images must have the same size.",
                                                               ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
     else
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                                          "Sorry, Image must have a signed short type.",
+                                                          "Both Images must have signed short as type.",
                                                           ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }

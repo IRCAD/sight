@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -68,17 +68,17 @@ void SFilterSelectorDialog::configuring() throw( ::fwTools::Failed )
 
         if( (*iter)->getName() == "selection" )
         {
-            SLM_ASSERT( "Sorry, xml element <selection> must have attribute 'mode'.", (*iter)->hasAttribute("mode"));
+            SLM_ASSERT( "The xml element <selection> must have the attribute 'mode'.", (*iter)->hasAttribute("mode"));
             const std::string mode = (*iter)->getExistingAttributeValue("mode");
             m_filtersAreExcluded = ( mode == "exclude" );
-            SLM_ASSERT( "Sorry, xml attribute <mode> must be 'exclude' or 'include'.", mode == "exclude" ||
+            SLM_ASSERT( "The xml attribute <mode> must be either 'exclude' or 'include'.", mode == "exclude" ||
                         mode == "include" );
             SLM_DEBUG( "mode => " + mode );
         }
 
         if( (*iter)->getName() == "addSelection" )
         {
-            SLM_ASSERT( "Sorry, xml element <addSelection> must have attribute 'filter'.",
+            SLM_ASSERT( "The xml element <addSelection> must have the attribute 'filter'.",
                         (*iter)->hasAttribute("filter"));
             m_selectedFilters.push_back( (*iter)->getExistingAttributeValue("filter") );
             SLM_DEBUG( "add selection => " + (*iter)->getExistingAttributeValue("filter") );
@@ -184,7 +184,7 @@ void SFilterSelectorDialog::updating() throw( ::fwTools::Failed )
         SLM_WARN("SFilterSelectorDialog::load : availableFilters is empty.");
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Filter not found");
-        messageBox.setMessage( "Sorry, there is no available filter for this reader." );
+        messageBox.setMessage( "There is no available filter for this reader." );
         messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
         messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
