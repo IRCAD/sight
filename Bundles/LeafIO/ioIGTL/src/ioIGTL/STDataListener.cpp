@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -110,14 +110,13 @@ void STDataListener::runClient() throw (::fwTools::Failed)
     ::fwGui::dialog::MessageDialog msgDialog;
 
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-    ::fwData::Object::sptr obj          = composite;
     try
     {
         m_client.connect (m_hostname, m_port);
         m_sigClientConnected->asyncEmit();
         while (m_client.isConnected())
         {
-            if (m_client.receiveObject(obj))
+            if (m_client.receiveObject(composite))
             {
                 this->manageTimeline(composite);
             }

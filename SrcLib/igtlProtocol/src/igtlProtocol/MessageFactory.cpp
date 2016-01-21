@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,6 +33,8 @@ MessageFactory::CreatorContainer MessageFactory::initFactory()
     container["POSITION"]  = &MessageMaker< ::igtl::PositionMessage, false >::createMessage;
     container["POLYDATA"]  = &MessageMaker< ::igtl::PolyDataMessage, false>::createMessage;
     container["TDATA"]     = &MessageMaker< ::igtl::TrackingDataMessage, false>::createMessage;
+    container["STT_TDATA"] = &MessageMaker< ::igtl::StartTrackingDataMessage, false>::createMessage;
+    container["STP_TDATA"] = &MessageMaker< ::igtl::StopTrackingDataMessage, false>::createMessage;
     container["ATOMS"]     = ::boost::bind(&MessageMaker< RawMessage, true >::createMessage, "ATOMS");
     container["INTEGER"]   = ::boost::bind(&MessageMaker< RawMessage, true >::createMessage, "INTEGER");
     container["FLOAT"]     = ::boost::bind(&MessageMaker< RawMessage, true >::createMessage, "FLOAT");
