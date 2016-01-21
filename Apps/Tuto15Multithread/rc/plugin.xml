@@ -7,8 +7,4 @@
 
     <xi:include href="configurations/config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     
-    <xi:include href="configurations/mesh-visu.xml"   xmlns:xi="http://www.w3.org/2003/XInclude" />
-    
-    <xi:include href="configurations/config-dynamic.xml"   xmlns:xi="http://www.w3.org/2003/XInclude" />
-    
 </plugin>

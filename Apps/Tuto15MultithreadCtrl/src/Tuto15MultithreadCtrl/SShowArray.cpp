@@ -1,22 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iterator>
-#include <iostream>
+#include "Tuto15MultithreadCtrl/SShowArray.hpp"
+
+#include <fwComEd/helper/Array.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 
-#include <fwComEd/helper/Array.hpp>
-
 #include <fwServices/macros.hpp>
 
-#include "Tuto15MultithreadCtrl/SShowArray.hpp"
+#include <iterator>
+#include <sstream>
 
-fwServicesRegisterMacro( ::fwServices::IService, ::Tuto15MultithreadCtrl::SShowArray, ::fwData::Array );
+fwServicesRegisterMacro( ::fwServices::IController, ::Tuto15MultithreadCtrl::SShowArray, ::fwData::Array );
 
 namespace Tuto15MultithreadCtrl
 {
@@ -31,12 +31,10 @@ SShowArray::~SShowArray() throw()
 
 void SShowArray::starting() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
 }
 
 void SShowArray::stopping() throw( ::fwTools::Failed )
 {
-
 }
 
 void SShowArray::updating() throw( ::fwTools::Failed )
@@ -48,20 +46,14 @@ void SShowArray::updating() throw( ::fwTools::Failed )
     ::fwComEd::helper::Array arrayHelper(array);
     unsigned int *buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
 
-    std::cout << "Buffer : ";
-    std::ostream_iterator<unsigned int> coutIter (std::cout,", ");
+    std::stringstream str;
+    std::ostream_iterator<unsigned int> coutIter (str,", ");
     std::copy(buffer, buffer+10, coutIter );
-    std::cout << std::endl;
-}
-
-void SShowArray::swapping( ) throw( ::fwTools::Failed )
-{
-
+    SLM_INFO("Buffer : " + str.str());
 }
 
 void SShowArray::configuring() throw( ::fwTools::Failed )
 {
-
 }
 
 } // namespace Tuto15MultithreadCtrl

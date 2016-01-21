@@ -1,15 +1,13 @@
 ﻿<extension implements="::fwServices::registry::AppConfig">
     <id>tuto15MultithreadConfig</id>
     <parameters>
-        <param name="GENERIC_UID" default="g"/>
+        <param name="GENERIC_UID" default="g" />
     </parameters>
     <config>
 
-
-        <!-- In tutoComChannel, the main data object type is ::fwData::Mesh. -->
         <object type="::fwData::Mesh">
 
-            <service uid="${GENERIC_UID}_frame" impl="::gui::frame::SDefaultFrame" >
+            <service uid="${GENERIC_UID}_frame" impl="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>Tuto15Multithread</name>
@@ -24,7 +22,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_menuBar" impl="::gui::aspect::SDefaultMenuBar" >
+            <service uid="${GENERIC_UID}_menuBar" impl="::gui::aspect::SDefaultMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -37,9 +35,7 @@
                 </registry>
             </service>
 
-            <!-- The application contains three different views. The different views are characterized by their 
-            associated service uid. Furthermore, a minimum window height and a width are given to the last two views.-->
-            <service uid="${GENERIC_UID}_view" impl="::gui::view::SDefaultView" >
+            <service uid="${GENERIC_UID}_view" impl="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -53,7 +49,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_fileMenu" impl="::gui::aspect::SDefaultMenu" >
+            <service uid="${GENERIC_UID}_fileMenu" impl="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
                         <menuItem name="Open file" shortcut="Ctrl+O" />
@@ -67,7 +63,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_deformationMenu" impl="::gui::aspect::SDefaultMenu" >
+            <service uid="${GENERIC_UID}_deformationMenu" impl="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
                         <menuItem name="Start deformation" shortcut="Ctrl+D" />
@@ -81,25 +77,25 @@
             </service>
 
 
-            <service uid="${GENERIC_UID}_openFileAction" impl="::gui::action::SStarter" >
+            <service uid="${GENERIC_UID}_openFileAction" impl="::gui::action::SStarter">
                 <start uid="${GENERIC_UID}_reader" />
             </service>
 
-            <service uid="${GENERIC_UID}_quitAction" impl="::gui::action::SQuit"  />
+            <service uid="${GENERIC_UID}_quitAction" impl="::gui::action::SQuit" />
 
-            <service uid="${GENERIC_UID}_startDeformationAction" impl="::gui::action::SSlotCaller" >
+            <service uid="${GENERIC_UID}_startDeformationAction" impl="::gui::action::SSlotCaller">
                 <slots>
                     <slot>${GENERIC_UID}_meshDeformation/startDeformation</slot>
                 </slots>
             </service>
 
-            <service uid="${GENERIC_UID}_stopDeformationAction" impl="::gui::action::SSlotCaller" >
+            <service uid="${GENERIC_UID}_stopDeformationAction" impl="::gui::action::SSlotCaller">
                 <slots>
                     <slot>${GENERIC_UID}_meshDeformation/stopDeformation</slot>
                 </slots>
             </service>
 
-            <service uid="${GENERIC_UID}_reader" impl="::uiIO::editor::SIOSelector" >
+            <service uid="${GENERIC_UID}_reader" impl="::uiIO::editor::SIOSelector">
                 <type mode="reader" />
             </service>
 
@@ -110,10 +106,14 @@
             <!-- Visualization service for the second window -->
             <service uid="${GENERIC_UID}_rendering2" impl="::vtkSimpleMesh::SRenderer" autoConnect="yes" />
 
-            <!-- Mesh deformation service. -->
-            <service uid="${GENERIC_UID}_meshDeformation" impl="::vtkSimpleMesh::SSimpleMeshDeformation"  worker="DEFORMATION_WORKER" />
+            <!-- 
+                Mesh deformation service: 
+                This service runs a deformation method in another worker. 
+                This method is called every 200 milliseconds.
+            -->
+            <service uid="${GENERIC_UID}_meshDeformation" impl="::vtkSimpleMesh::SSimpleMeshDeformation" worker="DEFORMATION_WORKER" />
 
-
+ 
             <!-- Connect the signal slot of the service to receive the updating of camera position -->
             <connect>
                 <signal>${GENERIC_UID}_rendering1/camUpdated</signal>

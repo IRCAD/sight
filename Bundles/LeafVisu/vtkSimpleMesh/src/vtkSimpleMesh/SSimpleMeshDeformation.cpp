@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -230,22 +230,25 @@ void SSimpleMeshDeformation::computeDeformation(
 
 void SSimpleMeshDeformation::initMeshBackup()
 {
-    m_currentIncrement   = 0;
-    m_currentDeformation = 0;
+    SLM_WARN_IF("Data already init", m_transformMesh || m_mesh);
+    if (!m_mesh && !m_transformMesh)
+    {
+        m_currentIncrement   = 0;
+        m_currentDeformation = 0;
 
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
-    ::fwData::mt::ObjectReadToWriteLock lock(mesh);
+        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+        ::fwData::mt::ObjectReadToWriteLock lock(mesh);
 
-    SLM_ASSERT("Data already init", !m_transformMesh && !m_mesh);
 
-    lock.upgrade();
-    ::fwDataTools::Mesh::generatePointNormals(mesh);
-    mesh->allocatePointColors( ::fwData::Mesh::RGB );
-    lock.downgrade();
+        lock.upgrade();
+        ::fwDataTools::Mesh::generatePointNormals(mesh);
+        mesh->allocatePointColors( ::fwData::Mesh::RGB );
+        lock.downgrade();
 
-    m_mesh = ::fwData::Object::copy( mesh );
+        m_mesh = ::fwData::Object::copy( mesh );
 
-    m_transformMesh = ::fwData::Object::copy( mesh );
+        m_transformMesh = ::fwData::Object::copy( mesh );
+    }
 }
 
 //-----------------------------------------------------------------------------

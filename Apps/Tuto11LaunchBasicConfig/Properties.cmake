@@ -4,18 +4,18 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    io
-    gui
-    guiQt
     dataReg
     servicesReg
+    gui
+    guiQt
+    io
+    ioData
+    ioVTK
+    uiIO
     visuVTK
     visuVTKQt
-    launcher
-    ioVTK
-    ioData
     vtkSimpleNegato
-    uiIO
+    launcher
     appXml
 )
 

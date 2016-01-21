@@ -6,19 +6,18 @@ set( UNIQUE TRUE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
-    ctrlSelection
+    servicesReg
     gui
     guiQt
-    ioData
-    ioVTK
     io
-    servicesReg
-    uiVisuQt
-    uiImageQt
+    ioData # contains reader/writer for mesh (.trian) or matrix (.trf)
+    ioVTK
     uiIO
+    uiVisuQt # contains several editors for visualization
+    uiImageQt # contains several editors on image
     visuVTK
     visuVTKQt
-    visuVTKAdaptor
+    visuVTKAdaptor # contains adaptors for the generic scene
     launcher
     appXml
 )

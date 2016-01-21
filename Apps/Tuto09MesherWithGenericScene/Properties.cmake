@@ -5,7 +5,6 @@ set( TYPE APP )
 set( UNIQUE TRUE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    launcher
     dataReg
     servicesReg
     gui
@@ -13,16 +12,17 @@ set( REQUIREMENTS
     io
     ioData
     ioVTK
+    uiIO
     uiVisuQt
     uiImageQt
-    uiReconstructionQt
-    uiMedDataQt
-    uiIO
+    uiReconstructionQt # contains editors to manage reconstructions
+    uiMedDataQt # contains editors to manage model series
     visuVTK
     visuVTKQt
     visuVTKAdaptor
     opVTKMesh
     ctrlSelection
+    launcher
     appXml
 )
 

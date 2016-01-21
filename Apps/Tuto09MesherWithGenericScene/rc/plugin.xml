@@ -1,4 +1,9 @@
-<plugin id="Tuto09MesherWithGenericScene" version="@DASH_VERSION@" >
+<!-- 
+    This tutorial shows a VTK scene containing a 3D image and a 3D model.
+    To use this application, you should open a 3D image mask of an organ. An used the mesher actions to creates a 
+    reconstruction. Then, you can update the organ color, transparence, ... using the editors in the right.
+ -->
+<plugin id="Tuto09MesherWithGenericScene" version="@DASH_VERSION@">
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -11,7 +16,7 @@
 
             <object type="::fwData::Composite">
 
-                <service uid="MyIHM" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                <service uid="MyIHM" impl="::gui::frame::SDefaultFrame">
                     <gui>
                         <frame>
                             <name>Tuto09MesherWithGenericScene</name>
@@ -21,11 +26,11 @@
                     </gui>
                     <registry>
                         <menuBar sid="myMenuBar" start="yes" />
-                        <view sid="multiView_scene1" start="yes" />
+                        <view sid="mainView" start="yes" />
                     </registry>
                 </service>
 
-                <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
+                <service uid="myMenuBar" impl="::gui::aspect::SDefaultMenuBar">
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -38,8 +43,7 @@
                     </registry>
                 </service>
 
-
-                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+                <service uid="mainView" impl="::gui::view::SDefaultView">
                     <gui>
                         <layout type="::fwGui::CardinalLayoutManager">
                             <view align="center" minWidth="200" />
@@ -54,10 +58,10 @@
                         <view sid="listOrganEditor" start="yes" />
                         <view sid="organMaterialEditor" />
                         <view sid="representationEditor" />
-                        <view sid="multiView_scene1_bottom" start="yes" />
+                        <view sid="sceneEditorsView" start="yes" />
                     </registry>
                 </service>
-                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+                <service uid="sceneEditorsView" impl="::gui::view::SDefaultView">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="horizontal" />
@@ -68,18 +72,18 @@
                         </layout>
                     </gui>
                     <registry>
-                        <view sid="sliceListEditor" />
-                        <view sid="showScanEditor" />
-                        <view sid="sliderIndexEditor" />
+                        <view sid="sliceListEditor" start="yes" />
+                        <view sid="showScanEditor" start="yes" />
+                        <view sid="sliderIndexEditor" start="yes" />
                         <view sid="snapshotScene1Editor" start="yes" />
                     </registry>
                 </service>
 
-                <service uid="progress_statusbar" impl="::gui::editor::SJobBar" autoConnect="no" />
+                <service uid="progress_statusbar" impl="::gui::editor::SJobBar" />
 
-                <service uid="snapshotScene1Editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
+                <service uid="snapshotScene1Editor" impl="::uiVisu::SnapshotEditor" />
 
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
+                <service uid="menu_File" impl="::gui::aspect::SDefaultMenu">
                     <gui>
                         <layout>
                             <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -94,7 +98,7 @@
                         <menuItem sid="action_quit" start="yes" />
                     </registry>
                 </service>
-                <service uid="menu_Mesher" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
+                <service uid="menu_Mesher" impl="::gui::aspect::SDefaultMenu">
                     <gui>
                         <layout>
                             <menuItem name="Create Mesh 50" />
@@ -102,180 +106,141 @@
                         </layout>
                     </gui>
                     <registry>
-                        <menuItem sid="action_createMesh50" start="no" />
-                        <menuItem sid="action_createMesh80" start="no" />
+                        <menuItem sid="action_createMesh50" start="yes" />
+                        <menuItem sid="action_createMesh80" start="yes" />
                     </registry>
                 </service>
 
-                <service uid="action_openImage" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+                <service uid="action_openImage" impl="::gui::action::SStarter">
                     <start uid="imageReader" />
                 </service>
-                <service uid="action_saveModelSeries" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+                <service uid="action_saveModelSeries" impl="::gui::action::SStarter">
                     <start uid="modelSeriesWriter" />
                 </service>
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
+                <service uid="action_quit" impl="::gui::action::SQuit" />
 
-                <item key="image">
-                    <object uid="imageUID" type="::fwData::Image">
-                        <service uid="imageReader" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
-                            <type mode="reader" />
+
+                <service uid="mesher50ServiceUID" impl="::opVTKMesh::SVTKMesher">
+                    <config>
+                        <percentReduction>50</percentReduction>
+                        <image>image</image>
+                        <modelSeries>modelSeries</modelSeries>
+                    </config>
+                </service>
+
+                <service uid="mesher80ServiceUID" impl="::opVTKMesh::SVTKMesher">
+                    <config>
+                        <percentReduction>80</percentReduction>
+                        <image>image</image>
+                        <modelSeries>modelSeries</modelSeries>
+                    </config>
+                </service>
+
+                <service uid="updaterReconstUID" impl="::ctrlSelection::updater::SObjFromSlot">
+                    <compositeKey>reconstruction</compositeKey>
+                </service>
+
+                <service uid="managerUID" impl="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
+                    <mode type="stop" />
+                    <config>
+
+                        <object id="reconstruction" type="::fwData::Reconstruction">
+                            <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" />
+                            <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" />
+
+                            <connect>
+                                <signal>representationEditor/normalsModeModified</signal>
+                                <slot>modelSeriesAdaptorUid/updateNormalMode</slot>
+                            </connect>
+                        </object>
+
+                    </config>
+                </service>
+
+                <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" autoConnect="yes">
+                    <scene>
+                        <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                        <renderer id="default" background="0.0" />
+                        <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                            <config renderer="default" picker="" />
+                        </adaptor>
+                        <adaptor id="MPRNegato3D" uid="MPRNegatoScene3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                            <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                        </adaptor>
+                        <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                            <config renderer="default" />
+                        </adaptor>
+
+                        <connect>
+                            <signal>listOrganEditor/recDisplayModified</signal>
+                            <slot>modelSeriesAdaptorUid/showReconstructions</slot>
+                        </connect>
+
+                        <connect>
+                            <signal>snapshotScene1Editor/snapped</signal>
+                            <slot>snapshotUID/snap</slot>
+                        </connect>
+
+                        <connect>
+                            <signal>showScanEditor/toggled</signal>
+                            <slot>MPRNegatoScene3D/showSlice</slot>
+                        </connect>
+
+                        <connect>
+                            <signal>sliceListEditor/selected</signal>
+                            <slot>MPRNegatoScene3D/updateSliceMode</slot>
+                        </connect>
+                    </scene>
+                </service>
+
+                <item key="modelSeries">
+                    <object uid="modelSeriesUID" type="::fwMedData::ModelSeries">
+                        <service uid="listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" autoConnect="yes">
+                            <columns>
+                                <organ_name>@organ_name</organ_name>
+                            </columns>
+                        </service>
+                        <service uid="modelSeriesWriter" impl="::uiIO::editor::SIOSelector">
+                            <type mode="writer" />
                         </service>
                     </object>
                 </item>
 
-                <!-- CompositeVisu description -->
-                <item key="myCompositeVisu">
-                    <object uid="myCompositeVisu" type="::fwData::Composite">
-
-                        <service uid="updaterImageUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <uid>imageUID</uid>
-                            <compositeKey>image</compositeKey>
+                <item key="image">
+                    <object uid="imageUID" type="::fwData::Image">
+                        <service uid="imageReader" impl="::uiIO::editor::SIOSelector">
+                            <type mode="reader" />
                         </service>
-
-                        <service uid="mesher50ServiceUID" impl="::opVTKMesh::SVTKMesher" type="::opVTKMesh::IMesher" autoConnect="no">
+                        <!-- This service convert a simple fwData::Image to medical Image -->
+                        <service uid="medicaImageConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="yes" />
+                        <service uid="action_createMesh50" impl="::gui::action::SStarter">
+                            <start_if_exists uid="mesher50ServiceUID" />
+                        </service>
+                        <service uid="action_createMesh80" impl="::gui::action::SStarter">
+                            <start_if_exists uid="mesher80ServiceUID" />
+                        </service>
+                        <service uid="sliceListEditor" impl="::guiQt::editor::SSelectionMenuButton">
+                            <toolTip>Manage slice visibility</toolTip>
+                            <selected>3</selected>
+                            <items>
+                                <item text="One slice" value="1" />
+                                <item text="three slices" value="3" />
+                            </items>
+                        </service>
+                        <service uid="showScanEditor" impl="::guiQt::editor::SSignalButton">
                             <config>
-                                <percentReduction>50</percentReduction>
-                                <image>image</image>
-                                <modelSeries>modelSeries</modelSeries>
+                                <checkable>true</checkable>
+                                <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
+                                <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                                <iconWidth>40</iconWidth>
+                                <iconHeight>16</iconHeight>
+                                <checked>true</checked>
                             </config>
                         </service>
-
-                        <service uid="mesher80ServiceUID" impl="::opVTKMesh::SVTKMesher" type="::opVTKMesh::IMesher" autoConnect="no">
-                            <config>
-                                <percentReduction>80</percentReduction>
-                                <image>image</image>
-                                <modelSeries>modelSeries</modelSeries>
-                            </config>
+                        <service uid="sliderIndexEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                            <sliceIndex>axial</sliceIndex>
                         </service>
-
-                        <service uid="updaterReconstUID" impl="::ctrlSelection::updater::SObjFromSlot" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <compositeKey>reconstruction</compositeKey>
-                        </service>
-
-                        <service uid="managerUID" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
-                            <mode type="stop" />
-                            <config>
-
-                                <object id="image" type="::fwData::Image">
-                                    <!-- This service convert a simple fwData::Image to medical Image -->
-                                    <service impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="yes" />
-                                    <service uid="action_createMesh50" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
-                                        <start_if_exists uid="mesher50ServiceUID" />
-                                    </service>
-                                    <service uid="action_createMesh80" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
-                                        <start_if_exists uid="mesher80ServiceUID" />
-                                    </service>
-                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
-                                        <toolTip>Manage slice visibility</toolTip>
-                                        <selected>3</selected>
-                                        <items>
-                                            <item text="One slice" value="1" />
-                                            <item text="three slices" value="3" />
-                                        </items>
-                                    </service>
-                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
-                                        <config>
-                                            <checkable>true</checkable>
-                                            <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
-                                            <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
-                                            <iconWidth>40</iconWidth>
-                                            <iconHeight>16</iconHeight>
-                                            <checked>true</checked>
-                                        </config>
-                                    </service>
-                                    <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
-                                        <sliceIndex>axial</sliceIndex>
-                                    </service>
-
-                                    <connect>
-                                        <signal>showScanEditor/toggled</signal>
-                                        <slot>sliceListEditor/setEnabled</slot>
-                                    </connect>
-                                    
-                                    <proxy channel="show_scan">
-                                        <signal>showScanEditor/toggled</signal>
-                                    </proxy>
-                                    
-                                    <proxy channel="slice_mode">
-                                        <signal>sliceListEditor/selected</signal>
-                                    </proxy>
-
-                                </object>
-
-                                <object id="reconstruction" type="::fwData::Reconstruction">
-                                    <service uid="organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
-                                    <service uid="representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
-
-                                    <connect>
-                                        <signal>representationEditor/normalsModeModified</signal>
-                                        <slot>modelSeriesAdaptorUid/updateNormalMode</slot>
-                                    </connect>
-                                </object>
-
-                            </config>
-                        </service>
-
-                        <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
-                            <scene>
-
-                                <picker id="myPicker" vtkclass="fwVtkCellPicker" />
-                                <renderer id="default" background="0.0" />
-                                <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
-                                    <config renderer="default" picker="" />
-                                </adaptor>
-                                <adaptor uid="MPRNegatoScene3D" id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
-                                    <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
-                                </adaptor>
-                                <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                    <config renderer="default" />
-                                </adaptor>
-
-                                <connect>
-                                    <signal>listOrganEditor/recDisplayModified</signal>
-                                    <slot>modelSeriesAdaptorUid/showReconstructions</slot>
-                                </connect>
-
-                                <connect>
-                                    <signal>snapshotScene1Editor/snapped</signal>
-                                    <slot>snapshotUID/snap</slot>
-                                </connect>
-
-                                <proxy channel="show_scan" waitForKey="image">
-                                    <slot>MPRNegatoScene3D/showSlice</slot>
-                                </proxy>
-
-                                <proxy channel="slice_mode" waitForKey="image">
-                                    <slot>MPRNegatoScene3D/updateSliceMode</slot>
-                                </proxy>
-
-                            </scene>
-                        </service>
-
-                        <item key="modelSeries">
-                            <object uid="modelSeriesUID" type="::fwMedData::ModelSeries">
-                                <service uid="listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes">
-                                    <columns>
-                                        <organ_name>@organ_name</organ_name>
-                                    </columns>
-                                </service>
-                                <service uid="modelSeriesWriter" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
-                                    <type mode="writer" />
-                                </service>
-                            </object>
-                        </item>
-
-                        <connect>
-                            <signal>imageUID/modified</signal>
-                            <slot>updaterImageUID/addOrSwap</slot>
-                        </connect>
-
-                        <connect>
-                            <signal>listOrganEditor/reconstructionSelected</signal>
-                            <slot>updaterReconstUID/addOrSwap</slot>
-                        </connect>
-
                     </object>
-
                 </item>
 
                 <connect>
@@ -283,11 +248,21 @@
                     <slot>progress_statusbar/showJob</slot>
                 </connect>
 
+                <connect>
+                    <signal>showScanEditor/toggled</signal>
+                    <slot>sliceListEditor/setEnabled</slot>
+                </connect>                
+
+                <connect>
+                    <signal>listOrganEditor/reconstructionSelected</signal>
+                    <slot>updaterReconstUID/addOrSwap</slot>
+                </connect>
+
                 <start uid="MyIHM" />
                 <start uid="progress_statusbar" />
                 <start uid="updaterReconstUID" />
-                <start uid="updaterImageUID" />
                 <start uid="managerUID" />
+                <start uid="medicaImageConverter" />
 
             </object>
 
