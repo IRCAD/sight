@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,6 +33,17 @@ public:
 
     VISUVTKADAPTOR_API Axes() throw();
     VISUVTKADAPTOR_API virtual ~Axes() throw();
+
+    /**
+     * @name Slots API
+     * @{
+     */
+    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
+    typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
+
+    /// Slot: update axes visibility (true = visible)
+    VISUVTKADAPTOR_API void updateVisibility ( bool isVisible );
+    /** @} */
 
 protected:
 

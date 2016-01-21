@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,12 +8,11 @@
 
 #include "visuVTKAdaptor/Axes.hpp"
 
-/// FW4SPL Includes
+#include <fwCom/Slots.hxx>
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-/// VTK Includes
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
@@ -26,6 +25,9 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Ax
 
 namespace visuVTKAdaptor
 {
+//------------------------------------------------------------------------------
+
+const ::fwCom::Slots::SlotKeyType Axes::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
 
 //------------------------------------------------------------------------------
 
@@ -39,7 +41,7 @@ Axes::Axes() throw() :
     m_zLabel("z")
 
 {
-
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &Axes::updateVisibility, this);
 }
 
 //------------------------------------------------------------------------------
@@ -135,6 +137,16 @@ void Axes::buildPipeline()
 
     this->setVtkPipelineModified();
 
+}
+
+//------------------------------------------------------------------------------
+
+void Axes::updateVisibility(bool _isVisible)
+{
+    m_axesActor->SetVisibility(_isVisible);
+
+    this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
