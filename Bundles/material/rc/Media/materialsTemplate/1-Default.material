@@ -52,7 +52,7 @@ geometry_program CellsNormalsDisplay_GP glsl
 
 //-----------------------------------------------------------------------------
 
-material "1 - Default"
+material Default
 {
     technique
     {

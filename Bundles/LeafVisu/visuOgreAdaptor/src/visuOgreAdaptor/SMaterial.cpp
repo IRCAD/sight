@@ -53,7 +53,7 @@ const ::fwCom::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeText
 
 //-----------------------------------------------------------------------------
 
-const std::string SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME = "1 - Default";
+const std::string SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME = "Default";
 
 static const std::string s_EDGE_PASS    = "EdgePass";
 static const std::string s_NORMALS_PASS = "NormalsPass";
