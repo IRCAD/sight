@@ -74,11 +74,11 @@ lightingParams = [ 'param_named_auto u_cameraPos camera_position',
                    'param_named_auto u_specular surface_specular_colour',
                    'param_named_auto u_shininess surface_shininess']
 
-## Common parameters used for ambien lighting
+## Common parameters used for ambient lighting
 ambientParams = [ 'param_named_auto u_ambient surface_ambient_colour',
                   'param_named_auto u_diffuse surface_diffuse_colour']
 
-## Diffuse or negato textures parameters, they should be bind at different unit depending on OIT technique
+## Diffuse or negato textures parameters, they should be bound at different unit depending on OIT technique
 texParams = ['param_named u_texture int 0']
 dpTexParams = ['param_named u_texture int 1']
 ddpTexParams = ['param_named u_texture int 4']
@@ -99,6 +99,7 @@ diffuseColorParams = ['param_named_auto u_diffuse surface_diffuse_colour']
 ppColorParams = ['param_named u_colorPrimitiveTexture int 10',
                  'param_named u_colorPrimitiveTextureSize float2 0 0']
 
+## 'Name', '#Define', 'Attached vp', 'Attached fp', 'useAdjacency [0|1]', {parameters dict}
 cfgAmbient = ['Ambient', 'AMBIENT=1', '', '', '', { 'renderSceneVP' : ambientParams,
                                                     'defaultFP' : [],
                                                     'depthPeelingFP' : [],
