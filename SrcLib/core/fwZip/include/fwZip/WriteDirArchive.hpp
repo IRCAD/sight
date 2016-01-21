@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,11 +52,12 @@ public:
     /**
      * @brief Writes source file in archive. If possible, creates hard link otherwise copy source file in archive.
      * @param sourceFile source file.
-     * @param path file in archive.
+     * @param destinationFile file in archive.
      *
-     * @note Do nothing if path already exists in archive.
+     * @note Do nothing if destinationFile already exists in archive.
      */
-    FWZIP_API void putFile(const ::boost::filesystem::path &sourceFile, const ::boost::filesystem::path &path);
+    FWZIP_API void putFile(const ::boost::filesystem::path &sourceFile,
+                           const ::boost::filesystem::path &destinationFile);
 
     /**
      * @brief Creates a folder in archive.

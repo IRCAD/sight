@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,18 +36,11 @@ SPTR(std::istream) ReadDirArchive::getFile(const ::boost::filesystem::path &path
     FW_RAISE_EXCEPTION_IF(
         ::fwZip::exception::Read("File '" +  path.string() + "' "
                                  "in archive '" + m_archive.string() + "' doesn't exist."),
-        !this->exists(m_archive / path));
+        !::boost::filesystem::exists(m_archive / path));
 
     SPTR(std::ifstream) is = std::make_shared< std::ifstream >();
     is->open((m_archive / path).string().c_str(), std::fstream::binary | std::fstream::in);
     return is;
-}
-
-//-----------------------------------------------------------------------------
-
-bool ReadDirArchive::exists(const ::boost::filesystem::path &path)
-{
-    return !::boost::filesystem::exists(m_archive / path);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -58,9 +58,10 @@ SPTR(std::ostream) WriteDirArchive::createFile(const ::boost::filesystem::path &
 
 //-----------------------------------------------------------------------------
 
-void WriteDirArchive::putFile(const ::boost::filesystem::path &sourceFile, const ::boost::filesystem::path &path)
+void WriteDirArchive::putFile(const ::boost::filesystem::path &sourceFile,
+                              const ::boost::filesystem::path &destinationFile)
 {
-    const ::boost::filesystem::path fileDest = m_archive / path;
+    const ::boost::filesystem::path fileDest = m_archive / destinationFile;
     if (!::boost::filesystem::exists(fileDest))
     {
         const ::boost::filesystem::path parentFile = fileDest.parent_path();
