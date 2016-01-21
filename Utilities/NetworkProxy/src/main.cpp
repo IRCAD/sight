@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -244,6 +244,7 @@ int main (int argc, char **argv)
                                                                     <<" to port : '"<<config.port<<"'.");
 
                                 //re-send the message with the correct server
+                                sendingServer->setMessageDeviceName(config.deviceOut);
                                 sendingServer->broadcast(msg);
                             }
                         }
