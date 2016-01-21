@@ -57,11 +57,11 @@ protected:
     VISUVTKARADAPTOR_API void doStop() throw(fwTools::Failed);
 
     /**
-     * @verbatim
+     * @code{.xml}
        <adaptor id="points" class="::visuVTKRDAdaptor::SPointList3D" objectId="pointListKey">
         <config renderer="default"color="#cb1f72" radius="3.0" />
        </adaptor>
-       @endverbatim
+       @endcode
      * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
      * - \b color(optional) : color used to display the points.
      * - \b radius (optional) : point sphere radius.

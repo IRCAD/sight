@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -64,11 +64,11 @@ protected:
 
     /**
      * @brief method description:
-     * @verbatim
+     * @code{.xml}
         <service uid="SImagesSelectorInstance" impl="::uiCalibration::SImagesSelector" type="::gui::editor::IEditor">
              <frameTLUid>frameTL</frameTLUid>
         </service>
-       @endverbatim
+       @endcode
      * - \b frameTLUid : uid of the frame timeline used to extract images
      */
     UICALIBRATION_API virtual void configuring()  throw ( ::fwTools::Failed );

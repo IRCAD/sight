@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -60,7 +60,7 @@ protected:
     /**
      * @brief This method is used to configure the service.
      *
-     * @verbatim
+     * @code{.xml}
        <service impl="::syncTimeline::SMatrixTLSynchronizer" type="::arServices::ISynchronizer">
            <matrices>
                <matrix index="0" to="matrix0" />
@@ -68,7 +68,7 @@ protected:
                <matrix index="2" to="matrix2" />
             </matrices>
        </service>
-       @endverbatim
+       @endcode
      * - \b matrices defines the matrixTL to synchronize.
      *   - \b index: index of the matrix in the timeline.
      *   - \b to: uid of the TransformationMatrix3D where to extract the matrix.

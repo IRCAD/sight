@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -68,13 +68,13 @@ protected:
     /**
      * @brief Configures the service
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="..." impl="::videoCalibration::SChessBoardDetector" autoConnect="no">
             <calibration timeline="timeline1" calInfo="calInfo1" />
             <calibration timeline="timeline2" calInfo="calInfo2" />
             <board width="17" height="13" />
         </service>
-       @endverbatim
+       @endcode
      * - \b timeline : key of frame timeline in the composite.
      * - \b calInfo : key of the CalibrationInfo in the composite
      * - \b board : number of square in board width and height

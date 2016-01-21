@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,7 @@ namespace ioCalibration
  * @brief The SExportCalibrationXml class
  * This class export arData::CameraSeries in xml files with openCV
  * Structure of the file will be :
- * @verbatim
+ * @code{.xml}
     <?xml version="1.0"?>
     <opencv_storage>
         <camera>
@@ -47,7 +47,7 @@ namespace ioCalibration
             </extrinsic>
         </camera>
     </opencv_storage>
- * @endverbatim
+ * @endcode
  */
 class IOCALIBRATION_CLASS_API SExportCalibrationXml : public ::io::IWriter
 {
@@ -69,11 +69,11 @@ protected:
 
     /**
      * @brief Configures the service.
-     * @verbatim
+     * @code{.xml}
        <service impl="::ioCalibration::SExportCalibrationXml" >
            <type mode="writer" />
        </service>
-       @endverbatim
+       @endcode
      */
     IOCALIBRATION_API void configuring() throw (fwTools::Failed);
 

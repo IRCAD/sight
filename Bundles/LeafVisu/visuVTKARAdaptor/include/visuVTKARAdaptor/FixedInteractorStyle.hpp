@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,11 +15,11 @@
  *  @class FixedInteractorStyle
  *  @brief This class disable all user's interactions in a vtk view.
  *  @note This interactor style must be set to the visuVTKAdaptor::InteractorStyle.
- *  @verbatim
+ *  @code{.xml}
     <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
         <config renderer="default" style="FixedInteractorStyle" />
     </adaptor>
-    @endverbatim
+    @endcode
  *  @note All method are empty in order to disable interactions.
  */
 class VISUVTKARADAPTOR_CLASS_API FixedInteractorStyle : public vtkInteractorStyleUser

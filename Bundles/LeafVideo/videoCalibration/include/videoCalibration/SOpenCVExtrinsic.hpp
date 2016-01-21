@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,14 +36,14 @@ protected:
 
     /**
      * @brief Configures the service.
-     * @verbatim
+     * @code{.xml}
        <service impl="::videoCalibration::SExtrinsic" >
             <calibrationInfo1ID> ... </calibrationInfo1ID>
             <calibrationInfo2ID> ... </calibrationInfo2ID>
             <camIndex>...</camIndex>
             <board width="17" height="13" />
        </service>
-       @endverbatim
+       @endcode
      * - \b calibrationInfo1ID: FwId of the first calibrationInfo.
      * - \b calibrationInfo2ID: FwId of the second calibrationInfo.
      * - \b camIndex (optional, default: 1): index of the camera in cameraSeries used to compute extrinsic matrix

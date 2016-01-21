@@ -54,11 +54,11 @@ protected:
     /**
      * @brief Configures the service
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="..." impl="::videoCalibration::SMarkerToPoint" autoConnect="no">
              <matrixTL>matrixTLUid</matrixTL>
         </service>
-       @endverbatim
+       @endcode
      * - \b matrixTL : key of the matrix timeline (marker position)
      */
     VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);

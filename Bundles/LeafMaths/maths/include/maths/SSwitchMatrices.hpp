@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -58,12 +58,12 @@ protected:
     /**
      * @brief This method is used to configure the service.
      *
-     * @verbatim
+     * @code{.xml}
        <service impl="::maths::SSwitchMatrices" type="::fwServices::IController">
            <matrix>matrix1Uid</matrix>
            <matrix>matrix2Uid</matrix>
        </service>
-       @endverbatim
+       @endcode
      */
     MATHS_API void configuring() throw (fwTools::Failed);
 

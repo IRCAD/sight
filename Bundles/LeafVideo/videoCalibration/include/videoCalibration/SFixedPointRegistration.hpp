@@ -54,11 +54,11 @@ protected:
     /**
      * @brief Configures the service
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="..." impl="::videoCalibration::SFixedPointRegistration" autoConnect="no">
              <pointList>pointListUid</pointList>
         </service>
-       @endverbatim
+       @endcode
      * - \b pointList : uid of the data pointList (marker positions)
      */
     VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
