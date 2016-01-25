@@ -860,85 +860,85 @@ void SMaterial::updatePolygonMode(int polygonMode)
 
 void SMaterial::updateShadingMode( int shadingMode  )
 {
-    if(m_materialTemplateName == DEFAULT_MATERIAL_TEMPLATE_NAME)
+    ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(shadingMode);
+
+    ::Ogre::String prgSuffix;
+    prgSuffix = ::fwRenderOgre::helper::Shading::getProgramSuffix(mode, this->hasDiffuseTexture(),
+                                                                  m_hasVertexColor);
+    ::Ogre::String r2vbGSName;
+    r2vbGSName = ::fwRenderOgre::helper::Shading::getR2VBGeometryProgramName(m_primitiveType,
+                                                                             this->hasDiffuseTexture(),
+                                                                             m_hasVertexColor,
+                                                                             m_hasPrimitiveColor);
+
+    // Iterate through each technique found in the material and switch the shading mode
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
+    while( techIt.hasMoreElements())
     {
-        ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(shadingMode);
+        ::Ogre::Technique* tech = techIt.getNext();
+        SLM_ASSERT("Technique is not set", tech);
 
-        ::Ogre::String prgSuffix;
-        prgSuffix = ::fwRenderOgre::helper::Shading::getProgramSuffix(mode, this->hasDiffuseTexture(),
-                                                                      m_hasVertexColor);
-        ::Ogre::String r2vbGSName;
-        r2vbGSName = ::fwRenderOgre::helper::Shading::getR2VBGeometryProgramName(m_primitiveType,
-                                                                                 this->hasDiffuseTexture(),
-                                                                                 m_hasVertexColor,
-                                                                                 m_hasPrimitiveColor);
+        ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
 
-        // Iterate through each technique found in the material and switch the shading mode
-        ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-        while( techIt.hasMoreElements())
+        while ( passIt.hasMoreElements() )
         {
-            ::Ogre::Technique* tech = techIt.getNext();
-            SLM_ASSERT("Technique is not set", tech);
+            ::Ogre::Pass* ogrePass = passIt.getNext();
 
-            ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
-
-            while ( passIt.hasMoreElements() )
+            // Discard edge pass
+            if (ogrePass->getName() == s_EDGE_PASS || ogrePass->getName() == s_NORMALS_PASS )
             {
-                ::Ogre::Pass* ogrePass = passIt.getNext();
+                continue;
+            }
 
-                // Discard edge pass
-                if (ogrePass->getName() == s_EDGE_PASS || ogrePass->getName() == s_NORMALS_PASS )
+            if(m_primitiveType != ::fwData::Mesh::TRIANGLE || m_hasPrimitiveColor)
+            {
+                // We need a geometry shader (primitive generation and per-primitive color)
+                // and thus we rely on the render to vertex buffer pipeline
+
+                ogrePass->setVertexProgram("RenderScene_R2VB_" + prgSuffix + "_VP_glsl");
+                ogrePass->setGeometryProgram(r2vbGSName);
+                ogrePass->setFragmentProgram("");
+
+                if(m_hasPrimitiveColor)
                 {
-                    continue;
-                }
+                    const std::string texUnitName = "PerPrimitiveColor";
+                    ::Ogre::TextureUnitState* texUnitState = ogrePass->getTextureUnitState(texUnitName);
 
-                if(m_primitiveType != ::fwData::Mesh::TRIANGLE || m_hasPrimitiveColor)
-                {
-                    // We need a geometry shader (primitive generation and per-primitive color)
-                    // and thus we rely on the render to vertex buffer pipeline
+                    const auto result = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
+                        m_perPrimitiveColorTextureName,
+                        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 
-                    ogrePass->setVertexProgram("RenderScene_R2VB_" + prgSuffix + "_VP_glsl");
-                    ogrePass->setGeometryProgram(r2vbGSName);
-                    ogrePass->setFragmentProgram("");
+                    SLM_ASSERT("Texture should have been created before in SMesh !", !result.second);
 
-                    if(m_hasPrimitiveColor)
+                    ::Ogre::TexturePtr tex = result.first.dynamicCast< ::Ogre::Texture>();
+
+                    if(texUnitState == nullptr)
                     {
-                        const std::string texUnitName = "PerPrimitiveColor";
-                        ::Ogre::TextureUnitState* texUnitState = ogrePass->getTextureUnitState(texUnitName);
+                        OSLM_DEBUG("create unit state: " << m_perPrimitiveColorTextureName);
 
-                        const auto result = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
-                            m_perPrimitiveColorTextureName,
-                            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+                        ::Ogre::TextureUnitState* texUnitState = ogrePass->createTextureUnitState();
+                        texUnitState->setName(texUnitName);
+                        texUnitState->setTexture(tex);
+                        texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+                        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-                        SLM_ASSERT("Texture should have been created before in SMesh !", !result.second);
+                        const auto unitStateCount = ogrePass->getNumTextureUnitStates();
 
-                        ::Ogre::TexturePtr tex = result.first.dynamicCast< ::Ogre::Texture>();
-
-                        if(texUnitState == nullptr)
-                        {
-                            OSLM_DEBUG("create unit state: " << m_perPrimitiveColorTextureName);
-
-                            ::Ogre::TextureUnitState* texUnitState = ogrePass->createTextureUnitState();
-                            texUnitState->setName(texUnitName);
-                            texUnitState->setTexture(tex);
-                            texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
-                            texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-
-                            const auto unitStateCount = ogrePass->getNumTextureUnitStates();
-
-                            // Unit state is set to 10 in the material file, but the real index is set here
-                            // Ogre packs texture unit indices so we can't use spare indices :'(
-                            ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTexture",
-                                                                                       unitStateCount - 1);
-                        }
-
-                        // Set size outside the scope of texture creation because the size could vary
-                        ::Ogre::Vector2 size(static_cast<float>(tex->getWidth()),
-                                             static_cast<float>(tex->getHeight() - 1));
-                        ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTextureSize", size);
+                        // Unit state is set to 10 in the material file, but the real index is set here
+                        // Ogre packs texture unit indices so we can't use spare indices :'(
+                        ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTexture",
+                                                                                   unitStateCount - 1);
                     }
+
+                    // Set size outside the scope of texture creation because the size could vary
+                    ::Ogre::Vector2 size(static_cast<float>(tex->getWidth()),
+                                         static_cast<float>(tex->getHeight() - 1));
+                    ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTextureSize", size);
                 }
-                else
+            }
+            else
+            {
+                if(m_materialTemplateName == DEFAULT_MATERIAL_TEMPLATE_NAME)
                 {
                     // "Regular" pipeline
 
