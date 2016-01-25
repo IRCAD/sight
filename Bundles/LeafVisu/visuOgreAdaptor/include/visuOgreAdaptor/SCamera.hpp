@@ -22,14 +22,17 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
-fwCorePredeclare( (arData)(Camera) )
+namespace arData
+{
+class Camera;
+}
 
 namespace visuOgreAdaptor
 {
 
 /**
  * @brief   Adaptor from fw4 Camera to Ogre Camera
- * @class   Camera
+ * @class   SCamera
  */
 class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor
 {
@@ -64,9 +67,9 @@ protected:
     /**
      * @brief Configuring method.
      *
-     * @verbatim
+     * @code{.xml}
          <adaptor id="cameraAdaptor" class="::visuOgreAdaptor::Camera" objectId="cameraTF" />
-       @endverbatim
+       @endcode
      */
     VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
 

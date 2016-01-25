@@ -18,7 +18,7 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Send a FW4SPL data as a shader parameter
- * @class   ShaderParameter
+ * @class   SShaderParameter
  */
 class VISUOGREADAPTOR_CLASS_API SShaderParameter : public ::fwRenderOgre::IAdaptor
 {
@@ -60,11 +60,11 @@ protected:
      *
      * Send parameters to vertex and fragment shaders
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="paramAdaptor" impl="::visuOgreAdaptor::SShaderParameter">
             <config materialAdaptor="mtlAdaptorUID" parameter="u_value" shaderType="fragment" />
         </service>
-       @endverbatim
+       @endcode
      *  - \b materialName (mandatory) : the name of the associated Ogre material
      *  - \b parameter (mandatory) : name of the shader parameter to set
      *  - \b technique (optional) : name of the technique, default to the first in the material

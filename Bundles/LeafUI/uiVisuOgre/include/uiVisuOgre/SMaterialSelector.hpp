@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,10 +47,10 @@ protected:
 
     /**
      * @brief method description:
-     * @verbatim
+     * @code{.xml}
         <service uid="SMaterialSelectorInstance" impl="::uiVisuOgre::SMaterialSelector" type="::gui::editor::IEditor">
         </service>
-       @endverbatim
+       @endcode
      */
     UIVISUOGRE_API virtual void configuring()  throw ( ::fwTools::Failed );
 

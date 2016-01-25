@@ -61,11 +61,11 @@ protected:
 
     /**
      * @brief Configure the adaptor.
-     * @verbatim
+     * @code{.xml}
        <adaptor id="texAdaptor" class="::visuOgreAdaptor::STexture" objectId="imageKey" >
         <config textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
        </adaptor>
-       @endverbatim
+       @endcode
      * With :
      *  - \b textureName (optional) : the name of the ogre texture managed by the adaptor
      *  - \b filtering (optional nearest/linear, default=linear) : filtering of the texture

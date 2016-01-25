@@ -129,7 +129,7 @@ protected:
 
     /**
      * @brief Configures the adaptor
-     * @verbatim
+     * @code{.xml}
        <service uid="generiSceneUID" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoconnect="yes">
         <scene renderMode="auto">
             <renderer id="rendererId" layer="1" compositors="Invert;Laplace;Posterize" />
@@ -160,7 +160,7 @@ protected:
             </proxy>
         </scene>
        </service>
-       @endverbatim
+       @endcode
      * With :
      *  - \b scene
      *    - \b renderMode (optional): 'auto' (only when something has changed) or 'always' (render continuously).

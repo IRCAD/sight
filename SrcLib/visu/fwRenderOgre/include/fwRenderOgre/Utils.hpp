@@ -24,6 +24,14 @@ fwCorePredeclare((fwRenderOgre)(factory)(R2VBRenderable))
 
 namespace fwRenderOgre
 {
+namespace factory
+{
+class R2VBRenderable;
+}
+}
+
+namespace fwRenderOgre
+{
 /**
  * @class Utils
  * @brief Provide some Ogre general functions for FW4SPL
@@ -71,6 +79,7 @@ public:
      * @param _image The FW4SPL Image to convert
      * @param _texture The target texture
      * @param _texType Type of the texture (::Ogre::TEX_TYPE_2D, ::Ogre::TEX_TYPE_3D, ...)
+     * @param _dynamic
      */
     FWRENDEROGRE_API static void loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::TexturePtr _texture,
                                                  ::Ogre::TextureType _texType, bool _dynamic);

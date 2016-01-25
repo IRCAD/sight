@@ -28,7 +28,10 @@
 
 #include "visuOgreAdaptor/STexture.hpp"
 
-fwCorePredeclare( (fwData)(Material) )
+namespace fwData
+{
+class Material;
+}
 
 namespace visuOgreAdaptor
 {
@@ -106,12 +109,12 @@ protected:
 
     /**
      * @brief Configures the adaptor
-     * @verbatim
+     * @code{.xml}
        <adaptor id="materialAdaptor" class="::visuOgreAdaptor::SMaterial" objectId="materialKey">
         <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureAdaptor="texAdaptorUID"
                 shadingMode="gouraud" normalLength="0.1" />
        </adaptor>
-       @endverbatim
+       @endcode
      * With :
      *  - \b materialTemplate (mandatory) : name of the base Ogre material
      *  - \b materialName (optional) : name of the managed Ogre material

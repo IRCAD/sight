@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,10 @@
 #include "visuOgreAdaptor/config.hpp"
 #include "visuOgreAdaptor/SMesh.hpp"
 
-fwCorePredeclare( (fwData)(Mesh) )
+namespace fwData
+{
+class Mesh;
+}
 
 namespace visuOgreAdaptor
 {
@@ -72,11 +75,11 @@ protected:
 
     /**
      * @brief Configure the Reconstruction adaptor.
-     * @verbatim
+     * @code{.xml}
        <adaptor id="reconstructionAdaptorId" class="::visuOgreAdaptor::SReconstruction" objectId="objectId">
         <config transform="transform" autoresetcamera="autoresetcamera" />
        </adaptor>
-       @endverbatim
+       @endcode
      * With :
      *  - \b transform (mandatory) : the transformation matrix to associate to the adaptor
      *  - \b autoresetcamera (optional)

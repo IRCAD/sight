@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,11 +54,11 @@ protected:
 
     /**
      * @brief method description:
-     * @verbatim
+     * @code{.xml}
         <service uid="SDefaultCompositorEditorInstance" impl="::uiVisuOgre::SDefaultCompositorEditor" type="::gui::editor::IEditor">
              <parameter>param</parameter>
         </service>
-       @endverbatim
+       @endcode
      * - \b Parameter : parameter description.
      */
     UIVISUOGRE_API virtual void configuring()  throw ( ::fwTools::Failed );

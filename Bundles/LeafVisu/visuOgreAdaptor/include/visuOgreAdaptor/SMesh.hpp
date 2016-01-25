@@ -23,9 +23,19 @@
 #include "visuOgreAdaptor/STransform.hpp"
 
 
-fwCorePredeclare( (fwData)(Material) )
-fwCorePredeclare( (fwData)(Mesh) )
-fwCorePredeclare( (fwRenderOgre)(R2VBRenderable) )
+namespace fwData
+{
+class Material;
+}
+namespace fwData
+{
+class Mesh;
+}
+namespace fwRenderOgre
+{
+class R2VBRenderable;
+}
+
 
 namespace visuOgreAdaptor
 {
@@ -105,12 +115,12 @@ private:
 
     /**
      * @brief Configures the adaptor
-     * @verbatim
+     * @code{.xml}
        <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
         <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
                 textureAdaptor="texAdaptorUID" />
        </adaptor>
-       @endverbatim
+       @endcode
      * With :
      *  - \b renderer (mandatory) : defines the mesh's layer
      *  - \b transform (optional) : the transformation matrix to associate to the adaptor

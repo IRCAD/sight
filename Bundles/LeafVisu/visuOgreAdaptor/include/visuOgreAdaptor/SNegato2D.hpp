@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,12 +48,12 @@ protected:
 
     /**
      * @brief Configures the service
-     * @verbatim
+     * @code{.xml}
         <adaptor uid="SNegato2D" class="::visuOgreAdaptor::SNegato2D" objectId="image">
              <config renderer="default" picker="negatodefault" sliceIndex="axial"
                      imageSource="imageKey" filtering="none" />
         </adaptor>
-       @endverbatim
+       @endcode
      * - \b renderer (optional): defines the renderer to show the arrow. It must be different from the 3D objects
      *      renderer.
      * - \b picker (optional): identifier of the picker
