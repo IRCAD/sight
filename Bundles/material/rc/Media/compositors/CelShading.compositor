@@ -2,8 +2,8 @@ compositor CelShading
 {
     technique
     {
-        texture mrt target_width target_height PF_FLOAT16_RGBA PF_FLOAT16_RGBA PF_FLOAT16_RGBA chain_scope
-        texture edges target_width target_height PF_A8R8G8B8 chain_scope
+        texture mrt target_width target_height PF_FLOAT16_RGBA PF_FLOAT16_RGBA PF_FLOAT16_RGBA
+        texture edges target_width target_height PF_A8R8G8B8
 
         target mrt
         {

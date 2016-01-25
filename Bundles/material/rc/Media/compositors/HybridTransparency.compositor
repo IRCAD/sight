@@ -12,7 +12,7 @@ compositor HybridTransparency
         // Depth map
         texture back_depth target_width target_height PF_R8G8B8A8
         // Fake texture for the first
-        texture peel_init target_width target_height PF_R8G8B8A8 depth_pool 0 chain_scope
+        texture peel_init target_width target_height PF_R8G8B8A8 depth_pool 0
 
         // WBOIT texture
         // Occlusion computing

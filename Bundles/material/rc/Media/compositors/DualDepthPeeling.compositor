@@ -5,11 +5,11 @@ compositor DualDepthPeeling
 
         // temporary textures
         // Color buffer - used for blending
-        texture gbuffer target_width target_height PF_R8G8B8A8 chain_scope
+        texture gbuffer target_width target_height PF_R8G8B8A8
         // Ping buffer
-        texture ping_buffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R chain_scope
+        texture ping_buffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
         // Pong buffer
-        texture pong_buffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R chain_scope
+        texture pong_buffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
 
          // Init peel buffer
          target ping_buffer
