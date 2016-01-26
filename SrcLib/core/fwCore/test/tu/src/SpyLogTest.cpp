@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,11 +11,15 @@
 
 #include <fwTest/Exception.hpp>
 
+#include <boost/regex.hpp>
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/regex.hpp>
+#include <boost/algorithm/string/regex_find_format.hpp>
+
 #include <iostream>
 #include <exception>
 #include <streambuf>
 #include <thread>
-#include <regex>
 #include <string>
 
 // Registers the fixture into the 'registry'
@@ -107,11 +111,11 @@ struct RegexLogCompare
 {
     bool operator() (std::string a, std::string b)
     {
-        std::regex re(".*(msg n [[:digit:]]+)$");
-        std::smatch matchA;
-        std::smatch matchB;
-        bool doMatchA = std::regex_match(a, matchA, re);
-        bool doMatchB = std::regex_match(b, matchB, re);
+        boost::regex re(".*(msg n [[:digit:]]+)$");
+        boost::smatch matchA;
+        boost::smatch matchB;
+        bool doMatchA = boost::regex_match(a, matchA, re);
+        bool doMatchB = boost::regex_match(b, matchB, re);
         CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + a, doMatchA);
         CPPUNIT_ASSERT_MESSAGE( std::string("Regex do not match ") + b, doMatchB);
 
@@ -174,7 +178,7 @@ void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const 
     const std::string fileLinePattern("([0-9]+: )");
     const std::string messagePattern("(.*)$");
 
-    std::regex re(
+    boost::regex re(
         linePattern
         + timePattern
         + levelPattern
@@ -182,13 +186,13 @@ void SpyLogTest::checkLog(const std::vector<std::string> &logMessagesRef, const 
         + fileLinePattern
         + messagePattern );
 
-    std::smatch match;
+    boost::smatch match;
     std::string regexMessage;
     size_t i = 0;
 
     for(const std::string &log :  logMessages)
     {
-        bool doMatch = std::regex_match(log, match, re);
+        bool doMatch = boost::regex_match(log, match, re);
 
         CPPUNIT_ASSERT_MESSAGE(log + " don't match regex.", doMatch);
 
