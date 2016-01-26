@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -83,7 +83,7 @@ protected:
         <placeInScene uid="genericScene" />
        </service>
        @endverbatim
-       \b genericScene is the uid of the ::fwRenderVTK::VtkRenderService representing the generic scene which will be printed.
+       \b genericScene is the uid of the ::fwRenderVTK::SRender representing the generic scene which will be printed.
      */
     virtual void configuring() throw(fwTools::Failed);
 

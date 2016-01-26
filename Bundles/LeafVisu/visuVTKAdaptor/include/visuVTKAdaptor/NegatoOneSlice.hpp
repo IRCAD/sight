@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -91,7 +91,7 @@ protected:
      * - \b tfSelectionFwID (optional): fwID of the composite containing transfer functions
      * - \b selectedTFKey (optional): key of the transfer function to use in negato
      */
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     bool m_manageImageSource;

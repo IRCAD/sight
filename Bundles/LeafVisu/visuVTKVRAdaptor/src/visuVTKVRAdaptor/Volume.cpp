@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -168,7 +168,7 @@ Volume::~Volume() throw()
 
 //------------------------------------------------------------------------------
 
-void Volume::setClippingPlanesId(::fwRenderVTK::VtkRenderService::VtkObjectIdType id)
+void Volume::setClippingPlanesId(::fwRenderVTK::SRender::VtkObjectIdType id)
 {
     m_clippingPlanesId = id;
 }
@@ -268,12 +268,11 @@ void Volume::updatingTFWindowing(double window, double level)
 
 //------------------------------------------------------------------------------
 
-void Volume::configuring() throw(fwTools::Failed)
+void Volume::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
     assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
     this->setClippingPlanesId( m_configuration->getAttributeValue("clippingplanes") );
 
     if (m_configuration->hasAttribute("autoresetcamera") )
@@ -292,11 +291,6 @@ void Volume::configuring() throw(fwTools::Failed)
     if(m_configuration->hasAttribute("reductionFactor"))
     {
         m_reductionFactor = std::stod(m_configuration->getAttributeValue("reductionFactor"));
-    }
-
-    if(m_configuration->hasAttribute("transform"))
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
     }
 }
 

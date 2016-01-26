@@ -111,7 +111,7 @@ public:
     VISUVTKADAPTOR_API void setUnclippedPartMaterial(SPTR(::fwData::Material) material);
 
     VISUVTKADAPTOR_API void setShowClippedPart ( bool show );
-    VISUVTKADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::VtkRenderService::VtkObjectIdType id );
+    VISUVTKADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::SRender::VtkObjectIdType id );
 
     VISUVTKADAPTOR_API void setVtkClippingPlanes               ( vtkPlaneCollection *planes );
     VISUVTKADAPTOR_API void setActorPropertyToUnclippedMaterial( bool opt );
@@ -145,7 +145,7 @@ public:
 protected:
 
     VISUVTKADAPTOR_API void doStart    () throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop     () throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap   () throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate   () throw(fwTools::Failed);
@@ -215,7 +215,7 @@ protected:
     vtkActor           *m_actor;
 
     vtkPlaneCollection *m_clippingPlanes;
-    ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_clippingPlanesId;
+    ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanesId;
 
     MeshVtkCommand *m_planeCollectionShifterCallback;
     MeshVtkCommand *m_servicesStarterCallback;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@ public:
 
     VISUVTKADAPTOR_API virtual ~Reconstruction() throw();
 
-    void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id)
+    void setClippingPlanes(::fwRenderVTK::SRender::VtkObjectIdType id)
     {
         m_clippingPlanesId = id;
     }
@@ -96,13 +96,13 @@ protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
     void createMeshService();
 
-    ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_clippingPlanesId;
+    ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanesId;
 
     ::fwRenderVTK::IVtkAdaptorService::wptr m_meshService;
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@
 #include <fwData/Image.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwRenderVTK/VtkRenderService.hpp>
+#include <fwRenderVTK/SRender.hpp>
 
 
 class vtkAbstractVolumeMapper;
@@ -43,7 +43,7 @@ public:
 
     VISUVTKVRADAPTOR_API virtual ~Volume() throw();
 
-    VISUVTKVRADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::VtkRenderService::VtkObjectIdType id );
+    VISUVTKVRADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::SRender::VtkObjectIdType id );
 
     VISUVTKVRADAPTOR_API void setVtkClippingPlanes( vtkPlaneCollection *planes );
 
@@ -91,7 +91,7 @@ protected:
      *
      * @throw fwTools::Failed
      */
-    VISUVTKVRADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKVRADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     VISUVTKVRADAPTOR_API void doSwap() throw(fwTools::Failed);
 
@@ -116,7 +116,7 @@ protected:
 
     vtkPlaneCollection *m_clippingPlanes;
 
-    ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_clippingPlanesId;
+    ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanesId;
 
     vtkAbstractVolumeMapper  * m_volumeMapper;
     vtkVolumeProperty        * m_volumeProperty;

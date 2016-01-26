@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -74,7 +74,7 @@ protected:
      *   (see second example). This is useful for multiline text. The same rules
      *   that for the attribute are applied.
      */
-    VISUVTKADAPTOR_API virtual void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API virtual void doConfigure() throw(fwTools::Failed);
 
     std::string m_text;
 

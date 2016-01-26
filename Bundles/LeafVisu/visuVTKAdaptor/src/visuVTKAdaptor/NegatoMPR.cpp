@@ -152,7 +152,7 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
 
     if ( imageIsValid)
     {
-        if(!this->getSliceMode() == NO_SLICE)
+        if(this->getSliceMode() != NO_SLICE)
         {
             if(this->getSliceMode() == ONE_SLICE)
             {
@@ -276,11 +276,9 @@ void NegatoMPR::setCrossScale(double scale)
 
 //------------------------------------------------------------------------------
 
-void NegatoMPR::configuring() throw(fwTools::Failed)
+void NegatoMPR::doConfigure() throw(fwTools::Failed)
 {
-    assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
 
     if (m_configuration->hasAttribute("mode"))
     {
@@ -324,10 +322,6 @@ void NegatoMPR::configuring() throw(fwTools::Failed)
         {
             m_orientation = X_AXIS;
         }
-    }
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
     }
     if(m_configuration->hasAttribute("tfalpha") )
     {

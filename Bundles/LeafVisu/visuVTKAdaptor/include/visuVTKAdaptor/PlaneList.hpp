@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,12 +34,12 @@ public:
 
     VISUVTKADAPTOR_API virtual ~PlaneList() throw();
 
-    void setPlaneCollectionId(::fwRenderVTK::VtkRenderService::VtkObjectIdType id)
+    void setPlaneCollectionId(::fwRenderVTK::SRender::VtkObjectIdType id)
     {
         m_planeCollectionId = id;
     }
 
-    ::fwRenderVTK::VtkRenderService::VtkObjectIdType getPlaneCollectionId() const
+    ::fwRenderVTK::SRender::VtkObjectIdType getPlaneCollectionId() const
     {
         return m_planeCollectionId;
     }
@@ -52,7 +52,7 @@ protected:
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
@@ -60,7 +60,7 @@ protected:
     void updateSelection(::fwData::Plane::sptr plane);
 
     vtkCommand * m_rightButtonCommand;
-    ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_planeCollectionId;
+    ::fwRenderVTK::SRender::VtkObjectIdType m_planeCollectionId;
 
     /// Store connections to planes adaptors.
     ::fwServices::helper::SigSlotConnection::sptr m_planeConnections;

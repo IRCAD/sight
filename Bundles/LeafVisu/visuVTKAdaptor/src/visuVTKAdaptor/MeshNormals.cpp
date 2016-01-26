@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -87,13 +87,11 @@ MeshNormals::~MeshNormals() throw()
 
 //------------------------------------------------------------------------------
 
-void MeshNormals::configuring() throw( ::fwTools::Failed)
+void MeshNormals::doConfigure() throw( ::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
     if(m_configuration->hasAttribute("normal") )
     {
         std::string normal = m_configuration->getExistingAttributeValue("normal");

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -192,11 +192,9 @@ void ImageSlice::updateSliceType(int from, int to)
 
 //------------------------------------------------------------------------------
 
-void ImageSlice::configuring() throw(fwTools::Failed)
+void ImageSlice::doConfigure() throw(fwTools::Failed)
 {
-    assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
     if(m_configuration->hasAttribute("sliceIndex"))
     {
         std::string orientation = m_configuration->getAttributeValue("sliceIndex");
@@ -212,10 +210,6 @@ void ImageSlice::configuring() throw(fwTools::Failed)
         {
             m_orientation = X_AXIS;
         }
-    }
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
     }
     if(m_configuration->hasAttribute("ctrlimage") )
     {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -212,11 +212,9 @@ ImagePickerInteractor::~ImagePickerInteractor() throw()
 
 //------------------------------------------------------------------------------
 
-void ImagePickerInteractor::configuring() throw(fwTools::Failed)
+void ImagePickerInteractor::doConfigure() throw(fwTools::Failed)
 {
     SLM_ASSERT("Required element 'config' is missing.", m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 
     if (m_configuration->hasAttribute("event"))
     {

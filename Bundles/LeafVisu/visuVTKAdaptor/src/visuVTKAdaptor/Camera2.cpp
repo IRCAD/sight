@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -77,12 +77,8 @@ Camera2::~Camera2() throw()
 
 //------------------------------------------------------------------------------
 
-void Camera2::configuring() throw(fwTools::Failed)
+void Camera2::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
 
 //------------------------------------------------------------------------------

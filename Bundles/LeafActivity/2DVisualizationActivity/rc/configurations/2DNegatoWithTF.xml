@@ -52,7 +52,7 @@
                 <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
 
                     <!-- Generic Scene Negato -->
-                    <service uid="${GENERIC_UID}_negato" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />

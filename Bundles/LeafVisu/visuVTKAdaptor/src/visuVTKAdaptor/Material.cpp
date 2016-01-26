@@ -82,12 +82,8 @@ vtkProperty *Material::getVtkProperty() const
 
 //------------------------------------------------------------------------------
 
-void Material::configuring() throw(fwTools::Failed)
+void Material::doConfigure() throw(fwTools::Failed)
 {
-
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
 }
 
 //------------------------------------------------------------------------------

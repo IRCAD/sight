@@ -450,7 +450,7 @@ Mesh::~Mesh() throw()
 
 //------------------------------------------------------------------------------
 
-void Mesh::configuring() throw(fwTools::Failed)
+void Mesh::doConfigure() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
 
@@ -466,10 +466,6 @@ void Mesh::configuring() throw(fwTools::Failed)
         std::string autoresetcamera = m_configuration->getAttributeValue("autoresetcamera");
         m_autoResetCamera = (autoresetcamera == "yes");
     }
-
-    this->setPickerId    ( m_configuration->getAttributeValue ( "picker"    ) );
-    this->setRenderId    ( m_configuration->getAttributeValue ( "renderer"  ) );
-    this->setTransformId ( m_configuration->getAttributeValue ( "transform" ) );
 
     if(m_configuration->hasAttribute("uvgen"))
     {
@@ -510,9 +506,9 @@ void Mesh::doStart() throw(fwTools::Failed)
 {
     if(!m_textureAdaptorUID.empty())
     {
-        ::fwRenderVTK::VtkRenderService::sptr renderService = this->getRenderService();
-        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor     = renderService->getAdaptor(m_textureAdaptorUID);
-        ::visuVTKAdaptor::Texture::sptr textureAdaptor      = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
+        ::fwRenderVTK::SRender::sptr renderService      = this->getRenderService();
+        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor = renderService->getAdaptor(m_textureAdaptorUID);
+        ::visuVTKAdaptor::Texture::sptr textureAdaptor  = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
 
         SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
         m_connections->connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
@@ -653,7 +649,7 @@ void Mesh::setShowClippedPart(bool show)
 
 //------------------------------------------------------------------------------
 
-void Mesh::setClippingPlanesId(::fwRenderVTK::VtkRenderService::VtkObjectIdType id)
+void Mesh::setClippingPlanesId(::fwRenderVTK::SRender::VtkObjectIdType id)
 {
     m_clippingPlanesId = id;
 }

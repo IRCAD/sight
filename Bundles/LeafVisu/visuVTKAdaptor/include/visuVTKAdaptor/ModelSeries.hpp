@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,7 +54,7 @@ public:
 
     VISUVTKADAPTOR_API virtual ~ModelSeries() throw();
 
-    void setClippingPlanes(::fwRenderVTK::VtkRenderService::VtkObjectIdType id)
+    void setClippingPlanes(::fwRenderVTK::SRender::VtkObjectIdType id)
     {
         m_clippingPlanes = id;
     }
@@ -72,13 +72,13 @@ public:
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     /// redraw all (stop then restart sub services)
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_clippingPlanes;
+    ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanes;
 
     /**
      * @name Slots methods

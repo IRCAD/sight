@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,12 +50,11 @@ SliceFollowerCamera::~SliceFollowerCamera() throw()
 
 //------------------------------------------------------------------------------
 
-void SliceFollowerCamera::configuring() throw(fwTools::Failed)
+void SliceFollowerCamera::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
     assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
     if(m_configuration->hasAttribute("sliceIndex"))
     {
         std::string orientation = m_configuration->getAttributeValue("sliceIndex");

@@ -58,7 +58,7 @@ Texture::~Texture() throw()
 
 //------------------------------------------------------------------------------
 
-void Texture::configuring() throw(fwTools::Failed)
+void Texture::doConfigure() throw(fwTools::Failed)
 {
     SLM_ASSERT("Missing configuration", m_configuration->getName() == "config");
 

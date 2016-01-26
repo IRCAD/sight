@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -203,17 +203,8 @@ void ProbeCursor::setVisibility( bool visibility )
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::configuring() throw(fwTools::Failed)
+void ProbeCursor::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
-    }
 }
 
 //------------------------------------------------------------------------------

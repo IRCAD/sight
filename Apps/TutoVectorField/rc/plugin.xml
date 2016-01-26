@@ -96,7 +96,7 @@
                     <object uid="compositeVisu" type="::fwData::Composite">
 
 
-                        <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="genericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
 

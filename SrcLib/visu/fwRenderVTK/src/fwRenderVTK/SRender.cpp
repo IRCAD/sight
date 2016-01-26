@@ -6,7 +6,7 @@
 
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
 #include "fwRenderVTK/OffScreenInteractorManager.hpp"
-#include "fwRenderVTK/VtkRenderService.hpp"
+#include "fwRenderVTK/SRender.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
 
 #include <fwCom/Slot.hpp>
@@ -41,16 +41,16 @@
 #include <vtkSmartPointer.h>
 #include <vtkWindowToImageFilter.h>
 
-fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::VtkRenderService, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::SRender, ::fwData::Composite );
 
 using namespace fwServices;
 
 
 namespace fwRenderVTK
 {
-const ::fwCom::Signals::SignalKeyType VtkRenderService::s_DROPPED_SIG     = "dropped";
-const ::fwCom::Slots::SlotKeyType VtkRenderService::s_RENDER_SLOT         = "render";
-const ::fwCom::Slots::SlotKeyType VtkRenderService::s_REQUEST_RENDER_SLOT = "requestRender";
+const ::fwCom::Signals::SignalKeyType SRender::s_DROPPED_SIG     = "dropped";
+const ::fwCom::Slots::SlotKeyType SRender::s_RENDER_SLOT         = "render";
+const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT = "requestRender";
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
 static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
@@ -58,7 +58,7 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 
 //-----------------------------------------------------------------------------
 
-VtkRenderService::VtkRenderService() throw() :
+SRender::SRender() throw() :
     m_pendingRenderRequest(false),
     m_renderMode(RenderMode::AUTO),
     m_width(1280),
@@ -69,22 +69,22 @@ VtkRenderService::VtkRenderService() throw() :
 
     newSignal<DroppedSignalType>(s_DROPPED_SIG);
 
-    newSlot(s_RENDER_SLOT, &VtkRenderService::render, this);
-    newSlot(s_REQUEST_RENDER_SLOT, &VtkRenderService::requestRender, this);
-    newSlot(s_ADD_OBJECTS_SLOT, &VtkRenderService::addObjects, this);
-    newSlot(s_CHANGE_OBJECTS_SLOT, &VtkRenderService::changeObjects, this);
-    newSlot(s_REMOVE_OBJECTS_SLOT, &VtkRenderService::removeObjects, this);
+    newSlot(s_RENDER_SLOT, &SRender::render, this);
+    newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
+    newSlot(s_ADD_OBJECTS_SLOT, &SRender::addObjects, this);
+    newSlot(s_CHANGE_OBJECTS_SLOT, &SRender::changeObjects, this);
+    newSlot(s_REMOVE_OBJECTS_SLOT, &SRender::removeObjects, this);
 }
 
 //-----------------------------------------------------------------------------
 
-VtkRenderService::~VtkRenderService() throw()
+SRender::~SRender() throw()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::configureRenderer( ConfigurationType conf )
+void SRender::configureRenderer( ConfigurationType conf )
 {
     assert(conf->getName() == "renderer");
 
@@ -125,7 +125,7 @@ void VtkRenderService::configureRenderer( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::configurePicker( ConfigurationType conf )
+void SRender::configurePicker( ConfigurationType conf )
 {
     assert(conf->getName() == "picker");
 
@@ -153,7 +153,7 @@ void VtkRenderService::configurePicker( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::configureObject( ConfigurationType conf )
+void SRender::configureObject( ConfigurationType conf )
 {
     assert(conf->getName() == "adaptor");
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
@@ -162,6 +162,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
     const std::string objectId      = conf->getAttributeValue("objectId");
     const std::string adaptor       = conf->getAttributeValue("class");
     const std::string uid           = conf->getAttributeValue("uid");
+    const std::string autoConnect   = conf->getAttributeValue("autoConnect");
     const std::string compositeName = "self";
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
@@ -191,7 +192,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
         adaptee.m_config = *(conf->begin());
         if (!uid.empty())
         {
-            OSLM_TRACE("VtkRenderService::configureObject : uid = " << uid);
+            OSLM_TRACE("SRender::configureObject : uid = " << uid);
             adaptee.m_service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( object, adaptor, uid);
         }
         else
@@ -205,8 +206,15 @@ void VtkRenderService::configureObject( ConfigurationType conf )
         adaptee.getService()->setConfiguration(adaptee.m_config);
         adaptee.getService()->setAutoRender(m_renderMode == RenderMode::AUTO);
         adaptee.getService()->configure();
-        adaptee.getService()->setRenderService(VtkRenderService::dynamicCast(this->shared_from_this()));
+        adaptee.getService()->setRenderService(SRender::dynamicCast(this->shared_from_this()));
         adaptee.getService()->setName(id);
+
+        if (!autoConnect.empty())
+        {
+            SLM_ASSERT("'autoConnect' attribut value must be 'yes' or 'no', actual: " + autoConnect,
+                       autoConnect == "yes" || autoConnect == "no" );
+            adaptee.getService()->setAutoConnect(autoConnect == "yes");
+        }
 
         if (this->isStarted())
         {
@@ -250,7 +258,7 @@ void VtkRenderService::configureObject( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::configureVtkObject( ConfigurationType conf )
+void SRender::configureVtkObject( ConfigurationType conf )
 {
     assert(conf->getName() == "vtkObject");
 
@@ -277,7 +285,7 @@ void VtkRenderService::configureVtkObject( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-vtkTransform * VtkRenderService::createVtkTransform( ConfigurationType conf )
+vtkTransform * SRender::createVtkTransform( ConfigurationType conf )
 {
     SLM_ASSERT("vtkObject must be contain just only one sub xml element called vtkTransform.", conf->size() == 1 &&
                ( *conf->begin() )->getName() == "vtkTransform");
@@ -312,10 +320,10 @@ vtkTransform * VtkRenderService::createVtkTransform( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::addVtkObject( const VtkObjectIdType& _id, vtkObject * _vtkObj )
+void SRender::addVtkObject( const VtkObjectIdType& _id, vtkObject * _vtkObj )
 {
-    SLM_ASSERT( !_id.empty(), "vtkObject id is empty" );
-    SLM_ASSERT( _vtkObj, "vtkObject is NULL" );
+    SLM_ASSERT( "vtkObject id is empty", !_id.empty() );
+    SLM_ASSERT( "vtkObject is NULL", _vtkObj );
 
     if( m_vtkObjects.count(_id) == 0 )
     {
@@ -325,7 +333,7 @@ void VtkRenderService::addVtkObject( const VtkObjectIdType& _id, vtkObject * _vt
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::configuring() throw(fwTools::Failed)
+void SRender::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
@@ -388,14 +396,14 @@ void VtkRenderService::configuring() throw(fwTools::Failed)
         m_timer = m_associatedWorker->createTimer();
 
         ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(timeStep);
-        m_timer->setFunction( std::bind( &VtkRenderService::requestRender, this)  );
+        m_timer->setFunction( std::bind( &SRender::requestRender, this)  );
         m_timer->setDuration(duration);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::starting() throw(fwTools::Failed)
+void SRender::starting() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -494,7 +502,7 @@ void VtkRenderService::starting() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::stopping() throw(fwTools::Failed)
+void SRender::stopping() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -531,7 +539,7 @@ void VtkRenderService::stopping() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void VtkRenderService::configureObjects(::fwData::Composite::ContainerType objects)
+void SRender::configureObjects(::fwData::Composite::ContainerType objects)
 {
     SLM_ASSERT("Scene configuration is not defined",  m_sceneConfiguration );
 
@@ -547,7 +555,7 @@ void VtkRenderService::configureObjects(::fwData::Composite::ContainerType objec
 
 //------------------------------------------------------------------------------
 
-void VtkRenderService::addObjects(::fwData::Composite::ContainerType objects)
+void SRender::addObjects(::fwData::Composite::ContainerType objects)
 {
     this->configureObjects(objects);
     this->connectAfterWait(objects);
@@ -555,8 +563,8 @@ void VtkRenderService::addObjects(::fwData::Composite::ContainerType objects)
 
 //------------------------------------------------------------------------------
 
-void VtkRenderService::changeObjects(::fwData::Composite::ContainerType newObjects,
-                                     ::fwData::Composite::ContainerType oldObjects)
+void SRender::changeObjects(::fwData::Composite::ContainerType newObjects,
+                            ::fwData::Composite::ContainerType oldObjects)
 {
     this->disconnect(oldObjects);
     this->configureObjects(newObjects);
@@ -565,7 +573,7 @@ void VtkRenderService::changeObjects(::fwData::Composite::ContainerType newObjec
 
 //------------------------------------------------------------------------------
 
-void VtkRenderService::removeObjects(::fwData::Composite::ContainerType objects)
+void SRender::removeObjects(::fwData::Composite::ContainerType objects)
 {
     this->disconnect(objects);
     this->configureObjects(objects);
@@ -573,13 +581,13 @@ void VtkRenderService::removeObjects(::fwData::Composite::ContainerType objects)
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::updating() throw(fwTools::Failed)
+void SRender::updating() throw(fwTools::Failed)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::render()
+void SRender::render()
 {
     if (m_offScreen)
     {
@@ -620,7 +628,7 @@ void VtkRenderService::render()
 
 //-----------------------------------------------------------------------------
 
-bool VtkRenderService::isShownOnScreen()
+bool SRender::isShownOnScreen()
 {
     if (!m_offScreen)
     {
@@ -635,18 +643,18 @@ bool VtkRenderService::isShownOnScreen()
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::requestRender()
+void SRender::requestRender()
 {
     if ( !this->getPendingRenderRequest())
     {
         this->setPendingRenderRequest(true);
-        this->slot(VtkRenderService::s_RENDER_SLOT)->asyncRun();
+        this->slot(SRender::s_RENDER_SLOT)->asyncRun();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::startContext()
+void SRender::startContext()
 {
     if (!m_offScreen)
     {
@@ -677,7 +685,7 @@ void VtkRenderService::startContext()
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::stopContext()
+void SRender::stopContext()
 {
     SLM_TRACE_FUNC();
 
@@ -697,7 +705,7 @@ void VtkRenderService::stopContext()
 
 //-----------------------------------------------------------------------------
 
-vtkRenderer * VtkRenderService::getRenderer(RendererIdType rendererId)
+vtkRenderer * SRender::getRenderer(RendererIdType rendererId)
 {
     OSLM_ASSERT("Renderer not found : '" << rendererId << "'", m_renderers.count(rendererId) == 1);
 
@@ -706,7 +714,7 @@ vtkRenderer * VtkRenderService::getRenderer(RendererIdType rendererId)
 
 //-----------------------------------------------------------------------------
 
-vtkAbstractPropPicker * VtkRenderService::getPicker(PickerIdType pickerId)
+vtkAbstractPropPicker * SRender::getPicker(PickerIdType pickerId)
 {
     PickersMapType::const_iterator iter = m_pickers.find(pickerId);
     if ( iter == m_pickers.end())
@@ -719,7 +727,7 @@ vtkAbstractPropPicker * VtkRenderService::getPicker(PickerIdType pickerId)
 
 //-----------------------------------------------------------------------------
 
-vtkObject * VtkRenderService::getVtkObject(const VtkObjectIdType& objectId) const
+vtkObject * SRender::getVtkObject(const VtkObjectIdType& objectId) const
 {
     VtkObjectMapType::const_iterator iter = m_vtkObjects.find(objectId);
     if ( iter == m_vtkObjects.end())
@@ -732,7 +740,7 @@ vtkObject * VtkRenderService::getVtkObject(const VtkObjectIdType& objectId) cons
 
 //-----------------------------------------------------------------------------
 
-SPTR (IVtkAdaptorService) VtkRenderService::getAdaptor(const VtkRenderService::AdaptorIdType& adaptorId) const
+SPTR (IVtkAdaptorService) SRender::getAdaptor(const SRender::AdaptorIdType& adaptorId) const
 {
     IVtkAdaptorService::sptr adaptor;
     SceneAdaptorsMapType::const_iterator it = m_sceneAdaptors.find(adaptorId);
@@ -751,7 +759,7 @@ SPTR (IVtkAdaptorService) VtkRenderService::getAdaptor(const VtkRenderService::A
 
 //-----------------------------------------------------------------------------
 
-vtkTransform * VtkRenderService::getOrAddVtkTransform( const VtkObjectIdType& _id )
+vtkTransform * SRender::getOrAddVtkTransform( const VtkObjectIdType& _id )
 {
     vtkTransform *t = vtkTransform::SafeDownCast(getVtkObject(_id));
     if(t == 0)
@@ -764,7 +772,7 @@ vtkTransform * VtkRenderService::getOrAddVtkTransform( const VtkObjectIdType& _i
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::connectAfterWait(::fwData::Composite::ContainerType objects)
+void SRender::connectAfterWait(::fwData::Composite::ContainerType objects)
 {
 
     for(::fwData::Composite::value_type element :  objects)
@@ -782,8 +790,8 @@ void VtkRenderService::connectAfterWait(::fwData::Composite::ContainerType objec
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::manageConnection(const std::string &key, const ::fwData::Object::sptr &obj,
-                                        const ConfigurationType &config)
+void SRender::manageConnection(const std::string &key, const ::fwData::Object::sptr &obj,
+                               const ConfigurationType &config)
 {
     if(config->hasAttribute("waitForKey"))
     {
@@ -809,8 +817,8 @@ void VtkRenderService::manageConnection(const std::string &key, const ::fwData::
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::manageProxy(const std::string &key, const ::fwData::Object::sptr &obj,
-                                   const ConfigurationType &config)
+void SRender::manageProxy(const std::string &key, const ::fwData::Object::sptr &obj,
+                          const ConfigurationType &config)
 {
     if(config->hasAttribute("waitForKey"))
     {
@@ -824,7 +832,7 @@ void VtkRenderService::manageProxy(const std::string &key, const ::fwData::Objec
 
 //-----------------------------------------------------------------------------
 
-void VtkRenderService::disconnect(::fwData::Composite::ContainerType objects)
+void SRender::disconnect(::fwData::Composite::ContainerType objects)
 {
 
     for(::fwData::Composite::value_type element :  objects)
@@ -842,7 +850,7 @@ void VtkRenderService::disconnect(::fwData::Composite::ContainerType objects)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType VtkRenderService::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsType SRender::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );

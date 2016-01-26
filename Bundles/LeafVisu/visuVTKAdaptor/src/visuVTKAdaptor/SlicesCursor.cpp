@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -85,7 +85,7 @@ void SlicesCursor::setCrossScale(double scale)
 
 //-----------------------------------------------------------------------------
 
-void SlicesCursor::configuring() throw(fwTools::Failed)
+void SlicesCursor::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -95,17 +95,6 @@ void SlicesCursor::configuring() throw(fwTools::Failed)
         SLM_ASSERT("scale attribute must be in a config", m_configuration->getName() == "config");
         m_scale = ::boost::lexical_cast<double>(scaleStr);
     }
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SlicesCursor::reconfiguring() throw(fwTools::Failed)
-{
-    configuring();
 }
 
 //-----------------------------------------------------------------------------

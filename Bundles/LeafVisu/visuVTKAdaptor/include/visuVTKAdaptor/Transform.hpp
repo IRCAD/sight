@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,7 +63,7 @@ protected:
      *    doStart, doUpdate, doSwap and doStop if m_vtkPipelineModified=true.
      *  - \b parent (optional): id of the parent vtkTransform, it will be concatenated with this current vtkTransform.
      */
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     /// Calls doUpdate()
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);

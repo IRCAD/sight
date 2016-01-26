@@ -87,7 +87,7 @@ void ImagesBlend::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::configuring() throw(fwTools::Failed)
+void ImagesBlend::doConfigure() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
 

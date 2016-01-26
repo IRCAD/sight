@@ -142,7 +142,7 @@
                     </service>
 
                     <!-- Generic scene to show merging of backgroung and front images -->
-                    <service uid="${GENERIC_UID}_blendGenericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_blendGenericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
                             <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                             <vtkObject id="imageBlend" class="vtkImageBlend" />

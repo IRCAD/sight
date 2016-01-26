@@ -79,7 +79,7 @@
                     This scene shows four times the same mesh but with a different matrix. It manages multiples
                     transformation matrices.
                 -->
-                <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" autoConnect="yes">
+                <service uid="genericScene" impl="::fwRenderVTK::SRender" autoConnect="yes">
                     <scene>
 
                         <renderer id="default" background="0.0" />

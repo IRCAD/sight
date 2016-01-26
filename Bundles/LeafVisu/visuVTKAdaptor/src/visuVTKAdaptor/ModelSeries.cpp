@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,20 +62,13 @@ ModelSeries::~ModelSeries() throw()
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::configuring() throw(fwTools::Failed)
+void ModelSeries::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
 
     this->setClippingPlanes( m_configuration->getAttributeValue("clippingplanes") );
-
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
-    }
 
     if (m_configuration->hasAttribute("autoresetcamera") )
     {
@@ -112,9 +105,9 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
 
     if(!m_textureAdaptorUID.empty())
     {
-        ::fwRenderVTK::VtkRenderService::sptr renderService = this->getRenderService();
-        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor     = renderService->getAdaptor(m_textureAdaptorUID);
-        ::visuVTKAdaptor::Texture::sptr textureAdaptor      = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
+        ::fwRenderVTK::SRender::sptr renderService      = this->getRenderService();
+        ::fwRenderVTK::IVtkAdaptorService::sptr adaptor = renderService->getAdaptor(m_textureAdaptorUID);
+        ::visuVTKAdaptor::Texture::sptr textureAdaptor  = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
 
         SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
         m_connections->connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,

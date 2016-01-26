@@ -80,7 +80,7 @@
                     </registry>
                 </service>
 
-                <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                     <scene>
                         <picker id="picker" vtkclass="fwVtkCellPicker" />
                         <renderer id="default" background="0.0" />
@@ -136,7 +136,7 @@
         </parameters>
         <config>
             <object type="::fwData::Composite">
-                <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                     <registry>
                         <parent wid="${WID_PARENT}" />
                     </registry>

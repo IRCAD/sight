@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -80,10 +80,9 @@ Transform::~Transform() throw()
 
 //------------------------------------------------------------------------------
 
-void Transform::configuring() throw(fwTools::Failed)
+void Transform::doConfigure() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
-    this->setTransformId( m_configuration->getAttributeValue("transform") );
 
     if ( m_configuration->hasAttribute( "autoRender" ) )
     {

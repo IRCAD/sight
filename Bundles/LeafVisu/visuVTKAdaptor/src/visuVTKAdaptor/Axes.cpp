@@ -82,16 +82,10 @@ void Axes::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Axes::configuring() throw(fwTools::Failed)
+void Axes::doConfigure() throw(fwTools::Failed)
 {
     assert( m_configuration->getName() == "config" );
 
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-
-    if ( m_configuration->hasAttribute( "transform" ) )
-    {
-        this->setTransformId ( m_configuration->getAttributeValue ( "transform" ) );
-    }
     if ( m_configuration->hasAttribute( "length" ) )
     {
         m_length = boost::lexical_cast<double>( m_configuration->getAttributeValue( "length" ) );

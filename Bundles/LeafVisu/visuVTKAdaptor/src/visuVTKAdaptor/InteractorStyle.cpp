@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,13 +38,12 @@ InteractorStyle::~InteractorStyle() throw()
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::configuring() throw(fwTools::Failed)
+void InteractorStyle::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    assert(m_configuration->getName() == "config");
-    assert(m_configuration->hasAttribute("style"));
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
+    SLM_ASSERT("Missing attribute 'style'", m_configuration->hasAttribute("style"));
     m_configuredStyle = m_configuration->getAttributeValue("style");
 }
 

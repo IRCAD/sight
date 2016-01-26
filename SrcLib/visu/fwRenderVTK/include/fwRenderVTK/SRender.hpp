@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDERVTK_VTKRENDERSERVICE_HPP__
-#define __FWRENDERVTK_VTKRENDERSERVICE_HPP__
+#ifndef __FWRENDERVTK_SRENDER_HPP__
+#define __FWRENDERVTK_SRENDER_HPP__
 
 #include "fwRenderVTK/config.hpp"
 #include "fwRenderVTK/IVtkRenderWindowInteractorManager.hpp"
@@ -42,13 +42,13 @@ namespace fwRenderVTK
 class IVtkAdaptorService;
 
 /**
- * @class VtkRenderService
+ * @class SRender
  * @brief The generic scene service shows adaptors in a 3D VTK scene.
  */
-class FWRENDERVTK_CLASS_API VtkRenderService : public ::fwRender::IRender
+class FWRENDERVTK_CLASS_API SRender : public ::fwRender::IRender
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (VtkRenderService)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro ( (SRender)(::fwRender::IRender) );
 
     typedef std::string RendererIdType;
     typedef std::string PickerIdType;
@@ -62,9 +62,9 @@ public:
     FWRENDERVTK_API static const ::fwCom::Signals::SignalKeyType s_DROPPED_SIG;
     typedef ::fwCom::Signal< void (std::string)> DroppedSignalType;
 
-    FWRENDERVTK_API VtkRenderService() throw();
+    FWRENDERVTK_API SRender() throw();
 
-    FWRENDERVTK_API virtual ~VtkRenderService() throw();
+    FWRENDERVTK_API virtual ~SRender() throw();
 
     /// Returns the vtkRenderer with the given id
     FWRENDERVTK_API vtkRenderer * getRenderer(RendererIdType rendererId);
@@ -81,7 +81,7 @@ public:
     /// Returns the adaptor with the given id
     FWRENDERVTK_API SPTR (IVtkAdaptorService) getAdaptor(const AdaptorIdType &adaptorId) const;
 
-    /// Get a vtkTransform in the VtkRenderService, referenced by a key. Create it if it does not exist.
+    /// Get a vtkTransform in the SRender, referenced by a key. Create it if it does not exist.
     FWRENDERVTK_API vtkTransform * getOrAddVtkTransform( const VtkObjectIdType& _id );
 
     bool getPendingRenderRequest()
@@ -116,7 +116,7 @@ protected:
     /**
      * @brief configures the adaptor
      * @verbatim
-       <service uid="generiSceneUID" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender">
+       <service uid="generiSceneUID" impl="::fwRenderVTK::SRender" type="::fwRender::IRender">
         <scene renderMode="auto|timer|none" offScreen="imageKey" width="1920" height="1080">
             <renderer id="background" layer="0" background="0.0" />
             <vtkObject id="transform" class="vtkTransform" />
@@ -173,6 +173,8 @@ protected:
      *    - \b uid (optional): the fwID to specify for the adaptor service
      *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used
      *     when the adaptor works on the scene's composite.
+     *    - \b autoConnect (optional, "yes" by default): if "yes" the service slot are automatically connected to the
+     *      object signals.
      *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
      *  - \b connect/proxy : not mandatory, connects signal to slot
      *    - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
@@ -185,7 +187,7 @@ protected:
     /// Does nothing.
     FWRENDERVTK_API void updating() throw( ::fwTools::Failed);
 
-    /// Add a vtk object in the VtkRenderService, referenced by a key.
+    /// Add a vtk object in the SRender, referenced by a key.
     FWRENDERVTK_API void addVtkObject( const VtkObjectIdType& _id, vtkObject * _vtkObj );
 
 private:
@@ -308,4 +310,4 @@ private:
 
 }
 
-#endif //__FWRENDERVTK_VTKRENDERSERVICE_HPP__
+#endif //__FWRENDERVTK_SRENDER_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,11 +34,9 @@ Resection::~Resection() throw()
 
 //------------------------------------------------------------------------------
 
-void Resection::configuring() throw(fwTools::Failed)
+void Resection::doConfigure() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 
     this->setClippingPlanes( m_configuration->getAttributeValue("clippingplanes") );
 
@@ -47,11 +45,6 @@ void Resection::configuring() throw(fwTools::Failed)
     {
         double sharpEdgeAngle = ::boost::lexical_cast< double > (sSharpEdgeAngle);
         this->setSharpEdgeAngle( sharpEdgeAngle );
-    }
-
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
     }
 
     if (m_configuration->hasAttribute("autoresetcamera") )

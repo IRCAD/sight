@@ -42,13 +42,11 @@ ImageSeries::~ImageSeries() throw()
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::configuring() throw(fwTools::Failed)
+void ImageSeries::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
 
     if (m_configuration->hasAttribute("mode"))
     {
@@ -91,10 +89,6 @@ void ImageSeries::configuring() throw(fwTools::Failed)
         {
             m_orientation = X_AXIS;
         }
-    }
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
     }
     if(m_configuration->hasAttribute("tfalpha") )
     {
