@@ -4,33 +4,27 @@
 uniform int u_useTextureAlpha;
 #endif // DIFFUSE_TEX
 
-#ifdef NEGATO
-
-vec4 negato();
-
-#else
-
-#   ifdef PIXEL_LIT
+#ifdef PIXEL_LIT
 vec4 lighting(vec3 _normal, vec3 _position);
-#   endif // PIXEL_LIT
+#endif // PIXEL_LIT
 
 in PixelDataIn
 {
-#   ifdef PIXEL_LIT
+#ifdef PIXEL_LIT
 
     vec3 oPosition_WS;
     vec3 oNormal_WS;
     vec4 oColor;
 
-#   else
+#else
 
-#       ifdef FLAT
+#   ifdef FLAT
     flat vec4 oColor;
-#       else
+#   else
     vec4 oColor;
-#       endif // FLAT
+#   endif // FLAT
 
-#   endif // PIXEL_LIT
+#endif // PIXEL_LIT
 
 #ifdef DIFFUSE_TEX
     vec2 oTexCoord;
@@ -38,7 +32,6 @@ in PixelDataIn
 
 } pixelIn;
 
-#endif // NEGATO
 
 #ifdef DIFFUSE_TEX
 uniform sampler2D u_texture;
@@ -46,28 +39,23 @@ uniform sampler2D u_texture;
 
 vec4 getMaterialColor()
 {
-#ifdef NEGATO
-    vec4 colorOut = negato();
+
+#ifdef PIXEL_LIT
+    vec4 colorOut = lighting(normalize(pixelIn.oNormal_WS), pixelIn.oPosition_WS) * pixelIn.oColor;
 #else
+    vec4 colorOut = pixelIn.oColor;
+#endif
 
-#   ifdef PIXEL_LIT
-        vec4 colorOut = lighting(normalize(pixelIn.oNormal_WS), pixelIn.oPosition_WS) * pixelIn.oColor;
-#   else
-        vec4 colorOut = pixelIn.oColor;
-#   endif
+#ifdef DIFFUSE_TEX
+    vec4 colorTex = texture(u_texture, pixelIn.oTexCoord);
 
-#   ifdef DIFFUSE_TEX
-        vec4 colorTex = texture(u_texture, pixelIn.oTexCoord);
+    if(u_useTextureAlpha == 0)
+    {
+        colorTex.a = 1.0;
+    }
 
-        if(u_useTextureAlpha == 0)
-        {
-            colorTex.a = 1.0;
-        }
-
-        colorOut *= colorTex;
-#   endif // DIFFUSE_TEX
-
-#endif // NEGATO
+    colorOut *= colorTex;
+#endif // DIFFUSE_TEX
 
     return colorOut;
 }

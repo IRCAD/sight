@@ -1,0 +1,159 @@
+
+//---------------------------------------------------------------------------
+
+fragment_program Negato_FP glsl
+{
+    source Negato_FP.glsl
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default_Negato_FP_glsl glsl
+{
+    source Default_FP.glsl
+    attach Negato_FP
+    default_params
+    {
+        // Negato
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        // Diffuse color
+        param_named_auto u_diffuse surface_diffuse_colour
+        // Diffuse texture
+        param_named u_texture int 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling_peel_Negato_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach Negato_FP
+    default_params
+    {
+        // DepthPeeling
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        // Negato
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        // Diffuse texture
+        param_named u_texture int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling_peel_Negato_FP_glsl glsl
+{
+    source DualDepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach Negato_FP
+    default_params
+    {
+        // DualDepthPeeling
+        param_named u_nearestDepthBuffer int 0
+        param_named u_farthestDepthBuffer int 1
+        param_named u_forwardColorBuffer int 2
+        param_named u_forwardAlphasBuffer int 3
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        // Negato
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        // Diffuse texture
+        param_named u_texture int 4
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_peel_Negato_FP_glsl glsl
+{
+    source DepthPeelingPeel_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach Negato_FP
+    default_params
+    {
+        // HybridTransparency
+        param_named u_fragData0 int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_diffuse surface_diffuse_colour
+        // Negato
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        // Diffuse texture
+        param_named u_texture int 1
+    }
+}
+
+
+//---------------------------------------------------------------------------
+
+fragment_program HybridTransparency_weight_blend_Negato_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach DepthPeelingCommon_FP
+    attach Negato_FP
+    preprocessor_defines HYBRID=1
+    default_params
+    {
+        // HybridTransparency
+        param_named u_frontDepthBuffer int 0
+        param_named u_occlusionDepthBuffer int 1
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        // Negato
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        // Diffuse color
+        param_named_auto u_diffuse surface_diffuse_colour
+        // Diffuse texture
+        param_named u_texture int 2
+    }
+}
+
+
+//---------------------------------------------------------------------------
+
+fragment_program WeightedBlended_weight_blend_Negato_FP_glsl glsl
+{
+    source WeightedBlended_Weight_Blend_FP.glsl
+    attach Negato_FP
+    default_params
+    {
+        // WeightedBlended
+        param_named u_occlusionDepthBuffer int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+        // Negato
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        // Diffuse color
+        param_named_auto u_diffuse surface_diffuse_colour
+        // Diffuse texture
+        param_named u_texture int 1
+    }
+}

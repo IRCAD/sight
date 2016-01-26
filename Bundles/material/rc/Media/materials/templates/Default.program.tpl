@@ -27,13 +27,6 @@ fragment_program DepthPeelingCommon_FP glsl
     source DepthPeelingCommon_FP.glsl
 }
 
-//---------------------------------------------------------------------------
-
-fragment_program Negato_FP glsl
-{
-    source Negato_FP.glsl
-}
-
 //-----------------------------------------------------------------------------
 // Vertex shader materials
 //-----------------------------------------------------------------------------
@@ -51,6 +44,7 @@ vertex_program RenderScene_{{ shading }}_VP_glsl glsl
 
     default_params
     {
+        // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
@@ -60,45 +54,6 @@ vertex_program RenderScene_{{ shading }}_VP_glsl glsl
     }
 }
 {% endfor %}
-
-{% for shading, defines, shadersVP, shadersFP, useAdjInfo, params in configsVP %}
-
-//---------------------------------------------------------------------------
-
-vertex_program RenderScene_R2VB_{{ shading }}_VP_glsl glsl
-{
-    source RenderScene_VP.glsl
-
-    preprocessor_defines R2VB=1{% if defines %}, {{ defines }}{% endif %}
-
-}
-{% endfor %}
-
-//-----------------------------------------------------------------------------
-// Geometry shader materials
-//-----------------------------------------------------------------------------
-
-{% for shading, defines, shadersGP, shadersFP, useAdjInfo, params in configsGP %}
-
-//---------------------------------------------------------------------------
-
-geometry_program RenderScene_{{ shading }}_GP_glsl glsl
-{
-    source RenderScene_GP.glsl
-
-    {% if defines %}preprocessor_defines {{ defines }}{% endif %}
-
-    {% if useAdjInfo == "1" %}uses_adjacency_information true{% endif %}
-
-    default_params
-    {
-{% for param in params['renderSceneGP'] %}
-        {{ param }}
-{% endfor %}
-    }
-}
-{% endfor %}
-
 
 //-----------------------------------------------------------------------------
 // Common color materials
@@ -156,6 +111,7 @@ fragment_program DepthPeeling_peel_{{ shading }}_FP_glsl glsl
 
     default_params
     {
+        // DepthPeeling
         param_named u_fragData0 int 0
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
@@ -184,6 +140,7 @@ fragment_program DualDepthPeeling_peel_{{ shading }}_FP_glsl glsl
 
     default_params
     {
+        // DualDepthPeeling
         param_named u_nearestDepthBuffer int 0
         param_named u_farthestDepthBuffer int 1
         param_named u_forwardColorBuffer int 2
@@ -215,6 +172,7 @@ fragment_program HybridTransparency_peel_{{ shading }}_FP_glsl glsl
 
     default_params
     {
+        // HybridTransparency
         param_named u_fragData0 int 0
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
@@ -241,6 +199,7 @@ fragment_program HybridTransparency_weight_blend_{{ shading }}_FP_glsl glsl
     preprocessor_defines HYBRID=1
     default_params
     {
+        // HybridTransparency
         param_named u_frontDepthBuffer int 0
         param_named u_occlusionDepthBuffer int 1
         param_named_auto u_vpWidth viewport_width
@@ -271,6 +230,7 @@ fragment_program WeightedBlended_weight_blend_{{ shading }}_FP_glsl glsl
 
     default_params
     {
+        // WeightedBlended
         param_named u_occlusionDepthBuffer int 0
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
@@ -301,6 +261,7 @@ vertex_program CelShadingDepthPeelingRenderScene_{{ shading }}_VP_glsl glsl
 
     default_params
     {
+        // CelShadingDepthPeeling
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
@@ -325,6 +286,7 @@ fragment_program CelShadingDepthPeeling_peel_{{ shading }}_FP_glsl glsl
 
     default_params
     {
+        // CelShadingDepthPeeling
         param_named u_bufferDepth int 0
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height

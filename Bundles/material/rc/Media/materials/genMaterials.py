@@ -4,7 +4,6 @@ from jinja2 import Environment, PackageLoader, Template
 from pprint import pprint
 import copy
 
-
 def appendDict(dict1, dict2):
     res = { k: v[:] for k,v in dict1.items() }
     for k in dict2.keys():
@@ -59,15 +58,14 @@ def generatePermutations(baseConfig, *configs):
 
     return permutations
 
-env = Environment(loader=PackageLoader('genMaterials', 'templates'),trim_blocks=True)
-template = env.get_template('Common.program.tpl')
 
 ###############################################################################
 ## Shader Parameters
 ###############################################################################
 
 ## Common parameters used in Lighting.glsl, used both at Vertex and Fragment stages
-lightingParams = [ 'param_named_auto u_cameraPos camera_position',
+lightingParams = [ '// Lighting',
+                   'param_named_auto u_cameraPos camera_position',
                    'param_named_auto u_lightDir light_position_array 1',
                    'param_named_auto u_ambient surface_ambient_colour',
                    'param_named_auto u_diffuse surface_diffuse_colour',
@@ -75,88 +73,59 @@ lightingParams = [ 'param_named_auto u_cameraPos camera_position',
                    'param_named_auto u_shininess surface_shininess']
 
 ## Common parameters used for ambient lighting
-ambientParams = [ 'param_named_auto u_ambient surface_ambient_colour',
+ambientParams = [ '// Ambient',
+                  'param_named_auto u_ambient surface_ambient_colour',
                   'param_named_auto u_diffuse surface_diffuse_colour']
 
 ## Diffuse or negato textures parameters, they should be bound at different unit depending on OIT technique
-texParams = ['param_named u_texture int 0']
-dpTexParams = ['param_named u_texture int 1']
-ddpTexParams = ['param_named u_texture int 4']
-htwbTexParams = ['param_named u_texture int 2']
+texParams = ['// Diffuse texture', 'param_named u_texture int 0']
+dpTexParams = ['// Diffuse texture', 'param_named u_texture int 1']
+ddpTexParams = ['// Diffuse texture', 'param_named u_texture int 4']
+htwbTexParams = ['// Diffuse texture', 'param_named u_texture int 2']
 
-texAlphaParams = ['param_named u_useTextureAlpha int 0']
+texAlphaParams = ['// Use alpha channel from the texture', 'param_named u_useTextureAlpha int 0']
 
 ## Parameters used for Negato.glsl
-negatoParams = [ 'param_named u_minValue float 0.0',
+negatoParams = [ '// Negato',
+                 'param_named u_minValue float 0.0',
                  'param_named u_maxValue float 1.0',
                  'param_named u_slice float 0',
                  'param_named u_orientation int 2']
 
 ## Diffuse needed alone in some cases
-diffuseColorParams = ['param_named_auto u_diffuse surface_diffuse_colour']
+diffuseColorParams = ['// Diffuse color',
+                      'param_named_auto u_diffuse surface_diffuse_colour']
 
 ## Per primitive color
 ppColorParams = ['param_named u_colorPrimitiveTexture int 10',
                  'param_named u_colorPrimitiveTextureSize float2 0 0']
 
 ## 'Name', '#Define', 'Attached vp', 'Attached fp', 'useAdjacency [0|1]', {parameters dict}
-cfgAmbient = ['Ambient', 'AMBIENT=1', '', '', '', { 'renderSceneVP' : ambientParams,
-                                                    'defaultFP' : [],
-                                                    'depthPeelingFP' : [],
-                                                    'dualDepthPeelingFP' : [],
-                                                    'HT_weight_blendFP' : [],
-                                                    'weighted_blendFP' : [] } ]
+cfgAmbient = ['Ambient', 'AMBIENT=1', '', '', '', { 'renderSceneVP' : ambientParams } ]
 
-cfgFlat = ['Flat', 'FLAT=1', 'Lighting_VP', '', '', {  'renderSceneVP' : lightingParams,
-                                                       'defaultFP' : [],
-                                                       'depthPeelingFP' : [],
-                                                       'dualDepthPeelingFP' : [],
-                                                       'HT_weight_blendFP' : [],
-                                                       'weighted_blendFP' : [] } ]
+cfgFlat = ['Flat', 'FLAT=1', 'Lighting_VP', '', '', {  'renderSceneVP' : lightingParams } ]
 
-cfgGouraud = ['Gouraud', '', 'Lighting_VP', '', '', { 'renderSceneVP' : lightingParams,
-                                                      'defaultFP' : [],
-                                                      'depthPeelingFP' : [],
-                                                      'dualDepthPeelingFP' : [],
-                                                      'HT_weight_blendFP' : [],
-                                                      'weighted_blendFP' : [] } ]
+cfgGouraud = ['Gouraud', '', 'Lighting_VP', '', '', { 'renderSceneVP' : lightingParams } ]
 
-cfgPixelLit = ['PixelLit', 'PIXEL_LIT=1', '', 'Lighting_FP', '', { 'renderSceneVP' : [],
-                                                                   'defaultFP' : lightingParams,
+cfgPixelLit = ['PixelLit', 'PIXEL_LIT=1', '', 'Lighting_FP', '', { 'defaultFP' : lightingParams,
                                                                    'depthPeelingFP' : lightingParams,
                                                                    'dualDepthPeelingFP' : lightingParams,
                                                                    'HT_weight_blendFP' : lightingParams,
                                                                    'weighted_blendFP' : lightingParams } ]
 
-cfgEdgeNormal = ['Edge_Normal', 'EDGE_NORMAL=1', '', '', '', { 'defaultFP' : [],
-                                                               'depthPeelingFP' : [],
-                                                               'dualDepthPeelingFP' : [],
-                                                               'HT_weight_blendFP' : [],
-                                                               'weighted_blendFP' : [] } ]
+cfgEdgeNormal = ['Edge_Normal', 'EDGE_NORMAL=1', '', '', '', { } ]
 
-cfgNegato = ['Negato', 'NEGATO=1', '', 'Negato_FP', '', { 'defaultFP' : negatoParams + diffuseColorParams + texParams,
-                                                          'depthPeelingFP' : negatoParams + dpTexParams,
-                                                          'dualDepthPeelingFP' : negatoParams + ddpTexParams,
-                                                          'HT_weight_blendFP' : negatoParams + diffuseColorParams + htwbTexParams,
-                                                          'weighted_blendFP' : negatoParams + diffuseColorParams + dpTexParams} ]
+cfgVertexColor = ['VT', 'VERTEX_COLOR=1', '', '', '', { } ]
 
-cfgVertexColor = ['VT', 'VERTEX_COLOR=1', '', '', '', { 'renderSceneVP' : [],
-                                                        'defaultFP' : [],
-                                                        'depthPeelingFP' : [],
-                                                        'dualDepthPeelingFP' : [],
-                                                        'HT_weight_blendFP' : [],
-                                                        'weighted_blendFP' : [] } ]
-
-cfgDiffuseTex = ['DfsTex', 'DIFFUSE_TEX=1', '', '', '', { 'renderSceneVP' : [],
-                                                          'defaultFP' : texParams + texAlphaParams,
+cfgDiffuseTex = ['DfsTex', 'DIFFUSE_TEX=1', '', '', '', { 'defaultFP' : texParams + texAlphaParams,
                                                           'depthPeelingFP' : dpTexParams + texAlphaParams,
                                                           'dualDepthPeelingFP' : ddpTexParams + texAlphaParams,
                                                           'HT_weight_blendFP' : htwbTexParams + texAlphaParams,
                                                           'weighted_blendFP' : dpTexParams + texAlphaParams } ]
 
 cfgTriangles = ['Triangles', 'TRIANGLES=1', '', '', '', { 'renderSceneGP' : [], } ]
-cfgQuad = ['Quad', 'QUAD=1', '', '', '1', { 'renderSceneGP' : [], } ]
-cfgTetra = ['Tetra', 'TETRA=1', '', '', '1', { 'renderSceneGP' : [], } ]
+cfgQuad = ['Quad', 'QUAD=1', '', '', '1', { } ]
+cfgTetra = ['Tetra', 'TETRA=1', '', '', '1', { } ]
 
 cfgPerPrimitiveColor = ['PPColor', 'PER_PRIMITIVE_COLOR=1', '', '', '', { 'renderSceneGP' : ppColorParams} ]
 
@@ -179,7 +148,6 @@ configsListFP += generatePermutations(cfgGouraud, cfgVertexColor, cfgDiffuseTex)
 configsListFP += generatePermutations(cfgPixelLit, cfgVertexColor, cfgDiffuseTex)
 
 configsListFP += [cfgEdgeNormal]
-configsListFP += [cfgNegato]
 
 ## Configurations for geometry programs
 ## Base are the different primitives types to generate, and optional are vertex color, diffuse texture and per-primitive
@@ -192,4 +160,9 @@ configsListGP += generatePermutations(cfgTetra, cfgVertexColor, cfgDiffuseTex, c
 
 #pprint(configsListVP)
 
-template.stream(configsVP=configsListVP, configsGP=configsListGP, configsFP=configsListFP).dump('Common.program')
+env = Environment(loader=PackageLoader('genMaterials', 'templates'),trim_blocks=True)
+template = env.get_template('Default.program.tpl')
+template.stream(configsVP=configsListVP, configsFP=configsListFP).dump('Default.program')
+
+template = env.get_template('R2VB.program.tpl')
+template.stream(configsVP=configsListVP, configsGP=configsListGP).dump('R2VB.program')
