@@ -189,7 +189,7 @@
                 <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
 
                     <!-- Negato1-->
-                    <service uid="${GENERIC_UID}_negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
@@ -224,7 +224,7 @@
                     </service>
 
                     <!-- Negato2 -->
-                    <service uid="${GENERIC_UID}_negato2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
@@ -268,7 +268,7 @@
 
                     <!-- Negato3 -->
 
-                    <service uid="${GENERIC_UID}_negato3" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato3" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
@@ -309,7 +309,7 @@
                         </scene>
                     </service>
 
-                    <service uid="${GENERIC_UID}_CurvedPlanarReformation2D" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_CurvedPlanarReformation2D" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />

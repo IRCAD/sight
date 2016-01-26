@@ -284,7 +284,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                         </service>
 
                         <!-- Comment: This generic scene (genericScene1) uses the transfert function stores with key = SelectedTF in TFSelections -->
-                        <service uid="genericScene1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="genericScene1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
 
@@ -307,7 +307,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                         </service>
 
                         <!-- Comment: This generic scene (genericScene2) uses the default transfert function (CT-GreyLevel) -->
-                        <service uid="genericScene2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="genericScene2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
 
@@ -344,7 +344,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                         </service>
 
                         <!-- Comment: This negato (negato1) uses the transfert function stores with key = SelectedTF in TFSelections -->
-                        <service uid="negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="negato1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
 
@@ -370,7 +370,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                         </service>
 
                         <!-- Comment : This negato (negato2) uses the default transfert function (CT-GreyLevel) -->
-                        <service uid="negato2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="negato2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
 

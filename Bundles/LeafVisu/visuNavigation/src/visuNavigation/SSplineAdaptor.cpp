@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -76,11 +76,8 @@ void SSplineAdaptor::doStop() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------------
 
-void SSplineAdaptor::configuring() throw(fwTools::Failed)
+void SSplineAdaptor::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-    OSLM_ASSERT("Wrong configuration tag name", m_configuration->getName() == "config");
-    this->setRenderId(m_configuration->getAttributeValue("renderer"));
 }
 
 //----------------------------------------------------------------------------------------------------------------

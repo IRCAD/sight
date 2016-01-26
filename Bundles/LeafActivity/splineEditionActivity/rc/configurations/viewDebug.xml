@@ -37,7 +37,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_vr2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <service uid="${GENERIC_UID}_vr2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                 <scene>
                     <vtkObject id="camPosMatrixTransform" class="vtkTransform" />
 

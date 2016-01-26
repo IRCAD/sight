@@ -96,7 +96,7 @@
 
             <service uid="igtlServerEditor" impl="::uiIGTL::SServerConfigEditor" autoConnect="no"/>
 
-            <service uid="3DView" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <service uid="3DView" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                 <scene>
                     <renderer id="default" layer="1" background="0.0" />
                     <renderer id="background" layer="0" background="0.0" />

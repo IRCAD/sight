@@ -29,7 +29,7 @@
 
             <item key="compositeVisu">
                 <object uid="${COMPOSITE_VISU_UID}" src="ref" type="::fwData::Composite">
-                    <service uid="genericScene3" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="genericScene3" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
                             <picker id="picker" vtkclass="fwVtkCellPicker" />
 

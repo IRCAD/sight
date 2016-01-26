@@ -244,7 +244,7 @@
                         </service>
 
                         <!-- Generic scene to show merging of backgroung and front images -->
-                        <service uid="blendGenericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="blendGenericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <vtkObject id="imageBlend" class="vtkImageBlend" />
@@ -301,7 +301,7 @@
                         </service>
 
                         <!-- Generic scene for background image -->
-                        <service uid="BgImgGenericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="BgImgGenericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
@@ -324,7 +324,7 @@
                         </service>
 
                         <!-- Generic scene for front image -->
-                        <service uid="FrontImgGenericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="FrontImgGenericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />

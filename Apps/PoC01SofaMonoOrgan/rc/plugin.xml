@@ -6,7 +6,7 @@
 
         <object uid="CompositeVisu" type="::fwData::Composite">
         
-        <service uid="RenderingMesh" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+        <service uid="RenderingMesh" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                     <scene>
                         <!--<picker id="myPicker" vtkclass="fwVtkCellPicker" />-->
 

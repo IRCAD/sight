@@ -74,7 +74,7 @@
                             </config>
                         </service>
 
-                        <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="genericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <vtkObject id="cam2PosMatrixTransform" class="vtkTransform" />
 
@@ -131,7 +131,7 @@
                             </scene>
                         </service>
 
-                        <service uid="genericScene2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="genericScene2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <vtkObject id="cam1PosMatrixTransform" class="vtkTransform" />
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />

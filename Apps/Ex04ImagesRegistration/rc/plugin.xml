@@ -267,7 +267,7 @@
                         </service>
 
                         <!-- Generic Scene (Negato) for the first tab -->
-                        <service uid="negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="negato1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="negato1default" vtkclass="fwVtkCellPicker" />
 
@@ -298,7 +298,7 @@
                         </service>
 
                         <!-- Generic Scene (Negato) for the second tab -->
-                        <service uid="negato2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="negato2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="negato2default" vtkclass="fwVtkCellPicker" />
 
@@ -329,7 +329,7 @@
                         </service>
 
                         <!-- Generic Scene (Negato) for the Third tab -->
-                        <service uid="negato3" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="negato3" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
 
                                 <picker id="negato3default" vtkclass="fwVtkCellPicker" />

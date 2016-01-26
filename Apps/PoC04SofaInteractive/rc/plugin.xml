@@ -135,7 +135,7 @@
 
                         </service>
 
-                        <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="genericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />

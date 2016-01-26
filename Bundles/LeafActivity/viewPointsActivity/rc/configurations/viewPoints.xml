@@ -255,7 +255,7 @@
                     <service uid="${GENERIC_UID}_ActionSnapshotVR" impl="::uiVisu::action::SSnapshot" type="::fwGui::IActionSrv" autoConnect="no"/>
 
                     <!-- Generic Scene VR -->
-                    <service uid="${GENERIC_UID}_camView" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_camView" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negato1default" vtkclass="fwVtkCellPicker" />
