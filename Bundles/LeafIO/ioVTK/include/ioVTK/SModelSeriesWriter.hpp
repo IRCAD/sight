@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,26 +7,32 @@
 #ifndef __IOVTK_SMODELSERIESWRITER_HPP__
 #define __IOVTK_SMODELSERIESWRITER_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
+#include "ioVTK/config.hpp"
 
-#include <fwServices/ObjectMsg.hpp>
+#include <fwCom/Signal.hpp>
+
 #include <fwData/Mesh.hpp>
 
 #include <io/IWriter.hpp>
 
-#include "ioVTK/export.hpp"
+#include <boost/filesystem/path.hpp>
+#include <string>
 
 namespace fwData
 {
-    class Mesh;
+class Mesh;
+}
+
+namespace fwJobs
+{
+class IJob;
 }
 
 namespace ioVTK
 {
 
 /**
- * @brief   Model series writer service.
+ * @brief   VTK Model series writer.
  * @class   SModelSeriesWriter
  *
  * Service writing a model series as .vtk files using the fwVtkIO lib.
@@ -34,10 +40,17 @@ namespace ioVTK
 class IOVTK_CLASS_API SModelSeriesWriter : public ::io::IWriter
 {
 
-public :
-    ~SModelSeriesWriter() throw() {}
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesWriter)( ::io::IWriter) ) ;
+    SModelSeriesWriter() throw();
+
+    ~SModelSeriesWriter() throw()
+    {
+    }
+
+    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesWriter)( ::io::IWriter) );
+
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
     /**
      * @brief Configure the mesh path.
@@ -74,21 +87,14 @@ protected:
     IOVTK_API void updating() throw(::fwTools::Failed);
 
     /**
-     * @brief React on modifications : default does nothing.
-     *
-     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
-     *
-     * @param[in] _msg information message for modification
-     */
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
-
-    /**
      * @brief Info method.
      *
      * This method is used to give
      * informations about the service.
      */
-    IOVTK_API void info(std::ostream &_sstream ) ;
+    IOVTK_API void info(std::ostream &_sstream );
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 
 };
 

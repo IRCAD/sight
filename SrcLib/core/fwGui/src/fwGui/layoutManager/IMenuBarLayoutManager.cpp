@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,11 +8,7 @@
  * @file fwGui/layoutManager/IMenuBarLayoutManager.cpp
  * @brief This file defines the implementation of the base class for managing a menubar.
  *
- * 
- * @date 2009-2010
  */
-
-#include <boost/foreach.hpp>
 
 #include "fwGui/layoutManager/IMenuBarLayoutManager.hpp"
 
@@ -26,12 +22,14 @@ const IMenuBarLayoutManager::RegistryKeyType IMenuBarLayoutManager::REGISTRY_KEY
 //-----------------------------------------------------------------------------
 
 IMenuBarLayoutManager::IMenuBarLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 IMenuBarLayoutManager::~IMenuBarLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -43,12 +41,12 @@ void IMenuBarLayoutManager::initialize( ConfigurationType configuration)
     std::vector < ConfigurationType > vectMenus = configuration->find("menu");
     SLM_TRACE_IF("No menu define.", vectMenus.empty() );
     m_menus.clear();
-    BOOST_FOREACH (ConfigurationType menu, vectMenus)
+    for (ConfigurationType menu : vectMenus)
     {
         SLM_ASSERT("missing <name> attribute", menu->hasAttribute("name"));
         if( menu->hasAttribute("name") )
         {
-            std::string name = menu->getExistingAttributeValue("name") ;
+            std::string name = menu->getExistingAttributeValue("name");
             m_menuNames.push_back(name);
         }
     }
@@ -58,7 +56,7 @@ void IMenuBarLayoutManager::initialize( ConfigurationType configuration)
 
 void IMenuBarLayoutManager::destroyMenus()
 {
-    BOOST_FOREACH( ::fwGui::container::fwMenu::sptr menu, m_menus)
+    for( ::fwGui::container::fwMenu::sptr menu :  m_menus)
     {
         menu->destroyContainer();
     }

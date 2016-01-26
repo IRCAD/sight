@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_CONTAINER_QTMENUBARCONTAINER_HPP_
-#define _FWGUIQT_CONTAINER_QTMENUBARCONTAINER_HPP_
+#ifndef __FWGUIQT_CONTAINER_QTMENUBARCONTAINER_HPP__
+#define __FWGUIQT_CONTAINER_QTMENUBARCONTAINER_HPP__
 
 #include <QPointer>
 
@@ -31,7 +31,7 @@ namespace container
 /**
  * @brief   Defines the Qt menu bar container for GUI.
  * @class   QtMenuBarContainer
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -44,9 +44,9 @@ public:
                                             (()),
                                             ::fwGui::factory::New< QtMenuBarContainer > );
 
-    FWGUIQT_API QtMenuBarContainer(::fwGui::GuiBaseObject::Key key) throw() ;
+    FWGUIQT_API QtMenuBarContainer(::fwGui::GuiBaseObject::Key key) throw();
 
-    FWGUIQT_API virtual ~QtMenuBarContainer() throw() ;
+    FWGUIQT_API virtual ~QtMenuBarContainer() throw();
 
 
     FWGUIQT_API virtual void clean();
@@ -55,7 +55,7 @@ public:
     FWGUIQT_API virtual void setQtMenuBar(QMenuBar *menuBar);
     FWGUIQT_API virtual QMenuBar* getQtMenuBar();
 
-private :
+private:
 
     QPointer<QMenuBar> m_menuBar;
 };
@@ -63,6 +63,6 @@ private :
 } // namespace container
 } // namespace fwGuiQt
 
-#endif /*_FWGUIQT_CONTAINER_QTMENUBARCONTAINER_HPP_*/
+#endif /*__FWGUIQT_CONTAINER_QTMENUBARCONTAINER_HPP__*/
 
 

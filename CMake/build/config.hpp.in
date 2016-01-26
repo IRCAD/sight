@@ -1,0 +1,29 @@
+
+#ifndef __@PROJECT_NAME_UPCASE@_CONFIG_HPP__
+#define __@PROJECT_NAME_UPCASE@_CONFIG_HPP__
+
+    #ifdef _WIN32
+
+        #ifdef @PROJECT_NAME_UPCASE@_EXPORTS
+            #define @PROJECT_NAME_UPCASE@_API __declspec(dllexport)
+        #else
+            #define @PROJECT_NAME_UPCASE@_API __declspec(dllimport)
+        #endif
+
+        #define @PROJECT_NAME_UPCASE@_CLASS_API
+
+        #pragma warning(disable: 4290)
+
+    #elif defined(__GNUC__) && (__GNUC__>=4)
+
+        #define @PROJECT_NAME_UPCASE@_API __attribute__ ((visibility("default")))
+        #define @PROJECT_NAME_UPCASE@_CLASS_API __attribute__ ((visibility("default")))
+
+    #else
+
+        #define @PROJECT_NAME_UPCASE@_API
+        #define @PROJECT_NAME_UPCASE@_CLASS_API
+
+    #endif
+
+#endif // __@PROJECT_NAME_UPCASE@_CONFIG_HPP__

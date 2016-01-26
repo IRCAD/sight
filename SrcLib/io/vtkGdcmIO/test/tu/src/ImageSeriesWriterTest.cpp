@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,11 +40,11 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
 }
 
 //------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ void ImageSeriesWriterTest::writeReadTest()
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // load ImageSeries
-    ::fwMedData::SeriesDB::sptr sdb = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::sptr sdb          = ::fwMedData::SeriesDB::New();
     ::vtkGdcmIO::SeriesDBReader::sptr reader = ::vtkGdcmIO::SeriesDBReader::New();
     reader->setObject(sdb);
     reader->setFolder(PATH);

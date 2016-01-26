@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>2DVisualization</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
@@ -12,7 +11,7 @@
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Negato1" align="center" />
@@ -30,7 +29,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="New landmark" icon="Bundles/media_0-1/icons/Add-landmark.png" />
@@ -48,7 +47,7 @@
                         <menuItem name="Show normal cross" icon="Bundles/media_0-1/icons/NormalCross.png" style="radio" />
                         <menuItem name="Show full cross" icon="Bundles/media_0-1/icons/FullCross.png" style="radio" />
                         <separator />
-                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg"  />
+                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -75,7 +74,7 @@
                     </service>
                 </object>
             </item>
-            
+
             <item key="activitySeries">
                 <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
             </item>
@@ -86,11 +85,12 @@
 
                     <service uid="${GENERIC_UID}_cfgNegato1" impl="::fwServices::SConfigController" autoConnect="no">
                         <config>
-                            <appConfig id="2DNegato" >
+                            <appConfig id="2DNegato">
                                 <parameters>
-                                    <parameter replace="imageUid" by="self"  />
-                                    <parameter replace="orientation" by="axial"  />
-                                    <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato1"  />
+                                    <parameter replace="imageUid" by="self" />
+                                    <parameter replace="orientation" by="axial" />
+                                    <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato1" />
+                                    <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
                                 </parameters>
                             </appConfig>
                         </config>
@@ -98,11 +98,12 @@
 
                     <service uid="${GENERIC_UID}_cfgNegato2" impl="::fwServices::SConfigController" autoConnect="no">
                         <config>
-                            <appConfig id="2DNegato" >
+                            <appConfig id="2DNegato">
                                 <parameters>
-                                    <parameter replace="imageUid" by="self"  />
-                                    <parameter replace="orientation" by="frontal"  />
-                                    <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato2"  />
+                                    <parameter replace="imageUid" by="self" />
+                                    <parameter replace="orientation" by="frontal" />
+                                    <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato2" />
+                                    <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
                                 </parameters>
                             </appConfig>
                         </config>
@@ -110,11 +111,12 @@
 
                     <service uid="${GENERIC_UID}_cfgNegato3" impl="::fwServices::SConfigController" autoConnect="no">
                         <config>
-                            <appConfig id="2DNegato" >
+                            <appConfig id="2DNegato">
                                 <parameters>
-                                    <parameter replace="imageUid" by="self"  />
-                                    <parameter replace="orientation" by="sagittal"  />
-                                    <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato3"  />
+                                    <parameter replace="imageUid" by="self" />
+                                    <parameter replace="orientation" by="sagittal" />
+                                    <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato3" />
+                                    <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
                                 </parameters>
                             </appConfig>
                         </config>
@@ -142,6 +144,12 @@
                     </service>
                 </object>
             </item>
+
+            <proxy channel="crossTypeChannel">
+                <signal>${GENERIC_UID}_ActionHideCross/crossTypeModified</signal>
+                <signal>${GENERIC_UID}_ActionShowNormalCross/crossTypeModified</signal>
+                <signal>${GENERIC_UID}_ActionShowFullCross/crossTypeModified</signal>
+            </proxy>
 
 
             <!-- START AND STOP SERVICES -->

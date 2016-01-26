@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,19 +38,19 @@ void StudyTest::tearDown()
 
 void StudyTest::propertiesTest()
 {
-    const std::string instance_uid = "123456789";
-    const std::string date = "20130214";
-    const std::string time = "143328";
-    const std::string referring_physician_name = "John Doe";
-    const std::string description = "description";
-    const std::string patient_age = "42";
+    const std::string instance_uid                            = "123456789";
+    const std::string date                                    = "20130214";
+    const std::string time                                    = "143328";
+    const std::string referring_physician_name                = "John Doe";
+    const std::string description                             = "description";
+    const std::string patient_age                             = "42";
     const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                       ("instance_uid")
-                                                                       ("date")
-                                                                       ("time")
-                                                                       ("referring_physician_name")
-                                                                       ("description")
-                                                                       ("patient_age");
+                                                                    ("instance_uid")
+                                                                    ("date")
+                                                                    ("time")
+                                                                    ("referring_physician_name")
+                                                                    ("description")
+                                                                    ("patient_age");
 
     ::fwMedData::Study::sptr obj = ::fwMedData::Study::New();
     obj->setInstanceUID(instance_uid);

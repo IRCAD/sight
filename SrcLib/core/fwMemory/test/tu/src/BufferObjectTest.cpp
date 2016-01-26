@@ -1,23 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-#include <boost/type_traits/is_const.hpp>
-#include <boost/type_traits/remove_pointer.hpp>
-
-#include <limits>
-
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
+#include "BufferObjectTest.hpp"
 
 #include <fwMemory/BufferObject.hpp>
 #include <fwMemory/BufferAllocationPolicy.hpp>
 #include <fwMemory/exception/Memory.hpp>
 
-#include "BufferObjectTest.hpp"
+#include <boost/type_traits/is_const.hpp>
+#include <boost/type_traits/remove_pointer.hpp>
+
+#include <boost/thread.hpp>
+#include <functional>
+#include <limits>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMemory::ut::BufferObjectTest );
@@ -152,7 +150,7 @@ void BufferObjectTest::allocateTest()
     CPPUNIT_ASSERT( bo->lock().getBuffer() != NULL );
 
     const size_t SMALLER_REALLOC_SIZE = 1024;
-    const size_t BIGGER_REALLOC_SIZE = SIZE+1024;
+    const size_t BIGGER_REALLOC_SIZE  = SIZE+1024;
 
     bo->reallocate(SMALLER_REALLOC_SIZE);
     CPPUNIT_ASSERT( !bo->isEmpty() );
@@ -201,9 +199,9 @@ void stressLock(::fwMemory::BufferObject::sptr bo, int nbLocks, int nbTest)
 {
     std::vector< ::fwMemory::BufferObject::Lock > m_locks;
 
-    for( int t = 0; t < nbTest ; ++t)
+    for( int t = 0; t < nbTest; ++t)
     {
-        for( int i = 0; i < nbLocks ; ++i)
+        for( int i = 0; i < nbLocks; ++i)
         {
             m_locks.push_back(bo->lock());
         }
@@ -221,10 +219,10 @@ void BufferObjectTest::lockThreadedStressTest()
 
     boost::thread_group group;
 
-    group.create_thread( boost::bind( &stressLock, bo, 800, 600 ) );
-    group.create_thread( boost::bind( &stressLock, bo, 600, 800 ) );
-    group.create_thread( boost::bind( &stressLock, bo, 452, 692 ) );
-    group.create_thread( boost::bind( &stressLock, bo, 253, 345 ) );
+    group.create_thread( std::bind( &stressLock, bo, 800, 600 ) );
+    group.create_thread( std::bind( &stressLock, bo, 600, 800 ) );
+    group.create_thread( std::bind( &stressLock, bo, 452, 692 ) );
+    group.create_thread( std::bind( &stressLock, bo, 253, 345 ) );
 
     group.join_all();
 

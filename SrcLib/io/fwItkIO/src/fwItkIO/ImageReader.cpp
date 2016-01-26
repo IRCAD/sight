@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,8 @@ namespace fwItkIO
 
 //------------------------------------------------------------------------------
 
-ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key key)  : ::fwData::location::enableSingleFile< IObjectReader >(this)
+ImageReader::ImageReader(::fwDataIO::reader::IObjectReader::Key key)  : ::fwData::location::enableSingleFile<
+                                                                            IObjectReader >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -51,22 +52,24 @@ struct ITKLoaderFunctor
 {
     struct Parameter
     {
-        ::fwData::Image::sptr       m_dataImage;
-        std::string                 m_filename;
-        ::fwItkIO::ImageReader::sptr  m_fwReader;
+        ::fwData::Image::sptr m_dataImage;
+        std::string m_filename;
+        ::fwItkIO::ImageReader::sptr m_fwReader;
     };
 
     template<class PIXELTYPE>
     void operator()(Parameter &param)
     {
-        OSLM_INFO( "::fwItkIO::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<  ::fwTools::DynamicType::string<PIXELTYPE>() );
+        OSLM_INFO( "::fwItkIO::ImageReader::ITKLoaderFunctor with PIXELTYPE "<<
+                   ::fwTools::DynamicType::string<PIXELTYPE>() );
 
         // VAG attention : ImageFileReader ne notifie AUCUNE progressEvent mais son ImageIO oui!!!! mais ImageFileReader ne permet pas de l'atteindre
         // car soit mis a la mano ou alors construit lors de l'Update donc trop tard
         // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le reader (voir *3*)
 
         // Reader IO (*1*)
-        typename itk::ImageIOBase::Pointer imageIORead = itk::ImageIOFactory::CreateImageIO( param.m_filename.c_str(), itk::ImageIOFactory::ReadMode);
+        typename itk::ImageIOBase::Pointer imageIORead = itk::ImageIOFactory::CreateImageIO(
+            param.m_filename.c_str(), itk::ImageIOFactory::ReadMode);
 
         // set observation (*2*)
         Progressor progress(imageIORead, param.m_fwReader, param.m_filename);
@@ -87,12 +90,13 @@ struct ITKLoaderFunctor
     //// get pixel type from Header
     static const std::type_info& getImageType( const std::string &imageFileName )
     {
-        itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO(imageFileName.c_str(), itk::ImageIOFactory::ReadMode);
+        itk::ImageIOBase::Pointer imageIO = itk::ImageIOFactory::CreateImageIO(
+            imageFileName.c_str(), itk::ImageIOFactory::ReadMode);
 
         if( !imageIO )
         {
             std::string errMsg;
-            errMsg  = "no ImageIOFactory found to read header of file : ";
+            errMsg = "no ImageIOFactory found to read header of file : ";
             errMsg.append( imageFileName );
 
             throw( std::ios_base::failure( errMsg ) );
@@ -113,14 +117,14 @@ void ImageReader::read()
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
-    const std::type_info& ti    = ITKLoaderFunctor::getImageType( file.string() );
+    const std::type_info& ti = ITKLoaderFunctor::getImageType( file.string() );
 
     ITKLoaderFunctor::Parameter param;
-    param.m_filename =  file.string();
+    param.m_filename  = file.string();
     param.m_dataImage = this->getConcreteObject();
-    param.m_fwReader = this->getSptr();
+    param.m_fwReader  = this->getSptr();
 
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , ITKLoaderFunctor >::invoke(ti , param );
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ITKLoaderFunctor >::invoke(ti, param );
 
     assert( m_object.lock() ); // verify that ::fwData::Image is well produced
     // Post Condition image with a pixel type

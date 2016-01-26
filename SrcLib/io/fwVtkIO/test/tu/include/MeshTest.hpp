@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWVTKIO_UT_MESHTEST_HPP_
-#define _FWVTKIO_UT_MESHTEST_HPP_
+#ifndef __FWVTKIO_UT_MESHTEST_HPP__
+#define __FWVTKIO_UT_MESHTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -22,11 +22,12 @@ namespace ut
  */
 class MeshTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( MeshTest );
-    CPPUNIT_TEST( testMeshToVtk );
-    CPPUNIT_TEST( testSyntheticMesh );
-    CPPUNIT_TEST( testExportImportSyntheticMesh );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( MeshTest );
+CPPUNIT_TEST( testMeshToVtk );
+CPPUNIT_TEST( testSyntheticMesh );
+CPPUNIT_TEST( testExportImportSyntheticMesh );
+CPPUNIT_TEST( testPointCloud );
+CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -36,10 +37,11 @@ public:
     void testMeshToVtk();
     void testSyntheticMesh();
     void testExportImportSyntheticMesh();
+    void testPointCloud();
 
 };
 
 } // namespace ut
 } // namespace fwVtkIO
 
-#endif //_FWVTKIO_UT_MESHTEST_HPP_
+#endif //__FWVTKIO_UT_MESHTEST_HPP__

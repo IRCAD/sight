@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,11 +16,13 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-ExtensionPoint::ExtensionPoint( const ::boost::shared_ptr< Bundle > bundle, const std::string & id, const ::boost::filesystem::path & schema )
-:   BundleElement   ( bundle ),
-    m_id            ( id ),
-    m_schema        ( schema )
-{}
+ExtensionPoint::ExtensionPoint( const std::shared_ptr< Bundle > bundle, const std::string & id,
+                                const ::boost::filesystem::path & schema )
+    :   BundleElement   ( bundle ),
+      m_id            ( id ),
+      m_schema        ( schema )
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -31,7 +33,7 @@ const std::string & ExtensionPoint::getIdentifier() const
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< io::Validator > ExtensionPoint::getExtensionValidator() const
+std::shared_ptr< io::Validator > ExtensionPoint::getExtensionValidator() const
 {
     if( !m_schema.empty() && !m_validator )
     {
@@ -39,7 +41,7 @@ const std::string & ExtensionPoint::getIdentifier() const
         {
             const ::boost::filesystem::path schemaPath = getBundle()->getLocation() / m_schema;
             OSLM_DEBUG( "Use this schema : " << schemaPath << " for this id : " << m_id );
-            m_validator = ::boost::shared_ptr< io::Validator >( new io::Validator(schemaPath) );
+            m_validator = std::shared_ptr< io::Validator >( new io::Validator(schemaPath) );
         }
         catch( const std::exception & e )
         {
@@ -52,7 +54,8 @@ const std::string & ExtensionPoint::getIdentifier() const
 //------------------------------------------------------------------------------
 
 void ExtensionPoint::operator=( const ExtensionPoint & ) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

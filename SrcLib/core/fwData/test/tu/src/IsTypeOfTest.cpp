@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <utility>
-#include <boost/foreach.hpp>
+#include "IsTypeOfTest.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/Boolean.hpp>
@@ -14,7 +13,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include "IsTypeOfTest.hpp"
+#include <utility>
 
 
 // Registers the fixture into the 'registry'
@@ -37,11 +36,11 @@ void IsTypeOfTest::tearDown()
 
 void IsTypeOfTest::methode1()
 {
-    ::fwData::Composite::sptr dataComposite = ::fwData::Composite::New();
-    ::fwData::Boolean::sptr dataBoolean = ::fwData::Boolean::New();
-    ::fwData::Float::sptr dataFloat = ::fwData::Float::New();
-    ::fwData::Integer::sptr dataInteger = ::fwData::Integer::New();
-    ::fwData::Image::sptr dataImage = ::fwData::Image::New();
+    ::fwData::Composite::sptr dataComposite               = ::fwData::Composite::New();
+    ::fwData::Boolean::sptr dataBoolean                   = ::fwData::Boolean::New();
+    ::fwData::Float::sptr dataFloat                       = ::fwData::Float::New();
+    ::fwData::Integer::sptr dataInteger                   = ::fwData::Integer::New();
+    ::fwData::Image::sptr dataImage                       = ::fwData::Image::New();
     ::fwData::TransferFunction::sptr dataTransferFunction = ::fwData::TransferFunction::New();
 
     ::fwData::Composite::isTypeOf         ( "::fwData::Object" );
@@ -58,40 +57,40 @@ void IsTypeOfTest::methode1()
     ::fwData::Image::isTypeOf             ( "::fwData::Image"             );
     ::fwData::TransferFunction::isTypeOf  ( "::fwData::TransferFunction"  );
 
-    CPPUNIT_ASSERT( dataComposite        ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( dataBoolean          ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( dataFloat            ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( dataInteger          ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( dataImage            ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( dataTransferFunction ->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( dataComposite->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( dataBoolean->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( dataFloat->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( dataInteger->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( dataImage->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( dataTransferFunction->isA("::fwData::Object") );
 
-    CPPUNIT_ASSERT( dataComposite        ->isA("::fwData::Composite") );
-    CPPUNIT_ASSERT( dataBoolean          ->isA("::fwData::Boolean") );
-    CPPUNIT_ASSERT( dataFloat            ->isA("::fwData::Float") );
-    CPPUNIT_ASSERT( dataInteger          ->isA("::fwData::Integer") );
-    CPPUNIT_ASSERT( dataImage            ->isA("::fwData::Image") );
-    CPPUNIT_ASSERT( dataTransferFunction ->isA("::fwData::TransferFunction") );
+    CPPUNIT_ASSERT( dataComposite->isA("::fwData::Composite") );
+    CPPUNIT_ASSERT( dataBoolean->isA("::fwData::Boolean") );
+    CPPUNIT_ASSERT( dataFloat->isA("::fwData::Float") );
+    CPPUNIT_ASSERT( dataInteger->isA("::fwData::Integer") );
+    CPPUNIT_ASSERT( dataImage->isA("::fwData::Image") );
+    CPPUNIT_ASSERT( dataTransferFunction->isA("::fwData::TransferFunction") );
 
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataComposite)        ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataBoolean)          ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataFloat)            ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataInteger)          ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataImage)            ->isA("::fwData::Object") );
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataTransferFunction) ->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataComposite)->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataBoolean)->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataFloat)->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataInteger)->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataImage)->isA("::fwData::Object") );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast(dataTransferFunction)->isA("::fwData::Object") );
 
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataComposite         )->isA( "::fwData::Composite"         ) ) ;
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataBoolean           )->isA( "::fwData::Boolean"           ) ) ;
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataFloat             )->isA( "::fwData::Float"             ) ) ;
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataInteger           )->isA( "::fwData::Integer"           ) ) ;
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataImage             )->isA( "::fwData::Image"             ) ) ;
-    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataTransferFunction  )->isA( "::fwData::TransferFunction"  ) ) ;
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataComposite         )->isA( "::fwData::Composite"         ) );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataBoolean           )->isA( "::fwData::Boolean"           ) );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataFloat             )->isA( "::fwData::Float"             ) );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataInteger           )->isA( "::fwData::Integer"           ) );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataImage             )->isA( "::fwData::Image"             ) );
+    CPPUNIT_ASSERT( ::fwData::Object::dynamicCast( dataTransferFunction  )->isA( "::fwData::TransferFunction"  ) );
 
-    CPPUNIT_ASSERT( ! dataComposite        ->isA("::fwData::Image") );
-    CPPUNIT_ASSERT( ! dataBoolean          ->isA("::fwData::Image") );
-    CPPUNIT_ASSERT( ! dataFloat            ->isA("::fwData::Image") );
-    CPPUNIT_ASSERT( ! dataInteger          ->isA("::fwData::Image") );
-    CPPUNIT_ASSERT( ! dataImage            ->isA("::fwData::Boolean") );
-    CPPUNIT_ASSERT( ! dataTransferFunction ->isA("::fwData::Image") );
+    CPPUNIT_ASSERT( !dataComposite->isA("::fwData::Image") );
+    CPPUNIT_ASSERT( !dataBoolean->isA("::fwData::Image") );
+    CPPUNIT_ASSERT( !dataFloat->isA("::fwData::Image") );
+    CPPUNIT_ASSERT( !dataInteger->isA("::fwData::Image") );
+    CPPUNIT_ASSERT( !dataImage->isA("::fwData::Boolean") );
+    CPPUNIT_ASSERT( !dataTransferFunction->isA("::fwData::Image") );
 }
 
 } //namespace ut

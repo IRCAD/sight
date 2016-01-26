@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 /* ioapi.h -- IO base function header for compress/uncompress .zip
    part of the MiniZip project - ( http://www.winimage.com/zLibDll/minizip.html )
 
@@ -16,15 +22,15 @@
     Oct-2009 - Defined fxxxx64 calls to normal fopen/ftell/fseek so they would compile on windows.
                           (but you should use iowin32.c for windows instead)
 
-*/
+ */
 
-#ifndef _ZLIBIOAPI64_H
-#define _ZLIBIOAPI64_H
+#ifndef __MINIZIP_IOAPI_H__
+#define __MINIZIP_IOAPI_H__
 
 #if (!defined(_WIN32)) && (!defined(WIN32)) && (!defined(__APPLE__))
 
-  // Linux needs this to support file operation on files larger then 4+GB
-  // But might need better if/def to select just the platforms that needs them.
+// Linux needs this to support file operation on files larger then 4+GB
+// But might need better if/def to select just the platforms that needs them.
 
         #ifndef __USE_FILE_OFFSET64
                 #define __USE_FILE_OFFSET64
@@ -64,15 +70,15 @@
 #endif
 
 /*
-#ifndef ZPOS64_T
-  #ifdef _WIN32
-                #define ZPOS64_T fpos_t
-  #else
-    #include <stdint.h>
-    #define ZPOS64_T uint64_t
-  #endif
-#endif
-*/
+   #ifndef ZPOS64_T
+   #ifdef _WIN32
+   #define ZPOS64_T fpos_t
+   #else
+   #include <stdint.h>
+   #define ZPOS64_T uint64_t
+   #endif
+   #endif
+ */
 
 #ifdef HAVE_MINIZIP64_CONF_H
 #include "minizip/mz64conf.h"
@@ -116,7 +122,8 @@ extern "C" {
 
 
 #ifndef ZCALLBACK
- #if (defined(WIN32) || defined(_WIN32) || defined (WINDOWS) || defined (_WINDOWS)) && defined(CALLBACK) && defined (USEWINDOWS_CALLBACK)
+ #if (defined(WIN32) || defined(_WIN32) || defined (WINDOWS) || defined (_WINDOWS)) && defined(CALLBACK) && \
+    defined (USEWINDOWS_CALLBACK)
    #define ZCALLBACK CALLBACK
  #else
    #define ZCALLBACK
@@ -126,43 +133,43 @@ extern "C" {
 
 
 
-typedef voidpf   (ZCALLBACK *open_file_func)      OF((voidpf opaque, const char* filename, int mode));
-typedef uLong    (ZCALLBACK *read_file_func)      OF((voidpf opaque, voidpf stream, void* buf, uLong size));
-typedef uLong    (ZCALLBACK *write_file_func)     OF((voidpf opaque, voidpf stream, const void* buf, uLong size));
-typedef int      (ZCALLBACK *close_file_func)     OF((voidpf opaque, voidpf stream));
-typedef int      (ZCALLBACK *testerror_file_func) OF((voidpf opaque, voidpf stream));
+typedef voidpf (ZCALLBACK *open_file_func)      OF ((voidpf opaque, const char* filename, int mode));
+typedef uLong (ZCALLBACK *read_file_func)      OF ((voidpf opaque, voidpf stream, void* buf, uLong size));
+typedef uLong (ZCALLBACK *write_file_func)     OF ((voidpf opaque, voidpf stream, const void* buf, uLong size));
+typedef int (ZCALLBACK *close_file_func)     OF ((voidpf opaque, voidpf stream));
+typedef int (ZCALLBACK *testerror_file_func) OF ((voidpf opaque, voidpf stream));
 
-typedef long     (ZCALLBACK *tell_file_func)      OF((voidpf opaque, voidpf stream));
-typedef long     (ZCALLBACK *seek_file_func)      OF((voidpf opaque, voidpf stream, uLong offset, int origin));
+typedef long (ZCALLBACK *tell_file_func)      OF ((voidpf opaque, voidpf stream));
+typedef long (ZCALLBACK *seek_file_func)      OF ((voidpf opaque, voidpf stream, uLong offset, int origin));
 
 
 /* here is the "old" 32 bits structure structure */
 typedef struct zlib_filefunc_def_s
 {
-    open_file_func      zopen_file;
-    read_file_func      zread_file;
-    write_file_func     zwrite_file;
-    tell_file_func      ztell_file;
-    seek_file_func      zseek_file;
-    close_file_func     zclose_file;
+    open_file_func zopen_file;
+    read_file_func zread_file;
+    write_file_func zwrite_file;
+    tell_file_func ztell_file;
+    seek_file_func zseek_file;
+    close_file_func zclose_file;
     testerror_file_func zerror_file;
-    voidpf              opaque;
+    voidpf opaque;
 } zlib_filefunc_def;
 
-typedef ZPOS64_T (ZCALLBACK *tell64_file_func)    OF((voidpf opaque, voidpf stream));
-typedef long     (ZCALLBACK *seek64_file_func)    OF((voidpf opaque, voidpf stream, ZPOS64_T offset, int origin));
-typedef voidpf   (ZCALLBACK *open64_file_func)    OF((voidpf opaque, const void* filename, int mode));
+typedef ZPOS64_T (ZCALLBACK *tell64_file_func)    OF ((voidpf opaque, voidpf stream));
+typedef long (ZCALLBACK *seek64_file_func)    OF ((voidpf opaque, voidpf stream, ZPOS64_T offset, int origin));
+typedef voidpf (ZCALLBACK *open64_file_func)    OF ((voidpf opaque, const void* filename, int mode));
 
 typedef struct zlib_filefunc64_def_s
 {
-    open64_file_func    zopen64_file;
-    read_file_func      zread_file;
-    write_file_func     zwrite_file;
-    tell64_file_func    ztell64_file;
-    seek64_file_func    zseek64_file;
-    close_file_func     zclose_file;
+    open64_file_func zopen64_file;
+    read_file_func zread_file;
+    write_file_func zwrite_file;
+    tell64_file_func ztell64_file;
+    seek64_file_func zseek64_file;
+    close_file_func zclose_file;
     testerror_file_func zerror_file;
-    voidpf              opaque;
+    voidpf opaque;
 } zlib_filefunc64_def;
 
 MINIZIP_API void fill_fopen64_filefunc OF((zlib_filefunc64_def* pzlib_filefunc_def));
@@ -172,24 +179,32 @@ MINIZIP_API void fill_fopen_filefunc OF((zlib_filefunc_def* pzlib_filefunc_def))
 typedef struct zlib_filefunc64_32_def_s
 {
     zlib_filefunc64_def zfile_func64;
-    open_file_func      zopen32_file;
-    tell_file_func      ztell32_file;
-    seek_file_func      zseek32_file;
+    open_file_func zopen32_file;
+    tell_file_func ztell32_file;
+    seek_file_func zseek32_file;
 } zlib_filefunc64_32_def;
 
 
-#define ZREAD64(filefunc,filestream,buf,size)     ((*((filefunc).zfile_func64.zread_file))   ((filefunc).zfile_func64.opaque,filestream,buf,size))
-#define ZWRITE64(filefunc,filestream,buf,size)    ((*((filefunc).zfile_func64.zwrite_file))  ((filefunc).zfile_func64.opaque,filestream,buf,size))
+#define ZREAD64(filefunc,filestream,buf, \
+                size)     ((*((filefunc).zfile_func64.zread_file))((filefunc).zfile_func64.opaque,filestream,buf,size))
+#define ZWRITE64(filefunc,filestream,buf, \
+                 size)    ((*((filefunc).zfile_func64.zwrite_file))((filefunc).zfile_func64.opaque,filestream,buf,size))
 //#define ZTELL64(filefunc,filestream)            ((*((filefunc).ztell64_file)) ((filefunc).opaque,filestream))
 //#define ZSEEK64(filefunc,filestream,pos,mode)   ((*((filefunc).zseek64_file)) ((filefunc).opaque,filestream,pos,mode))
-#define ZCLOSE64(filefunc,filestream)             ((*((filefunc).zfile_func64.zclose_file))  ((filefunc).zfile_func64.opaque,filestream))
-#define ZERROR64(filefunc,filestream)             ((*((filefunc).zfile_func64.zerror_file))  ((filefunc).zfile_func64.opaque,filestream))
+#define ZCLOSE64(filefunc, \
+                 filestream)             ((*((filefunc).zfile_func64.zclose_file))((filefunc).zfile_func64.opaque, \
+                                                                                   filestream))
+#define ZERROR64(filefunc, \
+                 filestream)             ((*((filefunc).zfile_func64.zerror_file))((filefunc).zfile_func64.opaque, \
+                                                                                   filestream))
 
 MINIZIP_API voidpf call_zopen64 OF((const zlib_filefunc64_32_def* pfilefunc,const void*filename,int mode));
-MINIZIP_API long call_zseek64 OF((const zlib_filefunc64_32_def* pfilefunc,voidpf filestream, ZPOS64_T offset, int origin));
+MINIZIP_API long call_zseek64 OF((const zlib_filefunc64_32_def* pfilefunc,voidpf filestream, ZPOS64_T offset,
+                                  int origin));
 MINIZIP_API ZPOS64_T call_ztell64 OF((const zlib_filefunc64_32_def* pfilefunc,voidpf filestream));
 
-MINIZIP_API void fill_zlib_filefunc64_32_def_from_filefunc32(zlib_filefunc64_32_def* p_filefunc64_32,const zlib_filefunc_def* p_filefunc32);
+MINIZIP_API void fill_zlib_filefunc64_32_def_from_filefunc32(zlib_filefunc64_32_def* p_filefunc64_32,
+                                                             const zlib_filefunc_def* p_filefunc32);
 
 #define ZOPEN64(filefunc,filename,mode)         (call_zopen64((&(filefunc)),(filename),(mode)))
 #define ZTELL64(filefunc,filestream)            (call_ztell64((&(filefunc)),(filestream)))
@@ -199,4 +214,4 @@ MINIZIP_API void fill_zlib_filefunc64_32_def_from_filefunc32(zlib_filefunc64_32_
 }
 #endif
 
-#endif
+#endif //__MINIZIP_IOAPI_H__

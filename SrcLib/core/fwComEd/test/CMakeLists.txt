@@ -1,10 +1,15 @@
-
 fwLoadProperties()
-
-find_package (Boost COMPONENTS date_time REQUIRED)
 find_package(CppUnit)
-fwInclude(${Boost_INCLUDE_DIRS} ${CPPUNIT_INCLUDE_DIR})
-fwLink(${Boost_LIBRARIES} ${CPPUNIT_LIBRARY})
+find_package(Boost COMPONENTS log chrono REQUIRED)
 
+fwInclude(
+    ${Boost_INCLUDE_DIRS}
+    ${CPPUNIT_INCLUDE_DIR}
+)
 
+fwLink(
+    ${CPPUNIT_LIBRARY}
+    ${Boost_LOG_LIBRARY}
+    ${Boost_CHRONO_LIBRARY}
+)
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::SlotsSignalsTest );
-
+//
 namespace fwServices
 {
 namespace ut
@@ -45,14 +45,19 @@ void SlotsSignalsTest::basicTest()
     SLM_TRACE_FUNC();
     using namespace ::fwServices::registry;
 
-    Buffer::sptr buffer = Buffer::New();
+    Buffer::sptr buffer  = Buffer::New();
     Buffer::sptr buffer2 = Buffer::New();
 
     ActiveWorkers::sptr activeWorkers = ActiveWorkers::getDefault();
     activeWorkers->initRegistry();
 
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    activeWorkers->addWorker("test", worker);
+
     SBasicTest::sptr basicTestSrv = ::fwServices::factory::New<SBasicTest>();
     ::fwServices::OSR::registerService(buffer, basicTestSrv);
+
+    basicTestSrv->setWorker(worker);
 
     IService::SharedFutureType startFuture = basicTestSrv->start();
     CPPUNIT_ASSERT(basicTestSrv->getStatus() != IService::STARTED);
@@ -102,7 +107,7 @@ void SlotsSignalsTest::comObjectServiceTest()
         ::fwServices::OSR::registerService(buffer, showTestSrv);
         showTestSrv->setWorker(worker1);
 
-        buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         readerTestSrv->start();
         showTestSrv->start();
@@ -110,13 +115,13 @@ void SlotsSignalsTest::comObjectServiceTest()
         readerTestSrv->update().wait();
 
         IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
-        IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+        IService::SharedFutureType stopShowFuture   = showTestSrv->stop();
         stopReaderFuture.wait();
         stopShowFuture.wait();
 
         CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
-        buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         ::fwServices::OSR::unregisterService(readerTestSrv);
         ::fwServices::OSR::unregisterService(showTestSrv);
@@ -134,25 +139,25 @@ void SlotsSignalsTest::comObjectServiceTest()
         ::fwServices::OSR::registerService(buffer, showTestSrv);
         showTestSrv->setWorker(worker1);
 
-        buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         readerTestSrv->start();
         reader2TestSrv->start();
         showTestSrv->start();
 
-        IService::SharedFutureType updateReaderFuture = readerTestSrv->update();
+        IService::SharedFutureType updateReaderFuture  = readerTestSrv->update();
         IService::SharedFutureType updateReader2Future = reader2TestSrv->update();
         updateReaderFuture.wait();
         updateReader2Future.wait();
 
-        IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
+        IService::SharedFutureType stopReaderFuture  = readerTestSrv->stop();
         IService::SharedFutureType stopReader2Future = reader2TestSrv->stop();
-        IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+        IService::SharedFutureType stopShowFuture    = showTestSrv->stop();
         stopReaderFuture.wait();
         stopReader2Future.wait();
         stopShowFuture.wait();
 
-        buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+        buffer->signal(::fwData::Object::s_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_UPDATE_SLOT));
 
         CPPUNIT_ASSERT_EQUAL(2, showTestSrv->m_receiveCount);
 
@@ -190,7 +195,7 @@ void SlotsSignalsTest::comServiceToServiceTest()
     readerTestSrv->update().wait();
 
     IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
-    IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+    IService::SharedFutureType stopShowFuture   = showTestSrv->stop();
     stopReaderFuture.wait();
     stopShowFuture.wait();
 
@@ -224,8 +229,8 @@ void SlotsSignalsTest::blockConnectionTest()
     showTestSrv->setWorker(worker1);
 
     ::fwCom::Connection connection;
-    connection = buffer->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->
-                                            connect(showTestSrv->slot(IService::s_RECEIVE_SLOT));
+    connection = buffer->signal(::fwData::Object::s_MODIFIED_SIG)->
+                 connect(showTestSrv->slot(SShow2Test::s_UPDATE_BUFFER_SLOT));
 
     readerTestSrv->start();
     showTestSrv->start();
@@ -235,7 +240,7 @@ void SlotsSignalsTest::blockConnectionTest()
     ::boost::this_thread::sleep_for( ::boost::chrono::seconds(8));
 
     IService::SharedFutureType stopReaderFuture = readerTestSrv->stop();
-    IService::SharedFutureType stopShowFuture = showTestSrv->stop();
+    IService::SharedFutureType stopShowFuture   = showTestSrv->stop();
     stopReaderFuture.wait();
     stopShowFuture.wait();
 

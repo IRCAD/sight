@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,10 +14,6 @@
 #include <vtkImageImport.h>
 #include <vtkSetGet.h>
 #include <vtkType.h>
-//Required for proper object factory initialization
-#include <vtkAutoInit.h>
-VTK_MODULE_INIT(vtkRenderingFreeType);
-VTK_MODULE_INIT(vtkRenderingOpenGL);
 
 // for mesh
 #include <vtkCell.h>
@@ -32,12 +28,6 @@ VTK_MODULE_INIT(vtkRenderingOpenGL);
 #include <vtkMatrix4x4.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkLookupTable.h>
-
-#include <vtkMassProperties.h>
-
-#include <vtkPolyDataToImageStencil.h>
-#include <vtkImageStencil.h>
-#include <vtkImageAccumulate.h>
 
 #include <vtkDataSetAttributes.h>
 #include <vtkDataArray.h>
@@ -58,14 +48,16 @@ namespace fwVtkIO
 {
 
 
-TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate( const TypeTranslator::fwToolsToVtkMap::key_type &key )
+TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate(
+    const TypeTranslator::fwToolsToVtkMap::key_type &key )
 {
     fwToolsToVtkMap::const_iterator it = s_toVtk.find( key );
     FW_RAISE_IF("Unknown Type: " << key, it == s_toVtk.end() );
     return it->second;
 }
 
-TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate( const TypeTranslator::VtkTofwToolsMap::key_type &key )
+TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
+    const TypeTranslator::VtkTofwToolsMap::key_type &key )
 {
     VtkTofwToolsMap::const_iterator it = s_fromVtk.find( key );
     FW_RAISE_IF("Unknown Type: " << key, it == s_fromVtk.end() );
@@ -76,26 +68,26 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate( const Ty
 
 
 const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk
-        = boost::assign::map_list_of
-            // char and signed char are treated as the same type.
-            // and plain char is used when writing an int8 image
-            ( fwTools::Type::create("int8" )         , VTK_CHAR )
-            ( fwTools::Type::create("uint8" )        , VTK_UNSIGNED_CHAR )
+    = boost::assign::map_list_of
+      // char and signed char are treated as the same type.
+      // and plain char is used when writing an int8 image
+          ( fwTools::Type::create("int8" ), VTK_CHAR )
+          ( fwTools::Type::create("uint8" ), VTK_UNSIGNED_CHAR )
 
-            ( fwTools::Type::create("int16")         , VTK_SHORT )
-            ( fwTools::Type::create("uint16")        , VTK_UNSIGNED_SHORT )
+          ( fwTools::Type::create("int16"), VTK_SHORT )
+          ( fwTools::Type::create("uint16"), VTK_UNSIGNED_SHORT )
 
-            ( fwTools::Type::create("int32")         , VTK_INT )
-            ( fwTools::Type::create("uint32")        , VTK_UNSIGNED_INT )
+          ( fwTools::Type::create("int32"), VTK_INT )
+          ( fwTools::Type::create("uint32"), VTK_UNSIGNED_INT )
 
-            ( fwTools::Type::create("float" )        , VTK_FLOAT )
-            ( fwTools::Type::create("double")        , VTK_DOUBLE )
+          ( fwTools::Type::create("float" ), VTK_FLOAT )
+          ( fwTools::Type::create("double"), VTK_DOUBLE )
 
 #if ( INT_MAX < LONG_MAX )
-            ( fwTools::Type::create("int64")         , VTK_LONG )
-            ( fwTools::Type::create("uint64")        , VTK_UNSIGNED_LONG )
+      ( fwTools::Type::create("int64"), VTK_LONG )
+          ( fwTools::Type::create("uint64"), VTK_UNSIGNED_LONG )
 #endif
-            ;
+    ;
 
 
 
@@ -103,35 +95,35 @@ const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk
 const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk
     = boost::assign::map_list_of
 
-        // char and signed char are treated as the same type.
-        // and plain char is used when writing an int8 image
-        ( VTK_SIGNED_CHAR        , fwTools::Type::create("int8" )  )
-        ( VTK_CHAR               , fwTools::Type::create("int8" )  )
-        ( VTK_UNSIGNED_CHAR      , fwTools::Type::create("uint8" ) )
+      // char and signed char are treated as the same type.
+      // and plain char is used when writing an int8 image
+          ( VTK_SIGNED_CHAR, fwTools::Type::create("int8" )  )
+          ( VTK_CHAR, fwTools::Type::create("int8" )  )
+          ( VTK_UNSIGNED_CHAR, fwTools::Type::create("uint8" ) )
 
-        ( VTK_SHORT              , fwTools::Type::create("int16")  )
-        ( VTK_UNSIGNED_SHORT     , fwTools::Type::create("uint16") )
+          ( VTK_SHORT, fwTools::Type::create("int16")  )
+          ( VTK_UNSIGNED_SHORT, fwTools::Type::create("uint16") )
 
-        ( VTK_INT                , fwTools::Type::create("int32")  )
-        ( VTK_UNSIGNED_INT       , fwTools::Type::create("uint32") )
+          ( VTK_INT, fwTools::Type::create("int32")  )
+          ( VTK_UNSIGNED_INT, fwTools::Type::create("uint32") )
 
-        ( VTK_FLOAT              , fwTools::Type::create("float" ) )
-        ( VTK_DOUBLE             , fwTools::Type::create("double") )
+          ( VTK_FLOAT, fwTools::Type::create("float" ) )
+          ( VTK_DOUBLE, fwTools::Type::create("double") )
 
 #if ( INT_MAX < LONG_MAX )
-        ( VTK_LONG               , fwTools::Type::create("int64")  )
-        ( VTK_UNSIGNED_LONG      , fwTools::Type::create("uint64") )
+      ( VTK_LONG, fwTools::Type::create("int64")  )
+          ( VTK_UNSIGNED_LONG, fwTools::Type::create("uint64") )
 
-        ( VTK___INT64            , fwTools::Type::create("int64")  )
-        ( VTK_LONG_LONG          , fwTools::Type::create("int64")  )
+          ( VTK___INT64, fwTools::Type::create("int64")  )
+          ( VTK_LONG_LONG, fwTools::Type::create("int64")  )
 
-        ( VTK_UNSIGNED___INT64   , fwTools::Type::create("uint64") )
-        ( VTK_UNSIGNED_LONG_LONG , fwTools::Type::create("uint64") )
+          ( VTK_UNSIGNED___INT64, fwTools::Type::create("uint64") )
+          ( VTK_UNSIGNED_LONG_LONG, fwTools::Type::create("uint64") )
 #else
-        ( VTK_LONG               , fwTools::Type::create("int32")  )
-        ( VTK_UNSIGNED_LONG      , fwTools::Type::create("uint32") )
+      ( VTK_LONG, fwTools::Type::create("int32")  )
+          ( VTK_UNSIGNED_LONG, fwTools::Type::create("uint32") )
 #endif
-        ;
+    ;
 
 
 //-----------------------------------------------------------------------------
@@ -161,9 +153,9 @@ void *newBuffer(size_t size)
     catch (std::exception &e)
     {
         OSLM_ERROR ("No enough memory to allocate an image of type "
-                << fwTools::makeDynamicType<IMAGETYPE>().string()
-                << " and of size "<< size << "." << std::endl
-                << e.what() );
+                    << fwTools::makeDynamicType<IMAGETYPE>().string()
+                    << " and of size "<< size << "." << std::endl
+                    << e.what() );
         throw;
     }
     return destBuffer;
@@ -186,9 +178,9 @@ void fromRGBBuffer( void *input, size_t size, void *&destBuffer)
 
     while (destBufferTyped < finalPtr)
     {
-        valR = (IMAGETYPE)(float((*(inputTyped++)) * 0.30));
-        valG = (IMAGETYPE)(float((*(inputTyped++)) * 0.59));
-        valB = (IMAGETYPE)(float((*(inputTyped++)) * 0.11));
+        valR                 = (IMAGETYPE)(float((*(inputTyped++)) * 0.30));
+        valG                 = (IMAGETYPE)(float((*(inputTyped++)) * 0.59));
+        valB                 = (IMAGETYPE)(float((*(inputTyped++)) * 0.11));
         (*destBufferTyped++) = valR + valG + valB;
     }
 }
@@ -227,7 +219,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 //    source->UpdateInformation();
 //    source->PropagateUpdateExtent();
 
-    int dim = source->GetDataDimension() ;
+    int dim = source->GetDataDimension();
     OSLM_TRACE("source->GetDataDimension() : " << dim);
 
     SLM_WARN_IF("2D Vtk image are not yet correctly managed", dim == 2);
@@ -268,7 +260,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     {
         void *destBuffer;
         int nbBytePerPixel = source->GetScalarSize();
-        int nbComponents = source->GetNumberOfScalarComponents();
+        int nbComponents   = source->GetNumberOfScalarComponents();
         OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << nbBytePerPixel );
 
         destination->setNumberOfComponents(3);
@@ -345,9 +337,9 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image:
 vtkMatrix4x4 *  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatrix )
 {
     vtkMatrix4x4  *matrix = vtkMatrix4x4 ::New();
-    for(int l=0; l<4; l++)
+    for(int l = 0; l<4; l++)
     {
-        for(int c=0; c <4; c++)
+        for(int c = 0; c <4; c++)
         {
             matrix->SetElement(l, c, _transfoMatrix->getCoefficient(l, c));
         }
@@ -361,9 +353,9 @@ bool fromVTKMatrix( vtkMatrix4x4* _matrix, ::fwData::TransformationMatrix3D::spt
 {
     SLM_TRACE_FUNC();
     bool res = true;
-    for(int l=0; l<4; l++)
+    for(int l = 0; l<4; l++)
     {
-        for(int c=0; c <4; c++)
+        for(int c = 0; c <4; c++)
         {
             _transfoMatrix->setCoefficient(l,c, _matrix->GetElement(l,c));
         }

@@ -1,4 +1,4 @@
-<plugin id="memory" class="memory::Plugin">
+<plugin id="memory" class="memory::Plugin" version="@DASH_VERSION@" >
 
     <library name="memory"/>
 

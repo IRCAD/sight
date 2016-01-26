@@ -1,14 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Composite.hpp>
-
 #include "scene2D/data/Size.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/Render.hpp"
+
+#include <fwData/Composite.hpp>
+
 
 #include <QMouseEvent>
 
@@ -38,7 +39,7 @@ Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget)
 
     this->setViewportUpdateMode( QGraphicsView::BoundingRectViewportUpdate );
     this->setOptimizationFlags( QGraphicsView::DontSavePainterState          //
-                              | QGraphicsView::DontAdjustForAntialiasing );  // Prevent from rendering artifacts
+                                | QGraphicsView::DontAdjustForAntialiasing ); // Prevent from rendering artifacts
     this->setCacheMode( QGraphicsView::CacheBackground );   // Activates background cache
     this->setAttribute( Qt::WA_TranslucentBackground, false );
     this->setFrameStyle( 0 );
@@ -46,7 +47,7 @@ Scene2DGraphicsView::Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget)
 
 //-----------------------------------------------------------------------------
 
-void Scene2DGraphicsView::setSceneRender( SPTR(::scene2D::Render) sceneRender )
+void Scene2DGraphicsView::setSceneRender( SPTR(::scene2D::Render)sceneRender )
 {
     m_scene2DRender = sceneRender;
 }

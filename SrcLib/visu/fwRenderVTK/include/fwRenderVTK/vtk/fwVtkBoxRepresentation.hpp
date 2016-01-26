@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 /*=========================================================================
 
-  Program:   Visualization Toolkit
-  Module:    $RCSfile: vtkBoxRepresentation.h,v $
+   Program:   Visualization Toolkit
+   Module:    $RCSfile: vtkBoxRepresentation.h,v $
 
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+   All rights reserved.
+   See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
 
      This software is distributed WITHOUT ANY WARRANTY; without even
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notice for more information.
 
-=========================================================================*/
+   =========================================================================*/
 // .NAME vtkBoxRepresentation - a class defining the representation for the vtkBoxWidget2
 // .SECTION Description
 // This class is a concrete representation for the vtkBoxWidget2. It
@@ -37,14 +37,16 @@
 // vtkBoxWidget2 vtkBoxWidget
 
 
-#ifndef __fwVtkBoxRepresentation_h
-#define __fwVtkBoxRepresentation_h
+#ifndef __FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__
+#define __FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__
 
-#include "vtkWidgetRepresentation.h"
+#ifndef ANDROID
 
 #include "fwRenderVTK/config.hpp"
 
-class vtkBoxRepresentation;
+#include <vtkBoxRepresentation.h>
+#include <vtkWidgetRepresentation.h>
+
 class vtkActor;
 class vtkPolyDataMapper;
 class vtkLineSource;
@@ -65,41 +67,42 @@ class vtkMatrix4x4;
 class FWRENDERVTK_CLASS_API fwVtkBoxRepresentation : public vtkBoxRepresentation
 {
 public:
-  // Description:
-  // Instantiate the class.
-  FWRENDERVTK_API static fwVtkBoxRepresentation *New();
+    // Description:
+    // Instantiate the class.
+    FWRENDERVTK_API static fwVtkBoxRepresentation *New();
 
-  // Description:
-  // Standard methods for the class.
-  vtkTypeRevisionMacro(fwVtkBoxRepresentation,vtkBoxRepresentation);
-  void PrintSelf(ostream& os, vtkIndent indent);
+    // Description:
+    // Standard methods for the class.
+    vtkTypeMacro(fwVtkBoxRepresentation,vtkBoxRepresentation);
+    void PrintSelf(ostream& os, vtkIndent indent);
 
-  // Description:
-  // Control the behavior of the widget. Translation, rotation, and
-  // scaling can all be enabled and disabled.
-  vtkSetMacro(TranslationEnabled,int);
-  vtkGetMacro(TranslationEnabled,int);
-  vtkBooleanMacro(TranslationEnabled,int);
-  vtkSetMacro(ScalingEnabled,int);
-  vtkGetMacro(ScalingEnabled,int);
-  vtkBooleanMacro(ScalingEnabled,int);
-  vtkSetMacro(RotationEnabled,int);
-  vtkGetMacro(RotationEnabled,int);
-  vtkBooleanMacro(RotationEnabled,int);
+    // Description:
+    // Control the behavior of the widget. Translation, rotation, and
+    // scaling can all be enabled and disabled.
+    vtkSetMacro(TranslationEnabled,int);
+    vtkGetMacro(TranslationEnabled,int);
+    vtkBooleanMacro(TranslationEnabled,int);
+    vtkSetMacro(ScalingEnabled,int);
+    vtkGetMacro(ScalingEnabled,int);
+    vtkBooleanMacro(ScalingEnabled,int);
+    vtkSetMacro(RotationEnabled,int);
+    vtkGetMacro(RotationEnabled,int);
+    vtkBooleanMacro(RotationEnabled,int);
 
 //  // Description:
 //  // These are methods that satisfy vtkWidgetRepresentation's API.
-  virtual void WidgetInteraction(double e[2]);
+    virtual void WidgetInteraction(double e[2]);
 
 
 protected:
-  fwVtkBoxRepresentation();
+    fwVtkBoxRepresentation();
 
-  // Control whether scaling, rotation, and translation are supported
-  int TranslationEnabled;
-  int ScalingEnabled;
-  int RotationEnabled;
+    // Control whether scaling, rotation, and translation are supported
+    int TranslationEnabled;
+    int ScalingEnabled;
+    int RotationEnabled;
 
 };
 
-#endif
+#endif //ANDROID
+#endif //__FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__

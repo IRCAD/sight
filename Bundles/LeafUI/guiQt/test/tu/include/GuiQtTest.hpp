@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATATOOLS_TEST_TU_MESHGENERATORTEST_HPP_
-#define _FWDATATOOLS_TEST_TU_MESHGENERATORTEST_HPP_
+#ifndef __GUIQT_UT_GUIQTTEST_HPP__
+#define __GUIQT_UT_GUIQTTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -19,11 +19,11 @@ namespace ut
  */
 class GuiQtTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( GuiQtTest );
-    CPPUNIT_TEST( testDefaultFrame );
-    CPPUNIT_TEST( testTuto01 );
-    CPPUNIT_TEST( testTuto02 );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( GuiQtTest );
+CPPUNIT_TEST( testDefaultFrame );
+CPPUNIT_TEST( testTuto01 );
+CPPUNIT_TEST( testTuto02 );
+CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -39,4 +39,4 @@ public:
 } //namespace ut
 } //namespace guiQt
 
-#endif //_FWDATATOOLS_TEST_TU_MESHGENERATORTEST_HPP_
+#endif //__GUIQT_UT_GUIQTTEST_HPP__

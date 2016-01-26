@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCORE_EXCEPTION_MACRO_HPP_
-# define _FWCORE_EXCEPTION_MACRO_HPP_
+#ifndef __FWCORE_EXCEPTIONMACROS_HPP__
+#define __FWCORE_EXCEPTIONMACROS_HPP__
 
 # include <boost/exception/exception.hpp>
 # include <boost/throw_exception.hpp>
@@ -27,8 +27,8 @@
 
 # define __FWCORE_EXCEPTION_INFO(excep)         \
     "Exception: <"                              \
-    << __FWCORE_EXCEPTION_GETCLASSNAME(excep)   \
-    << ">: " << excep.what()
+        << __FWCORE_EXCEPTION_GETCLASSNAME(excep)   \
+        << ">: " << excep.what()
 
 // --------------------------------------------------------------------------------
 
@@ -54,16 +54,16 @@
     __FWCORE_EXCEPT_RAISE_EXCEPTION_MSG(__FWCORE_EXCEPTION_CLASS, msg)
 
 # define __FWCORE_EXCEPT_RAISE_EXCEPTION_IF(excep, cond)        \
-    __FWCORE_IF(cond, __FWCORE_EXCEPT_RAISE_EXCEPTION(excep);)
+    __FWCORE_IF(cond, __FWCORE_EXCEPT_RAISE_EXCEPTION(excep); )
 
 # define __FWCORE_EXCEPT_RAISE_IF(msg, cond)            \
-    __FWCORE_IF(cond, __FWCORE_EXCEPT_RAISE(msg);)
+    __FWCORE_IF(cond, __FWCORE_EXCEPT_RAISE(msg); )
 
 # define __FWCORE_EXCEPT_FORWARD_EXCEPTION(excep)       \
     BOOST_THROW_EXCEPTION(excep)
 
 # define __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF(excep, cond)    \
-    __FWCORE_IF(cond, BOOST_THROW_EXCEPTION(excep);)
+    __FWCORE_IF(cond, BOOST_THROW_EXCEPTION(excep); )
 
 // -----------------------------------------------------------------------------
 
@@ -117,4 +117,4 @@
         __FWCORE_EXCEPT_FORWARD_EXCEPTION_IF(excep, cond);               \
         )
 
-#endif  // _FWCORE_EXCEPTION_MACRO_HPP_
+#endif  // __FWCORE_EXCEPTIONMACROS_HPP__

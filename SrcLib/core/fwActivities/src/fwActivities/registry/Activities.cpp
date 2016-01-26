@@ -1,16 +1,21 @@
-#include <limits>
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/Runtime.hpp>
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Convert.hpp>
+#include "fwActivities/registry/Activities.hpp"
 
 #include <fwData/Vector.hpp>
 
-#include "fwActivities/registry/Activities.hpp"
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/Convert.hpp>
+#include <fwRuntime/helper.hpp>
+#include <fwRuntime/Runtime.hpp>
+
+#include <boost/foreach.hpp>
+#include <boost/regex.hpp>
+#include <limits>
 
 namespace fwActivities
 {
@@ -31,7 +36,7 @@ ActivityAppConfig::ActivityAppConfig(const ConfigType &config) :
     if(config.count("parameters") == 1 )
     {
         const ConfigType &configParameters = config.get_child("parameters");
-        BOOST_FOREACH( const ConfigType::value_type &v, configParameters.equal_range("parameter") )
+        BOOST_FOREACH( const ConfigType::value_type &v,  configParameters.equal_range("parameter") )
         {
             ActivityAppConfigParam parameter( v.second );
             parameters.push_back( parameter );
@@ -67,8 +72,9 @@ ActivityRequirement::ActivityRequirement(const ConfigType &config) :
         this->maxOccurs = std::numeric_limits<unsigned int>::max();
     }
 
-    OSLM_ASSERT( "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
-                 0 <= minOccurs && minOccurs <= maxOccurs);
+    OSLM_ASSERT(
+        "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
+        0 <= minOccurs && minOccurs <= maxOccurs);
     OSLM_TRACE( "ActivityRequirement : " << name << " : " << type << ", " << minOccurs << "-" << maxOccurs );
 }
 
@@ -81,6 +87,8 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
     icon(ext->findConfigurationElement("icon")->getValue()),
     tabInfo(title),
     builderImpl(ext->findConfigurationElement("builder")->getValue()),
+    bundleId(ext->getBundle()->getIdentifier()),
+    bundleVersion(ext->getBundle()->getVersion().string()),
     appConfig(::fwRuntime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")).get_child("appConfig"))
 {
     if(ext->findConfigurationElement("tabinfo"))
@@ -141,9 +149,9 @@ bool ActivityInfo::usableWith(DataCountType dataCounts) const
 
     if(ok)
     {
-        BOOST_FOREACH( const RequirementsMinMaxCount::value_type &reqCount, m_requirementCount )
+        for( const RequirementsMinMaxCount::value_type &reqCount :  m_requirementCount )
         {
-            const MinMaxType &reqMinMax = reqCount.second;
+            const MinMaxType &reqMinMax  = reqCount.second;
             DataCountType::iterator iter = dataCounts.find(reqCount.first);
             if (iter != dataCounts.end())
             {
@@ -163,7 +171,7 @@ bool ActivityInfo::usableWith(DataCountType dataCounts) const
 
         if(ok)
         {
-            BOOST_FOREACH( const DataCountType::value_type &dataCount, dataCounts )
+            for( const DataCountType::value_type &dataCount :  dataCounts )
             {
                 if(m_requirementCount.find(dataCount.first) == m_requirementCount.end())
                 {
@@ -192,7 +200,8 @@ Activities::sptr Activities::getDefault()
 //-----------------------------------------------------------------------------
 
 Activities::~Activities()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -208,14 +217,14 @@ void Activities::parseBundleInformation()
 void Activities::parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Extension ) > &extensions)
 {
 
-    BOOST_FOREACH( const SPTR( ::fwRuntime::Extension ) &ext, extensions )
+    for( const SPTR( ::fwRuntime::Extension ) &ext :  extensions )
     {
         OSLM_DEBUG("Parsing <" << ext->getBundle()->getIdentifier() << "> Activities");
         ActivityInfo info(ext);
 
         ::fwCore::mt::WriteLock lock(m_registryMutex);
         SLM_ASSERT("The id " <<  info.id << "(" << info.title << ")"
-                << " already exists in the Activities registry", m_reg.find( info.id ) == m_reg.end());
+                             << " already exists in the Activities registry", m_reg.find( info.id ) == m_reg.end());
         m_reg.insert( Registry::value_type(info.id, info) );
     }
 }
@@ -223,7 +232,8 @@ void Activities::parseBundleInformation(const std::vector< SPTR( ::fwRuntime::Ex
 //-----------------------------------------------------------------------------
 
 Activities::Activities()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -250,7 +260,7 @@ std::vector< ActivityInfo > Activities::getInfos() const
 
     ::fwCore::mt::ReadLock lock(m_registryMutex);
 
-    BOOST_FOREACH( Registry::value_type val, m_reg )
+    for( Registry::value_type val :  m_reg )
     {
         infos.push_back( val.second );
     }
@@ -264,7 +274,7 @@ ActivityInfo::DataCountType Activities::getDataCount( const ::fwData::Vector::sp
 {
     ActivityInfo::DataCountType dataCount;
 
-    BOOST_FOREACH( const ::fwData::Object::sptr &obj, *data)
+    for( const ::fwData::Object::sptr &obj :  *data)
     {
         ++dataCount[obj->getClassname()];
     }
@@ -281,7 +291,7 @@ std::vector< ActivityInfo > Activities::getInfos( const ::fwData::Vector::sptr &
 
     ::fwCore::mt::ReadLock lock(m_registryMutex);
 
-    BOOST_FOREACH( const Registry::value_type &regValue, m_reg )
+    for( const Registry::value_type &regValue :  m_reg )
     {
         const ActivityInfo &activity = regValue.second;
         if (activity.usableWith(dataCount))
@@ -301,7 +311,7 @@ std::vector< std::string > Activities::getKeys() const
 
     ::fwCore::mt::ReadLock lock(m_registryMutex);
 
-    BOOST_FOREACH( Registry::value_type val, m_reg )
+    for( Registry::value_type val :  m_reg )
     {
         keys.push_back( val.first );
     }
@@ -315,7 +325,8 @@ const ActivityInfo Activities::getInfo( const std::string & extensionId ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );
-    SLM_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry", iter != m_reg.end());
+    SLM_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry",
+               iter != m_reg.end());
     return iter->second;
 }
 

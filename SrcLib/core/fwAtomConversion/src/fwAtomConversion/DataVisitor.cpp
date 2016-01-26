@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <string>
 
-#include <boost/shared_ptr.hpp>
 #include <boost/utility/enable_if.hpp>
 
 #include <camp/class.hpp>
@@ -52,12 +51,13 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
     DataVisitor::AtomCacheType & m_cache;
 
     DataConversionValueVisitor( DataVisitor::AtomCacheType & cache ) : m_cache(cache)
-    {}
+    {
+    }
 
     ::fwAtoms::Base::sptr operator()(camp::NoType value)
     {
         FW_RAISE_EXCEPTION( exception::ConversionNotManaged(
-                "Enter in void GetCampValueVisitor()(camp::NoType value) : case not managed" ) );
+                                "Enter in void GetCampValueVisitor()(camp::NoType value) : case not managed" ) );
         ::fwAtoms::Base::sptr val;
         return val;
     }
@@ -98,12 +98,12 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
             if( classname == "::fwMemory::BufferObject" )
             {
                 ::fwMemory::BufferObject * ptr = value.get< ::fwMemory::BufferObject * >();
-                baseObj = ::fwAtoms::Blob::New( ptr->getSptr() );
+                baseObj                        = ::fwAtoms::Blob::New( ptr->getSptr() );
             }
             else
             {
                 // get fwData object
-                ::fwData::Object * ptr = value.get< ::fwData::Object * >();
+                ::fwData::Object * ptr         = value.get< ::fwData::Object * >();
                 ::fwData::Object::sptr dataObj = ptr->getSptr();
 
                 baseObj = ::fwAtomConversion::convert( dataObj, m_cache );
@@ -112,12 +112,12 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
 
         return baseObj;
     }
- };
+};
 
 //-----------------------------------------------------------------------------
 
 DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType & cache )
-: m_campDataObj( dataObj.get() ), m_cache( cache )
+    : m_campDataObj( dataObj.get() ), m_cache( cache )
 {
 
     // Create atom object
@@ -130,12 +130,12 @@ DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType & cache 
 
     // Fill atom object with tag
     const camp::Class& metaclass = ::camp::classByName(classname);
-    std::size_t tagCount = metaclass.tagCount();
+    std::size_t tagCount         = metaclass.tagCount();
     for ( std::size_t i = 0; i < tagCount; ++i )
     {
         const ::camp::Value & tag = metaclass.tagId(i);
         const ::camp::Value & val = metaclass.tag(tag);
-        m_atomObj->setMetaInfo( tag.to< std::string >() , val.to< std::string >() );
+        m_atomObj->setMetaInfo( tag.to< std::string >(), val.to< std::string >() );
     }
 
 }
@@ -143,7 +143,8 @@ DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType & cache 
 //-----------------------------------------------------------------------------
 
 DataVisitor::~DataVisitor()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -195,17 +196,17 @@ void DataVisitor::visit(const camp::MapProperty& property)
     {
         value = property.getElement(m_campDataObj, index);
 
-        first = value.first;
+        first  = value.first;
         second = value.second;
 
         DataConversionValueVisitor valVisitor(m_cache);
         valAtom = second.visit( valVisitor );
 
         FW_RAISE_EXCEPTION_IF(
-                exception::ConversionNotManaged("Not managed type for map key (only support string, int and real)"),
-                first.type() != ::camp::stringType &&
-                first.type() != ::camp::intType &&
-                first.type() != ::camp::realType );
+            exception::ConversionNotManaged("Not managed type for map key (only support string, int and real)"),
+            first.type() != ::camp::stringType &&
+            first.type() != ::camp::intType &&
+            first.type() != ::camp::realType );
         atom->insert( first.to< std::string >(), valAtom );
     }
 

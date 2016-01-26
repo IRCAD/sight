@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@ namespace fwThread
  * @class   TaskHandler
  * @brief   This class encapsulates packaged task and provides a copy constructor.
  *
- * 
+ *
  * @date   2012.
  */
 template <typename R>
@@ -31,14 +31,16 @@ struct TaskHandler
     /// Executes intern packaged task.
     void operator ()() const;
 
-protected:
+    protected:
 
-    /// Copy constructor forbidden.
-    TaskHandler& operator=( const TaskHandler& ){};
+        /// Copy constructor forbidden.
+        TaskHandler& operator=( const TaskHandler& )
+        {
+        }
 
-private:
-    /// Encapsulated packaged task.
-    mutable ::boost::packaged_task<R> m_task;
+    private:
+        /// Encapsulated packaged task.
+        mutable ::boost::packaged_task<R> m_task;
 };
 
 /// Encapsulate a packaged_task into a boost function to be easily posted on a worker.

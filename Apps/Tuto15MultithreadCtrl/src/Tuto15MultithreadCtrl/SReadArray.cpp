@@ -1,20 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Array.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
+#include "Tuto15MultithreadCtrl/SReadArray.hpp"
+
+#include <fwCom/Signal.hxx>
 
 #include <fwComEd/helper/Array.hpp>
 
+#include <fwData/Array.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
 #include <fwServices/macros.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
-#include "Tuto15MultithreadCtrl/SReadArray.hpp"
 
-fwServicesRegisterMacro( ::fwServices::IService , ::Tuto15MultithreadCtrl::SReadArray , ::fwData::Array ) ;
+fwServicesRegisterMacro( ::fwServices::IController, ::Tuto15MultithreadCtrl::SReadArray, ::fwData::Array );
 
 namespace Tuto15MultithreadCtrl
 {
@@ -29,12 +31,10 @@ SReadArray::~SReadArray() throw()
 
 void SReadArray::starting() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
 }
 
 void SReadArray::stopping() throw( ::fwTools::Failed )
 {
-
 }
 
 void SReadArray::updating() throw( ::fwTools::Failed )
@@ -43,37 +43,23 @@ void SReadArray::updating() throw( ::fwTools::Failed )
     ::fwData::mt::ObjectWriteLock writeLock(array);
     SLM_ASSERT("No array.", array);
 
+    // Initialize the array size and type
     const int arraySize = 10;
-
     ::fwData::Array::SizeType size(1, arraySize);
-
     array->resize("uint32", size, 1, true);
 
+    // Fill the array values
     ::fwComEd::helper::Array arrayHelper(array);
-
     unsigned int *buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
-
-    for (int i = 0 ; i < arraySize; i++)
+    for (unsigned int i = 0; i < arraySize; i++)
     {
         buffer[i] = i;
     }
 
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig
-        = array->signal< ::fwData::Object::ObjectModifiedSignalType>( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-
-    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent("MODIFIED_EVENT");
-    sig->asyncEmit(msg);
-}
-
-void SReadArray::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-
-}
-
-void SReadArray::swapping( ) throw( ::fwTools::Failed )
-{
-
+    // Notify that the array is modified
+    ::fwData::Object::ModifiedSignalType::sptr sig
+        = array->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
+    sig->asyncEmit();
 }
 
 void SReadArray::configuring() throw( ::fwTools::Failed )

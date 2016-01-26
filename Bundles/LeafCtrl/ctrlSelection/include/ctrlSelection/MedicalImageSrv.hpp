@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_MEDICALIMAGESRV_HPP_
-#define _CTRLSELECTION_MEDICALIMAGESRV_HPP_
+#ifndef __CTRLSELECTION_MEDICALIMAGESRV_HPP__
+#define __CTRLSELECTION_MEDICALIMAGESRV_HPP__
 
 #include <fwServices/IService.hpp>
 #include <fwServices/IController.hpp>
@@ -19,21 +19,30 @@ namespace ctrlSelection
 /**
  * @class  MedicalImageSrv
  * @brief  This service convert its attached image to a medical image by adding specific fields.
- * 
+ *
 
  * @date   2010.
  */
 class CTRLSELECTION_CLASS_API MedicalImageSrv : public ::fwServices::IController
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MedicalImageSrv)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MedicalImageSrv)(::fwServices::IController) );
 
 
-    CTRLSELECTION_API MedicalImageSrv() throw() ;
+    CTRLSELECTION_API MedicalImageSrv() throw();
 
-    CTRLSELECTION_API virtual ~MedicalImageSrv() throw() ;
+    CTRLSELECTION_API virtual ~MedicalImageSrv() throw();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    CTRLSELECTION_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -58,9 +67,7 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
-private :
+private:
 
     void convertImage();
 
@@ -69,4 +76,4 @@ private :
 
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_MEDICALIMAGESRV_HPP_
+#endif // __CTRLSELECTION_MEDICALIMAGESRV_HPP__

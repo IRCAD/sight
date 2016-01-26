@@ -1,10 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/lexical_cast.hpp>
+#ifndef ANDROID
+
+#include "visuVTKAdaptor/Transform.hpp"
+#include "visuVTKAdaptor/BoxWidget.hpp"
+
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwServices/Base.hpp>
+
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderWindow.h>
@@ -16,17 +26,7 @@
 #include <vtkBoxRepresentation.h>
 #include <vtkBoxWidget2.h>
 
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwServices/Base.hpp>
-
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>
-
-#include "visuVTKAdaptor/Transform.hpp"
-#include "visuVTKAdaptor/BoxWidget.hpp"
-#include <fwServices/IEditionService.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -35,14 +35,19 @@ class BoxClallback : public ::vtkCommand
 {
 public:
 
-    static BoxClallback* New(::visuVTKAdaptor::BoxWidget* adaptor) {
+    static BoxClallback* New(::visuVTKAdaptor::BoxWidget* adaptor)
+    {
         BoxClallback *cb = new BoxClallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
 
-     BoxClallback() : m_adaptor(NULL) {}
-    ~BoxClallback() {}
+    BoxClallback() : m_adaptor(nullptr)
+    {
+    }
+    ~BoxClallback()
+    {
+    }
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )
     {
@@ -54,17 +59,20 @@ public:
 
 // BoxWidget
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::BoxWidget, ::fwData::TransformationMatrix3D );
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::BoxWidget,
+                         ::fwData::TransformationMatrix3D );
 
 //------------------------------------------------------------------------------
 
-BoxWidget::BoxWidget() throw()
-: ::fwRenderVTK::IVtkAdaptorService(),
-  m_vtkBoxWidget( 0 ), m_scaleFactor(1.0), m_enableScaling(true)
+BoxWidget::BoxWidget() throw() :
+    ::fwRenderVTK::IVtkAdaptorService(),
+    m_transform(nullptr),
+    m_vtkBoxWidget(nullptr),
+    m_boxWidgetCommand(nullptr),
+    m_scaleFactor(1.0),
+    m_enableScaling(true)
 {
     m_boxWidgetCommand = BoxClallback::New(this);
-
-    //addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -75,11 +83,8 @@ BoxWidget::~BoxWidget() throw()
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::configuring() throw( ::fwTools::Failed )
+void BoxWidget::doConfigure() throw( ::fwTools::Failed )
 {
-    setRenderId( m_configuration->getAttributeValue( "renderer" ) );
-    this->setTransformId( m_configuration->getAttributeValue("transform") );
-
     if (m_configuration->hasAttribute("scaleFactor"))
     {
         m_scaleFactor = ::boost::lexical_cast<double>(m_configuration->getAttributeValue("scaleFactor"));
@@ -88,8 +93,8 @@ void BoxWidget::configuring() throw( ::fwTools::Failed )
     if (m_configuration->hasAttribute("enableScaling"))
     {
         SLM_ASSERT("Wrong value for 'enableScaling', must be 'true' or 'false'",
-                m_configuration->getAttributeValue("enableScaling") == "yes" ||
-                m_configuration->getAttributeValue("enableScaling") == "no");
+                   m_configuration->getAttributeValue("enableScaling") == "yes" ||
+                   m_configuration->getAttributeValue("enableScaling") == "no");
         m_enableScaling = (m_configuration->getAttributeValue("enableScaling") == "yes");
     }
 }
@@ -159,17 +164,19 @@ void BoxWidget::updateFromVtk()
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
     vtkMatrix4x4* mat = m_transform->GetMatrix();
 
-    for(int lt=0; lt<4; lt++)
+    for(int lt = 0; lt<4; lt++)
     {
-        for(int ct=0; ct<4; ct++)
+        for(int ct = 0; ct<4; ct++)
         {
             trf->setCoefficient(lt,ct, mat->GetElement(lt,ct));
         }
     }
 
-    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
-    ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
+    auto sig = trf->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
 
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 }
@@ -184,9 +191,9 @@ void BoxWidget::doUpdate() throw( ::fwTools::Failed )
     {
         vtkMatrix4x4* mat = m_transform->GetMatrix();
         ::fwData::TransformationMatrix3D::sptr transMat = this->getObject< ::fwData::TransformationMatrix3D >();
-        for(int lt=0; lt<4; lt++)
+        for(int lt = 0; lt<4; lt++)
         {
-            for(int ct=0; ct<4; ct++)
+            for(int ct = 0; ct<4; ct++)
             {
                 mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
             }
@@ -200,16 +207,6 @@ void BoxWidget::doUpdate() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void BoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
-{
-    ::fwComEd::TransformationMatrix3DMsg::csptr transfoMsg = ::fwComEd::TransformationMatrix3DMsg::dynamicConstCast(msg);
-    if (transfoMsg && transfoMsg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED)
-            &&  m_vtkBoxWidget->HasObserver(::vtkCommand::InteractionEvent, m_boxWidgetCommand))
-    {
-        doUpdate();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 } // namespace visuVTKAdaptor
+
+#endif

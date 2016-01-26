@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWGUI_IMULTISELECTORDIALOG_HPP_
-#define FWGUI_IMULTISELECTORDIALOG_HPP_
+#ifndef __FWGUI_DIALOG_IMULTISELECTORDIALOG_HPP__
+#define __FWGUI_DIALOG_IMULTISELECTORDIALOG_HPP__
 
 #include <map>
 #include <vector>
@@ -23,7 +23,7 @@ namespace dialog
 /**
  * @brief   IMultiSelectorDialog allows the choice of some elements among several (_selections)
  * @class   IMultiSelectorDialog
- * 
+ *
  * @date    2009-2010.
  */
 class FWGUI_CLASS_API IMultiSelectorDialog : public ::fwGui::GuiBaseObject
@@ -42,7 +42,7 @@ public:
     /**
      * @brief Constructor builds a selector proposing a string list
      */
-    FWGUI_API IMultiSelectorDialog() ;
+    FWGUI_API IMultiSelectorDialog();
 
     /// Destructor. Do nothing.
     FWGUI_API virtual ~IMultiSelectorDialog();
@@ -69,4 +69,4 @@ public:
 } //namespace dialog
 } //namespace fwGui
 
-#endif /*FWGUI_IMULTISELECTORDIALOG_HPP_*/
+#endif /*__FWGUI_DIALOG_IMULTISELECTORDIALOG_HPP__*/

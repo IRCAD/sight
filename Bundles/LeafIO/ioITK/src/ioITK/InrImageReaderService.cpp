@@ -1,14 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ioITK/InrImageReaderService.hpp"
+
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwComEd/ImageMsg.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <io/IReader.hpp>
 
@@ -25,23 +28,22 @@
 
 #include <fwItkIO/ImageReader.hpp>
 
-#include "ioITK/InrImageReaderService.hpp"
-
-
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioITK::InrImageReaderService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioITK::InrImageReaderService, ::fwData::Image );
 
 //------------------------------------------------------------------------------
 
 InrImageReaderService::InrImageReaderService() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 InrImageReaderService::~InrImageReaderService() throw()
-{}
+{
+}
 
 
 //------------------------------------------------------------------------------
@@ -65,8 +67,8 @@ void InrImageReaderService::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::SingleFile::sptr  result;
-    result= ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    ::fwData::location::SingleFile::sptr result;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getPath().parent_path();
@@ -88,7 +90,8 @@ void InrImageReaderService::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-bool InrImageReaderService::createImage( const ::boost::filesystem::path &inrFileDir, const ::fwData::Image::sptr &_pImg )
+bool InrImageReaderService::createImage( const ::boost::filesystem::path &inrFileDir,
+                                         const ::fwData::Image::sptr &_pImg )
 {
     SLM_TRACE_FUNC();
     ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
@@ -108,15 +111,15 @@ bool InrImageReaderService::createImage( const ::boost::filesystem::path &inrFil
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                ss.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                                                          ss.str(),
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                "Warning during loading",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                                                          "Warning during loading",
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     return ok;
@@ -148,14 +151,11 @@ void InrImageReaderService::notificationOfDBUpdate()
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
     SLM_ASSERT("pImage not instanced", pImage);
 
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ;
-    msg->addEvent( ::fwComEd::ImageMsg::BUFFER ) ;
-    msg->addEvent( ::fwComEd::ImageMsg::REGION ) ;
-    msg->addEvent( ::fwComEd::ImageMsg::SPACING ) ;
-    msg->addEvent( ::fwComEd::ImageMsg::PIXELTYPE ) ;
-
-    ::fwServices::IEditionService::notify(this->getSptr(), pImage, msg);
+    auto sig = pImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
 }
 
 //------------------------------------------------------------------------------

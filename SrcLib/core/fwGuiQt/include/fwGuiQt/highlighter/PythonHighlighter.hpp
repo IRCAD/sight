@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_HIGHLIGHTER_PYTHONHIGHLIGHTER_HPP
-#define _FWGUIQT_HIGHLIGHTER_PYTHONHIGHLIGHTER_HPP
+#ifndef __FWGUIQT_HIGHLIGHTER_PYTHONHIGHLIGHTER_HPP__
+#define __FWGUIQT_HIGHLIGHTER_PYTHONHIGHLIGHTER_HPP__
 
 #include <QSyntaxHighlighter>
 
@@ -23,7 +23,7 @@ namespace highlighter
 
 class FWGUIQT_CLASS_API PythonHighlighter : public QSyntaxHighlighter
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     FWGUIQT_API PythonHighlighter(QTextDocument *parent = 0);
@@ -38,7 +38,8 @@ private:
     {
     public:
         HighlightingRule() : nth(0)
-        {}
+        {
+        }
         int nth;
         QRegExp pattern;
         QTextCharFormat format;
@@ -55,4 +56,4 @@ private:
 } //namespace fwGuiQt
 } //namespace highlighter
 
-#endif // _FWGUIQT_HIGHLIGHTER_PYTHONHIGHLIGHTER_HPP
+#endif // __FWGUIQT_HIGHLIGHTER_PYTHONHIGHLIGHTER_HPP__

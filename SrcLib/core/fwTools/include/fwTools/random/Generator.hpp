@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,7 +7,7 @@
 #ifndef __FWTOOLS_RANDOM_GENERATOR_HPP__
 #define __FWTOOLS_RANDOM_GENERATOR_HPP__
 
-#include <ctime>
+#include <fwCore/base.hpp>
 
 #include <boost/random/variate_generator.hpp>
 #include <boost/random/mersenne_twister.hpp>
@@ -18,7 +18,8 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/concept_check.hpp>
 
-#include <fwCore/base.hpp>
+#include <algorithm>
+#include <ctime>
 
 namespace fwTools
 {
@@ -43,7 +44,7 @@ T getValue(T min, T max, ::boost::uint32_t seedVal = std::time(NULL))
             ::boost::is_floating_point<T>,
             ::boost::uniform_real<>,
             ::boost::uniform_int<>
-    >::type DistroType;
+            >::type DistroType;
 
     ::boost::mt19937 seed(seedVal);
     DistroType dist(min, max);
@@ -69,7 +70,7 @@ void fillContainer(T min, T max, CONTAINER& randContainer, ::boost::uint32_t see
             ::boost::is_floating_point<T>,
             ::boost::uniform_real<>,
             ::boost::uniform_int<>
-    >::type DistroType;
+            >::type DistroType;
 
     ::boost::mt19937 seed(seedVal);
     DistroType dist(min, max);

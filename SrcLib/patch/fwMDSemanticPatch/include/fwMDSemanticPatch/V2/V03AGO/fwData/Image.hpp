@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@ class FWMDSEMANTICPATCH_CLASS_API Image : public ::fwAtomsPatch::ISemanticPatch
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro(
-            (Image)(::fwAtomsPatch::ISemanticPatch), (()), new Image) ;
+        (Image)(::fwAtomsPatch::ISemanticPatch), (()), new Image);
 
     /// Constructor
     FWMDSEMANTICPATCH_API Image();
@@ -42,9 +42,9 @@ public:
      * Sets the 'nb_components', 'window_center' and 'window_width' attributes to a newly generated UUID.
      */
     FWMDSEMANTICPATCH_API virtual void apply(
-            const ::fwAtoms::Object::sptr& previous,
-            const ::fwAtoms::Object::sptr& current,
-            ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
+        const ::fwAtoms::Object::sptr& previous,
+        const ::fwAtoms::Object::sptr& current,
+        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
 
 };
 

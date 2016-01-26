@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,11 +18,12 @@ namespace fwCommand
 
 //-----------------------------------------------------------------------------
 
-Manager::Manager( const ::boost::uint32_t maxUndoLevel, const ::boost::uint32_t maxUndoMemory, const ::boost::uint32_t maxCommandMemory )
-: m_maxUndoLevel  ( maxUndoLevel  ),
-  m_maxUndoMemory ( maxUndoMemory ),
-  m_maxCommandMemory (maxCommandMemory),
-  m_usedMemory ( 0 )
+Manager::Manager( const ::boost::uint32_t maxUndoLevel, const ::boost::uint32_t maxUndoMemory,
+                  const ::boost::uint32_t maxCommandMemory )
+    : m_maxUndoLevel  ( maxUndoLevel  ),
+      m_maxUndoMemory ( maxUndoMemory ),
+      m_maxCommandMemory (maxCommandMemory),
+      m_usedMemory ( 0 )
 {
     m_listCmd.push_back( Empty::New() );
     m_lastCmd = m_listCmd.end();
@@ -31,19 +32,21 @@ Manager::Manager( const ::boost::uint32_t maxUndoLevel, const ::boost::uint32_t 
 
 //-----------------------------------------------------------------------------
 
-Manager::sptr Manager::ManagerFactory( const ::boost::uint32_t  maxUndoLevel, const ::boost::uint32_t  maxUndoMemory, const ::boost::uint32_t  maxCommandMemory)
+Manager::sptr Manager::ManagerFactory( const ::boost::uint32_t maxUndoLevel, const ::boost::uint32_t maxUndoMemory,
+                                       const ::boost::uint32_t maxCommandMemory)
 {
     ::fwCommand::Manager::sptr manager = ::fwCommand::Manager::New();
-    manager->m_maxUndoLevel = maxUndoLevel;
-    manager->m_maxUndoMemory = maxUndoMemory;
-    manager->m_maxCommandMemory = maxCommandMemory;
+    manager->m_maxUndoLevel            = maxUndoLevel;
+    manager->m_maxUndoMemory           = maxUndoMemory;
+    manager->m_maxCommandMemory        = maxCommandMemory;
     return manager;
 }
 
 //-----------------------------------------------------------------------------
 
 Manager::~Manager() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -154,7 +157,7 @@ void Manager::clear()
     m_listCmd.clear();
     m_listCmd.push_back( Empty::New() );
     m_usedMemory = 0;
-    m_lastCmd = m_listCmd.begin();
+    m_lastCmd    = m_listCmd.begin();
 }
 
 //-----------------------------------------------------------------------------

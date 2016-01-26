@@ -1,25 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwMath/VectorFunctions.hpp"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 namespace fwMath
 {
 
+//------------------------------------------------------------------------------
+
 double normalize(fwVec3d& vec)
 {
-    double norme = sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
-
-    if(static_cast<float>(norme) == 0.0F)
-    {
-        return 0.0;
-    }
-
-    vec /= norme;
-    return norme;
+    const ::glm::dvec3 vecGlm        = ::glm::make_vec3<double>(vec.data());
+    const double length              = vecLength(vec);
+    const ::glm::dvec3 normalizedVec = ::glm::normalize(vecGlm);
+    vec[0] = normalizedVec[0];
+    vec[1] = normalizedVec[1];
+    vec[2] = normalizedVec[2];
+    return length;
 }
 
 //------------------------------------------------------------------------------
@@ -33,37 +36,39 @@ fwVec3d normalized(const fwVec3d& vec)
 
 //------------------------------------------------------------------------------
 
-double dot(const fwVec3d& v1, const fwVec3d& v2) 
+double dot(const fwVec3d& v1, const fwVec3d& v2)
 {
-    return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
+    // Using GLM here is slower, especially in debug, so keep it simple
+    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
 }
 
 //------------------------------------------------------------------------------
 
-fwVec3d cross(const fwVec3d& v1, const fwVec3d& v2) 
+fwVec3d cross(const fwVec3d& v1, const fwVec3d& v2)
 {
-    fwVec3d v;
-    v[0] = v1[1] * v2[2] - v1[2] * v2[1];
-    v[1] = v1[2] * v2[0] - v1[0] * v2[2];
-    v[2] = v1[0] * v2[1] - v1[1] * v2[0];
+    const ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(v1.data());
+    const ::glm::dvec3 vecGlm2 = ::glm::make_vec3<double>(v2.data());
 
-    return v;
+    ::glm::dvec3 res = ::glm::cross(vecGlm1, vecGlm2);
+
+    return {{res[0], res[1], res[2]}};
 }
 
 //------------------------------------------------------------------------------
 
-double vecLength(const fwVec3d &_vec)
+double vecLength(const fwVec3d &vec)
 {
-    return sqrt(_vec[0] * _vec[0] + _vec[1] * _vec[1] + _vec[2] * _vec[2]);
+    ::glm::dvec3 vecGLM (vec[0], vec[1], vec[2]);
+    return ::glm::length(vecGLM);
 }
 
 //------------------------------------------------------------------------------
 
-void negate(fwVec3d &_vec)
+void negate(fwVec3d &vec)
 {
-    _vec[0]=-_vec[0];
-    _vec[1]=-_vec[1];
-    _vec[2]=-_vec[2];
+    vec[0] = -vec[0];
+    vec[1] = -vec[1];
+    vec[2] = -vec[2];
 }
 } //namespace fwMath
 
@@ -71,9 +76,10 @@ void negate(fwVec3d &_vec)
 
 fwVec3d& operator*=(fwVec3d& vec1, double val)
 {
-    vec1[0] *= val;
-    vec1[1] *= val;
-    vec1[2] *= val;
+    ::glm::dvec3 vecGlm1(vec1[0], vec1[1], vec1[2]);
+    vecGlm1 *= val;
+    vec1     = {{vecGlm1[0], vecGlm1[1], vecGlm1[2]}};
+
     return vec1;
 }
 
@@ -81,12 +87,12 @@ fwVec3d& operator*=(fwVec3d& vec1, double val)
 
 fwVec3d& operator/=(fwVec3d& vec, double val )
 {
-    if(val != 0.)
-    {
-        vec[0] /= val;
-        vec[1] /= val;
-        vec[2] /= val;
-    }
+    FW_RAISE_IF("Division by 0 not possible.", val == 0.0);
+
+    ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec.data());
+    vecGlm1             /= val;
+    vec                  = {{vecGlm1[0], vecGlm1[1], vecGlm1[2]}};
+
     return vec;
 }
 
@@ -94,9 +100,11 @@ fwVec3d& operator/=(fwVec3d& vec, double val )
 
 fwVec3d& operator+=(fwVec3d& vec1, const fwVec3d& vec2)
 {
-    vec1[0] += vec2[0];
-    vec1[1] += vec2[1];
-    vec1[2] += vec2[2];
+    ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec1.data());
+    ::glm::dvec3 vecGlm2 = ::glm::make_vec3<double>(vec2.data());
+    vecGlm1             += vecGlm2;
+    vec1                 = {{vecGlm1[0], vecGlm1[1], vecGlm1[2]}};
+
     return vec1;
 }
 
@@ -104,80 +112,80 @@ fwVec3d& operator+=(fwVec3d& vec1, const fwVec3d& vec2)
 
 fwVec3d& operator-=(fwVec3d& vec1, const fwVec3d& vec2)
 {
-    vec1[0] -= vec2[0];
-    vec1[1] -= vec2[1];
-    vec1[2] -= vec2[2];
+    ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec1.data());
+    ::glm::dvec3 vecGlm2 = ::glm::make_vec3<double>(vec2.data());
+    vecGlm1             -= vecGlm2;
+    vec1                 = {{vecGlm1[0], vecGlm1[1], vecGlm1[2]}};
+
     return vec1;
 }
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator*(const fwVec3d& _vec, double _val)
+fwVec3d operator*(const fwVec3d& vec, double val)
 {
-    fwVec3d v;
-    v[0] = _vec[0] * _val;
-    v[1] = _vec[1] * _val;
-    v[2] = _vec[2] * _val;
-    return v;
+    ::glm::dvec3 vecGlm1(vec[0], vec[1], vec[2]);
+    ::glm::dvec3 vecGlm = vecGlm1 * val;
+
+    return {{vecGlm[0], vecGlm[1], vecGlm[2]}};
 }
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator*(const double _val, const fwVec3d& _vec)
+fwVec3d operator*(const double val, const fwVec3d& vec)
 {
-    return _vec * _val;
+    return vec * val;
 }
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator/(const fwVec3d& _vec, double _val)
+fwVec3d operator/(const fwVec3d& vec, double val)
 {
-    fwVec3d v;
-    v[0] = _vec[0] / _val;
-    v[1] = _vec[1] / _val;
-    v[2] = _vec[2] / _val;
+    FW_RAISE_IF("Division by 0 not possible.", val == 0.0);
 
-    return v;
+    ::glm::dvec3 vecGlm1(vec[0], vec[1], vec[2]);
+    ::glm::dvec3 vecGlm = vecGlm1 / val;
+
+    return {{vecGlm[0], vecGlm[1], vecGlm[2]}};
 }
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator+(const fwVec3d& _vec1, const fwVec3d& _vec2)
+fwVec3d operator+(const fwVec3d& vec1, const fwVec3d& vec2)
 {
-    fwVec3d v;
-    v[0] = _vec1[0] + _vec2[0];
-    v[1] = _vec1[1] + _vec2[1];
-    v[2] = _vec1[2] + _vec2[2];
+    const ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec1.data());
+    const ::glm::dvec3 vecGlm2 = ::glm::make_vec3<double>(vec2.data());
+    ::glm::dvec3 vecGlm = vecGlm1 + vecGlm2;
 
-    return v;
+    return {{vecGlm[0], vecGlm[1], vecGlm[2]}};
 }
 
 //------------------------------------------------------------------------------
 
-fwVec3d operator-(const fwVec3d& _vec1, const fwVec3d& _vec2)
+fwVec3d operator-(const fwVec3d& vec1, const fwVec3d& vec2)
 {
-    fwVec3d v;
-    v[0] = _vec1[0] - _vec2[0];
-    v[1] = _vec1[1] - _vec2[1];
-    v[2] = _vec1[2] - _vec2[2];
+    const ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec1.data());
+    const ::glm::dvec3 vecGlm2 = ::glm::make_vec3<double>(vec2.data());
+    ::glm::dvec3 vecGlm = vecGlm1 - vecGlm2;
 
-    return v;
+    return {{vecGlm[0], vecGlm[1], vecGlm[2]}};
 }
 
 //------------------------------------------------------------------------------
 
-int operator==(const fwVec3d& _vec1, const fwVec3d& _vec2)
+int operator==(const fwVec3d& vec1, const fwVec3d& vec2)
 {
-    return (((float)(_vec1[0]) == (float)(_vec2[0])) && 
-            ((float)(_vec1[1]) == (float)(_vec2[1])) && 
-            ((float)(_vec1[2]) == (float)(_vec2[2]))
-            ) ;
+    const ::glm::dvec3 vecGlm1 = ::glm::make_vec3<double>(vec1.data());
+    const ::glm::dvec3 vecGlm2 = ::glm::make_vec3<double>(vec2.data());
+    ::glm::bvec3 res = ::glm::equal(vecGlm1, vecGlm2);
+
+    return res[0] && res[1] && res[2];
 }
 
 //------------------------------------------------------------------------------
 
-int operator!=(const fwVec3d& _vec1, const fwVec3d& _vec2)
+int operator!=(const fwVec3d& vec1, const fwVec3d& vec2)
 {
-    return !(_vec1 == _vec2);
+    return !(vec1 == vec2);
 }
 

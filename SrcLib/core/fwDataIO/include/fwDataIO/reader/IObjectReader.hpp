@@ -1,13 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_READER_IOBJECTREADER_HPP_
-#define _FWDATAIO_READER_IOBJECTREADER_HPP_
+#ifndef __FWDATAIO_READER_IOBJECTREADER_HPP__
+#define __FWDATAIO_READER_IOBJECTREADER_HPP__
 
-#include <boost/filesystem/path.hpp>
+#include "fwDataIO/config.hpp"
+#include "fwDataIO/reader/factory/new.hpp"
+#include "fwDataIO/reader/registry/detail.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -15,9 +17,12 @@
 
 #include <fwData/location/ILocation.hpp>
 
-#include "fwDataIO/config.hpp"
-#include "fwDataIO/reader/factory/new.hpp"
-#include "fwDataIO/reader/registry/detail.hpp"
+#include <fwJobs/IJob.hpp>
+
+#include <boost/filesystem/path.hpp>
+
+#include <cstdint>
+#include <functional>
 
 namespace fwDataIO
 {
@@ -28,7 +33,7 @@ namespace reader
 /**
  * @brief   Base class for all object readers.
  * @class   IObjectReader
- * 
+ *
  * @date    2009
  *
  * This class defines the API to use basic object readers. This reader is not
@@ -40,9 +45,12 @@ namespace reader
 class FWDATAIO_CLASS_API IObjectReader : public ::fwCore::BaseObject
 {
 
-public :
+public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IObjectReader) );
+
+    typedef std::function< void ( std::uint64_t /*progress*/) > ProgressCallback;
+    typedef std::function< void ( ) > CancelCallback;
 
     typedef ::fwDataIO::reader::factory::Key Key;
 
@@ -98,9 +106,21 @@ public :
      */
     FWDATAIO_API virtual ::fwData::location::ILocation::sptr getLocation();
 
-    FWDATAIO_API virtual std::string  extension()=0;
+    FWDATAIO_API virtual std::string  extension() = 0;
 
-protected :
+    /**
+     * @brief Requests reader abortion.
+     */
+    FWDATAIO_API void cancel();
+
+    /// Returns the internal job
+    FWDATAIO_API virtual SPTR(::fwJobs::IJob) getJob() const
+    {
+        return nullptr;
+    }
+
+
+protected:
 
     /// Constructor. Do nothing.
     FWDATAIO_API IObjectReader();
@@ -125,4 +145,4 @@ protected :
 } // namespace fwDataIO
 
 
-#endif // _FWDATAIO_READER_IOBJECTREADER_HPP_
+#endif // __FWDATAIO_READER_IOBJECTREADER_HPP__

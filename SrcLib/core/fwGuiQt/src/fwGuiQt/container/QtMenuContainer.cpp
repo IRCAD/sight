@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,18 +15,20 @@ namespace container
 //-----------------------------------------------------------------------------
 
 QtMenuContainer::QtMenuContainer(::fwGui::GuiBaseObject::Key key) throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 QtMenuContainer::~QtMenuContainer() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void QtMenuContainer::clean()
 {
-    SLM_ASSERT("Sorry, Qt menu not yet initialized, cleaning impossible", m_menu);
+    SLM_ASSERT("The Qt menu is not yet initialized, cleaning is thus impossible", m_menu);
     m_menu->clear();
 }
 
@@ -34,7 +36,7 @@ void QtMenuContainer::clean()
 
 void QtMenuContainer::destroyContainer()
 {
-    SLM_ASSERT("Sorry, Qt menu not yet initialized, cleaning impossible", m_menu);
+    SLM_ASSERT("The Qt menu not yet initialized, cleaning is thus impossible", m_menu);
     delete m_menu;
 }
 

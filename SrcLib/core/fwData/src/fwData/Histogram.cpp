@@ -1,14 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
-
-#include <fwData/Image.hpp>
-
+#include "fwData/Image.hpp"
 #include "fwData/Histogram.hpp"
 
 
@@ -18,9 +16,9 @@ fwDataRegisterMacro( ::fwData::Histogram );
 namespace fwData
 {
 
-Histogram::Histogram(::fwData::Object::Key key) : m_binsWidth(1),
-                                                  m_minValue(0),
-                                                  m_maxValue(100)
+Histogram::Histogram(::fwData::Object::Key key) : m_binsWidth(1.f),
+                                                  m_minValue(0.f),
+                                                  m_maxValue(100.f)
 {
 }
 
@@ -37,12 +35,12 @@ void Histogram::shallowCopy(const Object::csptr &_source )
 {
     Histogram::csptr other = Histogram::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldShallowCopy( _source );
-    m_values = other->m_values;
-    m_minValue = other->m_minValue;
-    m_maxValue = other->m_maxValue;
+    m_values    = other->m_values;
+    m_minValue  = other->m_minValue;
+    m_maxValue  = other->m_maxValue;
     m_binsWidth = other->m_binsWidth;
 }
 
@@ -52,17 +50,17 @@ void Histogram::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &
 {
     Histogram::csptr other = Histogram::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
-    m_minValue = other->m_minValue;
-    m_maxValue = other->m_maxValue;
+    m_minValue  = other->m_minValue;
+    m_maxValue  = other->m_maxValue;
     m_binsWidth = other->m_binsWidth;
 
     m_values.clear();
 
-    BOOST_FOREACH( long value, other->m_values )
+    for(long value : other->m_values )
     {
         m_values.push_back( value );
     }
@@ -85,8 +83,8 @@ void Histogram::initialize( float _min, float _max, float _binsWidth )
 {
     SLM_ASSERT("The minimum value can't be greater than the maximum value", _min <= _max);
 
-    m_minValue = _min;
-    m_maxValue = _max;
+    m_minValue  = _min;
+    m_maxValue  = _max;
     m_binsWidth = _binsWidth;
 
     m_values.clear();

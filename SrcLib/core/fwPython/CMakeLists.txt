@@ -10,9 +10,9 @@ get_filename_component(PYTHON_DIR_NAME "${PYTHON_INCLUDE_DIR}" NAME)
 get_filename_component(PYTHON_DIR "${PYTHON_INCLUDE_DIR}" PATH)
 get_filename_component(PYTHON_DIR "${PYTHON_DIR}" PATH)
 
-if (WIN32)
+if(WIN32)
     string(REGEX REPLACE "2.7$" "27" PYTHON_DIR_NAME "${PYTHON_DIR_NAME}")
- endif()
+endif()
 
 file(COPY "${PYTHON_INCLUDE_DIR}/" DESTINATION "${CMAKE_BINARY_DIR}/PythonHome/include/")
 file(COPY "${PYTHON_DIR}/lib/${PYTHON_DIR_NAME}/" DESTINATION "${CMAKE_BINARY_DIR}/PythonHome/lib/")
@@ -23,6 +23,18 @@ if(${NAME}_INSTALL)
 endif()
 
 
-fwForwardInclude(${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
-fwLink(${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+fwForwardInclude(
+    ${Boost_INCLUDE_DIRS}
+    ${PYTHON_INCLUDE_DIRS}
+)
 
+fwLink(
+    ${Boost_PYTHON_LIBRARY}
+)
+
+# Test to avoid policy CMP0022
+if(PYTHON_DEBUG_LIBRARY)
+    fwForwardLink(${PYTHON_DEBUG_LIBRARY})
+else()
+    fwForwardLink(${PYTHON_LIBRARY})
+endif()

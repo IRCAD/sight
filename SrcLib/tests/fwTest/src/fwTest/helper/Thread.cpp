@@ -1,26 +1,33 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/chrono/duration.hpp>
 #include "fwTest/helper/Thread.hpp"
+
+#include <chrono>
+#include <functional>
 
 namespace fwTest
 {
 namespace helper
 {
 
-Thread::Thread(FunctionType f) :
-        m_hasFailed(false)
+//-----------------------------------------------------------------------------
+
+Thread::Thread(FunctionType f) : m_hasFailed(false)
 {
-    m_thread = ::boost::thread(::boost::bind(&Thread::run, this, f));
+    m_thread = std::thread(std::bind(&Thread::run, this, f));
 }
+
+//-----------------------------------------------------------------------------
 
 Thread::~Thread()
 {
 }
+
+//-----------------------------------------------------------------------------
 
 void Thread::join(bool raise)
 {
@@ -31,15 +38,27 @@ void Thread::join(bool raise)
     }
 }
 
+//-----------------------------------------------------------------------------
+
 bool Thread::timedJoin(int time, bool raise)
 {
-    bool joined = m_thread.try_join_for(boost::chrono::milliseconds(time));
+    bool joined = false;
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(time));
+    if (m_thread.joinable())
+    {
+        m_thread.join();
+        joined = true;
+    }
+
     if (raise)
     {
         this->throwException();
     }
     return joined;
 }
+
+//-----------------------------------------------------------------------------
 
 void Thread::throwException()
 {
@@ -48,6 +67,8 @@ void Thread::throwException()
         throw this->getException();
     }
 }
+
+//-----------------------------------------------------------------------------
 
 void Thread::run(FunctionType f)
 {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,25 +7,29 @@
 #ifndef __FWSERVICES_REGISTRY_OBJECTSERVICE_HPP__
 #define __FWSERVICES_REGISTRY_OBJECTSERVICE_HPP__
 
-#include <map>
-#include <vector>
+#include "fwServices/config.hpp"
+#include "fwServices/IService.hpp"
 
-#include <boost/static_assert.hpp>
-#include <boost/type_traits.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/bimap.hpp>
-#include <boost/bimap/unordered_set_of.hpp>
-#include <boost/bimap/multiset_of.hpp>
-
-#include <fwCore/mt/types.hpp>
 #include <fwCore/base.hpp>
 #include <fwCore/LogicStamp.hpp>
+#include <fwCore/mt/types.hpp>
 
 #include <fwTools/Failed.hpp>
 #include <fwTools/Object.hpp>
 
-#include "fwServices/config.hpp"
-#include "fwServices/IService.hpp"
+#include <boost/bimap.hpp>
+#include <boost/bimap/multiset_of.hpp>
+#include <boost/bimap/unordered_set_of.hpp>
+#include <boost/static_assert.hpp>
+#include <boost/type_traits.hpp>
+
+#include <map>
+#include <vector>
+
+namespace fwData
+{
+class Object;
+}
 
 namespace fwServices
 {
@@ -40,13 +44,13 @@ namespace registry
  * The API of ObjectService should not be directly invoked,
  * fwServices/op methods (i.e. add, get,...) should be used instead
  *
- * 
+ *
  */
-class FWSERVICES_CLASS_API ObjectService: public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API ObjectService : public ::fwCore::BaseObject
 {
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro( (ObjectService)(::fwCore::BaseObject) ) ;
+    fwCoreNonInstanciableClassDefinitionsMacro( (ObjectService)(::fwCore::BaseObject) );
 
     /**
      * @brief Service container
@@ -124,53 +128,53 @@ public:
      * @brief Return registered services matching serviceType
      * @note Should be optimized
      * @note Invoke getServices( ::fwData::Object::sptr , const std::string & ) for each registered object
-     * 
+     *
      */
     FWSERVICES_API ServiceVectorType getServices( const std::string & serviceType ) const;
 
     /**
      * @brief Return a container of services of type serviceType which are attached to obj
-     * 
+     *
      */
-    FWSERVICES_API ServiceVectorType getServices( ::fwData::Object::sptr obj , const std::string & serviceType ) const;
+    FWSERVICES_API ServiceVectorType getServices( ::fwData::Object::sptr obj, const std::string & serviceType ) const;
 
     /**
      * @brief return a vector containing all services associated with the object obj
-     * 
+     *
      */
     FWSERVICES_API ServiceVectorType getServices( ::fwData::Object::sptr obj ) const;
 
     /**
      * @brief Return a container with all objects associated with a service of type SERVICE in m_container
      */
-     template<class SERVICE>
-     ObjectVectorType getObjects() const;
+    template<class SERVICE>
+    ObjectVectorType getObjects() const;
 
 
     /**
      * @brief Return a container with all objects registered in m_container
      */
-     FWSERVICES_API ObjectVectorType getObjects() const;
+    FWSERVICES_API ObjectVectorType getObjects() const;
 
     //@}
 
-     /**
-      * @name Some useful getters
-      */
+    /**
+     * @name Some useful getters
+     */
 
-     //@{
-     /**
-      * @brief return true is obj has at least one service of type srvType
-      * 
-      */
-     FWSERVICES_API bool has( ::fwData::Object::sptr obj , const std::string &srvType) const;
+    //@{
+    /**
+     * @brief return true is obj has at least one service of type srvType
+     *
+     */
+    FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string &srvType) const;
 
-     /**
-      * @brief return true if key is still present in OSR
-      */
-     FWSERVICES_API bool hasKey( ::fwCore::LogicStamp::csptr key ) const;
+    /**
+     * @brief return true if key is still present in OSR
+     */
+    FWSERVICES_API bool hasKey( ::fwCore::LogicStamp::csptr key ) const;
 
-     //@}
+    //@}
 
 
     /**
@@ -179,22 +183,22 @@ public:
 
     //@{
 
-     /**
+    /**
      * @brief Move service (service) to object objDst in the m_container
-     * 
+     *
      */
     FWSERVICES_API void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service );
 
     //@}
 
-protected :
+protected:
 
     /**
      * @brief Object to service associations container
      * @note An object can be registered without services
      * @warning Do not use smart pointers for ::fwData::Object, otherwise they will never destroy
      */
-    ServiceContainerType m_container ;
+    ServiceContainerType m_container;
 
     mutable ::fwCore::mt::ReadWriteMutex m_containerMutex;
 
@@ -239,13 +243,13 @@ FWSERVICES_API std::string getRegistryInformation();
  * @brief Wraps ObjectService::getServices
  */
 template<class SERVICE>
-std::vector< SPTR(SERVICE) > getServices() ;
+std::vector< SPTR(SERVICE) > getServices();
 
 /**
  * @brief Wraps ObjectService::getServices
  */
 template<class SERVICE>
-std::vector< SPTR(SERVICE) > getServices(::fwData::Object::sptr obj) ;
+std::vector< SPTR(SERVICE) > getServices(::fwData::Object::sptr obj);
 
 /**
  * @brief Wraps ObjectService::getServices
@@ -261,12 +265,12 @@ FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServi
 /**
  * @brief Wraps ObjectService::getServices
  */
-FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServices( ::fwData::Object::sptr obj ) ;
+FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServices( ::fwData::Object::sptr obj );
 
 /**
  * @brief Wraps ObjectService::has
  */
-FWSERVICES_API bool has( ::fwData::Object::sptr obj , const std::string &srvType) ;
+FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string &srvType);
 
 /**
  * @brief Wraps ObjectService::registerService

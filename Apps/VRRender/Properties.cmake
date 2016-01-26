@@ -1,15 +1,15 @@
 
 set( NAME VRRender )
 set( VERSION 0.9 )
-set( TYPE BUNDLE )
+set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     servicesReg
     dataReg
-    visu
     visuVTK
     visuVTKQt
     visuVTKAdaptor
+    visuVTKVRAdaptor
     gui
     guiQt
     memory
@@ -17,12 +17,15 @@ set( REQUIREMENTS
     monitorQt
     ctrlMemory
     launcher
+    io
     ioVTK
     ioVtkGdcm
     uiIO
     uiGenericQt
     uiMedDataQt
     uiImageQt
+    uiVisu
+    uiVisuQt
     appXml
     activities
     ctrlSelection
@@ -31,10 +34,16 @@ set( REQUIREMENTS
     3DVisualizationActivity
     blendActivity
     volumeRenderingActivity
+    ioActivity
     media
     ioAtoms
     patchMedicalData
     ioITK
     filterVRRender
-    )
+    scene2D
+    uiMeasurement
+    uiMeasurementQt
+    uiTF
+)
 
+bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)

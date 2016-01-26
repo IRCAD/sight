@@ -1,21 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IFRAMESRV_HPP_
-#define _FWGUI_IFRAMESRV_HPP_
+#ifndef __FWGUI_IFRAMESRV_HPP__
+#define __FWGUI_IFRAMESRV_HPP__
 
-#include <fwServices/IService.hpp>
 
 #include "fwGui/config.hpp"
 #include "fwGui/container/fwContainer.hpp"
-
 #include "fwGui/registrar/ViewRegistrar.hpp"
 #include "fwGui/layoutManager/IFrameLayoutManager.hpp"
 #include "fwGui/builder/IMenuBarBuilder.hpp"
 #include "fwGui/builder/IToolBarBuilder.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
+#include <fwServices/IService.hpp>
 
 namespace fwGui
 {
@@ -23,25 +26,34 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing a frame.
  * @class   IFrameSrv
- * 
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IFrameSrv : public ::fwServices::IService
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IFrameSrv)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IFrameSrv)(::fwServices::IService) );
 
     /// Get widget defined for progress bar
     FWGUI_API static ::fwGui::container::fwContainer::sptr getProgressWidget();
 
-protected :
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Signal emitted when frame is closed and onclose policy is notify
+    static const ::fwCom::Signals::SignalKeyType s_CLOSED_SIG;
+    typedef ::fwCom::Signal< void ()> ClosedSignalType;
+    /**
+     * @}
+     */
 
-    FWGUI_API IFrameSrv() ;
 
-    FWGUI_API virtual ~IFrameSrv() ;
+protected:
+
+    FWGUI_API IFrameSrv();
+
+    FWGUI_API virtual ~IFrameSrv();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     /**
@@ -49,7 +61,7 @@ protected :
      *
      * Example of configuration
      * @verbatim
-        <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+        <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -67,10 +79,10 @@ protected :
                 <view sid="myView" start="yes" />
             </registry>
         </service>
-      @endverbatim
+       @endverbatim
      * - \<window onclose="notify" /\> : defines what to do when the frame is closed
      *   - \b exit (by default) : the application is closed. Use it for the main frame.
-     *   - \b notify : notifies service's object with WINDOW_CLOSED event.
+     *   - \b notify : send signal 'closed'
      *   - \b message : a confirmation dialog appears asking user to confirm closing application
      * - \<frame\> : defines the frame name, icon, size and style.
      *   - \b style : defines frame style (modal, always on top, etc.), not mandatory.
@@ -106,9 +118,9 @@ private:
     void initializeToolBarBuilder( ::fwRuntime::ConfigurationElement::sptr toolBarConfig );
 
     ::fwGui::layoutManager::IFrameLayoutManager::sptr m_frameLayoutManager;
-    ::fwGui::registrar::ViewRegistrar::sptr           m_viewRegistrar;
-    ::fwGui::builder::IMenuBarBuilder::sptr           m_menuBarBuilder;
-    ::fwGui::builder::IToolBarBuilder::sptr           m_toolBarBuilder;
+    ::fwGui::registrar::ViewRegistrar::sptr m_viewRegistrar;
+    ::fwGui::builder::IMenuBarBuilder::sptr m_menuBarBuilder;
+    ::fwGui::builder::IToolBarBuilder::sptr m_toolBarBuilder;
 
     ConfigurationType m_registrarConfig;
     ConfigurationType m_frameConfig;
@@ -119,10 +131,13 @@ private:
     bool m_hasToolBar;
 
     std::string m_closePolicy;
+
+    /// Signal emitted when frame is closed and onclose mode is message
+    ClosedSignalType::sptr m_sigClosed;
 };
 
 } // namespace fwGui
 
-#endif /*_FWGUI_IFRAMESRV_HPP_*/
+#endif /*__FWGUI_IFRAMESRV_HPP__*/
 
 

@@ -1,19 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRENDERVTK_VTKADAPTORSERVICE_HPP_
-#define _FWRENDERVTK_VTKADAPTORSERVICE_HPP_
+#ifndef __FWRENDERVTK_IVTKADAPTORSERVICE_HPP__
+#define __FWRENDERVTK_IVTKADAPTORSERVICE_HPP__
 
 #include <string>
 
-#include <fwServices/ObjectMsg.hpp>
+
 #include <fwServices/IService.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
 
-#include "fwRenderVTK/VtkRenderService.hpp"
+#include "fwRenderVTK/SRender.hpp"
 #include "fwRenderVTK/config.hpp"
 
 class vtkProp;
@@ -27,39 +27,44 @@ namespace fwRenderVTK
 
 class FWRENDERVTK_CLASS_API IVtkAdaptorService : public fwServices::IService
 {
-    friend class VtkRenderService;
-public :
-    fwCoreServiceClassDefinitionsMacro ( (IVtkAdaptorService)(::fwServices::IService) ) ;
+friend class SRender;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (IVtkAdaptorService)(::fwServices::IService) );
 
-    typedef fwServices::IService SuperClass ;
+    typedef fwServices::IService SuperClass;
 
 
     /// To set a representation
-    virtual void show(bool b = true) {};
-    virtual void hide() {this->show(false);};
+    virtual void show(bool b = true)
+    {
+    }
+    virtual void hide()
+    {
+        this->show(false);
+    }
 
 
-    FWRENDERVTK_API void setRenderService( VtkRenderService::sptr service );
-    FWRENDERVTK_API void setRenderId(VtkRenderService::RendererIdType newID);
-    FWRENDERVTK_API VtkRenderService::sptr getRenderService();
-    FWRENDERVTK_API VtkRenderService::RendererIdType getRenderId();
+    FWRENDERVTK_API void setRenderService( SRender::sptr service );
+    FWRENDERVTK_API void setRenderId(SRender::RendererIdType newID);
+    FWRENDERVTK_API SRender::sptr getRenderService();
+    FWRENDERVTK_API SRender::RendererIdType getRenderId();
     FWRENDERVTK_API vtkRenderer* getRenderer();
 
 
-    FWRENDERVTK_API void setPickerId(VtkRenderService::PickerIdType newID);
-    FWRENDERVTK_API VtkRenderService::PickerIdType getPickerId();
+    FWRENDERVTK_API void setPickerId(SRender::PickerIdType newID);
+    FWRENDERVTK_API SRender::PickerIdType getPickerId();
     FWRENDERVTK_API vtkAbstractPropPicker* getPicker(std::string pickerId = "");
 
-    FWRENDERVTK_API void setTransformId(VtkRenderService::VtkObjectIdType newID);
-    FWRENDERVTK_API VtkRenderService::VtkObjectIdType getTransformId();
+    FWRENDERVTK_API void setTransformId(SRender::VtkObjectIdType newID);
+    FWRENDERVTK_API SRender::VtkObjectIdType getTransformId();
     FWRENDERVTK_API vtkTransform* getTransform();
 
-    FWRENDERVTK_API vtkObject * getVtkObject(VtkRenderService::VtkObjectIdType objectId);
+    FWRENDERVTK_API vtkObject * getVtkObject(const SRender::VtkObjectIdType& objectId) const;
 
     FWRENDERVTK_API vtkRenderWindowInteractor* getInteractor();
 
 
-    FWRENDERVTK_API virtual ::fwData::Object::sptr getAssociatedObject(vtkProp *prop, int depth=0);
+    FWRENDERVTK_API virtual ::fwData::Object::sptr getAssociatedObject(vtkProp *prop, int depth = 0);
 
     FWRENDERVTK_API void getAllSubProps(vtkPropCollection *propc, int depth = -1);
 
@@ -79,31 +84,41 @@ public :
         m_autoRender = autoRender;
     }
 
-protected :
+    /// Return true if the service slots are automatically connected to the object signals
+    bool getAutoConnect() const
+    {
+        return m_autoConnect;
+    }
+
+    /// Set if the service slots are automatically connected to the object signals
+    void setAutoConnect(bool autoConnect)
+    {
+        m_autoConnect = autoConnect;
+    }
+
+protected:
 
     /**
      * @brief   constructor
      */
-    FWRENDERVTK_API IVtkAdaptorService() throw() ;
+    FWRENDERVTK_API IVtkAdaptorService() throw();
 
     /**
      * @brief   destructor
      */
-    FWRENDERVTK_API virtual ~IVtkAdaptorService() throw() ;
-
-    ::fwServices::ObjectMsg::sptr m_message;
+    FWRENDERVTK_API virtual ~IVtkAdaptorService() throw();
 
     /**
      * @name    Standard service methods
      */
     //@{
     /// Overrides
-    FWRENDERVTK_API virtual void info(std::ostream &_sstream ) ;
+    FWRENDERVTK_API virtual void info(std::ostream &_sstream );
+    FWRENDERVTK_API void configuring() throw(fwTools::Failed);
     FWRENDERVTK_API void starting() throw(fwTools::Failed);
     FWRENDERVTK_API void stopping() throw(fwTools::Failed);
     FWRENDERVTK_API void swapping() throw(fwTools::Failed);
     FWRENDERVTK_API void updating() throw(fwTools::Failed);
-    FWRENDERVTK_API void receiving(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     //@}
 
 
@@ -112,10 +127,10 @@ protected :
 
     /// state of the pipeline
     bool m_vtkPipelineModified;
-    VtkRenderService::RendererIdType   m_rendererId;
-    VtkRenderService::PickerIdType     m_pickerId;
-    VtkRenderService::VtkObjectIdType  m_transformId;
-    VtkRenderService::wptr             m_renderService;
+    SRender::RendererIdType m_rendererId;
+    SRender::PickerIdType m_pickerId;
+    SRender::VtkObjectIdType m_transformId;
+    SRender::wptr m_renderService;
 
     ::fwServices::helper::SigSlotConnection::sptr m_connections;
 
@@ -126,15 +141,18 @@ protected :
     vtkPropCollection * m_propCollection;
 
     bool m_autoRender;
+    bool m_autoConnect; ///< If true, connect the adaptor slots to its objects signals
 
-    FWRENDERVTK_API virtual void doStart() = 0;
-    FWRENDERVTK_API virtual void doStop() = 0;
-    FWRENDERVTK_API virtual void doSwap() = 0;
-    FWRENDERVTK_API virtual void doUpdate() = 0;
-    FWRENDERVTK_API virtual void doReceive(::fwServices::ObjectMsg::csptr msg) = 0;
+    FWRENDERVTK_API virtual void doStart()     = 0;
+    FWRENDERVTK_API virtual void doStop()      = 0;
+    FWRENDERVTK_API virtual void doSwap()      = 0;
+    FWRENDERVTK_API virtual void doUpdate()    = 0;
+    FWRENDERVTK_API virtual void doConfigure() = 0;
 
-
-    ServiceVector & getRegisteredServices() {return m_subServices;};
+    ServiceVector & getRegisteredServices()
+    {
+        return m_subServices;
+    }
     FWRENDERVTK_API void registerService( ::fwRenderVTK::IVtkAdaptorService::sptr service );
     FWRENDERVTK_API void unregisterServices();
 
@@ -149,13 +167,10 @@ protected :
 
     FWRENDERVTK_API static void getProps(vtkPropCollection *propc, vtkProp *prop);
 
-
-private:
     /// notify a render request iff vtkPipeline is modified
-    void requestRender();
-
+    FWRENDERVTK_API void requestRender();
 };
 
 }
 
-#endif /*_FWRENDERVTK_VTKADAPTORSERVICE_HPP_*/
+#endif /*__FWRENDERVTK_IVTKADAPTORSERVICE_HPP__*/

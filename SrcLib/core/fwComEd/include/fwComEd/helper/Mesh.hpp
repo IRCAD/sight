@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_HELPER_MESH_HPP_
-#define _FWCOMED_HELPER_MESH_HPP_
+#ifndef __FWCOMED_HELPER_MESH_HPP__
+#define __FWCOMED_HELPER_MESH_HPP__
 
 #include <fwTools/Type.hpp>
 #include <fwMemory/BufferObject.hpp>
@@ -13,7 +13,7 @@
 #include <fwData/Mesh.hpp>
 
 #include "fwComEd/helper/Array.hpp"
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 
 namespace fwComEd
 {
@@ -24,12 +24,12 @@ namespace helper
 /**
  * @class   Mesh
  * @brief   Helper to manage Mesh. Lock the mesh buffer before to modify it.
- * 
+ *
  * @date    2012
  */
 class FWCOMED_CLASS_API Mesh
 {
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro((Mesh), (((::fwData::Mesh::sptr))), new Mesh );
 
     FWCOMED_API Mesh( ::fwData::Mesh::sptr mesh );
@@ -61,178 +61,178 @@ public :
                                                    ::fwData::Mesh::PointValueType z) throw(::fwData::Exception);
 
     /**
-      * @brief Set a point coordinates.
-      * The mesh must be allocated before calling this method.
-      *
-      * @param id point index
-      * @param p point coordinates
-      *
-      * @throw ::fwData::Exception
-      */
-     FWCOMED_API void setPoint(::fwData::Mesh::Id id, const ::fwData::Mesh::PointValueType p[3]);
+     * @brief Set a point coordinates.
+     * The mesh must be allocated before calling this method.
+     *
+     * @param id point index
+     * @param p point coordinates
+     *
+     * @throw ::fwData::Exception
+     */
+    FWCOMED_API void setPoint(::fwData::Mesh::Id id, const ::fwData::Mesh::PointValueType p[3]);
 
-     /**
-      * @brief Set a point coordinates.
-      * @see setPoint
-      */
-     FWCOMED_API void setPoint(::fwData::Mesh::Id id,
-                               ::fwData::Mesh::PointValueType x,
-                               ::fwData::Mesh::PointValueType y,
-                               ::fwData::Mesh::PointValueType z);
+    /**
+     * @brief Set a point coordinates.
+     * @see setPoint
+     */
+    FWCOMED_API void setPoint(::fwData::Mesh::Id id,
+                              ::fwData::Mesh::PointValueType x,
+                              ::fwData::Mesh::PointValueType y,
+                              ::fwData::Mesh::PointValueType z);
 
-     /**
-      * @brief Set a point color.
-      *
-      * Depending on the type of allocated point-colors array (RGB or RGBA), 3
-      * or 4 points will be read from p.
-      * The color array must be allocated before calling this method.
-      *
-      * @param id point index
-      * @param c color
-      *
-      * @throw ::fwData::Exception
-      */
-     FWCOMED_API void setPointColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4]);
+    /**
+     * @brief Set a point color.
+     *
+     * Depending on the type of allocated point-colors array (RGB or RGBA), 3
+     * or 4 points will be read from p.
+     * The color array must be allocated before calling this method.
+     *
+     * @param id point index
+     * @param c color
+     *
+     * @throw ::fwData::Exception
+     */
+    FWCOMED_API void setPointColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4]);
 
-     /**
-      * @brief Set a cell color.
-      *
-      * Depending on the type of allocated cell-colors array (RGB or RGBA), 3 or
-      * 4 points will be read from p.
-      * The color array must be allocated before calling this method.
-      *
-      * @param id cell index
-      * @param c color
-      *
-      * @throw ::fwData::Exception
-      */
-     FWCOMED_API void setCellColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4]);
+    /**
+     * @brief Set a cell color.
+     *
+     * Depending on the type of allocated cell-colors array (RGB or RGBA), 3 or
+     * 4 points will be read from p.
+     * The color array must be allocated before calling this method.
+     *
+     * @param id cell index
+     * @param c color
+     *
+     * @throw ::fwData::Exception
+     */
+    FWCOMED_API void setCellColor(::fwData::Mesh::Id id, const ::fwData::Mesh::ColorValueType c[4]);
 
-     /**
-      * @brief Set a point normal.
-      *
-      * The normal array must be allocated before calling this method.
-      *
-      * @param id point index
-      * @param n normal
-      *
-      * @throw ::fwData::Exception
-      */
-     FWCOMED_API void setPointNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3]);
+    /**
+     * @brief Set a point normal.
+     *
+     * The normal array must be allocated before calling this method.
+     *
+     * @param id point index
+     * @param n normal
+     *
+     * @throw ::fwData::Exception
+     */
+    FWCOMED_API void setPointNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3]);
 
-     /**
-      * @brief Set a cell normal.
-      *
-      * The normal array must be allocated before calling this method.
-      *
-      * @param id cell index
-      * @param n normal
-      *
-      * @throw ::fwData::Exception
-      */
-     FWCOMED_API void setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3]);
+    /**
+     * @brief Set a cell normal.
+     *
+     * The normal array must be allocated before calling this method.
+     *
+     * @param id cell index
+     * @param n normal
+     *
+     * @throw ::fwData::Exception
+     */
+    FWCOMED_API void setCellNormal(::fwData::Mesh::Id id, const ::fwData::Mesh::NormalValueType n[3]);
 
-     /**
-      * @brief Set a point texCoord.
-      *
-      * The texCoord array must be allocated before calling this method.
-      *
-      * @param id point index
-      * @param t texCoord
-      *
-      * @throw ::fwData::Exception
-      */
-     FWCOMED_API void setPointTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2]);
+    /**
+     * @brief Set a point texCoord.
+     *
+     * The texCoord array must be allocated before calling this method.
+     *
+     * @param id point index
+     * @param t texCoord
+     *
+     * @throw ::fwData::Exception
+     */
+    FWCOMED_API void setPointTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2]);
 
-     /**
-      * @brief Set a cell texCoord.
-      *
-      * The texCoord array must be allocated before calling this method.
-      *
-      * @param id cell index
-      * @param t texCoord
-      *
-      * @throw ::fwData::Exception
-      */
-     FWCOMED_API void setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2]);
+    /**
+     * @brief Set a cell texCoord.
+     *
+     * The texCoord array must be allocated before calling this method.
+     *
+     * @param id cell index
+     * @param t texCoord
+     *
+     * @throw ::fwData::Exception
+     */
+    FWCOMED_API void setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoordValueType t[2]);
 
-     /**
-      * @brief Insert a cell into the mesh.
-      *
-      * Reallocates the mesh concerned arrays if needed.
-      *
-      * @return The id of the new cell
-      *
-      * @throw ::fwData::Exception
-      */
-     FWCOMED_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellTypesEnum type,
-                                                   const ::fwData::Mesh::CellValueType *cell,
-                                                   size_t nb ) throw(::fwData::Exception);
-     /**
-      * @brief Insert a cell into the mesh.
-      * @see insertNextCell
-      */
-     FWCOMED_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p)  throw(::fwData::Exception);
-     /**
-      * @brief Insert a cell into the mesh.
-      * @see insertNextCell
-      */
-     FWCOMED_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p1,
-                                                   ::fwData::Mesh::CellValueType p2 ) throw(::fwData::Exception);
-     /**
-      * @brief Insert a cell into the mesh.
-      * @see insertNextCell
-      */
-     FWCOMED_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p1,
-                                                   ::fwData::Mesh::CellValueType p2,
-                                                   ::fwData::Mesh::CellValueType p3 ) throw(::fwData::Exception);
-     /**
-      * @brief Insert a cell into the mesh.
-      * @see insertNextCell
-      */
-     FWCOMED_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p1,
-                                                   ::fwData::Mesh::CellValueType p2,
-                                                   ::fwData::Mesh::CellValueType p3,
-                                                   ::fwData::Mesh::CellValueType p4 ) throw(::fwData::Exception);
-     /**
-      * @brief Insert a cell into the mesh.
-      * @see insertNextCell
-      */
-     template <typename T> ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellTypesEnum type,
-                                                             const T &pointsBegin,
-                                                             const T &pointsEnd ) throw(::fwData::Exception);
+    /**
+     * @brief Insert a cell into the mesh.
+     *
+     * Reallocates the mesh concerned arrays if needed.
+     *
+     * @return The id of the new cell
+     *
+     * @throw ::fwData::Exception
+     */
+    FWCOMED_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellTypesEnum type,
+                                                  const ::fwData::Mesh::CellValueType *cell,
+                                                  size_t nb ) throw(::fwData::Exception);
+    /**
+     * @brief Insert a cell into the mesh.
+     * @see insertNextCell
+     */
+    FWCOMED_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p)  throw(::fwData::Exception);
+    /**
+     * @brief Insert a cell into the mesh.
+     * @see insertNextCell
+     */
+    FWCOMED_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p1,
+                                                  ::fwData::Mesh::CellValueType p2 ) throw(::fwData::Exception);
+    /**
+     * @brief Insert a cell into the mesh.
+     * @see insertNextCell
+     */
+    FWCOMED_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p1,
+                                                  ::fwData::Mesh::CellValueType p2,
+                                                  ::fwData::Mesh::CellValueType p3 ) throw(::fwData::Exception);
+    /**
+     * @brief Insert a cell into the mesh.
+     * @see insertNextCell
+     */
+    FWCOMED_API ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellValueType p1,
+                                                  ::fwData::Mesh::CellValueType p2,
+                                                  ::fwData::Mesh::CellValueType p3,
+                                                  ::fwData::Mesh::CellValueType p4 ) throw(::fwData::Exception);
+    /**
+     * @brief Insert a cell into the mesh.
+     * @see insertNextCell
+     */
+    template <typename T> ::fwData::Mesh::Id insertNextCell(::fwData::Mesh::CellTypesEnum type,
+                                                            const T &pointsBegin,
+                                                            const T &pointsEnd ) throw(::fwData::Exception);
 
 
 
-     /// Returns the internal corresponding array as a boost::multi_array_ref
-     FWCOMED_API ::fwData::Mesh::PointsMultiArrayType          getPoints() const;
-     /// Returns the internal corresponding array as a boost::multi_array_ref
-     FWCOMED_API ::fwData::Mesh::CellTypesMultiArrayType       getCellTypes() const;
-     /// Returns the internal corresponding array as a boost::multi_array_ref
-     FWCOMED_API ::fwData::Mesh::CellDataMultiArrayType        getCellData() const;
-     /// Returns the internal corresponding array as a boost::multi_array_ref
-     FWCOMED_API ::fwData::Mesh::CellDataOffsetsMultiArrayType getCellDataOffsets() const;
-     /// Returns the internal corresponding array as a boost::multi_array_ref
-     FWCOMED_API ::fwData::Mesh::PointColorsMultiArrayType     getPointColors() const;
-     /// Returns the internal corresponding array as a boost::multi_array_ref
-     FWCOMED_API ::fwData::Mesh::CellColorsMultiArrayType      getCellColors() const;
-     /// Returns the internal corresponding array as a boost::multi_array_ref
-     FWCOMED_API ::fwData::Mesh::PointNormalsMultiArrayType    getPointNormals() const;
-     /// Returns the internal corresponding array as a boost::multi_array_ref
-     FWCOMED_API ::fwData::Mesh::CellNormalsMultiArrayType     getCellNormals() const;
-     /// Returns the internal corresponding array as a boost::multi_array_ref
-     FWCOMED_API ::fwData::Mesh::PointTexCoordsMultiArrayType  getPointTexCoords() const;
-     /// Returns the internal corresponding array as a boost::multi_array_ref
-     FWCOMED_API ::fwData::Mesh::CellTexCoordsMultiArrayType   getCellTexCoords() const;
+    /// Returns the internal corresponding array as a boost::multi_array_ref
+    FWCOMED_API ::fwData::Mesh::PointsMultiArrayType          getPoints() const;
+    /// Returns the internal corresponding array as a boost::multi_array_ref
+    FWCOMED_API ::fwData::Mesh::CellTypesMultiArrayType       getCellTypes() const;
+    /// Returns the internal corresponding array as a boost::multi_array_ref
+    FWCOMED_API ::fwData::Mesh::CellDataMultiArrayType        getCellData() const;
+    /// Returns the internal corresponding array as a boost::multi_array_ref
+    FWCOMED_API ::fwData::Mesh::CellDataOffsetsMultiArrayType getCellDataOffsets() const;
+    /// Returns the internal corresponding array as a boost::multi_array_ref
+    FWCOMED_API ::fwData::Mesh::PointColorsMultiArrayType     getPointColors() const;
+    /// Returns the internal corresponding array as a boost::multi_array_ref
+    FWCOMED_API ::fwData::Mesh::CellColorsMultiArrayType      getCellColors() const;
+    /// Returns the internal corresponding array as a boost::multi_array_ref
+    FWCOMED_API ::fwData::Mesh::PointNormalsMultiArrayType    getPointNormals() const;
+    /// Returns the internal corresponding array as a boost::multi_array_ref
+    FWCOMED_API ::fwData::Mesh::CellNormalsMultiArrayType     getCellNormals() const;
+    /// Returns the internal corresponding array as a boost::multi_array_ref
+    FWCOMED_API ::fwData::Mesh::PointTexCoordsMultiArrayType  getPointTexCoords() const;
+    /// Returns the internal corresponding array as a boost::multi_array_ref
+    FWCOMED_API ::fwData::Mesh::CellTexCoordsMultiArrayType   getCellTexCoords() const;
 
-     /// Returns the internal ::fwData::Mesh
-     FWCOMED_API ::fwData::Mesh::csptr getMesh() const;
+    /// Returns the internal ::fwData::Mesh
+    FWCOMED_API ::fwData::Mesh::csptr getMesh() const;
 
-     /*!
-      * @brief Return true if the mesh is closed.
-      * The result is computed for each call.
-      */
-     FWCOMED_API bool isClosed();
+    /*!
+     * @brief Return true if the mesh is closed.
+     * The result is computed for each call.
+     */
+    FWCOMED_API bool isClosed();
 
 protected:
 
@@ -256,4 +256,4 @@ protected:
 
 } // namespace fwData
 
-#endif // _FWCOMED_HELPER_MESH_HPP_
+#endif // __FWCOMED_HELPER_MESH_HPP__

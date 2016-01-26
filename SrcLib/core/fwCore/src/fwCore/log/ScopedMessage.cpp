@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,8 @@ ScopedMessage::ScopedMessage( const char * _file, int _line, std::string enterMe
 ScopedMessage::~ScopedMessage()
 {
     std::stringstream oslStr;
-    oslStr << "[LEAVING SCOPE] "<<  m_baseMsg << "'leavemessage':'" << m_leave <<"','elapsed':"<<  m_timer.getElapsedTimeInMilliSec() << "}";
+    oslStr << "[LEAVING SCOPE] "<<  m_baseMsg << "'leavemessage':'" << m_leave <<"','elapsed':"<<
+        m_timer.getElapsedTimeInMilliSec() << "}";
     SpyLogger::getSpyLogger().trace(oslStr.str(), m_file, m_line);
 }
 

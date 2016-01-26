@@ -1,36 +1,36 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
 
-#include <fwData/Integer.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/TransferFunctionMsg.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <vtkRenderWindowInteractor.h>
-#include <vtkInteractorStyleImage.h>
-#include <vtkCommand.h>
+#include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
 
-#include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
-#include <fwServices/IEditionService.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor, ::fwData::Image ) ;
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <vtkCommand.h>
+#include <vtkInteractorStyleImage.h>
+#include <vtkRenderWindowInteractor.h>
+
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoWindowingInteractor,
+                         ::fwData::Image );
 
 
 #define START_WINDOWING_EVENT vtkCommand::RightButtonPressEvent
@@ -43,12 +43,18 @@ class NegatoWindowingCallback : public vtkCommand
 {
 public:
     static NegatoWindowingCallback *New()
-    { return new NegatoWindowingCallback(); }
-
-    NegatoWindowingCallback() : m_picker(NULL), m_x(0), m_y(0), m_mouseMoveObserved(false)
     {
-        m_windowStep = 1. ;
-        m_levelStep  = 1. ;
+        return new NegatoWindowingCallback();
+    }
+
+    NegatoWindowingCallback() :
+        m_picker(nullptr),
+        m_x(0),
+        m_y(0),
+        m_windowStep(1.),
+        m_levelStep(1.),
+        m_mouseMoveObserved(false)
+    {
         this->PassiveObserverOff();
     }
 
@@ -73,7 +79,7 @@ public:
                 display[1] = m_y;
                 display[2] = 0;
 
-                if ( m_picker->Pick( display , m_adaptor->getRenderer() ) )
+                if ( m_picker->Pick( display, m_adaptor->getRenderer() ) )
                 {
                     assert(!m_mouseMoveObserved);
                     m_adaptor->startWindowing();
@@ -104,8 +110,8 @@ public:
                 int x,y;
                 m_adaptor->getInteractor()->GetEventPosition(x,y);
 
-                double dx = m_windowStep * ( x - m_x ) ;
-                double dy = m_levelStep  * ( m_y - y ) ;
+                double dx = m_windowStep * ( x - m_x );
+                double dy = m_levelStep  * ( m_y - y );
 
                 m_adaptor->updateWindowing(dx, dy);
                 m_adaptor->update();
@@ -114,8 +120,8 @@ public:
         else if (m_adaptor->getInteractor()->GetShiftKey())
         {
             vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
-            char *keySym = rwi->GetKeySym();
-            if(keySym != NULL)
+            char *keySym                   = rwi->GetKeySym();
+            if(keySym != nullptr)
             {
                 if (std::string(keySym) == "R")
                 {
@@ -135,7 +141,7 @@ public:
         m_picker = picker;
     }
 
-protected :
+protected:
     NegatoWindowingInteractor::sptr m_adaptor;
     vtkAbstractPropPicker *m_picker;
 
@@ -151,30 +157,27 @@ protected :
 
 //------------------------------------------------------------------------------
 
-NegatoWindowingInteractor::NegatoWindowingInteractor() throw()
+NegatoWindowingInteractor::NegatoWindowingInteractor() throw() :
+    m_vtkObserver(nullptr),
+    m_initialWindow(0.),
+    m_initialLevel(0.),
+    m_priority(.6)
 {
-    m_priority = .6;
-    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
 }
 
 //------------------------------------------------------------------------------
 
 NegatoWindowingInteractor::~NegatoWindowingInteractor() throw()
 {
-
-
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoWindowingInteractor::configuring() throw(fwTools::Failed)
+void NegatoWindowingInteractor::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
     SLM_ASSERT("Tag config is required", m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
 
     this->parseTFConfig( m_configuration );
 }
@@ -191,7 +194,7 @@ void NegatoWindowingInteractor::doStart() throw(fwTools::Failed)
 
     this->getInteractor()->AddObserver(START_WINDOWING_EVENT, m_vtkObserver, m_priority);
     this->getInteractor()->AddObserver(STOP_WINDOWING_EVENT, m_vtkObserver, m_priority);
-    this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent  , m_vtkObserver, m_priority);
+    this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent, m_vtkObserver, m_priority);
 
     this->doUpdate();
 }
@@ -202,7 +205,7 @@ void NegatoWindowingInteractor::doUpdate() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
-    this->updateTransferFunction(image, this->getSptr());
+    this->updateTransferFunction(image);
 }
 
 //------------------------------------------------------------------------------
@@ -217,28 +220,12 @@ void NegatoWindowingInteractor::doSwap() throw(fwTools::Failed)
 
 void NegatoWindowingInteractor::doStop() throw(fwTools::Failed)
 {
-    this->getInteractor()->RemoveObservers(START_WINDOWING_EVENT  , m_vtkObserver);
+    this->getInteractor()->RemoveObservers(START_WINDOWING_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_WINDOWING_EVENT, m_vtkObserver);
-    this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent  , m_vtkObserver);
+    this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent, m_vtkObserver);
     m_vtkObserver->Delete();
-    m_vtkObserver = NULL;
+    m_vtkObserver = nullptr;
     this->removeAllPropFromRenderer();
-}
-
-//------------------------------------------------------------------------------
-
-void NegatoWindowingInteractor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-
-    if (imageIsValid)
-    {
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-        {
-            doUpdate();
-        }
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -248,43 +235,74 @@ void NegatoWindowingInteractor::startWindowing( )
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->doUpdate();
 
-    m_initialLevel = this->getLevel();
+    m_initialLevel  = this->getLevel();
     m_initialWindow = this->getWindow();
 }
 
 //------------------------------------------------------------------------------
 
 void NegatoWindowingInteractor::stopWindowing( )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void NegatoWindowingInteractor::updateWindowing( double dw, double dl )
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     double newWindow = m_initialWindow + dw;
     double newLevel  = m_initialLevel - dl;
 
-    this->setWindow( newWindow );
-    this->setLevel( newLevel );
-    this->notifyTFWindowing( this->getSptr() );
+    tf->setWindow( newWindow );
+    tf->setLevel( newLevel );
+
+    auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
+        ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+        sig->asyncEmit( newWindow, newLevel);
+    }
 
     this->setVtkPipelineModified();
 }
+
+//------------------------------------------------------------------------------
 
 void NegatoWindowingInteractor::resetWindowing()
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+
     double newWindow = image->getWindowWidth();
     double newLevel  = image->getWindowCenter();
 
-    this->setWindow( newWindow );
-    this->setLevel( newLevel );
-    this->notifyTFWindowing( this->getSptr() );
+    tf->setWindow( newWindow );
+    tf->setLevel( newLevel );
+
+    auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
+        ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+        sig->asyncEmit( newWindow, newLevel);
+    }
 
     this->setVtkPipelineModified();
 }
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType NegatoWindowingInteractor::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 
 } //namespace visuVTKAdaptor

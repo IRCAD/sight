@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ namespace registry
 
 typedef std::string KeyType;
 
-typedef ::fwCore::util::FactoryRegistry< SPTR(::fwAtomsFilter::IFilter) () , KeyType > Type;
+typedef ::fwCore::util::FactoryRegistry< SPTR(::fwAtomsFilter::IFilter) (), KeyType > Type;
 
 FWATOMSFILTER_API SPTR(Type) get();
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_SELECTORDIALOG_HPP_
-#define _FWGUI_SELECTORDIALOG_HPP_
+#ifndef __FWGUI_DIALOG_SELECTORDIALOG_HPP__
+#define __FWGUI_DIALOG_SELECTORDIALOG_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -19,18 +19,16 @@ namespace dialog
 /**
  * @brief   SelectorDialog allows the choice of an element among several (_selections)
  * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
- * The specific implementation are in fwWX and fwQT libraries
+ * The specific implementation are in fwGuiWX and fwGuiQT libraries
  * @class   SelectorDialog
- * 
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API SelectorDialog : public ISelectorDialog
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog), (()), new SelectorDialog );
+    fwCoreClassDefinitionsWithFactoryMacro( (SelectorDialog)(::fwGui::dialog::ISelectorDialog), (()),
+                                            new SelectorDialog );
 
     /**
      * Opens a default selector with the specified title, message and choices.
@@ -40,10 +38,14 @@ public:
      * @param _selections list of choices in the selector
      * @return Returns selected choice
      */
-    FWGUI_API static std::string showSelectorDialog(const std::string& title, const std::string& message, std::vector< std::string > _selections);
+    FWGUI_API static std::string showSelectorDialog(const std::string& title, const std::string& message,
+                                                    std::vector< std::string > _selections);
 
     /// will instanciate the concrete implementation
     FWGUI_API SelectorDialog();
+
+    /// Called by the constructor in the GUI thread.
+    FWGUI_API void create();
 
     /**
      * Constructor. Create a selector with the specified title, message and choices.
@@ -52,7 +54,8 @@ public:
      * @param message Message of the selector
      * @param _selections list of choices in the selector
      */
-    FWGUI_API SelectorDialog(const std::string& title, const std::string& message, std::vector< std::string > _selections);
+    FWGUI_API SelectorDialog(const std::string& title, const std::string& message,
+                             std::vector< std::string > _selections);
 
     /// Sets the selector title.
     FWGUI_API void setTitle(std::string title);
@@ -66,7 +69,7 @@ public:
     /// Set the message
     FWGUI_API virtual void setMessage(const std::string &msg);
 
-protected :
+protected:
 
     ::fwGui::dialog::ISelectorDialog::sptr m_implementation;
 
@@ -75,6 +78,6 @@ protected :
 } //namespace dialog
 } // namespace fwGui
 
-#endif /*_FWGUI_SELECTORDIALOG_HPP_*/
+#endif /*__FWGUI_DIALOG_SELECTORDIALOG_HPP__*/
 
 

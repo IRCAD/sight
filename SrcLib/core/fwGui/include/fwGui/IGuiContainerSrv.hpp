@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IGUICONTAINERSRV_HPP_
-#define _FWGUI_IGUICONTAINERSRV_HPP_
+#ifndef __FWGUI_IGUICONTAINERSRV_HPP__
+#define __FWGUI_IGUICONTAINERSRV_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -23,26 +23,26 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing the layout.
  * @class   IGuiContainerSrv
- * 
+ *
  * @date    2009-2010.
  *
  */
 class FWGUI_CLASS_API IGuiContainerSrv : public ::fwServices::IService
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IGuiContainerSrv)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IGuiContainerSrv)(::fwServices::IService) );
 
     FWGUI_API ::fwGui::container::fwContainer::sptr getContainer();
 
     FWGUI_API void setParent(std::string wid);
 
-protected :
+protected:
 
-    FWGUI_API IGuiContainerSrv() ;
+    FWGUI_API IGuiContainerSrv();
 
-    FWGUI_API virtual ~IGuiContainerSrv() ;
+    FWGUI_API virtual ~IGuiContainerSrv();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -51,7 +51,7 @@ protected :
      *
      * Example of configuration
      * @verbatim
-        <service uid="subView1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+        <service uid="subView1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -69,7 +69,7 @@ protected :
                 <view sid="subView5" />
             </registry>
         </service>
-      @endverbatim
+       @endverbatim
      *  - \<layout type="::fwGui::LineLayoutManager" \> : give the type of layout.
      *    - \b type {::fwGui::LineLayoutManager |::fwGui::CardinalLayoutManager |::fwGui::TabLayoutManager |::fwGui::ToolboxLayoutManager} :
      *     - \b ::fwGui::LineLayoutManager : all views will be on the same line or column (it depends of the orientation value attribute)
@@ -110,9 +110,9 @@ private:
     bool m_viewLayoutManagerIsCreated;
     ::fwGui::layoutManager::IViewLayoutManager::sptr m_viewLayoutManager;
 
-    ::fwGui::registrar::ViewRegistrar::sptr    m_viewRegistrar;
-    ::fwGui::builder::IToolBarBuilder::sptr    m_toolBarBuilder;
-    ::fwGui::builder::IContainerBuilder::sptr  m_containerBuilder;
+    ::fwGui::registrar::ViewRegistrar::sptr m_viewRegistrar;
+    ::fwGui::builder::IToolBarBuilder::sptr m_toolBarBuilder;
+    ::fwGui::builder::IContainerBuilder::sptr m_containerBuilder;
 
     ConfigurationType m_viewRegistrarConfig;
     ConfigurationType m_viewLayoutConfig;
@@ -123,6 +123,6 @@ private:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_IGUICONTAINERSRV_HPP_*/
+#endif /*__FWGUI_IGUICONTAINERSRV_HPP__*/
 
 

@@ -1,17 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <ctime>
+#include "fwTest/generator/Image.hpp"
 
 #include <fwTools/Type.hpp>
 #include <fwTools/NumericRoundCast.hxx>
 
 #include <fwComEd/helper/Array.hpp>
 
-#include "fwTest/generator/Image.hpp"
+#include <ctime>
 
 
 namespace fwTest
@@ -86,7 +86,7 @@ void Image::randomizeArray(::fwData::Array::sptr array)
     ::fwComEd::helper::Array helper(array);
     char *iter = helper.begin< char >();
 
-    for (; iter != helper.end< char >() ; ++iter)
+    for (; iter != helper.end< char >(); ++iter)
     {
         *iter = rand()%256;
     }

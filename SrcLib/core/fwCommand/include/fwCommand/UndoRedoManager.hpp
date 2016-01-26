@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWFWCOMMAND_UNDOREDOMANAGER_HPP_
-#define _FWFWCOMMAND_UNDOREDOMANAGER_HPP_
+#ifndef __FWCOMMAND_UNDOREDOMANAGER_HPP__
+#define __FWCOMMAND_UNDOREDOMANAGER_HPP__
 
 #include <deque>
 
 #include <boost/signals2/signal.hpp>
 #include <boost/signals2/connection.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/cstdint.hpp>
 
 #include <fwTools/Object.hpp>
@@ -34,9 +33,10 @@ class FWCOMMAND_CLASS_API UndoRedoManager : public ::fwTools::Object
 {
 public:
     typedef ::boost::signals2::signal<void (std::string)>  SignalType;
-    typedef ::boost::signals2::connection                  ConnectionType;
+    typedef ::boost::signals2::connection ConnectionType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (UndoRedoManager)(::fwTools::Object), (( )), ::boost::make_shared< UndoRedoManager > );
+    fwCoreClassDefinitionsWithFactoryMacro( (UndoRedoManager)(::fwTools::Object), (( )),
+                                            std::make_shared< UndoRedoManager > );
 
     /// Return the unique Instance, create it if required at first access
     FWCOMMAND_API static UndoRedoManager::sptr getDefault();
@@ -144,12 +144,12 @@ protected:
     Manager::sptr m_currentManager;
 
 
-private :
-    SignalType  m_sig;
+private:
+    SignalType m_sig;
 };
 
 
 } // namespace fwCommand
 
 
-#endif //#ifndef _FWCOMMAND_MANAGER_HPP_
+#endif // __FWCOMMAND_UNDOREDOMANAGER_HPP__

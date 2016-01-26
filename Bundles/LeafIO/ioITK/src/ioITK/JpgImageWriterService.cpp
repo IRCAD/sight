@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,17 +29,19 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioITK::JpgImageWriterService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioITK::JpgImageWriterService, ::fwData::Image );
 
 //------------------------------------------------------------------------------
 
 JpgImageWriterService::JpgImageWriterService() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 JpgImageWriterService::~JpgImageWriterService() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -61,7 +63,7 @@ void JpgImageWriterService::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr  result;
+    ::fwData::location::Folder::sptr result;
     result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
@@ -120,14 +122,14 @@ void JpgImageWriterService::saveImage(const ::boost::filesystem::path& imgPath, 
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                ss.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                                                          ss.str(),
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                                "Warning during saving",
-                                ::fwGui::dialog::IMessageDialog::WARNING);
+                                                          "Warning during saving",
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 

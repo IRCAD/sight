@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRENDERVTK_IVTKRENDERWINDOWINTERACTORMANAGER_HPP_
-#define _FWRENDERVTK_IVTKRENDERWINDOWINTERACTORMANAGER_HPP_
+#ifndef __FWRENDERVTK_IVTKRENDERWINDOWINTERACTORMANAGER_HPP__
+#define __FWRENDERVTK_IVTKRENDERWINDOWINTERACTORMANAGER_HPP__
 
 #include <string>
 #include <fwServices/IService.hpp>
@@ -26,9 +26,6 @@ namespace fwRenderVTK
 /**
  * @brief   Defines a class to manage vtkRenderWindowInteractor in a window.
  * @class   IVtkRenderWindowInteractorManager
- * 
- * @date    2009-2010.
- *
  */
 class FWRENDERVTK_CLASS_API IVtkRenderWindowInteractorManager : public ::fwCore::BaseObject
 {
@@ -77,7 +74,10 @@ public:
     /// Return a pointer on interactor
     FWRENDERVTK_API virtual ::vtkRenderWindowInteractor * getInteractor() = 0;
 
-    virtual void setRenderService(::fwServices::IService::sptr srv){m_renderService = srv;}
+    virtual void setRenderService(::fwServices::IService::sptr srv)
+    {
+        m_renderService = srv;
+    }
 
 
 protected:
@@ -86,6 +86,6 @@ protected:
 
 } // namespace fwRenderVTK
 
-#endif // _FWRENDERVTK_IVTKRENDERWINDOWINTERACTORMANAGER_HPP_
+#endif // __FWRENDERVTK_IVTKRENDERWINDOWINTERACTORMANAGER_HPP__
 
 

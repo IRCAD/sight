@@ -1,8 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__
+#define __FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__
 
 /**
  * @file fwGui/layoutManager/IFrameLayoutManager.hpp
@@ -11,9 +14,6 @@
  *
  * @date 2009-2010
  */
-
-#ifndef _FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGERB_HPP_
-#define _FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGERB_HPP_
 
 #include <list>
 
@@ -55,53 +55,54 @@ public:
         DEFAULT,
         STAY_ON_TOP,
         MODAL
-     } Style;
+    } Style;
 
-     typedef std::string RegistryKeyType;
+    typedef std::string RegistryKeyType;
 
-     static const std::string SOFTWARE_UI;
-     static const std::string FRAME_STATE_UI;
-     static const std::string FRAME_SIZE_W_UI;
-     static const std::string FRAME_SIZE_H_UI;
-     static const std::string FRAME_POSITION_X_UI;
-     static const std::string FRAME_POSITION_Y_UI;
+    static const std::string SOFTWARE_UI;
+    static const std::string FRAME_STATE_UI;
+    static const std::string FRAME_SIZE_W_UI;
+    static const std::string FRAME_SIZE_H_UI;
+    static const std::string FRAME_POSITION_X_UI;
+    static const std::string FRAME_POSITION_Y_UI;
 
-     typedef enum
-     {
-         UNKNOWN,    ///< the unknown state
-         ICONIZED,   ///< the minimized state
-         MAXIMIZED,  ///< the maximied state
-         FULL_SCREEN ///< the full screen state
-     } FrameState;
+    typedef enum
+    {
+        UNKNOWN,     ///< the unknown state
+        ICONIZED,    ///< the minimized state
+        MAXIMIZED,   ///< the maximied state
+        FULL_SCREEN  ///< the full screen state
+    } FrameState;
 
-     class FrameInfo
-     {
-     public :
+    class FrameInfo
+    {
+    public:
 
-         FrameInfo() :
-             m_name (""),
-             m_minSize (std::make_pair(-1,-1)),
-             m_style (DEFAULT),
-             m_size (std::make_pair(-1,-1)),
-             m_position (std::make_pair(-1,-1)),
-             m_state(UNKNOWN)
-         {}
+        FrameInfo() :
+            m_name (""),
+            m_minSize (std::make_pair(-1,-1)),
+            m_style (DEFAULT),
+            m_size (std::make_pair(-1,-1)),
+            m_position (std::make_pair(-1,-1)),
+            m_state(UNKNOWN)
+        {
+        }
 
-         /// Frame name.
-         std::string                      m_name ;
-         /// Frame icon.
-         ::boost::filesystem::path        m_iconPath;
-         /// Frame minimum size (min width and min height)
-         std::pair< int, int >            m_minSize;
-         /// Frame style
-         Style                            m_style;
-         /// Frame size
-         std::pair< int, int >            m_size;
-         /// Frame position
-         std::pair< int, int >            m_position;
-         /// Frame state (maximize, minized, full screen)
-         FrameState                       m_state;
-     };
+        /// Frame name.
+        std::string m_name;
+        /// Frame icon.
+        ::boost::filesystem::path m_iconPath;
+        /// Frame minimum size (min width and min height)
+        std::pair< int, int >            m_minSize;
+        /// Frame style
+        Style m_style;
+        /// Frame size
+        std::pair< int, int >            m_size;
+        /// Frame position
+        std::pair< int, int >            m_position;
+        /// Frame state (maximize, minized, full screen)
+        FrameState m_state;
+    };
 
     /// Constructor. Do nothing.
     FWGUI_API IFrameLayoutManager();
@@ -127,18 +128,42 @@ public:
     FWGUI_API virtual void destroyFrame() = 0;
 
     /// Return the frame container
-    virtual ::fwGui::container::fwContainer::sptr getFrame(){ return m_frame;};
+    virtual ::fwGui::container::fwContainer::sptr getFrame()
+    {
+        return m_frame;
+    }
 
     /// Return the first container into the frame
-    virtual ::fwGui::container::fwContainer::sptr getContainer(){ return m_container;};
+    virtual ::fwGui::container::fwContainer::sptr getContainer()
+    {
+        return m_container;
+    }
 
 
     typedef ::boost::function0< void > CloseCallback;
     FWGUI_API virtual void setCloseCallback(CloseCallback fct);
 
+
 protected:
 
-    fwGettersSettersDocMacro(FrameInfo, frameInfo, FrameInfo, configuration definition.);
+    /**
+     * @brief Configuration definition.
+     * @{ */
+    const FrameInfo& getFrameInfo() const
+    {
+        return m_frameInfo;
+    }
+
+    FrameInfo& getRefFrameInfo()
+    {
+        return m_frameInfo;
+    }
+
+    void setFrameInfo(const FrameInfo& frameInfo)
+    {
+        m_frameInfo = frameInfo;
+    }
+    /**  @} */
 
     ::fwGui::container::fwContainer::sptr m_frame;
     ::fwGui::container::fwContainer::sptr m_container;
@@ -156,13 +181,13 @@ private:
     void defaultCloseCallback();
 
     /// Save frame configuration definition
-    FrameInfo  m_frameInfo;
+    FrameInfo m_frameInfo;
 
 };
 
 } // namespace layoutManager
 } // namespace fwGui
 
-#endif /*_FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGERB_HPP_*/
+#endif /*__FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__*/
 
 

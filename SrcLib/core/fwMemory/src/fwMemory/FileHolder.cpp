@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwCore/spyLog.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -17,7 +16,8 @@ namespace fwMemory
 struct FileAutoDelete
 {
     FileAutoDelete(const ::boost::filesystem::path &file) : m_path(file)
-    { }
+    {
+    }
 
     ~FileAutoDelete()
     {
@@ -35,12 +35,12 @@ struct FileAutoDelete
 
 //-----------------------------------------------------------------------------
 
-FileHolder::FileHolder(const ::boost::filesystem::path &file, bool autodelete):
+FileHolder::FileHolder(const ::boost::filesystem::path &file, bool autodelete) :
     m_path(file)
 {
     if (autodelete)
     {
-        m_autoDelete = ::boost::make_shared< FileAutoDelete >( file );
+        m_autoDelete = std::make_shared< FileAutoDelete >( file );
     }
 }
 

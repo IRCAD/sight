@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,17 @@
 #ifndef __GUI_ACTION_SSIGNAL_HPP__
 #define __GUI_ACTION_SSIGNAL_HPP__
 
-#include <vector>
-
-#include <fwCom/Slots.hpp>
-
-#include <fwServices/IService.hpp>
-
-#include <fwGui/IActionSrv.hpp>
+#include "gui/config.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
+#include <fwCom/Slots.hpp>
 
-#include "gui/export.hpp"
+#include <fwGui/IActionSrv.hpp>
+
+#include <fwServices/IService.hpp>
+
+#include <vector>
 
 namespace gui
 {
@@ -27,7 +26,6 @@ namespace action
 
 /**
  * @brief   Simple Signal service
- * @class   SSignal
  *
  * Triggers a signal when the action is triggered.
  * If the action uses a confirmation, different signals are emitted depending on the confirmation result.
@@ -36,18 +34,18 @@ namespace action
 class GUI_CLASS_API SSignal : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
     typedef std::vector< ::fwData::Object::sptr > ObjectVectorType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SSignal)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSignal)(::fwGui::IActionSrv) );
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     /// Type of triggered signal
     typedef ::fwCom::Signal< void (ObjectVectorType) > TrigerredSignalType;
 
     /// Type of setObject slot
-    typedef ::fwCom::Slot< void( ObjectVectorType ) >  SetObjectsSlotType;
+    typedef ::fwCom::Slot< void ( ObjectVectorType ) >  SetObjectsSlotType;
 
     /**
      * @brief Constructor. Do nothing.
@@ -64,24 +62,19 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream &_sstream ) ;
+    GUI_API virtual void info(std::ostream &_sstream );
 
     /**
      * @brief This method emit a signal.
      */
-    GUI_API void updating()throw (fwTools::Failed);
-
-    /**
-     * @brief Do nothing.
-     */
-    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    GUI_API void updating() throw (fwTools::Failed);
 
     /**
      * @brief Configures the service
      *
-     @verbatim
-     <service uid="..." type="::fwGui::IActionSrv" impl="::gui::action::SSignal" autoConnect="no" />
-     @endverbatim
+       @verbatim
+       <service uid="..." type="::fwGui::IActionSrv" impl="::gui::action::SSignal" autoConnect="no" />
+       @endverbatim
      *
      * See also ::fwGui::IActionSrv::configuring for more configuration parameters.
      * @see IActionSrv::configuring
@@ -95,7 +88,10 @@ protected:
     /**
      * @brief setObjects slot's method
      */
-    virtual void setObjects( ObjectVectorType objects ) { m_objects = objects; }
+    virtual void setObjects( ObjectVectorType objects )
+    {
+        m_objects = objects;
+    }
 
     ///Signal trigerred when action has been trigerred
     SPTR(TrigerredSignalType) m_sigTriggered;

@@ -1,67 +1,51 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKAdaptor/Image.hpp"
+#include "visuVTKAdaptor/ImagesBlend.hpp"
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Color.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/String.hpp>
+#include <fwData/TransferFunction.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwMath/Compare.hpp>
+#include <fwServices/Base.hpp>
+
+#include <fwVtkIO/vtk.hpp>
+
+#include <boost/foreach.hpp>
 #include <vtkImageBlend.h>
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 #include <vtkLookupTable.h>
 
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/Base.hpp>
-
-#include <fwData/Boolean.hpp>
-#include <fwData/Color.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/TransferFunction.hpp>
-
-#include <fwMath/Compare.hpp>
-
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/TransferFunctionMsg.hpp>
-#include <fwComEd/CompositeMsg.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <fwVtkIO/vtk.hpp>
-
-#include "visuVTKAdaptor/Image.hpp"
-#include "visuVTKAdaptor/ImagesBlend.hpp"
-
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
 
-
 //------------------------------------------------------------------------------
 
-ImagesBlend::ImagesBlend() throw()
+ImagesBlend::ImagesBlend() throw() : m_imageBlend(nullptr)
 {
-    SLM_TRACE_FUNC();
-
-    // Manage events
-    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER                     );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE                  );
-    //addNewHandledEvent( ::fwComEd::CompositeMsg::ADDED_KEYS           );
-    //addNewHandledEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS         );
-    //addNewHandledEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS         );
 }
 
 //------------------------------------------------------------------------------
 
 ImagesBlend::~ImagesBlend() throw()
 {
-    SLM_TRACE_FUNC();
-
-    m_imageBlend = NULL;
+    m_imageBlend = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -103,41 +87,7 @@ void ImagesBlend::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast(msg);
-    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
-
-    if (compositeMsg)
-    {
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS)
-                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS)
-                || compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
-        {
-            this->doUpdate();
-        }
-    }
-    else if (imageMsg)
-    {
-        SLM_ASSERT("msg subject is expired", !imageMsg->getSubject().expired() );
-        ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(imageMsg->getSubject().lock());
-
-        if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-        {
-            if (! ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image)
-                || m_registeredImages.find(image->getID()) == m_registeredImages.end())
-            {
-                this->doUpdate();
-            }
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ImagesBlend::configuring() throw(fwTools::Failed)
+void ImagesBlend::doConfigure() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
 
@@ -148,9 +98,9 @@ void ImagesBlend::configuring() throw(fwTools::Failed)
 
     std::vector< ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("image");
     SLM_ASSERT("Missing tag 'image' ", !configs.empty());
-    BOOST_FOREACH(::fwRuntime::ConfigurationElement::sptr element, configs)
+    for(::fwRuntime::ConfigurationElement::sptr element :  configs)
     {
-        SPTR(ImageInfo) info = ::boost::shared_ptr< ImageInfo >(new ImageInfo());
+        SPTR(ImageInfo) info = std::shared_ptr< ImageInfo >(new ImageInfo());
         SLM_ASSERT("Missing attribute 'objectId'", element->hasAttribute("objectId"));
         std::string objectId = element->getAttributeValue("objectId");
 
@@ -189,7 +139,7 @@ bool ImagesBlend::checkImageInformations()
 
     bool haveSameInfo = true;
 
-    BOOST_FOREACH(std::string id, m_imageIds)
+    for(std::string id :  m_imageIds)
     {
         if (composite->find(id) != composite->end())
         {
@@ -200,33 +150,41 @@ bool ImagesBlend::checkImageInformations()
             {
                 if (size.empty() && spacing.empty() && origin.empty())
                 {
-                    size = img->getSize();
+                    size    = img->getSize();
                     spacing = img->getSpacing();
-                    origin = img->getOrigin();
+                    origin  = img->getOrigin();
                 }
                 else
                 {
                     if (  size != img->getSize() ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(spacing, img->getSpacing()) ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(origin, img->getOrigin()) )
+                          !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(spacing,
+                                                                                            img->getSpacing()) ||
+                          !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(origin,
+                                                                                           img->getOrigin()) )
                     {
                         OSLM_ERROR("imgA size : " << size[0] << " / " << size[1] << " / "<< size[2] );
                         OSLM_ERROR("imgA spacing : " << spacing[0] << " / " << spacing[1] << " / "<< spacing[2] );
                         OSLM_ERROR("imgA origin : " << origin[0] << " / " << origin[1] << " / "<< origin[2] );
 
-                        OSLM_ERROR("imgB size : " << img->getSize()[0] << " / " << img->getSize()[1] << " / "<< img->getSize()[2] );
-                        OSLM_ERROR("imgB spacing : " << img->getSpacing()[0] << " / " << img->getSpacing()[1] << " / "<< img->getSpacing()[2] );
-                        OSLM_ERROR("imgB origin : " << img->getOrigin()[0] << " / " << img->getOrigin()[1] << " / "<< img->getOrigin()[2] );
+                        OSLM_ERROR(
+                            "imgB size : " << img->getSize()[0] << " / " << img->getSize()[1] << " / "<<
+                            img->getSize()[2] );
+                        OSLM_ERROR(
+                            "imgB spacing : " << img->getSpacing()[0] << " / " << img->getSpacing()[1] << " / "<<
+                            img->getSpacing()[2] );
+                        OSLM_ERROR(
+                            "imgB origin : " << img->getOrigin()[0] << " / " << img->getOrigin()[1] << " / "<<
+                            img->getOrigin()[2] );
 
                         haveSameInfo = false;
                         std::string errorMsg = "Warning : images in blend have not the same";
-                        errorMsg += (size != img->getSize())?" size":"";
-                        errorMsg += (spacing != img->getSpacing())?" spacing":"";
-                        errorMsg += (origin != img->getOrigin())?" origin":"";
+                        errorMsg += (size != img->getSize()) ? " size" : "";
+                        errorMsg += (spacing != img->getSpacing()) ? " spacing" : "";
+                        errorMsg += (origin != img->getOrigin()) ? " origin" : "";
                         errorMsg += ".\n Background image size, spacing and origin are use.";
                         ::fwGui::dialog::MessageDialog::showMessageDialog("Images blending",
-                                errorMsg,
-                                ::fwGui::dialog::MessageDialog::WARNING);
+                                                                          errorMsg,
+                                                                          ::fwGui::dialog::IMessageDialog::WARNING);
                         break;
                     }
                 }
@@ -245,7 +203,7 @@ void ImagesBlend::addImageAdaptors()
 
     this->checkImageInformations();
 
-    BOOST_FOREACH(std::string id, m_imageIds)
+    for(std::string id :  m_imageIds)
     {
         if (composite->find(id) != composite->end())
         {
@@ -253,7 +211,7 @@ void ImagesBlend::addImageAdaptors()
 
             SPTR(ImageInfo) info = m_imagesInfo[id];
 
-            SLM_ASSERT("Sorry, '" << id << "' is not an image", img);
+            SLM_ASSERT("No image with the id '" << id << "' found", img);
 
             if (info->m_connections)
             {
@@ -262,7 +220,8 @@ void ImagesBlend::addImageAdaptors()
             }
 
             info->m_connections = ::fwServices::helper::SigSlotConnection::New();
-            info->m_connections->connect(img, this->getSptr(), this->getObjSrvConnections());
+            info->m_connections->connect(img, ::fwData::Image::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+            info->m_connections->connect(img, ::fwData::Image::s_BUFFER_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
 
             bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
@@ -307,6 +266,18 @@ void ImagesBlend::removeImageAdaptors()
         }
     }
     this->unregisterServices();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ImagesBlend::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

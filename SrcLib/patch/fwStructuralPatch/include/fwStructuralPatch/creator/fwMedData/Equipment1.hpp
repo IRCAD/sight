@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ namespace fwMedData
 class FWSTRUCTURALPATCH_CLASS_API Equipment1 : public ::fwAtomsPatch::IStructuralCreator
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Equipment1)(::fwAtomsPatch::IStructuralCreator), (()), new Equipment1) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Equipment1)(::fwAtomsPatch::IStructuralCreator), (()), new Equipment1);
 
     /// Constructor
     FWSTRUCTURALPATCH_API Equipment1();

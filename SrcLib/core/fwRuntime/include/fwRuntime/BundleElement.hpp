@@ -1,19 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_BUNDLEELEMENT_HPP_
-#define _FWRUNTIME_BUNDLEELEMENT_HPP_
-
-#include <boost/shared_ptr.hpp>
+#ifndef __FWRUNTIME_BUNDLEELEMENT_HPP__
+#define __FWRUNTIME_BUNDLEELEMENT_HPP__
 
 #include "fwRuntime/config.hpp"
 
+#include <memory>
+
 namespace fwRuntime
 {
-    struct Bundle;
+struct Bundle;
 }
 
 
@@ -26,7 +26,7 @@ namespace fwRuntime
  * @brief   Implements the base class for all element managed by a bundle.
  * @struct  BundleElement
  * @date    2006-2009
- * 
+ *
  */
 struct BundleElement
 {
@@ -36,7 +36,7 @@ struct BundleElement
      *
      * @return  a pointer to a bundle instance
      */
-    FWRUNTIME_API ::boost::shared_ptr<Bundle> getBundle() const;
+    FWRUNTIME_API std::shared_ptr<Bundle> getBundle() const;
 
     /**
      * @brief   Tells if the element is enabled or not.
@@ -60,32 +60,32 @@ struct BundleElement
      */
     FWRUNTIME_API void setEnable(const bool enable);
 
-protected:
+    protected:
 
-    /**
-     * @brief   Constructor
-     *
-     * @remark  The instance will try to guess the bundle that is being loaded and
-     *          consider that bundle as its owning bundle
-     *
-     * @post    The bundle isn't null.
-     * @see     ::fwRuntime::Bundle::getLoadingBundle
-     */
-    BundleElement();
+        /**
+         * @brief   Constructor
+         *
+         * @remark  The instance will try to guess the bundle that is being loaded and
+         *          consider that bundle as its owning bundle
+         *
+         * @post    The bundle isn't null.
+         * @see     ::fwRuntime::Bundle::getLoadingBundle
+         */
+        BundleElement();
 
-    /**
-     * @brief       Constructor
-     *
-     * @post        The bundle isn't null.
-     * @param[in]   bundle  a shared pointer to the managing bundle
-     */
-    BundleElement( ::boost::shared_ptr< Bundle > bundle );
+        /**
+         * @brief       Constructor
+         *
+         * @post        The bundle isn't null.
+         * @param[in]   bundle  a shared pointer to the managing bundle
+         */
+        BundleElement( std::shared_ptr< Bundle > bundle );
 
 
-private:
+    private:
 
-     ::boost::shared_ptr< Bundle >  m_bundle;   ///< a shared pointer to the bundle managing the element
-    bool                            m_enable;   ///< to know if bundle element is enabled
+        std::shared_ptr< Bundle >  m_bundle;///< a shared pointer to the bundle managing the element
+        bool m_enable;                          ///< to know if bundle element is enabled
 
 };
 
@@ -95,4 +95,4 @@ private:
 
 
 
-#endif /*_FWRUNTIME_BUNDLEELEMENT_HPP_*/
+#endif /*__FWRUNTIME_BUNDLEELEMENT_HPP__*/

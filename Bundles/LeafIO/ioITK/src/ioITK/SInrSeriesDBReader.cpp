@@ -1,18 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include "ioITK/SInrSeriesDBReader.hpp"
 
-#include <fwTools/UUID.hpp>
-#include <fwTools/dateAndTime.hpp>
-
-#include <fwServices/Base.hpp>
-
-#include <io/IReader.hpp>
+#include <fwComEd/helper/SeriesDB.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -21,37 +15,43 @@
 #include <fwData/location/MultiFiles.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Equipment.hpp>
-
-#include <fwComEd/helper/SeriesDB.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwItkIO/ImageReader.hpp>
 
-#include "ioITK/SInrSeriesDBReader.hpp"
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Study.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/UUID.hpp>
+
+#include <io/IReader.hpp>
+
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioITK::SInrSeriesDBReader , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioITK::SInrSeriesDBReader, ::fwMedData::SeriesDB );
 
 //------------------------------------------------------------------------------
 
 SInrSeriesDBReader::SInrSeriesDBReader() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SInrSeriesDBReader::~SInrSeriesDBReader() throw()
-{}
+{
+}
 
 
 //------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ void SInrSeriesDBReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::MultiFiles::sptr  result;
+    ::fwData::location::MultiFiles::sptr result;
     result = ::fwData::location::MultiFiles::dynamicCast( dialogFile.show() );
     if (result)
     {
@@ -116,15 +116,15 @@ bool SInrSeriesDBReader::createImage( const ::boost::filesystem::path inrFile, :
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                ss.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                                                          ss.str(),
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Warning",
-                "Warning during loading",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                                                          "Warning during loading",
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
         ok = false;
     }
     return ok;
@@ -139,7 +139,7 @@ void SInrSeriesDBReader::updating() throw(::fwTools::Failed)
     if( this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >() ;
+        ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
         SLM_ASSERT("SeriesDB not instanced", seriesDB);
 
         ::fwMedData::SeriesDB::sptr localSeriesDB = ::fwMedData::SeriesDB::New();
@@ -149,7 +149,7 @@ void SInrSeriesDBReader::updating() throw(::fwTools::Failed)
 
         const std::string instanceUID = ::fwTools::UUID::generateUUID();
 
-        BOOST_FOREACH(const ::boost::filesystem::path &path, this->getFiles())
+        for(const ::boost::filesystem::path &path :  this->getFiles())
         {
             ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::New();
             this->initSeries(imgSeries, instanceUID);
@@ -165,7 +165,7 @@ void SInrSeriesDBReader::updating() throw(::fwTools::Failed)
 
         ::fwData::mt::ObjectWriteLock lock(seriesDB);
         sDBhelper.merge(localSeriesDB);
-        sDBhelper.notify(this->getSptr());
+        sDBhelper.notify();
 
         cursor.setDefaultCursor();
     }
@@ -173,7 +173,7 @@ void SInrSeriesDBReader::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void  SInrSeriesDBReader::initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
+void SInrSeriesDBReader::initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
 {
     const std::string unknown = "unknown";
     series->setModality("OT");

@@ -1,14 +1,14 @@
-<plugin id="TutoGui">
+<plugin id="TutoGui" version="@DASH_VERSION@" >
 
+    <requirement id="dataReg" />
     <requirement id="servicesReg" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>tutoGuiConfig</id>
-        <type>parameters</type>
         <config>
 
         <object type="::fwData::Image">
-           <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no" >
+           <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no" >
                 <gui>
                     <frame>
                         <name>TutoGui</name>
@@ -27,7 +27,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+            <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no" >
                 <gui>
                     <layout>
                         <menu name="My Menu"/>
@@ -41,9 +41,13 @@
                 </registry>
             </service>
 
-            <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
+            <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
                 <gui>
                     <layout>
+                        <menuItem name="start" icon="Bundles/TutoGui_0-1/icons/start.svg" />
+                        <menuItem name="pause" icon="Bundles/TutoGui_0-1/icons/pause.svg" />
+                        <menuItem name="stop"  icon="Bundles/TutoGui_0-1/icons/stop.svg" />
+                        <separator />
                         <menuItem name="My item 1" style="check" icon="Bundles/TutoGui_0-1/icons/important.png" />
                         <separator />
                         <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
@@ -54,10 +58,15 @@
                         <separator />
                         <menuItem name="start 2-3 / stop A-B" style="radio" icon="Bundles/TutoGui_0-1/icons/important.png" />
                         <menuItem name="start A-B / stop 2-3" style="radio" icon="Bundles/TutoGui_0-1/icons/important.png" />
+                        <spacer/>
+                        <menu name="Test Hide/Show" start="yes" />
                         <menuItem name="Quit" icon="Bundles/TutoGui_0-1/icons/unreadable.png"/>
                     </layout>
                 </gui>
                 <registry>
+                    <menuItem sid="start" start="yes" />
+                    <menuItem sid="pause" start="yes" />
+                    <menuItem sid="stop" start="yes" />
                     <menuItem sid="item1" start="yes" />
                     <menuItem sid="item2" start="no" />
                     <menuItem sid="item3" start="no" />
@@ -65,11 +74,28 @@
                     <menuItem sid="item5" start="no" />
                     <menuItem sid="item16" start="yes" />
                     <menuItem sid="item17" start="yes" />
+                    <menu sid="testHideShow" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
 
-            <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+            <service uid="testHideShow" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Play" icon="Bundles/TutoGui_0-1/icons/start.svg" />
+                        <menuItem name="Pause" icon="Bundles/TutoGui_0-1/icons/pause.svg" />
+                        <menuItem name="Stop" icon="Bundles/TutoGui_0-1/icons/stop.svg" />
+
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="start" start="no" />
+                    <menuItem sid="pause" start="no" />
+                    <menuItem sid="stop" start="no" />
+                </registry>
+            </service>
+
+            <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
                 <gui>
                     <layout>
                         <menuItem name="My item 1" shortcut="1" style="check" />
@@ -93,7 +119,7 @@
                 </registry>
             </service>
 
-            <service uid="myMenu2" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+            <service uid="myMenu2" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
                 <gui>
                     <layout>
                         <menuItem name="My item 1" style="check" />
@@ -109,38 +135,62 @@
                 </registry>
             </service>
 
-            <service uid="item1" type="::fwGui::IActionSrv" impl="::gui::action::NothingActionSrv" autoConnect="no">
+            <service uid="item1" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no">
                 <state active="true" />
             </service>
-            <service uid="item2" type="::fwGui::IActionSrv" impl="::gui::action::NothingActionSrv" autoConnect="no" >
+            <service uid="item2" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no" >
                 <state active="true" />
             </service>
-            <service uid="item3" type="::fwGui::IActionSrv" impl="::gui::action::NothingActionSrv" autoConnect="no" />
-            <service uid="item4" type="::fwGui::IActionSrv" impl="::gui::action::NothingActionSrv" autoConnect="no" >
+            <service uid="item3" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no" />
+            <service uid="item4" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no" >
                 <state active="false" />
             </service>
-            <service uid="item5" type="::fwGui::IActionSrv" impl="::gui::action::NothingActionSrv" autoConnect="no" >
+            <service uid="item5" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no" >
                 <state active="true" />
             </service>
 
-            <service uid="item16" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="start" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>start/hide</slot>
+                    <slot>stop/setExecutable</slot>
+                    <slot>pause/show</slot>
+                </slots>
+            </service>
+
+            <service uid="stop" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <state executable="false" />
+                <slots>
+                    <slot>start/show</slot>
+                    <slot>stop/setInexecutable</slot>
+                    <slot>pause/hide</slot>
+                </slots>
+            </service>
+
+            <service uid="pause" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <state active="true" visible="false" />
+                <slots>
+                    <slot>start/show</slot>
+                    <slot>pause/hide</slot>
+                </slots>
+            </service>
+
+            <service uid="item16" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <state active="true" />
                 <start uid="item2" />
                 <start uid="item3" />
                 <stop uid="item4" />
                 <stop uid="item5" />
             </service>
-            <service uid="item17" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+            <service uid="item17" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                 <stop uid="item2" />
                 <stop uid="item3" />
                 <start uid="item4" />
                 <start uid="item5" />
             </service>
 
-            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
-
-            <service uid="view" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+            <service uid="view" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -154,7 +204,7 @@
                 </registry>
             </service>
 
-            <service uid="subView1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+            <service uid="subView1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="horizontal" />
@@ -170,7 +220,7 @@
             </service>
 
 
-            <service uid="subView2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+            <service uid="subView2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager" >
                         <view caption="CardinalView1" align="center" />
@@ -183,7 +233,7 @@
                 </registry>
             </service>
 
-            <service uid="subView3" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+            <service uid="subView3" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                 <gui>
                     <layout type="::fwGui::TabLayoutManager" >
                         <view caption="TabView1"  />
@@ -194,7 +244,7 @@
                 <registry/>
             </service>
 
-            <service uid="view12" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+            <service uid="view12" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                 <gui>
                     <layout type="::fwGui::LineLayoutManager" >
                         <orientation value="vertical" />
@@ -206,7 +256,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
+            <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
                 <gui>
                     <layout>
                         <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>

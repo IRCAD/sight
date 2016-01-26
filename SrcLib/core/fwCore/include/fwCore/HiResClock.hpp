@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCORE_HIRESCLOCK_HPP_
-#define _FWCORE_HIRESCLOCK_HPP_
+#ifndef __FWCORE_HIRESCLOCK_HPP__
+#define __FWCORE_HIRESCLOCK_HPP__
 
 #include "fwCore/config.hpp"
 
@@ -49,4 +49,4 @@ FWCORE_API HiResClockType getTimeInSec();
 
 } //namespace fwCore
 
-#endif // _FWCORE_HIRESCLOCK_HPP_
+#endif // __FWCORE_HIRESCLOCK_HPP__

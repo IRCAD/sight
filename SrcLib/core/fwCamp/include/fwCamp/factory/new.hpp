@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwCore/macros.hpp>
 
@@ -25,7 +24,7 @@ FWCAMP_API SPTR( ::camp::UserObject ) New( const ::fwCamp::registry::KeyType & c
 
 template<class CLASSNAME > SPTR( ::camp::UserObject )  New(::fwTools::Object *object)
 {
-    SPTR(::camp::UserObject) obj = ::boost::make_shared< ::camp::UserObject >(*(dynamic_cast<CLASSNAME*>( object )));
+    SPTR(::camp::UserObject) obj = std::make_shared< ::camp::UserObject >(*(dynamic_cast<CLASSNAME*>( object )));
     return obj;
 }
 

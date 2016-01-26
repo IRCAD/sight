@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,9 +23,10 @@ namespace in
 class FWMEMORY_CLASS_API RawZ : public IFactory
 {
 public:
-    RawZ(const boost::filesystem::path &path):
+    RawZ(const boost::filesystem::path &path) :
         m_path(path)
-    {};
+    {
+    }
 
 protected:
 

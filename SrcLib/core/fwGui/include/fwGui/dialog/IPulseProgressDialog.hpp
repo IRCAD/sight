@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IPULSEPROGRESSDIALOG_HPP_
-#define _FWGUI_IPULSEPROGRESSDIALOG_HPP_
+#ifndef __FWGUI_DIALOG_IPULSEPROGRESSDIALOG_HPP__
+#define __FWGUI_DIALOG_IPULSEPROGRESSDIALOG_HPP__
 
 #include <string>
 #include <boost/function.hpp>
@@ -23,7 +23,7 @@ namespace dialog
  * @brief   Defines the generic Progress dialog for IHM.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
  * @class   IPulseProgressDialog
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -69,6 +69,6 @@ protected:
 } //namespace dialog
 } // namespace fwGui
 
-#endif /*_FWGUI_IPULSEPROGRESSDIALOG_HPP_*/
+#endif /*__FWGUI_DIALOG_IPULSEPROGRESSDIALOG_HPP__*/
 
 

@@ -1,18 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_REGISTRY_SERVICECONFIG_HPP_
-#define _FWSERVICES_REGISTRY_SERVICECONFIG_HPP_
+#ifndef __FWSERVICES_REGISTRY_SERVICECONFIG_HPP__
+#define __FWSERVICES_REGISTRY_SERVICECONFIG_HPP__
 
-#include <map>
+#include "fwServices/config.hpp"
 
+#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwTools/Object.hpp>
 #include <fwTools/macros.hpp>
 
-#include "fwServices/config.hpp"
+#include <map>
 
 namespace fwServices
 {
@@ -23,19 +24,23 @@ namespace registry
 
 /**
  * @class ServiceConfigInfo
- * 
+ *
  */
 class FWSERVICES_CLASS_API ServiceConfigInfo : public ::fwCore::BaseObject
 {
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (ServiceConfigInfo)(::fwCore::BaseObject), (()), new ServiceConfigInfo );
 
     /// Constructor, do nothing.
-    ServiceConfigInfo(){}
+    ServiceConfigInfo()
+    {
+    }
 
     /// Destructor, do nothing.
-    virtual ~ServiceConfigInfo(){}
+    virtual ~ServiceConfigInfo()
+    {
+    }
 
     std::string service;
     std::string desc;
@@ -47,14 +52,14 @@ public :
  * @brief This class allows to register all the service configuration which has the point extension
  *        "::fwServices::registry::ServiceConfig".
  * @class ServiceConfig
- * 
+ *
  *
  *
  * Registry config like :
  * @verbatim
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>SDBOpenIOSelectorConfig</id>
-        <service>::uiIO::editor::IOSelectorService</service>
+        <service>::uiIO::editor::SIOSelector</service>
         <desc>"Open" action's IOSelector config</desc>
         <config>
             <type mode="reader" />
@@ -70,7 +75,7 @@ class FWSERVICES_CLASS_API ServiceConfig : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ServiceConfig)(::fwCore::BaseObject), (()), new ServiceConfig) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ServiceConfig)(::fwCore::BaseObject), (()), new ServiceConfig);
 
     /// Return the default global instance of ServiceConfig
     FWSERVICES_API static ServiceConfig::sptr getDefault();
@@ -103,7 +108,8 @@ public:
      * @note This method is thread safe
      */
     FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getServiceConfig( const std::string & configId,
-                                                                              const std::string &serviceImpl="" ) const;
+                                                                              const std::string &serviceImpl =
+                                                                                  "" ) const;
 
     /**
      * @brief Returns the description of the given configuration name.
@@ -124,7 +130,7 @@ public:
      */
     FWSERVICES_API void clearRegistry();
 
-protected :
+protected:
 
     typedef std::map< std::string, ServiceConfigInfo::sptr > Registry;
 
@@ -147,6 +153,6 @@ protected :
 
 } // namespace fwServices
 
-#endif // _FWSERVICES_REGISTRY_SERVICECONFIG_HPP_
+#endif // __FWSERVICES_REGISTRY_SERVICECONFIG_HPP__
 
 

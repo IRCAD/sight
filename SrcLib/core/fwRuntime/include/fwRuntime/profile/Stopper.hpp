@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_PROFILE_STOPPER_HPP_
-#define _FWRUNTIME_PROFILE_STOPPER_HPP_
+#ifndef __FWRUNTIME_PROFILE_STOPPER_HPP__
+#define __FWRUNTIME_PROFILE_STOPPER_HPP__
 
 #include <string>
 #include <boost/utility.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include "fwRuntime/profile/Starter.hpp"
 #include "fwRuntime/config.hpp"
@@ -27,7 +26,7 @@ namespace profile
  * @brief   Stops a given bundle.
  * @class  Stopper
  * @date    2007-2009
- * 
+ *
  */
 class Stopper :  public boost::noncopyable
 {
@@ -48,9 +47,9 @@ public:
      */
     void apply();
 
-private :
+private:
 
-    const std::string   m_identifier;   ///< a bundle identifier
+    const std::string m_identifier;     ///< a bundle identifier
 };
 
 
@@ -61,4 +60,4 @@ private :
 
 
 
-#endif /*_FWRUNTIME_PROFILE_STOPPER_HPP_*/
+#endif /*__FWRUNTIME_PROFILE_STOPPER_HPP__*/

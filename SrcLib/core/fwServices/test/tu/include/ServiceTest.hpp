@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_TEST_TU_SERVICETEST_HPP_
-#define _FWSERVICES_TEST_TU_SERVICETEST_HPP_
+#ifndef __FWSERVICES_UT_SERVICETEST_HPP__
+#define __FWSERVICES_UT_SERVICETEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -21,13 +21,13 @@ namespace ut
  */
 class ServiceTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( ServiceTest );
-    CPPUNIT_TEST( testServiceCreation );
-    CPPUNIT_TEST( testServiceCreationWithTemplateMethods );
-    CPPUNIT_TEST( testServiceCreationWithUUID );
-    CPPUNIT_TEST( testStartStopUpdate );
-    CPPUNIT_TEST( testCommunication );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( ServiceTest );
+CPPUNIT_TEST( testServiceCreation );
+CPPUNIT_TEST( testServiceCreationWithTemplateMethods );
+CPPUNIT_TEST( testServiceCreationWithUUID );
+CPPUNIT_TEST( testStartStopUpdate );
+CPPUNIT_TEST( testCommunication );
+CPPUNIT_TEST_SUITE_END();
 
 
 public:
@@ -64,5 +64,5 @@ private:
 } //namespace ut
 } //namespace fwServices
 
-#endif
+#endif // __FWSERVICES_UT_SERVICETEST_HPP__
 

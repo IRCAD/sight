@@ -1,10 +1,10 @@
-<plugin id="vtkSimpleNegato" class="::vtkSimpleNegato::Plugin" >
+<plugin id="vtkSimpleNegato" class="::vtkSimpleNegato::Plugin"  version="@DASH_VERSION@" >
     <library name="vtkSimpleNegato" />
 
 
 <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRender::IRender</type>
-        <service>::vtkSimpleNegato::RendererService</service>
+        <service>::vtkSimpleNegato::SRenderer</service>
         <object>::fwData::Image</object>
     </extension>
 

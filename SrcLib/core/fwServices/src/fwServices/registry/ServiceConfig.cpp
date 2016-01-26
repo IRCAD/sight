@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwServices/registry/ServiceConfig.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/helper.hpp>
+#include <fwRuntime/Runtime.hpp>
 
-#include "fwServices/registry/ServiceConfig.hpp"
 
 namespace fwServices
 {
@@ -39,18 +38,18 @@ ServiceConfig::~ServiceConfig()
 void ServiceConfig::parseBundleInformation()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    typedef ::boost::shared_ptr< ::fwRuntime::Extension > ExtensionType;
+    typedef std::shared_ptr< ::fwRuntime::Extension > ExtensionType;
 
     std::vector< ExtensionType >  extElements;
     extElements = ::fwRuntime::getAllExtensionsForPoint(CONFIG_EXT_POINT);
-    BOOST_FOREACH(ExtensionType ext , extElements)
+    for(ExtensionType ext :  extElements)
     {
         // Get id
         SLM_ASSERT("Missing id element", ext->hasConfigurationElement("id"));
         std::string id = ext->findConfigurationElement("id")->getValue();
 
         // Get service
-        std::string service ="";
+        std::string service = "";
         if ( ext->hasConfigurationElement("service") )
         {
             service = ext->findConfigurationElement("service")->getValue();
@@ -74,7 +73,7 @@ void ServiceConfig::parseBundleInformation()
 //-----------------------------------------------------------------------------
 
 void ServiceConfig::addServiceConfigInfo
-(   const std::string & configId,
+    (   const std::string & configId,
     const std::string & service,
     const std::string & desc,
     ::fwRuntime::ConfigurationElement::csptr config)
@@ -82,17 +81,18 @@ void ServiceConfig::addServiceConfigInfo
     ::fwCore::mt::WriteLock lock(m_registryMutex);
 
     OSLM_DEBUG( "New service config registring : "
-            << " configId = " << configId
-            << " service = " << service
-            << " desc = " << desc
-    );
+                << " configId = " << configId
+                << " service = " << service
+                << " desc = " << desc
+                );
 
-    SLM_ASSERT("Sorry, service config id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
+    SLM_ASSERT("The service config with the id "<< configId <<" already exist.",
+               m_reg.find( configId ) == m_reg.end() );
 
     ServiceConfigInfo::sptr info = ServiceConfigInfo::New();
-    info->service = service;
-    info->desc = desc;
-    info->config =  config;
+    info->service   = service;
+    info->desc      = desc;
+    info->config    = config;
     m_reg[configId] = info;
 }
 
@@ -117,9 +117,9 @@ void ServiceConfig::clearRegistry()
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
-    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry",
+    SLM_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
                iter != m_reg.end());
-    SLM_ASSERT("Sorry, the id " <<  configId << " is not allowed for this service " << serviceImpl,
+    SLM_ASSERT("The id " <<  configId << " is not allowed for this service " << serviceImpl,
                serviceImpl.empty() || iter->second->service.empty() || iter->second->service == serviceImpl);
     return iter->second->config;
 }
@@ -130,7 +130,7 @@ const std::string& ServiceConfig::getConfigDesc( const std::string & configId ) 
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
-    SLM_ASSERT("Sorry, the id " <<  configId << " is not found in the application configuration registry",
+    SLM_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
                iter != m_reg.end());
     return iter->second->desc;
 }
@@ -142,7 +142,7 @@ std::vector< std::string > ServiceConfig::getAllConfigForService( std::string se
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > configs;
 
-    BOOST_FOREACH(Registry::value_type srvCfg, m_reg)
+    for(Registry::value_type srvCfg :  m_reg)
     {
         ServiceConfigInfo::sptr info = srvCfg.second;
         if (info->service.empty() || info->service == serviceImpl)

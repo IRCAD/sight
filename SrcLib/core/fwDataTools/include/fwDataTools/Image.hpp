@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATATOOLS_IMAGE_HPP_
-#define _FWDATATOOLS_IMAGE_HPP_
+#ifndef __FWDATATOOLS_IMAGE_HPP__
+#define __FWDATATOOLS_IMAGE_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -17,7 +17,7 @@
 
 #include <fwComEd/helper/Array.hpp>
 
-#include "fwDataTools/export.hpp"
+#include "fwDataTools/config.hpp"
 
 namespace fwDataTools
 {
@@ -30,7 +30,7 @@ namespace fwDataTools
 class Image
 {
 
-public :
+public:
 
     /**
      * @brief Apply roi to image
@@ -62,31 +62,31 @@ public :
 template<typename IMG_DEST_TYPE, typename MASK_TYPE>
 void Image::mergeMask(::fwData::Image::sptr imgDest, ::fwData::Image::sptr mask, IMG_DEST_TYPE val )
 {
-    typedef IMG_DEST_TYPE  ImgDestType;
+    typedef IMG_DEST_TYPE ImgDestType;
     typedef MASK_TYPE MaskType;
     SLM_ASSERT( "Image dest has not correct type", imgDest->getType().isOfType< ImgDestType >());
     SLM_ASSERT( "Image mask has not correct type", mask->getType().isOfType< MaskType >());
 
     SLM_ASSERT( "Images have not the same size", imgDest->getSize() == mask->getSize() );
     SLM_ASSERT( "Images have not the same spacing",
-            ::fwMath::isContainerEqual(imgDest->getSpacing(), mask->getSpacing()) );
+                ::fwMath::isContainerEqual(imgDest->getSpacing(), mask->getSpacing()) );
     SLM_ASSERT( "Images have not the same origin",
-            ::fwMath::isContainerEqual(imgDest->getOrigin(), mask->getOrigin()) );
+                ::fwMath::isContainerEqual(imgDest->getOrigin(), mask->getOrigin()) );
 
     ::fwData::Array::sptr imgData;
     ::fwData::Array::sptr maskData;
-    imgData = imgDest->getDataArray();
+    imgData  = imgDest->getDataArray();
     maskData = mask->getDataArray();
 
     ::fwComEd::helper::Array imgHelper(imgData);
     ::fwComEd::helper::Array maskHelper(maskData);
 
     ImgDestType *imgIt = imgHelper.begin<ImgDestType>();
-    MaskType *maskIt = maskHelper.begin<MaskType>();
+    MaskType *maskIt   = maskHelper.begin<MaskType>();
 
     const ImgDestType *imgEnd = imgIt + maskData->getNumberOfElements();
 
-    for ( ; imgIt != imgEnd ; ++imgIt, ++maskIt)
+    for (; imgIt != imgEnd; ++imgIt, ++maskIt)
     {
         if (*maskIt != 0)
         {
@@ -97,4 +97,4 @@ void Image::mergeMask(::fwData::Image::sptr imgDest, ::fwData::Image::sptr mask,
 
 } // namespace fwDataTools
 
-#endif // _FWDATATOOLS_IMAGE_HPP_
+#endif // __FWDATATOOLS_IMAGE_HPP__

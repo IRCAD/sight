@@ -1,12 +1,21 @@
 # Generates Eclipse project (.project + .cproject) for all specified projects.
 # Works only with fw4spl CMake script.
 function(eclipseGenerator)
+
+    #find compiler system include directories
+    if(WIN32)
+        set(SYSTEM_INCLUDES "$ENV{INCLUDE}")
+    else()
+        include(CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs)
+        set(SYSTEM_INCLUDES ${CMAKE_EXTRA_GENERATOR_C_SYSTEM_INCLUDE_DIRS} ${CMAKE_EXTRA_GENERATOR_CXX_SYSTEM_INCLUDE_DIRS})
+    endif()
+    
     foreach(PROJECT ${ARGV})
         message(STATUS "Generating ${PROJECT} Eclipse project")
-        #configure eclipse project template 
+        #configure eclipse project template
         set(BUILD_PATH ${CMAKE_BINARY_DIR})
         set(PROJECT_NAME ${PROJECT})
-        
+
         set(TYPE ${${PROJECT}_TYPE})
         if( TYPE STREQUAL "EXECUTABLE" )
             set(PROJECT_NAME_USER "exec-${PROJECT}")
@@ -16,6 +25,8 @@ function(eclipseGenerator)
             set(PROJECT_NAME_USER "bundle-${PROJECT}")
         elseif( TYPE STREQUAL "TEST" )
             set(PROJECT_NAME_USER "test-${PROJECT}")
+        elseif( TYPE STREQUAL "APP")
+            set(PROJECT_NAME_USER "app-${PROJECT}")
         else()
             set(PROJECT_NAME_USER "unknown-${PROJECT}")
         endif()
@@ -26,15 +37,14 @@ function(eclipseGenerator)
         foreach(DEPENDENCY ${PROJECT_INCLUDE_DIRECTORIES})
             set(DEPS_INCLUDES "${DEPS_INCLUDES}\n<listOptionValue builtIn=\"false\" value=\"${DEPENDENCY}\"/>")
         endforeach()
-        if(WIN32)
-            #add system include dirs
-            SET(SYSTEM_INCLUDES "$ENV{INCLUDE}")
-            foreach(SYS_INC ${SYSTEM_INCLUDES})
-                string( REGEX REPLACE "\\\\" "/" SYS_INC ${SYS_INC} )
-                set(DEPS_INCLUDES "${DEPS_INCLUDES}\n<listOptionValue builtIn=\"false\" value=\"${SYS_INC}\"/>")
-            endforeach()
-        endif()
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/eclipse/.cproject.in ${${PROJECT}_DIR}/.cproject [@ONLY] )
-        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/eclipse/.project.in ${${PROJECT}_DIR}/.project [@ONLY] )
+        
+        #add system include dirs
+        foreach(SYS_INC ${SYSTEM_INCLUDES})
+            string( REGEX REPLACE "\\\\" "/" SYS_INC ${SYS_INC} )
+            set(DEPS_INCLUDES "${DEPS_INCLUDES}\n<listOptionValue builtIn=\"false\" value=\"${SYS_INC}\"/>")
+        endforeach()
+        
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/eclipse/.cproject.in ${${PROJECT}_DIR}/.cproject @ONLY )
+        configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/eclipse/.project.in ${${PROJECT}_DIR}/.project @ONLY )
     endforeach()
 endfunction()

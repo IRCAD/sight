@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,22 +42,19 @@ void ReconstructionTest::tearDown()
 
 void ReconstructionTest::methode1() //test des setters et getters
 {
-    const bool ISVISIBLE        = true ;
-    const std::string CREFORGANNAME     = "OrganName" ;
-    const std::string CREFSTRUCTURETYPE     = "StructureType" ;
+    const bool ISVISIBLE                = true;
+    const std::string CREFORGANNAME     = "OrganName";
+    const std::string CREFSTRUCTURETYPE = "StructureType";
 
     // process
     ::fwData::Reconstruction::sptr p1 = ::fwData::Reconstruction::New();
 
     p1->setIsVisible( ISVISIBLE );
-    p1->setCRefOrganName( CREFORGANNAME );
-    p1->setCRefStructureType( CREFSTRUCTURETYPE );
+    p1->setOrganName( CREFORGANNAME );
+    p1->setStructureType( CREFSTRUCTURETYPE );
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), ISVISIBLE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsVisible(), ISVISIBLE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIsVisible(), ISVISIBLE);
-
 
     CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefOrganName(), CREFORGANNAME);
@@ -73,22 +70,19 @@ void ReconstructionTest::methode1() //test des setters et getters
 
 void ReconstructionTest::methode2()
 {
-    const bool ISVISIBLE        = true ;
-    const std::string CREFORGANNAME     = "OrganName" ;
-    const std::string CREFSTRUCTURETYPE     = "StructureType" ;
+    const bool ISVISIBLE                = true;
+    const std::string CREFORGANNAME     = "OrganName";
+    const std::string CREFSTRUCTURETYPE = "StructureType";
 
     // process
     ::fwData::Reconstruction::sptr p1 = ::fwData::Reconstruction::New();
 
-    p1->setCRefIsVisible( ISVISIBLE );
-    p1->setCRefOrganName( CREFORGANNAME );
-    p1->setCRefStructureType( CREFSTRUCTURETYPE );
+    p1->setIsVisible( ISVISIBLE );
+    p1->setOrganName( CREFORGANNAME );
+    p1->setStructureType( CREFSTRUCTURETYPE );
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->getIsVisible(), ISVISIBLE);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefIsVisible(), ISVISIBLE);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefIsVisible(), ISVISIBLE);
-
 
     CPPUNIT_ASSERT_EQUAL(p1->getOrganName(), CREFORGANNAME);
     CPPUNIT_ASSERT_EQUAL(p1->getCRefOrganName(), CREFORGANNAME);
@@ -104,10 +98,10 @@ void ReconstructionTest::methode2()
 void ReconstructionTest::image()
 {
     ::fwData::Reconstruction::sptr p1 = ::fwData::Reconstruction::New();
-    ::fwData::Image::sptr i1(::fwData::Image::New()) ;
+    ::fwData::Image::sptr i1(::fwData::Image::New());
 
-    p1->setImage(i1) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getImage(), i1 ) ;
+    p1->setImage(i1);
+    CPPUNIT_ASSERT_EQUAL(p1->getImage(), i1 );
 }
 
 } //namespace ut

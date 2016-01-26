@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,14 +24,17 @@ fwServicesRegisterMacro(::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Tex
 namespace visuVTKAdaptor
 {
 
-Text::Text() : m_fontSize(20), m_vAlign("bottom"), m_hAlign("left")
+Text::Text() :
+    m_actor(vtkActor2D::New()),
+    m_mapper(vtkTextMapper::New()),
+    m_fontSize(20),
+    m_vAlign("bottom"),
+    m_hAlign("left")
 {
-    m_mapper = vtkTextMapper::New();
     m_mapper->GetTextProperty()->SetFontFamilyToCourier(); // Fixed-width font
     m_mapper->GetTextProperty()->ShadowOn(); // better contrast
     m_mapper->GetTextProperty()->BoldOn();
 
-    m_actor = vtkActor2D::New();
     m_actor->SetMapper(m_mapper);
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToNormalizedViewport();
     m_actor->GetPosition2Coordinate()->SetCoordinateSystemToNormalizedViewport();
@@ -42,26 +45,25 @@ Text::Text() : m_fontSize(20), m_vAlign("bottom"), m_hAlign("left")
 Text::~Text() throw()
 {
     m_actor->Delete();
-    m_actor = 0;
+    m_actor = nullptr;
 
     m_mapper->Delete();
-    m_mapper = 0;
+    m_mapper = nullptr;
 }
 
 //-----------------------------------------------------------------------------
 
-void Text::configuring() throw(fwTools::Failed)
+void Text::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
     assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 
     std::string text = m_configuration->getAttributeValue("text");
     if(!text.empty() && text[0] == '@')
     {
         OSLM_ASSERT("You shall set text attribute or <text> tag, not both", m_configuration->find("text").empty());
-        ::fwData::Object::sptr obj = this->getObject();
+        ::fwData::Object::sptr obj             = this->getObject();
         ::fwData::GenericFieldBase::sptr field = ::fwDataCamp::getObject< ::fwData::GenericFieldBase >(obj, text);
         SLM_ASSERT("Seshat path can't be cast to generic field", field);
         if(field)
@@ -115,7 +117,8 @@ void Text::configuring() throw(fwTools::Failed)
         {
             ::fwData::Color::sptr color = ::fwData::Color::New();
             color->setRGBA(colorText);
-            m_mapper->GetTextProperty()->SetColor(color->getRefRGBA()[0], color->getRefRGBA()[1], color->getRefRGBA()[2]);
+            m_mapper->GetTextProperty()->SetColor(color->getRefRGBA()[0], color->getRefRGBA()[1],
+                                                  color->getRefRGBA()[2]);
         }
         else
         {

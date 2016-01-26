@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@
 #include <fwComEd/helper/Mesh.hpp>
 
 #include "fwDataTools/Vector.hxx"
-#include "fwDataTools/export.hpp"
+#include "fwDataTools/config.hpp"
 
 namespace fwDataTools
 {
@@ -28,7 +28,7 @@ namespace fwDataTools
 class Mesh
 {
 
-public :
+public:
 
     typedef std::map<Point, ::fwData::Mesh::Id> PointsMapType;
 

@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 /* unzip.h -- IO for uncompress .zip files using zlib
    Version 1.1, February 14h, 2010
    part of the MiniZip project - ( http://www.winimage.com/zLibDll/minizip.html )
@@ -16,34 +22,34 @@
 
         Condition of use and distribution are the same than zlib :
 
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
+   This software is provided 'as-is', without any express or implied
+   warranty.  In no event will the authors be held liable for any damages
+   arising from the use of this software.
 
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
+   Permission is granted to anyone to use this software for any purpose,
+   including commercial applications, and to alter it and redistribute it
+   freely, subject to the following restrictions:
 
-  1. The origin of this software must not be misrepresented; you must not
+   1. The origin of this software must not be misrepresented; you must not
      claim that you wrote the original software. If you use this software
      in a product, an acknowledgment in the product documentation would be
      appreciated but is not required.
-  2. Altered source versions must be plainly marked as such, and must not be
+   2. Altered source versions must be plainly marked as such, and must not be
      misrepresented as being the original software.
-  3. This notice may not be removed or altered from any source distribution.
+   3. This notice may not be removed or altered from any source distribution.
 
-  ---------------------------------------------------------------------------------
+   ---------------------------------------------------------------------------------
 
         Changes
 
         See header of unzip64.c
 
-*/
+ */
+
+#ifndef __MINIZIP_UNZIP_H__
+#define __MINIZIP_UNZIP_H__
 
 #include "minizip/export.h"
-
-#ifndef _unz64_H
-#define _unz64_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -98,7 +104,7 @@ typedef struct tm_unz_s
 typedef struct unz_global_info64_s
 {
     ZPOS64_T number_entry;         /* total number of entries in
-                                     the central dir on this disk */
+                                      the central dir on this disk */
     uLong size_comment;         /* size of the global comment of the zipfile */
 } unz_global_info64;
 
@@ -153,8 +159,8 @@ typedef struct unz_file_info_s
 } unz_file_info;
 
 extern MINIZIP_API int unzStringFileNameCompare OF ((const char* fileName1,
-                                                 const char* fileName2,
-                                                 int iCaseSensitivity));
+                                                     const char* fileName2,
+                                                     int iCaseSensitivity));
 /*
    Compare two filename (fileName1,fileName2).
    If iCaseSenisivity = 1, comparision is case sensitivity (like strcmp)
@@ -162,13 +168,13 @@ extern MINIZIP_API int unzStringFileNameCompare OF ((const char* fileName1,
                                 or strcasecmp)
    If iCaseSenisivity = 0, case sensitivity is defaut of your operating system
     (like 1 on Unix, 2 on Windows)
-*/
+ */
 
 
 extern MINIZIP_API unzFile unzOpen OF((const char *path));
 extern MINIZIP_API unzFile unzOpen64 OF((const void *path));
 /*
-  Open a Zip file. path contain the full pathname (by example,
+   Open a Zip file. path contain the full pathname (by example,
      on a Windows XP computer "c:\\zlib\\zlib113.zip" or on an Unix computer
      "zlib/zlib113.zip".
      If the zipfile cannot be opened (file don't exist or in not valid), the
@@ -180,49 +186,49 @@ extern MINIZIP_API unzFile unzOpen64 OF((const void *path));
      Under Windows, if UNICODE is defined, using fill_fopen64_filefunc, the path
        is a pointer to a wide unicode string (LPCTSTR is LPCWSTR), so const char*
        does not describe the reality
-*/
+ */
 
 
 extern MINIZIP_API unzFile unzOpen2 OF((const char *path,
-                                    zlib_filefunc_def* pzlib_filefunc_def));
+                                        zlib_filefunc_def* pzlib_filefunc_def));
 /*
    Open a Zip file, like unzOpen, but provide a set of file low level API
       for read/write the zip file (see ioapi.h)
-*/
+ */
 
 extern MINIZIP_API unzFile unzOpen2_64 OF((const void *path,
-                                    zlib_filefunc64_def* pzlib_filefunc_def));
+                                           zlib_filefunc64_def* pzlib_filefunc_def));
 /*
    Open a Zip file, like unz64Open, but provide a set of file low level API
       for read/write the zip file (see ioapi.h)
-*/
+ */
 
 extern MINIZIP_API int unzClose OF((unzFile file));
 /*
-  Close a ZipFile opened with unzipOpen.
-  If there is files inside the .Zip opened with unzOpenCurrentFile (see later),
+   Close a ZipFile opened with unzipOpen.
+   If there is files inside the .Zip opened with unzOpenCurrentFile (see later),
     these files MUST be closed with unzipCloseCurrentFile before call unzipClose.
-  return UNZ_OK if there is no problem. */
+   return UNZ_OK if there is no problem. */
 
 extern MINIZIP_API int unzGetGlobalInfo OF((unzFile file,
-                                        unz_global_info *pglobal_info));
+                                            unz_global_info *pglobal_info));
 
 extern MINIZIP_API int unzGetGlobalInfo64 OF((unzFile file,
-                                        unz_global_info64 *pglobal_info));
+                                              unz_global_info64 *pglobal_info));
 /*
-  Write info about the ZipFile in the *pglobal_info structure.
-  No preparation of the structure is needed
-  return UNZ_OK if there is no problem. */
+   Write info about the ZipFile in the *pglobal_info structure.
+   No preparation of the structure is needed
+   return UNZ_OK if there is no problem. */
 
 
 extern MINIZIP_API int unzGetGlobalComment OF((unzFile file,
-                                           char *szComment,
-                                           uLong uSizeBuf));
+                                               char *szComment,
+                                               uLong uSizeBuf));
 /*
-  Get the global comment string of the ZipFile, in the szComment buffer.
-  uSizeBuf is the size of the szComment buffer.
-  return the number of byte copied or an error code <0
-*/
+   Get the global comment string of the ZipFile, in the szComment buffer.
+   uSizeBuf is the size of the szComment buffer.
+   return the number of byte copied or an error code <0
+ */
 
 
 /***************************************************************************/
@@ -230,28 +236,28 @@ extern MINIZIP_API int unzGetGlobalComment OF((unzFile file,
 
 extern MINIZIP_API int unzGoToFirstFile OF((unzFile file));
 /*
-  Set the current file of the zipfile to the first file.
-  return UNZ_OK if there is no problem
-*/
+   Set the current file of the zipfile to the first file.
+   return UNZ_OK if there is no problem
+ */
 
 extern MINIZIP_API int unzGoToNextFile OF((unzFile file));
 /*
-  Set the current file of the zipfile to the next file.
-  return UNZ_OK if there is no problem
-  return UNZ_END_OF_LIST_OF_FILE if the actual file was the latest.
-*/
+   Set the current file of the zipfile to the next file.
+   return UNZ_OK if there is no problem
+   return UNZ_END_OF_LIST_OF_FILE if the actual file was the latest.
+ */
 
 extern MINIZIP_API int unzLocateFile OF((unzFile file,
-                     const char *szFileName,
-                     int iCaseSensitivity));
+                                         const char *szFileName,
+                                         int iCaseSensitivity));
 /*
-  Try locate the file szFileName in the zipfile.
-  For the iCaseSensitivity signification, see unzStringFileNameCompare
+   Try locate the file szFileName in the zipfile.
+   For the iCaseSensitivity signification, see unzStringFileNameCompare
 
-  return value :
-  UNZ_OK if the file is found. It becomes the current file.
-  UNZ_END_OF_LIST_OF_FILE if the file is not found
-*/
+   return value :
+   UNZ_OK if the file is found. It becomes the current file.
+   UNZ_END_OF_LIST_OF_FILE if the file is not found
+ */
 
 
 /* ****************************************** */
@@ -288,34 +294,34 @@ extern MINIZIP_API int unzGoToFilePos64(
 /* ****************************************** */
 
 extern MINIZIP_API int unzGetCurrentFileInfo64 OF((unzFile file,
-                         unz_file_info64 *pfile_info,
-                         char *szFileName,
-                         uLong fileNameBufferSize,
-                         void *extraField,
-                         uLong extraFieldBufferSize,
-                         char *szComment,
-                         uLong commentBufferSize));
+                                                   unz_file_info64 *pfile_info,
+                                                   char *szFileName,
+                                                   uLong fileNameBufferSize,
+                                                   void *extraField,
+                                                   uLong extraFieldBufferSize,
+                                                   char *szComment,
+                                                   uLong commentBufferSize));
 
 extern MINIZIP_API int unzGetCurrentFileInfo OF((unzFile file,
-                         unz_file_info *pfile_info,
-                         char *szFileName,
-                         uLong fileNameBufferSize,
-                         void *extraField,
-                         uLong extraFieldBufferSize,
-                         char *szComment,
-                         uLong commentBufferSize));
+                                                 unz_file_info *pfile_info,
+                                                 char *szFileName,
+                                                 uLong fileNameBufferSize,
+                                                 void *extraField,
+                                                 uLong extraFieldBufferSize,
+                                                 char *szComment,
+                                                 uLong commentBufferSize));
 /*
-  Get Info about the current file
-  if pfile_info!=NULL, the *pfile_info structure will contain somes info about
+   Get Info about the current file
+   if pfile_info!=NULL, the *pfile_info structure will contain somes info about
         the current file
-  if szFileName!=NULL, the filemane string will be copied in szFileName
+   if szFileName!=NULL, the filemane string will be copied in szFileName
             (fileNameBufferSize is the size of the buffer)
-  if extraField!=NULL, the extra field information will be copied in extraField
+   if extraField!=NULL, the extra field information will be copied in extraField
             (extraFieldBufferSize is the size of the buffer).
             This is the Central-header version of the extra field
-  if szComment!=NULL, the comment string of the file will be copied in szComment
+   if szComment!=NULL, the comment string of the file will be copied in szComment
             (commentBufferSize is the size of the buffer)
-*/
+ */
 
 
 /** Addition for GDAL : START */
@@ -328,97 +334,97 @@ extern MINIZIP_API ZPOS64_T unzGetCurrentFileZStreamPos64 OF((unzFile file));
 /***************************************************************************/
 /* for reading the content of the current zipfile, you can open it, read data
    from it, and close it (you can close it before reading all the file)
-   */
+ */
 
 extern MINIZIP_API int unzOpenCurrentFile OF((unzFile file));
 /*
-  Open for reading data the current file in the zipfile.
-  If there is no error, the return value is UNZ_OK.
-*/
+   Open for reading data the current file in the zipfile.
+   If there is no error, the return value is UNZ_OK.
+ */
 
-extern MINIZIP_API  int unzOpenCurrentFilePassword OF((unzFile file,
-                                                  const char* password));
+extern MINIZIP_API int unzOpenCurrentFilePassword OF((unzFile file,
+                                                      const char* password));
 /*
-  Open for reading data the current file in the zipfile.
-  password is a crypting password
-  If there is no error, the return value is UNZ_OK.
-*/
+   Open for reading data the current file in the zipfile.
+   password is a crypting password
+   If there is no error, the return value is UNZ_OK.
+ */
 
-extern MINIZIP_API  int unzOpenCurrentFile2 OF((unzFile file,
-                                           int* method,
-                                           int* level,
-                                           int raw));
+extern MINIZIP_API int unzOpenCurrentFile2 OF((unzFile file,
+                                               int* method,
+                                               int* level,
+                                               int raw));
 /*
-  Same than unzOpenCurrentFile, but open for read raw the file (not uncompress)
+   Same than unzOpenCurrentFile, but open for read raw the file (not uncompress)
     if raw==1
-  *method will receive method of compression, *level will receive level of
+ * method will receive method of compression, *level will receive level of
      compression
-  note : you can set level parameter as NULL (if you did not want known level,
+   note : you can set level parameter as NULL (if you did not want known level,
          but you CANNOT set method parameter as NULL
-*/
+ */
 
-extern MINIZIP_API  int unzOpenCurrentFile3 OF((unzFile file,
-                                           int* method,
-                                           int* level,
-                                           int raw,
-                                           const char* password));
+extern MINIZIP_API int unzOpenCurrentFile3 OF((unzFile file,
+                                               int* method,
+                                               int* level,
+                                               int raw,
+                                               const char* password));
 /*
-  Same than unzOpenCurrentFile, but open for read raw the file (not uncompress)
+   Same than unzOpenCurrentFile, but open for read raw the file (not uncompress)
     if raw==1
-  *method will receive method of compression, *level will receive level of
+ * method will receive method of compression, *level will receive level of
      compression
-  note : you can set level parameter as NULL (if you did not want known level,
+   note : you can set level parameter as NULL (if you did not want known level,
          but you CANNOT set method parameter as NULL
-*/
+ */
 
 
 extern MINIZIP_API int unzCloseCurrentFile OF((unzFile file));
 /*
-  Close the file in zip opened with unzOpenCurrentFile
-  Return UNZ_CRCERROR if all the file was read but the CRC is not good
-*/
+   Close the file in zip opened with unzOpenCurrentFile
+   Return UNZ_CRCERROR if all the file was read but the CRC is not good
+ */
 
 extern MINIZIP_API int unzReadCurrentFile OF((unzFile file,
-                      voidp buf,
-                      unsigned len));
+                                              voidp buf,
+                                              unsigned len));
 /*
-  Read bytes from the current file (opened by unzOpenCurrentFile)
-  buf contain buffer where data must be copied
-  len the size of buf.
+   Read bytes from the current file (opened by unzOpenCurrentFile)
+   buf contain buffer where data must be copied
+   len the size of buf.
 
-  return the number of byte copied if somes bytes are copied
-  return 0 if the end of file was reached
-  return <0 with error code if there is an error
+   return the number of byte copied if somes bytes are copied
+   return 0 if the end of file was reached
+   return <0 with error code if there is an error
     (UNZ_ERRNO for IO error, or zLib error for uncompress error)
-*/
+ */
 
 extern z_off_t MINIZIP_API unztell OF((unzFile file));
 
 extern ZPOS64_T MINIZIP_API unztell64 OF((unzFile file));
 /*
-  Give the current position in uncompressed data
-*/
+   Give the current position in uncompressed data
+ */
 
 extern MINIZIP_API int unzeof OF((unzFile file));
 /*
-  return 1 if the end of file was reached, 0 elsewhere
-*/
+   return 1 if the end of file was reached, 0 elsewhere
+ */
 
 extern MINIZIP_API int unzGetLocalExtrafield OF((unzFile file,
-                                             voidp buf,
-                                             unsigned len));
+                                                 voidp buf,
+                                                 unsigned len));
 /*
-  Read extra field from the current file (opened by unzOpenCurrentFile)
-  This is the local-header version of the extra field (sometimes, there is
+   Read extra field from the current file (opened by unzOpenCurrentFile)
+   This is the local-header version of the extra field (sometimes, there is
     more info in the local-header version than in the central-header)
 
-  if buf==NULL, it return the size of the local extra field
+   if buf==NULL, it return the size of the local extra field
 
-  if buf!=NULL, len is the size of the buffer, the extra header is copied in
+   if buf!=NULL, len is the size of the buffer, the extra header is copied in
     buf.
-  the return value is the number of bytes copied in buf, or (if <0)
+   the return value is the number of bytes copied in buf, or (if <0)
     the error code
-*/
+ */
 
 /***************************************************************************/
 
@@ -436,4 +442,4 @@ extern MINIZIP_API int unzSetOffset (unzFile file, uLong pos);
 }
 #endif
 
-#endif /* _unz64_H */
+#endif // __MINIZIP_UNZIP_H__

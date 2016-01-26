@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,7 +41,7 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
 
     typedef ::fwData::Graph::ConnectionContainer GraphConnections;
     ::fwAtoms::Object::sptr value;
-    BOOST_FOREACH( GraphConnections::value_type elem, graph->getCRefConnections() )
+    for( GraphConnections::value_type elem :  graph->getCRefConnections() )
     {
         value = ::fwAtoms::Object::New();
 
@@ -72,21 +72,24 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Graph, ::fwData::Grap
     ::fwData::Graph::sptr graph = ::fwData::Graph::dynamicCast(data);
 
     ::fwAtoms::Sequence::sptr seqAtom = ::fwAtoms::Sequence::dynamicCast( atom->getAttribute("connections") );
-    BOOST_FOREACH( ::fwAtoms::Base::sptr elemAtom , seqAtom->getValue() )
+    for( ::fwAtoms::Base::sptr elemAtom  :  seqAtom->getValue() )
     {
         FW_RAISE_EXCEPTION_IF( exception::ConversionNotManaged(
-                "sub atoms stored in fwAtom::Sequence 'connections' must be atom objects"),
-                elemAtom->type() != ::fwAtoms::Base::OBJECT );
+                                   "sub atoms stored in fwAtom::Sequence 'connections' must be atom objects"),
+                               elemAtom->type() != ::fwAtoms::Base::OBJECT );
 
         ::fwAtoms::Object::sptr objectAtom = ::fwAtoms::Object::dynamicCast( elemAtom );
-        ::fwAtoms::Object::sptr edgeAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("edge") );
-        ::fwData::Edge::sptr edge = ::fwData::Edge::dynamicCast( ::fwAtomConversion::convert( edgeAtom, cache, uuidPolicy ) );
+        ::fwAtoms::Object::sptr edgeAtom   = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("edge") );
+        ::fwData::Edge::sptr edge          =
+            ::fwData::Edge::dynamicCast( ::fwAtomConversion::convert( edgeAtom, cache, uuidPolicy ) );
 
         ::fwAtoms::Object::sptr srcAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("source") );
-        ::fwData::Node::sptr src = ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( srcAtom, cache, uuidPolicy ) );
+        ::fwData::Node::sptr src        =
+            ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( srcAtom, cache, uuidPolicy ) );
 
         ::fwAtoms::Object::sptr destAtom = ::fwAtoms::Object::dynamicCast( objectAtom->getAttribute("destination") );
-        ::fwData::Node::sptr dest = ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( destAtom, cache, uuidPolicy ) );
+        ::fwData::Node::sptr dest        =
+            ::fwData::Node::dynamicCast( ::fwAtomConversion::convert( destAtom, cache, uuidPolicy ) );
 
         graph->addEdge( edge, src, dest );
     }

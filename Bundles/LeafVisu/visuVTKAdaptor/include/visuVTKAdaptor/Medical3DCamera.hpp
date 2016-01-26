@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_MEDICAL3DCAMERA_HPP_
-#define _VISUVTKADAPTOR_MEDICAL3DCAMERA_HPP_
+#ifndef __VISUVTKADAPTOR_MEDICAL3DCAMERA_HPP__
+#define __VISUVTKADAPTOR_MEDICAL3DCAMERA_HPP__
+
+#include "visuVTKAdaptor/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -14,7 +16,7 @@
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
+class vtkCamera;
 
 namespace visuVTKAdaptor
 {
@@ -23,21 +25,19 @@ namespace visuVTKAdaptor
  * @brief Update camera scene according to defined axes (axial, sagittal, frontal).
  *
  * The scene can be updated using adaptor slots setAxial, setFrontal, setSagittal.
- *
- * @deprecated This adaptor can react on ::fwComEd::ImageMsg messages having CAMERA_ORIENTATION event.
  */
 class VISUVTKADAPTOR_CLASS_API Medical3DCamera : public ::fwComEd::helper::MedicalImageAdaptor,
-    public ::fwRenderVTK::IVtkAdaptorService
+                                                 public ::fwRenderVTK::IVtkAdaptorService
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Medical3DCamera)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Medical3DCamera)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Medical3DCamera() throw();
 
     VISUVTKADAPTOR_API virtual ~Medical3DCamera() throw();
 
-    typedef ::fwCom::Slot< void() > SetCameraSlotType;
+    typedef ::fwCom::Slot< void () > SetCameraSlotType;
 
 protected:
 
@@ -46,19 +46,19 @@ protected:
      * @brief Configure the adaptor
      *
      * Example :
-     @verbatim
-     <adaptor id="medicalCamera" class="::visuVTKAdaptor::Medical3DCamera" objectId="object">
+       @verbatim
+       <adaptor id="medicalCamera" class="::visuVTKAdaptor::Medical3DCamera" objectId="object">
         <config renderer="default" sliceIndex="axial" resetAtStart="yes" />
-     </adaptor>
+       </adaptor>
 
-     ...
+       ...
 
-     <connect>
+       <connect>
         <signal>guiActionAxialView/triggered</signal>
         <slot>medicalCamera/setAxial</slot> <!-- Connect to adaptor's axial view slot -->
-     </connect>
+       </connect>
 
-     @endverbatim
+       @endverbatim
      *
      * - renderer : mandatory, renderer used by the adaptor
      * - sliceIndex : not mandatory, defines view orientation. Available values are axial, frontal, sagittal;
@@ -66,7 +66,7 @@ protected:
      * - resetAtStart : update view when adaptor is started if set to yes, default value is no.
      *
      */
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     /**
      * @name Overrides
@@ -75,7 +75,6 @@ protected:
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
     /**  @} */
 
 private:
@@ -105,8 +104,6 @@ private:
 };
 
 
-
-
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_MEDICAL3DCAMERA_HPP_
+#endif // __VISUVTKADAPTOR_MEDICAL3DCAMERA_HPP__

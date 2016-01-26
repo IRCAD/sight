@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,23 +7,20 @@
 #ifndef __CTRLMEMORY_MANAGER_LOCKDUMPMANAGERSRV_HPP__
 #define __CTRLMEMORY_MANAGER_LOCKDUMPMANAGERSRV_HPP__
 
+#include "ctrlMemory/config.hpp"
+
+#include <ctrlSelection/IManagerSrv.hpp>
+
+#include <fwData/Composite.hpp>
+
 #include <map>
 #include <vector>
 #include <string>
 
-#include <ctrlSelection/IManagerSrv.hpp>
-
-#include "ctrlMemory/config.hpp"
 
 namespace fwData
 {
-    class ObjectLock;
-    class Composite;
-}
-
-namespace fwServices
-{
-    class ObjectMsg;
+class ObjectLock;
 }
 
 namespace ctrlMemory
@@ -39,17 +36,27 @@ namespace manager
 class CTRLMEMORY_CLASS_API LockDumpManagerSrv : public ::ctrlSelection::IManagerSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (LockDumpManagerSrv)(::ctrlSelection::IManagerSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (LockDumpManagerSrv)(::ctrlSelection::IManagerSrv) );
 
     /// Constructor.  Does nothing.
-    CTRLMEMORY_API LockDumpManagerSrv() throw() ;
+    CTRLMEMORY_API LockDumpManagerSrv() throw();
 
     /// Destructor. Does nothing.
-    CTRLMEMORY_API virtual ~LockDumpManagerSrv() throw() ;
+    CTRLMEMORY_API virtual ~LockDumpManagerSrv() throw();
 
-protected :
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_ADD_OBJECTS_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_CHANGE_OBJECTS_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_REMOVE_OBJECTS_SLOT
+     */
+    CTRLMEMORY_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+protected:
 
     /// Dump lock composite objects
     CTRLMEMORY_API virtual void starting()  throw ( ::fwTools::Failed );
@@ -73,17 +80,23 @@ protected :
      */
     CTRLMEMORY_API virtual void configuring()  throw ( ::fwTools::Failed );
 
-    /// Updates dump locks when object are pushed removed or swaped in composite
-    CTRLMEMORY_API virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw ( ::fwTools::Failed );
+private:
 
-private :
+    /// Slot: add objects
+    void addObjects(::fwData::Composite::ContainerType objects);
+
+    /// Slot: change objects
+    void changeObjects(::fwData::Composite::ContainerType newObjects, ::fwData::Composite::ContainerType oldObjects);
+
+    /// Slot: remove objects
+    void removeObjects(::fwData::Composite::ContainerType objects);
 
     typedef std::string CompositeKeyType;
 
     typedef std::map< CompositeKeyType, ::fwData::ObjectLock > LockMapType;
 
     /// Add or remove lock ( _isLocked parameter ) on composite objects
-    void setDumpLockOnImages(LockMapType &lockMap, SPTR(::fwData::Composite) _composite, bool _isLocked );
+    void setDumpLockOnImages(LockMapType &lockMap, ::fwData::Composite::ContainerType objects, bool _isLocked );
 
     /// Composite keys managed by this service
     std::vector< std::string > m_managedKeys;

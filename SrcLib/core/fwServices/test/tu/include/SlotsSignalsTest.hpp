@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_TEST_TU_SLOTSSIGNALSTEST_HPP_
-#define _FWSERVICES_TEST_TU_SLOTSSIGNALSTEST_HPP_
+#ifndef __FWSERVICES_UT_SLOTSSIGNALSTEST_HPP__
+#define __FWSERVICES_UT_SLOTSSIGNALSTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -16,6 +16,7 @@ namespace ut
 
 class SlotsSignalsTest : public CPPUNIT_NS::TestFixture
 {
+private:
     CPPUNIT_TEST_SUITE( SlotsSignalsTest );
     CPPUNIT_TEST( basicTest );
     CPPUNIT_TEST( comObjectServiceTest );
@@ -39,4 +40,6 @@ public:
 } //namespace ut
 } //namespace fwServices
 
-#endif // _FWSERVICES_TEST_TU_SLOTSSIGNALSTEST_HPP_
+#endif // __FWSERVICES_UT_SLOTSSIGNALSTEST_HPP__
+
+

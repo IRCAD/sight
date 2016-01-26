@@ -1,23 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/adaptor/HistogramCursor.hpp"
+#include "scene2D/data/InitQtPen.hpp"
 
 #include <fwServices/Base.hpp>
 
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
 
-#include <fwComEd/HistogramMsg.hpp>
-
 #include <QGraphicsEllipseItem>
 #include <QFont>
-
-#include "scene2D/Scene2DGraphicsView.hpp"
-#include "scene2D/adaptor/HistogramCursor.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/data/ViewportMsg.hpp"
 
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::HistogramCursor, ::fwData::Histogram);
@@ -27,10 +24,9 @@ namespace scene2D
 namespace adaptor
 {
 
-HistogramCursor::HistogramCursor() throw()
-: m_color("red"), m_borderColor(Qt::gray), m_opacity(0.8), m_pointSize(6)
+HistogramCursor::HistogramCursor() throw() :
+    m_color("red"), m_borderColor(Qt::gray), m_opacity(0.8f), m_index(nullptr), m_pointSize(6.f), m_layer(nullptr)
 {
-//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -68,14 +64,15 @@ void HistogramCursor::configuring() throw( ::fwTools::Failed)
     }
 
     SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
-            !m_configuration->getAttributeValue("viewportUID").empty());
+               !m_configuration->getAttributeValue("viewportUID").empty());
 
     if( !m_configuration->getAttributeValue("viewportUID").empty() )
     {
-        m_viewportID =  m_configuration->getAttributeValue("viewportUID");
+        m_viewportID = m_configuration->getAttributeValue("viewportUID");
     }
 
-    SLM_ASSERT("'histogramPointUID' attribute is missing.", !m_configuration->getAttributeValue("histogramPointUID").empty());
+    SLM_ASSERT("'histogramPointUID' attribute is missing.", !m_configuration->getAttributeValue(
+                   "histogramPointUID").empty());
     m_histogramPointUID = m_configuration->getAttributeValue("histogramPointUID");
 }
 
@@ -83,8 +80,6 @@ void HistogramCursor::configuring() throw( ::fwTools::Failed)
 
 void HistogramCursor::doStart() throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     m_index = new QGraphicsEllipseItem();
     m_index->setBrush( m_color.color() );
     m_index->setPen( m_borderColor );
@@ -103,8 +98,8 @@ void HistogramCursor::doStart() throw( ::fwTools::Failed)
 
     m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
 
-    m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                                this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
+        this->slot(::fwServices::IService::s_UPDATE_SLOT));
 
     // Add the layer containing grid's lines to the scene
     this->getScene2DRender()->getScene()->addItem(m_layer);
@@ -114,8 +109,6 @@ void HistogramCursor::doStart() throw( ::fwTools::Failed)
 
 void HistogramCursor::doStop() throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     m_connection.disconnect();
 }
 
@@ -123,33 +116,34 @@ void HistogramCursor::doStop() throw( ::fwTools::Failed)
 
 void HistogramCursor::doUpdate() throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    this->initializeViewSize();
+    this->initializeViewportSize();
 
-    ::fwData::Histogram::sptr histogram = this->getObject< ::fwData::Histogram>();
+    ::fwData::Histogram::sptr histogram           = this->getObject< ::fwData::Histogram>();
     ::fwData::Histogram::fwHistogramValues values = histogram->getValues();
-    const float histogramMinValue = histogram->getMinValue();
+    const float histogramMinValue  = histogram->getMinValue();
     const float histogramBinsWidth = histogram->getBinsWidth();
 
     // Event coordinates in scene
     ::scene2D::data::Coord sceneCoord = this->getScene2DRender()->mapToScene( m_coord );
 
     int histIndex = (int) sceneCoord.getX();
-    int index = (histIndex - histogramMinValue) / histogramBinsWidth;
+    int index     = (histIndex - histogramMinValue) / histogramBinsWidth;
 
     if(index >= 0 && index < (int)values.size()) // avoid std out_of_range on MS Windows
     {
         ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
         const double viewportHeight = viewport->getHeight();
-        const double viewportWidth = viewport->getWidth();
+        const double viewportWidth  = viewport->getWidth();
 
-        const double viewportSizeRatio = viewportHeight / viewportWidth;
+        const double viewportSizeRatio    = viewportHeight / viewportWidth;
         const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
 
-        const Scene2DRatio ratio = this->getRatio();  // Total ratio
+        const Scene2DRatio ratio   = this->getRatio(); // Total ratio
         const double viewportRatio = this->getViewportSizeRatio().first;
 
-        double diameterH  = m_pointSize;
-        double diameterV  = m_pointSize * viewportSizeRatio;
+        double diameterH = m_pointSize;
+        double diameterV = m_pointSize * viewportSizeRatio;
 
         diameterV /= viewportRatio;
         diameterV *= viewInitialSizeRatio;
@@ -170,42 +164,20 @@ void HistogramCursor::doUpdate() throw( ::fwTools::Failed)
 
 //---------------------------------------------------------------------------------------------------------------
 
-void HistogramCursor::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
-{
-    ::fwComEd::HistogramMsg::csptr histoMsg = ::fwComEd::HistogramMsg::dynamicConstCast(_msg);
-    ::scene2D::data::ViewportMsg::csptr viewportMsg = ::scene2D::data::ViewportMsg::dynamicConstCast(_msg);
-    if (histoMsg && histoMsg->hasEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED))
-    {
-        this->doUpdate();
-    }
-    else if( viewportMsg && viewportMsg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED) )
-    {
-        this->initializeViewSize();
-        this->initializeViewportSize();
-
-        doUpdate();
-    }
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
 void HistogramCursor::doSwap() throw( ::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
 void HistogramCursor::processInteraction( ::scene2D::data::Event::sptr _event )
 {
-    SLM_TRACE_FUNC();
-
     this->initializeViewSize();
     this->initializeViewportSize();
 
     if( _event->getType() == ::scene2D::data::Event::MouseMove )
     {
-       m_coord = _event->getCoord();
+        m_coord = _event->getCoord();
     }
 
     doUpdate();

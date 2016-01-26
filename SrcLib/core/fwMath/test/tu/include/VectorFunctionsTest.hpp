@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMATH_TU_VECTORFUNCTIONSTEST_HPP__
-#define __FWMATH_TU_VECTORFUNCTIONSTEST_HPP__
+#ifndef __FWMATH_UT_VECTORFUNCTIONSTEST_HPP__
+#define __FWMATH_UT_VECTORFUNCTIONSTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -17,12 +17,14 @@ namespace ut
 
 class VectorFunctionsTest : public CPPUNIT_NS::TestFixture
 {
+private:
     CPPUNIT_TEST_SUITE( VectorFunctionsTest );
     CPPUNIT_TEST( checkNormalize);
     CPPUNIT_TEST( checkDot );
     CPPUNIT_TEST( checkCross );
     CPPUNIT_TEST(checkNegate);
     CPPUNIT_TEST(checkVecLength);
+    CPPUNIT_TEST(checkOperators);
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -37,10 +39,12 @@ public:
     void checkNormalize();
     void checkNegate();
     void checkVecLength();
+    void checkOperators();
+
 
 };
 
 } //namespace ut
 } //namespace fwMath
 
-#endif //__FWMATH_TU_VECTORFUNCTIONSTEST_HPP__
+#endif //__FWMATH_UT_VECTORFUNCTIONSTEST_HPP__

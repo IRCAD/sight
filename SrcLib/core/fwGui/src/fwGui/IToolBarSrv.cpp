@@ -1,29 +1,33 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwCore/base.hpp>
-#include <fwTools/fwID.hpp>
-#include <fwServices/Base.hpp>
-
+#include "fwGui/IActionSrv.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
 #include "fwGui/IToolBarSrv.hpp"
-#include "fwGui/IActionSrv.hpp"
+#include "fwGui/registry/worker.hpp"
+
+#include <fwCore/base.hpp>
+#include <fwServices/Base.hpp>
+#include <fwTools/fwID.hpp>
+
+#include <fwThread/Worker.hpp>
+#include <fwThread/Worker.hxx>
 
 namespace fwGui
 {
 
 IToolBarSrv::IToolBarSrv() : m_hideActions (false)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 IToolBarSrv::~IToolBarSrv()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -54,6 +58,14 @@ void IToolBarSrv::initialize()
         {
             m_layoutConfig = vectLayoutMng.at(0);
             this->initializeLayoutManager(m_layoutConfig);
+
+            if (m_layoutConfig->hasAttribute("hideAction"))
+            {
+                std::string hideActions = m_layoutConfig->getAttributeValue("hideActions");
+                SLM_ASSERT("'hideActions' attribute value must be 'true' or 'false'",
+                           hideActions == "true" || hideActions == "false");
+                m_hideActions = (hideActions == "true");
+            }
         }
     }
 }
@@ -67,7 +79,11 @@ void IToolBarSrv::create()
 
     SLM_ASSERT("Parent toolBar is unknown.", toolBar);
     m_layoutManager->setCallbacks(callbacks);
-    m_layoutManager->createLayout(toolBar);
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->createLayout(toolBar);
+        })).wait();
 
     m_registrar->manage(m_layoutManager->getMenuItems());
     m_registrar->manage(m_layoutManager->getMenus());
@@ -79,22 +95,33 @@ void IToolBarSrv::create()
 void IToolBarSrv::destroy()
 {
     m_registrar->unmanage();
-    m_layoutManager->destroyLayout();
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->destroyLayout();
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void IToolBarSrv::actionServiceStopping(std::string actionSrvSID)
 {
-    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+                                                                               m_layoutManager->getMenuItems());
 
     if (m_hideActions)
     {
-        m_layoutManager->menuItemSetVisible(menuItem, false);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetVisible(menuItem, false);
+            })).wait();
     }
     else
     {
-        m_layoutManager->menuItemSetEnabled(menuItem, false);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetEnabled(menuItem, false);
+            })).wait();
     }
 }
 
@@ -102,17 +129,27 @@ void IToolBarSrv::actionServiceStopping(std::string actionSrvSID)
 
 void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
 {
-    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+                                                                               m_layoutManager->getMenuItems());
 
     if (m_hideActions)
     {
-        m_layoutManager->menuItemSetVisible(menuItem, true);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetVisible(menuItem, true);
+            })).wait();
     }
     else
     {
-        ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID ) ;
-        ::fwGui::IActionSrv::sptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
-        m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
+        ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
+        ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
+
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
+                m_layoutManager->menuItemSetChecked(menuItem, actionSrv->getIsActive());
+                m_layoutManager->menuItemSetVisible(menuItem, actionSrv->isVisible());
+            })).wait();
     }
 }
 
@@ -120,20 +157,39 @@ void IToolBarSrv::actionServiceStarting(std::string actionSrvSID)
 
 void IToolBarSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
 {
-    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+                                                                               m_layoutManager->getMenuItems());
 
-    m_layoutManager->menuItemSetChecked(menuItem, isActive);
-
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->menuItemSetChecked(menuItem, isActive);
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void IToolBarSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable)
 {
-    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID, m_layoutManager->getMenuItems());
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+                                                                               m_layoutManager->getMenuItems());
 
-    m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
+        })).wait();
+}
 
+//-----------------------------------------------------------------------------
+
+void IToolBarSrv::actionServiceSetVisible(std::string actionSrvSID, bool isVisible)
+{
+    ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
+                                                                               m_layoutManager->getMenuItems());
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->menuItemSetVisible(menuItem, isVisible);
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -141,12 +197,13 @@ void IToolBarSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isEx
 void IToolBarSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
-            layoutConfig->getName() == "layout");
+                layoutConfig->getName() == "layout");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
-                                                 ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY);
+        ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY);
     m_layoutManager = ::fwGui::layoutManager::IToolBarLayoutManager::dynamicCast(guiObj);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY, m_layoutManager);
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY,
+                m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

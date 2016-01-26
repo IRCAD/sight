@@ -5,6 +5,7 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
     fwMedDataTools
     fwActivities
+    fwCom
     fwComEd
     fwCore
     fwData

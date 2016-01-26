@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,17 +20,17 @@ namespace action
 class MONITOR_CLASS_API MemoryConsumption : public  ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MemoryConsumption)(  ::fwGui::IActionSrv ) ) ;
-
-    /// Does nothing
-    MONITOR_API MemoryConsumption() throw() ;
+    fwCoreServiceClassDefinitionsMacro ( (MemoryConsumption)(  ::fwGui::IActionSrv ) );
 
     /// Does nothing
-    MONITOR_API virtual ~MemoryConsumption() throw() ;
+    MONITOR_API MemoryConsumption() throw();
 
-protected :
+    /// Does nothing
+    MONITOR_API virtual ~MemoryConsumption() throw();
+
+protected:
 
     /**
      * @brief Implements configuring method derived from IService. .
@@ -42,7 +42,7 @@ protected :
             implementation="::monitor::action::MemoryConsumption" autoComChannel="no" >
             <config mode="increase" value="256" />
         </service>
-     @endverbatim
+       @endverbatim
      * With:
      * @li mode : increase or decrease.
      * @li value : optional, consuming memory size in Mo (in "increase" mode).

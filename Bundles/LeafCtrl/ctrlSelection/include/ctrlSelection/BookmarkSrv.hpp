@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_BOOKMARKSRV_HPP_
-#define _CTRLSELECTION_BOOKMARKSRV_HPP_
+#ifndef __CTRLSELECTION_BOOKMARKSRV_HPP__
+#define __CTRLSELECTION_BOOKMARKSRV_HPP__
 
 #include <fwServices/IService.hpp>
 #include <fwServices/IController.hpp>
@@ -19,20 +19,17 @@ namespace ctrlSelection
 /**
  * @class  BookmarkSrv
  * @brief  This service bookmark its object with the name given in configuration.
- * 
-
- * @date   2011.
  */
 class CTRLSELECTION_CLASS_API BookmarkSrv : public ::fwServices::IController
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (BookmarkSrv)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (BookmarkSrv)(::fwServices::IController) );
 
-    CTRLSELECTION_API BookmarkSrv() throw() ;
+    CTRLSELECTION_API BookmarkSrv() throw();
 
-    CTRLSELECTION_API virtual ~BookmarkSrv() throw() ;
+    CTRLSELECTION_API virtual ~BookmarkSrv() throw();
 
 protected:
 
@@ -65,13 +62,10 @@ protected:
 
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    /// Do nothing
-    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
 private:
     std::string m_bookmarkName;
 };
 
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_BOOKMARKSRV_HPP_
+#endif // __CTRLSELECTION_BOOKMARKSRV_HPP__

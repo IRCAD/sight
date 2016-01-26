@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_READER_GENERICOBJECTREADER_HPP_
-#define _FWDATAIO_READER_GENERICOBJECTREADER_HPP_
+#ifndef __FWDATAIO_READER_GENERICOBJECTREADER_HPP__
+#define __FWDATAIO_READER_GENERICOBJECTREADER_HPP__
 
-#include <boost/shared_ptr.hpp>
 
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/IObjectReader.hpp"
@@ -21,7 +20,7 @@ namespace reader
 /**
  * @brief   generic class for all object readers.
  * @class   GenericObjectReader
- * 
+ *
  * @date    2009
  *
  * This class adds 2 methods to the API of IObjectReader. This
@@ -30,10 +29,10 @@ namespace reader
  * already cast.
  */
 template<class DATATYPE>
-class  GenericObjectReader  : virtual public ::fwDataIO::reader::IObjectReader
+class GenericObjectReader : virtual public ::fwDataIO::reader::IObjectReader
 {
 
-public :
+public:
 
     /// the object type related
     typedef DATATYPE DataType;
@@ -41,12 +40,19 @@ public :
     fwCoreNonInstanciableClassDefinitionsMacro( (GenericObjectReader<DATATYPE>)(::fwDataIO::reader::IObjectReader) );
 
     /// Constructor. Do nothing.
-    GenericObjectReader(){};
+    GenericObjectReader()
+    {
+    }
 
-    virtual std::string extension() {return ("");}
+    virtual std::string extension()
+    {
+        return ("");
+    }
 
     /// Destructor. Do nothing.
-    virtual ~GenericObjectReader(){};
+    virtual ~GenericObjectReader()
+    {
+    }
 
     /**
      * @brief m_object setter.
@@ -56,7 +62,7 @@ public :
      */
     virtual void setObject( ::fwTools::Object::sptr obj )
     {
-        assert ( ::boost::dynamic_pointer_cast< DataType >( obj ) );
+        assert ( std::dynamic_pointer_cast< DataType >( obj ) );
         m_object = obj;
     }
 
@@ -66,9 +72,9 @@ public :
      *
      * This method automatic cast object in correct DataType.
      */
-    virtual ::boost::shared_ptr< DataType > getConcreteObject()
+    virtual std::shared_ptr< DataType > getConcreteObject()
     {
-        return ::boost::dynamic_pointer_cast< DataType >( getObject() );
+        return std::dynamic_pointer_cast< DataType >( getObject() );
     }
 
 };
@@ -78,4 +84,4 @@ public :
 } // namespace fwDataIO
 
 
-#endif // _FWDATAIO_READER_GENERICOBJECTREADER_HPP_
+#endif // __FWDATAIO_READER_GENERICOBJECTREADER_HPP__

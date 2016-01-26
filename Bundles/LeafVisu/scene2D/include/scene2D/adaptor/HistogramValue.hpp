@@ -1,17 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_HISTOGRAMVALUE_HPP_
-#define _SCENE2D_HISTOGRAMVALUE_HPP_
+#ifndef __SCENE2D_ADAPTOR_HISTOGRAMVALUE_HPP__
+#define __SCENE2D_ADAPTOR_HISTOGRAMVALUE_HPP__
 
-#include <scene2D/adaptor/IAdaptor.hpp>
+#include "scene2D/data/Viewport.hpp"
+#include "scene2D/adaptor/IAdaptor.hpp"
 
 #include <QGraphicsTextItem>
 
-#include "scene2D/data/Viewport.hpp"
 
 namespace scene2D
 {
@@ -42,7 +42,7 @@ class HistogramValue : public ::scene2D::adaptor::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (HistogramValue)(::scene2D::adaptor::IAdaptor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (HistogramValue)(::scene2D::adaptor::IAdaptor) );
     SCENE2D_API HistogramValue() throw();
     SCENE2D_API virtual ~HistogramValue() throw();
 
@@ -50,7 +50,6 @@ protected:
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
     SCENE2D_API void doStart()    throw ( ::fwTools::Failed );
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
-    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
     SCENE2D_API void doStop()    throw ( ::fwTools::Failed );
 
@@ -95,5 +94,5 @@ private:
 }   // namespace adaptor
 }   // namespace scene2D
 
-#endif  // _SCENE2D_HISTOGRAMVALUEHPP_
+#endif  // __SCENE2D_ADAPTOR_HISTOGRAMVALUE_HPP__
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,11 +16,11 @@ namespace ut
 
 class SignalsTest : public CPPUNIT_NS::TestFixture
 {
+private:
     CPPUNIT_TEST_SUITE( SignalsTest );
 
     CPPUNIT_TEST( buildTest );
     CPPUNIT_TEST( hasSignalsTest );
-    CPPUNIT_TEST( signalsIDTest );
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -31,7 +31,6 @@ public:
 
     void buildTest();
     void hasSignalsTest();
-    void signalsIDTest();
 };
 
 } //namespace ut

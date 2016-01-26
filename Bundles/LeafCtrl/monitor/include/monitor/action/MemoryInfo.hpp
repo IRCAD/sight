@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __MONITOR_MEMORYINFO_HPP__
-#define __MONITOR_MEMORYINFO_HPP__
+#ifndef __MONITOR_ACTION_MEMORYINFO_HPP__
+#define __MONITOR_ACTION_MEMORYINFO_HPP__
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -20,17 +20,17 @@ namespace action
 class MONITOR_CLASS_API MemoryInfo : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MemoryInfo)( ::fwGui::IActionSrv ) ) ;
-
-    /// Does nothing
-    MONITOR_API MemoryInfo() throw() ;
+    fwCoreServiceClassDefinitionsMacro ( (MemoryInfo)( ::fwGui::IActionSrv ) );
 
     /// Does nothing
-    MONITOR_API virtual ~MemoryInfo() throw() ;
+    MONITOR_API MemoryInfo() throw();
 
-protected :
+    /// Does nothing
+    MONITOR_API virtual ~MemoryInfo() throw();
+
+protected:
 
     /// Calls classic IAction methods to configure
     void configuring() throw (::fwTools::Failed);
@@ -49,5 +49,5 @@ protected :
 } // namespace action
 } // namespace monitor
 
-#endif // __MONITOR_MEMORYINFO_HPP__
+#endif // __MONITOR_ACTION_MEMORYINFO_HPP__
 

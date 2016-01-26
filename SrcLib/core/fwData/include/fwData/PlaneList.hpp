@@ -7,12 +7,16 @@
 #ifndef __FWDATA_PLANELIST_HPP__
 #define __FWDATA_PLANELIST_HPP__
 
-#include <vector>
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Plane.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
+#include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(PlaneList), FWDATA_API);
 namespace fwData
@@ -24,9 +28,8 @@ namespace fwData
 class FWDATA_CLASS_API PlaneList : public Object
 {
 
-public :
-    fwCoreClassDefinitionsWithFactoryMacro( (PlaneList)(::fwData::Object),
-        (()), ::fwData::factory::New< PlaneList >) ;
+public:
+    fwCoreClassDefinitionsWithFactoryMacro( (PlaneList)(::fwData::Object), (()), ::fwData::factory::New< PlaneList >);
 
     fwCampMakeFriendDataMacro((fwData)(PlaneList));
 
@@ -48,18 +51,70 @@ public :
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    // Looking for duplicate plan
-    FWDATA_API void deleteDuplicatedPlan(void);
+    /** @{
+     *  @brief get/set container of all planes
+     */
+    const PlaneListContainer  getPlanes () const;
+    PlaneListContainer & getRefPlanes ();
+    const PlaneListContainer & getCRefPlanes () const;
+    void setPlanes (const PlaneListContainer& _vPlanes);
+    /// @}
 
-    /// Planes container
-    fwGettersSettersDocMacro(Planes, vPlanes, PlaneListContainer, a container of all planes);
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Signal emitted when a plane is added
+    typedef ::fwCom::Signal< void (::fwData::Plane::sptr) > PlaneAddedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_PLANE_ADDED_SIG;
 
-protected :
+    /// Signal emitted when a plane is removed
+    typedef ::fwCom::Signal< void (::fwData::Plane::sptr) > PlaneRemovedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_PLANE_REMOVED_SIG;
+
+    /// Signal emitted when the visibility changed
+    typedef ::fwCom::Signal< void (bool) > VisibilityModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
+    /**
+     * @}
+     */
+
+protected:
 
     //! Planes container
     PlaneListContainer m_vPlanes;
 
 }; // end class PlaneList
+
+//-----------------------------------------------------------------------------
+
+inline const PlaneList::PlaneListContainer PlaneList::getPlanes () const
+{
+    return m_vPlanes;
+}
+
+//-----------------------------------------------------------------------------
+
+inline PlaneList::PlaneListContainer & PlaneList::getRefPlanes ()
+{
+    return this->m_vPlanes;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const PlaneList::PlaneListContainer & PlaneList::getCRefPlanes () const
+{
+    return this->m_vPlanes;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void PlaneList::setPlanes (const PlaneList::PlaneListContainer& _vPlanes)
+{
+    this->m_vPlanes = _vPlanes;
+}
+
+//-----------------------------------------------------------------------------
 
 } // end namespace fwData
 

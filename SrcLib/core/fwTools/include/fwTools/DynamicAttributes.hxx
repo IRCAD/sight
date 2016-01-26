@@ -1,24 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
-#define _FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
+#ifndef __FWTOOLS_DYNAMICATTRIBUTES_HXX__
+#define __FWTOOLS_DYNAMICATTRIBUTES_HXX__
 
-#include <map>
-#include <vector>
-
-#include <boost/ref.hpp>
-#include <boost/foreach.hpp>
+#include "fwTools/macros.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwCore/Demangler.hpp>
 
-#include "fwTools/macros.hpp"
+#include <boost/ref.hpp>
+#include <map>
+#include <vector>
 
-namespace fwTools {
+namespace fwTools
+{
 
 class DynamicAttributesBase
 {
@@ -32,13 +31,13 @@ class DynamicAttributes : public DynamicAttributesBase
 {
 
 public:
-    typedef std::string  AttrNameType;
-    typedef SPTR(CLASS)  AttrType;
+    typedef std::string AttrNameType;
+    typedef SPTR (CLASS)  AttrType;
     typedef std::vector< AttrNameType > AttrNameVectorType;
     typedef ::boost::reference_wrapper< AttrType > AttrRefType;
     typedef std::map< AttrNameType, AttrRefType > AttrMapType;
 
-    typedef CSPTR(CLASS) ConstAttrType;
+    typedef CSPTR (CLASS) ConstAttrType;
 
     DynamicAttributes();
     virtual ~DynamicAttributes();
@@ -55,7 +54,8 @@ public:
 
     virtual AttrNameVectorType getAttributeNames();
 
-    virtual fwToolsRegisterAttributeSignatureMacro() {};
+    virtual fwToolsRegisterAttributeSignatureMacro() {
+    };
 protected:
     virtual AttrRefType getAttributeRef( AttrNameType attrName );
     AttrMapType __FWTOOLS_ATTRIBUTE_MAP_NAME;
@@ -92,22 +92,23 @@ typename DynamicAttributes< CLASS >::AttrRefType DynamicAttributes< CLASS >::get
 {
     typename DynamicAttributes::AttrMapType::iterator iter = this->__FWTOOLS_ATTRIBUTE_MAP_NAME.find(attrName);
     OSLM_FATAL_IF(
-            "Object "<< ::fwCore::getFullClassname< CLASS >() << "has no attribute named '"<< attrName << "'",
-            iter == this->__FWTOOLS_ATTRIBUTE_MAP_NAME.end()
-            );
+        "Object "<< ::fwCore::getFullClassname< CLASS >() << "has no attribute named '"<< attrName << "'",
+        iter == this->__FWTOOLS_ATTRIBUTE_MAP_NAME.end()
+        );
     return (*iter).second;
 }
 
 //------------------------------------------------------------------------------
 
 template< class CLASS >
-typename DynamicAttributes< CLASS >::ConstAttrType DynamicAttributes< CLASS >::getConstAttribute( AttrNameType attrName ) const
+typename DynamicAttributes< CLASS >::ConstAttrType DynamicAttributes< CLASS >::getConstAttribute( AttrNameType attrName )
+const
 {
     typename DynamicAttributes::AttrMapType::const_iterator iter = this->__FWTOOLS_ATTRIBUTE_MAP_NAME.find(attrName);
     OSLM_FATAL_IF(
-            "Object "<< ::fwCore::getFullClassname< CLASS >() << "has no attribute named '"<< attrName << "'",
-            iter == this->__FWTOOLS_ATTRIBUTE_MAP_NAME.end()
-            );
+        "Object "<< ::fwCore::getFullClassname< CLASS >() << "has no attribute named '"<< attrName << "'",
+        iter == this->__FWTOOLS_ATTRIBUTE_MAP_NAME.end()
+        );
     return (*iter).second.get();
 }
 
@@ -123,7 +124,7 @@ bool DynamicAttributes< CLASS >::hasAttribute( AttrNameType attrName )
 //------------------------------------------------------------------------------
 
 template< class CLASS >
-typename DynamicAttributes< CLASS >::AttrNameVectorType  DynamicAttributes< CLASS >::getAttributeNames()
+typename DynamicAttributes< CLASS >::AttrNameVectorType DynamicAttributes< CLASS >::getAttributeNames()
 {
     AttrNameVectorType names;
     typename DynamicAttributes::AttrMapType::const_iterator iter;
@@ -136,4 +137,4 @@ typename DynamicAttributes< CLASS >::AttrNameVectorType  DynamicAttributes< CLAS
 
 } //end namespace fwTools
 
-#endif //_FWTOOLS_DYNAMIC_ATTRIBUTE_HXX_
+#endif //__FWTOOLS_DYNAMICATTRIBUTES_HXX__

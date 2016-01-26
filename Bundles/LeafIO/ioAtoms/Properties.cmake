@@ -4,18 +4,22 @@ set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES
     fwAtomConversion
+    fwAtoms
     fwAtomsBoostIO
-    fwAtomsHdf5IO
     fwAtomsPatch
     fwAtomsFilter
     fwComEd
+    fwTools
+    fwCore
     fwData
     fwDataCamp
     fwGui
+    fwJobs
     fwMemory
     fwRuntime
     fwServices
     fwZip
+    fwCom
     io
     )
 set( REQUIREMENTS  )

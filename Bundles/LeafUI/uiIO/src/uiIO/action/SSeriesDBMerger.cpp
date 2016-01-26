@@ -1,40 +1,51 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwMedData/Series.hpp>
+#include "uiIO/action/SSeriesDBMerger.hpp"
 
-#include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ServiceConfig.hpp>
-#include <fwServices/IEditionService.hpp>
-
-#include <fwGui/Cursor.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwComEd/helper/SeriesDB.hpp>
 
-#include "uiIO/action/SSeriesDBMerger.hpp"
+#include <fwGui/Cursor.hpp>
+
+#include <fwJobs/IJob.hpp>
+
+#include <fwMedData/Series.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
 
 namespace uiIO
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiIO::action::SSeriesDBMerger , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiIO::action::SSeriesDBMerger, ::fwMedData::SeriesDB );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+static const ::fwCom::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob";
 
 //------------------------------------------------------------------------------
 
-SSeriesDBMerger::SSeriesDBMerger( ) throw() : m_ioSelectorSrvConfig ("IOSelectorServiceConfigVRRenderReader")
-{}
+SSeriesDBMerger::SSeriesDBMerger( ) throw() :
+    m_ioSelectorSrvConfig ("IOSelectorServiceConfigVRRenderReader")
+{
+    m_sigJobCreated  = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+    m_slotForwardJob = newSlot( FORWARD_JOB_SLOT, &SSeriesDBMerger::forwardJob, this );
+}
 
 //------------------------------------------------------------------------------
 
 SSeriesDBMerger::~SSeriesDBMerger() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -54,8 +65,8 @@ void SSeriesDBMerger::configuring() throw( ::fwTools::Failed )
     if(!vectConfig.empty())
     {
         ConfigurationType selectorConfig = vectConfig.at(0);
-        SLM_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name")) ;
-        m_ioSelectorSrvConfig = selectorConfig->getAttributeValue("name") ;
+        SLM_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
+        m_ioSelectorSrvConfig = selectorConfig->getAttributeValue("name");
     }
 }
 
@@ -75,19 +86,28 @@ void SSeriesDBMerger::updating( ) throw(::fwTools::Failed)
 
     // Get the config
     ::fwRuntime::ConfigurationElement::csptr ioCfg;
-    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig ,
-                                                                                  "::uiIO::editor::IOSelectorService");
-    SLM_ASSERT("Sorry, there is not service configuration "
+    ioCfg = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(m_ioSelectorSrvConfig,
+                                                                                  "::uiIO::editor::SIOSelector");
+    SLM_ASSERT("There is no service configuration "
                << m_ioSelectorSrvConfig
-               << " for ::uiIO::editor::IOSelectorService", ioCfg) ;
+               << " for ::uiIO::editor::SIOSelector", ioCfg);
 
     // Init and execute the service
     ::fwServices::IService::sptr ioSelectorSrv;
     ioSelectorSrv = ::fwServices::add(localSeriesDB,
                                       "::gui::editor::IDialogEditor",
-                                      "::uiIO::editor::IOSelectorService");
-    ioSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) ) ;
-    ioSelectorSrv->configure() ;
+                                      "::uiIO::editor::SIOSelector");
+
+    ioSelectorSrv->setWorker(m_associatedWorker);
+
+    auto jobCreatedSignal = ioSelectorSrv->signal("jobCreated");
+    if(jobCreatedSignal)
+    {
+        jobCreatedSignal->connect(m_slotForwardJob);
+    }
+
+    ioSelectorSrv->setConfiguration( ::fwRuntime::ConfigurationElement::constCast(ioCfg) );
+    ioSelectorSrv->configure();
     ioSelectorSrv->start();
     ioSelectorSrv->update();
     ioSelectorSrv->stop();
@@ -95,7 +115,7 @@ void SSeriesDBMerger::updating( ) throw(::fwTools::Failed)
 
     ::fwComEd::helper::SeriesDB sDBhelper(seriesDB);
     sDBhelper.merge(localSeriesDB);
-    sDBhelper.notify(this->getSptr());
+    sDBhelper.notify();
 }
 
 //------------------------------------------------------------------------------
@@ -107,11 +127,6 @@ void SSeriesDBMerger::starting() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{}
-
-//------------------------------------------------------------------------------
-
 void SSeriesDBMerger::stopping() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStopping();
@@ -119,5 +134,12 @@ void SSeriesDBMerger::stopping() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+void SSeriesDBMerger::forwardJob(::fwJobs::IJob::sptr iJob)
+{
+    m_sigJobCreated->emit(iJob);
+}
+
+//------------------------------------------------------------------------------
+//
 } // namespace action
 } // namespace uiIO

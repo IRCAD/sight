@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_REGISTRYMANAGER_VIEWREGISTRYMANAGER_HPP_
-#define _FWGUI_REGISTRYMANAGER_VIEWREGISTRYMANAGER_HPP_
+#ifndef __FWGUI_REGISTRAR_VIEWREGISTRAR_HPP__
+#define __FWGUI_REGISTRAR_VIEWREGISTRAR_HPP__
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -24,7 +24,7 @@ namespace registrar
 /**
  * @brief   Defines the generic view manager for IHM.
  * @class   ViewRegistrar
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -33,7 +33,8 @@ class FWGUI_CLASS_API ViewRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ViewRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new ViewRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (ViewRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )),
+                                            new ViewRegistrar );
 
     /// Constructor.
     FWGUI_API ViewRegistrar( const std::string &sid);
@@ -50,7 +51,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-        <service uid="subView1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+        <service uid="subView1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
                     <orientation value="horizontal" />
@@ -70,7 +71,7 @@ public:
                 <view wid="subView5" />
             </registry>
         </service>
-      @endverbatim
+       @endverbatim
      * - \<parent wid="myView" /\> : This section isn't mandatory. When the parent section is present, the wid attribute is used to find its parent container.
      * Otherwise, the service uid is used to find its parent container.
      * - \<toolBar sid="toolbar1" start="yes" /\> : This section isn't mandatory.
@@ -168,6 +169,6 @@ protected:
 } // namespace registrar
 } // namespace fwGui
 
-#endif /*_FWGUI_REGISTRYMANAGER_VIEWREGISTRYMANAGER_HPP_*/
+#endif /*__FWGUI_REGISTRAR_VIEWREGISTRAR_HPP__*/
 
 

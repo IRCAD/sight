@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@
 
 namespace fwAtoms
 {
-    class Object;
+class Object;
 }
 
 namespace fwAtomsPatch
@@ -33,7 +33,7 @@ class FWATOMSPATCH_CLASS_API PatchingManager
 public:
 
     /// Default constructor
-    FWATOMSPATCH_API PatchingManager(SPTR(::fwAtoms::Object) object);
+    FWATOMSPATCH_API PatchingManager(SPTR(::fwAtoms::Object)object);
 
     /// Default destructor
     FWATOMSPATCH_API ~PatchingManager();

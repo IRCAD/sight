@@ -1,26 +1,32 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_CONFIGTEMPLATEMANAGER_HPP_
-#define _FWSERVICES_CONFIGTEMPLATEMANAGER_HPP_
+#ifndef __FWSERVICES_APPCONFIGMANAGER_HPP__
+#define __FWSERVICES_APPCONFIGMANAGER_HPP__
+
+#include "fwServices/config.hpp"
+#include "fwServices/helper/SigSlotConnection.hpp"
+#include "fwServices/IService.hpp"
+#include "fwServices/IXMLParser.hpp"
+#include "fwServices/registry/AppConfig.hpp"
+
+#include <fwRuntime/ConfigurationElement.hpp>
+
+#include <fwTools/Object.hpp>
+
+#include <boost/tuple/tuple.hpp>
 
 #include <vector>
 #include <string>
 #include <utility>
 
-#include <boost/tuple/tuple.hpp>
-
-#include <fwTools/Object.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-
-#include "fwServices/config.hpp"
-#include "fwServices/IXMLParser.hpp"
-#include "fwServices/IService.hpp"
-#include "fwServices/helper/SigSlotConnection.hpp"
+namespace fwData
+{
+class Composite;
+}
 
 namespace fwServices
 {
@@ -28,7 +34,7 @@ namespace fwServices
  * @class   AppConfigManager
  * @brief   This class provides an API to manage config template.
  *
- * 
+ *
  * @date    2007-2009.
  */
 class FWSERVICES_CLASS_API AppConfigManager : public ::fwTools::Object
@@ -43,12 +49,13 @@ protected:
     };
     typedef std::vector< ::fwServices::IService::wptr > ServiceContainer;
     typedef ::boost::tuple< std::string, bool > ConfigAttribute;
+    typedef registry::AppConfig::FieldAdaptorType FieldAdaptorType;
 
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro((AppConfigManager)(::fwTools::Object),
                                            (()),
-                                           ::boost::make_shared< AppConfigManager >);
+                                           std::make_shared< AppConfigManager >);
 
     /// Constructor. Do nothing.
     FWSERVICES_API AppConfigManager();
@@ -57,16 +64,43 @@ public:
     FWSERVICES_API virtual ~AppConfigManager();
 
     /// Return state
-    bool isCreated() { return m_state == STATE_CREATED; }
-    bool isStarted() { return m_state == STATE_STARTED; }
-    bool isStopped() { return m_state == STATE_STOPPED; }
-    bool isDestroyed() { return m_state == STATE_DESTROYED; }
+    bool isCreated()
+    {
+        return m_state == STATE_CREATED;
+    }
+    bool isStarted()
+    {
+        return m_state == STATE_STARTED;
+    }
+    bool isStopped()
+    {
+        return m_state == STATE_STOPPED;
+    }
+    bool isDestroyed()
+    {
+        return m_state == STATE_DESTROYED;
+    }
 
     /// Set config param
     void setConfig(::fwRuntime::ConfigurationElement::csptr cfgElem)
     {
         m_cfgElem = cfgElem;
     }
+
+    /**
+     * @brief Set configuration
+     * @param configId the identifier of the requested config.
+     * @param replaceFields the associations between the value and the pattern to replace in the config.
+     */
+    FWSERVICES_API void setConfig(const std::string& configId,
+                                  const FieldAdaptorType &replaceFields = FieldAdaptorType());
+
+    /**
+     * @brief Set configuration
+     * @param configId the identifier of the requested config.
+     * @param replaceFields composite of association between the value and the pattern to replace in the config.
+     */
+    FWSERVICES_API void setConfig(const std::string& configId, const ::fwData::Composite::csptr &replaceFields);
 
     /// Get config root
     ::fwData::Object::sptr getConfigRoot() const
@@ -76,7 +110,14 @@ public:
 
     /// Get config root with autocast
     template < class ClassName >
-    ::boost::shared_ptr< ClassName > getConfigRoot() const;
+    std::shared_ptr< ClassName > getConfigRoot() const;
+
+    /**
+     * @brief Starts the bundle associated to the config
+     * @note  Does nothing if the bundle is already started or if the config id is not specified (ie. if config is set
+     *        with setConfig(::fwRuntime::ConfigurationElement::csptr cfgElem) ).
+     */
+    FWSERVICES_API virtual void startBundle();
 
     /// Creates objects and services from config
     FWSERVICES_API virtual void create();
@@ -112,10 +153,12 @@ protected:
         ProxyEltVectType m_signals;
 
         ProxyConnections(const std::string& channel) : m_channel(channel)
-        {}
+        {
+        }
 
         ~ProxyConnections()
-        {}
+        {
+        }
 
         void addSlotConnection(UIDType uid, KeyType key)
         {
@@ -133,6 +176,8 @@ protected:
     ::fwRuntime::ConfigurationElement::csptr m_cfgElem;
     ProxyConnectionsVectType m_vectProxyCtns;
 
+    std::string m_configId;
+
     ConfigState m_state;
 
     ServiceContainer m_createdSrv;
@@ -140,29 +185,29 @@ protected:
     helper::SigSlotConnection::sptr m_connections;
 
     FWSERVICES_API ::fwData::Object::sptr getNewObject(
-            ConfigAttribute type,
-            const std::string& uid,
-            ConfigAttribute id=ConfigAttribute("", false));
+        ConfigAttribute type,
+        const std::string& uid,
+        ConfigAttribute id = ConfigAttribute("", false));
 
     FWSERVICES_API ::fwData::Object::sptr getNewObject(
-            ConfigAttribute type,
-            ConfigAttribute uid=ConfigAttribute("", false),
-            ConfigAttribute id=ConfigAttribute("", false));
+        ConfigAttribute type,
+        ConfigAttribute uid = ConfigAttribute("", false),
+        ConfigAttribute id = ConfigAttribute("", false));
 
     FWSERVICES_API ::fwData::Object::sptr getRefObject(
-            ConfigAttribute type,
-            const std::string& uid,
-            ConfigAttribute id=ConfigAttribute("", false));
+        ConfigAttribute type,
+        const std::string& uid,
+        ConfigAttribute id = ConfigAttribute("", false));
 
     FWSERVICES_API ::fwServices::IService::sptr getNewService(
-            ConfigAttribute type,
-            ConfigAttribute uid,
-            ConfigAttribute implType);
+        ConfigAttribute type,
+        ConfigAttribute uid,
+        ConfigAttribute implType);
 
     FWSERVICES_API void autoSigSlotConnection(
-            ::fwData::Object::sptr obj,
-            ::fwServices::IService::sptr srv,
-            ConfigAttribute priority);
+        ::fwData::Object::sptr obj,
+        ::fwServices::IService::sptr srv,
+        ConfigAttribute priority);
 
     FWSERVICES_API void startConnections();
     FWSERVICES_API void stopConnections();
@@ -179,7 +224,6 @@ protected:
 
     FWSERVICES_API virtual void bindService(::fwRuntime::ConfigurationElement::csptr srvElem);
     FWSERVICES_API virtual void createConnections();
-    FWSERVICES_API virtual void createConnection(::fwRuntime::ConfigurationElement::csptr connectionCfg);
     FWSERVICES_API virtual void createProxy(::fwRuntime::ConfigurationElement::csptr config);
     FWSERVICES_API virtual void destroyProxies();
 };
@@ -188,4 +232,4 @@ protected:
 
 #include "fwServices/AppConfigManager.hxx"
 
-#endif // _FWSERVICES_CONFIGTEMPLATEMANAGER_HPP_
+#endif // __FWSERVICES_APPCONFIGMANAGER_HPP__

@@ -7,12 +7,13 @@
 #ifndef __FWDATA_SPLINE_HPP__
 #define __FWDATA_SPLINE_HPP__
 
-#include <vector>
-#include <boost/cstdint.hpp>
-
+#include "fwData/Color.hpp"
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
-#include "fwData/Color.hpp"
+
+#include <boost/cstdint.hpp>
+#include <vector>
+
 
 namespace fwData
 {
@@ -22,8 +23,8 @@ namespace fwData
  */
 class FWDATA_CLASS_API Spline : public Object
 {
-public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object), (()), ::fwData::factory::New< Spline >) ;
+public:
+    fwCoreClassDefinitionsWithFactoryMacro( (Spline)(::fwData::Object), (()), ::fwData::factory::New< Spline >);
 
     /**
      * @struct point
@@ -41,21 +42,21 @@ public :
 
         point &operator=( const point & _point )
         {
-            this->id = _point.id;
-            this->p[0] = _point.p[0];
-            this->p[1] = _point.p[1];
-            this->p[2] = _point.p[2];
+            this->id        = _point.id;
+            this->p[0]      = _point.p[0];
+            this->p[1]      = _point.p[1];
+            this->p[2]      = _point.p[2];
             this->normal[0] = _point.normal[0];
             this->normal[1] = _point.normal[1];
             this->normal[2] = _point.normal[2];
             this->isVisible = _point.isVisible;
-            c = ::fwData::Object::copy( _point.c );
+            c               = ::fwData::Object::copy( _point.c );
             return(*this);
-        };
+        }
     };
 
     /// 3D %point container
-    typedef std::vector< point > Points ;
+    typedef std::vector< point > Points;
 
     /**
      * @brief Constructor
@@ -66,33 +67,159 @@ public :
     /**
      * @brief destructor
      */
-    FWDATA_API virtual ~Spline() ;
+    FWDATA_API virtual ~Spline();
 
     /**
      * @brief returns editable point container
      */
-    FWDATA_API Points &points() ;
+    FWDATA_API Points &points();
 
-    fwGettersSettersDocMacro(Radius, radius, double, radius value);
+    /**
+     * @{
+     * @brief Get/Set value of the radius.
+     */
+    const double  getRadius () const;
+    double & getRefRadius ();
+    const double & getCRefRadius () const;
+    void setRadius(double _radius);
+    /// @}
 
-    fwGettersSettersDocMacro(NbSides, nbSides, int, number of slices);
+    /**
+     * @{
+     * @brief Get/Set value of the number of slices.
+     */
+    const int  getNbSides () const;
+    int & getRefNbSides ();
+    const int & getCRefNbSides () const;
+    void setNbSides (const int _nbSides);
+    void setCRefNbSides (const int & _nbSides);
+    /// @}
 
-    fwGettersSettersDocMacro(IdSpline, idSpline, int, spline identifier);
+    /**
+     * @{
+     * @brief Get/Set value of the spline identifier.
+     */
+    const int  getIdSpline () const;
+    int & getRefIdSpline ();
+    const int & getCRefIdSpline () const;
+    void setIdSpline (const int _idSpline);
+    void setCRefIdSpline (const int & _idSpline);
+    /// @}
 
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-protected :
+protected:
 
     /// Points container
-    Points      m_points ;
-    double      m_radius;
-    int         m_nbSides;
-    int         m_idSpline;
+    Points m_points;
+    double m_radius;
+    int m_nbSides;
+    int m_idSpline;
 
-} ;
+};
+
+//-----------------------------------------------------------------------------
+
+inline const double Spline::getRadius () const
+{
+    return m_radius;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double & Spline::getRefRadius ()
+{
+    return m_radius;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const double & Spline::getCRefRadius () const
+{
+    return m_radius;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Spline::setRadius(double _radius)
+{
+    m_radius = _radius;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const int Spline::getNbSides () const
+{
+    return m_nbSides;
+}
+
+//-----------------------------------------------------------------------------
+
+inline int & Spline::getRefNbSides ()
+{
+    return this->m_nbSides;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const int & Spline::getCRefNbSides () const
+{
+    return m_nbSides;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Spline::setNbSides (const int _nbSides)
+{
+    m_nbSides = _nbSides;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Spline::setCRefNbSides (const int & _nbSides)
+{
+    m_nbSides = _nbSides;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const int Spline::getIdSpline () const
+{
+    return m_idSpline;
+}
+
+//-----------------------------------------------------------------------------
+
+inline int & Spline::getRefIdSpline ()
+{
+    return m_idSpline;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const int & Spline::getCRefIdSpline () const
+{
+    return m_idSpline;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Spline::setIdSpline (const int _idSpline)
+{
+    m_idSpline = _idSpline;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Spline::setCRefIdSpline (const int & _idSpline)
+{
+    m_idSpline = _idSpline;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 
-#endif // _FWDATA_SPLINE_HPP_
+#endif // __FWDATA_SPLINE_HPP__
 

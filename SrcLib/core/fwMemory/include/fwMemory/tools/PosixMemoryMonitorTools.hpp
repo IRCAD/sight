@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWMEMORY_POSIXMEMORYMONITORTOOLS_HPP_
-#define _FWMEMORY_POSIXMEMORYMONITORTOOLS_HPP_
+#ifndef __FWMEMORY_TOOLS_POSIXMEMORYMONITORTOOLS_HPP__
+#define __FWMEMORY_TOOLS_POSIXMEMORYMONITORTOOLS_HPP__
 
-#ifdef linux
+#if defined(linux) || defined(__linux)
 
 #include <boost/cstdint.hpp>
 #include <string>
@@ -33,14 +33,14 @@ struct MemInfo {
 
     MemInfo()
     {
-        total = 0;
-        free = 0;
-        buffered = 0;
-        cached = 0;
+        total      = 0;
+        free       = 0;
+        buffered   = 0;
+        cached     = 0;
         swapcached = 0;
-        swaptotal = 0;
-        swapfree = 0;
-    };
+        swaptotal  = 0;
+        swapfree   = 0;
+    }
 
 };
 
@@ -63,15 +63,15 @@ struct Status {
     {
         VmPeak = 0;
         VmSize = 0;
-        VmLck = 0;
-        VmHWM = 0;
-        VmRSS = 0;
+        VmLck  = 0;
+        VmHWM  = 0;
+        VmRSS  = 0;
         VmData = 0;
-        VmStk = 0;
-        VmExe = 0;
-        VmLib = 0;
-        VmPTE = 0;
-    };
+        VmStk  = 0;
+        VmExe  = 0;
+        VmLib  = 0;
+        VmPTE  = 0;
+    }
 
 };
 
@@ -82,9 +82,9 @@ class FWMEMORY_CLASS_API PosixMemoryMonitorTools
 
 public:
 
-    FWMEMORY_API PosixMemoryMonitorTools() ;
+    FWMEMORY_API PosixMemoryMonitorTools();
 
-    FWMEMORY_API ~PosixMemoryMonitorTools() ;
+    FWMEMORY_API ~PosixMemoryMonitorTools();
 
 
 
@@ -110,7 +110,7 @@ public:
 
     FWMEMORY_API static ::boost::uint64_t getUsedProcessMemory();
 
-private :
+private:
 
     static ::boost::uint64_t s_pageSize;
     static ::boost::uint64_t s_totalMemory;
@@ -137,6 +137,6 @@ private :
 } // namespace tools
 } // namespace fwMemory
 
-#endif
+#endif //defined(linux) || defined(__linux)
 
-#endif // _FWMEMORY_POSIXMEMORYMONITORTOOLS_HPP_
+#endif // __FWMEMORY_TOOLS_POSIXMEMORYMONITORTOOLS_HPP__

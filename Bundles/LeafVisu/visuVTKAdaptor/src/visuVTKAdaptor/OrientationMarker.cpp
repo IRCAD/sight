@@ -1,9 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+#ifndef ANDROID
 
+#include "visuVTKAdaptor/OrientationMarker.hpp"
 
 #include <fwServices/macros.hpp>
 
@@ -19,17 +21,12 @@
 #include <vtkSmartPointer.h>
 
 
-
-#include "visuVTKAdaptor/OrientationMarker.hpp"
-
-
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::OrientationMarker, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::OrientationMarker, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
 
-OrientationMarker::OrientationMarker(): m_hAlign("left")
+OrientationMarker::OrientationMarker() : m_hAlign("left")
 {
 }
 
@@ -41,12 +38,10 @@ void OrientationMarker::doStart() throw(fwTools::Failed)
     reader->SetFileName("Bundles/visuVTKAdaptor_0-1/human.vtk");
     reader->Update();
     vtkDataObject *obj = reader->GetOutput();
-    vtkPolyData* mesh = vtkPolyData::SafeDownCast(obj);
+    vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);
 
-    if(!obj)
-    {
-        SLM_WARN("Orientation marker load failed ");
-    }
+    SLM_WARN_IF("Orientation marker load failed", !obj);
+
 
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     mapper->SetInputData(mesh);
@@ -81,17 +76,17 @@ void OrientationMarker::doStop() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void OrientationMarker::configuring() throw(fwTools::Failed)
+void OrientationMarker::doConfigure() throw(fwTools::Failed)
 {
     if(m_configuration->hasAttribute("hAlign"))
     {
         m_hAlign = m_configuration->getAttributeValue("hAlign");
         SLM_ASSERT("'hAlign' value must be 'left', 'center' or 'right'",
                    m_hAlign == "left"
-                   || m_hAlign == "right"
-                  );
+                   || m_hAlign == "right");
     }
 }
 
 
 } //namespace visuVTKAdaptor
+#endif // ANDROID

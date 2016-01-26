@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,13 +17,15 @@ namespace fwTools
 
 TypeInfo::TypeInfo()
 {
-    class Nil {};
+    class Nil
+    {
+    };
     pInfo_ = &typeid(Nil);
     SLM_ASSERT("pInfo_ not instanced", pInfo_);
 }
 
 TypeInfo::TypeInfo(const std::type_info& ti)
-: pInfo_(&ti)
+    : pInfo_(&ti)
 {
     SLM_ASSERT("pInfo_ not instanced", pInfo_);
 }
@@ -63,7 +65,7 @@ bool operator==(const TypeInfo& lhs, const TypeInfo& rhs)
 // typeinfo can have different ptr on the same strucure !!!!
 //http://gcc.gnu.org/ml/gcc/2002-05/msg02085.html
 {
-    return strcmp(lhs.type_info().name() , rhs.type_info().name() )== 0;
+    return strcmp(lhs.type_info().name(), rhs.type_info().name() )== 0;
 }
 
 
@@ -75,24 +77,24 @@ bool operator!=(const TypeInfo& lhs, const TypeInfo& rhs)
 
 bool operator<(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-    return strcmp(lhs.type_info().name() , rhs.type_info().name() )<  0;
+    return strcmp(lhs.type_info().name(), rhs.type_info().name() )<  0;
 }
 
 
 
 bool operator>(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-    return strcmp(lhs.type_info().name() , rhs.type_info().name() )>  0;
+    return strcmp(lhs.type_info().name(), rhs.type_info().name() )>  0;
 }
 
 bool operator<=(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-    return strcmp(lhs.type_info().name() , rhs.type_info().name() )<= 0;
+    return strcmp(lhs.type_info().name(), rhs.type_info().name() )<= 0;
 }
 
 bool operator>=(const TypeInfo& lhs, const TypeInfo& rhs)
 {
-    return strcmp(lhs.type_info().name() , rhs.type_info().name() )>= 0;
+    return strcmp(lhs.type_info().name(), rhs.type_info().name() )>= 0;
 }
 
 

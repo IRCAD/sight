@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
-
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/StructureTraits.hpp"
+
+#include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::StructureTraits );
 
@@ -26,7 +26,8 @@ StructureTraits::StructureTraits(::fwData::Object::Key key) : m_anatomicRegion("
 //------------------------------------------------------------------------------
 
 StructureTraits::~StructureTraits ()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -34,11 +35,11 @@ void StructureTraits::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheT
 {
     StructureTraits::csptr other = StructureTraits::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
-    OSLM_FATAL("Not implemented." );
+    SLM_FATAL("Not implemented." );
 }
 
 } // namespace fwData

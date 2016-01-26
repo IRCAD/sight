@@ -1,111 +1,124 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vtkCommand.h>
-#include <vtkHandleWidget.h>
-#include <vtkSphereHandleRepresentation.h>
+#ifndef ANDROID
 
-#include <fwData/Point.hpp>
-#include <fwData/Material.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
-
-#include <fwComEd/PointMsg.hpp>
-
-#include <vtkSphereSource.h>
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkPicker.h>
-#include <vtkPropCollection.h>
-#include <vtkProperty.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkWidgetEventTranslator.h>
 
 #include "fwRenderVTK/vtk/Helpers.hpp"
 #include "fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp"
 #include "visuVTKAdaptor/Point.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
+#include <fwData/Point.hpp>
+#include <fwData/Material.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <vtkActor.h>
+#include <vtkCommand.h>
+#include <vtkHandleWidget.h>
+#include <vtkPicker.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPropCollection.h>
+#include <vtkProperty.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkSphereHandleRepresentation.h>
+#include <vtkSphereSource.h>
+#include <vtkWidgetEventTranslator.h>
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Point, ::fwData::Point ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Point, ::fwData::Point );
 
 namespace visuVTKAdaptor
 {
 
+const ::fwCom::Signals::SignalKeyType Point::s_INTERACTION_STARTED_SIG = "interactionStarted";
+
+//------------------------------------------------------------------------------
+
 class vtkPointUpdateCallBack : public vtkCommand
 {
 
-public :
+public:
     static vtkPointUpdateCallBack *New( ::fwRenderVTK::IVtkAdaptorService *service)
-    { return new vtkPointUpdateCallBack(service); }
+    {
+        return new vtkPointUpdateCallBack(service);
+    }
 
-    vtkPointUpdateCallBack( ::fwRenderVTK::IVtkAdaptorService *service )
-    : m_service(service),
-      m_pickLimiter (0)
-    {}
+    vtkPointUpdateCallBack( ::fwRenderVTK::IVtkAdaptorService *service ) :
+        m_service(service),
+        m_pickLimiter (0)
+    {
+    }
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
     {
         vtkHandleWidget *handler = vtkHandleWidget::SafeDownCast(caller);
-        if (!handler) {return;}
+        if (!handler)
+        {
+            return;
+        }
 
         if ( eventId == vtkCommand::StartInteractionEvent)
         {
-            handler->AddObserver("EndInteractionEvent" ,this );
-            handler->AddObserver("InteractionEvent" ,this );
+            handler->AddObserver("EndInteractionEvent",this );
+            handler->AddObserver("InteractionEvent",this );
 
         }
         else if ( eventId == vtkCommand::EndInteractionEvent )
         {
-            handler->RemoveObservers("EndInteractionEvent" ,this );
-            handler->RemoveObservers("InteractionEvent" ,this );
+            handler->RemoveObservers("EndInteractionEvent",this );
+            handler->RemoveObservers("InteractionEvent",this );
         }
 
-        ::fwData::Point::sptr point= m_service->getObject< ::fwData::Point >();
+        ::fwData::Point::sptr point = m_service->getObject< ::fwData::Point >();
 
         vtkHandleRepresentation *representation = vtkHandleRepresentation::SafeDownCast(handler->GetRepresentation());
         SLM_ASSERT("handler not instanced", handler);
         double *world = representation->GetWorldPosition();
 
-        ::fwComEd::PointMsg::sptr msg = ::fwComEd::PointMsg::New();// (  new fwServices::ObjectMsg(point) );
-
         if ( (m_pickLimiter-- == 0 && eventId == vtkCommand::InteractionEvent)
-                || eventId == vtkCommand::EndInteractionEvent )
+             || eventId == vtkCommand::EndInteractionEvent )
         {
-            m_pickLimiter=2;
+            m_pickLimiter = 2;
 
             double display[3];
             int x,y;
             handler->GetInteractor()->GetLastEventPosition(x,y);
-            display[0]=x;
-            display[1]=y;
-            display[2]=0;
+            display[0] = x;
+            display[1] = y;
+            display[2] = 0;
 
-            if ( m_service->getPicker() && m_service->getPicker()->Pick( display , m_service->getRenderer() ) )
+            if ( m_service->getPicker() && m_service->getPicker()->Pick( display, m_service->getRenderer() ) )
             {
                 ::fwRenderVTK::vtk::getNearestPickedPosition(m_service->getPicker(), m_service->getRenderer(), world);
             }
         }
         else if (eventId == vtkCommand::StartInteractionEvent)
         {
-            msg->addEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION );
+            auto sig = m_service->signal< Point::InteractionStartedSignalType >(Point::s_INTERACTION_STARTED_SIG);
+            sig->asyncEmit();
         }
 
-        std::copy( world, world+3 , point->getRefCoord().begin() );
+        std::copy( world, world+3, point->getRefCoord().begin() );
 
-        msg->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );//setAllModified();
-
-        ::fwServices::IEditionService::notify( m_service->getSptr(), point, msg );
+        auto sig = point->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        {
+            ::fwCom::SlotBase::sptr slot;
+            slot = m_service->slot(::fwServices::IService::s_UPDATE_SLOT );
+            ::fwCom::Connection::Blocker block(sig->getConnection(slot));
+            sig->asyncEmit();
+        }
         m_service->update();
     }
 
-protected :
+protected:
 
     ::fwRenderVTK::IVtkAdaptorService * m_service;
 
@@ -116,12 +129,11 @@ protected :
 
 Point::Point() throw() :
     m_handle( vtkHandleWidget::New() ),
-//    m_representation( vtkSphereHandleRepresentation::New() ),
     m_representation( ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::New() ),
-    m_pointUpdateCommand(0)
+    m_pointUpdateCommand(nullptr)
 {
     m_handle->SetRepresentation(m_representation);
-    m_handle->SetPriority(0.8);
+    m_handle->SetPriority(0.8f);
 
     vtkWidgetEventTranslator *translator = m_handle->GetEventTranslator();
 
@@ -137,33 +149,25 @@ Point::Point() throw() :
     rep->GetMarkerProperty()->SetOpacity(.3);
     rep->SetHandleSize(7);
 
-    //addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
+    newSignal<InteractionStartedSignalType>(s_INTERACTION_STARTED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
 Point::~Point() throw()
 {
-    SLM_TRACE_FUNC();
-
     m_handle->SetRepresentation(0);
     m_handle->Delete();
-    m_handle = 0;
+    m_handle = nullptr;
 
     m_representation->Delete();
-    m_representation = 0;
-
+    m_representation = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
-void Point::configuring() throw(fwTools::Failed)
+void Point::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
 
 //------------------------------------------------------------------------------
@@ -207,21 +211,9 @@ void Point::doUpdate() throw(fwTools::Failed)
     assert ( point->getCRefCoord().size()==3 );
     std::copy(point->getCRefCoord().begin(),point->getCRefCoord().end(), ps  );
     m_representation->SetWorldPosition( ps );
-//  getRenderService()->update();
+    //getRenderService()->update();
     getRenderer()->ResetCameraClippingRange();
     this->setVtkPipelineModified();
-}
-
-//------------------------------------------------------------------------------
-
-void Point::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_ASSERT("ACH : receive a msg that no concern his object", _msg->getSubject().lock() == this->getObject() );
-    ::fwComEd::PointMsg::csptr pointMsg = ::fwComEd::PointMsg::dynamicConstCast( _msg );
-    if ( pointMsg && pointMsg->hasEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED ) )
-    {
-        this->doUpdate();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -244,7 +236,7 @@ void Point::doStop() throw(fwTools::Failed)
 void Point::setColor(double red, double green, double blue, double alpha)
 {
     ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation *rep =
-            ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
+        ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
     SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
     rep->GetProperty()->SetColor(red, green, blue);
     rep->GetProperty()->SetOpacity(alpha);
@@ -256,7 +248,7 @@ void Point::setColor(double red, double green, double blue, double alpha)
 void Point::setSelectedColor(double red, double green, double blue, double alpha)
 {
     ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation *rep =
-                ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
+        ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
     SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
     rep->GetSelectedProperty()->SetColor(red, green, blue);
     rep->GetSelectedProperty()->SetOpacity(alpha);
@@ -265,4 +257,16 @@ void Point::setSelectedColor(double red, double green, double blue, double alpha
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsType Point::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

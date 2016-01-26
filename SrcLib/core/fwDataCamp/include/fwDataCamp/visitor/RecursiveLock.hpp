@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,12 +17,12 @@
 
 namespace fwData
 {
-    class Object;
+class Object;
 
-    namespace mt
-    {
-        class ObjectReadLock;
-    }
+namespace mt
+{
+class ObjectReadLock;
+}
 }
 
 
@@ -56,8 +56,8 @@ public:
      * @param object data object (containing child data objects) to lock recursively
      * @param locks container of previously acquired locks
      */
-    FWDATACAMP_API RecursiveLock( SPTR(::fwData::Object) object,
-                                  SPTR(LockVectType) locks = SPTR(LockVectType)(new LockVectType()));
+    FWDATACAMP_API RecursiveLock( SPTR(::fwData::Object)object,
+                                  SPTR(LockVectType)locks = SPTR(LockVectType)(new LockVectType()));
 
     FWDATACAMP_API virtual ~RecursiveLock();
 
@@ -72,7 +72,7 @@ public:
     FWDATACAMP_API virtual void visit(const camp::MapProperty& property);
     /**  @} */
 
-private :
+private:
 
     /// Locks associated object recursively (called by constructor).
     void lock();

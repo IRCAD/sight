@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,11 +8,11 @@
  * @file fwTools/macros.hpp
  * @brief TODO
  *
- * 
+ *
  */
 
-#ifndef _FWTOOLS_ATTRIBUTESMACROS_HPP_
-#define _FWTOOLS_ATTRIBUTESMACROS_HPP_
+#ifndef __FWTOOLS_MACROS_HPP__
+#define __FWTOOLS_MACROS_HPP__
 
 #include <boost/ref.hpp>
 
@@ -61,7 +61,7 @@
 //-----------------------------------
 //
 #define fwToolsSetMacro( _memberprefix, _type, _var)                                      \
-    void set##_var (const _type fwToolsPrependParamPrefixMacro(_var))                     \
+    void set ## _var (const _type fwToolsPrependParamPrefixMacro(_var))                     \
     {                                                                                     \
         this->BOOST_PP_CAT( _memberprefix, _var ) = fwToolsPrependParamPrefixMacro(_var); \
     }
@@ -69,7 +69,7 @@
 //-----------------------------------
 //
 #define fwToolsSetCRefMacro( _memberprefix, _type, _var)                                  \
-    void setCRef##_var (const _type & fwToolsPrependParamPrefixMacro(_var))               \
+    void setCRef ## _var (const _type &fwToolsPrependParamPrefixMacro(_var))               \
     {                                                                                     \
         this->BOOST_PP_CAT( _memberprefix, _var ) = fwToolsPrependParamPrefixMacro(_var); \
     }
@@ -89,7 +89,7 @@
 //-----------------------------------
 //
 #define fwToolsGetMacro( _memberprefix, _type, _var) \
-    const _type get##_var () const                   \
+    const _type get ## _var () const                   \
     {                                                \
         return BOOST_PP_CAT( _memberprefix, _var );  \
     }
@@ -97,7 +97,7 @@
 //-----------------------------------
 //
 #define fwToolsGetRefMacro( _memberprefix, _type, _var)   \
-    _type & getRef##_var ()                               \
+    _type & getRef ## _var ()                               \
     {                                                     \
         return this->BOOST_PP_CAT( _memberprefix, _var ); \
     }
@@ -105,7 +105,7 @@
 //-----------------------------------
 //
 #define fwToolsGetCRefMacro( _memberprefix, _type, _var)  \
-    const _type & getCRef##_var () const                  \
+    const _type &getCRef ## _var () const                  \
     {                                                     \
         return this->BOOST_PP_CAT( _memberprefix, _var ); \
     }
@@ -117,34 +117,34 @@
     /** @name BOOST_PP_CAT( _memberprefix, _var ) accessor */                       \
     /** Getter/Setter for _var                            */                        \
     /** @{                                                */                        \
-    fwToolsGetterMacro( _memberprefix, fwToolsAttributeTypeMacro( _type ) , _name); \
-    fwToolsSetterMacro( _memberprefix, fwToolsAttributeTypeMacro( _type ) , _name); \
+    fwToolsGetterMacro( _memberprefix, fwToolsAttributeTypeMacro( _type ), _name); \
+    fwToolsSetterMacro( _memberprefix, fwToolsAttributeTypeMacro( _type ), _name); \
     /**@}                                                 */
 
 
 #define fwToolsDeclareAttrMacro( _memberprefix, _type, _name, _desc )          \
     /** @desc _desc **/                                                        \
-     fwToolsAttributeTypeMacro( _type )  BOOST_PP_CAT( _memberprefix, _name );
+    fwToolsAttributeTypeMacro( _type )  BOOST_PP_CAT( _memberprefix, _name );
 
 
 #define fwToolsDeclareAttrTypedefMacro( _type, _name, _desc ) \
     /** @desc _desc **/                                       \
-     typedef _type BOOST_PP_CAT( _name, Type );
+    typedef _type BOOST_PP_CAT ( _name, Type );
 
 
 
 #define __FWTOOLS_ONE_ATTR_REGISTER_MACRO( _memberprefix, _type, _name, _desc )  \
     /* Register the specified attribute in the map */                            \
-      /* Insert pair into map */                                                 \
-      __FWTOOLS_ATTRIBUTE_MAP_NAME.insert(                                       \
-              std::make_pair(                                                    \
-                  BOOST_PP_STRINGIZE(_name),                                     \
-                  boost::ref( (AttrType&) BOOST_PP_CAT( _memberprefix, _name ) ) \
-                  ));
+    /* Insert pair into map */                                                 \
+    __FWTOOLS_ATTRIBUTE_MAP_NAME.insert(                                       \
+        std::make_pair(                                                    \
+            BOOST_PP_STRINGIZE(_name),                                     \
+            boost::ref( (AttrType&) BOOST_PP_CAT( _memberprefix, _name ) ) \
+            ));
 
 #define __FWTOOLS_SET_ONE_ATTR_MACRO(_type, _name, _desc )                                          \
     /* check the given object and Set the specified attribute value */                              \
-    else if( BOOST_PP_STRINGIZE(_name) == attrName && BOOST_PP_CAT(_name,Type)::dynamicCast(_obj) ) \
+    else if( BOOST_PP_STRINGIZE(_name) == attrName && BOOST_PP_CAT(_name,Type) ::dynamicCast(_obj) ) \
     {                                                                                               \
         theAttr = _obj;                                                                             \
     }
@@ -166,22 +166,22 @@
 
 
 #define fwToolsOneAttrGetterSetterMacro( r, _data_memberprefix, _tuple )                 \
-    BOOST_PP_EXPAND( fwGetterSetterMacro  __FWTOOLS_PREPEND_TO_TUPLE_MACRO(3, _tuple, _data_memberprefix))
+    BOOST_PP_EXPAND( fwGetterSetterMacro __FWTOOLS_PREPEND_TO_TUPLE_MACRO(3, _tuple, _data_memberprefix))
 
 #define fwToolsSetOneAttrMacro( r, data, _tuple ) \
     __FWTOOLS_SET_ONE_ATTR_MACRO _tuple
 
 
 #define fwToolsDeclareAttributesMacro( _memberprefix, _attributes )                   \
-        BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrDeclareMacro, _memberprefix, _attributes)
+    BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrDeclareMacro, _memberprefix, _attributes)
 
 #define fwToolsDeclareAttributesTypedefMacro( _memberprefix, _attributes )                   \
-        BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrTypedefDeclareMacro, _memberprefix, _attributes)
+    BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrTypedefDeclareMacro, _memberprefix, _attributes)
 
 
 #define fwToolsGetterSetterAttributesMacro( _memberprefix, _attributes )                   \
     /** @cond **/                                                                          \
-        BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrGetterSetterMacro, _memberprefix, _attributes) \
+    BOOST_PP_SEQ_FOR_EACH(fwToolsOneAttrGetterSetterMacro, _memberprefix, _attributes) \
     /** @endcond **/
 
 
@@ -207,7 +207,7 @@
         else                                                                               \
         {                                                                                  \
             OSLM_FATAL( "Attribute '"<<attrName<<"' of object '"<< this->getClassname()    \
-                      <<"' can not handle a object of type '"<<_obj->getClassname()<<"'"); \
+                                     <<"' can not handle a object of type '"<<_obj->getClassname()<<"'"); \
         }                                                                                  \
     }                                                                                      \
     /** @endcond **/
@@ -228,4 +228,4 @@
     fwToolsPrefixedAttributesMacro( __FWTOOLS_MEMBER_PREFIX, _attributes )
 
 
-#endif //_FWTOOLS_ATTRIBUTESMACROS_HPP_
+#endif //__FWTOOLS_MACROS_HPP__

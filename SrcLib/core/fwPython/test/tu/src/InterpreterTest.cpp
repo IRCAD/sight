@@ -1,26 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <exception>
-#include <vector>
-#include <ostream>
-#include <map>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/assign/std/vector.hpp>
-#include <boost/foreach.hpp>
-
-#include <fwData/String.hpp>
-#include <fwData/factory/new.hpp>
-
-#include "fwPython/python.hpp"
 #include "fwPython/bindings/base.hpp"
 #include "fwPython/Interpreter.hpp"
+#include "fwPython/python.hpp"
 #include "InterpreterTest.hpp"
 
+#include <fwData/factory/new.hpp>
+#include <fwData/String.hpp>
+
+#include <boost/assign/std/vector.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <exception>
+#include <iostream>
+#include <map>
+#include <ostream>
+#include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwPython::ut::InterpreterTest );
@@ -57,10 +55,10 @@ void InterpreterTest::helloWorld()
     int succes;
 
     succes = interpreter.execute(
-            "a = 'hello world'\n"
-            );
+        "a = 'hello world'\n"
+        );
 
-    CPPUNIT_ASSERT_EQUAL( succes , 0 );
+    CPPUNIT_ASSERT_EQUAL( succes, 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -72,10 +70,10 @@ void InterpreterTest::fail()
     int succes;
 
     succes = interpreter.execute(
-            "assert 0\n"
-            );
+        "assert 0\n"
+        );
 
-    CPPUNIT_ASSERT_EQUAL( succes , -1 );
+    CPPUNIT_ASSERT_EQUAL( succes, -1 );
 }
 
 
@@ -88,11 +86,11 @@ void InterpreterTest::import()
     int succes;
 
     succes = interpreter.execute(
-            "import os\n"
-            "assert os\n"
-            );
+        "import os\n"
+        "assert os\n"
+        );
 
-    CPPUNIT_ASSERT_EQUAL( succes , 0 );
+    CPPUNIT_ASSERT_EQUAL( succes, 0 );
 }
 
 
@@ -105,10 +103,10 @@ void InterpreterTest::importFwDataBindings()
 
     int succes;
     succes = interpreter.execute(
-            "import fwData\n"
-            );
+        "import fwData\n"
+        );
 
-    CPPUNIT_ASSERT_EQUAL( succes , 0 );
+    CPPUNIT_ASSERT_EQUAL( succes, 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -130,7 +128,7 @@ void InterpreterTest::testFwDataBindings()
 
 
     std::string base = "::fwData::";
-    BOOST_FOREACH(std::string name, classes)
+    for(std::string name :  classes)
     {
         std::string klass = base + name;
         interpreter.addObject(name, ::fwData::factory::New(klass) );
@@ -141,7 +139,7 @@ void InterpreterTest::testFwDataBindings()
         code += "assert " + name + ".getClassname() == '" + klass + "'\n";
 
         succes = interpreter.execute( code );
-        CPPUNIT_ASSERT_EQUAL( succes , 0 );
+        CPPUNIT_ASSERT_EQUAL( succes, 0 );
     }
 
 }
@@ -154,16 +152,16 @@ void InterpreterTest::changeValue()
 
     int succes;
 
-    ::fwData::String::sptr str =  ::fwData::String::New("a string in fwData");
+    ::fwData::String::sptr str = ::fwData::String::New("a string in fwData");
     interpreter.addObject("myStr", str );
 
     succes = interpreter.execute(
-            "assert myStr.value == 'a string in fwData'\n"
-            "myStr.value = 'changed value in python'\n"
-            );
+        "assert myStr.value == 'a string in fwData'\n"
+        "myStr.value = 'changed value in python'\n"
+        );
 
-    CPPUNIT_ASSERT_EQUAL( succes , 0 );
-    CPPUNIT_ASSERT_EQUAL( str->value() , std::string("changed value in python") );
+    CPPUNIT_ASSERT_EQUAL( succes, 0 );
+    CPPUNIT_ASSERT_EQUAL( str->value(), std::string("changed value in python") );
 }
 
 } // namespace ut

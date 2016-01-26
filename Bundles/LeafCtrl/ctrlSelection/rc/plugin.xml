@@ -1,4 +1,4 @@
-<plugin id="ctrlSelection" class="::ctrlSelection::Plugin" >
+<plugin id="ctrlSelection" class="::ctrlSelection::Plugin"  version="@DASH_VERSION@" >
 
     <library name="ctrlSelection" />
 
@@ -7,31 +7,13 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::SReconstructionFromModelSeriesUpdater</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::ReconstructionFromResecUpdaterSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
         <service>::ctrlSelection::updater::ObjFromMsgUpdaterSrv</service>
         <object>::fwData::Composite</object>
     </extension>
 
-   <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::DataInfoFromMsgUpdaterSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::TranslateUpdater</service>
+        <service>::ctrlSelection::updater::STranslate</service>
         <object>::fwData::Composite</object>
     </extension>
 
@@ -73,37 +55,25 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::ctrlSelection::IWrapperSrv</type>
-        <service>::ctrlSelection::wrapper::GraphWrapperSrv</service>
-        <object>::fwData::Graph</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IWrapperSrv</type>
-        <service>::ctrlSelection::wrapper::ImageWrapperSrv</service>
+        <service>::ctrlSelection::wrapper::SImageSignalForwarder</service>
         <object>::fwData::Image</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IWrapperSrv</type>
-        <service>::ctrlSelection::wrapper::MsgForwarderSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IWrapperSrv</type>
-        <service>::ctrlSelection::wrapper::ObjToCompositeMsgForwarderSrv</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IWrapperSrv</type>
-        <service>::ctrlSelection::wrapper::MsgWrapperSrv</service>
-        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::ctrlSelection::IUpdaterSrv</type>
         <service>::ctrlSelection::updater::SDrop</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::SObjFromSlot</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::ctrlSelection::IUpdaterSrv</type>
+        <service>::ctrlSelection::updater::SObjFromUid</service>
         <object>::fwData::Composite</object>
     </extension>
 

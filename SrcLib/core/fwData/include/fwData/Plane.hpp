@@ -7,13 +7,14 @@
 #ifndef __FWDATA_PLANE_HPP__
 #define __FWDATA_PLANE_HPP__
 
-#include <vector>
-
-#include <fwMath/IntrasecTypes.hpp>
-
 #include "fwData/config.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Point.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
+#include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(Plane), FWDATA_API);
 namespace fwData
@@ -25,13 +26,12 @@ namespace fwData
 class FWDATA_CLASS_API Plane : public Object
 {
 
-public :
-    fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object),
-        (()), ::fwData::factory::New< Plane >) ;
+public:
+    fwCoreClassDefinitionsWithFactoryMacro( (Plane)(::fwData::Object), (()), ::fwData::factory::New< Plane >);
 
     fwCampMakeFriendDataMacro((fwData)(Plane));
 
-    typedef ::boost::array< ::fwData::Point::sptr, 3> PointContainer;
+    typedef std::array< ::fwData::Point::sptr, 3> PointContainer;
 
 
     /**
@@ -49,30 +49,42 @@ public :
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    /*
-     * @brief Compare method
-     *
-     * Compare plane normal and distance from origin
-     */
-    FWDATA_API bool operator==( const Plane & _plane ) ;
-
-    /// get the plane coordinate
-    fwPlane getPlane() const {return m_plane;};
-
     /// Re-initialize the plane with 3 points
-    FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2, ::fwData::Point::sptr _point3);
+    FWDATA_API void setValue(::fwData::Point::sptr _point1, ::fwData::Point::sptr _point2,
+                             ::fwData::Point::sptr _point3);
 
-    /// Compute plane normal and distance from points coordinates
-    FWDATA_API void computePlaneFromPoints();
+    /** @{
+     *  @brief get/set points container
+     */
+    const PointContainer getPoints() const;
+    PointContainer& getRefPoints();
+    const PointContainer& getCRefPoints() const;
+    void setPoints(const PointContainer _vPoints);
+    void setCRefPoints(const PointContainer& _vPoints);
+    /// @}
 
-    /// Points container
-    fwGettersSettersDocMacro(Points, vPoints, PointContainer, a container of all points);
+    /** @{
+     *  @brief get/set flag if the plane is an intersection one (else an union one)
+     */
+    bool getIsIntersection () const;
+    bool& getRefIsIntersection ();
+    const bool& getCRefIsIntersection () const;
+    void setIsIntersection(bool _isIntersection);
+    /// @}
 
-    fwGettersSettersDocMacro(IsIntersection, isIntersection, bool, flag if the plane is an intersection one (else an union one));
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Signal emitted when plane is selected/deselected
+    typedef ::fwCom::Signal< void (bool) > SelectedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_SELECTED_SIG;
+    /**
+     * @}
+     */
 
-protected :
+protected:
 
-    fwPlane m_plane;
     //! Points container
     PointContainer m_vPoints;
 
@@ -80,6 +92,71 @@ protected :
     bool m_isIntersection;
 
 }; // end class Plane
+
+//-----------------------------------------------------------------------------
+
+inline const Plane::PointContainer Plane::getPoints() const
+{
+    return m_vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Plane::PointContainer& Plane::getRefPoints()
+{
+    return this->m_vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Plane::PointContainer& Plane::getCRefPoints() const
+{
+    return this->m_vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Plane::setPoints(const Plane::PointContainer _vPoints)
+{
+    this->m_vPoints = _vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Plane::setCRefPoints(const Plane::PointContainer& _vPoints)
+{
+    this->m_vPoints = _vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool Plane::getIsIntersection () const
+{
+    return m_isIntersection;
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool& Plane::getRefIsIntersection ()
+{
+    return this->m_isIntersection;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const bool& Plane::getCRefIsIntersection () const
+{
+    return this->m_isIntersection;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Plane::setIsIntersection(bool _isIntersection)
+{
+    this->m_isIntersection = _isIntersection;
+}
+
+//-----------------------------------------------------------------------------
 
 } // end namespace fwData
 

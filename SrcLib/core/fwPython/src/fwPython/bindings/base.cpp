@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,7 @@
 // HACK -- CRIME SCENE -- DOT NOT CROSS {
 struct IServiceProxy
 {
-    typedef SPTR(IServiceProxy) sptr ;
+    typedef SPTR (IServiceProxy) sptr;
 
     IServiceProxy(const ::fwTools::Object::sptr obj)
     {
@@ -34,11 +34,20 @@ struct IServiceProxy
         service = ::fwServices::IService::dynamicCast(obj);
         SLM_ASSERT("Cast to service failed", service);
         this->m_service = service;
-    };
+    }
 
-    void start() { m_service->start();  };
-    void update(){ m_service->update();   };
-    void stop()  { m_service->stop(); };
+    void start()
+    {
+        m_service->start();
+    }
+    void update()
+    {
+        m_service->update();
+    }
+    void stop()
+    {
+        m_service->stop();
+    }
 
     ::fwServices::IService::sptr m_service;
 
@@ -59,8 +68,8 @@ BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
     using namespace ::boost::python;
 
     // fwTools::Object binding
-    class_< ::fwTools::Object , ::fwTools::Object::sptr, boost::noncopyable >("Object",no_init)
-                .def("getClassname", &::fwTools::Object::className );
+    class_< ::fwTools::Object, ::fwTools::Object::sptr, boost::noncopyable >("Object",no_init)
+    .def("getClassname", &::fwTools::Object::className );
 
     def( "getObject", &::fwTools::fwID::getObject );
     def( "getSrv", &getSrv );
@@ -71,15 +80,15 @@ BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
         bases< ::fwTools::Object >,
         ::fwData::Object::sptr,
         boost::noncopyable
-            >("Object",no_init);
+        >("Object",no_init);
 
     // fwServices::IService binding
 
     class_< IServiceProxy >("IService",no_init)
-        .def("update", &IServiceProxy::update)
-        .def("start", &IServiceProxy::start)
-        .def("stop", &IServiceProxy::stop)
-        ;
+    .def("update", &IServiceProxy::update)
+    .def("start", &IServiceProxy::start)
+    .def("stop", &IServiceProxy::stop)
+    ;
 
     // fwData:: generic fields bindings
     class_<
@@ -87,27 +96,27 @@ BOOST_PYTHON_MODULE(fwData) // create a void initimage() function
         bases< ::fwData::Object >,
         ::fwData::Boolean::sptr,
         boost::noncopyable
-            >("Boolean", no_init)
-            .add_property("value",  &::fwData::Boolean::getValue  ,  &::fwData::Boolean::setValue );
+        >("Boolean", no_init)
+    .add_property("value",  &::fwData::Boolean::getValue,  &::fwData::Boolean::setValue );
 
     class_< ::fwData::Float, bases< ::fwData::Object >, ::fwData::Float::sptr, boost::noncopyable >("Float", no_init)
-              .add_property("value",  &::fwData::Float::getValue  ,  &::fwData::Float::setValue );
+    .add_property("value",  &::fwData::Float::getValue,  &::fwData::Float::setValue );
 
     class_<
         ::fwData::Integer,
         bases< ::fwData::Object >,
         ::fwData::Integer::sptr,
         boost::noncopyable
-            >("Integer", no_init)
-              .add_property("value",  &::fwData::Integer::getValue  ,  &::fwData::Integer::setValue );
+        >("Integer", no_init)
+    .add_property("value",  &::fwData::Integer::getValue,  &::fwData::Integer::setValue );
 
     class_<
         ::fwData::String,
         bases< ::fwData::Object >,
         ::fwData::String::sptr,
         boost::noncopyable
-            >("String", no_init)
-              .add_property("value",  &::fwData::String::getValue  ,  &::fwData::String::setValue );
+        >("String", no_init)
+    .add_property("value",  &::fwData::String::getValue,  &::fwData::String::setValue );
 
     ::fwPython::bindings::export_STLContainers();
     ::fwPython::bindings::export_image();
@@ -129,9 +138,9 @@ void initialize()
     }
 
     SLM_ASSERT(
-            "Python interpreter have to be initialzed before bindings.",
-            ::fwPython::isInitialized()
-            );
+        "Python interpreter have to be initialzed before bindings.",
+        ::fwPython::isInitialized()
+        );
 
     initfwData();
     initialized = true;

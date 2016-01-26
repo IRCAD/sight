@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ class FWATOMSPATCH_CLASS_API StructuralPatchDB
 {
 
 public:
-    typedef SPTR(StructuralPatchDB) sptr;
+    typedef SPTR (StructuralPatchDB) sptr;
     ///Typedef used to store the pair classname/version of a data structure
     typedef std::pair< std::string, std::string > VersionIDType;
     ///Typedef used to store link to data structure
@@ -58,27 +58,36 @@ public:
      * @note This method is thread safe.
      */
     FWATOMSPATCH_API SPTR(::fwAtomsPatch::IStructuralPatch) getPatch(const std::string& originClassname,
-                                                                            const std::string& originVersion,
-                                                                            const std::string& targetClassname,
-                                                                            const std::string& targetVersion) const;
+                                                                     const std::string& originVersion,
+                                                                     const std::string& targetClassname,
+                                                                     const std::string& targetVersion) const;
 
     /// Retrieves number of patch.
-   FWATOMSPATCH_API size_t size() const;
+    FWATOMSPATCH_API size_t size() const;
 
-   /// Returns default instance.
-   static ::fwAtomsPatch::StructuralPatchDB::sptr getDefault() { return s_default; }
+    /// Returns default instance.
+    static ::fwAtomsPatch::StructuralPatchDB::sptr getDefault()
+    {
+        return s_default;
+    }
 
-   /// Constructor
-    StructuralPatchDB() {};
+    /// Constructor
+    StructuralPatchDB()
+    {
+    }
 
     /// Destructor
-    ~StructuralPatchDB() {};
+    ~StructuralPatchDB()
+    {
+    }
 
 private:
 
 
     /// Copy constructor
-    StructuralPatchDB( const StructuralPatchDB &cpy ) {};
+    StructuralPatchDB( const StructuralPatchDB &cpy )
+    {
+    }
 
     /// Mutex to protect concurrent access for m_patches
     mutable ::fwCore::mt::ReadWriteMutex m_mutex;

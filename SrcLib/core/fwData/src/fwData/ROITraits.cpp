@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
-
 #include "fwData/registry/macros.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/ROITraits.hpp"
+
+#include <fwCore/base.hpp>
 
 fwDataRegisterMacro( ::fwData::ROITraits );
 
@@ -18,16 +18,18 @@ namespace fwData
 //------------------------------------------------------------------------------
 
 ROITraits::ROITraits(::fwData::Object::Key key)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 ROITraits::~ROITraits()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
-void ROITraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
+void ROITraits::setMaskOpNode(const ::fwData::Node::sptr& maskOpNode )
 {
     m_maskOpNode = maskOpNode;
 }
@@ -46,7 +48,7 @@ void ROITraits::setMaskOpNode( ::fwData::Node::sptr maskOpNode )
 
 //------------------------------------------------------------------------------
 
-void ROITraits::setStructureTraits( ::fwData::StructureTraits::sptr structureTraits )
+void ROITraits::setStructureTraits(const ::fwData::StructureTraits::sptr& structureTraits )
 {
     m_structureTraits = structureTraits;
 }
@@ -64,8 +66,8 @@ void ROITraits::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &c
 {
     ROITraits::csptr other = ROITraits::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (source?source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( source, cache );
 
     OSLM_FATAL("Not implemented." );

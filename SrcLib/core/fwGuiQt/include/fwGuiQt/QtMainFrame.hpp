@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_MAINFRAME_HPP_
-#define _FWGUIQT_MAINFRAME_HPP_
+#ifndef __FWGUIQT_QTMAINFRAME_HPP__
+#define __FWGUIQT_QTMAINFRAME_HPP__
 
 
 #include <QPointer>
@@ -20,12 +20,12 @@ namespace fwGuiQt
 
 /**
  * @brief A qt panel used to control a VTK 2D Negatoscope view.
- * 
+ *
  */
 class QtMainFrame : public QMainWindow
 {
 
-    Q_OBJECT
+Q_OBJECT
 
 public:
     /**
@@ -50,4 +50,4 @@ private:
 
 } // fwGuiQt
 
-#endif // _FWGUIQT_MAINFRAME_HPP_
+#endif // __FWGUIQT_QTMAINFRAME_HPP__

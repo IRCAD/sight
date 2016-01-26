@@ -1,27 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/ImageSeries.hpp"
 
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Material.hpp>
 #include <fwData/Boolean.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwMedData/ImageSeries.hpp>
-
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
-
-#include "visuVTKAdaptor/ImageSeries.hpp"
-
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSeries, ::fwMedData::ImageSeries );
 
@@ -30,33 +26,33 @@ namespace visuVTKAdaptor
 
 
 ImageSeries::ImageSeries() throw() :
-        m_allowAlphaInTF(false),
-        m_interpolation(false),
-        m_3dModeEnabled ( ::boost::logic::indeterminate ),
-        m_sliceMode(NegatoMPR::THREE_SLICES)
+    m_allowAlphaInTF(false),
+    m_interpolation(false),
+    m_3dModeEnabled ( ::boost::logic::indeterminate ),
+    m_sliceMode(NegatoMPR::THREE_SLICES)
 
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 ImageSeries::~ImageSeries() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::configuring() throw(fwTools::Failed)
+void ImageSeries::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
 
     if (m_configuration->hasAttribute("mode"))
     {
         std::string value(m_configuration->getAttributeValue("mode"));
         std::transform(value.begin(), value.end(), value.begin(), tolower);
-        OSLM_ASSERT("Sorry, bad value "<<value<<" for attribute mode.",
+        OSLM_ASSERT("Bad value "<<value<<" for attribute mode, it should either be '3d' or '2d'.",
                     value == "3d" || value == "2d");
         this->set3dMode(value == "3d");
     }
@@ -80,7 +76,7 @@ void ImageSeries::configuring() throw(fwTools::Failed)
     }
     if(m_configuration->hasAttribute("sliceIndex"))
     {
-        std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
+        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
         if(orientation == "axial" )
         {
             m_orientation = Z_AXIS;
@@ -93,10 +89,6 @@ void ImageSeries::configuring() throw(fwTools::Failed)
         {
             m_orientation = X_AXIS;
         }
-    }
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
     }
     if(m_configuration->hasAttribute("tfalpha") )
     {
@@ -131,7 +123,7 @@ void ImageSeries::doUpdate() throw(fwTools::Failed)
     ::fwData::Image::sptr image = series->getImage();
 
     ::fwRenderVTK::IVtkAdaptorService::sptr service =
-            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, "::visuVTKAdaptor::NegatoMPR" );
+        ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, "::visuVTKAdaptor::NegatoMPR" );
     SLM_ASSERT("service not instanced", service);
 
     service->setTransformId( this->getTransformId() );
@@ -168,12 +160,7 @@ void ImageSeries::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{}
-
-//------------------------------------------------------------------------------
-
-void  ImageSeries::setSliceMode(NegatoMPR::SliceMode sliceMode)
+void ImageSeries::setSliceMode(NegatoMPR::SliceMode sliceMode)
 {
     if(m_sliceMode != sliceMode)
     {

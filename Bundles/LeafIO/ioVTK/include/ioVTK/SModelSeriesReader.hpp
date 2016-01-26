@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,20 +7,25 @@
 #ifndef __IOVTK_SMODELSERIESREADER_HPP__
 #define __IOVTK_SMODELSERIESREADER_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
+#include "ioVTK/config.hpp"
 
-#include <fwServices/ObjectMsg.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <io/IReader.hpp>
 
-#include "ioVTK/export.hpp"
+#include <boost/filesystem/path.hpp>
+#include <string>
+
+namespace fwJobs
+{
+class IJob;
+}
 
 namespace ioVTK
 {
 
 /**
- * @brief   Model series reader service.
+ * @brief   VTK Model series reader.
  * @class   SModelSeriesReader
  *
  * Service reading a model series as .vtk files using the fwVtkIO lib.
@@ -28,10 +33,19 @@ namespace ioVTK
 class IOVTK_CLASS_API SModelSeriesReader : public ::io::IReader
 {
 
-public :
-    ~SModelSeriesReader() throw() {}
+public:
+    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesReader)( ::io::IReader) );
 
-    fwCoreServiceClassDefinitionsMacro ( (SModelSeriesReader)( ::io::IReader) ) ;
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
+
+    /**
+     * @brief Constructor. Do nothing.
+     */
+    IOVTK_API SModelSeriesReader() throw();
+
+    ~SModelSeriesReader() throw()
+    {
+    }
 
     /**
      * @brief Configure the mesh path.
@@ -73,11 +87,13 @@ protected:
      * This method is used to give
      * informations about the service.
      */
-    IOVTK_API void info(std::ostream &_sstream ) ;
+    IOVTK_API void info(std::ostream &_sstream );
 
 private:
 
     IOVTK_API void loadMesh( const ::boost::filesystem::path file, ::fwData::Mesh::sptr mesh );
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 
 };
 

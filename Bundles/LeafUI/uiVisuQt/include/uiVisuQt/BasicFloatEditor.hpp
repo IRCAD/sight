@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIVISUQT_BASICFLOATEDITOR_HPP_
-#define _UIVISUQT_BASICFLOATEDITOR_HPP_
+#ifndef __UIVISUQT_BASICFLOATEDITOR_HPP__
+#define __UIVISUQT_BASICFLOATEDITOR_HPP__
 
 #include <QObject>
 #include <QPointer>
@@ -23,21 +23,22 @@ namespace uiVisu
 /**
  * @brief   BasicFloatEditor service permits to edit a float value.
  * @class   BasicFloatEditor
- * 
+ *
  * @date    2011.
  */
-class UIVISUQT_CLASS_API BasicFloatEditor : public QObject, public ::gui::editor::IEditor
+class UIVISUQT_CLASS_API BasicFloatEditor : public QObject,
+                                            public ::gui::editor::IEditor
 {
-    Q_OBJECT
-public :
+Q_OBJECT
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (BasicFloatEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (BasicFloatEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIVISUQT_API BasicFloatEditor() throw() ;
+    UIVISUQT_API BasicFloatEditor() throw();
 
     /// Destructor. Do nothing.
-    UIVISUQT_API virtual ~BasicFloatEditor() throw() ;
+    UIVISUQT_API virtual ~BasicFloatEditor() throw();
 
 protected:
 
@@ -50,9 +51,6 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
 
     /// Do nothing
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
-    /// Do nothing
     virtual void updating() throw(::fwTools::Failed);
 
     /// Do nothing
@@ -62,7 +60,7 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 protected Q_SLOTS:
 
@@ -81,6 +79,6 @@ private:
 
 } // uiVisu
 
-#endif // _UIVISUQT_BASICFLOATEDITOR_HPP_
+#endif // __UIVISUQT_BASICFLOATEDITOR_HPP__
 
 

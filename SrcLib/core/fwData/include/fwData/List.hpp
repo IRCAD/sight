@@ -7,12 +7,11 @@
 #ifndef __FWDATA_LIST_HPP__
 #define __FWDATA_LIST_HPP__
 
-#include <list>
-#include <boost/shared_ptr.hpp>
-
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
+
+#include <list>
 
 fwCampAutoDeclareDataMacro((fwData)(List), FWDATA_API);
 
@@ -29,7 +28,7 @@ class FWDATA_CLASS_API List : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::factory::New< List >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (List)(::fwData::Object), (()), ::fwData::factory::New< List >);
 
 
     fwCampMakeFriendDataMacro((fwData)(List));
@@ -65,29 +64,30 @@ public:
 
     typedef List Container;
 
-    IteratorType begin() { return m_attrContainer.begin(); }
-    IteratorType end()   { return m_attrContainer.end(); }
-    ConstIteratorType begin() const { return m_attrContainer.begin(); }
-    ConstIteratorType end()   const { return m_attrContainer.end(); }
+    IteratorType begin();
+    IteratorType end();
+    ConstIteratorType begin() const;
+    ConstIteratorType end()   const;
 
-    ReverseIteratorType rbegin() { return m_attrContainer.rbegin(); }
-    ReverseIteratorType rend()   { return m_attrContainer.rend(); }
-    ConstReverseIteratorType rbegin() const { return m_attrContainer.rbegin(); }
-    ConstReverseIteratorType rend()   const { return m_attrContainer.rend(); }
+    ReverseIteratorType rbegin();
+    ReverseIteratorType rend();
+    ConstReverseIteratorType rbegin() const;
+    ConstReverseIteratorType rend()   const;
 
-    bool empty() const { return m_attrContainer.empty(); }
-    SizeType size() const { return m_attrContainer.size(); }
+    bool empty() const;
+    SizeType size() const;
 
-    ReferenceType front(){ return m_attrContainer.front(); }
-    ReferenceType back(){ return m_attrContainer.back(); }
-    ConstReferenceType front() const{ return m_attrContainer.front(); }
-    ConstReferenceType back() const{ return m_attrContainer.back(); }
+    ReferenceType front();
+    ReferenceType back();
+    ConstReferenceType front() const;
+    ConstReferenceType back() const;
     /// @}
 
     /// @brief get/set the list of ::fwData::Object
     /// @{
-    ContainerType &getContainer(){ return m_attrContainer; };
-    fwDataGetSetCRefMacro(Container, ContainerType);
+    ContainerType &getContainer();
+    const ContainerType &getContainer () const;
+    void setContainer (const ContainerType &val);
     /// @}
 
 
@@ -99,8 +99,129 @@ public:
 
 protected:
 
-    ContainerType m_attrContainer;
+    ContainerType m_container;
 };
+
+//-----------------------------------------------------------------------------
+
+inline List::IteratorType List::begin()
+{
+    return m_container.begin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::IteratorType List::end()
+{
+    return m_container.end();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::ConstIteratorType List::begin() const
+{
+    return m_container.begin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::ConstIteratorType List::end() const
+{
+    return m_container.end();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::ReverseIteratorType List::rbegin()
+{
+    return m_container.rbegin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::ReverseIteratorType List::rend()
+{
+    return m_container.rend();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::ConstReverseIteratorType List::rbegin() const
+{
+    return m_container.rbegin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::ConstReverseIteratorType List::rend() const
+{
+    return m_container.rend();
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool List::empty() const
+{
+    return m_container.empty();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::SizeType List::size() const
+{
+    return m_container.size();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::ReferenceType List::front()
+{
+    return m_container.front();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::ReferenceType List::back()
+{
+    return m_container.back();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::ConstReferenceType List::front() const
+{
+    return m_container.front();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::ConstReferenceType List::back() const
+{
+    return m_container.back();
+}
+
+//-----------------------------------------------------------------------------
+
+inline List::ContainerType &List::getContainer()
+{
+    return m_container;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const List::ContainerType &List::getContainer () const
+{
+    return m_container;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void List::setContainer (const List::ContainerType &val)
+{                                                                                                                                                                                         \
+    m_container = val;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

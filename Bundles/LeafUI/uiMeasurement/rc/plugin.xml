@@ -1,4 +1,4 @@
-<plugin id="uiMeasurement" class="::uiMeasurement::Plugin">
+<plugin id="uiMeasurement" class="::uiMeasurement::Plugin" version="@DASH_VERSION@" >
     <library name="uiMeasurement"/>
     
     <requirement id="dataReg"/>
@@ -69,7 +69,6 @@
     
      <extension implements="::fwServices::registry::AppConfig">
         <id>LoadLandmark</id>
-        <type>parameters</type>
         <parameters>
             <param name="GENERIC_UID" />
             <param name="landmark" />
@@ -89,7 +88,6 @@
     
     <extension implements="::fwServices::registry::AppConfig">
         <id>SaveLandmark</id>
-        <type>parameters</type>
         <parameters>
             <param name="GENERIC_UID" />
             <param name="landmark" />

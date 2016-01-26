@@ -1,14 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_WRITER_GZBUFFER_HPP_
-#define _FWDATAIO_WRITER_GZBUFFER_HPP_
+#ifndef __FWDATAIO_WRITER_GZBUFFERIMAGEWRITER_HPP__
+#define __FWDATAIO_WRITER_GZBUFFERIMAGEWRITER_HPP__
 
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -25,17 +24,18 @@ namespace writer
 /**
  * @brief   Image Writer. Write file format .raw.gz
  * @class   GzBufferImageWriter
- * 
+ *
  * @date    2009
  *
  * Ircad writer to write a ::fwData::Image on filesystem which the file format
  * is .raw.gz. This format is basic. The buffer is writen in a file with zlib.
  */
 class FWDATAIO_CLASS_API GzBufferImageWriter :  public GenericObjectWriter< ::fwData::Image >,
-                                                public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
+                                                public ::fwData::location::enableSingleFile< ::fwDataIO::writer::
+                                                                                             IObjectWriter >
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro((GzBufferImageWriter)(GenericObjectWriter< ::fwData::Image>),
                                            (()),
@@ -61,4 +61,4 @@ public :
 } // namespace fwDataIO
 
 
-#endif // _FWDATAIO_WRITER_GZBUFFER_HPP_
+#endif // __FWDATAIO_WRITER_GZBUFFERIMAGEWRITER_HPP__

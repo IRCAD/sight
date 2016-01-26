@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWMEMORY_WIN32MEMORYMONITORTOOLS_HPP_
-#define _FWMEMORY_WIN32MEMORYMONITORTOOLS_HPP_
+#ifndef __FWMEMORY_TOOLS_WIN32MEMORYMONITORTOOLS_HPP__
+#define __FWMEMORY_TOOLS_WIN32MEMORYMONITORTOOLS_HPP__
 
 #ifdef _WIN32
 
@@ -23,9 +23,9 @@ class FWMEMORY_CLASS_API Win32MemoryMonitorTools
 
 public:
 
-    FWMEMORY_API Win32MemoryMonitorTools() ;
+    FWMEMORY_API Win32MemoryMonitorTools();
 
-    FWMEMORY_API ~Win32MemoryMonitorTools() ;
+    FWMEMORY_API ~Win32MemoryMonitorTools();
 
 
 
@@ -59,4 +59,4 @@ public:
 
 #endif
 
-#endif // _FWMEMORY_WIN32MEMORYMONITORTOOLS_HPP_
+#endif // __FWMEMORY_TOOLS_WIN32MEMORYMONITORTOOLS_HPP__

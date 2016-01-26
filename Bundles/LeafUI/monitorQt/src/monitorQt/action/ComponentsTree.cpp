@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,17 +23,19 @@ namespace monitor
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::monitor::action::ComponentsTree , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::ComponentsTree, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
 ComponentsTree::ComponentsTree( ) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 ComponentsTree::~ComponentsTree() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -42,13 +44,13 @@ void ComponentsTree::updating( ) throw(::fwTools::Failed)
     m_treeContainer->clearSelection();
     m_treeContainer->clear();
 
-    ::fwRuntime::Runtime * defaultRuntime = ::fwRuntime::Runtime::getDefault() ;
-    ::fwRuntime::Runtime::BundleIterator iter_bundles = defaultRuntime->bundlesBegin() ;
+    ::fwRuntime::Runtime * defaultRuntime             = ::fwRuntime::Runtime::getDefault();
+    ::fwRuntime::Runtime::BundleIterator iter_bundles = defaultRuntime->bundlesBegin();
     while (iter_bundles != defaultRuntime->bundlesEnd())
     {
         const std::string bundleName = (*iter_bundles)->getIdentifier();
-        bool isBundleEnable = (*iter_bundles)->isEnable();
-        QTreeWidgetItem* bundleItem = new QTreeWidgetItem();
+        bool isBundleEnable          = (*iter_bundles)->isEnable();
+        QTreeWidgetItem* bundleItem  = new QTreeWidgetItem();
         if(!isBundleEnable)
         {
             bundleItem->setBackground(0, QBrush(QColor(155,155,155)));
@@ -63,9 +65,9 @@ void ComponentsTree::updating( ) throw(::fwTools::Failed)
         ::fwRuntime::Bundle::ExtensionConstIterator iter_extension = (*iter_bundles)->extensionsBegin();
         while (iter_extension != (*iter_bundles)->extensionsEnd())
         {
-            std::string point = (*iter_extension)->getPoint() ;
+            std::string point      = (*iter_extension)->getPoint();
             bool isExtensionEnable = (*iter_extension)->isEnable();
-            QTreeWidgetItem* item = new QTreeWidgetItem();
+            QTreeWidgetItem* item  = new QTreeWidgetItem();
             if(!isExtensionEnable)
             {
                 item->setBackground(0, QBrush(QColor(155,155,155)));

@@ -1,49 +1,52 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "uiImageQt/ImageInfo.hpp"
 
-#include <QHBoxLayout>
-#include <QWidget>
-#include <QLabel>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
 
+#include <fwGuiQt/container/QtContainer.hpp>
+
 #include <fwMath/IntrasecTypes.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include <fwComEd/InteractionMsg.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include "uiImageQt/ImageInfo.hpp"
-
+#include <QHBoxLayout>
+#include <QWidget>
+#include <QLabel>
 
 namespace uiImage
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ImageInfo , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ImageInfo, ::fwData::Image );
 
+static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
 
 ImageInfo::ImageInfo() throw()
 {
-//    addNewHandledEvent(::fwComEd::InteractionMsg::MOUSE_MOVE);
+    newSlot(s_GET_INTERACTION_SLOT, &ImageInfo::getInteraction, this);
 }
 
 //------------------------------------------------------------------------------
 
 ImageInfo::~ImageInfo() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -53,7 +56,8 @@ void ImageInfo::starting() throw(::fwTools::Failed)
     this->::fwGui::IGuiContainerSrv::create();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -90,7 +94,8 @@ void ImageInfo::configuring() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void ImageInfo::updating() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -103,28 +108,23 @@ void ImageInfo::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void ImageInfo::getInteraction(::fwComEd::PickingInfo info)
 {
     SLM_TRACE_FUNC();
-    ::fwComEd::InteractionMsg::csptr interactionMsg = ::fwComEd::InteractionMsg::dynamicConstCast(_msg);
 
-    if (interactionMsg && _msg->hasEvent(::fwComEd::InteractionMsg::MOUSE_MOVE))
+    if (info.m_eventId == ::fwComEd::PickingInfo::Event::MOUSE_MOVE)
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
         bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
         m_valueText->setEnabled(imageIsValid);
         if (imageIsValid)
         {
-            ::fwData::Point::csptr point = interactionMsg->getEventPoint();
-            SLM_ASSERT("Sorry, the object is null", point);
-            if(point)
-            {
-                fwVec3d  pointCoord = point->getCoord();
-                ::fwComEd::helper::Image imageHelper(image);
+            double *point = info.m_worldPos;
 
-                std::string intensity = imageHelper.getPixelAsString(pointCoord[0], pointCoord[1], pointCoord[2] );;
-                m_valueText->setText(QString::fromStdString(intensity));
-            }
+            ::fwComEd::helper::Image imageHelper(image);
+
+            std::string intensity = imageHelper.getPixelAsString(point[0], point[1], point[2] );
+            m_valueText->setText(QString::fromStdString(intensity));
         }
     }
 }

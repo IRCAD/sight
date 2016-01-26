@@ -3,25 +3,32 @@ fwUseForwardInclude(
     fwCore
     fwData
     fwGui
-    fwMath
     fwRender
     fwRuntime
     fwServices
     fwTools
+    fwVtkIO
 )
 
-
-find_package(Boost REQUIRED)
 find_package(VTK REQUIRED)
 
 fwForwardInclude(
-    ${Boost_INCLUDE_DIRS}
     ${VTK_INCLUDE_DIRS}
+)
+
+
+if(NOT ANDROID)
+    fwLink(
+        vtkInteractionWidgets
+        vtkInteractionStyle
+        vtkRenderingCore
+        vtkRenderingFreeTypeOpenGL
+        vtkRenderingVolumeOpenGL
+        vtkRenderingAnnotation
     )
-fwLink(
-    ${Boost_LIBRARIES} 
-    vtkInteractionWidgets
-    vtkInteractionStyle
-    vtkRenderingFreeTypeOpenGL
-    vtkRenderingVolumeOpenGL
+else()
+    fwLink(
+        vtkRenderingOpenGL2
+        vtkInteractionStyle
     )
+endif()

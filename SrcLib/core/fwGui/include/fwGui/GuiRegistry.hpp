@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_GUIREGISTRY_HPP_
-#define _FWGUI_GUIREGISTRY_HPP_
+#ifndef __FWGUI_GUIREGISTRY_HPP__
+#define __FWGUI_GUIREGISTRY_HPP__
 
 
 #include "fwGui/GuiBaseObject.hpp"
@@ -22,33 +22,33 @@ namespace fwGui
 /**
  * @brief   This class contains helpers to manage all fwContainer in the application.
  * @class   GuiRegistry
- * 
+ *
  * @date    2009-2010.
  *
  */
 class FWGUI_CLASS_API GuiRegistry : public ::fwGui::GuiBaseObject
 {
 
-public :
+public:
 
-    typedef std::map< std::string , ::fwGui::container::fwContainer::sptr > ContainerMapType;
-    typedef std::map< std::string , ::fwGui::container::fwMenuBar::sptr >   MenuBarMapType;
-    typedef std::map< std::string , ::fwGui::container::fwToolBar::sptr >   ToolBarMapType;
-    typedef std::map< std::string , ::fwGui::container::fwMenu::sptr >      MenuMapType;
+    typedef std::map< std::string, ::fwGui::container::fwContainer::sptr > ContainerMapType;
+    typedef std::map< std::string, ::fwGui::container::fwMenuBar::sptr >   MenuBarMapType;
+    typedef std::map< std::string, ::fwGui::container::fwToolBar::sptr >   ToolBarMapType;
+    typedef std::map< std::string, ::fwGui::container::fwMenu::sptr >      MenuMapType;
     typedef std::vector< std::string >                           ParentSidsType;
-    typedef std::map< std::string , ParentSidsType > ActionToParentMapType;
+    typedef std::map< std::string, ParentSidsType > ActionToParentMapType;
 
     fwCoreNonInstanciableClassDefinitionsMacro( (GuiRegistry)(::fwGui::GuiBaseObject) )
 
     /**
      * @brief   Constructor.
      */
-    FWGUI_API GuiRegistry() ;
+    FWGUI_API GuiRegistry();
 
     /**
      * @brief   Destructor. Do nothing.
      */
-    FWGUI_API virtual ~GuiRegistry() ;
+    FWGUI_API virtual ~GuiRegistry();
 
     //-----------------------------------------------------------------------------
 
@@ -205,23 +205,29 @@ public :
      * Call parent service actionServiceSetExecutable() method
      */
     FWGUI_API static void actionServiceSetExecutable(std::string actionSid, bool isExecutable);
+
+    /**
+     * @brief Method called when the action service is visible or not.
+     * Call parent service actionServiceSetVisible() method
+     */
+    FWGUI_API static void actionServiceSetVisible(std::string actionSid, bool isVisible);
     ///@}
 
-protected :
+protected:
 
-    static ContainerMapType       m_globalSIDToFwContainer;
-    static ContainerMapType       m_globalWIDToFwContainer;
-    static MenuBarMapType         m_globalSIDToFwMenuBar;
-    static ToolBarMapType         m_globalSIDToFwToolBar;
-    static MenuMapType            m_globalSIDToFwMenu;
+    static ContainerMapType m_globalSIDToFwContainer;
+    static ContainerMapType m_globalWIDToFwContainer;
+    static MenuBarMapType m_globalSIDToFwMenuBar;
+    static ToolBarMapType m_globalSIDToFwToolBar;
+    static MenuMapType m_globalSIDToFwMenu;
 
     /// Parent sid can be Menu sid or ToolBar sid
-    static ActionToParentMapType  m_actionSIDToParentSID;
+    static ActionToParentMapType m_actionSIDToParentSID;
 
 };
 
 } // namespace fwGui
 
-#endif /*_FWGUI_GUIREGISTRY_HPP_*/
+#endif /*__FWGUI_GUIREGISTRY_HPP__*/
 
 

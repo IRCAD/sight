@@ -1,4 +1,0 @@
-TYPE    = 'shared'
-USE     = ['boost', 'boostThread', 'boostLog', 'boostLogSetup']
-
-VERSION = '0-1'

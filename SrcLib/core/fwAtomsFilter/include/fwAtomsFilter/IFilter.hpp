@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,7 @@
 
 namespace fwAtoms
 {
-    class Object;
+class Object;
 }
 
 namespace fwAtomsFilter
@@ -33,7 +33,7 @@ class FWATOMSFILTER_CLASS_API IFilter : public ::fwCore::BaseObject
 {
 
 public:
-    /// Factory key used by IFilter implementations 
+    /// Factory key used by IFilter implementations
     typedef ::fwAtomsFilter::factory::Key Key;
 
     /**

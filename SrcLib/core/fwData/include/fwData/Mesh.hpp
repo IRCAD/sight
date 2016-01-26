@@ -7,17 +7,15 @@
 #ifndef __FWDATA_MESH_HPP__
 #define __FWDATA_MESH_HPP__
 
-#include <camp/class.hpp>
-
-#include <fwCore/macros.hpp>
-#include <boost/cstdint.hpp>
-#include <boost/multi_array.hpp>
 #include "fwData/Array.hpp"
 #include "fwData/Exception.hpp"
 #include "fwData/factory/new.hpp"
-
 #include "fwData/config.hpp"
-#include "fwData/Array.hpp"
+
+#include <fwCore/macros.hpp>
+
+#include <boost/cstdint.hpp>
+#include <boost/multi_array.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Mesh), FWDATA_API);
 
@@ -77,7 +75,7 @@ class FWDATA_CLASS_API Mesh : public ::fwData::Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::factory::New< Mesh >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Mesh)(::fwData::Object), (()), ::fwData::factory::New< Mesh >);
 
 
     fwCampMakeFriendDataMacro((fwData)(Mesh));
@@ -87,7 +85,8 @@ public:
     typedef boost::uint64_t Id;
 
 
-    typedef enum {
+    typedef enum
+    {
         NO_CELL = 0,
         POINT,
         EDGE,
@@ -97,29 +96,30 @@ public:
         TETRA
     } CellTypesEnum;
 
-    typedef enum {
-        RGB = 3,
+    typedef enum
+    {
+        RGB  = 3,
         RGBA = 4
     } ColorArrayTypes;
 
-    typedef float          PointValueType;
+    typedef float PointValueType;
     typedef boost::uint8_t ColorValueType;
-    typedef float          NormalValueType;
-    typedef float          TexCoordValueType;
-    typedef Id             CellValueType;
-    typedef Id             CellDataOffsetType;
+    typedef float NormalValueType;
+    typedef float TexCoordValueType;
+    typedef Id CellValueType;
+    typedef Id CellDataOffsetType;
     typedef boost::uint8_t CellTypes;
 
-    typedef boost::multi_array_ref<PointValueType    , 2> PointsMultiArrayType;
-    typedef boost::multi_array_ref<CellTypes         , 1> CellTypesMultiArrayType;
-    typedef boost::multi_array_ref<CellValueType     , 1> CellDataMultiArrayType;
+    typedef boost::multi_array_ref<PointValueType, 2> PointsMultiArrayType;
+    typedef boost::multi_array_ref<CellTypes, 1> CellTypesMultiArrayType;
+    typedef boost::multi_array_ref<CellValueType, 1> CellDataMultiArrayType;
     typedef boost::multi_array_ref<CellDataOffsetType, 1> CellDataOffsetsMultiArrayType;
-    typedef boost::multi_array_ref<ColorValueType    , 2> PointColorsMultiArrayType;
-    typedef boost::multi_array_ref<ColorValueType    , 2> CellColorsMultiArrayType;
-    typedef boost::multi_array_ref<NormalValueType   , 2> PointNormalsMultiArrayType;
-    typedef boost::multi_array_ref<NormalValueType   , 2> CellNormalsMultiArrayType;
-    typedef boost::multi_array_ref<TexCoordValueType , 2> PointTexCoordsMultiArrayType;
-    typedef boost::multi_array_ref<TexCoordValueType , 2> CellTexCoordsMultiArrayType;
+    typedef boost::multi_array_ref<ColorValueType, 2> PointColorsMultiArrayType;
+    typedef boost::multi_array_ref<ColorValueType, 2> CellColorsMultiArrayType;
+    typedef boost::multi_array_ref<NormalValueType, 2> PointNormalsMultiArrayType;
+    typedef boost::multi_array_ref<NormalValueType, 2> CellNormalsMultiArrayType;
+    typedef boost::multi_array_ref<TexCoordValueType, 2> PointTexCoordsMultiArrayType;
+    typedef boost::multi_array_ref<TexCoordValueType, 2> CellTexCoordsMultiArrayType;
 
 
     /**
@@ -129,7 +129,7 @@ public:
     FWDATA_API Mesh(::fwData::Object::Key key);
 
     /// Destructor
-    FWDATA_API virtual ~Mesh() ;
+    FWDATA_API virtual ~Mesh();
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& _source );
@@ -153,7 +153,7 @@ public:
      * @throw ::fwData::Exception
      */
     FWDATA_API size_t allocate(size_t nbPts, size_t nbCells, size_t nbCellsData = 0)
-        throw(::fwData::Exception);
+    throw(::fwData::Exception);
 
     /// Allocates normals array according to the number of points of the mesh.
     FWDATA_API size_t allocatePointNormals() throw(::fwData::Exception);
@@ -190,25 +190,25 @@ public:
     FWDATA_API bool adjustAllocatedMemory() throw(::fwData::Exception);
 
     /// Sets the internal corresponding array
-    FWDATA_API void setPointsArray           (::fwData::Array::sptr array);
+    FWDATA_API void setPointsArray           (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellTypesArray        (::fwData::Array::sptr array);
+    FWDATA_API void setCellTypesArray        (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellDataArray         (::fwData::Array::sptr array);
+    FWDATA_API void setCellDataArray         (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellDataOffsetsArray  (::fwData::Array::sptr array);
+    FWDATA_API void setCellDataOffsetsArray  (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setPointColorsArray      (::fwData::Array::sptr array);
+    FWDATA_API void setPointColorsArray      (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellColorsArray       (::fwData::Array::sptr array);
+    FWDATA_API void setCellColorsArray       (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setPointNormalsArray     (::fwData::Array::sptr array);
+    FWDATA_API void setPointNormalsArray     (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellNormalsArray      (::fwData::Array::sptr array);
+    FWDATA_API void setCellNormalsArray      (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setPointTexCoordsArray   (::fwData::Array::sptr array);
+    FWDATA_API void setPointTexCoordsArray   (const ::fwData::Array::sptr& array);
     /// Sets the internal corresponding array
-    FWDATA_API void setCellTexCoordsArray    (::fwData::Array::sptr array);
+    FWDATA_API void setCellTexCoordsArray    (const ::fwData::Array::sptr& array);
 
     /// Returns the internal corresponding array
     FWDATA_API ::fwData::Array::sptr getPointsArray           () const;
@@ -307,6 +307,58 @@ public:
     /// Return all array names stock in the mesh array-map
     FWDATA_API std::vector<std::string> getDataArrayNames() const;
 
+
+    /***
+     * @name Signals
+     * @{
+     */
+
+    /// Type of signal when vertex are modified
+    typedef ::fwCom::Signal< void () > VertexModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigVertexModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VERTEX_MODIFIED_SIG;
+
+    /// Type of signal when point colors are modified
+    typedef ::fwCom::Signal< void () > PointColorsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigPointColorsModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_COLORS_MODIFIED_SIG;
+
+    /// Type of signal when cell colors are modified
+    typedef ::fwCom::Signal< void () > CellColorsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigCellColorsModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CELL_COLORS_MODIFIED_SIG;
+
+    /// Type of signal when point normals are modified
+    typedef ::fwCom::Signal< void () > PointNormalsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigPointNormalsModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_NORMALS_MODIFIED_SIG;
+
+    /// Type of signal when cell normals are modified
+    typedef ::fwCom::Signal< void () > CellNormalsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigCellNormalsModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CELL_NORMALS_MODIFIED_SIG;
+
+    /// Type of signal when point tex coords are modified
+    typedef ::fwCom::Signal< void () > PointTexCoordsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigPointTexCoorddModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINT_TEX_COORDS_MODIFIED_SIG;
+
+    /// Type of signal when cell tex coords are modified
+    typedef ::fwCom::Signal< void () > CellTexCoordsModifiedSignalType;
+
+    /// Key in m_signals map of signal m_sigCellTexCoorddModified
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_CELL_TEX_COORDS_MODIFIED_SIG;
+
+    /**
+     * @}
+     */
+
 protected:
 
     /**
@@ -329,12 +381,14 @@ protected:
      * This array contains points : [ x1 y1 z1 x2 y2 z2 ... xn yn zn ]
      */
     ::fwData::Array::sptr m_points;
+
     /**
      * @brief Cell types array : 1-components 1-dimension uint8 array, size = m_nbCells.
      *
      * This array each cell type : [ TRIANGLE QUAD QUAD ... TRIANGLE TRIANGLE QUAD ]
      */
     ::fwData::Array::sptr m_cellTypes;
+
     /**
      * @brief Cell data array : 1-components 1-dimension uint64 array, size = m_cellsDataSize.
      *
@@ -344,6 +398,7 @@ protected:
      * This array contains point indexes (index in m_points) : [ TRIAN_ID1, TRIAN_ID2, TRIAN_ID3, QUAD_ID1, QUAD_ID2, QUAD_ID3, QUAD_ID4, ... ]
      */
     ::fwData::Array::sptr m_cellData;
+
     /**
      * @brief Cell data offsets array : 1-components 1-dimension uint64 array, size = m_nbCells.
      *
@@ -353,36 +408,42 @@ protected:
      * This array contains cell indexes m_cellData : [ INDEX_TRIAN_1, INDEX_QUAD_1, INDEX_QUAD_2 ...  ]
      */
     ::fwData::Array::sptr m_cellDataOffsets;
+
     /**
      * @brief point colors array : 3 or 4-components 1-dimension float array, size = m_nbPoints.
      *
      * This array contains point colors : [ R1 G1 B1 R2 G2 B2 ... ] or [ R1 G1 B1 A1 R2 G2 B2 A2 ... ]
      */
     ::fwData::Array::sptr m_pointColors;
+
     /**
      * @brief Mesh point array : 3 or 4-components 1-dimension uint8_t array, size = m_nbCells.
      *
      * This array contains cell colors : [ R1 G1 B1 R2 G2 B2 ... ] or [ R1 G1 B1 A1 R2 G2 B2 A2 ... ]
      */
     ::fwData::Array::sptr m_cellColors;
+
     /**
      * @brief Mesh point array : 3-components 1-dimension uint8_t array, size = m_nbPoints.
      *
      * This array contains point normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
      */
     ::fwData::Array::sptr m_pointNormals;
+
     /**
      * @brief Mesh point array : 3-components 1-dimension float array, size = m_nbCells.
      *
      * This array contains cell normals : [ nx1 ny1 nz1 nx2 ny2 nz2 ... ]
      */
     ::fwData::Array::sptr m_cellNormals;
+
     /**
      * @brief Mesh texCoord array : 2-components 1-dimension float array, size = m_nbPoints.
      *
      * This array contains point texCoords : [ tx1 ty1 tx2 ty2 ... ]
      */
     ::fwData::Array::sptr m_pointTexCoords;
+
     /**
      * @brief Mesh texCoord array : 2-components 1-dimension float array, size = m_nbCells.
      *

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_INPUTDIALOG_HPP_
-#define _FWGUI_INPUTDIALOG_HPP_
+#ifndef __FWGUI_DIALOG_INPUTDIALOG_HPP__
+#define __FWGUI_DIALOG_INPUTDIALOG_HPP__
 
 #include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/dialog/IInputDialog.hpp"
@@ -20,17 +20,17 @@ namespace dialog
  * @brief   Defines the generic input dialog for IHM.
  * Use the Delegate design pattern
  * @class   InputDialog
- * 
+ *
  * @date    2009-2010.
  *
  * Example of use:
  * @verbatim
-  ::fwGui::dialog::InputDialog inputDlg;
-  inputDlg.setTitle("Identification dialog");
-  inputDlg.setMessage("Enter Pin Code: ");
-  inputDlg.setInput ("<Enter your code here>");
-  std::string inputText = inputDlg.getInput();
-  @endverbatim
+   ::fwGui::dialog::InputDialog inputDlg;
+   inputDlg.setTitle("Identification dialog");
+   inputDlg.setMessage("Enter Pin Code: ");
+   inputDlg.setInput ("<Enter your code here>");
+   std::string inputText = inputDlg.getInput();
+   @endverbatim
  */
 class FWGUI_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 {
@@ -47,19 +47,20 @@ public:
      * @param text the input text in the input field
      * @return Returns text in the input field
      */
-    FWGUI_API static std::string showInputDialog(const std::string& title, const std::string& message, const std::string &text = "");
+    FWGUI_API static std::string showInputDialog(const std::string& title, const std::string& message,
+                                                 const std::string &text = "");
 
 
     /** @brief Constructor. Create the implementation of the specific input dialog box.
      *
      * Example of use:
      * @verbatim
-      ::fwGui::dialog::InputDialog inputDlg;
-      inputDlg.setTitle("Identification dialog");
-      inputDlg.setMessage("Enter Pin Code: ");
-      inputDlg.setInput ("<Enter your code here>");
-      std::string inputText = inputDlg.getInput();
-     @endverbatim
+       ::fwGui::dialog::InputDialog inputDlg;
+       inputDlg.setTitle("Identification dialog");
+       inputDlg.setMessage("Enter Pin Code: ");
+       inputDlg.setInput ("<Enter your code here>");
+       std::string inputText = inputDlg.getInput();
+       @endverbatim
      */
     FWGUI_API InputDialog();
 
@@ -96,6 +97,6 @@ protected:
 } //namespace dialog
 } // namespace fwGui
 
-#endif /*_FWGUI_INPUTDIALOG_HPP_*/
+#endif /*__FWGUI_DIALOG_INPUTDIALOG_HPP__*/
 
 

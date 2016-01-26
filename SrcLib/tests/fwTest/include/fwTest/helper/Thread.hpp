@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,13 @@
 #ifndef __FWTEST_HELPER_THREAD_HPP__
 #define __FWTEST_HELPER_THREAD_HPP__
 
-#include <exception>
-
-#include <boost/thread.hpp>
-#include <boost/bind.hpp>
-#include <boost/thread/thread_time.hpp>
+#include "fwTest/config.hpp"
 
 #include <cppunit/Exception.h>
 
-#include "fwTest/config.hpp"
+#include <exception>
+#include <functional>
+#include <thread>
 
 namespace fwTest
 {
@@ -25,7 +23,7 @@ namespace helper
 /**
  * @brief   Helper to manage a thread. The thread launches a function and catches its exception.
  * @class   Thread
- * 
+ *
  * @date    2012.
  *
  * @note    It is used for unit test.
@@ -34,7 +32,7 @@ class FWTEST_CLASS_API Thread
 {
 public:
 
-    typedef ::boost::function<void ()> FunctionType;
+    typedef std::function<void ()> FunctionType;
 
     /**
      * @brief Constructor : launch a thread which call run(f)
@@ -57,23 +55,29 @@ public:
     FWTEST_API bool timedJoin(int time, bool raise = true);
 
     /// Return the exception raised in function launched by thread
-    CPPUNIT_NS::Exception getException() {return m_exception;}
+    CPPUNIT_NS::Exception getException()
+    {
+        return m_exception;
+    }
 
     /// Return true if function launched by thread raised exception
-    bool hasFailed() {return m_hasFailed;}
+    bool hasFailed() const
+    {
+        return m_hasFailed;
+    }
 
     /**
      * @brief If any, throws the exception raised by the thread function.
      */
     void throwException();
 
-private :
+private:
 
     /// Method launched by thread : call run(f) surrounded by try/catch
     void run(FunctionType f);
 
     /// Thread created in constructor
-    ::boost::thread m_thread;
+    std::thread m_thread;
 
     /// Exception raised by function launched by thread
     CPPUNIT_NS::Exception m_exception;

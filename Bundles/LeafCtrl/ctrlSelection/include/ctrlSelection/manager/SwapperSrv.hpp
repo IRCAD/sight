@@ -1,19 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_MANAGER_SWAPPER_HPP_
-#define _CTRLSELECTION_MANAGER_SWAPPER_HPP_
-
-#include <fwRuntime/ConfigurationElement.hpp>
-
-#include <fwServices/IService.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
+#ifndef __CTRLSELECTION_MANAGER_SWAPPERSRV_HPP__
+#define __CTRLSELECTION_MANAGER_SWAPPERSRV_HPP__
 
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IManagerSrv.hpp"
+
+#include <fwData/Composite.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
+
+#include <fwServices/helper/SigSlotConnection.hpp>
+#include <fwServices/IService.hpp>
+
 
 namespace ctrlSelection
 {
@@ -28,15 +31,25 @@ namespace manager
 class CTRLSELECTION_CLASS_API SwapperSrv : public ::ctrlSelection::IManagerSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SwapperSrv)(::ctrlSelection::IManagerSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SwapperSrv)(::ctrlSelection::IManagerSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API SwapperSrv() throw() ;
+    CTRLSELECTION_API SwapperSrv() throw();
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~SwapperSrv() throw() ;
+    CTRLSELECTION_API virtual ~SwapperSrv() throw();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_ADD_OBJECTS_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_CHANGE_OBJECTS_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_REMOVE_OBJECTS_SLOT
+     */
+    CTRLSELECTION_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -48,11 +61,11 @@ protected:
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
     /**
-    * @brief Implements configuring method derived from IService. .
-    *
-    * Sample of declaration configuration for a simple swapper service
-    *
-    * @verbatim
+     * @brief Implements configuring method derived from IService. .
+     *
+     * Sample of declaration configuration for a simple swapper service
+     *
+     * @verbatim
         <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
             <mode type="dummy" />
             <config>
@@ -61,7 +74,7 @@ protected:
                     <service uid="myServices" impl="..." type="..." autoConnect="yes" />
 
                     <connect>
-                        <signal>key</signal>
+                        <signal>key</signal><!-- Signal of object "myImage" -->
                         <slot>uid/key</slot>
                     </connect>
 
@@ -70,7 +83,7 @@ protected:
                     <service uid="myServices2" impl="..." type="..." autoConnect="yes" worker="myThread" />
 
                     <proxy channel="...">
-                        <signal>...</signal>
+                        <signal>...</signal><!-- Signal of object "myAcquisition" -->
                         <signal>.../...</signal>
                         <slot>.../...</slot>
                         <slot>.../...</slot>
@@ -78,13 +91,23 @@ protected:
                 </object>
             </config>
         </service>
-    @endverbatim
-    * With:
-    * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached object is deleted but swap it on a dummy object.
-    * @li the objects and services tags are defined as same as the configuration of objects and services.
-    * @li autoConnect: optional (default value = false), if true allows to listen signals from the associated object.
-    * @li worker: optional, allows to manage the service in another thread.
-    */
+       @endverbatim
+     * With:
+     * @li \b mode : must be "stop", "dummy" or "startAndUpdate".
+     *     - The mode "stop", used by default, starts the services when their attached object is added in the compsite
+     *       and stop and unregister the services when the object is deleted.
+     *     - The mode "dummy" doesn't stop the services when its attached object is deleted but swap it on a dummy
+     *       object.
+     *     - The mode "startAndUpdate" start and update the services when its attached object is added in the composite.
+     * @li the objects and services tags are defined as same as the configuration of objects and services.
+     * @li \b autoConnect: optional (default value = false), if true allows to listen signals from the associated object.
+     * @li \b worker: optional, allows to manage the service in another thread.
+     * @li \b connect : not mandatory, connects signal to slot
+     *   - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
+     *        object signal, you don't have to write object uid, only the signal name.
+     *   - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
+     * @li \b proxy : not mandatory, connects the signals/slots in a proxy
+     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements reconfiguring method derived from IService. Do nothing.
@@ -96,11 +119,6 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    /// Reacts on specifics event (ADDED_KEYS, REMOVED_KEYS and CHANGED_KEYS) and start, stop or swap the managed services
-    /// on the objects defined in the message or dummy objects
-    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
-
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string ObjectIdType;
 
@@ -110,13 +128,17 @@ protected:
     public:
 
         SubService() : m_hasAutoConnection(false)
-        {}
+        {
+        }
 
         ~SubService()
-        {}
+        {
+        }
 
         SPTR (::fwServices::IService) getService()
-                    { return m_service.lock(); }
+        {
+            return m_service.lock();
+        }
 
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
@@ -126,17 +148,23 @@ protected:
     };
 
     typedef std::vector< SPTR(SubService) > SubServicesVecType;
-    typedef std::map< ObjectIdType, SubServicesVecType > SubServicesMapType ;
+    typedef std::map< ObjectIdType, SubServicesVecType > SubServicesMapType;
+
+    /// Slot: add objects
+    void addObjects(::fwData::Composite::ContainerType objects);
+
+    /// Slot: change objects
+    void changeObjects(::fwData::Composite::ContainerType newObjects, ::fwData::Composite::ContainerType oldObjects);
+
+    /// Slot: remove objects
+    void removeObjects(::fwData::Composite::ContainerType objects);
 
     void initOnDummyObject( std::string objectId );
-    void addObjects( ::fwData::Composite::sptr _composite );
     void addObject( const std::string &objectId, ::fwData::Object::sptr object );
-    void swapObjects( ::fwData::Composite::sptr _composite );
-    void swapObject(const std::string &objectId, ::fwData::Object::sptr object);
-    void removeObjects( ::fwData::Composite::sptr _composite );
+    void changeObject(const std::string &objectId, ::fwData::Object::sptr object);
     void removeObject( const std::string &objectId );
 
-    ::fwServices::IService::sptr add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
+    ::fwServices::IService::sptr add( ::fwData::Object::sptr obj, ::fwRuntime::ConfigurationElement::sptr _elt );
 
 private:
 
@@ -150,4 +178,4 @@ private:
 } // manager
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_MANAGER_SWAPPER_HPP_
+#endif // __CTRLSELECTION_MANAGER_SWAPPERSRV_HPP__

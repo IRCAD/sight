@@ -1,20 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UITF_TRANSFERFUNCTIONEDITOR_HPP_
-#define _UITF_TRANSFERFUNCTIONEDITOR_HPP_
+#ifndef __UITF_TRANSFERFUNCTIONEDITOR_HPP__
+#define __UITF_TRANSFERFUNCTIONEDITOR_HPP__
 
-#include <QObject>
+#include "uiTF/config.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
-#include "export.hpp"
+#include <QObject>
 
 class QComboBox;
 class QPushButton;
@@ -26,16 +26,17 @@ namespace uiTF
 /**
  * @brief   TransferFunctionEditor service.
  * @class   TransferFunctionEditor
- * 
+ *
  * @date    2011.
  */
-class UITF_CLASS_API TransferFunctionEditor : public QObject, public ::gui::editor::IEditor
+class UITF_CLASS_API TransferFunctionEditor : public QObject,
+                                              public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (TransferFunctionEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TransferFunctionEditor)(::gui::editor::IEditor) );
 
     /// Basic constructor, do nothing.
     UITF_API TransferFunctionEditor();
@@ -43,21 +44,36 @@ public:
     /// Basic destructor, do nothing.
     UITF_API virtual ~TransferFunctionEditor() throw ();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     */
+    UITF_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     /**
-    * @brief Configuring the transfer function editor.
-    *
-    * Example of configuration
-    * @verbatim
-    <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes" >
-        <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-    </service>
-    @endverbatim
-    * - \<image id="myImage" /\> : Set the link between the service and the associated image.
-    *
-    * \b id : mandatory (no default value) : set the id of the associated image.
-    */
+     * @brief Configuring the transfer function editor.
+     *
+     * Example of configuration
+     * @verbatim
+       <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes" >
+        <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" useDefaultPath="yes">
+            <path>....</path>
+            <path>....</path>
+            <path>....</path>
+        </config>
+       </service>
+       @endverbatim
+     * - \b selectedTFKey: key of the ::fwData::String containing the key of the selected tf.
+     * - \b tfSelectionFwID: fwID of the composite containing the selected tf.
+     * - \b useDefaultPath (optional)(default = yes): if true, load tf files from uiTF bundle.
+     * - \b path (optional): path to a directory containing tf files.
+     */
     UITF_API virtual void configuring() throw( ::fwTools::Failed );
 
     /// Start the TransferFunctionEditor, create Container, place in Buttons, ComboBox, Layout, and connect them.
@@ -66,19 +82,22 @@ protected:
     /// Update the TransferFunctionEditor, do nothing.
     UITF_API virtual void updating() throw( ::fwTools::Failed );
 
-    /// Update the TransferFunctionEditor when message, do nothing.
-    UITF_API virtual void receiving(::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed );
-
     /// Stop the TransferFunctionEditor, disconnect Buttons and Combo Box, delete them and clean the container.
     UITF_API virtual void stopping() throw( ::fwTools::Failed );
 
-    /// Initialize the transfer functions, get fields m_transferFunctionCompositeId and m_transferFunctionId associated to the related image, add their names to the ComboBox. If the image does not contain any TF, the create a few from the ressources of the Bundle.
+    /**
+     * @brief Initialize the transfer functions.
+     *
+     * Add their names to the ComboBox. If the composite does not contain any TF (or only the default grey level TF,
+     * the service creates a few from the ressources of the Bundle.
+     */
     UITF_API void initTransferFunctions();
 
     /// Check if the image contain the specified TF.
     UITF_API bool hasTransferFunctionName(const std::string & _sName);
 
-    /// Create a string that represents a TF name not already present in the image. For example, if blabla is already used, it will return blabla_1.
+    /// Create a string that represents a TF name not already present in the composite. For example, if blabla is
+    /// already used, it will return blabla_1.
     UITF_API std::string createTransferFunctionName( const std::string & _sBasename );
 
     /// Update the image with the selected TF in the ComboBox.
@@ -105,6 +124,8 @@ private Q_SLOTS:
 
 private:
 
+    typedef std::vector< ::boost::filesystem::path > PathContainerType;
+
     QComboBox *m_pTransferFunctionPreset;
     QPushButton *m_deleteButton;
     QPushButton *m_newButton;
@@ -119,7 +140,10 @@ private:
 
     /// Identifier of the key containing the current selection of TransferFunction in TFSelection.
     std::string m_selectedTFKey;
+
+    /// Paths of the tf files to load.
+    PathContainerType m_paths;
 };
 
 }
-#endif
+#endif // __UITF_TRANSFERFUNCTIONEDITOR_HPP__

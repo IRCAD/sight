@@ -1,7 +1,22 @@
 
 set( NAME Tuto11LaunchBasicConfig )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE APP )
 set( DEPENDENCIES  )
-set( REQUIREMENTS io gui guiQt dataReg servicesReg visu visuVTKQt launcher ioVTK ioData vtkSimpleNegato uiIO appXml )
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+    gui
+    guiQt
+    io
+    ioData
+    ioVTK
+    uiIO
+    visuVTK
+    visuVTKQt
+    vtkSimpleNegato
+    launcher
+    appXml
+)
 
+bundleParam(appXml PARAM_LIST config PARAM_VALUES TutoLaunchBasicConfig)

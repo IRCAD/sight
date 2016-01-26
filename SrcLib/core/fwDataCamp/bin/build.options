@@ -1,3 +1,0 @@
-TYPE = 'shared'
-VERSION = '0.1'
-LIB = ['fwCamp_0-1', 'fwData_0-1', 'fwMedData_0-1','fwMemory_0-1']

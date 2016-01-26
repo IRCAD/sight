@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,18 +17,20 @@ namespace container
 //-----------------------------------------------------------------------------
 
 QtToolBarContainer::QtToolBarContainer(::fwGui::GuiBaseObject::Key key) throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 QtToolBarContainer::~QtToolBarContainer() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void QtToolBarContainer::clean()
 {
-    SLM_ASSERT("Sorry, Qt toolBar not yet initialized, cleaning impossible", m_toolBar);
+    SLM_ASSERT("The Qt toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
 
     m_toolBar->clear();
 }
@@ -37,7 +39,7 @@ void QtToolBarContainer::clean()
 
 void QtToolBarContainer::destroyContainer()
 {
-    SLM_ASSERT("Sorry, Qt toolBar not yet initialized, cleaning impossible", m_toolBar);
+    SLM_ASSERT("The Qt toolBar is not yet initialized, cleaning is thus impossible", m_toolBar);
 
     delete m_toolBar;
 }

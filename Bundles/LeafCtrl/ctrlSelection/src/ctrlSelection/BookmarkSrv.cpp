@@ -1,26 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwTools/Bookmarks.hpp>
-
-#include <fwData/String.hpp>
-
-#include <fwServices/macros.hpp>
-
 #include "ctrlSelection/BookmarkSrv.hpp"
 
+#include <fwData/String.hpp>
+#include <fwServices/macros.hpp>
+#include <fwTools/Bookmarks.hpp>
 
 namespace ctrlSelection
 {
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::BookmarkSrv, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSelection::BookmarkSrv, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
@@ -32,14 +27,16 @@ BookmarkSrv::BookmarkSrv() throw()
 //-----------------------------------------------------------------------------
 
 BookmarkSrv::~BookmarkSrv() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void BookmarkSrv::configuring()  throw ( ::fwTools::Failed )
 {
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("bookmark");
-    SLM_ASSERT("Problem with configuration for BookmarkSrv type, one element \"bookmark\" must be present", m_configuration->findAllConfigurationElement("bookmark").size() == 1 );
+    SLM_ASSERT("Problem with configuration for BookmarkSrv type, one element \"bookmark\" must be present", m_configuration->findAllConfigurationElement(
+                   "bookmark").size() == 1 );
 
     m_bookmarkName = "";
 
@@ -65,7 +62,7 @@ void BookmarkSrv::configuring()  throw ( ::fwTools::Failed )
 
 void BookmarkSrv::starting()  throw ( ::fwTools::Failed )
 {
-    ::fwTools::Bookmarks::add( m_bookmarkName , this->getObject());
+    ::fwTools::Bookmarks::add( m_bookmarkName, this->getObject());
 }
 
 //-----------------------------------------------------------------------------
@@ -82,27 +79,26 @@ void BookmarkSrv::stopping()  throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void BookmarkSrv::swapping()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void BookmarkSrv::reconfiguring()  throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void BookmarkSrv::updating() throw ( ::fwTools::Failed )
-{}
-
-//-----------------------------------------------------------------------------
-
-void BookmarkSrv::receiving( ::fwServices::ObjectMsg::csptr message ) throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void BookmarkSrv::info( std::ostream &_sstream )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 

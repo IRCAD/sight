@@ -1,18 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_HELPER_ARRAY_HPP_
-#define _FWCOMED_HELPER_ARRAY_HPP_
+#ifndef __FWCOMED_HELPER_ARRAY_HPP__
+#define __FWCOMED_HELPER_ARRAY_HPP__
 
 #include <fwTools/Type.hpp>
 #include <fwMemory/BufferObject.hpp>
 
 #include <fwData/Array.hpp>
 
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 
 namespace fwComEd
 {
@@ -23,13 +23,13 @@ namespace helper
 /**
  * @class   Array
  * @brief   Helper to manage array buffer. Lock the buffer before to modify it.
- * 
+ *
  * @date    2012
  */
 class FWCOMED_CLASS_API Array
 {
 
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro((Array), (((::fwData::Array::sptr))), new Array );
 
 
@@ -134,7 +134,8 @@ public :
      * @{
      */
     FWCOMED_API char *getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType );
-    FWCOMED_API const char *getBufferPtr( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const;
+    FWCOMED_API const char *getBufferPtr( const ::fwData::Array::IndexType &id, size_t component,
+                                          size_t sizeOfType ) const;
     ///@}
 
     /// Returns a copy of current lock on array
@@ -180,4 +181,4 @@ T* Array::getItem(const  ::fwData::Array::IndexType &id, const size_t component)
 
 } // namespace fwData
 
-#endif // _FWCOMED_HELPER_ARRAY_HPP_
+#endif // __FWCOMED_HELPER_ARRAY_HPP__

@@ -1,10 +1,17 @@
-
 fwLoadProperties()
-
-find_package (Boost REQUIRED)
 find_package(CppUnit)
-fwInclude(${Boost_INCLUDE_DIRS} ${CPPUNIT_INCLUDE_DIR})
-fwLink(${Boost_LIBRARIES} ${CPPUNIT_LIBRARY})
+find_package(VTK REQUIRED)
 
+fwForwardInclude(
+    ${CPPUNIT_INCLUDE_DIR}
+    ${VTK_INCLUDE_DIRS}
+)
 
-
+fwLink(
+    ${CPPUNIT_LIBRARY}
+    vtkIOLegacy
+    vtkFiltersSources
+    vtkCommonExecutionModel
+    vtkCommonDataModel
+    vtkCommonCore
+)

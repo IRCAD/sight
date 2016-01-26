@@ -1,14 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMMAND_PAINTCOMMAND_HPP_
-#define _FWCOMMAND_PAINTCOMMAND_HPP_
+#ifndef __FWCOMMAND_PAINTCOMMAND_HPP__
+#define __FWCOMMAND_PAINTCOMMAND_HPP__
 
 #include <boost/cstdint.hpp>
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -27,7 +26,7 @@ namespace fwCommand
 class FWCOMMAND_CLASS_API PaintCommand : public ICommand
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (PaintCommand)(ICommand), (( )), ::boost::make_shared< PaintCommand > );
+    fwCoreClassDefinitionsWithFactoryMacro( (PaintCommand)(ICommand), (( )), std::make_shared< PaintCommand > );
 
     FWCOMMAND_API PaintCommand();
 
@@ -44,19 +43,21 @@ public:
     FWCOMMAND_API const std::string getDescription( void ) const;
 
     /// Register paint voxel on image
-    FWCOMMAND_API void paint( ::fwData::Image::BufferIndexType index, ::fwData::Image::BufferType oldValue, ::fwData::Image::BufferType newValue );
+    FWCOMMAND_API void paint( ::fwData::Image::BufferIndexType index, ::fwData::Image::BufferType oldValue,
+                              ::fwData::Image::BufferType newValue );
 
 
-    FWCOMMAND_API void prePaint( ::fwData::Image::IndexType x, ::fwData::Image::IndexType y, ::fwData::Image::IndexType z );
+    FWCOMMAND_API void prePaint( ::fwData::Image::IndexType x, ::fwData::Image::IndexType y,
+                                 ::fwData::Image::IndexType z );
     FWCOMMAND_API void prePaint( ::fwData::Image::IndexType index );
 
     FWCOMMAND_API void postPaint();
 
-    FWCOMMAND_API void setImage( ::fwData::Image::sptr  image );
+    FWCOMMAND_API void setImage( ::fwData::Image::sptr image );
 
-private :
+private:
 
-     void notifyImageModification();
+    void notifyImageModification();
 
     /**
      * @brief Typedef for the index containers.
@@ -71,15 +72,15 @@ private :
     /**
      * @brief The index container
      */
-    IndexContainer  m_commandIndexContainer;
+    IndexContainer m_commandIndexContainer;
 
     /**
      * @brief The color container
      */
-    ColorContainer  m_commandColorContainer;
+    ColorContainer m_commandColorContainer;
 
     /// Working image
-    ::fwData::Image::wptr         m_image;
+    ::fwData::Image::wptr m_image;
     /// Helper on Working image
     ::fwComEd::helper::Image::sptr m_imageHelper;
 
@@ -92,4 +93,4 @@ private :
 } // namespace fwCommand
 
 
-#endif //#ifndef _FWCOMMAND_PAINTCOMMAND_HPP_
+#endif //__FWCOMMAND_PAINTCOMMAND_HPP__

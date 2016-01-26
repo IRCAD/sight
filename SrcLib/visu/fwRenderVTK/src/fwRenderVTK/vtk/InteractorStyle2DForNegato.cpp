@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,6 @@
 
 #include "fwRenderVTK/vtk/InteractorStyle2DForNegato.hpp"
 
-vtkCxxRevisionMacro(InteractorStyle2DForNegato, "$Revision: 1.24 $");
 vtkStandardNewMacro(InteractorStyle2DForNegato);
 
 //------------------------------------------------------------------------------
@@ -28,7 +27,8 @@ InteractorStyle2DForNegato::InteractorStyle2DForNegato() :
 //------------------------------------------------------------------------------
 
 InteractorStyle2DForNegato::~InteractorStyle2DForNegato()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -38,12 +38,16 @@ void InteractorStyle2DForNegato::OnChar()
 
     switch (rwi->GetKeyCode())
     {
-    case 'r' :
-        this->FindPokedRenderer(rwi->GetEventPosition()[0],
-                rwi->GetEventPosition()[1]);
-        this->CurrentRenderer->ResetCamera();
-        rwi->Render();
-        break;
+        case 'r':
+            this->FindPokedRenderer(rwi->GetEventPosition()[0],
+                                    rwi->GetEventPosition()[1]);
+            this->CurrentRenderer->ResetCamera();
+
+            if (this->getAutoRender())
+            {
+                rwi->Render();
+            }
+            break;
     }
 }
 
@@ -52,7 +56,7 @@ void InteractorStyle2DForNegato::OnChar()
 void InteractorStyle2DForNegato::OnLeftButtonDown()
 {
     this->FindPokedRenderer(this->Interactor->GetEventPosition()[0],
-            this->Interactor->GetEventPosition()[1]);
+                            this->Interactor->GetEventPosition()[1]);
     if (this->CurrentRenderer == NULL)
     {
         return;
@@ -72,7 +76,7 @@ void InteractorStyle2DForNegato::OnLeftButtonDown()
 void InteractorStyle2DForNegato::OnRightButtonDown()
 {
     this->FindPokedRenderer(this->Interactor->GetEventPosition()[0],
-            this->Interactor->GetEventPosition()[1]);
+                            this->Interactor->GetEventPosition()[1]);
     if (this->CurrentRenderer == NULL)
     {
         return;
@@ -111,16 +115,16 @@ void InteractorStyle2DForNegato::OnMouseMove()
 
     switch (this->State)
     {
-    case VTKIS_PAN:
-        this->FindPokedRenderer(x, y);
-        this->Pan();
-        this->InvokeEvent(vtkCommand::InteractionEvent, NULL);
-        break;
-    case VTKIS_DOLLY:
-          this->FindPokedRenderer(x, y);
-          this->Dolly();
-          this->InvokeEvent(vtkCommand::InteractionEvent, NULL);
-          break;
+        case VTKIS_PAN:
+            this->FindPokedRenderer(x, y);
+            this->Pan();
+            this->InvokeEvent(vtkCommand::InteractionEvent, NULL);
+            break;
+        case VTKIS_DOLLY:
+            this->FindPokedRenderer(x, y);
+            this->Dolly();
+            this->InvokeEvent(vtkCommand::InteractionEvent, NULL);
+            break;
     }
     m_oldPickPoint[0] = m_newPickPoint[0];
     m_oldPickPoint[1] = m_newPickPoint[1];
@@ -173,7 +177,7 @@ void InteractorStyle2DForNegato::Pan()
 
     // do nothing if mouse is still on the same pos
     if( (m_newPickPoint[0] == m_oldPickPoint[0]) &&
-            (m_newPickPoint[1] == m_oldPickPoint[1]) )
+        (m_newPickPoint[1] == m_oldPickPoint[1]) )
     {
         return;
     }
@@ -187,20 +191,20 @@ void InteractorStyle2DForNegato::Pan()
     vtkCamera *camera = this->CurrentRenderer->GetActiveCamera();
     camera->GetFocalPoint(viewFocus);
     this->ComputeWorldToDisplay(viewFocus[0], viewFocus[1], viewFocus[2],
-            viewFocus);
+                                viewFocus);
     focalDepth = viewFocus[2];
 
     this->ComputeDisplayToWorld( m_newPickPoint[0],
-            m_newPickPoint[1],
-            focalDepth,
-            newPickPoint);
+                                 m_newPickPoint[1],
+                                 focalDepth,
+                                 newPickPoint);
 
     // Has to recalc old mouse point since the viewport has moved,
     // so can't move it outside the loop
     this->ComputeDisplayToWorld(m_oldPickPoint[0],
-            m_oldPickPoint[1],
-            focalDepth,
-            oldPickPoint);
+                                m_oldPickPoint[1],
+                                focalDepth,
+                                oldPickPoint);
 
     // Camera motion is reversed
     motionVector[0] = oldPickPoint[0] - newPickPoint[0];
@@ -211,18 +215,22 @@ void InteractorStyle2DForNegato::Pan()
     camera->GetPosition(viewPoint);
 
     camera->SetFocalPoint(motionVector[0] + viewFocus[0],
-            motionVector[1] + viewFocus[1],
-            motionVector[2] + viewFocus[2]);
+                          motionVector[1] + viewFocus[1],
+                          motionVector[2] + viewFocus[2]);
 
     camera->SetPosition(motionVector[0] + viewPoint[0],
-            motionVector[1] + viewPoint[1],
-            motionVector[2] + viewPoint[2]);
+                        motionVector[1] + viewPoint[1],
+                        motionVector[2] + viewPoint[2]);
 
     if (rwi->GetLightFollowCamera())
     {
         this->CurrentRenderer->UpdateLightsGeometryToFollowCamera();
     }
-    rwi->Render();
+
+    if (this->getAutoRender())
+    {
+        rwi->Render();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -234,13 +242,13 @@ void InteractorStyle2DForNegato::Dolly()
         return;
     }
     if( (m_newPickPoint[0] == m_oldPickPoint[0]) &&
-            (m_newPickPoint[1] == m_oldPickPoint[1]) )
+        (m_newPickPoint[1] == m_oldPickPoint[1]) )
     {
         return;
     }
     double *center = this->CurrentRenderer->GetCenter();
-    int dy = m_newPickPoint[1] - m_oldPickPoint[1];
-    double dyf = this->MotionFactor * dy / center[1];
+    int dy         = m_newPickPoint[1] - m_oldPickPoint[1];
+    double dyf     = this->MotionFactor * dy / center[1];
     this->Dolly(pow(1.1, dyf));
 }
 
@@ -272,5 +280,8 @@ void InteractorStyle2DForNegato::Dolly(double factor)
         this->CurrentRenderer->UpdateLightsGeometryToFollowCamera();
     }
 
-    this->Interactor->Render();
+    if (this->getAutoRender())
+    {
+        this->Interactor->Render();
+    }
 }

@@ -1,20 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#ifndef ANDROID
 
+#include "visuVTKAdaptor/PlaneInteractor.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <fwData/Plane.hpp>
 
 #include <fwMath/PlaneFunctions.hpp>
 
-#include <fwComEd/PlaneMsg.hpp>
-#include <fwComEd/PointMsg.hpp>
-
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
@@ -22,10 +23,7 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkCommand.h>
 
-#include "visuVTKAdaptor/PlaneInteractor.hpp"
-#include <fwServices/IEditionService.hpp>
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneInteractor, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
@@ -34,13 +32,17 @@ class PlaneInteractorCallback : public vtkCommand
 {
 public:
     static PlaneInteractorCallback *New()
-    { return new PlaneInteractorCallback(); }
+    {
+        return new PlaneInteractorCallback();
+    }
 
     PlaneInteractorCallback()
-    {}
+    {
+    }
 
     ~PlaneInteractorCallback()
-    {}
+    {
+    }
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
     {
@@ -78,41 +80,35 @@ public:
         m_adaptor = adaptor;
     }
 
-protected :
+protected:
     PlaneInteractor::sptr m_adaptor;
 
 };
 
 //------------------------------------------------------------------------------
 
-PlaneInteractor::PlaneInteractor() throw()
+PlaneInteractor::PlaneInteractor() throw() :
+    m_vtkObserver(nullptr),
+    m_priority(1.)
 {
-    m_priority = 1;
-    m_vtkObserver = NULL;
-    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
 
 PlaneInteractor::~PlaneInteractor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
-void PlaneInteractor::configuring() throw(fwTools::Failed)
+void PlaneInteractor::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("Tag config is required", m_configuration->getName() == "config");
-    //this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    //this->setPickerId( m_configuration->getAttributeValue("picker") );
 }
 
 //------------------------------------------------------------------------------
 
 void PlaneInteractor::doStart() throw(fwTools::Failed)
 {
-
     if (::fwData::Plane::dynamicCast(this->getObject()))
     {
         PlaneInteractorCallback *observer = PlaneInteractorCallback::New();
@@ -120,7 +116,7 @@ void PlaneInteractor::doStart() throw(fwTools::Failed)
 
         m_vtkObserver = observer;
 
-        this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent  , m_vtkObserver, m_priority);
+        this->getInteractor()->AddObserver(vtkCommand::KeyPressEvent, m_vtkObserver, m_priority);
         this->getInteractor()->AddObserver(vtkCommand::KeyReleaseEvent, m_vtkObserver, m_priority);
         this->getInteractor()->AddObserver(vtkCommand::MouseWheelForwardEvent, m_vtkObserver, m_priority);
         this->getInteractor()->AddObserver(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver, m_priority);
@@ -148,19 +144,14 @@ void PlaneInteractor::doStop() throw(fwTools::Failed)
 {
     if(m_vtkObserver)
     {
-        this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent  , m_vtkObserver);
+        this->getInteractor()->RemoveObservers(vtkCommand::KeyPressEvent, m_vtkObserver);
         this->getInteractor()->RemoveObservers(vtkCommand::KeyReleaseEvent, m_vtkObserver);
         this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelForwardEvent, m_vtkObserver);
         this->getInteractor()->RemoveObservers(vtkCommand::MouseWheelBackwardEvent, m_vtkObserver);
         m_vtkObserver->Delete();
-        m_vtkObserver = NULL;
+        m_vtkObserver = nullptr;
     }
 }
-
-//------------------------------------------------------------------------------
-
-void PlaneInteractor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{}
 
 //------------------------------------------------------------------------------
 
@@ -177,9 +168,8 @@ void PlaneInteractor::switchPlaneNormal()
         {
             plane->setValue(pt0,pt2,pt1);
 
-            ::fwComEd::PlaneMsg::sptr modifiedMsg = ::fwComEd::PlaneMsg::New();
-            modifiedMsg->addEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
-            ::fwServices::IEditionService::notify( this->getSptr(), plane, modifiedMsg);
+            auto sig = plane->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
         }
         this->setVtkPipelineModified();
     }
@@ -196,7 +186,10 @@ void PlaneInteractor::pushPlane(double factor)
         ::fwData::Point::sptr pt1 = plane->getPoints()[1];
         ::fwData::Point::sptr pt2 = plane->getPoints()[2];
 
-        fwVec3d normal = ::fwMath::getNormal(plane->getPlane());
+        fwPlane planeDesc;
+        ::fwMath::setValues(planeDesc, pt0->getCoord(), pt1->getCoord(), pt2->getCoord());
+
+        fwVec3d normal = ::fwMath::getNormal(planeDesc);
         if ( pt0 && pt1 && pt2 )
         {
             fwVec3d vec0 = pt0->getCoord();
@@ -214,18 +207,19 @@ void PlaneInteractor::pushPlane(double factor)
             pt2->setCoord(vec2);
 
             plane->setValue(pt0,pt1,pt2);
+            ::fwMath::setValues(planeDesc, pt0->getCoord(), pt1->getCoord(), pt2->getCoord());
+            normal = ::fwMath::getNormal(planeDesc);
 
-            normal = ::fwMath::getNormal(plane->getPlane());
+            ::fwData::Object::ModifiedSignalType::sptr sig;
+            sig = pt0->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
 
-            ::fwComEd::PointMsg::sptr modifiedMsg = ::fwComEd::PointMsg::New();
-            modifiedMsg->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
-            ::fwServices::IEditionService::notify( this->getSptr(), pt0, modifiedMsg);
-            ::fwComEd::PointMsg::sptr modifiedMsg2 = ::fwComEd::PointMsg::New();
-            modifiedMsg2->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
-            ::fwServices::IEditionService::notify( this->getSptr(), pt1, modifiedMsg2);
-            ::fwComEd::PointMsg::sptr modifiedMsg3 = ::fwComEd::PointMsg::New();
-            modifiedMsg3->addEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
-            ::fwServices::IEditionService::notify( this->getSptr(), pt2, modifiedMsg3);
+            sig = pt1->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
+
+            sig = pt2->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            sig->asyncEmit();
+
             this->setVtkPipelineModified();
         }
     }
@@ -238,11 +232,12 @@ void PlaneInteractor::deselectPlane()
     ::fwData::Plane::sptr plane ( ::fwData::Plane::dynamicCast( this->getObject() ) );
     if (plane)
     {
-        ::fwComEd::PlaneMsg::sptr deselectMsg = ::fwComEd::PlaneMsg::New();
-        deselectMsg->addEvent( ::fwComEd::PlaneMsg::DESELECT_PLANE );
-        ::fwServices::IEditionService::notify( this->getSptr(), plane, deselectMsg);
+        auto sig = plane->signal< ::fwData::Plane::SelectedSignalType >(::fwData::Plane::s_SELECTED_SIG);
+        sig->asyncEmit(false);
     }
 }
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

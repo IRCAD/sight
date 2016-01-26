@@ -1,4 +1,3 @@
-fwEnableCpp11()
 fwLoadProperties()
 fwUseForwardInclude(
     fwCore
@@ -7,9 +6,5 @@ fwUseForwardInclude(
     fwServices
     fwTools
 )
-
-
-find_package (Boost REQUIRED)
-fwForwardInclude(${Boost_INCLUDE_DIRS})
 
 

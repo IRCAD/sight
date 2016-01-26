@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_EXECUTABLEFACTORY_HPP
-#define _FWRUNTIME_EXECUTABLEFACTORY_HPP
+#ifndef __FWRUNTIME_EXECUTABLEFACTORY_HPP__
+#define __FWRUNTIME_EXECUTABLEFACTORY_HPP__
 
 #include <string>
 
@@ -15,7 +15,7 @@
 
 namespace fwRuntime
 {
-    struct IExecutable;
+struct IExecutable;
 }
 
 
@@ -28,7 +28,7 @@ namespace fwRuntime
  * @brief   Defines the abstract executable factory class.
  * @struct  ExecutableFactory
  * @date    2004-2009
- * 
+ *
  */
 struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
 {
@@ -68,10 +68,10 @@ struct FWRUNTIME_CLASS_API ExecutableFactory : public BundleElement
     FWRUNTIME_API const std::string getType() const;
 
 
-private:
+    private:
 
 
-    std::string m_type; ///< a string containing the type identifier managed by the factory
+        std::string m_type; ///< a string containing the type identifier managed by the factory
 
 };
 
@@ -79,4 +79,4 @@ private:
 } // namespace fwRuntime
 
 
-#endif // #define _FWRUNTIME_EXECUTABLEFACTORY_HPP
+#endif // __FWRUNTIME_EXECUTABLEFACTORY_HPP__

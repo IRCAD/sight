@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IODATA_MESHREADERSERVICE_HPP_
-#define _IODATA_MESHREADERSERVICE_HPP_
+#ifndef __IODATA_MESHREADERSERVICE_HPP__
+#define __IODATA_MESHREADERSERVICE_HPP__
 
 #include <io/IReader.hpp>
 #include <boost/filesystem/path.hpp>
 
-#include "ioData/export.hpp"
+#include "ioData/config.hpp"
 
 namespace ioData
 {
 /**
  * @brief   Mesh reader service.
  * @class   MeshReaderService
- * 
+ *
  * @date    2009.
  *
  * Service reading a trian file into a fwData::Mesh object.
@@ -33,10 +33,10 @@ class IODATA_CLASS_API MeshReaderService : public ::io::IReader
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MeshReaderService)(::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (MeshReaderService)(::io::IReader) );
 
-     /// Super class of reader services
-    typedef ::io::IReader   SuperClass;
+    /// Super class of reader services
+    typedef ::io::IReader SuperClass;
 
 
     /** @name Specified reader service methods ( override from ::io::IReader )
@@ -46,7 +46,7 @@ public:
     /**
      * @brief   returns  (filename) extension
      */
-    IODATA_API virtual std::vector< std::string > getSupportedExtensions() ;
+    IODATA_API virtual std::vector< std::string > getSupportedExtensions();
 
     /**
      * @brief Configure the mesh path.
@@ -71,14 +71,18 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    virtual void starting() throw(::fwTools::Failed){};
+    virtual void starting() throw(::fwTools::Failed)
+    {
+    }
 
     /**
      * @brief Stopping method : default does nothing.
      *
      * The stopping method is empty for this service.
      */
-    virtual void stopping() throw(::fwTools::Failed){};
+    virtual void stopping() throw(::fwTools::Failed)
+    {
+    }
 
 
     /**
@@ -91,16 +95,6 @@ protected:
     IODATA_API void updating() throw(::fwTools::Failed);
 
     /**
-     * @brief React on modifications : default does nothing.
-     *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
-     *
-     * @param[in] _msg information message for modification
-     */
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
-
-
-    /**
      * @brief Info method.
      *
      * This method is used to give
@@ -108,11 +102,11 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    IODATA_API virtual void info(std::ostream &_sstream ) ;
+    IODATA_API virtual void info(std::ostream &_sstream );
     /// @}
 
 };
 
 }
 
-#endif /*_IODATA_MESHREADERSERVICE_HPP_*/
+#endif /*__IODATA_MESHREADERSERVICE_HPP__*/

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,8 @@ SConfigController::SConfigController() throw()
 //------------------------------------------------------------------------------
 
 SConfigController::~SConfigController() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -45,6 +46,14 @@ void SConfigController::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+void SConfigController::swapping() throw(::fwTools::Failed)
+{
+    m_configLauncher->stopConfig();
+    m_configLauncher->startConfig(this->getSptr());
+}
+
+//------------------------------------------------------------------------------
+
 void SConfigController::configuring() throw(fwTools::Failed)
 {
     m_configLauncher->parseConfig(this->getConfigTree());
@@ -53,12 +62,8 @@ void SConfigController::configuring() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void SConfigController::updating() throw(::fwTools::Failed)
-{}
-
-//------------------------------------------------------------------------------
-
-void SConfigController::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

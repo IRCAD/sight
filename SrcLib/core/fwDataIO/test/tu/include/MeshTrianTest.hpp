@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_TEST_TU_MESHTRIANTEST_HPP_
-#define _FWDATAIO_TEST_TU_MESHTRIANTEST_HPP_
+#ifndef __FWDATAIO_UT_MESHTRIANTEST_HPP__
+#define __FWDATAIO_UT_MESHTRIANTEST_HPP__
 
 #include <boost/filesystem/operations.hpp>
 
@@ -23,10 +23,10 @@ namespace ut
  */
 class MeshTrianTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( MeshTrianTest );
-    CPPUNIT_TEST( testSimpleMesh );
-    CPPUNIT_TEST( testMeshWithCellNormals );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( MeshTrianTest );
+CPPUNIT_TEST( testSimpleMesh );
+CPPUNIT_TEST( testMeshWithCellNormals );
+CPPUNIT_TEST_SUITE_END();
 
 
 public:
@@ -45,4 +45,4 @@ public:
 } //namespace ut
 } //namespace fwDataIO
 
-#endif //_FWDATAIO_TEST_TU_MESHTRIANTEST_HPP_
+#endif //__FWDATAIO_UT_MESHTRIANTEST_HPP__

@@ -1,20 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vtkPolyData.h>
-#include <vtkGenericDataObjectWriter.h>
-#include <vtkSmartPointer.h>
+#include "fwVtkIO/helper/Mesh.hpp"
+#include "fwVtkIO/MeshWriter.hpp"
+#include "fwVtkIO/helper/vtkLambdaCommand.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include "fwVtkIO/helper/Mesh.hpp"
-#include "fwVtkIO/MeshWriter.hpp"
-#include "fwVtkIO/helper/ProgressVtkToFw.hpp"
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Observer.hpp>
+
+#include <vtkPolyData.h>
+#include <vtkGenericDataObjectWriter.h>
+#include <vtkSmartPointer.h>
 
 fwDataIOWriterRegisterMacro( ::fwVtkIO::MeshWriter );
 
@@ -23,8 +26,9 @@ namespace fwVtkIO
 {
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key)
-: ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this),
+    m_job(::fwJobs::Observer::New("Mesh writer"))
 {
     SLM_TRACE_FUNC();
 }
@@ -40,28 +44,53 @@ MeshWriter::~MeshWriter()
 
 void MeshWriter::write()
 {
+    using namespace fwVtkIO::helper;
+
     assert( !m_object.expired() );
     assert( m_object.lock() );
 
     ::fwData::Mesh::sptr pMesh = getConcreteObject();
 
     vtkSmartPointer< vtkGenericDataObjectWriter > writer = vtkSmartPointer< vtkGenericDataObjectWriter >::New();
-    vtkSmartPointer< vtkPolyData > vtkMesh = vtkSmartPointer< vtkPolyData >::New();
+    vtkSmartPointer< vtkPolyData > vtkMesh               = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( pMesh, vtkMesh);
     writer->SetInputData( vtkMesh );
     writer->SetFileName(this->getFile().string().c_str());
     writer->SetFileTypeToBinary();
 
-    //add progress observation
-    Progressor progress(writer, this->getSptr(), this->getFile().string());
+    vtkSmartPointer<vtkLambdaCommand> progressCallback;
+
+    progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
+    progressCallback->SetCallback(
+        [&](vtkObject* caller, long unsigned int, void* )
+        {
+            auto filter = static_cast<vtkGenericDataObjectWriter*>(caller);
+            m_job->doneWork( filter->GetProgress()*100 );
+        }
+        );
+    writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+
+    m_job->addSimpleCancelHook([&] { writer->AbortExecuteOn(); });
+
     writer->Update();
+
+    m_job->finish();
 }
 
 //------------------------------------------------------------------------------
 
-std::string  MeshWriter::extension()
+std::string MeshWriter::extension()
 {
-   return ".vtk";
+    return ".vtk";
 }
+
+//------------------------------------------------------------------------------
+
+::fwJobs::IJob::sptr MeshWriter::getJob() const
+{
+    return m_job;
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace fwVtkIO

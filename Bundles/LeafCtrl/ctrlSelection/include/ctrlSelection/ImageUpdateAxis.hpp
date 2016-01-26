@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_IMAGEUPDATEAXIS_HPP_
-#define _CTRLSELECTION_IMAGEUPDATEAXIS_HPP_
+#ifndef __CTRLSELECTION_IMAGEUPDATEAXIS_HPP__
+#define __CTRLSELECTION_IMAGEUPDATEAXIS_HPP__
 
 #include <fwServices/IService.hpp>
 #include <fwServices/IController.hpp>
@@ -21,20 +21,25 @@ namespace ctrlSelection
 /**
  * @class  ImageUpdateAxis
  * @brief  This service updates a fwData::Float given in configuration with the image axis.
- * 
-
- * @date   2011.
  */
 class CTRLSELECTION_CLASS_API ImageUpdateAxis : public ::fwServices::IController
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageUpdateAxis)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageUpdateAxis)(::fwServices::IController) );
 
-    CTRLSELECTION_API ImageUpdateAxis() throw() ;
+    CTRLSELECTION_API ImageUpdateAxis() throw();
 
-    CTRLSELECTION_API virtual ~ImageUpdateAxis() throw() ;
+    CTRLSELECTION_API virtual ~ImageUpdateAxis() throw();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
+     */
+    CTRLSELECTION_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -69,10 +74,17 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    /// Receives image event to change axis orientation.
-    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
 private:
+
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: update image slice type
+    void updateSliceType(int from, int to);
+    /**
+     * @}
+     */
 
     /// fwID of the float to update.
     std::string m_floatID;
@@ -83,4 +95,4 @@ private:
 
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_IMAGEUPDATEAXIS_HPP_
+#endif // __CTRLSELECTION_IMAGEUPDATEAXIS_HPP__

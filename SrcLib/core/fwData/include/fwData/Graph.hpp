@@ -7,19 +7,19 @@
 #ifndef __FWDATA_GRAPH_HPP__
 #define __FWDATA_GRAPH_HPP__
 
-#include <map>
-#include <set>
-
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/Edge.hpp"
 #include "fwData/Node.hpp"
 
+#include <map>
+#include <set>
 
 fwCampAutoDeclareDataMacro((fwData)(Graph), FWDATA_API);
 
-namespace fwData {
+namespace fwData
+{
 /**
  * @brief   This class defines a graph object.
  *
@@ -27,10 +27,11 @@ namespace fwData {
 
  * @see     ::fwData::Edge, ::fwData::Node
  */
-class FWDATA_CLASS_API Graph : public ::fwData::Object {
+class FWDATA_CLASS_API Graph : public ::fwData::Object
+{
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Graph)(::fwData::Object), (()), ::fwData::factory::New< Graph >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Graph)(::fwData::Object), (()), ::fwData::factory::New< Graph >);
 
     fwCampMakeFriendDataMacro((fwData)(Graph));
 
@@ -69,7 +70,7 @@ public:
     /**
      * @brief remove a node
      *
-     * @return true on sucess
+     * @return true on success
      */
     FWDATA_API bool removeNode( Node::csptr _node);
 
@@ -112,7 +113,7 @@ public:
                                 Node::csptr _nodeDestination,
                                 std::string _nodeDestinationInputPortID,
                                 std::string _EdgeNature
-                             );
+                                );
 
     /**
      * @brief remove an edge
@@ -173,8 +174,8 @@ public:
      * @return the vector of all edges with correct nature and portID where _node is a source/destination node
      */
     FWDATA_API std::vector< Edge::sptr > getEdges(const Node::csptr &_node, bool _upStream,
-                                                  const std::string &_nature="",
-                                                  const std::string &_portID="");
+                                                  const std::string &_nature = "",
+                                                  const std::string &_portID = "");
 
     /**
      * @brief Get a vector of nodes
@@ -186,9 +187,9 @@ public:
      *
      * @return the vector of all nodes associated with _node
      */
-    FWDATA_API  std::vector< ::fwData::Node::sptr > getNodes( const ::fwData::Node::csptr &node, bool upStream,
-                                                              const std::string &nature="",
-                                                              const std::string &portID="" );
+    FWDATA_API std::vector< ::fwData::Node::sptr > getNodes( const ::fwData::Node::csptr &node, bool upStream,
+                                                             const std::string &nature = "",
+                                                             const std::string &portID = "" );
 
     /**
      * @return Number of nodes
@@ -214,7 +215,7 @@ public:
     /// Updated signal key
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_SIG;
 
-protected :
+protected:
 
     NodeContainer m_nodes;
     ConnectionContainer m_connections;

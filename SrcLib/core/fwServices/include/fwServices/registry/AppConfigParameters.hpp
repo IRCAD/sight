@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP_
-#define _FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP_
+#ifndef __FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP__
+#define __FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP__
 
 #include <map>
 
@@ -31,7 +31,7 @@ namespace registry
  * @class AppConfigParameters
  * @brief This class allows to register all the configuration parameters which has the point extension
  *        "::fwServices::registry::AppConfigParameters".
- * 
+ *
  * @date 2012
  */
 class FWSERVICES_CLASS_API AppConfigParameters : public ::fwCore::BaseObject
@@ -39,7 +39,7 @@ class FWSERVICES_CLASS_API AppConfigParameters : public ::fwCore::BaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (AppConfigParameters)(::fwCore::BaseObject), (()), new AppConfigParameters) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (AppConfigParameters)(::fwCore::BaseObject), (()), new AppConfigParameters);
 
     /// Return the default global instance of AppConfigParameters
     FWSERVICES_API static AppConfigParameters::sptr getDefault();
@@ -66,7 +66,7 @@ public:
      */
     FWSERVICES_API void clearRegistry();
 
-protected :
+protected:
 
     typedef std::map< std::string, AppConfig::FieldAdaptorType > Registry;
 
@@ -89,6 +89,6 @@ protected :
 
 } // namespace fwServices
 
-#endif // _FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP_
+#endif // __FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP__
 
 

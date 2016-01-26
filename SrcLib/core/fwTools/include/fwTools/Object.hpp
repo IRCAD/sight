@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWTOOLS_OBJECT_HPP_
-#define _FWTOOLS_OBJECT_HPP_
+#ifndef __FWTOOLS_OBJECT_HPP__
+#define __FWTOOLS_OBJECT_HPP__
 
 #include <string>
 #include <vector>
@@ -25,10 +25,11 @@ class UUID;
 /**
  * @brief   Define Base class for FW4SPL objects and services
  * @class   Object
- * 
+ *
  * @date    2007-2009.
  */
-class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject , protected ::fwTools::fwID
+class FWTOOLS_CLASS_API Object  : public ::fwCore::BaseObject,
+                                  protected ::fwTools::fwID
 {
 public:
     fwCoreNonInstanciableClassDefinitionsMacro( (Object)(::fwCore::BaseObject) );
@@ -37,13 +38,11 @@ public:
     friend class ::fwTools::UUID;
 
     // expose API for ID management
-    FWTOOLS_API using  ::fwTools::fwID::hasID;
-    FWTOOLS_API using  ::fwTools::fwID::getID;
-    FWTOOLS_API using  ::fwTools::fwID::setID;
-    FWTOOLS_API using  ::fwTools::fwID::resetID;
-#ifdef COM_LOG
-    FWTOOLS_API using  ::fwTools::fwID::getLightID;
-#endif
+    using  ::fwTools::fwID::hasID;
+    using  ::fwTools::fwID::getID;
+    using  ::fwTools::fwID::setID;
+    using  ::fwTools::fwID::resetID;
+
 
     /// return the sub class classname : an alias of this->getClassname
     FWTOOLS_API std::string className() const;
@@ -60,55 +59,70 @@ public:
      * @brief Set a name for an object
      * @deprecated (should use UUID)
      */
-    void setName ( const std::string _strName ) { m_strName = _strName; }
+    void setName ( const std::string _strName )
+    {
+        m_strName = _strName;
+    }
 
     /**
      * @brief Retrieve the name object
      * @deprecated (should use UUID)
      */
-    const std::string getName() const { return m_strName; }
+    const std::string getName() const
+    {
+        return m_strName;
+    }
 
     //@}
 
     FWTOOLS_API void modified()
     {
         m_logicStamp->modified();
-    };
+    }
 
     FWTOOLS_API void timeModified()
     {
         m_timeStamp->modified();
-    };
+    }
 
     FWTOOLS_API void setLifePeriod(::fwCore::TimeStamp::TimeStampType p)
     {
         m_timeStamp->setLifePeriod(p);
-    };
+    }
 
     FWTOOLS_API ::fwCore::TimeStamp::TimeStampType getLifePeriod()
     {
         return m_timeStamp->getLifePeriod();
-    };
+    }
 
     FWTOOLS_API bool periodExpired()
     {
         return m_timeStamp->periodExpired();
-    };
+    }
 
-    ::fwCore::TimeStamp::sptr  getTimeStamp()  const { return m_timeStamp; }
-    ::fwCore::LogicStamp::sptr getLogicStamp() const { return m_logicStamp; }
+    ::fwCore::TimeStamp::sptr  getTimeStamp()  const
+    {
+        return m_timeStamp;
+    }
+    ::fwCore::LogicStamp::sptr getLogicStamp() const
+    {
+        return m_logicStamp;
+    }
 
-    ::fwCore::LogicStamp::csptr getOSRKey() const { return m_OSRKey; }
+    ::fwCore::LogicStamp::csptr getOSRKey() const
+    {
+        return m_OSRKey;
+    }
 
-protected :
+protected:
 
-    ::fwCore::TimeStamp::sptr  m_timeStamp;
+    ::fwCore::TimeStamp::sptr m_timeStamp;
 
     ::fwCore::LogicStamp::sptr m_logicStamp;
 
     SPTR(::fwTools::UUID) m_uuid;
 
-private :
+private:
 
     /// Standard copy operator, forbidden.
     Object &operator=(const Object &_obj);
@@ -122,4 +136,4 @@ private :
 
 }
 
-#endif /* _FWTOOLS_OBJECT_HPP_ */
+#endif /* __FWTOOLS_OBJECT_HPP__ */

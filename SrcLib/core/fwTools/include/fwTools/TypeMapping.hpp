@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ struct isMappingSingleMPLHelper;
  * @tparam TSingle_or_TSEQ a sequence or 1 element type to test
  * @tparam KeyType_or_KeyTypeContainer to keys (sequence or single one)
  * @return  true iff the value of the KeyType can deal with the specified type T
- * 
+ *
  *
  * This function should be specializated to create a Mapping with a KeyType value and a type.
  * This function is used by Dispatcher<>::invoke(key) to know what instance to execute.
@@ -60,10 +60,10 @@ bool isMapping(const KeyType_or_KeyTypeContainer &key)
 {
     namespace mpl = ::boost::mpl;
     typedef BOOST_DEDUCED_TYPENAME mpl::if_<
-                                        mpl::is_sequence< TSingle_or_TSEQ >,
-                                        isMappingMultiMPLHelper< TSingle_or_TSEQ,KeyType_or_KeyTypeContainer >,
-                                        isMappingSingleMPLHelper< TSingle_or_TSEQ,KeyType_or_KeyTypeContainer >
-                                    >::type typex;
+            mpl::is_sequence< TSingle_or_TSEQ >,
+            isMappingMultiMPLHelper< TSingle_or_TSEQ,KeyType_or_KeyTypeContainer >,
+            isMappingSingleMPLHelper< TSingle_or_TSEQ,KeyType_or_KeyTypeContainer >
+            >::type typex;
     return typex::evaluate(key);
 
 }
@@ -78,7 +78,7 @@ bool isMapping(const KeyType_or_KeyTypeContainer &key)
  * @class   isMappingSingleMPLHelper
  * @tparam  T the type to test
  * @tparam  KeyType the type to match
- * 
+ *
  * @date    2007-2009.
  */
 template< class T, class KeyType >
@@ -101,13 +101,13 @@ struct isMappingSingleMPLHelper
 
 /**
  * @brief   Test whatever a typelist is mapping a container of KeyType
- * 
+ *
  * @return  true if same size & each element of type list mappes a single element of KeyType
  */
 template< class TSEQ, class KeyTypeContainer >
 bool isMappingMulti(const KeyTypeContainer& keys)
 {
-    return  isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate(keys);
+    return isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate(keys);
 }
 
 
@@ -116,13 +116,14 @@ bool isMappingMulti(const KeyTypeContainer& keys)
 /**
  * @class   EmptyListMapping
  * @brief an helper to isMapping() using iterator
- * 
+ *
  * @date    2007-2009.
  */
 template<  class KeyTypeContainer >
 struct EmptyListMapping
 {
-    static bool evaluate(typename KeyTypeContainer::const_iterator & begin, typename KeyTypeContainer::const_iterator & end)
+    static bool evaluate(typename KeyTypeContainer::const_iterator & begin,
+                         typename KeyTypeContainer::const_iterator & end)
     {
         assert( begin == end ); // assertion fails iff TypeList & KeyType container does not have the same size
         return true; // an empty typelist with an emty keyType matches
@@ -136,14 +137,15 @@ struct EmptyListMapping
  * @class   isMappingMultiMPLHelper
  * @brief an helper to isMapping() using iterator : this class is called when TSEQ is a sequence. it is recursivelly called with head element
  * removed from TSEQ
- * 
+ *
  * @date    2007-2009.
  */
 template< class TSEQ, class KeyTypeContainer >
 struct
 isMappingMultiMPLHelper
 {
-    static bool evaluate(typename KeyTypeContainer::const_iterator & begin, typename KeyTypeContainer::const_iterator & end);
+    static bool evaluate(typename KeyTypeContainer::const_iterator & begin,
+                         typename KeyTypeContainer::const_iterator & end);
 
     static bool evaluate(const KeyTypeContainer& keys)
     {
@@ -158,7 +160,7 @@ isMappingMultiMPLHelper
         }
 
         typename KeyTypeContainer::const_iterator begin = keys.begin(); // needed to have cste ptr
-        typename KeyTypeContainer::const_iterator end = keys.end();
+        typename KeyTypeContainer::const_iterator end   = keys.end();
         return isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate( begin, end );
 
     }
@@ -168,28 +170,29 @@ isMappingMultiMPLHelper
 
 template< class TSEQ, class KeyTypeContainer >
 bool
-isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate(typename KeyTypeContainer::const_iterator & begin, typename KeyTypeContainer::const_iterator & end)
+isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate(typename KeyTypeContainer::const_iterator & begin,
+                                                         typename KeyTypeContainer::const_iterator & end)
 {
-        namespace mpl = ::boost::mpl;
+    namespace mpl = ::boost::mpl;
 
-        typedef BOOST_DEDUCED_TYPENAME mpl::front<TSEQ>::type Head;
-        typedef BOOST_DEDUCED_TYPENAME mpl::pop_front<TSEQ>::type Tail;
+    typedef BOOST_DEDUCED_TYPENAME mpl::front<TSEQ>::type Head;
+    typedef BOOST_DEDUCED_TYPENAME mpl::pop_front<TSEQ>::type Tail;
 
-        typedef BOOST_DEDUCED_TYPENAME mpl::if_<
-                mpl::empty<Tail>,
-                EmptyListMapping < KeyTypeContainer >,
-                isMappingMultiMPLHelper <Tail,KeyTypeContainer >
-                 >::type typex;
+    typedef BOOST_DEDUCED_TYPENAME mpl::if_<
+            mpl::empty<Tail>,
+            EmptyListMapping < KeyTypeContainer >,
+            isMappingMultiMPLHelper <Tail,KeyTypeContainer >
+            >::type typex;
 
-        bool firstKeyIsOK = isMapping< Head >( *begin ); // call a isMapping with a single key
+    bool firstKeyIsOK = isMapping< Head >( *begin );     // call a isMapping with a single key
 
-        if ( firstKeyIsOK == false ) // OPTIMISATION
-        {
-            return false; // the first key doesn't match : do not try to test other
-        }
+    if ( firstKeyIsOK == false )     // OPTIMISATION
+    {
+        return false;     // the first key doesn't match : do not try to test other
+    }
 
-        bool otherKeys = typex::evaluate( ++begin , end );
-        return firstKeyIsOK && otherKeys;
+    bool otherKeys = typex::evaluate( ++begin, end );
+    return firstKeyIsOK && otherKeys;
 
 }
 

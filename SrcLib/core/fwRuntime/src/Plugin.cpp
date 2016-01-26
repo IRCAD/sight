@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,7 @@ namespace fwRuntime
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<Bundle> Plugin::getBundle() const throw()
+std::shared_ptr<Bundle> Plugin::getBundle() const throw()
 {
     return m_bundle;
 }
@@ -20,11 +20,12 @@ namespace fwRuntime
 //------------------------------------------------------------------------------
 
 void Plugin::setInitializationData(const ConfigurationElement::sptr) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
-void Plugin::setBundle( ::boost::shared_ptr<Bundle> bundle) throw()
+void Plugin::setBundle( std::shared_ptr<Bundle> bundle) throw()
 {
     m_bundle = bundle;
 }

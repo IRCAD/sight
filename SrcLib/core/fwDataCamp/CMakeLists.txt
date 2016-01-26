@@ -1,4 +1,3 @@
-
 fwLoadProperties()
 
 fwUseForwardInclude(
@@ -7,6 +6,4 @@ fwUseForwardInclude(
     fwData
     fwMedData
     fwMemory
-    )
-
-
+)

@@ -7,11 +7,11 @@
 #ifndef __FWDATA_PROCESSOBJECT_HPP__
 #define __FWDATA_PROCESSOBJECT_HPP__
 
-#include <map>
-#include <vector>
-
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <map>
+#include <vector>
 
 fwCorePredeclare( (fwData)(Field) );
 
@@ -27,7 +27,8 @@ namespace fwData
 class FWDATA_CLASS_API ProcessObject : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()), ::fwData::factory::New< ProcessObject >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ProcessObject)(::fwData::Object), (()),
+                                            ::fwData::factory::New< ProcessObject >);
 
 
     fwCampMakeFriendDataMacro((fwData)(ProcessObject));
@@ -40,7 +41,7 @@ public:
      * @brief Constructor
      * @param key Private construction key
      */
-    FWDATA_API ProcessObject(::fwData::Object::Key key) ;
+    FWDATA_API ProcessObject(::fwData::Object::Key key);
 
     /**
      * @brief   Destructor
@@ -60,10 +61,7 @@ public:
      * @return null sptr if input is not found
      */
     template< class OBJECTTYPE >
-    typename OBJECTTYPE::sptr getInput(const ParamNameType& name)
-    {
-        return OBJECTTYPE::dynamicCast( this->getInput( name ) ) ;
-    }
+    typename OBJECTTYPE::sptr getInput(const ParamNameType& name);
 
     /**
      * @brief Retrieves the output data associated with specified name (null if non exist).
@@ -78,16 +76,25 @@ public:
      * @return null sptr if output is not found
      */
     template< class OBJECTTYPE >
-    typename OBJECTTYPE::sptr getOutput(const ParamNameType& name)
-    {
-        return OBJECTTYPE::dynamicCast( this->getOutput( name ) ) ;
-    }
+    typename OBJECTTYPE::sptr getOutput(const ParamNameType& name);
 
-    /// Retrieve the input data
-    fwDataGetSetCRefMacro(Inputs, ProcessObjectMapType);
+    /**
+     * @{
+     * @brief Retrieve the input data.
+     */
+    const ProcessObjectMapType &getInputs () const;
 
-    /// Retrieve the output data
-    fwDataGetSetCRefMacro(Outputs, ProcessObjectMapType);
+    void setInputs (const ProcessObjectMapType &val);
+    /// @}
+
+    /**
+     * @{
+     * @briefRetrieve the output data.
+     */
+    const ProcessObjectMapType &getOutputs () const;
+
+    void setOutputs (const ProcessObjectMapType &val);
+    /// @}
 
     /**
      * @brief Register input value with specified name.
@@ -161,11 +168,58 @@ protected:
     FWDATA_API void clearParams(ProcessObjectMapType& params);
 
     /// Inputs values map
-    ProcessObjectMapType m_attrInputs;
+    ProcessObjectMapType m_inputs;
 
     /// Outputs values map
-    ProcessObjectMapType m_attrOutputs;
+    ProcessObjectMapType m_outputs;
 };
+
+//-----------------------------------------------------------------------------
+
+
+template< class OBJECTTYPE >
+inline typename OBJECTTYPE::sptr ProcessObject::getInput(const ProcessObject::ParamNameType& name)
+{
+    return OBJECTTYPE::dynamicCast( this->getInput( name ) );
+}
+
+//-----------------------------------------------------------------------------
+
+template< class OBJECTTYPE >
+inline typename OBJECTTYPE::sptr ProcessObject::getOutput(const ProcessObject::ParamNameType& name)
+{
+    return OBJECTTYPE::dynamicCast( this->getOutput( name ) );
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ProcessObject::ProcessObjectMapType &ProcessObject::getInputs () const
+{
+    return m_inputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ProcessObject::setInputs (const ProcessObject::ProcessObjectMapType &val)
+{
+    m_inputs = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const ProcessObject::ProcessObjectMapType &ProcessObject::getOutputs () const
+{
+    return m_outputs;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ProcessObject::setOutputs (const ProcessObject::ProcessObjectMapType &val)
+{
+    m_outputs = val;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

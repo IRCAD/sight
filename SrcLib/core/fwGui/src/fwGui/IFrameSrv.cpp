@@ -4,46 +4,58 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGui/IFrameSrv.hpp"
+#include "fwGui/Application.hpp"
+#include "fwGui/registry/worker.hpp"
+
+#include <fwThread/Worker.hpp>
+#include <fwThread/Worker.hxx>
+
 #include <boost/foreach.hpp>
 #include <boost/bind.hpp>
 #include <boost/lambda/lambda.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
-#include <fwTools/fwID.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwServices/IEditionService.hpp>
 
-#include "fwGui/Application.hpp"
-#include "fwGui/IFrameSrv.hpp"
+#include <fwTools/fwID.hpp>
 
 namespace fwGui
 {
 
-const std::string IFrameSrv::CLOSE_POLICY_EXIT   = "exit";
-const std::string IFrameSrv::CLOSE_POLICY_NOTIFY = "notify";
+const std::string IFrameSrv::CLOSE_POLICY_EXIT    = "exit";
+const std::string IFrameSrv::CLOSE_POLICY_NOTIFY  = "notify";
 const std::string IFrameSrv::CLOSE_POLICY_MESSAGE = "message";
 
-::fwGui::container::fwContainer::wptr  IFrameSrv::m_progressWidget = ::boost::weak_ptr< ::fwGui::container::fwContainer >();
+const ::fwCom::Signals::SignalKeyType IFrameSrv::s_CLOSED_SIG = "closed";
+
+::fwGui::container::fwContainer::wptr IFrameSrv::m_progressWidget =
+    std::weak_ptr< ::fwGui::container::fwContainer >();
 
 IFrameSrv::IFrameSrv() :
-        m_hasMenuBar(false),
-        m_hasToolBar(false),
-        m_closePolicy("exit")
-{}
+    m_hasMenuBar(false),
+    m_hasToolBar(false),
+    m_closePolicy("exit")
+{
+    m_sigClosed = newSignal< ClosedSignalType >(s_CLOSED_SIG);
+}
 
 //-----------------------------------------------------------------------------
 
 IFrameSrv::~IFrameSrv()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void IFrameSrv::initialize()
 {
     // find gui configuration
-    std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
+    std::vector < ConfigurationType > vectGui    = m_configuration->find("gui");
     std::vector < ConfigurationType > vectWindow = m_configuration->find("window");
 
     if(!vectGui.empty())
@@ -78,14 +90,14 @@ void IFrameSrv::initialize()
     if(!vectWindow.empty())
     {
         ConfigurationType window = vectWindow.at(0);
-        std::string onclose = window->getAttributeValue("onclose");
+        std::string onclose      = window->getAttributeValue("onclose");
         if ( !onclose.empty() )
         {
             m_closePolicy = onclose;
         }
         SLM_ASSERT("Invalid onclose value : " << m_closePolicy << ". Should be 'exit', 'notify' or 'message'",
-                m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
-                || m_closePolicy == CLOSE_POLICY_MESSAGE);
+                   m_closePolicy == CLOSE_POLICY_NOTIFY || m_closePolicy == CLOSE_POLICY_EXIT
+                   || m_closePolicy == CLOSE_POLICY_MESSAGE);
     }
 
     m_viewRegistrar = ::fwGui::registrar::ViewRegistrar::New(this->getID());
@@ -103,7 +115,12 @@ void IFrameSrv::initialize()
 void IFrameSrv::create()
 {
     SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
-    m_frameLayoutManager->createFrame();
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_frameLayoutManager->createFrame();
+        })).wait();
+
     ::fwGui::container::fwContainer::sptr frame = m_frameLayoutManager->getFrame();
     if ( m_progressWidget.expired() )
     {
@@ -117,17 +134,17 @@ void IFrameSrv::create()
 
     ::fwGui::layoutManager::IFrameLayoutManager::CloseCallback fct;
 
-     if (m_closePolicy == CLOSE_POLICY_EXIT)
+    if (m_closePolicy == CLOSE_POLICY_EXIT)
     {
-         fct = ::boost::bind( &::fwGui::IFrameSrv::onCloseExit, this);
+        fct = std::bind( &::fwGui::IFrameSrv::onCloseExit, this);
     }
     else if (m_closePolicy == CLOSE_POLICY_NOTIFY)
     {
-        fct = ::boost::bind( &::fwGui::IFrameSrv::onCloseNotify, this);
+        fct = std::bind( &::fwGui::IFrameSrv::onCloseNotify, this);
     }
     else if(m_closePolicy == CLOSE_POLICY_MESSAGE)
     {
-        fct = ::boost::bind( &::fwGui::IFrameSrv::onCloseMessage, this);
+        fct = std::bind( &::fwGui::IFrameSrv::onCloseMessage, this);
         auto app = ::fwGui::Application::New();
         app->setConfirm(true);
     }
@@ -136,13 +153,21 @@ void IFrameSrv::create()
 
     if (m_hasMenuBar)
     {
-        m_menuBarBuilder->createMenuBar(frame);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_menuBarBuilder->createMenuBar(frame);
+            })).wait();
+
         m_viewRegistrar->manageMenuBar(m_menuBarBuilder->getMenuBar());
     }
 
     if (m_hasToolBar)
     {
-        m_toolBarBuilder->createToolBar(frame);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_toolBarBuilder->createToolBar(frame);
+            })).wait();
+
         m_viewRegistrar->manageToolBar(m_toolBarBuilder->getToolBar());
     }
 }
@@ -157,19 +182,31 @@ void IFrameSrv::destroy()
     {
         m_viewRegistrar->unmanageToolBar();
         SLM_ASSERT("ToolBarBuilder must be initialized.",m_toolBarBuilder);
-        m_toolBarBuilder->destroyToolBar();
+
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_toolBarBuilder->destroyToolBar();
+            })).wait();
     }
 
     if (m_hasMenuBar)
     {
         m_viewRegistrar->unmanageMenuBar();
         SLM_ASSERT("MenuBarBuilder must be initialized.",m_menuBarBuilder);
-        m_menuBarBuilder->destroyMenuBar();
+
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_menuBarBuilder->destroyMenuBar();
+            })).wait();
     }
 
     m_viewRegistrar->unmanage();
     SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
-    m_frameLayoutManager->destroyFrame();
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_frameLayoutManager->destroyFrame();
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -177,9 +214,9 @@ void IFrameSrv::destroy()
 void IFrameSrv::initializeLayoutManager(ConfigurationType frameConfig)
 {
     OSLM_ASSERT("Bad configuration name "<<frameConfig->getName()<< ", must be frame",
-            frameConfig->getName() == "frame");
+                frameConfig->getName() == "frame");
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
-                                                 ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY);
+        ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY);
     m_frameLayoutManager = ::fwGui::layoutManager::IFrameLayoutManager::dynamicCast(guiObj);
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IFrameLayoutManager::REGISTRY_KEY,
                 m_frameLayoutManager);
@@ -195,7 +232,7 @@ void IFrameSrv::initializeMenuBarBuilder(ConfigurationType menuBarConfig)
                 menuBarConfig->getName() == "menuBar");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY);
-    m_menuBarBuilder = ::fwGui::builder::IMenuBarBuilder::dynamicCast(guiObj);
+    m_menuBarBuilder                    = ::fwGui::builder::IMenuBarBuilder::dynamicCast(guiObj);
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IMenuBarBuilder::REGISTRY_KEY,
                 m_menuBarBuilder);
 
@@ -210,7 +247,7 @@ void IFrameSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
                 toolBarConfig->getName() == "toolBar");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
-    m_toolBarBuilder = ::fwGui::builder::IToolBarBuilder::dynamicCast(guiObj);
+    m_toolBarBuilder                    = ::fwGui::builder::IToolBarBuilder::dynamicCast(guiObj);
     OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY,
                 m_toolBarBuilder);
 
@@ -230,10 +267,7 @@ void IFrameSrv::onCloseExit()
 void IFrameSrv::onCloseNotify()
 {
     SLM_TRACE_FUNC();
-    ::fwServices::ObjectMsg::sptr objectMsg = ::fwServices::ObjectMsg::New();
-    ::fwData::Object::sptr srvObj = this->getObject();
-    objectMsg->addEvent( "WINDOW_CLOSED" );
-    ::fwServices::IEditionService::notify(this->getSptr(), srvObj, objectMsg);
+    m_sigClosed->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

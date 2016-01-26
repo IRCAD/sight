@@ -1,77 +1,61 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <algorithm>
+#include "visuVTKAdaptor/LabeledPointList.hpp"
+#include "visuVTKAdaptor/PointLabel.hpp"
+#include "visuVTKAdaptor/PointList.hpp"
 
-#include <boost/foreach.hpp>
-
-#include <fwData/PointList.hpp>
-#include <fwData/Point.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/PointListMsg.hpp>
+#include <fwData/Point.hpp>
+#include <fwData/PointList.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
 #include <vtkAssemblyPath.h>
+#include <vtkCellPicker.h>
 #include <vtkCommand.h>
 #include <vtkCubeSource.h>
-#include <vtkCellPicker.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 
-#include "visuVTKAdaptor/LabeledPointList.hpp"
-#include "visuVTKAdaptor/PointList.hpp"
-#include "visuVTKAdaptor/PointLabel.hpp"
+#include <algorithm>
 
-
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::LabeledPointList, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::LabeledPointList, ::fwData::PointList );
 
 namespace visuVTKAdaptor
 {
 
 //------------------------------------------------------------------------------
 
-void notifyRemoveLandMark( ::fwData::Point::sptr point )
-{
-    ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
-    msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED, point );
-
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = point->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-
-    fwServicesNotifyMsgMacro( point->getLightID(), sig, msgPointList );
-}
-
-//------------------------------------------------------------------------------
-
 class vtkLabeledPointDeleteCallBack : public vtkCommand
 {
 
-public :
+public:
     static vtkLabeledPointDeleteCallBack *New( ::fwRenderVTK::IVtkAdaptorService *service)
-    { return new vtkLabeledPointDeleteCallBack(service); }
+    {
+        return new vtkLabeledPointDeleteCallBack(service);
+    }
 
     vtkLabeledPointDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService *service )
-    : m_service(service),
-      m_picker( vtkCellPicker::New() ),
-      m_propCollection( vtkPropCollection::New() )
+        : m_service(service),
+          m_picker( vtkCellPicker::New() ),
+          m_propCollection( vtkPropCollection::New() )
     {
         m_lastPos[0] = -1;
         m_lastPos[1] = -1;
         m_picker->PickFromListOn();
         m_picker->SetTolerance(0.001);
 
-        m_display[2]=0.0;
+        m_display[2] = 0.0;
     }
 
     ~vtkLabeledPointDeleteCallBack( )
@@ -112,7 +96,7 @@ public :
             m_display[1] = pos[1];
 
             this->fillPickList();
-            if (m_picker->Pick( m_display , m_service->getRenderer() ) )
+            if (m_picker->Pick( m_display, m_service->getRenderer() ) )
             {
                 if(getSelectedPoint())
                 {
@@ -125,32 +109,39 @@ public :
                 }
             }
         }
-        else if ( (eventId == vtkCommand::RightButtonReleaseEvent ) && !m_pickedPoint.expired() && !m_pickedPointList.expired() && std::equal(pos, pos+1, m_lastPos) )
+        else if ( (eventId == vtkCommand::RightButtonReleaseEvent ) && !m_pickedPoint.expired() &&
+                  !m_pickedPointList.expired() && std::equal(pos, pos+1, m_lastPos) )
         {
-            ::fwData::PointList::PointListContainer::iterator itr = std::find( m_pickedPointList.lock()->getRefPoints().begin(), m_pickedPointList.lock()->getRefPoints().end(), m_pickedPoint.lock() );
+            ::fwData::PointList::PointListContainer::iterator itr = std::find(
+                m_pickedPointList.lock()->getRefPoints().begin(),
+                m_pickedPointList.lock()->getRefPoints().end(), m_pickedPoint.lock() );
             if(itr != m_pickedPointList.lock()->getRefPoints().end())
             {
                 ::fwData::Point::sptr point = *itr;
                 m_pickedPointList.lock()->getRefPoints().erase(itr);
-                notifyRemoveLandMark( point );
+                auto sig = m_pickedPointList.lock()->signal< ::fwData::PointList::PointRemovedSignalType >(
+                    ::fwData::PointList::s_POINT_REMOVED_SIG );
+                sig->asyncEmit(point);
             }
         }
     }
     bool getSelectedPoint()
     {
-        bool isFind = false;
+        bool isFind              = false;
         vtkPropCollection *propc = m_picker->GetActors();
         vtkProp *prop;
 
         propc->InitTraversal();
         while ( (prop = propc->GetNextProp()) )
         {
-            m_pickedPoint = ::fwData::Point::dynamicCast(m_service->getAssociatedObject(prop,2));
+            m_pickedPoint     = ::fwData::Point::dynamicCast(m_service->getAssociatedObject(prop,2));
             m_pickedPointList = ::fwData::PointList::dynamicCast(m_service->getAssociatedObject(prop,1));
 
             if( !m_pickedPoint.expired() && !m_pickedPointList.expired() )
             {
-                ::fwData::PointList::PointListContainer::iterator itr = std::find( m_pickedPointList.lock()->getRefPoints().begin(), m_pickedPointList.lock()->getRefPoints().end(), m_pickedPoint.lock());
+                ::fwData::PointList::PointListContainer::iterator itr = std::find(
+                    m_pickedPointList.lock()->getRefPoints().begin(),
+                    m_pickedPointList.lock()->getRefPoints().end(), m_pickedPoint.lock());
                 if(itr != m_pickedPointList.lock()->getRefPoints().end() )
                 {
                     isFind = true;
@@ -161,7 +152,7 @@ public :
         return isFind;
     }
 
-protected :
+protected:
     ::fwRenderVTK::IVtkAdaptorService *m_service;
     vtkPicker * m_picker;
     vtkPropCollection * m_propCollection;
@@ -174,29 +165,21 @@ protected :
 
 //------------------------------------------------------------------------------
 
-LabeledPointList::LabeledPointList() throw():
-    m_rightButtonCommand(0),
-    m_needSubservicesDeletion(false)
+LabeledPointList::LabeledPointList() throw() :
+    m_rightButtonCommand(nullptr)
 {
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
 }
 
 //------------------------------------------------------------------------------
 
 LabeledPointList::~LabeledPointList() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
-void LabeledPointList::configuring() throw(fwTools::Failed)
+void LabeledPointList::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
 
 //------------------------------------------------------------------------------
@@ -206,8 +189,8 @@ void LabeledPointList::doStart() throw(fwTools::Failed)
     SLM_TRACE_FUNC();
 
     m_rightButtonCommand = vtkLabeledPointDeleteCallBack::New(this);
-    this->getInteractor()->AddObserver( "RightButtonPressEvent" , m_rightButtonCommand, 1 );
-    this->getInteractor()->AddObserver( "RightButtonReleaseEvent" , m_rightButtonCommand, 1 );
+    this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
+    this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
 
     this->doUpdate();
 }
@@ -228,16 +211,13 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
     // get PointList in image Field then install distance service if required
     ::fwData::PointList::sptr landmarks = this->getObject< ::fwData::PointList >();
 
-    if ( m_needSubservicesDeletion )
-    {
-        this->unregisterServices();
-        m_needSubservicesDeletion = false;
-    }
+    this->unregisterServices();
 
-    if ( ! landmarks->getPoints().empty() )
+    if ( !landmarks->getPoints().empty() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr servicePointList;
-        servicePointList = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( landmarks , "::visuVTKAdaptor::PointList");
+        servicePointList = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( landmarks,
+                                                                                   "::visuVTKAdaptor::PointList");
         SLM_ASSERT("servicePointList not instanced", servicePointList);
 
         servicePointList->setPickerId( this->getPickerId() );
@@ -248,10 +228,11 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
         this->registerService( servicePointList );
 
 
-        BOOST_FOREACH( ::fwData::Point::sptr point, landmarks->getRefPoints() )
+        for( ::fwData::Point::sptr point :  landmarks->getRefPoints() )
         {
             ::fwRenderVTK::IVtkAdaptorService::sptr serviceLabel;
-            serviceLabel = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(point , "::visuVTKAdaptor::PointLabel");
+            serviceLabel =
+                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(point, "::visuVTKAdaptor::PointLabel");
             SLM_ASSERT("serviceLabel not instanced", serviceLabel);
             serviceLabel->setRenderService( this->getRenderService() );
             serviceLabel->setAutoRender( this->getAutoRender() );
@@ -261,22 +242,6 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
     }
 
     this->setVtkPipelineModified();
-}
-
-//------------------------------------------------------------------------------
-
-void LabeledPointList::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    // update only if new LandMarks
-    ::fwComEd::PointListMsg::csptr plMsg =  ::fwComEd::PointListMsg::dynamicConstCast( msg );
-    if ( plMsg &&
-                ( plMsg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED ) ||
-                  plMsg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED )||
-                  plMsg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED ) ) )
-    {
-        m_needSubservicesDeletion = true; // to manage point deletion
-        doUpdate();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -291,6 +256,18 @@ void LabeledPointList::doStop() throw(fwTools::Failed)
     }
 
     this->unregisterServices();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType LabeledPointList::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

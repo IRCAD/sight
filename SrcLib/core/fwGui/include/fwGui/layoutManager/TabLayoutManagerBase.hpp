@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,12 +8,12 @@
  * @file fwGui/layoutManager/TabLayoutManagerBase.hpp
  * @brief This file defines the interface of the class for managing a tab layout geometry.
  *
- * 
+ *
  * @date 2009-2010
  */
 
-#ifndef _FWGUI_LAYOUTMANAGER_TABLAYOUTMANAGERBASE_HPP_
-#define _FWGUI_LAYOUTMANAGER_TABLAYOUTMANAGERBASE_HPP_
+#ifndef __FWGUI_LAYOUTMANAGER_TABLAYOUTMANAGERBASE_HPP__
+#define __FWGUI_LAYOUTMANAGER_TABLAYOUTMANAGERBASE_HPP__
 
 #include <list>
 #include <map>
@@ -31,7 +31,7 @@ namespace layoutManager
 /**
  * @brief   Defines the base for cardinal layout manager.
  * @class   TabLayoutManagerBase
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -42,22 +42,23 @@ public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (TabLayoutManagerBase)(::fwGui::layoutManager::IViewLayoutManager) )
 
-     typedef std::string RegistryKeyType;
+    typedef std::string RegistryKeyType;
 
-     class ViewInfo
-     {
-     public :
+    class ViewInfo
+    {
+    public:
 
-         ViewInfo() :
-             m_caption(""),
-             m_isSelect(false),
-             m_useScrollBar(false)
-         {}
+        ViewInfo() :
+            m_caption(""),
+            m_isSelect(false),
+            m_useScrollBar(false)
+        {
+        }
 
-         std::string  m_caption;
-         bool         m_isSelect;
-         bool         m_useScrollBar;
-     };
+        std::string m_caption;
+        bool m_isSelect;
+        bool m_useScrollBar;
+    };
 
     /// Constructor. Do nothing.
     FWGUI_API TabLayoutManagerBase();
@@ -70,7 +71,7 @@ public:
      *
      * Example of configuration with Tab layout.
      * @verbatim
-       <service uid="subView3" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+       <service uid="subView3" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
            <gui>
                <layout type="::fwGui::TabLayoutManager" >
                    <view caption="TabView1" />
@@ -95,7 +96,10 @@ public:
 
     FWGUI_API static const RegistryKeyType REGISTRY_KEY;
 
-    std::list< ViewInfo> getViewsInfo(){ return m_views;};
+    std::list< ViewInfo> getViewsInfo()
+    {
+        return m_views;
+    }
 
 private:
 
@@ -107,6 +111,6 @@ private:
 } // namespace layoutManager
 } // namespace fwGui
 
-#endif /*_FWGUI_LAYOUTMANAGER_TABLAYOUTMANAGERBASE_HPP_*/
+#endif /*__FWGUI_LAYOUTMANAGER_TABLAYOUTMANAGERBASE_HPP__*/
 
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMCONVERSION_UT_METAHELPERTEST_HPP__
-#define __FWATOMCONVERSION_UT_METAHELPERTEST_HPP__
+#ifndef __FWATOMCONVERSION_UT_CONVERSIONTEST_HPP__
+#define __FWATOMCONVERSION_UT_CONVERSIONTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -16,22 +16,22 @@ namespace ut
 
 class ConversionTest :  public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( ConversionTest );
-    CPPUNIT_TEST( dataToAtomTest );
-    CPPUNIT_TEST( materialConversionTest );
-    CPPUNIT_TEST( graphConversionTest );
-    CPPUNIT_TEST( tfConversionTest );
-    CPPUNIT_TEST( seriesDBConversionTest );
-    CPPUNIT_TEST( objectMultiReferencedTest );
-    CPPUNIT_TEST( recursiveObjectTest );
-    CPPUNIT_TEST( uuidExceptionTest );
-    CPPUNIT_TEST( uuidChangeTest );
-    CPPUNIT_TEST( uuidReuseTest );
-    CPPUNIT_TEST( dataFactoryNotFoundExceptionTest );
-    CPPUNIT_TEST( campFactoryNotFoundExceptionTest );
-    CPPUNIT_TEST( conversionNotManagedExceptionTest );
-    CPPUNIT_TEST( nullPtrManagmentTest );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( ConversionTest );
+CPPUNIT_TEST( dataToAtomTest );
+CPPUNIT_TEST( materialConversionTest );
+CPPUNIT_TEST( graphConversionTest );
+CPPUNIT_TEST( tfConversionTest );
+CPPUNIT_TEST( seriesDBConversionTest );
+CPPUNIT_TEST( objectMultiReferencedTest );
+CPPUNIT_TEST( recursiveObjectTest );
+CPPUNIT_TEST( uuidExceptionTest );
+CPPUNIT_TEST( uuidChangeTest );
+CPPUNIT_TEST( uuidReuseTest );
+CPPUNIT_TEST( dataFactoryNotFoundExceptionTest );
+CPPUNIT_TEST( campFactoryNotFoundExceptionTest );
+CPPUNIT_TEST( conversionNotManagedExceptionTest );
+CPPUNIT_TEST( nullPtrManagmentTest );
+CPPUNIT_TEST_SUITE_END();
 
 public:
 
@@ -90,4 +90,4 @@ public:
 
 
 
-#endif // __FWATOMCONVERSION_UT_METAHELPERTEST_HPP__
+#endif // __FWATOMCONVERSION_UT_CONVERSIONTEST_HPP__

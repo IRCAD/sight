@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMSPATCH_VERSIONMANAGER_HPP__
-#define __FWATOMSPATCH_VERSIONMANAGER_HPP__
+#ifndef __FWATOMSPATCH_VERSIONSMANAGER_HPP__
+#define __FWATOMSPATCH_VERSIONSMANAGER_HPP__
 
 #include <map>
 #include <vector>
@@ -74,7 +74,9 @@ public:
     FWATOMSPATCH_API void buildLinkTable(const std::string& dirPath);
 
     /// Returns the default instance of VersionsManager
-    static SPTR(VersionsManager) getDefault() {return s_default; }
+    static SPTR(VersionsManager) getDefault() {
+        return s_default;
+    }
 
 private:
 
@@ -84,14 +86,14 @@ private:
      * @param filePath path to a .versions file
      */
     FWATOMSPATCH_API static ::fwAtomsPatch::VersionDescriptor getVersion(
-            const ::boost::filesystem::path& filePath);
+        const ::boost::filesystem::path& filePath);
 
     /**
      * @brief Loads a file containing links between objects versions.
      * @param filePath path to a .graphlink file
      */
     FWATOMSPATCH_API static ::fwAtomsPatch::LinkDescriptor getLink(
-            const ::boost::filesystem::path& filePath);
+        const ::boost::filesystem::path& filePath);
 
     /**
      * @brief Generates the versions graph.
@@ -114,7 +116,7 @@ private:
     /// Link table
     ListPathType m_linkTable;
 
-     /// Versions graphs
+    /// Versions graphs
     VersionsGraphMapType m_versionsGraphMap;
 
     /// Default instance of Versions Manager
@@ -123,4 +125,4 @@ private:
 
 } // fwAtomsPatch
 
-#endif /* _FWATOMSPATCH_VERSIONMANAGER_HPP_ */
+#endif /* __FWATOMSPATCH_VERSIONSMANAGER_HPP__ */

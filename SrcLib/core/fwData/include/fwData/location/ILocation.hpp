@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_LOCATION_HPP_
-#define _FWDATA_LOCATION_HPP_
+#ifndef __FWDATA_LOCATION_ILOCATION_HPP__
+#define __FWDATA_LOCATION_ILOCATION_HPP__
 
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
@@ -65,10 +65,10 @@ inline typename LOCATION::sptr getLocation(RW *rw)
 template<class LOCATION, class RW >
 inline bool have(RW *rw)
 {
-    return LOCATION::dynamicCast( rw->getLocation() );
+    return (LOCATION::dynamicCast( rw->getLocation() )) ? true : false;
 }
 
 }
 }
 
-#endif /* LOCATION_HPP_ */
+#endif /* __FWDATA_LOCATION_ILOCATION_HPP__ */

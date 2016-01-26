@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,6 +16,7 @@ namespace ut
 
 class MeshTest : public CPPUNIT_NS::TestFixture
 {
+private:
     CPPUNIT_TEST_SUITE( MeshTest );
     CPPUNIT_TEST( allocation );
     CPPUNIT_TEST( insertion );

@@ -1,17 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/type_traits.hpp>
-
-#include <fwCamp/UserObject.hpp>
-
 #include "fwAtoms/registry/macros.hpp"
 #include "fwAtoms/Object.hpp"
 
+#include <fwCamp/UserObject.hpp>
+
+#include <boost/type_traits.hpp>
 
 fwAtomsRegisterMacro( ::fwAtoms::Object );
 
@@ -51,7 +49,7 @@ Base::sptr Object::clone() const
     Object::sptr obj = Object::New();
     obj->m_metaInfos = m_metaInfos;
 
-    BOOST_FOREACH(const AttributesType::value_type& elem, m_attributes)
+    for(const AttributesType::value_type& elem :  m_attributes)
     {
         if ( elem.second )
         {

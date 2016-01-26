@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWATOMS_BASE_BOOLEAN_HPP_
-#define _FWATOMS_BASE_BOOLEAN_HPP_
+#ifndef __FWATOMS_BOOLEAN_HPP__
+#define __FWATOMS_BOOLEAN_HPP__
 
 
 #include <string>
@@ -24,20 +24,22 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Boolean : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Boolean > ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Boolean)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Boolean > );
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
     Boolean(::fwAtoms::Base::Key key) : m_value(false)
-    {}
+    {
+    }
 
     /**
      * @brief   Destructor
      */
     virtual ~Boolean()
-    {}
+    {
+    }
 
     FWATOMS_API virtual std::string getString() const;
 
@@ -65,9 +67,15 @@ public:
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const {return ::fwAtoms::Base::BOOLEAN;};
+    ::fwAtoms::Base::AtomType type() const
+    {
+        return ::fwAtoms::Base::BOOLEAN;
+    }
 
-    bool getValue() const {return m_value;};
+    bool getValue() const
+    {
+        return m_value;
+    }
 
 protected:
 
@@ -92,5 +100,5 @@ protected:
 
 
 
-#endif /* _FWATOMS_BASE_BOOLEAN_HPP_ */
+#endif /* __FWATOMS_BOOLEAN_HPP__ */
 

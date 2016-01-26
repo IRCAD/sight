@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,7 @@
 #include <sstream>
 
 #ifdef DEBUG
-  static std::stringstream spiritDebugStream;
+static std::stringstream spiritDebugStream;
   #define BOOST_SPIRIT_DEBUG_OUT spiritDebugStream
   #define BOOST_SPIRIT_DEBUG
 #endif
@@ -29,8 +29,7 @@
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
 #include <boost/spirit/include/phoenix_bind.hpp>
-#include <boost/spirit/home/phoenix/statement/sequence.hpp>
-#include <boost/spirit/home/phoenix/container.hpp>
+#include <boost/spirit/include/phoenix_statement.hpp>
 #include <boost/spirit/include/phoenix_stl.hpp>
 
 #include <boost/fusion/include/adapt_struct.hpp>
@@ -79,19 +78,19 @@ struct line
 BOOST_FUSION_ADAPT_STRUCT(
     ::fwDataIO::line,
     (std::string, type)
-    (double, red)
-    (double, green)
-    (double, blue)
-    (double, alpha)
-    (std::string, catgegory)
-    (std::string, organClass)
-    (std::string, attachment)
-    (std::string, nativeExp)
-    (std::string, nativeExpGeo)
-    (std::string, anatomicRegion)
-    (std::string, propertyCategory)
-    (std::string, propertyType)
-)
+        (double, red)
+        (double, green)
+        (double, blue)
+        (double, alpha)
+        (std::string, catgegory)
+        (std::string, organClass)
+        (std::string, attachment)
+        (std::string, nativeExp)
+        (std::string, nativeExpGeo)
+        (std::string, anatomicRegion)
+        (std::string, propertyCategory)
+        (std::string, propertyType)
+    )
 
 //------------------------------------------------------------------------------
 
@@ -106,7 +105,7 @@ inline std::string trim ( std::string &s )
 std::string  reformatString(std::string& expr)
 {
     std::string trimStr = ::boost::algorithm::trim_copy(expr);
-    std::string result =  ::boost::algorithm::to_upper_copy(trimStr.substr(0,1))
+    std::string result  = ::boost::algorithm::to_upper_copy(trimStr.substr(0,1))
                           + ::boost::algorithm::to_lower_copy(trimStr.substr(1));
     return (result);
 }
@@ -119,7 +118,7 @@ std::string getValues(const MapType & m)
 {
     std::stringstream str;
     typedef typename MapType::const_iterator const_iterator;
-    const_iterator iter  = m.begin();
+    const_iterator iter = m.begin();
     str << "( " << iter->first;
     for(; iter != m.end(); ++iter )
     {
@@ -133,7 +132,7 @@ std::string getValues(const MapType & m)
 namespace fwDataIO
 {
 
-namespace qi = boost::spirit::qi;
+namespace qi    = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
 
@@ -157,61 +156,61 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
 
         error.clear();
 
-        lines = +( line[phx::push_back(qi::_val, qi::_1)] | comment ) >> eoi  ;
-        comment =  *blank >> lit('#') >> *(char_- eol)>> +qi::eol;
+        lines   = +( line[phx::push_back(qi::_val, qi::_1)] | comment ) >> eoi;
+        comment = *blank >> lit('#') >> *(char_- eol)>> +qi::eol;
 
         line = trimmedString >> lit(';')
-                  >> omit[*blank]>> lit('(')
-                    >>  dbl   >> lit(',')
-                    >>  dbl   >> lit(',')
-                    >>  dbl   >> lit(',')
-                    >>  dbl
-                >> lit(')') >> omit[*blank]
-                >> lit(';')
-                >>  stringSet >> lit(';')
-                >>  trimmedString >> lit(';')
-                >>  trimmedString >> lit(';')
-                >>  trimmedStringExpr >> lit(';')
-                >>  trimmedStringExpr >> lit(';')
-                >>  trimmedString >> lit(';')
-                >>  trimmedString >> lit(';')
-                >>  trimmedString
-                >> +qi::eol;
+               >> omit[*blank]>> lit('(')
+               >>  dbl   >> lit(',')
+               >>  dbl   >> lit(',')
+               >>  dbl   >> lit(',')
+               >>  dbl
+               >> lit(')') >> omit[*blank]
+               >> lit(';')
+               >>  stringSet >> lit(';')
+               >>  trimmedString >> lit(';')
+               >>  trimmedString >> lit(';')
+               >>  trimmedStringExpr >> lit(';')
+               >>  trimmedStringExpr >> lit(';')
+               >>  trimmedString >> lit(';')
+               >>  trimmedString >> lit(';')
+               >>  trimmedString
+               >> +qi::eol;
 
-        trimmedString =   str[qi::_val = phx::bind(trim, qi::_1)] ;
-        str =   *( (alnum|char_("_"))[qi::_val += qi::_1] | blank[qi::_val += " "]) ;
+        trimmedString = str[qi::_val = phx::bind(trim, qi::_1)];
+        str           = *( (alnum|char_("_"))[qi::_val += qi::_1] | blank[qi::_val += " "]);
 
-        trimmedStringExpr =   stringExpr[qi::_val = phx::bind(trim, qi::_1)] ;
-        stringExpr =   *( (alnum|char_("()_,.+-"))[qi::_val += qi::_1] | blank[qi::_val += " "] ) ;
+        trimmedStringExpr = stringExpr[qi::_val = phx::bind(trim, qi::_1)];
+        stringExpr        = *( (alnum|char_("()_,.+-"))[qi::_val += qi::_1] | blank[qi::_val += " "] );
 
-        stringSet =   stringWithComma[qi::_val = phx::bind(trim, qi::_1)] ;
-        stringWithComma =   *( (alnum| char_(",_"))[qi::_val += qi::_1] | blank[qi::_val += " "] ) ;
+        stringSet       = stringWithComma[qi::_val = phx::bind(trim, qi::_1)];
+        stringWithComma = *( (alnum| char_(",_"))[qi::_val += qi::_1] | blank[qi::_val += " "] );
 
 
         dbl = omit[*blank] >> double_ >> omit[*blank];
 
     #ifdef BOOST_SPIRIT_DEBUG
-      BOOST_SPIRIT_DEBUG_NODE(comment);
-      BOOST_SPIRIT_DEBUG_NODE(trimmedString);
-      BOOST_SPIRIT_DEBUG_NODE(trimmedStringExpr);
-      BOOST_SPIRIT_DEBUG_NODE(stringSet);
-      BOOST_SPIRIT_DEBUG_NODE(dbl);
-      BOOST_SPIRIT_DEBUG_NODE(line);
-      BOOST_SPIRIT_DEBUG_NODE(lines);
-      SLM_DEBUG(spiritDebugStream.str());
-      spiritDebugStream.str( std::string() );
+        BOOST_SPIRIT_DEBUG_NODE(comment);
+        BOOST_SPIRIT_DEBUG_NODE(trimmedString);
+        BOOST_SPIRIT_DEBUG_NODE(trimmedStringExpr);
+        BOOST_SPIRIT_DEBUG_NODE(stringSet);
+        BOOST_SPIRIT_DEBUG_NODE(dbl);
+        BOOST_SPIRIT_DEBUG_NODE(line);
+        BOOST_SPIRIT_DEBUG_NODE(lines);
+        SLM_DEBUG(spiritDebugStream.str());
+        spiritDebugStream.str( std::string() );
     #endif
 
-      qi::on_error< qi::fail>
-      (
-              line
-              , phx::ref( (std::ostream &)error )
-                    << phx::val("Error! Expecting ")
-                    << qi::_4                      // what failed?
-                    << phx::val(" here: \"")
-                    << phx::construct<std::string>(qi::_3, qi::_2)   // iterators to error-pos, end
-                    << phx::val("\"")
-                    << std::endl
+        qi::on_error< qi::fail>
+        (
+            line
+            , phx::ref( (std::ostream &)error )
+            << phx::val("Error! Expecting ")
+            << qi::_4                              // what failed?
+            << phx::val(" here: \"")
+            << phx::construct<std::string>(qi::_3, qi::_2)           // iterators to error-pos, end
+            << phx::val("\"")
+            << std::endl
         );
 
     }
@@ -246,12 +245,12 @@ std::pair<bool,std::string> parse(Iterator first,  Iterator last, std::string& b
     typedef ::fwDataIO::line_parser<iterator_type> line_parser;
 
     iterator_type iter = buf.begin();
-    iterator_type end = buf.end();
+    iterator_type end  = buf.end();
 
     line_parser grammar; // Our grammar
 
-    bool result = phrase_parse(iter, end, grammar,  space - blank - eol, lines);
-    bool success =  result && (iter == end);
+    bool result     = phrase_parse(iter, end, grammar,  space - blank - eol, lines);
+    bool success    = result && (iter == end);
     std::string msg = grammar.error.str();
     return std::make_pair( success, msg );
 }
@@ -266,15 +265,16 @@ DictionaryReader::DictionaryReader(::fwDataIO::reader::IObjectReader::Key key)
 //------------------------------------------------------------------------------
 
 DictionaryReader::~DictionaryReader()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void DictionaryReader::read()
 {
     SLM_TRACE_FUNC();
-    assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-    ::boost::filesystem::path path = ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+    assert( std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
+    ::boost::filesystem::path path = std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
     OSLM_INFO( "[DictionaryReader::read] dictionary file: " << path.string());
     SLM_ASSERT("Empty path for dictionary file", !path.empty());
@@ -285,7 +285,7 @@ void DictionaryReader::read()
     std::ifstream file;
     file.open(path.string().c_str(), std::ios::binary );
 
-    std::string errorOpen  = "Unable to open " + path.string();
+    std::string errorOpen = "Unable to open " + path.string();
     FW_RAISE_IF(errorOpen, !file.is_open());
 
     file.seekg (0, std::ios::end);
@@ -309,28 +309,33 @@ void DictionaryReader::read()
     // File the dictionary Structure
     ::fwData::StructureTraitsDictionary::sptr structDico = getConcreteObject();
 
-    BOOST_FOREACH(::fwDataIO::line line, dicolines)
+    for(::fwDataIO::line line :  dicolines)
     {
         ::fwData::StructureTraits::sptr newOrgan = ::fwData::StructureTraits::New();
         newOrgan->setType(line.type);
 
         std::string classReformated = reformatString(line.organClass);
-        ::fwData::StructureTraitsHelper::ClassTranslatorType::right_const_iterator strClassIter = ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.find(classReformated);
+        ::fwData::StructureTraitsHelper::ClassTranslatorType::right_const_iterator strClassIter =
+            ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.find(classReformated);
         std::string availableValues = getValues(::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right);
         error = "Organ class " + classReformated + " isn't available. Authorized type are " + availableValues;
         FW_RAISE_IF(error, !(strClassIter != ::fwData::StructureTraitsHelper::s_CLASSTRANSLATOR.right.end()));
         newOrgan->setClass(strClassIter->second);
 
-        newOrgan->setColor(::fwData::Color::New(line.red/255.0f, line.green/255.0f, line.blue/255.0f, line.alpha/100.0f));
+        newOrgan->setColor(::fwData::Color::New(line.red/255.0f, line.green/255.0f, line.blue/255.0f,
+                                                line.alpha/100.0f));
         std::vector<std::string> categorylist;
         ::boost::algorithm::split( categorylist, line.catgegory, ::boost::algorithm::is_any_of(",") );
         ::fwData::StructureTraits::CategoryContainer categories;
-        BOOST_FOREACH(std::string category, categorylist)
+        for(std::string category :  categorylist)
         {
             std::string catReformated = reformatString(category);
-            ::fwData::StructureTraitsHelper::CategoryTranslatorType::right_const_iterator strCategoryIter = ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.find(catReformated);
-            availableValues = getValues(::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right);
-            error = "Category " + catReformated + " isn't available. Authorized type are " + availableValues;
+            ::fwData::StructureTraitsHelper::CategoryTranslatorType::right_const_iterator strCategoryIter =
+                ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.find(catReformated);
+            availableValues = getValues(
+                ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right);
+            error =
+                "Category " + catReformated + " isn't available. Authorized type are " + availableValues;
             FW_RAISE_IF(error, !(strCategoryIter != ::fwData::StructureTraitsHelper::s_CATEGORYTRANSLATOR.right.end()));
             categories.push_back(strCategoryIter->second);
         }
@@ -347,7 +352,7 @@ void DictionaryReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string  DictionaryReader::extension()
+std::string DictionaryReader::extension()
 {
     SLM_TRACE_FUNC();
     return (".dic");
@@ -355,7 +360,7 @@ std::string  DictionaryReader::extension()
 
 //------------------------------------------------------------------------------
 
-::boost::filesystem::path  DictionaryReader::getDefaultDictionaryPath()
+::boost::filesystem::path DictionaryReader::getDefaultDictionaryPath()
 {
     std::string dicoPath = std::string("./share/") + PRJ_NAME +"_"+ FWDATAIO_VER + "/OrganDictionary.dic";
     return dicoPath;

@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_AXIS_HPP_
-#define _SCENE2D_AXIS_HPP_
+#ifndef __SCENE2D_ADAPTOR_AXIS_HPP__
+#define __SCENE2D_ADAPTOR_AXIS_HPP__
 
-#include <scene2D/config.hpp>
-#include <scene2D/adaptor/IAdaptor.hpp>
+#include "scene2D/config.hpp"
+#include "scene2D/adaptor/IAdaptor.hpp"
 
 namespace scene2D
 {
@@ -21,7 +21,7 @@ class SCENE2D_CLASS_API Axis : public ::scene2D::adaptor::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Axis)(::scene2D::adaptor::IAdaptor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Axis)(::scene2D::adaptor::IAdaptor) );
 
     SCENE2D_API Axis() throw();
     SCENE2D_API virtual ~Axis() throw();
@@ -32,7 +32,6 @@ protected:
     void doStop() throw( ::fwTools::Failed);
     void doSwap() throw( ::fwTools::Failed);
     void doUpdate() throw( ::fwTools::Failed);
-    void doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed);
     void configuring() throw( ::fwTools::Failed);
 
     /// Manage the given events
@@ -90,10 +89,8 @@ private:
     ::fwCom::Connection m_connection;
 };
 
-
 }   // namespace adaptor
-
 }   // namespace scene2D
 
-#endif
+#endif //__SCENE2D_ADAPTOR_AXIS_HPP__
 

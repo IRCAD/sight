@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,12 @@
 #ifndef __FWMEDDATA_STUDY_HPP__
 #define __FWMEDDATA_STUDY_HPP__
 
-#include "fwData/Object.hpp"
-#include "fwData/factory/new.hpp"
-#include "fwData/macros.hpp"
-
-#include "fwMedData/types.hpp"
 #include "fwMedData/config.hpp"
+#include "fwMedData/types.hpp"
+
+#include <fwData/factory/new.hpp>
+#include <fwData/Object.hpp>
+
 
 fwCampAutoDeclareDataMacro((fwMedData)(Study), FWMEDDATA_API);
 
@@ -26,7 +26,7 @@ class FWMEDDATA_CLASS_API Study : public ::fwData::Object
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Study)(::fwData::Object), (()), ::fwData::factory::New< Study >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Study)(::fwData::Object), (()), ::fwData::factory::New< Study >);
 
     fwCampMakeFriendDataMacro((fwMedData)(Study));
 
@@ -52,37 +52,46 @@ public:
     /**
      * @brief Unique identifier of the Study (0020,000D)
      * @{ */
-    fwDataGetSetCRefMacro(InstanceUID, DicomValueType);
+    const DicomValueType &getInstanceUID () const;
+    void setInstanceUID (const DicomValueType &val);
+
     /**  @} */
 
     /**
      * @brief Date the Study started (0008,0020)
      * @{ */
-    fwDataGetSetCRefMacro(Date, DicomValueType);
+    const DicomValueType &getDate () const;
+    void setDate (const DicomValueType &val);
     /**  @} */
 
     /**
      * @brief Time the Study started (0008,0030)
      * @{ */
-    fwDataGetSetCRefMacro(Time, DicomValueType);
+
+    const DicomValueType &getTime () const;
+    void setTime (const DicomValueType &val);
+
     /**  @} */
 
     /**
      * @brief Name of the patient's referring physician (0008,0090)
      * @{ */
-    fwDataGetSetCRefMacro(ReferringPhysicianName, DicomValueType);
+    const DicomValueType &getReferringPhysicianName () const;
+    void setReferringPhysicianName (const DicomValueType &val);
     /**  @} */
 
     /**
      * @brief Institution-generated description or classification of the Study (component) performed (0008,1030)
      * @{ */
-    fwDataGetSetCRefMacro(Description, DicomValueType);
+    const DicomValueType &getDescription () const;
+    void setDescription (const DicomValueType &val);
     /**  @} */
 
     /**
      * @brief Age of the Patient (0010,1010)
      * @{ */
-    fwDataGetSetCRefMacro(PatientAge, DicomValueType);
+    const DicomValueType &getPatientAge () const;
+    void setPatientAge (const DicomValueType &val);
     /**  @} */
 
     /**  @} */
@@ -90,23 +99,109 @@ public:
 protected:
 
     /// Study unique identifier
-    DicomValueType m_attrInstanceUID;
+    DicomValueType m_instanceUID;
 
     /// Date
-    DicomValueType m_attrDate;
+    DicomValueType m_date;
 
     /// Time
-    DicomValueType m_attrTime;
+    DicomValueType m_time;
 
     /// Referring physician name
-    DicomValueType m_attrReferringPhysicianName;
+    DicomValueType m_referringPhysicianName;
 
     /// Description
-    DicomValueType m_attrDescription;
+    DicomValueType m_description;
 
     /// Patient age
-    DicomValueType m_attrPatientAge;
+    DicomValueType m_patientAge;
 };
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType &Study::getInstanceUID () const
+{
+    return m_instanceUID;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Study::setInstanceUID (const DicomValueType &val)
+{
+    m_instanceUID = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType &Study::getDate () const
+{
+    return m_date;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Study::setDate (const DicomValueType &val)
+{
+    m_date = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType &Study::getTime () const
+{
+    return m_time;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Study::setTime (const DicomValueType &val)
+{
+    m_time = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType &Study::getReferringPhysicianName () const
+{
+    return m_referringPhysicianName;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Study::setReferringPhysicianName (const DicomValueType &val)
+{
+    m_referringPhysicianName = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType &Study::getDescription () const
+{
+    return m_description;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Study::setDescription (const DicomValueType &val)
+{
+    m_description = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const DicomValueType &Study::getPatientAge () const
+{
+    return m_patientAge;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Study::setPatientAge (const DicomValueType &val)
+{
+    m_patientAge = val;
+}
+
+//-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_EXCEPTION_HPP
-#define _FWRUNTIME_EXCEPTION_HPP
+#ifndef __FWRUNTIME_RUNTIMEEXCEPTION_HPP__
+#define __FWRUNTIME_RUNTIMEEXCEPTION_HPP__
 
 #include <exception>
 #include <string>
@@ -23,7 +23,7 @@ namespace fwRuntime
  * @brief   Defines the runtime exception class.
  * @struct  RuntimeException
  * @date    2004-2009
- * 
+ *
  */
 struct FWRUNTIME_CLASS_API RuntimeException : public ::fwCore::Exception
 {
@@ -53,4 +53,4 @@ struct FWRUNTIME_CLASS_API RuntimeException : public ::fwCore::Exception
 } // namespace fwRuntime
 
 
-#endif // #ifndef _FWRUNTIME_EXCEPTION_HPP
+#endif // __FWRUNTIME_RUNTIMEEXCEPTION_HPP__

@@ -1,23 +1,26 @@
 /* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_ACTION_SCONFIGLAUNCHER_HPP_
-#define _GUI_ACTION_SCONFIGLAUNCHER_HPP_
+#ifndef __GUI_ACTION_SCONFIGLAUNCHER_HPP__
+#define __GUI_ACTION_SCONFIGLAUNCHER_HPP__
+
+#include "gui/config.hpp"
 
 #include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
 
-#include <fwTools/Failed.hpp>
+#include <fwGui/IActionSrv.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwGui/IActionSrv.hpp>
-
 #include <fwServices/helper/ConfigLauncher.hpp>
 
-#include "gui/export.hpp"
+#include <fwTools/Failed.hpp>
+
 
 namespace gui
 {
@@ -54,18 +57,26 @@ namespace action
 class GUI_CLASS_API SConfigLauncher : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SConfigLauncher)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SConfigLauncher)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API SConfigLauncher() throw() ;
+    GUI_API SConfigLauncher() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SConfigLauncher() throw() ;
+    GUI_API virtual ~SConfigLauncher() throw();
 
     /// Set the action service is activated/disable.
     GUI_API virtual void setIsActive(bool isActive);
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * @note connect Object::s_MODIFIED_SIG to this::s_CHECK_PARAMETERS_SIG
+     */
+    GUI_API virtual KeyConnectionsType getObjSrvConnections() const;
 
     // Launched signal key
     GUI_API static const ::fwCom::Signals::SignalKeyType s_LAUNCHED_SIG;
@@ -84,13 +95,6 @@ protected:
 
     ///This method launches the IAction::stopping method.
     virtual void stopping() throw(::fwTools::Failed);
-
-    /**
-     * @brief Management of observations ( overrides ).
-     *
-     * Stop configuration when it receives "WINDOW_CLOSED" event (ie. close the param view).
-     */
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Starts the view and initialize the operator.
@@ -120,15 +124,27 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
+
+    /**
+     * @name Slots
+     * @}
+     */
+    /// Slot: stop the config.
+    void stopConfig();
+
+    /// Slot: check if the configuration is executable
+    void checkIfExecutable();
+    /**
+     * @}
+     */
 
     ::fwServices::helper::ConfigLauncher::sptr m_configLauncher;
+    std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 };
 
 } // action
 } // gui
 
 
-#endif // _GUI_ACTION_SCONFIGLAUNCHER_HPP_
-
-
+#endif // __GUI_ACTION_SCONFIGLAUNCHER_HPP__

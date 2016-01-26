@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWVTKIO_UT_IMAGETEST_HPP_
-#define _FWVTKIO_UT_IMAGETEST_HPP_
+#ifndef __FWVTKIO_UT_IMAGETEST_HPP__
+#define __FWVTKIO_UT_IMAGETEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -22,18 +22,18 @@ namespace ut
  */
 class ImageTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( ImageTest );
-    CPPUNIT_TEST( testImageToVtk );
-    CPPUNIT_TEST( testFromVtk );
+CPPUNIT_TEST_SUITE( ImageTest );
+CPPUNIT_TEST( testImageToVtk );
+CPPUNIT_TEST( testFromVtk );
 
-    CPPUNIT_TEST( mhdReaderTest );
-    CPPUNIT_TEST( mhdWriterTest );
-    CPPUNIT_TEST( vtiReaderTest );
-    CPPUNIT_TEST( vtiWriterTest );
-    CPPUNIT_TEST( vtkReaderTest );
-    CPPUNIT_TEST( vtkWriterTest );
+CPPUNIT_TEST( mhdReaderTest );
+CPPUNIT_TEST( mhdWriterTest );
+CPPUNIT_TEST( vtiReaderTest );
+CPPUNIT_TEST( vtiWriterTest );
+CPPUNIT_TEST( vtkReaderTest );
+CPPUNIT_TEST( vtkWriterTest );
 
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -55,4 +55,4 @@ public:
 } // namespace ut
 } // namespace fwVtkIO
 
-#endif //_FWVTKIO_UT_IMAGETEST_HPP_
+#endif //__FWVTKIO_UT_IMAGETEST_HPP__

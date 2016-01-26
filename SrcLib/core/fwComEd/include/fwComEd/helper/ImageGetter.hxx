@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-#ifndef _FWCOMED_IMAGEGETTER_HXX_
-#define _FWCOMED_IMAGEGETTER_HXX_
+#ifndef __FWCOMED_HELPER_IMAGEGETTER_HXX__
+#define __FWCOMED_HELPER_IMAGEGETTER_HXX__
 
 #include <fwData/Image.hpp>
 
@@ -27,5 +27,5 @@ template < typename SERVICE >
 
 
 
-#endif // _FWCOMED_IMAGEGETTER_HXX_
+#endif // __FWCOMED_HELPER_IMAGEGETTER_HXX__
 

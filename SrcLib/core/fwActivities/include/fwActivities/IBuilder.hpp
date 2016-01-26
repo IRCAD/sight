@@ -1,13 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __FWACTIVITIES_IBUILDER_HPP__
 #define __FWACTIVITIES_IBUILDER_HPP__
-
-#include <boost/enable_shared_from_this.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwMedData/ActivitySeries.hpp>
@@ -32,7 +30,7 @@ namespace fwActivities
 class FWACTIVITIES_CLASS_API IBuilder : public ::fwCore::BaseObject
 {
 
-public :
+public:
 
     typedef ::fwActivities::builder::factory::Key Key;
     typedef ::fwMedData::ActivitySeries::ConfigIdType ConfigIdType;
@@ -64,10 +62,10 @@ public :
      * @return specific data ActivitySeries for the specified Activity.
      */
     FWACTIVITIES_API virtual ::fwMedData::ActivitySeries::sptr buildData(
-            const ::fwActivities::registry::ActivityInfo& activityInfo,
-            SPTR(::fwData::Vector) currentSelection ) const = 0;
+        const ::fwActivities::registry::ActivityInfo& activityInfo,
+        SPTR(::fwData::Vector) currentSelection ) const = 0;
 
-protected :
+protected:
 
     FWACTIVITIES_API virtual SPTR(::fwData::Vector) getType( SPTR(::fwData::Vector) currentSelection,
                                                              std::string type ) const;

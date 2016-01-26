@@ -1,21 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _GUI_ACTION_SSLOTCALLER_HPP_
-#define _GUI_ACTION_SSLOTCALLER_HPP_
+#ifndef __GUI_ACTION_SSLOTCALLER_HPP__
+#define __GUI_ACTION_SSLOTCALLER_HPP__
 
-#include <vector>
+#include "gui/config.hpp"
 
 #include <fwCom/Slots.hpp>
 
-#include <fwServices/IService.hpp>
-
 #include <fwGui/IActionSrv.hpp>
 
-#include "gui/export.hpp"
+#include <fwServices/IService.hpp>
+
+#include <vector>
 
 namespace gui
 {
@@ -24,7 +24,6 @@ namespace action
 
 /**
  * @brief   Run a slot given by HasSlot id and slot key.
- * @class   SSlotCaller
  *
  * This action works on a ::fwData::Object. It does the action specify by the specify config.
  */
@@ -32,9 +31,9 @@ namespace action
 class GUI_CLASS_API SSlotCaller : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSlotCaller)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSlotCaller)(::fwGui::IActionSrv) );
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
     typedef std::string HasSlotIDType;
@@ -42,13 +41,13 @@ public :
     typedef std::vector< SlotInfoType > SlotInfoContainerType;
 
     /**
-    * @brief Constructor. Do nothing.
-    */
+     * @brief Constructor. Do nothing.
+     */
     GUI_API SSlotCaller() throw();
 
     /**
-    * @brief Destructor. Do nothing.
-    */
+     * @brief Destructor. Do nothing.
+     */
     GUI_API virtual ~SSlotCaller() throw();
 
 protected:
@@ -56,17 +55,12 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream &_sstream ) ;
+    GUI_API virtual void info(std::ostream &_sstream );
 
     /**
      * @brief This method run the specified slots.
      */
-    GUI_API void updating()throw (fwTools::Failed);
-
-    /**
-     * @brief Do nothing.
-     */
-    GUI_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
+    GUI_API void updating() throw (fwTools::Failed);
 
     /**
      * @brief This method is used to configure the service parameters: specifies which slots must be called.
@@ -84,7 +78,6 @@ protected:
 
     GUI_API virtual void stopping() throw(::fwTools::Failed);
 
-private:
     // vector representing slots
     SlotInfoContainerType m_slotInfos;
 };
@@ -94,4 +87,4 @@ private:
 } // namespace gui
 
 
-#endif /*_GUI_ACTION_SSLOTCALLER_HPP_*/
+#endif /*__GUI_ACTION_SSLOTCALLER_HPP__*/

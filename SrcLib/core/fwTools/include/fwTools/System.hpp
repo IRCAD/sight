@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWTOOLS_SYSTEM_HPP_
-#define _FWTOOLS_SYSTEM_HPP_
+#ifndef __FWTOOLS_SYSTEM_HPP__
+#define __FWTOOLS_SYSTEM_HPP__
 
 #include <string>
 
@@ -19,7 +19,7 @@ namespace fwTools
 /**
  * @class   System
  * @brief Provide a system to get a Temporary folder which allow multi-user, multi-instance separation
- * 
+ *
  * @date    2007-2009.
  * @todo  change "fwDumpFolder" to "localTemp"
  */
@@ -43,7 +43,7 @@ public:
      * @return  created folder
      */
     FWTOOLS_API static const ::boost::filesystem::path getTemporaryFolder(
-            const std::string& subFolderPrefix = "" ) throw();
+        const std::string& subFolderPrefix = "" ) throw();
 
     /**
      * @brief   Returns the pid of a temporary folder
@@ -77,7 +77,7 @@ public:
     static void setTempPrefix(const std::string &prefix)
     {
         s_tempPrefix = prefix;
-    };
+    }
 
 protected:
 
@@ -88,4 +88,4 @@ protected:
 
 } // namespace fwTools
 
-#endif // _FWTOOLS_SYSTEM_HPP_
+#endif // __FWTOOLS_SYSTEM_HPP__

@@ -1,5 +1,5 @@
-
 fwLoadProperties()
+
 fwUseForwardInclude(
     fwComEd
     fwData
@@ -7,8 +7,7 @@ fwUseForwardInclude(
     fwTools
 )
 
-find_package (Boost COMPONENTS signals REQUIRED)
-fwForwardInclude(${Boost_INCLUDE_DIRS})
-fwLink(${Boost_LIBRARIES})
+find_package(Boost COMPONENTS signals REQUIRED)
+fwLink(${Boost_SIGNALS_LIBRARY})
 
 

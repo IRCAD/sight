@@ -1,45 +1,51 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/operations.hpp>
+#ifndef ANDROID
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/ObjectMsg.hpp>
+#include "ioVTK/SMeshWriter.hpp"
+#include "ioVTK/SModelSeriesObjWriter.hpp"
 
 #include <fwCore/base.hpp>
 
+#include <fwData/location/Folder.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
-#include <fwData/location/Folder.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/ILocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTools/UUID.hpp>
 
 #include <fwVtkIO/ModelSeriesObjWriter.hpp>
 
-#include <fwVtkIO/ModelSeriesObjWriter.hpp>
-
-#include "ioVTK/MeshWriterService.hpp"
-#include "ioVTK/SModelSeriesObjWriter.hpp"
-
+#include <boost/filesystem/operations.hpp>
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioVTK::SModelSeriesObjWriter , ::fwMedData::ModelSeries ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SModelSeriesObjWriter, ::fwMedData::ModelSeries );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
+//------------------------------------------------------------------------------
+
+SModelSeriesObjWriter::SModelSeriesObjWriter() throw()
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
 
 //------------------------------------------------------------------------------
 
@@ -124,7 +130,7 @@ void SModelSeriesObjWriter::updating() throw(::fwTools::Failed)
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >() ;
+        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
         SLM_ASSERT("ModelSeries is not instanced", modelSeries);
 
         ::fwVtkIO::ModelSeriesObjWriter::sptr writer = ::fwVtkIO::ModelSeriesObjWriter::New();
@@ -136,10 +142,8 @@ void SModelSeriesObjWriter::updating() throw(::fwTools::Failed)
 
         try
         {
-            ::fwGui::dialog::ProgressDialog progressMeterGUI("Saving reconstructions...");
-            writer->addHandler( progressMeterGUI );
+            m_sigJobCreated->emit(writer->getJob());
             writer->write();
-
         }
         catch (const std::exception & e)
         {
@@ -174,3 +178,4 @@ void SModelSeriesObjWriter::updating() throw(::fwTools::Failed)
 
 } // namespace ioVtk
 
+#endif // ANDROID

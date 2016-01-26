@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -64,7 +64,7 @@ std::string getString(const signed char &c)
 //------------------------------------------------------------------------------
 
 template<>
-std::string getString(const  char &c)
+std::string getString(const char &c)
 {
     return boost::lexical_cast<std::string>((short)c);
 }

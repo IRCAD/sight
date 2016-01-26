@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 
 
 #include "fwGui/dialog/LocationDialog.hpp"
+#include "fwGui/registry/worker.hpp"
 
 namespace fwGui
 {
@@ -16,20 +17,32 @@ namespace dialog
 
 LocationDialog::LocationDialog()
 {
-    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ILocationDialog::REGISTRY_KEY);
-    m_implementation = ::fwGui::dialog::ILocationDialog::dynamicCast(guiObj);
+
+    ::fwGui::registry::worker::get()->postTask< void >(::boost::function< void() >(
+                                                           [&] {
+                ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ILocationDialog::REGISTRY_KEY);
+                m_implementation = ::fwGui::dialog::ILocationDialog::dynamicCast(guiObj);
+            })
+                                                       ).wait();
 }
 
 //------------------------------------------------------------------------------
 
 LocationDialog::~LocationDialog()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ::fwData::location::ILocation::sptr LocationDialog::show()
 {
-    return m_implementation->show();
+    typedef SPTR (::fwData::location::ILocation) R;
+
+    ::boost::function< R() > func = ::boost::bind(&ILocationDialog::show, m_implementation);
+    ::boost::shared_future< R > f = ::fwGui::registry::worker::get()->postTask< R >(func);
+
+    f.wait();
+    return f.get();
 }
 
 //-----------------------------------------------------------------------------

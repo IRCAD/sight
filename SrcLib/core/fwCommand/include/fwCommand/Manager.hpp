@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWFWCOMMAND_MANAGER_HPP_
-#define _FWFWCOMMAND_MANAGER_HPP_
+#ifndef __FWCOMMAND_MANAGER_HPP__
+#define __FWCOMMAND_MANAGER_HPP__
 
 #include <deque>
 #include <boost/cstdint.hpp>
-#include <boost/make_shared.hpp>
 
 #include <fwTools/Object.hpp>
 #include <fwTools/macros.hpp>
@@ -30,9 +29,11 @@ class FWCOMMAND_CLASS_API Manager : public ::fwTools::Object
 public:
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Manager)(::fwTools::Object),
-           ((::boost::make_shared< Manager > ,() ))
-           ((ManagerFactory ,((::boost::uint32_t)) ((::boost::uint32_t)) ((::boost::uint32_t))  ))
-           );
+                                               ((std::make_shared< Manager >,() ))
+                                                   ((ManagerFactory,
+                                                     ((::boost::uint32_t))((::boost::uint32_t)) (
+                                                         (::boost::uint32_t))  ))
+                                               );
 
     /**
      * @brief Default constructor.
@@ -46,9 +47,12 @@ public:
      * @remarks The latest queued command is ignored by the memory usage counter in order to ensure that the latest command could always being stored in the history.
      * @remarks The maximum memory used by the history is maxUndoMemory + maxCommandMemory.
      */
-    FWCOMMAND_API Manager( const ::boost::uint32_t  maxUndoLevel = 0, const ::boost::uint32_t  maxUndoMemory = 0, const ::boost::uint32_t  maxCommandMemory = 1024*1024*32 /* 32 MB */);
+    FWCOMMAND_API Manager( const ::boost::uint32_t maxUndoLevel = 0, const ::boost::uint32_t maxUndoMemory = 0,
+                           const ::boost::uint32_t maxCommandMemory = 1024*1024*32 /* 32 MB */);
 
-    FWCOMMAND_API static sptr ManagerFactory( const ::boost::uint32_t  maxUndoLevel, const ::boost::uint32_t  maxUndoMemory , const ::boost::uint32_t  maxCommandMemory);
+    FWCOMMAND_API static sptr ManagerFactory( const ::boost::uint32_t maxUndoLevel,
+                                              const ::boost::uint32_t maxUndoMemory,
+                                              const ::boost::uint32_t maxCommandMemory);
 
     /**
      * @brief Destructor.
@@ -105,17 +109,26 @@ public:
     /**
      * @brief Returns the maximum number of undo that could be stored in the history.
      */
-    const ::boost::uint32_t  getMaxUndoLevel() const { return m_maxUndoLevel; }
+    const ::boost::uint32_t  getMaxUndoLevel() const
+    {
+        return m_maxUndoLevel;
+    }
 
     /**
      * @brief Returns the maximum memory that could be used by the history.
      */
-    const ::boost::uint32_t  getMaxUndoMemory() const { return m_maxUndoMemory; }
+    const ::boost::uint32_t  getMaxUndoMemory() const
+    {
+        return m_maxUndoMemory;
+    }
 
     /**
      * @brief Returns the maximum memory that could be used by a single command.
      */
-    const ::boost::uint32_t  getMaxCommandMemory() const { return m_maxCommandMemory; }
+    const ::boost::uint32_t  getMaxCommandMemory() const
+    {
+        return m_maxCommandMemory;
+    }
 
     /**
      * @brief Returns the number of commands that can be un-done.
@@ -146,7 +159,7 @@ protected:
     /**
      * @brief  Maximum number of undo that could be stored in the history.
      */
-    ::boost::uint32_t  m_maxUndoLevel;
+    ::boost::uint32_t m_maxUndoLevel;
 
     /**
      * @brief Maximum number of bytes that could be used by the history.
@@ -183,4 +196,4 @@ protected:
 } // namespace fwCommand
 
 
-#endif //#ifndef _FWCOMMAND_MANAGER_HPP_
+#endif // __FWCOMMAND_MANAGER_HPP__

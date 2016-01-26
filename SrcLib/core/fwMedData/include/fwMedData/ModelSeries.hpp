@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,21 +7,25 @@
 #ifndef __FWMEDDATA_MODELSERIES_HPP__
 #define __FWMEDDATA_MODELSERIES_HPP__
 
-#include <vector>
+#include "fwMedData/config.hpp"
+#include "fwMedData/Series.hpp"
+#include "fwMedData/types.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
+#include <fwData/factory/new.hpp>
 
 #include <fwData/Object.hpp>
-#include <fwData/factory/new.hpp>
-#include <fwData/macros.hpp>
 
-#include "fwMedData/types.hpp"
-#include "fwMedData/Series.hpp"
-#include "fwMedData/config.hpp"
+#include <vector>
+
 
 fwCampAutoDeclareDataMacro((fwMedData)(ModelSeries), FWMEDDATA_API);
 
 namespace fwData
 {
-    class Reconstruction;
+class Reconstruction;
 }
 
 namespace fwMedData
@@ -37,7 +41,8 @@ class FWMEDDATA_CLASS_API ModelSeries : public ::fwMedData::Series
 public:
     typedef std::vector< SPTR(::fwData::Reconstruction) > ReconstructionVectorType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ModelSeries)(::fwData::Object), (()), ::fwData::factory::New< ModelSeries >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ModelSeries)(::fwData::Object), (()),
+                                            ::fwData::factory::New< ModelSeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(ModelSeries));
 
@@ -59,22 +64,67 @@ public:
     /**
      * @name Getters / Setters
      * @{ */
+    const ReconstructionVectorType &getReconstructionDB() const;
+    void setReconstructionDB(const ReconstructionVectorType &val);
+    /**  @} */
+
+    /***
+     * @name Signals
+     * @{
+     */
+    /// Type of signal when reconstructions are added
+    typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsAddedSignalType;
+
+    /// Key in m_signals map of signal m_sigReconstructionsAdded
+    FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_ADDED_SIG;
+
+    /// Type of signal when reconstructions are removed
+    typedef ::fwCom::Signal< void (ReconstructionVectorType) > ReconstructionsRemovedSignalType;
+
+    /// Key in m_signals map of signal m_sigReconstructionsRemoved
+    FWMEDDATA_API static const ::fwCom::Signals::SignalKeyType s_RECONSTRUCTIONS_REMOVED_SIG;
 
     /**
-     * @brief Model container
-     * @{ */
-    fwDataGetSetCRefMacro(ReconstructionDB, ReconstructionVectorType);
-    /**  @} */
-
-    /**  @} */
-
+     * @}
+     */
 
 protected:
 
     /// Model container
-    ReconstructionVectorType m_attrReconstructionDB;
+    ReconstructionVectorType m_reconstructionDB;
+
+private:
+
+    /***
+     * @name Signals attributes
+     * @{
+     */
+    /// Signal emitted when reconstructions are added
+    ReconstructionsAddedSignalType::sptr m_sigReconstructionsAdded;
+
+    /// Signal emitted when reconstructions are removed
+    ReconstructionsRemovedSignalType ::sptr m_sigReconstructionsRemoved;
+    /**
+     * @}
+     */
 
 };
+
+//-----------------------------------------------------------------------------
+
+inline const ModelSeries::ReconstructionVectorType& ModelSeries::getReconstructionDB() const
+{
+    return m_reconstructionDB;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ModelSeries::setReconstructionDB(const ModelSeries::ReconstructionVectorType &val)
+{
+    m_reconstructionDB = val;
+}
+
+//-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
 

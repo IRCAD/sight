@@ -1,33 +1,32 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-#include <fwData/registry/macros.hpp>
-#include <fwData/Exception.hpp>
-
-#include "fwMedData/Patient.hpp"
-#include "fwMedData/Study.hpp"
 #include "fwMedData/Equipment.hpp"
+#include "fwMedData/Patient.hpp"
 #include "fwMedData/Series.hpp"
+#include "fwMedData/Study.hpp"
 
+#include <fwData/Exception.hpp>
+#include <fwData/registry/macros.hpp>
 
 namespace fwMedData
 {
 
 Series::Series(::fwData::Object::Key key) :
-        m_attrPatient(::fwMedData::Patient::New()),
-        m_attrStudy(::fwMedData::Study::New()),
-        m_attrEquipment(::fwMedData::Equipment::New())
+    m_patient(::fwMedData::Patient::New()),
+    m_study(::fwMedData::Study::New()),
+    m_equipment(::fwMedData::Equipment::New())
 {
 }
 
 //------------------------------------------------------------------------------
 
 Series::~Series()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -35,21 +34,21 @@ void Series::shallowCopy(const ::fwData::Object::csptr &_source)
 {
     Series::csptr other = Series::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
 
     this->fieldShallowCopy( other );
 
-    m_attrPatient = other->m_attrPatient;
-    m_attrStudy = other->m_attrStudy;
-    m_attrEquipment = other->m_attrEquipment;
+    m_patient   = other->m_patient;
+    m_study     = other->m_study;
+    m_equipment = other->m_equipment;
 
-    m_attrInstanceUID = other->m_attrInstanceUID;
-    m_attrModality = other->m_attrModality;
-    m_attrDate = other->m_attrDate;
-    m_attrTime = other->m_attrTime;
-    m_attrPerformingPhysiciansName = other->m_attrPerformingPhysiciansName;
-    m_attrDescription = other->m_attrDescription;
+    m_instanceUID              = other->m_instanceUID;
+    m_modality                 = other->m_modality;
+    m_date                     = other->m_date;
+    m_time                     = other->m_time;
+    m_performingPhysiciansName = other->m_performingPhysiciansName;
+    m_description              = other->m_description;
 }
 
 //------------------------------------------------------------------------------
@@ -58,21 +57,21 @@ void Series::cachedDeepCopy(const ::fwData::Object::csptr &_source, DeepCopyCach
 {
     Series::csptr other = Series::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
 
     this->fieldDeepCopy( other, cache );
 
-    m_attrPatient = ::fwData::Object::copy(other->m_attrPatient, cache);
-    m_attrStudy = ::fwData::Object::copy(other->m_attrStudy, cache);
-    m_attrEquipment = ::fwData::Object::copy(other->m_attrEquipment, cache);
+    m_patient   = ::fwData::Object::copy(other->m_patient, cache);
+    m_study     = ::fwData::Object::copy(other->m_study, cache);
+    m_equipment = ::fwData::Object::copy(other->m_equipment, cache);
 
-    m_attrInstanceUID = other->m_attrInstanceUID;
-    m_attrModality = other->m_attrModality;
-    m_attrDate = other->m_attrDate;
-    m_attrTime = other->m_attrTime;
-    m_attrPerformingPhysiciansName = other->m_attrPerformingPhysiciansName;
-    m_attrDescription = other->m_attrDescription;
+    m_instanceUID              = other->m_instanceUID;
+    m_modality                 = other->m_modality;
+    m_date                     = other->m_date;
+    m_time                     = other->m_time;
+    m_performingPhysiciansName = other->m_performingPhysiciansName;
+    m_description              = other->m_description;
 }
 
 //------------------------------------------------------------------------------

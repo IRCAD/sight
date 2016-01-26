@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,42 +7,43 @@
 #ifndef __VTKSIMPLEMESH_SSIMPLEMESHDEFORMATION_HPP__
 #define __VTKSIMPLEMESH_SSIMPLEMESHDEFORMATION_HPP__
 
+#include "vtkSimpleMesh/config.hpp"
+
+#include <fwData/Mesh.hpp>
+
 #include <fwThread/Timer.hpp>
 
-#include <fwServices/ObjectMsg.hpp>
+
 #include <fwServices/IController.hpp>
 
-#include "vtkSimpleMesh/config.hpp"
 
 
 namespace vtkSimpleMesh
 {
 
 /**
- * @brief   Service used to deform mesh
+ * @brief   Service used to deform a mesh
  * @class   SSimpleMeshDeformation
- * 
- * @date    2012.
  */
 class VTKSIMPLEMESH_CLASS_API SSimpleMeshDeformation : public ::fwServices::IController
 {
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SSimpleMeshDeformation)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SSimpleMeshDeformation)(::fwServices::IController) );
 
+    // Key used to register the 'startDeformation' slot
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_START_DEFORMATION_SLOT;
-    typedef ::fwCom::Slot<void()> StartDeformationSlotType;
 
+    // Key used to register the 'stopDeformation' slot
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_STOP_DEFORMATION_SLOT;
-    typedef ::fwCom::Slot<void()> StopDeformationSlotType;
 
     /// Constructor
-    VTKSIMPLEMESH_API SSimpleMeshDeformation() throw() ;
+    VTKSIMPLEMESH_API SSimpleMeshDeformation() throw();
 
     /// Destructor
-    VTKSIMPLEMESH_API virtual ~SSimpleMeshDeformation() throw() ;
+    VTKSIMPLEMESH_API virtual ~SSimpleMeshDeformation() throw();
 
-protected :
+protected:
 
     /// Starting method. Initialize timer.
     VTKSIMPLEMESH_API virtual void starting() throw(fwTools::Failed);
@@ -58,9 +59,6 @@ protected :
     /// Updating method. Deforms the mesh
     VTKSIMPLEMESH_API virtual void updating() throw(fwTools::Failed);
 
-    /// Receiving.
-    VTKSIMPLEMESH_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
     /// Starts mesh deformation
     VTKSIMPLEMESH_API void startDeformation();
 
@@ -68,12 +66,6 @@ protected :
     VTKSIMPLEMESH_API void stopDeformation();
 
 private:
-
-    /// Slot to call startDeformation method
-    StartDeformationSlotType::sptr m_slotStartDeformation;
-
-    /// Slot to call stopDeformation method
-    StopDeformationSlotType::sptr m_slotStopDeformation;
 
     /// Helper to copy quicly meshes ( only points, normals and point colors )
     void copyMesh( const ::fwData::Mesh::sptr & src, const ::fwData::Mesh::sptr & dest ) const;
@@ -86,9 +78,9 @@ private:
 
     /// Helper to compute mesh deformation
     void computeDeformation(
-            const ::fwData::Mesh::sptr & refMesh,
-            const ::fwData::Mesh::sptr & transformMesh,
-            float deformationPercent );
+        const ::fwData::Mesh::sptr & refMesh,
+        const ::fwData::Mesh::sptr & transformMesh,
+        float deformationPercent );
 
     ::fwThread::Timer::sptr m_timer;
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -65,7 +65,7 @@ void ColorTest::methode2()
     array[2] = B;
     array[3] = A;
 
-    color->setCRefRGBA(array);
+    color->setRGBA(array);
 
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[0], R);
     CPPUNIT_ASSERT_EQUAL(color->getRGBA()[1], G);

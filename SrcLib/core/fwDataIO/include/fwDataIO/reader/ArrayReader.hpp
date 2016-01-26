@@ -1,14 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_READER_ARRAYREADER_HPP_
-#define _FWDATAIO_READER_ARRAYREADER_HPP_
+#ifndef __FWDATAIO_READER_ARRAYREADER_HPP__
+#define __FWDATAIO_READER_ARRAYREADER_HPP__
 
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -24,16 +23,16 @@ namespace reader
 /**
  * @brief   Array Reader. Read file format .raw
  * @class   ArrayReader
- * 
+ *
  * @date    2011
  *
  * Ircad reader to read a ::fwData::Array on filesystem in a raw format.
  */
 class FWDATAIO_CLASS_API ArrayReader :  public GenericObjectReader< ::fwData::Array >,
-                                                public ::fwData::location::enableSingleFile< IObjectReader >
+                                        public ::fwData::location::enableSingleFile< IObjectReader >
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro((ArrayReader)(GenericObjectReader< ::fwData::Array>),
                                            (()),
@@ -58,4 +57,4 @@ public :
 } // namespace fwDataIO
 
 
-#endif // _FWDATAIO_READER_ARRAYREADER_HPP_
+#endif // __FWDATAIO_READER_ARRAYREADER_HPP__

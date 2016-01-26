@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/thread/locks.hpp>
-#include <boost/make_shared.hpp>
-
 #include "fwData/mt/ObjectReadToWriteLock.hpp"
+
+#include <boost/thread/locks.hpp>
 
 namespace fwData
 {
@@ -31,7 +30,8 @@ ObjectReadToWriteLock::ObjectReadToWriteLock(::fwData::Object::sptr obj, bool lo
 //-----------------------------------------------------------------------------
 
 ObjectReadToWriteLock::~ObjectReadToWriteLock()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -51,7 +51,7 @@ void ObjectReadToWriteLock::unlock()
 
 void ObjectReadToWriteLock::upgrade()
 {
-    m_upgradedLock = ::boost::make_shared< ::fwCore::mt::UpgradeToWriteLock >(::boost::ref(m_lock));
+    m_upgradedLock = std::make_shared< ::fwCore::mt::UpgradeToWriteLock >(::boost::ref(m_lock));
 }
 
 //-----------------------------------------------------------------------------

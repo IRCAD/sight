@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/python.hpp>
+#include "fwPython/bindings/base.hpp"
+#include "fwPython/Interpreter.hpp"
+#include "fwPython/python.hpp"
+
 #include <fwCore/base.hpp>
 
-#include "fwPython/python.hpp"
-#include "fwPython/bindings/base.hpp"
-
-#include "fwPython/Interpreter.hpp"
+#include <boost/python.hpp>
 
 namespace fwPython
 {
@@ -39,7 +38,7 @@ Interpreter::Interpreter()
         // Retrieve the main module.
         bp::object main = bp::import("__main__");
         // Retrieve the main module's namespace
-        m_globals= main.attr("__dict__");
+        m_globals = main.attr("__dict__");
 
         bp::exec("import sys\n"
                  "\n"
@@ -82,20 +81,20 @@ Interpreter::Interpreter()
 
 Interpreter::~Interpreter()
 {
-   ::fwPython::finalize();
+    ::fwPython::finalize();
 }
 
 //------------------------------------------------------------------------------
 
 void Interpreter::addObject( std::string key, ::fwTools::Object::sptr object)
 {
-   namespace bp = ::boost::python;
+    namespace bp = ::boost::python;
     try
     {
         ::boost::python::object pyObject = ::boost::python::object( object );
-        m_globals[key] = pyObject;
+        m_globals[key]                   = pyObject;
     }
-   catch( boost::python::error_already_set const &)
+    catch( boost::python::error_already_set const &)
     {
         PyErr_Print();
     }
@@ -106,7 +105,7 @@ void Interpreter::addObject( std::string key, ::fwTools::Object::sptr object)
 int Interpreter::execute(std::string code)
 {
     namespace bp = ::boost::python;
-    int succes=0;
+    int succes = 0;
 
     try
     {

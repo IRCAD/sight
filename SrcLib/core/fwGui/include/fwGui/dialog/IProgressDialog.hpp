@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IPROGRESSDIALOG_HPP_
-#define _FWGUI_IPROGRESSDIALOG_HPP_
+#ifndef __FWGUI_DIALOG_IPROGRESSDIALOG_HPP__
+#define __FWGUI_DIALOG_IPROGRESSDIALOG_HPP__
 
 #include <string>
 #include <boost/function.hpp>
@@ -24,11 +24,12 @@ namespace dialog
  * @brief   Defines the generic Progress dialog for IHM.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
  * @class   IProgressDialog
- * 
+ *
  * @date    2009-2010.
  *
  */
-class FWGUI_CLASS_API IProgressDialog : public ::fwGui::GuiBaseObject, public ::boost::signals2::trackable // to autoDisconnect if handler is destroyed before the notifier
+class FWGUI_CLASS_API IProgressDialog : public ::fwGui::GuiBaseObject,
+                                        public ::boost::signals2::trackable                                // to autoDisconnect if handler is destroyed before the notifier
 {
 
 public:
@@ -56,15 +57,26 @@ public:
 
     FWGUI_API virtual void setCancelCallback(CancelCallbackType callback);
 
-    virtual void setCancelRaiseException(bool raise){m_raise = raise;};
+    virtual void setCancelRaiseException(bool raise)
+    {
+        m_raise = raise;
+    }
 
-    virtual bool getCanceled(){return m_canceled;};
+    virtual bool getCanceled()
+    {
+        return m_canceled;
+    }
 
-    virtual void hideCancelButton() {};
+    virtual void hideCancelButton()
+    {
+    }
 
-    virtual void setProcessUserEvents(bool process){m_processUserEvents = process;}
+    virtual void setProcessUserEvents(bool process)
+    {
+        m_processUserEvents = process;
+    }
 
-protected :
+protected:
 
     FWGUI_API virtual void cancelPressed();
 
@@ -72,13 +84,14 @@ protected :
     bool m_canceled;
     bool m_raise;
     ///progress bar's current value: [0-100]
-    int  m_value;
+    int m_value;
     bool m_processUserEvents;
 
-protected :
+protected:
     static sptr progressDialogFactory()
     {
-        ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::dialog::IProgressDialog::REGISTRY_KEY);
+        ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
+            ::fwGui::dialog::IProgressDialog::REGISTRY_KEY);
         ::fwGui::dialog::IProgressDialog::sptr progressDlg = ::fwGui::dialog::IProgressDialog::dynamicCast(guiObj);
         return progressDlg;
     }
@@ -88,6 +101,6 @@ protected :
 } //namespace dialog
 } // namespace fwGui
 
-#endif /*_FWGUI_LOCATIONDIALOG_HPP_*/
+#endif /*__FWGUI_DIALOG_IPROGRESSDIALOG_HPP__*/
 
 

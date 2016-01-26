@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <exception>
-
-#include <boost/thread.hpp>
-#include <boost/chrono/duration.hpp>
+#include "LazyInstantiatorTest.hpp"
 
 #include <fwCore/util/LazyInstantiator.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include "LazyInstantiatorTest.hpp"
-
+#include <chrono>
+#include <exception>
+#include <iostream>
+#include <thread>
+#include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCore::ut::LazyInstantiatorTest );
@@ -42,13 +41,13 @@ template < int SLEEP = 0 >
 class StaticCounter
 {
 public:
-    typedef ::boost::shared_ptr< StaticCounter > sptr;
+    typedef std::shared_ptr< StaticCounter > sptr;
 
     StaticCounter()
     {
         ::fwCore::mt::ScopedLock lock(s_mutex);
         ++s_counter;
-        ::boost::this_thread::sleep_for( ::boost::chrono::seconds(SLEEP));
+        std::this_thread::sleep_for( std::chrono::seconds(SLEEP));
     }
 
     static int s_counter;
@@ -61,7 +60,7 @@ int StaticCounter<SLEEP>::s_counter = 0;
 template < int SLEEP >
 ::fwCore::mt::Mutex StaticCounter<SLEEP>::s_mutex;
 
-struct second_counter{};
+struct second_counter {};
 
 //-----------------------------------------------------------------------------
 
@@ -87,20 +86,21 @@ void LazyInstantiatorTest::lazyTest()
 
 //-----------------------------------------------------------------------------
 
-struct thread_counter_tag {} ;
+struct thread_counter_tag {};
 
 struct CounterThread
 {
     typedef StaticCounter<5> CounterType;
-    typedef ::boost::shared_ptr< CounterThread > sptr;
+    typedef std::shared_ptr< CounterThread > sptr;
 
     CounterThread()
-    {}
+    {
+    }
 
     void run ()
     {
         CounterType::sptr counter;
-        counter = ::fwCore::util::LazyInstantiator< CounterType , thread_counter_tag >::getInstance();
+        counter = ::fwCore::util::LazyInstantiator< CounterType, thread_counter_tag >::getInstance();
     }
 };
 
@@ -111,14 +111,16 @@ void LazyInstantiatorTest::threadSafetyTest()
     const int NB_THREAD(100);
     CounterThread::CounterType::s_counter = 0;
 
-    ::boost::thread_group tg;
+    std::vector< std::thread > tg;
     for(size_t i = 0; i <= NB_THREAD; i++)
     {
-        CounterThread::sptr ct = ::boost::make_shared<CounterThread>();
-        ::boost::thread* t  = new ::boost::thread(::boost::bind(&CounterThread::run, ct) );
-        tg.add_thread(t);
+        CounterThread::sptr ct = std::make_shared<CounterThread>();
+        tg.push_back(std::thread(std::bind(&CounterThread::run, ct) ));
     }
-    tg.join_all();
+    for(auto& t : tg)
+    {
+        t.join();
+    }
 
     CounterThread::CounterType::sptr counter;
     counter = ::fwCore::util::LazyInstantiator< CounterThread::CounterType, thread_counter_tag >::getInstance();

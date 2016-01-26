@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwServices/Base.hpp>
-#include <fwServices/registry/AppConfig.hpp>
 
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>
@@ -21,17 +21,19 @@ namespace helper
 {
 
 //------------------------------------------------------------------------------
-const std::string ConfigLauncher::s_SELF_KEY = "self";
+const std::string ConfigLauncher::s_SELF_KEY        = "self";
 const std::string ConfigLauncher::s_GENERIC_UID_KEY = "GENERIC_UID";
 //------------------------------------------------------------------------------
 
 ConfigLauncher::ConfigLauncher() : m_configIsRunning(false)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 ConfigLauncher::~ConfigLauncher()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -39,10 +41,10 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
 {
     if(config.get_child("service").count("config") > 0)
     {
-        SLM_ASSERT("Sorry you must have one (and only one) <config/> element.",
-                config.get_child("service").count("config") == 1 );
+        SLM_ASSERT("There must be one (and only one) <config/> element.",
+                   config.get_child("service").count("config") == 1 );
         const ::fwServices::IService::ConfigType srvconfig = config.get_child("service");
-        const ::fwServices::IService::ConfigType &config = srvconfig.get_child("config");
+        const ::fwServices::IService::ConfigType &config   = srvconfig.get_child("config");
 
         if(config.count("appConfig") == 1 )
         {
@@ -55,17 +57,18 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
 
 //------------------------------------------------------------------------------
 
-void ConfigLauncher::startConfig(::fwServices::IService::sptr srv)
+void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
+                                 const FieldAdaptorType& optReplaceMap )
 {
     ::fwData::Object::sptr currentObj = srv->getObject();
     typedef ::fwActivities::registry::ActivityAppConfig AppConfig;
-    ::fwServices::registry::AppConfig::FieldAdaptorType replaceMap;
+    FieldAdaptorType replaceMap(optReplaceMap);
 
     // Generate generic UID
     const std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( srv->getID() );
     replaceMap[ConfigLauncher::s_GENERIC_UID_KEY] = genericUidAdaptor;
 
-    BOOST_FOREACH(const AppConfig::ActivityAppConfigParamsType::value_type& param, m_appConfig.parameters)
+    for(const AppConfig::ActivityAppConfigParamsType::value_type& param :  m_appConfig.parameters)
     {
         if(!param.isSeshat())
         {
@@ -84,7 +87,7 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv)
                 parameterToReplace.replace(0, 1, "@");
             }
 
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(currentObj, param.by);
+            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(currentObj, parameterToReplace);
             OSLM_ASSERT("Invalid seshat path : '"<<param.by<<"'", obj);
             ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
 
@@ -99,10 +102,8 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv)
     }
 
     // Init manager
-    ::fwRuntime::ConfigurationElement::csptr config =
-            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_appConfig.id, replaceMap );
     m_appConfigManager = ::fwServices::AppConfigManager::New();
-    m_appConfigManager->setConfig( config );
+    m_appConfigManager->setConfig( m_appConfig.id, replaceMap );
 
     // Launch config
     m_appConfigManager->launch();
@@ -134,7 +135,7 @@ void ConfigLauncher::stopConfig()
 void ConfigLauncher::connectToConfigRoot(::fwServices::IService::sptr srv)
 {
     ::fwData::Object::sptr root = m_appConfigManager->getConfigRoot();
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
+    m_connections               = ::fwServices::helper::SigSlotConnection::New();
     m_connections->connect( root, srv->getSptr(), srv->getObjSrvConnections() );
 }
 
@@ -152,7 +153,7 @@ bool ConfigLauncher::isExecutable(::fwData::Object::sptr currentObj)
 {
     typedef ::fwActivities::registry::ActivityAppConfig AppConfig;
     bool executable = true;
-    BOOST_FOREACH(const AppConfig::ActivityAppConfigParamsType::value_type& param, m_appConfig.parameters)
+    for(const AppConfig::ActivityAppConfigParamsType::value_type& param :  m_appConfig.parameters)
     {
         if(param.isSeshat())
         {
@@ -166,6 +167,5 @@ bool ConfigLauncher::isExecutable(::fwData::Object::sptr currentObj)
 
 //------------------------------------------------------------------------------
 
-} // helper
+}     // helper
 } // fwServices
-

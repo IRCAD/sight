@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>2DNegato</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
@@ -8,12 +7,13 @@
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
         <param name="patient_name" default="" />
         <param name="IMAGE_LOCATIONS" default="" />
+        <param name="CrossTypeChannel"   default="crossTypeChannel" />
     </parameters>
     <config>
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -28,7 +28,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_multiView_negato_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_multiView_negato_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -44,25 +44,21 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_snapshotNegatoEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-                <snap>
-                    <scene uid="${GENERIC_UID}_negato" />
-                </snap>
-            </service>
+            <service uid="${GENERIC_UID}_snapshotNegatoEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
 
             <!-- GENERIC SCENE DEFINITION -->
             <item key="visuConfig">
                 <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
 
                     <!-- Generic Scene Negato -->
-                    <service uid="${GENERIC_UID}_negato" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                            <adaptor id="snapshot" uid="${GENERIC_UID}_snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                 <config renderer="default" />
                             </adaptor>
 
@@ -70,7 +66,7 @@
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
                             </adaptor>
 
-                            <adaptor id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
+                            <adaptor id="MPRNegato" uid="${GENERIC_UID}_MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
                                 <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="${orientation}" />
                             </adaptor>
 
@@ -79,13 +75,13 @@
                             </adaptor>
 
                             <adaptor id="imageSliceOrientationText" class="::visuVTKAdaptor::ImageSliceOrientationText" objectId="imageKey">
-                                <config renderer="default" >
+                                <config renderer="default">
                                     <locations>${IMAGE_LOCATIONS}</locations>
                                     <initialOrientation>${orientation}</initialOrientation>
                                 </config>
                             </adaptor>
 
-                            <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
+                            <adaptor id="multiDistances" uid="${GENERIC_UID}_multiDistancesUID" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
                                 <config filter="true" renderer="default" picker="negatodefault" />
                             </adaptor>
 
@@ -96,6 +92,20 @@
                             <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="imageKey">
                                 <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
                             </adaptor>
+
+                            <connect>
+                                <signal>${GENERIC_UID}_snapshotNegatoEditor/snapped</signal>
+                                <slot>${GENERIC_UID}_snapshotUID/snap</slot>
+                            </connect>
+                            
+                            <connect waitForKey="imageKey">
+                                <signal>${GENERIC_UID}_distanceNegatoEditor/distanceRequested</signal>
+                                <slot>${GENERIC_UID}_multiDistancesUID/createDistance</slot>
+                            </connect>
+                            
+                            <proxy channel="${CrossTypeChannel}" waitForKey="imageKey">
+                                <slot>${GENERIC_UID}_MPRNegato/setCrossScale</slot>
+                            </proxy>
                         </scene>
                     </service>
 

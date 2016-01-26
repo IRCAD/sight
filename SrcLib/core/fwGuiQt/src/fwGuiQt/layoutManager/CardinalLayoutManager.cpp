@@ -1,21 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "fwGuiQt/layoutManager/CardinalLayoutManager.hpp"
+
+#include <fwCore/base.hpp>
+#include <fwGui/registry/macros.hpp>
 
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QBoxLayout>
 #include <QGroupBox>
 #include <QScrollArea>
-
-#include <boost/foreach.hpp>
-
-#include <fwCore/base.hpp>
-#include <fwGui/registry/macros.hpp>
-
-#include "fwGuiQt/layoutManager/CardinalLayoutManager.hpp"
 
 
 fwGuiRegisterMacro( ::fwGui::CardinalLayoutManager,
@@ -28,12 +26,14 @@ namespace fwGui
 //-----------------------------------------------------------------------------
 
 CardinalLayoutManager::CardinalLayoutManager(::fwGui::GuiBaseObject::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 CardinalLayoutManager::~CardinalLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -59,7 +59,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
 
     bool hasCentral = false;
 
-    BOOST_FOREACH ( ViewInfo viewInfo, views)
+    for ( ViewInfo viewInfo : views)
     {
         QWidget *insideWidget;
         QScrollArea *scrollArea;
@@ -79,7 +79,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
 
             QWidget *widget = insideWidget;
             SLM_ASSERT("multiple center views are not managed in Qt version of CardinalLayoutManager",
-                    !hasCentral);
+                       !hasCentral);
 
             if (viewInfo.m_useScrollBar)
             {
@@ -98,18 +98,30 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
         }
         else
         {
-            QDockWidget *dockWidget= new QDockWidget(m_qtWindow);
+            QDockWidget *dockWidget = new QDockWidget(m_qtWindow);
             insideWidget = new QWidget(dockWidget);
             QDockWidget::DockWidgetFeatures features;
 
-            features = QDockWidget::DockWidgetMovable ;
+            features = QDockWidget::DockWidgetMovable;
 
             Qt::DockWidgetArea area;
 
-            if(viewInfo.m_align==RIGHT)       { area = Qt::RightDockWidgetArea;}
-            else if(viewInfo.m_align==LEFT)   { area = Qt::LeftDockWidgetArea;}
-            else if(viewInfo.m_align==BOTTOM) { area = Qt::BottomDockWidgetArea;}
-            else if(viewInfo.m_align==TOP)    { area = Qt::TopDockWidgetArea;}
+            if(viewInfo.m_align==RIGHT)
+            {
+                area = Qt::RightDockWidgetArea;
+            }
+            else if(viewInfo.m_align==LEFT)
+            {
+                area = Qt::LeftDockWidgetArea;
+            }
+            else if(viewInfo.m_align==BOTTOM)
+            {
+                area = Qt::BottomDockWidgetArea;
+            }
+            else if(viewInfo.m_align==TOP)
+            {
+                area = Qt::TopDockWidgetArea;
+            }
 
             m_qtWindow->addDockWidget(area, dockWidget);
             dockWidget->setFeatures(features);
@@ -121,8 +133,10 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             else
             {
                 // Remove title bar
-                QWidget *widget = new QWidget(dockWidget);
+                QWidget *widget = new QWidget();
+                dockWidget->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
                 dockWidget->setTitleBarWidget(widget);
+
             }
 
             if (viewInfo.m_useScrollBar)

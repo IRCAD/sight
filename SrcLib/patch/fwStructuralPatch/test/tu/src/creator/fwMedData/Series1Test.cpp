@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,16 +46,16 @@ void Series1Test::createTest()
 
     CPPUNIT_ASSERT(seriesCreator);
     const std::string& classname = seriesCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::Series") == classname );
-    const std::string& objectVersion =  seriesCreator->getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == objectVersion );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Series") == classname );
+    const std::string& objectVersion = seriesCreator->getObjectVersion();
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
     ::fwAtoms::Object::sptr series = seriesCreator->create();
 
     const std::string& seriesClassname = ::fwAtomsPatch::helper::getClassname(series);
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::Series") == seriesClassname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Series") == seriesClassname );
     const std::string& seriesObjectVersion = ::fwAtomsPatch::helper::getVersion(series);
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == seriesObjectVersion );
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == seriesObjectVersion );
 
     CPPUNIT_ASSERT(series->getAttribute("patient"));
     CPPUNIT_ASSERT(series->getAttribute("study"));
@@ -76,18 +76,18 @@ void Series1Test::copyTest()
     Series1 seriesCreator;
 
     const std::string& classname = seriesCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::Series") == classname );
-    const std::string& objectVersion =  seriesCreator.getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == objectVersion );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Series") == classname );
+    const std::string& objectVersion = seriesCreator.getObjectVersion();
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
     Series1* seriesCreator2 = new Series1(seriesCreator);
 
     CPPUNIT_ASSERT(seriesCreator2);
     const std::string& classnameSeriesCreator2 = seriesCreator2->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::Series") == classnameSeriesCreator2 );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Series") == classnameSeriesCreator2 );
 
-    const std::string& objectVersionSeriesCreator2 =  seriesCreator2->getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == objectVersionSeriesCreator2 );
+    const std::string& objectVersionSeriesCreator2 = seriesCreator2->getObjectVersion();
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionSeriesCreator2 );
 
     delete(seriesCreator2);
 

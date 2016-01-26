@@ -1,22 +1,20 @@
-#include <QWidget>
-#include <QLabel>
-#include <QLineEdit>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/Object.hpp>
+#include "uiMedDataQt/editor/SSeries.hpp"
 
-#include <fwCom/Slots.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/VectorMsg.hpp>
 #include <fwComEd/helper/SeriesDB.hpp>
+
+#include <fwData/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwData/Vector.hpp>
 
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
@@ -25,43 +23,47 @@
 
 #include <fwServices/macros.hpp>
 
+#include <fwTools/Object.hpp>
+
 #include "uiMedDataQt/widget/PatientEditor.hpp"
 #include "uiMedDataQt/widget/StudyEditor.hpp"
 #include "uiMedDataQt/widget/EquipmentEditor.hpp"
 #include "uiMedDataQt/widget/SeriesEditor.hpp"
-#include "uiMedDataQt/editor/SSeries.hpp"
+
+#include <QWidget>
+#include <QLabel>
+#include <QLineEdit>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
 
 namespace uiMedData
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMedData::editor::SSeries , ::fwData::Vector ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMedData::editor::SSeries, ::fwData::Vector );
 
-const ::fwCom::Signals::SignalKeyType SSeries::s_EXPORT_SLOT = "export";
+const ::fwCom::Signals::SignalKeyType SSeries::s_EXPORT_SLOT         = "export";
 const ::fwCom::Signals::SignalKeyType SSeries::s_SERIES_EXPORTED_SIG = "seriesExported";
-const ::fwCom::Signals::SignalKeyType SSeries::s_CAN_EXPORT_SIG = "canExport";
+const ::fwCom::Signals::SignalKeyType SSeries::s_CAN_EXPORT_SIG      = "canExport";
 
 //------------------------------------------------------------------------------
 
 SSeries::SSeries()
 {
-    m_slotExport  = ::fwCom::newSlot( &SSeries::onExportClicked, this ) ;
+    m_slotExport = ::fwCom::newSlot( &SSeries::onExportClicked, this );
     ::fwCom::HasSlots::m_slots( s_EXPORT_SLOT, m_slotExport );
 
-    m_sigCanExport = CanExportSignalType::New();
+    m_sigCanExport      = CanExportSignalType::New();
     m_sigSeriesExported = SeriesExportedSignalType::New();
 
     ::fwCom::HasSignals::m_signals
         (s_CAN_EXPORT_SIG, m_sigCanExport)
         (s_SERIES_EXPORTED_SIG, m_sigSeriesExported)
-        ;
+    ;
 
-#ifdef COM_LOG
-    m_slotExport->setID(s_EXPORT_SLOT);
-    m_sigCanExport->setID(s_CAN_EXPORT_SIG);
-    m_sigSeriesExported->setID(s_SERIES_EXPORTED_SIG);
-#endif
+
 
     // worker was set by IService
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
@@ -70,7 +72,8 @@ SSeries::SSeries()
 //------------------------------------------------------------------------------
 
 SSeries::~SSeries() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -84,10 +87,10 @@ void SSeries::starting() throw(::fwTools::Failed)
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
-    m_patientEditor = new ::uiMedData::widget::PatientEditor();
-    m_studyEditor = new ::uiMedData::widget::StudyEditor();
+    m_patientEditor   = new ::uiMedData::widget::PatientEditor();
+    m_studyEditor     = new ::uiMedData::widget::StudyEditor();
     m_equipmentEditor = new ::uiMedData::widget::EquipmentEditor();
-    m_seriesEditor = new ::uiMedData::widget::SeriesEditor();
+    m_seriesEditor    = new ::uiMedData::widget::SeriesEditor();
 
 
     QVBoxLayout* studyEquipmentLayout = new QVBoxLayout();
@@ -106,7 +109,7 @@ void SSeries::starting() throw(::fwTools::Failed)
     m_btnExport = new QPushButton(tr("Export series"));
     m_btnExport->setEnabled(false);
     m_btnExport->setVisible(m_sigCanExport->getNumberOfConnections() == 0);
-    fwServicesNotifyMacro(this->getLightID(), m_sigCanExport, (false));
+    m_sigCanExport->asyncEmit(false);
     QHBoxLayout* btnLayout = new QHBoxLayout();
     btnLayout->setAlignment(Qt::AlignRight);
     btnLayout->setSizeConstraint(QLayout::SetFixedSize);
@@ -150,12 +153,12 @@ void SSeries::updating() throw(::fwTools::Failed)
         m_equipmentEditor->setSeries(series);
         m_seriesEditor->setSeries(series);
         m_btnExport->setEnabled(true);
-        fwServicesNotifyMacro(this->getLightID(), m_sigCanExport, (true));
+        m_sigCanExport->asyncEmit(true);
     }
     else
     {
         m_btnExport->setEnabled(false);
-        fwServicesNotifyMacro(this->getLightID(), m_sigCanExport, (false));
+        m_sigCanExport->asyncEmit(false);
     }
 }
 
@@ -176,7 +179,7 @@ void SSeries::onExportClicked()
     SLM_ASSERT("Failed to retrieve a ::fwMedData::SeriesDB from object '" << m_seriesDBId << "'", seriesDB);
 
     if(m_patientEditor->isValid() && m_studyEditor->isValid()
-            && m_equipmentEditor->isValid() && m_seriesEditor->isValid())
+       && m_equipmentEditor->isValid() && m_seriesEditor->isValid())
     {
 
         ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
@@ -185,7 +188,7 @@ void SSeries::onExportClicked()
         SLM_ASSERT("Failed to retrieve ::fwMedData::Series from vector", seriesVec);
 
         ::fwMedData::Patient::sptr patient = m_patientEditor->getPatient();
-        ::fwMedData::Study::sptr study = m_studyEditor->getStudy();
+        ::fwMedData::Study::sptr study     = m_studyEditor->getStudy();
 
         // If a new patient is being created but the study edition didn't change a new study instance UID must be set
         if(patient->getPatientId() != seriesVec->getPatient()->getPatientId())
@@ -218,10 +221,9 @@ void SSeries::onExportClicked()
         else
         {
             helper.add(series);
-            helper.notify(this->getSptr());
+            helper.notify();
         }
-
-        fwServicesNotifyMacro(this->getLightID(), m_sigSeriesExported, ());
+        m_sigSeriesExported->asyncEmit();
     }
     else
     {
@@ -255,15 +257,13 @@ void SSeries::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeries::receiving(::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+::fwServices::IService::KeyConnectionsType SSeries::getObjSrvConnections() const
 {
-    ::fwComEd::VectorMsg::csptr vectorMsg = ::fwComEd::VectorMsg::dynamicConstCast(_msg);
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_UPDATE_SLOT ) );
 
-    if ( vectorMsg && (vectorMsg->hasEvent( ::fwComEd::VectorMsg::ADDED_OBJECTS )
-                      || vectorMsg->hasEvent( ::fwComEd::VectorMsg::REMOVED_OBJECTS ) ))
-    {
-        this->updating();
-    }
+    return connections;
 }
 
 //------------------------------------------------------------------------------

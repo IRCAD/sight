@@ -1,21 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKAdaptor/PointListInteractor.hpp"
 
-
-#include <boost/foreach.hpp>
-
-#include <vtkAbstractPropPicker.h>
-#include <vtkActor.h>
-#include <vtkCommand.h>
-#include <vtkCubeSource.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkRenderWindowInteractor.h>
-
-#include <fwComEd/PointListMsg.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Material.hpp>
 #include <fwData/PointList.hpp>
@@ -24,17 +21,21 @@
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include "visuVTKAdaptor/PointListInteractor.hpp"
-#include <fwServices/IEditionService.hpp>
-
+#include <vtkAbstractPropPicker.h>
+#include <vtkActor.h>
+#include <vtkCommand.h>
+#include <vtkCubeSource.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderWindowInteractor.h>
 
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointListInteractor, ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointListInteractor,
+                         ::fwData::PointList );
 
 namespace visuVTKAdaptor
 {
@@ -43,19 +44,20 @@ class PointListInteractorCallback : public vtkCommand
 {
 public:
     static PointListInteractorCallback *New()
-    { return new PointListInteractorCallback(); }
-
-    PointListInteractorCallback()
-        : m_priority(-1),
-          m_mouseMoveObserved(false)
     {
-        m_picker = NULL;
+        return new PointListInteractorCallback();
+    }
+
+    PointListInteractorCallback() :
+        m_picker(nullptr),
+        m_priority(-1.f),
+        m_mouseMoveObserved(false)
+    {
         this->PassiveObserverOff();
     }
 
     ~PointListInteractorCallback()
     {
-
     }
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
@@ -63,7 +65,8 @@ public:
         assert(m_priority>=0);
         SLM_ASSERT("m_adaptor not instanced", m_adaptor);
         SLM_ASSERT("m_picker not instanced", m_picker);
-        if ( m_mouseMoveObserved || (m_adaptor->getInteractor()->GetControlKey() && m_adaptor->getInteractor()->GetShiftKey()) )
+        if ( m_mouseMoveObserved ||
+             (m_adaptor->getInteractor()->GetControlKey() && m_adaptor->getInteractor()->GetShiftKey()) )
         {
             if ( eventId == vtkCommand::MouseMoveEvent )
             {
@@ -104,13 +107,13 @@ public:
         display[1] = y;
         display[2] = 0;
 
-        return  m_picker->Pick( display , m_adaptor->getRenderer() );
+        return m_picker->Pick( display, m_adaptor->getRenderer() );
     }
 
 
     void process() // from
     {
-        double world[3] = {-1,0,0};
+        double world[3] = {-1, 0, 0};
         ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), world);
         OSLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
         m_adaptor->addPoint( world[0], world[1], world[2] );
@@ -131,10 +134,10 @@ public:
         m_priority = priority;
     }
 
-protected :
+protected:
     PointListInteractor::sptr m_adaptor;
     vtkAbstractPropPicker *m_picker;
-    float    m_priority;
+    float m_priority;
 
     bool m_mouseMoveObserved;
 
@@ -142,10 +145,10 @@ protected :
 
 //------------------------------------------------------------------------------
 
-PointListInteractor::PointListInteractor() throw()
-    : m_priority(0.999)
+PointListInteractor::PointListInteractor() throw() :
+    m_interactionCommand(nullptr),
+    m_priority(0.999f)
 {
-    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -156,13 +159,8 @@ PointListInteractor::~PointListInteractor() throw()
 
 //------------------------------------------------------------------------------
 
-void PointListInteractor::configuring() throw(fwTools::Failed)
+void PointListInteractor::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
 
 //------------------------------------------------------------------------------
@@ -208,27 +206,30 @@ void PointListInteractor::doStop() throw(fwTools::Failed)
 void PointListInteractor::resetPointList()
 {
     ::fwData::PointList::sptr list = this->getObject< ::fwData::PointList >();
-    list->getRefPoints().clear();
 
-    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-    msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED);
-    ::fwServices::IEditionService::notify(this->getSptr(), list, msg);
+    for (auto point : list->getPoints())
+    {
+        auto sig =
+            list->signal< ::fwData::PointList::PointRemovedSignalType >(::fwData::PointList::s_POINT_REMOVED_SIG);
+        sig->asyncEmit(point);
+    }
+
+    list->getRefPoints().clear();
 }
 
 //------------------------------------------------------------------------------
 
 void PointListInteractor::addPoint(const double &x, const double &y, const double &z)
 {
-    ::fwData::PointList::sptr list = this->getObject< ::fwData::PointList >();
+    ::fwData::PointList::sptr list             = this->getObject< ::fwData::PointList >();
     ::fwData::Point::PointCoordArrayType coord = {{ x, y, z }};
-    ::fwData::Point::sptr p = ::fwData::Point::New();
-    p->getRefCoord() = coord;
+    ::fwData::Point::sptr p                    = ::fwData::Point::New();
+    p->getRefCoord()                           = coord;
 
     list->getRefPoints().push_back(p);
 
-    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-    msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
-    ::fwServices::IEditionService::notify(this->getSptr(), list, msg);
+    auto sig = list->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_ADDED_SIG);
+    sig->asyncEmit(p);
 }
 
 //------------------------------------------------------------------------------

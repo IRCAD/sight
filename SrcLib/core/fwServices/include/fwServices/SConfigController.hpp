@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_SCONFIGCONTROLLER_HPP_
-#define _FWSERVICES_SCONFIGCONTROLLER_HPP_
+#ifndef __FWSERVICES_SCONFIGCONTROLLER_HPP__
+#define __FWSERVICES_SCONFIGCONTROLLER_HPP__
 
 #include <fwTools/Failed.hpp>
 
@@ -48,15 +48,15 @@ namespace fwServices
 class FWSERVICES_CLASS_API SConfigController : public ::fwServices::IController
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SConfigController)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SConfigController)(::fwServices::IController) );
 
     /// Constructor. Does nothing.
-    FWSERVICES_API SConfigController() throw() ;
+    FWSERVICES_API SConfigController() throw();
 
     /// Destructor. Does nothing.
-    FWSERVICES_API virtual ~SConfigController() throw() ;
+    FWSERVICES_API virtual ~SConfigController() throw();
 
 protected:
 
@@ -65,9 +65,6 @@ protected:
 
     /// Stops the config
     virtual void stopping() throw(::fwTools::Failed);
-
-    /// Does nothing
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
 
     /// Does nothing
     virtual void updating() throw(::fwTools::Failed);
@@ -95,8 +92,11 @@ protected:
      */
     virtual void configuring() throw(fwTools::Failed);
 
+    /// Swaps the config
+    virtual void swapping() throw ( ::fwTools::Failed );
+
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 private:
 
@@ -108,6 +108,6 @@ private:
 } // fwServices
 
 
-#endif // _FWSERVICES_SCONFIGCONTROLLER_HPP_
+#endif // __FWSERVICES_SCONFIGCONTROLLER_HPP__
 
 

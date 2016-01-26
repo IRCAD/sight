@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIGENERICQT_UI_ACTION_SHOWHELPCONTENTS_HPP_
-#define _UIGENERICQT_UI_ACTION_SHOWHELPCONTENTS_HPP_
+#ifndef __UIGENERICQT_ACTION_SHOWHELPCONTENTS_HPP__
+#define __UIGENERICQT_ACTION_SHOWHELPCONTENTS_HPP__
 
 #include <boost/filesystem/path.hpp>
 
@@ -21,37 +21,32 @@ namespace action
 /**
  * @brief   This action show the help contents.
  * @class   ShowHelpContents
- * 
- * @date    2010.
  */
 class UIGENERICQT_CLASS_API ShowHelpContents : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ShowHelpContents)( ::fwGui::IActionSrv) ) ;
-    UIGENERICQT_API ShowHelpContents() throw() ;
+    fwCoreServiceClassDefinitionsMacro ( (ShowHelpContents)( ::fwGui::IActionSrv) );
+    UIGENERICQT_API ShowHelpContents() throw();
 
-    UIGENERICQT_API virtual ~ShowHelpContents() throw() ;
+    UIGENERICQT_API virtual ~ShowHelpContents() throw();
 
 protected:
 
     /**
-    * @brief Configuring method.
-    *
-    * XML configuration sample:
-    * @verbatim
-    <service impl="::uiGeneric::ui::action::ShowHelpContents" type="::fwGui::IActionSrv">
+     * @brief Configuring method.
+     *
+     * XML configuration sample:
+     * @verbatim
+       <service impl="::uiGeneric::ui::action::ShowHelpContents" type="::fwGui::IActionSrv">
         <filename id=".../doc.qhc"/>
-    </service>
-    @endverbatim
-    * This method is used to configure the service.
-    */
+       </service>
+       @endverbatim
+     * This method is used to configure the service.
+     */
     void configuring() throw (::fwTools::Failed);
 
     /// Starts action
     void starting() throw (::fwTools::Failed);
-
-    /// Does nothing
-    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
 
     /// Show the frame
     void updating() throw(::fwTools::Failed);
@@ -59,18 +54,18 @@ protected:
     /// Stops action
     void stopping() throw (::fwTools::Failed);
 
-    UIGENERICQT_API void info(std::ostream &_sstream ) ;
+    UIGENERICQT_API void info(std::ostream &_sstream );
 
 private:
     /**
-    * @brief the m_bServiceIsConfigured value is \b true
-    * if the help files path is known.
-    */
+     * @brief the m_bServiceIsConfigured value is \b true
+     * if the help files path is known.
+     */
     bool m_bServiceIsConfigured;
 
     /**
-    * @brief help files path.
-    */
+     * @brief help files path.
+     */
     ::boost::filesystem::path m_fsHelpPath;
 };
 
@@ -78,4 +73,4 @@ private:
 
 } // namespace uiGeneric
 
-#endif /*_UIGENERICQT_ACTION_SHOWHELPCONTENTS_HPP_*/
+#endif /*__UIGENERICQT_ACTION_SHOWHELPCONTENTS_HPP__*/

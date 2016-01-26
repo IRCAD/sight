@@ -1,15 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/assign/list_of.hpp>
-#include <boost/assign/std/vector.hpp>
-
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
-#include <fwData/Camera.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Edge.hpp>
@@ -43,15 +39,12 @@
 #include <fwData/TransferFunction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
-#include <fwData/Video.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
 #include <fwData/location/SingleFile.hpp>
 
 #include "CopyTest.hpp"
 
-
-using namespace boost::assign;
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::CopyTest);
@@ -108,7 +101,6 @@ void CopyTest::fieldCopyTest()
     __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Vector);
 
 //Not implemented !?
-//    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Camera);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Edge);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Node);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Object);
@@ -120,7 +112,6 @@ void CopyTest::fieldCopyTest()
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::StructureTraits);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::StructureTraitsDictionary);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Tag);
-//    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::Video);
 //    __FWDATA_UT_FIELD_COPY_MACRO(::fwData::location::MultiFiles);
 
 }
@@ -129,7 +120,7 @@ void CopyTest::fieldCopyTest()
 
 void CopyTest::severalReferencesCopyTest()
 {
-    ::fwData::Integer::sptr integer = ::fwData::Integer::New(42);
+    ::fwData::Integer::sptr integer     = ::fwData::Integer::New(42);
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
 
     (*composite)["A"] = integer;
@@ -181,8 +172,8 @@ void CopyTest::severalReferencesCopyTest()
 void CopyTest::recursiveCopyTest()
 {
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-    ::fwData::Vector::sptr vector = ::fwData::Vector::New();
-    ::fwData::List::sptr list = ::fwData::List::New();
+    ::fwData::Vector::sptr vector       = ::fwData::Vector::New();
+    ::fwData::List::sptr list           = ::fwData::List::New();
 
     ::fwData::Composite::sptr compositeCopy;
     ::fwData::Vector::sptr vectorCopy;
@@ -248,8 +239,8 @@ void CopyTest::recursiveCopyTest()
 
 
     compositeCopy = ::fwData::Object::copy(composite);
-    vectorCopy = ::fwData::Object::copy(vector);
-    listCopy = ::fwData::Object::copy(list);
+    vectorCopy    = ::fwData::Object::copy(vector);
+    listCopy      = ::fwData::Object::copy(list);
 
 
 
@@ -279,8 +270,8 @@ void CopyTest::recursiveCopyTest()
 
     //composite->list->vector->composite
     {
-        ::fwData::List::sptr insideList = L((*compositeCopy)["A"]);
-        ::fwData::Vector::sptr insideVector = V(insideList->front());
+        ::fwData::List::sptr insideList           = L((*compositeCopy)["A"]);
+        ::fwData::Vector::sptr insideVector       = V(insideList->front());
         ::fwData::Composite::sptr insideComposite = C(insideVector->front());
 
         CPPUNIT_ASSERT_EQUAL(compositeCopy, insideComposite );
@@ -294,9 +285,9 @@ void CopyTest::recursiveCopyTest()
 
     //list->vector->composite->list
     {
-        ::fwData::Vector::sptr insideVector = V(listCopy->front());
+        ::fwData::Vector::sptr insideVector       = V(listCopy->front());
         ::fwData::Composite::sptr insideComposite = C(insideVector->front());
-        ::fwData::List::sptr insideList = L((*insideComposite)["A"]);
+        ::fwData::List::sptr insideList           = L((*insideComposite)["A"]);
 
         CPPUNIT_ASSERT_EQUAL(listCopy, insideList );
         CPPUNIT_ASSERT_EQUAL(insideVector, V(insideList->front()) );
@@ -309,8 +300,8 @@ void CopyTest::recursiveCopyTest()
     //vector->composite->list->vector
     {
         ::fwData::Composite::sptr insideComposite = C(vectorCopy->front());
-        ::fwData::List::sptr insideList = L((*insideComposite)["A"]);
-        ::fwData::Vector::sptr insideVector = V(insideList->front());
+        ::fwData::List::sptr insideList           = L((*insideComposite)["A"]);
+        ::fwData::Vector::sptr insideVector       = V(insideList->front());
 
         CPPUNIT_ASSERT_EQUAL(vectorCopy, insideVector );
         CPPUNIT_ASSERT_EQUAL(insideComposite, C(insideVector->front()) );
@@ -343,13 +334,13 @@ void CopyTest::recursiveCopyTest()
     compositeCopy = ::fwData::Object::copy(composite);
 
     {
-        ::fwData::List::sptr   insideList  = L((*compositeCopy)["A"]);
+        ::fwData::List::sptr insideList    = L((*compositeCopy)["A"]);
         ::fwData::Vector::sptr fieldVector = V(compositeCopy->getField("F1"));
 
         ::fwData::Composite::sptr insideComposite = C(fieldVector->front());
-        ::fwData::List::sptr fieldList = L(fieldVector->getField("F1"));
+        ::fwData::List::sptr fieldList            = L(fieldVector->getField("F1"));
 
-        ::fwData::Vector::sptr insideVector = V(fieldList->front());
+        ::fwData::Vector::sptr insideVector      = V(fieldList->front());
         ::fwData::Composite::sptr fieldComposite = C(fieldList->getField("F1"));
 
 

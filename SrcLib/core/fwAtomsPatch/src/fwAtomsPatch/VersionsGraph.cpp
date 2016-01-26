@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@ class VertexVisitor : public boost::default_bfs_visitor
 {
 public:
 
-    VertexVisitor(std::vector< std::string >* vector): m_vector(vector)
+    VertexVisitor(std::vector< std::string >* vector) : m_vector(vector)
     {
     }
 
@@ -32,7 +32,7 @@ public:
     }
 
 protected:
-  std::vector< std::string >* m_vector;
+    std::vector< std::string >* m_vector;
 };
 
 VersionsGraph::VersionsGraph()
@@ -66,7 +66,7 @@ void VersionsGraph::addEdge(EdgeType edge)
 // ----------------------------------------------------------------------------
 
 VersionsGraph::VersionSeriesType VersionsGraph::shortestPath(const std::string& origin,
-                                                    const std::string& target)
+                                                             const std::string& target)
 {
     NodeIDType originID = this->getNode(origin);
     NodeIDType targetID = this->getNode(target);
@@ -87,10 +87,13 @@ VersionsGraph::VersionSeriesType VersionsGraph::shortestPath(const NodeType& ori
 
     const NodeIDType& vOrig = m_nodes[origin];
     ::boost::dijkstra_shortest_paths(m_graph, vOrig,
-            ::boost::weight_map(get(&EdgeType::m_weight, m_graph))
-            .predecessor_map(&predecessor[0])
-            .distance_map(::boost::make_iterator_property_map(distances.begin(), ::boost::get(::boost::vertex_index, m_graph )))
-            );
+                                     ::boost::weight_map(get(&EdgeType::m_weight, m_graph))
+                                     .predecessor_map(&predecessor[0])
+                                     .distance_map(::boost::make_iterator_property_map(distances.begin(),
+                                                                                       ::boost::get(::boost::
+                                                                                                    vertex_index,
+                                                                                                    m_graph )))
+                                     );
 
     NodeIDType current = m_nodes[target];
 
@@ -142,18 +145,18 @@ VersionsGraph::EdgeType VersionsGraph::getEdge(const NodeIDType& origin, const N
     ::fwCore::mt::ReadLock lock(m_graphMutex);
     ::boost::tie(edgeID,success) = ::boost::edge(origin, target, m_graph);
     OSLM_ASSERT("There is no edge between '" << m_graph[origin].getVersionName() <<"' and '"
-            << m_graph[target].getVersionName() << "'.", success);
+                                             << m_graph[target].getVersionName() << "'.", success);
     return m_graph[edgeID];
 }
 
 // ----------------------------------------------------------------------------
 
 VersionsGraph::LinkedVersionType VersionsGraph::getLinkedVersion(
-        const NodeIDType& originID, const NodeIDType& targetID, LinkDescriptor::VersionIDType current)
+    const NodeIDType& originID, const NodeIDType& targetID, LinkDescriptor::VersionIDType current)
 {
     NodeType origin = this->getNode(originID);
     NodeType target = this->getNode(targetID);
-    EdgeType edge = this->getEdge(originID, targetID);
+    EdgeType edge   = this->getEdge(originID, targetID);
 
     bool success = false;
     LinkDescriptor::VersionIDType result;
@@ -164,7 +167,7 @@ VersionsGraph::LinkedVersionType VersionsGraph::getLinkedVersion(
     linkIt = links.find(current);
     if(linkIt != links.end())
     {
-        result = linkIt->second;
+        result  = linkIt->second;
         success = true;
     }
     //Implicit
@@ -177,7 +180,7 @@ VersionsGraph::LinkedVersionType VersionsGraph::getLinkedVersion(
             //Same type
             if(current.first == versIt->first)
             {
-                result = *versIt;
+                result  = *versIt;
                 success = true;
                 break;
             }
@@ -218,7 +221,7 @@ VersionsGraph::EdgeIDType VersionsGraph::createEdge(const EdgeType& edge)
     ::boost::tie(newEdge, success) = ::boost::add_edge(origin,target,edge,m_graph);
 
     OSLM_ASSERT("Unable to create the edge between '" << edge.getOriginVersion() << "' "
-            "and '" << edge.getTargetVersion() << "'", success);
+                "and '" << edge.getTargetVersion() << "'", success);
 
     return newEdge;
 }
@@ -237,7 +240,8 @@ std::vector< std::string > VersionsGraph::getConnectedVersions(const std::string
         vector.erase(vector.begin());
     }
     catch ( ::fwAtomsPatch::exceptions::UnknownVersion & )
-    {}
+    {
+    }
 
     return vector;
 }

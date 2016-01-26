@@ -1,32 +1,37 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "scene2D/adaptor/Negato.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/helper/Image.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Composite.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/TransferFunction.hpp>
+
+#include <fwServices/Base.hpp>
 
 #include <QGraphicsItemGroup>
 #include <QPoint>
 #include <QBitmap>
 #include <QPixmap>
 
-#include <fwData/Image.hpp>
-#include <fwData/Boolean.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/TransferFunction.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
-
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/TransferFunctionMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/helper/Image.hpp>
-
-#include "scene2D/adaptor/Negato.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
-
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Negato  , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Negato, ::fwData::Image );
 
 
 namespace scene2D
@@ -34,24 +39,35 @@ namespace scene2D
 namespace adaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
+
 typedef ::fwComEd::helper::MedicalImageAdaptor MedicalImageAdaptor;
 
 //-----------------------------------------------------------------------------
 
-Negato::Negato() throw()
-: m_pointIsCaptured (false),
-    m_orientation(MedicalImageAdaptor::Z_AXIS), m_changeSliceTypeAllowed(true)
+Negato::Negato() throw() :
+    m_qimg(nullptr),
+    m_pixmapItem(nullptr),
+    m_layer(nullptr),
+    m_orientation(MedicalImageAdaptor::Z_AXIS),
+    m_pointIsCaptured (false),
+    m_changeSliceTypeAllowed(true)
 {
-    this->installTFSelectionEventHandler(this);
-//    this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-//    this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
-//    this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    this->installTFSlots(this);
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &Negato::updateSliceIndex, this);
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &Negato::updateSliceType, this);
+    newSlot(s_UPDATE_BUFFER_SLOT, &Negato::updateBuffer, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &Negato::updateVisibility, this);
 }
 
 //-----------------------------------------------------------------------------
 
 Negato::~Negato() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -106,66 +122,77 @@ void Negato::updateBufferFromImage( QImage * qimg )
     // Window min/max
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
     const double wlMin = tf->getWLMinMax().first;
-    const double wlMax = tf->getWLMinMax().second;
 
     // Window max
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     ::fwComEd::helper::Image imgHelper(image);
     const ::fwData::Image::SizeType size = image->getSize();
-    signed short * imgBuff = (signed short *) imgHelper.getBuffer();
-    const double window = tf->getWindow();
-    const size_t imageZOffset = size[0] * size[1];
+    const short * imgBuff                = static_cast<const short *>(imgHelper.getBuffer());
+    const size_t imageZOffset            = size[0] * size[1];
 
     const double tfMin = tf->getMinMaxTFValues().first;
     const double tfMax = tf->getMinMaxTFValues().second;
+    const double tfWin = (1. / tf->getWindow()) * ((tfMax - tfMin) + tfMin);
 
+    ::std::uint8_t* pDest = qimg->bits();
 
     // Fill image according to current slice type:
     if( m_orientation == MedicalImageAdaptor::X_AXIS ) // sagittal
     {
+        const size_t sagitalIndex = static_cast<size_t>(m_sagittalIndex->value());
+
         for( size_t z = 0; z < size[2]; ++z)
         {
-            const size_t zOffset = z * imageZOffset;
-            const int zPos = static_cast<int>(size[2] - 1 - z);
-            const size_t zxOffset = zOffset + m_sagittalIndex->value();
+            const size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
+            const size_t zxOffset = zOffset + sagitalIndex;
 
-            for( size_t y = 0; y < size[1]; y++ )
+            for( size_t y = 0; y < size[1]; ++y )
             {
-                QRgb val = this->getQImageVal(zxOffset + y * size[0], imgBuff, wlMin, wlMax, window, tfMin, tfMax, tf);
-                qimg->setPixel(y, zPos, val);
+                const QRgb val = this->getQImageVal(zxOffset + y * size[0], imgBuff, wlMin, tfWin, tf);
+
+                *pDest++ = static_cast<std::uint8_t>(qRed(val));
+                *pDest++ = static_cast<std::uint8_t>(qGreen(val));
+                *pDest++ = static_cast<std::uint8_t>(qBlue(val));
             }
         }
     }
     else if( m_orientation == MedicalImageAdaptor::Y_AXIS ) // frontal
     {
-        const double yOffset = m_frontalIndex->value() * size[0];
+        const size_t frontalIndex = static_cast<size_t>(m_frontalIndex->value());
+        const size_t yOffset      = frontalIndex * size[0];
 
-        for( ::boost::int32_t z = 0; z < size[2]; ++z)
+        for( size_t z = 0; z < size[2]; ++z)
         {
-            const double zOffset = z * imageZOffset;
-            const double zPos = size[2] - 1 - z;
-            const double zyOffset = zOffset + yOffset;
+            const size_t zOffset  = (size[2] - 1 - z) * imageZOffset;
+            const size_t zyOffset = zOffset + yOffset;
 
-            for( ::boost::int32_t x = 0; x < size[0]; x++ )
+            for( size_t x = 0; x < size[0]; ++x )
             {
-                QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, wlMax, window, tfMin, tfMax, tf);
-                qimg->setPixel(x, zPos, val);
+                const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
+
+                *pDest++ = static_cast<std::uint8_t>(qRed(val));
+                *pDest++ = static_cast<std::uint8_t>(qGreen(val));
+                *pDest++ = static_cast<std::uint8_t>(qBlue(val));
             }
         }
     }
     else if( m_orientation == MedicalImageAdaptor::Z_AXIS ) // axial
     {
-        const double zOffset = m_axialIndex->value() * imageZOffset;
+        const size_t axialIndex = static_cast<size_t>(m_axialIndex->value());
+        const size_t zOffset    = axialIndex * imageZOffset;
 
-        for( ::boost::int32_t y = 0; y < size[1]; y++ )
+        for( size_t y = 0; y < size[1]; ++y )
         {
-            const unsigned int yOffset = static_cast<unsigned int>(y * size[0]);
-            const unsigned int zyOffset = zOffset + yOffset;
+            const size_t yOffset  = y * size[0];
+            const size_t zyOffset = zOffset + yOffset;
 
-            for( ::boost::int32_t x = 0; x < size[0]; x++ )
+            for( size_t x = 0; x < size[0]; ++x )
             {
-                QRgb val = this->getQImageVal(x + zyOffset, imgBuff, wlMin, wlMax, window, tfMin, tfMax, tf);
-                qimg->setPixel(x, y, val);
+                const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
+
+                *pDest++ = static_cast<std::uint8_t>(qRed(val));
+                *pDest++ = static_cast<std::uint8_t>(qGreen(val));
+                *pDest++ = static_cast<std::uint8_t>(qBlue(val));
             }
         }
     }
@@ -176,19 +203,17 @@ void Negato::updateBufferFromImage( QImage * qimg )
 
 //-----------------------------------------------------------------------------
 
-QRgb Negato::getQImageVal(
-    const size_t index, signed short* buffer, const double wlMin, const double wlMax, const double window,
-    const double tfMin, const double tfMax, ::fwData::TransferFunction::sptr tf)
+QRgb Negato::getQImageVal(const size_t index, const short* buffer, double wlMin, double tfWin,
+                          const fwData::TransferFunction::sptr& tf)
 {
-    signed short val16 = buffer[index];
+    const short val16 = buffer[index];
 
-    double value = (val16 - wlMin) / window;
-    value = value * (tfMax - tfMin) + tfMin;
+    double value = (val16 - wlMin) * tfWin;
 
-    ::fwData::TransferFunction::TFColor color = tf->getInterpolatedColor(value);
+    const ::fwData::TransferFunction::TFColor color = tf->getInterpolatedColor(value);
 
     // use QImage::Format_RGBA8888 in QImage if you need alpha value
-    return qRgb(color.r*255, color.g*255, color.b*255);
+    return qRgb(static_cast<int>(color.r*255), static_cast<int>(color.g*255), static_cast<int>(color.b*255));
 }
 
 //---------------------------------------------------------------------------
@@ -199,9 +224,9 @@ QImage * Negato::createQImage()
 
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
 
-    const ::fwData::Image::SizeType size = img->getSize();
+    const ::fwData::Image::SizeType size       = img->getSize();
     const ::fwData::Image::SpacingType spacing = img->getSpacing();
-    const ::fwData::Image::OriginType origin = img->getOrigin();
+    const ::fwData::Image::OriginType origin   = img->getOrigin();
 
     double qImageSpacing[2];
     double qImageOrigin[2];
@@ -216,7 +241,7 @@ QImage * Negato::createQImage()
             qImageSpacing[0] = spacing[1];
             qImageSpacing[1] = spacing[2];
             qImageOrigin[0]  = origin[1] - 0.5f*spacing[1];
-            qImageOrigin[1]  =  - ( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
+            qImageOrigin[1]  = -( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
             break;
 
         case MedicalImageAdaptor::Y_AXIS:// frontal
@@ -225,7 +250,7 @@ QImage * Negato::createQImage()
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[2];
             qImageOrigin[0]  = origin[0] - 0.5f*spacing[0];
-            qImageOrigin[1]  =  - ( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
+            qImageOrigin[1]  = -( origin[2] + size[2] * spacing[2]  - 0.5f*spacing[2]);
             break;
 
         case MedicalImageAdaptor::Z_AXIS:// axial
@@ -266,7 +291,7 @@ void Negato::doStart() throw ( ::fwTools::Failed )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos( image );
-    this->updateTransferFunction( image, this->getSptr() );
+    this->updateTransferFunction( image );
 
     m_pixmapItem = new QGraphicsPixmapItem();
     m_pixmapItem->setShapeMode( QGraphicsPixmapItem::BoundingRectShape );
@@ -283,7 +308,7 @@ void Negato::doStart() throw ( ::fwTools::Failed )
 
     this->getScene2DRender()->updateSceneSize( 1.f );
 
-    this->installTFObserver( this->getSptr() );
+    this->installTFConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -298,43 +323,30 @@ void Negato::doUpdate() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Negato::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Failed )
+void Negato::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    SLM_TRACE_FUNC();
-    if( msg->hasEvent( ::fwComEd::ImageMsg::VISIBILITY ))
-    {
-        ::fwData::Object::csptr dataInfo = msg->getDataInfo(::fwComEd::ImageMsg::VISIBILITY);
-        SLM_ASSERT("dataInfo is missing", dataInfo);
-            
-        ::fwData::Boolean::csptr boolean = ::fwData::Boolean::dynamicConstCast(dataInfo);
-            
-        SLM_ASSERT("dataInfo is missing", boolean);
-           
-        if( boolean->getValue() ) // display the scene
-        {
-            m_layer->setVisible(true);
-        }
-        else // remove the layer from the scene
-        {
-            m_layer->setVisible(false);
-        }
-    }
-    if( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE) && m_changeSliceTypeAllowed )
-    {
-        ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-        ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-        ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
+    m_axialIndex->value()    = axial;
+    m_frontalIndex->value()  = frontal;
+    m_sagittalIndex->value() = sagittal;
 
-        ::fwData::Integer::sptr fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] );
-        ::fwData::Integer::sptr toSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] );
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos( image );
+    this->updateBufferFromImage( m_qimg );
+}
 
-        if( toSliceType->value() == static_cast< int > ( m_orientation ) )
+//-----------------------------------------------------------------------------
+
+void Negato::updateSliceType(int from, int to)
+{
+    if (m_changeSliceTypeAllowed)
+    {
+        if( to == static_cast< int > ( m_orientation ) )
         {
-            m_orientation = static_cast< MedicalImageAdaptor::Orientation > ( fromSliceType->value() );
+            m_orientation = static_cast< MedicalImageAdaptor::Orientation > ( from );
         }
-        else if(fromSliceType->value() == static_cast<int>(m_orientation))
+        else if(from == static_cast<int>(m_orientation))
         {
-            m_orientation = static_cast< MedicalImageAdaptor::Orientation >( toSliceType->value() );
+            m_orientation = static_cast< MedicalImageAdaptor::Orientation >( to );
         }
 
         // manages the modification of axes
@@ -349,28 +361,41 @@ void Negato::doReceive( fwServices::ObjectMsg::csptr msg) throw ( ::fwTools::Fai
 
         this->doUpdate();
     }
+}
 
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::MODIFIED ) )
+//-----------------------------------------------------------------------------
+
+void Negato::updateVisibility(bool isVisible)
+{
+    if( isVisible ) // display the scene
     {
-        this->updateBufferFromImage(m_qimg);
+        m_layer->setVisible(true);
     }
-
-    if ( this->upadteTFObserver(msg, this->getSptr() )
-            || msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING )
-            || msg->hasEvent( ::fwComEd::TransferFunctionMsg::MODIFIED_POINTS ) )
+    else // remove the layer from the scene
     {
-        this->updateBufferFromImage( m_qimg );
+        m_layer->setVisible(false);
     }
+}
 
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
-    {
-        ::fwComEd::ImageMsg::csptr imgMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
-        imgMsg->getSliceIndex(m_axialIndex, m_frontalIndex, m_sagittalIndex);
+//-----------------------------------------------------------------------------
 
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-        this->updateImageInfos( image );
-        this->updateBufferFromImage( m_qimg );
-    }
+void Negato::updateBuffer()
+{
+    this->updateBufferFromImage(m_qimg);
+}
+
+//------------------------------------------------------------------------------
+
+void Negato::updatingTFPoints()
+{
+    this->updateBufferFromImage( m_qimg );
+}
+
+//------------------------------------------------------------------------------
+
+void Negato::updatingTFWindowing(double window, double level)
+{
+    this->updateBufferFromImage( m_qimg );
 }
 
 //-----------------------------------------------------------------------------
@@ -385,7 +410,7 @@ void Negato::doSwap() throw ( ::fwTools::Failed )
 
 void Negato::doStop() throw ( ::fwTools::Failed )
 {
-    this->removeTFObserver();
+    this->removeTFConnections();
 
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
@@ -407,37 +432,37 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
         if ( _event->getKey() == Qt::Key_R )
         {
             // get image origin
-            QRectF recImage =  m_pixmapItem->sceneBoundingRect();
-       
+            QRectF recImage = m_pixmapItem->sceneBoundingRect();
+
             ::scene2D::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
 
             float sceneWidth  = static_cast<float>(this->getScene2DRender()->getView()->width());
             float sceneHeight = static_cast<float>(this->getScene2DRender()->getView()->height());
 
             float ratioYonXimage = recImage.height() / recImage.width();
-            float sceneRatio      = sceneHeight / sceneWidth;
+            float sceneRatio     = sceneHeight / sceneWidth;
 
             if ( sceneRatio > ratioYonXimage ) // used scene ratio
             {
-                float widthViewPortNew = recImage.width();
+                float widthViewPortNew  = recImage.width();
                 float heightViewPortNew = widthViewPortNew * sceneRatio;
 
                 // computes new y origin
-                float newOrigineY =  recImage.y() - ( heightViewPortNew - recImage.height() ) / 2.f;
-                
+                float newOrigineY = recImage.y() - ( heightViewPortNew - recImage.height() ) / 2.f;
+
                 sceneViewport->setX(  recImage.x() );
                 sceneViewport->setY( newOrigineY );
                 sceneViewport->setWidth(  widthViewPortNew );
                 sceneViewport->setHeight( heightViewPortNew );
             }
             else
-            {               
+            {
                 float heightViewPortNew = recImage.height();
-                float widthViewPortNew = heightViewPortNew / sceneRatio;
+                float widthViewPortNew  = heightViewPortNew / sceneRatio;
 
                 // computes new x origin
-                float newOrigineX =  recImage.x() - (widthViewPortNew - recImage.width() )/ 2.f;
-                
+                float newOrigineX = recImage.x() - (widthViewPortNew - recImage.width() )/ 2.f;
+
                 sceneViewport->setX( newOrigineX );
                 sceneViewport->setY( recImage.y() );
                 sceneViewport->setWidth(  widthViewPortNew );
@@ -467,11 +492,11 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
     coord.setY( coord.getY() / m_layer->scale());
 
     if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress
-            && _event->getButton() == ::scene2D::data::Event::RightButton
-            && _event->getModifier() == ::scene2D::data::Event::NoModifier )
+         && _event->getButton() == ::scene2D::data::Event::RightButton
+         && _event->getModifier() == ::scene2D::data::Event::NoModifier )
     {
         m_pointIsCaptured = true;
-        m_oldCoord = _event->getCoord();
+        m_oldCoord        = _event->getCoord();
         _event->setAccepted(true);
     }
     else if ( m_pointIsCaptured )
@@ -484,7 +509,7 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
             _event->setAccepted(true);
         }
         else if( _event->getButton() == ::scene2D::data::Event::RightButton
-                && _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
+                 && _event->getType() == ::scene2D::data::Event::MouseButtonRelease )
         {
             m_pointIsCaptured = false;
             _event->setAccepted(true);
@@ -496,30 +521,47 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
 
 void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord )
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     double min = tf->getWLMinMax().first;
     double max = tf->getWLMinMax().second;
 
     double window = newCoord.getX() - m_oldCoord.getX();
-    double level = newCoord.getY() - m_oldCoord.getY();
+    double level  = newCoord.getY() - m_oldCoord.getY();
 
     double imgWindow = max - min;
-    double imgLevel = min + imgWindow/2.0;
+    double imgLevel  = min + imgWindow/2.0;
 
 
-    double newImgLevel = imgLevel + level;
+    double newImgLevel  = imgLevel + level;
     double newImgWindow = imgWindow + imgWindow * window/100.0;
-
-    double newMin = newImgLevel - newImgWindow/2.0;
-    double newMax = newImgLevel + newImgWindow/2.0;
 
     this->doUpdate();
 
-    // Fire the message
-    this->setWindowLevel(newMin, newMax);
-    this->notifyTFWindowing(this->getSptr());
+    // Send signal
+    tf->setWindow(newImgWindow);
+    tf->setLevel(newImgLevel);
+    auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
+        ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+        sig->asyncEmit( newImgWindow, newImgLevel);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Negato::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

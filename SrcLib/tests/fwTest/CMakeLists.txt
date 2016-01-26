@@ -6,11 +6,18 @@ fwUseForwardInclude(
     fwDataTools
     fwMath
     fwTools
+    fwMedData
 )
 
-
-find_package (Boost COMPONENTS thread filesystem REQUIRED)
 find_package(CppUnit REQUIRED)
+find_package(Boost COMPONENTS chrono REQUIRED)
 
-fwForwardInclude(${Boost_INCLUDE_DIRS} ${CPPUNIT_INCLUDE_DIR})
-fwLink(${Boost_LIBRARIES} ${CPPUNIT_LIBRARY})
+fwForwardInclude(
+    ${Boost_INCLUDE_DIRS}
+    ${CPPUNIT_INCLUDE_DIR}
+)
+
+fwLink(
+    ${CPPUNIT_LIBRARY}
+    ${Boost_CHRONO_LIBRARY}
+)

@@ -1,50 +1,53 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "uiMeasurement/action/AddDistance.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwComEd/Dictionary.hpp>
+
 #include <fwCore/base.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Boolean.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Point.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/Vector.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <exception>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/ObjectMsg.hpp>
-
-#include <fwData/Vector.hpp>
-#include <fwData/Boolean.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Boolean.hpp>
-#include <fwData/Image.hpp>
-
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
-
-
-#include "uiMeasurement/action/AddDistance.hpp"
 
 namespace uiMeasurement
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::AddDistance , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::AddDistance, ::fwData::Image );
 
 
 //------------------------------------------------------------------------------
 
 
-AddDistance::AddDistance( ) throw():
+AddDistance::AddDistance( ) throw() :
     m_actionCheckId(-1)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 AddDistance::~AddDistance() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -59,7 +62,10 @@ void AddDistance::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE("AddDistance::updating");
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (!image) {return; }
+    if (!image)
+    {
+        return;
+    }
 
     ::fwData::Point::sptr pt1 = ::fwData::Point::New();
     std::copy( image->getOrigin().begin(),  image->getOrigin().begin() +3, pt1->getRefCoord().begin() );
@@ -68,13 +74,13 @@ void AddDistance::updating() throw(::fwTools::Failed)
     std::copy( image->getSize().begin(),  image->getSize().begin() +3, pt2->getRefCoord().begin() );
 
     std::transform( pt2->getRefCoord().begin(),pt2->getRefCoord().end(),
-            image->getSpacing().begin(),
-            pt2->getRefCoord().begin(),
-            std::multiplies<double>() );
+                    image->getSpacing().begin(),
+                    pt2->getRefCoord().begin(),
+                    std::multiplies<double>() );
     std::transform( pt2->getRefCoord().begin(),pt2->getRefCoord().end(),
-            image->getOrigin().begin(),
-            pt2->getRefCoord().begin(),
-            std::plus<double>() );
+                    image->getOrigin().begin(),
+                    pt2->getRefCoord().begin(),
+                    std::plus<double>() );
 
     ::fwData::PointList::sptr pl = ::fwData::PointList::New();
 
@@ -89,10 +95,8 @@ void AddDistance::updating() throw(::fwTools::Failed)
     // force distance to be shown
     image->setField("ShowDistances",  ::fwData::Boolean::New(true));
 
-
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::DISTANCE );
-    ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+    auto sig = image->signal< ::fwData::Image::DistanceAddedSignalType >(::fwData::Image::s_DISTANCE_ADDED_SIG);
+    sig->asyncEmit(pl);
 }
 
 //------------------------------------------------------------------------------
@@ -108,11 +112,6 @@ void AddDistance::starting() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
-
-//------------------------------------------------------------------------------
-
-void AddDistance::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{}
 
 //------------------------------------------------------------------------------
 

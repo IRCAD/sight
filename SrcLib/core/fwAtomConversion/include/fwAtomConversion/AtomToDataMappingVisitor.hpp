@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,11 +14,11 @@
 
 namespace fwAtoms
 {
-    class Object;
+class Object;
 }
 namespace fwData
 {
-    class Object;
+class Object;
 }
 
 namespace fwAtomConversion
@@ -37,11 +37,11 @@ public:
 
     /// Constructor. Initializes visitor.
     FWATOMCONVERSION_API AtomToDataMappingVisitor(
-            SPTR(::fwData::Object) dataObj,
-            SPTR(::fwAtoms::Object) atomObj,
-            AtomVisitor::DataCacheType & cache,
-            const AtomVisitor::IReadPolicy &uuidPolicy
-            );
+        SPTR(::fwData::Object)dataObj,
+        SPTR(::fwAtoms::Object)atomObj,
+        AtomVisitor::DataCacheType & cache,
+        const AtomVisitor::IReadPolicy &uuidPolicy
+        );
 
     /// Destructor. Does nothing.
     FWATOMCONVERSION_API virtual ~AtomToDataMappingVisitor();

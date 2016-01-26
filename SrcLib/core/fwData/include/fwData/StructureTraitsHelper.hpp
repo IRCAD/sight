@@ -7,11 +7,10 @@
 #ifndef __FWDATA_STRUCTURETRAITSHELPER_HPP__
 #define __FWDATA_STRUCTURETRAITSHELPER_HPP__
 
-#include <boost/bimap/bimap.hpp>
-
-#include <fwData/StructureTraits.hpp>
-
 #include "fwData/config.hpp"
+#include "fwData/StructureTraits.hpp"
+
+#include <boost/bimap/bimap.hpp>
 
 namespace fwData
 {
@@ -22,7 +21,7 @@ namespace fwData
 class FWDATA_CLASS_API StructureTraitsHelper
 {
 
-public :
+public:
 
     typedef ::boost::bimaps::bimap< ::fwData::StructureTraits::StructureClass, std::string > ClassTranslatorType;
     /// Map to translate structure class (string vs enum)

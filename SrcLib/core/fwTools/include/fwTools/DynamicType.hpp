@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ namespace fwTools
 /**
  * @brief   Class defining an elementary C++ type aka unsigned char, signed char, .... signed long, float, double
  * @class   DynamicType
- * 
+ *
  * @date    2007-2009.
  *
  **/
@@ -110,19 +110,19 @@ public:
     FWTOOLS_API bool isSigned();
 
     typedef boost::mpl::vector<
-        signed char,
-        unsigned char,
-        signed short,
-        unsigned short,
-        signed int,
-        unsigned int,
-        unsigned long,
-        signed long,
-        float,
-        double
+            signed char,
+            unsigned char,
+            signed short,
+            unsigned short,
+            signed int,
+            unsigned int,
+            unsigned long,
+            signed long,
+            float,
+            double
             >::type SupportedTypes;
 
-protected :
+protected:
 
     std::string m_value; // aka key
     unsigned char m_sizeof;
@@ -147,7 +147,7 @@ DynamicType makeDynamicType();
  */
 // #include "KEYTYPEMapping.hpp" is mandatory
 template<class KEYTYPE>
-DynamicType makeDynamicType(const  KEYTYPE &keyType);
+DynamicType makeDynamicType(const KEYTYPE &keyType);
 
 
 template<>

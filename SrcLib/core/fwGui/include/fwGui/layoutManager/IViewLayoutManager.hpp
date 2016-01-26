@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,12 +8,12 @@
  * @file fwGui/layoutManager/IViewLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a layout geometry.
  *
- * 
+ *
  * @date 2009-2010
  */
 
-#ifndef _FWGUI_LAYOUTMANAGER_ILAYOUTMANAGER_HPP_
-#define _FWGUI_LAYOUTMANAGER_ILAYOUTMANAGER_HPP_
+#ifndef __FWGUI_LAYOUTMANAGER_IVIEWLAYOUTMANAGER_HPP__
+#define __FWGUI_LAYOUTMANAGER_IVIEWLAYOUTMANAGER_HPP__
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -29,7 +29,7 @@ namespace layoutManager
 /**
  * @brief   Defines the generic layout manager for IHM.
  * @class   IViewLayoutManager
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -85,6 +85,6 @@ protected:
 } // namespace layoutManager
 } // namespace fwGui
 
-#endif /*_FWGUI_LAYOUTMANAGER_ILAYOUTMANAGER_HPP_*/
+#endif /*__FWGUI_LAYOUTMANAGER_IVIEWLAYOUTMANAGER_HPP__*/
 
 

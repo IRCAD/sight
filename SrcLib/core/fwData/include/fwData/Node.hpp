@@ -7,14 +7,12 @@
 #ifndef __FWDATA_NODE_HPP__
 #define __FWDATA_NODE_HPP__
 
-#include <vector>
-
-#include <boost/shared_ptr.hpp>
-
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/Port.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(Node), FWDATA_API);
 
@@ -29,7 +27,7 @@ class FWDATA_CLASS_API Node : public ::fwData::Object
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwData::factory::New< Node >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Node)(::fwData::Object), (()), ::fwData::factory::New< Node >);
     fwCampMakeFriendDataMacro((fwData)(Node));
 
     /// Port container
@@ -48,10 +46,10 @@ public:
     FWDATA_API virtual ~Node();
 
     /// Add an input port
-    FWDATA_API void addInputPort(::fwData::Port::sptr port);
+    FWDATA_API void addInputPort(const ::fwData::Port::sptr& port);
 
     /// Add an output port
-    FWDATA_API void addOutputPort(::fwData::Port::sptr port);
+    FWDATA_API void addOutputPort(const ::fwData::Port::sptr& port);
 
     /// Get the container of input ports
     FWDATA_API PortContainer & getInputPorts();
@@ -60,7 +58,7 @@ public:
     FWDATA_API PortContainer & getOutputPorts();
 
     /// Set object to the node
-    FWDATA_API void setObject( ::fwData::Object::sptr object );
+    FWDATA_API void setObject(const ::fwData::Object::sptr& object );
 
     /// Get node object
     FWDATA_API ::fwData::Object::sptr getObject() const;
@@ -73,7 +71,7 @@ public:
      *
      * @return input or output port with given identifier
      */
-    FWDATA_API Port::sptr findPort(const std::string &_identifier, /*const std::string &type,*/ bool _modeInput) const;
+    FWDATA_API Port::sptr findPort(const std::string &_identifier, bool _modeInput) const;
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& _source );
@@ -84,7 +82,7 @@ public:
     /// Updated signal key
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_SIG;
 
-protected :
+protected:
 
     /// node object
     ::fwData::Object::sptr m_object;

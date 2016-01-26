@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_OPERATIONS_HPP_
-#define _FWRUNTIME_OPERATIONS_HPP_
+#ifndef __FWRUNTIME_OPERATIONS_HPP__
+#define __FWRUNTIME_OPERATIONS_HPP__
 
 #include <iterator>
 #include <memory>
 #include <string>
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -26,12 +25,12 @@
 
 namespace fwRuntime
 {
-    struct Bundle;
+struct Bundle;
 
-    namespace profile
-    {
-    class Profile;
-    }
+namespace profile
+{
+class Profile;
+}
 }
 
 
@@ -47,7 +46,7 @@ namespace fwRuntime
  *
  * @return      a pointer to the found extension point or null if none
  */
-FWRUNTIME_API ::boost::shared_ptr<ExtensionPoint> findExtensionPoint( const std::string & identifier );
+FWRUNTIME_API std::shared_ptr<ExtensionPoint> findExtensionPoint( const std::string & identifier );
 
 
 
@@ -64,12 +63,12 @@ FWRUNTIME_API ::boost::shared_ptr<ExtensionPoint> findExtensionPoint( const std:
  */
 template<typename T>
 T* createExecutableInstance(
-        const ::boost::shared_ptr<Extension>    extension,
-        const std::string           & element = "executable",
-        const std::string           & attribute = "class" ) throw(RuntimeException)
+    const std::shared_ptr<Extension>    extension,
+    const std::string           & element = "executable",
+    const std::string           & attribute = "class" ) throw(RuntimeException)
 {
     // Retrieves the right configuration element.
-     ::boost::shared_ptr<ConfigurationElement> elt( extension->findConfigurationElement(element) );
+    std::shared_ptr<ConfigurationElement> elt( extension->findConfigurationElement(element) );
     if( elt == 0 )
     {
         throw RuntimeException(element + ": configuration element not found in extension.");
@@ -91,8 +90,8 @@ T* createExecutableInstance(
  */
 template<typename T>
 T * createExecutableInstance(
-        const ::boost::shared_ptr<ConfigurationElement> element,
-        const std::string                       & attribute = "class" ) throw(RuntimeException)
+    const std::shared_ptr<ConfigurationElement> element,
+    const std::string                       & attribute = "class" ) throw(RuntimeException)
 {
 
     // Retrieves the executable type.
@@ -129,11 +128,11 @@ T * createExecutableInstance(
  */
 template<typename OutputIterator>
 void getAllExtensionsForPoint(
-        const std::string   & identifier,
-        OutputIterator        output
+    const std::string   & identifier,
+    OutputIterator output
     ) throw(RuntimeException)
 {
-     ::boost::shared_ptr< ExtensionPoint >  point = findExtensionPoint(identifier);
+    std::shared_ptr< ExtensionPoint >  point = findExtensionPoint(identifier);
 
     if( !point )
     {
@@ -154,13 +153,14 @@ void getAllExtensionsForPoint(
  */
 template<typename OutputIterator>
 void getAllConfigurationElementsForPoint(
-        const std::string   & identifier,
-        OutputIterator        output
+    const std::string   & identifier,
+    OutputIterator output
     ) throw(RuntimeException)
 {
-     ::boost::shared_ptr< ExtensionPoint >  point = findExtensionPoint(identifier);
+    std::shared_ptr< ExtensionPoint >  point = findExtensionPoint(identifier);
 
-    OSLM_TRACE("getAllConfigurationElementsForPoint(" << identifier << "Bundle" << point->getBundle()->getIdentifier() );
+    OSLM_TRACE("getAllConfigurationElementsForPoint(" << identifier << "Bundle" <<
+               point->getBundle()->getIdentifier() );
 
     if( !point )
     {
@@ -185,7 +185,7 @@ void getAllConfigurationElementsForPoint(
  *          specified identifier.
  *
  * This method use the container type specified by the template parameter. The
- * type of the elements of the container must be \::boost::shared_ptr< ConfigurationElement >
+ * type of the elements of the container must be \std::shared_ptr< ConfigurationElement >
  * or the compilation will fail.
  *
  * @return  a container containing shared pointers to all found configuration
@@ -198,8 +198,8 @@ const Container getAllConfigurationElementsForPoint(const std::string & identifi
     typedef std::back_insert_iterator< Container > Inserter;
 
     // Collects all contributed configuratoin elements.
-    Container   elements;
-    Inserter    inserter(elements);
+    Container elements;
+    Inserter inserter(elements);
     getAllConfigurationElementsForPoint(identifier, inserter);
 
     // The job is done!
@@ -215,31 +215,33 @@ const Container getAllConfigurationElementsForPoint(const std::string & identifi
  *                      the executable identifier (default is "class")
  *
  * This method use the container type specified by the template parameter. The
- * type of the elements of the container must be \::boost::shared_ptr< T >
+ * type of the elements of the container must be \std::shared_ptr< T >
  * or the compilation will fail (where T is the type of the executable you want to create).
  *
  * @return  a container containing shared pointers to all created executable instances
  */
 template< typename Container, typename T >
-const Container getAllExecutableForPoint( const std::string & identifier, const std::string & attribute = "class" ) throw(RuntimeException)
+const Container getAllExecutableForPoint( const std::string & identifier,
+                                          const std::string & attribute = "class" ) throw(RuntimeException)
 {
     // Defines the element container
-    typedef std::vector< ::boost::shared_ptr< ConfigurationElement > > ConfigurationElementContainer;
+    typedef std::vector< std::shared_ptr< ConfigurationElement > > ConfigurationElementContainer;
 
     // Retrieves all configuration elements.
-    ConfigurationElementContainer   elements( getAllConfigurationElementsForPoint< ConfigurationElementContainer >(identifier) );
+    ConfigurationElementContainer elements( getAllConfigurationElementsForPoint< ConfigurationElementContainer >(
+                                                identifier) );
 
     // Defines an insert iterator type for the executable container.
     typedef std::back_insert_iterator< Container > Inserter;
 
     // Walks through collected configuration elements and create desired executable instances
-    Container                               result;
+    Container result;
     ConfigurationElementContainer::iterator iElement;
-    Inserter                                iInserter( result );
+    Inserter iInserter( result );
     for( iElement = elements.begin(); iElement != elements.end(); ++iElement, ++iInserter )
     {
-         ::boost::shared_ptr< ConfigurationElement >    element( *iElement );
-         ::boost::shared_ptr< T >                       executable( createExecutableInstance< T >(element, attribute) );
+        std::shared_ptr< ConfigurationElement >    element( *iElement );
+        std::shared_ptr< T >                       executable( createExecutableInstance< T >(element, attribute) );
 
         iInserter = executable;
     }
@@ -256,7 +258,8 @@ const Container getAllExecutableForPoint( const std::string & identifier, const 
  *
  * @return  a shared pointer to the found configuration element or null if none
  */
-FWRUNTIME_API ::boost::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string & identifier, const std::string & pointIdentifier );
+FWRUNTIME_API std::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string & identifier,
+                                                                                const std::string & pointIdentifier );
 
 
 
@@ -267,7 +270,7 @@ FWRUNTIME_API ::boost::shared_ptr< ConfigurationElement > findConfigurationEleme
  *
  * @return  a shared pointer to the found extension or null if none
  */
-FWRUNTIME_API ::boost::shared_ptr<Extension> findExtension( const std::string & identifier );
+FWRUNTIME_API std::shared_ptr<Extension> findExtension( const std::string & identifier );
 
 
 /**
@@ -278,7 +281,8 @@ FWRUNTIME_API ::boost::shared_ptr<Extension> findExtension( const std::string & 
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier, const boost::filesystem::path &path) throw();
+FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier,
+                                                                  const boost::filesystem::path &path) throw();
 
 
 /**
@@ -289,7 +293,8 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const std::str
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( ::boost::shared_ptr<Bundle> bundle, const boost::filesystem::path &path) throw();
+FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
+                                                                   const boost::filesystem::path &path) throw();
 
 
 /**
@@ -300,7 +305,8 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( ::boost::shar
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( ::boost::shared_ptr<ConfigurationElement> element, const boost::filesystem::path &path) throw();
+FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( std::shared_ptr<ConfigurationElement> element,
+                                                                   const boost::filesystem::path &path) throw();
 
 
 /**
@@ -311,7 +317,8 @@ FWRUNTIME_API const boost::filesystem::path getBundleResourcePath( ::boost::shar
  *
  * @return  a system valid path
  */
-FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const IExecutable *executable, const boost::filesystem::path &path) throw();
+FWRUNTIME_API const boost::filesystem::path getBundleResourcePath(const IExecutable *executable,
+                                                                  const boost::filesystem::path &path) throw();
 
 
 /**
@@ -329,7 +336,7 @@ FWRUNTIME_API void addBundles( const boost::filesystem::path & directory ) throw
  *
  * @return  a shared pointer to the started profile
  */
-FWRUNTIME_API ::boost::shared_ptr< ::fwRuntime::profile::Profile > startProfile( const boost::filesystem::path & path );
+FWRUNTIME_API std::shared_ptr< ::fwRuntime::profile::Profile > startProfile( const boost::filesystem::path & path );
 
 
 
@@ -341,7 +348,7 @@ FWRUNTIME_API ::boost::shared_ptr< ::fwRuntime::profile::Profile > startProfile(
  *
  * @return  a shared pointer to the found bundle, or empty when none
  */
-FWRUNTIME_API ::boost::shared_ptr<Bundle> findBundle( const std::string & identifier, const Version & version = Version() );
+FWRUNTIME_API std::shared_ptr<Bundle> findBundle( const std::string & identifier, const Version & version = Version() );
 
 
 
@@ -356,4 +363,4 @@ FWRUNTIME_API void startBundle(const std::string &identifier) throw(RuntimeExcep
 } // namespace fwRuntime
 
 
-#endif // #define _FWRUNTIME_OPERATIONS_HPP_
+#endif // __FWRUNTIME_OPERATIONS_HPP__

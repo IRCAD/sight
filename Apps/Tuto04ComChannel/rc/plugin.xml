@@ -1,7 +1,0 @@
-﻿<plugin id="Tuto04ComChannel">
-    
-    <requirement id="servicesReg" />
-    <xi:include href="configurations/config-connect.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/config-proxy.xml"   xmlns:xi="http://www.w3.org/2003/XInclude" />
-    
-</plugin>

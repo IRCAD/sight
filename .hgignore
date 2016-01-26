@@ -7,3 +7,8 @@ syntax: glob
 *.project
 *.pyc
 *.pyo
+# qt creator
+*.user
+# reject and backup file
+*.rej
+*.orig

@@ -1,17 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-#include <boost/assign.hpp>
-#include <boost/foreach.hpp>
 
 #include "fwMemory/exception/BadCast.hpp"
 #include "fwMemory/ByteSize.hpp"
 #include "fwMemory/policy/registry/macros.hpp"
 #include "fwMemory/policy/BarrierDump.hpp"
 
+#include <boost/assign.hpp>
 
 namespace fwMemory
 {
@@ -34,7 +32,7 @@ BarrierDump::BarrierDump() :
 //------------------------------------------------------------------------------
 
 void BarrierDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType size )
+                                     BufferInfo::SizeType size )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
@@ -49,7 +47,7 @@ void BarrierDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager
 
 
 void BarrierDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType size )
+                              BufferInfo::SizeType size )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
@@ -64,7 +62,7 @@ void BarrierDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::Const
 
 
 void BarrierDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType newSize )
+                                     BufferInfo::SizeType newSize )
 {
     m_totalAllocated -= info.size;
     m_totalAllocated += newSize;
@@ -120,7 +118,7 @@ void BarrierDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::C
 
 size_t BarrierDump::getTotalAlive() const
 {
-    SLM_ASSERT("More dumped data than allocated data." , m_totalAllocated >= m_totalDumped);
+    SLM_ASSERT("More dumped data than allocated data.", m_totalAllocated >= m_totalDumped);
     size_t totalAlive = m_totalAllocated - m_totalDumped;
     return totalAlive;
 }
@@ -144,24 +142,24 @@ size_t BarrierDump::dump(size_t nbOfBytes)
         const ::fwMemory::BufferManager::BufferInfoMapType bufferInfos = manager->getBufferInfos().get();
 
         typedef std::pair<
-            ::fwMemory::BufferManager::BufferInfoMapType::key_type,
-            ::fwMemory::BufferManager::BufferInfoMapType::mapped_type
+                ::fwMemory::BufferManager::BufferInfoMapType::key_type,
+                ::fwMemory::BufferManager::BufferInfoMapType::mapped_type
                 > BufferInfosPairType;
         typedef std::vector< BufferInfosPairType > BufferVectorType;
 
         BufferVectorType buffers;
 
-        BOOST_FOREACH(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt, bufferInfos)
+        for(const ::fwMemory::BufferManager::BufferInfoMapType::value_type &elt :  bufferInfos)
         {
             const ::fwMemory::BufferInfo &info = elt.second;
-            if( ! ( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
+            if( !( info.size == 0 || info.lockCount() > 0 || !info.loaded )  )
             {
                 buffers.push_back(elt);
             }
         }
 
 
-        BOOST_FOREACH(const BufferVectorType::value_type &pair, bufferInfos)
+        for(const BufferVectorType::value_type &pair :  bufferInfos)
         {
             if(dumped < nbOfBytes)
             {
@@ -194,10 +192,10 @@ void BarrierDump::apply()
 
 void BarrierDump::refresh()
 {
-    ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
+    ::fwMemory::BufferManager::sptr manager      = ::fwMemory::BufferManager::getDefault();
     ::fwMemory::BufferManager::BufferStats stats = manager->getBufferStats().get();
-    m_totalAllocated = stats.totalManaged;
-    m_totalDumped = stats.totalDumped;
+    m_totalAllocated                             = stats.totalManaged;
+    m_totalDumped                                = stats.totalDumped;
     this->apply();
 }
 
@@ -240,7 +238,7 @@ std::string BarrierDump::getParam(const std::string &name, bool *ok ) const
     if(name == "barrier")
     {
         value = std::string(::fwMemory::ByteSize( ::fwMemory::ByteSize::SizeType(m_barrier) ));
-        isOk = true;
+        isOk  = true;
     }
     if (ok)
     {

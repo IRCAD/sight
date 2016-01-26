@@ -1,4 +1,0 @@
-CLASSTEST=['WorkerTest','TaskHandlerTest']
-USE = ['boost','boostThread']
-LIB = ['fwCore_0-1', 'fwTest_0-1', 'fwThread_0-1']
-CONSOLE = 'yes'

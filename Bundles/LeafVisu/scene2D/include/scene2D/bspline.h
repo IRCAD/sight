@@ -1,34 +1,35 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _BSPLINE_H
-#define _BSPLINE_H
+#ifndef __SCENE2D_BSPLINE_H__
+#define __SCENE2D_BSPLINE_H__
 
 #include <iostream>
 #include <cmath>
 #include <list>
 #include <vector>
 
-#define BUFFER_SIZE 128
 #define DEFAULT_PRECISION 40
-
-using namespace std;
 
 struct point
 {
     float x;
     float y;
 
-    point(float _x = 0, float _y = 0): x(_x), y(_y) { }
+    point(float _x = 0.f, float _y = 0.f) : x(_x), y(_y)
+    {
+    }
     point(const point & _which)
     {
         this->x = _which.x;
         this->y = _which.y;
     }
-    ~point() {}
+    ~point()
+    {
+    }
 
     point & operator = (const point & _which)
     {
@@ -37,100 +38,113 @@ struct point
         return *this;
     }
 };
+
 class point_list
 {
 public:
-    point_list() {}
+    point_list()
+    {
+    }
     point_list(const point_list & _which)
     {
-        this->list = _which.list;
+        this->m_list = _which.m_list;
     }
     ~point_list()
     {
-        for (unsigned int i = 0; i<this->list.size(); i++) delete list[i];
+        for (unsigned int i = 0; i < m_list.size(); i++)
+        {
+            delete m_list[i];
+        }
     }
 
     point & get_point(int which)
     {
-        std::vector<point*>::iterator _it = this->list.begin();
-        for (int i = 0; i < which; i++) _it++;
-        return **_it;
+        point* pt = m_list.at(which);
+        return *pt;
     }
 
     void add_point(point * _which)
     {
-        this->list.push_back(_which);
+        m_list.push_back(_which);
     }
 
-    std::vector<point*> list;
+    std::vector<point*> m_list;
 };
 
 
 class cat_curve
 {
 public:
-    cat_curve(const point_list & _which)
+    cat_curve(const point_list & _which) :
+        m_plist(new point_list(_which)),
+        m_curve_point(nullptr),
+        m_nb_curve_point(0),
+        m_nb_point(m_plist->m_list.size()),
+        m_precision(DEFAULT_PRECISION),
+        m_draw_number(true)
     {
-        this->plist = new point_list(_which);
-        this->curve_point = NULL;
-        this->nb_curve_point = 0;
-        this->nb_point = this->plist->list.size();
-        this->precision = DEFAULT_PRECISION;
-        this->draw_number = true;
     }
+
     ~cat_curve()
     {
-        if (this->curve_point != NULL) delete[] this->curve_point;
+        if (m_curve_point != nullptr)
+        {
+            delete[] m_curve_point;
+        }
     }
 
     void compute()
     {
-        if (this->curve_point != NULL) delete[] this->curve_point;
-        this->curve_point = new point[this->precision+1];
-        this->nb_curve_point = this->precision+1;
+        if (m_curve_point != nullptr)
+        {
+            delete[] m_curve_point;
+        }
+        m_curve_point    = new point[m_precision+1];
+        m_nb_curve_point = m_precision+1;
 
-        float t=1.0f, p = (float)(this->nb_point-3)/(float)this->precision;
+        float t = 1.0f, p = (float)(m_nb_point-3)/(float)m_precision;
 
         int i;
         float ti;
-        for(int k=0; k<this->nb_curve_point; k++)
+        for(int k = 0; k<m_nb_curve_point; k++)
         {
-            i = (int)floor(t);
+            i  = (int)floor(t);
             ti = (float)i;
-            if (i < this->nb_point-2)
+            if (i < m_nb_point-2)
             {
-                this->curve_point[k].x =
-                    (3.0f*this->plist->list[i]->x-3.0f*this->plist->list[i+1]->x+
-                    this->plist->list[i+2]->x-this->plist->list[i-1]->x)*pow(t-ti,3)/2.0f+
-                    ( 2.0f*this->plist->list[i-1]->x - 5.0f*this->plist->list[i]->x +
-                    4.0f*this->plist->list[i+1]->x - this->plist->list[i+2]->x)*pow(t-ti,2)/2.0f+
-                    ( this->plist->list[i+1]->x - this->plist->list[i-1]->x ) *(t-ti)/2.0f + this->plist->list[i]->x;
+                m_curve_point[k].x =
+                    (3.0f*m_plist->m_list[i]->x-3.0f*m_plist->m_list[i+1]->x+
+                     m_plist->m_list[i+2]->x-m_plist->m_list[i-1]->x)*pow(t-ti,3)/2.0f+
+                    ( 2.0f*m_plist->m_list[i-1]->x - 5.0f*m_plist->m_list[i]->x +
+                      4.0f*m_plist->m_list[i+1]->x - m_plist->m_list[i+2]->x)*pow(t-ti,2)/2.0f+
+                    ( m_plist->m_list[i+1]->x - m_plist->m_list[i-1]->x ) *(t-ti)/2.0f + m_plist->m_list[i]->x;
 
-                this->curve_point[k].y =
-                    (3.0f*this->plist->list[i]->y-3.0f*this->plist->list[i+1]->y+
-                    this->plist->list[i+2]->y-this->plist->list[i-1]->y)*pow(t-ti,3)/2.0f+
-                    ( 2.0f*this->plist->list[i-1]->y - 5.0f*this->plist->list[i]->y +
-                    4.0f*this->plist->list[i+1]->y - this->plist->list[i+2]->y)*pow(t-ti,2)/2.0f+
-                    ( this->plist->list[i+1]->y - this->plist->list[i-1]->y ) *(t-ti)/2.0f + this->plist->list[i]->y;
+                m_curve_point[k].y =
+                    (3.0f*m_plist->m_list[i]->y-3.0f*m_plist->m_list[i+1]->y+
+                     m_plist->m_list[i+2]->y-m_plist->m_list[i-1]->y)*pow(t-ti,3)/2.0f+
+                    ( 2.0f*m_plist->m_list[i-1]->y - 5.0f*m_plist->m_list[i]->y +
+                      4.0f*m_plist->m_list[i+1]->y - m_plist->m_list[i+2]->y)*pow(t-ti,2)/2.0f+
+                    ( m_plist->m_list[i+1]->y - m_plist->m_list[i-1]->y ) *(t-ti)/2.0f + m_plist->m_list[i]->y;
             }
-            else if(i < this->nb_point)
+            else if(i < m_nb_point)
             {
-                this->curve_point[k].x = this->plist->list[i]->x;
-                this->curve_point[k].y = this->plist->list[i]->y;
+                m_curve_point[k].x = m_plist->m_list[i]->x;
+                m_curve_point[k].y = m_plist->m_list[i]->y;
             }
 
             t += p;
         }
     }
 
-    point * curve_point;
-    int nb_curve_point;
+    point * m_curve_point;
+    int m_nb_curve_point;
 
-    point_list * plist;
-    int nb_point;
+    point_list * m_plist;
+    int m_nb_point;
 
-    int precision;
-    bool draw_number;
+    int m_precision;
+    bool m_draw_number;
 };
-#endif
+
+#endif //__SCENE2D_BSPLINE_H__
 

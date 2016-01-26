@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IO_IREADER_HPP_
-#define _IO_IREADER_HPP_
+#ifndef __IO_IREADER_HPP__
+#define __IO_IREADER_HPP__
 
 #include <boost/filesystem/path.hpp>
 
@@ -32,8 +32,8 @@ namespace io
 class IO_CLASS_API IReader : public fwServices::IService
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (IReader)(::fwServices::IService) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (IReader)(::fwServices::IService) );
 
     /**
      * @name    Specific service methods for reading
@@ -51,7 +51,7 @@ public :
     /**
      * @brief   returns  (filename) extension
      */
-    IO_API virtual std::vector< std::string > getSupportedExtensions() ;
+    IO_API virtual std::vector< std::string > getSupportedExtensions();
 
     /**
      * @brief   returns  the title of selector dialog box
@@ -125,9 +125,9 @@ public :
 
 protected:
 
-    IO_API IReader() throw() ;
+    IO_API IReader() throw();
 
-    IO_API virtual ~IReader() throw() ;
+    IO_API virtual ~IReader() throw();
 
     /**
      * @brief This method proposes to parse xml configuration to retrieve
@@ -139,29 +139,36 @@ protected:
      *
      * Sample configuration for a file:
      * @verbatim
-     <service ... >
+       <service ... >
         <file>/home/user/myFile.jpg</file>
-     </service>
-     @endverbatim
+       </service>
+       @endverbatim
      * Sample configuration for many files:
      * @verbatim
-     <service ... >
+       <service ... >
         <file>/home/user/myFile01.jpg</file>
         <file>/home/user/myFile02.jpg</file>
         <file>/home/user/myFile03.jpg</file>
-     </service>
-     @endverbatim
+       </service>
+       @endverbatim
      * Sample configuration for a folder:
      * @verbatim
-     <service ... >
+       <service ... >
         <folder>/home/user/myFolder</folder>
-     </service>
-     @endverbatim
+       </service>
+       @endverbatim
      */
     IO_API virtual void configuring() throw (fwTools::Failed);
 
 
 private:
+
+    /// Slot to read folder
+    void readFolder(::boost::filesystem::path path);
+    /// Slot to read file
+    void readFile(::boost::filesystem::path path);
+    /// Slot to read files
+    void readFiles(::io::LocationsType files);
 
     /// Value to stock file or folder paths
     ::io::LocationsType m_locations;
@@ -170,4 +177,4 @@ private:
 }
 
 
-#endif /*_IO_IREADER_HPP_*/
+#endif /*__IO_IREADER_HPP__*/

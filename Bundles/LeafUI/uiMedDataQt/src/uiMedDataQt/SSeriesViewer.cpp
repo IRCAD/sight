@@ -1,25 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "uiMedDataQt/SSeriesViewer.hpp"
+
 #include <fwCore/base.hpp>
 
-#include <fwData/Vector.hpp>
 #include <fwData/String.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-
-#include <fwComEd/VectorMsg.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwDataCamp/getObject.hpp>
 
 #include <fwMedData/Series.hpp>
 
-#include "uiMedDataQt/SSeriesViewer.hpp"
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
 
 
 namespace uiMedData
@@ -27,7 +26,7 @@ namespace uiMedData
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwServices::IController , ::uiMedData::SSeriesViewer , ::fwData::Vector);
+fwServicesRegisterMacro( ::fwServices::IController, ::uiMedData::SSeriesViewer, ::fwData::Vector);
 
 //------------------------------------------------------------------------------
 
@@ -58,19 +57,6 @@ void SSeriesViewer::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesViewer::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-    ::fwComEd::VectorMsg::csptr vectorMsg = ::fwComEd::VectorMsg::dynamicConstCast(msg);
-
-    if ( vectorMsg && (vectorMsg->hasEvent( ::fwComEd::VectorMsg::ADDED_OBJECTS )
-                      || vectorMsg->hasEvent( ::fwComEd::VectorMsg::REMOVED_OBJECTS ) ))
-    {
-        this->updating();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SSeriesViewer::stopping() throw(::fwTools::Failed)
 {
     if(m_configTemplateManager)
@@ -95,29 +81,29 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
     if(vector->size() == 1)
     {
         ::fwData::Object::sptr obj = vector->front();
-        std::string classname = obj->getClassname();
+        std::string classname             = obj->getClassname();
         SeriesConfigMapType::iterator itr = m_seriesConfigs.find(classname);
 
         if(itr != m_seriesConfigs.end())
         {
             SeriesConfigInfo info = itr->second;
-            std::string configId =  info.configId;
+            std::string configId  = info.configId;
 
             std::map< std::string, std::string > replaceMap;
             // Generate generic UID
             std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier( this->getID() );
             replaceMap["GENERIC_UID"] = genericUidAdaptor;
-            replaceMap["WID_PARENT"] = m_parentView;
-            replaceMap["objectID"] = obj->getID();
+            replaceMap["WID_PARENT"]  = m_parentView;
+            replaceMap["objectID"]    = obj->getID();
 
-            BOOST_FOREACH(const ReplaceValuesMapType::value_type &elt, info.extractValues)
+            for(const ReplaceValuesMapType::value_type &elt :  info.extractValues)
             {
                 ::fwData::Object::sptr object = ::fwDataCamp::getObject( obj, elt.second );
                 OSLM_ASSERT("Object from name "<< elt.second <<" not found", object);
                 replaceMap[elt.first] = object->getID();
             }
 
-            BOOST_FOREACH(const ReplaceValuesMapType::value_type &elt, info.parameters)
+            for(const ReplaceValuesMapType::value_type &elt :  info.parameters)
             {
                 SLM_ASSERT("Value '" << elt.first << "' already used in extracted values.",
                            replaceMap.find(elt.first) == replaceMap.end());
@@ -125,10 +111,8 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
             }
 
             // Init manager
-            ::fwRuntime::ConfigurationElement::csptr config =
-                   ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceMap );
             m_configTemplateManager = ::fwServices::AppConfigManager::New();
-            m_configTemplateManager->setConfig( config );
+            m_configTemplateManager->setConfig( configId, replaceMap );
 
             // Launch config
             m_configTemplateManager->launch();
@@ -151,7 +135,7 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
     std::vector < ::fwRuntime::ConfigurationElement::sptr > config = configsCfg[0]->find("config");
     SLM_ASSERT("Missing tag 'config'", !config.empty());
 
-    BOOST_FOREACH(const ::fwRuntime::ConfigurationElement::sptr &elt, config)
+    for(const ::fwRuntime::ConfigurationElement::sptr &elt :  config)
     {
         SeriesConfigInfo info;
         info.configId = elt->getAttributeValue("id");
@@ -161,7 +145,7 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
         OSLM_ASSERT("Type " << seriesType << " is already defined.",
                     m_seriesConfigs.find(seriesType)== m_seriesConfigs.end() );
 
-        BOOST_FOREACH(const ::fwRuntime::ConfigurationElement::sptr &extractElt, elt->find("extract"))
+        for(const ::fwRuntime::ConfigurationElement::sptr &extractElt :  elt->find("extract"))
         {
             std::string path = extractElt->getAttributeValue("path");
             SLM_ASSERT("'path' attribute must not be empty", !path.empty());
@@ -170,7 +154,7 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
             info.extractValues[pattern] = path;
         }
 
-        BOOST_FOREACH(const ::fwRuntime::ConfigurationElement::sptr &param, elt->find("parameter"))
+        for(const ::fwRuntime::ConfigurationElement::sptr &param :  elt->find("parameter"))
         {
             std::string replace = param->getAttributeValue("replace");
             SLM_ASSERT("'replace' attribute must not be empty", !replace.empty());
@@ -182,6 +166,17 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
         m_seriesConfigs[seriesType] = info;
     }
 
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SSeriesViewer::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

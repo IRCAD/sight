@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,83 +8,110 @@
 #include "fwMath/VectorFunctions.hpp"
 #include "fwMath/PlaneFunctions.hpp"
 
-namespace fwMath {
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include <limits>
+
+namespace fwMath
+{
 
 //------------------------------------------------------------------------------
 
-bool getClosestPoints( const fwLine& _line1, const fwLine& _line2, fwVec3d& _pointOnThis, fwVec3d& _pointOnfwLine)
+bool getClosestPoints( const fwLine& _ray1, const fwLine& _ray2, fwVec3d& _pointOnThis, fwVec3d& _pointOnfwLine)
 {
-    SLM_TRACE_FUNC();
-    const fwVec3d& pos1 = _line1.first;
-    const fwVec3d& dir1 = _line1.second;
+    const ::glm::dvec3 pos1 = ::glm::make_vec3<double>(_ray1.first.data());
+    const ::glm::dvec3 dir1 = ::glm::make_vec3<double>(_ray1.second.data());
 
-    const fwVec3d& pos2 = _line2.first;
-    const fwVec3d& dir2 = _line2.second;
+    const ::glm::dvec3 pos2 = ::glm::make_vec3<double>(_ray2.first.data());
+    const ::glm::dvec3 dir2 = ::glm::make_vec3<double>(_ray2.second.data());
 
-    double dd = dot(dir1, dir2);
-    double delta = 1.0F - dd * dd;
+    double dd    = ::glm::dot(dir1, dir2);
+    double delta = 1.0 - dd * dd;
 
-    if((float)delta==0.0F) return false;
+    if(delta < std::numeric_limits<double>::epsilon())
+    {
+        return false;
+    }
 
-    double t2 = ( dot(dir2, pos1 - pos2) -  dot(dir1, pos1-pos2) * dd)/delta;
-    double t1  = ( -dot(dir1, pos1 - pos2) + dot(dir2, pos1-pos2) * dd)/delta;
+    double t2 = ( ::glm::dot(dir2, pos1 - pos2) -  ::glm::dot(dir1, pos1-pos2) * dd)/delta;
+    double t1 = ( -::glm::dot(dir1, pos1 - pos2) + ::glm::dot(dir2, pos1-pos2) * dd)/delta;
 
-    _pointOnThis = pos1 + t1 * dir1;
-    _pointOnfwLine = pos2 + t2 * dir2;
+    const ::glm::dvec3 pointOnThis   = pos1 + t1 * dir1;
+    const ::glm::dvec3 pointOnfwLine = pos2 + t2 * dir2;
+
+    _pointOnThis[0] = pointOnThis[0];
+    _pointOnThis[1] = pointOnThis[1];
+    _pointOnThis[2] = pointOnThis[2];
+
+    _pointOnfwLine[0] = pointOnfwLine[0];
+    _pointOnfwLine[1] = pointOnfwLine[1];
+    _pointOnfwLine[2] = pointOnfwLine[2];
 
     return true;
 }
 
 //------------------------------------------------------------------------------
 
-fwVec3d getClosestPoint( const fwLine& _line, fwVec3d& _point)
+fwVec3d getClosestPoint( const fwLine& _ray, const fwVec3d& _point)
 {
-    SLM_TRACE_FUNC();
-    const fwVec3d& pos = _line.first;
-    const fwVec3d& dir = _line.second;
+    const ::glm::dvec3 pos   = ::glm::make_vec3<double>(_ray.first.data());
+    const ::glm::dvec3 dir   = ::glm::make_vec3<double>(_ray.second.data());
+    const ::glm::dvec3 point = ::glm::make_vec3<double>(_point.data());
 
-    double t = dot(_point - pos,dir);
-    return (pos + t * dir);
+    double t              = ::glm::dot(point - pos, dir);
+    const ::glm::dvec3 pt = (pos + t * dir);
+
+    fwVec3d res;
+    res[0] = pt[0];
+    res[1] = pt[1];
+    res[2] = pt[2];
+
+    return res;
 }
 
 //------------------------------------------------------------------------------
 
-bool intersect(const fwLine& _line, double _radius, fwVec3d _point)
+bool intersect(const fwLine& _ray, double _radius, const fwVec3d& _point)
 {
-    SLM_TRACE_FUNC();
-    fwVec3d point = getClosestPoint(_line, _point);
-    fwVec3d tmp = _point-point;
-    double length = vecLength(tmp);
-    if(length>_radius) return false;
-    return true;
+    fwVec3d point          = getClosestPoint(_ray, _point);
+    const ::glm::dvec3 pt1 = ::glm::make_vec3<double>(_point.data());
+    const ::glm::dvec3 pt2 = ::glm::make_vec3<double>(point.data());
+    ::glm::dvec3 tmp = pt1-pt2;
+    double length = ::glm::length(tmp);
+    return (length <= _radius);
 }
 
 //------------------------------------------------------------------------------
 
-bool intersect(const fwLine& _line, double _radius,fwVec3d _vec0, fwVec3d _vec1, fwVec3d _point)
+bool intersect(const fwLine& _ray, double _radius, const fwVec3d& _origin, const fwVec3d& _direction, fwVec3d& _point)
 {
-    SLM_TRACE_FUNC();
-    fwLine line = std::pair<fwVec3d, fwVec3d>(_vec0, _vec1);
+    fwLine line = std::pair<fwVec3d, fwVec3d>(_origin, _direction);
     fwVec3d pThis;
-    if(getClosestPoints(_line, line,pThis,_point) == false) return false;
-    fwVec3d tmp = _point-pThis;
-    double length = vecLength(tmp);
-    if(length>_radius) return false;
-    return true;
+    if(getClosestPoints(_ray, line, pThis, _point) == false)
+    {
+        return false;
+    }
 
+    const ::glm::dvec3 pt1 = ::glm::make_vec3<double>(_point.data());
+    const ::glm::dvec3 pt2 = ::glm::make_vec3<double>(pThis.data());
+    ::glm::dvec3 tmp = pt1-pt2;
+    double length = ::glm::length(tmp);
+
+    return (length <= _radius);
 }
 
 //------------------------------------------------------------------------------
 
-bool intersect( const fwLine& _line, const fwVec3d &_v1,  const fwVec3d &_v2, const fwVec3d &_v3, fwVec3d &_point, fwVec3d &_barycentric, bool& _front) {
-
-    SLM_TRACE_FUNC();
+bool intersect( const fwLine& _line, const fwVec3d& _v1,  const fwVec3d& _v2, const fwVec3d& _v3, fwVec3d& _point,
+                fwVec3d& _barycentric, bool& _front)
+{
     _barycentric = (_v1 + _v2 + _v3)/3.;
-    fwVec3d v01 = _v2 - _v1;
-    fwVec3d v12 = _v3 - _v2;
-    fwVec3d v20 = _v1 - _v3;
+    const fwVec3d v01 = _v2 - _v1;
+    const fwVec3d v12 = _v3 - _v2;
+    const fwVec3d v20 = _v1 - _v3;
 
-    fwPlane plane = getPlane(_v1, _v2, _v3);
+    const fwPlane plane = getPlane(_v1, _v2, _v3);
 
     fwVec3d v;
     v[0] = 0.0F;
@@ -92,12 +119,27 @@ bool intersect( const fwLine& _line, const fwVec3d &_v1,  const fwVec3d &_v2, co
     v[2] = 1.0F;
 
     const fwVec3d& normal = getNormal(plane);
-    _front = (float)(dot(normal,v ))>=0.0F ? true : false;
-    if(intersect(plane, _line, _point)==false) return false;
+    _front = ((dot(normal,v )) >= 0.0);
 
-    if((float)(dot(normal, cross(v01, _point-_v1)))<0.0F) return false;
-    if((float)(dot(normal, cross(v12, _point-_v2)))<0.0F) return false;
-    if((float)(dot(normal, cross(v20, _point-_v3)))<0.0F) return false;
-    return true;
+    bool isIntersect = true;
+    if(intersect(plane, _line, _point) == false)
+    {
+        isIntersect = false;
+    }
+    else if((dot(normal, cross(v01, _point-_v1))) < 0.0)
+    {
+        isIntersect = false;
+    }
+    else if((dot(normal, cross(v12, _point-_v2))) < 0.0)
+    {
+        isIntersect = false;
+    }
+    else if((dot(normal, cross(v20, _point-_v3))) < 0.0)
+    {
+        isIntersect = false;
+    }
+
+    return isIntersect;
 }
-}
+
+} //namespace fwMath

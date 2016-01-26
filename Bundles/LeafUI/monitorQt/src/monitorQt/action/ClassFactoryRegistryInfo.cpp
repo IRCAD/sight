@@ -1,35 +1,35 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QHBoxLayout>
-
-#include <boost/foreach.hpp>
+#include "monitorQt/action/ClassFactoryRegistryInfo.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
-#include "monitorQt/action/ClassFactoryRegistryInfo.hpp"
+#include <QHBoxLayout>
 
 namespace monitor
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::ClassFactoryRegistryInfo , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::ClassFactoryRegistryInfo, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
 ClassFactoryRegistryInfo::ClassFactoryRegistryInfo( ) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 ClassFactoryRegistryInfo::~ClassFactoryRegistryInfo() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -41,10 +41,10 @@ void ClassFactoryRegistryInfo::updating( ) throw(::fwTools::Failed)
     typedef ::fwServices::registry::ServiceFactory ServiceRegistry;
     const ServiceRegistry::KeyVectorType& factoryKeys = ServiceRegistry::getDefault()->getFactoryKeys();
 
-    BOOST_FOREACH( ServiceRegistry::KeyVectorType::value_type key, factoryKeys )
+    for( ServiceRegistry::KeyVectorType::value_type key :  factoryKeys )
     {
         const std::string objImpl = ServiceRegistry::getDefault()->getObjectImplementation(key);
-        QTreeWidgetItem* srvItem = new QTreeWidgetItem();
+        QTreeWidgetItem* srvItem  = new QTreeWidgetItem();
         srvItem->setText(0, QString::fromStdString(key));
         srvItem->setText(1, QString::fromStdString(objImpl));
         m_tree->addTopLevelItem( srvItem );
@@ -70,7 +70,7 @@ void ClassFactoryRegistryInfo::starting() throw (::fwTools::Failed)
     m_dialog->setWindowTitle("ServiceFactoryRegistry");
     m_dialog->setMinimumSize(800, 600);
 
-    QHBoxLayout* sizer  = new QHBoxLayout();
+    QHBoxLayout* sizer = new QHBoxLayout();
     m_tree = new QTreeWidget( m_dialog );
     QStringList headerList = (QStringList() << "Service" << "Object");
     m_tree->setColumnCount(2);
@@ -80,8 +80,8 @@ void ClassFactoryRegistryInfo::starting() throw (::fwTools::Failed)
     m_tree->setSelectionMode(QAbstractItemView::SingleSelection);
     m_tree->setAlternatingRowColors( true );
 
-    sizer->addWidget( m_tree ) ;
-    m_dialog->setLayout( sizer ) ;
+    sizer->addWidget( m_tree );
+    m_dialog->setLayout( sizer );
 }
 
 //------------------------------------------------------------------------------

@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWMEMORY_BARRIERDUMP_HPP_
-#define FWMEMORY_BARRIERDUMP_HPP_
+#ifndef __FWMEMORY_POLICY_BARRIERDUMP_HPP__
+#define __FWMEMORY_POLICY_BARRIERDUMP_HPP__
 
-#include <boost/shared_ptr.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -31,20 +30,23 @@ namespace policy
  */
 class FWMEMORY_CLASS_API BarrierDump : public ::fwMemory::IPolicy
 {
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro((BarrierDump)(fwMemory::IPolicy),
                                            (()),
-                                           ::fwMemory::policy::factory::New< BarrierDump >) ;
+                                           ::fwMemory::policy::factory::New< BarrierDump >);
     FWMEMORY_API BarrierDump();
 
     FWMEMORY_API virtual void allocationRequest( BufferInfo &info,
-            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType size ) ;
+                                                 ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+                                                 BufferInfo::SizeType size );
 
     FWMEMORY_API virtual void setRequest( BufferInfo &info,
-            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType size ) ;
+                                          ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+                                          BufferInfo::SizeType size );
 
     FWMEMORY_API virtual void reallocateRequest( BufferInfo &info,
-            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType newSize ) ;
+                                                 ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+                                                 BufferInfo::SizeType newSize );
 
     FWMEMORY_API virtual void destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer );
 
@@ -69,7 +71,7 @@ public :
     FWMEMORY_API bool setParam(const std::string &name, const std::string &value);
     FWMEMORY_API const fwMemory::IPolicy::ParamNamesType &getParamNames() const;
 
-protected :
+protected:
 
     FWMEMORY_API size_t getTotalAlive() const;
     FWMEMORY_API bool isBarrierCrossed() const;
@@ -88,5 +90,5 @@ protected :
 
 } // namespace fwMemory
 
-#endif // FWMEMORY_BARRIERDUMP_HPP_
+#endif // __FWMEMORY_POLICY_BARRIERDUMP_HPP__
 

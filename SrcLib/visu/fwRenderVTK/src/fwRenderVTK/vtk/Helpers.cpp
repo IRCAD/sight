@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,9 +13,11 @@
 #include <vtkCamera.h>
 #include <vtkAssemblyPath.h>
 #include <vtkProp3DCollection.h>
-#include <vtkShader2Collection.h>
+#ifndef ANDROID
 #include <vtkShaderProgram2.h>
 #include <vtkShader2.h>
+#include <vtkShader2Collection.h>
+#endif
 #include <vtkOpenGLRenderWindow.h>
 
 #include <fwCore/base.hpp>
@@ -32,19 +34,19 @@ namespace vtk
 
 vtkIdType getNearestPointId(vtkPoints* pts, vtkRenderer* renderer)
 {
-    vtkIdType id=-1;
+    vtkIdType id = -1;
     double camPosition[3];
     double distance = VTK_DOUBLE_MAX;
     renderer->GetActiveCamera()->GetPosition(camPosition);
 
     for(vtkIdType i = 0; i<pts->GetNumberOfPoints (); i++)
     {
-        double *point = pts->GetPoint(i);
+        double *point        = pts->GetPoint(i);
         double distancePtCam = vtkMath::Distance2BetweenPoints(point, camPosition);
 
         if(distancePtCam < distance)
         {
-            id = i;
+            id       = i;
             distance = distancePtCam;
         }
     }
@@ -68,23 +70,6 @@ vtkProp * getNearestPickedProp(vtkAbstractPropPicker *picker, vtkRenderer *rende
 
         if (id>-1 && vtkpicker->GetProp3Ds()->GetNumberOfItems() > id)
         {
-//          vtkIdType i = id;
-//          vtkAssemblyPath *path = picker->GetPath();
-//          vtkAssemblyNode *node;
-//          path->InitTraversal();
-//          for ( path->InitTraversal(); (node=path->GetNextNode()); )
-//          {
-//              if (--i == 0)
-//              {
-//                  res = node->GetViewProp();
-//                  break;
-//              }
-//          }
-//          vtkAssemblyNode *node = vtkAssemblyNode::SafeDownCast(picker->GetPath()->GetItemAsObject(id));
-//          SLM_ASSERT("vtkAssemblyNode error: not found", node);
-//          res = node->GetViewProp();
-//          SLM_ASSERT("No vtkProp found in picker's path", res);
-
             res = vtkProp::SafeDownCast(vtkpicker->GetProp3Ds()->GetItemAsObject(id));
         }
     }
@@ -99,7 +84,7 @@ vtkProp * getNearestPickedProp(vtkAbstractPropPicker *picker, vtkRenderer *rende
 
 bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *renderer, double position[3])
 {
-    bool res = false;
+    bool res             = false;
     vtkPicker *vtkpicker = vtkPicker::SafeDownCast(picker);
 
     SLM_ASSERT("getNearestPickedProp *need* a picker.", picker);
@@ -109,7 +94,7 @@ bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *render
     if (vtkpicker)
     {
         vtkPoints *pts = vtkpicker->GetPickedPositions();
-        vtkIdType id = getNearestPointId(pts, renderer);
+        vtkIdType id   = getNearestPointId(pts, renderer);
 
         if (id>-1)
         {
@@ -135,6 +120,7 @@ bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *render
 
 //------------------------------------------------------------------------------
 
+#ifndef ANDROID
 vtkSmartPointer<vtkShaderProgram2> buildShader( vtkOpenGLRenderWindow* pWindow,
                                                 const char* pcVertexShader,
                                                 const char* pcFragmentShader )
@@ -254,6 +240,7 @@ vtkSmartPointer<vtkShaderProgram2> buildShaderFromFile( vtkRenderWindow* pWindow
 
     return pProgram;
 }
+#endif
 
 } //vtk
 

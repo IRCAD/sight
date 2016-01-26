@@ -1,13 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __FWACTIVITIES_IVALIDATOR_HPP__
 #define __FWACTIVITIES_IVALIDATOR_HPP__
-
-#include <boost/enable_shared_from_this.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwMedData/ActivitySeries.hpp>
@@ -32,7 +30,7 @@ namespace fwActivities
 class FWACTIVITIES_CLASS_API IValidator : public ::fwCore::BaseObject
 {
 
-public :
+public:
 
     /**
      * @brief Defines validation result of an activity.
@@ -56,7 +54,7 @@ public :
         Registrar(std::string functorKey)
         {
             ::fwActivities::validator::registry::get()->addFactory( functorKey,
-                                                                  &::fwActivities::validator::factory::New<T> );
+                                                                    &::fwActivities::validator::factory::New<T> );
         }
     };
 
@@ -72,8 +70,8 @@ public :
      * @see IValidator::ValidationType
      */
     FWACTIVITIES_API virtual ValidationType validate(
-            const ::fwActivities::registry::ActivityInfo& activityInfo,
-            SPTR(::fwData::Vector) currentSelection ) const = 0;
+        const ::fwActivities::registry::ActivityInfo& activityInfo,
+        SPTR(::fwData::Vector) currentSelection ) const = 0;
 
 };
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,13 +27,15 @@ namespace writer
 //------------------------------------------------------------------------------
 
 TransformationMatrix3DWriter::TransformationMatrix3DWriter(::fwDataIO::writer::IObjectWriter::Key key)
-: ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
-{}
+    : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+{
+}
 
 //------------------------------------------------------------------------------
 
 TransformationMatrix3DWriter::~TransformationMatrix3DWriter()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -46,18 +48,21 @@ void TransformationMatrix3DWriter::write()
         OSLM_ERROR( "Trf file writing error for " << getFile());
         return;
     }
-    ::std::vector< double > mat = this->getConcreteObject()->getRefCoefficients();
-    ::std::vector< double >::iterator iter;
-    int i=0;
-    for (iter = mat.begin() ; iter!= mat.end() ; ++iter)
+    ::fwData::TransformationMatrix3D::TMCoefArray mat = this->getConcreteObject()->getRefCoefficients();
+    int i = 0;
+    for (auto val : mat)
     {
-        OSLM_TRACE("MATRIX : " << (*iter));
-        file << (*iter);
+        OSLM_TRACE("MATRIX : " << val);
+        file << val;
         i++;
         if (i%4 == 0 && i!=16)
+        {
             file << std::endl;
+        }
         else
+        {
             file << " ";
+        }
     }
 
     file.close();
@@ -65,7 +70,7 @@ void TransformationMatrix3DWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string  TransformationMatrix3DWriter::extension()
+std::string TransformationMatrix3DWriter::extension()
 {
     static std::string ext(".trf");
     return ext;

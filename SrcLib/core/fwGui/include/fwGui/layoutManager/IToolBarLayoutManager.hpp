@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,12 +8,12 @@
  * @file fwGui/layoutManager/IToolBarLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a toolbar.
  *
- * 
+ *
  * @date 2009-2010
  */
 
-#ifndef _FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_
-#define _FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_
+#ifndef __FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP__
+#define __FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP__
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -46,12 +46,13 @@ public:
 
     class ActionInfo
     {
-    public :
+    public:
 
         ActionInfo() :
             m_name(""),
             m_shortcut(""),
             m_icon(""),
+            m_icon2(""),
             m_isCheckable (false),
             m_isRadio(false),
             m_isSeparator(false),
@@ -59,18 +60,20 @@ public:
             m_isMenu(false),
             m_isEditor(false),
             m_size(0)
-        {}
+        {
+        }
 
         std::string m_name;
         std::string m_shortcut;
         std::string m_icon;
-        bool        m_isCheckable;
-        bool        m_isRadio;
-        bool        m_isSeparator;
-        bool        m_isSpacer;
-        bool        m_isMenu;
-        bool        m_isEditor;
-        int         m_size;
+        std::string m_icon2;
+        bool m_isCheckable;
+        bool m_isRadio;
+        bool m_isSeparator;
+        bool m_isSpacer;
+        bool m_isMenu;
+        bool m_isEditor;
+        int m_size;
     };
 
     FWGUI_API const static RegistryKeyType REGISTRY_KEY;
@@ -101,11 +104,11 @@ public:
      *
      * Example of configuration
      * @verbatim
-       <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
+       <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
                <layout>
-                   <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
-                   <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 2" style="check" icon="Bundles/TutoGui_0-1/icons/system.png" icon2="Bundles/TutoGui_0-1/icons/monkey.png" />
+                   <menuItem name="My item 3" style="check" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                    <separator />
                    <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
                    <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
@@ -132,6 +135,7 @@ public:
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
      *   - \b icon : give the path of the icon file
+     *   - \b icon2 : give the path of the icon file used when the item is checked
      *  - \<menu name="My menu" /\> :
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      *   - \b icon : give the path of the icon file
@@ -170,7 +174,10 @@ public:
     /**
      * @brief Sets callbacks associate with toolBar items.
      */
-    virtual void setCallbacks(CallbacksType callbacks) {m_callbacks = callbacks;};
+    virtual void setCallbacks(CallbacksType callbacks)
+    {
+        m_callbacks = callbacks;
+    }
 
 protected:
 
@@ -198,6 +205,6 @@ protected:
 } // namespace layoutManager
 } // namespace fwGui
 
-#endif /*_FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP_*/
+#endif /*__FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP__*/
 
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,34 +31,88 @@ void TransformationMatrix3DTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DTest::methode1()
+void TransformationMatrix3DTest::getterSetterByCoef()
 {
-    double COEFFICIENTS = 1 ;
-    // process
-    ::fwData::TransformationMatrix3D::sptr p1 = ::fwData::TransformationMatrix3D::New();
+    double identity[] = { 1., 0., 0., 0.,
+                          0., 1., 0., 0.,
+                          0., 0., 1., 0.,
+                          0., 0., 0., 1.};
 
-    // check
-    CPPUNIT_ASSERT_EQUAL(p1->getCoefficients().back(),  COEFFICIENTS);
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefCoefficients().back(),  COEFFICIENTS);
-    CPPUNIT_ASSERT_EQUAL(p1->getRefCoefficients().back(),   COEFFICIENTS);
+    ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
+
+    // Check default initialization
+    for (size_t i = 0; i < 4; ++i)
+    {
+        for (size_t j = 0; j < 4; ++j)
+        {
+            CPPUNIT_ASSERT_EQUAL(mat->getCoefficient(i, j), identity[i * 4 + j]);
+        }
+    }
+
+    // Call setter and check getter
+    double coefs[] = { 2, -2, .3, .12,
+                       4, 8.9, 4.2, 1.2,
+                       7.8, -12.1, 2.3, 1.2,
+                       .3, 1.21, -3.1, 1.2};
+
+    for (size_t i = 0; i < 4; ++i)
+    {
+        for (size_t j = 0; j < 4; ++j)
+        {
+            mat->setCoefficient(i, j, coefs[i * 4 + j]);
+        }
+    }
+
+    for (size_t i = 0; i < 4; ++i)
+    {
+        for (size_t j = 0; j < 4; ++j)
+        {
+            CPPUNIT_ASSERT_EQUAL(mat->getCoefficient(i, j), coefs[i * 4 + j]);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void TransformationMatrix3DTest::methode2()
+void TransformationMatrix3DTest::getterSetterByArray()
 {
-    double COEFFICIENTS = 4 ;
-    std::vector<double> VECTORCOEFFICIENTS ;
-    VECTORCOEFFICIENTS.push_back( COEFFICIENTS ) ;
+    ::fwData::TransformationMatrix3D::TMCoefArray identity = { 1., 0., 0., 0.,
+                                                               0., 1., 0., 0.,
+                                                               0., 0., 1., 0.,
+                                                               0., 0., 0., 1.};
 
-    // process
-    ::fwData::TransformationMatrix3D::sptr p1 = ::fwData::TransformationMatrix3D::New();
-    p1->setCRefCoefficients(VECTORCOEFFICIENTS) ;
+    ::fwData::TransformationMatrix3D::sptr mat = ::fwData::TransformationMatrix3D::New();
 
-    // check
-    CPPUNIT_ASSERT_EQUAL(p1->getCoefficients().back(),  COEFFICIENTS) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getCRefCoefficients().back(),  COEFFICIENTS) ;
-    CPPUNIT_ASSERT_EQUAL(p1->getRefCoefficients().back(),   COEFFICIENTS) ;
+    // Check default initialization
+    for (size_t i = 0; i < 4; ++i)
+    {
+        for (size_t j = 0; j < 4; ++j)
+        {
+            CPPUNIT_ASSERT_EQUAL(mat->getCoefficient(i, j), identity[i * 4 + j]);
+        }
+    }
+
+    // Call setter and check getter
+    ::fwData::TransformationMatrix3D::TMCoefArray coefs = { 2, -2, .3, .12,
+                                                            4, 8.9, 4.2, 1.2,
+                                                            7.8, -12.1, 2.3, 1.2,
+                                                            .3, 1.21, -3.1, 1.2};
+
+    mat->setCoefficients(coefs);
+
+    for (size_t i = 0; i < 4; ++i)
+    {
+        for (size_t j = 0; j < 4; ++j)
+        {
+            CPPUNIT_ASSERT_EQUAL(mat->getCoefficient(i, j), coefs[i * 4 + j]);
+        }
+    }
+
+    const ::fwData::TransformationMatrix3D::TMCoefArray& coefs2 = mat->getCoefficients();
+    for (size_t i = 0; i < 16; ++i)
+    {
+        CPPUNIT_ASSERT_EQUAL(coefs2[i], coefs[i]);
+    }
 }
 
 } //namespace ut

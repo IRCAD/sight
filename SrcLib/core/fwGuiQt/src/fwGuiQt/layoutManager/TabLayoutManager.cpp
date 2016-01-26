@@ -1,10 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-#include <boost/foreach.hpp>
 
 #include <QTabWidget>
 #include <QBoxLayout>
@@ -25,12 +23,14 @@ namespace fwGui
 //-----------------------------------------------------------------------------
 
 TabLayoutManager::TabLayoutManager(::fwGui::GuiBaseObject::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 TabLayoutManager::~TabLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
 
     const std::list< ViewInfo> &views = this->getViewsInfo();
 
-    BOOST_FOREACH ( ViewInfo viewInfo, views)
+    for ( ViewInfo viewInfo : views)
     {
         QWidget *widget = new QWidget(m_tabWidget);
 

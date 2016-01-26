@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATATOOLS_TEST_TU_TRANSFORMATIONMATRIX3DTEST_HPP__
-#define __FWDATATOOLS_TEST_TU_TRANSFORMATIONMATRIX3DTEST_HPP__
+#ifndef __FWDATATOOLS_UT_TRANSFORMATIONMATRIX3DTEST_HPP__
+#define __FWDATATOOLS_UT_TRANSFORMATIONMATRIX3DTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -22,10 +22,11 @@ namespace ut
  */
 class TransformationMatrix3DTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( TransformationMatrix3DTest );
-    CPPUNIT_TEST( identityMatrixTest );
-    CPPUNIT_TEST( matrixTest );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( TransformationMatrix3DTest );
+CPPUNIT_TEST( identityMatrixTest );
+CPPUNIT_TEST( matrixTest );
+CPPUNIT_TEST( glmGetterSetterTest );
+CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -35,10 +36,11 @@ public:
 
     void identityMatrixTest();
     void matrixTest();
+    void glmGetterSetterTest();
 
 };
 
 } //namespace ut
 } //namespace fwDataTools
 
-#endif //__FWDATATOOLS_TEST_TU_TRANSFORMATIONMATRIX3DTEST_HPP__
+#endif //__FWDATATOOLS_UT_TRANSFORMATIONMATRIX3DTEST_HPP__

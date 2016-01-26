@@ -1,19 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "scene2D/adaptor/Line.hpp"
+#include "scene2D/data/InitQtPen.hpp"
 
 #include <fwServices/Base.hpp>
 #include <fwData/Composite.hpp>
 
 #include <QGraphicsItemGroup>
 
-#include "scene2D/adaptor/Line.hpp"
-#include "scene2D/data/InitQtPen.hpp"
 
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Line  , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Line, ::fwData::Composite );
 
 
 namespace scene2D
@@ -21,9 +22,15 @@ namespace scene2D
 namespace adaptor
 {
 
-Line::Line() throw()
+Line::Line() throw() :
+    m_x1(0.f), m_x2(0.f),
+    m_y1(0.f), m_y2(0.f),
+    m_lineType(PLAIN),
+    m_layer(nullptr)
 {
 }
+
+//---------------------------------------------------------------------------------------------------------------
 
 Line::~Line() throw()
 {
@@ -62,11 +69,11 @@ void Line::draw()
 
     // Draw the line
     QGraphicsLineItem* line = new QGraphicsLineItem(
-        this->mapAdaptorToScene(std::pair< double , double >( m_x1, m_y1) , m_xAxis, m_yAxis).first,
-        this->mapAdaptorToScene(std::pair< double , double >( m_x1, m_y1) , m_xAxis, m_yAxis).second,
-        this->mapAdaptorToScene(std::pair< double , double >( m_x2, m_y2) , m_xAxis, m_yAxis).first,
-        this->mapAdaptorToScene(std::pair< double , double >( m_x2, m_y2) , m_xAxis, m_yAxis).second
-    );
+        this->mapAdaptorToScene(std::pair< double, double >( m_x1, m_y1), m_xAxis, m_yAxis).first,
+        this->mapAdaptorToScene(std::pair< double, double >( m_x1, m_y1), m_xAxis, m_yAxis).second,
+        this->mapAdaptorToScene(std::pair< double, double >( m_x2, m_y2), m_xAxis, m_yAxis).first,
+        this->mapAdaptorToScene(std::pair< double, double >( m_x2, m_y2), m_xAxis, m_yAxis).second
+        );
     // Set the line the pen
     line->setPen(m_pen);
 
@@ -96,13 +103,6 @@ void Line::doStart() throw ( ::fwTools::Failed )
 //---------------------------------------------------------------------------------------------------------------
 
 void Line::doUpdate() throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
-//---------------------------------------------------------------------------------------------------------------
-
-void Line::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATA_UT_ColorTEST_HPP__
-#define __FWDATA_UT_ColorTEST_HPP__
+#ifndef __FWDATA_UT_COLORTEST_HPP__
+#define __FWDATA_UT_COLORTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -16,6 +16,7 @@ namespace ut
 
 class ColorTest : public CPPUNIT_NS::TestFixture
 {
+private:
     CPPUNIT_TEST_SUITE( ColorTest );
     CPPUNIT_TEST( methode1 );
     CPPUNIT_TEST( methode2 );
@@ -31,4 +32,5 @@ public:
 };
 } //namespace ut
 } //namespace fwData
-#endif //__FWDATA_UT_ColorTEST_HPP__
+
+#endif //__FWDATA_UT_COLORTEST_HPP__

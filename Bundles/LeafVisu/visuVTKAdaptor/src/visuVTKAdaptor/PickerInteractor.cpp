@@ -1,55 +1,85 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKAdaptor/PickerInteractor.hpp"
 
-
-#include <boost/foreach.hpp>
-
-#include <vtkAbstractPropPicker.h>
-#include <vtkActor.h>
-#include <vtkCommand.h>
-#include <vtkCubeSource.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkRenderWindowInteractor.h>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <fwCore/HiResClock.hpp>
 
-#include <fwComEd/InteractionMsg.hpp>
-
-#include <fwData/Material.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/Material.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/macros.hpp>
 
-#include "visuVTKAdaptor/PickerInteractor.hpp"
-#include <fwServices/IEditionService.hpp>
-
+#include <vtkAbstractPropPicker.h>
+#include <vtkActor.h>
+#include <vtkCellPicker.h>
+#include <vtkCommand.h>
+#include <vtkCubeSource.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderWindowInteractor.h>
 
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PickerInteractor, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PickerInteractor, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
+
+static const std::map< unsigned long, ::fwComEd::PickingInfo::Event > s_vtkEventIDConversion
+{
+    { vtkCommand::LeftButtonReleaseEvent, ::fwComEd::PickingInfo::Event::MOUSE_LEFT_UP },
+    { vtkCommand::RightButtonReleaseEvent, ::fwComEd::PickingInfo::Event::MOUSE_RIGHT_UP },
+    { vtkCommand::MiddleButtonReleaseEvent, ::fwComEd::PickingInfo::Event::MOUSE_MIDDLE_UP },
+    { vtkCommand::MouseWheelForwardEvent, ::fwComEd::PickingInfo::Event::MOUSE_WHEELFORWARD },
+    { vtkCommand::LeftButtonPressEvent, ::fwComEd::PickingInfo::Event::MOUSE_LEFT_DOWN },
+    { vtkCommand::RightButtonPressEvent, ::fwComEd::PickingInfo::Event::MOUSE_RIGHT_DOWN },
+    { vtkCommand::MiddleButtonPressEvent, ::fwComEd::PickingInfo::Event::MOUSE_MIDDLE_DOWN },
+    { vtkCommand::MouseWheelBackwardEvent, ::fwComEd::PickingInfo::Event::MOUSE_WHEELBACKWARD },
+    { vtkCommand::MouseMoveEvent, ::fwComEd::PickingInfo::Event::MOUSE_MOVE },
+    { vtkCommand::KeyPressEvent, ::fwComEd::PickingInfo::Event::KEY_PRESS }
+};
+
+PickerInteractor::MapEventIdType PickerInteractor::m_eventIdConversion
+{
+    { std::string("MOUSE_LEFT_UP"), MOUSE_LEFT_UP },
+    { std::string("MOUSE_RIGHT_UP"), MOUSE_RIGHT_UP },
+    { std::string("MOUSE_MIDDLE_UP"), MOUSE_MIDDLE_UP },
+    { std::string("MOUSE_WHEELBACKWARD"), MOUSE_WHEELBACKWARD },
+    { std::string("MOUSE_LEFT_DOWN"), MOUSE_LEFT_DOWN },
+    { std::string("MOUSE_RIGHT_DOWN"), MOUSE_RIGHT_DOWN },
+    { std::string("MOUSE_MIDDLE_DOWN"), MOUSE_MIDDLE_DOWN },
+    { std::string("MOUSE_WHEELBACKWARD"), MOUSE_WHEELBACKWARD },
+    { std::string("MOUSE_MOVE"), MOUSE_MOVE },
+    { std::string("KEY_PRESS"), KEY_PRESS }
+};
+
+const ::fwCom::Signals::SignalKeyType PickerInteractor::s_PICKED_SIGNAL = "picked";
+
+//------------------------------------------------------------------------------
+
 
 class PickerInteractorCallback : public vtkCommand
 {
 public:
     static PickerInteractorCallback *New()
-    { return new PickerInteractorCallback(); }
-
-    PickerInteractorCallback() : m_caller(NULL), m_priority(-1)
     {
-        m_picker = NULL;
+        return new PickerInteractorCallback();
+    }
+
+    PickerInteractorCallback() : m_picker(nullptr), m_eventId(nullptr)
+    {
         this->PassiveObserverOn();
     }
 
@@ -59,7 +89,6 @@ public:
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
     {
-        assert(m_priority>=0);
         SLM_ASSERT("m_adaptor not instanced", m_adaptor);
         SLM_ASSERT("m_picker not instanced", m_picker);
 
@@ -76,82 +105,60 @@ public:
         display[1] = y;
         display[2] = 0;
 
-        return  m_picker->Pick( display , m_adaptor->getRenderer() );
+        return (m_picker->Pick( display, m_adaptor->getRenderer() ) != 0);
     }
 
 
     void process(vtkRenderWindowInteractor *caller, unsigned long eventId) // from
     {
         SLM_ASSERT("bad vtk caller", caller);
-        m_caller = caller;
-
-        switch (eventId)
+        if( m_eventId->find( static_cast< PickerInteractor::EventID>(eventId) ) != m_eventId->end() )
         {
-            case vtkCommand::LeftButtonPressEvent :
-                this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_LEFT_DOWN);
-                break;
-            case vtkCommand::LeftButtonReleaseEvent :
-                this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_LEFT_UP);
-                break;
-            case vtkCommand::MiddleButtonPressEvent :
-                this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_MIDDLE_DOWN);
-                break;
-            case vtkCommand::MiddleButtonReleaseEvent :
-                this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_MIDDLE_UP);
-                break;
-            case vtkCommand::RightButtonPressEvent :
-                this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_RIGHT_DOWN);
-                break;
-            case vtkCommand::RightButtonReleaseEvent :
-                this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_RIGHT_UP);
-                break;
-            //case vtkCommand::EnterEvent :
-                //this->notifyMsg(::fwComEd::InteractionMsg::);
-                //break;
-            //case vtkCommand::LeaveEvent :
-                //this->notifyMsg(::fwComEd::InteractionMsg::);
-                //break;
-            //case vtkCommand::KeyPressEvent :
-                //this->notifyMsg(::fwComEd::InteractionMsg::KEY_DOWN);
-                //break;
-            //case vtkCommand::KeyReleaseEvent :
-                //this->notifyMsg(::fwComEd::InteractionMsg::KEY_UP);
-                //break;
-            case vtkCommand::MouseMoveEvent :
-                this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_MOVE);
-                break;
-            case vtkCommand::MouseWheelForwardEvent :
-                this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_WHEELFORWARD_DOWN);
-                this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_WHEELFORWARD_UP);
-                break;
-            case vtkCommand::MouseWheelBackwardEvent :
-                this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_WHEELBACKWARD_DOWN);
-                this->notifyMsg(::fwComEd::InteractionMsg::MOUSE_WHEELBACKWARD_UP);
-                break;
-            default:
-                OSLM_ASSERT("Unknown vtk event: " << vtkCommand::GetStringFromEventId(eventId) ,0);
-        };
+#ifdef __linux
+            /// We receive way too many MOUSE_MOVE events on Linux
+            /// HACK_FB: Skip some of them...
+            if(eventId == PickerInteractor::MOUSE_MOVE)
+            {
+                m_skipMove++;
+                if( m_skipMove % 10 )
+                {
+                    return;
+                }
+            }
+#endif
+            if(this->pickSomething())
+            {
+                ::fwComEd::PickingInfo info;
+                ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), info.m_worldPos);
+                OSLM_TRACE("PICK" << info.m_worldPos[0] << " ," << info.m_worldPos[1] << " ," << info.m_worldPos[2] );
 
-    }
+                info.m_modifierMask =
+                    caller->GetControlKey() ? ::fwComEd::PickingInfo::CTRL : ::fwComEd::PickingInfo::NONE;
+                info.m_modifierMask |=
+                    caller->GetShiftKey() ? ::fwComEd::PickingInfo::SHIFT : ::fwComEd::PickingInfo::NONE;
 
+                vtkCellPicker* picker = vtkCellPicker::SafeDownCast ( m_picker );
+                if (picker)
+                {
+                    info.m_cellId         = picker->GetCellId();
+                    info.m_closestPointId = picker->GetPointId();
+                }
 
-    void notifyMsg(std::string event)
-    {
-        double world[3] = {-1,0,0};
-        this->pickSomething();
-        ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), world);
-        OSLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
+                const auto iter = s_vtkEventIDConversion.find(eventId);
+                SLM_ASSERT("Unknown eventId", iter != s_vtkEventIDConversion.end());
+                info.m_eventId = iter->second;
 
-        ::fwComEd::InteractionMsg::sptr msg = ::fwComEd::InteractionMsg::New();
-        msg->setEventPoint(world[0], world[1], world[2]);
-        msg->setEvent(event);
+                info.m_keyPressed = caller->GetKeyCode();
+                OSLM_TRACE("EVENT" << static_cast<int>(info.m_eventId) );
+                OSLM_TRACE("KEY" << info.m_keyPressed << " - MASK " << static_cast<int>(info.m_modifierMask) );
 
-        msg->setModifiersStatus( ::fwComEd::InteractionMsg::CTRL,  m_caller->GetControlKey());
-        msg->setModifiersStatus( ::fwComEd::InteractionMsg::SHIFT, m_caller->GetShiftKey());
+                info.m_timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
 
-        msg->setEventTimestamp(::fwCore::HiResClock::getTimeInMilliSec());
-
-        m_adaptor->notifyEvent( msg );
+                auto sig = m_adaptor->signal<PickerInteractor::PickedSignalType>(
+                    PickerInteractor::s_PICKED_SIGNAL);
+                sig->asyncEmit(info);
+            }
+        }
     }
 
     void setAdaptor( PickerInteractor::sptr adaptor)
@@ -159,30 +166,31 @@ public:
         m_adaptor = adaptor;
     }
 
-    void setPicker( vtkAbstractPropPicker *adaptor)
+    void setPicker( vtkAbstractPropPicker *picker)
     {
-        m_picker = adaptor;
+        m_picker = picker;
     }
 
-    void setPriority( float priority )
+    void setEventId(PickerInteractor::SetEventIdType* eventId)
     {
-        m_priority = priority;
+        m_eventId = eventId;
     }
 
-protected :
-    vtkRenderWindowInteractor *m_caller;
+protected:
+    PickerInteractor::SetEventIdType* m_eventId;
     PickerInteractor::sptr m_adaptor;
     vtkAbstractPropPicker *m_picker;
-    float    m_priority;
+#ifdef __linux
+    unsigned int m_skipMove = 0u;
+#endif // __linux
 
 };
 
 //------------------------------------------------------------------------------
 
-PickerInteractor::PickerInteractor() throw()
-    : m_priority(0.999)
+PickerInteractor::PickerInteractor() throw() : m_interactionCommand(nullptr)
 {
-    //handlingEventOff();
+    newSignal<PickedSignalType>(s_PICKED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -193,13 +201,30 @@ PickerInteractor::~PickerInteractor() throw()
 
 //------------------------------------------------------------------------------
 
-void PickerInteractor::configuring() throw(fwTools::Failed)
+void PickerInteractor::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    SLM_ASSERT("Required element 'config' is missing.", m_configuration->getName() == "config");
 
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    if (m_configuration->hasAttribute("event"))
+    {
+        const std::string eventTxt = m_configuration->getAttributeValue("event");
+
+        ::boost::char_separator<char> sep(", ;");
+        ::boost::tokenizer< ::boost::char_separator<char> > tok(eventTxt, sep);
+        for( const auto it : tok)
+        {
+            const auto iter = m_eventIdConversion.find(it);
+            SLM_ASSERT("Unknown eventId '"+ it+"'.", iter != m_eventIdConversion.end());
+            m_eventId.insert(iter->second);
+        }
+    }
+    else
+    {
+        for(auto elt : m_eventIdConversion)
+        {
+            m_eventId.insert(elt.second);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -209,24 +234,22 @@ void PickerInteractor::doStart() throw(fwTools::Failed)
     PickerInteractorCallback *observer = PickerInteractorCallback::New();
     observer->setAdaptor( PickerInteractor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
-    observer->setPriority(  m_priority );
+    observer->setEventId(&m_eventId);
 
     m_interactionCommand = observer;
 
     vtkRenderWindowInteractor *interactor = this->getInteractor();
-    interactor->AddObserver(vtkCommand::LeftButtonPressEvent    , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::LeftButtonReleaseEvent  , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::MiddleButtonPressEvent  , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::MiddleButtonReleaseEvent, m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::RightButtonPressEvent   , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::RightButtonReleaseEvent , m_interactionCommand, m_priority);
-    //interactor->AddObserver(vtkCommand::EnterEvent              , m_interactionCommand, m_priority);
-    //interactor->AddObserver(vtkCommand::LeaveEvent              , m_interactionCommand, m_priority);
-    //interactor->AddObserver(vtkCommand::KeyPressEvent           , m_interactionCommand, m_priority);
-    //interactor->AddObserver(vtkCommand::KeyReleaseEvent         , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::MouseMoveEvent          , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::MouseWheelForwardEvent  , m_interactionCommand, m_priority);
-    interactor->AddObserver(vtkCommand::MouseWheelBackwardEvent , m_interactionCommand, m_priority);
+    const float priority                  = 0.999f;
+    interactor->AddObserver(vtkCommand::LeftButtonPressEvent, m_interactionCommand, priority);
+    interactor->AddObserver(vtkCommand::LeftButtonReleaseEvent, m_interactionCommand, priority);
+    interactor->AddObserver(vtkCommand::MiddleButtonPressEvent, m_interactionCommand, priority);
+    interactor->AddObserver(vtkCommand::MiddleButtonReleaseEvent, m_interactionCommand, priority);
+    interactor->AddObserver(vtkCommand::RightButtonPressEvent, m_interactionCommand, priority);
+    interactor->AddObserver(vtkCommand::RightButtonReleaseEvent, m_interactionCommand, priority);
+    interactor->AddObserver(vtkCommand::MouseMoveEvent, m_interactionCommand, priority);
+    interactor->AddObserver(vtkCommand::MouseWheelForwardEvent, m_interactionCommand, priority);
+    interactor->AddObserver(vtkCommand::MouseWheelBackwardEvent, m_interactionCommand, priority);
+    interactor->AddObserver(vtkCommand::KeyPressEvent, m_interactionCommand, priority);
 
 }
 
@@ -247,30 +270,20 @@ void PickerInteractor::doSwap() throw(fwTools::Failed)
 void PickerInteractor::doStop() throw(fwTools::Failed)
 {
     vtkRenderWindowInteractor *interactor = this->getInteractor();
-    interactor->RemoveObservers(vtkCommand::LeftButtonPressEvent    , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::LeftButtonReleaseEvent  , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::MiddleButtonPressEvent  , m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::LeftButtonPressEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::LeftButtonReleaseEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::MiddleButtonPressEvent, m_interactionCommand);
     interactor->RemoveObservers(vtkCommand::MiddleButtonReleaseEvent, m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::RightButtonPressEvent   , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::RightButtonReleaseEvent , m_interactionCommand);
-    //interactor->RemoveObservers(vtkCommand::EnterEvent              , m_interactionCommand);
-    //interactor->RemoveObservers(vtkCommand::LeaveEvent              , m_interactionCommand);
-    //interactor->RemoveObservers(vtkCommand::KeyPressEvent           , m_interactionCommand);
-    //interactor->RemoveObservers(vtkCommand::KeyReleaseEvent         , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::MouseMoveEvent          , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::MouseWheelForwardEvent  , m_interactionCommand);
-    interactor->RemoveObservers(vtkCommand::MouseWheelBackwardEvent , m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::RightButtonPressEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::RightButtonReleaseEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::MouseMoveEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::MouseWheelForwardEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::MouseWheelBackwardEvent, m_interactionCommand);
+    interactor->RemoveObservers(vtkCommand::KeyPressEvent, m_interactionCommand);
 
     m_interactionCommand->Delete();
-    m_interactionCommand = NULL;
+    m_interactionCommand = nullptr;
     this->unregisterServices();
-}
-
-//------------------------------------------------------------------------------
-
-void PickerInteractor::notifyEvent(::fwComEd::InteractionMsg::sptr msg)
-{
-    ::fwServices::IEditionService::notify(this->getSptr(), this->getObject(), msg);
 }
 
 //------------------------------------------------------------------------------

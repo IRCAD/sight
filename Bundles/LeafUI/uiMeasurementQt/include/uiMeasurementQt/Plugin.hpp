@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIMEASUREMENTQT_PLUGIN_HPP_
-#define _UIMEASUREMENTQT_PLUGIN_HPP_
+#ifndef __UIMEASUREMENTQT_PLUGIN_HPP__
+#define __UIMEASUREMENTQT_PLUGIN_HPP__
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -13,7 +13,7 @@ namespace uiMeasurementQt
 {
 
 /**
- * 
+ *
  * @date    2009.
  */
 struct Plugin : public ::fwRuntime::Plugin
@@ -33,4 +33,4 @@ struct Plugin : public ::fwRuntime::Plugin
 
 } // namespace uiMeasurementQt
 
-#endif //_UIMEASUREMENTQT_PLUGIN_HPP_
+#endif //__UIMEASUREMENTQT_PLUGIN_HPP__

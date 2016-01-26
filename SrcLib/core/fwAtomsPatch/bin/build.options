@@ -1,9 +1,0 @@
-TYPE = 'shared'
-VERSION = '0.1'
-#USE = []
-LIB = [
-    'fwCore_0-1', 
-    'fwAtoms_0-1',
-    'fwAtomConversion_0-1',
-    'fwData_0-1'
-]

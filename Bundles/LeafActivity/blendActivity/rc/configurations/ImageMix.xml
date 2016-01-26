@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>ImageMix</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_VIEW" />
         <param name="GENERIC_UID" />
@@ -15,7 +14,7 @@
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Blend" align="center" />
@@ -30,7 +29,7 @@
             </service>
 
 
-            <service uid="${GENERIC_UID}_bottomView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_bottomView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -44,7 +43,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_sliderView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_sliderView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -58,7 +57,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_editorsView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_editorsView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -72,7 +71,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_bgBottomView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_bgBottomView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -85,7 +84,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_frontBottomView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_frontBottomView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -107,11 +106,7 @@
             <item key="myBlendSelectionComposite">
                 <object uid="${SELECTED_myBlendSelectionComposite}" src="ref" type="::fwData::Composite">
 
-                    <service uid="${GENERIC_UID}_snapshot" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-                        <snap>
-                            <scene uid="${GENERIC_UID}_blendGenericScene" />
-                        </snap>
-                    </service>
+                    <service uid="${GENERIC_UID}_snapshot" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no"/>
 
                     <service uid="${GENERIC_UID}_myManagerVisu" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes"> <!-- priority="0.6" -->
                         <mode type="stop" />
@@ -147,7 +142,7 @@
                     </service>
 
                     <!-- Generic scene to show merging of backgroung and front images -->
-                    <service uid="${GENERIC_UID}_blendGenericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_blendGenericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
                             <picker id="myPicker" vtkclass="fwVtkCellPicker" />
                             <vtkObject id="imageBlend" class="vtkImageBlend" />
@@ -166,7 +161,7 @@
                             <adaptor id="frontImagePicker" class="::visuVTKAdaptor::ImagePickerInteractor" objectId="frontImage">
                                 <config renderer="default" picker="myPicker" />
                             </adaptor>
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                            <adaptor id="snapshot" uid="${GENERIC_UID}_snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                 <config renderer="default" />
                             </adaptor>
 
@@ -191,6 +186,11 @@
                                     <image objectId="frontImage" name="front" />
                                 </config>
                             </adaptor>
+                            
+                            <connect>
+                                <signal>${GENERIC_UID}_snapshot/snapped</signal>
+                                <slot>${GENERIC_UID}_snapshotUID/snap</slot>
+                            </connect>
                         </scene>
                     </service>
 

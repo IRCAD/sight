@@ -1,15 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "ServiceConfigTest.hpp"
 
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwData/String.hpp>
 #include <fwTest/helper/Thread.hpp>
 
-#include "ServiceConfigTest.hpp"
+#include <functional>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ServiceConfigTest );
@@ -51,7 +53,7 @@ void ServiceConfigTest::serviceConfigTest()
     CPPUNIT_ASSERT_EQUAL(std::string("serviceUUID"), serviceConfig->getAttributeValue("uid"));
 
     std::vector< std::string > configs = currentServiceConfig->getAllConfigForService(service);
-    CPPUNIT_ASSERT( ! configs.empty());
+    CPPUNIT_ASSERT( !configs.empty());
     CPPUNIT_ASSERT(std::find(configs.begin(), configs.end(), configId) != configs.end());
 }
 
@@ -61,15 +63,15 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
 {
     const unsigned int nbThreads = 20;
     std::vector< SPTR(::fwTest::helper::Thread) > threads;
-    for (int i=0 ; i<nbThreads ; ++i)
+    for (int i = 0; i<nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
-        thread = ::boost::shared_ptr< ::fwTest::helper::Thread >(
-                new ::fwTest::helper::Thread(::boost::bind(&ServiceConfigTest::serviceConfigTest, this)));
+        thread = std::shared_ptr< ::fwTest::helper::Thread >(
+            new ::fwTest::helper::Thread(std::bind(&ServiceConfigTest::serviceConfigTest, this)));
         threads.push_back(thread);
     }
 
-    for (int i=0 ; i<nbThreads ; ++i)
+    for (int i = 0; i<nbThreads; ++i)
     {
         std::stringstream str;
         str << "thread " << i;
@@ -79,7 +81,8 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
     ::fwServices::registry::ServiceConfig::sptr currentServiceConfig;
     currentServiceConfig = ::fwServices::registry::ServiceConfig::getDefault();
     currentServiceConfig->clearRegistry();
-    std::vector< std::string > allCconfigs = currentServiceConfig->getAllConfigForService("::fwServices::ut::TestService");
+    std::vector< std::string > allCconfigs = currentServiceConfig->getAllConfigForService(
+        "::fwServices::ut::TestService");
     CPPUNIT_ASSERT(allCconfigs.empty());
 }
 
@@ -87,15 +90,16 @@ void ServiceConfigTest::concurentAccessToServiceConfigTest()
 
 ::fwRuntime::ConfigurationElement::sptr ServiceConfigTest::buildConfig()
 {
-    ::boost::shared_ptr< ::fwRuntime::EConfigurationElement > serviceCfg ( new ::fwRuntime::EConfigurationElement("config")) ;
-    serviceCfg->setAttributeValue( "uid" , "serviceUUID") ;
-    serviceCfg->setAttributeValue( "type" , "serviceType") ;
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceCfg ( new ::fwRuntime::EConfigurationElement(
+                                                                           "config"));
+    serviceCfg->setAttributeValue( "uid", "serviceUUID");
+    serviceCfg->setAttributeValue( "type", "serviceType");
 
     ::fwRuntime::EConfigurationElement::sptr cfg = serviceCfg->addConfigurationElement("param");
-    cfg->setValue("Parameter") ;
+    cfg->setValue("Parameter");
 
 
-    return serviceCfg ;
+    return serviceCfg;
 }
 
 //------------------------------------------------------------------------------

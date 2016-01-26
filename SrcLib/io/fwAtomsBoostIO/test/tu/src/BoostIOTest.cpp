@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,10 +61,10 @@ struct SequenceGenerator
 
     SequenceGenerator()
     {
-        META_KEY_0 = "info.a<b>.c.0";
-        META_KEY_1 = "info.a<b>.c.{1:d}";
-        META_KEY_2 = "info.a<b>.c.2";
-        META_KEY_3 = "info.a<b>.c.3";
+        META_KEY_0   = "info.a<b>.c.0";
+        META_KEY_1   = "info.a<b>.c.{1:d}";
+        META_KEY_2   = "info.a<b>.c.2";
+        META_KEY_3   = "info.a<b>.c.3";
         META_VALUE_0 = "A";
         META_VALUE_1 = "B";
         META_VALUE_2 = "C";
@@ -77,17 +77,17 @@ struct SequenceGenerator
         ATTR_NAME_4 = "NULL";
 
         ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::New();
-        ::fwAtoms::Map::sptr map = ::fwAtoms::Map::New();
-        ::fwAtoms::Blob::sptr blob = ::fwAtoms::Blob::New();
+        ::fwAtoms::Map::sptr map    = ::fwAtoms::Map::New();
+        ::fwAtoms::Blob::sptr blob  = ::fwAtoms::Blob::New();
         m_seq = ::fwAtoms::Sequence::New();
 
-        ::fwMemory::BufferObject::sptr bo = ::fwMemory::BufferObject::New();
+        ::fwMemory::BufferObject::sptr bo                  = ::fwMemory::BufferObject::New();
         const ::fwMemory::BufferObject::SizeType BUFF_SIZE = 1*1024*1024; // 1Mo
         bo->allocate(BUFF_SIZE);
         blob->setBufferObject(bo);
 
         ::fwMemory::BufferObject::Lock lock(bo->lock());
-        void *v = lock.getBuffer();
+        void *v    = lock.getBuffer();
         char* buff = static_cast<char*>(v);
         for (size_t i = 0; i < BUFF_SIZE; ++i)
         {
@@ -95,10 +95,10 @@ struct SequenceGenerator
         }
 
         ::fwAtoms::Boolean::sptr boolFalse = ::fwAtoms::Boolean::New(false);
-        ::fwAtoms::Boolean::sptr boolTrue = ::fwAtoms::Boolean::New(true);
-        ::fwAtoms::Numeric::sptr num = ::fwAtoms::Numeric::New(42);
-        ::fwAtoms::Numeric::sptr num2 = ::fwAtoms::Numeric::New(16.64);
-        ::fwAtoms::String::sptr str = ::fwAtoms::String::New("MyStr");
+        ::fwAtoms::Boolean::sptr boolTrue  = ::fwAtoms::Boolean::New(true);
+        ::fwAtoms::Numeric::sptr num       = ::fwAtoms::Numeric::New(42);
+        ::fwAtoms::Numeric::sptr num2      = ::fwAtoms::Numeric::New(16.64);
+        ::fwAtoms::String::sptr str        = ::fwAtoms::String::New("MyStr");
 
         obj->setMetaInfo(META_KEY_0, META_VALUE_0);
         obj->setMetaInfo(META_KEY_1, META_VALUE_1);
@@ -124,7 +124,7 @@ struct SequenceGenerator
         m_seq->push_back(boolTrue);
 
         // tests the case of a a cache path hiting an object stored in a map
-        ::fwAtoms::Map::sptr map2 = ::fwAtoms::Map::New();
+        ::fwAtoms::Map::sptr map2    = ::fwAtoms::Map::New();
         ::fwAtoms::Object::sptr obj2 = ::fwAtoms::Object::New();
         map2->insert("obj2 ref1", obj2);
         map2->insert("obj2 ref2", obj2);
@@ -144,27 +144,27 @@ struct SequenceGenerator
 
     void compare(::fwAtoms::Sequence::sptr readSeq)
     {
-        ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::dynamicCast((*m_seq)[0]);
-        ::fwAtoms::Blob::sptr blob = ::fwAtoms::Blob::dynamicCast((*m_seq)[2]);
+        ::fwAtoms::Object::sptr obj        = ::fwAtoms::Object::dynamicCast((*m_seq)[0]);
+        ::fwAtoms::Blob::sptr blob         = ::fwAtoms::Blob::dynamicCast((*m_seq)[2]);
         ::fwAtoms::Boolean::sptr boolFalse = ::fwAtoms::Boolean::dynamicCast((*m_seq)[5]);
-        ::fwAtoms::Numeric::sptr num = ::fwAtoms::Numeric::dynamicCast((*m_seq)[6]);
-        ::fwAtoms::String::sptr str = ::fwAtoms::String::dynamicCast((*m_seq)[7]);
-        ::fwAtoms::Numeric::sptr num2 = ::fwAtoms::Numeric::dynamicCast((*m_seq)[9]);
-        ::fwAtoms::Boolean::sptr boolTrue = ::fwAtoms::Boolean::dynamicCast((*m_seq)[10]);
+        ::fwAtoms::Numeric::sptr num       = ::fwAtoms::Numeric::dynamicCast((*m_seq)[6]);
+        ::fwAtoms::String::sptr str        = ::fwAtoms::String::dynamicCast((*m_seq)[7]);
+        ::fwAtoms::Numeric::sptr num2      = ::fwAtoms::Numeric::dynamicCast((*m_seq)[9]);
+        ::fwAtoms::Boolean::sptr boolTrue  = ::fwAtoms::Boolean::dynamicCast((*m_seq)[10]);
 
         CPPUNIT_ASSERT_EQUAL(m_seq->size(), readSeq->size());
 
-        ::fwAtoms::Object::sptr   readObj0  = ::fwAtoms::Object::dynamicCast((*readSeq)[0]);
-        ::fwAtoms::Object::sptr   readObj1  = ::fwAtoms::Object::dynamicCast((*readSeq)[1]);
-        ::fwAtoms::Blob::sptr     readBlob  = ::fwAtoms::Blob::dynamicCast((*readSeq)[2]);
-        ::fwAtoms::Map::sptr      readMap   = ::fwAtoms::Map::dynamicCast((*readSeq)[3]);
-        ::fwAtoms::Sequence::sptr readSeq2  = ::fwAtoms::Sequence::dynamicCast((*readSeq)[4]);
-        ::fwAtoms::Boolean::sptr  readBoolF = ::fwAtoms::Boolean::dynamicCast((*readSeq)[5]);
-        ::fwAtoms::Numeric::sptr  readNum   = ::fwAtoms::Numeric::dynamicCast((*readSeq)[6]);
-        ::fwAtoms::String::sptr   readStr   = ::fwAtoms::String::dynamicCast((*readSeq)[7]);
-        ::fwAtoms::Base::sptr     readNull  = ::fwAtoms::Base::dynamicCast((*readSeq)[8]);
-        ::fwAtoms::Numeric::sptr  readNum2  = ::fwAtoms::Numeric::dynamicCast((*readSeq)[9]);
-        ::fwAtoms::Boolean::sptr  readBoolT = ::fwAtoms::Boolean::dynamicCast((*readSeq)[10]);
+        ::fwAtoms::Object::sptr readObj0   = ::fwAtoms::Object::dynamicCast((*readSeq)[0]);
+        ::fwAtoms::Object::sptr readObj1   = ::fwAtoms::Object::dynamicCast((*readSeq)[1]);
+        ::fwAtoms::Blob::sptr readBlob     = ::fwAtoms::Blob::dynamicCast((*readSeq)[2]);
+        ::fwAtoms::Map::sptr readMap       = ::fwAtoms::Map::dynamicCast((*readSeq)[3]);
+        ::fwAtoms::Sequence::sptr readSeq2 = ::fwAtoms::Sequence::dynamicCast((*readSeq)[4]);
+        ::fwAtoms::Boolean::sptr readBoolF = ::fwAtoms::Boolean::dynamicCast((*readSeq)[5]);
+        ::fwAtoms::Numeric::sptr readNum   = ::fwAtoms::Numeric::dynamicCast((*readSeq)[6]);
+        ::fwAtoms::String::sptr readStr    = ::fwAtoms::String::dynamicCast((*readSeq)[7]);
+        ::fwAtoms::Base::sptr readNull     = ::fwAtoms::Base::dynamicCast((*readSeq)[8]);
+        ::fwAtoms::Numeric::sptr readNum2  = ::fwAtoms::Numeric::dynamicCast((*readSeq)[9]);
+        ::fwAtoms::Boolean::sptr readBoolT = ::fwAtoms::Boolean::dynamicCast((*readSeq)[10]);
 
         CPPUNIT_ASSERT( readObj0  );
         CPPUNIT_ASSERT( readObj1  );
@@ -178,7 +178,7 @@ struct SequenceGenerator
         CPPUNIT_ASSERT( readNum2  );
         CPPUNIT_ASSERT( readBoolT );
 
-        ::fwMemory::BufferObject::sptr bo = blob->getBufferObject();
+        ::fwMemory::BufferObject::sptr bo     = blob->getBufferObject();
         ::fwMemory::BufferObject::sptr readBo = readBlob->getBufferObject();
 
         CPPUNIT_ASSERT( readBo );
@@ -188,9 +188,9 @@ struct SequenceGenerator
         ::fwMemory::BufferObject::Lock lock(bo->lock());
         ::fwMemory::BufferObject::Lock readLock(readBo->lock());
 
-        void *v = lock.getBuffer();
-        void *readV = readLock.getBuffer();
-        char* buff = static_cast<char*>(v);
+        void *v        = lock.getBuffer();
+        void *readV    = readLock.getBuffer();
+        char* buff     = static_cast<char*>(v);
         char* readBuff = static_cast<char*>(readV);
 
         CPPUNIT_ASSERT(readBlob);
@@ -240,7 +240,7 @@ void BoostIOTest::tearDown()
 void BoostIOTest::readWriteZipTest()
 {
     ::boost::filesystem::path folderPath =
-            ::fwTools::System::getTemporaryFolder() / ( ::fwTools::UUID::generateUUID() + ".zip");
+        ::fwTools::System::getTemporaryFolder() / ( ::fwTools::UUID::generateUUID() + ".zip");
 
     ::fwZip::IWriteArchive::sptr writeArchive;
     ::fwZip::IReadArchive::sptr readArchive;
@@ -276,7 +276,7 @@ void BoostIOTest::readWriteZipTest()
 void BoostIOTest::readWriteDirTest()
 {
     ::boost::filesystem::path folderPath =
-            ::fwTools::System::getTemporaryFolder() / ::fwTools::UUID::generateUUID();
+        ::fwTools::System::getTemporaryFolder() / ::fwTools::UUID::generateUUID();
 
     ::fwZip::IWriteArchive::sptr writeArchive;
     ::fwZip::IReadArchive::sptr readArchive;
@@ -299,7 +299,7 @@ void BoostIOTest::readWriteDirTest()
         writeArchive.reset();
 
         readArchive = ::fwZip::ReadDirArchive::New(folderPath.string());
-        this->readProcess(readArchive, "root.xml" , ::fwAtomsBoostIO::XML);
+        this->readProcess(readArchive, "root.xml", ::fwAtomsBoostIO::XML);
         readArchive.reset();
 
         bool suppr = ::boost::filesystem::remove_all(folderPath);
@@ -325,7 +325,8 @@ void BoostIOTest::readProcess(::fwZip::IReadArchive::sptr readArchive,
 {
     ::fwAtoms::Sequence::sptr readSeq;
     {
-        readSeq = ::fwAtoms::Sequence::dynamicCast(::fwAtomsBoostIO::Reader().read(readArchive, rootFilename, formatType));
+        readSeq = ::fwAtoms::Sequence::dynamicCast(::fwAtomsBoostIO::Reader().read(readArchive, rootFilename,
+                                                                                   formatType));
     }
     generator.compare(readSeq);
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2010.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 #include <fwTools/DynamicAttributes.hxx>
@@ -36,10 +35,12 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
  */
 class Key
 {
-    template<typename CLASSNAME>
-    friend SPTR( CLASSNAME ) fwDataIO::reader::factory::New();
+template<typename CLASSNAME>
+friend SPTR( CLASSNAME ) fwDataIO::reader::factory::New();
 
-    Key(){};
+Key()
+{
+}
 };
 
 
@@ -48,7 +49,7 @@ FWDATAIO_API SPTR( ::fwDataIO::reader::IObjectReader ) New( const ::fwDataIO::re
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
 
     return obj;
 }

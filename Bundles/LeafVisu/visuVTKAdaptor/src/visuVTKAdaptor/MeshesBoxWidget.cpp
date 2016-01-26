@@ -1,39 +1,39 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-#include <limits>
 
-#include <boost/foreach.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/Mesh.hpp>
-
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
-
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwVtkIO/vtk.hpp>
-#include <fwVtkIO/helper/Mesh.hpp>
-
-#include <vtkPolyData.h>
-#include <vtkBoxRepresentation.h>
-#include <vtkBoxWidget2.h>
-#include <vtkTransform.h>
-#include <vtkCommand.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkActor.h>
-#include <vtkAssembly.h>
-#include <vtkProp3DCollection.h>
+#ifndef ANDROID
 
 #include "visuVTKAdaptor/MeshesBoxWidget.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwData/Mesh.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <fwVtkIO/helper/Mesh.hpp>
+
+#include <fwVtkIO/vtk.hpp>
+
+#include <limits>
+
+#include <vtkActor.h>
+#include <vtkAssembly.h>
+#include <vtkBoxRepresentation.h>
+#include <vtkBoxWidget2.h>
+#include <vtkCommand.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProp3DCollection.h>
+#include <vtkTransform.h>
 
 class MeshesBoxClallback : public ::vtkCommand
 {
@@ -46,8 +46,12 @@ public:
         return cb;
     }
 
-    MeshesBoxClallback() : m_adaptor(NULL) {}
-    ~MeshesBoxClallback() {}
+    MeshesBoxClallback() : m_adaptor(NULL)
+    {
+    }
+    ~MeshesBoxClallback()
+    {
+    }
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )
     {
@@ -59,21 +63,27 @@ public:
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshesBoxWidget, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::MeshesBoxWidget, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_MATRICES_SLOT = "updateMatrices";
+static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT     = "addObject";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT  = "changeObject";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT  = "removeObjects";
+
 //-----------------------------------------------------------------------------
 
-MeshesBoxWidget::MeshesBoxWidget() throw()
+MeshesBoxWidget::MeshesBoxWidget() throw() :
+    m_assembly(nullptr),
+    m_boxWidgetCommand(MeshesBoxClallback::New(this)),
+    m_vtkBoxWidget(nullptr)
 {
-    //addNewHandledEvent(::fwComEd::CompositeMsg::ADDED_KEYS);
-    //addNewHandledEvent(::fwComEd::CompositeMsg::REMOVED_KEYS);
-    //addNewHandledEvent(::fwComEd::CompositeMsg::CHANGED_KEYS);
-    //addNewHandledEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED);
-
-    m_boxWidgetCommand = MeshesBoxClallback::New(this);
+    newSlot(s_UPDATE_MATRICES_SLOT, &MeshesBoxWidget::updateMatrices, this);
+    newSlot(s_ADD_OBJECTS_SLOT, &MeshesBoxWidget::addObjects, this);
+    newSlot(s_CHANGE_OBJECTS_SLOT, &MeshesBoxWidget::changeObjects, this);
+    newSlot(s_REMOVE_OBJECTS_SLOT, &MeshesBoxWidget::removeObjects, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -84,13 +94,8 @@ MeshesBoxWidget::~MeshesBoxWidget() throw()
 
 //-----------------------------------------------------------------------------
 
-void MeshesBoxWidget::configuring() throw(fwTools::Failed)
+void MeshesBoxWidget::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
 
 //-----------------------------------------------------------------------------
@@ -110,7 +115,7 @@ void MeshesBoxWidget::doStart() throw(fwTools::Failed)
 
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 
-    this->updateMeshMapFromComposite(composite);
+    this->updateMeshMapFromComposite(composite->getContainer());
     this->doUpdate();
 }
 
@@ -121,7 +126,7 @@ void MeshesBoxWidget::doUpdate() throw(fwTools::Failed)
     m_assembly->GetParts()->RemoveAllItems();
     if (!m_meshMap.empty())
     {
-        BOOST_FOREACH(MeshMapType::value_type elt, m_meshMap)
+        for(MeshMapType::value_type elt :  m_meshMap)
         {
             m_assembly->AddPart( elt.second );
         }
@@ -149,7 +154,7 @@ void MeshesBoxWidget::doStop() throw(fwTools::Failed)
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
+    for(::fwData::Composite::value_type elt :  *composite)
     {
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
@@ -160,51 +165,12 @@ void MeshesBoxWidget::doStop() throw(fwTools::Failed)
     m_meshMap.clear();
 
     m_assembly->Delete();
-    m_assembly = 0;
+    m_assembly = nullptr;
 
     m_vtkBoxWidget->Off();
     m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
     m_vtkBoxWidget->Delete();
-    m_vtkBoxWidget = 0;
-}
-
-//-----------------------------------------------------------------------------
-
-void MeshesBoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg ) ;
-    if (compositeMsg)
-    {
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::REMOVED_KEYS))
-        {
-            BOOST_FOREACH(::fwData::Composite::value_type elt, *compositeMsg->getRemovedKeys())
-            {
-                ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
-                m_meshMap[elt.first]->Delete();
-                m_meshMap.erase(elt.first);
-
-                ::fwData::TransformationMatrix3D::sptr fieldTransform;
-                fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
-                m_connections[elt.first].disconnect();
-                m_connections.erase(elt.first);
-            }
-        }
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::ADDED_KEYS))
-        {
-            this->updateMeshMapFromComposite(compositeMsg->getAddedKeys());
-        }
-        if (compositeMsg->hasEvent(::fwComEd::CompositeMsg::CHANGED_KEYS))
-        {
-            this->updateMeshMapFromComposite(compositeMsg->getNewChangedKeys());
-        }
-        this->updateMeshTransform();
-        this->doUpdate();
-    }
-    else if (msg->hasEvent(::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED))
-    {
-        this->updateMeshTransform();
-        this->doUpdate();
-    }
+    m_vtkBoxWidget = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -216,33 +182,34 @@ void MeshesBoxWidget::updateFromVtk()
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
     vtkBoxRepresentation *boxRep = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
-    vtkTransform * boxTransform = vtkTransform::New();
+    vtkTransform * boxTransform  = vtkTransform::New();
     boxRep->GetTransform(boxTransform);
 
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
+    for(::fwData::Composite::value_type elt :  *composite)
     {
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
         ::fwData::TransformationMatrix3D::sptr fieldTransform;
         SLM_ASSERT("Mesh must have a TransformMatrix field", mesh->getField("TransformMatrix"));
         fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
 
-        vtkTransform * transform = vtkTransform::New();
+        vtkTransform * transform           = vtkTransform::New();
         vtkLinearTransform * meshTransform = m_meshMap[elt.first]->GetUserTransform();
         transform->Concatenate(boxTransform);
         transform->Concatenate(meshTransform);
 
         vtkMatrix4x4* mat = transform->GetMatrix();
-        for(int lt=0; lt<4; lt++)
+        for(int lt = 0; lt<4; lt++)
         {
-            for(int ct=0; ct<4; ct++)
+            for(int ct = 0; ct<4; ct++)
             {
                 fieldTransform->setCoefficient(lt,ct, mat->GetElement(lt,ct));
             }
         }
 
-        ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-        msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
-        ::fwServices::IEditionService::notify(this->getSptr(), fieldTransform, msg);
+        auto sig = fieldTransform->signal< ::fwData::Object::ModifiedSignalType >(
+            ::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
+
         transform->Delete();
     }
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
@@ -251,9 +218,9 @@ void MeshesBoxWidget::updateFromVtk()
 
 //-----------------------------------------------------------------------------
 
-void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr composite)
+void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::ContainerType objects)
 {
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
+    for(::fwData::Composite::value_type elt :  objects)
     {
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
         vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
@@ -267,9 +234,9 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
 
         vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
 
-        for(int lt=0; lt<4; lt++)
+        for(int lt = 0; lt<4; lt++)
         {
-            for(int ct=0; ct<4; ct++)
+            for(int ct = 0; ct<4; ct++)
             {
                 matrix->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
             }
@@ -285,8 +252,8 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
 
         if (m_meshMap.find(elt.first) == m_meshMap.end())
         {
-            ::fwCom::Connection connection = fieldTransform->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->
-                                connect(this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+            ::fwCom::Connection connection = fieldTransform->signal(::fwData::Object::s_MODIFIED_SIG)->
+                                             connect(this->slot(s_UPDATE_MATRICES_SLOT));
             m_connections[elt.first] = connection;
         }
 
@@ -299,7 +266,7 @@ void MeshesBoxWidget::updateMeshMapFromComposite(::fwData::Composite::sptr compo
 void MeshesBoxWidget::updateMeshTransform()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    BOOST_FOREACH(::fwData::Composite::value_type elt, *composite)
+    for(::fwData::Composite::value_type elt :  *composite)
     {
         ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
 
@@ -312,9 +279,9 @@ void MeshesBoxWidget::updateMeshTransform()
 
         vtkSmartPointer<vtkMatrix4x4> matrix = vtkSmartPointer<vtkMatrix4x4>::New();
 
-        for(int lt=0; lt<4; lt++)
+        for(int lt = 0; lt<4; lt++)
         {
-            for(int ct=0; ct<4; ct++)
+            for(int ct = 0; ct<4; ct++)
             {
                 matrix->SetElement(lt,ct, fieldTransform->getCoefficient(lt,ct));
             }
@@ -326,6 +293,68 @@ void MeshesBoxWidget::updateMeshTransform()
     }
 }
 
+
+//-----------------------------------------------------------------------------
+
+void MeshesBoxWidget::updateMatrices()
+{
+    this->updateMeshTransform();
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+void MeshesBoxWidget::addObjects(::fwData::Composite::ContainerType objects)
+{
+    this->updateMeshMapFromComposite(objects);
+    this->updateMeshTransform();
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+void MeshesBoxWidget::changeObjects(::fwData::Composite::ContainerType newObjects,
+                                    ::fwData::Composite::ContainerType oldObjects)
+{
+    this->updateMeshMapFromComposite(newObjects);
+    this->updateMeshTransform();
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+void MeshesBoxWidget::removeObjects(::fwData::Composite::ContainerType objects)
+{
+    for(::fwData::Composite::value_type elt :  objects)
+    {
+        ::fwData::Mesh::sptr mesh = ::fwData::Mesh::dynamicCast(elt.second);
+        m_meshMap[elt.first]->Delete();
+        m_meshMap.erase(elt.first);
+
+        ::fwData::TransformationMatrix3D::sptr fieldTransform;
+        fieldTransform = mesh->getField< ::fwData::TransformationMatrix3D > ("TransformMatrix");
+        m_connections[elt.first].disconnect();
+        m_connections.erase(elt.first);
+    }
+
+    this->updateMeshTransform();
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType MeshesBoxWidget::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHANGE_OBJECTS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT ) );
+
+    return connections;
+}
+
 //-----------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

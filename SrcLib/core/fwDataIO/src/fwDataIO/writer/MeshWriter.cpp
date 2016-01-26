@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,13 +29,15 @@ namespace writer
 //------------------------------------------------------------------------------
 
 MeshWriter::MeshWriter(::fwDataIO::writer::IObjectWriter::Key key)
-: ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
-{}
+    : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+{
+}
 
 //------------------------------------------------------------------------------
 
 MeshWriter::~MeshWriter()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -45,7 +47,8 @@ void MeshWriter::write()
     assert( getFile().empty() ==  false );
 
     ::fwData::Mesh::sptr mesh = this->getConcreteObject();
-    FW_RAISE_IF("Can't convert this Mesh to Trian file", !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
+    FW_RAISE_IF("Can't convert this Mesh to Trian file",
+                !::fwDataTools::Mesh::hasUniqueCellType(mesh, ::fwData::Mesh::TRIANGLE));
 
     std::fstream file;
     file.open(getFile().string().c_str(), std::fstream::out);
@@ -55,30 +58,30 @@ void MeshWriter::write()
     {
         OSLM_ERROR( "Trian file writing error for " << getFile().string());
         std::string str = "Unable to write ";
-        str+= getFile().string();
+        str += getFile().string();
         throw std::ios_base::failure(str);
     }
 
     ::fwComEd::helper::Mesh meshHelper(mesh);
 
     size_t i, nbPts, nbCells;
-    nbPts = mesh->getNumberOfPoints();
+    nbPts                                       = mesh->getNumberOfPoints();
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     file<<nbPts<<std::endl;
-    for( i=0 ; i<nbPts ; ++i )
+    for( i = 0; i<nbPts; ++i )
     {
         file << points[i][0] << " " << points[i][1] << " " << points[i][2] << std::endl;
     }
 
-    nbCells = mesh->getNumberOfCells();
+    nbCells                     = mesh->getNumberOfCells();
     ::fwData::Array::sptr cells = mesh->getCellDataArray();
 
     ::fwComEd::helper::Array cellsArrayHelper(cells);
 
     FW_RAISE_IF("Not able to write " << cells->getType().string() << " cell type in trian file.",
-            cells->getType() != ::fwTools::Type::create< ::boost::uint64_t >());
+                cells->getType() != ::fwTools::Type::create< ::boost::uint64_t >());
 
-    ::boost::uint64_t *cellBuf = cellsArrayHelper.begin< ::boost::uint64_t >();
+    ::boost::uint64_t *cellBuf    = cellsArrayHelper.begin< ::boost::uint64_t >();
     ::boost::uint64_t *cellBufEnd = cellBuf + 3*nbCells;
 
     SLM_ASSERT("Wrong CellDataMultiArray size", cells->getNumberOfElements() >= nbCells*3);
@@ -87,23 +90,23 @@ void MeshWriter::write()
     ::fwData::Array::sptr normals = mesh->getCellNormalsArray();
 
     if(normals
-            && !normals->empty()
-            && normals->getType() == ::fwTools::Type::create<float>()
-            && normals->getNumberOfComponents() == 3
-            && normals->getNumberOfDimensions() == 1
-            && nbCells == normals->getSize().at(0)
-            )
+       && !normals->empty()
+       && normals->getType() == ::fwTools::Type::create<float>()
+       && normals->getNumberOfComponents() == 3
+       && normals->getNumberOfDimensions() == 1
+       && nbCells == normals->getSize().at(0)
+       )
     {
         ::fwComEd::helper::Array normalsArrayHelper(normals);
         float *normalBuf = normalsArrayHelper.begin< float >();
 
         while (cellBuf != cellBufEnd)
         {
-            file << (*cellBuf++) << " " ;
-            file << (*cellBuf++) << " " ;
-            file << (*cellBuf++) << " " ;
-            file << (*normalBuf++) << " " ;
-            file << (*normalBuf++) << " " ;
+            file << (*cellBuf++) << " ";
+            file << (*cellBuf++) << " ";
+            file << (*cellBuf++) << " ";
+            file << (*normalBuf++) << " ";
+            file << (*normalBuf++) << " ";
             file << (*normalBuf++) << std::endl;
         }
     }
@@ -121,7 +124,7 @@ void MeshWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string  MeshWriter::extension()
+std::string MeshWriter::extension()
 {
     return ".trian";
 }

@@ -1,14 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <cmath>
-
-#include <boost/assign/std/vector.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include "fwTest/generator/Image.hpp"
+#include "fwTest/generator/Mesh.hpp"
+#include "fwTest/generator/SeriesDB.hpp"
+#include "fwTest/generator/Object.hpp"
 
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
@@ -17,14 +16,13 @@
 #include <fwData/Plane.hpp>
 #include <fwData/ProcessObject.hpp>
 
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/generator/Mesh.hpp>
-#include <fwTest/generator/SeriesDB.hpp>
-#include "fwTest/generator/Object.hpp"
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/convenience.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 
-using namespace boost::assign;
+#include <cmath>
+
 
 namespace fwTest
 {
@@ -36,7 +34,7 @@ namespace generator
 ::fwData::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
 {
     ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
-    ::fwData::StructureTraits::sptr skin = ::fwData::StructureTraits::New();
+    ::fwData::StructureTraits::sptr skin                 = ::fwData::StructureTraits::New();
     std::string skinType = "Skin";
     skin->setType(skinType);
     skin->setClass(::fwData::StructureTraits::ENVIRONMENT);
@@ -111,9 +109,9 @@ namespace generator
 {
     ::fwData::StructureTraits::sptr pStructureTraits = ::fwData::StructureTraits::New();
 
-    const std::string type = "Liver";
+    const std::string type                                      = "Liver";
     const ::fwData::StructureTraits::StructureClass structClass = ::fwData::StructureTraits::ORGAN;
-    const ::fwData::StructureTraits::ROIExpression nativeExp = "inter(world(type(Skin)),not(class(Organ)))";
+    const ::fwData::StructureTraits::ROIExpression nativeExp    = "inter(world(type(Skin)),not(class(Organ)))";
     const ::fwData::StructureTraits::ROIExpression nativeGeoExp = "halfSpace(world(Left_lung),Z+,true)";
 
     pStructureTraits->setType(type);
@@ -151,9 +149,9 @@ namespace generator
     ::fwData::Node::sptr maskNode = Object::createNode();
     roi->setMaskOpNode(maskNode);
 
-    (*composite)["ROITraits"] = roi;
+    (*composite)["ROITraits"]       = roi;
     (*composite)["StructureTraits"] = structure;
-    (*composite)["MaskOpNode"] = maskNode;
+    (*composite)["MaskOpNode"]      = maskNode;
 
     return composite;
 }
@@ -180,9 +178,9 @@ namespace generator
     rec->setMeshOpNode(meshNode);
 
     (*composite)["ReconstructionTraits"] = rec;
-    (*composite)["StructureTraits"] = structure;
-    (*composite)["MaskOpNode"] = maskNode;
-    (*composite)["MeshOpNode"] = meshNode;
+    (*composite)["StructureTraits"]      = structure;
+    (*composite)["MaskOpNode"]           = maskNode;
+    (*composite)["MeshOpNode"]           = meshNode;
 
     return composite;
 }
@@ -193,15 +191,15 @@ namespace generator
 {
     ::fwData::Node::sptr node = ::fwData::Node::New();
 
-    unsigned int nbInputs = rand()%5;
+    unsigned int nbInputs  = rand()%5;
     unsigned int nbOutputs = rand()%5;
 
-    for (unsigned int i=0 ; i<nbInputs ; ++i)
+    for (unsigned int i = 0; i<nbInputs; ++i)
     {
         node->addInputPort(Object::createPort());
     }
 
-    for (unsigned int i=0 ; i<nbOutputs ; ++i)
+    for (unsigned int i = 0; i<nbOutputs; ++i)
     {
         node->addOutputPort(Object::createPort());
     }
@@ -243,17 +241,20 @@ namespace generator
 {
     ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
 
-    tf->setBackgroundColor( ::fwData::TransferFunction::TFColor( rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f) );
+    tf->setBackgroundColor( ::fwData::TransferFunction::TFColor( rand()%100 / 100.f, rand()%100 / 100.f,
+                                                                 rand()%100 / 100.f, rand()%100 / 100.f) );
     tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
     tf->setIsClamped( false );
     tf->setLevel(level);
     tf->setName( "TFColor" );
     tf->setWindow(window );
 
-    for (unsigned char nb=0 ; nb<nbPoints ; ++nb)
+    for (unsigned char nb = 0; nb<nbPoints; ++nb)
     {
         double value = rand()%100 - level;
-        tf->addTFColor( value, ::fwData::TransferFunction::TFColor( rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f ));
+        tf->addTFColor( value,
+                        ::fwData::TransferFunction::TFColor( rand()%100 / 100.f, rand()%100 / 100.f, rand()%100 / 100.f,
+                                                             rand()%100 / 100.f ));
     }
 
     ::fwData::String::sptr myString = ::fwData::String::New("fieldStringValue");
@@ -291,7 +292,7 @@ namespace generator
 
 ::fwData::Material::sptr Object::createMaterial()
 {
-    // use the default value MODE_PHONG,MODE_SURFACE, MODE_STANDARD
+    // use the default value PHONG,SURFACE, STANDARD
 
     ::fwData::Color::sptr ambient = ::fwData::Color::New();
     ambient->setRGBA(0.5f,0.5f,0.5f,0.5f);
@@ -315,8 +316,8 @@ namespace generator
     const std::string IMAGEID2 = "myImage2";
     const std::string FIELDID1 = "myField1";
     const std::string FIELDID2 = "myField2";
-    ::fwData::Image::sptr image1 = ::fwData::Image::New();
-    ::fwData::Image::sptr image2 = ::fwData::Image::New();
+    ::fwData::Image::sptr image1   = ::fwData::Image::New();
+    ::fwData::Image::sptr image2   = ::fwData::Image::New();
     ::fwData::Integer::sptr field1 = ::fwData::Integer::New(3);
     ::fwData::Integer::sptr field2 = ::fwData::Integer::New(8);
 
@@ -334,7 +335,9 @@ namespace generator
 
 ::fwData::Point::sptr Object::generatePoint()
 {
-    fwVec3d coord = {{rand()%300, rand()%300, rand()%300}};
+    std::array< double, 3> coord = {static_cast<double>(rand()%300),
+                                    static_cast<double>(rand()%300),
+                                    static_cast<double>(rand()%300)};
     ::fwData::Point::sptr point = ::fwData::Point::New();
     point->setCoord(coord);
     return point;
@@ -346,7 +349,7 @@ namespace generator
 {
     ::fwData::Plane::sptr plane = ::fwData::Plane::New();
     plane->setValue(generatePoint(), generatePoint(), generatePoint());
-    plane->setIsIntersection(((rand()%1) ? true :false));
+    plane->setIsIntersection(((rand()%1) ? true : false));
     return plane;
 }
 

@@ -1,14 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <assert.h>
 #include <boost/lexical_cast.hpp>
-#ifdef COM_LOG
-# include <boost/regex.hpp>
-#endif
 
 #include <fwCore/Demangler.hpp>
 
@@ -73,7 +70,7 @@ void fwID::addIDInDictionary( IDType newID )
     // note we use a static cast for a down cast because we do not use the classical polyvi morphic approach
     //m_dictionary[ newID ] = (static_cast< Object *>(this))->getSptr();
     m_dictionary[ newID ] = ((Object*)(this))->getSptr();
-    m_id = newID;
+    m_id                  = newID;
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +87,8 @@ fwID::IDType fwID::getID( Policy policy) const
             const_cast<fwID *>(this)->addIDInDictionary(newID);
         }
         else if  ( policy == EMPTY )
-        { /* nothing to do*/ }
+        { /* nothing to do*/
+        }
         else if ( policy == MUST_EXIST )
         {
             throw fwTools::Failed( "fwID::getID() no id set" );
@@ -98,25 +96,6 @@ fwID::IDType fwID::getID( Policy policy) const
     }
     return m_id;
 }
-
-//-----------------------------------------------------------------------------
-
-#ifdef COM_LOG
-fwID::IDType fwID::getLightID( Policy  policy ) const
-{
-    IDType id = this->getID( policy );
-    IDType lightID = id;
-
-    ::boost::regex namespaceRegex ("[:A-Za-z0-9]*::(.*)");
-    const std::string machine_format("\\1");
-    if ( ::boost::regex_match( id, namespaceRegex ) )
-    {
-        lightID = ::boost::regex_replace( id, namespaceRegex, machine_format, boost::match_default | boost::format_sed );
-    }
-
-    return lightID;
-}
-#endif
 
 //-----------------------------------------------------------------------------
 
@@ -141,7 +120,7 @@ fwID::IDType fwID::generate() const
     Dictionary::iterator it = m_dictionary.find(requestID);
     if ( it!=m_dictionary.end() )
     {
-        SLM_ASSERT(  "expired object in fwID::Dictionary for id=" + requestID ,  !it->second.expired() );
+        SLM_ASSERT(  "expired object in fwID::Dictionary for id=" + requestID,  !it->second.expired() );
         return it->second.lock();
     }
     else

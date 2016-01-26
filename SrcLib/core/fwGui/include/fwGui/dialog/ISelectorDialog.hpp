@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWGUI_ISELECTORDIALOG_HPP_
-#define FWGUI_ISELECTORDIALOG_HPP_
+#ifndef __FWGUI_DIALOG_ISELECTORDIALOG_HPP__
+#define __FWGUI_DIALOG_ISELECTORDIALOG_HPP__
 
 #include <vector>
 
@@ -22,7 +22,7 @@ namespace dialog
 /**
  * @brief   ISelectorDialog allows the choice of an element among several (_selections)
  * @class   ISelectorDialog
- * 
+ *
  * @date    2009-2010.
  */
 class FWGUI_CLASS_API ISelectorDialog : public ::fwGui::GuiBaseObject
@@ -40,7 +40,7 @@ public:
     /**
      * @brief Constructor builds a selector proposing a string list
      */
-    FWGUI_API ISelectorDialog() ;
+    FWGUI_API ISelectorDialog();
 
     /// Destructor. Do nothing.
     FWGUI_API virtual ~ISelectorDialog();
@@ -67,4 +67,4 @@ public:
 } //namespace dialog
 } //namespace fwGui
 
-#endif /*FWGUI_ISELECTORDIALOG_HPP_*/
+#endif /*__FWGUI_DIALOG_ISELECTORDIALOG_HPP__*/

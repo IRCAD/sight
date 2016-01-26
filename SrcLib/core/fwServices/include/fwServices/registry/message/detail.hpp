@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ namespace message
 
 typedef std::string KeyType;
 
-typedef ::fwCore::util::FactoryRegistry< SPTR(::fwServices::ObjectMsg) () , KeyType > Type;
+typedef ::fwCore::util::FactoryRegistry< SPTR(::fwServices::ObjectMsg) (), KeyType > Type;
 
 FWSERVICES_API SPTR( Type ) get();
 

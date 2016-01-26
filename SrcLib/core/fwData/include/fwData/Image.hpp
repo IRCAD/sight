@@ -7,23 +7,29 @@
 #ifndef __FWDATA_IMAGE_HPP__
 #define __FWDATA_IMAGE_HPP__
 
-#include <vector>
+#include "fwData/Array.hpp"
+#include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
+#include <fwTools/Type.hpp>
+#include <fwTools/DynamicType.hpp>
 
 #include <boost/shared_array.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/cstdint.hpp>
 
-#include <fwTools/Type.hpp>
-#include <fwTools/DynamicType.hpp>
-
-#include "fwData/Object.hpp"
-#include "fwData/Array.hpp"
-#include "fwData/factory/new.hpp"
+#include <vector>
 
 fwCampAutoDeclareDataMacro((fwData)(Image), FWDATA_API);
 
 namespace fwData
 {
+
+class Point;
+class PointList;
 
 /**
  * @brief This class defines an image
@@ -33,7 +39,7 @@ namespace fwData
 class FWDATA_CLASS_API Image : public Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwData::factory::New< Image > ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Image)(::fwData::Object), (()), ::fwData::factory::New< Image > );
     fwCoreAllowSharedFromThis();
     fwCampMakeFriendDataMacro((fwData)(Image));
 
@@ -87,37 +93,44 @@ public:
 
     FWDATA_API const SpacingType &getSpacing() const;
     FWDATA_API void setSpacing(const SpacingType &spacing);
-    // @}
+    /// @}
 
     /** @{
-     * @brief get/set image origin
+     *  @brief get/set image origin
      */
     FWDATA_API const OriginType &getOrigin() const;
     FWDATA_API void setOrigin(const OriginType &origin);
-    // @}
+    /// @}
 
     /** @{
      * @brief get/set image size
      */
     FWDATA_API const SizeType &getSize() const;
     FWDATA_API void setSize(const SizeType &size);
-    // @}
+    /// @}
 
-    /**
-     * @brief Get/set prefered window center
+    /** @{
+     *  @brief Get/set preferred window center
      */
-    fwDataGetSetMacro(WindowCenter, double);
+    double  getWindowCenter () const;
 
-    /**
-     * @brief Get/set prefered window width
+    void setWindowCenter (double val);
+    /// @}
+
+    /** @{
+     *  @brief Get/set preferred window width
      */
-    fwDataGetSetMacro(WindowWidth , double);
+    double  getWindowWidth () const;
+    void setWindowWidth (double val);
+    /// @}
 
-
-    /**
-     * @brief Get/set prefered window center
+    /** @{
+     *  @brief Get/set preferred window center
      */
-    fwDataGetSetMacro(NumberOfComponents, size_t);
+    size_t  getNumberOfComponents() const;
+
+    void setNumberOfComponents(size_t val);
+    /// @}
 
     /**
      * @brief set data array
@@ -137,7 +150,7 @@ public:
     FWDATA_API void setType(::fwTools::Type type);
     FWDATA_API void setType(const std::string &type);
     FWDATA_API ::fwTools::Type getType() const;
-    // @}
+    /// @}
 
     /// get a DynamicType for retrocompatibility
     FWDATA_API ::fwTools::DynamicType getPixelType() const;
@@ -156,16 +169,68 @@ public:
     FWDATA_API size_t allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
                                const ::fwTools::Type &type, size_t numberOfComponents = 1) throw(::fwData::Exception);
     FWDATA_API size_t allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents = 1)
-        throw(::fwData::Exception);
-    // @}
+    throw(::fwData::Exception);
+    /// @}
 
 
-     /// @brief return image size in bytes
+    /// @brief return image size in bytes
     FWDATA_API size_t getSizeInBytes() const;
-     /// @brief return allocated image size in bytes
-    size_t getAllocatedSizeInBytes() const;
+    /// @brief return allocated image size in bytes
+    FWDATA_API size_t getAllocatedSizeInBytes() const;
 
-protected :
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Type of signal when image's buffer is added
+    typedef ::fwCom::Signal< void () > BufferModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_BUFFER_MODIFIED_SIG;
+
+    /// Type of signal when a landmark is added
+    typedef ::fwCom::Signal< void (SPTR(::fwData::Point)) > LandmarkAddedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_LANDMARK_ADDED_SIG;
+
+    /// Type of signal when a landmark is removed
+    typedef ::fwCom::Signal< void (SPTR(::fwData::Point)) > LandmarkRemovedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_LANDMARK_REMOVED_SIG;
+
+    /// Type of signal when a distance is added
+    typedef ::fwCom::Signal< void (bool) > LandmarkDisplayedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_LANDMARK_DISPLAYED_SIG;
+
+    /// Type of signal when a distance is added
+    typedef ::fwCom::Signal< void (bool) > DistanceDisplayedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_DISPLAYED_SIG;
+
+    /// Type of signal when a distance is added
+    typedef ::fwCom::Signal< void (SPTR(::fwData::PointList)) > DistanceAddedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_ADDED_SIG;
+
+    /// Type of signal when a distance is removed
+    typedef ::fwCom::Signal< void (SPTR(::fwData::PointList)) > DistanceRemovedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_DISTANCE_REMOVED_SIG;
+
+    /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
+    typedef ::fwCom::Signal< void (int, int, int) > SliceIndexModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_SLICE_INDEX_MODIFIED_SIG;
+
+    /// Type of signal when slice type is modified (from slice type, to slice type)
+    typedef ::fwCom::Signal< void (int, int) > SliceTypeModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_SLICE_TYPE_MODIFIED_SIG;
+
+    /// Type of signal when visibility is modified
+    typedef ::fwCom::Signal< void (bool) > VisibilityModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
+
+    /// Type of signal when visibility is modified
+    typedef ::fwCom::Signal< void () > TransparencyModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_TRANSPARENCY_MODIFIED_SIG;
+
+    /**
+     * @}
+     */
+
+protected:
 
     //! Size of the image (in terms of points)
     SizeType m_size;
@@ -181,16 +246,60 @@ protected :
 
     //! Preferred window center/with
     ///@{
-    double m_attrWindowCenter;
-    double m_attrWindowWidth;
+    double m_windowCenter;
+    double m_windowWidth;
     ///@}
 
     //! Number of components
-    size_t m_attrNumberOfComponents;
+    size_t m_numberOfComponents;
 
     //! image buffer
     ::fwData::Array::sptr m_dataArray;
 };
+
+//-----------------------------------------------------------------------------
+
+inline double Image::getWindowCenter () const
+{
+    return m_windowCenter;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Image::setWindowCenter (double val)
+{
+    m_windowCenter = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Image::getWindowWidth () const
+{
+    return m_windowWidth;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Image::setWindowWidth (double val)
+{
+    m_windowWidth = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline size_t Image::getNumberOfComponents() const
+{
+    return m_numberOfComponents;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Image::setNumberOfComponents(size_t val)
+{
+    m_numberOfComponents = val;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

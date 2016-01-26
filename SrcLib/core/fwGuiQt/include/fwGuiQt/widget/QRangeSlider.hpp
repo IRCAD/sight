@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_QRANGESLIDER_HPP_
-#define _FWGUIQT_QRANGESLIDER_HPP_
+#ifndef __FWGUIQT_WIDGET_QRANGESLIDER_HPP__
+#define __FWGUIQT_WIDGET_QRANGESLIDER_HPP__
 
 #include <QWidget>
 #include <QPainter>
@@ -23,7 +23,7 @@ namespace widget
 
 class FWGUIQT_CLASS_API QRangeSlider : public QWidget
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     class Paintable
@@ -33,13 +33,18 @@ public:
         {
             m_widget = w;
         }
-        virtual ~Paintable(){}
+        virtual ~Paintable()
+        {
+        }
 
         virtual void draw(QPainter &, bool enabled = true) = 0;
-        virtual bool pick(const QPoint&) const = 0;
+        virtual bool pick(const QPoint&) const             = 0;
 
     protected:
-        QSize drawingArea() const {return m_widget->size();}
+        QSize drawingArea() const
+        {
+            return m_widget->size();
+        }
         QPointer<QWidget> m_widget;
     };
 
@@ -48,9 +53,15 @@ public:
     FWGUIQT_API QRangeSlider(QWidget *parent = NULL);
     FWGUIQT_API virtual ~QRangeSlider();
 
-    QSize sizeHint() const {return QSize(100,20);};
+    QSize sizeHint() const
+    {
+        return QSize(100,20);
+    }
 
-    void setMinimumMinMaxDelta(double d){ m_minimumMinMaxDelta = d;}
+    void setMinimumMinMaxDelta(double d)
+    {
+        m_minimumMinMaxDelta = d;
+    }
 
 public Q_SLOTS:
     FWGUIQT_API void setPos(double _min, double _max);
@@ -97,4 +108,4 @@ protected:
 } // namespace widget
 } // namespace fwGuiQt
 
-#endif // _FWGUIQT_QRANGESLIDER_HPP_
+#endif // __FWGUIQT_WIDGET_QRANGESLIDER_HPP__

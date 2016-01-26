@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,8 +40,8 @@ public:
      * @see ::fwActivities::IValidator::validate
      */
     FWACTIVITIES_API virtual IValidator::ValidationType validate(
-            const ::fwActivities::registry::ActivityInfo& activityInfo,
-            SPTR(::fwData::Vector) currentSelection ) const;
+        const ::fwActivities::registry::ActivityInfo& activityInfo,
+        SPTR(::fwData::Vector) currentSelection ) const;
 };
 
 } // namespace validator

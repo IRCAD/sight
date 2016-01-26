@@ -21,7 +21,7 @@ namespace fwData
 class FWDATA_CLASS_API Port : public ::fwData::Object
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object), (()), ::fwData::factory::New< Port >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Port)(::fwData::Object), (()), ::fwData::factory::New< Port >);
 
     /**
      * @brief Constructor
@@ -32,11 +32,35 @@ public:
     /// Destructor
     FWDATA_API virtual ~Port();
 
-    fwGettersSettersDocMacro(Identifier, identifier, std::string,the port identifier (example : "ID_SIZEX", "THRESHOLD_LOW") );
+    /**
+     * @{
+     * @brief Retrieve the identifier.
+     */
+    const std::string  getIdentifier () const;
+    std::string & getRefIdentifier ();
+    const std::string & getCRefIdentifier () const;
+    void setIdentifier (const std::string _identifier);
+    void setCRefIdentifier (const std::string & _identifier);
+    /// @}
 
-    fwGettersSettersDocMacro(Type, type, std::string, the port type (example : "Image", "Mesh", a %data className));
+    /**
+     * @{
+     * @brief Retrieve the type.
+     */
 
+    const std::string  getType () const;
+    std::string & getRefType ();
+    const std::string & getCRefType () const;
+    void setType (const std::string _type);
+    void setCRefType (const std::string & _type);
+    /// @}
+
+    /**
+     * @{
+     * @brief Retrieve the input data.
+     */
     fwCampMakeFriendDataMacro((fwData)(Port));
+    /// @}
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& _source );
@@ -44,13 +68,85 @@ public:
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-protected :
+protected:
 
     //! port identifier
-    std::string  m_identifier; // example "ID_SIZEX", "THRESHOLD_LOW"
+    std::string m_identifier;  // example "ID_SIZEX", "THRESHOLD_LOW"
     //! port type
-    std::string  m_type ; // example "Image, Mesh" un className de data
+    std::string m_type;   // example "Image, Mesh" un className de data
 };
+
+//-----------------------------------------------------------------------------
+
+inline const std::string Port::getIdentifier () const
+{
+    return m_identifier;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::string & Port::getRefIdentifier ()
+{
+    return this->m_identifier;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string & Port::getCRefIdentifier () const
+{
+    return this->m_identifier;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Port::setIdentifier (const std::string _identifier)
+{
+    this->m_identifier = _identifier;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Port::setCRefIdentifier (const std::string & _identifier)
+{
+    this->m_identifier = _identifier;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string Port::getType () const
+{
+    return m_type;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::string & Port::getRefType ()
+{
+    return this->m_type;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string & Port::getCRefType () const
+{
+    return this->m_type;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Port::setType (const std::string _type)
+{
+    this->m_type = _type;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Port::setCRefType (const std::string & _type)
+{
+    this->m_type = _type;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

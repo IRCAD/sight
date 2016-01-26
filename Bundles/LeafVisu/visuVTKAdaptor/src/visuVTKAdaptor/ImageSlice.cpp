@@ -1,21 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/ImageMsg.hpp>
+#include "visuVTKAdaptor/ImageSlice.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwData/Image.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
-#include <fwData/Color.hpp>
-#include <fwData/String.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 
@@ -24,77 +26,75 @@
 #include <vtkImageActor.h>
 #include <vtkImageBlend.h>
 #include <vtkImageData.h>
+#include <vtkImageMapper3D.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
-#include <vtkImageMapper3D.h>
-
-#include "visuVTKAdaptor/ImageSlice.hpp"
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSlice, ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSlice, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_CHECK_CTRL_IMAGE_SLOT   = "checkCtrlImage";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 
 //------------------------------------------------------------------------------
 
-ImageSlice::ImageSlice() throw()
+ImageSlice::ImageSlice() throw() :
+    m_interpolation(true),
+    m_useImageTF(false),
+    m_actorOpacity(1.),
+    m_imageSource(nullptr),
+    m_imageActor(vtkImageActor::New()),
+    m_planeOutlinePolyData(vtkPolyData::New()),
+    m_planeOutlineMapper(vtkPolyDataMapper::New()),
+    m_planeOutlineActor(vtkActor::New())
 {
-    SLM_TRACE_FUNC();
-    m_imageActor = vtkImageActor::New();
-
-    m_imageSource = NULL;
-
-    m_planeOutlinePolyData = vtkPolyData::New();
-    m_planeOutlineMapper   = vtkPolyDataMapper::New();
-    m_planeOutlineActor    = vtkActor::New();
-
-    m_interpolation = true;
-
-    m_actorOpacity = 1.0;
-    m_useImageTF = false;
-
-    // Manage events
-    //this->addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER              );
-    //this->addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE           );
-    //this->addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX         );
-    //this->addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE   );
-    //this->addNewHandledEvent( "ACTOR_TRANSPARENCY");
+    newSlot(s_CHECK_CTRL_IMAGE_SLOT, &ImageSlice::checkCtrlImage, this);
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &ImageSlice::updateSliceIndex, this);
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &ImageSlice::updateSliceType, this);
 }
 
 //------------------------------------------------------------------------------
 
 ImageSlice::~ImageSlice() throw()
 {
-    SLM_TRACE_FUNC();
     m_imageActor->Delete();
-    m_imageActor = NULL;
+    m_imageActor = nullptr;
 
     m_planeOutlineActor->Delete();
-    m_planeOutlineActor = NULL;
+    m_planeOutlineActor = nullptr;
 
     m_planeOutlineMapper->Delete();
-    m_planeOutlineMapper = NULL;
+    m_planeOutlineMapper = nullptr;
 
     m_planeOutlinePolyData->Delete();
-    m_planeOutlinePolyData = NULL;
+    m_planeOutlinePolyData = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
 void ImageSlice::doStart() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->addToRenderer(m_imageActor);
     this->addToRenderer(m_planeOutlineActor);
     this->addToPicker(m_imageActor);
 
-    m_connection = this->getCtrlImage()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
+
+    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_MODIFIED_SIG,
+                           this->getSptr(), s_UPDATE_SLOT);
+    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG,
+                           this->getSptr(), s_UPDATE_SLICE_INDEX_SLOT);
+    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG,
+                           this->getSptr(), s_UPDATE_SLICE_TYPE_SLOT);
+    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_BUFFER_MODIFIED_SIG,
+                           this->getSptr(), s_UPDATE_SLOT);
     this->doUpdate();
 }
 
@@ -103,10 +103,8 @@ void ImageSlice::doStart() throw(fwTools::Failed)
 void ImageSlice::doStop() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if (!m_connection.expired())
-    {
-        m_connection.disconnect();
-    }
+
+    m_connections->disconnect();
     this->removeFromPicker(m_imageActor);
     this->removeAllPropFromRenderer();
 }
@@ -115,12 +113,15 @@ void ImageSlice::doStop() throw(fwTools::Failed)
 
 void ImageSlice::doSwap() throw(fwTools::Failed)
 {
-    if (!m_connection.expired())
-    {
-        m_connection.disconnect();
-    }
-    m_connection = this->getCtrlImage()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    m_connections->disconnect();
+    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_MODIFIED_SIG,
+                           this->getSptr(), s_UPDATE_SLOT);
+    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG,
+                           this->getSptr(), s_UPDATE_SLICE_INDEX_SLOT);
+    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG,
+                           this->getSptr(), s_UPDATE_SLICE_TYPE_SLOT);
+    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_BUFFER_MODIFIED_SIG,
+                           this->getSptr(), s_UPDATE_SLOT);
     this->doUpdate();
 }
 
@@ -156,108 +157,59 @@ void ImageSlice::doUpdate() throw(::fwTools::Failed)
     {
         this->buildPipeline();
         this->updateImage(image);
-        this->updateSliceIndex(image);
+        this->updateImageSliceIndex(image);
         this->updateOutline();
     }
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void ImageSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void ImageSlice::updateSliceIndex(int axial, int frontal, int sagittal)
 {
+    m_axialIndex->value()    = axial;
+    m_frontalIndex->value()  = frontal;
+    m_sagittalIndex->value() = sagittal;
+
     ::fwData::Image::sptr image = m_ctrlImage.lock();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    this->updateImageSliceIndex(image);
+    this->updateOutline();
+}
 
-    if ( msg->hasEvent( ::fwComEd::CompositeMsg::CHANGED_KEYS )
-         || msg->hasEvent( ::fwComEd::CompositeMsg::ADDED_KEYS )
-         || msg->hasEvent( ::fwComEd::CompositeMsg::REMOVED_KEYS )
-         )
+//-----------------------------------------------------------------------------
+
+void ImageSlice::updateSliceType(int from, int to)
+{
+    if( to == static_cast<int>(m_orientation) )
     {
-        if (m_ctrlImage.expired() || m_ctrlImage.lock() != this->getCtrlImage())
-        {
-            if (!m_connection.expired())
-            {
-                m_connection.disconnect();
-            }
-            m_connection = m_ctrlImage.lock()->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                                            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
-        }
-        this->doUpdate();
+        setOrientation( static_cast< Orientation >( from ));
     }
-
-    if (imageIsValid)
+    else if(from == static_cast<int>(m_orientation))
     {
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-        {
-            doUpdate();
-        }
-
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
-        {
-            ::fwComEd::ImageMsg::dynamicConstCast(msg)->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
-            this->updateSliceIndex(image);
-            this->updateOutline();
-        }
-
-        if ( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ) && imageIsValid)
-        {
-            ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-            ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-            ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
-
-            int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
-            int toSliceType =   ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
-
-            if( toSliceType == static_cast<int>(m_orientation) )
-            {
-                setOrientation( static_cast< Orientation >( fromSliceType ));
-                this->doUpdate();
-            }
-            else if(fromSliceType == static_cast<int>(m_orientation))
-            {
-                setOrientation( static_cast< Orientation >( toSliceType ));
-                this->doUpdate();
-            }
-        }
-        if ( msg->hasEvent( "ACTOR_OPACITY" ) )
-        {
-            ::fwData::Integer::csptr opacity =
-                    ::fwData::Integer::dynamicConstCast( msg->getDataInfo( "ACTOR_OPACITY" )) ;
-
-            double opacityDouble = static_cast<double>(opacity->value()) / 100.;
-            this->setActorOpacity(opacityDouble);
-            this->doUpdate();
-        }
+        setOrientation( static_cast< Orientation >( to ));
     }
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSlice::configuring() throw(fwTools::Failed)
+void ImageSlice::doConfigure() throw(fwTools::Failed)
 {
-
-    assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
     if(m_configuration->hasAttribute("sliceIndex"))
     {
-         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
-         if(orientation == "axial" )
-         {
-             m_orientation = Z_AXIS;
-         }
-         else if(orientation == "frontal" )
-         {
-             m_orientation = Y_AXIS;
-         }
-         else if(orientation == "sagittal" )
-         {
-             m_orientation = X_AXIS;
-         }
-    }
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
+        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
+        if(orientation == "axial" )
+        {
+            m_orientation = Z_AXIS;
+        }
+        else if(orientation == "frontal" )
+        {
+            m_orientation = Y_AXIS;
+        }
+        else if(orientation == "sagittal" )
+        {
+            m_orientation = X_AXIS;
+        }
     }
     if(m_configuration->hasAttribute("ctrlimage") )
     {
@@ -288,7 +240,7 @@ void ImageSlice::updateImage( ::fwData::Image::sptr image  )
 
 //------------------------------------------------------------------------------
 
-void ImageSlice::updateSliceIndex( ::fwData::Image::sptr image )
+void ImageSlice::updateImageSliceIndex( ::fwData::Image::sptr image )
 {
     unsigned int axialIndex    = m_axialIndex->value();
     unsigned int frontalIndex  = m_frontalIndex->value();
@@ -310,16 +262,16 @@ void ImageSlice::setSlice( int slice, ::fwData::Image::sptr image  )
     SLM_TRACE_FUNC();
     int extent[6];
     std::fill(  extent, extent+6, 0);
-    extent[1] = static_cast<int>(image->getSize()[0]-1);
-    extent[3] = static_cast<int>(image->getSize()[1]-1);
-    extent[5] = static_cast<int>(image->getSize()[2]-1);
-    extent[2*m_orientation]=slice;
-    extent[2*m_orientation+1]=slice;
+    extent[1]                 = static_cast<int>(image->getSize()[0]-1);
+    extent[3]                 = static_cast<int>(image->getSize()[1]-1);
+    extent[5]                 = static_cast<int>(image->getSize()[2]-1);
+    extent[2*m_orientation]   = slice;
+    extent[2*m_orientation+1] = slice;
 
     OSLM_TRACE("DisplayExtent : " << " X min: " << extent[0] << " X max: " << extent[1] <<
-                " Y min: " << extent[2] << " Y max: " << extent[3] <<
-                " Z min: " << extent[4] << " Z max: " << extent[5]
-                );
+               " Y min: " << extent[2] << " Y max: " << extent[3] <<
+               " Z min: " << extent[4] << " Z max: " << extent[5]
+               );
 
     m_imageActor->SetDisplayExtent( extent );
 
@@ -330,15 +282,13 @@ void ImageSlice::setSlice( int slice, ::fwData::Image::sptr image  )
 
 void ImageSlice::buildPipeline( )
 {
-    SLM_TRACE_FUNC();
-
     if (!m_imageSourceId.empty())
     {
         m_imageSource = this->getVtkObject(m_imageSourceId);
     }
 
-    vtkImageAlgorithm *algorithm  = vtkImageAlgorithm::SafeDownCast(m_imageSource);
-    vtkImageData      *imageData  = vtkImageData::SafeDownCast(m_imageSource);
+    vtkImageAlgorithm *algorithm = vtkImageAlgorithm::SafeDownCast(m_imageSource);
+    vtkImageData      *imageData = vtkImageData::SafeDownCast(m_imageSource);
     //vtkImageBlend     *imageBlend = vtkImageBlend::SafeDownCast(m_imageSource);
 
     SLM_ASSERT("Invalid vtk image source", algorithm||imageData );
@@ -348,8 +298,8 @@ void ImageSlice::buildPipeline( )
         m_imageActor->GetMapper()->SetInputConnection(algorithm->GetOutputPort());
         //if (imageBlend)
         //{
-            //imageBlend->SetBlendModeToCompound();
-            //imageBlend->SetCompoundThreshold(0);
+        //imageBlend->SetBlendModeToCompound();
+        //imageBlend->SetCompoundThreshold(0);
         //}
     }
     else if (imageData)
@@ -365,16 +315,16 @@ void ImageSlice::buildPipeline( )
 
     m_imageActor->SetInterpolate(m_interpolation);
     m_imageActor->SetOpacity(m_actorOpacity);
-    
+
     this->buildOutline();
     this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
+
 void ImageSlice::buildOutline()
 {
-    SLM_TRACE_FUNC();
-    vtkPoints* points   = vtkPoints::New(VTK_DOUBLE);
+    vtkPoints* points = vtkPoints::New(VTK_DOUBLE);
     points->SetNumberOfPoints(4);
     int i;
     for (i = 0; i < 4; i++)
@@ -396,10 +346,10 @@ void ImageSlice::buildOutline()
 
     m_planeOutlinePolyData->SetPoints(points);
     points->Delete();
-    points = NULL;
+    points = nullptr;
     m_planeOutlinePolyData->SetLines(cells);
     cells->Delete();
-    cells = NULL;
+    cells = nullptr;
 
     m_planeOutlineMapper = vtkPolyDataMapper::New();
     m_planeOutlineMapper->SetInputData( m_planeOutlinePolyData );
@@ -415,22 +365,21 @@ void ImageSlice::buildOutline()
 
 //------------------------------------------------------------------------------
 
-
 void ImageSlice::updateOutline()
 {
     SLM_TRACE_FUNC();
-    static const int indexZ[12] = { 0,2,4, 1,2,4,  1,3,4 ,0,3,4 };
-    static const int indexY[12] = { 0,2,4, 1,2,4,  1,2,5 ,0,2,5 };
-    static const int indexX[12] = { 0,2,4, 0,2,5,  0,3,5 ,0,3,4 };
+    static const int indexZ[12]   = { 0,2,4, 1,2,4,  1,3,4,0,3,4 };
+    static const int indexY[12]   = { 0,2,4, 1,2,4,  1,2,5,0,2,5 };
+    static const int indexX[12]   = { 0,2,4, 0,2,5,  0,3,5,0,3,4 };
     static const int *indexSet[3] = { indexX, indexY, indexZ  };
-    static double colors[3][3] = { {0.,0.,1.} , {0.,1.,0.}, {1.,0.,0.} };
+    static double colors[3][3]    = { {0.,0.,1.}, {0.,1.,0.}, {1.,0.,0.} };
 
-    double *extent = m_imageActor->GetBounds();
+    double *extent    = m_imageActor->GetBounds();
     vtkPoints* points = m_planeOutlinePolyData->GetPoints();
 
 
     const int *index = indexSet[ m_orientation ];
-    for ( int i=0; i < 4; ++i)
+    for ( int i = 0; i < 4; ++i)
     {
         double pt[3];
         pt[0] = extent[ *(index++) ];
@@ -446,5 +395,38 @@ void ImageSlice::updateOutline()
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
+
+void ImageSlice::checkCtrlImage()
+{
+    if (m_ctrlImage.expired() || m_ctrlImage.lock() != this->getCtrlImage())
+    {
+        m_connections->disconnect();
+        m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_MODIFIED_SIG,
+                               this->getSptr(), s_UPDATE_SLOT);
+        m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG,
+                               this->getSptr(), s_UPDATE_SLICE_INDEX_SLOT);
+        m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG,
+                               this->getSptr(), s_UPDATE_SLICE_TYPE_SLOT);
+        m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_BUFFER_MODIFIED_SIG,
+                               this->getSptr(), s_UPDATE_SLOT);
+
+        this->doUpdate();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ImageSlice::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_CHECK_CTRL_IMAGE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHECK_CTRL_IMAGE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_CHECK_CTRL_IMAGE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

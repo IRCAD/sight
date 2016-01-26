@@ -7,14 +7,13 @@
 #ifndef __FWDATA_GENERICFIELDBASE_HPP__
 #define __FWDATA_GENERICFIELDBASE_HPP__
 
-#include <string>
-#include <ostream>
+#include "fwData/config.hpp"
+#include "fwData/Object.hpp"
 
 #include <fwCore/base.hpp>
 
-
-#include "fwData/config.hpp"
-#include "fwData/Object.hpp"
+#include <string>
+#include <ostream>
 
 namespace fwData
 {
@@ -36,11 +35,11 @@ public:
     FWDATA_API virtual bool operator>= (const GenericFieldBase &lf ) = 0;
     FWDATA_API friend std::ostream& operator<<( std::ostream &, const GenericFieldBase & );
 
-    FWDATA_API virtual ::std::string toString() const = 0;
+    FWDATA_API virtual ::std::string toString() const               = 0;
     FWDATA_API virtual void fromString(const ::std::string &_value) = 0;
 
 
-private :
+private:
     FWDATA_API virtual std::ostream & toOStream( std::ostream &_os ) const = 0;
 };
 

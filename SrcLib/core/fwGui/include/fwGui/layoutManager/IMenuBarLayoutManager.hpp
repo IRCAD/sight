@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,12 +8,12 @@
  * @file fwGui/layoutManager/IMenuBarLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a menubar.
  *
- * 
+ *
  * @date 2009-2010
  */
 
-#ifndef _FWGUI_LAYOUTMANAGER_IMENUBARLAYOUTMANAGER_HPP_
-#define _FWGUI_LAYOUTMANAGER_IMENUBARLAYOUTMANAGER_HPP_
+#ifndef __FWGUI_LAYOUTMANAGER_IMENUBARLAYOUTMANAGER_HPP__
+#define __FWGUI_LAYOUTMANAGER_IMENUBARLAYOUTMANAGER_HPP__
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -30,7 +30,7 @@ namespace layoutManager
 /**
  * @brief   Defines the menu bar layout manager for IHM.
  * @class   IMenuBarLayoutManager
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -60,7 +60,7 @@ public:
      *
      * Example of configuration
      * @verbatim
-      <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+       <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no" >
           <gui>
               <layout>
                   <menu name="My Menu"/>
@@ -71,7 +71,7 @@ public:
               <menu sid="myMenu" start="yes" />
               <menu sid="myMenu2" start="yes" />
           </registry>
-      </service>
+       </service>
        @endverbatim
      * This method analyzes the gui section of the configuration.
      *  - \<layout\> (mandatory) : give the list of the menu that will appear in the menu bar.
@@ -124,6 +124,6 @@ protected:
 } // namespace layoutManager
 } // namespace fwGui
 
-#endif /*_FWGUI_LAYOUTMANAGER_IMENUBARLAYOUTMANAGER_HPP_*/
+#endif /*__FWGUI_LAYOUTMANAGER_IMENUBARLAYOUTMANAGER_HPP__*/
 
 

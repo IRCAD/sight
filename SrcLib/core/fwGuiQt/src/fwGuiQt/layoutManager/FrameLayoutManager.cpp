@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,12 +31,14 @@ namespace fwGui
 //-----------------------------------------------------------------------------
 
 FrameLayoutManager::FrameLayoutManager(::fwGui::GuiBaseObject::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 FrameLayoutManager::~FrameLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -46,10 +48,10 @@ void FrameLayoutManager::createFrame()
     FrameInfo frameInfo = this->getFrameInfo();
 
     ::fwGuiQt::QtMainFrame *mainframe = new ::fwGuiQt::QtMainFrame();
-    m_qtWindow = mainframe;
+    m_qtWindow                        = mainframe;
 
 
-    ::fwGuiQt::QtMainFrame::CloseCallback fct = ::boost::bind( &::fwGui::FrameLayoutManager::onCloseFrame, this);
+    ::fwGuiQt::QtMainFrame::CloseCallback fct = std::bind( &::fwGui::FrameLayoutManager::onCloseFrame, this);
     mainframe->setCloseCallback(fct);
 
     m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
@@ -60,7 +62,7 @@ void FrameLayoutManager::createFrame()
     if(!frameInfo.m_iconPath.empty())
     {
         QIcon icon(QString::fromStdString(frameInfo.m_iconPath.string()));
-        OSLM_ASSERT("Sorry, unable to create an icon instance from " << frameInfo.m_iconPath.string(), !icon.isNull());
+        OSLM_ASSERT("Unable to create an icon instance from " << frameInfo.m_iconPath.string(), !icon.isNull());
         m_qtWindow->setWindowIcon(icon);
     }
     if(!qApp->activeWindow())
@@ -76,8 +78,8 @@ void FrameLayoutManager::createFrame()
         m_qtWindow->setWindowModality(Qt::ApplicationModal);
     }
 
-    int sizeX = (frameInfo.m_size.first  > 0)?frameInfo.m_size.first:m_qtWindow->size().width();
-    int sizeY = (frameInfo.m_size.second > 0)?frameInfo.m_size.second:m_qtWindow->size().height();
+    int sizeX = (frameInfo.m_size.first  > 0) ? frameInfo.m_size.first : m_qtWindow->size().width();
+    int sizeY = (frameInfo.m_size.second > 0) ? frameInfo.m_size.second : m_qtWindow->size().height();
 
     int posX = frameInfo.m_position.first;
     int posY = frameInfo.m_position.second;
@@ -112,10 +114,10 @@ void FrameLayoutManager::createFrame()
 void FrameLayoutManager::destroyFrame()
 {
 
-    this->getRefFrameInfo().m_state = this->getState();
-    this->getRefFrameInfo().m_size.first = m_qtWindow->size().width();
-    this->getRefFrameInfo().m_size.second = m_qtWindow->size().height();
-    this->getRefFrameInfo().m_position.first = m_qtWindow->geometry().x();
+    this->getRefFrameInfo().m_state           = this->getState();
+    this->getRefFrameInfo().m_size.first      = m_qtWindow->size().width();
+    this->getRefFrameInfo().m_size.second     = m_qtWindow->size().height();
+    this->getRefFrameInfo().m_position.first  = m_qtWindow->geometry().x();
     this->getRefFrameInfo().m_position.second = m_qtWindow->geometry().y();
     this->writeConfig();
 
@@ -149,19 +151,19 @@ void FrameLayoutManager::setState( FrameState state )
     // Updates the window state.
     switch( state )
     {
-    case ICONIZED:
-        m_qtWindow->showMinimized();
-        break;
+        case ICONIZED:
+            m_qtWindow->showMinimized();
+            break;
 
-    case MAXIMIZED:
-        m_qtWindow->showMaximized();
-        break;
+        case MAXIMIZED:
+            m_qtWindow->showMaximized();
+            break;
 
-    case FULL_SCREEN:
-        m_qtWindow->showFullScreen();
-        break;
-    default:
-        m_qtWindow->showNormal();
+        case FULL_SCREEN:
+            m_qtWindow->showFullScreen();
+            break;
+        default:
+            m_qtWindow->showNormal();
     }
 }
 
@@ -191,7 +193,7 @@ void FrameLayoutManager::setState( FrameState state )
 bool FrameLayoutManager::isOnScreen(const QPoint& pos)
 {
     bool isVisible = false;
-    for(int i=0; i < QDesktopWidget().screenCount() && !isVisible; ++i)
+    for(int i = 0; i < QDesktopWidget().screenCount() && !isVisible; ++i)
     {
         isVisible = QDesktopWidget().screenGeometry(i).contains(pos, false);
     }

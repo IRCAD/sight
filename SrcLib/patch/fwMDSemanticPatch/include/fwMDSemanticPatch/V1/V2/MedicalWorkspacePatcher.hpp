@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMDSEMANTICPATCH_V1TOV2_MEDICALWORKSPACEPATCHER_HPP__
-#define __FWMDSEMANTICPATCH_V1TOV2_MEDICALWORKSPACEPATCHER_HPP__
+#ifndef __FWMDSEMANTICPATCH_V1_V2_MEDICALWORKSPACEPATCHER_HPP__
+#define __FWMDSEMANTICPATCH_V1_V2_MEDICALWORKSPACEPATCHER_HPP__
 
 #include <string>
 
@@ -43,8 +43,8 @@ class FWMDSEMANTICPATCH_CLASS_API MedicalWorkspacePatcher : public ::fwAtomsPatc
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro(
-            (MedicalWorkspacePatcher)(::fwAtomsPatch::patcher::DefaultPatcher), (()),
-                ::fwAtomsPatch::patcher::factory::New< MedicalWorkspacePatcher >);
+        (MedicalWorkspacePatcher)(::fwAtomsPatch::patcher::DefaultPatcher), (()),
+        ::fwAtomsPatch::patcher::factory::New< MedicalWorkspacePatcher >);
 
     /// Constructor
     FWMDSEMANTICPATCH_API MedicalWorkspacePatcher(::fwAtomsPatch::patcher::IPatcher::Key key);
@@ -59,9 +59,9 @@ public:
      * 'patientDB', 'planningDB' and 'processingDB', and applies patcher 'DefaultPatcher'.
      */
     FWMDSEMANTICPATCH_API virtual ::fwAtoms::Object::sptr transformObject(::fwAtoms::Object::sptr object,
-            const std::string& context,
-            const std::string& currentVersion,
-            const std::string& targetVersion);
+                                                                          const std::string& context,
+                                                                          const std::string& currentVersion,
+                                                                          const std::string& targetVersion);
 
 protected:
 
@@ -74,5 +74,5 @@ protected:
 } // namespace V1
 } // namespace fwMDSemanticPatch
 
-#endif /* __FWMDSEMANTICPATCH_V1TOV2_MEDICALWORKSPACEPATCHER_HPP__ */
+#endif /* __FWMDSEMANTICPATCH_V1_V2_MEDICALWORKSPACEPATCHER_HPP__ */
 

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IOTUTO_EXTERNALDATAREADER_HPP_
-#define _IOTUTO_EXTERNALDATAREADER_HPP_
+#ifndef __IOTUTO_EXTERNALDATAREADERSERVICE_HPP__
+#define __IOTUTO_EXTERNALDATAREADERSERVICE_HPP__
 
 #include <io/IReader.hpp>
 #include <boost/filesystem/path.hpp>
@@ -19,21 +19,21 @@ class IOTUTO_CLASS_API ExternalDataReaderService : public ::io::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (ExternalDataReaderService)( ::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ExternalDataReaderService)( ::io::IReader) );
     /**
      * @brief Constructor : does nothing
-    */
-    IOTUTO_API ExternalDataReaderService() ;
+     */
+    IOTUTO_API ExternalDataReaderService();
 
     /**
      * @brief Destructor
      */
-        IOTUTO_API ~ExternalDataReaderService() throw() ;
+    IOTUTO_API ~ExternalDataReaderService() throw();
 
     /**
      * @brief   returns  (filename) extension
      */
-    IOTUTO_API virtual std::vector< std::string > getSupportedExtensions() ;
+    IOTUTO_API virtual std::vector< std::string > getSupportedExtensions();
 
 protected:
 
@@ -46,14 +46,18 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    IOTUTO_API virtual void starting() throw(::fwTools::Failed){};
+    IOTUTO_API virtual void starting() throw(::fwTools::Failed)
+    {
+    }
 
     /**
      * @brief Stopping method : default does nothing.
      *
      * The stopping method is empty for this service.
      */
-    IOTUTO_API virtual void stopping() throw(::fwTools::Failed){};
+    IOTUTO_API virtual void stopping() throw(::fwTools::Failed)
+    {
+    }
 
 
     /**
@@ -61,13 +65,13 @@ protected:
      *
      * XML configuration sample:
      * @verbatim
-    <service type="::ioTuto::ExternalDataReaderService">
-    </service>
-     @endverbatim
+       <service type="::ioTuto::ExternalDataReaderService">
+       </service>
+       @endverbatim
      *
      * Configure External data info filename.
      */
-IOTUTO_API virtual void configuring( ) throw(::fwTools::Failed);
+    IOTUTO_API virtual void configuring( ) throw(::fwTools::Failed);
 
     /**
      * @brief Configure the image path.
@@ -85,15 +89,6 @@ IOTUTO_API virtual void configuring( ) throw(::fwTools::Failed);
     IOTUTO_API void updating() throw(::fwTools::Failed);
 
     /**
-     * @brief React on modifications : default does nothing.
-     *
-     * @note This method is automatically called by update( msg ) method from base service ( ::fwServices::IService ).
-     *
-     * @param[in] _msg information message for modification
-     */
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
-
-    /**
      * @brief Info method.
      *
      * This method is used to give
@@ -101,11 +96,11 @@ IOTUTO_API virtual void configuring( ) throw(::fwTools::Failed);
      *
      * @param[out] _sstream output stream
      */
-    IOTUTO_API virtual void info(std::ostream &_sstream ) ;
+    IOTUTO_API virtual void info(std::ostream &_sstream );
     /// @}
 
     /// Returns managed path type, here service manages only single file
     IOTUTO_API ::io::IOPathType getIOPathType() const;
 };
 }
-#endif /*_IOTUTO_EXTERNALDATAREADER_HPP_*/
+#endif /*__IOTUTO_EXTERNALDATAREADERSERVICE_HPP__*/

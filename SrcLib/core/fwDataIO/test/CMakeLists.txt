@@ -1,10 +1,14 @@
-
 fwLoadProperties()
 
 find_package (Boost COMPONENTS regex REQUIRED)
 find_package(CppUnit)
-fwInclude(${Boost_INCLUDE_DIRS} ${CPPUNIT_INCLUDE_DIR})
-fwLink(${Boost_LIBRARIES} ${CPPUNIT_LIBRARY})
+fwInclude(
+    ${CPPUNIT_INCLUDE_DIR}
+)
+fwLink(
+    ${Boost_REGEX_LIBRARY}
+    ${CPPUNIT_LIBRARY}
+)
 
 
 

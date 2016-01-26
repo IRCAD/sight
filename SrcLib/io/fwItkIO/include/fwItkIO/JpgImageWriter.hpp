@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWITKIO_JPGIMAGEWRITER_HPP_
-#define _FWITKIO_JPGIMAGEWRITER_HPP_
+#ifndef __FWITKIO_JPGIMAGEWRITER_HPP__
+#define __FWITKIO_JPGIMAGEWRITER_HPP__
 
 #include <boost/filesystem/path.hpp>
 
@@ -24,12 +24,12 @@ class JpgImageWriter :  public ::fwDataIO::writer::GenericObjectWriter< ::fwData
                         public ::fwTools::ProgressAdviser
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro((JpgImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image>),
                                            (()),
                                            ::fwDataIO::writer::factory::New< JpgImageWriter >
-                                          );
+                                           );
     fwCoreAllowSharedFromThis();
 
     FWITKIO_API JpgImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
@@ -43,4 +43,4 @@ public :
 
 } // namespace fwItkIO
 
-#endif // _FWITKIO_JPGIMAGEWRITER_HPP_
+#endif // __FWITKIO_JPGIMAGEWRITER_HPP__

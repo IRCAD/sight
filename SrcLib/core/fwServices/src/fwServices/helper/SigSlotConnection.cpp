@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwServices/helper/SigSlotConnection.hpp"
 
 #include <fwCom/SignalBase.hpp>
 
-#include "fwServices/helper/SigSlotConnection.hpp"
+#include <boost/foreach.hpp>
 
 namespace fwServices
 {
@@ -16,7 +16,8 @@ namespace helper
 {
 
 SigSlotConnection::SigSlotConnection()
-{}
+{
+}
 
 SigSlotConnection::~SigSlotConnection()
 {
@@ -36,11 +37,16 @@ void SigSlotConnection::connect(::fwCom::HasSignals::sptr hasSignals,
                                 const KeyConnectionsType & keyConnections )
 {
     ::fwCom::Connection connection;
-    BOOST_FOREACH( KeyConnectionType keys, keyConnections )
+    for( KeyConnectionType keys : keyConnections )
     {
         connection = hasSignals->signal( keys.first )->connect( hasSlots->slot( keys.second ) );
         m_connections.push_back(connection);
     }
+}
+
+void SigSlotConnection::addConnection( ::fwCom::Connection connection )
+{
+    m_connections.push_back(connection);
 }
 
 void SigSlotConnection::disconnect()

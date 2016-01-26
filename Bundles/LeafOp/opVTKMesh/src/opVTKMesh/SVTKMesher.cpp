@@ -1,13 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/lexical_cast.hpp>
+#include "opVTKMesh/SVTKMesher.hpp"
 
-#include <fwTools/fwID.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
+#include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -15,10 +18,8 @@
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/ModelSeriesMsg.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>
@@ -30,40 +31,38 @@
 #include <vtkSmartPointer.h>
 #include <vtkImageData.h>
 
-#include "opVTKMesh/SVTKMesher.hpp"
 
 namespace opVTKMesh
 {
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::opVTKMesh::IMesher , ::opVTKMesh::SVTKMesher , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::opVTKMesh::IMesher, ::opVTKMesh::SVTKMesher, ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
 SVTKMesher::SVTKMesher() throw() :
     m_reduction(0)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 SVTKMesher::~SVTKMesher() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SVTKMesher::starting() throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void SVTKMesher::stopping() throw ( ::fwTools::Failed )
-{}
-
-//-----------------------------------------------------------------------------
-
-void SVTKMesher::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -79,12 +78,12 @@ void SVTKMesher::configuring() throw ( ::fwTools::Failed )
     SLM_ASSERT("You must have one <image/> element.", config.count("image") == 1);
     SLM_ASSERT("You must have one <modelSeries/> element.", config.count("modelSeries") == 1);
 
-    const ::fwServices::IService::ConfigType& reductionCfg = config.get_child("percentReduction");
-    const ::fwServices::IService::ConfigType& imageCfg = config.get_child("image");
+    const ::fwServices::IService::ConfigType& reductionCfg   = config.get_child("percentReduction");
+    const ::fwServices::IService::ConfigType& imageCfg       = config.get_child("image");
     const ::fwServices::IService::ConfigType& modelSeriesCfg = config.get_child("modelSeries");
 
-    m_reduction = reductionCfg.get_value<unsigned int>();
-    m_imageKey = imageCfg.get_value<std::string>();
+    m_reduction      = reductionCfg.get_value<unsigned int>();
+    m_imageKey       = imageCfg.get_value<std::string>();
     m_modelSeriesKey = modelSeriesCfg.get_value<std::string>();
 }
 
@@ -92,8 +91,8 @@ void SVTKMesher::configuring() throw ( ::fwTools::Failed )
 
 void SVTKMesher::updating() throw ( ::fwTools::Failed )
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    ::fwData::Composite::iterator iterImg = composite->find(m_imageKey);
+    ::fwData::Composite::sptr composite           = this->getObject< ::fwData::Composite >();
+    ::fwData::Composite::iterator iterImg         = composite->find(m_imageKey);
     ::fwData::Composite::iterator iterModelSeries = composite->find(m_modelSeriesKey);
 
     SLM_ASSERT("Key '"+m_imageKey+"' not found in composite.", iterImg != composite->end());
@@ -120,7 +119,8 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
     contourFilter->Update();
 
     // smooth filter
-    vtkSmartPointer< vtkWindowedSincPolyDataFilter > smoothFilter = vtkSmartPointer< vtkWindowedSincPolyDataFilter >::New();
+    vtkSmartPointer< vtkWindowedSincPolyDataFilter > smoothFilter =
+        vtkSmartPointer< vtkWindowedSincPolyDataFilter >::New();
     smoothFilter->SetInputConnection(contourFilter->GetOutputPort());
     smoothFilter->SetNumberOfIterations( 50 );
     smoothFilter->BoundarySmoothingOn();
@@ -157,14 +157,12 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
         ::fwVtkIO::helper::Mesh::fromVTKMesh( polyData, mesh);
     }
 
-
-
     ::fwData::Reconstruction::sptr reconstruction = ::fwData::Reconstruction::New();
 
     static unsigned int organNumber = 0;
     ++organNumber;
-    reconstruction->setCRefOrganName("OrganMesher_VTK_" + ::boost::lexical_cast<std::string>(organNumber));
-    reconstruction->setCRefStructureType("OrganType");
+    reconstruction->setOrganName("OrganMesher_VTK_" + std::to_string(organNumber));
+    reconstruction->setStructureType("OrganType");
     reconstruction->setIsVisible(true);
     // Set Mesh
     reconstruction->setMesh(mesh);
@@ -173,16 +171,13 @@ void SVTKMesher::updating() throw ( ::fwTools::Failed )
     recs.push_back(reconstruction);
     modelSeries->setReconstructionDB(recs);
 
-    /// Notification
-    ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
-    msg->addEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION ) ;
-    ::fwServices::IEditionService::notify( this->getSptr(), modelSeries, msg );
+    // Notification
+    ::fwMedData::ModelSeries::ReconstructionVectorType addedRecs;
+    addedRecs.push_back(reconstruction);
+    auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType >(
+        ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
+    sig->asyncEmit(addedRecs);
 }
-
-//-----------------------------------------------------------------------------
-
-void SVTKMesher::info ( std::ostream &_sstream )
-{}
 
 //-----------------------------------------------------------------------------
 

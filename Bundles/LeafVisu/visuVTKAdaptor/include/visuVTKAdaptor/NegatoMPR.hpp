@@ -1,29 +1,32 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_NEGATOMPR_HPP_
-#define _VISUVTKADAPTOR_NEGATOMPR_HPP_
-
-#include <boost/logic/tribool.hpp>
-
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#ifndef __VISUVTKADAPTOR_NEGATOMPR_HPP__
+#define __VISUVTKADAPTOR_NEGATOMPR_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
+
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
+#include <fwServices/helper/SigSlotConnection.hpp>
 
 namespace visuVTKAdaptor
 {
 
+class SliceCursor;
 
-class VISUVTKADAPTOR_CLASS_API NegatoMPR: public ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API NegatoMPR : public ::fwComEd::helper::MedicalImageAdaptor,
+                                           public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API NegatoMPR() throw();
 
@@ -36,19 +39,40 @@ public:
         THREE_SLICES
     } SliceMode;
 
-    void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
-    void setInterpolation(bool interpolation){m_interpolation = interpolation;};
-    void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
+    void setAllowAlphaInTF(bool allow)
+    {
+        m_allowAlphaInTF = allow;
+    }
+    void setInterpolation(bool interpolation)
+    {
+        m_interpolation = interpolation;
+    }
+    void setVtkImageSourceId(std::string id)
+    {
+        m_imageSourceId = id;
+    }
 
-    void setSliceMode(SliceMode sliceMode);
-    SliceMode getSliceMode();
-    ::boost::logic::tribool is3dModeEnabled();
-    void set3dMode( bool enabled );
+    VISUVTKADAPTOR_API void setSliceMode(SliceMode sliceMode);
+    VISUVTKADAPTOR_API SliceMode getSliceMode() const;
+    VISUVTKADAPTOR_API ::boost::logic::tribool is3dModeEnabled() const;
+    VISUVTKADAPTOR_API void set3dMode( bool enabled );
 
     /// Set actor opacity
-    void setActorOpacity(double actorOpacity) {m_actorOpacity = actorOpacity;};
+    void setActorOpacity(double actorOpacity)
+    {
+        m_actorOpacity = actorOpacity;
+    }
 
-protected :
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
@@ -56,7 +80,6 @@ protected :
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     /**
      * @brief Configures the service
@@ -83,13 +106,32 @@ protected :
      * - \b tfSelectionFwID (optional): fwID of the composite containing transfer functions
      * - \b selectedTFKey (optional): key of the transfer function to use in negato
      */
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
-    void addAdaptor(std::string adaptor, int axis=-1);
+    ::fwRenderVTK::IVtkAdaptorService::sptr addAdaptor(std::string adaptor, int axis = -1);
 
 
 private:
+
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: update image slice type
+    void updateSliceType(int from, int to);
+
+    /// Slot: update Slice mode (0: NO_SLICE, 1: ONE_SLICE, 3: THREE_SLICES)
+    void updateSliceMode(int mode);
+
+    /// Slot: show/hide slice
+    void showSlice(bool isShown);
+
+    /// Slot: set the slice cross scale. Forward the information to SliceCursor sub-adaptor.
+    void setCrossScale(double scale);
+    /**
+     * @}
+     */
 
     bool m_allowAlphaInTF;
     bool m_interpolation;
@@ -100,11 +142,11 @@ private:
     ::boost::logic::tribool m_3dModeEnabled;
     SliceMode m_sliceMode;
     SliceMode m_backupedSliceMode;
+    ::fwServices::helper::SigSlotConnection::sptr m_connections; /// store subservices connections
+
+    ::fwRenderVTK::IVtkAdaptorService::wptr m_sliceCursor;
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_NEGATOMPR_HPP_
+#endif // __VISUVTKADAPTOR_NEGATOMPR_HPP__

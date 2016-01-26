@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWCAMP_CAMP_MAPPROPERTYIMPL_HPP__
-#define __FWCAMP_CAMP_MAPPROPERTYIMPL_HPP__
+#ifndef __FWCAMP_CAMP_DETAIL_MAPPROPERTYIMPL_HPP__
+#define __FWCAMP_CAMP_DETAIL_MAPPROPERTYIMPL_HPP__
 
 #include "fwCamp/camp/MapValueMapper.hpp"
 #include "fwCamp/camp/MapMapper.hpp"
@@ -67,4 +67,4 @@ private:
 
 #include "fwCamp/camp/detail/MapPropertyImpl.hxx"
 
-#endif /* __FWCAMP_CAMP_MAPPROPERTYIMPL_HPP__ */
+#endif /* __FWCAMP_CAMP_DETAIL_MAPPROPERTYIMPL_HPP__ */

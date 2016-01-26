@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,11 +30,11 @@ void RandomTest::tearDown()
 
 void RandomTest::generatorTest()
 {
-    float minF=10.f, maxF=20.f;
+    float minF  = 10.f, maxF = 20.f;
     float randF = ::fwTools::random::getValue(minF, maxF);
     CPPUNIT_ASSERT_MESSAGE("Generate random number not in good interval.", randF>=minF && randF<=maxF);
 
-    int minI=10, maxI=12;
+    int minI  = 10, maxI = 12;
     int randI = ::fwTools::random::getValue(minI, maxI);
     CPPUNIT_ASSERT_MESSAGE("Generate random number not in good interval.", randI>=minI && randI<=maxI);
 }
@@ -43,7 +43,7 @@ void RandomTest::generatorTest()
 
 void RandomTest::randomListTest()
 {
-    float minF=10.f, maxF=20.f;
+    float minF = 10.f, maxF = 20.f;
     std::vector<float> randF(10);
     ::fwTools::random::fillContainer(minF, maxF, randF);
     for(size_t i = 0; i <randF.size(); ++i)
@@ -51,7 +51,7 @@ void RandomTest::randomListTest()
         CPPUNIT_ASSERT_MESSAGE("Generate random number not in good interval.", randF[i]>=minF && randF[i]<=maxF);
     }
 
-    int minI=10, maxI=20;
+    int minI = 10, maxI = 20;
     std::vector<int> randI(10);
     ::fwTools::random::fillContainer(minI, maxI, randI);
     for(size_t i = 0; i <randF.size(); ++i)
@@ -66,13 +66,13 @@ void RandomTest::seedTest()
 {
     ::boost::uint32_t seedVal = 42;
 
-    float minF=10.f, maxF=20.f;
+    float minF   = 10.f, maxF = 20.f;
     float randF1 = ::fwTools::random::getValue(minF, maxF, seedVal);
     CPPUNIT_ASSERT_MESSAGE("Generate random number not in good interval.", randF1>=minF && randF1<=maxF);
     float randF2 = ::fwTools::random::getValue(minF, maxF, seedVal);
     CPPUNIT_ASSERT_EQUAL(randF1, randF2);
 
-    int minI=10, maxI=20;
+    int minI = 10, maxI = 20;
     std::vector<int> randI1(10);
     std::vector<int> randI2(10);
     ::fwTools::random::fillContainer(minI, maxI, randI1, seedVal);

@@ -1,17 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _CTRLSELECTION_MANAGER_SFIELD_HPP_
-#define _CTRLSELECTION_MANAGER_SFIELD_HPP_
+#ifndef __CTRLSELECTION_MANAGER_SFIELD_HPP__
+#define __CTRLSELECTION_MANAGER_SFIELD_HPP__
 
 #include <fwData/Object.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
 #include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IManagerSrv.hpp"
@@ -29,15 +28,25 @@ namespace manager
 class CTRLSELECTION_CLASS_API SField : public ::ctrlSelection::IManagerSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SField)(::ctrlSelection::IManagerSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SField)(::ctrlSelection::IManagerSrv) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API SField() throw() ;
+    CTRLSELECTION_API SField() throw();
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~SField() throw() ;
+    CTRLSELECTION_API virtual ~SField() throw();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Object::s_ADDED_FIELDS_SIG to this::s_ADD_FIELDS_SLOT
+     * Connect Object::s_CHANGED_FIELDS_SIG to this::s_CHANGE_FIELDS_SLOT
+     * Connect Object::s_REMOVED_FIELDS_SIG to this::s_REMOVE_FIELDS_SLOT
+     */
+    CTRLSELECTION_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -49,11 +58,11 @@ protected:
     CTRLSELECTION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
     /**
-    * @brief Implements configuring method derived from IService. .
-    *
-    * Sample of declaration configuration for a simple swapper service
-    *
-    * @verbatim
+     * @brief Implements configuring method derived from IService. .
+     *
+     * Sample of declaration configuration for a simple swapper service
+     *
+     * @verbatim
         <service uid="FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
             <mode type="dummy" />
             <config>
@@ -75,13 +84,13 @@ protected:
                 </field>
             </config>
         </service>
-    @endverbatim
-    * With:
-    * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached field is deleted but swap it on a dummy field.
-    * @li the fields, services, connect and proxy tags are defined as same as the configuration of fields and services.
-    * @li autoConnect: optional (default value = false), if true allows to listen signals from the associated object.
-    * @li worker: optional, allows to manage the service in another thread.
-    */
+       @endverbatim
+     * With:
+     * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached field is deleted but swap it on a dummy field.
+     * @li the fields, services, connect and proxy tags are defined as same as the configuration of fields and services.
+     * @li autoConnect: optional (default value = false), if true allows to listen signals from the associated object.
+     * @li worker: optional, allows to manage the service in another thread.
+     */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements reconfiguring method derived from IService. Do nothing.
@@ -93,27 +102,25 @@ protected:
     /// Implements info method derived from IService. Print classname.
     CTRLSELECTION_API virtual void info( std::ostream &_sstream );
 
-    /// Reacts on specifics event (ADDED_FIELDS, REMOVED_FIELDS and SWAPPED_FIELDS) and start, stop or swap the managed services
-    /// on the fields defined in the message or dummy fields
-    CTRLSELECTION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
-
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef ::fwData::Object::FieldNameType FieldNameType;
-    typedef ::fwServices::ObjectMsg::ModifiedFieldsContainerType ModifiedFieldsContainerType;
 
     class SubService
     {
     public:
 
         SubService() : m_hasAutoConnection(false)
-        {}
+        {
+        }
 
         ~SubService()
-        { }
+        {
+        }
 
         SPTR (::fwServices::IService) getService()
-                            { return m_service.lock(); }
+        {
+            return m_service.lock();
+        }
 
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
@@ -123,20 +130,27 @@ protected:
     };
 
     typedef std::vector< SPTR(SubService) > SubServicesVecType;
-    typedef std::map< FieldNameType, SubServicesVecType > SubServicesMapType ;
+    typedef std::map< FieldNameType, SubServicesVecType > SubServicesMapType;
 
 
     void initOnDummyObject( const FieldNameType& fieldName );
-    void addFields( const ModifiedFieldsContainerType& fields );
     void addField( const FieldNameType& fieldName, ::fwData::Object::sptr field );
-    void swapFields( const ModifiedFieldsContainerType& fields );
     void swapField(const FieldNameType& fieldName, ::fwData::Object::sptr field);
-    void removeFields( const ModifiedFieldsContainerType& fields );
     void removeField( const FieldNameType& fieldName );
+    /// Slot: add objects
+    void addFields(::fwData::Object::FieldsContainerType fields);
 
-    ::fwServices::IService::sptr add( ::fwData::Object::sptr obj , ::fwRuntime::ConfigurationElement::sptr _elt );
+    /// Slot: change objects
+    void changeFields(::fwData::Object::FieldsContainerType newFields, ::fwData::Object::FieldsContainerType oldFields);
+
+    /// Slot: remove objects
+    void removeFields(::fwData::Object::FieldsContainerType fields);
+
+    ::fwServices::IService::sptr add( ::fwData::Object::sptr obj, ::fwRuntime::ConfigurationElement::sptr _elt );
 
 private:
+
+
 
     std::string m_mode;
     bool m_dummyStopMode;
@@ -147,4 +161,4 @@ private:
 } // manager
 } // ctrlSelection
 
-#endif // _CTRLSELECTION_MANAGER_SFIELD_HPP_
+#endif // __CTRLSELECTION_MANAGER_SFIELD_HPP__

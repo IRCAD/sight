@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,11 +12,15 @@
 
 #include <io/IReader.hpp>
 
+#include <fwCom/Signal.hpp>
+
+#include <fwJobs/IJob.hpp>
+
 #include "ioAtoms/config.hpp"
 
 namespace fwMemory
 {
-    class IPolicy;
+class IPolicy;
 }
 
 namespace ioAtoms
@@ -32,13 +36,18 @@ class IOATOMS_CLASS_API SReader : public ::io::IReader
 
 public:
 
+    /// Signal type for job creation.
+    typedef ::fwCom::Signal< void ( ::fwJobs::IJob::sptr ) > JobCreatedSignalType;
+
     fwCoreServiceClassDefinitionsMacro( (SReader)(::io::IReader) );
 
     /// Does nothing
     SReader();
 
     /// Does nothing
-    virtual ~SReader() throw() {};
+    virtual ~SReader() throw()
+    {
+    }
 
     /// Propose to choose a medical data file (*.json,*.jsonz,*.xml or *.xmlz)
     IOATOMS_API void configureWithIHM();
@@ -60,23 +69,18 @@ protected:
     /**
      * @brief Configures the reader.
      * @verbatim
-     <config>
+       <config>
         <inject>ReadData</inject>
         <uuidPolicy>Strict|Change|Reuse</uuidPolicy>
         <patcher context="..." version="..." />
 
         <archive backend="json">
             <extension>.j</extension>
-        </archive> 
+        </archive>
 
         <archive backend="jsonz">
             <extension>.vpz</extension>
         </archive>
-
-        <archive backend="hdf5">
-            <extension>.f4s</extension>
-            <extension>.mw</extension>
-        </archive> 
 
         <extensions>
             <extension label="XML">.xml</extension>
@@ -87,16 +91,16 @@ protected:
             <extension>.vpz</extension>
         </extensions>
 
-     </config>
-     @endverbatim
+       </config>
+       @endverbatim
      *
      * archive : defines custom file extensions. The file to be read with an extension given in 'archive' tag will be
-     * processed with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must begin 
+     * processed with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must begin
      * with '.'.
-     * Available 'backend' values are json, xml, jsonz, xmlz, and hdf5.
+     * Available 'backend' values are json, xml, jsonz and xmlz.
      *
      * extensions : defines available extensions displayed in dialog to read file. If the 'extensions' is empty or not
-     * specified, all the extensions (.json, .xml, .jsonz, .xmlz, .hdf5 extensions and custom extensions) are available.
+     * specified, all the extensions (.json, .xml, .jsonz, .xmlz extensions and custom extensions) are available.
      * The attribute label (not mandatory) allows to display a label in front of extension when the file dialog is
      * shown.
      *
@@ -148,6 +152,9 @@ private:
 
     /// Labels shown in file dialog for each allowed extension
     FileExtension2NameType m_allowedExtLabels;
+
+    /// Signal emitted when job created.
+    JobCreatedSignalType::sptr m_sigJobCreated;
 };
 
 } // namespace ioAtoms

@@ -1,10 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-#include <boost/foreach.hpp>
 
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
@@ -16,7 +14,6 @@
 #include <fwTools/fwID.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
 
@@ -28,11 +25,12 @@ namespace fwRenderVTK
 IVtkAdaptorService::IVtkAdaptorService() throw()
     : m_comChannelPriority(0.5),
       m_vtkPipelineModified(true),
-      m_rendererId ("default") ,
+      m_rendererId ("default"),
       m_pickerId   (""), // by default no Picker
       m_transformId   (""), // by default no Transform
       m_propCollection ( vtkPropCollection::New() ),
-      m_autoRender(true)
+      m_autoRender(true),
+      m_autoConnect(true)
 {
     m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
@@ -44,15 +42,30 @@ IVtkAdaptorService::~IVtkAdaptorService() throw()
 
 void IVtkAdaptorService::info(std::ostream &_sstream )
 {
-    _sstream << "IVtkAdaptorService : " ;
-    this->SuperClass::info( _sstream ) ;
+    _sstream << "IVtkAdaptorService : ";
+    this->SuperClass::info( _sstream );
 }
+
+//------------------------------------------------------------------------------
+
+void IVtkAdaptorService::configuring() throw(fwTools::Failed)
+{
+    this->setPickerId    ( m_configuration->getAttributeValue ( "picker"    ) );
+    this->setRenderId    ( m_configuration->getAttributeValue ( "renderer"  ) );
+    this->setTransformId ( m_configuration->getAttributeValue ( "transform" ) );
+    doConfigure();
+}
+
+//------------------------------------------------------------------------------
+
 
 void IVtkAdaptorService::starting() throw(fwTools::Failed)
 {
     /// Install observation
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
-
+    if (m_autoConnect)
+    {
+        m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    }
     assert( m_renderService.lock() );
 
     doStart();
@@ -73,7 +86,10 @@ void IVtkAdaptorService::stopping() throw(fwTools::Failed)
 void IVtkAdaptorService::swapping() throw(fwTools::Failed)
 {
     m_connections->disconnect();
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    if (m_autoConnect)
+    {
+        m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    }
     doSwap();
     requestRender();
 }
@@ -88,28 +104,20 @@ void IVtkAdaptorService::updating() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::receiving(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    doReceive(msg);
-    requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void IVtkAdaptorService::setRenderService( VtkRenderService::sptr service)
+void IVtkAdaptorService::setRenderService( SRender::sptr service)
 {
     /// Preconditions
     SLM_ASSERT("service not instanced", service);
-    assert( this->isStopped() ) ;
+    assert( this->isStopped() );
 
-    m_renderService = service ;
+    m_renderService = service;
 }
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::setRenderId(VtkRenderService::RendererIdType newID)
+void IVtkAdaptorService::setRenderId(SRender::RendererIdType newID)
 {
-    m_rendererId =  newID;
+    m_rendererId = newID;
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +136,7 @@ void IVtkAdaptorService::requestRender()
         if ( !this->getRenderService()->getPendingRenderRequest())
         {
             this->getRenderService()->setPendingRenderRequest(true);
-            this->getRenderService()->slot(VtkRenderService::s_RENDER_SLOT)->asyncRun();
+            this->getRenderService()->slot(SRender::s_RENDER_SLOT)->asyncRun();
         }
         m_vtkPipelineModified = false;
     }
@@ -136,14 +144,14 @@ void IVtkAdaptorService::requestRender()
 
 //------------------------------------------------------------------------------
 
-VtkRenderService::RendererIdType IVtkAdaptorService::getRenderId()
+SRender::RendererIdType IVtkAdaptorService::getRenderId()
 {
     return m_rendererId;
 }
 
 //------------------------------------------------------------------------------
 
-VtkRenderService::sptr  IVtkAdaptorService:: getRenderService()
+SRender::sptr IVtkAdaptorService:: getRenderService()
 {
     return m_renderService.lock();
 }
@@ -157,14 +165,14 @@ vtkRenderer* IVtkAdaptorService::getRenderer()
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::setPickerId(VtkRenderService::PickerIdType newID)
+void IVtkAdaptorService::setPickerId(SRender::PickerIdType newID)
 {
-    m_pickerId =  newID;
+    m_pickerId = newID;
 }
 
 //------------------------------------------------------------------------------
 
-VtkRenderService::PickerIdType IVtkAdaptorService::getPickerId()
+SRender::PickerIdType IVtkAdaptorService::getPickerId()
 {
     return m_pickerId;
 }
@@ -182,14 +190,14 @@ vtkAbstractPropPicker * IVtkAdaptorService::getPicker(std::string pickerId)
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::setTransformId(VtkRenderService::VtkObjectIdType newID)
+void IVtkAdaptorService::setTransformId(SRender::VtkObjectIdType newID)
 {
-    m_transformId =  newID;
+    m_transformId = newID;
 }
 
 //------------------------------------------------------------------------------
 
-VtkRenderService::VtkObjectIdType IVtkAdaptorService::getTransformId()
+SRender::VtkObjectIdType IVtkAdaptorService::getTransformId()
 {
     return m_transformId;
 }
@@ -203,13 +211,13 @@ vtkTransform * IVtkAdaptorService::getTransform()
 
 //------------------------------------------------------------------------------
 
-vtkObject * IVtkAdaptorService::getVtkObject(VtkRenderService::VtkObjectIdType objectId)
+vtkObject * IVtkAdaptorService::getVtkObject(const SRender::VtkObjectIdType& objectId) const
 {
     if (!objectId.empty())
     {
         return m_renderService.lock()->getVtkObject(objectId);
     }
-    return NULL;
+    return nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -234,12 +242,15 @@ vtkRenderWindowInteractor* IVtkAdaptorService::getInteractor()
         else
         {
             ::fwData::Object::sptr res;
-            BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
+            for( ServiceVector::value_type service :  m_subServices)
             {
                 if(!service.expired())
                 {
                     res = service.lock()->getAssociatedObject(prop, depth - 1 );
-                    if (res) break;
+                    if (res)
+                    {
+                        break;
+                    }
                 }
             }
             obj = ( res && depth == 0 ) ? this->getObject() : res;
@@ -252,17 +263,14 @@ vtkRenderWindowInteractor* IVtkAdaptorService::getInteractor()
 
 void IVtkAdaptorService::registerService( ::fwRenderVTK::IVtkAdaptorService::sptr service)
 {
-        m_subServices.push_back(service);
+    m_subServices.push_back(service);
 }
 
 //------------------------------------------------------------------------------
 
 void IVtkAdaptorService::unregisterServices()
 {
-    BOOST_FOREACH(
-            ServiceVector::value_type service,
-            m_subServices
-            )
+    for(ServiceVector::value_type service : m_subServices)
     {
         if(!service.expired())
         {
@@ -310,7 +318,7 @@ void IVtkAdaptorService::getAllSubProps(vtkPropCollection *propc, int depth)
 
     if(depth != 0)
     {
-        BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
+        for( ServiceVector::value_type service :  m_subServices)
         {
             if(!service.expired())
             {
@@ -340,7 +348,7 @@ void IVtkAdaptorService::addToRenderer(vtkProp *prop)
 
 void IVtkAdaptorService::addToPicker(vtkProp *prop, std::string pickerId)
 {
-    OSLM_ASSERT("Picker '"<< pickerId << "' undefined." , this->getPicker(pickerId));
+    OSLM_ASSERT("Picker '"<< pickerId << "' undefined.", this->getPicker(pickerId));
     this->getPicker(pickerId)->AddPickList(prop);
     this->setVtkPipelineModified();
 }
@@ -349,7 +357,7 @@ void IVtkAdaptorService::addToPicker(vtkProp *prop, std::string pickerId)
 
 void IVtkAdaptorService::removeFromPicker(vtkProp *prop, std::string pickerId)
 {
-    OSLM_ASSERT("Picker '"<< pickerId << "' undefined." , this->getPicker(pickerId));
+    OSLM_ASSERT("Picker '"<< pickerId << "' undefined.", this->getPicker(pickerId));
     this->getPicker(pickerId)->DeletePickList(prop);
     this->setVtkPipelineModified();
 }

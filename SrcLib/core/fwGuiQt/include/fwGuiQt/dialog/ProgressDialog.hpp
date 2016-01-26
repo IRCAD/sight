@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_PROGRESSDIALOG_HPP
-#define _FWGUIQT_PROGRESSDIALOG_HPP
+#ifndef __FWGUIQT_DIALOG_PROGRESSDIALOG_HPP__
+#define __FWGUIQT_DIALOG_PROGRESSDIALOG_HPP__
 
 
 #include <string>
@@ -36,14 +36,15 @@ namespace dialog
 /**
  * @brief   This class allows us to select an acquisition in a patient data base.
  * @class   ProgressDialog
- * 
+ *
  * @date    2009.
  * @note Do not inherit from fwProgressDialog but embed a fwProgressDialog because this lasted is not copiable.
  * @todo ProgressDialog is not commented.
  */
-class FWGUIQT_CLASS_API ProgressDialog : public QObject, public ::fwGui::dialog::IProgressDialog
+class FWGUIQT_CLASS_API ProgressDialog : public QObject,
+                                         public ::fwGui::dialog::IProgressDialog
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
 
@@ -52,8 +53,8 @@ public:
                                             ::fwGui::factory::New< ProgressDialog > );
 
     FWGUIQT_API ProgressDialog( ::fwGui::GuiBaseObject::Key key,
-                                const std::string &title="Progression",
-                                const std::string &message= std::string(86,' ') );
+                                const std::string &title = "Progression",
+                                const std::string &message = std::string(86,' ') );
 
     FWGUIQT_API virtual ~ProgressDialog();
 
@@ -70,7 +71,7 @@ public:
 protected Q_SLOTS:
     void cancelPressed();
 
-protected :
+protected:
 
     QString m_title;
 
@@ -84,4 +85,4 @@ protected :
 } // namespace fwGuiQt
 
 
-#endif /* _FWGUIQT_PROGRESSDIALOG_HPP */
+#endif /* __FWGUIQT_DIALOG_PROGRESSDIALOG_HPP__ */

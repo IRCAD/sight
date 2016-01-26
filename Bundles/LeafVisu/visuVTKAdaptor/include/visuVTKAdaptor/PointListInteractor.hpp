@@ -1,30 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_POINTLISTINTERACTOR_HPP_
-#define _VISUVTKADAPTOR_POINTLISTINTERACTOR_HPP_
-
-#include <vector>
-
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#ifndef __VISUVTKADAPTOR_POINTLISTINTERACTOR_HPP__
+#define __VISUVTKADAPTOR_POINTLISTINTERACTOR_HPP__
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
+#include <vector>
 
 class vtkCommand;
 
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API PointListInteractor: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API PointListInteractor : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PointListInteractor)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PointListInteractor)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API PointListInteractor() throw();
 
@@ -39,21 +39,15 @@ protected:
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed){};
-
-
 
     vtkCommand *m_interactionCommand;
     float m_priority;
-
 };
-
-
 
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_POINTLISTINTERACTOR_HPP_
+#endif // __VISUVTKADAPTOR_POINTLISTINTERACTOR_HPP__

@@ -1,4 +1,3 @@
-fwEnableCpp11(${FWPROJECT_NAME})
 fwLoadProperties()
 fwUseForwardInclude(
     fwCom
@@ -9,17 +8,31 @@ fwUseForwardInclude(
     fwServices
 )
 
-find_package(Boost REQUIRED)
-find_package(VTK REQUIRED)
+if(NOT ANDROID)
+    find_package(VTK 
+        COMPONENTS
+        vtkInteractionWidgets
+        vtkInteractionStyle
+        vtkFiltersTexture
+        vtkRenderingOpenGL
+        vtkIOLegacy
+        REQUIRED
+    )
+else()
+    find_package(VTK 
+        COMPONENTS
+        vtkInteractionStyle
+        vtkFiltersTexture
+        vtkRenderingOpenGL2
+        vtkIOLegacy
+        REQUIRED
+    )  
+endif()
 
 fwForwardInclude(
-    ${Boost_INCLUDE_DIRS} 
     ${VTK_INCLUDE_DIRS}
-    )
+)
 fwLink(
-    ${Boost_LIBRARIES} 
-    vtkInteractionWidgets
-    vtkInteractionStyle
-    vtkFiltersTexture
-    )
+    ${VTK_LIBRARIES} 
+)
 

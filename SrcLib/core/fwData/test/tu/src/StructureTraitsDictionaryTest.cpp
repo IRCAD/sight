@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@ void StructureTraitsDictionaryTest::tearDown()
 void StructureTraitsDictionaryTest::testAddingStructure()
 {
     ::fwData::StructureTraitsDictionary::sptr structDico = ::fwData::StructureTraitsDictionary::New();
-    ::fwData::StructureTraits::sptr skin = ::fwData::StructureTraits::New();
+    ::fwData::StructureTraits::sptr skin                 = ::fwData::StructureTraits::New();
     std::string skinType = "Skin";
     skin->setType(skinType);
     skin->setClass(::fwData::StructureTraits::ENVIRONMENT);

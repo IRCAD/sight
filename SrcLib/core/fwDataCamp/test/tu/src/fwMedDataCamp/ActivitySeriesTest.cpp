@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,17 +43,17 @@ void ActivitySeriesTest::propertiesTest()
     const ::fwMedData::ActivitySeries::ConfigIdType activity_config_id = "Visu2D";
 
     const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                       ("patient")
-                                                                       ("study")
-                                                                       ("equipment")
-                                                                       ("instance_uid")
-                                                                       ("modality")
-                                                                       ("date")
-                                                                       ("time")
-                                                                       ("performing_physicians_name")
-                                                                       ("description")
-                                                                       ("activity_config_id")
-                                                                       ("data");
+                                                                    ("patient")
+                                                                    ("study")
+                                                                    ("equipment")
+                                                                    ("instance_uid")
+                                                                    ("modality")
+                                                                    ("date")
+                                                                    ("time")
+                                                                    ("performing_physicians_name")
+                                                                    ("description")
+                                                                    ("activity_config_id")
+                                                                    ("data");
 
     ::fwData::Composite::sptr data = ::fwData::Composite::New();
 

@@ -4,17 +4,17 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_OBJECTLOCK_HPP_
-#define _FWDATA_OBJECTLOCK_HPP_
+#ifndef __FWDATA_OBJECTLOCK_HPP__
+#define __FWDATA_OBJECTLOCK_HPP__
 
-#include <vector>
 
 #include "fwData/Image.hpp"
 #include "fwData/Array.hpp"
 #include "fwData/Mesh.hpp"
 #include "fwData/Reconstruction.hpp"
-
 #include "fwData/config.hpp"
+
+#include <vector>
 
 namespace fwData
 {
@@ -26,9 +26,11 @@ namespace fwData
 class FWDATA_CLASS_API ObjectLock
 {
 
-public :
+public:
 
-    ObjectLock(){}
+    ObjectLock()
+    {
+    }
 
     FWDATA_API ObjectLock( const ObjectLock & );
     FWDATA_API ObjectLock( ::fwData::Object::sptr obj );
@@ -36,7 +38,7 @@ public :
     FWDATA_API ~ObjectLock();
 
     FWDATA_API ObjectLock & operator=(const ObjectLock & );
-private :
+private:
 
 
     typedef std::vector< ::fwMemory::BufferObject::Lock > LocksType;
@@ -53,4 +55,4 @@ private :
 
 } // fwData
 
-#endif // _FWDATA_OBJECTLOCK_HPP_
+#endif // __FWDATA_OBJECTLOCK_HPP__

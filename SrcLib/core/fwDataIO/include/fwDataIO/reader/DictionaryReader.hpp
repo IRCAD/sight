@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_READER_DICTIONARY_HPP_
-#define _FWDATAIO_READER_DICTIONARY_HPP_
+#ifndef __FWDATAIO_READER_DICTIONARYREADER_HPP__
+#define __FWDATAIO_READER_DICTIONARYREADER_HPP__
 
-#include <boost/shared_ptr.hpp>
 #include <boost/filesystem.hpp>
 
 #include <fwData/StructureTraitsDictionary.hpp>
@@ -16,8 +15,9 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
 
-namespace fwData {
-    class StructureTraitsDictionary;
+namespace fwData
+{
+class StructureTraitsDictionary;
 }
 
 namespace fwDataIO
@@ -29,24 +29,25 @@ namespace reader
 /**
  * @brief   Dictionary reader. Read file with .dic extension.
  * @class   DictionaryReader
- * 
+ *
  * @date    2011
  *
  * Ircad reader to read a ::fwData::StructureTraitsDictionary on filesystem which the file format
  * is .dic. This is an ascii file the structure of each line is defined on the first line of this file.
  */
-class FWDATAIO_CLASS_API DictionaryReader:
-   public GenericObjectReader< ::fwData::StructureTraitsDictionary>,
-   public ::fwData::location::enableSingleFile< IObjectReader >
+class FWDATAIO_CLASS_API DictionaryReader :
+    public GenericObjectReader< ::fwData::StructureTraitsDictionary>,
+    public ::fwData::location::enableSingleFile< IObjectReader >
 
 {
 
-public :
+public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (DictionaryReader)(GenericObjectReader< ::fwData::StructureTraitsDictionary >),
-                                            (()),
-                                            ::fwDataIO::reader::factory::New< DictionaryReader >
-                                            );
+    fwCoreClassDefinitionsWithFactoryMacro(
+        (DictionaryReader)(GenericObjectReader< ::fwData::StructureTraitsDictionary >),
+        (()),
+        ::fwDataIO::reader::factory::New< DictionaryReader >
+        );
 
     /// Constructor. Do nothing .
     FWDATAIO_API DictionaryReader(::fwDataIO::reader::IObjectReader::Key key);
@@ -68,4 +69,4 @@ public :
 } // namespace fwDataIO
 
 
-#endif // _FWDATAIO_READER_DICTIONARY_HPP_
+#endif // __FWDATAIO_READER_DICTIONARYREADER_HPP__

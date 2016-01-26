@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_PROFILE_UNINITIALIZER_HPP_
-#define _FWRUNTIME_PROFILE_UNINITIALIZER_HPP_
+#ifndef __FWRUNTIME_PROFILE_UNINITIALIZER_HPP__
+#define __FWRUNTIME_PROFILE_UNINITIALIZER_HPP__
 
 #include <string>
 #include <boost/utility.hpp>
@@ -25,7 +25,7 @@ namespace profile
  * @brief   Starts a given bundle.
  * @class  Uninitializer
  * @date    2007-2009
- * 
+ *
  */
 class Uninitializer : public boost::noncopyable
 {
@@ -49,7 +49,7 @@ public:
 
 protected:
 
-    const std::string   m_identifier;   ///< a bundle identifier
+    const std::string m_identifier;     ///< a bundle identifier
 
 };
 
@@ -61,4 +61,4 @@ protected:
 
 
 
-#endif /*_FWRUNTIME_PROFILE_UNINITIALIZER_HPP_*/
+#endif /*__FWRUNTIME_PROFILE_UNINITIALIZER_HPP__*/

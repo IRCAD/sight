@@ -1,20 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_METAIMAGEWRITER_HPP_
-#define _VTKIO_METAIMAGEWRITER_HPP_
+#ifndef __FWVTKIO_METAIMAGEWRITER_HPP__
+#define __FWVTKIO_METAIMAGEWRITER_HPP__
 
 #include <boost/filesystem/path.hpp>
 
 #include <fwDataIO/writer/GenericObjectWriter.hpp>
 #include <fwData/location/SingleFile.hpp>
-#include <fwTools/ProgressAdviser.hpp>
 #include <fwData/Image.hpp>
 
 #include "fwVtkIO/config.hpp"
+
+namespace fwJobs
+{
+class Observer;
+}
 
 namespace fwVtkIO
 {
@@ -22,37 +26,44 @@ namespace fwVtkIO
 /**
  * @brief   Write a MetaImage.
  * @class   MetaImageWriter
- * 
- * @date    2011.
  *
  * Write a MetaImage using the VTK lib
  */
 class MetaImageWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >,
-                             public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >,
-                             public ::fwTools::ProgressAdviser
+                        public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
-public :
+public:
 
-    fwCoreClassDefinitionsWithFactoryMacro((MetaImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
-                                           (()),
-                                           ::fwDataIO::writer::factory::New< MetaImageWriter >
-                                          );
+    fwCoreClassDefinitionsWithFactoryMacro(
+        (MetaImageWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwData::Image >),
+        (()),
+        ::fwDataIO::writer::factory::New< MetaImageWriter >
+        );
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
-    VTKIO_API MetaImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWVTKIO_API MetaImageWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     //! @brief Destructor.
-    VTKIO_API ~MetaImageWriter();
+    FWVTKIO_API ~MetaImageWriter();
 
     //! @brief Writing operator.
-    VTKIO_API void write();
+    FWVTKIO_API void write();
 
     /// @return ".mhd"
-    VTKIO_API  std::string extension();
+    FWVTKIO_API std::string extension();
+
+    /// @return internal job
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+
+private:
+
+    ///Internal job
+    SPTR(::fwJobs::Observer) m_job;
+
 };
 
 } // namespace fwVtkIO
 
-#endif // _VTKIO_METAIMAGEWRITER_HPP_
+#endif // __FWVTKIO_METAIMAGEWRITER_HPP__

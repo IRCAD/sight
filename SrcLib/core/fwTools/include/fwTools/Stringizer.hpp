@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,9 +63,9 @@ template<class T>
 inline std::string getString(const T &t)
 {
     typedef BOOST_DEDUCED_TYPENAME boost::mpl::if_c<  boost::is_arithmetic<T>::value,
-            NumericCast,
-            Default
-            >::type Choice;
+                                                      NumericCast,
+                                                      Default
+                                                      >::type Choice;
 
     return Choice::eval(t);
 }
@@ -81,7 +81,7 @@ inline std::string getString(const T &t)
 template<class T1,class T2>
 inline std::string getString(const std::pair<T1,T2> &t)
 {
-    std::string res=("[");
+    std::string res = ("[");
     res += getString(t.first) + "," + getString(t.second) + "]";
     return res;
 }
@@ -101,10 +101,10 @@ inline std::string getString(ForwardIterator begin,ForwardIterator end)
     std::string result("[");
     if (begin!=end)
     {
-        result+= getString( *begin );
+        result += getString( *begin );
         while (++begin!=end)
         {
-            result+= "," + getString( *begin );
+            result += "," + getString( *begin );
         }
     }
     result += "]";

@@ -1,20 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP_
-#define _ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP_
+#ifndef __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
+#define __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
 
-#include <fwTools/Failed.hpp>
+#include <fwActivities/registry/Activities.hpp>
+#include <fwActivities/registry/ActivityMsg.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 
-#include <fwActivities/registry/Activities.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
 
 #include "activities/config.hpp"
 
@@ -23,26 +24,44 @@ namespace activities
 namespace action
 {
 
+/**
+ * @brief This action launchs an activity according to the selected data
+ *
+ * This action works on a ::fwData::Vector. It proposes all the available activity according to the selected data and
+ * the given configuration. And then, send a signal with all the activity information.
+ *
+ * This action should be followed by the service '::guiQt::editor::DynamicView' : this service listens the action
+ * signals and launchs the activity in a new tab.
+ */
 class ACTIVITIES_CLASS_API SActivityLauncher : public ::fwGui::IActionSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SActivityLauncher)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SActivityLauncher)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    ACTIVITIES_API SActivityLauncher() throw() ;
+    ACTIVITIES_API SActivityLauncher() throw();
 
     /// Destructor. Do nothing.
-    ACTIVITIES_API virtual ~SActivityLauncher() throw() ;
+    ACTIVITIES_API virtual ~SActivityLauncher() throw();
 
     ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
     typedef ::fwCom::Slot< void (SPTR( ::fwMedData::Series )) > LaunchSeriesSlotType;
 
-    typedef ::fwCom::Signal< void ( CSPTR(::fwServices::ObjectMsg) ) > ActivityLaunchedSignalType;
+    typedef ::fwCom::Signal< void ( ::fwActivities::registry::ActivityMsg ) > ActivityLaunchedSignalType;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
     ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
+     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_STATE_SLOT
+     */
+    ACTIVITIES_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -51,12 +70,6 @@ protected:
 
     ///This method launches the IAction::stopping method.
     virtual void stopping() throw(::fwTools::Failed);
-
-    /**
-     * @brief This method is used to update services on notification. ( overrides ).
-     * Enable the action according to the available activities.
-     */
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) msg ) throw(::fwTools::Failed);
 
     /**
      * @brief Show activity selector.
@@ -68,7 +81,7 @@ protected:
      * @see fwGui::IActionSrv::initialize()
      *
      * @verbatim
-     <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+       <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
          <config>
              <!-- SActivityLauncher mode : immediate or message(default)
              Immediate mode starts and stop immediatly the activity's config -->
@@ -95,13 +108,43 @@ protected:
             </quickLaunch>
 
          </config>
-     </service>
-     @endverbatim
-      */
+       </service>
+       @endverbatim
+     *
+     * - \b mode (optional): there are two mode: "message" and "immediate"
+     *    - \b message (used by défaut): the action send a signal containing the information needed to launch the
+     *      choosen activity. The service '::guiQt::editor::DynamicView' allows to launch the activity in a new tab. For
+     *      that, it must listen the action signal.
+     *    - \b immediate: the activity is automatically started et stopped by this action. It is used to run a process
+     *      without creating a new tab, for example, to save the selected data.
+     * - \b parameters (optional): list of the parameters used to launch the activity, it is the parameters for the
+     *   AppConfig associated to the activity.
+     *    - \b parameter: defines a parameter
+     *        - \b replace: name of the parameter as defined in the AppConfig
+     *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
+     *          frontal) or define a sesh@ path (ex. @values.myImage). The root object of the sesh@ path if the
+     *          composite contained in the ActivitySeries.
+     * - \b filter (optional): it allows to filter the activity that can be proposed.
+     *    - \b mode: 'include' or 'exclude'. Defines if the activity in the following list are proposed (include) or not
+     *      (exclude).
+     *    - \b id: id of the activity
+     * - \b quickLaunch (optional): defines the activity that will be launched on a double-click on a series. The
+     *   launched activity depends of the series type (ImageSeries, ModelSeries, ...).
+     *    - \b association: allows to associate an activity to launch with a type of series
+     *       - \b type: type of series (::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ....)
+     *       - \b id: identifier of the activity.
+     *
+     *
+     * @note A sesh@ path is a path used to browse an object (and sub-object) using the introspection (see fwDataCamp).
+     *       The path begins with a '@' or a '!'.
+     *          - '@' : the returned string is the fwID of the sub-object defined by the path.
+     *          - '!' : the returned string is the value of the sub-object, it works only on String, Integer, Float and
+     *            Boolean object.
+     */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
     typedef ::fwActivities::registry::ActivityAppConfig::ActivityAppConfigParamsType ParametersType;
 
@@ -109,10 +152,10 @@ protected:
 
     typedef std::map< std::string, std::string > QuickLaunchType;
 
-    /**
-     * @brief Updates action state (enable if activities are available for current selection).
-     */
+    //// SLOT: Updates action state (enable if activities are available for current selection).
     virtual void updateState();
+
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
 
     /**
      * @brief Interpret configuration parameters.
@@ -172,9 +215,6 @@ private:
     /// Id-s of activity configurations to be enabled or disabled, according to filter mode.
     KeysType m_keys;
 
-    /// Slot to call launchSeries method
-    LaunchSeriesSlotType::sptr m_slotLaunchSeries;
-
     /// Signal emitted when activity is launched. Send a message containing the activity information.
     ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
 
@@ -189,6 +229,6 @@ private:
 } // gui
 
 
-#endif // _ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP_
+#endif // __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
 
 

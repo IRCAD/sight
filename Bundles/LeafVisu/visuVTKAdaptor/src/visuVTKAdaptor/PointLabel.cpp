@@ -1,9 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef ANDROID
 
 #include <boost/format.hpp>
 
@@ -12,7 +13,6 @@
 #include <fwData/String.hpp>
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/PointMsg.hpp>
 
 #include <vtkRenderer.h>
 #include <vtkTextActor.h>
@@ -22,7 +22,7 @@
 #include <sstream>
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointLabel, ::fwData::Point ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointLabel, ::fwData::Point );
 
 namespace visuVTKAdaptor
 {
@@ -33,7 +33,6 @@ PointLabel::PointLabel() : Text()
 {
     m_actor->GetPositionCoordinate()->SetCoordinateSystemToWorld();
     m_actor->GetPosition2Coordinate()->SetCoordinateSystemToWorld();
-    //addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
 }
 
 //------------------------------------------------------------------------------
@@ -57,7 +56,7 @@ void PointLabel::doUpdate() throw(::fwTools::Failed)
 {
     ::fwData::Point::sptr point = this->getObject< ::fwData::Point >();
 
-    std::string label = point->getField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New())->value() ;
+    std::string label = point->getField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New())->value();
 
     setText( label );
 
@@ -71,19 +70,6 @@ void PointLabel::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointLabel::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_ASSERT("ACH : recieve a msg that no concern his object", _msg->getSubject().lock() == this->getObject() );
-
-    ::fwComEd::PointMsg::csptr pointMsg = ::fwComEd::PointMsg::dynamicConstCast( _msg );
-    if ( pointMsg && pointMsg->hasEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED ) )
-    {
-        this->doUpdate();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void PointLabel::doSwap() throw(fwTools::Failed)
 {
     this->doUpdate();
@@ -91,4 +77,16 @@ void PointLabel::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsType PointLabel::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Point::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

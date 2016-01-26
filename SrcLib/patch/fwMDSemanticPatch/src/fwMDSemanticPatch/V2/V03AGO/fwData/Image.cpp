@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,32 +27,34 @@ namespace fwData
 Image::Image() : ::fwAtomsPatch::ISemanticPatch()
 {
     m_originClassname = "::fwData::Image";
-    m_originVersion = "1";
+    m_originVersion   = "1";
     this->addContext("MedicalData", "V2", "V03AGO");
 }
 
 // ----------------------------------------------------------------------------
 
 Image::~Image()
-{}
+{
+}
 
 // ----------------------------------------------------------------------------
 
 Image::Image( const Image &cpy ) : ::fwAtomsPatch::ISemanticPatch(cpy)
-{}
+{
+}
 
 // ----------------------------------------------------------------------------
 
 void Image::apply(
-        const ::fwAtoms::Object::sptr& previous,
-        const ::fwAtoms::Object::sptr& current,
-        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
+    const ::fwAtoms::Object::sptr& previous,
+    const ::fwAtoms::Object::sptr& current,
+    ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     ISemanticPatch::apply(previous, current, newVersions);
     ::fwAtomsPatch::helper::cleanFields( current );
     ::fwAtomsPatch::helper::Object helper( current );
 
-    ::fwAtoms::Object::sptr array = ::fwAtoms::Object::dynamicCast(previous->getAttribute("array"));
+    ::fwAtoms::Object::sptr array        = ::fwAtoms::Object::dynamicCast(previous->getAttribute("array"));
     ::fwAtoms::Numeric::sptr nbComponent = ::fwAtoms::Numeric::dynamicCast(array->getAttribute("nb_of_components"));
 
     helper.replaceAttribute("nb_components", nbComponent->clone());

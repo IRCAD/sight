@@ -1,16 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifdef linux
-
+#if defined(linux) || defined(__linux) || defined (__MACOSX__)
 
 #include "fwRuntime/Bundle.hpp"
 #include "fwRuntime/dl/Posix.hpp"
-#include "fwRuntime/dl/PosixNameDecorator.hpp"
-
 
 namespace fwRuntime
 {
@@ -18,22 +15,28 @@ namespace fwRuntime
 namespace dl
 {
 
+//------------------------------------------------------------------------------
 
-Posix::Posix( const boost::filesystem::path & modulePath ) throw()
-: Native        ( modulePath, ::boost::shared_ptr< INameDecorator >(new PosixNameDecorator()) ),
-  m_handle  ( 0 )
-{}
+Posix::Posix( const boost::filesystem::path & modulePath ) throw() :
+    Native(modulePath),
+    m_handle  ( 0 )
+{
+}
 
+//------------------------------------------------------------------------------
 
 Posix::~Posix() throw()
-{}
+{
+}
 
+//------------------------------------------------------------------------------
 
 bool Posix::isLoaded() const throw()
 {
     return m_handle != 0;
 }
 
+//------------------------------------------------------------------------------
 
 void * Posix::getSymbol( const std::string & name ) const throw(RuntimeException)
 {
@@ -54,17 +57,14 @@ void * Posix::getSymbol( const std::string & name ) const throw(RuntimeException
     return result;
 }
 
+//------------------------------------------------------------------------------
 
 void Posix::load() throw(RuntimeException)
 {
     if(m_handle == 0)
     {
         // Opens the dynamic library.
-#if BOOST_FILESYSTEM_VERSION > 2
         m_handle = dlopen(getFullPath(true).string().c_str(), RTLD_LAZY|RTLD_GLOBAL);
-#else
-        m_handle = dlopen(getFullPath(true).native_file_string().c_str(), RTLD_LAZY|RTLD_GLOBAL);
-#endif
         if(m_handle == 0)
         {
             std::string message(dlerror());
@@ -73,6 +73,7 @@ void Posix::load() throw(RuntimeException)
     }
 }
 
+//------------------------------------------------------------------------------
 
 void Posix::unload() throw(RuntimeException)
 {
@@ -89,10 +90,11 @@ void Posix::unload() throw(RuntimeException)
     }
 }
 
+//------------------------------------------------------------------------------
 
 } // namespace dl
 
 } // namespace fwRuntime
 
 
-#endif // #ifdef linux
+#endif // #if defined(linux) || defined(__linux) || defined (__MACOSX__)
