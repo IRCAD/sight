@@ -1,4 +1,4 @@
-<plugin id="uiTools" class="::uiTools::Plugin" >
+<plugin id="uiTools" class="::uiTools::Plugin" version="@DASH_VERSION@" >
  
  <library name="uiTools" />
  

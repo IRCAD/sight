@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,10 @@ class vtkImageData;
 class vtkTexture;
 class vtkActor;
 
+namespace arData
+{
+class Camera;
+}
 
 namespace visuVTKARAdaptor
 {
@@ -52,16 +56,16 @@ protected:
     VISUVTKARADAPTOR_API void doStart() throw(fwTools::Failed);
 
     /**
-     * @verbatim
+     * @code{.xml}
        <adaptor id="video" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey">
         <config renderer="default" cameraUID="..." reverse="true" />
        </adaptor>
-       @endverbatim
+       @endcode
      * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
      * - \b cameraUID (optional) : defines the uid of the camera used to place video plane.
      * - \b reverse (optional)(default: true) : if true, the actor is rotated in z and y axis.
      */
-    VISUVTKARADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     /// Calls doUpdate()
     VISUVTKARADAPTOR_API void doSwap() throw(fwTools::Failed);
@@ -80,6 +84,9 @@ private:
     /// Slot: update image
     void updateImage();
 
+    /// Slot: apply the optical center offset to our video plane
+    void offsetOpticalCenter();
+
     vtkImageData* m_imageData; ///< vtk image created from current data Image. It is shown in the frame.
     vtkTexture* m_texture;  ///< texture used to show the image
     vtkActor * m_actor;  ///< actor to show frame
@@ -89,6 +96,8 @@ private:
     std::string m_cameraUID; ///< uid of the camera
 
     bool m_reverse; ///< if true, the actor is rotated in z and y axis.
+
+    SPTR(::arData::Camera) m_camera; ///< camera used to retrieve the optical center
 };
 
 } //namespace visuVTKARAdaptor

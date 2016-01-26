@@ -30,7 +30,7 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-fwServicesRegisterMacro(::videoTools::ISynchronizer, ::videoTools::SMatrixSynchronizer,
+fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SMatrixSynchronizer,
                         ::fwData::TransformationMatrix3D);
 
 // ----------------------------------------------------------------------------

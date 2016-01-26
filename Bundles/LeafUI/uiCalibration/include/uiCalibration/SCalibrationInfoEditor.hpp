@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -67,12 +67,12 @@ protected:
 
     /**
      * @brief Configuring method : This method is used to configure the service.
-     * @verbatim
+     * @code{.xml}
         <service uid="CalInfoEditor" type="::gui::editor::IEditor" impl="::uiCalibration::SCalibrationInfoEditor" autoConnect="no">
             <calInfo1>...</calInfo1>
             <calInfo2>...</calInfo2>
         </service>
-       @endverbatim
+       @endcode
      *
      * - \b calInfo1 uid of Camera1 CalibrationInfo
      * - \b calInfo2 uid of Camera2 calibrationInfo

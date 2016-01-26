@@ -29,7 +29,6 @@ fwInclude(
     ${Qt5Core_INCLUDE_DIRS}
     ${Qt5Widgets_INCLUDE_DIRS}
 )
-
 fwLink(
     ${Boost_SYSTEM_LIBRARY}
     ${CPPUNIT_LIBRARY}

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -92,7 +92,7 @@ protected:
      *
      * The method verifies if the configuration is well written and retrieves user parameter values.
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="..." impl="::trackerAruco::SArucoTracker" autoConnect="no">
             <config>
                 <timelineVideo>timelineA</timelineVideo>
@@ -111,7 +111,7 @@ protected:
                 <debugMarkers>yes</debugMarkers>
             </config>
         </service>
-       @endverbatim
+       @endcode
      * With :
      * None of these parameters are mandatory.
      *  - \b timelineVideo (mandatory) : input data.

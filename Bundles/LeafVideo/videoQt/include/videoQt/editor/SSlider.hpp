@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,7 +50,7 @@ public:
      */
 
     VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_POSITION_CHANGED_SIG;
-    typedef ::fwCom::Signal<void (int)> PositionChangedSignalType;
+    typedef ::fwCom::Signal<void (int64_t)> PositionChangedSignalType;
 
     /** @} */
 
@@ -60,10 +60,10 @@ public:
      */
 
     VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_SET_POSITION_SLIDER_SLOT;
-    typedef ::fwCom::Slot<void (long long)> ChangePositionSlotType;
+    typedef ::fwCom::Slot<void (int64_t)> ChangePositionSlotType;
 
     VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_SET_DURATION_SLIDER_SLOT;
-    typedef ::fwCom::Slot<void (long long)> ChangeDurationSlotType;
+    typedef ::fwCom::Slot<void (int64_t)> ChangeDurationSlotType;
 
     ///@}
 
@@ -87,9 +87,9 @@ protected:
     /**
      * @brief Configure the service
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="..." type="::gui::editor::IEditor" impl="::videoQt::editor::SSlider" autoConnect="no"/>
-       @endverbatim
+       @endcode
      */
     virtual void configuring() throw(fwTools::Failed);
 
@@ -97,10 +97,10 @@ protected:
     PositionChangedSignalType::sptr m_sigPositionChanged;
 
     /// SLOT : Call to set the video position.
-    void setPosition(const long long newPos);
+    void setPosition(int64_t newPos);
 
     /// SLOT : Call to set the video position.
-    void setDuration(const long long duration);
+    void setDuration(int64_t duration);
 
 protected Q_SLOTS:
 
@@ -116,12 +116,6 @@ private:
     QPointer<QSlider> m_positionSlider;
     QPointer<QLabel> m_currentPosition;
     QPointer<QLabel> m_totalDuration;
-
-    /// Slot to change the position of the slider
-    ChangePositionSlotType::sptr m_slotChangePosition;
-
-    /// Slot to change the duration of the slider
-    ChangeDurationSlotType::sptr m_slotChangeDuration;
 
     /// Is the slider pressed ?
     bool m_sliderPressed;

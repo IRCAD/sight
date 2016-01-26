@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UITOOLS_STIMESTAMPSLOTCALLER_HPP__
-#define __UITOOLS_STIMESTAMPSLOTCALLER_HPP__
+#ifndef __UITOOLS_ACTION_STIMESTAMPSLOTCALLER_HPP__
+#define __UITOOLS_ACTION_STIMESTAMPSLOTCALLER_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -26,10 +26,10 @@ namespace action
  * @class STimestampSlotCaller
  * @brief Runs a slot given by HasSlot id and slot key and set the current timestamp in parameter.
  *
- * @verbatim
+ * @code{.xml}
      ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
      slot->asyncRun(timestamp);
-   @endverbatim
+   @endcode
  */
 class UITOOLS_CLASS_API STimestampSlotCaller : public ::fwGui::IActionSrv
 {
@@ -57,14 +57,14 @@ protected:
     /**
      * @brief Configure the service
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="..." type="::fwGui::IActionSrv" impl="::uiTools::STimestampSlotCaller" autoConnect="no">
             <slots>
               <slot>hasSlotsId/slotKey</slot>
               <slot>hasSlots2Id/slot2Key</slot>
           </slots>
         </service>
-       @endverbatim
+       @endcode
      * - \b slot : defines the slot to run
      *   - \b hasSlotsId : fwId of the HasSlots (usually a service)
      *   - \b slotKey : the identifier of the slot in the HasSlots
@@ -85,4 +85,4 @@ protected:
 } // namespace uiTools
 
 
-#endif /* __UITOOLS_STIMESTAMPSLOTCALLER_HPP__ */
+#endif /* __UITOOLS_ACTION_STIMESTAMPSLOTCALLER_HPP__ */

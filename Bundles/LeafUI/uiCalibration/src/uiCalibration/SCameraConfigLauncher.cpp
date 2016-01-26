@@ -51,7 +51,7 @@ void SCameraConfigLauncher::configuring() throw(fwTools::Failed)
     this->initialize();
     ::fwServices::IService::ConfigType configuration = this->getConfigTree();
 
-    SLM_ASSERT("Sorry you must have one (and only one) <config/> element.",
+    SLM_ASSERT("There must be one (and only one) <config/> element.",
                configuration.get_child("service").count("config") == 1 );
     const ::fwServices::IService::ConfigType &srvconfig = configuration.get_child("service");
     const ::fwServices::IService::ConfigType &config    = srvconfig.get_child("config");
@@ -226,7 +226,7 @@ void SCameraConfigLauncher::onRemoveClicked()
         sig->asyncEmit(camera);
 
         // Remove calibrationInfo
-        std::string calibrationInfoKey = "calibrationInfo" + ::boost::lexical_cast<std::string>(index);
+        std::string calibrationInfoKey = "calibrationInfo" + camera->getID();
         m_activitySeries->getData()->getContainer().erase(calibrationInfoKey);
 
         const size_t nbCam = m_cameraSeries->getNumberOfCameras();
@@ -276,7 +276,7 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
 
     ::arData::Camera::sptr camera = m_cameraSeries->getCamera(index);
 
-    std::string calibrationInfoKey = "calibrationInfo" + ::boost::lexical_cast<std::string>(index);
+    std::string calibrationInfoKey = "calibrationInfo" + camera->getID();
     ::fwData::Composite::sptr data            = m_activitySeries->getData();
     ::arData::CalibrationInfo::sptr calibInfo =
         ::arData::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfoKey]);
@@ -348,14 +348,14 @@ void SCameraConfigLauncher::addCamera()
 {
     const size_t nbCam = m_cameraSeries->getNumberOfCameras();
 
-    // Add the CalibrationInfo in activitySeries to be saved in activity
-    std::string calibrationInfoKey = "calibrationInfo" + ::boost::lexical_cast<std::string>(nbCam);
-    ::arData::CalibrationInfo::sptr calibInfo = ::arData::CalibrationInfo::New();
+    ::arData::Camera::sptr camera = ::arData::Camera::New();
 
+    // Add the CalibrationInfo in activitySeries to be saved in activity
+    std::string calibrationInfoKey = "calibrationInfo" + camera->getID();
+    ::arData::CalibrationInfo::sptr calibInfo                       = ::arData::CalibrationInfo::New();
     m_activitySeries->getData()->getContainer()[calibrationInfoKey] = calibInfo;
 
     // Add the camera
-    ::arData::Camera::sptr camera = ::arData::Camera::New();
     m_cameraSeries->addCamera(camera);
     ::arData::CameraSeries::AddedCameraSignalType::sptr sig;
     sig = m_cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(

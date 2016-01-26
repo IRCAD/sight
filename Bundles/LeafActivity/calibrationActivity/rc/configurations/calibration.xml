@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>calibration</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
@@ -9,12 +8,14 @@
         <param name="cameraSeriesUid" />
         <param name="chessboardWidth" default="11" />
         <param name="chessboardHeight" default="8" />
+        <param name="squareSizeChessboard" default="20" />
+        <param name="videoGrabberImpl" default="::videoQt::SFrameGrabber" />
     </parameters>
     <config>
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Calibration" align="center" />
@@ -28,25 +29,25 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Export camera series" icon="Bundles/media_0-1/icons/Export.svg" />
                         <menuItem name="Export activity" icon="Bundles/arMedia_0-1/icons/export_activity.svg" />
-                        <separator/>
+                        <separator />
                         <menuItem name="Export XML" icon="Bundles/arMedia_0-1/icons/save.svg" />
-                        <separator/>
-                        <editor/>
-                        <separator/>
-                        <menuItem name="Chessboard size" icon="Bundles/arMedia_0-1/icons/chessboard.svg" />                        
+                        <separator />
+                        <editor />
+                        <separator />
+                        <menuItem name="Chessboard size" icon="Bundles/arMedia_0-1/icons/chessboard.svg" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="${GENERIC_UID}_ActionExport" start="yes" />
                     <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_ActionWriteXmlCalib" start="yes"/>
+                    <menuItem sid="${GENERIC_UID}_ActionWriteXmlCalib" start="yes" />
                     <editor sid="${GENERIC_UID}_cameraLauncher" start="no" />
-                    <menuItem sid="${GENERIC_UID}_action_chessBoardSize" start="yes" />                    
+                    <menuItem sid="${GENERIC_UID}_action_chessBoardSize" start="yes" />
                 </registry>
             </service>
 
@@ -55,41 +56,45 @@
                     <slot>${GENERIC_UID}_CalibrationXmlWriter/update</slot>
                 </slots>
             </service>
-            
+
             <service uid="${GENERIC_UID}_cameraLauncher" type="::gui::editor::IEditor" impl="::uiCalibration::SCameraConfigLauncher" autoConnect="no">
                 <config>
-                 <intrinsic>
-                    <appConfig id="calIntrinsicView" >
-                        <parameters>
-                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_calibrationView"  />
-                            <parameter replace="chessboardWidth" by="!values.chessboardParameters.values.chessboardWidth.value" />
-                            <parameter replace="chessboardHeight" by="!values.chessboardParameters.values.chessboardHeight.value" />
-                            <parameter replace="chessboardProxy" by="${GENERIC_UID}_chessboardProxy"  />
-                        </parameters>
-                    </appConfig>
-                </intrinsic>
-                <extrinsic>
-                    <appConfig id="calExtrinsicView" >
-                        <parameters>
-                            <parameter replace="WID_PARENT" by="${GENERIC_UID}_calibrationView"  />
-                            <parameter replace="chessboardWidth" by="!values.chessboardParameters.values.chessboardWidth.value" />
-                            <parameter replace="chessboardHeight" by="!values.chessboardParameters.values.chessboardHeight.value" />                            
-                            <parameter replace="cameraSeriesUid" by="${cameraSeriesUid}"  />
-                            <parameter replace="chessboardProxy" by="${GENERIC_UID}_chessboardProxy"  />
-                        </parameters>
-                    </appConfig>
-                </extrinsic>
-                <cameraSeriesKey>cameraSeries</cameraSeriesKey>
-                <activitySeriesKey>activitySeries</activitySeriesKey>
-            </config>
+                    <intrinsic>
+                        <appConfig id="calIntrinsicView">
+                            <parameters>
+                                <parameter replace="WID_PARENT" by="${GENERIC_UID}_calibrationView" />
+                                <parameter replace="chessboardWidth" by="!values.chessboardParameters.values.chessboardWidth.value" />
+                                <parameter replace="chessboardHeight" by="!values.chessboardParameters.values.chessboardHeight.value" />
+                                <parameter replace="squareSizeChessboard" by="!values.chessboardParameters.values.squareSizeChessboard.value" />
+                                <parameter replace="chessboardProxy" by="${GENERIC_UID}_chessboardProxy" />
+                                <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
+                            </parameters>
+                        </appConfig>
+                    </intrinsic>
+                    <extrinsic>
+                        <appConfig id="calExtrinsicView">
+                            <parameters>
+                                <parameter replace="WID_PARENT" by="${GENERIC_UID}_calibrationView" />
+                                <parameter replace="chessboardWidth" by="!values.chessboardParameters.values.chessboardWidth.value" />
+                                <parameter replace="chessboardHeight" by="!values.chessboardParameters.values.chessboardHeight.value" />
+                                <parameter replace="squareSizeChessboard" by="!values.chessboardParameters.values.squareSizeChessboard.value" />
+                                <parameter replace="cameraSeriesUid" by="${cameraSeriesUid}" />
+                                <parameter replace="chessboardProxy" by="${GENERIC_UID}_chessboardProxy" />
+                                <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
+                            </parameters>
+                        </appConfig>
+                    </extrinsic>
+                    <cameraSeriesKey>cameraSeries</cameraSeriesKey>
+                    <activitySeriesKey>activitySeries</activitySeriesKey>
+                </config>
             </service>
-            
-            <service uid="${GENERIC_UID}_action_chessBoardSize" impl="::videoCalibration::action::SCalibrationConfiguration" type="::fwGui::IActionSrv" autoConnect="no" >
+
+            <service uid="${GENERIC_UID}_action_chessBoardSize" impl="::videoCalibration::action::SCalibrationConfiguration" type="::fwGui::IActionSrv" autoConnect="no">
                 <config>
                     <parametersKey>chessboardParameters</parametersKey>
                 </config>
-            </service>         
-            
+            </service>
+
             <item key="seriesDB">
                 <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB">
                     <service uid="${GENERIC_UID}_ActionExport" type="::fwGui::IActionSrv" impl="::uiMedData::action::SExportSeries" autoConnect="yes">
@@ -100,43 +105,49 @@
                     </service>
                 </object>
             </item>
-            
+
             <item key="activitySeries">
                 <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
             </item>
-            
+
             <item key="cameraSeries">
-                <object uid="${cameraSeriesUid}" type="::arData::CameraSeries" src="ref" >
-                    <service uid="${GENERIC_UID}_CalibrationXmlWriter" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                <object uid="${cameraSeriesUid}" type="::arData::CameraSeries" src="ref">
+                    <service uid="${GENERIC_UID}_CalibrationXmlWriter" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                         <type mode="writer" />
                         <selection mode="include" />
                         <addSelection service="::ioCalibration::SExportCalibrationXml" />
                     </service>
                 </object>
             </item>
-            
+
             <item key="chessboardParameters">
                 <object type="::fwData::Composite">
                     <item key="chessboardWidth">
                         <object type="::fwData::String">
                             <value>${chessboardWidth}</value>
                         </object>
-                    </item>                    
+                    </item>
                     <item key="chessboardHeight">
                         <object type="::fwData::String">
                             <value>${chessboardHeight}</value>
                         </object>
                     </item>
+                    <item key="squareSizeChessboard">
+                        <object type="::fwData::String">
+                            <value>${squareSizeChessboard}</value>
+                        </object>
+                    </item>
+
                 </object>
             </item>
-            
+
             <proxy channel="${GENERIC_UID}_chessboardProxy">
                 <signal>${GENERIC_UID}_action_chessBoardSize/updatedChessboardSize</signal>
             </proxy>
 
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_mainView" />
-            <start uid="${GENERIC_UID}_cameraLauncher" /> <!-- Must be started after mainView  -->
+            <start uid="${GENERIC_UID}_cameraLauncher" /> <!-- Must be started after mainView -->
             <start uid="${GENERIC_UID}_CalibrationXmlWriter" />
 
         </object>

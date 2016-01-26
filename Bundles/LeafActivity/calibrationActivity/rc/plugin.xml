@@ -1,7 +1,6 @@
-<plugin id="calibrationActivity" >
+<plugin id="calibrationActivity" class="::calibrationActivity::Plugin" version="@DASH_VERSION@" >
 
     <library name="calibrationActivity" />
-
     <requirement id="gui" />
     <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKARAdaptor" />
@@ -18,6 +17,7 @@
     <xi:include href="configurations/calCameraView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/displayImageConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/toolsCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     
     
     <extension implements="::fwActivities::registry::Activities">
@@ -32,6 +32,26 @@
         <appConfig id="calibration">
             <parameters>
                 <parameter replace="cameraSeriesUid" by="@values.cameraSeries" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>toolsCalibration</id>
+        <title>ToolsCalibration</title>
+        <desc>Tools Calibration activity</desc>
+        <icon>Bundles/arMedia_0-1/icons/calibrationActivity.svg</icon>
+        <requirements>
+             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::calibrationActivity::builder::ToolCalibrationBuilder</builder>
+        <validator>::calibrationActivity::validator::ToolsCalibration</validator>
+        <appConfig id="toolsCalibration">
+            <parameters>
+                <parameter replace="camera1Uid" by="@values.cameraSeries.cameras.0" />
+                <parameter replace="camera2Uid" by="@values.cameraSeries.cameras.1" />
+                <parameter replace="cameraExtrinsicUid" by="@values.cameraSeries.extrinsic_matrices.1" />
+                <parameter replace="tagsId" by="!values.tagsIdString" />
             </parameters>
         </appConfig>
     </extension>

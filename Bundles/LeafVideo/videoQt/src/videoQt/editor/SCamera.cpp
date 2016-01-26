@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoQt/editor/SCamera.hpp"
+#include "videoQt/editor/CameraDeviceDlg.hpp"
 #include "videoQt/helper/preferences.hpp"
 
 #include <fwCore/base.hpp>
@@ -36,7 +37,6 @@
 #include <QLabel>
 #include <QPushButton>
 
-
 namespace videoQt
 {
 namespace editor
@@ -46,8 +46,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::videoQt::editor::SCamera, ::a
 
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() throw() :
-    m_bVideoSupport(false)
+SCamera::SCamera() throw() : m_bVideoSupport(false)
 {
 }
 
@@ -69,42 +68,23 @@ void SCamera::starting() throw(::fwTools::Failed)
     SLM_ASSERT("container not instanced", container);
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
-    QPointer<QLabel> deviceLabel = new QLabel(QObject::tr("Device: "));
+    QPointer<QLabel> sourceLabel = new QLabel(QObject::tr("Video source: "));
     m_devicesComboBox = new QComboBox();
-    layout->addWidget(deviceLabel);
+    layout->addWidget(sourceLabel);
     layout->addWidget(m_devicesComboBox);
 
-    // Add cameras
-    const QList<QByteArray> devices = QCamera::availableDevices();
-    for (int i = 0; i < devices.size(); ++i)
-    {
-        m_devicesComboBox->addItem(QCamera::deviceDescription(devices.at(i)), QString(devices.at(i)));
-    }
+    m_devicesComboBox->addItem("Device...", "device");
 
     // Add video file
     if(m_bVideoSupport)
     {
-        m_devicesComboBox->addItem("Open file...", "file");
-        m_devicesComboBox->addItem("Open stream...", "stream");
+        m_devicesComboBox->addItem("File...", "file");
+        m_devicesComboBox->addItem("Stream...", "stream");
     }
-
 
     container->setLayout(layout);
 
     QObject::connect(m_devicesComboBox, SIGNAL(activated(int)), this, SLOT(onApply(int)));
-
-    if(!devices.empty())
-    {
-        ::arData::Camera::sptr cam = this->getObject< ::arData::Camera >();
-        std::string cameraID = cam->getCameraID();
-        //select default camera device
-        if(cameraID.empty())
-        {
-            this->onApply(0);
-        }
-        //TODO : Manage selection with cameraID
-    }
-    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -124,11 +104,7 @@ void SCamera::configuring() throw(fwTools::Failed)
     if(cfgVideo)
     {
         std::string str = cfgVideo->getValue();
-
-        if(str == "yes")
-        {
-            m_bVideoSupport = true;
-        }
+        m_bVideoSupport = (str == "yes");
     }
 
     this->initialize();
@@ -151,69 +127,97 @@ void SCamera::swapping() throw(::fwTools::Failed)
 
 void SCamera::onApply(int index)
 {
-    if(index >= 0)
+    switch(index)
     {
-        QString device = m_devicesComboBox->currentData().toString();
+        case 0:
+            this->onChooseDevice();
+            break;
+        case 1:
+            this->onChooseFile();
+            break;
+        case 2:
+            this->onChooseStream();
+            break;
+    }
+}
 
-        ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+//------------------------------------------------------------------------------
 
-        if(device == "file")
-        {
-            // Check preferences
-            std::string videoDir = helper::getVideoDir();
+void SCamera::onChooseFile()
+{
+    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
 
-            static ::boost::filesystem::path _sDefaultPath;
+    // Check preferences
+    std::string videoDir = helper::getVideoDir();
 
-            ::fwGui::dialog::LocationDialog dialogFile;
-            dialogFile.setTitle("Choose a file to load a video");
-            dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-            dialogFile.addFilter("mp4","*.mp4");
-            dialogFile.addFilter("avi","*.avi");
-            dialogFile.addFilter("m4v","*.m4v");
-            dialogFile.addFilter("mkv","*.mkv");
-            dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
-            dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
+    static ::boost::filesystem::path _sDefaultPath;
 
-            ::fwData::location::SingleFile::sptr result;
-            ::boost::filesystem::path videoPath;
-            result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
-            if (result)
-            {
-                _sDefaultPath = result->getPath().parent_path();
-                dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-                videoPath = result->getPath();
-                ::boost::filesystem::path videoDirPath(videoDir);
-                videoPath = ::fwTools::getPathDifference(videoDirPath, videoPath);
-            }
-            else
-            {
-                videoPath = "";
-            }
+    ::fwGui::dialog::LocationDialog dialogFile;
+    dialogFile.setTitle("Choose a file to load a video");
+    dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+    dialogFile.addFilter("mp4","*.mp4");
+    dialogFile.addFilter("avi","*.avi");
+    dialogFile.addFilter("m4v","*.m4v");
+    dialogFile.addFilter("mkv","*.mkv");
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
+    dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-            camera->setCameraID("file");
-            camera->setDescription(videoPath.string());
-        }
-        else if (device == "stream")
-        {
-            ::fwGui::dialog::InputDialog inputDialog;
-            std::string streamSource;
+    ::fwData::location::SingleFile::sptr result;
+    ::boost::filesystem::path videoPath;
+    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+    if (result)
+    {
+        _sDefaultPath = result->getPath().parent_path();
+        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+        videoPath = result->getPath();
+        ::boost::filesystem::path videoDirPath(videoDir);
+        videoPath = ::fwTools::getPathDifference(videoDirPath, videoPath);
 
-            inputDialog.setTitle ("Enter stream source");
-            streamSource = inputDialog.getInput();
-            camera->setCameraID("stream");
-            camera->setDescription(streamSource);
-        }
-        else
-        {
-            QString description = QCamera::deviceDescription(m_devicesComboBox->currentData().toByteArray());
-            camera->setCameraID(device.toStdString());
-            camera->setDescription(description.toStdString());
-        }
+        camera->setCameraSource(::arData::Camera::FILE);
+        camera->setVideoFile(videoPath.string());
 
-        ::arData::Camera::IdModifiedSignalType::sptr sig;
-        sig = camera->signal< ::arData::Camera::IdModifiedSignalType >( ::arData::Camera::s_ID_MODIFIED_SIG );
+        ::arData::Camera::ModifiedSignalType::sptr sig;
+        sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+        sig->asyncEmit();
+    }
+}
 
-        sig->asyncEmit(device.toStdString());
+//------------------------------------------------------------------------------
+
+void SCamera::onChooseStream()
+{
+    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+
+    ::fwGui::dialog::InputDialog inputDialog;
+    std::string streamSource;
+
+    inputDialog.setTitle ("Enter stream source");
+    streamSource = inputDialog.getInput();
+    if(!streamSource.empty())
+    {
+        camera->setCameraSource(::arData::Camera::STREAM);
+        camera->setStreamUrl(streamSource);
+
+        ::arData::Camera::ModifiedSignalType::sptr sig;
+        sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+        sig->asyncEmit();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SCamera::onChooseDevice()
+{
+    ::videoQt::editor::CameraDeviceDlg camDialog;
+    camDialog.exec();
+
+    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+    bool isSelected = camDialog.getSelectedCamera(camera);
+    if(isSelected)
+    {
+        ::arData::Camera::ModifiedSignalType::sptr sig;
+        sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+        sig->asyncEmit();
     }
 }
 

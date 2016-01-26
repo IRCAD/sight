@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,6 +42,7 @@ namespace visuVTKARAdaptor
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
+static const  ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT           = "calibrate";
 
 //------------------------------------------------------------------------------
 
@@ -54,6 +55,7 @@ SVideoAdapter::SVideoAdapter() throw() :
 {
     newSlot(s_UPDATE_IMAGE_SLOT, &SVideoAdapter::updateImage, this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideoAdapter::updateImageOpacity, this);
+    newSlot(s_CALIBRATE_SLOT, &SVideoAdapter::offsetOpticalCenter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -66,11 +68,22 @@ SVideoAdapter::~SVideoAdapter() throw()
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::configuring() throw(fwTools::Failed)
+::fwServices::IService::KeyConnectionsType SVideoAdapter::getObjSrvConnections() const
 {
-    SLM_TRACE_FUNC();
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair(::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT));
+    connections.push_back( std::make_pair(::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
+    connections.push_back( std::make_pair(::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
+    connections.push_back( std::make_pair(::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT));
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void SVideoAdapter::doConfigure() throw(fwTools::Failed)
+{
     assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 
     m_cameraUID = m_configuration->getAttributeValue("cameraUID");
 
@@ -79,6 +92,7 @@ void SVideoAdapter::configuring() throw(fwTools::Failed)
     {
         m_reverse = false;
     }
+    this->setPickerId(m_configuration->getAttributeValue("picker"));
 }
 
 //------------------------------------------------------------------------------
@@ -95,8 +109,24 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
         m_actor->RotateZ(180);
         m_actor->RotateY(180);
     }
-    this->setVtkPipelineModified();
+
+    // Set camera pointer, it will be used if present in doUpdate()
+    if (!m_cameraUID.empty())
+    {
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_cameraUID);
+        m_camera                    = ::arData::Camera::dynamicCast(obj);
+        SLM_ASSERT("Missing camera", m_camera);
+
+        m_connections->connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
+                               this->getSptr(), s_CALIBRATE_SLOT);
+    }
+
     this->doUpdate();
+
+    if (this->getPicker())
+    {
+        this->addToPicker(m_actor);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -104,7 +134,7 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
 void SVideoAdapter::doUpdate() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    const bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (!imageIsValid)
     {
@@ -121,13 +151,12 @@ void SVideoAdapter::doUpdate() throw(fwTools::Failed)
         m_actor->PokeMatrix(vtkMatrix4x4::New());
         if (m_reverse)
         {
-
             m_actor->RotateZ(180);
             m_actor->RotateY(180);
         }
 
-        ::fwData::Image::SizeType size       = image->getSize();
-        ::fwData::Image::SpacingType spacing = image->getSpacing();
+        const ::fwData::Image::SizeType size       = image->getSize();
+        const ::fwData::Image::SpacingType spacing = image->getSpacing();
 
         m_texture->SetInputData( m_imageData );
         m_actor->SetScale(size[0]*spacing[0], size[1]*spacing[1], 1.);
@@ -143,25 +172,7 @@ void SVideoAdapter::doUpdate() throw(fwTools::Failed)
         this->getRenderer()->GetActiveCamera()->ParallelProjectionOn();
         this->getRenderer()->ResetCamera();
         this->getRenderer()->GetActiveCamera()->SetParallelScale(size[1] / 2.0);
-
-        if (!m_cameraUID.empty())
-        {
-            ::fwTools::Object::sptr obj   = ::fwTools::fwID::getObject(m_cameraUID);
-            ::arData::Camera::sptr camera = ::arData::Camera::dynamicCast(obj);
-            SLM_ASSERT("Missing camera", camera);
-
-            double shiftX = size[0] / 2. - camera->getCx();
-            double shiftY = size[1] / 2. - camera->getCy();
-
-            if (m_reverse)
-            {
-                m_actor->SetPosition(shiftX, -shiftY, 0);
-            }
-            else
-            {
-                m_actor->SetPosition(-shiftX, shiftY, 0);
-            }
-        }
+        this->offsetOpticalCenter();
     }
 
     m_imageData->Modified();
@@ -181,6 +192,10 @@ void SVideoAdapter::doStop() throw(fwTools::Failed)
 {
     this->unregisterServices();
     this->removeAllPropFromRenderer();
+    if (this->getPicker())
+    {
+        this->removeFromPicker(m_actor);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -214,16 +229,34 @@ void SVideoAdapter::updateImage()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SVideoAdapter::getObjSrvConnections() const
+void SVideoAdapter::offsetOpticalCenter()
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair(::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT));
-    connections.push_back( std::make_pair(::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
-    connections.push_back( std::make_pair(::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_IMAGE_OPACITY_SLOT));
-    connections.push_back( std::make_pair(::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT));
+    if (m_camera)
+    {
+        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    return connections;
+        const bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+        if (!imageIsValid)
+        {
+            return;
+        }
+
+        const ::fwData::Image::SizeType size = image->getSize();
+
+        const double shiftX = size[0] / 2. - m_camera->getCx();
+        const double shiftY = size[1] / 2. - m_camera->getCy();
+
+        if (m_reverse)
+        {
+            m_actor->SetPosition(shiftX, -shiftY, 0);
+        }
+        else
+        {
+            m_actor->SetPosition(-shiftX, shiftY, 0);
+        }
+    }
 }
+
 
 //------------------------------------------------------------------------------
 

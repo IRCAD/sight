@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,11 +61,11 @@ protected:
     /**
      * @brief Configure the service
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="..." type="::gui::editor::IEditor" impl="::videoQt::editor::SCamera" autoConnect="no">
             <videoSupport>...</videoSupport>
         </service>
-       @endverbatim
+       @endcode
      * - \b videoSupport (optional, by default "no") : if we can open a video file in addition with cameras
      */
     virtual void configuring() throw(fwTools::Failed);
@@ -76,6 +76,10 @@ protected Q_SLOTS:
     void onApply(int index);
 
 private:
+
+    void onChooseFile();
+    void onChooseStream();
+    void onChooseDevice();
 
     /// Combobox for camera selection
     QPointer<QComboBox> m_devicesComboBox;

@@ -21,7 +21,7 @@
 #include <QString>
 #include <QTime>
 
-#include <math.h>
+#include <chrono>
 
 namespace videoQt
 {
@@ -37,51 +37,28 @@ const ::fwCom::Slots::SlotKeyType SSlider::s_SET_POSITION_SLIDER_SLOT = "setPosi
 const ::fwCom::Slots::SlotKeyType SSlider::s_SET_DURATION_SLIDER_SLOT = "setDurationSlider";
 
 
-QString convertMSecToHHMMSS(long long milliseconds)
+QString convertMSecToHHMMSS(int64_t milliseconds)
 {
-    double hours   = 0;
-    double minutes = 0;
-    double seconds = 0;
+    std::chrono::milliseconds ms(milliseconds);
+    std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(ms);
+    std::chrono::minutes minutes = std::chrono::duration_cast<std::chrono::minutes>(ms);
+    std::chrono::hours hours     = std::chrono::duration_cast<std::chrono::hours>(ms);
 
-    if (milliseconds > 3600000)
-    {
-        hours         = floor(milliseconds/3600000.);
-        milliseconds -= (hours*3600000);
-    }
-    if (milliseconds > 60000)
-    {
-        minutes       = floor(milliseconds/60000.);
-        milliseconds -= (minutes*60000);
-    }
-    if (milliseconds > 1000)
-    {
-        seconds       = floor(milliseconds/1000.);
-        milliseconds -= (seconds*1000);
-    }
-
-    QTime time(hours, minutes, seconds, milliseconds);
+    QTime time(hours.count(), minutes.count(), seconds.count());
     return time.toString("hh:mm:ss");
 
 }
+
 //------------------------------------------------------------------------------
 
-SSlider::SSlider() throw() :
-    m_sliderPressed(false)
+SSlider::SSlider() throw() :  m_sliderPressed(false)
 {
-    m_slotChangePosition = ::fwCom::newSlot( &SSlider::setPosition, this );
-    m_slotChangeDuration = ::fwCom::newSlot( &SSlider::setDuration, this );
+    /// Slot to change the position of the slider
+    newSlot(s_SET_POSITION_SLIDER_SLOT,  &SSlider::setPosition, this);
+    /// Slot to change the duration of the slider
+    newSlot(s_SET_DURATION_SLIDER_SLOT,  &SSlider::setDuration, this);
 
-    m_sigPositionChanged = PositionChangedSignalType::New();
-
-    ::fwCom::HasSignals::m_signals(s_POSITION_CHANGED_SIG, m_sigPositionChanged);
-
-    ::fwCom::HasSlots::m_slots( s_SET_POSITION_SLIDER_SLOT, m_slotChangePosition)
-        ( s_SET_DURATION_SLIDER_SLOT, m_slotChangeDuration);
-
-
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
+    m_sigPositionChanged = newSignal<PositionChangedSignalType>(s_POSITION_CHANGED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -95,8 +72,8 @@ SSlider::~SSlider() throw()
 void SSlider::starting() throw(::fwTools::Failed)
 {
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =
+        ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -153,16 +130,12 @@ void SSlider::swapping() throw(::fwTools::Failed)
 
 void SSlider::changePosition()
 {
-    int newPos = m_positionSlider->sliderPosition();
+    int64_t newPos = m_positionSlider->sliderPosition();
     m_positionSlider->setSliderPosition(newPos);
     m_currentPosition->setText(convertMSecToHHMMSS(newPos));
 
     // Notify the new position
-    ::videoQt::editor::SSlider::PositionChangedSignalType::sptr sig;
-    sig = this->signal< ::videoQt::editor::SSlider::PositionChangedSignalType >
-              ( ::videoQt::editor::SSlider::s_POSITION_CHANGED_SIG );
-
-    sig->asyncEmit(newPos);
+    m_sigPositionChanged->asyncEmit(newPos);
 
     m_sliderPressed = false;
 }
@@ -175,7 +148,7 @@ void SSlider::sliderPressed()
 }
 //------------------------------------------------------------------------------
 
-void SSlider::setPosition(const long long newPos)
+void SSlider::setPosition(int64_t newPos)
 {
     if(!m_sliderPressed)
     {
@@ -186,7 +159,7 @@ void SSlider::setPosition(const long long newPos)
 
 //------------------------------------------------------------------------------
 
-void SSlider::setDuration(const long long duration)
+void SSlider::setDuration(int64_t duration)
 {
     m_positionSlider->setRange(0, duration);
     m_totalDuration->setText(convertMSecToHHMMSS(duration));

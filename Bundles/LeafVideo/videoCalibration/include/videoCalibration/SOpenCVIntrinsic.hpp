@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ class VIDEOCALIBRATION_CLASS_API SOpenCVIntrinsic : public ::videoCalibration::I
 public:
     fwCoreServiceClassDefinitionsMacro((SOpenCVIntrinsic)(::videoCalibration::ICalibration));
 
-    typedef ::fwCom::Slot <void (int, int)> UpdateChessboardSizeSlotType;
+    typedef ::fwCom::Slot <void (int, int, float)> UpdateChessboardSizeSlotType;
 
     /// Constructor.
     VIDEOCALIBRATION_API SOpenCVIntrinsic() throw ();
@@ -37,12 +37,12 @@ protected:
     /// Does nothing
     /**
      * @brief Configures the service.
-     * @verbatim
+     * @code{.xml}
        <service impl="::videoCalibration::SOpenCVIntrinsic" >
             <calibrationInfoID> ... </calibrationInfoID>
             <board width="17" height="13" />
        </service>
-       @endverbatim
+       @endcode
      * - \b calibrationInfoID: FwId of calibrationInfo.
      * - \b board : defines the number of square in 2 dimensions of the chessboard.
      */
@@ -65,7 +65,7 @@ protected:
      * @param width chessboard's width expresses by the number of square.
      * @param height chessboard's height expresses by the number of square.
      */
-    void updateChessboardSize(const int width, const int height);
+    void updateChessboardSize(const int width, const int height,  const float squareSize);
 
 private:
 
@@ -77,6 +77,9 @@ private:
 
     /// Height of the chessboard used for calibration
     unsigned int m_height;
+
+    /// Size of the chessboard'square used for calibration
+    float m_squareSize;
 
     /// Slot that calls update chessboard size method
     UpdateChessboardSizeSlotType::sptr m_slotUpdateChessboardSize;

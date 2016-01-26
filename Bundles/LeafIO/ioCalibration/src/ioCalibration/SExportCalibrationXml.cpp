@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/calib3d/calib3d.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/calib3d.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
@@ -129,7 +129,6 @@ void SExportCalibrationXml::updating() throw (fwTools::Failed)
         }
     }
 
-
     if( this->hasLocationDefined() )
     {
         ::cv::FileStorage fs(this->getFile().string().c_str(), ::cv::FileStorage::WRITE);
@@ -141,25 +140,27 @@ void SExportCalibrationXml::updating() throw (fwTools::Failed)
             std::stringstream camNum;
             camNum << "camera_"<<i;
 
-            fs<<camNum.str()<<"{";
-            fs<<"id"<<camSeries->getCamera(i)->getCameraID().c_str();
-            fs<<"description"<<camSeries->getCamera(i)->getDescription().c_str();
-            fs<<"matrix"<<cameraMatrices[i];
-            fs<<"distortion"<<cameraDistCoefs[i];
-            fs<<"}";
+            fs << camNum.str() << "{";
+            fs << "id"<<camSeries->getCamera(i)->getCameraID().c_str();
+            fs << "description" << camSeries->getCamera(i)->getDescription().c_str();
+            fs << "imageWidth" << static_cast< int> (camSeries->getCamera(i)->getWidth());
+            fs << "imageHeight" << static_cast< int >(camSeries->getCamera(i)->getHeight());
+            fs << "matrix" << cameraMatrices[i];
+            fs << "distortion" << cameraDistCoefs[i];
 
             extrinsicMatrix = camSeries->getExtrinsicMatrix(i);
             if(extrinsicMatrix)
             {
-                for(unsigned int i = 0; i < 3; ++i)
+                for(unsigned int i = 0; i < 4; ++i)
                 {
-                    for(unsigned int j = 0; j < 3; ++j)
+                    for(unsigned int j = 0; j < 4; ++j)
                     {
                         extrinsic.at< double >(i,j) = extrinsicMatrix->getCoefficient(i,j);
                     }
                 }
                 fs<<"extrinsic"<<extrinsic;
             }
+            fs << "}";
         }
 
         fs.release();

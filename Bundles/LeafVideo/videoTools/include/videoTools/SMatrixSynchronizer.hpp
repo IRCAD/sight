@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,10 @@
 #ifndef __VIDEOTOOLS_SMATRIXSYNCHRONIZER_HPP__
 #define __VIDEOTOOLS_SMATRIXSYNCHRONIZER_HPP__
 
-#include "videoTools/ISynchronizer.hpp"
+
 #include "videoTools/config.hpp"
 
+#include <arServices/ISynchronizer.hpp>
 #include <extData/MatrixTL.hpp>
 
 #include <fwCore/base.hpp>
@@ -25,12 +26,12 @@ namespace videoTools
  * @brief   SMatrixSynchronizer reads the content of a MatrixTL into a TransformationMatrix3D.
  * @class   SMatrixSynchronizer
  */
-class VIDEOTOOLS_CLASS_API SMatrixSynchronizer : public ::videoTools::ISynchronizer
+class VIDEOTOOLS_CLASS_API SMatrixSynchronizer : public ::arServices::ISynchronizer
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SMatrixSynchronizer)(::videoTools::ISynchronizer));
+    fwCoreServiceClassDefinitionsMacro((SMatrixSynchronizer)(::arServices::ISynchronizer));
 
     /**
      * @brief Constructor.
@@ -52,11 +53,11 @@ protected:
     /**
      * @brief This method is used to configure the service.
      *
-     * @verbatim
-       <service impl="::videoTools::SMatrixSynchronizer" type="::videoTools::ISynchronizer">
+     * @code{.xml}
+       <service impl="::videoTools::SMatrixSynchronizer" type="::arServices::ISynchronizer">
             <TL>MatrixTLUid</TL>
        </service>
-       @endverbatim
+       @endcode
      * - \b TL : Defines the uid of the MatrixTL containing the matrices.
      */
     VIDEOTOOLS_API void configuring() throw (fwTools::Failed);
