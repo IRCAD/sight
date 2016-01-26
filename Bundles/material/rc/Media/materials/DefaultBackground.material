@@ -1,0 +1,47 @@
+vertex_program myBackgroundVertexShader glsl
+{
+    source Background_VP.glsl
+
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+fragment_program myBackgroundFragmentShader glsl
+{
+    source Background_FP.glsl
+
+    default_params
+    {
+        param_named topColour float4 0.0 0.0 0.0 1.0
+        param_named bottomColour float4 0.5 0.5 0.5 1.0
+        param_named topScale float 0.7
+        param_named bottomScale float 1.0
+    }
+}
+
+// Default background material of Ogre Generic Scene
+// Use it only with an ::Ogre::Rectangle2D used for background
+material DefaultBackground
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            lighting off
+
+            depth_check false
+            depth_write false
+
+            vertex_program_ref myBackgroundVertexShader
+            {
+            }
+
+            fragment_program_ref myBackgroundFragmentShader
+            {
+            }
+        }
+    }
+}

@@ -1,0 +1,72 @@
+vertex_program Logo_VP glsl
+{
+    source Video_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+fragment_program Logo_FP glsl
+{
+    source Video_FP.glsl
+}
+
+
+// Material to represent IRCAD logo in a texture
+material IrcadLogo
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            scene_blend alpha_blend
+
+            vertex_program_ref Logo_VP
+            {
+            }
+
+            fragment_program_ref Logo_FP
+            {
+            }
+            texture_unit
+            {
+                texture ircad_logo.png
+                filtering bilinear
+                alpha_op_ex modulate src_texture src_manual 0.7
+            }
+        }
+    }
+}
+
+// Material to represent IHU logo in a texture
+material IHULogo
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            ambient 1.0 1.0 1.0 1.0
+            diffuse 1.0 1.0 1.0 1.0
+            cull_hardware none
+            scene_blend alpha_blend
+
+            vertex_program_ref Logo_VP
+            {
+            }
+
+            fragment_program_ref Logo_FP
+            {
+            }
+            texture_unit
+            {
+                texture ihu_logo.png
+                filtering bilinear
+                alpha_op_ex modulate src_texture src_manual 0.7
+            }
+        }
+    }
+}

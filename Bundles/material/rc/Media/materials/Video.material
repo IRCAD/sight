@@ -1,0 +1,33 @@
+vertex_program Video_VP glsl
+{
+    source Video_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+fragment_program Video_FP glsl
+{
+    source Video_FP.glsl
+}
+
+material Video
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref Video_VP
+            {
+            }
+
+            fragment_program_ref Video_FP
+            {
+            }
+        }
+    }
+}
