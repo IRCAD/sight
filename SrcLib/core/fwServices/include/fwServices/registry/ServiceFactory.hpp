@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,34 +7,18 @@
 #ifndef __FWSERVICES_REGISTRY_SERVICEFACTORY_HPP__
 #define __FWSERVICES_REGISTRY_SERVICEFACTORY_HPP__
 
-#include <map>
-
-#include <boost/unordered_map.hpp>
-
-#include <boost/tuple/tuple.hpp>
-
-#include <fwCore/mt/types.hpp>
-
 #include "fwServices/config.hpp"
 
-#if defined(_WIN32) && _MSC_VER > 1499 // Visual C++ 2008 only
-#include <boost/functional/hash/hash.hpp>
-namespace std
-{
-namespace tr1
-{
-template<typename a>
-class hash< std::pair<a, a> >
-{
-public:
-    size_t operator()(const std::pair<a, a> &p) const
-    {
-        return ::boost::hash_value(p);
-    }
-};
-} //namespace tr1
-} //namespace std
-#endif
+#include <fwTools/Object.hpp>
+#include <fwCore/mt/types.hpp>
+
+#include <fwRuntime/Bundle.hpp>
+
+#include <boost/function.hpp>
+#include <boost/unordered_map.hpp>
+#include <boost/tuple/tuple.hpp>
+
+#include <map>
 
 namespace fwServices
 {

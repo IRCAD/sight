@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,8 +36,6 @@ namespace io
 
 /**
  * @brief   Defines the bundle descriptor reader class.
- * @date    2004-2009
- *
  */
 struct BundleDescriptorReader
 {
@@ -74,7 +72,8 @@ struct BundleDescriptorReader
      *
      * @return      a container with all created bundles
      */
-    static const BundleContainer createBundles(const boost::filesystem::path& location) throw(RuntimeException);
+    FWRUNTIME_API static const BundleContainer createBundles(const boost::filesystem::path& location) throw(
+        RuntimeException);
 
     /**
      * @brief   Processes a configuration element XML node.
@@ -84,11 +83,9 @@ struct BundleDescriptorReader
      *
      * @return  a pointer to the created configuration element
      */
-    static std::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node,
-                                                                             const std::shared_ptr<Bundle> bundle) throw(
-        RuntimeException);
-
-
+    FWRUNTIME_API static std::shared_ptr<ConfigurationElement> processConfigurationElement(xmlNodePtr node,
+                                                                                           const std::shared_ptr<Bundle> bundle)
+    throw(RuntimeException);
 
     private:
 
@@ -167,13 +164,6 @@ struct BundleDescriptorReader
          * @return  a string containing the requirement's value
          */
         static const std::string processRequirement(xmlNodePtr node) throw(RuntimeException);
-
-        /**
-         * @brief   Runs the descriptor reading and bundle intialization.
-         *
-         * @return  a pointer to a bundle
-         */
-//   std::shared_ptr<Bundle> run(const boost::filesystem::path& location) throw(RuntimeException);
 };
 
 
