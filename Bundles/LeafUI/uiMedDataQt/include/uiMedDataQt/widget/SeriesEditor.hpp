@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ class QPushButton;
 
 namespace fwMedData
 {
-    class Series;
+class Series;
 }
 
 namespace uiMedData
@@ -35,20 +35,25 @@ namespace widget
  */
 class ListInput : public QWidget
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     /**
      * @name Constructor/Destructor
      * @{ */
     ListInput();
-    ~ListInput() {}
+    ~ListInput()
+    {
+    }
     /**  @} */
 
     /// Erases all items in the list
-    QListWidget* getListWidget() { return m_performingPhysiciansName; }
+    QListWidget* getListWidget()
+    {
+        return m_performingPhysiciansName;
+    }
 
-protected Q_SLOTS: 
+protected Q_SLOTS:
 
     /// Triggered when the add button is clicked, if the input text is not empty
     void onAddPhysician();
@@ -84,7 +89,7 @@ protected:
  */
 class UIMEDDATAQT_CLASS_API SeriesEditor : public QWidget
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
 
@@ -115,7 +120,7 @@ protected Q_SLOTS:
     /// Triggered when series description text changes
     void onDescChanged(const QString&);
 
-protected :
+protected:
 
     /// Series to edit information
     SPTR(::fwMedData::Series) m_series;

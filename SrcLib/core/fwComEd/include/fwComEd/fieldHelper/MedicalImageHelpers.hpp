@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_FIELDHELPER_MEDICALIMAGEHELPERS_HPP_
-#define _FWCOMED_FIELDHELPER_MEDICALIMAGEHELPERS_HPP_
+#ifndef __FWCOMED_FIELDHELPER_MEDICALIMAGEHELPERS_HPP__
+#define __FWCOMED_FIELDHELPER_MEDICALIMAGEHELPERS_HPP__
 
 #include <utility> // std::pair
 #include <numeric>
@@ -21,7 +21,7 @@
 #include <fwTools/NumericRoundCast.hxx>
 #include <fwServices/IService.hpp>
 
-#include "fwComEd/export.hpp"
+#include "fwComEd/config.hpp"
 #include "fwComEd/helper/Image.hpp"
 
 namespace fwComEd
@@ -32,20 +32,22 @@ namespace fieldHelper
 
 template <class T> struct bitwise_or : std::binary_function <T,T,T>
 {
-  T operator() (const T& x, const T& y) const
-    {return x|y;}
+    T operator() (const T& x, const T& y) const
+    {
+        return x|y;
+    }
 };
 
 
 /**
  * @class   MedicalImageHelpers
  * @brief   This class contains helpers for medical image fields.
- * 
+ *
  * @date    2009.
  */
 class FWCOMED_CLASS_API MedicalImageHelpers
 {
-public :
+public:
 
     /**
      * @brief       Check if the image has a landmark field.
@@ -104,7 +106,9 @@ public :
      *
      * @return      Returns initialized image.
      */
-    FWCOMED_API static ::fwData::Image::sptr initialize( ::fwData::Image::sptr imgSrc, ::fwData::Image::sptr imgToInitialize = ::fwData::Image::sptr());
+    FWCOMED_API static ::fwData::Image::sptr initialize( ::fwData::Image::sptr imgSrc,
+                                                         ::fwData::Image::sptr imgToInitialize =
+                                                             ::fwData::Image::sptr());
 
     /**
      * @brief       Return true if the pixel value is null.
@@ -123,7 +127,7 @@ public :
      * @param[in] point : coordinate of the pixel
      * @param[in] value : the pixel value
      */
-    template < typename T , typename INT_INDEX>
+    template < typename T, typename INT_INDEX>
     static void setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value);
 
     /**
@@ -167,12 +171,13 @@ class PixelCastAndSetFunctor
 public:
     class Param
     {
-        public:
+    public:
         typedef VALUE ValueType;
-        typedef SPTR( ::fwData::Image::BufferType ) BufferTypeSptr;
+        typedef SPTR ( ::fwData::Image::BufferType ) BufferTypeSptr;
 
-        Param(ValueType &v): value (v)
-        {};
+        Param(ValueType &v) : value (v)
+        {
+        }
 
         const ValueType &value;
         BufferTypeSptr res;
@@ -203,13 +208,14 @@ class CastAndSetFunctor
 public:
     class Param
     {
-        public:
+    public:
         typedef VALUE ValueType;
         typedef INT_INDEX PointType;
 
-            Param(PointType &p, ValueType &v):
-                value (v), point(p)
-            {};
+        Param(PointType &p, ValueType &v) :
+            value (v), point(p)
+        {
+        }
 
         ::fwData::Image::sptr image;
         const ValueType &value;
@@ -220,12 +226,12 @@ public:
     void operator()( Param &param )
     {
         ::fwComEd::helper::Image imagehelper(param.image);
-        IMAGE * buffer = static_cast < IMAGE* > (imagehelper.getBuffer());
-        const INT_INDEX &p = param.point;
+        IMAGE * buffer                        = static_cast < IMAGE* > (imagehelper.getBuffer());
+        const INT_INDEX &p                    = param.point;
         const ::fwData::Image::SizeType &size = param.image->getSize();
-        const int &sx = size[0];
-        const int &sy = size[1];
-        const int &offset = p[0] + sx*p[1] + p[2]*sx*sy;
+        const int &sx                         = size[0];
+        const int &sy                         = size[1];
+        const int &offset                     = p[0] + sx*p[1] + p[2]*sx*sy;
         *(buffer+offset) = ::fwTools::numericRoundCast<IMAGE>(param.value);
     }
 
@@ -244,14 +250,14 @@ void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, ::fwData::Point:
 
 //------------------------------------------------------------------------------
 
-template < typename T , typename INT_INDEX>
+template < typename T, typename INT_INDEX>
 void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX &point, T &value)
 {
     typename CastAndSetFunctor<T,INT_INDEX>::Param param(point, value);
     param.image = image;
 
     ::fwTools::DynamicType type = image->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , CastAndSetFunctor<T, INT_INDEX> >::invoke( type, param );
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, CastAndSetFunctor<T, INT_INDEX> >::invoke( type, param );
 }
 
 
@@ -259,12 +265,13 @@ void MedicalImageHelpers::setPixel(::fwData::Image::sptr image, INT_INDEX &point
 //------------------------------------------------------------------------------
 
 template < typename T >
-SPTR( ::fwData::Image::BufferType ) MedicalImageHelpers::getPixelBufferInImageSpace(::fwData::Image::sptr image, T &value)
+SPTR( ::fwData::Image::BufferType ) MedicalImageHelpers::getPixelBufferInImageSpace(::fwData::Image::sptr image,
+                                                                                    T &value)
 {
     typename PixelCastAndSetFunctor<T>::Param param(value);
 
     ::fwTools::DynamicType type = image->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , PixelCastAndSetFunctor<T> >::invoke( type, param );
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, PixelCastAndSetFunctor<T> >::invoke( type, param );
     return param.res;
 }
 
@@ -278,12 +285,13 @@ class CastAndCheckFunctor
 public:
     class Param
     {
-        public:
+    public:
         typedef INT_INDEX PointType;
 
-        Param(PointType &p, bool &b):
+        Param(PointType &p, bool &b) :
             point(p), isNull(b)
-        {};
+        {
+        }
 
         ::fwData::Image::sptr image;
         const PointType &point;
@@ -294,12 +302,12 @@ public:
     void operator()( Param &param )
     {
         ::fwComEd::helper::Image imagehelper(param.image);
-        IMAGE * buffer = static_cast < IMAGE* > (imagehelper.getBuffer());
-        const INT_INDEX &p = param.point;
+        IMAGE * buffer                          = static_cast < IMAGE* > (imagehelper.getBuffer());
+        const INT_INDEX &p                      = param.point;
         const std::vector<boost::int32_t> &size = param.image->getCRefSize();
-        const int &sx = size[0];
-        const int &sy = size[1];
-        const int &offset = p[0] + sx*p[1] + p[2]*sx*sy;
+        const int &sx                           = size[0];
+        const int &sy                           = size[1];
+        const int &offset                       = p[0] + sx*p[1] + p[2]*sx*sy;
         param.isNull = (*(buffer+offset) == 0);
     }
 
@@ -312,7 +320,8 @@ bool MedicalImageHelpers::isPixelNull(::fwData::Image::sptr image, INT_INDEX &po
 {
     ::fwComEd::helper::Image imageLock ( image );
     const unsigned char imageTypeSize = image->getPixelType().sizeOf();
-    ::fwData::Image::BufferType *buf = static_cast< ::fwData::Image::BufferType *> (imageLock.getPixelBuffer(point[0], point[1], point[2]));
+    ::fwData::Image::BufferType *buf =
+        static_cast< ::fwData::Image::BufferType *> (imageLock.getPixelBuffer(point[0], point[1], point[2]));
 
     return isBufNull(buf, imageTypeSize);
 }
@@ -325,11 +334,12 @@ class MinMaxFunctor
 public:
     class Param
     {
-        public:
+    public:
 
-        Param(::fwData::Image::sptr _img, T &_min, T &_max):
+        Param(::fwData::Image::sptr _img, T &_min, T &_max) :
             image(_img), min(_min), max(_max)
-        {};
+        {
+        }
 
         ::fwData::Image::sptr image;
         T &min;
@@ -340,7 +350,7 @@ public:
     void operator()( Param &param )
     {
         ::fwComEd::helper::Image imageLock ( param.image );
-        IMAGE * buffer = static_cast < IMAGE* > (imageLock.getBuffer());
+        IMAGE * buffer                        = static_cast < IMAGE* > (imageLock.getBuffer());
         const ::fwData::Image::SizeType &size = param.image->getSize();
         ::fwData::Image::SizeType::value_type len = size[0]*size[1]*size[2];
 
@@ -349,7 +359,7 @@ public:
 
         typedef std::numeric_limits<IMAGE> ImgLimits;
         IMAGE imin = ImgLimits::max();
-        IMAGE imax = (ImgLimits::is_integer || !ImgLimits::is_signed) ? ImgLimits::min() : - ImgLimits::max();
+        IMAGE imax = (ImgLimits::is_integer || !ImgLimits::is_signed) ? ImgLimits::min() : -ImgLimits::max();
 
         IMAGE * bufEnd = buffer + len;
         IMAGE currentVoxel;
@@ -369,11 +379,11 @@ public:
         }
 
         typedef std::numeric_limits<T> TLimits;
-        T minT =  (TLimits::is_integer || !ImgLimits::is_signed) ? TLimits::min() : - TLimits::max();
+        T minT = (TLimits::is_integer || !ImgLimits::is_signed) ? TLimits::min() : -TLimits::max();
         T maxT = TLimits::max();
 
-        min = ( imin < minT ) ? minT : static_cast< T > (imin) ;
-        max = ( imax > maxT ) ? maxT : static_cast< T > (imax) ;
+        min = ( imin < minT ) ? minT : static_cast< T > (imin);
+        max = ( imax > maxT ) ? maxT : static_cast< T > (imax);
 
     }
 
@@ -386,7 +396,7 @@ void MedicalImageHelpers::getMinMax(const ::fwData::Image::sptr _img, MINMAXTYPE
     typename MinMaxFunctor<MINMAXTYPE>::Param param(_img, _min, _max);
 
     ::fwTools::DynamicType type = _img->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , MinMaxFunctor<MINMAXTYPE> >::invoke( type, param );
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, MinMaxFunctor<MINMAXTYPE> >::invoke( type, param );
 }
 
 
@@ -395,5 +405,5 @@ void MedicalImageHelpers::getMinMax(const ::fwData::Image::sptr _img, MINMAXTYPE
 } // fwComEd
 
 
-#endif // _FWCOMED_FIELDHELPER_MEDICALIMAGEHELPERS_HPP_
+#endif // __FWCOMED_FIELDHELPER_MEDICALIMAGEHELPERS_HPP__
 

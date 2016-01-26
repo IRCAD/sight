@@ -1,11 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/shared_ptr.hpp>
-#include <boost/make_shared.hpp>
 
 #include <fwCore/mt/types.hpp>
 
@@ -30,26 +28,33 @@ struct LockVisitor : public camp::ValueVisitor< void >
 {
     SPTR(RecursiveLock::LockVectType) m_locks;
 
-    LockVisitor(SPTR(RecursiveLock::LockVectType) locks) : m_locks(locks)
-    {}
+    LockVisitor(SPTR(RecursiveLock::LockVectType)locks) : m_locks(locks)
+    {
+    }
 
     void operator()(camp::NoType value)
-    {}
+    {
+    }
 
     void operator()(bool value)
-    {}
+    {
+    }
 
     void operator()(long value)
-    {}
+    {
+    }
 
     void operator()(double value)
-    {}
+    {
+    }
 
     void operator()(const std::string& value)
-    {}
+    {
+    }
 
     void operator()(const camp::EnumObject& value)
-    {}
+    {
+    }
 
     void operator()(const camp::UserObject& value)
     {
@@ -61,30 +66,30 @@ struct LockVisitor : public camp::ValueVisitor< void >
             {
                 if( value.call("is_a", ::camp::Args("::fwData::Object")).to<bool>() )
                 {
-                    ::fwData::Object * ptr = value.get< ::fwData::Object * >();
+                    ::fwData::Object * ptr     = value.get< ::fwData::Object * >();
                     ::fwData::Object::sptr obj = ptr->getSptr();
                     ::fwDataCamp::visitor::RecursiveLock visitor( obj, m_locks );
                 }
                 else if( value.call("is_a", ::camp::Args("::fwMemory::BufferObject")).to<bool>() )
                 {
-                    ::fwMemory::BufferObject * ptr = value.get< ::fwMemory::BufferObject * >();
+                    ::fwMemory::BufferObject * ptr    = value.get< ::fwMemory::BufferObject * >();
                     ::fwMemory::BufferObject::sptr bo = ptr->getSptr();
                     SPTR(::fwCore::mt::ReadLock) lock
-                            = SPTR(::fwCore::mt::ReadLock)(new ::fwCore::mt::ReadLock(bo->getMutex()));
+                        = SPTR(::fwCore::mt::ReadLock)(new ::fwCore::mt::ReadLock(bo->getMutex()));
                     m_locks->push_back(lock);
                 }
             }
         }
     }
- };
+};
 
 //-----------------------------------------------------------------------------
 
-RecursiveLock::RecursiveLock( ::fwData::Object::sptr object, SPTR(LockVectType) locks ) :
-        m_object(object), m_locks(locks)
+RecursiveLock::RecursiveLock( ::fwData::Object::sptr object, SPTR(LockVectType)locks ) :
+    m_object(object), m_locks(locks)
 {
     SPTR(::fwCore::mt::ReadLock) lock
-            = SPTR(::fwCore::mt::ReadLock)(new ::fwCore::mt::ReadLock(m_object->getMutex()));
+        = SPTR(::fwCore::mt::ReadLock)(new ::fwCore::mt::ReadLock(m_object->getMutex()));
     m_locks->push_back(lock);
     m_campObj = camp::UserObject( object.get() );
     this->lock();
@@ -93,17 +98,20 @@ RecursiveLock::RecursiveLock( ::fwData::Object::sptr object, SPTR(LockVectType) 
 //-----------------------------------------------------------------------------
 
 RecursiveLock::~RecursiveLock()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void RecursiveLock::visit(const camp::SimpleProperty& property)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void RecursiveLock::visit(const camp::EnumProperty& property)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -120,13 +128,13 @@ void RecursiveLock::visit(const camp::MapProperty& property)
     {
         value = property.getElement(m_campObj, var);
 
-        first = value.first;
+        first  = value.first;
         second = value.second;
 
         SLM_ASSERT("Not managed type for map key.",
-                first.type() == ::camp::stringType ||
-                first.type() == ::camp::intType ||
-                first.type() == ::camp::realType );
+                   first.type() == ::camp::stringType ||
+                   first.type() == ::camp::intType ||
+                   first.type() == ::camp::realType );
 
         if ( second.type() == ::camp::userType )
         {

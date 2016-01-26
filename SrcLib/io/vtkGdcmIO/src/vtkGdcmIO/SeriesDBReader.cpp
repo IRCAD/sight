@@ -1,22 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <exception>
 
-#include <boost/filesystem/path.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/foreach.hpp>
+#include "vtkGdcmIO/SeriesDBReader.hpp"
+#include "vtkGdcmIO/helper/GdcmHelper.hpp"
+
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/fromIsoExtendedString.hpp>
-
 #include <fwData/Image.hpp>
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Observer.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -27,8 +25,13 @@
 
 #include <fwDataIO/reader/registry/macros.hpp>
 
-#include <vtkImageWriter.h>
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/fromIsoExtendedString.hpp>
 
+#include <fwVtkIO/vtk.hpp>
+#include <fwVtkIO/helper/vtkLambdaCommand.hpp>
+
+#include <vtkImageWriter.h>
 #include <vtkGDCMImageReader.h>
 #include <vtkImageData.h>
 #include <vtkStringArray.h>
@@ -41,11 +44,12 @@
 #include <gdcmReader.h>
 #include <gdcmIPPSorter.h>
 
-#include <fwVtkIO/vtk.hpp>
-#include <fwVtkIO/helper/ProgressVtkToFw.hpp>
 
-#include "vtkGdcmIO/SeriesDBReader.hpp"
-#include "vtkGdcmIO/helper/GdcmHelper.hpp"
+#include <boost/filesystem/path.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+
+#include <exception>
 
 fwDataIOReaderRegisterMacro( ::vtkGdcmIO::SeriesDBReader );
 
@@ -56,7 +60,8 @@ namespace vtkGdcmIO
 
 SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
     ::fwData::location::enableFolder< IObjectReader >(this),
-    ::fwData::location::enableMultiFiles< IObjectReader >(this)
+    ::fwData::location::enableMultiFiles< IObjectReader >(this),
+    m_job(::fwJobs::Observer::New("SeriesDB reader"))
 {
     SLM_TRACE_FUNC();
 }
@@ -78,13 +83,14 @@ SeriesDBReader::~SeriesDBReader()
     std::vector<std::string> filenames;
     ::vtkGdcmIO::helper::DicomSearch::searchRecursivelyFiles(dicomDir, filenames);
 
-    this->addSeries( seriesDB , filenames);
+    this->addSeries( seriesDB, filenames);
     return seriesDB;
 }
 
 //------------------------------------------------------------------------------
 
-void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, const std::vector< std::string > &filenames)
+void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
+                                const std::vector< std::string > &filenames)
 {
     //gdcm::Trace::SetDebug( 1 );
     //gdcm::Trace::SetWarning( 1 );
@@ -144,21 +150,21 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
         if( !b )
         {
             SLM_ERROR("Scanner failed");
-            return ;
+            return;
         }
-        gdcm::Directory::FilenamesType keys = scanner.GetKeys();
+        gdcm::Directory::FilenamesType keys               = scanner.GetKeys();
         gdcm::Directory::FilenamesType::const_iterator it = keys.begin();
 
         typedef std::map< std::string, std::vector< std::string > > MapSeriesType;
         MapSeriesType mapSeries;
 
-        for(; it != keys.end() ; ++it)
+        for(; it != keys.end(); ++it)
         {
             const char *filename = it->c_str();
             assert( scanner.IsKey( filename ) );
 
-            const char *seriesUID =  scanner.GetValue( filename, seriesUIDTag );
-            const char *acqDate   =  scanner.GetValue( filename, acquisitionDateTag );
+            const char *seriesUID = scanner.GetValue( filename, seriesUIDTag );
+            const char *acqDate   = scanner.GetValue( filename, acquisitionDateTag );
 
             if (seriesUID)
             {
@@ -175,7 +181,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                 {
                     // Treatment of secondary capture dicom file.
                     std::string imageType(imageTypeStr);
-                    OSLM_TRACE("Image Type : " << imageType);
+                    SLM_TRACE("Image Type : " + imageType);
 
                     fileSetId += "_";
                     fileSetId += imageTypeStr;
@@ -198,9 +204,9 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
             std::string seriesInstanceUID;
             std::string studyInstanceUID;
 
-            ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::New();
-            ::fwMedData::Patient::sptr patient = series->getPatient();
-            ::fwMedData::Study::sptr study = series->getStudy();
+            ::fwMedData::ImageSeries::sptr series  = ::fwMedData::ImageSeries::New();
+            ::fwMedData::Patient::sptr patient     = series->getPatient();
+            ::fwMedData::Study::sptr study         = series->getStudy();
             ::fwMedData::Equipment::sptr equipment = series->getEquipment();
 
             seriesDB->getContainer().push_back(series);
@@ -209,7 +215,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
             const MapSeriesType::mapped_type &files = iter->second;
             if ( !files.empty() )
             {
-                vtkSmartPointer< vtkStringArray > fileArray = vtkSmartPointer< vtkStringArray >::New();
+                vtkSmartPointer< vtkStringArray > fileArray  = vtkSmartPointer< vtkStringArray >::New();
                 vtkSmartPointer< vtkGDCMImageReader > reader = vtkSmartPointer< vtkGDCMImageReader >::New();
                 reader->FileLowerLeftOn();
                 gdcm::IPPSorter s;
@@ -245,29 +251,33 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
 
                             localReader1.SetFileName( f1.c_str() );
                             localReader2.SetFileName( f2.c_str() );
-                            bool canRead = localReader1.Read() && localReader2.Read() ;
+                            bool canRead = localReader1.Read() && localReader2.Read();
                             if( canRead )
                             {
-                                std::vector<double> vOrigin1 = gdcm::ImageHelper::GetOriginValue(localReader1.GetFile());
-                                std::vector<double> vOrigin2 = gdcm::ImageHelper::GetOriginValue(localReader2.GetFile());
+                                std::vector<double> vOrigin1 =
+                                    gdcm::ImageHelper::GetOriginValue(localReader1.GetFile());
+                                std::vector<double> vOrigin2 =
+                                    gdcm::ImageHelper::GetOriginValue(localReader2.GetFile());
                                 zspacing = vOrigin2[2] - vOrigin1[2];
-                                OSLM_TRACE ( "Found z-spacing:" << zspacing << " from : << " << vOrigin2[2] << " | " << vOrigin1[2]);
+                                OSLM_TRACE (
+                                    "Found z-spacing:" << zspacing << " from : << " << vOrigin2[2] << " | " <<
+                                    vOrigin1[2]);
                             }
 
-                            OSLM_ERROR_IF( "Cannot read :" << f1 << " or : " << f2 , !canRead );
+                            OSLM_ERROR_IF( "Cannot read :" << f1 << " or : " << f2, !canRead );
                         }
                         OSLM_DEBUG_IF ( "Failed to find z-spacing:" << s.GetZSpacing(), !zspacing);
-                        OSLM_DEBUG_IF ( "Guessed z-spacing:" << s.GetZSpacing() << " -> " << zspacing , zspacing);
+                        OSLM_DEBUG_IF ( "Guessed z-spacing:" << s.GetZSpacing() << " -> " << zspacing, zspacing);
                     }
 
                     filesIt  = sorted.begin();
                     filesEnd = sorted.end();
                 }
 
-                for( ; filesIt != filesEnd; ++filesIt)
+                for(; filesIt != filesEnd; ++filesIt)
                 {
                     const std::string &f = *filesIt;
-                    OSLM_TRACE("Add " << f << " to vtkGdcmReader");
+                    SLM_TRACE("Add '" + f + "' to vtkGdcmReader");
                     fileArray->InsertNextValue( f.c_str() );
                 }
 
@@ -279,9 +289,23 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                     reader->SetFileNames( fileArray );
                     try
                     {
-                        SLM_TRACE ( "Read all files" );
+                        SLM_TRACE("Read Series: " + iter->first);
+
+                        using namespace fwVtkIO::helper;
                         //add progress observation
-                        ::fwVtkIO::Progressor progress(reader, this->getSptr(), "Serie " + iter->first);
+                        vtkSmartPointer<vtkLambdaCommand> progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
+                        progressCallback->SetCallback([this](vtkObject* caller, long unsigned int, void* )
+                            {
+                                auto filter = static_cast<vtkGDCMImageReader*>(caller);
+                                m_job->doneWork( filter->GetProgress()*100 );
+                            });
+                        reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+
+                        m_job->addSimpleCancelHook( [&]()
+                            {
+                                reader->AbortExecuteOn();
+                            } );
+
                         reader->Update();
                         reader->UpdateInformation();
                         reader->PropagateUpdateExtent();
@@ -319,16 +343,16 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                     std::string patientSex       = medprop->GetPatientSex(); //"0010|0040"
 
                     gdcm::Scanner::ValuesType gdcmPhysicianNames = scanner.GetValues( seriesPhysicianNamesTag );
-                    const char * seriesUIDStr =  scanner.GetValue( files[0].c_str(), seriesUIDTag );
-                    const char * seriesTimeStr = scanner.GetValue( files[0].c_str(), seriesTimeTag );
-                    const char * seriesDateStr = scanner.GetValue( files[0].c_str(), seriesDateTag );
-                    std::string seriesModality = medprop->GetModality(); //"0008|0060"
-                    std::string seriesDescription = medprop->GetSeriesDescription();
-                    std::string seriesDate = ( seriesDateStr ? seriesDateStr : "" );
-                    std::string seriesTime = ( seriesTimeStr ? seriesTimeStr : "" );
+                    const char * seriesUIDStr                    = scanner.GetValue( files[0].c_str(), seriesUIDTag );
+                    const char * seriesTimeStr                   = scanner.GetValue( files[0].c_str(), seriesTimeTag );
+                    const char * seriesDateStr                   = scanner.GetValue( files[0].c_str(), seriesDateTag );
+                    std::string seriesModality                   = medprop->GetModality(); //"0008|0060"
+                    std::string seriesDescription                = medprop->GetSeriesDescription();
+                    std::string seriesDate                       = ( seriesDateStr ? seriesDateStr : "" );
+                    std::string seriesTime                       = ( seriesTimeStr ? seriesTimeStr : "" );
 
                     ::fwMedData::DicomValuesType seriesPhysicianNames;
-                    BOOST_FOREACH(const std::string &str, gdcmPhysicianNames)
+                    for(const std::string &str :  gdcmPhysicianNames)
                     {
                         ::fwMedData::DicomValuesType result;
                         ::boost::split( result, str, ::boost::is_any_of("\\"));
@@ -336,13 +360,13 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
                         seriesPhysicianNames.insert(seriesPhysicianNames.end(), result.begin(), result.end());
                     }
 
-                    const char * studyUIDStr =  scanner.GetValue( files[0].c_str(), studyUIDTag );
+                    const char * studyUIDStr = scanner.GetValue( files[0].c_str(), studyUIDTag );
                     const char * studyReferingPhysicianNameStr
                         = scanner.GetValue( files[0].c_str(), studyReferingPhysicianNameTag );
-                    std::string studyDate = medprop->GetStudyDate();
-                    std::string studyTime = medprop->GetStudyTime();
-                    std::string studyDescription = medprop->GetStudyDescription() ; //"0008|1030"
-                    std::string studyPatientAge = medprop->GetPatientAge();
+                    std::string studyDate        = medprop->GetStudyDate();
+                    std::string studyTime        = medprop->GetStudyTime();
+                    std::string studyDescription = medprop->GetStudyDescription();  //"0008|1030"
+                    std::string studyPatientAge  = medprop->GetPatientAge();
                     std::string studyReferingPhysicianName
                         = ( studyReferingPhysicianNameStr ? studyReferingPhysicianNameStr : "" );
 
@@ -350,8 +374,8 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
 
 
                     double thickness = medprop->GetSliceThicknessAsDouble();//"0018|0050"
-                    double center=0.0;
-                    double width=0.0;
+                    double center    = 0.0;
+                    double width     = 0.0;
                     if (medprop->GetNumberOfWindowLevelPresets())//FIXME : Multiple preset !!!
                     {
                         medprop->GetNthWindowLevelPreset(0,&width,&center); //0028|1050,1051
@@ -414,7 +438,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB, con
     {
         OSLM_ERROR ( "Try with another reader or retry with this reader on a specific subfolder : " << e.what() );
         std::vector< std::string >::const_iterator it = filenames.begin();
-        for( ; it != filenames.end(); ++it)
+        for(; it != filenames.end(); ++it)
         {
             OSLM_ERROR ("file error : " << *it );
         }
@@ -434,12 +458,19 @@ void SeriesDBReader::read()
     }
     else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))
     {
-        BOOST_FOREACH(::boost::filesystem::path file, this->getFiles())
+        for(::boost::filesystem::path file :  this->getFiles())
         {
             filenames.push_back(file.string());
         }
     }
-    this->addSeries( seriesDB , filenames);
+    this->addSeries( seriesDB, filenames);
+}
+
+//------------------------------------------------------------------------------
+
+::fwJobs::IJob::sptr SeriesDBReader::getJob() const
+{
+    return m_job;
 }
 
 } //namespace vtkGdcmIO

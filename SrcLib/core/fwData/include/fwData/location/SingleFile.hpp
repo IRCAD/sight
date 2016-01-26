@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_LOCATION_SINGLEFILE_HPP_
-#define _FWDATA_LOCATION_SINGLEFILE_HPP_
-
-
-#include <boost/filesystem.hpp>
+#ifndef __FWDATA_LOCATION_SINGLEFILE_HPP__
+#define __FWDATA_LOCATION_SINGLEFILE_HPP__
 
 #include "fwData/config.hpp"
 #include "fwData/location/ILocation.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <boost/filesystem.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(location)(SingleFile), FWDATA_API);
 
@@ -28,10 +27,10 @@ class FWDATA_CLASS_API SingleFile  : public ILocation
 {
 public:
     fwCoreClassDefinitionsWithNFactoriesMacro(
-            (SingleFile)(ILocation),
-            ((::fwData::factory::New< SingleFile > ,() ))
-            ((SingleFileFactory ,((::boost::filesystem::path)) ))
-    );
+        (SingleFile)(ILocation),
+        ((::fwData::factory::New< SingleFile >,() ))
+            ((SingleFileFactory,((::boost::filesystem::path)) ))
+        );
 
 
     /// Constructor
@@ -55,7 +54,7 @@ public:
     /// Get file system path
     FWDATA_API PathType getPath() const;
 
-protected :
+protected:
 
     FWDATA_API static sptr SingleFileFactory(PathType path);
 
@@ -94,14 +93,14 @@ struct enableSingleFile
         return (getLocation<SingleFile>(m_rw))->getPath();
     }
 
-private :
-    /// Not implemented must use constructor with one parameter
-    enableSingleFile();
-    RW *m_rw;
+    private:
+        /// Not implemented must use constructor with one parameter
+        enableSingleFile();
+        RW *m_rw;
 
 };
 
 }
 }
 
-#endif /* _FWDATA_LOCATION_SINGLEFILE_HPP_ */
+#endif /* __FWDATA_LOCATION_SINGLEFILE_HPP__ */

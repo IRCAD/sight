@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,6 @@
 #include <exception>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwData/Image.hpp>
@@ -22,7 +20,6 @@
 #include <fwData/Vector.hpp>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -35,19 +32,21 @@ namespace uiMeasurement
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::RemoveLandmark , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::RemoveLandmark, ::fwData::Image );
 
 
 //------------------------------------------------------------------------------
 
 
 RemoveLandmark::RemoveLandmark( ) throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 RemoveLandmark::~RemoveLandmark() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -58,19 +57,20 @@ void RemoveLandmark::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-::fwData::Point::sptr  RemoveLandmark::getLandmarkToRemove(::fwData::Image::sptr image, bool &removeAll)
+::fwData::Point::sptr RemoveLandmark::getLandmarkToRemove(::fwData::Image::sptr image, bool &removeAll)
 {
     ::fwData::Point::sptr landmarkToRemove;
     removeAll = false;
 
-    ::fwData::PointList::sptr landmarksBackup = image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId );
+    ::fwData::PointList::sptr landmarksBackup = image->getField< ::fwData::PointList >(
+        ::fwComEd::Dictionary::m_imageLandmarksId );
     SLM_ASSERT("No Field ImageLandmarks", landmarksBackup);
 
     std::vector< std::string > selections;
     selections.push_back("ALL");
-    std::map< std::string , ::fwData::Point::sptr > correspondance;
+    std::map< std::string, ::fwData::Point::sptr > correspondance;
 
-    BOOST_FOREACH(::fwData::Point::sptr landmark, landmarksBackup->getRefPoints())
+    for(::fwData::Point::sptr landmark :  landmarksBackup->getRefPoints())
     {
         ::fwData::String::sptr name = landmark->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId);
         SLM_ASSERT("No Field LabelId", name);
@@ -82,15 +82,15 @@ void RemoveLandmark::info(std::ostream &_sstream )
     selector->setTitle("Select a landmark to remove");
     selector->setSelections(selections);
     std::string selection = selector->show();
-    if( ! selection.empty() )
+    if( !selection.empty() )
     {
         if (selection=="ALL")
         {
-            removeAll=true;
+            removeAll = true;
         }
         else
         {
-            removeAll=false;
+            removeAll        = false;
             landmarkToRemove = correspondance[selection];
         }
     }
@@ -100,11 +100,10 @@ void RemoveLandmark::info(std::ostream &_sstream )
 
 //------------------------------------------------------------------------------
 
-void RemoveLandmark::notify( ::fwData::Image::sptr image , ::fwData::Object::sptr backup)
+void RemoveLandmark::notify( ::fwData::Image::sptr image, ::fwData::Point::sptr backup)
 {
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::LANDMARK, backup );
-    ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+    auto sig = image->signal< ::fwData::Image::LandmarkRemovedSignalType >(::fwData::Image::s_LANDMARK_REMOVED_SIG);
+    sig->asyncEmit(backup);
 }
 
 //------------------------------------------------------------------------------
@@ -113,8 +112,9 @@ void RemoveLandmark::updating( ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId );
+    ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
+    ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
+        ::fwComEd::Dictionary::m_imageLandmarksId );
 
     if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image) && landmarks)
     {
@@ -139,7 +139,7 @@ void RemoveLandmark::updating( ) throw(::fwTools::Failed)
             {
                 // backup
                 image->removeField( ::fwComEd::Dictionary::m_imageLandmarksId ); // erase field
-                this->notify(image, landmarks);
+                this->notify(image, landmarkToRemove);
             }
         }
     }
@@ -158,11 +158,6 @@ void RemoveLandmark::starting() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
-
-//------------------------------------------------------------------------------
-
-void RemoveLandmark::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{}
 
 //------------------------------------------------------------------------------
 

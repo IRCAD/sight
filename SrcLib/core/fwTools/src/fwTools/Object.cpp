@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,15 +26,16 @@ Object::Object() :
 //------------------------------------------------------------------------------
 
 Object::~Object()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 Object &Object::operator=(const Object &_obj)
 {
     SLM_FATAL("This operator is forbidden, use shallowCopy or deepCopy instead.");
-    m_timeStamp =_obj.m_timeStamp;
-    m_logicStamp =_obj.m_logicStamp;
+    m_timeStamp  = _obj.m_timeStamp;
+    m_logicStamp = _obj.m_logicStamp;
     return (*this);
 }
 

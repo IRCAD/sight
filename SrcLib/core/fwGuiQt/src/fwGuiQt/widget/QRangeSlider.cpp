@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,8 @@ struct Castable
 
 
 
-class Handle: public QRangeSlider::Paintable, public Castable<Handle>
+class Handle : public QRangeSlider::Paintable,
+               public Castable<Handle>
 {
 public:
     Handle(QWidget *w)
@@ -40,16 +41,16 @@ public:
           m_pen(Qt::gray),
           m_brush(Qt::lightGray)
     {
-        m_pos = 0;
-        m_width = 13;
+        m_pos             = 0;
+        m_width           = 13;
         m_verticalPadding = 0.2;
-        m_tolerance = std::max(0, 10 - m_width);
+        m_tolerance       = std::max(0, 10 - m_width);
     }
 
     virtual void draw(QPainter &painter, bool /*enabled*/)
     {
-        int height = drawingArea().height()-1;
-        int top = height * m_verticalPadding;
+        int height       = drawingArea().height()-1;
+        int top          = height * m_verticalPadding;
         int handleHeight = height - 2*top;
         painter.setRenderHint(QPainter::Antialiasing);
         painter.setPen(m_pen);
@@ -61,12 +62,12 @@ public:
     {
         bool picked = false;
 
-        int height = drawingArea().height()-1;
-        int top = height * m_verticalPadding;
+        int height       = drawingArea().height()-1;
+        int top          = height * m_verticalPadding;
         int handleHeight = height - 2*top;
 
         if ( abs(point.x() - m_pos) <= (halfWidth() + m_tolerance)
-            && (top+handleHeight) >= point.y() && point.y() >= top )
+             && (top+handleHeight) >= point.y() && point.y() >= top )
         {
             picked = true;
         }
@@ -145,22 +146,23 @@ protected:
     int m_width;
     double m_verticalPadding;
 
-    QPen   m_pen;
+    QPen m_pen;
     QBrush m_brush;
 };
 
 
-class Window: public QRangeSlider::Paintable, public Castable<Window>
+class Window : public QRangeSlider::Paintable,
+               public Castable<Window>
 {
 public:
     Window(QWidget *w)
         : Paintable(w),
-        m_pen(Qt::darkBlue),
-        m_brush(Qt::cyan),
-        m_reversePen(Qt::darkYellow),
-        m_reverseBrush(Qt::yellow)
+          m_pen(Qt::darkBlue),
+          m_brush(Qt::cyan),
+          m_reversePen(Qt::darkYellow),
+          m_reverseBrush(Qt::yellow)
     {
-        m_left = 0;
+        m_left  = 0;
         m_right = 0;
     }
 
@@ -172,26 +174,26 @@ public:
     virtual void draw(QPainter &painter, bool enabled)
     {
         int w = this->width();
-        QPen   pen;
+        QPen pen;
         QBrush brush;
 
         if(enabled)
         {
             if ( w < 0 )
             {
-                pen = m_reversePen;
+                pen   = m_reversePen;
                 brush = m_reverseBrush;
             }
             else
             {
-                pen = m_pen;
+                pen   = m_pen;
                 brush = m_brush;
             }
         }
         else
         {
-                pen = QPen(Qt::lightGray);
-                brush = QBrush(Qt::lightGray);
+            pen   = QPen(Qt::lightGray);
+            brush = QBrush(Qt::lightGray);
         }
 
         painter.setPen(pen);
@@ -203,15 +205,15 @@ public:
     virtual bool pick(const QPoint &point) const
     {
         bool picked = false;
-        int min = std::min(m_left, m_right);
-        int max = std::max(m_left, m_right);
-        picked = min <= point.x() && point.x() <= max ;
+        int min     = std::min(m_left, m_right);
+        int max     = std::max(m_left, m_right);
+        picked = min <= point.x() && point.x() <= max;
         return picked;
     }
 
     void setPos(const int &left, const int &right)
     {
-        m_left = left;
+        m_left  = left;
         m_right = right;
     }
 
@@ -219,9 +221,9 @@ protected:
     int m_left;
     int m_right;
 
-    QPen   m_pen;
+    QPen m_pen;
     QBrush m_brush;
-    QPen   m_reversePen;
+    QPen m_reversePen;
     QBrush m_reverseBrush;
 
 };
@@ -233,11 +235,11 @@ protected:
 QRangeSlider::QRangeSlider(QWidget *parent)
     : QWidget(parent)
 {
-    m_minValue = 0.;
-    m_maxValue = 1.;
+    m_minValue               = 0.;
+    m_maxValue               = 1.;
     m_allowMinGreaterThanMax = true;
-    m_minimumMinMaxDelta = 0.;
-    m_handleSize = 11;
+    m_minimumMinMaxDelta     = 0.;
+    m_handleSize             = 11;
 
     m_current = NULL;
 
@@ -257,9 +259,9 @@ QRangeSlider::QRangeSlider(QWidget *parent)
 
 QRangeSlider::~QRangeSlider()
 {
-     delete m_minHandle;
-     delete m_maxHandle;
-     delete m_window;
+    delete m_minHandle;
+    delete m_maxHandle;
+    delete m_window;
 }
 
 void QRangeSlider::setPos(double _min, double _max)
@@ -292,14 +294,14 @@ void QRangeSlider::move(int delta)
 
     int low, high, width, dir;
     dir = ((minHandle->pos() < maxHandle->pos()) ? 1 : -1);
-    bool movingRight =  (delta < 0) ;
+    bool movingRight = (delta < 0);
 
-    low  = minHandle->pos();
-    high = maxHandle->pos();
+    low   = minHandle->pos();
+    high  = maxHandle->pos();
     width = high - low;
 
     if(  (movingRight  && dir < 0)
-        || (!movingRight && dir > 0 ) )
+         || (!movingRight && dir > 0 ) )
     {
         low  = minHandle->setPos(low-delta);
         high = low + width;
@@ -317,7 +319,7 @@ void QRangeSlider::move(int delta)
 
 bool QRangeSlider::movedTo(double _min, double _max)
 {
-    bool changed = m_minValue != _min || m_maxValue != _max ;
+    bool changed = m_minValue != _min || m_maxValue != _max;
     if (changed)
     {
         m_minValue = _min;
@@ -367,7 +369,8 @@ void QRangeSlider::mouseMoveEvent ( QMouseEvent * event )
             int newPos = event->pos().x();
             currentHandle->setPos(newPos);
 
-            if(!m_allowMinGreaterThanMax && minHandle->floatingPos() + m_minimumMinMaxDelta >= maxHandle->floatingPos() )
+            if(!m_allowMinGreaterThanMax &&
+               minHandle->floatingPos() + m_minimumMinMaxDelta >= maxHandle->floatingPos() )
             {
                 currentHandle->setPos(oldPos);
             }
@@ -395,12 +398,12 @@ void QRangeSlider::mouseMoveEvent ( QMouseEvent * event )
 
 void QRangeSlider::mousePressEvent ( QMouseEvent * event )
 {
-    Handle *minHandle  = Handle::safeCast(m_minHandle);
+    Handle *minHandle = Handle::safeCast(m_minHandle);
     Handle *maxHandle = Handle::safeCast(m_maxHandle);
 //    Window *window     = Window::safeCast(m_window);
 
-    m_pressPos  = event->pos();
-    m_pressMin  = minHandle->pos();
+    m_pressPos = event->pos();
+    m_pressMin = minHandle->pos();
     m_pressMax = maxHandle->pos();
 
     if(m_maxHandle->pick(m_pressPos))
@@ -425,21 +428,21 @@ void QRangeSlider::mouseReleaseEvent ( QMouseEvent * /*event*/)
 
 void QRangeSlider::wheelEvent ( QWheelEvent * event )
 {
-    Handle *minHandle  = Handle::safeCast(m_minHandle);
+    Handle *minHandle = Handle::safeCast(m_minHandle);
     Handle *maxHandle = Handle::safeCast(m_maxHandle);
-    Window *window     = Window::safeCast(m_window);
+    Window *window    = Window::safeCast(m_window);
 
     int delta = this->size().width()/( ((double) event->delta())/4. );
-    int low  = minHandle->pos();
-    int high = maxHandle->pos();
+    int low   = minHandle->pos();
+    int high  = maxHandle->pos();
 
     if(event->orientation() == Qt::Vertical)
     {
         if(!m_allowMinGreaterThanMax)
         {
-            int diff = (high - low);
+            int diff    = (high - low);
             int minDiff = minHandle->fromFloatingPos(m_minimumMinMaxDelta);
-            delta = std::max(delta,  - (diff - minDiff)/2);
+            delta = std::max(delta,  -(diff - minDiff)/2);
         }
 
         low  = minHandle->setPos(low -  delta);

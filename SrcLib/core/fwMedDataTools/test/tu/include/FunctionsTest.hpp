@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2004-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
- * */
+ * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMEDDATATOOLS_FUNCTIONSTEST_HPP__
-#define __FWMEDDATATOOLS_FUNCTIONSTEST_HPP__
+#ifndef __FWMEDDATATOOLS_UT_FUNCTIONSTEST_HPP__
+#define __FWMEDDATATOOLS_UT_FUNCTIONSTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -16,10 +16,10 @@ namespace ut
 
 class FunctionsTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( FunctionsTest );
-    CPPUNIT_TEST(generatePatientIdTest);
-    CPPUNIT_TEST(generateStudyInstanceUidTest);
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( FunctionsTest );
+CPPUNIT_TEST(generatePatientIdTest);
+CPPUNIT_TEST(generateStudyInstanceUidTest);
+CPPUNIT_TEST_SUITE_END();
 
 public:
     /**
@@ -41,5 +41,5 @@ public:
 
 } // namespace fwMedDataTools
 
-#endif // __FWMEDDATATOOLS_FUNCTIONSTEST_HPP__
+#endif // __FWMEDDATATOOLS_UT_FUNCTIONSTEST_HPP__
 

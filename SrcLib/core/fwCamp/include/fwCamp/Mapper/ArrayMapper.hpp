@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@ struct ArrayMapper<std::set<T> >
     static const T& get(const std::set<T>& arr, std::size_t index)
     {
         typename std::set<T>::const_iterator cIt = arr.begin();
-        for(int i =0;i < index; i++)
+        for(int i = 0; i < index; i++)
         {
             ++cIt;
         }
@@ -55,7 +55,7 @@ struct ArrayMapper<std::set<T> >
     static void remove(std::set<T>& arr, std::size_t index)
     {
         typename std::set<T>::const_iterator cIt = arr.begin();
-        for(int i =0;i < index; ++i)
+        for(int i = 0; i < index; ++i)
         {
             ++cIt;
         }

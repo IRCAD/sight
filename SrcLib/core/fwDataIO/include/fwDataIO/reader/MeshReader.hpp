@@ -1,14 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_READER_MESH_HPP_
-#define _FWDATAIO_READER_MESH_HPP_
+#ifndef __FWDATAIO_READER_MESHREADER_HPP__
+#define __FWDATAIO_READER_MESHREADER_HPP__
 
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <fwData/Mesh.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -16,8 +15,9 @@
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/reader/GenericObjectReader.hpp"
 
-namespace fwData {
-    class Mesh;
+namespace fwData
+{
+class Mesh;
 }
 
 namespace fwDataIO
@@ -29,7 +29,7 @@ namespace reader
 /**
  * @brief   Mesh reader. Read file format .trian
  * @class   MeshReader
- * 
+ *
  * @date    2011
  *
  * Load trian file into fwData::Mesh
@@ -39,7 +39,7 @@ class FWDATAIO_CLASS_API MeshReader :
     public ::fwData::location::enableSingleFile< IObjectReader >
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (MeshReader)(GenericObjectReader< ::fwData::Mesh >),
                                             (()),
@@ -64,4 +64,4 @@ public :
 } // namespace fwDataIO
 
 
-#endif // _FWDATAIO_READER_MESH_HPP_
+#endif // __FWDATAIO_READER_MESHREADER_HPP__

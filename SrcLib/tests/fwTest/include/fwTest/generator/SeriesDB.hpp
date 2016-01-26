@@ -1,31 +1,32 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDTEST_GENERATOR_SERIESDB_HPP__
-#define __FWDTEST_GENERATOR_SERIESDB_HPP__
-
-#include <fwCore/base.hpp>
+#ifndef __FWTEST_GENERATOR_SERIESDB_HPP__
+#define __FWTEST_GENERATOR_SERIESDB_HPP__
 
 #include "fwTest/config.hpp"
 
+#include <fwCore/base.hpp>
+
+
 namespace fwData
 {
-    class Reconstruction;
+class Reconstruction;
 }
 
 namespace fwMedData
 {
-    class SeriesDB;
-    class Series;
-    class Patient;
-    class Study;
-    class Equipment;
-    class ImageSeries;
-    class ModelSeries;
-    class ActivitySeries;
+class SeriesDB;
+class Series;
+class Patient;
+class Study;
+class Equipment;
+class ImageSeries;
+class ModelSeries;
+class ActivitySeries;
 }
 
 namespace fwTest
@@ -42,7 +43,7 @@ namespace generator
 class SeriesDB
 {
 
-public :
+public:
 
     /**
      * @brief Creates a SeriesDB.
@@ -52,8 +53,8 @@ public :
      * @return The created SeriesDB
      */
     FWTEST_API static SPTR(::fwMedData::SeriesDB) createSeriesDB(const unsigned char nbImgSeries,
-                                                     const unsigned char nbModelSeries,
-                                                     const unsigned char nbActivitySeries);
+                                                                 const unsigned char nbModelSeries,
+                                                                 const unsigned char nbActivitySeries);
 
 
     /// Returns a Patient with dummy informations
@@ -93,4 +94,4 @@ public :
 } // namespace generator
 } // namespace fwTest
 
-#endif // __FWDTEST_GENERATOR_SERIESDB_HPP__
+#endif // __FWTEST_GENERATOR_SERIESDB_HPP__

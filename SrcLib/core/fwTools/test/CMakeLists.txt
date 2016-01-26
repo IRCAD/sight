@@ -1,9 +1,21 @@
-
 fwLoadProperties()
+fwUseForwardInclude(
+    fwCore
+    fwTools
+    fwTest
+)
 
-find_package (Boost COMPONENTS thread REQUIRED)
 find_package(CppUnit)
-fwInclude(${Boost_INCLUDE_DIRS} ${CPPUNIT_INCLUDE_DIR})
-fwLink(${Boost_LIBRARIES} ${CPPUNIT_LIBRARY})
+find_package(Boost COMPONENTS chrono REQUIRED)
+    
+fwInclude(
+    ${CPPUNIT_INCLUDE_DIR}
+)
+fwLink(
+    ${CPPUNIT_LIBRARY}
+    ${Boost_CHRONO_LIBRARY}
+)
+
+
 
 

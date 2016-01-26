@@ -1,5 +1,5 @@
-
 fwLoadProperties()
+
 fwUseForwardInclude(
     fwComEd
     fwCore
@@ -8,7 +8,8 @@ fwUseForwardInclude(
     fwTools
 )
 
-find_package (Boost COMPONENTS thread REQUIRED)
-fwForwardInclude(${fwCore_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
-fwLink(${Boost_LIBRARIES})
+find_package(GLM REQUIRED)
 
+fwForwardInclude(
+    ${GLM_INCLUDE_DIR}
+)

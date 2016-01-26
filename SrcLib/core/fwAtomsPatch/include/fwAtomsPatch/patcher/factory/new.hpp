@@ -1,15 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMSPATCH_FACTORY_NEW_HPP__
-#define __FWATOMSPATCH_FACTORY_NEW_HPP__
+#ifndef __FWATOMSPATCH_PATCHER_FACTORY_NEW_HPP__
+#define __FWATOMSPATCH_PATCHER_FACTORY_NEW_HPP__
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -37,20 +36,22 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
  */
 class Key
 {
-    template<typename CLASSNAME>
-    friend SPTR( CLASSNAME ) fwAtomsPatch::patcher::factory::New();
+template<typename CLASSNAME>
+friend SPTR( CLASSNAME ) fwAtomsPatch::patcher::factory::New();
 
-    Key(){};
+Key()
+{
+}
 };
 
 
 FWATOMSPATCH_API SPTR(::fwAtomsPatch::patcher::IPatcher) New(
-        const ::fwAtomsPatch::patcher::registry::KeyType & classname );
+    const ::fwAtomsPatch::patcher::registry::KeyType & classname );
 
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
 
     return obj;
 }
@@ -61,6 +62,6 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 
 } // namespace fwAtomsPatch
 
-#endif /* __FWATOMSPATCH_FACTORY_NEW_HPP__ */
+#endif /* __FWATOMSPATCH_PATCHER_FACTORY_NEW_HPP__ */
 
 

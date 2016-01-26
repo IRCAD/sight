@@ -1,12 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 
-#ifndef _SCENE2D_PLUGIN_HPP_
-#define _SCENE2D_PLUGIN_HPP_
+#ifndef __SCENE2D_PLUGIN_HPP__
+#define __SCENE2D_PLUGIN_HPP__
 
 
 #include <fwRuntime/Plugin.hpp>
@@ -15,12 +15,9 @@
 namespace scene2D
 {
 /**
-* @brief   This class is started when the bundles is loaded.
-* @class   Plugin
-* 
-* @date    2010.
-*/
-
+ * @brief   This class is started when the bundles is loaded.
+ * @class   Plugin
+ */
 struct Plugin : public ::fwRuntime::Plugin
 {
 
@@ -41,4 +38,4 @@ struct Plugin : public ::fwRuntime::Plugin
 } // namespace scene2D
 
 
-#endif //_SCENE2D_PLUGIN_HPP_
+#endif //__SCENE2D_PLUGIN_HPP__

@@ -1,10 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/Camera2.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -14,10 +17,8 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
 
 #include <vtkActor.h>
 #include <vtkRenderer.h>
@@ -28,20 +29,23 @@
 #include <vtkCommand.h>
 #include <vtkPerspectiveTransform.h>
 
-#include "visuVTKAdaptor/Camera2.hpp"
-
 class Camera2Clallback : public ::vtkCommand
 {
 public:
 
-    static Camera2Clallback* New(::visuVTKAdaptor::Camera2* adaptor) {
+    static Camera2Clallback* New(::visuVTKAdaptor::Camera2* adaptor)
+    {
         Camera2Clallback *cb = new Camera2Clallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
 
-     Camera2Clallback() : m_adaptor(NULL) {}
-    ~Camera2Clallback() {}
+    Camera2Clallback() : m_adaptor(nullptr)
+    {
+    }
+    ~Camera2Clallback()
+    {
+    }
 
     virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )
     {
@@ -51,31 +55,30 @@ public:
     ::visuVTKAdaptor::Camera2 *m_adaptor;
 };
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera2, ::fwData::TransformationMatrix3D ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera2,
+                         ::fwData::TransformationMatrix3D );
 
 namespace visuVTKAdaptor
 {
 
 //------------------------------------------------------------------------------
 
-Camera2::Camera2() throw()
+Camera2::Camera2() throw() :
+    m_cameraCommand(Camera2Clallback::New(this)),
+    m_transOrig(nullptr)
 {
-    m_cameraCommand = Camera2Clallback::New(this);
 }
 
 //------------------------------------------------------------------------------
 
 Camera2::~Camera2() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
-void Camera2::configuring() throw(fwTools::Failed)
+void Camera2::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
 
 //------------------------------------------------------------------------------
@@ -84,9 +87,9 @@ void Camera2::doStart() throw(fwTools::Failed)
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
 
-    double position[]={0.0, 0.0, 0.0};
-    double focal[]={1.0, 0.0, 0.0};
-    double viewUp[]={0.0, 0.0, 1.0};
+    double position[] = {0.0, 0.0, 0.0};
+    double focal[]    = {1.0, 0.0, 0.0};
+    double viewUp[]   = {0.0, 0.0, 1.0};
 
     m_transOrig = vtkPerspectiveTransform::New();
     m_transOrig->Identity();
@@ -103,7 +106,49 @@ void Camera2::doStart() throw(fwTools::Failed)
 //------------------------------------------------------------------------------
 
 void Camera2::doUpdate() throw(fwTools::Failed)
-{}
+{
+    vtkCamera* camera = this->getRenderer()->GetActiveCamera();
+    camera->RemoveObserver( m_cameraCommand );
+
+    ::fwData::TransformationMatrix3D::sptr transMat = this->getObject< ::fwData::TransformationMatrix3D >();
+
+    vtkMatrix4x4* mat = vtkMatrix4x4::New();
+
+    ::fwData::mt::ObjectReadLock lock(transMat);
+
+    for(int lt = 0; lt<4; lt++)
+    {
+        for(int ct = 0; ct<4; ct++)
+        {
+            mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
+        }
+    }
+
+    lock.unlock();
+
+    // Position camera on origin
+    vtkPerspectiveTransform* oldTrans = vtkPerspectiveTransform::New();
+    oldTrans->Identity();
+    oldTrans->SetupCamera(camera->GetPosition(), camera->GetFocalPoint(), camera->GetViewUp());
+    oldTrans->Inverse();
+    oldTrans->Concatenate(m_transOrig);
+    oldTrans->Inverse();
+
+    // Apply new transform
+    vtkTransform* trans = vtkTransform::New();
+    trans->SetMatrix(mat);
+    trans->Concatenate(oldTrans->GetMatrix());
+    camera->ApplyTransform(trans);
+
+    this->getRenderer()->ResetCameraClippingRange();
+    this->setVtkPipelineModified();
+
+    camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );
+
+    mat->Delete();
+    oldTrans->Delete();
+    trans->Delete();
+}
 
 //------------------------------------------------------------------------------
 
@@ -124,56 +169,6 @@ void Camera2::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Camera2::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    if( msg->hasEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) )
-    {
-        vtkCamera* camera = this->getRenderer()->GetActiveCamera();
-        camera->RemoveObserver( m_cameraCommand );
-
-        ::fwData::TransformationMatrix3D::sptr transMat = this->getObject< ::fwData::TransformationMatrix3D >();
-
-        vtkMatrix4x4* mat = vtkMatrix4x4::New();
-
-        ::fwData::mt::ObjectReadLock lock(transMat);
-
-        for(int lt=0; lt<4; lt++)
-        {
-            for(int ct=0; ct<4; ct++)
-            {
-                mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
-            }
-        }
-
-        lock.unlock();
-
-        // Position camera on origin
-        vtkPerspectiveTransform* oldTrans = vtkPerspectiveTransform::New();
-        oldTrans->Identity();
-        oldTrans->SetupCamera(camera->GetPosition(), camera->GetFocalPoint(), camera->GetViewUp());
-        oldTrans->Inverse();
-        oldTrans->Concatenate(m_transOrig);
-        oldTrans->Inverse();
-
-        // Apply new transform
-        vtkTransform* trans =  vtkTransform::New();
-        trans->SetMatrix(mat);
-        trans->Concatenate(oldTrans->GetMatrix());
-        camera->ApplyTransform(trans);
-
-        this->getRenderer()->ResetCameraClippingRange();
-        this->setVtkPipelineModified();
-
-        camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );
-
-        mat->Delete();
-        oldTrans->Delete();
-        trans->Delete();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void Camera2::updateFromVtk()
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
@@ -190,9 +185,9 @@ void Camera2::updateFromVtk()
     trans->Concatenate(m_transOrig);
     vtkMatrix4x4* mat = trans->GetMatrix();
 
-    for(int lt=0; lt<4; lt++)
+    for(int lt = 0; lt<4; lt++)
     {
-        for(int ct=0; ct<4; ct++)
+        for(int ct = 0; ct<4; ct++)
         {
             trf->setCoefficient(lt,ct, mat->GetElement(lt,ct));
         }
@@ -200,9 +195,11 @@ void Camera2::updateFromVtk()
 
     lock.unlock();
 
-    ::fwComEd::TransformationMatrix3DMsg::sptr msg = ::fwComEd::TransformationMatrix3DMsg::New();
-    msg->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED ) ;
-    ::fwServices::IEditionService::notify(this->getSptr(), trf, msg);
+    auto sig = trf->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
 
     camera->AddObserver( ::vtkCommand::ModifiedEvent, m_cameraCommand );
 

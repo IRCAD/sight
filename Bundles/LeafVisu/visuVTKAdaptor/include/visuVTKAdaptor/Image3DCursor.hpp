@@ -1,20 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_IMAGE3DCURSOR_HPP_
-#define _VISUVTKADAPTOR_IMAGE3DCURSOR_HPP_
+#ifndef __VISUVTKADAPTOR_IMAGE3DCURSOR_HPP__
+#define __VISUVTKADAPTOR_IMAGE3DCURSOR_HPP__
 
-#include <vtkSmartPointer.h>
+#include "visuVTKAdaptor/config.hpp"
 
-#include <fwData/TransferFunction.hpp>
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
+
+#include <fwData/Color.hpp>
+#include <fwData/TransferFunction.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
+#include <vtkSmartPointer.h>
 
 class vtkCommand;
 class vtkActor;
@@ -25,13 +27,14 @@ namespace visuVTKAdaptor
 {
 
 /**
-* @brief Add a 3D spatial marker represented by a sphere
-*/
-class VISUVTKADAPTOR_CLASS_API Image3DCursor: public  ::fwComEd::helper::MedicalImageAdaptor,public ::fwRenderVTK::IVtkAdaptorService
+ * @brief Add a 3D spatial marker represented by a sphere
+ */
+class VISUVTKADAPTOR_CLASS_API Image3DCursor : public  ::fwComEd::helper::MedicalImageAdaptor,
+                                               public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Image3DCursor)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Image3DCursor)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Image3DCursor() throw();
 
@@ -41,16 +44,23 @@ public:
 
     VISUVTKADAPTOR_API void setVisibility( bool visibility );
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     // redraw all (stop then restart sub services)
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     void buildPolyData(float radius = 1.0);
 
@@ -60,7 +70,20 @@ protected:
     vtkSmartPointer<vtkPolyDataMapper> m_cursorMapper;
     vtkSmartPointer<vtkActor>          m_cursorActor;
 
+private:
 
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: update image slice index
+    void updateSliceIndex(int axial, int frontal, int sagittal);
+
+    /// Slot: update the sphere color and radius
+    void updateSphere(::fwData::Color::sptr color, float radius);
+    /**
+     * @}
+     */
 
 };
 
@@ -69,4 +92,4 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_IMAGE3DCURSOR_HPP_
+#endif // __VISUVTKADAPTOR_IMAGE3DCURSOR_HPP__

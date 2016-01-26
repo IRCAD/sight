@@ -1,13 +1,7 @@
-<plugin id="ioData" class="::ioData::Plugin" >
+<plugin id="ioData" class="::ioData::Plugin"  version="@DASH_VERSION@" >
     <library name="ioData" />
 
     <requirement id="io" />
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::io::IReader</type>
-        <service>::ioData::CameraReaderService</service>
-        <object>::fwData::Camera</object>
-    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::io::IReader</type>

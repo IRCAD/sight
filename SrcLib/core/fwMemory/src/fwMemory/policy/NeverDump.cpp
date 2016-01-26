@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,7 +20,7 @@ fwMemoryPolicyRegisterMacro(::fwMemory::policy::NeverDump);
 //------------------------------------------------------------------------------
 
 void NeverDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType size )
+                                   BufferInfo::SizeType size )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -31,7 +31,7 @@ void NeverDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::
 
 
 void NeverDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType size )
+                            BufferInfo::SizeType size )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -42,7 +42,7 @@ void NeverDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBu
 
 
 void NeverDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
-        BufferInfo::SizeType newSize )
+                                   BufferInfo::SizeType newSize )
 {
     FwCoreNotUsedMacro(info);
     FwCoreNotUsedMacro(buffer);
@@ -95,7 +95,8 @@ void NeverDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::Con
 //------------------------------------------------------------------------------
 
 void NeverDump::refresh()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 

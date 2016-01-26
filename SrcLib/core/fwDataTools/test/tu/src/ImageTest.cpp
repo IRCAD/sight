@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -53,12 +53,12 @@ void ImageTest::roiApplyTest()
         ::fwTools::Type roiType(roiTypeName);                                                           \
         ::fwData::Image::sptr imageRef;                                                                 \
         ::fwData::Image::sptr image = ::fwData::Image::New();                                                                 \
-        ::fwData::Image::sptr roi = ::fwData::Image::New();                                                                   \
+        ::fwData::Image::sptr roi   = ::fwData::Image::New();                                                                   \
                                                                                                         \
         ::fwTest::generator::Image::generateRandomImage(image, imageType);                                    \
-        ::fwData::Image::SizeType    size = image->getSize();                                           \
+        ::fwData::Image::SizeType size       = image->getSize();                                           \
         ::fwData::Image::SpacingType spacing = image->getSpacing();                                     \
-        ::fwData::Image::OriginType  origin = image->getOrigin();                                       \
+        ::fwData::Image::OriginType origin   = image->getOrigin();                                       \
         ::fwTest::generator::Image::generateImage(roi, size, spacing, origin, roiType);                       \
                                                                                                         \
         imageRef = ::fwData::Object::copy(image);                                                       \
@@ -98,26 +98,26 @@ void ImageTest::roiApplyTest()
     TestRoiApplyMacro( "int8", "uint16");
     TestRoiApplyMacro( "int8", "uint32");
 
-    TestRoiApplyMacro( "int16" , "int8"  );
-    TestRoiApplyMacro( "int16" , "int16" );
-    TestRoiApplyMacro( "int16" , "int32" );
-    TestRoiApplyMacro( "int16" , "uint8" );
-    TestRoiApplyMacro( "int16" , "uint16");
-    TestRoiApplyMacro( "int16" , "uint32");
+    TestRoiApplyMacro( "int16", "int8"  );
+    TestRoiApplyMacro( "int16", "int16" );
+    TestRoiApplyMacro( "int16", "int32" );
+    TestRoiApplyMacro( "int16", "uint8" );
+    TestRoiApplyMacro( "int16", "uint16");
+    TestRoiApplyMacro( "int16", "uint32");
 
-    TestRoiApplyMacro( "int32" , "int8"  );
-    TestRoiApplyMacro( "int32" , "int16" );
-    TestRoiApplyMacro( "int32" , "int32" );
-    TestRoiApplyMacro( "int32" , "uint8" );
-    TestRoiApplyMacro( "int32" , "uint16");
-    TestRoiApplyMacro( "int32" , "uint32");
+    TestRoiApplyMacro( "int32", "int8"  );
+    TestRoiApplyMacro( "int32", "int16" );
+    TestRoiApplyMacro( "int32", "int32" );
+    TestRoiApplyMacro( "int32", "uint8" );
+    TestRoiApplyMacro( "int32", "uint16");
+    TestRoiApplyMacro( "int32", "uint32");
 
-    TestRoiApplyMacro( "uint8" , "int8"  );
-    TestRoiApplyMacro( "uint8" , "int16" );
-    TestRoiApplyMacro( "uint8" , "int32" );
-    TestRoiApplyMacro( "uint8" , "uint8" );
-    TestRoiApplyMacro( "uint8" , "uint16");
-    TestRoiApplyMacro( "uint8" , "uint32");
+    TestRoiApplyMacro( "uint8", "int8"  );
+    TestRoiApplyMacro( "uint8", "int16" );
+    TestRoiApplyMacro( "uint8", "int32" );
+    TestRoiApplyMacro( "uint8", "uint8" );
+    TestRoiApplyMacro( "uint8", "uint16");
+    TestRoiApplyMacro( "uint8", "uint32");
 
     TestRoiApplyMacro( "uint16", "int8"  );
     TestRoiApplyMacro( "uint16", "int16" );

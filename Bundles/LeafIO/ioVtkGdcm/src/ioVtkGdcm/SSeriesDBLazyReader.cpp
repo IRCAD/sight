@@ -1,50 +1,56 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/bind.hpp>
+#include "ioVtkGdcm/SSeriesDBLazyReader.hpp"
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwCore/base.hpp>
+
+#include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Series.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <fwGui/dialog/ProgressDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/Cursor.hpp>
-
 #include <io/IReader.hpp>
-
-#include <fwComEd/SeriesDBMsg.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
 
 #include <vtkGdcmIO/SeriesDBLazyReader.hpp>
 
-#include "ioVtkGdcm/SSeriesDBLazyReader.hpp"
-
+#include <boost/bind.hpp>
 
 namespace ioVtkGdcm
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioVtkGdcm::SSeriesDBLazyReader , ::fwMedData::SeriesDB ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioVtkGdcm::SSeriesDBLazyReader, ::fwMedData::SeriesDB );
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
 SSeriesDBLazyReader::SSeriesDBLazyReader() throw()
-{}
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
 
 //------------------------------------------------------------------------------
 
 SSeriesDBLazyReader::~SSeriesDBLazyReader() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -58,8 +64,8 @@ void SSeriesDBLazyReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr  result;
-    result= ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    ::fwData::location::Folder::sptr result;
+    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
@@ -86,15 +92,15 @@ void SSeriesDBLazyReader::stopping() throw(::fwTools::Failed)
 
 void SSeriesDBLazyReader::info(std::ostream &_sstream )
 {
-    _sstream << "SSeriesDBLazyReader::info" ;
+    _sstream << "SSeriesDBLazyReader::info";
 }
 
 //------------------------------------------------------------------------------
 
 SSeriesDBLazyReader::ExtensionsType SSeriesDBLazyReader::getSupportedExtensions()
 {
-    ExtensionsType extensions ;
-    return extensions ;
+    ExtensionsType extensions;
+    return extensions;
 }
 
 //------------------------------------------------------------------------------
@@ -111,14 +117,14 @@ std::string SSeriesDBLazyReader::getSelectorDialogTitle()
 {
     SLM_TRACE_FUNC();
     ::vtkGdcmIO::SeriesDBLazyReader::sptr myLoader = ::vtkGdcmIO::SeriesDBLazyReader::New();
-    ::fwMedData::SeriesDB::sptr dummy = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::sptr dummy              = ::fwMedData::SeriesDB::New();
     myLoader->setObject(dummy);
     myLoader->setFolder(dicomDir);
 
+    m_sigJobCreated->emit(myLoader->getJob());
+
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Dicom Image");
-        myLoader->addHandler( progressMeterGUI );
         myLoader->read();
     }
     catch (const std::exception & e)
@@ -126,12 +132,12 @@ std::string SSeriesDBLazyReader::getSelectorDialogTitle()
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 
     return myLoader->getConcreteObject();
@@ -151,7 +157,7 @@ void SSeriesDBLazyReader::updating() throw(::fwTools::Failed)
             // Retrieve dataStruct associated with this service
             ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
             SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
-            associatedSeriesDB->shallowCopy( seriesDB ) ;
+            associatedSeriesDB->shallowCopy( seriesDB );
 
             ::fwGui::Cursor cursor;
             cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -161,7 +167,8 @@ void SSeriesDBLazyReader::updating() throw(::fwTools::Failed)
         else
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Image Reader","This file can not be read. Retry with another file reader.", ::fwGui::dialog::IMessageDialog::WARNING);
+                "Image Reader","This file can not be read. Retry with another file reader.",
+                ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }
@@ -171,16 +178,18 @@ void SSeriesDBLazyReader::updating() throw(::fwTools::Failed)
 void SSeriesDBLazyReader::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >() ;
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
-    ::fwComEd::SeriesDBMsg::sptr msg = ::fwComEd::SeriesDBMsg::New();
-    BOOST_FOREACH( ::fwMedData::Series::sptr s, seriesDB->getContainer() )
+    ::fwMedData::SeriesDB::ContainerType addedSeries;
+    for( ::fwMedData::Series::sptr s :  seriesDB->getContainer() )
     {
-        msg->appendAddedSeries(s);
+        addedSeries.push_back(s);
     }
 
-    ::fwServices::IEditionService::notify(this->getSptr(),  seriesDB, msg);
+    auto sig = seriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
+        ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+    sig->asyncEmit(addedSeries);
 }
 
 //-----------------------------------------------------------------------------

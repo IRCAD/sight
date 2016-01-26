@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,8 @@
  * Based on (and also inspired by) QToolbox: http://doc.qt.nokia.com/4.7/qtoolbox.html
  */
 
-#ifndef _FWGUIQT_WIDGET_QFWTOOLBOX_HPP
-#define _FWGUIQT_WIDGET_QFWTOOLBOX_HPP
+#ifndef __FWGUIQT_WIDGET_QFWTOOLBOX_HPP__
+#define __FWGUIQT_WIDGET_QFWTOOLBOX_HPP__
 
 #include <QObject>
 #include <QScrollArea>
@@ -28,17 +28,35 @@ namespace widget
 class Page
 {
 public:
-    void setText(const QString &text) { button->setText(text); }
-    void setIcon(const QIcon &is) { button->setIcon(is); }
-    void setToolTip(const QString &tip) { button->setToolTip(tip); }
-    QString toolTip() const { return button->toolTip(); }
-    QString text() const { return button->text(); }
-    QIcon icon() const { return button->icon(); }
+    void setText(const QString &text)
+    {
+        button->setText(text);
+    }
+    void setIcon(const QIcon &is)
+    {
+        button->setIcon(is);
+    }
+    void setToolTip(const QString &tip)
+    {
+        button->setToolTip(tip);
+    }
+    QString toolTip() const
+    {
+        return button->toolTip();
+    }
+    QString text() const
+    {
+        return button->text();
+    }
+    QIcon icon() const
+    {
+        return button->icon();
+    }
 
     inline bool operator==(const Page& other) const
     {
         return widget == other.widget;
-     }
+    }
 
     QPushButton *button;
     QFrame* sv;
@@ -47,7 +65,7 @@ public:
 
 class FWGUIQT_CLASS_API QfwToolBox : public QFrame
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     FWGUIQT_API QfwToolBox(QWidget *parent = 0, Qt::WindowFlags f = 0);
@@ -99,4 +117,4 @@ private:
 } // namespace widget
 } // namespace fwGuiQt
 
-#endif // _FWGUIQT_WIDGET_QFWTOOLBOX_HPP
+#endif // __FWGUIQT_WIDGET_QFWTOOLBOX_HPP__

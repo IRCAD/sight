@@ -1,16 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Object.hpp>
-
-#include <fwServices/macros.hpp>
-
 #include "fwComEd/parser/Object.hpp"
 
-fwServicesRegisterMacro( ::fwServices::IXMLParser , ::fwComEd::parser::Object , ::fwData::Object ) ;
+#include <fwData/Object.hpp>
+#include <fwServices/macros.hpp>
+
+
+#include <boost/foreach.hpp>
+
+fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::Object, ::fwData::Object );
 
 namespace fwComEd
 {
@@ -20,12 +22,14 @@ namespace parser
 //------------------------------------------------------------------------------
 
 Object::Object( )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 Object::~Object()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -33,13 +37,15 @@ bool Object::refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgEl
 {
     bool isOk = true;
 
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, _cfgElement->getElements() )
+    for( ::fwRuntime::ConfigurationElement::csptr elem :  _cfgElement->getElements() )
     {
         std::string subElementName = elem->getName();
         if(     subElementName != "service" &&
                 subElementName != "serviceList"    )
         {
-            OSLM_ERROR("xml subelement \""<< subElementName <<"\" for element object is not supported for the moment when you use a reference on item composite.");
+            OSLM_ERROR(
+                "xml subelement \""<< subElementName <<
+                "\" for element object is not supported for the moment when you use a reference on item composite.");
             isOk = false;
         }
     }
@@ -51,7 +57,7 @@ bool Object::refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgEl
 
 void Object::updating( ) throw(fwTools::Failed)
 {
-    SLM_FATAL("Sorry, this method is depreciated");
+    SLM_FATAL("This method is deprecated, and thus, shouldn't be used.");
 }
 
 
@@ -61,13 +67,13 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
 {
     // Declaration of attributes values
     const std::string OBJECT_BUILD_MODE = "src";
-    const std::string BUILD_OBJECT = "new";
-    const std::string GET_OBJECT = "ref";
+    const std::string BUILD_OBJECT      = "new";
+    const std::string GET_OBJECT        = "ref";
 
     ::fwData::Object::sptr associatedObject = ::fwData::Object::dynamicCast(_obj);
     SLM_ASSERT("associatedObject not instanced", associatedObject);
 
-    BOOST_FOREACH( ::fwRuntime::ConfigurationElement::csptr elem, m_cfg->getElements() )
+    for( ::fwRuntime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
 
         if( elem->getName() == "item" )
@@ -78,19 +84,25 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
             if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
                 buildMode = elem->getExistingAttributeValue( OBJECT_BUILD_MODE );
-                OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.", buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
+                OSLM_ASSERT( "The buildMode \""<< buildMode <<"\" is not supported, it should either be BUILD_OBJECT "
+                             "or GET_OBJECT.",
+                             buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
 
 
-            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" .", elem->hasAttribute("key") );
+            SLM_ASSERT( "The xml element \"item\" must have an attribute named \"key\" .",
+                        elem->hasAttribute("key") );
             std::string key = elem->getExistingAttributeValue("key");
-            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" not empty.", ! key.empty() );
-            SLM_ASSERT( "Sorry, xml element item must have one (and only one) xml sub-element \"object\".", elem->size() == 1 && (*(elem->getElements().begin()))->getName() == "object" );
+            SLM_ASSERT( "The xml element \"item\" must have an attribute named \"key\" whick is not empty.",
+                        !key.empty() );
+            SLM_ASSERT( "The xml element \"item\" must have one (and only one) xml sub-element \"object\".",
+                        elem->size() == 1 && (*(elem->getElements().begin()))->getName() == "object" );
 
             if( buildMode == BUILD_OBJECT )
             {
                 // Test if key already exist in object
-                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the object.", !associatedObject->getField( key ) );
+                OSLM_ASSERT("The key "<< key <<" already exists in the object.", !associatedObject->getField(
+                                key ) );
 
                 // Create and manage object config
                 ::fwServices::AppConfigManager::sptr ctm = ::fwServices::AppConfigManager::New();
@@ -115,7 +127,7 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
 
 void Object::startConfig()
 {
-    BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
+    for( ::fwServices::AppConfigManager::sptr ctm :  m_ctmContainer )
     {
         ctm->start();
     }
@@ -125,7 +137,7 @@ void Object::startConfig()
 
 void Object::updateConfig()
 {
-    BOOST_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
+    for( ::fwServices::AppConfigManager::sptr ctm :  m_ctmContainer )
     {
         ctm->update();
     }

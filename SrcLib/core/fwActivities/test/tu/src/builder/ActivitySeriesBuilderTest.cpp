@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,7 @@ void ActivitySeriesBuilderTest::setUp()
 {
     // Set up context before running a test.
     ::boost::filesystem::path plugin = "share/tu_exec_fwActivities_0-0/tu_builder";
-    m_bundle = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
+    m_bundle                         = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
 
     m_activities = ::fwActivities::registry::Activities::New();
 
@@ -58,8 +58,8 @@ void ActivitySeriesBuilderTest::tearDown()
 
 void ActivitySeriesBuilderTest::builDataTest()
 {
-    ::fwData::Vector::sptr selection = ::fwData::Vector::New();
-    ::fwMedData::ImageSeries::sptr imgSeriesSelected = ::fwMedData::ImageSeries::New();
+    ::fwData::Vector::sptr selection                   = ::fwData::Vector::New();
+    ::fwMedData::ImageSeries::sptr imgSeriesSelected   = ::fwMedData::ImageSeries::New();
     ::fwMedData::ModelSeries::sptr modelSeriesSelected = ::fwMedData::ModelSeries::New();
     selection->getContainer().push_back(imgSeriesSelected);
     selection->getContainer().push_back(modelSeriesSelected);
@@ -92,7 +92,7 @@ void ActivitySeriesBuilderTest::builDataTest()
     CPPUNIT_ASSERT(obj == imgSeriesSelected);
 
     //set of param [0;2]
-    obj = (*dataActivity)[modelKey];
+    obj                                 = (*dataActivity)[modelKey];
     ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast(obj);
     CPPUNIT_ASSERT_MESSAGE(modelKey + " param dynamicCast to fwData::Composite failed", composite);
     CPPUNIT_ASSERT_EQUAL(size_t(1), composite->size());

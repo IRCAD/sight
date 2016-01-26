@@ -1,60 +1,66 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#ifndef ANDROID
+
+#include "visuVTKAdaptor/Plane.hpp"
+#include "visuVTKAdaptor/Point.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwData/Color.hpp>
+#include <fwData/Plane.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 #include <fwMath/PlaneFunctions.hpp>
 
-#include <fwData/Plane.hpp>
-#include <fwData/Color.hpp>
+#include <fwRenderVTK/vtk/Helpers.hpp>
+#include <fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
-
-#include <fwComEd/PointMsg.hpp>
-#include <fwComEd/PlaneMsg.hpp>
 
 #include <vtkActor.h>
 #include <vtkPlaneCollection.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPropCollection.h>
 #include <vtkProperty.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
 
-
-#include "fwRenderVTK/vtk/Helpers.hpp"
-#include "fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp"
-#include "visuVTKAdaptor/Plane.hpp"
-#include "visuVTKAdaptor/Point.hpp"
-
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Plane, ::fwData::Plane ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Plane, ::fwData::Plane );
 
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_POINTS_SLOT     = "updatePoints";
+static const ::fwCom::Slots::SlotKeyType s_START_INTERACTION_SLOT = "startInteraction";
+static const ::fwCom::Slots::SlotKeyType s_SELECT_PLANE_SLOT      = "selectPlane";
 
+const ::fwCom::Signals::SignalKeyType Plane::s_INTERACTION_STARTED_SIG = "interactionStarted";
 
-Plane::Plane() throw()
+//------------------------------------------------------------------------------
+
+Plane::Plane() throw() :
+    m_vtkPlane(nullptr),
+    m_actorPlan(nullptr),
+    m_vtkImplicitPlane(nullptr),
+    m_vtkPlaneCollection(nullptr)
 {
-    SLM_TRACE_FUNC();
-
-    m_vtkPlaneCollection = 0;
-    m_vtkImplicitPlane = 0;
-
-    //addNewHandledEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED );
-    //addNewHandledEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION );
-    //addNewHandledEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
-    //addNewHandledEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );
-    //addNewHandledEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
-
     m_connections = ::fwServices::helper::SigSlotConnection::New();
+
+    newSlot(s_UPDATE_POINTS_SLOT, &Plane::updatePoints, this);
+    newSlot(s_START_INTERACTION_SLOT, &Plane::startInteraction, this);
+    newSlot(s_SELECT_PLANE_SLOT, &Plane::selectPlane, this);
+
+    newSignal< InteractionStartedSignalType >(s_INTERACTION_STARTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -66,13 +72,8 @@ Plane::~Plane() throw()
 
 //------------------------------------------------------------------------------
 
-void Plane::configuring() throw(fwTools::Failed)
+void Plane::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
 
 //------------------------------------------------------------------------------
@@ -81,51 +82,13 @@ void Plane::doStart() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-//  vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
-//  mapper->SetInput( m_vtkPlane->GetOutput() );
-//  m_actorPlan->SetMapper(mapper);
-//  m_actorPlan->GetProperty()->SetOpacity( 0.5 );
-//  m_actorPlan->GetProperty()->SetColor( 1., 1., 1. );
-//  this->addToRenderer(m_actorPlan);
-//
-//  mapper->Delete();
-//  mapper = 0;
-//
-//  vtkMaskPoints* ptMask = vtkMaskPoints::New();
-//  ptMask->SetInputConnection(m_vtkPlane->GetOutputPort());
-//  ptMask->SetOnRatio(1);
-//  //ptMask->RandomModeOn();
-//
-//  vtkArrowSource* arrow = vtkArrowSource::New();
-//
-//  vtkGlyph3D* glyph = vtkGlyph3D::New();
-//  glyph->SetInputConnection(ptMask->GetOutputPort());
-//  glyph->SetSource(arrow->GetOutput());
-//  glyph->SetVectorModeToUseNormal();
-//  glyph->SetScaleModeToScaleByVector();
-//  glyph->SetScaleFactor(50.0);
-//
-//  vtkPolyDataMapper* glyphMapper = vtkPolyDataMapper::New();
-//  glyphMapper->SetInputConnection(glyph->GetOutputPort());
-//
-//  vtkActor *arrowsActor = vtkActor::New();
-//    arrowsActor->SetMapper(glyphMapper);
-//  arrowsActor->GetProperty()->SetOpacity( 0.5 );
-//  this->addToRenderer(arrowsActor);
-//
-//  arrowsActor->Delete();
-//  ptMask->Delete();
-//  glyph->Delete();
-//  glyphMapper->Delete();
-//  arrow->Delete();
-
     m_pPlane = this->getObject< ::fwData::Plane >();
 
-    BOOST_FOREACH( ::fwData::Point::sptr point, m_pPlane.lock()->getPoints() )
+    for( ::fwData::Point::sptr point :  m_pPlane.lock()->getPoints() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr servicePoint =
-                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-        ( point, "::visuVTKAdaptor::Point" );
+            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+                ( point, "::visuVTKAdaptor::Point" );
         SLM_ASSERT("servicePoint not instanced", servicePoint);
 
         servicePoint->setRenderService(this->getRenderService());
@@ -136,8 +99,10 @@ void Plane::doStart() throw(fwTools::Failed)
 
         this->registerService(servicePoint);
 
-        m_connections->connect(point, ::fwData::Object::s_OBJECT_MODIFIED_SIG,
-                               this->getSptr(), ::fwServices::IService::s_RECEIVE_SLOT);
+        m_connections->connect(point, ::fwData::Object::s_MODIFIED_SIG,
+                               this->getSptr(), s_UPDATE_POINTS_SLOT);
+        m_connections->connect(servicePoint, ::visuVTKAdaptor::Point::s_INTERACTION_STARTED_SIG,
+                               this->getSptr(), s_START_INTERACTION_SLOT);
     }
 
     if (m_vtkPlaneCollection)
@@ -169,11 +134,13 @@ void Plane::doUpdate() throw(fwTools::Failed)
     ::fwData::Point::sptr pt0 = plane->getPoints()[0];
     ::fwData::Point::sptr pt1 = plane->getPoints()[1];
     ::fwData::Point::sptr pt2 = plane->getPoints()[2];
-    plane->computePlaneFromPoints();
+
+    fwPlane planeDesc;
+    ::fwMath::setValues(planeDesc, pt0->getCoord(), pt1->getCoord(), pt2->getCoord());
 
     if(m_vtkImplicitPlane)
     {
-        fwVec3d normal = ::fwMath::getNormal(plane->getPlane());
+        fwVec3d normal = ::fwMath::getNormal(planeDesc);
 
         m_vtkImplicitPlane->SetOrigin(pt0->getCoord()[0], pt0->getCoord()[1], pt0->getCoord()[2]);
         m_vtkImplicitPlane->SetNormal(normal[0], normal[1], normal[2]);
@@ -184,46 +151,24 @@ void Plane::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Plane::doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
+void Plane::updatePoints()
 {
-    SLM_TRACE_FUNC();
-    ::fwComEd::PointMsg::csptr pointMsg = ::fwComEd::PointMsg::dynamicConstCast( _msg );
-    ::fwComEd::PlaneMsg::csptr planeMsg = ::fwComEd::PlaneMsg::dynamicConstCast( _msg );
-    if ( pointMsg)
-    {
-        if (pointMsg->hasEvent( ::fwComEd::PointMsg::POINT_IS_MODIFIED ) )
-        {
-            this->doUpdate();
-            ::fwComEd::PlaneMsg::sptr msg = ::fwComEd::PlaneMsg::New();
-            msg->addEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED );
-            ::fwServices::IEditionService::notify( this->getSptr(), m_pPlane.lock(), msg );
-        }
+    this->updating();
 
-        if ( pointMsg->hasEvent( ::fwComEd::PointMsg::START_POINT_INTERACTION ))
-        {
-            ::fwComEd::PlaneMsg::sptr msg = ::fwComEd::PlaneMsg::New();
-            msg->addEvent( ::fwComEd::PlaneMsg::START_PLANE_INTERACTION );
-            ::fwServices::IEditionService::notify( this->getSptr(), m_pPlane.lock(), msg );
-        }
-    }
-    else if (planeMsg)
+    auto sig = m_pPlane.lock()->signal< ::fwData::Object::ModifiedSignalType >(
+        ::fwData::Object::s_MODIFIED_SIG);
     {
-        if (planeMsg->hasEvent( ::fwComEd::PlaneMsg::PLANE_MODIFIED ) )
-        {
-            this->doUpdate();
-        }
-        else  if (planeMsg->hasEvent( ::fwComEd::PlaneMsg::WAS_SELECTED ) )
-        {
-            // highlight selected plan
-            this->selectPlane(true);
-            setVtkPipelineModified();
-        }
-        else  if (planeMsg->hasEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED ) )
-        {
-            this->selectPlane(false);
-            setVtkPipelineModified();
-        }
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Plane::startInteraction()
+{
+    auto sig = m_pPlane.lock()->signal< InteractionStartedSignalType >( s_INTERACTION_STARTED_SIG);
+    sig->asyncEmit( m_pPlane.lock() );
 }
 
 //------------------------------------------------------------------------------
@@ -255,7 +200,7 @@ void Plane::setVtkPlaneCollection( vtkObject * col )
             {
                 m_vtkPlaneCollection->RemoveItem(m_vtkImplicitPlane);
             }
-            m_vtkPlaneCollection=0;
+            m_vtkPlaneCollection = 0;
         }
 
         if ( col )
@@ -274,7 +219,7 @@ void Plane::setVtkPlaneCollection( vtkObject * col )
 
 void Plane::selectPlane(bool select)
 {
-    BOOST_FOREACH( ServiceVector::value_type service, m_subServices )
+    for( ServiceVector::value_type service :  m_subServices )
     {
         if(!service.expired())
         {
@@ -289,10 +234,25 @@ void Plane::selectPlane(bool select)
             }
         }
     }
-
-
-
+    this->setVtkPipelineModified();
+    this->requestRender();
 }
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Plane::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Plane::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Plane::s_SELECTED_SIG, s_SELECT_PLANE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 
 
 } //namespace visuVTKAdaptor
+
+#endif //ANDROID

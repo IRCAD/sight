@@ -1,17 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IACTIONSRV_HPP_
-#define _FWGUI_IACTIONSRV_HPP_
-
-#include <fwServices/IService.hpp>
+#ifndef __FWGUI_IACTIONSRV_HPP__
+#define __FWGUI_IACTIONSRV_HPP__
 
 #include "fwGui/config.hpp"
-
 #include "fwGui/registrar/ActionRegistrar.hpp"
+
+#include <fwCom/Slots.hpp>
+
+#include <fwServices/IService.hpp>
 
 namespace fwGui
 {
@@ -20,16 +21,55 @@ namespace fwGui
  * @brief   Defines the service interface managing the menu items.
  * @class   IActionSrv
  *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IActionSrv : public ::fwServices::IService
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IActionSrv)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IActionSrv)(::fwServices::IService) );
     fwCoreAllowSharedFromThis();
+
+    /**
+     * @name Slots Keys
+     * @{
+     */
+    /// Slot to activate/deactivate the action
+    static const ::fwCom::Slots::SlotKeyType s_SET_IS_ACTIVE_SLOT;
+
+    /// Slot to activate the action
+    static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_SLOT;
+
+    /// Slot to desactivate the action
+    static const ::fwCom::Slots::SlotKeyType s_DEACTIVATE_SLOT;
+
+    /// Slot to enable/disable the action
+    static const ::fwCom::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT;
+
+    /// Slot to enable the action
+    static const ::fwCom::Slots::SlotKeyType s_SET_EXECUTABLE_SLOT;
+
+    /// Slot to disable the action
+    static const ::fwCom::Slots::SlotKeyType s_SET_INEXECUTABLE_SLOT;
+    /**
+     * @}
+     */
+
+    /// Slot to show/hide the action
+    typedef ::fwCom::Slot< void (bool) >  SetVisibleSlotType;
+    static const ::fwCom::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
+
+    /// Slot to disable the action
+    typedef ::fwCom::Slot< void () >  ShowSlotType;
+    static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+
+    /// Slot to disable the action
+    typedef ::fwCom::Slot< void () >  HideSlotType;
+    static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
+
+    /**
+     * @}
+     */
 
     /// Method called when the action service is stopping
     FWGUI_API void actionServiceStopping();
@@ -40,17 +80,43 @@ public :
     /// Set the action service is active/inactive.
     FWGUI_API virtual void setIsActive(bool isActive);
 
+    /// Set the action service is active.
+    FWGUI_API virtual void activate();
+
+    /// Set the action service is not active.
+    FWGUI_API virtual void deactivate();
+
     /// Return true if action service is active.
     FWGUI_API bool getIsActive();
 
     /// Return true if action 'check' feedback is inverted.
-    bool getActiveStateValue(){ return m_activeStateValue; };
+    bool getActiveStateValue()
+    {
+        return m_activeStateValue;
+    }
 
     /// Set the action service executable or not.
-    FWGUI_API void setIsExecutable(bool isExecutable);
+    FWGUI_API virtual void setIsExecutable(bool isExecutable);
+
+    /// Set the action service executable.
+    FWGUI_API virtual void setExecutable();
+
+    /// Set the action service not executable.
+    FWGUI_API virtual void setInexecutable();
 
     /// Return action service is executable.
     FWGUI_API bool getIsExecutable();
+
+    /// Show or hide the action.
+    FWGUI_API void setVisible(bool isVisible);
+
+    /// Show the action.
+    FWGUI_API void show();
+
+    /// Hide the action.
+    FWGUI_API void hide();
+
+    FWGUI_API bool isVisible();
 
     /**
      * @brief Confirm that the action must be executed.
@@ -62,11 +128,11 @@ public :
      */
     FWGUI_API bool confirmAction();
 
-protected :
+protected:
 
-    FWGUI_API IActionSrv() ;
+    FWGUI_API IActionSrv();
 
-    FWGUI_API virtual ~IActionSrv() ;
+    FWGUI_API virtual ~IActionSrv();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -75,8 +141,8 @@ protected :
      *
      * Example of configuration
      * @verbatim
-           <service uid="item" type="::fwGui::IActionSrv" impl="::gui::action::NothingActionSrv" autoConnect="no" >
-              <state active="false" executable="false" inverse="true" />
+           <service uid="item" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no" >
+              <state active="false" executable="false" inverse="true" visible="true" />
               <confirmation value="yes" message="..." />
            </service>
        @endverbatim
@@ -85,6 +151,8 @@ protected :
      *     If the action appears in the interface it will be enable/disable.
      *   - \b active not mandatory (Default value false ):
      *     If the action appears in the interface it will be check/uncheck.
+     *   - \b visible not mandatory (Default value true ):
+     *     If true, the action is visible in the interface (and if the action is associated to a menu and/or a toolbar).
      *   - \b inverse not mandatory (Default value true) : allow to invert the state of the action (if "check")
      * - \<confirmation value="yes" message="..." /\> : configure if the action must be confirm by user before to execute it.
      *   - \b value : if true the action will show a confirmation message before to be executed.
@@ -97,12 +165,13 @@ protected :
 
 private:
 
-    ::fwGui::registrar::ActionRegistrar::sptr    m_registrar;
+    ::fwGui::registrar::ActionRegistrar::sptr m_registrar;
 
     /// Value for which the action will be considered 'active'
     bool m_activeStateValue;
     bool m_isActive;
     bool m_isExecutable;
+    bool m_isVisible;
     bool m_confirmAction;
     std::string m_confirmMessage;
     std::string m_defaultButton;
@@ -129,6 +198,6 @@ private:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_IACTIONSRV_HPP_*/
+#endif /*__FWGUI_IACTIONSRV_HPP__*/
 
 

@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP_
-#define _FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP_
+#ifndef __FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP__
+#define __FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP__
 
 #include <iterator>
 #include <vector>
 
-#include <boost/shared_ptr.hpp>
 
 #include "fwRuntime/config.hpp"
 
@@ -20,7 +19,7 @@ namespace fwRuntime
 
 namespace io
 {
-    struct BundleDescriptorReader;
+struct BundleDescriptorReader;
 } // namespace io
 
 
@@ -31,7 +30,7 @@ struct ConfigurationElement;
  * @brief   Defines the generic configuration element container class.
  * @struct  ConfigurationElementContainer
  * @date    2004-2009
- * 
+ *
  */
 struct FWRUNTIME_CLASS_API ConfigurationElementContainer
 {
@@ -44,8 +43,8 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      * @{
      */
 
-    typedef std::vector< ::boost::shared_ptr<ConfigurationElement> >    Container;  ///< Defines the configuration element container type.
-    typedef Container::iterator                                         Iterator;   ///< Defines the configuration element container iterator type.
+    typedef std::vector< std::shared_ptr<ConfigurationElement> >    Container;  ///< Defines the configuration element container type.
+    typedef Container::iterator Iterator;                                           ///< Defines the configuration element container iterator type.
 
     //@}
 
@@ -66,10 +65,10 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
     FWRUNTIME_API Iterator end();
 
     /**
-    * @brief   Returns the configuration element container
-    *
-    * @return  an configuration element container
-    */
+     * @brief   Returns the configuration element container
+     *
+     * @return  an configuration element container
+     */
     FWRUNTIME_API const Container & getElements() const;
 
     /**
@@ -79,7 +78,8 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      *
      * @return      a pointer to a configuration element instance or null if none
      */
-    FWRUNTIME_API const ::boost::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string & name ) const;
+    FWRUNTIME_API const std::shared_ptr< ConfigurationElement > findConfigurationElement( const std::string & name )
+    const;
 
     /**
      * @brief       Test if has an configuration corresponding to the specified name.
@@ -106,19 +106,19 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      */
     FWRUNTIME_API size_t size() const;
 
-protected:
+    protected:
 
-    /**
-     * @brief       Adds a new configuration element to the extension.
-     *
-     * @param[in]   element a shared pointer to the configuration element to add
-     */
-    FWRUNTIME_API void addConfigurationElement( ::boost::shared_ptr< ConfigurationElement > element );
+        /**
+         * @brief       Adds a new configuration element to the extension.
+         *
+         * @param[in]   element a shared pointer to the configuration element to add
+         */
+        FWRUNTIME_API void addConfigurationElement( std::shared_ptr< ConfigurationElement > element );
 
 
-private:
+    private:
 
-    Container m_elements;   ///< all configuration elements
+        Container m_elements; ///< all configuration elements
 
 };
 
@@ -126,4 +126,4 @@ private:
 } // namespace fwRuntime
 
 
-#endif // #define _FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP_
+#endif // __FWRUNTIME_CONFIGURATIONELEMENTCONTAINER_HPP__

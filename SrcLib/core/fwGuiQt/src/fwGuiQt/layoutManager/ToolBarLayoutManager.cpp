@@ -1,30 +1,27 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QAction>
-#include <QActionGroup>
-#include <QToolBar>
-#include <QMenu>
-#include <QToolButton>
-
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/function.hpp>
-#include <boost/foreach.hpp>
-#include <boost/assign/list_of.hpp>
+#include "fwGuiQt/ActionCallback.hpp"
+#include "fwGuiQt/container/QtContainer.hpp"
+#include "fwGuiQt/container/QtMenuContainer.hpp"
+#include "fwGuiQt/container/QtMenuItemContainer.hpp"
+#include "fwGuiQt/container/QtToolBarContainer.hpp"
+#include "fwGuiQt/layoutManager/ToolBarLayoutManager.hpp"
 
 #include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/ActionCallback.hpp"
-#include "fwGuiQt/container/QtToolBarContainer.hpp"
-#include "fwGuiQt/container/QtMenuContainer.hpp"
-#include "fwGuiQt/container/QtMenuItemContainer.hpp"
-#include "fwGuiQt/container/QtContainer.hpp"
-#include "fwGuiQt/layoutManager/ToolBarLayoutManager.hpp"
-
+#include <boost/assign/list_of.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <QAction>
+#include <QActionGroup>
+#include <QMenu>
+#include <QToolBar>
+#include <QToolButton>
 
 fwGuiRegisterMacro( ::fwGui::layoutManager::ToolBarLayoutManager,
                     ::fwGui::layoutManager::IToolBarLayoutManager::REGISTRY_KEY );
@@ -37,12 +34,14 @@ namespace layoutManager
 //-----------------------------------------------------------------------------
 
 ToolBarLayoutManager::ToolBarLayoutManager(::fwGui::GuiBaseObject::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ToolBarLayoutManager::~ToolBarLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -57,7 +56,7 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
 
     QActionGroup * actionGroup = 0;
     unsigned int menuItemIndex = 0;
-    BOOST_FOREACH ( ::fwGui::layoutManager::IToolBarLayoutManager::ActionInfo actionInfo, m_actionInfo)
+    for ( ::fwGui::layoutManager::IToolBarLayoutManager::ActionInfo actionInfo : m_actionInfo)
     {
         if (actionInfo.m_isSeparator)
         {
@@ -134,6 +133,11 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
             if (!actionInfo.m_icon.empty())
             {
                 QIcon icon(QString::fromStdString(actionInfo.m_icon));
+                if (!actionInfo.m_icon2.empty())
+                {
+                    icon.addFile(QString::fromStdString(actionInfo.m_icon2), QSize(), QIcon::Normal, QIcon::On);
+                    icon.addFile(QString::fromStdString(actionInfo.m_icon2), QSize(), QIcon::Active, QIcon::On);
+                }
                 action = toolBar->addAction( icon, QString::fromStdString(actionInfo.m_name) );
             }
             else
@@ -188,7 +192,8 @@ void ToolBarLayoutManager::destroyLayout()
 
 void ToolBarLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isVisible)
 {
-    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer =
+        ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
     action->setVisible(isVisible);
 }
@@ -197,7 +202,8 @@ void ToolBarLayoutManager::menuItemSetVisible(::fwGui::container::fwMenuItem::sp
 
 void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isEnabled)
 {
-    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer =
+        ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
     action->setEnabled(isEnabled);
 }
@@ -206,7 +212,8 @@ void ToolBarLayoutManager::menuItemSetEnabled(::fwGui::container::fwMenuItem::sp
 
 void ToolBarLayoutManager::menuItemSetChecked(::fwGui::container::fwMenuItem::sptr fwMenuItem, bool isChecked)
 {
-    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer = ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
+    ::fwGuiQt::container::QtMenuItemContainer::sptr menuItemContainer =
+        ::fwGuiQt::container::QtMenuItemContainer::dynamicCast(fwMenuItem);
     QAction *action = menuItemContainer->getQtMenuItem();
     action->setChecked(isChecked);
 }

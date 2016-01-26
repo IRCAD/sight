@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIPYTHON_PLUGIN_HPP_
-#define _UIPYTHON_PLUGIN_HPP_
+#ifndef __UIPYTHON_PLUGIN_HPP__
+#define __UIPYTHON_PLUGIN_HPP__
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -17,7 +17,7 @@ namespace uiPython
 /**
  * @brief   This class is called when the uiPython bundle is loaded.
  * @class   Plugin
- * 
+ *
  * @date    2009.
  */
 
@@ -26,7 +26,7 @@ class UIPYTHON_CLASS_API Plugin : public ::fwRuntime::Plugin
 
 public:
 
-     ///@brief  Destructor. Do nothing.
+    ///@brief  Destructor. Do nothing.
     UIPYTHON_API virtual ~Plugin() throw();
 
     /**
@@ -35,17 +35,17 @@ public:
      * @exception ::fwRuntime::RuntimeException.
      *
      * Register first basic services of type IAction, IEditor and IView.
-     * Secondly, verifies if the command line and profile.xml are well formed and starts the wxWidgets IHM.
+     * Secondly, verifies if the command line and profile.xml are well formed and starts the IHM.
      */
     UIPYTHON_API void start() throw(::fwRuntime::RuntimeException);
 
     /**
-    * @brief This method is used by runtime to close the bundle. Do nothing.
-    */
+     * @brief This method is used by runtime to close the bundle. Do nothing.
+     */
     UIPYTHON_API void stop() throw();
 
 };
 
 } // namespace uiPython
 
-#endif //_UIPYTHON_PLUGIN_HPP_
+#endif //__UIPYTHON_PLUGIN_HPP__

@@ -1,7 +1,10 @@
-
 fwLoadProperties()
+fwUseForwardInclude(
+    fwCore
+)
 
-find_package (Boost REQUIRED)
+find_package(GLM REQUIRED)
 
-fwForwardInclude(${Boost_INCLUDE_DIRS})
-
+fwForwardInclude(
+    ${GLM_INCLUDE_DIR}
+)

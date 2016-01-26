@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,27 +35,27 @@ public:
 
     /// Adds a new attribute in the current object
     FWATOMSPATCH_API void addAttribute(const std::string& name,
-                                      ::fwAtoms::Base::sptr value,
-                                      conditions::Abstract::sptr condition = conditions::Abstract::New());
+                                       ::fwAtoms::Base::sptr value,
+                                       conditions::Abstract::sptr condition = conditions::Abstract::New());
 
     /// Adds or replaces an attribute in the current object
     FWATOMSPATCH_API void addOrReplaceAttribute(const std::string& name,
-                                      ::fwAtoms::Base::sptr value,
-                                      conditions::Abstract::sptr condition = conditions::Abstract::New());
+                                                ::fwAtoms::Base::sptr value,
+                                                conditions::Abstract::sptr condition = conditions::Abstract::New());
 
     /// Removes an attribute
     FWATOMSPATCH_API void removeAttribute(const std::string& name,
-                                         conditions::Abstract::sptr condition = conditions::Abstract::New());
+                                          conditions::Abstract::sptr condition = conditions::Abstract::New());
 
     /// Replaces an attribute
     FWATOMSPATCH_API void replaceAttribute(const std::string& name,
-                                          ::fwAtoms::Base::sptr newValue,
-                                          conditions::Abstract::sptr condition = conditions::Abstract::New());
+                                           ::fwAtoms::Base::sptr newValue,
+                                           conditions::Abstract::sptr condition = conditions::Abstract::New());
 
     /// Renames an attribute.
     FWATOMSPATCH_API void renameAttribute(const std::string& name, const std::string& newName,
-                                         conditions::Abstract::sptr condition = conditions::Abstract::New()
-                                         );
+                                          conditions::Abstract::sptr condition = conditions::Abstract::New()
+                                          );
 
     /// Atom::Object getter
     FWATOMSPATCH_API ::fwAtoms::Object::sptr getObject() const;

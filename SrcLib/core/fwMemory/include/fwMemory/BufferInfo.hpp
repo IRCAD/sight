@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,19 +28,22 @@ struct FWMEMORY_CLASS_API BufferInfo
 {
 
     typedef size_t SizeType;
-    typedef WPTR( void ) CounterType;
+    typedef WPTR ( void ) CounterType;
 
     FWMEMORY_API BufferInfo();
 
     FWMEMORY_API void clear();
-    long lockCount() const {return lockCounter.use_count();};
+    long lockCount() const
+    {
+        return lockCounter.use_count();
+    }
 
 
 
     SizeType size;
     /// true if 'buffer' is loaded
-    bool     loaded;
-    bool     userStreamFactory;
+    bool loaded;
+    bool userStreamFactory;
 
     FileHolder fsFile;
     FileFormatType fileFormat;

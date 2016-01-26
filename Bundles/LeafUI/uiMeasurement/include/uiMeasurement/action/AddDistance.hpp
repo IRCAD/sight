@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIMEASUREMENT_ACTION_ADDISTANCE_HPP_
-#define _UIMEASUREMENT_ACTION_ADDISTANCE_HPP_
+#ifndef __UIMEASUREMENT_ACTION_ADDDISTANCE_HPP__
+#define __UIMEASUREMENT_ACTION_ADDDISTANCE_HPP__
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -19,17 +19,15 @@ namespace action
 /**
  * @brief   This action adds distance on image.
  * @class   AddDistance
- * 
- * @date    2010.
  */
 class UIMEASUREMENT_CLASS_API AddDistance : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (AddDistance)( ::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (AddDistance)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API AddDistance() throw() ;
+    UIMEASUREMENT_API AddDistance() throw();
 
-    UIMEASUREMENT_API virtual ~AddDistance() throw() ;
+    UIMEASUREMENT_API virtual ~AddDistance() throw();
 
 protected:
 
@@ -39,11 +37,9 @@ protected:
 
     void updating() throw (::fwTools::Failed);
 
-    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
-
     void stopping() throw (::fwTools::Failed);
 
-    UIMEASUREMENT_API void info(std::ostream &_sstream ) ;
+    UIMEASUREMENT_API void info(std::ostream &_sstream );
 
 private:
     int m_actionCheckId;
@@ -53,4 +49,4 @@ private:
 
 } // namespace uiMeasurement
 
-#endif // _UIMEASUREMENT_ACTION_ADDISTANCE_HPP_
+#endif // __UIMEASUREMENT_ACTION_ADDDISTANCE_HPP__

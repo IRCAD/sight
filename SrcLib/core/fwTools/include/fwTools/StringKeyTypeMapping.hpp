@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@ namespace fwTools
  * Header declare function already specialized while src provide definition.
  *
  * @warning isMapping does not need to be exported since fwTools Library is builded as static.
- * 
+ *
  */
 
 // FIX UNSIGNED

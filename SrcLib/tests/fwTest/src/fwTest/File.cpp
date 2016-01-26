@@ -1,13 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 
-#include <fstream>
-#include <boost/filesystem/path.hpp>
 #include "fwTest/File.hpp"
+
+#include <boost/filesystem/path.hpp>
+#include <fstream>
 
 namespace fwTest
 {
@@ -43,5 +44,5 @@ bool File::contentEquals(const ::boost::filesystem::path &lfile, const ::boost::
     return false;
 }
 
-}; //namespace fwTest
+}  //namespace fwTest
 

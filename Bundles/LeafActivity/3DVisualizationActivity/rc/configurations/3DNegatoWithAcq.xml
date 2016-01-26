@@ -1,19 +1,22 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>3DNegatoWithAcq</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
         <param name="InputImageCompositeUID" />
         <param name="modelSeriesUid" />
-        <param name="patient_name"  default="" />
+        <param name="patient_name" default="" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
+        <param name="ModelRepresentationChannel" />
+        <param name="ModelDisplayChannel" />
+        <param name="CrossTypeChannel" default="crossTypeChannel" />
+        <param name="Medical3DCameraUID" />
     </parameters>
     <config>
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -28,7 +31,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_multiView_negato_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_multiView_negato_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
@@ -46,33 +49,30 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_snapshotNegatoEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-                <snap>
-                    <scene uid="${GENERIC_UID}_negato" />
-                </snap>
-            </service>
+            <service uid="${GENERIC_UID}_snapshotNegatoEditor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no" />
 
             <!-- GENERIC SCENE DEFINITION -->
             <item key="visuConfig">
                 <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
 
-                    <service uid="${GENERIC_UID}_VisuCompositeUpdater" impl="::ctrlSelection::updater::TranslateUpdater" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <translate fromUID="${InputImageCompositeUID}" fromKey="OptionalInputImageKey" toKey="imageKey" />
+                    <service uid="${GENERIC_UID}_VisuCompositeUpdater" impl="::ctrlSelection::updater::STranslate" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <source>${InputImageCompositeUID}</source>
+                        <translate fromKey="OptionalInputImageKey" toKey="imageKey" />
                     </service>
 
                     <!-- Generic Scene Negato -->
-                    <service uid="${GENERIC_UID}_negato" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                            <adaptor id="snapshot" uid="${GENERIC_UID}_snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                 <config renderer="default" />
                             </adaptor>
 
-                            <adaptor  id="orientationMarker" class="::visuVTKAdaptor::OrientationMarker" objectId="self">
+                            <adaptor id="orientationMarker" class="::visuVTKAdaptor::OrientationMarker" objectId="self">
                                 <config renderer="default" hAlign="right" />
                             </adaptor>
 
@@ -80,7 +80,7 @@
                                 <config renderer="default" style="InteractorStyle3DForNegato" />
                             </adaptor>
 
-                            <adaptor id="medicalCamera" class="::visuVTKAdaptor::Medical3DCamera" objectId="imageKey">
+                            <adaptor id="medicalCamera" uid="${Medical3DCameraUID}" class="::visuVTKAdaptor::Medical3DCamera" objectId="imageKey">
                                 <config renderer="default" sliceIndex="${orientation}" resetAtStart="yes" />
                             </adaptor>
 
@@ -88,7 +88,7 @@
                                 <config renderer="default" picker="negatodefault" slices="3" sliceIndex="${orientation}" />
                             </adaptor>
 
-                            <adaptor id="modelSeries" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesKey">
+                            <adaptor id="modelSeries" uid="${GENERIC_UID}_modelSeriesUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesKey">
                                 <config renderer="default" picker="negatodefault" autoresetcamera="no" />
                             </adaptor>
 
@@ -96,7 +96,7 @@
                                 <config renderer="default" picker="negatodefault" text="" />
                             </adaptor>
 
-                            <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
+                            <adaptor id="multiDistances" uid="${GENERIC_UID}_multiDistancesUID" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
                                 <config filter="true" renderer="default" picker="negatodefault" />
                             </adaptor>
 
@@ -107,6 +107,31 @@
                             <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="modelSeriesKey">
                                 <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
                             </adaptor>
+
+                            <proxy channel="${ModelRepresentationChannel}" waitForKey="modelSeriesKey">
+                                <slot>${GENERIC_UID}_modelSeriesUid/updateNormalMode</slot>
+                            </proxy>
+                            <proxy channel="${ModelDisplayChannel}" waitForKey="modelSeriesKey">
+                                <slot>${GENERIC_UID}_modelSeriesUid/showReconstructions</slot>
+                            </proxy>
+
+                            <connect>
+                                <signal>${GENERIC_UID}_snapshotNegatoEditor/snapped</signal>
+                                <slot>${GENERIC_UID}_snapshotUID/snap</slot>
+                            </connect>
+
+                            <connect waitForKey="imageKey">
+                                <signal>${GENERIC_UID}_distanceNegatoEditor/distanceRequested</signal>
+                                <slot>${GENERIC_UID}_multiDistancesUID/createDistance</slot>
+                            </connect>
+
+                            <proxy channel="${GENERIC_UID}_slice_mode" waitForKey="imageKey">
+                                <slot>${GENERIC_UID}_MPRNegato/updateSliceMode</slot>
+                            </proxy>
+
+                            <proxy channel="${CrossTypeChannel}" waitForKey="imageKey">
+                                <slot>${GENERIC_UID}_MPRNegato/setCrossScale</slot>
+                            </proxy>
 
                         </scene>
                     </service>
@@ -129,9 +154,19 @@
                                             <placeInScene uid="${GENERIC_UID}_negato" />
                                         </service>
 
-                                        <service uid="${GENERIC_UID}_sliceListNegatoEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor2" autoConnect="yes">
-                                            <negatoAdaptor uid="${GENERIC_UID}_MPRNegato" slices="3" />
+                                        <service uid="${GENERIC_UID}_sliceListNegatoEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
+                                            <toolTip>Manage slice visibility</toolTip>
+                                            <selected>3</selected>
+                                            <items>
+                                                <item text="No slice" value="0" />
+                                                <item text="One slice" value="1" />
+                                                <item text="three slices" value="3" />
+                                            </items>
                                         </service>
+
+                                        <proxy channel="${GENERIC_UID}_slice_mode">
+                                            <signal>${GENERIC_UID}_sliceListNegatoEditor/selected</signal>
+                                        </proxy>
 
                                     </object>
                                 </config>

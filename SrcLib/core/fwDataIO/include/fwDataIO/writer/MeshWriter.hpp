@@ -1,14 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_WRITER_MESHWRITER_HPP_
-#define _FWDATAIO_WRITER_MESHWRITER_HPP_
+#ifndef __FWDATAIO_WRITER_MESHWRITER_HPP__
+#define __FWDATAIO_WRITER_MESHWRITER_HPP__
 
 #include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include <fwData/Mesh.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -25,7 +24,7 @@ namespace writer
 /**
  * @brief   Mesh writer. Write file format .trian
  * @class   MeshWriter
- * 
+ *
  * @date    2011
  *
  * Ircad writer to write a ::fwData::Mesh (with only triangular cells) on filesystem which the file format
@@ -40,7 +39,7 @@ class FWDATAIO_CLASS_API MeshWriter :
     public ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro((MeshWriter)(GenericObjectWriter< ::fwData::Mesh >),
                                            (()),
@@ -68,4 +67,4 @@ public :
 } // namespace fwDataIO
 
 
-#endif // _FWDATAIO_WRITER_MESHWRITER_HPP_
+#endif // __FWDATAIO_WRITER_MESHWRITER_HPP__

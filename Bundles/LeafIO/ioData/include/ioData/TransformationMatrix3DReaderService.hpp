@@ -1,24 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IODATA_TRANSFORMATIONMATRIX3DREADER_HPP_
-#define _IODATA_TRANSFORMATIONMATRIX3DREADER_HPP_
+#ifndef __IODATA_TRANSFORMATIONMATRIX3DREADERSERVICE_HPP__
+#define __IODATA_TRANSFORMATIONMATRIX3DREADERSERVICE_HPP__
 
 #include <boost/filesystem/path.hpp>
 
 #include <io/IReader.hpp>
 
-#include "ioData/export.hpp"
+#include "ioData/config.hpp"
 
 namespace ioData
 {
 /**
  * @brief   Transformation matrix 3D reader service.
  * @class   TransformationMatrix3DReaderService
- * 
+ *
  * @date    2009.
  *
  * Service reading a TransformationMatrix3D object.
@@ -34,10 +34,10 @@ class IODATA_CLASS_API TransformationMatrix3DReaderService : public ::io::IReade
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TransformationMatrix3DReaderService)(::io::IReader) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TransformationMatrix3DReaderService)(::io::IReader) );
 
     /// Super class of reader services
-    typedef ::io::IReader   SuperClass;
+    typedef ::io::IReader SuperClass;
 
     /** @name Specified reader service methods ( override from ::io::IReader )
      * @{
@@ -54,7 +54,7 @@ public:
     /**
      * @brief   returns  (filename) extension
      */
-    IODATA_API virtual std::vector< std::string > getSupportedExtensions() ;
+    IODATA_API virtual std::vector< std::string > getSupportedExtensions();
     /// @}
 
     /// Return path type managed by the service, here FILE
@@ -90,16 +90,6 @@ protected:
     IODATA_API void updating() throw(::fwTools::Failed);
 
     /**
-     * @brief React on modifications : default does nothing.
-     *
-     * @note This method is automaticaly called by update( msg ) method from base service ( ::fwServices::IService ).
-     *
-     * @param[in] _msg information message for modification
-     */
-    void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed){};
-
-
-    /**
      * @brief Info method.
      *
      * This method is used to give
@@ -107,11 +97,11 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    IODATA_API virtual void info(std::ostream &_sstream ) ;
+    IODATA_API virtual void info(std::ostream &_sstream );
     /// @}
 
 };
 
 } // namespace ioData
 
-#endif // _IODATA_TRANSFORMATIONMATRIX3DREADER_HPP_
+#endif // __IODATA_TRANSFORMATIONMATRIX3DREADERSERVICE_HPP__

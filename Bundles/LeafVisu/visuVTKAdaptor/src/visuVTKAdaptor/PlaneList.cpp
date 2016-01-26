@@ -1,72 +1,79 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#ifndef ANDROID
 
-#include <fwData/PlaneList.hpp>
-#include <fwData/Plane.hpp>
+#include "visuVTKAdaptor/Plane.hpp"
+#include "visuVTKAdaptor/PlaneList.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwData/Boolean.hpp>
+#include <fwData/Plane.hpp>
+#include <fwData/PlaneList.hpp>
 
-
-#include <fwComEd/PlaneMsg.hpp>
-#include <fwComEd/PlaneListMsg.hpp>
-
-#include <fwServices/macros.hpp>
 #include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <vtkCommand.h>
-#include <vtkCellPicker.h>
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
 #include <vtkAssemblyPath.h>
+#include <vtkCellPicker.h>
+#include <vtkCommand.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 
-#include "visuVTKAdaptor/Plane.hpp"
-#include "visuVTKAdaptor/PlaneList.hpp"
-#include <fwServices/IEditionService.hpp>
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneList, ::fwData::PlaneList );
 
 namespace visuVTKAdaptor
 {
 
+const ::fwCom::Signals::SignalKeyType s_SELECTED_SIG = "selected";
+
+const ::fwCom::Slots::SlotKeyType s_UPDATE_SELECTION_SLOT = "updateSelection";
+const ::fwCom::Slots::SlotKeyType s_UPDATE_PLANES_SLOT    = "updatePlanes";
+const ::fwCom::Slots::SlotKeyType s_SHOW_PLANES_SLOT      = "showPlanes";
+
+//------------------------------------------------------------------------------
 
 
 void notifyDeletePlane( ::fwData::PlaneList::sptr planeList, ::fwData::Plane::sptr plane )
 {
-    ::fwComEd::PlaneListMsg::sptr msg = ::fwComEd::PlaneListMsg::New();
-    msg->addEvent( ::fwComEd::PlaneListMsg::DESELECT_ALL_PLANES );
-    msg->addEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE, plane );
-
-    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
-    sig = planeList->signal< ::fwData::Object::ObjectModifiedSignalType >( ::fwData::Object::s_OBJECT_MODIFIED_SIG );
-    fwServicesNotifyMsgMacro( planeList->getLightID(), sig, msg );
+    auto sig = planeList->signal< ::fwData::PlaneList::PlaneRemovedSignalType >(
+        ::fwData::PlaneList::s_PLANE_REMOVED_SIG );
+    sig->asyncEmit(plane);
 }
 
 class vtkPlaneDeleteCallBack : public vtkCommand
 {
 
-public :
+public:
     static vtkPlaneDeleteCallBack *New( ::fwRenderVTK::IVtkAdaptorService *service)
-    { return new vtkPlaneDeleteCallBack(service); }
+    {
+        return new vtkPlaneDeleteCallBack(service);
+    }
 
-    vtkPlaneDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService *service )
-    : m_service(service),
-      m_picker( vtkCellPicker::New() ),
-      m_propCollection( vtkPropCollection::New() )
+    vtkPlaneDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService *service ) :
+        m_service(service),
+        m_picker( vtkCellPicker::New() ),
+        m_propCollection( vtkPropCollection::New() )
     {
         m_lastPos[0] = -1;
         m_lastPos[1] = -1;
         m_picker->PickFromListOn();
         m_picker->SetTolerance(0.001);
 
-        m_display[2]=0.0;
+        m_display[2] = 0.0;
     }
 
     ~vtkPlaneDeleteCallBack( )
@@ -106,7 +113,7 @@ public :
             m_display[1] = pos[1];
 
             this->fillPickList();
-            if (m_picker->Pick( m_display , m_service->getRenderer() ) )
+            if (m_picker->Pick( m_display, m_service->getRenderer() ) )
             {
                 if(getSelectedPlane())
                 {
@@ -118,7 +125,8 @@ public :
                 }
             }
         }
-        else if ( eventId == vtkCommand::RightButtonReleaseEvent && std::equal(pos, pos+1, m_lastPos) && !m_pickedPlane.expired() )
+        else if ( eventId == vtkCommand::RightButtonReleaseEvent &&
+                  std::equal(pos, pos+1, m_lastPos) && !m_pickedPlane.expired() )
         {
             // backup of plane
             ::fwData::Plane::sptr planeBackup(m_pickedPlane);
@@ -126,14 +134,14 @@ public :
             ::fwData::PlaneList::sptr planeList = m_service->getObject< ::fwData::PlaneList >();
             planeList->getRefPlanes().erase
             (
-                    std::find( planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock())
+                std::find( planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock())
             );
             notifyDeletePlane(planeList, planeBackup);
         }
     }
     bool getSelectedPlane()
     {
-        bool isFind = false;
+        bool isFind              = false;
         vtkPropCollection *propc = m_picker->GetActors();
         vtkProp *prop;
 
@@ -146,7 +154,8 @@ public :
                 ::fwData::PlaneList::sptr planeList = m_service->getObject< ::fwData::PlaneList >();
                 if(!planeList->getRefPlanes().empty())
                 {
-                    ::fwData::PlaneList::PlaneListContainer::iterator itr = std::find( planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock());
+                    ::fwData::PlaneList::PlaneListContainer::iterator itr = std::find(
+                        planeList->getRefPlanes().begin(), planeList->getRefPlanes().end(), m_pickedPlane.lock());
                     if(itr != planeList->getRefPlanes().end() )
                     {
                         isFind = true;
@@ -158,7 +167,7 @@ public :
         return isFind;
     }
 
-protected :
+protected:
     ::fwRenderVTK::IVtkAdaptorService *m_service;
     vtkPicker * m_picker;
     vtkPropCollection * m_propCollection;
@@ -170,12 +179,13 @@ protected :
 
 //------------------------------------------------------------------------------
 
-PlaneList::PlaneList() throw()
-    : m_planeCollectionId("")
+PlaneList::PlaneList() throw()  : m_rightButtonCommand(nullptr), m_planeCollectionId("")
 {
-    //addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
-    //addNewHandledEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE );
-    //addNewHandledEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY );
+    newSlot(s_UPDATE_SELECTION_SLOT, &PlaneList::updateSelection, this);
+    newSlot(s_UPDATE_PLANES_SLOT, &PlaneList::updatePlanes, this);
+    newSlot(s_SHOW_PLANES_SLOT, &PlaneList::showPlanes, this);
+
+    newSignal< SelectedignalType >(s_SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -186,14 +196,9 @@ PlaneList::~PlaneList() throw()
 
 //------------------------------------------------------------------------------
 
-void PlaneList::configuring() throw(fwTools::Failed)
+void PlaneList::doConfigure() throw(fwTools::Failed)
 {
-
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
     this->setPlaneCollectionId( m_configuration->getAttributeValue("planecollection") );
 }
 
@@ -202,10 +207,12 @@ void PlaneList::configuring() throw(fwTools::Failed)
 void PlaneList::doStart() throw(fwTools::Failed)
 {
     m_rightButtonCommand = vtkPlaneDeleteCallBack::New(this);
-    this->getInteractor()->AddObserver( "RightButtonPressEvent" , m_rightButtonCommand, 1 );
-    this->getInteractor()->AddObserver( "RightButtonReleaseEvent" , m_rightButtonCommand, 1 );
+    this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
+    this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
 
     this->doUpdate();
+
+    m_planeConnections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -219,10 +226,10 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
     showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
     if(showPlanes)
     {
-        BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
+        for( ::fwData::Plane::sptr plane :  planeList->getPlanes() )
         {
             ::fwRenderVTK::IVtkAdaptorService::sptr servicePlane =
-                    ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
                     ( plane, "::visuVTKAdaptor::Plane" );
             SLM_ASSERT("servicePlane not instanced", servicePlane);
 
@@ -237,6 +244,9 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
             }
             servicePlane->start();
 
+            m_planeConnections->connect(servicePlane, Plane::s_INTERACTION_STARTED_SIG, this->getSptr(),
+                                        s_UPDATE_SELECTION_SLOT);
+
             this->registerService(servicePlane);
         }
     }
@@ -244,33 +254,27 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneList::doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PlaneList::updatePlanes()
 {
-    SLM_TRACE_FUNC();
-    ::fwComEd::PlaneListMsg::csptr planeListMsg = ::fwComEd::PlaneListMsg::dynamicConstCast( msg );
-    if ( planeListMsg )
-    {
-        if (planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::ADD_PLANE )
-                || planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE) )
-        {
-            this->doStop();
-            this->doStart();
-        }
-        else if ( planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY ) )
-        {
-            ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
+    this->doStop();
+    this->doStart();
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
 
-            this->doStop();
-            bool showPlanes;
-            showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
-            OSLM_INFO( "Receive event ShowPlanes : " << showPlanes );
-            if(showPlanes)
-            {
-                this->doStart();
-            }
-        }
+//------------------------------------------------------------------------------
+
+void PlaneList::showPlanes(bool visible)
+{
+    ::fwData::PlaneList::sptr planeList = this->getObject< ::fwData::PlaneList >();
+
+    this->doStop();
+    if(visible)
+    {
+        this->doStart();
     }
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -290,6 +294,14 @@ void PlaneList::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+void PlaneList::updateSelection(::fwData::Plane::sptr plane)
+{
+    auto sig = this->signal< SelectedignalType >(s_SELECTED_SIG);
+    sig->asyncEmit(plane);
+}
+
+//------------------------------------------------------------------------------
+
 void PlaneList::doStop() throw(fwTools::Failed)
 {
     if ( m_rightButtonCommand ) // can be not instanciated
@@ -298,9 +310,12 @@ void PlaneList::doStop() throw(fwTools::Failed)
         m_rightButtonCommand->Delete();
         m_rightButtonCommand = 0;
     }
+    m_planeConnections->disconnect();
 
     this->unregisterServices();
 }
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

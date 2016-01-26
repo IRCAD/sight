@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@ struct SignalBase;
  * @class   Signals
  * @brief   This class proposes a mapping between a SignalKeyType and a SignalBase.
  *
- * 
+ *
  * @date   2012.
  */
 class FWCOM_CLASS_API Signals
@@ -48,10 +48,7 @@ public:
     /// Returns all SignalKeyType registered in m_signals
     FWCOM_API SignalKeyContainerType getSignalKeys() const;
 
-#ifdef COM_LOG
-    /// Set new id for all signals using their key in m_signals, a prefix can be added
-    FWCOM_API void setID( const std::string prefix = "" );
-#endif
+
 
 protected:
 

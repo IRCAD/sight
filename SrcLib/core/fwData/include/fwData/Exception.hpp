@@ -7,11 +7,11 @@
 #ifndef __FWDATA_EXCEPTION_HPP__
 #define __FWDATA_EXCEPTION_HPP__
 
-#include <exception>
-#include <string>
-
 #include "fwCore/Exception.hpp"
 #include "fwData/config.hpp"
+
+#include <exception>
+#include <string>
 
 namespace fwData
 {
@@ -19,8 +19,9 @@ namespace fwData
 /**
  * @brief   Implements data exception class.
  */
-struct FWDATA_CLASS_API Exception : public ::fwCore::Exception
+class FWDATA_CLASS_API Exception : public ::fwCore::Exception
 {
+public:
 
     /**
      * @brief       Constructor
@@ -33,8 +34,6 @@ struct FWDATA_CLASS_API Exception : public ::fwCore::Exception
      * @brief   Destructor : do nothing.
      */
     FWDATA_API ~Exception() throw();
-
-
 };
 
 } // namespace fwData

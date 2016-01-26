@@ -1,12 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/format.hpp>
+#include "visuVTKAdaptor/Image3DCursor.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwData/Integer.hpp>
 #include <fwData/Image.hpp>
@@ -14,13 +20,13 @@
 #include <fwData/Float.hpp>
 #include <fwData/Color.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
+#include <fwRenderVTK/vtk/Helpers.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/Base.hpp>
+
+#include <boost/format.hpp>
 
 #include <vtkActor.h>
 #include <vtkParametricBoy.h>
@@ -32,29 +38,29 @@
 #include <vtkSphereSource.h>
 #include <vtkTransform.h>
 
-#include "fwRenderVTK/vtk/Helpers.hpp"
-
-#include "visuVTKAdaptor/Image3DCursor.hpp"
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image );
 
 
 namespace visuVTKAdaptor
 {
+
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPHERE_SLOT      = "updateSphere";
 
 //------------------------------------------------------------------------------
 
 Image3DCursor::Image3DCursor() throw() : m_priority(.6)
 {
     ////handlingEventOff();
-    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
-    //addNewHandledEvent( "NEW_SPHERE_CONFIG" );
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &Image3DCursor::updateSliceIndex, this);
+    newSlot(s_UPDATE_SPHERE_SLOT, &Image3DCursor::updateSphere, this);
 }
 
 //------------------------------------------------------------------------------
 
 Image3DCursor::~Image3DCursor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 void Image3DCursor::setVisibility( bool visibility )
@@ -66,17 +72,8 @@ void Image3DCursor::setVisibility( bool visibility )
 
 //------------------------------------------------------------------------------
 
-void Image3DCursor::configuring() throw(fwTools::Failed)
+void Image3DCursor::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -92,7 +89,7 @@ void Image3DCursor::doStart() throw(fwTools::Failed)
     if ( img->getField("IMAGE3DCURSOR_RADIUS") && img->getField("IMAGE3DCURSOR_COLOR") )
     {
         ::fwData::Float::sptr radius = img->getField< ::fwData::Float >("IMAGE3DCURSOR_RADIUS");
-        ::fwData::Color::sptr color = img->getField< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
+        ::fwData::Color::sptr color  = img->getField< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
 
         this->buildPolyData(radius->value());
         m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
@@ -149,37 +146,33 @@ void Image3DCursor::doStop() throw(fwTools::Failed)
     m_cursorActor    = 0;
 }
 
+//-----------------------------------------------------------------------------
+
+void Image3DCursor::updateSliceIndex(int axial, int frontal, int sagittal)
+{
+    m_axialIndex->value()    = axial;
+    m_frontalIndex->value()  = frontal;
+    m_sagittalIndex->value() = sagittal;
+
+    int index[3] = {sagittal, frontal, axial};
+    double center[3];
+    this->sliceIndexToWorld(index, center);
+    this->updateCursorPosition(center);
+    this->requestRender();
+}
+
 //------------------------------------------------------------------------------
 
-void Image3DCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void Image3DCursor::updateSphere(::fwData::Color::sptr color, float radius)
 {
-    SLM_TRACE_FUNC();
+    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
 
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
-    {
-        ::fwComEd::ImageMsg::dynamicConstCast(msg)->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
-        int index[3] = {
-            *m_sagittalIndex,
-            *m_frontalIndex,
-            *m_axialIndex
-        };
-        double center[3];
-        sliceIndexToWorld(index, center);
-        this->updateCursorPosition(center);
-    }
+    m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
+    this->buildPolyData(radius);
 
-    if ( msg->hasEvent( "NEW_SPHERE_CONFIG" ) )
-    {
-        ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-        ::fwData::Float::sptr radius = img->getField< ::fwData::Float >("IMAGE3DCURSOR_RADIUS");
-        ::fwData::Color::sptr color = img->getField< ::fwData::Color >("IMAGE3DCURSOR_COLOR");
-
-        m_cursorActor->GetProperty()->SetColor( color->red(), color->green(), color->blue());
-        buildPolyData(radius->value());
-
-        m_cursorMapper->SetInputData( m_cursorPolyData );
-        this->setVtkPipelineModified();
-    }
+    m_cursorMapper->SetInputData( m_cursorPolyData );
+    this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -210,5 +203,16 @@ void Image3DCursor::buildPolyData(float radius)
     //this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Image3DCursor::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
+
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

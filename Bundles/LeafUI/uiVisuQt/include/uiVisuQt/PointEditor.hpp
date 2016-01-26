@@ -1,24 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIVISUQT_POINT_EDITOR_HPP
-#define _UIVISUQT_POINT_EDITOR_HPP
+#ifndef __UIVISUQT_POINTEDITOR_HPP__
+#define __UIVISUQT_POINTEDITOR_HPP__
 
 
-#include <QObject>
-#include <QLineEdit>
-#include <QPointer>
 
-#include <fwTools/Failed.hpp>
+#include "uiVisuQt/config.hpp"
+
+#include <fwComEd/PickingInfo.hpp>
 
 #include <fwData/Point.hpp>
 
+#include <fwTools/Failed.hpp>
+
 #include <gui/editor/IEditor.hpp>
 
-#include "uiVisuQt/config.hpp"
+#include <QLineEdit>
+#include <QObject>
+#include <QPointer>
+
 
 namespace uiVisu
 {
@@ -26,22 +30,21 @@ namespace uiVisu
 /**
  * @brief   PointEditor service allows to display point information.
  * @class   PointEditor
- * 
- * @date    2010.
  */
-class UIVISUQT_CLASS_API PointEditor : public QObject, public ::gui::editor::IEditor
+class UIVISUQT_CLASS_API PointEditor : public QObject,
+                                       public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PointEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PointEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIVISUQT_API PointEditor() throw() ;
+    UIVISUQT_API PointEditor() throw();
 
     /// Destructor. Do nothing.
-    UIVISUQT_API virtual ~PointEditor() throw() ;
+    UIVISUQT_API virtual ~PointEditor() throw();
 
 protected:
 
@@ -54,9 +57,6 @@ protected:
     ///This method launches the IEditor::stopping method.
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Management of observations ( overrides )
-    virtual void receiving( CSPTR(::fwServices::ObjectMsg) _msg ) throw(::fwTools::Failed);
-
     void updating() throw(::fwTools::Failed);
 
     void swapping() throw(::fwTools::Failed);
@@ -64,10 +64,13 @@ protected:
     void configuring() throw( ::fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 
 private:
+
+    /// Slot: get the interaction information
+    void getInteraction(::fwComEd::PickingInfo info);
 
     QPointer< QLineEdit >   m_textCtrl_x;
     QPointer< QLineEdit >   m_textCtrl_y;
@@ -77,4 +80,4 @@ private:
 
 } // uiData
 
-#endif /*_UIVISUQT_POINT_EDITOR_HPP_*/
+#endif /*__UIVISUQT_POINTEDITOR_HPP___*/

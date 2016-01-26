@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMS_BASE_BLOB_HPP__
-#define __FWATOMS_BASE_BLOB_HPP__
+#ifndef __FWATOMS_BLOB_HPP__
+#define __FWATOMS_BLOB_HPP__
 
 #include <fwMemory/BufferObject.hpp>
 
@@ -23,20 +23,22 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Blob : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Blob)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Blob >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Blob)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Blob >);
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
     Blob(::fwAtoms::Base::Key key)
-    {}
+    {
+    }
 
     /**
      * @brief   Destructor
      */
     virtual ~Blob()
-    {}
+    {
+    }
 
     /**
      * @brief create a new Blob shared ptr.
@@ -68,7 +70,10 @@ public:
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const {return ::fwAtoms::Base::BLOB;};
+    ::fwAtoms::Base::AtomType type() const
+    {
+        return ::fwAtoms::Base::BLOB;
+    }
 
 protected:
 
@@ -79,5 +84,5 @@ protected:
 
 
 
-#endif /* _FWATOMS_BASE_BLOB_HPP_ */
+#endif /* __FWATOMS_BLOB_HPP__ */
 

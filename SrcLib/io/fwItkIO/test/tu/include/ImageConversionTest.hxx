@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
+#ifndef __FWITKIO_UT_IMAGECONVERSIONTEST_HXX__
+#define __FWITKIO_UT_IMAGECONVERSIONTEST_HXX__
 
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
@@ -21,12 +22,12 @@ namespace ut
 template< class TYPE>
 void ImageConversionTest::stressTestForAType()
 {
-    for(unsigned char k=0; k<5; k++)
+    for(unsigned char k = 0; k<5; k++)
     {
         ::fwData::Image::sptr image = ::fwData::Image::New();
         ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create<TYPE>());
 
-        typedef itk::Image< TYPE , 3 > ImageType;
+        typedef itk::Image< TYPE, 3 > ImageType;
         typename ImageType::Pointer itkImage = ::fwItkIO::itkImageFactory<ImageType>( image );
 
         ::fwTest::helper::ExcludeSetType exclude;
@@ -47,3 +48,5 @@ void ImageConversionTest::stressTestForAType()
 
 } //namespace ut
 } //namespace fwItkIO
+
+#endif // __FWITKIO_UT_IMAGECONVERSIONTEST_HXX__

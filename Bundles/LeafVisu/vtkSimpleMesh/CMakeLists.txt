@@ -1,5 +1,7 @@
 fwLoadProperties()
 fwUseForwardInclude(
+    fwCom
+    fwData
     fwRender
     fwRenderVTK
     fwRuntime
@@ -7,14 +9,22 @@ fwUseForwardInclude(
     fwThread
 )
 
-find_package(Boost REQUIRED)
 find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
 
 fwForwardInclude(
-    ${Boost_INCLUDE_DIRS} 
     ${VTK_INCLUDE_DIRS} 
-    )
-fwLink(
-    vtkInteractionWidgets
-    )
+)
 
+if(ANDROID)
+    fwLink(
+        vtkRenderingOpenGL2
+        vtkInteractionStyle
+    )
+else()
+    fwLink(
+        vtkRenderingOpenGL
+        vtkRenderingFreeTypeOpenGL
+        vtkInteractionWidgets
+    )
+endif()

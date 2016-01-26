@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C), 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2004-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWATOMS_NAMESPACE_HPP_
-#define _FWATOMS_NAMESPACE_HPP_
+#ifndef __FWATOMS_NAMESPACE_HPP__
+#define __FWATOMS_NAMESPACE_HPP__
 
 /**
  * @namespace   fwAtoms
@@ -25,5 +25,5 @@ namespace fwAtoms
 {
 }
 
-#endif /* _FWATOMS_NAMESPACE_HPP_ */
+#endif /* __FWATOMS_NAMESPACE_HPP__ */
 

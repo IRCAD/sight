@@ -1,18 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwTools/Type.hpp>
+#include "ImageTest.hpp"
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwTest/generator/Image.hpp>
-
-#include "ImageTest.hpp"
+#include <fwTools/Type.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwTest::ut::ImageTest );
@@ -29,11 +25,11 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
 }
 
 //------------------------------------------------------------------------------
@@ -66,9 +62,9 @@ void ImageTest::generator3DTest()
     spacing[1] = 2.6;
     spacing[2] = 1.87;
     ::fwData::Image::OriginType origin(dim);
-    origin[0] = -45.6;
-    origin[1] = 25.97;
-    origin[2] = -53.9;
+    origin[0]            = -45.6;
+    origin[1]            = 25.97;
+    origin[2]            = -53.9;
     ::fwTools::Type type = ::fwTools::Type::create< ::boost::int32_t >();
 
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type);
@@ -92,8 +88,8 @@ void ImageTest::generator2DTest()
     spacing[0] = 0.85;
     spacing[1] = 2.6;
     std::vector<double> origin(dim);
-    origin[0] = -45.6;
-    origin[1] = 25.97;
+    origin[0]            = -45.6;
+    origin[1]            = 25.97;
     ::fwTools::Type type = ::fwTools::Type::create< ::boost::int16_t >();
 
     ::fwTest::generator::Image::generateImage(image, size, spacing, origin, type);
@@ -155,7 +151,7 @@ void ImageTest::stressTest()
 
 void ImageTest::stressTestWithType(::fwTools::Type type, int nbTest)
 {
-    for (int nb=0 ; nb < nbTest ; ++nb)
+    for (int nb = 0; nb < nbTest; ++nb)
     {
         ::fwData::Image::sptr image = ::fwData::Image::New();
         ::fwTest::generator::Image::generateRandomImage(image, type);

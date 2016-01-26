@@ -1,40 +1,36 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
+#include "gui/action/SSignal.hpp"
+
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/fwID.hpp>
-
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Extension.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
-
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include "gui/action/SSignal.hpp"
+#include <fwRuntime/Extension.hpp>
+#include <fwRuntime/helper.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+
+#include <fwTools/fwID.hpp>
 
 namespace gui
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::gui::action::SSignal , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSignal, ::fwData::Object );
 
 
-static const ::fwCom::Signals::SignalKeyType TRIGERRED_SIG = "triggered";
-static const ::fwCom::Signals::SignalKeyType CANCELLED_SIG = "cancelled";
+static const ::fwCom::Signals::SignalKeyType TRIGERRED_SIG   = "triggered";
+static const ::fwCom::Signals::SignalKeyType CANCELLED_SIG   = "cancelled";
 static const ::fwCom::Signals::SignalKeyType SET_OBJECT_SLOT = "setObjects";
 
 //-----------------------------------------------------------------------------
@@ -51,11 +47,7 @@ SSignal::SSignal() throw() :
     ::fwCom::HasSlots::m_slots
         ( SET_OBJECT_SLOT, m_slotSetObjects );
 
-#ifdef COM_LOG
-    m_sigTriggered->setID( TRIGERRED_SIG );
-    m_sigCancelled->setID( CANCELLED_SIG );
-    m_slotSetObjects->setID( SET_OBJECT_SLOT );
-#endif
+
 
     this->setWorker( m_associatedWorker );
 }
@@ -63,7 +55,8 @@ SSignal::SSignal() throw() :
 //-----------------------------------------------------------------------------
 
 SSignal::~SSignal() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -95,30 +88,23 @@ void SSignal::info(std::ostream &_sstream )
 
 void SSignal::updating() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
     if (this->confirmAction())
     {
-        fwServicesNotifyMacro(this->getLightID(), m_sigTriggered, (m_objects));
+        m_sigTriggered->asyncEmit(m_objects);
     }
     else
     {
-        fwServicesNotifyMacro(this->getLightID(), m_sigCancelled, (m_objects));
+        m_sigCancelled->asyncEmit(m_objects);
     }
 
-}
-
-//-----------------------------------------------------------------------------
-
-void SSignal::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
 void SSignal::configuring() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
     this->initialize();
 }
 

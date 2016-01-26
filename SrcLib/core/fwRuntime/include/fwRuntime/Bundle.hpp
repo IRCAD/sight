@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_BUNDLE_HPP
-#define _FWRUNTIME_BUNDLE_HPP
+#ifndef __FWRUNTIME_BUNDLE_HPP__
+#define __FWRUNTIME_BUNDLE_HPP__
 
 #include <map>
 #include <set>
 #include <string>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/filesystem/path.hpp>
 
 #include "fwCore/base.hpp"
@@ -22,18 +21,18 @@
 
 namespace fwRuntime
 {
-    struct Extension;
-    struct ExtensionPoint;
-    struct ExtensionRegistry;
-    struct IExecutable;
-    struct ExecutableFactory;
-    struct IPlugin;
-    struct Runtime;
+struct Extension;
+struct ExtensionPoint;
+struct ExtensionRegistry;
+struct IExecutable;
+struct ExecutableFactory;
+struct IPlugin;
+struct Runtime;
 
-    namespace io
-    {
-        struct BundleDescriptorReader;
-    }
+namespace io
+{
+struct BundleDescriptorReader;
+}
 }
 
 
@@ -47,9 +46,9 @@ namespace fwRuntime
  * @brief   Defines the bundle class.
  * @struct  Bundle
  * @date    2004-2009
- * 
+ *
  */
-struct Bundle : public ::boost::enable_shared_from_this< Bundle >
+struct Bundle : public std::enable_shared_from_this< Bundle >
 {
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 
@@ -68,7 +67,7 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
     typedef ExtensionPointContainer::const_iterator ExtensionPointConstIterator;    ///< Defines the extension point container constant iterator type.
 
     typedef std::set< SPTR(dl::Library) >     LibraryContainer;               ///< Defines the dynamic library container type.
-    typedef LibraryContainer::const_iterator  LibraryConstIterator;           ///< Defines the dynamic library container constant iterator type.
+    typedef LibraryContainer::const_iterator LibraryConstIterator;            ///< Defines the dynamic library container constant iterator type.
     //@}
 
 
@@ -384,86 +383,92 @@ struct Bundle : public ::boost::enable_shared_from_this< Bundle >
     //@}
 
 
-    bool isStarted()     {return m_started;};
-    bool isInitialized() {return m_initialized;};
+    bool isStarted()
+    {
+        return m_started;
+    }
+    bool isInitialized()
+    {
+        return m_initialized;
+    }
 
-protected:
+    protected:
 
-    /**
-     * @brief       Constructor.
-     *
-     * @param[in]   location    a path to the directory containing the bundle
-     * @param[in]   id          a string containing the bundle identifier
-     * @param[in]   version     a string containing the bundle version
-     *
-     * @todo        test parameters validity
-     *
-     */
-    Bundle( const boost::filesystem::path   & location,
-            const std::string               & id,
-            const std::string               & version );
+        /**
+         * @brief       Constructor.
+         *
+         * @param[in]   location    a path to the directory containing the bundle
+         * @param[in]   id          a string containing the bundle identifier
+         * @param[in]   version     a string containing the bundle version
+         *
+         * @todo        test parameters validity
+         *
+         */
+        Bundle( const boost::filesystem::path   & location,
+                const std::string               & id,
+                const std::string               & version );
 
-    /**
-     * @brief       Constructor.
-     *
-     * @param[in]   location        a path to the directory containing the bundle
-     * @param[in]   id              a string containing the bundle identifier
-     * @param[in]   version         a string containing the bundler version
-     * @param[in]   pluginClass     a string containing the bundle's pugin class name
-     *
-     * @todo        test parameters validity
-     *
-     */
-    Bundle( const boost::filesystem::path   & location,
-            const std::string               & id,
-            const std::string               & version,
-            const std::string               & pluginClass );
+        /**
+         * @brief       Constructor.
+         *
+         * @param[in]   location        a path to the directory containing the bundle
+         * @param[in]   id              a string containing the bundle identifier
+         * @param[in]   version         a string containing the bundler version
+         * @param[in]   pluginClass     a string containing the bundle's pugin class name
+         *
+         * @todo        test parameters validity
+         *
+         */
+        Bundle( const boost::filesystem::path   & location,
+                const std::string               & id,
+                const std::string               & version,
+                const std::string               & pluginClass );
 
 
-private:
+    private:
 
-    typedef std::set< std::string >                 RequirementContainer;   ///< Defines the requirement container type.
-    typedef std::map< std::string, std::string >    ParameterContainer;     ///< defines the parameter container type
+        typedef std::set< std::string >                 RequirementContainer;///< Defines the requirement container type.
+        typedef std::map< std::string, std::string >    ParameterContainer; ///< defines the parameter container type
 
-    static SPTR( Bundle )           m_loadingBundle;        ///< a pointer to the bundle that is currently loading its dynamic libaries
+        static SPTR( Bundle )           m_loadingBundle;    ///< a pointer to the bundle that is currently loading its dynamic libaries
 
-    const boost::filesystem::path   m_location;             ///< the path to the bundle location
-    const std::string               m_identifier;           ///< a string containing the bundle identifier
-    const Version                   m_version;              ///< defines the version of the bundle
-    const std::string               m_class;                ///< a string containing the bundle's plugin class name
-    bool                            m_enable;               ///< a boolean telling if the bundle is enabled or not
-    ExtensionContainer              m_extensions;           ///< all extensions
-    ExtensionPointContainer         m_extensionPoints;      ///< all extension points
-    ExecutableFactoryContainer      m_executableFactories;  ///< all executable factories
-    LibraryContainer                m_libraries;            ///< all libaries that are part of the bundle
-    RequirementContainer            m_requirements;         ///< all requirements of the bundle
-    SPTR( IPlugin )                 m_plugin;               ///< a shared pointer to the plugin instance
-    ParameterContainer              m_parameters;           ///< all parameters
+        const boost::filesystem::path m_location;           ///< the path to the bundle location
+        const std::string m_identifier;                     ///< a string containing the bundle identifier
+        const Version m_version;                            ///< defines the version of the bundle
+        const std::string m_class;                          ///< a string containing the bundle's plugin class name
+        bool m_enable;                                      ///< a boolean telling if the bundle is enabled or not
+        ExtensionContainer m_extensions;                    ///< all extensions
+        ExtensionPointContainer m_extensionPoints;          ///< all extension points
+        ExecutableFactoryContainer m_executableFactories;   ///< all executable factories
+        LibraryContainer m_libraries;                       ///< all libaries that are part of the bundle
+        RequirementContainer m_requirements;                ///< all requirements of the bundle
+        SPTR( IPlugin )                 m_plugin;           ///< a shared pointer to the plugin instance
+        ParameterContainer m_parameters;                    ///< all parameters
 
-    bool m_started;
-    bool m_initialized;
+        bool m_started;
+        bool m_initialized;
 
-    /**
-     * @brief   Assignement operator.
-     *
-     * @remark  Assignement is forbidden for this class.
-     */
-    void operator= (const Bundle & );
+        /**
+         * @brief   Assignement operator.
+         *
+         * @remark  Assignement is forbidden for this class.
+         */
+        void operator= (const Bundle & );
 
-    /**
-     * @brief   Load bundle's library in the current process.
-     */
-    void loadLibraries() throw(RuntimeException);
+        /**
+         * @brief   Load bundle's library in the current process.
+         */
+        void loadLibraries() throw(RuntimeException);
 
-    /**
-     * @brief   load all requirement needed by the bundle to work
-     */
-    void loadRequirements() throw(RuntimeException);
+        /**
+         * @brief   load all requirement needed by the bundle to work
+         */
+        void loadRequirements() throw(RuntimeException);
 
-    /**
-     * @brief   Starts the plugin associated to the bundle.
-     */
-    void startPlugin() throw(RuntimeException);
+        /**
+         * @brief   Starts the plugin associated to the bundle.
+         */
+        void startPlugin() throw(RuntimeException);
 
 };
 
@@ -472,4 +477,4 @@ private:
 } // namespace fwRuntime
 
 
-#endif // #define _FWRUNTIME_BUNDLE_HPP
+#endif // __FWRUNTIME_BUNDLE_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,7 @@ void StringizerTest::convertTest()
 {
     const std::string STR1 = "[1,2,3]";
     const std::string STR2 = "6";
-    const double D = 6.0;
+    const double D         = 6.0;
     std::vector<int> vec;
     vec.push_back(1);
     vec.push_back(2);

@@ -1,10 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <sstream>
+#include "fwTest/generator/SeriesDB.hpp"
+#include "fwTest/generator/Image.hpp"
+#include "fwTest/generator/Mesh.hpp"
 
 #include <fwTools/Type.hpp>
 
@@ -24,9 +26,7 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Equipment.hpp>
 
-#include "fwTest/generator/SeriesDB.hpp"
-#include "fwTest/generator/Image.hpp"
-#include "fwTest/generator/Mesh.hpp"
+#include <sstream>
 
 
 namespace fwTest
@@ -42,21 +42,21 @@ namespace generator
 {
     Image::initRand();
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
-    for (unsigned char nb=0 ; nb<nbImgSeries ; ++nb)
+    for (unsigned char nb = 0; nb<nbImgSeries; ++nb)
     {
         ::fwMedData::Series::sptr imgSeries;
         imgSeries = SeriesDB::createImageSeries();
         seriesDB->getContainer().push_back(imgSeries);
     }
 
-    for (unsigned char nb=0 ; nb<nbModelSeries ; ++nb)
+    for (unsigned char nb = 0; nb<nbModelSeries; ++nb)
     {
         ::fwMedData::Series::sptr modelSeries;
         modelSeries = SeriesDB::createModelSeries(rand()%15+1);
         seriesDB->getContainer().push_back(modelSeries);
     }
 
-    for (unsigned char nb=0 ; nb<nbActivitySeries ; ++nb)
+    for (unsigned char nb = 0; nb<nbActivitySeries; ++nb)
     {
         ::fwMedData::Series::sptr activitySeries;
         activitySeries = SeriesDB::createActivitySeries();
@@ -70,11 +70,11 @@ namespace generator
 ::fwMedData::Patient::sptr SeriesDB::createPatient()
 {
     ::fwMedData::Patient::sptr patient = ::fwMedData::Patient::New();
-    const std::string PATIENT_NAME          = "NomSeriesDB1" ;
-    const std::string PATIENT_FIRSTNAME     = "PrenomSeriesDB1" ;
-    const std::string PATIENT_ID            = "4564383757" ;
-    const std::string PATIENT_BIRTHDATE     = "19710418";
-    const std::string PATIENT_SEX           = "O ";
+    const std::string PATIENT_NAME      = "NomSeriesDB1";
+    const std::string PATIENT_FIRSTNAME = "PrenomSeriesDB1";
+    const std::string PATIENT_ID        = "4564383757";
+    const std::string PATIENT_BIRTHDATE = "19710418";
+    const std::string PATIENT_SEX       = "O ";
 
     patient->setName( PATIENT_NAME + "^" + PATIENT_FIRSTNAME );
     patient->setPatientId(   PATIENT_ID );
@@ -97,12 +97,12 @@ namespace generator
     str << count++;
 
     // studies informations
-    const std::string UID         = "1.2.826.0.1.3680043.2.1125.44278200849347599055201494082232" + str.str() ;
+    const std::string UID         = "1.2.826.0.1.3680043.2.1125.44278200849347599055201494082232" + str.str();
     const std::string DATE        = "20130418";
     const std::string TIME        = "095948.689872 ";
-    const std::string PHYSICIAN   = "Dr^Jekyl" ;
-    const std::string DESCRIPTION = "Say 33. " ;
-    const std::string PATIENT_AGE = "042Y" ;
+    const std::string PHYSICIAN   = "Dr^Jekyl";
+    const std::string DESCRIPTION = "Say 33. ";
+    const std::string PATIENT_AGE = "042Y";
 
     study->setInstanceUID( UID );
     study->setDate( DATE );
@@ -119,7 +119,7 @@ namespace generator
 ::fwMedData::Equipment::sptr SeriesDB::createEquipement()
 {
     ::fwMedData::Equipment::sptr equipment = ::fwMedData::Equipment::New();
-    const std::string INSTITUTION = "hospital" ;
+    const std::string INSTITUTION = "hospital";
     equipment->setInstitutionName(INSTITUTION);
 
     return equipment;
@@ -184,7 +184,7 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
     SeriesDB::generateSeriesInformation(modelSeries);
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recDB;
-    for (unsigned char nb=0 ; nb<nbReconstruction ; ++nb)
+    for (unsigned char nb = 0; nb<nbReconstruction; ++nb)
     {
         ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::New();
 
@@ -209,7 +209,7 @@ void SeriesDB::generateSeriesInformation(::fwMedData::Series::sptr series)
     activitySeries->setActivityConfigId(CONFIG_ID);
 
     ::fwData::Composite::sptr data = ::fwData::Composite::New();
-    data->getContainer()["key1"] = ::fwData::String::New("ValueOfKey1");
+    data->getContainer()["key1"]   = ::fwData::String::New("ValueOfKey1");
     activitySeries->setData(data);
 
     return activitySeries;
@@ -228,14 +228,14 @@ void SeriesDB::generateReconstruction(::fwData::Reconstruction::sptr rec)
     rec->setImage(img);
 
     ::fwData::Material::sptr material = ::fwData::Material::New();
-    material->ambient()->red() = 0.75f;
-    material->ambient()->green() = 0.10f;
-    material->ambient()->blue() = 0.56f;
-    material->ambient()->alpha() = 0.8f;
-    material->diffuse()->red() = 0.85f;
-    material->diffuse()->green() = 0.20f;
-    material->diffuse()->blue() = 0.66f;
-    material->diffuse()->alpha() = 0.9f;
+    material->ambient()->red()        = 0.75f;
+    material->ambient()->green()      = 0.10f;
+    material->ambient()->blue()       = 0.56f;
+    material->ambient()->alpha()      = 0.8f;
+    material->diffuse()->red()        = 0.85f;
+    material->diffuse()->green()      = 0.20f;
+    material->diffuse()->blue()       = 0.66f;
+    material->diffuse()->alpha()      = 0.9f;
     rec->setMaterial(material);
 
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();

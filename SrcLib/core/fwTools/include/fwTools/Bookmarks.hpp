@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWTOOLS_BOOKMARKS_HPP_
-#define _FWTOOLS_BOOKMARKS_HPP_
+#ifndef __FWTOOLS_BOOKMARKS_HPP__
+#define __FWTOOLS_BOOKMARKS_HPP__
 
 #include <string>
 #include <list>
@@ -25,7 +25,7 @@ class Object;
 /**
  * @brief   Allows to add a bookmark to an object, the bookmark name is unique (in time), an object can have several bookmarks
  * @class   Bookmarks
- * 
+ *
  * @date    2007-2011.
  * @note    expired object do not erase its bookmarks
  **/
@@ -65,18 +65,18 @@ public:
      */
     FWTOOLS_API static std::list<BookmarkName> getBookmarks();
 
-protected :
+
+    FWTOOLS_API virtual ~Bookmarks();
+protected:
 
     FWTOOLS_API Bookmarks();
 
-    FWTOOLS_API virtual ~Bookmarks() ;
+    typedef ::boost::unordered_map< BookmarkName, WPTR(::fwTools::Object ) > Dictionary;
 
-   typedef ::boost::unordered_map< BookmarkName, WPTR(::fwTools::Object ) > Dictionary;
-
-   static  Dictionary m_dictionary;
+    static Dictionary m_dictionary;
 };
 
 }
 
 
-#endif /* BOOKMARKS_HPP_ */
+#endif /* __FWTOOLS_BOOKMARKS_HPP__ */

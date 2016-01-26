@@ -1,11 +1,17 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef __SCENE2D_PROCESSING_COMPUTEHISTOGRAMFUNCTOR_HXX__
 #define __SCENE2D_PROCESSING_COMPUTEHISTOGRAMFUNCTOR_HXX__
+
+#include "scene2D/processing/SComputeHistogram.hpp"
 
 #include <fwComEd/helper/Image.hpp>
 #include <fwComEd/helper/Array.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
-#include "scene2D/processing/SComputeHistogram.hpp"
 
 namespace scene2D
 {
@@ -20,7 +26,7 @@ struct ComputeHistogramFunctor
     /// Parameters of the functor.
     struct Parameter
     {
-        ::fwData::Image::sptr  image;
+        ::fwData::Image::sptr image;
         ::fwData::Histogram::sptr histogram;
         float binsWidth;
     };
@@ -28,7 +34,7 @@ struct ComputeHistogramFunctor
     template<class IMAGETYPE>
     void operator()(Parameter &param)
     {
-        ::fwData::Image::sptr image = param.image;
+        ::fwData::Image::sptr image         = param.image;
         ::fwData::Histogram::sptr histogram = param.histogram;
 
         ::fwComEd::helper::Image imgHelper(image);
@@ -37,7 +43,7 @@ struct ComputeHistogramFunctor
         IMAGETYPE max = std::numeric_limits<IMAGETYPE>::min();
 
         ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-        SLM_ASSERT("Wrong image", max > min) ;
+        SLM_ASSERT("Wrong image", max > min);
         if( max > min )
         {
             histogram->initialize( min, max, param.binsWidth );
@@ -45,7 +51,7 @@ struct ComputeHistogramFunctor
             ::fwData::Array::sptr array = image->getDataArray();
             ::fwComEd::helper::Array arrayHelper(array);
 
-            IMAGETYPE* itr = arrayHelper.begin<IMAGETYPE>();
+            IMAGETYPE* itr    = arrayHelper.begin<IMAGETYPE>();
             IMAGETYPE* itrEnd = arrayHelper.end<IMAGETYPE>();
 
             for(; itr!= itrEnd; ++itr)

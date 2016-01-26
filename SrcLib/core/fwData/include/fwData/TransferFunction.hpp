@@ -7,14 +7,16 @@
 #ifndef __FWDATA_TRANSFERFUNCTION_HPP__
 #define __FWDATA_TRANSFERFUNCTION_HPP__
 
+#include "fwData/config.hpp"
+#include "fwData/Object.hpp"
+#include "fwData/factory/new.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 #include <vector>
 #include <map>
 #include <limits>
-
-#include "fwData/config.hpp"
-#include "fwData/macros.hpp"
-#include "fwData/Object.hpp"
-#include "fwData/factory/new.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(TransferFunction), FWDATA_API);
 
@@ -29,9 +31,10 @@ namespace fwData
 class FWDATA_CLASS_API TransferFunction : public Object
 {
 
-public :
+public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()), ::fwData::factory::New< TransferFunction >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (TransferFunction)(::fwData::Object), (()),
+                                            ::fwData::factory::New< TransferFunction >);
 
     /// Macro for deep and shallow copies
 
@@ -59,7 +62,7 @@ public :
             g = 0.0;
             b = 0.0;
             a = 0.0;
-        };
+        }
 
         TFColor( ColorType _r, ColorType _g, ColorType _b, ColorType _a )
         {
@@ -67,12 +70,12 @@ public :
             g = _g;
             b = _b;
             a = _a;
-        };
+        }
 
         inline bool operator== (const TFColor& _color) const
         {
             return (r == _color.r && g == _color.g && b == _color.b && a == _color.a);
-        };
+        }
 
     };
 
@@ -162,55 +165,180 @@ public :
     FWDATA_API const TFColor& getTFColor( TFValueType value ) const;
 
     /// Interpolation mode
-    fwDataGetSetMacro(InterpolationMode, InterpolationMode);
+    InterpolationMode  getInterpolationMode () const;
+
+    void setInterpolationMode (InterpolationMode val);
 
     /// Level
-    fwDataGetSetMacro(Level, double);
+    double  getLevel () const;
+    void setLevel (double val);
 
     /// Window
-    fwDataGetSetMacro(Window, double);
+    double getWindow () const;
+    void setWindow (double val);
 
     /// Transfert function name
-    fwDataGetSetCRefMacro(Name, std::string);
+    const std::string &getName () const;
+    void setName (const std::string &val);
 
     /// is TF clamped
-    fwDataGetSetMacro(IsClamped, bool);
+    bool  getIsClamped () const;
+    void setIsClamped (bool val);
 
     /// set the TF background color when tf 'IsClamped' is true
-    fwDataGetSetCRefMacro(BackgroundColor, TFColor);
+    const TFColor &getBackgroundColor () const;
+    void setBackgroundColor (const TFColor &val);
 
     /// Default transfer function name
     FWDATA_API static const std::string s_DEFAULT_TF_NAME;
 
-private :
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Type of signal when points are modified
+    typedef ::fwCom::Signal< void () > PointsModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_POINTS_MODIFIED_SIG;
+
+    /// Type of signal when window-level is modified (window, level)
+    typedef ::fwCom::Signal< void (double, double) > WindowingModifiedSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_WINDOWING_MODIFIED_SIG;
+    /**
+     * @}
+     */
+
+private:
 
     /// Current visualization level
-    double m_attrLevel;
+    double m_level;
 
     /// Current visualization window
-    double m_attrWindow;
+    double m_window;
 
     ///  Function transfer name.
-    std::string m_attrName;
+    std::string m_name;
 
     /// The recommended background color to use this TF.
-    TFColor m_attrBackgroundColor;
+    TFColor m_backgroundColor;
 
     /// The Transfer function data.
     TFDataType m_tfData;
 
     /// The current interpolation mode.
-    InterpolationMode m_attrInterpolationMode;
+    InterpolationMode m_interpolationMode;
 
     /**
      *  @brief Defines interpolation mode on extremities
      *
      *  if m_isClamped == true then after extremity point, the returned TF color is TFColor(0,0,0,0).
      *  if m_isClamped == false then after extremity point, the returned TF color is one of the extremity color value.
-    **/
-    bool m_attrIsClamped;
+     **/
+    bool m_isClamped;
 
 }; // class TransferFunction
+
+//-----------------------------------------------------------------------------
+
+inline TransferFunction::TFColor TransferFunction::getInterpolatedColor( TFValueType value ) const
+{
+    TFColor color;
+
+    if(m_interpolationMode == LINEAR)
+    {
+        color = this->getLinearColor(value);
+    }
+    else if(m_interpolationMode == NEAREST)
+    {
+        color = this->getNearestColor(value);
+    }
+    return color;
+}
+
+//-----------------------------------------------------------------------------
+
+inline TransferFunction::InterpolationMode TransferFunction::getInterpolationMode () const
+{
+    return m_interpolationMode;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void TransferFunction::setInterpolationMode (InterpolationMode val)
+{
+    m_interpolationMode = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double TransferFunction::getLevel () const
+{
+    return m_level;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void TransferFunction::setLevel (double val)
+{
+    m_level = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double TransferFunction::getWindow () const
+{
+    return m_window;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void TransferFunction::setWindow (double val)
+{
+    m_window = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const std::string &TransferFunction::getName () const
+{
+    return m_name;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void TransferFunction::setName (const std::string &val)
+{
+    m_name = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool TransferFunction::getIsClamped () const
+{
+    return m_isClamped;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void TransferFunction::setIsClamped (bool val)
+{
+    m_isClamped = val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const TransferFunction::TFColor &TransferFunction::getBackgroundColor () const
+{
+    return m_backgroundColor;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void TransferFunction::setBackgroundColor (const TFColor &val)
+{
+    m_backgroundColor = val;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

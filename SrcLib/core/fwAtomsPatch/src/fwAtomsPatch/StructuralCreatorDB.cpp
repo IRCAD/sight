@@ -1,10 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 
 #include "fwAtomsPatch/infos/log.hpp"
 #include "fwAtomsPatch/IStructuralCreator.hpp"
@@ -13,7 +12,7 @@
 namespace fwAtomsPatch
 {
 
-StructuralCreatorDB::sptr StructuralCreatorDB::s_default = ::boost::make_shared<StructuralCreatorDB>();
+StructuralCreatorDB::sptr StructuralCreatorDB::s_default = std::make_shared<StructuralCreatorDB>();
 
 void StructuralCreatorDB::registerCreator(::fwAtomsPatch::IStructuralCreator::sptr creator)
 {
@@ -25,7 +24,7 @@ void StructuralCreatorDB::registerCreator(::fwAtomsPatch::IStructuralCreator::sp
 // ----------------------------------------------------------------------------
 
 ::fwAtomsPatch::IStructuralCreator::sptr StructuralCreatorDB::getCreator(const std::string& classname,
-     const std::string& version)
+                                                                         const std::string& version)
 {
     VersionIDType key = std::make_pair(classname, version);
 

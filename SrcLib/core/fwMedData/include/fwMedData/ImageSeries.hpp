@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,19 +7,19 @@
 #ifndef __FWMEDDATA_IMAGESERIES_HPP__
 #define __FWMEDDATA_IMAGESERIES_HPP__
 
-#include <fwData/Object.hpp>
-#include <fwData/factory/new.hpp>
-#include <fwData/macros.hpp>
-
-#include "fwMedData/types.hpp"
-#include "fwMedData/Series.hpp"
 #include "fwMedData/config.hpp"
+#include "fwMedData/Series.hpp"
+#include "fwMedData/types.hpp"
+
+#include <fwData/factory/new.hpp>
+#include <fwData/Object.hpp>
+
 
 fwCampAutoDeclareDataMacro((fwMedData)(ImageSeries), FWMEDDATA_API);
 
 namespace fwData
 {
-    class Image;
+class Image;
 }
 
 namespace fwMedData
@@ -33,7 +33,8 @@ class FWMEDDATA_CLASS_API ImageSeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (ImageSeries)(::fwData::Object), (()), ::fwData::factory::New< ImageSeries >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ImageSeries)(::fwData::Object), (()),
+                                            ::fwData::factory::New< ImageSeries >);
 
     fwCampMakeFriendDataMacro((fwMedData)(ImageSeries));
 
@@ -59,7 +60,8 @@ public:
     /**
      * @brief Image container
      * @{ */
-    fwDataGetSetSptrMacro(Image, SPTR(::fwData::Image));
+    SPTR(::fwData::Image) getImage() const;
+    void setImage(const SPTR(::fwData::Image)& val);
     /**  @} */
 
     /**  @} */
@@ -67,9 +69,25 @@ public:
 protected:
 
     /// Image container
-    SPTR(::fwData::Image) m_attrImage;
+    SPTR(::fwData::Image) m_image;
 
 };
+
+//-----------------------------------------------------------------------------
+
+inline SPTR(::fwData::Image) ImageSeries::getImage() const
+{
+    return m_image;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ImageSeries::setImage(const SPTR(::fwData::Image)& val)
+{
+    m_image = val;
+}
+
+//-----------------------------------------------------------------------------
 
 }   //end namespace fwMedData
 

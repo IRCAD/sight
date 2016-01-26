@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -120,28 +120,28 @@ void GraphTest::limitCase1()
     CPPUNIT_ASSERT_EQUAL( (size_t)0, g->getNbEdges() );
 
     success = g->addNode(n1);
-    CPPUNIT_ASSERT_EQUAL( success ,  true );
+    CPPUNIT_ASSERT_EQUAL( success,  true );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)0, g->getNbEdges() );
 
     success = g->addNode(n1);
-    CPPUNIT_ASSERT_EQUAL( success ,  false );
+    CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)0, g->getNbEdges() );
 
     success = g->addNode(n2);
-    CPPUNIT_ASSERT_EQUAL( success ,  true );
+    CPPUNIT_ASSERT_EQUAL( success,  true );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)0, g->getNbEdges() );
 
 
     success = g->addEdge(e1,n1,n2);
-    CPPUNIT_ASSERT_EQUAL( success ,  true );
+    CPPUNIT_ASSERT_EQUAL( success,  true );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
     success = g->addEdge(e1,n1,n2);
-    CPPUNIT_ASSERT_EQUAL( success ,  false );
+    CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
@@ -152,12 +152,12 @@ void GraphTest::limitCase1()
     n3->addOutputPort( p3 );
 
     success = g->addEdge(e1,n3,n2);
-    CPPUNIT_ASSERT_EQUAL( success ,  false );
+    CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
     success = g->addEdge(e1,n1,n3);
-    CPPUNIT_ASSERT_EQUAL( success ,  false );
+    CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
@@ -165,7 +165,7 @@ void GraphTest::limitCase1()
     e2->setIdentifiers("sizex","BADID");
 
     success = g->addEdge(e2,n1,n2);
-    CPPUNIT_ASSERT_EQUAL( success ,  false );
+    CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
@@ -173,7 +173,7 @@ void GraphTest::limitCase1()
     e3->setIdentifiers("BADID","threshold");
 
     success = g->addEdge(e3,n1,n2);
-    CPPUNIT_ASSERT_EQUAL( success ,  false );
+    CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
@@ -184,7 +184,7 @@ void GraphTest::limitCase1()
     n4->addInputPort( p4 );
 
     success = g->addNode( n4 );
-    CPPUNIT_ASSERT_EQUAL( success ,  true );
+    CPPUNIT_ASSERT_EQUAL( success,  true );
     CPPUNIT_ASSERT_EQUAL( (size_t)3, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
@@ -196,7 +196,7 @@ void GraphTest::limitCase1()
     e4->setIdentifiers("sizex","threshold");
 
     success = g->addEdge(e4,n1,n4);
-    CPPUNIT_ASSERT_EQUAL( success ,  false );
+    CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)3, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 }
@@ -231,7 +231,7 @@ void GraphTest::limitCase2()
 
     bool success;
     success = g->removeNode(n1);
-    CPPUNIT_ASSERT_EQUAL( success ,  false );
+    CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 
@@ -240,7 +240,7 @@ void GraphTest::limitCase2()
 
 
     success = g->removeEdge(e2);
-    CPPUNIT_ASSERT_EQUAL( success ,  false );
+    CPPUNIT_ASSERT_EQUAL( success,  false );
     CPPUNIT_ASSERT_EQUAL( (size_t)2, g->getNbNodes() );
     CPPUNIT_ASSERT_EQUAL( (size_t)1, g->getNbEdges() );
 

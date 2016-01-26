@@ -1,41 +1,56 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/PlaneListMsg.hpp>
-#include <fwComEd/PlaneMsg.hpp>
-
-#include <fwData/Plane.hpp>
-#include <fwData/PlaneList.hpp>
-#include <fwData/Boolean.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
+#ifndef ANDROID
 
 #include "visuVTKAdaptor/PlaneSelectionNotifier.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelectionNotifier, ::fwData::Composite ) ;
+#include <fwComEd/helper/Composite.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Plane.hpp>
+#include <fwData/PlaneList.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelectionNotifier,
+                         ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_PLANELIST_SLOT = "updatePlaneList";
+static const ::fwCom::Slots::SlotKeyType s_SELECT_PLANE_SLOT     = "selectPlane";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SELECTION_SLOT = "updateSelection";
+static const ::fwCom::Slots::SlotKeyType s_ADD_PLANE_SLOT        = "addPlane";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_PLANE_SLOT     = "removePlane";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_PLANES_SLOT      = "showPlanes";
+
 PlaneSelectionNotifier::PlaneSelectionNotifier() throw()
 {
-    //addNewHandledEvent( ::fwComEd::PlaneListMsg::ADD_PLANE );
-    //addNewHandledEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE);
-    //addNewHandledEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY);
-    //addNewHandledEvent( ::fwComEd::PlaneListMsg::DESELECT_ALL_PLANES );
-    //addNewHandledEvent( ::fwComEd::PlaneMsg::START_PLANE_INTERACTION );
-    //addNewHandledEvent( ::fwComEd::PlaneMsg::DESELECT_PLANE );
+    m_slotUpdatePlaneList = newSlot(s_UPDATE_PLANELIST_SLOT, &PlaneSelectionNotifier::updatePlaneList, this);
+    newSlot(s_SELECT_PLANE_SLOT, &PlaneSelectionNotifier::selectPlane, this);
+    newSlot(s_UPDATE_SELECTION_SLOT, &PlaneSelectionNotifier::updateSelection, this);
+    newSlot(s_ADD_PLANE_SLOT, &PlaneSelectionNotifier::addPlane, this);
+    newSlot(s_REMOVE_PLANE_SLOT, &PlaneSelectionNotifier::removePlane, this);
+    newSlot(s_SHOW_PLANES_SLOT, &PlaneSelectionNotifier::showPlanes, this);
+
+    m_plConnection = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -46,7 +61,7 @@ PlaneSelectionNotifier::~PlaneSelectionNotifier() throw()
 
 //------------------------------------------------------------------------------
 
-void PlaneSelectionNotifier::configuring() throw(fwTools::Failed)
+void PlaneSelectionNotifier::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     assert(m_configuration->getName() == "config");
@@ -74,13 +89,15 @@ void PlaneSelectionNotifier::doStart() throw(fwTools::Failed)
     ::fwData::PlaneList::sptr planeList = m_currentPlaneList.lock();
     if(planeList)
     {
-        m_plConnection = planeList->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                                this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+        m_plConnection->connect(planeList, ::fwData::PlaneList::s_PLANE_REMOVED_SIG,
+                                this->getSptr(), s_REMOVE_PLANE_SLOT);
+        m_plConnection->connect(planeList, ::fwData::PlaneList::s_VISIBILITY_MODIFIED_SIG,
+                                this->getSptr(), s_SHOW_PLANES_SLOT);
 
-        BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
+        for( ::fwData::Plane::sptr plane :  planeList->getPlanes() )
         {
-            m_planeConnections[plane->getID()] = plane->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                                                            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+            m_planeConnections[plane->getID()] = plane->signal(::fwData::Plane::s_SELECTED_SIG)->connect(
+                this->slot(s_UPDATE_SELECTION_SLOT));
         }
     }
 }
@@ -111,12 +128,12 @@ void PlaneSelectionNotifier::doStop() throw(fwTools::Failed)
     if(planeList)
     {
 
-        BOOST_FOREACH( ::fwData::Plane::sptr plane, planeList->getPlanes() )
+        for( ::fwData::Plane::sptr plane :  planeList->getPlanes() )
         {
             m_planeConnections[plane->getID()].disconnect();
         }
 
-        m_plConnection.disconnect();
+        m_plConnection->disconnect();
 
         m_currentPlaneList.reset();
     }
@@ -124,86 +141,39 @@ void PlaneSelectionNotifier::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PlaneSelectionNotifier::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PlaneSelectionNotifier::addPlane(::fwData::Plane::sptr plane)
 {
-    SLM_TRACE_FUNC();
+    //New plane selected is the last one in planeList
+    this->selectPlane(plane);
 
-    ::fwComEd::PlaneListMsg::csptr planeListMsg = ::fwComEd::PlaneListMsg::dynamicConstCast( msg );
-    ::fwComEd::PlaneMsg::csptr planeMsg         = ::fwComEd::PlaneMsg::dynamicConstCast( msg );
-    ::fwComEd::CompositeMsg::csptr compositeMsg = ::fwComEd::CompositeMsg::dynamicConstCast( msg );
+    m_planeConnections[plane->getID()] = plane->signal(::fwData::Plane::s_SELECTED_SIG)->connect(
+        this->slot(s_UPDATE_SELECTION_SLOT));
+}
 
-    if ( compositeMsg )
+//------------------------------------------------------------------------------
+
+void PlaneSelectionNotifier::removePlane(::fwData::Plane::sptr plane)
+{
+    //Remove connections
+    m_planeConnections[plane->getID()].disconnect();
+    this->deselectPlane();
+}
+
+//------------------------------------------------------------------------------
+
+void PlaneSelectionNotifier::showPlanes(bool visible)
+{
+    if (visible)
     {
-        ::fwData::Composite::ContainerType objects;
-        ::fwData::Composite::sptr modifiedKeys;
+        ::fwData::PlaneList::sptr planeList = m_currentPlaneList.lock();
 
-        modifiedKeys = compositeMsg->getAddedKeys();
-        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
-
-        modifiedKeys = compositeMsg->getNewChangedKeys();
-        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
-
-        modifiedKeys = compositeMsg->getRemovedKeys();
-        objects.insert(modifiedKeys->begin(), modifiedKeys->end());
-
-        if ( objects.find(m_planeListId) != objects.end() )
-        {
-            this->doStop();
-            this->doStart();
-            this->deselectPlane();
-        }
+        //New plane selected is the last one in planeList
+        ::fwData::Plane::sptr plane = *(planeList->getRefPlanes().rbegin());
+        this->selectPlane(plane);
     }
-    else if ( planeListMsg )
+    else
     {
-        ::fwData::PlaneList::sptr planeList = ::fwData::PlaneList::dynamicCast(planeListMsg->getSubject().lock());
-        SLM_ASSERT("Messsage's subject should be a PlaneList", planeList);
-        bool showPlanes;
-        showPlanes = planeList->getField("ShowPlanes", ::fwData::Boolean::New(true))->value();
-
-        if(!planeList->getRefPlanes().empty())
-        {
-            if (planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::ADD_PLANE))
-            {
-                //New plane selected is the last one in planeList
-                ::fwData::Plane::sptr plane = *(planeList->getRefPlanes().rbegin());
-                this->selectPlane(plane);
-
-                m_planeConnections[plane->getID()] = plane->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-                                                                this->slot(::fwServices::IService::s_RECEIVE_SLOT));
-            }
-            else if(showPlanes && planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY ))
-            {
-                //New plane selected is the last one in planeList
-                ::fwData::Plane::sptr plane = *(planeList->getRefPlanes().rbegin());
-                this->selectPlane(plane);
-            }
-        }
-        if (planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::REMOVE_PLANE))
-        {
-            //Remove connections
-            ::fwTools::Object::csptr dataInfo = planeListMsg->getDataInfo(::fwComEd::PlaneListMsg::REMOVE_PLANE);
-
-            SLM_ASSERT("Sorry, Missing data info", dataInfo);
-            ::fwData::Plane::sptr plane = ::fwData::Plane::dynamicCast(::fwTools::Object::constCast(dataInfo));
-
-            m_planeConnections[plane->getID()].disconnect();
-        }
-        if ( (!showPlanes && planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::PLANELIST_VISIBILITY ))
-                || planeListMsg->hasEvent( ::fwComEd::PlaneListMsg::DESELECT_ALL_PLANES ) )
-        {
-            this->deselectPlane();
-        }
-    }
-    else if (planeMsg)
-    {
-        if (planeMsg->hasEvent( ::fwComEd::PlaneMsg::START_PLANE_INTERACTION ))
-        {
-            this->selectPlane(::fwData::Object::dynamicCast(planeMsg->getSubject().lock()));
-        }
-        if (planeMsg->hasEvent( ::fwComEd::PlaneMsg::DESELECT_PLANE ))
-        {
-            this->deselectPlane();
-        }
+        this->deselectPlane();
     }
 }
 
@@ -211,35 +181,74 @@ void PlaneSelectionNotifier::doReceive( ::fwServices::ObjectMsg::csptr msg) thro
 
 void PlaneSelectionNotifier::selectPlane( ::fwData::Object::sptr plane )
 {
-    SLM_TRACE_FUNC();
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    ::fwData::Object::sptr oldPlane = composite->getContainer()[m_planeSelectionId];
+    ::fwComEd::helper::Composite helper(composite);
+    helper.swap(m_planeSelectionId, plane);
 
-    if (plane && plane != oldPlane)
+    auto sig = composite->signal< ::fwData::Composite::ChangedObjectsSignalType >(
+        ::fwData::Composite::s_CHANGED_OBJECTS_SIG);
     {
-        ::fwComEd::CompositeMsg::sptr compositeMsg = ::fwComEd::CompositeMsg::New();
-        compositeMsg->appendChangedKey(m_planeSelectionId,oldPlane, plane);
-        composite->getContainer()[m_planeSelectionId] = plane;
-        ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdatePlaneList));
+        helper.notify();
     }
 }
 
+//------------------------------------------------------------------------------
+
 void PlaneSelectionNotifier::deselectPlane()
 {
-     SLM_TRACE_FUNC();
-     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-     if ( composite->find(m_planeSelectionId) != composite->end() )
-     {
-        ::fwComEd::CompositeMsg::sptr compositeMsg = ::fwComEd::CompositeMsg::New();
-        compositeMsg->appendRemovedKey(m_planeSelectionId,(*composite)[m_planeSelectionId]);
-
-        composite->getContainer().erase(m_planeSelectionId);
-
-        ::fwServices::IEditionService::notify(this->getSptr(), composite, compositeMsg);
-     }
+    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    if ( composite->find(m_planeSelectionId) != composite->end() )
+    {
+        ::fwComEd::helper::Composite helper(composite);
+        helper.remove(m_planeSelectionId);
+        auto sig = composite->signal< ::fwData::Composite::RemovedObjectsSignalType >(
+            ::fwData::Composite::s_REMOVED_OBJECTS_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdatePlaneList));
+            helper.notify();
+        }
+    }
 }
+
+//------------------------------------------------------------------------------
+
+void PlaneSelectionNotifier::updatePlaneList(::fwData::Composite::ContainerType objects)
+{
+    if ( objects.find(m_planeListId) != objects.end() )
+    {
+        this->doStop();
+        this->doStart();
+        this->deselectPlane();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void PlaneSelectionNotifier::updateSelection(bool selected)
+{
+    if (!selected)
+    {
+        this->deselectPlane();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType PlaneSelectionNotifier::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_PLANELIST_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_PLANELIST_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_PLANELIST_SLOT ) );
+
+    return connections;
+}
+//------------------------------------------------------------------------------
 
 
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID
 

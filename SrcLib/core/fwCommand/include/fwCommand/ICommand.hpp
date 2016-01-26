@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMMAND_ICOMMAND_H
-#define _FWCOMMAND_ICOMMAND_H
+#ifndef __FWCOMMAND_ICOMMAND_HPP__
+#define __FWCOMMAND_ICOMMAND_HPP__
 
 #include <exception>
 #include <string>
@@ -32,18 +32,20 @@ namespace fwCommand
 class FWCOMMAND_CLASS_API ICommand : public ::fwTools::Object
 {
 
-protected :
+protected:
 
     ::fwServices::IService::wptr m_serviceNotifier;
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ICommand)(::fwTools::Object) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ICommand)(::fwTools::Object) );
 
     /**
      * @brief Virtual destructor.
      */
-    virtual ~ICommand() {};
+    virtual ~ICommand()
+    {
+    }
 
     /**
      * @brief Retrieves the memory footprint of the command.
@@ -67,13 +69,19 @@ public :
      */
     FWCOMMAND_API virtual const std::string getDescription( void ) const = 0;
 
-    void setNotifier( ::fwServices::IService::sptr serviceNotifier ) { m_serviceNotifier = serviceNotifier; }
+    void setNotifier( ::fwServices::IService::sptr serviceNotifier )
+    {
+        m_serviceNotifier = serviceNotifier;
+    }
 
-    ::fwServices::IService::sptr getNotifier() { return m_serviceNotifier.lock(); }
+    ::fwServices::IService::sptr getNotifier()
+    {
+        return m_serviceNotifier.lock();
+    }
 };
 
 
 } // namespace fwCommand
 
 
-#endif //#ifndef _FWCOMMAND_ICOMMAND_H
+#endif // __FWCOMMAND_ICOMMAND_HPP__

@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+
+#include "fwData/registry/macros.hpp"
+#include "fwData/Exception.hpp"
+#include "fwData/Array.hpp"
 
 #include <algorithm>
 #include <cstdlib>
 #include <functional>
 #include <numeric>
-
-#include "fwData/registry/macros.hpp"
-#include "fwData/Exception.hpp"
-
-#include "fwData/Array.hpp"
-
 
 namespace fwData
 {
@@ -21,15 +20,17 @@ namespace fwData
 fwDataRegisterMacro( ::fwData::Array );
 
 inline size_t computeSize(
-        size_t elementSize,
-        const ::fwData::Array::SizeType &size,
-        size_t nbOfComponents )
+    size_t elementSize,
+    const ::fwData::Array::SizeType &size,
+    size_t nbOfComponents )
 {
     size_t total = 0;
     if (!size.empty())
     {
-        total = elementSize;
-        total *= std::accumulate (size.begin(), size.end(), nbOfComponents, std::multiplies< ::fwData::Array::SizeType::value_type >() );
+        total  = elementSize;
+        total *=
+            std::accumulate (size.begin(),
+                             size.end(), nbOfComponents, std::multiplies< ::fwData::Array::SizeType::value_type >() );
     }
     return total;
 }
@@ -40,7 +41,7 @@ inline size_t computeSize(
     strides.reserve(size.size());
 
     size_t currentStride = sizeOfType*nbOfComponents;
-    BOOST_FOREACH(SizeType::value_type s, size)
+    for(const SizeType::value_type& s : size)
     {
         strides.push_back(currentStride);
         currentStride *= s;
@@ -50,10 +51,10 @@ inline size_t computeSize(
 
 //------------------------------------------------------------------------------
 
-Array::Array( ::fwData::Object::Key key ):
+Array::Array( ::fwData::Object::Key key ) :
     m_strides(0),
     m_type(),
-    m_attrBufferObject(::fwMemory::BufferObject::New()),
+    m_bufferObject(::fwMemory::BufferObject::New()),
     m_size(0),
     m_nbOfComponents(0),
     m_isBufferOwner(true)
@@ -74,7 +75,7 @@ void Array::swap( Array::sptr _source )
     m_fields.swap(_source->m_fields);
     m_strides.swap(_source->m_strides);
     m_size.swap(_source->m_size);
-    m_attrBufferObject->swap(_source->m_attrBufferObject);
+    m_bufferObject->swap(_source->m_bufferObject);
 
     std::swap(m_type, _source->m_type);
     std::swap(m_nbOfComponents, _source->m_nbOfComponents);
@@ -87,18 +88,18 @@ void Array::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
 {
     Array::csptr other = Array::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
     this->fieldDeepCopy( _source, cache );
 
     this->clear();
 
-    if( !other->m_attrBufferObject->isEmpty() )
+    if( !other->m_bufferObject->isEmpty() )
     {
-        ::fwMemory::BufferObject::Lock lockerDest(m_attrBufferObject);
+        ::fwMemory::BufferObject::Lock lockerDest(m_bufferObject);
         this->resize(other->m_type, other->m_size, other->m_nbOfComponents, true);
         char * buffDest = static_cast< char * >( lockerDest.getBuffer() );
-        ::fwMemory::BufferObject::Lock lockerSource(other->m_attrBufferObject);
+        ::fwMemory::BufferObject::Lock lockerSource(other->m_bufferObject);
         char * buffSrc = static_cast< char * >( lockerSource.getBuffer() );
         std::copy(buffSrc, buffSrc+other->getSizeInBytes(), buffDest );
     }
@@ -114,34 +115,34 @@ void Array::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cach
 //------------------------------------------------------------------------------
 
 size_t Array::resize(
-        const ::fwTools::Type &type,
-        const SizeType &size,
-        size_t nbOfComponents,
-        bool reallocate
-        ) throw(::fwData::Exception)
+    const ::fwTools::Type &type,
+    const SizeType &size,
+    size_t nbOfComponents,
+    bool reallocate
+    ) throw(::fwData::Exception)
 {
     nbOfComponents = (nbOfComponents == 0) ? 1 : nbOfComponents;
     size_t bufSize = computeSize(type.sizeOf(), size, nbOfComponents);
 
-    if(reallocate && (m_isBufferOwner || m_attrBufferObject->isEmpty()))
+    if(reallocate && (m_isBufferOwner || m_bufferObject->isEmpty()))
     {
-        if(m_attrBufferObject->isEmpty())
+        if(m_bufferObject->isEmpty())
         {
-            m_attrBufferObject->allocate(bufSize);
+            m_bufferObject->allocate(bufSize);
         }
         else
         {
-            m_attrBufferObject->reallocate(bufSize);
+            m_bufferObject->reallocate(bufSize);
         }
         m_isBufferOwner = true;
     }
     else if(reallocate && !m_isBufferOwner)
     {
         FW_RAISE_EXCEPTION_MSG( ::fwData::Exception,
-                "Tried to reallocate a not-owned Buffer.");
+                                "Tried to reallocate a not-owned Buffer.");
     }
 
-    m_strides = computeStrides(size, nbOfComponents, type.sizeOf());
+    m_strides        = computeStrides(size, nbOfComponents, type.sizeOf());
     m_type           = type;
     m_size           = size;
     m_nbOfComponents = nbOfComponents;
@@ -164,7 +165,8 @@ size_t Array::resize(const SizeType &size, bool reallocate) throw(::fwData::Exce
 }
 //------------------------------------------------------------------------------
 
-size_t Array::resize(const std::string &type, const SizeType &size, size_t nbOfComponents, bool reallocate) throw(::fwData::Exception)
+size_t Array::resize(const std::string &type, const SizeType &size, size_t nbOfComponents,
+                     bool reallocate) throw(::fwData::Exception)
 {
     ::fwTools::Type fwType = ::fwTools::Type::create(type);
     return this->resize( fwType, size, nbOfComponents, reallocate);
@@ -174,11 +176,11 @@ size_t Array::resize(const std::string &type, const SizeType &size, size_t nbOfC
 
 void Array::clear()
 {
-    if ( ! this->m_attrBufferObject->isEmpty() )
+    if ( !this->m_bufferObject->isEmpty() )
     {
         if(m_isBufferOwner)
         {
-            this->m_attrBufferObject->destroy();
+            this->m_bufferObject->destroy();
         }
         m_strides.clear();
         m_type = ::fwTools::Type();
@@ -236,11 +238,11 @@ void Array::setNumberOfComponents(size_t nb)
 {
     m_nbOfComponents = (nb == 0) ? 1 : nb;
     this->resize(
-            m_type,
-            m_size,
-            m_nbOfComponents,
-            (m_isBufferOwner && !m_attrBufferObject->isEmpty())
-            );
+        m_type,
+        m_size,
+        m_nbOfComponents,
+        (m_isBufferOwner && !m_bufferObject->isEmpty())
+        );
 }
 
 //------------------------------------------------------------------------------
@@ -283,11 +285,11 @@ void Array::setType(const ::fwTools::Type &type)
 {
     m_type = type;
     this->resize(
-            m_type,
-            m_size,
-            m_nbOfComponents,
-            (m_isBufferOwner && !m_attrBufferObject->isEmpty())
-            );
+        m_type,
+        m_size,
+        m_nbOfComponents,
+        (m_isBufferOwner && !m_bufferObject->isEmpty())
+        );
 }
 
 
@@ -303,13 +305,14 @@ void Array::setType(const ::fwTools::Type &type)
 size_t Array::getBufferOffset( const ::fwData::Array::IndexType &id, size_t component, size_t sizeOfType ) const
 {
     OSLM_ASSERT(
-            "Given index has " << id.size() << " dimensions, but Array has " << m_size.size() << "dimensions.",
-            id.size() == m_size.size()
-            );
+        "Given index has " << id.size() << " dimensions, but Array has " << m_size.size() << "dimensions.",
+        id.size() == m_size.size()
+        );
 
     OffsetType offsets(id.size());
 
-    std::transform(id.begin(), id.end(), m_strides.begin(), offsets.begin(), std::multiplies<OffsetType::value_type>() );
+    std::transform(id.begin(), id.end(), m_strides.begin(), offsets.begin(),
+                   std::multiplies<OffsetType::value_type>() );
 
     size_t offset;
     offset = std::accumulate(offsets.begin(), offsets.end(), size_t(0));
@@ -321,4 +324,4 @@ size_t Array::getBufferOffset( const ::fwData::Array::IndexType &id, size_t comp
 
 //------------------------------------------------------------------------------
 
-}//namespace fwData
+} //namespace fwData

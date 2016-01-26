@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ namespace widget
  */
 class UIMEDDATAQT_CLASS_API SelectorModel : public QStandardItemModel
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
 
@@ -104,7 +104,7 @@ public:
      * @param[in]  seriesIcons map\<series classname, icon path\>
      */
     UIMEDDATAQT_API void setSeriesIcons(const SeriesIconType &seriesIcons);
-    
+
     /// Sets if the selector must be in insert mode.
     UIMEDDATAQT_API void setInsertMode(bool insert);
 
@@ -143,7 +143,7 @@ private:
 
     /// Sets if the selector is in insert mode (adding new series, forbid selection of existing series).
     bool m_insert;
-    
+
     /// Map containing the specified icons for a series (map\<series classname, icon path\>)
     SeriesIconType m_seriesIcons;
 };
@@ -160,7 +160,7 @@ QStandardItem* SelectorModel::getInfo(T data, QString separator)
         str << *itr++;
         dataStr = QString::fromStdString(str.str());
 
-        for(;itr!= data.end(); ++itr)
+        for(; itr!= data.end(); ++itr)
         {
             str.str("");
             str << *itr;

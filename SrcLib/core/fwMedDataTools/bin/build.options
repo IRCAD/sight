@@ -1,6 +1,0 @@
-TYPE    = 'shared'
-VERSION = '0-1'
-LIB = [
-      ]
-USE = ['boostDateTime', 'gdcmMSFF']
-

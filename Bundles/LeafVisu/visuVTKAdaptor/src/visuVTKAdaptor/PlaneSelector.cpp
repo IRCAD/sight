@@ -1,33 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#ifndef ANDROID
 
-#include <fwComEd/CompositeMsg.hpp>
-#include <fwComEd/PlaneListMsg.hpp>
-#include <fwComEd/PlaneMsg.hpp>
+#include "visuVTKAdaptor/PlaneSelector.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
+#include <fwData/Object.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 
-#include <fwData/Object.hpp>
-
-#include "visuVTKAdaptor/PlaneSelector.hpp"
-
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelector, ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelector, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
 
 PlaneSelector::PlaneSelector() throw()
 {
-    //handlingEventOff();
 }
 
 //------------------------------------------------------------------------------
@@ -38,15 +34,10 @@ PlaneSelector::~PlaneSelector() throw()
 
 //------------------------------------------------------------------------------
 
-void PlaneSelector::configuring() throw(fwTools::Failed)
+void PlaneSelector::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     assert(m_configuration->getName() == "config");
-    //assert(m_configuration->hasAttribute("planelist"));
-    //assert(m_configuration->hasAttribute("planeselection"));
-
-    //this->setPlaneListId( m_configuration->getAttributeValue("planelist") );
-    //this->setPlaneSelectionId( m_configuration->getAttributeValue("planeselection") );
 }
 
 //------------------------------------------------------------------------------
@@ -68,16 +59,13 @@ void PlaneSelector::doStart() throw(fwTools::Failed)
 
 void PlaneSelector::doUpdate() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-    SLM_ASSERT("NOT IMPLEMENTED",false);
+    SLM_ASSERT("NOT IMPLEMENTED", false);
 }
 
 //------------------------------------------------------------------------------
 
 void PlaneSelector::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     ::fwData::Object::sptr object = ::fwData::Object::dynamicCast(this->getObject());
     this->selectObject(object);
 }
@@ -86,45 +74,31 @@ void PlaneSelector::doSwap() throw(fwTools::Failed)
 
 void PlaneSelector::doStop() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     this->selectObject( ::fwData::Object::sptr() );
-}
-
-//------------------------------------------------------------------------------
-
-void PlaneSelector::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void PlaneSelector::selectObject( ::fwData::Object::sptr object )
 {
-    SLM_TRACE_FUNC();
-
     ::fwData::Object::sptr oldObject = m_currentObject.lock();
 
     if (oldObject != object)
     {
         if (oldObject)
         {
-            ::fwComEd::PlaneMsg::sptr deselectMsg = ::fwComEd::PlaneMsg::New();
-            deselectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_DESELECTED );
-            ::fwServices::IEditionService::notify( this->getSptr(), oldObject, deselectMsg); //TODO: remove option
+            auto sig = oldObject->signal< ::fwData::Plane::SelectedSignalType >(
+                ::fwData::Plane::s_SELECTED_SIG);
+            sig->asyncEmit(false);
         }
 
         m_currentObject.reset();
 
         if (object)
         {
-            if ( object )
-            {
-                ::fwComEd::PlaneMsg::sptr selectMsg = ::fwComEd::PlaneMsg::New();
-                selectMsg->addEvent( ::fwComEd::PlaneMsg::WAS_SELECTED );
-                ::fwServices::IEditionService::notify( this->getSptr(), object, selectMsg); //TODO: remove option
-            }
+            auto sig = object->signal< ::fwData::Plane::SelectedSignalType >(
+                ::fwData::Plane::s_SELECTED_SIG);
+            sig->asyncEmit(true);
             m_currentObject = object;
         }
     }
@@ -133,5 +107,7 @@ void PlaneSelector::selectObject( ::fwData::Object::sptr object )
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
+
+#endif //ANDROID
 
 

@@ -1,10 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/Object.hpp>
 
@@ -30,10 +29,10 @@ void ObjectTest::tearDown()
 
 void ObjectTest::idTest()
 {
-    const std::string UUID = "uid" ;
+    const std::string UUID = "uid";
 
     // process
-    ::fwTools::Object::sptr obj = ::boost::make_shared< ::fwTools::Object >();
+    ::fwTools::Object::sptr obj = std::make_shared< ::fwTools::Object >();
 
     obj->setID(UUID);
 

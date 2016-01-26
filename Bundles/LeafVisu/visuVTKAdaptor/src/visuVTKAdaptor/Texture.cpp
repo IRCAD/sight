@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,30 +11,25 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/MaterialMsg.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwMedData/ModelSeries.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+#include <fwServices/Base.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 
-#include <vtkTexture.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkTexture.h>
 
-#include <boost/foreach.hpp>
-
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Texture, ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Texture, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
@@ -45,15 +40,14 @@ const ::fwCom::Slots::SlotKeyType Texture::s_APPLY_TEXTURE_SLOT = "applyTexture"
 
 Texture::Texture() throw() :
     m_filtering("linear"),
-    m_wrapping("repeat")
+    m_wrapping("repeat"),
+    m_lighting(true)
 {
-    m_slotApplyTexture      = ::fwCom::newSlot( &Texture::applyTexture, this );
+    m_slotApplyTexture = ::fwCom::newSlot( &Texture::applyTexture, this );
     ::fwCom::HasSlots::m_slots( s_APPLY_TEXTURE_SLOT, m_slotApplyTexture);
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 
- #ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
- #endif
+
 }
 
 //------------------------------------------------------------------------------
@@ -64,14 +58,14 @@ Texture::~Texture() throw()
 
 //------------------------------------------------------------------------------
 
-void Texture::configuring() throw(fwTools::Failed)
+void Texture::doConfigure() throw(fwTools::Failed)
 {
     SLM_ASSERT("Missing configuration", m_configuration->getName() == "config");
 
     if ( m_configuration->hasAttribute( "autoRender" ) )
     {
         const std::string autoRender = m_configuration->getAttributeValue("autoRender");
-        const bool autoRenderValue = (autoRender == "true");
+        const bool autoRenderValue   = (autoRender == "true");
         this->setAutoRender(autoRenderValue);
     }
 
@@ -83,6 +77,10 @@ void Texture::configuring() throw(fwTools::Failed)
     if ( m_configuration->hasAttribute( "wrapping" ) )
     {
         m_wrapping = m_configuration->getAttributeValue("wrapping");
+    }
+    if ( m_configuration->hasAttribute( "lighting" ) )
+    {
+        m_lighting = (m_configuration->getAttributeValue("lighting") == "yes");
     }
 }
 
@@ -96,7 +94,7 @@ void Texture::doStart() throw(fwTools::Failed)
 
 void Texture::doUpdate() throw(fwTools::Failed)
 {
-    BOOST_FOREACH(::fwData::Material::sptr material, m_materialSet)
+    for(::fwData::Material::sptr material :  m_materialSet)
     {
         applyTexture(material);
     }
@@ -117,21 +115,7 @@ void Texture::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Texture::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
-{
-    ::fwComEd::ImageMsg::csptr textureMsg = ::fwComEd::ImageMsg::dynamicConstCast(msg);
-    if (textureMsg && (
-                textureMsg->hasEvent( ::fwComEd::ImageMsg::MODIFIED) ||
-                textureMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) ||
-                textureMsg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE ) ) )
-    {
-        doUpdate();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Texture::applyTexture( SPTR(::fwData::Material) _material )
+void Texture::applyTexture( SPTR(::fwData::Material)_material )
 {
     if(m_materialSet.count(_material) == 0)
     {
@@ -146,9 +130,13 @@ void Texture::applyTexture( SPTR(::fwData::Material) _material )
     }
 
     _material->setDiffuseTexture(image);
+    if(m_lighting == false)
+    {
+        _material->setShadingMode(::fwData::Material::AMBIENT);
+    }
 
     ::fwData::Material::FilteringType filtering = ::fwData::Material::LINEAR;
-    ::fwData::Material::WrappingType wrapping = ::fwData::Material::REPEAT;
+    ::fwData::Material::WrappingType wrapping   = ::fwData::Material::REPEAT;
 
     if(m_filtering == "nearest")
     {
@@ -178,9 +166,26 @@ void Texture::applyTexture( SPTR(::fwData::Material) _material )
     }
     _material->setDiffuseTextureWrapping(wrapping);
 
-    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
-    msg->addEvent(::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED);
-    ::fwServices::IEditionService::notify(this->getSptr(), _material, msg);
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = _material->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
 }
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Texture::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 
 } //namespace visuVTKAdaptor

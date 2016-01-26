@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ class MEMORY_CLASS_API SDumpPolicy : public ::fwServices::IController
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SDumpPolicy)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SDumpPolicy)(::fwServices::IController) );
 
     MEMORY_API SDumpPolicy();
 
@@ -31,8 +31,8 @@ public:
 
     /**
      * Configuration example :
-     @verbatim
-     <service ...>
+       @verbatim
+       <service ...>
        <config>
          <policy>ValveDump</policy>
          <params>
@@ -40,8 +40,8 @@ public:
           <hysteresis_offet>104857600</hysteresis_offet>
          </params>
        </config>
-     </service>
-      @endverbatim
+       </service>
+       @endverbatim
      * */
     MEMORY_API virtual void configuring() throw ( ::fwTools::Failed );
 
@@ -55,12 +55,9 @@ public:
     MEMORY_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Overrides
-    MEMORY_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
-    /// Overrides
     MEMORY_API virtual void swapping() throw ( ::fwTools::Failed );
 
-protected :
+protected:
 
     typedef std::vector< std::pair< ::fwMemory::IPolicy::ParamNamesType::value_type, std::string > > ParametersType;
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,20 +25,23 @@ namespace fwRuntime
 //------------------------------------------------------------------------------
 
 Convert::Convert()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 Convert::~Convert()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
-void Convert::fromConfigurationElementToXml( ::boost::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement, xmlNodePtr _node)
+void Convert::fromConfigurationElementToXml( std::shared_ptr< ::fwRuntime::ConfigurationElement > _cfgElement,
+                                             xmlNodePtr _node)
 {
     //NAME
-    xmlNodePtr pNode = xmlNewNode( NULL,  xmlCharStrdup( _cfgElement->getName().c_str() ) ) ;
-    xmlAddChild(_node, pNode ) ;
+    xmlNodePtr pNode = xmlNewNode( NULL,  xmlCharStrdup( _cfgElement->getName().c_str() ) );
+    xmlAddChild(_node, pNode );
 
 
     std::string nodeValue = _cfgElement->getValue();
@@ -47,18 +50,20 @@ void Convert::fromConfigurationElementToXml( ::boost::shared_ptr< ::fwRuntime::C
         xmlNodeSetContent (pNode, reinterpret_cast<const xmlChar *>(nodeValue.c_str()));
     }
 
-    std::map<std::string, std::string> attr_cfe = _cfgElement->getAttributes() ;
+    std::map<std::string, std::string> attr_cfe = _cfgElement->getAttributes();
 
 
-    for ( std::map<std::string, std::string>::iterator iter_attr_cfe = attr_cfe.begin() ;
-        iter_attr_cfe!= attr_cfe.end();
-        ++iter_attr_cfe)
+    for ( std::map<std::string, std::string>::iterator iter_attr_cfe = attr_cfe.begin();
+          iter_attr_cfe!= attr_cfe.end();
+          ++iter_attr_cfe)
     {
         //ATTRIBUTES + VALUES
-        xmlSetProp(pNode , xmlCharStrdup((iter_attr_cfe->first).c_str()), xmlCharStrdup((iter_attr_cfe->second).c_str()) ) ;
+        xmlSetProp(pNode, xmlCharStrdup((iter_attr_cfe->first).c_str()),
+                   xmlCharStrdup((iter_attr_cfe->second).c_str()) );
         if ((iter_attr_cfe->first) == std::string("class"))
         {
-            xmlSetProp(pNode , xmlCharStrdup((iter_attr_cfe->first).c_str()), xmlCharStrdup((iter_attr_cfe->second).c_str()) ) ;
+            xmlSetProp(pNode, xmlCharStrdup((iter_attr_cfe->first).c_str()),
+                       xmlCharStrdup((iter_attr_cfe->second).c_str()) );
         }
     }
 
@@ -67,11 +72,11 @@ void Convert::fromConfigurationElementToXml( ::boost::shared_ptr< ::fwRuntime::C
                 << nodeValue <<") at the same time.",
                 !(!nodeValue.empty() && _cfgElement->size())  );
 
-    for ( std::vector< ::fwRuntime::ConfigurationElement::sptr >::iterator iter_cfeC = _cfgElement->begin() ;
-    iter_cfeC != _cfgElement->end() ;
-    ++iter_cfeC )
+    for ( std::vector< ::fwRuntime::ConfigurationElement::sptr >::iterator iter_cfeC = _cfgElement->begin();
+          iter_cfeC != _cfgElement->end();
+          ++iter_cfeC )
     {
-        fromConfigurationElementToXml( (*iter_cfeC), pNode) ;
+        fromConfigurationElementToXml( (*iter_cfeC), pNode);
     }
 
 }
@@ -80,104 +85,110 @@ void Convert::fromConfigurationElementToXml( ::boost::shared_ptr< ::fwRuntime::C
 
 xmlNodePtr Convert::runningBundlesToXml( )
 {
-    xmlNodePtr node_root = xmlNewNode( NULL,  xmlCharStrdup( "Bundles" ) ) ;
-    std::set< ::boost::shared_ptr< ::fwRuntime::Bundle > > ::iterator iter_bundles ;
-    ::fwRuntime::Runtime * tmp_runtime = ::fwRuntime::Runtime::getDefault() ;
+    xmlNodePtr node_root = xmlNewNode( NULL,  xmlCharStrdup( "Bundles" ) );
+    std::set< std::shared_ptr< ::fwRuntime::Bundle > > ::iterator iter_bundles;
+    ::fwRuntime::Runtime * tmp_runtime = ::fwRuntime::Runtime::getDefault();
 
-    xmlNodePtr activated_Node = xmlNewNode( NULL,  xmlCharStrdup( "Activated" ) ) ;
-    xmlAddChild(node_root, activated_Node ) ;
+    xmlNodePtr activated_Node = xmlNewNode( NULL,  xmlCharStrdup( "Activated" ) );
+    xmlAddChild(node_root, activated_Node );
 
-    xmlNodePtr inactivated_Node = xmlNewNode( NULL,  xmlCharStrdup( "Inactivated" ) ) ;
-    xmlAddChild(node_root, inactivated_Node ) ;
+    xmlNodePtr inactivated_Node = xmlNewNode( NULL,  xmlCharStrdup( "Inactivated" ) );
+    xmlAddChild(node_root, inactivated_Node );
 
-    bool enable_Value = false ; // the 'do while' loop stop if enable_Value==false.
+    bool enable_Value = false;  // the 'do while' loop stop if enable_Value==false.
     do
     {
-        enable_Value = !enable_Value ;
-        for (iter_bundles =  tmp_runtime->bundlesBegin() ;
-                iter_bundles != tmp_runtime->bundlesEnd() ;
-                ++iter_bundles)
+        enable_Value = !enable_Value;
+        for (iter_bundles = tmp_runtime->bundlesBegin();
+             iter_bundles != tmp_runtime->bundlesEnd();
+             ++iter_bundles)
         {
             //BUNDLE
 
-            xmlNodePtr bundleNode = xmlNewNode( NULL, xmlCharStrdup( (*iter_bundles)->getIdentifier().c_str() ) ) ;
+            xmlNodePtr bundleNode = xmlNewNode( NULL, xmlCharStrdup( (*iter_bundles)->getIdentifier().c_str() ) );
             if (enable_Value)
             {
-                xmlAddChild(activated_Node, bundleNode ) ;
+                xmlAddChild(activated_Node, bundleNode );
             }
             else
             {
-                xmlAddChild(inactivated_Node, bundleNode ) ;
+                xmlAddChild(inactivated_Node, bundleNode );
             }
 
             //EXTENSIONS POINTS
-            xmlNodePtr extensionPoint_activated_list_Node = xmlNewNode( NULL,  xmlCharStrdup( "Extensions_Points" ) ) ;
-            xmlAddChild(bundleNode, extensionPoint_activated_list_Node ) ;
+            xmlNodePtr extensionPoint_activated_list_Node = xmlNewNode( NULL,  xmlCharStrdup( "Extensions_Points" ) );
+            xmlAddChild(bundleNode, extensionPoint_activated_list_Node );
 
-            for ( std::set< ::boost::shared_ptr< ::fwRuntime::ExtensionPoint > >::const_iterator iter_extensionPoints = (*iter_bundles)->extensionPointsBegin() ;
-                    iter_extensionPoints != (*iter_bundles)->extensionPointsEnd() ;
-                    ++iter_extensionPoints)
+            for ( std::set< std::shared_ptr< ::fwRuntime::ExtensionPoint > >::const_iterator iter_extensionPoints =
+                      (*iter_bundles)->extensionPointsBegin();
+                  iter_extensionPoints != (*iter_bundles)->extensionPointsEnd();
+                  ++iter_extensionPoints)
             {
                 //EXTENSIONS POINTS
-                std::string str = "Identifier : "+(*iter_extensionPoints)->getIdentifier() ;
+                std::string str = "Identifier : "+(*iter_extensionPoints)->getIdentifier();
                 //-----DEBUG------
-                xmlNodePtr extensionPointsNode = xmlNewNode( NULL,  xmlCharStrdup( str.c_str() ) ) ;
+                xmlNodePtr extensionPointsNode = xmlNewNode( NULL,  xmlCharStrdup( str.c_str() ) );
                 //xmlNodePtr extensionPointsNode = xmlNewNode( NULL,  xmlCharStrdup( (str.substr(str.find_last_of("::")+1)).c_str() ) ) ;
                 //-----DEBUG------
                 if (((*iter_extensionPoints)->isEnable())==enable_Value)
                 {
-                    xmlAddChild(extensionPoint_activated_list_Node, extensionPointsNode ) ;
+                    xmlAddChild(extensionPoint_activated_list_Node, extensionPointsNode );
                 }
 
-                std::vector< ::fwRuntime::ConfigurationElement::sptr > AllConfigElement = ((*iter_extensionPoints)->getAllConfigurationElements());
-                for (std::vector< ::fwRuntime::ConfigurationElement::sptr >::const_iterator iter_config_elem = AllConfigElement.begin() ;
-                        iter_config_elem != AllConfigElement.end() ;
-                        ++iter_config_elem)
+                std::vector< ::fwRuntime::ConfigurationElement::sptr > AllConfigElement =
+                    ((*iter_extensionPoints)->getAllConfigurationElements());
+                for (std::vector< ::fwRuntime::ConfigurationElement::sptr >::const_iterator iter_config_elem =
+                         AllConfigElement.begin();
+                     iter_config_elem != AllConfigElement.end();
+                     ++iter_config_elem)
                 {
                     //CONFIGURATIONS ELEMENTS
-                    Convert::fromConfigurationElementToXml( (*iter_config_elem), extensionPointsNode) ;
+                    Convert::fromConfigurationElementToXml( (*iter_config_elem), extensionPointsNode);
                 }
             }//end extensionsPoints parsing
 
             //Extensions
-            xmlNodePtr extension_activated_list_Node = xmlNewNode( NULL,  xmlCharStrdup( "Extensions" ) ) ;
-            xmlAddChild(bundleNode, extension_activated_list_Node ) ;
+            xmlNodePtr extension_activated_list_Node = xmlNewNode( NULL,  xmlCharStrdup( "Extensions" ) );
+            xmlAddChild(bundleNode, extension_activated_list_Node );
 
-            for ( std::set< ::boost::shared_ptr< ::fwRuntime::Extension > >::const_iterator iter_extension = (*iter_bundles)->extensionsBegin()  ;
-                    iter_extension != (*iter_bundles)->extensionsEnd() ;
-                    ++iter_extension)
+            for ( std::set< std::shared_ptr< ::fwRuntime::Extension > >::const_iterator iter_extension =
+                      (*iter_bundles)->extensionsBegin();
+                  iter_extension != (*iter_bundles)->extensionsEnd();
+                  ++iter_extension)
             {
                 if (((*iter_extension)->isEnable())==enable_Value)
                 {
-                    std::string str = (*iter_extension)->getPoint() ;
-                    xmlNodePtr extensionNode = xmlNewNode( NULL,  xmlCharStrdup( (str.c_str() ) ) ) ;
+                    std::string str          = (*iter_extension)->getPoint();
+                    xmlNodePtr extensionNode = xmlNewNode( NULL,  xmlCharStrdup( (str.c_str() ) ) );
 
                     // Adds node if not exist
-                    xmlNodePtr node ;
-                    bool found_node = false ;
-                    for ( node = extension_activated_list_Node->children ;
-                            node ;
-                            node = node->next)
+                    xmlNodePtr node;
+                    bool found_node = false;
+                    for ( node = extension_activated_list_Node->children;
+                          node;
+                          node = node->next)
                     {
-                        if ( (node->type == XML_ELEMENT_NODE) && !(xmlStrcmp(node->name, xmlCharStrdup( (str.c_str() ) ) ) ) )
+                        if ( (node->type == XML_ELEMENT_NODE) &&
+                             !(xmlStrcmp(node->name, xmlCharStrdup( (str.c_str() ) ) ) ) )
                         {
-                            extensionNode = node ;
-                            found_node = true ;
-                            break ;
+                            extensionNode = node;
+                            found_node    = true;
+                            break;
                         }
                     }
 
                     if (!found_node)
                     {
-                        xmlAddChild(extension_activated_list_Node, extensionNode ) ;
+                        xmlAddChild(extension_activated_list_Node, extensionNode );
                     }
                     //end adds node
 
-                    for (std::vector< ::fwRuntime::ConfigurationElement::sptr >::iterator iter_cfe_extension = (*iter_extension)->begin() ;
-                            iter_cfe_extension != (*iter_extension)->end() ;
-                            ++iter_cfe_extension )
+                    for (std::vector< ::fwRuntime::ConfigurationElement::sptr >::iterator iter_cfe_extension =
+                             (*iter_extension)->begin();
+                         iter_cfe_extension != (*iter_extension)->end();
+                         ++iter_cfe_extension )
                     {
-                        Convert::fromConfigurationElementToXml( (*iter_cfe_extension), extensionNode) ;
+                        Convert::fromConfigurationElementToXml( (*iter_cfe_extension), extensionNode);
                     }
                 }
             }//end Extensions parsing
@@ -187,26 +198,27 @@ xmlNodePtr Convert::runningBundlesToXml( )
             // xmlIsBlankNode too, work only for Text-Nodes
             if (!(extensionPoint_activated_list_Node->children))
             {
-                xmlUnlinkNode(extensionPoint_activated_list_Node) ;
-                xmlFreeNode(extensionPoint_activated_list_Node) ;
+                xmlUnlinkNode(extensionPoint_activated_list_Node);
+                xmlFreeNode(extensionPoint_activated_list_Node);
             }
 
             if (!(extension_activated_list_Node->children))
             {
-                xmlUnlinkNode(extension_activated_list_Node) ;
-                xmlFreeNode(extension_activated_list_Node) ;
+                xmlUnlinkNode(extension_activated_list_Node);
+                xmlFreeNode(extension_activated_list_Node);
             }
 
             if (!(bundleNode->children))
             {
-                xmlUnlinkNode(bundleNode) ;
-                xmlFreeNode(bundleNode) ;
+                xmlUnlinkNode(bundleNode);
+                xmlFreeNode(bundleNode);
             }
             //end cleaning
         }//end bundles iterator
-    } while ( enable_Value ) ;
+    }
+    while ( enable_Value );
 
-    return node_root ;
+    return node_root;
 }//runningBundlesToXml
 
 //------------------------------------------------------------------------------
@@ -214,14 +226,14 @@ xmlNodePtr Convert::runningBundlesToXml( )
 xmlNodePtr Convert::toXml( ::fwRuntime::ConfigurationElement::sptr _cfgElement)
 {
     xmlNodePtr tmp = xmlNewNode( NULL,  xmlCharStrdup( "Configurations_Elements" ) );
-    ::fwRuntime::Convert::fromConfigurationElementToXml( _cfgElement, tmp) ;
-    return tmp ;
+    ::fwRuntime::Convert::fromConfigurationElementToXml( _cfgElement, tmp);
+    return tmp;
 }
 
 
 std::string Convert::toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgElement)
 {
-    xmlNodePtr node = toXml( _cfgElement );
+    xmlNodePtr node     = toXml( _cfgElement );
     xmlBufferPtr buffer = xmlBufferCreate();
     xmlNodeDump( buffer, node->doc, xmlFirstElementChild(node), 0, 1 );
 
@@ -238,7 +250,7 @@ std::string Convert::toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgEl
     ::boost::property_tree::ptree pt;
     ::boost::property_tree::ptree ptAttr;
 
-    std::string propertyName = _cfgElement->getName();
+    std::string propertyName  = _cfgElement->getName();
     std::string propertyValue = _cfgElement->getValue();
 
     typedef std::map<std::string, std::string> AttributeMatType;
@@ -248,9 +260,9 @@ std::string Convert::toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgEl
         pt.put(propertyName, propertyValue);
     }
 
-    AttributeMatType attr = _cfgElement->getAttributes() ;
+    AttributeMatType attr = _cfgElement->getAttributes();
 
-    for ( AttributeMatType::iterator iter = attr.begin() ; iter!= attr.end(); ++iter)
+    for ( AttributeMatType::iterator iter = attr.begin(); iter!= attr.end(); ++iter)
     {
         ptAttr.put(iter->first,iter->second);
     }
@@ -260,8 +272,8 @@ std::string Convert::toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgEl
         pt.put_child(propertyName + ".<xmlattr>", ptAttr);
     }
 
-    for ( ::fwRuntime::ConfigurationElementContainer::Iterator iterElement = _cfgElement->begin() ;
-          iterElement != _cfgElement->end() ;
+    for ( ::fwRuntime::ConfigurationElementContainer::Iterator iterElement = _cfgElement->begin();
+          iterElement != _cfgElement->end();
           ++iterElement )
     {
         std::string childName = (*iterElement)->getName();
@@ -269,14 +281,14 @@ std::string Convert::toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgEl
 
         ptChild = toPropertyTree (*iterElement);
 
-        boost::optional< ::boost::property_tree::ptree & > child = ptChild.get_child_optional(childName) ;
+        boost::optional< ::boost::property_tree::ptree & > child = ptChild.get_child_optional(childName);
 
         if(child)
         {
             ptChild = *child;
         }
 
-        pt.add_child( propertyName + "." + childName  , ptChild );
+        pt.add_child( propertyName + "." + childName, ptChild );
     }
     return pt;
 }

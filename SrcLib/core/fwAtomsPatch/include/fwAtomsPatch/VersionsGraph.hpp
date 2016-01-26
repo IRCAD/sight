@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,8 +24,8 @@ namespace fwAtomsPatch
 {
 
 /**
-* @brief Versions graph description.
-**/
+ * @brief Versions graph description.
+ **/
 class FWATOMSPATCH_CLASS_API VersionsGraph : public ::fwCore::BaseObject
 {
 
@@ -96,7 +96,7 @@ public:
      * (Do not rely on the versionID if returned bool is set to false).
      */
     FWATOMSPATCH_API LinkedVersionType getLinkedVersion(
-            const NodeIDType& originID, const NodeIDType& targetID, LinkDescriptor::VersionIDType current);
+        const NodeIDType& originID, const NodeIDType& targetID, LinkDescriptor::VersionIDType current);
 
     /**
      * @brief Get connected versions

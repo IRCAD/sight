@@ -1,28 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRENDERVTK_INTERACTORSTYLE3DFORNEGATO_HPP_
-#define _FWRENDERVTK_INTERACTORSTYLE3DFORNEGATO_HPP_
+#ifndef __FWRENDERVTK_VTK_INTERACTORSTYLE3DFORNEGATO_HPP__
+#define __FWRENDERVTK_VTK_INTERACTORSTYLE3DFORNEGATO_HPP__
 
-#include <vtkImagePlaneWidget.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 
 #include "fwRenderVTK/config.hpp"
+#include "fwRenderVTK/IInteractorStyle.hpp"
 
 
 class Renderer;
 
-class FWRENDERVTK_CLASS_API InteractorStyle3DForNegato : public vtkInteractorStyleTrackballCamera
+class FWRENDERVTK_CLASS_API InteractorStyle3DForNegato : public vtkInteractorStyleTrackballCamera,
+                                                         public ::fwRenderVTK::IInteractorStyle
 {
 
 public:
 
     FWRENDERVTK_API static InteractorStyle3DForNegato *New();
 
-    vtkTypeRevisionMacro(InteractorStyle3DForNegato, vtkInteractorStyle);
+    vtkTypeMacro(InteractorStyle3DForNegato, vtkInteractorStyle);
 
     FWRENDERVTK_API virtual void OnMiddleButtonDown();
 
@@ -57,4 +58,4 @@ private:
     double m_oldPickPoint[4];
 };
 
-#endif // _FWRENDERVTK_INTERACTORSTYLE3DFORNEGATO_HPP_
+#endif // __FWRENDERVTK_VTK_INTERACTORSTYLE3DFORNEGATO_HPP__

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,9 @@
 #include <fwData/String.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
-#include <fwServices/ObjectMsg.hpp>
+
 
 #include <fwComEd/helper/Field.hpp>
 
@@ -48,7 +47,7 @@ void FieldHelperTest::testHelper()
     const std::string FIELD_ID3 = "FIELD_ID3";
 
     ::fwData::Object::sptr nullobj;
-    ::fwData::Object::sptr obj = ::fwData::String::New();
+    ::fwData::Object::sptr obj       = ::fwData::String::New();
     ::fwData::Object::sptr fieldObj1 = ::fwData::String::New();
     ::fwData::Object::sptr fieldObj2 = ::fwData::String::New();
 
@@ -61,7 +60,7 @@ void FieldHelperTest::testHelper()
         CPPUNIT_ASSERT(obj->getField(FIELD_ID3) == nullobj);
     }
 
-    ::fwData::Object::FieldMapType localFields = obj->getFields();
+    ::fwData::Object::FieldMapType localFields       = obj->getFields();
     ::fwData::Object::FieldMapType localFieldsBackup = obj->getFields();
     localFields.insert( ::fwData::Object::FieldMapType::value_type(FIELD_ID2,fieldObj2));
 

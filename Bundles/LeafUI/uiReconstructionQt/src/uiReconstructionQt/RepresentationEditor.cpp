@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QAbstractButton>
-#include <QRadioButton>
-#include <QVBoxLayout>
-#include <QGroupBox>
-#include <QButtonGroup>
+#include "uiReconstructionQt/RepresentationEditor.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -17,38 +17,45 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwComEd/MaterialMsg.hpp>
-#include <fwComEd/MeshMsg.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
-#include <fwServices/IEditionService.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include "uiReconstructionQt/RepresentationEditor.hpp"
+#include <QAbstractButton>
+#include <QRadioButton>
+#include <QVBoxLayout>
+#include <QGroupBox>
+#include <QButtonGroup>
 
 namespace uiReconstruction
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiReconstruction::RepresentationEditor , ::fwData::Reconstruction ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstruction::RepresentationEditor, ::fwData::Reconstruction );
 
+//------------------------------------------------------------------------------
+
+const ::fwCom::Signals::SignalKeyType RepresentationEditor::s_NORMALS_MODE_MODIFIED_SIG = "normalsModeModified";
+
+//------------------------------------------------------------------------------
 
 RepresentationEditor::RepresentationEditor() throw()
 {
-    //handlingEventOff();
+    m_sigNormalsModeModified = NormalsModeModifiedSignalType::New();
+    ::fwCom::HasSignals::m_signals(s_NORMALS_MODE_MODIFIED_SIG, m_sigNormalsModeModified);
 }
 
 //------------------------------------------------------------------------------
 
 RepresentationEditor::~RepresentationEditor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -56,14 +63,15 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
-    QVBoxLayout * layout = new QVBoxLayout(container);
+    QVBoxLayout * layout = new QVBoxLayout();
 
-    QGroupBox *groupBox =new QGroupBox(tr("Representation"), container);
-    QVBoxLayout * layoutGroupBox = new QVBoxLayout(groupBox);
+    QGroupBox *groupBox          = new QGroupBox(tr("Representation"), container);
+    QVBoxLayout * layoutGroupBox = new QVBoxLayout();
     groupBox->setLayout(layoutGroupBox);
 
     m_buttonGroup = new QButtonGroup(groupBox);
@@ -90,40 +98,46 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     layoutGroupBox->addWidget(buttonEdge);
 
     // Shading group box
-    QGroupBox *groupBoxShading =new QGroupBox(tr("Shading"), container);
-    QVBoxLayout * layoutGroupBoxShading = new QVBoxLayout(groupBoxShading);
+    QGroupBox *groupBoxShading          = new QGroupBox(tr("Shading"), container);
+    QVBoxLayout * layoutGroupBoxShading = new QVBoxLayout();
     groupBoxShading->setLayout(layoutGroupBoxShading);
     m_buttonGroupShading = new QButtonGroup(groupBoxShading);
 
+    QRadioButton *buttonAmbient = new QRadioButton ( tr("Ambient"), groupBoxShading );
+    buttonAmbient->setMinimumSize(buttonAmbient->sizeHint());
+    m_buttonGroupShading->addButton(buttonAmbient, 0);
+    layoutGroupBoxShading->addWidget(buttonAmbient);
+    buttonAmbient->setChecked(true);
+
     QRadioButton *buttonFlat = new QRadioButton ( tr("Flat"), groupBoxShading );
     buttonFlat->setMinimumSize(buttonFlat->sizeHint());
-    m_buttonGroupShading->addButton(buttonFlat, 0);
+    m_buttonGroupShading->addButton(buttonFlat, 1);
     layoutGroupBoxShading->addWidget(buttonFlat);
     buttonFlat->setChecked(true);
 
     QRadioButton *buttonGouraud = new QRadioButton ( tr("Gouraud"), groupBoxShading );
     buttonGouraud->setMinimumSize(buttonGouraud->sizeHint());
-    m_buttonGroupShading->addButton(buttonGouraud, 1);
+    m_buttonGroupShading->addButton(buttonGouraud, 2);
     layoutGroupBoxShading->addWidget(buttonGouraud);
 
     QRadioButton *buttonPhong = new QRadioButton ( tr("Phong"), groupBoxShading );
     buttonPhong->setMinimumSize(buttonPhong->sizeHint());
-    m_buttonGroupShading->addButton(buttonPhong, 2);
+    m_buttonGroupShading->addButton(buttonPhong, 3);
     layoutGroupBoxShading->addWidget(buttonPhong);
 
     layout->addWidget( groupBox);
     layout->addWidget( groupBoxShading);
 
 #ifdef _DEBUG
-    QGroupBox *groupBoxNormals =new QGroupBox(tr("Normals"), container);
+    QGroupBox *groupBoxNormals          = new QGroupBox(tr("Normals"), container);
     QVBoxLayout * layoutGroupBoxNormals = new QVBoxLayout(groupBoxNormals);
     m_normalsRadioBox = new QButtonGroup(container);
     QRadioButton* pointNormalsButton = new QRadioButton(tr("Show point normals"), container);
-    QRadioButton* cellNormalsButton = new QRadioButton(tr("Show cell normals"), container);
-    QRadioButton* hideNormalsButton = new QRadioButton(tr("Hide normals"), container);
+    QRadioButton* cellNormalsButton  = new QRadioButton(tr("Show cell normals"), container);
+    QRadioButton* hideNormalsButton  = new QRadioButton(tr("Hide normals"), container);
 
-    m_normalsRadioBox->addButton(pointNormalsButton, 2);
-    m_normalsRadioBox->addButton(cellNormalsButton, 1);
+    m_normalsRadioBox->addButton(pointNormalsButton, 1);
+    m_normalsRadioBox->addButton(cellNormalsButton, 2);
     m_normalsRadioBox->addButton(hideNormalsButton, 0);
 
     layoutGroupBoxNormals->addWidget( pointNormalsButton);
@@ -151,8 +165,8 @@ void RepresentationEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    QObject::disconnect(m_buttonGroup, SIGNAL(buttonClicked ( QAbstractButton *)), this, SLOT(onChangeRepresentation(QAbstractButton *)));
-    QObject::disconnect(m_buttonGroupShading, SIGNAL(buttonClicked ( QAbstractButton *)), this, SLOT(onChangeShading(QAbstractButton *)));
+    QObject::disconnect(m_buttonGroup, SIGNAL(buttonClicked ( int )), this, SLOT(onChangeRepresentation(int )));
+    QObject::disconnect(m_buttonGroupShading, SIGNAL(buttonClicked ( int )), this, SLOT(onChangeShading(int )));
 
 #ifdef _DEBUG
     QObject::connect(m_normalsRadioBox, SIGNAL(buttonClicked(int)), this, SLOT(onShowNormals(int)));
@@ -176,16 +190,17 @@ void RepresentationEditor::updating() throw(::fwTools::Failed)
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
     SLM_ASSERT("No Reconstruction!", reconstruction);
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
-    m_material = reconstruction->getMaterial() ;
+    m_material = reconstruction->getMaterial();
     container->setEnabled(!reconstruction->getOrganName().empty());
 
     this->refreshRepresentation();
     this->refreshNormals();
-    this->refreshShading() ;
+    this->refreshShading();
 }
 
 //------------------------------------------------------------------------------
@@ -193,12 +208,6 @@ void RepresentationEditor::updating() throw(::fwTools::Failed)
 void RepresentationEditor::swapping() throw(::fwTools::Failed)
 {
     this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void RepresentationEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------
@@ -212,29 +221,29 @@ void RepresentationEditor::info( std::ostream &_sstream )
 void RepresentationEditor::onChangeRepresentation( int id )
 {
 
-    ::fwData::Material::REPRESENTATION_MODE selectedMode = ::fwData::Material::MODE_SURFACE;
+    ::fwData::Material::RepresentationType selectedMode = ::fwData::Material::SURFACE;
 
     switch(id)
     {
-        case 0 :
+        case 0:
         {
-            selectedMode = ::fwData::Material::MODE_SURFACE;
-            break ;
+            selectedMode = ::fwData::Material::SURFACE;
+            break;
         }
-        case 1 :
+        case 1:
         {
-            selectedMode = ::fwData::Material::MODE_POINT;
-            break ;
+            selectedMode = ::fwData::Material::POINT;
+            break;
         }
-        case 2 :
+        case 2:
         {
-            selectedMode = ::fwData::Material::MODE_WIREFRAME;
-            break ;
+            selectedMode = ::fwData::Material::WIREFRAME;
+            break;
         }
-        case 3 :
+        case 3:
         {
-            selectedMode = ::fwData::Material::MODE_EDGE;
-            break ;
+            selectedMode = ::fwData::Material::EDGE;
+            break;
         }
     }
 
@@ -246,24 +255,29 @@ void RepresentationEditor::onChangeRepresentation( int id )
 
 void RepresentationEditor::onChangeShading(  int id )
 {
-    ::fwData::Material::SHADING_MODE selectedMode = ::fwData::Material::MODE_PHONG;
+    ::fwData::Material::ShadingType selectedMode = ::fwData::Material::PHONG;
 
     switch(id)
     {
-        case 0 :
+        case 0:
         {
-            selectedMode = ::fwData::Material::MODE_FLAT;
-            break ;
+            selectedMode = ::fwData::Material::AMBIENT;
+            break;
         }
-        case 1 :
+        case 1:
         {
-            selectedMode = ::fwData::Material::MODE_GOURAUD;
-            break ;
+            selectedMode = ::fwData::Material::FLAT;
+            break;
         }
-        case 2 :
+        case 2:
         {
-            selectedMode = ::fwData::Material::MODE_PHONG;
-            break ;
+            selectedMode = ::fwData::Material::GOURAUD;
+            break;
+        }
+        case 3:
+        {
+            selectedMode = ::fwData::Material::PHONG;
+            break;
         }
     }
 
@@ -280,33 +294,33 @@ void RepresentationEditor::refreshRepresentation()
 
     switch(representationMode)
     {
-    case ::fwData::Material::MODE_SURFACE:
-    {
-        button = m_buttonGroup->button(0);
-        button->setChecked(true);
-        break ;
-    }
-    case ::fwData::Material::MODE_POINT:
-    {
-        button = m_buttonGroup->button(1);
-        button->setChecked(true);
-        break ;
-    }
-    case ::fwData::Material::MODE_WIREFRAME:
-    {
-        button= m_buttonGroup->button(2);
-        button->setChecked(true);
-        break ;
-    }
-    case ::fwData::Material::MODE_EDGE:
-    {
-        button = m_buttonGroup->button(3);
-        button->setChecked(true);
-        break ;
-    }
-    default :
-        button = m_buttonGroup->button(0);
-        button->setChecked(true);
+        case ::fwData::Material::SURFACE:
+        {
+            button = m_buttonGroup->button(0);
+            button->setChecked(true);
+            break;
+        }
+        case ::fwData::Material::POINT:
+        {
+            button = m_buttonGroup->button(1);
+            button->setChecked(true);
+            break;
+        }
+        case ::fwData::Material::WIREFRAME:
+        {
+            button = m_buttonGroup->button(2);
+            button->setChecked(true);
+            break;
+        }
+        case ::fwData::Material::EDGE:
+        {
+            button = m_buttonGroup->button(3);
+            button->setChecked(true);
+            break;
+        }
+        default:
+            button = m_buttonGroup->button(0);
+            button->setChecked(true);
     }
 }
 
@@ -319,27 +333,33 @@ void RepresentationEditor::refreshShading()
 
     switch(shadingMode)
     {
-    case ::fwData::Material::MODE_FLAT:
-    {
-        button = m_buttonGroupShading->button(0);
-        button->setChecked(true);
-        break ;
-    }
-    case ::fwData::Material::MODE_GOURAUD:
-    {
-        button = m_buttonGroupShading->button(1);
-        button->setChecked(true);
-        break ;
-    }
-    case ::fwData::Material::MODE_PHONG:
-    {
-        button = m_buttonGroupShading->button(2);
-        button->setChecked(true);
-        break ;
-    }
-    default :
-        button = m_buttonGroupShading->button(2);
-        button->setChecked(true);
+        case ::fwData::Material::AMBIENT:
+        {
+            button = m_buttonGroupShading->button(0);
+            button->setChecked(true);
+            break;
+        }
+        case ::fwData::Material::FLAT:
+        {
+            button = m_buttonGroupShading->button(1);
+            button->setChecked(true);
+            break;
+        }
+        case ::fwData::Material::GOURAUD:
+        {
+            button = m_buttonGroupShading->button(2);
+            button->setChecked(true);
+            break;
+        }
+        case ::fwData::Material::PHONG:
+        {
+            button = m_buttonGroupShading->button(3);
+            button->setChecked(true);
+            break;
+        }
+        default:
+            button = m_buttonGroupShading->button(2);
+            button->setChecked(true);
     }
 }
 
@@ -349,9 +369,9 @@ void RepresentationEditor::refreshNormals()
 {
 #ifdef _DEBUG
     QAbstractButton *buttonHide = m_normalsRadioBox->button(0);
-    buttonHide->setChecked(m_material->getOptionsMode() == ::fwData::Material::MODE_STANDARD);
+    buttonHide->setChecked(m_material->getOptionsMode() == ::fwData::Material::STANDARD);
     QAbstractButton *buttonNormals = m_normalsRadioBox->button(1);
-    buttonNormals->setChecked(m_material->getOptionsMode() == ::fwData::Material::MODE_NORMALS);
+    buttonNormals->setChecked(m_material->getOptionsMode() == ::fwData::Material::NORMALS);
 #endif
 }
 
@@ -360,26 +380,22 @@ void RepresentationEditor::refreshNormals()
 void RepresentationEditor::onShowNormals(int state )
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
-    ::fwComEd::MeshMsg::sptr meshMsg = ::fwComEd::MeshMsg::New();
-    switch (state)
+
+    switch(state)
     {
         case 0:
-            m_material->setOptionsMode( ::fwData::Material::MODE_STANDARD );
-            meshMsg->addEvent("HIDE_NORMALS");
+            m_material->setOptionsMode( ::fwData::Material::STANDARD );
             break;
         case 1:
-            m_material->setOptionsMode( ::fwData::Material::MODE_NORMALS );
-            meshMsg->addEvent("SHOW_CELL_NORMALS");
+            m_material->setOptionsMode( ::fwData::Material::NORMALS );
             break;
         case 2:
-            m_material->setOptionsMode( ::fwData::Material::MODE_NORMALS );
-            meshMsg->addEvent("SHOW_POINT_NORMALS");
+            m_material->setOptionsMode( ::fwData::Material::CELLS_NORMALS );
             break;
     }
-    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
-    msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
-    ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMesh(), msg);
-    ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMesh(), meshMsg);
+
+    this->notifyMaterial();
+    m_sigNormalsModeModified->asyncEmit(static_cast<std::uint8_t>(state), reconstruction->getID());
 }
 
 //------------------------------------------------------------------------------
@@ -388,20 +404,13 @@ void RepresentationEditor::notifyMaterial()
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
 
-    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
-    msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
-    ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMaterial(), msg);
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = reconstruction->getMaterial()->signal< ::fwData::Object::ModifiedSignalType >(
+        ::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
 
-void RepresentationEditor::notifyMesh()
-{
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction>();
-
-    ::fwComEd::MaterialMsg::sptr msg = ::fwComEd::MaterialMsg::New();
-    msg->addEvent( ::fwComEd::MaterialMsg::MATERIAL_IS_MODIFIED ) ;
-    ::fwServices::IEditionService::notify(this->getSptr(), reconstruction->getMesh(), msg);
-}
 }
 

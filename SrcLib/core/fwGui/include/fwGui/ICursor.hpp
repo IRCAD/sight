@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_ICURSOR_HPP_
-#define _FWGUI_ICURSOR_HPP_
+#ifndef __FWGUI_ICURSOR_HPP__
+#define __FWGUI_ICURSOR_HPP__
 
 #include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
@@ -16,7 +16,7 @@ namespace fwGui
 /**
  * @brief   Defines the generic cursor for IHM.
  * @class   ICursor
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -26,7 +26,8 @@ public:
     fwCoreNonInstanciableClassDefinitionsMacro( (ICursor)(::fwGui::GuiBaseObject) )
 
     /// Cursor type
-    typedef enum {
+    typedef enum
+    {
         DEFAULT,
         BUSY,
         WAIT,
@@ -52,6 +53,6 @@ public:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_ICURSOR_HPP_*/
+#endif /*__FWGUI_ICURSOR_HPP__*/
 
 

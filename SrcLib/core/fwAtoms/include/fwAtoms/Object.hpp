@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ namespace fwAtoms
 class FWATOMS_CLASS_API Object : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Object >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Object)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Object >);
 
     typedef std::map<std::string, Base::sptr> AttributesType;
     typedef std::map<std::string, std::string> MetaInfosType;
@@ -33,19 +33,24 @@ public:
      * @param key Private construction key
      */
     Object(::fwAtoms::Base::Key key)
-    {}
+    {
+    }
 
     /**
      * @brief   Destructor
      */
     virtual ~Object()
-    {}
+    {
+    }
 
     //! Sets the attributes map
     FWATOMS_API void setAttributes(const AttributesType& attrs);
 
     //! Returns the internal map
-    const AttributesType& getAttributes() const {return m_attributes;}
+    const AttributesType& getAttributes() const
+    {
+        return m_attributes;
+    }
 
 
     //! Returns requested attribute if exists, empty sptr else.
@@ -85,7 +90,10 @@ public:
     FWATOMS_API std::string getMetaInfo(const std::string& key) const;
 
     //! Get internal metaInfo mapping
-    const MetaInfosType& getMetaInfos() const { return m_metaInfos; }
+    const MetaInfosType& getMetaInfos() const
+    {
+        return m_metaInfos;
+    }
 
     /**
      * @brief Removes a MetaInfo
@@ -107,17 +115,20 @@ public:
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const {return ::fwAtoms::Base::OBJECT;};
+    ::fwAtoms::Base::AtomType type() const
+    {
+        return ::fwAtoms::Base::OBJECT;
+    }
 
 
 private:
 
-    MetaInfosType  m_metaInfos;
+    MetaInfosType m_metaInfos;
     AttributesType m_attributes;
 
 };
 
 }
 
-#endif /*  _FWATOMS_OBJECT_HPP_ */
+#endif /*  __FWATOMS_OBJECT_HPP__ */
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,6 +9,7 @@
 
 #include "fwCom/config.hpp"
 #include "fwCom/Slots.hpp"
+#include "fwCom/util/convert_function_type.hpp"
 
 namespace fwCom
 {
@@ -25,9 +26,11 @@ class HasSlots
 
 public:
 
-    typedef ::boost::shared_ptr< HasSlots > sptr;
+    typedef std::shared_ptr< HasSlots > sptr;
 
-    HasSlots(){}
+    HasSlots()
+    {
+    }
 
     SPTR( SlotBase ) slot( const Slots::SlotKeyType & key ) const
     {
@@ -37,17 +40,20 @@ public:
     template< typename SlotType >
     SPTR( SlotType ) slot( const Slots::SlotKeyType & key ) const
     {
-        SPTR( SlotType ) slot = ::boost::dynamic_pointer_cast< SlotType >( this->slot(key) );
+        SPTR( SlotType ) slot = std::dynamic_pointer_cast< SlotType >( this->slot(key) );
         return slot;
     }
 
+    template<typename F, typename A>
+    SPTR(Slot< typename ::fwCom::util::convert_function_type< F >::type >) newSlot( const Slots::SlotKeyType & key, F f,
+                                                                                    A a );
 
 protected:
 
     /// Copy constructor forbidden
     HasSlots( const HasSlots& );
 
-    /// Copy operator forbiden
+    /// Copy operator forbidden
     HasSlots& operator=( const HasSlots& );
 
     Slots m_slots;

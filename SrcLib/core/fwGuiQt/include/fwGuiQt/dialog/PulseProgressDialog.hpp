@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUIQT_PULSEPROGRESSDIALOG_HPP
-#define _FWGUIQT_PULSEPROGRESSDIALOG_HPP
+#ifndef __FWGUIQT_DIALOG_PULSEPROGRESSDIALOG_HPP__
+#define __FWGUIQT_DIALOG_PULSEPROGRESSDIALOG_HPP__
 
 
 #include <string>
@@ -31,7 +31,7 @@ namespace dialog
 /**
  * @brief   This class allows us to show a pulse progress bar.
  * @class   PulseProgressDialog
- * 
+ *
  * @date    2009.
  */
 class FWGUIQT_CLASS_API PulseProgressDialog : public ::fwGui::dialog::IPulseProgressDialog
@@ -54,7 +54,7 @@ public:
 
     FWGUIQT_API void show();
 
-protected :
+protected:
 
     QPointer< QProgressDialog >  m_pdialog;
 
@@ -63,4 +63,4 @@ protected :
 } // namespace fwGuiQt
 
 
-#endif /* _FWGUIQT_PULSEPROGRESSDIALOG_HPP */
+#endif /* __FWGUIQT_DIALOG_PULSEPROGRESSDIALOG_HPP__ */

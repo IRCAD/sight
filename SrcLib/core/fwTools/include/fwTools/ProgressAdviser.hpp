@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,10 +8,12 @@
 #define __FWTOOLS_PROGRESSADVISER_HPP__
 
 #include <string>
-#include <boost/signals2.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwTools/config.hpp>
+
+#include <boost/weak_ptr.hpp>
+#include <boost/signals2.hpp>
 
 
 namespace fwTools
@@ -24,15 +26,13 @@ namespace fwTools
  * Handlers can be added using addHandler(). the Handler of type ProgessHandler can be a function or functor or boost::signal with a signature
  * ( float, std::string ) and returning nothing.
  * @class   ProgressAdviser
- * 
- * @date    2007-2009.
  */
 class FWTOOLS_CLASS_API ProgressAdviser : public ::boost::signals2::trackable
 {
 public:
 
     /// define a boost signal signature for the ProgessHandler
-    typedef ::boost::signals2::signal< void(float, std::string) >  ProgessSignal; // signal for fctor or function returning void
+    typedef ::boost::signals2::signal< void (float, std::string) >  ProgessSignal; // signal for fctor or function returning void
 
     /// define the ProgessHandler type
     typedef ProgessSignal::slot_type ProgessHandler; // signal for fctor or function returning void and
@@ -49,9 +49,9 @@ public:
     FWTOOLS_API void addHandler(const ProgessHandler &handler);
 
     /// notify modification for all handler
-    FWTOOLS_API void notifyProgress(float percent, const std::string& msg="") const;
+    FWTOOLS_API void notifyProgress(float percent, const std::string& msg = "") const;
 
-protected :
+protected:
 
     /// to notify progress simply use m_progressSignal( percent,msg ) to notify to Handler
     ProgessSignal m_progressSignal;

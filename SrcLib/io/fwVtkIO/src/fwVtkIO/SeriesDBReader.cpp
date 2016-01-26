@@ -1,22 +1,46 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <numeric>
-#include <algorithm>
-#include <iosfwd>
+#include "fwVtkIO/helper/Mesh.hpp"
+#include "fwVtkIO/helper/vtkLambdaCommand.hpp"
+#include "fwVtkIO/SeriesDBReader.hpp"
+#include "fwVtkIO/vtk.hpp"
 
+#include <fwCore/base.hpp>
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Observer.hpp>
+
+#include <fwData/Image.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwDataIO/reader/registry/macros.hpp>
+
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Study.hpp>
+
+#include <fwMemory/BufferObject.hpp>
+#include <fwMemory/stream/in/IFactory.hpp>
+
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/UUID.hpp>
+
+#include <boost/algorithm/string/join.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/iostreams/categories.hpp>
-#include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
-#include <boost/foreach.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/algorithm/string/join.hpp>
+#include <boost/iostreams/stream.hpp>
 
+#include <vtkDataSetAttributes.h>
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
 #include <vtkInformation.h>
@@ -28,32 +52,10 @@
 #include <vtkStructuredPointsReader.h>
 #include <vtkXMLGenericDataObjectReader.h>
 #include <vtkXMLImageDataReader.h>
-#include <vtkDataSetAttributes.h>
 
-#include <fwCore/base.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-
-#include <fwTools/UUID.hpp>
-#include <fwTools/dateAndTime.hpp>
-
-#include <fwMemory/stream/in/IFactory.hpp>
-#include <fwMemory/BufferObject.hpp>
-
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/ImageSeries.hpp>
-
-#include <fwDataIO/reader/registry/macros.hpp>
-
-#include "fwVtkIO/vtk.hpp"
-#include "fwVtkIO/helper/Mesh.hpp"
-#include "fwVtkIO/helper/ProgressVtkToFw.hpp"
-#include "fwVtkIO/SeriesDBReader.hpp"
+#include <algorithm>
+#include <iosfwd>
+#include <numeric>
 
 fwDataIOReaderRegisterMacro( ::fwVtkIO::SeriesDBReader );
 
@@ -93,7 +95,8 @@ void  initSeries(::fwMedData::Series::sptr series, const std::string& instanceUI
 
 SeriesDBReader::SeriesDBReader(::fwDataIO::reader::IObjectReader::Key key) :
     ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >(this),
-    m_lazyMode(true)
+    m_lazyMode(true),
+    m_job(::fwJobs::Observer::New("SeriesDB reader"))
 {
     SLM_TRACE_FUNC();
 }
@@ -106,27 +109,59 @@ SeriesDBReader::~SeriesDBReader()
 }
 
 //------------------------------------------------------------------------------
-    template <typename T, typename FILE>
-vtkSmartPointer< vtkDataObject  > getObj(FILE &file, SeriesDBReader *progressor)
+template <typename T, typename FILE>
+vtkSmartPointer< vtkDataObject  > getObj(FILE &file, const ::fwJobs::Observer::sptr& job)
 {
+    using namespace fwVtkIO::helper;
+
     vtkSmartPointer< T > reader = vtkSmartPointer< T >::New();
     reader->SetFileName(file.string().c_str());
-    if(progressor)
+
+    if(job)
     {
-        Progressor progress(reader, progressor->getSptr(), file.string());
+        vtkSmartPointer<vtkLambdaCommand> progressCallback;
+        progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
+        progressCallback->SetCallback([&](vtkObject* caller, long unsigned int, void* )
+            {
+                auto filter = static_cast<T*>(caller);
+                job->doneWork( filter->GetProgress()*100 );
+            });
+        reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);
+
+        job->addSimpleCancelHook( [&]()
+            {
+                reader->AbortExecuteOn();
+            } );
+        reader->Update();
+        job->finish();
     }
-    reader->Update();
+    else
+    {
+        reader->Update();
+    }
     return reader->GetOutput();
 }
 
 //------------------------------------------------------------------------------
 
-
 ::fwData::Object::sptr getDataObject(const vtkSmartPointer< vtkDataObject  > &obj, const boost::filesystem::path &file)
 {
-    vtkSmartPointer< vtkPolyData  > mesh = vtkPolyData::SafeDownCast(obj);
-    vtkSmartPointer< vtkImageData  > img = vtkImageData::SafeDownCast(obj);
+    vtkSmartPointer< vtkPolyData > mesh         = vtkPolyData::SafeDownCast(obj);
+    vtkSmartPointer< vtkImageData > img         = vtkImageData::SafeDownCast(obj);
+    vtkSmartPointer< vtkUnstructuredGrid > grid = vtkUnstructuredGrid::SafeDownCast(obj);
     ::fwData::Object::sptr dataObj;
+
+    if(grid)
+    {
+        ::fwData::Mesh::sptr meshObj = ::fwData::Mesh::New();
+        ::fwVtkIO::helper::Mesh::fromVTKGrid(grid, meshObj);
+
+        ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::New();
+        rec->setMesh(meshObj);
+        rec->setOrganName(file.stem().string());
+        rec->setIsVisible(true);
+        dataObj = rec;
+    }
     if(mesh)
     {
         ::fwData::Mesh::sptr meshObj = ::fwData::Mesh::New();
@@ -164,14 +199,21 @@ struct FilteringStream : ::boost::iostreams::filtering_istream
         m_image(source),
         m_bufferObject(source->getDataArray()->getBufferObject()),
         m_lock( m_bufferObject->lock() ),
-        m_bufferStream( ::boost::make_shared<BufferStreamType>(static_cast<char *>(m_lock.getBuffer()), m_bufferObject->getSize()) )
+        m_bufferStream( std::make_shared<BufferStreamType>(static_cast<char *>(m_lock.getBuffer()),
+                                                           m_bufferObject->getSize()) )
     {
         this->push(*m_bufferStream);
     }
 
     ~FilteringStream()
     {
-        try { this->reset(); } catch (...) { }
+        try
+        {
+            this->reset();
+        }
+        catch (...)
+        {
+        }
     }
 
     ::fwData::Image::sptr m_image;
@@ -188,7 +230,8 @@ class ImageStream : public ::fwMemory::stream::in::IFactory
 public:
 
     ImageStream( const ::boost::filesystem::path& path ) :  m_path(path)
-    {}
+    {
+    }
 
 protected:
 
@@ -200,7 +243,7 @@ protected:
         }
 
         vtkSmartPointer< vtkDataObject  > obj;
-        obj = getObj<READER>(m_path, NULL);
+        obj = getObj<READER>(m_path, nullptr);
 
         return ::fwData::Image::dynamicCast(getDataObject(obj, m_path));
     }
@@ -208,7 +251,7 @@ protected:
     SPTR(std::istream) get()
     {
         SPTR(FilteringStream) is
-            = ::boost::make_shared< FilteringStream>( this->getImage() );
+            = std::make_shared< FilteringStream>( this->getImage() );
 
         return is;
     }
@@ -254,7 +297,7 @@ void updateImageFromVtkInfo(const vtkSmartPointer< vtkInformation > &info, const
 
     vtkInformation *attrInfo = vtkDataObject::GetActiveFieldInformation(info, vtkDataObject::FIELD_ASSOCIATION_POINTS,
                                                                         vtkDataSetAttributes::SCALARS);
-    int type = attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE());
+    int type           = attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE());
     int nbOfComponents = attrInfo->Get(vtkDataObject::FIELD_NUMBER_OF_COMPONENTS());
     imgObj->setType( ::fwVtkIO::TypeTranslator::translate( attrInfo->Get(vtkDataObject::FIELD_ARRAY_TYPE()) ) );
     imgObj->setNumberOfComponents(nbOfComponents);
@@ -274,7 +317,8 @@ void getInfo(const vtkSmartPointer< vtkGenericDataObjectReader > &reader, const 
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
-    buffObj->setIStreamFactory( ::boost::make_shared< ImageStream<vtkStructuredPointsReader> >(file), imgObj->getSizeInBytes());
+    buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkStructuredPointsReader> >(file),
+                                imgObj->getSizeInBytes());
 }
 
 
@@ -292,7 +336,8 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader > &reader, con
 
     ::fwMemory::BufferObject::sptr buffObj = imgObj->getDataArray()->getBufferObject();
     boost::filesystem::path file = reader->GetFileName();
-    buffObj->setIStreamFactory( ::boost::make_shared< ImageStream<vtkXMLImageDataReader> >(file), imgObj->getSizeInBytes());
+    buffObj->setIStreamFactory( std::make_shared< ImageStream<vtkXMLImageDataReader> >(file),
+                                imgObj->getSizeInBytes());
 
 }
 
@@ -329,13 +374,12 @@ void SeriesDBReader::read()
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
     const ::fwData::location::ILocation::VectPathType files = this->getFiles();
-    const std::string instanceUID = ::fwTools::UUID::generateUUID();
+    const std::string instanceUID                           = ::fwTools::UUID::generateUUID();
 
     ::fwMedData::ModelSeries::ReconstructionVectorType recs;
     std::vector< std::string > errorFiles;
-    BOOST_FOREACH(const ::fwData::location::ILocation::VectPathType::value_type& file, files)
+    for(const ::fwData::location::ILocation::VectPathType::value_type& file :  files)
     {
-
         vtkSmartPointer< vtkDataObject  > obj;
         ::fwData::Image::sptr img;
         ::fwData::Reconstruction::sptr rec;
@@ -348,7 +392,7 @@ void SeriesDBReader::read()
             }
             if (!img)
             {
-                obj = getObj<vtkGenericDataObjectReader>(file, this);
+                obj = getObj<vtkGenericDataObjectReader>(file, m_job);
             }
         }
         else if(file.extension().string() == ".vti")
@@ -359,19 +403,23 @@ void SeriesDBReader::read()
             }
             if (!img)
             {
-                obj = getObj<vtkXMLGenericDataObjectReader>(file, this);
+                obj = getObj<vtkXMLGenericDataObjectReader>(file, m_job);
             }
         }
         else if(file.extension().string() == ".mhd")
         {
-            obj = getObj<vtkMetaImageReader>(file, this);
+            obj = getObj<vtkMetaImageReader>(file, m_job);
+        }
+        else if(file.extension().string() == ".vtu")
+        {
+            obj = getObj<vtkXMLGenericDataObjectReader>(file, m_job);
         }
 
         if (!img)
         {
             ::fwData::Object::sptr dataObj = getDataObject(obj, file);
-            img = ::fwData::Image::dynamicCast(dataObj);
-            rec = ::fwData::Reconstruction::dynamicCast(dataObj);
+            img                            = ::fwData::Image::dynamicCast(dataObj);
+            rec                            = ::fwData::Reconstruction::dynamicCast(dataObj);
         }
         if(img)
         {
@@ -407,9 +455,16 @@ void SeriesDBReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string  SeriesDBReader::extension()
+std::string SeriesDBReader::extension()
 {
     return ".vtk";
+}
+
+//------------------------------------------------------------------------------
+
+::fwJobs::IJob::sptr SeriesDBReader::getJob() const
+{
+    return m_job;
 }
 
 } // namespace fwVtkIO

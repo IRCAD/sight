@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,39 +7,41 @@
 #ifndef __TUTO15MULTITHREADCTRL_SSHOWARRAY_HPP__
 #define __TUTO15MULTITHREADCTRL_SSHOWARRAY_HPP__
 
-#include <fwServices/IService.hpp>
-
 #include "Tuto15MultithreadCtrl/config.hpp"
+
+#include <fwServices/IController.hpp>
+
 
 namespace Tuto15MultithreadCtrl
 {
 
-class TUTO15MULTITHREADCTRL_CLASS_API SShowArray : public ::fwServices::IService
+/**
+ * @brief This service displays the array values.
+ *
+ * @note To see the information, you need to activate log level "info".
+ */
+class TUTO15MULTITHREADCTRL_CLASS_API SShowArray : public ::fwServices::IController
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SShowArray)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SShowArray)(::fwServices::IController) );
 
     TUTO15MULTITHREADCTRL_API SShowArray() throw();
     TUTO15MULTITHREADCTRL_API virtual ~SShowArray() throw();
 
 protected:
 
+    /// Do nothing
     virtual void starting() throw(::fwTools::Failed);
 
+    /// Do nothing
     virtual void stopping() throw(::fwTools::Failed);
 
-    virtual void swapping() throw ( ::fwTools::Failed );
-
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
+    /// Display the array values
     virtual void updating() throw(::fwTools::Failed);
 
+    /// Do nothing
     virtual void configuring() throw(fwTools::Failed);
-
-    //virtual void info( std::ostream &_sstream ) ;
-
-
 };
 
 }  // namespace Tuto15MultithShowCtrl

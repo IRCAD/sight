@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,14 @@
 #ifndef __FWDATA_FACTORY_NEW_HPP__
 #define __FWDATA_FACTORY_NEW_HPP__
 
-#include <string>
 
-#include <boost/make_shared.hpp>
+#include "fwData/config.hpp"
+#include "fwData/registry/detail.hpp"
 
 #include <fwTools/macros.hpp>
 #include <fwTools/DynamicAttributes.hxx>
 
-#include "fwData/config.hpp"
-#include "fwData/registry/detail.hpp"
+#include <string>
 
 namespace fwData
 {
@@ -34,10 +33,13 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
  */
 class Key
 {
+private:
     template<typename CLASSNAME>
     friend SPTR( CLASSNAME ) fwData::factory::New();
 
-    Key(){};
+    Key()
+    {
+    }
 };
 
 
@@ -46,14 +48,12 @@ FWDATA_API SPTR( ::fwData::Object ) New( const ::fwData::registry::KeyType & cla
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
 
     ::fwTools::DynamicAttributesBase *dynAttr = obj.get();
     dynAttr->__FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME();
 
-#ifdef COM_LOG
-    obj->setID(obj->getID());
-#endif
+
 
     return obj;
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,18 +16,20 @@ namespace container
 //-----------------------------------------------------------------------------
 
 QtMenuBarContainer::QtMenuBarContainer(::fwGui::GuiBaseObject::Key key) throw() : m_menuBar(0)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 QtMenuBarContainer::~QtMenuBarContainer() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void QtMenuBarContainer::clean()
 {
-    SLM_ASSERT("Sorry, Qt MenuBar not yet initialized, cleaning impossible", m_menuBar);
+    SLM_ASSERT("The Qt MenuBar is not yet initialized, cleaning is thus impossible", m_menuBar);
 
     m_menuBar->clear();
 
@@ -43,7 +45,7 @@ void QtMenuBarContainer::clean()
 
 void QtMenuBarContainer::destroyContainer()
 {
-    SLM_ASSERT("Sorry, Qt MenuBar not yet initialized", m_menuBar);
+    SLM_ASSERT("The Qt MenuBar is not yet initialized", m_menuBar);
 
     QList<QMenu *> allMenu = m_menuBar->findChildren<QMenu *>();
     OSLM_ASSERT("MenuBar container must be empty ( " << allMenu.count() << " menus).", allMenu.empty());

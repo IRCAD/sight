@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/registry/macros.hpp>
+#include "fwMedData/ActivitySeries.hpp"
 
-#include <fwData/Object.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Exception.hpp>
-
-#include "fwMedData/ActivitySeries.hpp"
+#include <fwData/Object.hpp>
+#include <fwData/registry/macros.hpp>
 
 fwDataRegisterMacro( ::fwMedData::ActivitySeries );
 
@@ -18,13 +17,15 @@ namespace fwMedData
 {
 
 ActivitySeries::ActivitySeries(::fwData::Object::Key key) : Series(key),
-        m_attrData(::fwData::Composite::New())
-{}
+                                                            m_data(::fwData::Composite::New())
+{
+}
 
 //------------------------------------------------------------------------------
 
 ActivitySeries::~ActivitySeries()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -32,12 +33,12 @@ void ActivitySeries::shallowCopy(const ::fwData::Object::csptr &_source)
 {
     ActivitySeries::csptr other = ActivitySeries::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
 
     this->::fwMedData::Series::shallowCopy(_source);
-    m_attrActivityConfigId = other->m_attrActivityConfigId;
-    m_attrData = other->m_attrData;
+    m_activityConfigId = other->m_activityConfigId;
+    m_data             = other->m_data;
 }
 
 //------------------------------------------------------------------------------
@@ -46,13 +47,13 @@ void ActivitySeries::cachedDeepCopy(const ::fwData::Object::csptr &_source, Deep
 {
     ActivitySeries::csptr other = ActivitySeries::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
-            "Unable to copy" + (_source?_source->getClassname():std::string("<NULL>"))
-            + " to " + this->getClassname()), !bool(other) );
+                               "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
+                               + " to " + this->getClassname()), !bool(other) );
 
     this->::fwMedData::Series::cachedDeepCopy(_source, cache);
 
-    m_attrActivityConfigId = other->m_attrActivityConfigId;
-    m_attrData = ::fwData::Object::copy(other->m_attrData, cache);
+    m_activityConfigId = other->m_activityConfigId;
+    m_data             = ::fwData::Object::copy(other->m_data, cache);
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,8 @@ namespace fwMemory
 {
 
 
-void BufferMallocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+void BufferMallocPolicy::allocate(BufferType &buffer,
+                                  BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     if (size > 0)
     {
@@ -28,7 +29,8 @@ void BufferMallocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::Si
 
 //------------------------------------------------------------------------------
 
-void BufferMallocPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+void BufferMallocPolicy::reallocate(BufferType &buffer,
+                                    BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     BufferType newBuffer;
     if (size > 0)
@@ -71,7 +73,8 @@ BufferAllocationPolicy::sptr BufferMallocPolicy::New()
 
 
 
-void BufferNewPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+void BufferNewPolicy::allocate(BufferType &buffer,
+                               BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     try
     {
@@ -89,7 +92,8 @@ void BufferNewPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeT
 
 //------------------------------------------------------------------------------
 
-void BufferNewPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+void BufferNewPolicy::reallocate(BufferType &buffer,
+                                 BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);
@@ -119,7 +123,8 @@ BufferAllocationPolicy::sptr BufferNewPolicy::New()
 
 
 
-void BufferNoAllocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+void BufferNoAllocPolicy::allocate(BufferType &buffer,
+                                   BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);
@@ -129,7 +134,8 @@ void BufferNoAllocPolicy::allocate(BufferType &buffer, BufferAllocationPolicy::S
 
 //------------------------------------------------------------------------------
 
-void BufferNoAllocPolicy::reallocate(BufferType &buffer, BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
+void BufferNoAllocPolicy::reallocate(BufferType &buffer,
+                                     BufferAllocationPolicy::SizeType size) throw( ::fwMemory::exception::Memory )
 {
     FwCoreNotUsedMacro(buffer);
     FwCoreNotUsedMacro(size);

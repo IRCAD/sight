@@ -23,8 +23,8 @@ V2ToV3::V2ToV3() : ::fwAtomsPatch::IStructuralPatch()
 {
     m_originClassname = "::fwData::Mesh";
     m_targetClassname = "::fwData::Mesh";
-    m_originVersion = "2";
-    m_targetVersion = "3";
+    m_originVersion   = "2";
+    m_targetVersion   = "3";
 }
 
 // ----------------------------------------------------------------------------

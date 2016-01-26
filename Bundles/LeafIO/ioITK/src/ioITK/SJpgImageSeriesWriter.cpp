@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,17 +30,19 @@
 namespace ioITK
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioITK::SJpgImageSeriesWriter , ::fwMedData::ImageSeries ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioITK::SJpgImageSeriesWriter, ::fwMedData::ImageSeries );
 
 //------------------------------------------------------------------------------
 
 SJpgImageSeriesWriter::SJpgImageSeriesWriter() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SJpgImageSeriesWriter::~SJpgImageSeriesWriter() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -62,7 +64,7 @@ void SJpgImageSeriesWriter::configureWithIHM()
     dialog.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialog.setType(::fwGui::dialog::ILocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr  result;
+    ::fwData::location::Folder::sptr result;
 
     while (result = ::fwData::location::Folder::dynamicCast( dialog.show() ))
     {

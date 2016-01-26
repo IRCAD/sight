@@ -1,3 +1,8 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
@@ -45,15 +50,15 @@ void ProcessingTest::histogramTest()
     activeWorkers->initRegistry();
 
     typedef signed short ImageType;
-    const int sizeX = 50;
-    const int sizeY = 50;
-    const int sizeZ = 50;
+    const int sizeX     = 50;
+    const int sizeY     = 50;
+    const int sizeZ     = 50;
     const int imageSize = sizeX * sizeY * sizeZ;
 
     std::string implementation = "::scene2D::processing::SComputeHistogram";
 
     // Configure data hirearchy
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwData::Image::sptr image         = ::fwData::Image::New();
     ::fwData::Histogram::sptr histogram = ::fwData::Histogram::New();
 
     // Create image.
@@ -61,27 +66,27 @@ void ProcessingTest::histogramTest()
     ::fwData::Array::sptr array = image->getDataArray();
     ::fwComEd::helper::Array arrayHelper(array);
 
-    ImageType* itr = arrayHelper.begin< ImageType >();
+    ImageType* itr    = arrayHelper.begin< ImageType >();
     ImageType* itrEnd = arrayHelper.end< ImageType >();
 
-    int count=0;
+    int count = 0;
     for(; itr!= itrEnd; ++itr)
     {
         if(count < imageSize/4)
         {
-            *itr =10;
+            *itr = 10;
         }
         else if( count < imageSize/2)
         {
-            *itr =20;
+            *itr = 20;
         }
         else if( count < 3*imageSize/4)
         {
-            *itr =30;
+            *itr = 30;
         }
         else if( count < imageSize)
         {
-            *itr =40;
+            *itr = 40;
         }
         ++count;
     }
@@ -92,7 +97,7 @@ void ProcessingTest::histogramTest()
     CPPUNIT_ASSERT(srv);
 
     // Register service.
-    ::fwServices::OSR::registerService( image , srv );
+    ::fwServices::OSR::registerService( image, srv );
 
     ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@
 
 namespace fwThread
 {
-    class Worker;
+class Worker;
 }
 
 namespace fwMemory
@@ -30,18 +30,23 @@ namespace fwMemory
 
 class IPolicy;
 
-namespace stream {
-namespace in {
-class IFactory ;
-}}
+namespace stream
+{
+namespace in
+{
+class IFactory;
+}
+}
 
 class BufferManager;
 
 class Key
 {
-    friend SPTR(BufferManager) getDefault();
+friend SPTR(BufferManager) getDefault();
 
-    Key(){};
+Key()
+{
+}
 };
 
 /**
@@ -74,7 +79,8 @@ public:
     BufferManager();
     virtual ~BufferManager();
 
-    typedef enum {
+    typedef enum
+    {
         DIRECT,
         LAZY
     } LoadingModeType;
@@ -120,7 +126,7 @@ public:
      * @param policy BufferObject's allocation policy
      */
     FWMEMORY_API virtual ::boost::shared_future<void> allocateBuffer(BufferPtrType bufferPtr, SizeType size,
-                                             const ::fwMemory::BufferAllocationPolicy::sptr &policy) ;
+                                                                     const ::fwMemory::BufferAllocationPolicy::sptr &policy);
 
     /**
      * @brief Hook called when a request is made to set BufferObject's buffer from an external buffer
@@ -131,8 +137,9 @@ public:
      * @param policy BufferObject's allocation policy
      */
     FWMEMORY_API virtual ::boost::shared_future<void> setBuffer(BufferPtrType bufferPtr,
-                                        ::fwMemory::BufferManager::BufferType buffer,
-                                        SizeType size, const ::fwMemory::BufferAllocationPolicy::sptr &policy) ;
+                                                                ::fwMemory::BufferManager::BufferType buffer,
+                                                                SizeType size,
+                                                                const ::fwMemory::BufferAllocationPolicy::sptr &policy);
 
     /**
      * @brief Hook called when a reallocation is requested from a BufferObject
@@ -140,7 +147,7 @@ public:
      * @param bufferPtr BufferObject's buffer pointer
      * @param newSize requested size for reallocation
      */
-    FWMEMORY_API virtual ::boost::shared_future<void> reallocateBuffer(BufferPtrType bufferPtr, SizeType newSize) ;
+    FWMEMORY_API virtual ::boost::shared_future<void> reallocateBuffer(BufferPtrType bufferPtr, SizeType newSize);
 
 
     /**
@@ -148,7 +155,7 @@ public:
      *
      * @param bufferPtr BufferObject's buffer pointer
      */
-    FWMEMORY_API virtual ::boost::shared_future<void> destroyBuffer(BufferPtrType bufferPtr) ;
+    FWMEMORY_API virtual ::boost::shared_future<void> destroyBuffer(BufferPtrType bufferPtr);
 
 
     /**
@@ -157,7 +164,7 @@ public:
      * @param bufA First BufferObject's buffer
      * @param bufB Second BufferObject's buffer
      */
-    FWMEMORY_API virtual ::boost::shared_future<void> swapBuffer(BufferPtrType bufA, BufferPtrType bufB) ;
+    FWMEMORY_API virtual ::boost::shared_future<void> swapBuffer(BufferPtrType bufA, BufferPtrType bufB);
 
 
     /**
@@ -167,7 +174,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    FWMEMORY_API virtual ::boost::shared_future<SPTR(void)> lockBuffer(ConstBufferPtrType bufferPtr) ;
+    FWMEMORY_API virtual ::boost::shared_future<SPTR(void)> lockBuffer(ConstBufferPtrType bufferPtr);
 
 
     /**
@@ -177,7 +184,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    FWMEMORY_API virtual ::boost::shared_future<bool> unlockBuffer(ConstBufferPtrType bufferPtr) ;
+    FWMEMORY_API virtual ::boost::shared_future<bool> unlockBuffer(ConstBufferPtrType bufferPtr);
 
 
     /**
@@ -195,8 +202,8 @@ public:
      *
      * @return true on success
      * @{ */
-    FWMEMORY_API ::boost::shared_future<bool> dumpBuffer(ConstBufferPtrType  bufferPtr);
-    FWMEMORY_API ::boost::shared_future<bool> restoreBuffer(ConstBufferPtrType  bufferPtr);
+    FWMEMORY_API ::boost::shared_future<bool> dumpBuffer(ConstBufferPtrType bufferPtr);
+    FWMEMORY_API ::boost::shared_future<bool> restoreBuffer(ConstBufferPtrType bufferPtr);
     /**  @} */
 
     /**
@@ -210,8 +217,10 @@ public:
      *
      * @return true on success
      * @{ */
-    FWMEMORY_API ::boost::shared_future<bool> writeBuffer(ConstBufferType buffer, SizeType size, ::boost::filesystem::path &path);
-    FWMEMORY_API ::boost::shared_future<bool> readBuffer(BufferType buffer, SizeType size, ::boost::filesystem::path &path);
+    FWMEMORY_API ::boost::shared_future<bool> writeBuffer(ConstBufferType buffer, SizeType size,
+                                                          ::boost::filesystem::path &path);
+    FWMEMORY_API ::boost::shared_future<bool> readBuffer(BufferType buffer, SizeType size,
+                                                         ::boost::filesystem::path &path);
     /**  @} */
 
 
@@ -220,7 +229,9 @@ public:
      *
      * @return
      */
-    SPTR(UpdatedSignalType) getUpdatedSignal(){return m_updatedSig;};
+    SPTR(UpdatedSignalType) getUpdatedSignal(){
+        return m_updatedSig;
+    };
 
 
     /**
@@ -257,7 +268,7 @@ public:
                                                                 ::fwMemory::FileHolder fsFile,
                                                                 ::fwMemory::FileFormatType format,
                                                                 const ::fwMemory::BufferAllocationPolicy::sptr &policy
-                                                               );
+                                                                );
 
     FWMEMORY_API LoadingModeType getLoadingMode() const;
     FWMEMORY_API void setLoadingMode(LoadingModeType mode);
@@ -280,26 +291,28 @@ protected:
      * @{ */
     virtual void registerBufferImpl(BufferPtrType bufferPtr);
     virtual void unregisterBufferImpl(BufferPtrType bufferPtr);
-    virtual void allocateBufferImpl(BufferPtrType bufferPtr, SizeType size, const ::fwMemory::BufferAllocationPolicy::sptr &policy) ;
-    virtual void setBufferImpl(BufferPtrType bufferPtr, ::fwMemory::BufferManager::BufferType buffer, SizeType size, const ::fwMemory::BufferAllocationPolicy::sptr &policy) ;
-    virtual void reallocateBufferImpl(BufferPtrType bufferPtr, SizeType newSize) ;
-    virtual void destroyBufferImpl(BufferPtrType bufferPtr) ;
-    virtual void swapBufferImpl(BufferPtrType bufA, BufferPtrType bufB) ;
-    virtual SPTR(void) lockBufferImpl(ConstBufferPtrType bufferPtr) ;
-    virtual bool unlockBufferImpl(ConstBufferPtrType bufferPtr) ;
+    virtual void allocateBufferImpl(BufferPtrType bufferPtr, SizeType size,
+                                    const ::fwMemory::BufferAllocationPolicy::sptr &policy);
+    virtual void setBufferImpl(BufferPtrType bufferPtr, ::fwMemory::BufferManager::BufferType buffer, SizeType size,
+                               const ::fwMemory::BufferAllocationPolicy::sptr &policy);
+    virtual void reallocateBufferImpl(BufferPtrType bufferPtr, SizeType newSize);
+    virtual void destroyBufferImpl(BufferPtrType bufferPtr);
+    virtual void swapBufferImpl(BufferPtrType bufA, BufferPtrType bufB);
+    virtual SPTR(void) lockBufferImpl(ConstBufferPtrType bufferPtr);
+    virtual bool unlockBufferImpl(ConstBufferPtrType bufferPtr);
     virtual std::string toStringImpl() const;
-    bool dumpBufferImpl(ConstBufferPtrType  buffer);
-    bool restoreBufferImpl(ConstBufferPtrType  buffer);
+    bool dumpBufferImpl(ConstBufferPtrType buffer);
+    bool restoreBufferImpl(ConstBufferPtrType buffer);
     bool writeBufferImpl(ConstBufferType buffer, SizeType size, ::boost::filesystem::path &path);
     bool readBufferImpl(BufferType buffer, SizeType size, ::boost::filesystem::path &path);
     BufferInfoMapType getBufferInfosImpl() const;
     StreamInfo getStreamInfoImpl(const ConstBufferPtrType bufferPtr) const;
     void setIStreamFactoryImpl(BufferPtrType bufferPtr,
-                                const SPTR(::fwMemory::stream::in::IFactory) &factory,
-                                SizeType size,
-                                ::fwMemory::FileHolder fsFile,
-                                ::fwMemory::FileFormatType format,
-                                const ::fwMemory::BufferAllocationPolicy::sptr &policy
+                               const SPTR(::fwMemory::stream::in::IFactory) &factory,
+                               SizeType size,
+                               ::fwMemory::FileHolder fsFile,
+                               ::fwMemory::FileFormatType format,
+                               const ::fwMemory::BufferAllocationPolicy::sptr &policy
                                );
     /**  @} */
 

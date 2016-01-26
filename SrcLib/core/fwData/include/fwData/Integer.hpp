@@ -24,7 +24,8 @@ namespace fwData
 class FWDATA_CLASS_API Integer : public GenericField< int >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Integer)(::fwData::Object),( ((const int)(0)) ), GenericFieldFactory< Integer >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Integer)(::fwData::Object),( ((const int)(0)) ),
+                                            GenericFieldFactory< Integer >);
     fwCampMakeFriendDataMacro((fwData)(Integer));
 
     /**

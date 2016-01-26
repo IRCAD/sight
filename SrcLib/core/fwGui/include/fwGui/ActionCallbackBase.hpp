@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_ACTIONCALLBACKBASE_HPP_
-#define _FWGUI_ACTIONCALLBACKBASE_HPP_
+#ifndef __FWGUI_ACTIONCALLBACKBASE_HPP__
+#define __FWGUI_ACTIONCALLBACKBASE_HPP__
 
 #include <fwCore/base.hpp>
 
@@ -18,14 +18,14 @@ namespace fwGui
 /**
  * @brief   Defines the menu item callback.
  * @class   ActionCallbackBase
- * 
+ *
  * @date    2009-2010.
  *
  */
 class FWGUI_CLASS_API ActionCallbackBase : public ::fwGui::IMenuItemCallback
 {
 
-public :
+public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (ActionCallbackBase)(::fwGui::IMenuItemCallback) )
 
@@ -53,12 +53,12 @@ protected:
     /**
      * @brief   Constructor.
      */
-    FWGUI_API ActionCallbackBase() ;
+    FWGUI_API ActionCallbackBase();
 
     /**
      * @brief   Destructor. Do nothing.
      */
-    FWGUI_API virtual ~ActionCallbackBase() ;
+    FWGUI_API virtual ~ActionCallbackBase();
 
 private:
     std::string m_sid;
@@ -67,6 +67,6 @@ private:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_ACTIONCALLBACKBASE_HPP_*/
+#endif /*__FWGUI_ACTIONCALLBACKBASE_HPP__*/
 
 

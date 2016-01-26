@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,25 +25,28 @@ namespace fwCore
 
 
 Demangler::Demangler(const std::type_info &t) : m_name(t.name())
-{ }
+{
+}
 
 
 Demangler::Demangler(const std::string &s) : m_name(s)
-{ }
+{
+}
 
 
 Demangler::~Demangler()
-{ }
+{
+}
 
 
 std::string Demangler::getLeafClassname() const
 {
     std::string demangled(this->demangle());
 
-    size_t lt_pos = demangled.find(LT);
+    size_t lt_pos     = demangled.find(LT);
     size_t colons_pos = demangled.rfind(COLONS, lt_pos);
 
-    colons_pos = (colons_pos == std::string::npos)? 0 : colons_pos+COLONS.size();
+    colons_pos = (colons_pos == std::string::npos) ? 0 : colons_pos+COLONS.size();
     return demangled.replace(0,colons_pos,"");
 }
 
@@ -73,7 +76,7 @@ std::string Demangler::getFullNamespace() const
 {
     std::string demangled(this->demangle());
 
-    size_t lt_pos = demangled.find(LT);
+    size_t lt_pos     = demangled.find(LT);
     size_t colons_pos = demangled.rfind(COLONS, lt_pos);
 
     if(colons_pos == std::string::npos)
@@ -108,27 +111,33 @@ std::string Demangler::demangle(  ) const
     }
     return res;
 #else
-   static std::vector<std::string> keywords;
-   typedef std::vector<std::string>::iterator keyword_iterator;
-   if ( keywords.empty() )
-   {
-      keywords.push_back("__cdecl");
-      keywords.push_back("class ");
-      keywords.push_back("enum ");
-      keywords.push_back("struct ");
-      keywords.push_back("union ");
-   }
-   std::string res(mangled);
-   for (keyword_iterator iter = keywords.begin(); iter != keywords.end(); ++iter )
-   {
-      while (res.find(*iter) != std::string::npos)
-         res = res.replace(res.find(*iter), iter->size(), "");
-      while (res.find(" *") != std::string::npos)
-         res = res.replace(res.find(" *"), 2, "*");
-      while (res.find(" &") != std::string::npos)
-         res = res.replace(res.find(" &"), 2, "&");
-   }
-   return res;
+    static std::vector<std::string> keywords;
+    typedef std::vector<std::string>::iterator keyword_iterator;
+    if ( keywords.empty() )
+    {
+        keywords.push_back("__cdecl");
+        keywords.push_back("class ");
+        keywords.push_back("enum ");
+        keywords.push_back("struct ");
+        keywords.push_back("union ");
+    }
+    std::string res(mangled);
+    for (keyword_iterator iter = keywords.begin(); iter != keywords.end(); ++iter )
+    {
+        while (res.find(*iter) != std::string::npos)
+        {
+            res = res.replace(res.find(*iter), iter->size(), "");
+        }
+        while (res.find(" *") != std::string::npos)
+        {
+            res = res.replace(res.find(" *"), 2, "*");
+        }
+        while (res.find(" &") != std::string::npos)
+        {
+            res = res.replace(res.find(" &"), 2, "&");
+        }
+    }
+    return res;
 #endif
 }
 

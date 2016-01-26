@@ -1,34 +1,34 @@
 /* ***** BEGIN LICENSE BLOCK *****
- *
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/lexical_cast.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/Histogram.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
-
-#include <fwComEd/HistogramMsg.hpp>
 
 #include "scene2D/processing/SComputeHistogram.hpp"
 #include "scene2D/processing/ComputeHistogramFunctor.hxx"
 
-fwServicesRegisterMacro( ::fwServices::IController , ::scene2D::processing::SComputeHistogram, ::fwData::Image ) ;
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwData/Histogram.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <boost/lexical_cast.hpp>
+
+fwServicesRegisterMacro( ::fwServices::IController, ::scene2D::processing::SComputeHistogram, ::fwData::Image );
 
 namespace scene2D
 {
 namespace processing
 {
 
-SComputeHistogram::SComputeHistogram() throw() :
-    m_binsWidth(1.0)
+SComputeHistogram::SComputeHistogram() throw() : m_binsWidth(1.0f)
 {
 }
 
@@ -67,7 +67,7 @@ void SComputeHistogram::starting() throw ( ::fwTools::Failed )
 
 void SComputeHistogram::updating() throw ( ::fwTools::Failed )
 {
-    ::fwData::Image::sptr image =  this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwData::mt::ObjectReadLock imgLock(image);
 
@@ -78,28 +78,18 @@ void SComputeHistogram::updating() throw ( ::fwTools::Failed )
         ::fwData::mt::ObjectWriteLock lock(histogram);
 
         ComputeHistogramFunctor::Parameter param;
-        param.image = image;
+        param.image     = image;
         param.histogram = histogram;
         param.binsWidth = m_binsWidth;
 
         ::fwTools::DynamicType type = image->getPixelType();
-        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , ComputeHistogramFunctor >::invoke( type , param );
+        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, ComputeHistogramFunctor >::invoke( type, param );
 
-        ::fwComEd::HistogramMsg::sptr msg = ::fwComEd::HistogramMsg::New();
-        msg->addEvent(::fwComEd::HistogramMsg::VALUE_IS_MODIFIED);
-        ::fwServices::IEditionService::notify(this->getSptr(), histogram, msg);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SComputeHistogram::receiving( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
-{
-     if(_msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE) ||
-        _msg->hasEvent(::fwComEd::ImageMsg::BUFFER) ||
-        _msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
-    {
-        this->updating();
+        auto sig = histogram->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
+        }
     }
 }
 
@@ -122,11 +112,22 @@ void SComputeHistogram::stopping() throw ( ::fwTools::Failed )
 {
     SLM_ASSERT("Object " << m_histogramId << " doesn't exist", ::fwTools::fwID::exist(m_histogramId));
 
-    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_histogramId);
+    ::fwTools::Object::sptr obj         = ::fwTools::fwID::getObject(m_histogramId);
     ::fwData::Histogram::sptr histogram = ::fwData::Histogram::dynamicCast(obj);
     SLM_ASSERT("Object " << m_histogramId << " is not a '::fwData::Histogram'", histogram);
 
     return histogram;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SComputeHistogram::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,9 +8,10 @@
 #define __FWSERVICES_FACTORY_NEW_HPP__
 
 #include <string>
-#include <boost/make_shared.hpp>
 
 #include "fwServices/config.hpp"
+
+#include <fwCore/base.hpp>
 
 namespace fwServices
 {
@@ -22,10 +23,8 @@ namespace factory
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) srv = ::boost::make_shared< CLASSNAME >();
-#ifdef COM_LOG
-    srv->setID(srv->getID());
-#endif
+    SPTR(CLASSNAME) srv = std::make_shared< CLASSNAME >();
+
     return srv;
 }
 

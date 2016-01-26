@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -71,12 +71,6 @@ void SInitNewSeries::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SInitNewSeries::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SInitNewSeries::stopping() throw(::fwTools::Failed)
 {
     this->actionServiceStopping();
@@ -97,7 +91,7 @@ void SInitNewSeries::updating() throw(::fwTools::Failed)
 
     ::fwComEd::helper::SeriesDB helper(seriesDB);
 
-    BOOST_FOREACH(const ::fwMedData::Series::sptr& series, srcSeriesDB->getContainer())
+    for(const ::fwMedData::Series::sptr& series :  srcSeriesDB->getContainer())
     {
         helper.add(series);
     }
@@ -108,11 +102,11 @@ void SInitNewSeries::updating() throw(::fwTools::Failed)
     StudyToPatientType studyToPatient;
     StudyMapType studies;
 
-    BOOST_FOREACH(const ::fwMedData::Series::sptr& series, seriesDB->getContainer())
+    for(const ::fwMedData::Series::sptr& series :  seriesDB->getContainer())
     {
         const std::string& studyUID = series->getStudy()->getInstanceUID();
 
-        studies[studyUID] = series->getStudy();
+        studies[studyUID]        = series->getStudy();
         studyToPatient[studyUID] = series->getPatient();
     }
 
@@ -121,7 +115,7 @@ void SInitNewSeries::updating() throw(::fwTools::Failed)
     const std::string date = ::fwTools::getDate(now);
     const std::string time = ::fwTools::getTime(now);
 
-    BOOST_FOREACH(const StudyMapType::value_type& study, studies)
+    for(const StudyMapType::value_type& study :  studies)
     {
         ::fwMedData::Series::sptr newSeries = ::uiMedData::InsertSeries::New();
         newSeries->setDescription(s_INSERT_NEW_SERIES_TEXT);
@@ -156,7 +150,7 @@ void SInitNewSeries::updating() throw(::fwTools::Failed)
     newSeries->setTime(time);
 
     helper.add(newSeries);
-    helper.notify(this->getSptr());
+    helper.notify();
 }
 
 //------------------------------------------------------------------------------

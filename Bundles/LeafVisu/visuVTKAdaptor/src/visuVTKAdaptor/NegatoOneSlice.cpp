@@ -1,65 +1,66 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
-
-#include <fwServices/Base.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
-#include <fwData/Color.hpp>
-#include <fwData/String.hpp>
-#include <fwVtkIO/vtk.hpp>
-
-#include <vtkImageData.h>
-#include <vtkImageMapToColors.h>
-#include <vtkImageBlend.h>
 
 #include "visuVTKAdaptor/Image.hpp"
 #include "visuVTKAdaptor/ImageSlice.hpp"
 #include "visuVTKAdaptor/NegatoOneSlice.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoOneSlice, ::fwData::Image ) ;
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwData/Color.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/String.hpp>
+#include <fwData/TransferFunction.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <fwVtkIO/vtk.hpp>
+
+#include <vtkImageBlend.h>
+#include <vtkImageData.h>
+#include <vtkImageMapToColors.h>
+
+
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoOneSlice, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT = "updateSliceType";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT      = "updateImage";
 
 //------------------------------------------------------------------------------
 
-NegatoOneSlice::NegatoOneSlice() throw()
+NegatoOneSlice::NegatoOneSlice() throw() :
+    m_manageImageSource(false),
+    m_imageSource(nullptr),
+    m_allowAlphaInTF(false),
+    m_interpolation(true),
+    m_actorOpacity (1.0)
 {
-    SLM_TRACE_FUNC();
-    m_allowAlphaInTF = false;
-    m_interpolation  = true;
-    m_manageImageSource = false;
-    m_actorOpacity = 1.0;
-
-    m_imageSource = NULL;
-
-    // Manage events
-    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER            );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE         );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::MODIFIED          );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &NegatoOneSlice::updateSliceType, this);
+    newSlot(s_UPDATE_IMAGE_SLOT, &NegatoOneSlice::updateImage, this);
 }
 
 //------------------------------------------------------------------------------
 
 NegatoOneSlice::~NegatoOneSlice() throw()
 {
-    SLM_TRACE_FUNC();
     this->unregisterServices();
     this->cleanImageSource();
 }
 
 //------------------------------------------------------------------------------
+
 vtkObject* NegatoOneSlice::getImageSource()
 {
     if ( !m_imageSource )
@@ -71,7 +72,7 @@ vtkObject* NegatoOneSlice::getImageSource()
         }
         else
         {
-            m_imageSource = vtkImageMapToColors::New();
+            m_imageSource       = vtkImageMapToColors::New();
             m_manageImageSource = true;
         }
     }
@@ -86,7 +87,7 @@ void NegatoOneSlice::cleanImageSource()
     if (m_manageImageSource && m_imageSource)
     {
         m_imageSource->Delete();
-        m_imageSource = NULL;
+        m_imageSource = nullptr;
     }
 }
 
@@ -94,7 +95,7 @@ void NegatoOneSlice::cleanImageSource()
 
 ::fwRenderVTK::IVtkAdaptorService::sptr NegatoOneSlice::getImageSliceAdaptor()
 {
-    ::fwRenderVTK::IVtkAdaptorService::sptr imageSliceAdaptor;
+    ::fwRenderVTK::IVtkAdaptorService::sptr adaptor;
 
     if (m_imageSliceAdaptor.expired())
     {
@@ -105,73 +106,70 @@ void NegatoOneSlice::cleanImageSource()
         image          = this->getObject< ::fwData::Image >();
         sceneComposite = this->getRenderService()->getObject< ::fwData::Composite >();
 
-        imageSliceAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
-                sceneComposite,
-                "::visuVTKAdaptor::ImageSlice"
-                );
-        imageSliceAdaptor->setRenderService(this->getRenderService());
-        imageSliceAdaptor->setRenderId( this->getRenderId() );
-        imageSliceAdaptor->setPickerId( this->getPickerId() );
-        imageSliceAdaptor->setTransformId( this->getTransformId() );
-        imageSliceAdaptor->setAutoRender( this->getAutoRender() );
+        adaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
+            sceneComposite,
+            "::visuVTKAdaptor::ImageSlice");
+        adaptor->setRenderService(this->getRenderService());
+        adaptor->setRenderId( this->getRenderId() );
+        adaptor->setPickerId( this->getPickerId() );
+        adaptor->setTransformId( this->getTransformId() );
+        adaptor->setAutoRender( this->getAutoRender() );
 
+        ::visuVTKAdaptor::ImageSlice::sptr imgSliceAdaptor;
+        imgSliceAdaptor = ::visuVTKAdaptor::ImageSlice::dynamicCast(adaptor);
+        imgSliceAdaptor->setVtkImageSource(this->getImageSource());
+        imgSliceAdaptor->setCtrlImage(image);
+        imgSliceAdaptor->setInterpolation(m_interpolation);
+        imgSliceAdaptor->setActorOpacity(m_actorOpacity);
+        imgSliceAdaptor->setOrientation((Orientation) m_orientation);
 
-        ::visuVTKAdaptor::ImageSlice::sptr ISA;
-        ISA = ::visuVTKAdaptor::ImageSlice::dynamicCast(imageSliceAdaptor);
-        ISA->setVtkImageSource(this->getImageSource());
-        ISA->setCtrlImage(image);
-        ISA->setInterpolation(m_interpolation);
-        ISA->setActorOpacity(m_actorOpacity);
-
-       ::fwComEd::helper::MedicalImageAdaptor::dynamicCast(ISA)->setOrientation((Orientation) m_orientation);
-
-        m_imageSliceAdaptor = imageSliceAdaptor;
-        this->registerService(imageSliceAdaptor);
+        m_imageSliceAdaptor = adaptor;
+        this->registerService(adaptor);
     }
     else
     {
-        imageSliceAdaptor = m_imageSliceAdaptor.lock();
+        adaptor = m_imageSliceAdaptor.lock();
     }
-    return imageSliceAdaptor;
+    return adaptor;
 }
 
 //------------------------------------------------------------------------------
+
 ::fwRenderVTK::IVtkAdaptorService::sptr NegatoOneSlice::getImageAdaptor()
 {
-    ::fwRenderVTK::IVtkAdaptorService::sptr imageAdaptor;
+    ::fwRenderVTK::IVtkAdaptorService::sptr adaptor;
 
     if (m_imageAdaptor.expired())
     {
         OSLM_TRACE(this->getID() << ": Create Image Adaptor Service");
         ::fwData::Image::sptr image;
-        image = this->getObject< ::fwData::Image >();
-        imageAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
-                image,
-                "::visuVTKAdaptor::Image"
-                );
-        imageAdaptor->setRenderService(this->getRenderService());
-        imageAdaptor->setRenderId( this->getRenderId() );
-        imageAdaptor->setPickerId( this->getPickerId() );
-        imageAdaptor->setTransformId( this->getTransformId() );
-        imageAdaptor->setAutoRender( this->getAutoRender() );
+        image   = this->getObject< ::fwData::Image >();
+        adaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
+            image,
+            "::visuVTKAdaptor::Image");
+        adaptor->setRenderService(this->getRenderService());
+        adaptor->setRenderId( this->getRenderId() );
+        adaptor->setPickerId( this->getPickerId() );
+        adaptor->setTransformId( this->getTransformId() );
+        adaptor->setAutoRender( this->getAutoRender() );
 
-        ::visuVTKAdaptor::Image::sptr IA;
-        IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);
-        IA->setVtkImageRegister(this->getImageSource());
-        IA->setSelectedTFKey( this->getSelectedTFKey() );
-        IA->setTFSelectionFwID( this->getTFSelectionFwID() );
+        ::visuVTKAdaptor::Image::sptr imgAdaptor;
+        imgAdaptor = ::visuVTKAdaptor::Image::dynamicCast(adaptor);
+        imgAdaptor->setVtkImageRegister(this->getImageSource());
+        imgAdaptor->setSelectedTFKey( this->getSelectedTFKey() );
+        imgAdaptor->setTFSelectionFwID( this->getTFSelectionFwID() );
 
-        IA->setImageOpacity(1.);
-        IA->setAllowAlphaInTF(m_allowAlphaInTF);
+        imgAdaptor->setImageOpacity(1.);
+        imgAdaptor->setAllowAlphaInTF(m_allowAlphaInTF);
 
-        m_imageAdaptor = imageAdaptor;
-        this->registerService(imageAdaptor);
+        m_imageAdaptor = adaptor;
+        this->registerService(adaptor);
     }
     else
     {
-        imageAdaptor = m_imageAdaptor.lock();
+        adaptor = m_imageAdaptor.lock();
     }
-    return imageAdaptor;
+    return adaptor;
 }
 
 //------------------------------------------------------------------------------
@@ -179,7 +177,7 @@ void NegatoOneSlice::cleanImageSource()
 void NegatoOneSlice::doStart() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if (! vtkImageBlend::SafeDownCast(this->getImageSource()))
+    if (!vtkImageBlend::SafeDownCast(this->getImageSource()))
     {
         this->getImageAdaptor()->start();
     }
@@ -190,9 +188,6 @@ void NegatoOneSlice::doStart() throw(fwTools::Failed)
 
 void NegatoOneSlice::doStop() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-//    this->getImageAdaptor()->stop();
-//    this->getImageSliceAdaptor()->stop();
     this->unregisterServices();
     this->cleanImageSource();
 }
@@ -201,7 +196,6 @@ void NegatoOneSlice::doStop() throw(fwTools::Failed)
 
 void NegatoOneSlice::doSwap() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->doStop();
     this->doStart();
 }
@@ -211,75 +205,56 @@ void NegatoOneSlice::doSwap() throw(fwTools::Failed)
 void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if (! vtkImageBlend::SafeDownCast(this->getImageSource()))
+    if (!vtkImageBlend::SafeDownCast(this->getImageSource()))
     {
         this->getImageAdaptor()->update();
     }
     this->getImageSliceAdaptor()->update();
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void NegatoOneSlice::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void NegatoOneSlice::updateSliceType(int from, int to)
 {
-    SLM_TRACE_FUNC();
-
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ))
+    if( to == static_cast<int>(m_orientation) )
     {
-        ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-        ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-        ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
-
-        int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
-        int toSliceType =   ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
-
-        if( toSliceType == static_cast<int>(m_orientation) )
-        {
-            setOrientation( static_cast< Orientation >( fromSliceType ));
-        }
-        else if(fromSliceType == static_cast<int>(m_orientation))
-        {
-            setOrientation( static_cast< Orientation >( toSliceType ));
-        }
+        setOrientation( static_cast< Orientation >( from ));
     }
-    else if (msg->hasEvent(::fwComEd::ImageMsg::BUFFER)
-              || msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE)
-              ||msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
+    else if(from == static_cast<int>(m_orientation))
     {
-        this->doStop();
-        this->doStart();
-        this->doUpdate();
+        setOrientation( static_cast< Orientation >( to ));
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void NegatoOneSlice::updateImage()
+{
+    this->doStop();
+    this->doStart();
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void NegatoOneSlice::configuring() throw(fwTools::Failed)
+void NegatoOneSlice::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
     if(m_configuration->hasAttribute("sliceIndex"))
     {
-         std::string  orientation = m_configuration->getAttributeValue("sliceIndex");
-         if(orientation == "axial" )
-         {
-             m_orientation = Z_AXIS;
-         }
-         else if(orientation == "frontal" )
-         {
-             m_orientation = Y_AXIS;
-         }
-         else if(orientation == "sagittal" )
-         {
-             m_orientation = X_AXIS;
-         }
-    }
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
+        std::string orientation = m_configuration->getAttributeValue("sliceIndex");
+        if(orientation == "axial" )
+        {
+            m_orientation = Z_AXIS;
+        }
+        else if(orientation == "frontal" )
+        {
+            m_orientation = Y_AXIS;
+        }
+        else if(orientation == "sagittal" )
+        {
+            m_orientation = X_AXIS;
+        }
     }
     if(m_configuration->hasAttribute("tfalpha") )
     {
@@ -299,6 +274,18 @@ void NegatoOneSlice::configuring() throw(fwTools::Failed)
     }
 
     this->parseTFConfig( m_configuration );
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType NegatoOneSlice::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_IMAGE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

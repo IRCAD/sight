@@ -1,15 +1,39 @@
 fwLoadProperties()
+
 fwUseForwardInclude(
     fwCore
     fwData
     fwDataIO
     fwMedData
     fwTools
+    fwJobs
 )
 
 find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
 
-fwForwardInclude(${VTK_INCLUDE_DIRS})
-fwLink(vtkFiltersModeling vtkIOImage vtkIOLegacy vtkIOExport vtkIOXML vtkImagingStencil vtkImagingStatistics)
+fwForwardInclude(
+    ${VTK_INCLUDE_DIRS}
+)
 
-get_target_property(TARGET_TYPE vtkHybrid LOCATION)
+fwLink(
+    vtkFiltersModeling
+    vtkIOImage
+    vtkIOLegacy
+    vtkIOXML
+    vtkImagingStencil
+    vtkImagingStatistics
+    vtkFiltersGeometry
+    vtkInteractionStyle
+)
+    
+if(NOT ANDROID)
+    fwLink(
+        vtkIOExport
+        vtkRenderingFreeTypeOpenGL
+    )
+else()
+    fwLink(
+        vtkRenderingOpenGL2
+    )
+endif()

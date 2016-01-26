@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_ITOOLBARSRV_HPP_
-#define _FWGUI_ITOOLBARSRV_HPP_
+#ifndef __FWGUI_ITOOLBARSRV_HPP__
+#define __FWGUI_ITOOLBARSRV_HPP__
 
 #include <fwServices/IService.hpp>
 
@@ -20,16 +20,16 @@ namespace fwGui
 /**
  * @brief   Defines the service interface managing the toolBar.
  * @class   IToolBarSrv
- * 
+ *
  * @date    2009-2010.
  *
  */
 class FWGUI_CLASS_API IToolBarSrv : public ::fwServices::IService
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IToolBarSrv)(::fwServices::IService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IToolBarSrv)(::fwServices::IService) );
 
     /// Method called when an action service is stopping
     FWGUI_API void actionServiceStopping(std::string actionSrvSID);
@@ -43,11 +43,14 @@ public :
     /// Method called when the action service is executable
     FWGUI_API void actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable);
 
-protected :
+    /// Method called when the action service is visible
+    FWGUI_API void actionServiceSetVisible(std::string actionSrvSID, bool isVisible);
 
-    FWGUI_API IToolBarSrv() ;
+protected:
 
-    FWGUI_API virtual ~IToolBarSrv() ;
+    FWGUI_API IToolBarSrv();
+
+    FWGUI_API virtual ~IToolBarSrv();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -56,9 +59,9 @@ protected :
      *
      * Example of configuration
      * @verbatim
-       <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
+       <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
-               <layout>
+               <layout hideAction="false">
                    <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                    <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                    <separator />
@@ -80,11 +83,13 @@ protected :
            </registry>
        </service>
        @endverbatim
-     *   - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
-     *   - \<registry\> \</registry\> : (mandatory) describe the service management.
-     *     - \<menuItem\> represents IActionSrv
-     *     - \<menu\> represents IMenuSrv
-     *     - \<editor\> represents container service (IEditor, IView, ...)
+     * - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
+     *   - \<layout\> \</layout\> : (mandatory) describe the layout of the service
+     *     - \b hideAction: (optional, default=false): if true, the actions are hidden when they are stopped.
+     * - \<registry\> \</registry\> : (mandatory) describe the service management.
+     *   - \<menuItem\> represents IActionSrv
+     *   - \<menu\> represents IMenuSrv
+     *   - \<editor\> represents container service (IEditor, IView, ...)
      *
      *   @warning
      *   - The number of item in the gui section must be EQUAL to the registry section.
@@ -106,7 +111,7 @@ private:
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
 
     ::fwGui::layoutManager::IToolBarLayoutManager::sptr m_layoutManager;
-    ::fwGui::registrar::ToolBarRegistrar::sptr    m_registrar;
+    ::fwGui::registrar::ToolBarRegistrar::sptr m_registrar;
 
     ConfigurationType m_registrarConfig;
     ConfigurationType m_layoutConfig;
@@ -117,6 +122,6 @@ private:
 
 } // namespace fwGui
 
-#endif /*_FWGUI_ITOOLBARSRV_HPP_*/
+#endif /*__FWGUI_ITOOLBARSRV_HPP__*/
 
 

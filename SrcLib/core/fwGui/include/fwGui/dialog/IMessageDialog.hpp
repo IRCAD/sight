@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_IMESSAGEBOX_HPP_
-#define _FWGUI_IMESSAGEBOX_HPP_
+#ifndef __FWGUI_DIALOG_IMESSAGEDIALOG_HPP__
+#define __FWGUI_DIALOG_IMESSAGEDIALOG_HPP__
 
 #include <string>
 
@@ -31,7 +31,8 @@ public:
     fwCoreNonInstanciableClassDefinitionsMacro( (IMessageDialog)(::fwGui::GuiBaseObject) )
 
     /// Icon type
-    typedef enum {
+    typedef enum
+    {
         CRITICAL,
         WARNING,
         INFO,
@@ -40,15 +41,16 @@ public:
     } Icons;
 
     /// Buttons type
-    typedef enum {
+    typedef enum
+    {
         NOBUTTON = 0, // invalid
 
-        OK     = 1 << 1,
-        YES    = 1 << 2,
-        NO     = 1 << 3,
-        CANCEL = 1 << 4,
+        OK         = 1 << 1,
+            YES    = 1 << 2,
+            NO     = 1 << 3,
+            CANCEL = 1 << 4,
 
-        YES_NO = YES | NO
+            YES_NO = YES | NO
     } Buttons;
 
     /// Constructor. Do nothing.
@@ -67,10 +69,10 @@ public:
     FWGUI_API virtual void setMessage(const std::string &msg) = 0;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    FWGUI_API virtual void setIcon( Icons icon) =0;
+    FWGUI_API virtual void setIcon( Icons icon) = 0;
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL)
-    FWGUI_API virtual void addButton(Buttons button )=0;
+    FWGUI_API virtual void addButton(Buttons button ) = 0;
 
     /// Set the default button
     FWGUI_API virtual void setDefaultButton(Buttons button) = 0;
@@ -83,6 +85,6 @@ public:
 } //namespace dialog
 } // namespace fwGui
 
-#endif /*_FWGUI_IMESSAGEBOX_HPP_*/
+#endif /*__FWGUI_DIALOG_IMESSAGEDIALOG_HPP__*/
 
 

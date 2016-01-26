@@ -1,10 +1,9 @@
-<plugin id="visuVTKQt" class="visuVTKQt::Plugin" >
+<plugin id="visuVTKQt" class="visuVTKQt::Plugin"  version="@DASH_VERSION@" >
     
     <library name="visuVTKQt" />
 
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
-    <requirement id="visu" />
     <requirement id="visuVTK" />
 
 </plugin>

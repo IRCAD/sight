@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_DL_NATIVE_HPP
-#define _FWRUNTIME_DL_NATIVE_HPP
-
-#include <boost/filesystem/path.hpp>
-#include <boost/shared_ptr.hpp>
+#ifndef __FWRUNTIME_DL_NATIVE_HPP__
+#define __FWRUNTIME_DL_NATIVE_HPP__
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
+#include <boost/filesystem/path.hpp>
+#include <boost/regex.hpp>
 
 namespace fwRuntime
 {
@@ -25,16 +24,9 @@ namespace dl
 {
 
 
-
-struct INameDecorator;
-
-
-
 /**
  * @brief   Defines the abstract class for native module implementors.
  * @struct  Native
- * @date    2004-2009
- * 
  */
 struct Native
 {
@@ -47,7 +39,7 @@ struct Native
      * @param[in]   modulePath      a path to the module to manage
      * @param[in]   nameDecorator   a shared pointer to a name decorator to use to retrieve the native file name
      */
-    Native( const boost::filesystem::path & modulePath, const ::boost::shared_ptr< INameDecorator > nameDecorator ) throw();
+    Native( const boost::filesystem::path & modulePath) throw();
 
     /**
      * @brief   Destructor : does nothing.
@@ -108,31 +100,38 @@ struct Native
      */
     void setBundle( const ::fwRuntime::Bundle * bundle ) throw();
 
-
-private:
-
     /**
-     * @brief   The path to the module to load.
+     * @brief  Retrieves the pattern of the dynamic library file name given the host OS
+     * @return the boost::regex
      */
-    const boost::filesystem::path       m_modulePath;
+    const ::boost::regex getNativeName() const;
 
-    /**
-     * @brief   a name decorator to use to retrieve the native path
-     */
-    const ::boost::shared_ptr< INameDecorator > m_nameDecorator;
+    private:
 
-    /**
-     * @brief   A pointer to the bundle the library is attached to.
-     */
-    const Bundle                            * m_bundle;
+        /**
+         * @brief  Returns the location of bundle library
+         * @note   For android, the bundle library are in the "<working_dir>/lib" directory.
+         * @return The path of bundle library.
+         */
+        const ::boost::filesystem::path getBundleLocation() const;
+
+        /**
+         * @brief   The path to the module to load.
+         */
+        const boost::filesystem::path m_modulePath;
+
+        /**
+         * @brief   A pointer to the bundle the library is attached to.
+         */
+        const Bundle                            * m_bundle;
 
 
-    /**
-     * @brief   Assignment operator.
-     *
-     * @remark  Assignment is forbidden for this class.
-     */
-    void operator=( const Native & ) throw();
+        /**
+         * @brief   Assignment operator.
+         *
+         * @remark  Assignment is forbidden for this class.
+         */
+        void operator=( const Native & ) throw();
 
 };
 
@@ -143,4 +142,4 @@ private:
 } // namespace fwRuntime
 
 
-#endif // #define _FWRUNTIME_DL_NATIVE_HPP
+#endif // __FWRUNTIME_DL_NATIVE_HPP__

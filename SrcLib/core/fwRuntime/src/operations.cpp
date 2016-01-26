@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,22 +27,23 @@ namespace
  * @brief   Functor that matches configuration element identifiers
  *          against the given identifier
  *
- * 
+ *
  */
 struct ConfigurationElementIdentifierPredicate
 {
     ConfigurationElementIdentifierPredicate( const std::string & identifier )
-    :   m_identifier( identifier )
-    {}
+        :   m_identifier( identifier )
+    {
+    }
 
-    bool operator() ( ::boost::shared_ptr< ConfigurationElement > element )
+    bool operator() ( std::shared_ptr< ConfigurationElement > element )
     {
         return element->getAttributeValue("id") == m_identifier;
     }
 
-private:
+    private:
 
-    std::string m_identifier;
+        std::string m_identifier;
 
 };
 
@@ -50,12 +51,16 @@ private:
 
 //------------------------------------------------------------------------------
 
-ConfigurationElement::sptr findConfigurationElement( const std::string & identifier, const std::string & pointIdentifier )
+ConfigurationElement::sptr findConfigurationElement( const std::string & identifier,
+                                                     const std::string & pointIdentifier )
 {
     typedef std::vector< ConfigurationElement::sptr >  ElementContainer;
     ConfigurationElement::sptr resultConfig;
-    ElementContainer            elements = getAllConfigurationElementsForPoint< ElementContainer >( pointIdentifier );
-    ElementContainer::iterator  foundElement = ::std::find_if( elements.begin(), elements.end(), ConfigurationElementIdentifierPredicate(identifier) );
+    ElementContainer elements =
+        getAllConfigurationElementsForPoint< ElementContainer >( pointIdentifier );
+    ElementContainer::iterator foundElement = ::std::find_if( elements.begin(),
+                                                              elements.end(),
+                                                              ConfigurationElementIdentifierPredicate(identifier) );
     if(foundElement != elements.end())
     {
         resultConfig = *foundElement;
@@ -65,7 +70,7 @@ ConfigurationElement::sptr findConfigurationElement( const std::string & identif
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< Extension > findExtension( const std::string & identifier )
+std::shared_ptr< Extension > findExtension( const std::string & identifier )
 {
     ::fwRuntime::Runtime* rntm = ::fwRuntime::Runtime::getDefault();
     return rntm->findExtension( identifier );
@@ -73,7 +78,7 @@ ConfigurationElement::sptr findConfigurationElement( const std::string & identif
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string &identifier)
+std::shared_ptr< ExtensionPoint > findExtensionPoint(const std::string &identifier)
 {
     ::fwRuntime::Runtime * rntm = ::fwRuntime::Runtime::getDefault();
     return rntm->findExtensionPoint( identifier );
@@ -81,30 +86,34 @@ ConfigurationElement::sptr findConfigurationElement( const std::string & identif
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier, const ::boost::filesystem::path &path) throw()
+const ::boost::filesystem::path getBundleResourcePath(const std::string& bundleIdentifier,
+                                                      const ::boost::filesystem::path &path) throw()
 {
-    Runtime *rntm = Runtime::getDefault();
-     ::boost::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier );
+    Runtime *rntm                     = Runtime::getDefault();
+    std::shared_ptr<Bundle>    bundle = rntm->findBundle( bundleIdentifier );
     return bundle != 0 ? getBundleResourcePath(bundle, path) : ::boost::filesystem::path();
 }
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getBundleResourcePath( ::boost::shared_ptr<Bundle> bundle, const ::boost::filesystem::path &path) throw()
+const ::boost::filesystem::path getBundleResourcePath( std::shared_ptr<Bundle> bundle,
+                                                       const ::boost::filesystem::path &path) throw()
 {
     return bundle->getLocation() / path;
 }
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getBundleResourcePath( ConfigurationElement::sptr element, const ::boost::filesystem::path &path) throw()
+const ::boost::filesystem::path getBundleResourcePath( ConfigurationElement::sptr element,
+                                                       const ::boost::filesystem::path &path) throw()
 {
     return getBundleResourcePath(element->getBundle(), path);
 }
 
 //------------------------------------------------------------------------------
 
-const ::boost::filesystem::path getBundleResourcePath(const IExecutable *executable, const ::boost::filesystem::path &path) throw()
+const ::boost::filesystem::path getBundleResourcePath(const IExecutable *executable,
+                                                      const ::boost::filesystem::path &path) throw()
 {
     return getBundleResourcePath(executable->getBundle(), path);
 }
@@ -135,7 +144,7 @@ void addBundles( const ::boost::filesystem::path & directory) throw(RuntimeExcep
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr< Bundle > findBundle( const std::string & identifier, const Version & version )
+std::shared_ptr< Bundle > findBundle( const std::string & identifier, const Version & version )
 {
     return Runtime::getDefault()->findBundle( identifier, version );
 }
@@ -147,7 +156,7 @@ void startBundle(const std::string &identifier) throw(RuntimeException)
     Runtime* rntm = Runtime::getDefault();
 
     // Retrieves the specified bundle.
-    ::boost::shared_ptr<Bundle> bundle = rntm->findBundle( identifier );
+    std::shared_ptr<Bundle> bundle = rntm->findBundle( identifier );
     if( bundle == 0 )
     {
         throw RuntimeException(identifier + ": bundle not found.");

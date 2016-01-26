@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_HELPER_FIELD_HPP_
-#define _FWCOMED_HELPER_FIELD_HPP_
+#ifndef __FWCOMED_HELPER_FIELD_HPP__
+#define __FWCOMED_HELPER_FIELD_HPP__
 
-#include <fwServices/IService.hpp>
-#include <fwServices/ObjectMsg.hpp>
+#include "fwComEd/config.hpp"
 
 #include <fwData/Object.hpp>
 
-#include "fwComEd/export.hpp"
+#include <fwServices/IService.hpp>
 
 
 namespace fwComEd
@@ -21,14 +20,12 @@ namespace helper
 {
 
 /**
- * @brief   Defines an helper to modify field on a ::fwData::Object and create a message notifying this modification.
- * 
- * @date    2007-2009.
+ * @brief   Defines a helper to modify field on a ::fwData::Object and create a message notifying this modification.
  */
 class FWCOMED_CLASS_API Field
 {
 
-public :
+public:
 
     /// Constructor. Initialize parameters.
     FWCOMED_API Field( ::fwData::Object::sptr object );
@@ -66,15 +63,23 @@ public :
     FWCOMED_API void removeField( const ::fwData::Object::FieldNameType &name );
 
     /// Send the built message
-    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource );
+    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource = ::fwServices::IService::sptr());
 
 protected:
     FWCOMED_API void buildMessage(
-            const ::fwData::Object::FieldMapType &oldFields,
-            const ::fwData::Object::FieldMapType &newFields
-            );
+        const ::fwData::Object::FieldMapType &oldFields,
+        const ::fwData::Object::FieldMapType &newFields
+        );
 
-    ::fwServices::ObjectMsg::sptr m_objectMsg;
+    /// Map of added objects, send on notify
+    ::fwData::Object::FieldsContainerType m_addedFields;
+    /// Map of new changed objects, send on notify
+    ::fwData::Object::FieldsContainerType m_newChangedFields;
+    /// Map of old changed objects, send on notify
+    ::fwData::Object::FieldsContainerType m_oldChangedFields;
+    /// Map of removed objects, send on notify
+    ::fwData::Object::FieldsContainerType m_removedFields;
+    /// Composite to add/remove/change objects
 
     ::fwData::Object::wptr m_object;
 };
@@ -86,10 +91,10 @@ inline SPTR(DATA_TYPE) Field::setDefaultField(const fwData::Object::FieldNameTyp
 {
     SLM_ASSERT("Field helper need a non-null object pointer", !m_object.expired());
     ::fwData::Object::sptr object = m_object.lock();
-    ::fwData::Object::sptr field = object->getField(name);
+    ::fwData::Object::sptr field  = object->getField(name);
     if (!field)
     {
-        m_objectMsg->appendAddedField(name, defaultValue);
+        m_addedFields[name] = defaultValue;
     }
     return object->setDefaultField(name, defaultValue);
 }
@@ -97,4 +102,4 @@ inline SPTR(DATA_TYPE) Field::setDefaultField(const fwData::Object::FieldNameTyp
 } // namespace helper
 } // namespace fwComEd
 
-#endif // _FWCOMED_HELPER_FIELD_HPP_
+#endif // __FWCOMED_HELPER_FIELD_HPP__

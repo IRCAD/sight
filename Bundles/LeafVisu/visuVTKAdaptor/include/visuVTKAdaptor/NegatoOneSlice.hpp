@@ -1,18 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_NEGATOONESLICE_HPP_
-#define _VISUVTKADAPTOR_NEGATOONESLICE_HPP_
+#ifndef __VISUVTKADAPTOR_NEGATOONESLICE_HPP__
+#define __VISUVTKADAPTOR_NEGATOONESLICE_HPP__
+
+#include "visuVTKAdaptor/config.hpp"
 
 #include <fwData/Image.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
 
 class vtkObject;
 
@@ -20,30 +21,55 @@ class vtkObject;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API NegatoOneSlice: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API NegatoOneSlice : public ::fwComEd::helper::MedicalImageAdaptor,
+                                                public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoOneSlice)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (NegatoOneSlice)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API NegatoOneSlice() throw();
 
     VISUVTKADAPTOR_API virtual ~NegatoOneSlice() throw();
 
-    void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
-    void setInterpolation(bool interpolation){m_interpolation = interpolation;};
-    void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
-    void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
-    void setActorOpacity(double actorOpacity) {m_actorOpacity = actorOpacity;};
+    void setAllowAlphaInTF(bool allow)
+    {
+        m_allowAlphaInTF = allow;
+    }
+    void setInterpolation(bool interpolation)
+    {
+        m_interpolation = interpolation;
+    }
+    void setVtkImageSourceId(std::string id)
+    {
+        m_imageSourceId = id;
+    }
+    void setVtkImageSource(vtkObject *obj)
+    {
+        m_imageSource = obj;
+    }
+    void setActorOpacity(double actorOpacity)
+    {
+        m_actorOpacity = actorOpacity;
+    }
 
-protected :
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_IMAGE_SLOT
+     * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_IMAGE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     /**
      * @brief Configures the service
@@ -65,7 +91,7 @@ protected :
      * - \b tfSelectionFwID (optional): fwID of the composite containing transfer functions
      * - \b selectedTFKey (optional): key of the transfer function to use in negato
      */
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     bool m_manageImageSource;
@@ -84,11 +110,22 @@ protected :
     ::fwRenderVTK::IVtkAdaptorService::wptr m_imageAdaptor;
     ::fwRenderVTK::IVtkAdaptorService::wptr m_imageSliceAdaptor;
 
+private:
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: update image slice type
+    void updateSliceType(int from, int to);
+
+    /// Slot: update image
+    void updateImage();
+    /**
+     * @}
+     */
 };
-
-
 
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_NEGATOONESLICE_HPP_
+#endif // __VISUVTKADAPTOR_NEGATOONESLICE_HPP__

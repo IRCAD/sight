@@ -1,7 +1,21 @@
 
 set( NAME Tuto03DataService )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE APP )
 set( DEPENDENCIES  )
-set( REQUIREMENTS io gui guiQt dataReg servicesReg visu visuVTKQt launcher ioVTK ioData vtkSimpleNegato uiIO appXml )
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+    gui
+    guiQt
+    io
+    ioVTK
+    uiIO # contains services to show dialogs for reader/writer selection
+    visuVTK
+    visuVTKQt
+    vtkSimpleNegato
+    launcher
+    appXml
+)
 
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoDataServiceConfig)

@@ -7,11 +7,11 @@
 #ifndef __FWDATA_POINT_HPP__
 #define __FWDATA_POINT_HPP__
 
-#include <fwMath/IntrasecTypes.hpp>
-
 #include "fwData/config.hpp"
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
+
+#include <array>
 
 fwCampAutoDeclareDataMacro((fwData)(Point), FWDATA_API);
 
@@ -24,18 +24,18 @@ namespace fwData
 class FWDATA_CLASS_API Point : public Object
 {
 
-public :
+public:
 
     typedef double PointCoordType;
-    typedef fwVec3d PointCoordArrayType;
+    typedef std::array<double, 3> PointCoordArrayType;
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Point)(::fwData::Object),
-       ((::fwData::factory::New< Point > ,() ))
-       ((PointFactory ,((float)) ((float)(0.0f)) ((float) (0.0f)) ))
-       ((PointFactory ,((double)) ((double)(0.0)) ((double) (0.0)) ))
-       ((PointFactory ,((const PointCoordArrayType&)) ))
-       ((PointFactory ,((Point::sptr)) ))
-       );
+                                               ((::fwData::factory::New< Point >,() ))
+                                                   ((PointFactory,((float))((float)(0.0f)) ((float) (0.0f)) ))
+                                                   ((PointFactory,((double))((double)(0.0)) ((double) (0.0)) ))
+                                                   ((PointFactory,((const PointCoordArrayType &)) ))
+                                                   ((PointFactory,((Point::sptr)) ))
+                                               );
 
     fwCampMakeFriendDataMacro((fwData)(Point));
 
@@ -54,10 +54,15 @@ public :
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-    /// Coordinates of point
-    fwGettersSettersDocMacro(Coord, vCoord, fwVec3d, point coordinates. );
+    /// @brief get/set point coordinates
+    /// @{
+    const PointCoordArrayType  getCoord () const;
+    PointCoordArrayType& getRefCoord ();
+    const PointCoordArrayType & getCRefCoord() const;
+    void setCoord(const PointCoordArrayType& _vCoord);
+    /// @}
 
-protected :
+protected:
 
     /// Point factory
     FWDATA_API static Point::sptr PointFactory(float x, float y, float z);
@@ -69,6 +74,36 @@ protected :
     PointCoordArrayType m_vCoord;
 
 }; // end class Point
+
+//-----------------------------------------------------------------------------
+
+inline const Point::PointCoordArrayType Point::getCoord () const
+{
+    return m_vCoord;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Point::PointCoordArrayType& Point::getRefCoord ()
+{
+    return this->m_vCoord;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Point::PointCoordArrayType & Point::getCRefCoord() const
+{
+    return this->m_vCoord;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Point::setCoord(const PointCoordArrayType & _vCoord)
+{
+    this->m_vCoord = _vCoord;
+}
+
+//-----------------------------------------------------------------------------
 
 } // end namespace fwData
 

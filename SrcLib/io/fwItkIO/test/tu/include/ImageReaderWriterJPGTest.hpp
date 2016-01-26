@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWITKIO_UT_IMAGEREADERWRITERJPGTEST_HPP_
-#define _FWITKIO_UT_IMAGEREADERWRITERJPGTEST_HPP_
+#ifndef __FWITKIO_UT_IMAGEREADERWRITERJPGTEST_HPP__
+#define __FWITKIO_UT_IMAGEREADERWRITERJPGTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <fwServices/macros.hpp>
@@ -20,10 +20,10 @@ namespace ut
 
 class ImageReaderWriterJPGTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( ImageReaderWriterJPGTest );
-    CPPUNIT_TEST( testImageWriter );
-    CPPUNIT_TEST( testImageWriter2 );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( ImageReaderWriterJPGTest );
+CPPUNIT_TEST( testImageWriter );
+CPPUNIT_TEST( testImageWriter2 );
+CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -39,4 +39,4 @@ public:
 } //namespace ut
 } //namespace fwItkIO
 
-#endif // _FWITKIO_UT_IMAGEREADERWRITERJPGTEST_HPP_
+#endif // __FWITKIO_UT_IMAGEREADERWRITERJPGTEST_HPP__

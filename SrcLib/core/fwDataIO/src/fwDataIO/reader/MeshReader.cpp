@@ -1,34 +1,27 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <fstream>
-
-#include <boost/cstdint.hpp>
-#include <boost/foreach.hpp>
-
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/home/phoenix/statement/sequence.hpp>
-#include <boost/spirit/home/phoenix/container.hpp>
-#include <boost/spirit/home/phoenix/bind/bind_member_function.hpp>
-#include <boost/spirit/home/phoenix/core/argument.hpp>
-#include <boost/spirit/home/phoenix/operator/bitwise.hpp>
-
-#include <fwData/Object.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/location/SingleFile.hpp>
-
-#include <fwComEd/helper/Mesh.hpp>
-#include <fwComEd/helper/Array.hpp>
-
 #include "fwDataIO/reader/MeshReader.hpp"
 #include "fwDataIO/reader/registry/macros.hpp"
 
+#include <fwComEd/helper/Array.hpp>
+#include <fwComEd/helper/Mesh.hpp>
+#include <fwData/location/SingleFile.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Object.hpp>
+
+#include <boost/cstdint.hpp>
+#include <boost/spirit/include/phoenix_bind.hpp>
+#include <boost/spirit/include/phoenix_core.hpp>
+#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/spirit/include/phoenix_statement.hpp>
+#include <boost/spirit/include/phoenix_stl.hpp>
+#include <boost/spirit/include/qi.hpp>
+#include <fstream>
+#include <iostream>
 
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::MeshReader );
 
@@ -42,14 +35,18 @@ namespace reader
 //------------------------------------------------------------------------------
 
 struct cell_data_offset_generator {
-        ::fwData::Mesh::CellDataOffsetType current;
-        cell_data_offset_generator() {current=0;}
-        int operator()() {
-            ::fwData::Mesh::CellDataOffsetType res = current;
-            current += 3;
-            return res;
-        }
-} ;
+    ::fwData::Mesh::CellDataOffsetType current;
+    cell_data_offset_generator()
+    {
+        current = 0;
+    }
+    int operator()()
+    {
+        ::fwData::Mesh::CellDataOffsetType res = current;
+        current += 3;
+        return res;
+    }
+};
 
 //------------------------------------------------------------------------------
 
@@ -101,82 +98,88 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
 
     bool r = phrase_parse(first, last,
 
-        //  Begin grammar
-        (
-            ulong_long
-            [
-                ref(nbPoints) = _1,
-                phx::bind(&::fwData::Mesh::setNumberOfPoints, *mesh, _1),
-                phx::push_back(phx::ref(pointArraySize),phx::ref(nbPoints)),
-                phx::bind(&::fwData::Array::resize, *pointArray, phx::ref(pointArraySize), true) ,
-                ref(pointArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::PointValueType >, pointHelper )
-            ]
+                          //  Begin grammar
+                          (
+                              ulong_long
+                              [
+                                  ref(nbPoints) = _1,
+                                  phx::bind(&::fwData::Mesh::setNumberOfPoints, mesh, _1),
+                                  phx::push_back(phx::ref(pointArraySize),phx::ref(nbPoints)),
+                                  phx::bind(&::fwData::Array::resize, pointArray, phx::ref(pointArraySize), true),
+                                  ref(pointArrayBuffer) =
+                                      phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::PointValueType >,
+                                                &pointHelper )
+                              ]
 
-            >> repeat(ref(nbPoints))
-            [
-                (float_ >> float_ >> float_)
-                [
-                    *ref(pointArrayBuffer)++ = _1,
-                    *ref(pointArrayBuffer)++ = _2,
-                    *ref(pointArrayBuffer)++ = _3
-                ]
-            ]
+                              >> repeat(ref(nbPoints))
+                              [
+                                  (float_ >> float_ >> float_)
+                                  [
+                                      *ref(pointArrayBuffer)++ = _1,
+                                      *ref(pointArrayBuffer)++ = _2,
+                                      *ref(pointArrayBuffer)++ = _3
+                                  ]
+                              ]
 
-            >> ulong_long
-            [
-                ref(nbCells) = _1,
-                phx::bind(&::fwData::Mesh::setNumberOfCells, *mesh, _1),
-                phx::bind(&::fwData::Mesh::setCellDataSize, *mesh, _1*3),
-                phx::bind(&::fwData::Mesh::adjustAllocatedMemory, *mesh),
-                ref(cellDataArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::CellValueType >, cellDataHelper ),
-                ref(cellNormalsArrayBuffer) = phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::NormalValueType >, cellNormalsHelper )
-            ]
+                              >> ulong_long
+                              [
+                                  ref(nbCells) = _1,
+                                  phx::bind(&::fwData::Mesh::setNumberOfCells, mesh, _1),
+                                  phx::bind(&::fwData::Mesh::setCellDataSize, mesh, _1*3),
+                                  phx::bind(&::fwData::Mesh::adjustAllocatedMemory, mesh),
+                                  ref(cellDataArrayBuffer) =
+                                      phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::CellValueType >,
+                                                &cellDataHelper ),
+                                  ref(cellNormalsArrayBuffer) =
+                                      phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::NormalValueType >,
+                                                &cellNormalsHelper )
+                              ]
 
-            >> repeat(ref(nbCells))
-            [
-                (int_ >> int_ >> int_ >> float_ >> float_ >> float_)
-                [
-                    *ref(cellDataArrayBuffer)++ = _1,
-                    *ref(cellDataArrayBuffer)++ = _2,
-                    *ref(cellDataArrayBuffer)++ = _3,
-                    *ref(cellNormalsArrayBuffer)++ = _4,
-                    *ref(cellNormalsArrayBuffer)++ = _5,
-                    *ref(cellNormalsArrayBuffer)++ = _6
-                ]
-            ]
-        ),
-        //  End grammar
+                              >> repeat(ref(nbCells))
+                              [
+                                  (int_ >> int_ >> int_ >> float_ >> float_ >> float_)
+                                  [
+                                      *ref(cellDataArrayBuffer)++ = _1,
+                                      *ref(cellDataArrayBuffer)++ = _2,
+                                      *ref(cellDataArrayBuffer)++ = _3,
+                                      *ref(cellNormalsArrayBuffer)++ = _4,
+                                      *ref(cellNormalsArrayBuffer)++ = _5,
+                                      *ref(cellNormalsArrayBuffer)++ = _6
+                                  ]
+                              ]
+                          ),
+                          //  End grammar
 
-        space
-        );
+                          space
+                          );
 
     std::fill(
-            cellTypesHelper.begin< ::fwData::Mesh::CellTypes >(),
-            cellTypesHelper.end< ::fwData::Mesh::CellTypes >(),
-            static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE)
-            );
+        cellTypesHelper.begin< ::fwData::Mesh::CellTypes >(),
+        cellTypesHelper.end< ::fwData::Mesh::CellTypes >(),
+        static_cast< ::fwData::Mesh::CellTypes >(::fwData::Mesh::TRIANGLE)
+        );
 
 
     cell_data_offset_generator cellDataOffsetGenerator;
 
     std::generate(
-            cellDataOffsetsHelper.begin< ::fwData::Mesh::CellDataOffsetType >(),
-            cellDataOffsetsHelper.end< ::fwData::Mesh::CellDataOffsetType >(),
-            cellDataOffsetGenerator
-            );
+        cellDataOffsetsHelper.begin< ::fwData::Mesh::CellDataOffsetType >(),
+        cellDataOffsetsHelper.end< ::fwData::Mesh::CellDataOffsetType >(),
+        cellDataOffsetGenerator
+        );
 
 
 
     // Check if normals array is filled of -1. values
     const float normalBadValue = -1.f;
-    float normal = normalBadValue;
-    int &n = *reinterpret_cast<int*>(&normal);
+    float normal               = normalBadValue;
+    int &n                     = *reinterpret_cast<int*>(&normal);
 
     std::for_each(
-            cellNormalsHelper.begin< int >(),
-            cellNormalsHelper.end< int >(),
-            ref(n) &= boost::phoenix::arg_names::arg1
-            );
+        cellNormalsHelper.begin< int >(),
+        cellNormalsHelper.end< int >(),
+        ref(n) &= boost::phoenix::arg_names::arg1
+        );
 
     if (normal == -1)
     {
@@ -185,7 +188,9 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     }
 
     if (first != last) // fail if we didn't get a full match
+    {
         return false;
+    }
     return r;
 
 }
@@ -195,20 +200,22 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
 //------------------------------------------------------------------------------
 
 MeshReader::MeshReader(::fwDataIO::reader::IObjectReader::Key key)
-: ::fwData::location::enableSingleFile< IObjectReader >(this)
-{}
+    : ::fwData::location::enableSingleFile< IObjectReader >(this)
+{
+}
 
 //------------------------------------------------------------------------------
 
 MeshReader::~MeshReader()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void MeshReader::read()
 {
-    assert( ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
-    ::boost::filesystem::path path = ::boost::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
+    assert( std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location) );
+    ::boost::filesystem::path path = std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
     SLM_TRACE( "Trian file: " + path.string());
     SLM_ASSERT("Empty path for Trian file", !path.empty() );
@@ -253,7 +260,7 @@ void MeshReader::read()
 
 //------------------------------------------------------------------------------
 
-std::string  MeshReader::extension()
+std::string MeshReader::extension()
 {
     return (".trian");
 }

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRENDER_IRENDER_HPP_
-#define _FWRENDER_IRENDER_HPP_
+#ifndef __FWRENDER_IRENDER_HPP__
+#define __FWRENDER_IRENDER_HPP__
 
 #include <fwTools/Failed.hpp>
 #include <fwServices/IService.hpp>
@@ -14,7 +14,6 @@
 
 #include "fwRender/config.hpp"
 
-class wxWindow;
 
 namespace fwRender
 {
@@ -22,7 +21,7 @@ namespace fwRender
 /**
  * @brief   Defines the service interface managing the rendering service for object.
  * @class   IRender
- * 
+ *
  * @date    2007-2009.
  *
  * Use the base service methods :
@@ -33,29 +32,30 @@ namespace fwRender
  * @li Finally we must call stop() before deleting the service
  *
  */
+
 class FWRENDER_CLASS_API IRender : public ::fwGui::IGuiContainerSrv
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IRender)(::fwGui::IGuiContainerSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (IRender)(::fwGui::IGuiContainerSrv) );
 
-protected :
+protected:
 
     /**
      * @brief   Constructor. Initialize default values.
      */
-    FWRENDER_API IRender() throw() ;
+    FWRENDER_API IRender() throw();
 
     /**
      * @brief   Destructor. Do nothing.
      */
-    FWRENDER_API virtual ~IRender() throw() ;
+    FWRENDER_API virtual ~IRender() throw();
 
 };
 
 } // namespace fwRenderVTK
 
-#endif /*_FWRENDER_IRENDER_HPP_*/
+#endif /*__FWRENDER_IRENDER_HPP__*/
 
 

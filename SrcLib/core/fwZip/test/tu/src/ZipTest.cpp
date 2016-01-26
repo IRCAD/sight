@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,7 +12,6 @@
 #include <fwTools/System.hpp>
 #include <fwTest/Data.hpp>
 
-#include <boost/make_shared.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
 
@@ -40,16 +39,16 @@ void ZipTest::commentTest()
 
     const ::boost::filesystem::path dirPath = ::fwTools::System::getTemporaryFolder() / "fwZipTest";
     ::boost::filesystem::create_directories( dirPath );
-    const ::boost::filesystem::path path = dirPath / "jambon.zip";
-    const ::boost::filesystem::path sourceFile = ::fwTest::Data::dir() / "fw4spl/image/jpg/makao01.jpg";
+    const ::boost::filesystem::path path        = dirPath / "jambon.zip";
+    const ::boost::filesystem::path sourceFile  = ::fwTest::Data::dir() / "fw4spl/image/jpg/makao01.jpg";
     const ::boost::filesystem::path archiveFile = "makao.jpg";
 
 
-    SPTR(WriteZipArchive) writer = ::boost::make_shared<WriteZipArchive>(path, writerComment);
+    SPTR(WriteZipArchive) writer = std::make_shared<WriteZipArchive>(path, writerComment);
     writer->putFile(sourceFile, archiveFile);
     writer->createFile("");
 
-    SPTR(ReadZipArchive) reader = ::boost::make_shared<ReadZipArchive>(path);
+    SPTR(ReadZipArchive) reader = std::make_shared<ReadZipArchive>(path);
     std::string readerComment = reader->getComment();
 
     ::boost::filesystem::remove_all( path );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,6 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include <boost/make_shared.hpp>
 
 #include <fwCore/macros.hpp>
 
@@ -33,7 +32,7 @@ public:
 
     fwCoreClassDefinitionsWithFactoryMacro((ReadDirArchive)(IReadArchive),
                                            ((( const ::boost::filesystem::path& ))),
-                                           ::boost::make_shared< ReadDirArchive >);
+                                           std::make_shared< ReadDirArchive >);
 
     /// Constructors. Initializes archive path.
     FWZIP_API ReadDirArchive( const ::boost::filesystem::path &archive );
@@ -61,11 +60,6 @@ public:
     }
 
 protected:
-
-    /**
-     * @brief Returns true if path exists in archive.
-     */
-    FWZIP_API bool exists(const ::boost::filesystem::path &path);
 
     ::boost::filesystem::path m_archive;
 };

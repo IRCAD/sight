@@ -1,18 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP_
-#define _VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP_
+#ifndef __VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP__
+#define __VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP__
 
-
-#include <fwData/PointList.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include "visuVTKAdaptor/config.hpp"
+
+#include <fwData/PointList.hpp>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
 
 class vtkCommand;
 
@@ -22,14 +22,14 @@ namespace visuVTKAdaptor
 
 
 /**
-* @brief Adaptor to display distance on an image
-*/
-class VISUVTKADAPTOR_CLASS_API ImageMultiDistances: public ::fwRenderVTK::IVtkAdaptorService
+ * @brief Adaptor to display distance on an image
+ */
+class VISUVTKADAPTOR_CLASS_API ImageMultiDistances : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageMultiDistances)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageMultiDistances)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API ImageMultiDistances() throw();
 
@@ -39,18 +39,27 @@ public:
 
     VISUVTKADAPTOR_API virtual void show(bool showDistances = true);
 
-protected :
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_DISTANCE_ADDED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_DISTANCE_REMOVED_SIG to this::s_REMOVE_DISTANCE_SLOT
+     * Connect Image::s_DISTANCE_DISPLAYED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API virtual void doReceive( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     void installSubServices( ::fwData::PointList::sptr pl );
     ::fwData::Point::sptr screenToWorld(int X,int Y);
-    void removeDistance(  ::fwData::PointList::sptr plToRemove ) throw(::fwTools::Failed);
+
     void createNewDistance( std::string sceneId ) throw(::fwTools::Failed);
 
     std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
@@ -59,6 +68,20 @@ protected :
 
     bool m_needSubservicesDeletion;
 
+private:
+
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: remove distance
+    void removeDistance(::fwData::PointList::sptr pointList);
+
+    /// Slot: to create a new distance attached to this adaptor
+    void createDistance();
+    /**
+     * @}
+     */
 };
 
 
@@ -66,4 +89,4 @@ protected :
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP_
+#endif // __VISUVTKADAPTOR_IMAGEMULTIDISTANCES_HPP__

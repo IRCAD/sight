@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef __FWGUIQT_UTIL_FUNCSLOT_HPP__
 #define __FWGUIQT_UTIL_FUNCSLOT_HPP__
 
@@ -16,7 +22,7 @@ namespace util
 
 class FWGUIQT_CLASS_API FuncSlot : public QObject
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
     FWGUIQT_API FuncSlot();
@@ -43,5 +49,5 @@ protected:
 
 } // namespace fwGuiQt
 
-#endif
+#endif //__FWGUIQT_UTIL_FUNCSLOT_HPP__
 

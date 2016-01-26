@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIMAGEQT_WINDOWLEVEL_HPP_
-#define _UIIMAGEQT_WINDOWLEVEL_HPP_
+#ifndef __UIIMAGEQT_WINDOWLEVEL_HPP__
+#define __UIIMAGEQT_WINDOWLEVEL_HPP__
 
 #include <QObject>
 #include <QPointer>
@@ -35,28 +35,37 @@ namespace uiImage
 /**
  * @brief   WindowLevel service allows to change the min / max value of windowing.
  * @class   WindowLevel
- * 
+ *
  * @date    2010-2011.
  *
  * This is represented by
  *  - two sliders to modify the min, max value of windowing
  */
-class UIIMAGEQT_CLASS_API WindowLevel : public QObject, public ::fwComEd::helper::MedicalImageAdaptor, public ::gui::editor::IEditor
+class UIIMAGEQT_CLASS_API WindowLevel : public QObject,
+                                        public ::fwComEd::helper::MedicalImageAdaptor,
+                                        public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
 
-    fwCoreServiceClassDefinitionsMacro ( (WindowLevel)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (WindowLevel)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UIIMAGEQT_API WindowLevel() throw() ;
+    UIIMAGEQT_API WindowLevel() throw();
 
     /// Destructor. Do nothing.
-    UIIMAGEQT_API virtual ~WindowLevel() throw() ;
+    UIIMAGEQT_API virtual ~WindowLevel() throw();
 
-    UIIMAGEQT_API void notifyWindowLevelCallback();
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    UIIMAGEQT_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
 
@@ -69,9 +78,6 @@ protected:
      * @brief Destroy the layout.
      */
     virtual void stopping() throw(::fwTools::Failed);
-
-    /// Management of observations : update editor according to the received message
-    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
 
     /// Update editor information from the image
     virtual void updating() throw(::fwTools::Failed);
@@ -97,9 +103,16 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    UIIMAGEQT_API virtual void info( std::ostream &_sstream ) ;
+    UIIMAGEQT_API virtual void info( std::ostream &_sstream );
 
     virtual void setEnabled(bool enable);
+
+
+    /// Called when transfer function points are modified.
+    UIIMAGEQT_API virtual void updatingTFPoints();
+
+    /// Called when transfer function windowing is modified.
+    UIIMAGEQT_API virtual void updatingTFWindowing(double window, double level);
 
 
 protected Q_SLOTS:
@@ -120,7 +133,6 @@ protected:
     WindowLevelMinMaxType getImageWindowMinMax();
 
     void onImageWindowLevelChanged(double _imageMin, double _imageMax);
-    void notifyWindowLevel(double _imageMin, double _imageMax);
 
     void updateWidgetMinMax(double _imageMin, double _imageMax);
     void updateImageWindowLevel(double _imageMin, double _imageMax);
@@ -149,11 +161,8 @@ private:
 
     double m_widgetDynamicRangeMin;
     double m_widgetDynamicRangeWidth;
-    double m_imageMin;
-    double m_imageMax;
     double m_notifiedImageMin;
     double m_notifiedImageMax;
-    bool m_isNotifying;
     bool m_autoWindowing;
     bool m_useImageGreyLevelTF;
 
@@ -165,6 +174,6 @@ private:
 
 } // uiImage
 
-#endif /*_UIIMAGEQT_WINDOWLEVEL_HPP_*/
+#endif /*__UIIMAGEQT_WINDOWLEVEL_HPP__*/
 
 

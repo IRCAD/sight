@@ -1,3 +1,0 @@
-TYPE    = 'bundle'
-VERSION = '0-1'
-LIB     = ['fwRuntime_0-3','fwStructuralPatch_0-1','fwMDSemanticPatch_0-1']

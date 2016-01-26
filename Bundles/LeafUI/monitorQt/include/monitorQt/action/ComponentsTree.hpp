@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __MONITORQT_UI_ACTION_COMPONENTSTREE_HPP__
-#define __MONITORQT_UI_ACTION_COMPONENTSTREE_HPP__
+#ifndef __MONITORQT_ACTION_COMPONENTSTREE_HPP__
+#define __MONITORQT_ACTION_COMPONENTSTREE_HPP__
 
 #include <QDialog>
 #include <QPointer>
@@ -29,15 +29,15 @@ class MONITORQT_CLASS_API ComponentsTree : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ComponentsTree)(::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ComponentsTree)(::fwGui::IActionSrv) );
 
     /// Does nothing
-    MONITORQT_API ComponentsTree() throw() ;
+    MONITORQT_API ComponentsTree() throw();
 
     /// Does nothing
-    MONITORQT_API virtual ~ComponentsTree() throw() ;
+    MONITORQT_API virtual ~ComponentsTree() throw();
 
-protected :
+protected:
 
     /// Calls classic IAction methods to configure
     void configuring() throw (::fwTools::Failed);
@@ -64,5 +64,5 @@ private:
 } // namespace action
 } // namespace monitor
 
-#endif //__MONITORQT_UI_ACTION_COMPONENTSTREE_HPP__
+#endif //__MONITORQT_ACTION_COMPONENTSTREE_HPP__
 

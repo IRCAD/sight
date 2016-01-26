@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,9 +18,11 @@
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
+#include <fwRuntime/profile/Profile.hpp>
+
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
-
+#include <functional>
 #include <QEvent>
 #include <QDir>
 #include <QPointer>
@@ -36,8 +38,8 @@ namespace fwGuiQt
 class WorkerQtTask : public QEvent
 {
 public:
-    WorkerQtTask( const ::fwThread::Worker::TaskType &handler )
-        : QEvent( static_cast< QEvent::Type >(s_WORKER_QT_TASK_EVENT_TYPE) ),
+    WorkerQtTask( const ::fwThread::Worker::TaskType &handler ) :
+        QEvent( static_cast< QEvent::Type >(s_WORKER_QT_TASK_EVENT_TYPE) ),
         m_handler( handler )
     {
         SLM_ASSERT( "QApplication should be instantiated", qApp );
@@ -69,7 +71,7 @@ public:
 
     WorkerQt();
 
-    void init( int &argc, char **argv );
+    void init( int& argc, char **argv, bool guiEnabled = true );
 
     virtual ~WorkerQt();
 
@@ -87,6 +89,8 @@ public:
 
 protected:
 
+    int m_argc;
+
     QSharedPointer< QApplication > m_app;
 
     SPTR(::fwThread::Timer) createTimer();
@@ -98,82 +102,27 @@ protected:
     WorkerQt& operator=( const WorkerQt& );
 
     ::fwThread::ThreadIdType m_threadId;
-
 };
 
 
+//-----------------------------------------------------------------------------
 
-struct FWGUIQT_CLASS_API WorkerQtInstanciator
+::fwThread::Worker::sptr getQtWorker(int& argc, char **argv, bool guiEnabled)
 {
+    SPTR(WorkerQt) workerQt = std::make_shared< WorkerQt >();
+    workerQt->init(argc, argv, guiEnabled);
 
-    FWGUIQT_API WorkerQtInstanciator(bool reg = true ) ;
+    ::fwServices::registry::ActiveWorkers::getDefault()->addWorker(
+        ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, workerQt);
 
-    FWGUIQT_API SPTR(::fwThread::Worker) getWorker();
-
-    SPTR(WorkerQt) m_qtWorker;
-
-    FWGUIQT_API static int    s_argc;
-    FWGUIQT_API static char **s_argv;
-    FWGUIQT_API static bool   s_GUIenabled;
-};
-
-int WorkerQtInstanciator::s_argc = 0 ;
-char** WorkerQtInstanciator::s_argv = NULL;
-bool WorkerQtInstanciator::s_GUIenabled = true;
-
-FWGUIQT_API WorkerQtInstanciator::WorkerQtInstanciator(bool reg) :
-    m_qtWorker(::boost::make_shared< WorkerQt >())
-{
-    m_qtWorker->init( boost::ref(s_argc), s_argv);
-
-    if(reg)
-    {
-        ::fwServices::registry::ActiveWorkers::getDefault()
-            ->addWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_qtWorker);
-    }
+    return workerQt;
 }
 
-
-SPTR(::fwThread::Worker) WorkerQtInstanciator::getWorker()
-{
-    return m_qtWorker;
-}
-
-::fwThread::Worker::sptr getQtWorker( int &argc, char **argv )
-{
-
-    WorkerQtInstanciator::s_argc = argc;
-    WorkerQtInstanciator::s_argv = argv;
-
-    typedef ::fwCore::util::LazyInstantiator< WorkerQtInstanciator, WorkerQtInstanciator > InstantiatorType;
-
-    SPTR(WorkerQtInstanciator) instanciator = InstantiatorType::getInstance();
-
-#ifdef _DEBUG
-    {
-        static ::boost::mutex mutex;
-        ::boost::mutex::scoped_lock scoped_lock(mutex);
-        static bool initialized = false;
-        SLM_ASSERT("getQtWorker(argc, argv) shall be called only once", !initialized);
-        initialized = true;
-    }
-#endif
-
-
-    return instanciator->m_qtWorker;
-}
-
-
-
-//------------------------------------------------------------------------------
-
+//-----------------------------------------------------------------------------
 
 /**
  * @class TimerQt
  * @brief Private Timer implementation using Qt.
- *
- *
- * @date   2012.
  */
 class TimerQt : public ::fwThread::Timer
 {
@@ -240,49 +189,46 @@ protected:
 // ---------- WorkerQt private implementation ----------
 
 WorkerQt::WorkerQt() :
-    m_app(NULL),
+    m_argc(0),
+    m_app(nullptr),
     m_threadId( ::fwThread::getCurrentThreadId() )
 {
 }
 
-void WorkerQt::init( int &argc, char **argv )
+//------------------------------------------------------------------------------
+
+void WorkerQt::init( int& argc, char **argv, bool guiEnabled )
 {
-#ifdef __MACOSX__
-    if ( QSysInfo::MacintoshVersion > QSysInfo::MV_10_8 )
-    {
-        // https://bugreports.qt-project.org/browse/QTBUG-32789 #fix for Mac OS X 10.9
-        QFont::insertSubstitution(".Lucida Grande UI", "Lucida Grande");
-    }
-#endif
-
-    m_app = QSharedPointer< QApplication > ( new ::fwGuiQt::App( argc, argv, WorkerQtInstanciator::s_GUIenabled ) );
-
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
 
-    QDir pluginDir("./qtplugins");
+    QDir pluginDir("./plugins");
     if (pluginDir.exists())
     {
         QCoreApplication::setLibraryPaths(QStringList(pluginDir.absolutePath()));
     }
+    m_argc = argc;
+    m_app  = QSharedPointer< QApplication > ( new ::fwGuiQt::App( m_argc, argv, guiEnabled ) );
 
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Finish");
-
 }
+
+//------------------------------------------------------------------------------
 
 WorkerQt::~WorkerQt()
 {
     this->stop();
 }
 
+//------------------------------------------------------------------------------
 
 ::fwThread::Worker::FutureType WorkerQt::getFuture()
 {
-    if (! m_future.valid() )
+    if (!m_future.valid() )
     {
         SLM_ASSERT("WorkerQt loop shall be created and ran from main thread ",
-            ! m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
+                   !m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
 
-        ::boost::packaged_task< ExitReturnType > task( ::boost::bind(&QApplication::exec) );
+        ::boost::packaged_task< ExitReturnType > task( std::bind(&QApplication::exec) );
 
         ::boost::future< ExitReturnType > ufuture = task.get_future();
 
@@ -294,32 +240,41 @@ WorkerQt::~WorkerQt()
     return m_future;
 }
 
+//------------------------------------------------------------------------------
 
 ::fwThread::ThreadIdType WorkerQt::getThreadId() const
 {
     return m_threadId;
 }
 
+//------------------------------------------------------------------------------
 
 void WorkerQt::stop()
 {
     this->postTask<void>(&QApplication::quit).wait();
 }
+//------------------------------------------------------------------------------
 
 SPTR(::fwThread::Timer) WorkerQt::createTimer()
 {
-    return ::boost::make_shared< TimerQt >();
+    return std::make_shared< TimerQt >();
 }
+
+//------------------------------------------------------------------------------
 
 void WorkerQt::post(TaskType handler)
 {
     QApplication::postEvent( qApp, new WorkerQtTask(handler) );
 }
 
+//------------------------------------------------------------------------------
+
 void WorkerQt::processTasks()
 {
     QApplication::sendPostedEvents(0, ::fwGuiQt::WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE);
 }
+
+//------------------------------------------------------------------------------
 
 void WorkerQt::processTasks(PeriodType maxtime)
 {
@@ -328,12 +283,13 @@ void WorkerQt::processTasks(PeriodType maxtime)
 
 // ---------- Timer private implementation ----------
 
-TimerQt::TimerQt() :
-    m_timerQt( new QTimer(qApp) )
+TimerQt::TimerQt() : m_timerQt( new QTimer(qApp) )
 {
     m_qtFunc = new ::fwGuiQt::util::FuncSlot();
     QObject::connect(m_timerQt, SIGNAL(timeout()), m_qtFunc, SLOT(trigger()));
 }
+
+//------------------------------------------------------------------------------
 
 TimerQt::~TimerQt()
 {
@@ -343,13 +299,17 @@ TimerQt::~TimerQt()
     delete m_timerQt;
 }
 
+//------------------------------------------------------------------------------
+
 void TimerQt::setDuration(TimeDurationType duration)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
     m_timerQt->setInterval( static_cast<int>(
-                                    ::boost::chrono::duration_cast< ::boost::chrono::milliseconds >(duration).count())
+                                ::boost::chrono::duration_cast< ::boost::chrono::milliseconds >(duration).count())
                             );
 }
+
+//------------------------------------------------------------------------------
 
 void TimerQt::start()
 {
@@ -357,18 +317,22 @@ void TimerQt::start()
     m_timerQt->start();
 }
 
+//------------------------------------------------------------------------------
+
 void TimerQt::stop()
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
     m_timerQt->stop();
 }
 
+//------------------------------------------------------------------------------
 
 void TimerQt::call()
 {
     m_function();
 }
 
+//------------------------------------------------------------------------------
 
 void TimerQt::updatedFunction()
 {

@@ -1,4 +1,4 @@
-<plugin id="opImageFilter" class="::opImageFilter::Plugin">
+<plugin id="opImageFilter" class="::opImageFilter::Plugin" version="@DASH_VERSION@" >
     
     <library name="opImageFilter" />
 
@@ -7,7 +7,7 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
-        <service>::opImageFilter::action::ImageFilter</service>
+        <service>::opImageFilter::action::SThreshold</service>
         <object>::fwData::Object</object>
     </extension>
     

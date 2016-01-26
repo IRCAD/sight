@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWGUI_REGISTRAR_TOOLBARREGISTRYMANAGER_HPP_
-#define _FWGUI_REGISTRAR_TOOLBARREGISTRYMANAGER_HPP_
+#ifndef __FWGUI_REGISTRAR_TOOLBARREGISTRAR_HPP__
+#define __FWGUI_REGISTRAR_TOOLBARREGISTRAR_HPP__
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -26,7 +26,7 @@ namespace registrar
 /**
  * @brief   Defines the toolBar registrar for IHM.
  * @class   ToolBarRegistrar
- * 
+ *
  * @date    2009-2010.
  *
  */
@@ -35,7 +35,8 @@ class FWGUI_CLASS_API ToolBarRegistrar : public ::fwGui::GuiBaseObject
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )), new ToolBarRegistrar );
+    fwCoreClassDefinitionsWithFactoryMacro( (ToolBarRegistrar)(::fwGui::GuiBaseObject), (( (const std::string&) )),
+                                            new ToolBarRegistrar );
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.
@@ -52,14 +53,15 @@ public:
      * @param actionSid sid of the action service
      * @param menuItems  vector containing the fwMenuItem manages by this registrar.
      */
-    FWGUI_API virtual ::fwGui::container::fwMenuItem::sptr getFwMenuItem(std::string actionSid, std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems);
+    FWGUI_API virtual ::fwGui::container::fwMenuItem::sptr getFwMenuItem(std::string actionSid,
+                                                                         std::vector< ::fwGui::container::fwMenuItem::sptr > menuItems);
 
     /**
      * @brief Initialize registry managers.
      *
      * Example of configuration
      * @verbatim
-           <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no" >
+           <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
                <gui>
                    <layout>
                        <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
@@ -143,7 +145,10 @@ public:
     /**
      * @brief Returns callbacks associate with toolBar items.
      */
-    virtual CallbacksType getCallbacks(){ return m_callbacks;};
+    virtual CallbacksType getCallbacks()
+    {
+        return m_callbacks;
+    }
 
 protected:
 
@@ -178,6 +183,6 @@ protected:
 } // namespace registrar
 } // namespace fwGui
 
-#endif /*_FWGUI_REGISTRAR_TOOLBARREGISTRYMANAGER_HPP_*/
+#endif /*__FWGUI_REGISTRAR_TOOLBARREGISTRAR_HPP__*/
 
 

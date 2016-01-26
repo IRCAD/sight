@@ -1,21 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <QBoxLayout>
-#include <QGroupBox>
-#include <QStyle>
-#include <QScrollArea>
+#include "fwGuiQt/layoutManager/LineLayoutManager.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/layoutManager/LineLayoutManager.hpp"
-
+#include <QBoxLayout>
+#include <QGroupBox>
+#include <QScrollArea>
+#include <QStyle>
 
 fwGuiRegisterMacro( ::fwGui::LineLayoutManager, ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY );
 
@@ -26,12 +23,14 @@ namespace fwGui
 //-----------------------------------------------------------------------------
 
 LineLayoutManager::LineLayoutManager(::fwGui::GuiBaseObject::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 LineLayoutManager::~LineLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -44,7 +43,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
     QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    QWidget *qtContainer = m_parentContainer->getQtContainer();
+    QWidget *qtContainer    = m_parentContainer->getQtContainer();
     Orientation orientation = this->getOrientation();
 
     if( orientation == VERTICAL )
@@ -59,7 +58,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
     qtContainer->setLayout(layout);
 
     const std::list< ViewInfo> &views = this->getViewsInfo();
-    BOOST_FOREACH ( ViewInfo viewInfo, views)
+    for ( ViewInfo viewInfo : views)
     {
         if(viewInfo.m_isSpacer)
         {
@@ -73,7 +72,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
             {
                 QGroupBox *groupbox = new QGroupBox(qtContainer);
                 groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
-                panel = groupbox;
+                panel   = groupbox;
                 border += groupbox->style()->pixelMetric(QStyle::PM_LayoutTopMargin);
             }
             else

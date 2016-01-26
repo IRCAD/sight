@@ -1,18 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwTools/Type.hpp>
-
-#include <fwTest/generator/Mesh.hpp>
 
 #include "fwMedData/ModelSeries.hpp"
 
 #include "ModelSeriesTest.hpp"
+
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwTest/generator/Mesh.hpp>
+#include <fwTools/Type.hpp>
 
 
 // Registers the fixture into the 'registry'
@@ -69,6 +70,59 @@ void ModelSeriesTest::modelTest()
     CPPUNIT_ASSERT_EQUAL(2, (int)m_series->getReconstructionDB().size());
     CPPUNIT_ASSERT_EQUAL(rec1, m_series->getReconstructionDB()[0]);
     CPPUNIT_ASSERT_EQUAL(rec2, m_series->getReconstructionDB()[1]);
+}
+
+//------------------------------------------------------------------------------
+
+void ModelSeriesTest::deepCopyTest()
+{
+    CPPUNIT_ASSERT(m_series);
+
+    ::fwData::Reconstruction::sptr rec1 = ::fwData::Reconstruction::New();
+    ::fwData::Mesh::sptr mesh1          = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
+
+    rec1->setMesh(mesh1);
+    ModelSeries::ReconstructionVectorType recs;
+    recs.push_back(rec1);
+    m_series->setReconstructionDB(recs);
+
+    ::fwMedData::ModelSeries::sptr secondSeries = ::fwMedData::ModelSeries::New();
+
+    secondSeries->deepCopy(m_series);
+
+    CPPUNIT_ASSERT_EQUAL(1, (int)m_series->getReconstructionDB().size());
+    CPPUNIT_ASSERT_EQUAL(1, (int)secondSeries->getReconstructionDB().size());
+    CPPUNIT_ASSERT (m_series->getReconstructionDB()[0] != secondSeries->getReconstructionDB()[0]);
+
+}
+
+//------------------------------------------------------------------------------
+
+void ModelSeriesTest::shallowCopyTest()
+{
+    CPPUNIT_ASSERT(m_series);
+
+    ::fwData::Reconstruction::sptr rec1 = ::fwData::Reconstruction::New();
+    ::fwData::Mesh::sptr mesh1          = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateQuadMesh(mesh1);
+    rec1->setMesh(mesh1);
+    ModelSeries::ReconstructionVectorType recs;
+    recs.push_back(rec1);
+    m_series->setReconstructionDB(recs);
+
+    ::fwMedData::ModelSeries::sptr secondSeries = ::fwMedData::ModelSeries::New();
+
+    secondSeries->shallowCopy(m_series);
+
+    CPPUNIT_ASSERT(m_series->getReconstructionDB()[0] == secondSeries->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT_EQUAL(m_series->getReconstructionDB()[0], secondSeries->getReconstructionDB()[0]);
+
+    CPPUNIT_ASSERT_EQUAL(recs[0], m_series->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT_EQUAL(recs[0], secondSeries->getReconstructionDB()[0]);
+    CPPUNIT_ASSERT_EQUAL(1, (int)m_series->getReconstructionDB().size());
+    CPPUNIT_ASSERT_EQUAL(1, (int)secondSeries->getReconstructionDB().size());
+
 }
 
 //------------------------------------------------------------------------------

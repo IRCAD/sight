@@ -1,4 +1,0 @@
-TYPE = 'shared'
-VERSION = '0.1'
-USE = ['boost','camp']
-LIB = ['fwData_0.1', 'fwAtoms_0.1', 'fwDataCamp_0.1']

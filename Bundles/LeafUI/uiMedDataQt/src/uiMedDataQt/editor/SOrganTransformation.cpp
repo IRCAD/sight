@@ -1,8 +1,26 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "uiMedDataQt/editor/SOrganTransformation.hpp"
+
+#include <fwComEd/helper/Composite.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwDataTools/TransformationMatrix3D.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwTools/fwID.hpp>
 
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -15,28 +33,6 @@
 #include <QCheckBox>
 
 #include <map>
-
-#include <fwTools/fwID.hpp>
-
-#include <fwData/Composite.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwDataTools/TransformationMatrix3D.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwComEd/ModelSeriesMsg.hpp>
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
-#include <fwComEd/helper/Composite.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include "uiMedDataQt/editor/SOrganTransformation.hpp"
 
 namespace uiMedData
 {
@@ -52,13 +48,13 @@ SOrganTransformation::SOrganTransformation() throw() :
     m_reconstructionListBox( 0 ),
     m_saveCount( 0 )
 {
-    //addNewHandledEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION );
 }
 
 //------------------------------------------------------------------------------
 
 SOrganTransformation::~SOrganTransformation() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -77,7 +73,7 @@ void SOrganTransformation::starting() throw( ::fwTools::Failed )
 {
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
-            ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+        ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -151,20 +147,9 @@ void SOrganTransformation::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::receiving( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
-{
-    ::fwComEd::ModelSeriesMsg::csptr pMessage = ::fwComEd::ModelSeriesMsg::dynamicConstCast( msg );
-
-    if( pMessage && pMessage->hasEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION ) )
-    {
-        this->updating();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SOrganTransformation::info( ::std::ostream& sstream )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -176,7 +161,7 @@ void SOrganTransformation::refresh()
     ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
-            ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+        ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -189,10 +174,10 @@ void SOrganTransformation::refresh()
         if (::fwTools::fwID::exist(m_TMSUid))
         {
             pComposite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_TMSUid));
-            SLM_ASSERT("Sorry, '"<< m_TMSUid <<"' object is not a composite", pComposite);
+            SLM_ASSERT("The object '"<< m_TMSUid <<"' is not a composite", pComposite);
         }
 
-        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
+        for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
             m_reconstructionMap[ rec->getOrganName() ] = rec;
         }
@@ -218,9 +203,8 @@ void SOrganTransformation::refresh()
 
 void SOrganTransformation::notitfyTransformationMatrix(::fwData::TransformationMatrix3D::sptr aTransMat)
 {
-    ::fwComEd::TransformationMatrix3DMsg::sptr message = ::fwComEd::TransformationMatrix3DMsg::New();
-    message->addEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
-    ::fwServices::IEditionService::notify( getSptr(), aTransMat, message );
+    auto sig = aTransMat->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
@@ -231,11 +215,11 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem *currentItem)
     if (::fwTools::fwID::exist(m_TMSUid))
     {
         pComposite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_TMSUid));
-        SLM_ASSERT("Sorry, '"<< m_TMSUid <<"' object is not a composite", pComposite);
+        SLM_ASSERT("The object '"<< m_TMSUid <<"' is not a composite", pComposite);
 
-        ::std::string item_name = currentItem->text().toStdString();
+        ::std::string item_name                        = currentItem->text().toStdString();
         ::fwData::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
-        ::fwData::Mesh::sptr pMesh = pReconstruction->getMesh();
+        ::fwData::Mesh::sptr pMesh                     = pReconstruction->getMesh();
 
         ::fwComEd::helper::Composite aCompositeHelper(pComposite);
         if ((currentItem->checkState()) == Qt::Checked)
@@ -256,7 +240,7 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem *currentItem)
                 aCompositeHelper.remove(item_name);
             }
         }
-        aCompositeHelper.notify(this->getSptr());
+        aCompositeHelper.notify();
     }
 }
 
@@ -267,12 +251,12 @@ void SOrganTransformation::onResetClick()
     ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
 
     //search the corresponding triangular mesh
-    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
+    for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
     {
         ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
 
         ::fwData::TransformationMatrix3D::sptr pTmpMat =
-                pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+            pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
         if (pTmpMat)
         {
             ::fwDataTools::TransformationMatrix3D::identity(pTmpMat);
@@ -291,15 +275,15 @@ void SOrganTransformation::onSaveClick()
 
     if(!series->getReconstructionDB().empty())
     {
-        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
+        for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
-            ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
+            ::fwData::Mesh::sptr pTmpTrMesh                = rec->getMesh();
             ::fwData::TransformationMatrix3D::sptr pTmpMat =
-                    pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+                pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
             if (pTmpMat)
             {
                 ::fwData::TransformationMatrix3D::sptr pCpyTmpMat;
-                pCpyTmpMat = ::fwData::Object::copy(pTmpMat);
+                pCpyTmpMat                  = ::fwData::Object::copy(pTmpMat);
                 matMap[pTmpTrMesh->getID()] = pCpyTmpMat;
             }
         }
@@ -323,13 +307,13 @@ void SOrganTransformation::onLoadClick()
         ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
 
         //search the corresponding triangular mesh
-        BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
+        for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
         {
             ::fwData::Mesh::sptr pTmpTrMesh = rec->getMesh();
             if (matMap.find(pTmpTrMesh->getID()) != matMap.end())
             {
                 ::fwData::TransformationMatrix3D::sptr pTmpMat =
-                        pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
+                    pTmpTrMesh->getField< ::fwData::TransformationMatrix3D>( "TransformMatrix" );
                 if (pTmpMat)
                 {
                     pTmpMat->shallowCopy(matMap[pTmpTrMesh->getID()]);
@@ -356,7 +340,7 @@ void SOrganTransformation::onSelectAllChanged(int state)
 
             ::fwMedData::ModelSeries::sptr series = this->getObject< ::fwMedData::ModelSeries >();
 
-            BOOST_FOREACH(::fwData::Reconstruction::sptr rec, series->getReconstructionDB())
+            for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
             {
                 if(composite->find(rec->getOrganName()) == composite->end())
                 {
@@ -369,19 +353,31 @@ void SOrganTransformation::onSelectAllChanged(int state)
         {
             m_reconstructionListBox->setEnabled(true);
 
-            QList<QListWidgetItem*> itemList =  m_reconstructionListBox->findItems("", Qt::MatchContains);
-            BOOST_FOREACH(QListWidgetItem* item, itemList)
+            QList<QListWidgetItem*> itemList = m_reconstructionListBox->findItems("", Qt::MatchContains);
+            for(QListWidgetItem* item :  itemList)
             {
-               if(item->checkState() == Qt::Unchecked)
-               {
-                   compositeHelper.remove(item->text().toStdString());
-               }
+                if(item->checkState() == Qt::Unchecked)
+                {
+                    compositeHelper.remove(item->text().toStdString());
+                }
             }
 
             this->refresh();
         }
-        compositeHelper.notify(this->getSptr());
+        compositeHelper.notify();
     }
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType SOrganTransformation::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <assert.h>
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
+#include "fwTools/Bookmarks.hpp"
+#include "fwTools/Failed.hpp"
+#include "fwTools/Object.hpp"
 
 #include <fwCore/Demangler.hpp>
 
-#include "fwTools/Object.hpp"
-#include "fwTools/Bookmarks.hpp"
-#include "fwTools/Failed.hpp"
+#include <assert.h>
+#include <boost/lexical_cast.hpp>
 
 namespace fwTools
 {
@@ -21,12 +20,14 @@ Bookmarks::Dictionary Bookmarks::m_dictionary;
 //-----------------------------------------------------------------------------
 
 Bookmarks::Bookmarks()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 Bookmarks::~Bookmarks()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -60,7 +61,7 @@ void Bookmarks::remove( Bookmarks::BookmarkName _bookmark  )
     {
         bookmark = iter->second.lock();
     }
-    return  bookmark;
+    return bookmark;
 }
 
 //-----------------------------------------------------------------------------
@@ -68,14 +69,14 @@ void Bookmarks::remove( Bookmarks::BookmarkName _bookmark  )
 std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks( ::fwTools::Object::sptr obj )
 {
     std::list<Bookmarks::BookmarkName> result;
-    BOOST_FOREACH( Bookmarks::Dictionary::value_type elt, m_dictionary)
+    for( Bookmarks::Dictionary::value_type elt :  m_dictionary)
     {
         if ( !elt.second.expired() && elt.second.lock() == obj )
         {
             result.push_back(  elt.first );
         }
     }
-    return  result;
+    return result;
 }
 
 //-----------------------------------------------------------------------------
@@ -83,11 +84,11 @@ std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks( ::fwTools::Object::s
 std::list<Bookmarks::BookmarkName> Bookmarks::getBookmarks()
 {
     std::list<Bookmarks::BookmarkName> result;
-    BOOST_FOREACH( Bookmarks::Dictionary::value_type elt, m_dictionary)
+    for( Bookmarks::Dictionary::value_type elt :  m_dictionary)
     {
         result.push_back( elt.first );
     }
-    return  result;
+    return result;
 }
 
 //-----------------------------------------------------------------------------

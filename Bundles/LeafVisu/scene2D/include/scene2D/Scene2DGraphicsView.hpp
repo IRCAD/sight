@@ -1,20 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_SCENE2DGRAPHICVIEW_HPP_
-#define _SCENE2D_SCENE2DGRAPHICVIEW_HPP_
+#ifndef __SCENE2D_SCENE2DGRAPHICSVIEW_HPP__
+#define __SCENE2D_SCENE2DGRAPHICSVIEW_HPP__
+
+#include "scene2D/config.hpp"
+#include "scene2D/data/Viewport.hpp"
+#include "scene2D/data/Event.hpp"
 
 #include <QGraphicsView>
 #include <QResizeEvent>
 #include <QGraphicsScene>
 #include <QPaintEvent>
 
-#include "scene2D/config.hpp"
-#include "scene2D/data/Viewport.hpp"
-#include "scene2D/data/Event.hpp"
 
 namespace scene2D
 {
@@ -23,16 +24,16 @@ class Render;
 
 class SCENE2D_CLASS_API Scene2DGraphicsView : public QGraphicsView
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
     SCENE2D_API Scene2DGraphicsView(QGraphicsScene* scene, QWidget* widget);
 
     /// Events
 
     SCENE2D_API void keyPressEvent(QKeyEvent* _event);
-    
+
     SCENE2D_API void keyReleaseEvent(QKeyEvent* _event);
 
     SCENE2D_API void resizeEvent(QResizeEvent *_event);
@@ -55,7 +56,7 @@ public :
 
     SCENE2D_API void setSceneRender( SPTR(::scene2D::Render) sceneRender );
 
-protected :
+protected:
 
     WPTR(::scene2D::data::Viewport) m_viewport;
     WPTR(::scene2D::Render) m_scene2DRender;
@@ -69,5 +70,5 @@ protected :
 } // namespace scene2D
 
 
-#endif // _SCENE2D_SCENE2DGRAPHICVIEW_HPP_
+#endif // __SCENE2D_SCENE2DGRAPHICSVIEW_HPP__
 

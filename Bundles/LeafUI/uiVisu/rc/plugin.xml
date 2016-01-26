@@ -1,4 +1,4 @@
-<plugin id="uiVisu" class="::uiVisu::Plugin">
+<plugin id="uiVisu" class="::uiVisu::Plugin" version="@DASH_VERSION@" >
     <library name="uiVisu"/>
     
     <requirement id="dataReg"/>
@@ -8,12 +8,6 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
         <service>::uiVisu::action::CrossTypeAction</service>
-        <object>::fwData::Image</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
-        <service>::uiVisu::action::CameraOrientationAction</service>
         <object>::fwData::Image</object>
     </extension>
     

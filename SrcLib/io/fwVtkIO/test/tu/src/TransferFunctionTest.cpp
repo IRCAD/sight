@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -69,33 +69,33 @@ void TransferFunctionTest::toVtkLookupTableTest()
     ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
     lt->GetColor( 0, color);
     opacity = lt->GetOpacity(0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[1] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[2] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, opacity  , colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[1], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[2], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, opacity, colorTolerance );
 
     lt->GetColor(200,color);
     opacity = lt->GetOpacity(200);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[1] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, opacity  , colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[1], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, opacity, colorTolerance );
 
     lt->GetColor(150,color);
     opacity = lt->GetOpacity(150);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, color[1] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.75, opacity  , colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, color[1], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.75, opacity, colorTolerance );
 
     tf->setInterpolationMode( ::fwData::TransferFunction::NEAREST );
     ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
     lt->GetColor(120,color);
     opacity = lt->GetOpacity(120);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[1] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, opacity  , colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[1], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, opacity, colorTolerance );
 
 //    tf->setLevel(200);
 //    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
@@ -131,24 +131,24 @@ void TransferFunctionTest::toBWVtkLookupTableTest()
 
     lt->GetColor(0,color);
     opacity = lt->GetOpacity(0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[1] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[2] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, opacity  , colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[1], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[2], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, opacity, colorTolerance );
 
     lt->GetColor(100,color);
     opacity = lt->GetOpacity(100);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[0] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[1] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, opacity  , colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[0], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[1], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, opacity, colorTolerance );
 
     lt->GetColor(50,color);
     opacity = lt->GetOpacity(50);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, color[0] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, color[1] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, color[2] , colorTolerance );
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, opacity  , colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, color[0], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, color[1], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, color[2], colorTolerance );
+    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, opacity, colorTolerance );
 }
 
 //------------------------------------------------------------------------------

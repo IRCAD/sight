@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,13 +26,15 @@ namespace writer
 //------------------------------------------------------------------------------
 
 ArrayWriter::ArrayWriter(::fwDataIO::writer::IObjectWriter::Key key)
-: ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
-{}
+    : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+{
+}
 
 //------------------------------------------------------------------------------
 
 ArrayWriter::~ArrayWriter()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -57,7 +59,7 @@ void ArrayWriter::write()
 
 //------------------------------------------------------------------------------
 
-std::string  ArrayWriter::extension()
+std::string ArrayWriter::extension()
 {
     return ".raw";
 }

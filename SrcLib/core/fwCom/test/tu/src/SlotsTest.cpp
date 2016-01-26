@@ -1,21 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "SlotsTest.hpp"
 
-#include <fwTest/Exception.hpp>
-
-#include <fwThread/Worker.hpp>
+#include <fwCom/HasSlots.hpp>
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/HasSlots.hpp>
+#include <fwTest/Exception.hpp>
 
-#include "SlotsTest.hpp"
-
+#include <fwThread/Worker.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCom::ut::SlotsTest );
@@ -50,7 +47,8 @@ void slotsTestPrint(const std::string &str)
 struct SlotsTestBasic
 {
     SlotsTestBasic()
-    {}
+    {
+    }
 
     int sum(int a, int b)
     {
@@ -64,12 +62,12 @@ void SlotsTest::buildTest()
 {
     ::fwCom::Slots slots;
 
-    ::fwCom::Slot< int (int, int) >::sptr slot1 = ::fwCom::newSlot( &slotsTestSum );
+    ::fwCom::Slot< int (int, int) >::sptr slot1             = ::fwCom::newSlot( &slotsTestSum );
     ::fwCom::Slot< void (const std::string &) >::sptr slot2 = ::fwCom::newSlot( &slotsTestPrint );
 
-    slots("sum", ::boost::dynamic_pointer_cast< SlotBase >(slot1))
-         ("print", ::boost::dynamic_pointer_cast< SlotBase >(slot2))
-         ("another_key", slot1);
+    slots("sum", std::dynamic_pointer_cast< SlotBase >(slot1))
+        ("print", std::dynamic_pointer_cast< SlotBase >(slot2))
+        ("another_key", slot1);
 
     CPPUNIT_ASSERT(slot1 == slots["sum"]);
     CPPUNIT_ASSERT(slot2 == slots["print"]);
@@ -87,7 +85,7 @@ void SlotsTest::buildTest()
     slots.setWorker(worker);
 
     int count = 0;
-    BOOST_FOREACH(::fwCom::Slots::SlotKeyType key, slots.getSlotKeys())
+    for(::fwCom::Slots::SlotKeyType key :  slots.getSlotKeys())
     {
         ::fwCom::SlotBase::sptr slot = slots[key];
         CPPUNIT_ASSERT(worker == slot->getWorker());
@@ -100,13 +98,39 @@ void SlotsTest::buildTest()
 
 struct SlotsTestHasSlots : public HasSlots
 {
-    typedef Slot< int()> GetValueSlotType;
+    typedef Slot< int ()> GetValueSlotType;
 
     SlotsTestHasSlots()
     {
         GetValueSlotType::sptr slotGetValue = ::fwCom::newSlot( &SlotsTestHasSlots::getValue, this );
+
         HasSlots::m_slots("sum", &SlotsTestHasSlots::sum, this)
-                         ("getValue", slotGetValue );
+            ("getValue", slotGetValue );
+    }
+
+    int sum(int a, int b)
+    {
+        return a+b;
+    }
+
+    int getValue()
+    {
+        return 4;
+    }
+};
+
+//-----------------------------------------------------------------------------
+
+struct SlotsTestHasSlots2 : public HasSlots
+{
+    typedef Slot< int ()> GetValueSlotType;
+
+    SlotsTestHasSlots2()
+    {
+        newSlot( "sum", &SlotsTestHasSlots2::sum, this );
+
+        GetValueSlotType::sptr slot = newSlot( "getValue", &SlotsTestHasSlots2::getValue, this );
+        CPPUNIT_ASSERT(slot);
     }
 
     int sum(int a, int b)
@@ -127,28 +151,17 @@ void SlotsTest::hasSlotsTest()
     SlotsTestHasSlots obj;
     CPPUNIT_ASSERT_EQUAL(14, obj.slot("sum")->call<int>(5,9));
     CPPUNIT_ASSERT_EQUAL(4, obj.slot< SlotsTestHasSlots::GetValueSlotType >("getValue")->call());
+
+    SlotsTestHasSlots2 obj2;
+    CPPUNIT_ASSERT_EQUAL(14, obj2.slot("sum")->call<int>(5,9));
+    CPPUNIT_ASSERT_EQUAL(4, obj2.slot< SlotsTestHasSlots::GetValueSlotType >("getValue")->call());
 }
 
 //-----------------------------------------------------------------------------
 
 void SlotsTest::slotsIDTest()
 {
-#ifdef COM_LOG
-    ::fwCom::Slot< int (int, int) >::sptr slot1 = ::fwCom::newSlot( &slotsTestSum );
-    ::fwCom::Slot< void (const std::string &) >::sptr slot2 = ::fwCom::newSlot( &slotsTestPrint );
 
-    ::fwCom::Slots slots;
-    slots( "sum", slot1 )
-         ( "print", slot2 );
-
-    slots.setID();
-    CPPUNIT_ASSERT_EQUAL( std::string("sum"), slot1->getID() );
-    CPPUNIT_ASSERT_EQUAL( std::string("print"), slot2->getID() );
-
-    slots.setID("prefix::");
-    CPPUNIT_ASSERT_EQUAL( std::string("prefix::sum"), slot1->getID() );
-    CPPUNIT_ASSERT_EQUAL( std::string("prefix::print"), slot2->getID() );
-#endif
 }
 
 //-----------------------------------------------------------------------------

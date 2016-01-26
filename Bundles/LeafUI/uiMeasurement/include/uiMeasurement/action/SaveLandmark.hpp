@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIMEASUREMENT_UI_ACTION_SAVELANDMARK_HPP_
-#define _UIMEASUREMENT_UI_ACTION_SAVELANDMARK_HPP_
+#ifndef __UIMEASUREMENT_ACTION_SAVELANDMARK_HPP__
+#define __UIMEASUREMENT_ACTION_SAVELANDMARK_HPP__
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -17,16 +17,16 @@ namespace action
 {
 
 /**
-* @brief Save landmark store in image on the filesystem
-*/
+ * @brief Save landmark store in image on the filesystem
+ */
 class UIMEASUREMENT_CLASS_API SaveLandmark : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SaveLandmark)( ::fwGui::IActionSrv) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SaveLandmark)( ::fwGui::IActionSrv) );
 
-    UIMEASUREMENT_API SaveLandmark() throw() ;
+    UIMEASUREMENT_API SaveLandmark() throw();
 
-    UIMEASUREMENT_API virtual ~SaveLandmark() throw() ;
+    UIMEASUREMENT_API virtual ~SaveLandmark() throw();
 
 protected:
 
@@ -36,11 +36,9 @@ protected:
 
     void updating() throw (::fwTools::Failed);
 
-    void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed) ;
-
     void stopping() throw (::fwTools::Failed);
 
-    void info(std::ostream &_sstream ) ;
+    void info(std::ostream &_sstream );
 
     void save(const ::boost::filesystem::path& path);
 
@@ -50,4 +48,4 @@ protected:
 
 } // namespace uiMeasurement
 
-#endif // _UIMEASUREMENT_UI_ACTION_SAVELANDMARK_HPP_
+#endif // __UIMEASUREMENT_ACTION_SAVELANDMARK_HPP__

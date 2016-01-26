@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,11 +22,11 @@ namespace action
 {
 
 /// Static variable shared by both actions
-static std::vector< ::fwData::Array::sptr > memoryConsumer ;
+static std::vector< ::fwData::Array::sptr > memoryConsumer;
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::monitor::action::MemoryConsumption , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::monitor::action::MemoryConsumption, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
@@ -38,31 +38,33 @@ void MemoryConsumption::pushNewArray(size_t memorySizeInBytes)
         ::fwData::Array::SizeType size(1, memorySizeInBytes);
         buffer->resize(::fwTools::Type::s_UINT8_TYPENAME, size, 1, true);
 
-        OSLM_INFO("Creating a fwData::array consuming "<< memorySizeInBytes/(1024*1024) << " Mo ") ;
+        OSLM_INFO("Creating a fwData::array consuming "<< memorySizeInBytes/(1024*1024) << " Mo ");
 
-        memoryConsumer.push_back( buffer ) ;
+        memoryConsumer.push_back( buffer );
     }
     catch( std::exception &e )
     {
-        std::stringstream msg ;
-        msg << "Cannot allocate buffer (256 Mo) :\n" << e.what() << std::endl ;
+        std::stringstream msg;
+        msg << "Cannot allocate buffer (256 Mo) :\n" << e.what() << std::endl;
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                            "Action increase memory",
-                            msg.str(),
-                            ::fwGui::dialog::IMessageDialog::CRITICAL);
+            "Action increase memory",
+            msg.str(),
+            ::fwGui::dialog::IMessageDialog::CRITICAL);
     }
 }
 
 //------------------------------------------------------------------------------
 
 MemoryConsumption::MemoryConsumption( ) throw() :
-        m_isIncreaseMode(true), m_memorySizeInBytes(1024*1024*256) // 256 Mo
-{}
+    m_isIncreaseMode(true), m_memorySizeInBytes(1024*1024*256)     // 256 Mo
+{
+}
 
 //------------------------------------------------------------------------------
 
 MemoryConsumption::~MemoryConsumption() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -70,14 +72,14 @@ void MemoryConsumption::updating() throw(::fwTools::Failed)
 {
     if(m_isIncreaseMode)
     {
-        this->pushNewArray(m_memorySizeInBytes) ;
+        this->pushNewArray(m_memorySizeInBytes);
     }
     else
     {
         if( !memoryConsumer.empty() )
         {
-            SLM_INFO("Removing one fwData::Array") ;
-            memoryConsumer.pop_back() ;
+            SLM_INFO("Removing one fwData::Array");
+            memoryConsumer.pop_back();
         }
     }
 }
@@ -100,7 +102,7 @@ void MemoryConsumption::configuring() throw (::fwTools::Failed)
     if(m_isIncreaseMode && consumptionCfg->hasAttribute("value"))
     {
         std::string value = consumptionCfg->getAttributeValue("value");
-        size_t sizeInMo = ::boost::lexical_cast<size_t>(value);
+        size_t sizeInMo   = ::boost::lexical_cast<size_t>(value);
         m_memorySizeInBytes = sizeInMo * 1024 * 1024;
     }
 }

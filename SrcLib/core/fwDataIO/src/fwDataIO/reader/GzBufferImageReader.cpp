@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,13 +30,17 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-GzBufferImageReader::GzBufferImageReader(::fwDataIO::reader::IObjectReader::Key key) : ::fwData::location::enableSingleFile< IObjectReader >(this)
-{}
+GzBufferImageReader::GzBufferImageReader(::fwDataIO::reader::IObjectReader::Key key) : ::fwData::location::
+                                                                                       enableSingleFile< IObjectReader >(
+                                                                                           this)
+{
+}
 
 //------------------------------------------------------------------------------
 
 GzBufferImageReader::~GzBufferImageReader()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -60,7 +64,7 @@ void GzBufferImageReader::read()
     if ( rawFile == 0 )
     {
         std::string str = "Unable to open ";
-        str+= file.string();
+        str += file.string();
         throw std::ios_base::failure(str);
     }
 
@@ -77,14 +81,14 @@ void GzBufferImageReader::read()
     if ( uncompressedbytesreaded == -1 )
     {
         std::string str = "Unable to read ";
-        str+= file.string();
+        str += file.string();
         throw std::ios_base::failure(str);
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::string  GzBufferImageReader::extension()
+std::string GzBufferImageReader::extension()
 {
     return (".raw.gz");
 }

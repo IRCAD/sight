@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_WRITER_GENERICOBJECTWRITER_HPP_
-#define _FWDATAIO_WRITER_GENERICOBJECTWRITER_HPP_
+#ifndef __FWDATAIO_WRITER_GENERICOBJECTWRITER_HPP__
+#define __FWDATAIO_WRITER_GENERICOBJECTWRITER_HPP__
 
-#include <boost/shared_ptr.hpp>
 
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/IObjectWriter.hpp"
@@ -21,7 +20,7 @@ namespace writer
 /**
  * @brief   generic class for all object writers.
  * @class   GenericObjectWriter
- * 
+ *
  * @date    2009
  *
  * This class adds 2 methods to the API of IObjectWriter. This
@@ -30,10 +29,10 @@ namespace writer
  * already cast.
  */
 template<class DATATYPE>
-class GenericObjectWriter  : public ::fwDataIO::writer::IObjectWriter
+class GenericObjectWriter : public ::fwDataIO::writer::IObjectWriter
 {
 
-public :
+public:
 
     /// the object type related
     typedef DATATYPE DataType;
@@ -41,10 +40,14 @@ public :
     fwCoreNonInstanciableClassDefinitionsMacro( (GenericObjectWriter<DATATYPE>)(::fwDataIO::writer::IObjectWriter) );
 
     /// Constructor. Do nothing.
-    GenericObjectWriter() {};
+    GenericObjectWriter()
+    {
+    }
 
     /// Destructor. Do nothing.
-    virtual ~GenericObjectWriter() {};
+    virtual ~GenericObjectWriter()
+    {
+    }
 
     /**
      * @brief m_object setter.
@@ -54,7 +57,7 @@ public :
      */
     virtual void  setObject( ::fwTools::Object::sptr obj)
     {
-        assert ( ::boost::dynamic_pointer_cast< DataType >( obj ) );
+        assert ( std::dynamic_pointer_cast< DataType >( obj ) );
         m_object = obj;
     }
 
@@ -64,9 +67,9 @@ public :
      *
      * This method automatic cast object in correct DataType.
      */
-    virtual ::boost::shared_ptr< DataType >  getConcreteObject()
+    virtual std::shared_ptr< DataType >  getConcreteObject()
     {
-        return ::boost::dynamic_pointer_cast< DataType >( getObject() );
+        return std::dynamic_pointer_cast< DataType >( getObject() );
     }
 
 };
@@ -76,4 +79,4 @@ public :
 } // namespace fwDataIO
 
 
-#endif // _FWDATAIO_WRITER_GENERICOBJECTWRITER_HPP_
+#endif // __FWDATAIO_WRITER_GENERICOBJECTWRITER_HPP__

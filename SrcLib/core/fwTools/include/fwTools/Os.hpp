@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,17 +9,19 @@
 
 #include <string>
 
-#include "config.hpp"
+#include "fwTools/config.hpp"
 
 
-namespace fwTools {
+namespace fwTools
+{
 
 /**
  * @brief   Namespace fwTools::os contains tools methods which depend on os like get user application data directory.
- * 
+ *
  * @date    2009-2010.
  */
-namespace os {
+namespace os
+{
 
 
 /**
@@ -43,7 +45,7 @@ FWTOOLS_API std::string getEnv(const std::string &name, const std::string &defau
 
 /**
  * @brief   Return the users's application data directory
- * 
+ *
  * @param company The company name
  * @param appName The application name
  * @param createDirectory if true, create the returned directory if it don't exist
@@ -54,14 +56,14 @@ FWTOOLS_API std::string getEnv(const std::string &name, const std::string &defau
  * For example, the UserDataDir under linux will be "~/.config/company/appName"
  */
 FWTOOLS_API std::string  getUserDataDir(
-        std::string company  = "",
-        std::string appName  = "",
-        bool createDirectory = false
-        );
+    std::string company = "",
+    std::string appName = "",
+    bool createDirectory = false
+    );
 
 
 } // namespace os
 
 } // namespace fwTools
 
-#endif
+#endif //__FWTOOLS_OS_HPP__

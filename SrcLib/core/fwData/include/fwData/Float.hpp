@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATA_FLOAT_HPP_
-#define _FWDATA_FLOAT_HPP_
+#ifndef __FWDATA_FLOAT_HPP__
+#define __FWDATA_FLOAT_HPP__
 
 #include "fwData/GenericField.hpp"
 
@@ -27,7 +27,8 @@ namespace fwData
 class FWDATA_CLASS_API Float : public GenericField< float >
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Float)(::fwData::Object),( ((const float)(0.0f)) ), GenericFieldFactory< Float >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Float)(::fwData::Object),( ((const float)(0.0f)) ),
+                                            GenericFieldFactory< Float >);
 
 
     fwCampMakeFriendDataMacro((fwData)(Float));
@@ -57,4 +58,4 @@ protected:
 
 } // namespace fwData
 
-#endif // _FWDATA_FLOAT_HPP_
+#endif // __FWDATA_FLOAT_HPP__

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWATOMS_BASE_STRING_HPP_
-#define _FWATOMS_BASE_STRING_HPP_
+#ifndef __FWATOMS_STRING_HPP__
+#define __FWATOMS_STRING_HPP__
 
 #include <string>
 
@@ -23,26 +23,37 @@ namespace fwAtoms
 class FWATOMS_CLASS_API String : public Base
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< String > ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (String)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< String > );
 
     /**
      * @brief Constructor
      * @param key Private construction key
      */
     String(::fwAtoms::Base::Key key) : m_value("")
-    {}
+    {
+    }
 
     /**
      * @brief   Destructor
      */
     virtual ~String()
-    {}
+    {
+    }
 
-    const std::string& getValue() const {return m_value;};
+    const std::string& getValue() const
+    {
+        return m_value;
+    }
 
-    void setValue( const std::string &value ){m_value=value;};
+    void setValue( const std::string &value )
+    {
+        m_value = value;
+    }
 
-    std::string getString() const {return m_value;};
+    std::string getString() const
+    {
+        return m_value;
+    }
 
     /**
      * @brief Construct a new Object represented a string.
@@ -59,7 +70,10 @@ public:
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const {return ::fwAtoms::Base::STRING;};
+    ::fwAtoms::Base::AtomType type() const
+    {
+        return ::fwAtoms::Base::STRING;
+    }
 
 
 protected:
@@ -71,5 +85,5 @@ protected:
 
 
 
-#endif /* _FWATOMS_BASE_STRING_HPP_ */
+#endif /* __FWATOMS_STRING_HPP__ */
 

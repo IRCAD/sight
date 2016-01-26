@@ -1,17 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "scene2D/adaptor/Square.hpp"
 
 #include <fwServices/Base.hpp>
 #include <fwData/Composite.hpp>
 
 #include <QGraphicsItemGroup>
 
-#include "scene2D/adaptor/Square.hpp"
 
-fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor , ::scene2D::adaptor::Square  , ::fwData::Composite ) ;
+fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Square, ::fwData::Composite );
 
 
 namespace scene2D
@@ -21,13 +22,19 @@ namespace adaptor
 
 //-----------------------------------------------------------------------------
 
-Square::Square() throw() : m_pointIsCaptured (false)
-{}
+Square::Square() throw() :
+    m_size(0),
+    m_layer(nullptr),
+    m_rec(nullptr),
+    m_pointIsCaptured (false)
+{
+}
 
 //-----------------------------------------------------------------------------
 
 Square::~Square() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -80,13 +87,6 @@ void Square::doUpdate() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Square::doReceive( fwServices::ObjectMsg::csptr _msg) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------
-
 void Square::doSwap() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
@@ -123,13 +123,14 @@ void Square::setColor( std::string _color )
 void Square::processInteraction( ::scene2D::data::Event::sptr _event )
 {
     SLM_TRACE_FUNC();
-    if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress && _event->getButton() == ::scene2D::data::Event::LeftButton )
+    if ( _event->getType() == ::scene2D::data::Event::MouseButtonPress &&
+         _event->getButton() == ::scene2D::data::Event::LeftButton )
     {
         if ( this->coordViewIsInItem( _event->getCoord(), m_rec ) )
         {
             SLM_TRACE("Point is captured");
             m_pointIsCaptured = true;
-            m_oldCoord = this->coordViewToCoordItem( _event->getCoord(), m_rec );
+            m_oldCoord        = this->coordViewToCoordItem( _event->getCoord(), m_rec );
             m_rec->setBrush( Qt::yellow );
             _event->setAccepted(true);
         }

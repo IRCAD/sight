@@ -1,7 +1,0 @@
-CLASSTEST=[
-    'Hdf5IOTest',
-]
-
-LIB = ['fwTools_0-1','fwCore_0-1', 'fwAtoms_0-1', 'fwAtomsHdf5IO_0-1', 'fwTest_0-1']
-CONSOLE = 'yes'
-

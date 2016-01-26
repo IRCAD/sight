@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __FWTEST_GENERATOR_IMAGE_HPP__
 #define __FWTEST_GENERATOR_IMAGE_HPP__
+
+#include "fwTest/config.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -17,7 +19,6 @@
 
 #include <fwComEd/helper/Array.hpp>
 
-#include "fwTest/config.hpp"
 
 namespace fwTest
 {
@@ -32,7 +33,7 @@ namespace generator
 class Image
 {
 
-public :
+public:
 
     /**
      * @brief Initialize 'rand' seed
@@ -48,10 +49,10 @@ public :
      * @param type      image type
      */
     FWTEST_API static void generateImage(::fwData::Image::sptr image,
-                                              ::fwData::Image::SizeType size,
-                                              std::vector<double> spacing,
-                                              std::vector<double> origin,
-                                              ::fwTools::Type type);
+                                         ::fwData::Image::SizeType size,
+                                         std::vector<double> spacing,
+                                         std::vector<double> origin,
+                                         ::fwTools::Type type);
 
     /// Generate an image with random information (size, spacing, ...). Buffer is filled with random values.
     FWTEST_API static void generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type type);

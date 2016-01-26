@@ -12,7 +12,6 @@
 
 #include "fwData/config.hpp"
 
-#include <boost/shared_ptr.hpp>
 
 fwCampAutoDeclareDataMacro((fwData)(Histogram), FWDATA_API);
 
@@ -87,33 +86,174 @@ public:
      */
     FWDATA_API bool isInRange( float _pixel );
 
-    fwGettersSettersDocMacro(BinsWidth, binsWidth, float, bins width);
-    fwGettersSettersDocMacro(Values, values, fwHistogramValues, histogram values);
-    fwGettersSettersDocMacro(MinValue, minValue, float, minimum value within the histogram);
-    fwGettersSettersDocMacro(MaxValue, maxValue, float, maximum value within the histogram);
+    /** @name bins width accessor
+     *  @brief Get/Set bins width
+     *  @{
+     */
+    const float  getBinsWidth() const;
+    float & getRefBinsWidth();
+    const float& getCRefBinsWidth() const;
+    void setBinsWidth(float _binsWidth);
+    /// @}
+
+    /** @name histogram values accessor
+     *  @brief Get/Set histogram values
+     *  @{
+     */
+    const fwHistogramValues getValues() const;
+    fwHistogramValues& getRefValues();
+    const fwHistogramValues & getCRefValues() const;
+    void setCRefValues(const fwHistogramValues & _values);
+    /// @}
+
+    /** @name minimum value within the histogram
+     *  @brief Get/Set minimum value within the histogram
+     *  @{
+     */
+    const float getMinValue () const;
+    float& getRefMinValue ();
+    const float& getCRefMinValue () const;
+    void setMinValue (float _minValue);
+    /// @}
+
+    /** @name maximum value within the histogram
+     *  @brief Get/Set maximum value within the histogram
+     *  @{
+     */
+    const float getMaxValue() const;
+    float& getRefMaxValue();
+    const float& getCRefMaxValue() const;
+    void setMaxValue(float _maxValue);
+    /// @}
 
 protected:
 
-    /**
-     * @brief Histogram values.
-     */
+    /// Histogram values.
     fwHistogramValues m_values;
 
-    /**
-     * @brief The pixel width of the bins (a default value is set to 1).
-     */
+    /// The pixel width of the bins (a default value is set to 1).
     float m_binsWidth;
 
-    /**
-     * @brief The minimum pixel value within the histogram (a default value is set to 0).
-     */
+    /// The minimum pixel value within the histogram (a default value is set to 0).
     float m_minValue;
 
-    /**
-     * @brief The maximum pixel value within the histogram (a default value is set to 100).
-     */
+    /// The maximum pixel value within the histogram (a default value is set to 100).
     float m_maxValue;
 };
+
+//-----------------------------------------------------------------------------
+
+inline const float Histogram::getBinsWidth() const
+{
+    return m_binsWidth;
+}
+
+//-----------------------------------------------------------------------------
+
+inline float & Histogram::getRefBinsWidth()
+{
+    return this->m_binsWidth;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const float& Histogram::getCRefBinsWidth() const
+{
+    return this->m_binsWidth;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Histogram::setBinsWidth(float _binsWidth)
+{
+    this->m_binsWidth = _binsWidth;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Histogram::fwHistogramValues Histogram::getValues() const
+{
+    return m_values;
+}
+
+//-----------------------------------------------------------------------------
+
+inline Histogram::fwHistogramValues& Histogram::getRefValues()
+{
+    return this->m_values;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Histogram::fwHistogramValues & Histogram::getCRefValues() const
+{
+    return this->m_values;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Histogram::setCRefValues(const Histogram::fwHistogramValues & _values)
+{
+    this->m_values = _values;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const float Histogram::getMinValue () const
+{
+    return m_minValue;
+}
+
+//-----------------------------------------------------------------------------
+
+inline float& Histogram::getRefMinValue ()
+{
+    return this->m_minValue;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const float& Histogram::getCRefMinValue () const
+{
+    return this->m_minValue;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Histogram::setMinValue (float _minValue)
+{
+    this->m_minValue = _minValue;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const float Histogram::getMaxValue() const
+{
+    return m_maxValue;
+}
+
+//-----------------------------------------------------------------------------
+
+inline float& Histogram::getRefMaxValue()
+{
+    return this->m_maxValue;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const float& Histogram::getCRefMaxValue() const
+{
+    return this->m_maxValue;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Histogram::setMaxValue(float _maxValue)
+{
+    this->m_maxValue = _maxValue;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace fwData
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -120,7 +120,7 @@ void WorkerTest::timerTest()
 
     ::fwThread::Timer::sptr timer = worker->createTimer();
 
-    ::boost::chrono::milliseconds duration = ::boost::chrono::milliseconds(100) ;
+    ::boost::chrono::milliseconds duration = ::boost::chrono::milliseconds(100);
 
     timer->setFunction(  ::boost::bind( &TestHandler::nextStepNoSleep, &handler)  );
     timer->setDuration(duration);
@@ -137,7 +137,7 @@ void WorkerTest::timerTest()
 
     ::boost::this_thread::sleep_for( duration/10. );
 
-    for (int i = 1 ; i < 50 ; ++i)
+    for (int i = 1; i < 50; ++i)
     {
         ::boost::this_thread::sleep_for( duration );
 
@@ -167,7 +167,7 @@ void WorkerTest::timerTest()
 
     ::boost::this_thread::sleep_for( duration/10. );
 
-    for (int i = 1 ; i < 50 ; ++i)
+    for (int i = 1; i < 50; ++i)
     {
         ::boost::this_thread::sleep_for( duration );
 
@@ -201,7 +201,7 @@ void WorkerTest::timerTest()
 
     ::boost::this_thread::sleep_for( duration/10. );
 
-    for (int i = 1 ; i < 25 ; ++i)
+    for (int i = 1; i < 25; ++i)
     {
         ::boost::this_thread::sleep_for( duration );
 
@@ -214,7 +214,7 @@ void WorkerTest::timerTest()
     duration = ::boost::chrono::milliseconds(50);
     timer->setDuration(duration);
 
-    for (int i = 24 ; i < 50 ; ++i)
+    for (int i = 24; i < 50; ++i)
     {
         ::boost::this_thread::sleep_for( duration );
 

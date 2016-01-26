@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,15 +62,15 @@ void SeriesDBLazyReaderTest::readSeriesDBTest()
     CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesACHGenou( series ) );
 
 #if (SPYLOG_LEVEL >= 4 ) // Log level info
-        ::fwCore::HiResTimer timer;
-        timer.start();
+    ::fwCore::HiResTimer timer;
+    timer.start();
 #endif
 
     ::fwComEd::helper::Image locker ( series->getImage() );
 
     #if (SPYLOG_LEVEL >= 4 )
-        timer.stop();
-        OSLM_INFO( "Time in to read data : " << timer.getElapsedTimeInMilliSec() );
+    timer.stop();
+    OSLM_INFO( "Time in to read data : " << timer.getElapsedTimeInMilliSec() );
 #endif
 
 }

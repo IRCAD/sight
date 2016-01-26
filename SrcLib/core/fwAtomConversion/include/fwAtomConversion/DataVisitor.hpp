@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,12 +17,12 @@
 
 namespace fwAtoms
 {
-    class Object;
+class Object;
 }
 
 namespace fwData
 {
-    class Object;
+class Object;
 }
 
 namespace fwAtomConversion
@@ -55,7 +55,7 @@ public:
      * Creates a new ::fwAtoms::Object. Sets : ID from dataObj UUID, meta info
      * CLASSNAME_METAINFO from dataObj classname() and add tag information from camp data
      */
-    FWATOMCONVERSION_API DataVisitor( SPTR(::fwData::Object) dataObj, AtomCacheType & cache );
+    FWATOMCONVERSION_API DataVisitor( SPTR(::fwData::Object)dataObj, AtomCacheType & cache );
 
     /// Destructor. Does nothing.
     FWATOMCONVERSION_API virtual ~DataVisitor();

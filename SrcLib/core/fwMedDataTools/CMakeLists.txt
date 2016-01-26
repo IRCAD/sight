@@ -1,5 +1,11 @@
-
 fwLoadProperties()
+
+fwUseForwardInclude(
+    fwCom
+    fwCore
+    fwData
+    fwMedData
+)
 
 find_package (Boost COMPONENTS date_time REQUIRED)
 fwInclude(${Boost_INCLUDE_DIRS})

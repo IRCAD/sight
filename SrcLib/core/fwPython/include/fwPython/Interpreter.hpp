@@ -1,20 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWPYTHON_INTERPRETER_HPP_
-#define _FWPYTHON_INTERPRETER_HPP_
+#ifndef __FWPYTHON_INTERPRETER_HPP__
+#define __FWPYTHON_INTERPRETER_HPP__
+
+#include "fwPython/config.hpp"
+
+#include <fwTools/Object.hpp>
 
 #include <boost/python.hpp>
 #undef tolower //defined by python, conflicting with std::lower
 
 #include <string>
-
-#include <fwTools/Object.hpp>
-
-#include "fwPython/config.hpp"
 
 namespace fwPython
 {
@@ -22,40 +22,40 @@ namespace fwPython
 class FWPYTHON_CLASS_API Interpreter
 {
 
-public :
+public:
 
-   // create a python interpretor
-   FWPYTHON_API Interpreter();
-
-
-   // a destroy the  python interpretor
-   FWPYTHON_API ~Interpreter();
-
-   // insert an object inside the python global dictionnay with the specified key
-   FWPYTHON_API void addObject(std::string key, ::fwTools::Object::sptr object);
+    // create a python interpretor
+    FWPYTHON_API Interpreter();
 
 
-   //execute the python code sequence
-   FWPYTHON_API int execute(std::string code);
+    // a destroy the  python interpretor
+    FWPYTHON_API ~Interpreter();
 
-   /**
-    * @brief Return the value of the given sys module attribute value.
-    *
-    * @param moduleName Python module name
-    * @param attrName   attribute name of the specified Python module
-    *
-    * @return attribute value
-    */
-   FWPYTHON_API std::string getAttrValue(const std::string &moduleName, const std::string &attrName);
+    // insert an object inside the python global dictionnay with the specified key
+    FWPYTHON_API void addObject(std::string key, ::fwTools::Object::sptr object);
 
-   protected :
 
-   void importBindings();
+    //execute the python code sequence
+    FWPYTHON_API int execute(std::string code);
 
-   //direct accesor to global dict
-   boost::python::object m_globals;
-   //direct accesor to local dict
-   boost::python::dict m_locals;
+    /**
+     * @brief Return the value of the given sys module attribute value.
+     *
+     * @param moduleName Python module name
+     * @param attrName   attribute name of the specified Python module
+     *
+     * @return attribute value
+     */
+    FWPYTHON_API std::string getAttrValue(const std::string &moduleName, const std::string &attrName);
+
+protected:
+
+    void importBindings();
+
+    //direct accesor to global dict
+    boost::python::object m_globals;
+    //direct accesor to local dict
+    boost::python::dict m_locals;
 
 };
 
@@ -65,5 +65,5 @@ public :
 
 
 
-#endif //_FWPYTHON_INTERPRETER_HPP_
+#endif //__FWPYTHON_INTERPRETER_HPP__
 

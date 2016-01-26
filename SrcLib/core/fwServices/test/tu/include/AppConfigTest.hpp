@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_TEST_TU_APPCONFIGTEST_HPP_
-#define _FWSERVICES_TEST_TU_APPCONFIGTEST_HPP_
+#ifndef __FWSERVICES_UT_APPCONFIGTEST_HPP__
+#define __FWSERVICES_UT_APPCONFIGTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -20,10 +20,10 @@ namespace ut
  */
 class AppConfigTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( AppConfigTest );
-    CPPUNIT_TEST( parametersConfigTest );
-    CPPUNIT_TEST( concurentAccessToAppConfigTest );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( AppConfigTest );
+CPPUNIT_TEST( parametersConfigTest );
+CPPUNIT_TEST( concurentAccessToAppConfigTest );
+CPPUNIT_TEST_SUITE_END();
 
 
 public:
@@ -44,4 +44,4 @@ private:
 } //namespace ut
 } //namespace fwServices
 
-#endif // _FWSERVICES_TEST_TU_APPCONFIGTEST_HPP_
+#endif // __FWSERVICES_UT_APPCONFIGTEST_HPP__

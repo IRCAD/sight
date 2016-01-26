@@ -1,19 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "scene2D/data/InitQtPen.hpp"
+#include "scene2D/adaptor/Axis.hpp"
 
 #include <fwServices/Base.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <QGraphicsItemGroup>
-
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/data/ViewportMsg.hpp"
-#include "scene2D/adaptor/Axis.hpp"
 
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Axis, ::fwData::Composite );
@@ -24,9 +22,8 @@ namespace scene2D
 namespace adaptor
 {
 
-Axis::Axis() throw() : m_showLine(true), m_tickSize(0.02), m_color(Qt::white)
+Axis::Axis() throw() : m_showLine(true), m_tickSize(0.02f), m_color(Qt::white)
 {
-//    addNewHandledEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED);
 }
 
 //--------------------------------------------------------------------------------------------------
@@ -42,8 +39,8 @@ void Axis::doStart() throw( ::fwTools::Failed)
 {
     m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
 
-    m_connection = m_viewport->signal(::fwData::Object::s_OBJECT_MODIFIED_SIG)->connect(
-            this->slot(::fwServices::IService::s_RECEIVE_SLOT));
+    m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
+        this->slot(::fwServices::IService::s_UPDATE_SLOT));
 
     this->buildAxis();
     this->doUpdate();
@@ -85,10 +82,11 @@ void Axis::configuring() throw( ::fwTools::Failed)
 
     // 'align' attribute configuration
     m_align = m_configuration->getAttributeValue("align");
-    SLM_ASSERT("'align' attribute is missing. Please add an 'align' attribute with value 'left', 'right', 'top' or 'bottom'",
-            !m_align.empty());
+    SLM_ASSERT(
+        "'align' attribute is missing. Please add an 'align' attribute with value 'left', 'right', 'top' or 'bottom'",
+        !m_align.empty());
     SLM_ASSERT("Unsupported value for 'align' attribute.",
-           m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
+               m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
 
 
     // Axis bounds
@@ -109,11 +107,11 @@ void Axis::configuring() throw( ::fwTools::Failed)
 
     // Viewport
     SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
-            !m_configuration->getAttributeValue("viewportUID").empty());
+               !m_configuration->getAttributeValue("viewportUID").empty());
 
     if( !m_configuration->getAttributeValue("viewportUID").empty() )
     {
-        m_viewportID =  m_configuration->getAttributeValue("viewportUID");
+        m_viewportID = m_configuration->getAttributeValue("viewportUID");
     }
 
 
@@ -182,9 +180,9 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
 
     ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
     const double viewportHeight = viewport->getHeight();
-    const double viewportWidth = viewport->getWidth();
+    const double viewportWidth  = viewport->getWidth();
 
-    const double viewportSizeRatio = viewportHeight / viewportWidth;
+    const double viewportSizeRatio    = viewportHeight / viewportWidth;
     const double viewInitialSizeRatio = m_viewInitialSize.first / m_viewInitialSize.second;
 
     double viewportWidthRatio = this->getViewportSizeRatio().first;
@@ -197,7 +195,7 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
     scaleX = scaleX * ratio.first;
     scaleY = scaleY * ratio.second;
 
-    const int nbValues = m_ticks.size();
+    const size_t nbValues = m_ticks.size();
 
     const double min = this->getStartVal();
     const double max = this->getEndVal();
@@ -207,7 +205,7 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
     std::pair<double, double> tickPos;
 
     const std::pair<double, double> viewportSize = this->mapAdaptorToScene(
-            std::pair<double, double>(viewportWidth, viewportHeight), m_xAxis, m_yAxis);
+        std::pair<double, double>(viewportWidth, viewportHeight), m_xAxis, m_yAxis);
 
     if(m_align == "bottom")
     {
@@ -217,11 +215,11 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
 
         for(int i = 0; i < nbValues; ++i)
         {
-            pos = min + i * m_interval;
+            pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(std::pair<double, double>(pos, tickPosY), m_xAxis, m_yAxis);
             m_ticks.at(i)->setLine(
-                    tickPos.first, tickPos.second,
-                    tickPos.first, tickPos.second - tickSize.second * scaleY);
+                tickPos.first, tickPos.second,
+                tickPos.first, tickPos.second - tickSize.second * scaleY);
         }
 
         m_line->setLine(min, tickPos.second, max, tickPos.second);
@@ -234,12 +232,12 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
 
         for(int i = 0; i < nbValues; ++i)
         {
-            pos = min + i * m_interval;
+            pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(std::pair<double, double>(pos, tickPosY), m_xAxis, m_yAxis);
 
             m_ticks.at(i)->setLine(
-                    tickPos.first, tickPos.second,
-                    tickPos.first, tickPos.second - tickSize.second * scaleY);
+                tickPos.first, tickPos.second,
+                tickPos.first, tickPos.second - tickSize.second * scaleY);
         }
 
         m_line->setLine(min, tickPos.second, max, tickPos.second);
@@ -252,11 +250,11 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
 
         for(int i = 0; i < nbValues; ++i)
         {
-            pos = min + i * m_interval;
+            pos     = min + i * m_interval;
             tickPos = this->mapAdaptorToScene(std::pair<double, double>(tickPosX, pos), m_xAxis, m_yAxis);
             m_ticks.at(i)->setLine(
-                    tickPos.first, tickPos.second,
-                    tickPos.first + tickSize.first * scaleX, tickPos.second);
+                tickPos.first, tickPos.second,
+                tickPos.first + tickSize.first * scaleX, tickPos.second);
         }
 
         m_line->setLine( tickPos.first, min, tickPos.first, tickPos.second);
@@ -264,7 +262,7 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
     else if(m_align == "right")
     {
         tickSize = this->mapAdaptorToScene(
-                std::pair<double, double>(m_tickSize, 0), m_xAxis, m_yAxis);
+            std::pair<double, double>(m_tickSize, 0), m_xAxis, m_yAxis);
 
         const double tickPosX = m_viewport->getX() + m_viewport->getWidth();
 
@@ -273,24 +271,14 @@ void Axis::doUpdate() throw( ::fwTools::Failed)
             pos = min + i * m_interval;
 
             tickPos = this->mapAdaptorToScene(
-                    std::pair<double, double>(tickPosX, pos), m_xAxis, m_yAxis);
+                std::pair<double, double>(tickPosX, pos), m_xAxis, m_yAxis);
 
             m_ticks.at(i)->setLine(
-                  tickPos.first - tickSize.first * scaleX, tickPos.second,
-                  tickPos.first, tickPos.second);
+                tickPos.first - tickSize.first * scaleX, tickPos.second,
+                tickPos.first, tickPos.second);
         }
 
         m_line->setLine(tickPos.first, min, tickPos.first, tickPos.second);
-    }
-}
-
-//--------------------------------------------------------------------------------------------------
-
-void Axis::doReceive( ::fwServices::ObjectMsg::csptr _msg) throw( ::fwTools::Failed)
-{
-    if( _msg->hasEvent( ::scene2D::data::ViewportMsg::VALUE_IS_MODIFIED) )
-    {
-        doUpdate();
     }
 }
 

@@ -1,37 +1,37 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/assign/list_of.hpp>
-#include <boost/foreach.hpp>
 
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/System.hpp>
+#include "PatchTest.hpp"
+
+#include <fwData/Object.hpp>
+#include <fwDataTools/Image.hpp>
+
+#include <fwGui/registry/worker.hpp>
+
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Study.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
-#include <fwData/Object.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Equipment.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
 
-#include <fwDataTools/Image.hpp>
+#include <fwThread/Worker.hpp>
 
-#include <fwServices/registry/ServiceFactory.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/System.hpp>
 
-
-#include "PatchTest.hpp"
+#include <boost/assign/list_of.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::patchMedicalData::ut::PatchTest );
@@ -46,6 +46,8 @@ namespace ut
 void PatchTest::setUp()
 {
     // Set up context before running a test.
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    ::fwGui::registry::worker::init(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -53,6 +55,7 @@ void PatchTest::setUp()
 void PatchTest::tearDown()
 {
     // Clean up after the test run.
+    ::fwGui::registry::worker::reset();
 }
 
 //------------------------------------------------------------------------------
@@ -61,11 +64,11 @@ template <typename T>
 SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::string &reader)
 {
 
-    typename T::sptr readObj = T::New();
+    typename T::sptr readObj               = T::New();
     ::fwServices::IService::sptr readerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( reader );
     CPPUNIT_ASSERT(readerSrv);
 
-    ::fwServices::OSR::registerService( readObj , readerSrv );
+    ::fwServices::OSR::registerService( readObj, readerSrv );
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
     readerSrv->start();
@@ -80,7 +83,7 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
 
 ::fwMedData::Series::sptr getACHSeries( const ::fwMedData::SeriesDB::sptr & sdb )
 {
-    BOOST_FOREACH( ::fwMedData::Series::sptr series, sdb->getContainer() )
+    for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
     {
         if ( series->getPatient()->getName() == "CHARNOZ ARNAUD" )
         {
@@ -96,7 +99,7 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
 std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::SeriesDB::sptr & sdb )
 {
     std::vector< ::fwMedData::Series::sptr > otherSeries;
-    BOOST_FOREACH( ::fwMedData::Series::sptr series, sdb->getContainer() )
+    for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
     {
         if ( series->getPatient()->getName() != "CHARNOZ ARNAUD" )
         {
@@ -122,7 +125,7 @@ void PatchTest::patchMedicalDataTest()
     //<patcher context="..." version="..." />
     ::fwRuntime::EConfigurationElement::sptr patcherCfg = ::fwRuntime::EConfigurationElement::New("patcher");
     patcherCfg->setAttributeValue("context","MedicalData");
-    patcherCfg->setAttributeValue("version","V06AGO");
+    patcherCfg->setAttributeValue("version","V09ALA");
     srvCfg->addConfigurationElement(patcherCfg);
 
     ::fwMedData::SeriesDB::sptr sdb = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader" );
@@ -135,7 +138,7 @@ void PatchTest::patchMedicalDataTest()
     CPPUNIT_ASSERT( series );
     CPPUNIT_ASSERT( ::fwMedData::ImageSeries::dynamicCast(series) );
     CPPUNIT_ASSERT_EQUAL(std::string("1.2.392.200036.9116.2.6.1.48.1211418863.1225184516.765855"),
-            series->getInstanceUID());
+                         series->getInstanceUID());
     CPPUNIT_ASSERT_EQUAL(std::string("20081028"), series->getDate());
     CPPUNIT_ASSERT_EQUAL(std::string("174446"), series->getTime());
     CPPUNIT_ASSERT_EQUAL(std::string("Original image"),series->getDescription());
@@ -152,7 +155,7 @@ void PatchTest::patchMedicalDataTest()
     ::fwMedData::Study::sptr study = series->getStudy();
     CPPUNIT_ASSERT( study );
     CPPUNIT_ASSERT_EQUAL(std::string("1.2.392.200036.9116.2.6.1.48.1211418863.1225183167.375775"),
-            study->getInstanceUID());
+                         study->getInstanceUID());
     CPPUNIT_ASSERT_EQUAL(std::string("20081028"), study->getDate());
     CPPUNIT_ASSERT_EQUAL(std::string("174446"), study->getTime());
     CPPUNIT_ASSERT_EQUAL(std::string(""), study->getReferringPhysicianName());

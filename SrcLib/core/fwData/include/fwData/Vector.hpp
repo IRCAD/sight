@@ -7,13 +7,14 @@
 #ifndef __FWDATA_VECTOR_HPP__
 #define __FWDATA_VECTOR_HPP__
 
-#include <vector>
-#include <boost/shared_ptr.hpp>
-#include <camp/class.hpp>
-
 #include "fwData/Object.hpp"
 #include "fwData/factory/new.hpp"
 #include "fwData/config.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
+#include <vector>
 
 fwCorePredeclare((fwData)(Vector))
 
@@ -32,7 +33,7 @@ class FWDATA_CLASS_API Vector : public Object
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwData::factory::New< Vector >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Vector)(::fwData::Object), (()), ::fwData::factory::New< Vector >);
     fwCampMakeFriendDataMacro((fwData)(Vector));
 
     typedef std::vector< Object::sptr > ContainerType;
@@ -66,39 +67,35 @@ public:
 
     typedef Vector Container;
 
-    IteratorType begin() { return m_attrContainer.begin(); }
-    IteratorType end()   { return m_attrContainer.end(); }
-    ConstIteratorType begin() const { return m_attrContainer.begin(); }
-    ConstIteratorType end()   const { return m_attrContainer.end(); }
+    IteratorType begin();
+    IteratorType end();
+    ConstIteratorType begin() const;
+    ConstIteratorType end()   const;
 
-    ReverseIteratorType rbegin() { return m_attrContainer.rbegin(); }
-    ReverseIteratorType rend()   { return m_attrContainer.rend(); }
-    ConstReverseIteratorType rbegin() const { return m_attrContainer.rbegin(); }
-    ConstReverseIteratorType rend()   const { return m_attrContainer.rend(); }
+    ReverseIteratorType rbegin();
+    ReverseIteratorType rend();
+    ConstReverseIteratorType rbegin() const;
+    ConstReverseIteratorType rend()   const;
 
-    bool empty() const { return m_attrContainer.empty(); }
-    SizeType size() const { return m_attrContainer.size(); }
+    bool empty() const;
+    SizeType size() const;
 
-    ValueType front(){ return m_attrContainer.front(); }
-    ValueType back(){ return m_attrContainer.back(); }
+    ValueType front();
+    ValueType back();
 
-    ReferenceType operator[] ( size_type n )
-    {return this->m_attrContainer[n];}
-    ConstReferenceType operator[] ( size_type n ) const
-    {return this->m_attrContainer[n];}
+    ReferenceType operator[] ( size_type n );
+    ConstReferenceType operator[] ( size_type n ) const;
 
-    ReferenceType at ( SizeType n ) {return m_attrContainer.at(n);}
-    ConstReferenceType at ( SizeType n ) const {return m_attrContainer.at(n);}
+    ReferenceType at ( SizeType n );
+    ConstReferenceType at ( SizeType n ) const;
     /// @}
 
     /// @brief get/set the vector of ::fwData::Object
     /// @{
-    ContainerType &getContainer(){ return m_attrContainer; };
-    fwDataGetSetCRefMacro(Container, ContainerType);
+    ContainerType &getContainer();
+    const ContainerType &getContainer () const;
+    void setContainer (const ContainerType &val);
     /// @}
-
-
-
 
     /// Defines shallow copy
     FWDATA_API void shallowCopy( const Object::csptr& _source );
@@ -108,33 +105,194 @@ public:
 
     /// Method to initialize a ::fwData::Vector from a std::vector
     template< class DATATYPE >
-    void setDataContainer( const std::vector< SPTR(DATATYPE) > & vec )
-    {
-        this->m_attrContainer.clear();
-        std::copy( vec.begin(), vec.end(), std::back_inserter(this->getContainer()) );
-    }
+    void setDataContainer( const std::vector< SPTR(DATATYPE) > & vec );
 
     /// Method to get a std::vector from ::fwData::Vector
     template< class DATATYPE >
-    std::vector< SPTR(DATATYPE) > getDataContainer() const
-    {
-        std::vector< SPTR(DATATYPE) > vec;
-        vec.reserve( this->size() );
-        SPTR(DATATYPE) castedData;
-        BOOST_FOREACH( ::fwData::Object::sptr data, this->getContainer() )
-        {
-            castedData = ::boost::dynamic_pointer_cast<DATATYPE>( data );
-            OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castedData);
-            vec.push_back( castedData );
-        }
+    std::vector< SPTR(DATATYPE) > getDataContainer() const;
 
-        return vec;
-    }
+    /**
+     * @name Signals
+     * @{
+     */
+    /// Type of signal when objects are added
+    typedef ::fwCom::Signal< void (ContainerType) > AddedObjectsSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_ADDED_OBJECTS_SIG;
+
+    /// Type of signal when objects are removed
+    typedef ::fwCom::Signal< void (ContainerType) > RemovedObjectsSignalType;
+    FWDATA_API static const ::fwCom::Signals::SignalKeyType s_REMOVED_OBJECTS_SIG;
+    /**
+     * @}
+     */
 
 protected:
 
-    ContainerType m_attrContainer;
+    ContainerType m_container;
 };
+
+//-----------------------------------------------------------------------------
+
+inline Vector::IteratorType Vector::begin()
+{
+    return m_container.begin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::IteratorType Vector::end()
+{
+    return m_container.end();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ConstIteratorType Vector::begin() const
+{
+    return m_container.begin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ConstIteratorType Vector::end() const
+{
+    return m_container.end();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ReverseIteratorType Vector::rbegin()
+{
+    return m_container.rbegin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ReverseIteratorType Vector::rend()
+{
+    return m_container.rend();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ConstReverseIteratorType Vector::rbegin() const
+{
+    return m_container.rbegin();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ConstReverseIteratorType Vector::rend() const
+{
+    return m_container.rend();
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool Vector::empty() const
+{
+    return m_container.empty();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::SizeType Vector::size() const
+{
+    return m_container.size();
+}
+
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ValueType Vector::front()
+{
+    return m_container.front();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ValueType Vector::back()
+{
+    return m_container.back();
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ReferenceType Vector::operator[](Vector::size_type n)
+{
+    return this->m_container[n];
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ConstReferenceType Vector::operator[](Vector::size_type n) const
+{
+    return this->m_container[n];
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ReferenceType Vector::at(Vector::SizeType n)
+{
+    return m_container.at(n);
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ConstReferenceType Vector::at(Vector::SizeType n) const
+{
+    return m_container.at(n);
+}
+
+//-----------------------------------------------------------------------------
+
+inline Vector::ContainerType &Vector::getContainer()
+{
+    return m_container;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const Vector::ContainerType &Vector::getContainer () const
+{
+    return m_container;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Vector::setContainer (const Vector::ContainerType &val)
+{
+    m_container = val;
+}
+
+//-----------------------------------------------------------------------------
+
+template< class DATATYPE >
+inline void Vector::setDataContainer( const std::vector< SPTR(DATATYPE) > & vec )
+{
+    m_container.clear();
+    std::copy( vec.begin(), vec.end(), std::back_inserter(this->getContainer()) );
+}
+
+//-----------------------------------------------------------------------------
+
+template< class DATATYPE >
+inline std::vector< SPTR(DATATYPE) > Vector::getDataContainer() const
+{
+    std::vector< SPTR(DATATYPE) > vec;
+    vec.reserve( this->size() );
+    SPTR(DATATYPE) castedData;
+    for(const ::fwData::Object::sptr& data : this->getContainer() )
+    {
+        castedData = std::dynamic_pointer_cast<DATATYPE>( data );
+        OSLM_ASSERT("DynamicCast "<< ::fwCore::TypeDemangler<DATATYPE>().getFullClassname()<<" failed", castedData);
+        vec.push_back( castedData );
+    }
+
+    return vec;
+}
+
+//-----------------------------------------------------------------------------
 
 } //namespace fwData
 

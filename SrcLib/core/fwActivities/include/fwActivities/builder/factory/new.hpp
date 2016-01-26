@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -35,17 +34,19 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
  */
 class Key
 {
-    template<typename CLASSNAME>
-    friend SPTR( CLASSNAME ) fwActivities::builder::factory::New();
+template<typename CLASSNAME>
+friend SPTR( CLASSNAME ) fwActivities::builder::factory::New();
 
-    Key(){};
+Key()
+{
+}
 };
 
 FWACTIVITIES_API SPTR( ::fwActivities::IBuilder ) New( const ::fwActivities::builder::registry::KeyType & classname );
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
-    SPTR(CLASSNAME) builder = ::boost::make_shared< CLASSNAME >( Key() );
+    SPTR(CLASSNAME) builder = std::make_shared< CLASSNAME >( Key() );
     return builder;
 }
 

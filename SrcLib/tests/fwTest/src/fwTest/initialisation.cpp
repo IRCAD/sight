@@ -1,15 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <ostream>
-#include <cstdio>
+# include <fwCore/log/SpyLogger.hpp>
 
 #include <boost/filesystem.hpp>
 
-# include <fwCore/log/SpyLogger.hpp>
+#include <ostream>
+#include <cstdio>
 
 namespace fwTest
 {
@@ -36,7 +36,7 @@ struct LogInitialization
             else
             {
                 // creates SLM.log in temp directory: default dir unreachable
-                sysTmp = sysTmp / logFile;
+                sysTmp  = sysTmp / logFile;
                 logFile = sysTmp.string();
                 logger.addFileAppender(logFile);
             }
@@ -53,5 +53,5 @@ struct LogInitialization
 
 static LogInitialization init;
 
-}; //namespace fwTest
+}  //namespace fwTest
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,14 +28,14 @@ ISemanticPatch::~ISemanticPatch()
 ISemanticPatch::ISemanticPatch( const ISemanticPatch &cpy ) : IPatch(cpy)
 {
     m_originClassname = cpy.getOriginClassname();
-    m_originVersion = cpy.getOriginVersion();
+    m_originVersion   = cpy.getOriginVersion();
 }
 
 // ----------------------------------------------------------------------------
 
 void ISemanticPatch::addContext(const std::string& context,
-                                  const std::string& originVersion,
-                                  const std::string& targetVersion)
+                                const std::string& originVersion,
+                                const std::string& targetVersion)
 {
     ::fwCore::mt::WriteLock lock(m_mutex);
     m_contexts.push_back(Context(context, originVersion, targetVersion));
@@ -44,8 +44,8 @@ void ISemanticPatch::addContext(const std::string& context,
 // ----------------------------------------------------------------------------
 
 bool ISemanticPatch::isApplicable(const std::string& context,
-            const std::string& originVersion,
-            const std::string& targetVersion) const
+                                  const std::string& originVersion,
+                                  const std::string& targetVersion) const
 {
     Context c(context, originVersion, targetVersion);
     ::fwCore::mt::ReadLock lock(m_mutex);
@@ -56,13 +56,13 @@ bool ISemanticPatch::isApplicable(const std::string& context,
 // ----------------------------------------------------------------------------
 
 void ISemanticPatch::apply(const ::fwAtoms::Object::sptr& previous,
-        const ::fwAtoms::Object::sptr& current,
-        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
+                           const ::fwAtoms::Object::sptr& current,
+                           ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
 {
     OSLM_ASSERT("The type of the previous object ("
-            << ::fwAtomsPatch::helper::getClassname(previous) << "does not match"
-            "the required type (" << m_originClassname << ").",
-            ::fwAtomsPatch::helper::getClassname(previous) == m_originClassname);
+                << ::fwAtomsPatch::helper::getClassname(previous) << "does not match"
+                "the required type (" << m_originClassname << ").",
+                ::fwAtomsPatch::helper::getClassname(previous) == m_originClassname);
 
     OSLM_ASSERT("The version of the previous object (" << ::fwAtomsPatch::helper::getVersion(previous) <<
                 "does not match the required version (" << m_originVersion << ").",

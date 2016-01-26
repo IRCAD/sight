@@ -1,17 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifdef _WIN32
 
-#include <fwCore/base.hpp>
-
 #include "fwRuntime/dl/Win32.hpp"
-#include "fwRuntime/dl/Win32NameDecorator.hpp"
 
-
+#include <fwCore/base.hpp>
 
 namespace fwRuntime
 {
@@ -21,10 +18,11 @@ namespace dl
 
 //------------------------------------------------------------------------------
 
-Win32::Win32( const boost::filesystem::path & modulePath ) throw()
-: Native        ( modulePath, ::boost::shared_ptr< INameDecorator >(new Win32NameDecorator()) ),
-  m_handle  ( 0 )
-{}
+Win32::Win32( const boost::filesystem::path & modulePath ) throw() :
+    Native(modulePath),
+    m_handle  ( 0 )
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -54,18 +52,14 @@ void Win32::load() throw(RuntimeException)
     if(m_handle == 0)
     {
         // Opens the dynamic library.
-#if BOOST_FILESYSTEM_VERSION > 2
         std::string lib(getFullPath(true).string());
-#else
-        std::string lib(getFullPath(true).native_file_string());
-#endif
         OSLM_TRACE("Opens the dynamic library " << lib);
         m_handle = LoadLibrary( lib.c_str() );
         if(m_handle == 0)
         {
             // Retrieves the last error message.
-            DWORD   lastError = GetLastError();
-            char    buffer[1024];
+            DWORD lastError = GetLastError();
+            char buffer[1024];
             FormatMessage( FORMAT_MESSAGE_FROM_SYSTEM, 0, lastError, 0, buffer, 1024, 0 );
 
             // Builds the error message and throws the exception.

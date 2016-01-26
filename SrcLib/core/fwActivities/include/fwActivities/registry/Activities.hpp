@@ -1,10 +1,15 @@
-#ifndef _FWACTIVITIES_REGISTRY_ACTIVITIES_HPP_
-#define _FWACTIVITIES_REGISTRY_ACTIVITIES_HPP_
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWACTIVITIES_REGISTRY_ACTIVITIES_HPP__
+#define __FWACTIVITIES_REGISTRY_ACTIVITIES_HPP__
 
 #include <map>
 #include <string>
 
-#include <boost/make_shared.hpp>
 #include <boost/property_tree/ptree.hpp>
 
 #include <fwCore/BaseObject.hpp>
@@ -36,7 +41,9 @@ typedef ::boost::property_tree::ptree ConfigType;
 
 struct FWACTIVITIES_CLASS_API ActivityAppConfigParam
 {
-    ActivityAppConfigParam(){};
+    ActivityAppConfigParam()
+    {
+    }
     FWACTIVITIES_API ActivityAppConfigParam(const ConfigType &config);
 
     bool isSeshat() const
@@ -52,7 +59,9 @@ struct FWACTIVITIES_CLASS_API ActivityAppConfig
 {
     typedef std::vector< ActivityAppConfigParam > ActivityAppConfigParamsType;
 
-    ActivityAppConfig(){};
+    ActivityAppConfig()
+    {
+    }
     FWACTIVITIES_API ActivityAppConfig(const ConfigType &config);
 
     std::string id;
@@ -61,7 +70,9 @@ struct FWACTIVITIES_CLASS_API ActivityAppConfig
 
 struct FWACTIVITIES_CLASS_API ActivityRequirementKey
 {
-    ActivityRequirementKey(){};
+    ActivityRequirementKey()
+    {
+    }
     FWACTIVITIES_API ActivityRequirementKey(const ConfigType &config);
 
     std::string key;
@@ -70,7 +81,9 @@ struct FWACTIVITIES_CLASS_API ActivityRequirementKey
 
 struct FWACTIVITIES_CLASS_API ActivityRequirement
 {
-    ActivityRequirement(){};
+    ActivityRequirement()
+    {
+    }
     FWACTIVITIES_API ActivityRequirement(const ConfigType &config);
 
     typedef std::vector< ActivityRequirementKey > KeyType;
@@ -154,7 +167,9 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     typedef std::map< std::string, MinMaxType > RequirementsMinMaxCount;
     typedef std::map< std::string, unsigned int > DataCountType;
 
-    ActivityInfo(){};
+    ActivityInfo()
+    {
+    }
 
     FWACTIVITIES_API ActivityInfo(const SPTR(::fwRuntime::Extension) &ext);
 
@@ -167,15 +182,17 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
     std::string tabInfo;
     RequirementsType requirements;
     std::string builderImpl;
+    std::string bundleId; ///< Identifier of the bundle containing the activity
+    std::string bundleVersion; ///< Version of the bundle containing the activity
 
     /// Validator implementations
     std::vector< std::string > validatorsImpl;
 
     ActivityAppConfig appConfig;
 
-protected:
+    protected:
 
-    RequirementsMinMaxCount m_requirementCount;
+        RequirementsMinMaxCount m_requirementCount;
 };
 
 
@@ -192,7 +209,7 @@ class FWACTIVITIES_CLASS_API Activities : public ::fwCore::BaseObject
 public:
     typedef std::vector< ActivityInfo > ActivitiesType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Activities)(::fwCore::BaseObject), (()), new Activities ) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Activities)(::fwCore::BaseObject), (()), new Activities );
 
     /// Return the default global instance of Activities
     FWACTIVITIES_API static Activities::sptr getDefault();
@@ -251,7 +268,7 @@ public:
      */
     FWACTIVITIES_API void clearRegistry();
 
-protected :
+protected:
 
     typedef std::map< std::string, ActivityInfo > Registry;
 
@@ -274,6 +291,6 @@ protected :
 
 } // namespace fwActivities
 
-#endif // _FWACTIVITIES_REGISTRY_ACTIVITIES_HPP_
+#endif // __FWACTIVITIES_REGISTRY_ACTIVITIES_HPP__
 
 

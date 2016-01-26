@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,27 +16,28 @@ namespace fwRuntime
 namespace
 {
 
-    /**
-     * @brief   Implements a STL compliant predicate that test if a configuration
-     *          element has the given name.
-     *
-     * 
-     */
-    struct HasName
-    {
-        HasName( const std::string & name )
+/**
+ * @brief   Implements a STL compliant predicate that test if a configuration
+ *          element has the given name.
+ *
+ *
+ */
+struct HasName
+{
+    HasName( const std::string & name )
         :   m_name( name )
-        {}
+    {
+    }
 
-        bool operator() ( ConfigurationElement::csptr element ) const
-        {
-            return element->getName() == m_name;
-        }
+    bool operator() ( ConfigurationElement::csptr element ) const
+    {
+        return element->getName() == m_name;
+    }
 
     private:
 
         std::string m_name;
-    };
+};
 
 }
 
@@ -78,16 +79,18 @@ bool ConfigurationElementContainer::hasConfigurationElement( const std::string &
 
 //-----------------------------------------------------------------------------
 
-const ::boost::shared_ptr<ConfigurationElement> ConfigurationElementContainer::findConfigurationElement( const std::string & name ) const
+const std::shared_ptr<ConfigurationElement> ConfigurationElementContainer::findConfigurationElement(
+    const std::string & name ) const
 {
-    Container::const_iterator   found = std::find_if( m_elements.begin(), m_elements.end(), HasName(name) );
+    Container::const_iterator found = std::find_if( m_elements.begin(), m_elements.end(), HasName(name) );
 
-    return ( found == m_elements.end() ) ? ::boost::shared_ptr< ConfigurationElement >() : *found;
+    return ( found == m_elements.end() ) ? std::shared_ptr< ConfigurationElement >() : *found;
 }
 
 //-----------------------------------------------------------------------------
 
-ConfigurationElementContainer ConfigurationElementContainer::findAllConfigurationElement( const std::string & _name ) const
+ConfigurationElementContainer ConfigurationElementContainer::findAllConfigurationElement( const std::string & _name )
+const
 {
     ConfigurationElementContainer container;
 

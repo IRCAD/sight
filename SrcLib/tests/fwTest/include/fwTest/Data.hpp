@@ -1,16 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWTEST__DATA_HPP__
-#define __FWTEST__DATA_HPP__
-
-#include <boost/filesystem/path.hpp>
+#ifndef __FWTEST_DATA_HPP__
+#define __FWTEST_DATA_HPP__
 
 #include "fwTest/Exception.hpp"
 #include "fwTest/config.hpp"
+
+#include <boost/filesystem/path.hpp>
 
 namespace fwTest
 {
@@ -26,4 +26,4 @@ public:
 
 } // namespace fwTest
 
-#endif // __FWTEST__DATA_HPP__
+#endif // __FWTEST_DATA_HPP__

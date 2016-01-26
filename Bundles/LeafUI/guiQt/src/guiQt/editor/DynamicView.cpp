@@ -1,22 +1,26 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QtGui>
-#include <QTabWidget>
-#include <QBoxLayout>
+#include "guiQt/editor/DynamicView.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwCore/base.hpp>
 
-#include <boost/foreach.hpp>
-
-#include <fwTools/fwID.hpp>
-
-#include <fwData/String.hpp>
-#include <fwData/Composite.hpp>
 #include <fwData/Boolean.hpp>
+#include <fwData/Composite.hpp>
+#include <fwData/String.hpp>
+
+#include <fwDataCamp/getObject.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/GuiRegistry.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
@@ -24,19 +28,22 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwGui/GuiRegistry.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwTools/fwID.hpp>
 
-#include <fwDataCamp/getObject.hpp>
+#include <QtGui>
+#include <QTabWidget>
+#include <QBoxLayout>
 
-#include "guiQt/editor/DynamicView.hpp"
+#include <boost/foreach.hpp>
 
 namespace guiQt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::view::IView , ::guiQt::editor::DynamicView , ::fwData::Object ) ;
+static const ::fwCom::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
+
+fwServicesRegisterMacro( ::gui::view::IView, ::guiQt::editor::DynamicView, ::fwData::Object );
 
 AppConfig::AppConfig(const DynamicView::ConfigType& config) :
     id(config.get<std::string>("<xmlattr>.id")),
@@ -51,7 +58,7 @@ AppConfig::AppConfig(const DynamicView::ConfigType& config) :
     if(config.count("parameters") == 1 )
     {
         const ConfigType &configParameters = config.get_child("parameters");
-        BOOST_FOREACH( const ConfigType::value_type &v, configParameters.equal_range("parameter") )
+        BOOST_FOREACH( const ConfigType::value_type &v,  configParameters.equal_range("parameter") )
         {
             ParameterType parameter( v.second );
             parameters.push_back( parameter );
@@ -65,13 +72,15 @@ AppConfig::AppConfig(const DynamicView::ConfigType& config) :
 DynamicView::DynamicView() throw()
 {
     m_dynamicConfigStartStop = false;
-    //addNewHandledEvent( "NEW_CONFIGURATION_HELPER" );
+
+    newSlot(s_CREATE_TAB_SLOT, &DynamicView::createTab, this);
 }
 
 //------------------------------------------------------------------------------
 
 DynamicView::~DynamicView() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -81,7 +90,7 @@ void DynamicView::starting() throw(::fwTools::Failed)
 
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr parentContainer ;
+    ::fwGuiQt::container::QtContainer::sptr parentContainer;
     parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QWidget* qtContainer = parentContainer->getQtContainer();
@@ -121,7 +130,7 @@ void DynamicView::stopping() throw(::fwTools::Failed)
         this->closeTab(0,true);
     }
     m_tabWidget->clear();
-    ::fwGuiQt::container::QtContainer::sptr parentContainer ;
+    ::fwGuiQt::container::QtContainer::sptr parentContainer;
     parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     parentContainer->clean();
     this->::fwGui::IGuiContainerSrv::destroy();
@@ -136,13 +145,13 @@ void DynamicView::configuring() throw(fwTools::Failed)
 
     if(this->getConfigTree().get_child("service").count("config") > 0)
     {
-        SLM_ASSERT("Sorry you must have one (and only one) <config/> element.",
-                this->getConfigTree().get_child("service").count("config") == 1 );
+        SLM_ASSERT("There must be one (and only one) <config/> element.",
+                   this->getConfigTree().get_child("service").count("config") == 1 );
         const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
-        const ::fwServices::IService::ConfigType &config = srvconfig.get_child("config");
+        const ::fwServices::IService::ConfigType &config   = srvconfig.get_child("config");
 
         const std::string dynamicConfig =
-                config.get_optional<std::string>("<xmlattr>.dynamicConfigStartStop").get_value_or("false");
+            config.get_optional<std::string>("<xmlattr>.dynamicConfigStartStop").get_value_or("false");
         m_dynamicConfigStartStop = (dynamicConfig == "true");
 
         if(config.count("appConfig") == 1 )
@@ -170,15 +179,15 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
         info.title = appConfig.tabInfo;
     }
     info.viewConfigID = appConfig.id;
-    info.closable = appConfig.closable;
+    info.closable     = appConfig.closable;
 
     ::fwData::Object::sptr currentObj = this->getObject();
-    ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();
-    BOOST_FOREACH(const AppConfig::ParametersType::value_type& param, appConfig.parameters)
+    ReplaceMapType replaceMap;
+    for(const AppConfig::ParametersType::value_type& param :  appConfig.parameters)
     {
         if(!param.isSeshat())
         {
-            (*replaceMap)[param.replace] = ::fwData::String::New(param.by);
+            replaceMap[param.replace] = param.by;
         }
         else
         {
@@ -199,11 +208,9 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
             {
                 parameterValue = stringParameter->getValue();
             }
-            (*replaceMap)[param.replace] = ::fwData::String::New(parameterValue);
+            replaceMap[param.replace] = parameterValue;
         }
     }
-    std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(appConfig.id);
-    (*replaceMap)["GENERIC_UID"] = ::fwData::String::New(genericUidAdaptor);
     info.replaceMap = replaceMap;
     return info;
 }
@@ -211,44 +218,29 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
 //------------------------------------------------------------------------------
 
 void DynamicView::updating() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void DynamicView::swapping() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
-void DynamicView::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void DynamicView::createTab( ::fwActivities::registry::ActivityMsg info )
 {
-    if (msg->hasEvent("NEW_CONFIGURATION_HELPER"))
-    {
-        DynamicViewInfo info;
-        ::fwData::String::csptr titleData = ::fwData::String::dynamicConstCast(msg->getDataInfo( "NEW_CONFIGURATION_HELPER" ) );
+    DynamicViewInfo viewInfo;
+    viewInfo.title        = info.getTitle();
+    viewInfo.tabID        = info.getTabID();
+    viewInfo.closable     = info.isClosable();
+    viewInfo.icon         = info.getIconPath();
+    viewInfo.tooltip      = info.getToolTip();
+    viewInfo.viewConfigID = info.getAppConfigID();
+    viewInfo.replaceMap   = info.getReplaceMap();
 
-        const std::string eventID              = "NEW_CONFIGURATION_HELPER";
-        const std::string fieldID              = "APPCONFIG";
-        const std::string viewConfigFieldID    = "VIEWCONFIGID";
-        const std::string closableFieldID      = "CLOSABLE";
-        const std::string iconFieldID          = "ICON";
-        const std::string tooltipFieldID       = "TOOLTIP";
-        const std::string tabIDFieldID         = "TABID";
-        const std::string asFieldID            = "ACTIVITYSERIES";
-        const std::string tabInfo              = "TABINFO";
-
-        SLM_ASSERT("Missing field 'tabID' in message", titleData->getField(tabIDFieldID));
-        info.title         = titleData->getField< ::fwData::String >("TABINFO")->value();
-        info.tabID         = titleData->getField< ::fwData::String >(tabIDFieldID)->value();
-        info.closable      = titleData->getField(closableFieldID, ::fwData::Boolean::New(true))->value();
-        info.icon          = titleData->getField(iconFieldID, ::fwData::String::New(""))->value();
-        info.tooltip       = titleData->getField(tooltipFieldID, ::fwData::String::New(""))->value();
-        info.viewConfigID  = titleData->getField(viewConfigFieldID, ::fwData::String::New(""))->value();
-        info.replaceMap    = titleData->getField(fieldID, ::fwData::Composite::New());
-
-
-        this->launchTab(info);
-    }
+    this->launchTab(viewInfo);
 }
 
 //------------------------------------------------------------------------------
@@ -259,14 +251,14 @@ void DynamicView::launchTab(DynamicViewInfo& info)
     if(m_tabIDList.find(info.tabID) != m_tabIDList.end() )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("New tab",
-                "Sorry, the tab " + info.title + " cannot be opened twice.",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                                                          "The tab " + info.title + " cannot be opened twice.",
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
         return;
     }
 
     if ( m_titleToCount.find( info.title ) !=  m_titleToCount.end() )
     {
-        m_titleToCount[ info.title ] ++;
+        m_titleToCount[ info.title ]++;
     }
     else
     {
@@ -281,14 +273,12 @@ void DynamicView::launchTab(DynamicViewInfo& info)
     subContainer->setQtContainer(widget);
     ::fwGui::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
-    (*(info.replaceMap))[ "WID_PARENT" ] = fwData::String::New( info.wid );
-
-
-    ::fwRuntime::ConfigurationElement::csptr config =
-            ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( info.viewConfigID, info.replaceMap);
+    info.replaceMap[ "WID_PARENT" ] = info.wid;
+    std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);
+    info.replaceMap["GENERIC_UID"] = genericUidAdaptor;
 
     ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
-    helper->setConfig( config );
+    helper->setConfig( info.viewConfigID, info.replaceMap );
 
     if (!m_dynamicConfigStartStop)
     {
@@ -321,7 +311,8 @@ void DynamicView::launchTab(DynamicViewInfo& info)
 //------------------------------------------------------------------------------
 
 void DynamicView::info( std::ostream &_sstream )
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -369,8 +360,8 @@ void DynamicView::closeTab( int index, bool forceClose )
     else
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Close tab",
-                "Sorry, the tab " + info.title + " can not be closed.",
-                ::fwGui::dialog::IMessageDialog::INFO);
+                                                          "The tab " + info.title + " can not be closed.",
+                                                          ::fwGui::dialog::IMessageDialog::INFO);
     }
 }
 

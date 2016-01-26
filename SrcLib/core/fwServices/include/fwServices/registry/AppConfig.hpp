@@ -1,25 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWSERVICES_REGISTRY_APPCONFIG_HPP_
-#define _FWSERVICES_REGISTRY_APPCONFIG_HPP_
+#ifndef __FWSERVICES_REGISTRY_APPCONFIG_HPP__
+#define __FWSERVICES_REGISTRY_APPCONFIG_HPP__
 
-#include <map>
-
-#include <fwTools/Object.hpp>
-#include <fwTools/macros.hpp>
+#include "fwServices/config.hpp"
 
 #include <fwCore/mt/types.hpp>
 
 #include <fwData/Composite.hpp>
 
-#include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
 
-#include "fwServices/config.hpp"
+#include <fwTools/macros.hpp>
+#include <fwTools/Object.hpp>
+
+#include <map>
 
 
 namespace fwServices
@@ -31,32 +31,31 @@ namespace registry
 
 /**
  * @class AppInfo
- * 
+ *
  */
 class FWSERVICES_CLASS_API AppInfo : public ::fwCore::BaseObject
 {
-public :
-
-    enum ConfigType {
-        TEMPLATE,
-        STANDARD,
-        PARAMETERS
-    };
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (AppInfo)(::fwCore::BaseObject), (()), new AppInfo );
 
     /// Constructor, do nothing.
-    AppInfo(){}
+    AppInfo()
+    {
+    }
 
     /// Destructor, do nothing.
-    virtual ~AppInfo(){}
+    virtual ~AppInfo()
+    {
+    }
 
-    ConfigType type;
     std::string group;
     std::string desc;
     typedef std::map< std::string, std::string > ParamatersType;
     ParamatersType parameters;
     ::fwRuntime::ConfigurationElement::csptr config;
+    std::string bundleId; ///< Bundle identifier (used to start the bundle when the appConfig is launched)
+    std::string bundleVersion; ///< Bundle version (used to start the bundle when the appConfig is launched)
 };
 
 
@@ -64,7 +63,7 @@ public :
  * @class AppConfig
  * @brief This class allows to register all the configuration which has the point extension
  *        "::fwServices::registry::AppConfig".
- * 
+ *
  * @date 2012.
  */
 class FWSERVICES_CLASS_API AppConfig : public ::fwCore::BaseObject
@@ -75,7 +74,7 @@ public:
     /// Associations of <pattern, value>.
     typedef std::map< std::string, std::string > FieldAdaptorType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (AppConfig)(::fwCore::BaseObject), (()), new AppConfig) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (AppConfig)(::fwCore::BaseObject), (()), new AppConfig);
 
     /// Destructor
     FWSERVICES_API virtual ~AppConfig();
@@ -98,12 +97,13 @@ public:
      * @note This method is thread safe
      */
     FWSERVICES_API void addAppInfo
-    (   const std::string & configId,
-            AppInfo::ConfigType type,
-            const std::string & group,
-            const std::string & desc,
-            const AppInfo::ParamatersType & parameters,
-            ::fwRuntime::ConfigurationElement::csptr config);
+        (   const std::string & configId,
+        const std::string & group,
+        const std::string & desc,
+        const AppInfo::ParamatersType & parameters,
+        ::fwRuntime::ConfigurationElement::csptr config,
+        const std::string bundleId,
+        const std::string bundleVersion);
 
     /**
      * @brief  Return the adapted config with the identifier configId.
@@ -112,7 +112,8 @@ public:
      * @note This method is thread safe.
      */
     FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId,
-            const FieldAdaptorType replaceFields = FieldAdaptorType() ) const;
+                                                                                      const FieldAdaptorType replaceFields =
+                                                                                          FieldAdaptorType() ) const;
 
     /**
      * @brief  Return the adapted config with the identifier configId.
@@ -120,7 +121,15 @@ public:
      * @param replaceFields composite of association between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
-    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId, ::fwData::Composite::csptr replaceFields ) const;
+    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getAdaptedTemplateConfig( const std::string & configId,
+                                                                                      ::fwData::Composite::csptr replaceFields )
+    const;
+
+    /**
+     * @brief Retrieves the bunble from the config id
+     * @param configId the config identifier
+     */
+    FWSERVICES_API std::shared_ptr< ::fwRuntime::Bundle > getBundle(const std::string & configId);
 
     /**
      * @brief Return all configurations ( standard and template ) register in the registry.
@@ -149,7 +158,7 @@ public:
     /// Return an instance of AppConfig.
     FWSERVICES_API static AppConfig::sptr getDefault();
 
-protected :
+protected:
 
     typedef std::map< std::string, AppInfo::sptr > Registry;
 
@@ -159,7 +168,7 @@ protected :
     /// Constructor
     FWSERVICES_API AppConfig();
 
-private :
+private:
 
     /// Convert the composite into map <pattern, value>.
     FieldAdaptorType compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const;
@@ -188,6 +197,6 @@ private :
 
 } // namespace fwServices
 
-#endif // _FWSERVICES_REGISTRY_APPCONFIG_HPP_
+#endif // __FWSERVICES_REGISTRY_APPCONFIG_HPP__
 
 

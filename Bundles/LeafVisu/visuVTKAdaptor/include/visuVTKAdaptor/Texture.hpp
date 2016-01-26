@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ class VISUVTKADAPTOR_CLASS_API Texture : public ::fwRenderVTK::IVtkAdaptorServic
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Texture)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Texture)(::fwRenderVTK::IVtkAdaptorService) );
 
     /**
      * @name Slots API
@@ -42,42 +42,49 @@ public:
     /// Destructor
     VISUVTKADAPTOR_API virtual ~Texture() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
 
     /// Calls doUpdate()
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
-    
-    /** 
+
+    /**
      * @brief Configure the adaptor.
      * @verbatim
-    <adaptor id="texAdaptor" class="::visuVTKAdaptor::Texture" objectId="imageKey" >
+       <adaptor id="texAdaptor" class="::visuVTKAdaptor::Texture" objectId="imageKey" >
         <config texture="texture" autoRender="true" meshAdaptor="meshAdaptor" filtering="linear" wrapping="repeat" />
-    </adaptor> 
+       </adaptor>
        @endverbatim
-     * With : 
+     * With :
      *  - \b texture (mandatory) : the vtkTexture to associate to the adaptor
      *  - \b autoRender (optional, "true" by default): if autoRender=true,  the scene is automatically rendered after
-     *    doStart, doUpdate, doSwap, doReceive and doStop if m_vtkPipelineModified=true.
+     *    doStart, doUpdate, doSwap and doStop if m_vtkPipelineModified=true.
      *  - \b filtering (optional) : filtering of the texture, "nearest" or "linear"
      *  - \b wrapping (optional) : wrapping of the texture, "clamp" or "repeat"
+     *  - \b lighting (optional) : enable the lighting, "yes" or "no" default yes
      * And either of the three (adaptor is preferred if several are specified) :
      *  - \b meshAdaptor : the meshAdaptor referring to the mesh you want to map
      *  - \b mesh : a mesh data, in this case the first mesh adaptor linked to it is used
      *  - \b modelSeries : a model series data, the first mesh adaptor of all reconstructions are used
      */
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
-    
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
+
     /// Calls doUpdate()
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
-    
+
     /// Updates the vtkTransform from the TransformationMatrix3D
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    
+
     /// Does nothing
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
- 
-    /// Calls doUpdate() when it receives MATRIX_IS_MODIFIED event
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     /// Slot called when a texture must be applied on a material.
     void applyTexture( SPTR(::fwData::Material) _material);
@@ -96,6 +103,9 @@ protected:
 
     /// register connections between signal and slot
     ::fwServices::helper::SigSlotConnection::sptr m_connections;
+
+    /// enable or not the lighting (default true)
+    bool m_lighting;
 };
 
 } //namespace visuVTKAdaptor

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWITKIO_INR2ITK_INRIMAGEIOFACTORY_HPP__
-#define __FWITKIO_INR2ITK_INRIMAGEIOFACTORY_HPP__
+#ifndef __INR2ITK_ITKINRIMAGEIOFACTORY_HPP__
+#define __INR2ITK_ITKINRIMAGEIOFACTORY_HPP__
 
 #include <itkObjectFactoryBase.h>
 #include <itkImageIOBase.h>
@@ -19,9 +19,9 @@ namespace itk
 class ITK_EXPORT InrImageIOFactory : public ObjectFactoryBase
 {
 public:
-  /** Standard class typedefs. */
-    typedef InrImageIOFactory   Self;
-    typedef ObjectFactoryBase  Superclass;
+    /** Standard class typedefs. */
+    typedef InrImageIOFactory Self;
+    typedef ObjectFactoryBase Superclass;
     typedef SmartPointer<Self>  Pointer;
     typedef SmartPointer<const Self>  ConstPointer;
 
@@ -56,4 +56,4 @@ private:
 } // end namespace itk
 
 
-#endif // __FWITKIO_INR2ITK_INRIMAGEIOFACTORY_HPP__
+#endif // __INR2ITK_ITKINRIMAGEIOFACTORY_HPP__

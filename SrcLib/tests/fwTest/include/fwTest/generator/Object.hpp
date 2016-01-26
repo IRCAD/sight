@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __FWTEST_GENERATOR_OBJECT_HPP__
 #define __FWTEST_GENERATOR_OBJECT_HPP__
+
+#include "fwTest/config.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -26,7 +28,6 @@
 #include <fwData/StructureTraitsDictionary.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include "fwTest/config.hpp"
 
 namespace fwTest
 {

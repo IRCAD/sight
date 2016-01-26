@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWMEMORY_IPOLICY_HPP_
-#define FWMEMORY_IPOLICY_HPP_
+#ifndef __FWMEMORY_IPOLICY_HPP__
+#define __FWMEMORY_IPOLICY_HPP__
 
-#include <boost/shared_ptr.hpp>
 #include <boost/function.hpp>
 
 #include <fwCore/base.hpp>
@@ -25,33 +24,35 @@ namespace fwMemory
  */
 class FWMEMORY_CLASS_API IPolicy : public fwCore::BaseObject
 {
-public :
+public:
 
-    typedef SPTR(IPolicy) sptr;
+    typedef SPTR (IPolicy) sptr;
     typedef std::vector<std::string> ParamNamesType;
 
     virtual void allocationRequest(BufferInfo &info,
-            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType size ) = 0 ;
+                                   ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+                                   BufferInfo::SizeType size ) = 0;
 
     virtual void setRequest(BufferInfo &info,
-            ::fwMemory::BufferManager::ConstBufferPtrType buffer,  BufferInfo::SizeType size ) = 0 ;
+                            ::fwMemory::BufferManager::ConstBufferPtrType buffer,  BufferInfo::SizeType size ) = 0;
 
     virtual void reallocateRequest(BufferInfo &info,
-            ::fwMemory::BufferManager::ConstBufferPtrType buffer, BufferInfo::SizeType newSize ) = 0 ;
+                                   ::fwMemory::BufferManager::ConstBufferPtrType buffer,
+                                   BufferInfo::SizeType newSize ) = 0;
 
-    virtual void destroyRequest(BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0 ;
+    virtual void destroyRequest(BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0;
 
-    virtual void lockRequest(BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0 ;
-    virtual void unlockRequest(BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0 ;
+    virtual void lockRequest(BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )   = 0;
+    virtual void unlockRequest(BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0;
 
-    virtual void dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0 ;
-    virtual void restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0 ;
+    virtual void dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )    = 0;
+    virtual void restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer ) = 0;
 
     virtual void refresh() = 0;
 
-    virtual bool setParam(const std::string &name, const std::string &value) = 0;
+    virtual bool setParam(const std::string &name, const std::string &value)      = 0;
     virtual std::string getParam(const std::string &name, bool *ok = NULL ) const = 0;
-    virtual const ParamNamesType &getParamNames() const = 0;
+    virtual const ParamNamesType &getParamNames() const                           = 0;
 
 
     template <typename T>
@@ -68,5 +69,5 @@ public :
 
 } // namespace fwMemory
 
-#endif // FWMEMORY_IPOLICY_HPP_
+#endif // __FWMEMORY_IPOLICY_HPP__
 

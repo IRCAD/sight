@@ -1,7 +1,18 @@
 
 set( NAME Tuto13Scene2D )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE APP )
 set( DEPENDENCIES  )
-set( REQUIREMENTS io appXml gui guiQt dataReg servicesReg launcher scene2D uiVisu uiVisuQt )
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+    gui
+    guiQt
+    uiVisu
+    uiVisuQt
+    scene2D
+    launcher
+    appXml
+)
 
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoScene2DConfig)

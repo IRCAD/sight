@@ -1,23 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QVBoxLayout>
-#include <QIcon>
+#include "uiMeasurementQt/editor/Distance.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/convenience.hpp>
 
 #include <fwData/String.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Boolean.hpp>
 
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/Dictionary.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -26,11 +22,17 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include "uiMeasurementQt/editor/Distance.hpp"
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/convenience.hpp>
+
+#include <QVBoxLayout>
+#include <QIcon>
 
 
 namespace uiMeasurement
@@ -38,18 +40,20 @@ namespace uiMeasurement
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiMeasurement::editor::Distance , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurement::editor::Distance, ::fwData::Image );
 
+const ::fwCom::Signals::SignalKeyType Distance::s_DISTANCE_REQUESTED_SIG = "distanceRequested";
 
 Distance::Distance() throw()
 {
-    //handlingEventOff();
+    m_sigDistanceRequested = newSignal< DistanceRequestedSignalType >(s_DISTANCE_REQUESTED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
 Distance::~Distance() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -58,7 +62,8 @@ void Distance::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -68,10 +73,10 @@ void Distance::starting() throw(::fwTools::Failed)
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));
 
-    m_distButton = new QPushButton( imageDist, tr(""), container) ;
+    m_distButton = new QPushButton( imageDist, tr(""), container);
     m_distButton->setToolTip(tr("Distance"));
 
-    QVBoxLayout* layout  = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget( m_distButton, 1 );
     layout->setContentsMargins(0, 0, 0, 0);
     QObject::connect(m_distButton, SIGNAL(clicked()), this, SLOT(onDistanceButton()));
@@ -118,11 +123,6 @@ void Distance::swapping() throw(::fwTools::Failed)
 {
 
 }
-//------------------------------------------------------------------------------
-
-void Distance::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-}
 
 //------------------------------------------------------------------------------
 
@@ -141,9 +141,7 @@ void Distance::onDistanceButton()
     // force distance to be shown
     image->setField("ShowDistances",  ::fwData::Boolean::New(true));
 
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent( ::fwComEd::ImageMsg::NEW_DISTANCE, ::fwData::String::New(m_scenesUID) );
-    ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+    m_sigDistanceRequested->asyncEmit();
 }
 
 //------------------------------------------------------------------------------

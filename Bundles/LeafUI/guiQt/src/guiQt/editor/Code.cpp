@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QHBoxLayout>
+#include "guiQt/editor/Code.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -12,15 +12,15 @@
 
 #include <fwServices/Base.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 
-#include <fwComEd/StringMsg.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/highlighter/CppHighlighter.hpp>
 #include <fwGuiQt/highlighter/PythonHighlighter.hpp>
 
-#include "guiQt/editor/Code.hpp"
+#include <QHBoxLayout>
 
 namespace guiQt
 {
@@ -28,7 +28,7 @@ namespace guiQt
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::guiQt::editor::Code , ::fwData::String ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::guiQt::editor::Code, ::fwData::String );
 
 //------------------------------------------------------------------------------
 
@@ -39,13 +39,13 @@ const std::string Code::CPP    = "Cpp";
 
 Code::Code() throw() : m_language(PYTHON)
 {
-    //addNewHandledEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED);
 }
 
 //------------------------------------------------------------------------------
 
 Code::~Code() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -54,7 +54,8 @@ void Code::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -119,7 +120,7 @@ void Code::configuring() throw(fwTools::Failed)
 void Code::updating() throw(::fwTools::Failed)
 {
     ::fwData::String::sptr stringObj = this->getObject< ::fwData::String >();
-    SLM_ASSERT("Sorry, the object is null", stringObj);
+    SLM_ASSERT("The given string object is null", stringObj);
 
     m_valueCtrl->setText(QString::fromStdString(stringObj->value()));
     OSLM_TRACE(stringObj->getID() << " updated value : " << stringObj->value());
@@ -130,17 +131,6 @@ void Code::updating() throw(::fwTools::Failed)
 void Code::swapping() throw(::fwTools::Failed)
 {
     this->updating();
-}
-//------------------------------------------------------------------------------
-
-void Code::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    ::fwComEd::StringMsg::csptr stringMsg = ::fwComEd::StringMsg::dynamicConstCast(_msg);
-
-    if (stringMsg && stringMsg->hasEvent(::fwComEd::StringMsg::VALUE_IS_MODIFIED))
-    {
-        this->updating();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -165,11 +155,26 @@ void Code::onModifyValue()
     if ( oldValue->value() != stringObj->value() )
     {
         OSLM_TRACE( stringObj->getID() << " modified");
-        ::fwComEd::StringMsg::sptr msg = ::fwComEd::StringMsg::New();
-        msg->addEvent( ::fwComEd::StringMsg::VALUE_IS_MODIFIED );
-        ::fwServices::IEditionService::notify(this->getSptr(), stringObj, msg);
+
+        auto sig = stringObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
+        }
     }
 }
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType Code::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 
 } // namespace editor

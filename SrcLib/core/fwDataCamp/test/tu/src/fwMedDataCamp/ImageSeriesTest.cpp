@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,23 +47,23 @@ void ImageSeriesTest::tearDown()
 
 void ImageSeriesTest::propertiesTest()
 {
-    const std::string instance_uid = "123456789";
-    const std::string modality = "CT";
-    const std::string date = "20130214";
-    const std::string time = "143328";
-    const std::string performing_physicians_name = "John Doe";
-    const std::string description = "description";
+    const std::string instance_uid                            = "123456789";
+    const std::string modality                                = "CT";
+    const std::string date                                    = "20130214";
+    const std::string time                                    = "143328";
+    const std::string performing_physicians_name              = "John Doe";
+    const std::string description                             = "description";
     const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                        ("image")
-                                                                        ("patient")
-                                                                        ("study")
-                                                                        ("equipment")
-                                                                        ("instance_uid")
-                                                                        ("modality")
-                                                                        ("date")
-                                                                        ("time")
-                                                                        ("performing_physicians_name")
-                                                                        ("description");
+                                                                    ("image")
+                                                                    ("patient")
+                                                                    ("study")
+                                                                    ("equipment")
+                                                                    ("instance_uid")
+                                                                    ("modality")
+                                                                    ("date")
+                                                                    ("time")
+                                                                    ("performing_physicians_name")
+                                                                    ("description");
 
     ::fwData::Image::sptr img = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type::create("uint8"));

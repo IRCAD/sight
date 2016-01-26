@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,21 +22,26 @@ class ClassTest
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((ClassTest), (()) ( ((int)) ), new ClassTest);
+    fwCoreClassDefinitionsWithFactoryMacro((ClassTest), (())( ((int)) ), new ClassTest);
 
-    int getNum() { return m_num; }
+    int getNum()
+    {
+        return m_num;
+    }
 
-protected:
     ClassTest()
-    : m_num(1)
-    {}
+        : m_num(1)
+    {
+    }
 
     ClassTest(int num)
-    : m_num(num)
-    {}
+        : m_num(num)
+    {
+    }
 
     virtual ~ClassTest()
-    {}
+    {
+    }
 
 private:
     int m_num;

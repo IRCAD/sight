@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,7 +30,7 @@ namespace fwCom
 {
 template< typename F >
 struct Slot;
-};
+}
 
 namespace monitor
 {
@@ -40,19 +40,20 @@ namespace monitor
  * @brief   Editor to dump or restore selected buffer.
  * @date    2010-2013
  */
-class MONITORQT_CLASS_API DumpEditor : public QObject, public ::gui::editor::IEditor
+class MONITORQT_CLASS_API DumpEditor : public QObject,
+                                       public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (DumpEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (DumpEditor)(::gui::editor::IEditor) );
 
     /// Constructor. Does nothing.
-    MONITORQT_API DumpEditor() throw() ;
+    MONITORQT_API DumpEditor() throw();
 
     /// Destructor. Does nothing.
-    MONITORQT_API virtual ~DumpEditor() throw() ;
+    MONITORQT_API virtual ~DumpEditor() throw();
 
 protected:
 
@@ -75,7 +76,7 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides. Does nothing.
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
     /// Start m_updateTimer, call on buffManager signal emit ( see m_refreshSignal )
     void onUpdate();
@@ -92,7 +93,7 @@ protected Q_SLOTS:
 
 private:
 
-    typedef ::fwCom::Slot<void()> UpdateSlotType;
+    typedef ::fwCom::Slot<void ()> UpdateSlotType;
 
     QFutureWatcher< ::fwMemory::BufferManager::BufferInfoMapType > m_watcher;
 

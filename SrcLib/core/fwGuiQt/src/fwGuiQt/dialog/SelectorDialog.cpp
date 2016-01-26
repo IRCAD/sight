@@ -1,24 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-#include <QApplication>
-#include <QPushButton>
-#include <QListWidget>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QPushButton>
-#include <QLabel>
-
-#include <boost/foreach.hpp>
+#include "fwGuiQt/dialog/SelectorDialog.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/dialog/SelectorDialog.hpp"
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QListWidget>
+#include <QPushButton>
+#include <QPushButton>
+#include <QVBoxLayout>
+#include <QDialog>
 
 fwGuiRegisterMacro( ::fwGuiQt::dialog::SelectorDialog, ::fwGui::dialog::ISelectorDialog::REGISTRY_KEY );
 
@@ -30,12 +28,14 @@ namespace dialog
 //------------------------------------------------------------------------------
 
 SelectorDialog::SelectorDialog(::fwGui::GuiBaseObject::Key key) : m_message(""),  m_title("")
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 SelectorDialog::~SelectorDialog()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -61,7 +61,7 @@ std::string SelectorDialog::show()
     dialog->setWindowTitle(QString::fromStdString(m_title));
 
     QListWidget *selectionList = new QListWidget(dialog);
-    BOOST_FOREACH( std::string selection, m_selections)
+    for( std::string selection :  m_selections)
     {
         selectionList->addItem(QString::fromStdString ( selection ));
     }
@@ -69,8 +69,8 @@ std::string SelectorDialog::show()
     QListWidgetItem* firstItem = selectionList->item(0);
     selectionList->setCurrentItem(firstItem);
 
-    QPushButton* okButton = new QPushButton(tr("Ok"));
-    QPushButton* cancelButton = new QPushButton(tr("Cancel"));
+    QPushButton* okButton     = new QPushButton(QObject::tr("Ok"));
+    QPushButton* cancelButton = new QPushButton(QObject::tr("Cancel"));
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addWidget(okButton);

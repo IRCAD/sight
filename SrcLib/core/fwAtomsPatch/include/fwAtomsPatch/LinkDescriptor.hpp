@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,8 +17,8 @@ namespace fwAtomsPatch
 {
 
 /**
-* @brief Link descriptor used to identify a link between two versions.
-**/
+ * @brief Link descriptor used to identify a link between two versions.
+ **/
 class FWATOMSPATCH_CLASS_API LinkDescriptor
 {
 
@@ -26,7 +26,8 @@ public:
 
     /// Struct used to compare two LinkDescriptor
     struct Compare {
-        bool operator() (LinkDescriptor a, LinkDescriptor b) const {
+        bool operator() (LinkDescriptor a, LinkDescriptor b) const
+        {
             return (a.m_originVersion+a.m_targetVersion) < (b.m_originVersion+b.m_targetVersion);
         }
     };
@@ -48,22 +49,40 @@ public:
     ~LinkDescriptor();
 
     /// Returns link weight.
-    int getWeight() const { return m_weight; }
+    int getWeight() const
+    {
+        return m_weight;
+    }
 
     /// Returns context name.
-    const std::string& getContext() const { return m_context; }
+    const std::string& getContext() const
+    {
+        return m_context;
+    }
 
     /// Returns origin version.
-    const std::string& getOriginVersion() const { return m_originVersion; }
+    const std::string& getOriginVersion() const
+    {
+        return m_originVersion;
+    }
 
     /// Returns target version.
-    const std::string& getTargetVersion() const { return m_targetVersion; }
+    const std::string& getTargetVersion() const
+    {
+        return m_targetVersion;
+    }
 
     /// Returns patcher classname.
-    const std::string& getPatcher() const { return m_patcher; }
+    const std::string& getPatcher() const
+    {
+        return m_patcher;
+    }
 
     /// Returns map of links between versions.
-    const LinksType& getLinks() const { return m_links; }
+    const LinksType& getLinks() const
+    {
+        return m_links;
+    }
 
 private:
 

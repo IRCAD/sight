@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "ConversionTest.hpp"
 
 #include <fwCore/log/SpyLogger.hpp>
 #include <fwTools/UUID.hpp>
@@ -46,8 +48,7 @@
 #include <fwAtomConversion/exception/DuplicatedDataUUID.hpp>
 #include <fwAtomConversion/exception/ConversionNotManaged.hpp>
 
-#include "ConversionTest.hpp"
-
+#include <functional>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwAtomConversion::ut::ConversionTest );
 
@@ -60,7 +61,8 @@ namespace ut
 
 // Set up context before running a test.
 void ConversionTest::setUp()
-{};
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -76,11 +78,11 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
 }
 
 //-----------------------------------------------------------------------------
@@ -88,28 +90,28 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
 void ConversionTest::dataToAtomTest()
 {
     const ::fwData::Object::sptr VALUES[] = {
-            ::fwData::Integer::New(1337),
-            ::fwData::Float::New(),
-            ::fwData::String::New(),
-            ::fwData::Boolean::New(),
-            ::fwData::Vector::New(),
-            ::fwData::Color::New(1.4f, 0.9f, 1.1f, 1.67f),
-            ::fwData::Array::New(),
-            ::fwData::Image::New(),
-            ::fwData::Mesh::New(),
-            ::fwData::Material::New(),
-            ::fwData::Reconstruction::New(),
-            ::fwData::Composite::New(),
-            ::fwData::Point::New(),
-            ::fwData::PointList::New(),
-            ::fwData::TransformationMatrix3D::New(),
-            ::fwData::TransferFunction::New(),
-            ::fwData::Graph::New(),
+        ::fwData::Integer::New(1337),
+        ::fwData::Float::New(),
+        ::fwData::String::New(),
+        ::fwData::Boolean::New(),
+        ::fwData::Vector::New(),
+        ::fwData::Color::New(1.4f, 0.9f, 1.1f, 1.67f),
+        ::fwData::Array::New(),
+        ::fwData::Image::New(),
+        ::fwData::Mesh::New(),
+        ::fwData::Material::New(),
+        ::fwData::Reconstruction::New(),
+        ::fwData::Composite::New(),
+        ::fwData::Point::New(),
+        ::fwData::PointList::New(),
+        ::fwData::TransformationMatrix3D::New(),
+        ::fwData::TransferFunction::New(),
+        ::fwData::Graph::New(),
     };
 
     ::fwAtoms::Object::sptr atom;
 
-    BOOST_FOREACH ( fwData::Object::sptr  object, VALUES )
+    for ( fwData::Object::sptr object : VALUES )
     {
         atom = ::fwAtomConversion::convert(object);
 
@@ -119,32 +121,32 @@ void ConversionTest::dataToAtomTest()
         CPPUNIT_ASSERT_EQUAL( object->getClassname(),
                               atom->getMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO ) );
 
-         //Test attribute type
-        BOOST_FOREACH( ::fwAtoms::Object::AttributesType::value_type elem, atom->getAttributes() )
+        //Test attribute type
+        for( ::fwAtoms::Object::AttributesType::value_type elem :  atom->getAttributes() )
         {
             std::string classname = atom->getMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO );
-            if ( ! (  classname == "::fwData::Graph" &&
-                    elem.first == "connections" ) )
+            if ( !(  classname == "::fwData::Graph" &&
+                     elem.first == "connections" ) )
             {
-                int type = metaClass.property(elem.first).type();
+                int type              = metaClass.property(elem.first).type();
                 std::string attribute = metaClass.property(elem.first).name();
                 switch(type)
                 {
-                case camp::stringType:
-                    CPPUNIT_ASSERT(elem.second->isString());
-                    CPPUNIT_ASSERT(elem.second->isValue());
-                    break;
-                case camp::realType :
-                case camp::intType :
-                    CPPUNIT_ASSERT(elem.second->isNumeric());
-                    CPPUNIT_ASSERT(elem.second->isValue());
-                    break;
-                case camp::boolType :
-                    CPPUNIT_ASSERT(elem.second->isBoolean());
-                    CPPUNIT_ASSERT(elem.second->isValue());
-                    break;
-                case camp::userType:
-                    if( ( ( classname == "::fwData::Mesh" ) && ( attribute == "cell_colors" ) ) ||
+                    case camp::stringType:
+                        CPPUNIT_ASSERT(elem.second->isString());
+                        CPPUNIT_ASSERT(elem.second->isValue());
+                        break;
+                    case camp::realType:
+                    case camp::intType:
+                        CPPUNIT_ASSERT(elem.second->isNumeric());
+                        CPPUNIT_ASSERT(elem.second->isValue());
+                        break;
+                    case camp::boolType:
+                        CPPUNIT_ASSERT(elem.second->isBoolean());
+                        CPPUNIT_ASSERT(elem.second->isValue());
+                        break;
+                    case camp::userType:
+                        if( ( ( classname == "::fwData::Mesh" ) && ( attribute == "cell_colors" ) ) ||
                             ( ( classname == "::fwData::Mesh" ) && ( attribute == "cell_normals" ) ) ||
                             ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_colors" ) ) ||
                             ( ( classname == "::fwData::Mesh" ) && ( attribute == "point_normals" ) ) ||
@@ -153,24 +155,24 @@ void ConversionTest::dataToAtomTest()
                             ( ( classname == "::fwData::Material" ) && ( attribute == "diffuse_texture" ) ) ||
                             ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "image" ) ) ||
                             ( ( classname == "::fwData::Reconstruction" ) && ( attribute == "mesh" ) ) )
-                    {
-                        CPPUNIT_ASSERT(!elem.second);
-                    }
-                    else
-                    {
-                        CPPUNIT_ASSERT(elem.second->isObject() || elem.second->isBlob());
-                    }
-                    break;
-                case camp::mappingType:
-                    CPPUNIT_ASSERT(elem.second->isMapping());
-                    break;
-                case camp::enumType:
-                    CPPUNIT_ASSERT(elem.second->isString());
-                    CPPUNIT_ASSERT(elem.second->isValue());
-                    break;
-                case camp::arrayType:
-                    CPPUNIT_ASSERT(elem.second->isSequence());
-                    break;
+                        {
+                            CPPUNIT_ASSERT(!elem.second);
+                        }
+                        else
+                        {
+                            CPPUNIT_ASSERT(elem.second->isObject() || elem.second->isBlob());
+                        }
+                        break;
+                    case camp::mappingType:
+                        CPPUNIT_ASSERT(elem.second->isMapping());
+                        break;
+                    case camp::enumType:
+                        CPPUNIT_ASSERT(elem.second->isString());
+                        CPPUNIT_ASSERT(elem.second->isValue());
+                        break;
+                    case camp::arrayType:
+                        CPPUNIT_ASSERT(elem.second->isSequence());
+                        break;
                 }
             }
         }
@@ -181,18 +183,18 @@ void ConversionTest::dataToAtomTest()
 
 void ConversionTest::materialConversionTest()
 {
-    ::fwData::Color::sptr color = ::fwData::Color::New(0.2f, 1.2f, 1.3f, 0.9f);
+    ::fwData::Color::sptr color       = ::fwData::Color::New(0.2f, 1.2f, 1.3f, 0.9f);
     ::fwData::Material::sptr material = ::fwData::Material::New();
-    material->setAmbient(color);
+    material->setDiffuse(color);
 
     // Create Atom
     ::fwData::Material::sptr materialTmp;
-    materialTmp = ::fwData::Object::copy( material );
+    materialTmp                  = ::fwData::Object::copy( material );
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( materialTmp );
     materialTmp.reset();
 
     // Create Data from Atom
-    ::fwData::Object::sptr materialRes = ::fwAtomConversion::convert(atom);
+    ::fwData::Object::sptr materialRes        = ::fwAtomConversion::convert(atom);
     ::fwData::Material::sptr materialResultat = ::fwData::Material::dynamicCast(materialRes);
 
     compare(material, materialResultat);
@@ -205,18 +207,18 @@ void ConversionTest::graphConversionTest()
     ::fwAtoms::Object::sptr atom;
     ::fwTools::UUID::UUIDType gID,n1ID,n2ID,n3ID,e12ID,e23ID;
     {
-        ::fwData::Graph::sptr g = ::fwData::Graph::New();
-        gID = ::fwTools::UUID::get(g);
-        ::fwData::Node::sptr  n1 = ::fwData::Node::New();
-        n1ID = ::fwTools::UUID::get(n1);
-        ::fwData::Node::sptr  n2 = ::fwData::Node::New();
-        n2ID = ::fwTools::UUID::get(n2);
-        ::fwData::Node::sptr  n3 = ::fwData::Node::New();
-        n3ID = ::fwTools::UUID::get(n3);
-        ::fwData::Edge::sptr  e12 = ::fwData::Edge::New();
-        e12ID = ::fwTools::UUID::get(e12);
-        ::fwData::Edge::sptr  e23 = ::fwData::Edge::New();
-        e23ID = ::fwTools::UUID::get(e23);
+        ::fwData::Graph::sptr g  = ::fwData::Graph::New();
+        gID                      = ::fwTools::UUID::get(g);
+        ::fwData::Node::sptr n1  = ::fwData::Node::New();
+        n1ID                     = ::fwTools::UUID::get(n1);
+        ::fwData::Node::sptr n2  = ::fwData::Node::New();
+        n2ID                     = ::fwTools::UUID::get(n2);
+        ::fwData::Node::sptr n3  = ::fwData::Node::New();
+        n3ID                     = ::fwTools::UUID::get(n3);
+        ::fwData::Edge::sptr e12 = ::fwData::Edge::New();
+        e12ID                    = ::fwTools::UUID::get(e12);
+        ::fwData::Edge::sptr e23 = ::fwData::Edge::New();
+        e23ID                    = ::fwTools::UUID::get(e23);
 
         // build graph
         g->addNode(n1);
@@ -241,50 +243,59 @@ void ConversionTest::graphConversionTest()
         atom = ::fwAtomConversion::convert( g );
     }
 
-   // Create Data from Atom
-   ::fwData::Graph::sptr newGraph = ::fwData::Graph::dynamicCast( ::fwAtomConversion::convert(atom) );
+    // Create Data from Atom
+    ::fwData::Graph::sptr newGraph = ::fwData::Graph::dynamicCast( ::fwAtomConversion::convert(atom) );
 
-   // nodes
-   ::fwData::Node::sptr n1, n2, n3;
+    // nodes
+    ::fwData::Node::sptr n1, n2, n3;
 
-   // Test nodes
-   const ::fwData::Graph::NodeContainer & nodes = newGraph->getCRefNodes();
-   CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph nodes size" ,  (size_t)3, nodes.size() );
-   BOOST_FOREACH( ::fwData::Node::sptr node, nodes )
-   {
-       ::fwTools::UUID::UUIDType nodeID = ::fwTools::UUID::get(node);
-       CPPUNIT_ASSERT_MESSAGE("Test node uuid" ,  nodeID == n1ID || nodeID == n2ID || nodeID == n3ID );
-       if (  nodeID == n1ID ) { n1 = node; }
-       else if  (  nodeID == n2ID ) { n2 = node; }
-       else if  (  nodeID == n3ID ) { n3 = node; }
+    // Test nodes
+    const ::fwData::Graph::NodeContainer & nodes = newGraph->getCRefNodes();
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph nodes size",  (size_t)3, nodes.size() );
+    for( ::fwData::Node::sptr node :  nodes )
+    {
+        ::fwTools::UUID::UUIDType nodeID = ::fwTools::UUID::get(node);
+        CPPUNIT_ASSERT_MESSAGE("Test node uuid",  nodeID == n1ID || nodeID == n2ID || nodeID == n3ID );
+        if (  nodeID == n1ID )
+        {
+            n1 = node;
+        }
+        else if  (  nodeID == n2ID )
+        {
+            n2 = node;
+        }
+        else if  (  nodeID == n3ID )
+        {
+            n3 = node;
+        }
 
-   }
-   CPPUNIT_ASSERT_MESSAGE("Test node n1" , n1 );
-   CPPUNIT_ASSERT_MESSAGE("Test node n2" , n2 );
-   CPPUNIT_ASSERT_MESSAGE("Test node n3" , n3 );
+    }
+    CPPUNIT_ASSERT_MESSAGE("Test node n1", n1 );
+    CPPUNIT_ASSERT_MESSAGE("Test node n2", n2 );
+    CPPUNIT_ASSERT_MESSAGE("Test node n3", n3 );
 
-   // Test edges
-   const ::fwData::Graph::ConnectionContainer & connections = newGraph->getCRefConnections();
-   CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph connections size" ,  (size_t)2, connections.size() );
-   BOOST_FOREACH( ::fwData::Graph::ConnectionContainer::value_type elem , connections )
-   {
-       ::fwTools::UUID::UUIDType edgeID = ::fwTools::UUID::get(elem.first);
-       CPPUNIT_ASSERT_MESSAGE("Test edge uuid" ,  edgeID == e12ID || edgeID == e23ID );
-       if ( edgeID == e12ID )
-       {
-           CPPUNIT_ASSERT( newGraph->getSourceNode( elem.first ) == n1 );
-           CPPUNIT_ASSERT( newGraph->getDestinationNode( elem.first ) == n2 );
+    // Test edges
+    const ::fwData::Graph::ConnectionContainer & connections = newGraph->getCRefConnections();
+    CPPUNIT_ASSERT_EQUAL_MESSAGE("Graph connections size",  (size_t)2, connections.size() );
+    for( ::fwData::Graph::ConnectionContainer::value_type elem  :  connections )
+    {
+        ::fwTools::UUID::UUIDType edgeID = ::fwTools::UUID::get(elem.first);
+        CPPUNIT_ASSERT_MESSAGE("Test edge uuid",  edgeID == e12ID || edgeID == e23ID );
+        if ( edgeID == e12ID )
+        {
+            CPPUNIT_ASSERT( newGraph->getSourceNode( elem.first ) == n1 );
+            CPPUNIT_ASSERT( newGraph->getDestinationNode( elem.first ) == n2 );
 
-           // test field
-           CPPUNIT_ASSERT( elem.first->getField("infoTest") );
-           CPPUNIT_ASSERT( elem.first->getField< ::fwData::String >("infoTest")->value() == "valueInfoTest" );
-       }
-       else
-       {
-           CPPUNIT_ASSERT( newGraph->getSourceNode( elem.first ) == n2 );
-           CPPUNIT_ASSERT( newGraph->getDestinationNode( elem.first ) == n3 );
-       }
-   }
+            // test field
+            CPPUNIT_ASSERT( elem.first->getField("infoTest") );
+            CPPUNIT_ASSERT( elem.first->getField< ::fwData::String >("infoTest")->value() == "valueInfoTest" );
+        }
+        else
+        {
+            CPPUNIT_ASSERT( newGraph->getSourceNode( elem.first ) == n2 );
+            CPPUNIT_ASSERT( newGraph->getDestinationNode( elem.first ) == n3 );
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -299,7 +310,7 @@ void ConversionTest::tfConversionTest()
     atom = ::fwAtomConversion::convert( tf );
 
     ::fwData::TransferFunction::sptr newTF =
-            ::fwData::TransferFunction::dynamicCast( ::fwAtomConversion::convert(atom) );
+        ::fwData::TransferFunction::dynamicCast( ::fwAtomConversion::convert(atom) );
 
     compare(tf, newTF);
 }
@@ -317,7 +328,7 @@ void ConversionTest::seriesDBConversionTest()
 
 
     ::fwMedData::SeriesDB::sptr newSdb =
-            ::fwMedData::SeriesDB::dynamicCast( ::fwAtomConversion::convert(atom) );
+        ::fwMedData::SeriesDB::dynamicCast( ::fwAtomConversion::convert(atom) );
 
     compare(sdb, newSdb);
 }
@@ -329,16 +340,17 @@ void ConversionTest::objectMultiReferencedTest()
     ::fwAtoms::Object::sptr atom;
     {
         ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        ::fwData::String::sptr data = ::fwData::String::New();
-        composite->getContainer()["key1"] = data;
-        composite->getContainer()["key2"] = data;
+        ::fwData::String::sptr data         = ::fwData::String::New();
+        composite->getContainer()["key1"]   = data;
+        composite->getContainer()["key2"]   = data;
 
         // Create Atom
         atom = ::fwAtomConversion::convert( composite );
     }
 
     // Create Data from Atom
-    ::fwData::Composite::sptr newComposite = ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
+    ::fwData::Composite::sptr newComposite =
+        ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
     ::fwData::Composite::ContainerType & dataMap = newComposite->getContainer();
     CPPUNIT_ASSERT( dataMap.find("key1") != dataMap.end() );
     CPPUNIT_ASSERT( dataMap.find("key2") != dataMap.end() );
@@ -355,8 +367,8 @@ void ConversionTest::recursiveObjectTest()
     ::fwTools::UUID::UUIDType compositeID;
     {
         ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        compositeID = ::fwTools::UUID::get( composite );
-        composite->getContainer()["key"] = composite;
+        compositeID                         = ::fwTools::UUID::get( composite );
+        composite->getContainer()["key"]    = composite;
         // Create Atom
         atom = ::fwAtomConversion::convert( composite );
 
@@ -364,10 +376,11 @@ void ConversionTest::recursiveObjectTest()
         composite->getContainer().erase("key");
     }
 
-    CPPUNIT_ASSERT( ! ::fwTools::UUID::exist( compositeID ) );
+    CPPUNIT_ASSERT( !::fwTools::UUID::exist( compositeID ) );
 
     // Create Data from Atom
-    ::fwData::Composite::sptr newComposite = ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
+    ::fwData::Composite::sptr newComposite =
+        ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
     ::fwData::Composite::ContainerType & dataMap = newComposite->getContainer();
     CPPUNIT_ASSERT( dataMap.find("key") != dataMap.end() );
     CPPUNIT_ASSERT( newComposite == dataMap["key"] );
@@ -380,15 +393,15 @@ void ConversionTest::dataFactoryNotFoundExceptionTest()
     ::fwAtoms::Object::sptr atom;
     {
         ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-        ::fwData::String::sptr data = ::fwData::String::New();
-        composite->getContainer()["key"] = data;
+        ::fwData::String::sptr data         = ::fwData::String::New();
+        composite->getContainer()["key"]    = data;
 
         // Create Atom
         atom = ::fwAtomConversion::convert( composite );
     }
 
     {
-        ::fwAtoms::Map::sptr map = ::fwAtoms::Map::dynamicCast( atom->getAttribute("values") );
+        ::fwAtoms::Map::sptr map    = ::fwAtoms::Map::dynamicCast( atom->getAttribute("values") );
         ::fwAtoms::Object::sptr obj = ::fwAtoms::Object::dynamicCast( (*map)["key"] );
         obj->eraseMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO );
         obj->setMetaInfo( ::fwAtomConversion::DataVisitor::CLASSNAME_METAINFO, "CHANGE::CLASNAME" );
@@ -405,14 +418,14 @@ void ConversionTest::uuidExceptionTest()
 {
     // Create data
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-    ::fwData::String::sptr data = ::fwData::String::New();
-    composite->getContainer()["key"] = data;
+    ::fwData::String::sptr data         = ::fwData::String::New();
+    composite->getContainer()["key"]    = data;
 
     // Create Atom
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( composite );
 
     CPPUNIT_ASSERT_THROW( ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::StrictPolicy()),
-            ::fwAtomConversion::exception::DuplicatedDataUUID );
+                          ::fwAtomConversion::exception::DuplicatedDataUUID );
 }
 
 
@@ -422,8 +435,8 @@ void ConversionTest::uuidChangeTest()
 {
     // Create data
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-    ::fwData::String::sptr data = ::fwData::String::New();
-    composite->getContainer()["key"] = data;
+    ::fwData::String::sptr data         = ::fwData::String::New();
+    composite->getContainer()["key"]    = data;
 
     // Create Atom
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( composite );
@@ -432,8 +445,8 @@ void ConversionTest::uuidChangeTest()
     ::fwData::String::sptr dataReloaded;
 
     compositeReloaded = ::fwData::Composite::dynamicCast(
-                            ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ChangePolicy())
-                            );
+        ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ChangePolicy())
+        );
     dataReloaded = ::fwData::String::dynamicCast((*compositeReloaded)["key"]);
 
     CPPUNIT_ASSERT( ::fwTools::UUID::get(composite) != ::fwTools::UUID::get(compositeReloaded) );
@@ -448,8 +461,8 @@ void ConversionTest::uuidReuseTest()
 {
     // Create data
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-    ::fwData::String::sptr data = ::fwData::String::New();
-    composite->getContainer()["key"] = data;
+    ::fwData::String::sptr data         = ::fwData::String::New();
+    composite->getContainer()["key"]    = data;
 
     // Create Atom
     ::fwAtoms::Object::sptr atom = ::fwAtomConversion::convert( composite );
@@ -459,8 +472,8 @@ void ConversionTest::uuidReuseTest()
     ::fwData::String::sptr dataReloaded;
 
     compositeReloaded = ::fwData::Composite::dynamicCast(
-                            ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ReusePolicy())
-                            );
+        ::fwAtomConversion::convert(atom, ::fwAtomConversion::AtomVisitor::ReusePolicy())
+        );
     dataReloaded = ::fwData::String::dynamicCast((*compositeReloaded)["key"]);
 
     CPPUNIT_ASSERT_EQUAL( composite, compositeReloaded );
@@ -472,13 +485,17 @@ void ConversionTest::uuidReuseTest()
 class ClassNotCamped : public ::fwData::Object
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (ClassNotCamped)(::fwData::Object),
-       ((::fwData::factory::New< ClassNotCamped > ,() )) );
+                                               ((::fwData::factory::New< ClassNotCamped >,() )) );
 
-    ClassNotCamped(::fwData::Object::Key key){};
-    void cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache ){};
+    ClassNotCamped(::fwData::Object::Key key)
+    {
+    }
+    void cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache )
+    {
+    }
 
 };
 
@@ -499,7 +516,7 @@ void ConversionTest::nullPtrManagmentTest()
         ::fwAtoms::Object::sptr atom;
         {
             ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-            CPPUNIT_ASSERT( ! mesh->getPointColorsArray() );
+            CPPUNIT_ASSERT( !mesh->getPointColorsArray() );
 
             // Create Atom
             atom = ::fwAtomConversion::convert( mesh );
@@ -510,7 +527,7 @@ void ConversionTest::nullPtrManagmentTest()
 
         ::fwData::Mesh::sptr newMesh = ::fwData::Mesh::dynamicCast( ::fwAtomConversion::convert(atom) );
         CPPUNIT_ASSERT( newMesh );
-        CPPUNIT_ASSERT( ! newMesh->getPointColorsArray() );
+        CPPUNIT_ASSERT( !newMesh->getPointColorsArray() );
     }
 
     // null shared ptr in map is managed
@@ -518,8 +535,8 @@ void ConversionTest::nullPtrManagmentTest()
         ::fwAtoms::Object::sptr atom;
         {
             ::fwData::Composite::sptr composite = ::fwData::Composite::New();
-            composite->getContainer()["key1"] = ::fwData::String::New();
-            composite->getContainer()["key2"] = ::fwData::Object::sptr();
+            composite->getContainer()["key1"]   = ::fwData::String::New();
+            composite->getContainer()["key2"]   = ::fwData::Object::sptr();
 
             // Create Atom
             atom = ::fwAtomConversion::convert( composite );
@@ -529,16 +546,17 @@ void ConversionTest::nullPtrManagmentTest()
             ::fwAtoms::Map::sptr map = ::fwAtoms::Map::dynamicCast( atom->getAttribute("values") );
             CPPUNIT_ASSERT_EQUAL( (size_t)2, map->size() );
             CPPUNIT_ASSERT( map->find("key2") != map->end() );
-            CPPUNIT_ASSERT( ! (*map)["key2"] );
+            CPPUNIT_ASSERT( !(*map)["key2"] );
         }
 
-        ::fwData::Composite::sptr newComposite = ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
+        ::fwData::Composite::sptr newComposite =
+            ::fwData::Composite::dynamicCast( ::fwAtomConversion::convert(atom) );
         ::fwData::Composite::ContainerType & dataMap = newComposite->getContainer();
         CPPUNIT_ASSERT( newComposite );
         CPPUNIT_ASSERT_EQUAL( (size_t)2, dataMap.size() );
         CPPUNIT_ASSERT( dataMap["key1"] );
         CPPUNIT_ASSERT( dataMap.find("key2") != dataMap.end() );
-        CPPUNIT_ASSERT( ! dataMap["key2"] );
+        CPPUNIT_ASSERT( !dataMap["key2"] );
     }
 
     // null shared ptr in vector is managed
@@ -556,15 +574,15 @@ void ConversionTest::nullPtrManagmentTest()
         {
             ::fwAtoms::Sequence::sptr seq = ::fwAtoms::Sequence::dynamicCast( atom->getAttribute("values") );
             CPPUNIT_ASSERT_EQUAL( (size_t)2, seq->size() );
-            CPPUNIT_ASSERT( ! (*seq)[1] );
+            CPPUNIT_ASSERT( !(*seq)[1] );
         }
 
-        ::fwData::Vector::sptr newVector = ::fwData::Vector::dynamicCast( ::fwAtomConversion::convert(atom) );
+        ::fwData::Vector::sptr newVector          = ::fwData::Vector::dynamicCast( ::fwAtomConversion::convert(atom) );
         ::fwData::Vector::ContainerType & dataVec = newVector->getContainer();
         CPPUNIT_ASSERT( newVector );
         CPPUNIT_ASSERT_EQUAL( (size_t)2, dataVec.size() );
         CPPUNIT_ASSERT( dataVec[0] );
-        CPPUNIT_ASSERT( ! dataVec[1] );
+        CPPUNIT_ASSERT( !dataVec[1] );
     }
 }
 
@@ -577,25 +595,29 @@ void ConversionTest::nullPtrManagmentTest()
 #define EMTPY_CLASS_API
 fwCampAutoDeclareDataMacro((fwAtomConversion)(ut)(ClassNotManaged),EMTPY_CLASS_API);
 
-namespace fwAtomConversion {
-namespace ut {
+namespace fwAtomConversion
+{
+namespace ut
+{
 
 class ClassNotManaged : public ::fwData::Object
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (ClassNotManaged)(::fwData::Object),
-       ((::fwData::factory::New< ClassNotManaged > ,() )) );
+                                               ((::fwData::factory::New< ClassNotManaged >,() )) );
 
     fwCampMakeFriendDataMacro((fwAtomConversion)(ut)(ClassNotManaged));
 
     ClassNotManaged(::fwData::Object::Key key)
     {
         m_values.insert( std::make_pair( ::fwData::String::New(), 0.2 ) );
-    };
+    }
 
-    void cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache ){};
+    void cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache )
+    {
+    }
 
     std::map< ::fwData::String::sptr, double > m_values;
 
@@ -608,14 +630,16 @@ public :
 fwCampImplementDataMacro((fwAtomConversion)(ut)(ClassNotManaged))
 {
     builder
-        .tag("object_version", "1")
-        .tag("lib_name", "fwAtomConversion")
-        .base< ::fwData::Object>()
-        .property("values", &::fwAtomConversion::ut::ClassNotManaged::m_values);
+    .tag("object_version", "1")
+    .tag("lib_name", "fwAtomConversion")
+    .base< ::fwData::Object>()
+    .property("values", &::fwAtomConversion::ut::ClassNotManaged::m_values);
 }
 
-namespace fwAtomConversion {
-namespace ut {
+namespace fwAtomConversion
+{
+namespace ut
+{
 
 void ConversionTest::conversionNotManagedExceptionTest()
 {

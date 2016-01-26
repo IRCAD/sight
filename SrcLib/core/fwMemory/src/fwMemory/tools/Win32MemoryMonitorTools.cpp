@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,7 +52,8 @@ Win32MemoryMonitorTools::~Win32MemoryMonitorTools()
     freeMemory = getFreeSystemMemory();
 #else
     ::boost::uint64_t windowsLimitForAProcess = 1.2 * 1024 * 1024 * 1024; // 1.5 Go
-    ::boost::uint64_t freeMem = std::min(getFreeSystemMemory(), windowsLimitForAProcess - getUsedProcessMemory());
+    ::boost::uint64_t freeMem                 = std::min(
+        getFreeSystemMemory(), windowsLimitForAProcess - getUsedProcessMemory());
     freeMemory = std::max((::boost::uint64_t) 0, freeMem );
 #endif
     return freeMemory;
@@ -74,7 +75,7 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
     {
         // Get the process name.
         int nameSize = 100;
-        char * name = new char[nameSize];
+        char * name  = new char[nameSize];
 
         HMODULE hMod;
         DWORD cbNeeded;
@@ -93,16 +94,16 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
         PROCESS_MEMORY_COUNTERS_EX pmc;
         if ( GetProcessMemoryInfo( hProcess, reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)) )
         {
-            OSLM_INFO("    PageFaultCount : "               << (int)pmc.PageFaultCount );
-            OSLM_INFO("    PeakWorkingSetSize : "           << (int)pmc.PeakWorkingSetSize );
-            OSLM_INFO("    WorkingSetSize : "               << (int)pmc.WorkingSetSize );
-            OSLM_INFO("    QuotaPeakPagedPoolUsage : "      << (int)pmc.QuotaPeakPagedPoolUsage );
-            OSLM_INFO("    QuotaPagedPoolUsage : "          << (int)pmc.QuotaPagedPoolUsage );
-            OSLM_INFO("    QuotaPeakNonPagedPoolUsage : "   << (int)pmc.QuotaPeakNonPagedPoolUsage );
-            OSLM_INFO("    QuotaNonPagedPoolUsage : "       << (int)pmc.QuotaNonPagedPoolUsage );
-            OSLM_INFO("    PagefileUsage : "                << (int)pmc.PagefileUsage );
-            OSLM_INFO("    PeakPagefileUsage : "            << (int)pmc.PeakPagefileUsage );
-            OSLM_INFO("    PrivateUsage : "                 << (int)pmc.PrivateUsage );
+            OSLM_INFO("    PageFaultCount : " << (int)pmc.PageFaultCount );
+            OSLM_INFO("    PeakWorkingSetSize : " << (int)pmc.PeakWorkingSetSize );
+            OSLM_INFO("    WorkingSetSize : " << (int)pmc.WorkingSetSize );
+            OSLM_INFO("    QuotaPeakPagedPoolUsage : " << (int)pmc.QuotaPeakPagedPoolUsage );
+            OSLM_INFO("    QuotaPagedPoolUsage : " << (int)pmc.QuotaPagedPoolUsage );
+            OSLM_INFO("    QuotaPeakNonPagedPoolUsage : " << (int)pmc.QuotaPeakNonPagedPoolUsage );
+            OSLM_INFO("    QuotaNonPagedPoolUsage : " << (int)pmc.QuotaNonPagedPoolUsage );
+            OSLM_INFO("    PagefileUsage : " << (int)pmc.PagefileUsage );
+            OSLM_INFO("    PeakPagefileUsage : " << (int)pmc.PeakPagefileUsage );
+            OSLM_INFO("    PrivateUsage : " << (int)pmc.PrivateUsage );
         }
         else
         {
@@ -187,7 +188,8 @@ void Win32MemoryMonitorTools::printMemoryInformation()
 
     BOOL result;
     PROCESS_MEMORY_COUNTERS_EX pmc;
-    if ( result = GetProcessMemoryInfo( GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)) )
+    if ( result =
+             GetProcessMemoryInfo( GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc)) )
     {
         memory = pmc.WorkingSetSize;
     }

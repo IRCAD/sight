@@ -1,22 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <QScrollArea>
-#include <QVBoxLayout>
-#include <QStyle>
-
 #include <fwCore/base.hpp>
+
 #include <fwGui/registry/macros.hpp>
-
-
 #include "fwGuiQt/container/QtContainer.hpp"
 #include "fwGuiQt/layoutManager/ToolboxLayoutManager.hpp"
 
+#include <QScrollArea>
+#include <QStyle>
+#include <QVBoxLayout>
 
 fwGuiRegisterMacro( ::fwGui::ToolboxLayoutManager, ::fwGui::layoutManager::ToolboxLayoutManagerBase::REGISTRY_KEY );
 
@@ -27,12 +23,14 @@ namespace fwGui
 //-----------------------------------------------------------------------------
 
 ToolboxLayoutManager::ToolboxLayoutManager(::fwGui::GuiBaseObject::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ToolboxLayoutManager::~ToolboxLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -60,9 +58,9 @@ void ToolboxLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr p
     sv->setWidgetResizable(true);
 
     const std::list< ViewInfo> &views = this->getViewsInfo();
-    BOOST_FOREACH ( ViewInfo viewInfo, views)
+    for ( ViewInfo viewInfo : views)
     {
-        int border = viewInfo.m_border;
+        int border     = viewInfo.m_border;
         QWidget* panel = new QWidget();
         panel->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
         panel->setContentsMargins(border, border,border, border);

@@ -1,39 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_DL_MODULE_HPP
-#define _FWRUNTIME_DL_MODULE_HPP
-
-#include <boost/filesystem/path.hpp>
+#ifndef __FWRUNTIME_DL_LIBRARY_HPP__
+#define __FWRUNTIME_DL_LIBRARY_HPP__
 
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/dl/Posix.hpp"
 #include "fwRuntime/dl/Win32.hpp"
-#include "fwRuntime/dl/Darwin.hpp"
 
+#include <boost/filesystem/path.hpp>
 
 namespace fwRuntime
 {
 
-
 struct Bundle;
-
 
 namespace dl
 {
 
-
 /**
  * @brief   Defines the module class.
  * @struct  LibraryBridge
- * @date    2004-2009
- *
  * This class is only a bridge to a native module implementor.
- *
- * 
  */
 template< typename Implementor >
 struct LibraryBridge
@@ -46,14 +37,16 @@ struct LibraryBridge
      *                          information
      */
     LibraryBridge( const boost::filesystem::path & modulePath ) throw()
-    : m_implementor( modulePath )
-    {}
+        : m_implementor( modulePath )
+    {
+    }
 
     /**
      * @brief   Destructor : does nothing.
      */
     ~LibraryBridge() throw()
-    {}
+    {
+    }
 
 
     /**
@@ -131,34 +124,29 @@ struct LibraryBridge
     }
 
 
-private:
+    private:
 
-    /**
-     * @brief   The native module implementator.
-     */
-    Implementor m_implementor;
+        /**
+         * @brief   The native module implementator.
+         */
+        Implementor m_implementor;
 
 
-    /**
-     * @brief   Assignment operator.
-     *
-     * @remark  Assignment is fobidden for this class.
-     */
-    void operator=(const LibraryBridge&) throw()
-    {}
+        /**
+         * @brief   Assignment operator.
+         *
+         * @remark  Assignment is forbidden for this class.
+         */
+        void operator=(const LibraryBridge&) throw()
+        {
+        }
 };
 
 
-#if defined(linux) || defined(__linux)
-    typedef struct LibraryBridge< Posix > Library;
+#if defined(linux) || defined(__linux) || defined(__MACOSX__)
+typedef struct LibraryBridge< Posix > Library;
 #else
-#   ifdef WIN32
-    typedef struct LibraryBridge< Win32 > Library;
-#   else
-#       ifdef __MACOSX__
-    typedef struct LibraryBridge< Darwin > Library;
-#       endif
-#   endif
+typedef struct LibraryBridge< Win32 > Library;
 #endif
 
 
@@ -167,4 +155,4 @@ private:
 } // namespace fwRuntime
 
 
-#endif // #ifdef _FWRUNTIME_DL_MODULE_HPP
+#endif // __FWRUNTIME_DL_LIBRARY_HPP__

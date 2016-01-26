@@ -1,51 +1,49 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "uiImageQt/ImageTransparency.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwCore/base.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Image.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwMath/IntrasecTypes.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/IService.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QWidget>
 
-#include <fwCore/base.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/Boolean.hpp>
-
-#include <fwMath/IntrasecTypes.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/IService.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include "uiImageQt/ImageTransparency.hpp"
-
 namespace uiImage
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::ImageTransparency , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ImageTransparency, ::fwData::Image );
 
 
 ImageTransparency::ImageTransparency() throw()
 {
-//    addNewHandledEvent(::fwComEd::ImageMsg::TRANSPARENCY);
-//    addNewHandledEvent(::fwComEd::ImageMsg::VISIBILITY);
-//    addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
 }
 
 //------------------------------------------------------------------------------
 
 ImageTransparency::~ImageTransparency() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -55,7 +53,8 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
     this->::fwGui::IGuiContainerSrv::create();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -70,7 +69,7 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
     m_valueSlider->setMinimumWidth(100);
 
     m_valueCheckBox = new QCheckBox( QObject::tr("visible"), container);
-    m_action = new QAction(container);
+    m_action        = new QAction(container);
     m_action->setCheckable(true);
     if (!m_shortcut.empty())
     {
@@ -170,23 +169,6 @@ void ImageTransparency::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageTransparency::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    ::fwComEd::ImageMsg::csptr imageMsg = ::fwComEd::ImageMsg::dynamicConstCast(_msg);
-    if(imageMsg)
-    {
-        if ( imageMsg->hasEvent( ::fwComEd::ImageMsg::TRANSPARENCY ) ||
-             imageMsg->hasEvent( ::fwComEd::ImageMsg::VISIBILITY )   ||
-             imageMsg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) )
-        {
-            this->updating();
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void ImageTransparency::info( std::ostream &_sstream )
 {
     _sstream << "Image Features Editor";
@@ -199,9 +181,13 @@ void ImageTransparency::onModifyTransparency(int value)
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
     img->setField( "TRANSPARENCY",  ::fwData::Integer::New(value) );
-    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
-    imageMsg->addEvent( "TRANSPARENCY" );
-    ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
+
+    auto sig = img->signal< ::fwData::Image::TransparencyModifiedSignalType >(
+        ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -229,9 +215,26 @@ void ImageTransparency::notifyVisibility(bool isVisible)
 {
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
     img->setField( "VISIBILITY",  ::fwData::Boolean::New(isVisible) );
-    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
-    imageMsg->addEvent( "VISIBILITY" );
-    ::fwServices::IEditionService::notify(this->getSptr(), img, imageMsg);
+
+    auto sig = img->signal< ::fwData::Image::VisibilityModifiedSignalType >(::fwData::Image::s_VISIBILITY_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit(isVisible);
+    }
+}
+
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ImageTransparency::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

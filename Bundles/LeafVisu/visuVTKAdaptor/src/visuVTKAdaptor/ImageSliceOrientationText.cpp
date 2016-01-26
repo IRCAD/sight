@@ -1,29 +1,34 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuVTKAdaptor/ImageSliceOrientationText.hpp"
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
-#include <fwServices/Base.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwData/Image.hpp>
 
-#include <vtkSmartPointer.h>
-#include <vtkTextProperty.h>
-#include <vtkTextMapper.h>
+#include <fwServices/Base.hpp>
+
 #include <vtkActor2D.h>
 #include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
+#include <vtkTextMapper.h>
+#include <vtkTextProperty.h>
 
 #include <boost/algorithm/string.hpp>
 
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageSliceOrientationText,
-                         ::fwData::Object ) ;
+                         ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
@@ -36,7 +41,7 @@ public:
 
     void configure(TextActorPtr& actor, TextMapperPtr& mapper)
     {
-        actor = TextActorPtr::New();
+        actor  = TextActorPtr::New();
         mapper = TextMapperPtr::New();
 
         mapper->GetTextProperty()->SetFontFamilyToCourier(); // Fixed-width font
@@ -96,12 +101,12 @@ public:
             ::boost::algorithm::split( locations, str, ::boost::algorithm::is_any_of(",") );
             SLM_ASSERT("Six location should be given, got : " << locations.size() << ":" << str, locations.size());
 
-            m_rightStr     = (locations.size()>0) ? locations[0] : "" ;
-            m_leftStr      = (locations.size()>1) ? locations[1] : "" ;
-            m_anteriorStr  = (locations.size()>2) ? locations[2] : "" ;
-            m_porteriorStr = (locations.size()>3) ? locations[3] : "" ;
-            m_superiorStr  = (locations.size()>4) ? locations[4] : "" ;
-            m_inferiorStr  = (locations.size()>5) ? locations[5] : "" ;
+            m_rightStr     = (locations.size()>0) ? locations[0] : "";
+            m_leftStr      = (locations.size()>1) ? locations[1] : "";
+            m_anteriorStr  = (locations.size()>2) ? locations[2] : "";
+            m_porteriorStr = (locations.size()>3) ? locations[3] : "";
+            m_superiorStr  = (locations.size()>4) ? locations[4] : "";
+            m_inferiorStr  = (locations.size()>5) ? locations[5] : "";
         }
 
     }
@@ -110,30 +115,30 @@ public:
     {
         switch (orientation)
         {
-        case ::fwComEd::helper::MedicalImageAdaptor::X_AXIS: // Sagittal
-            m_rightMapper ->SetInput(m_anteriorStr.c_str());
-            m_leftMapper  ->SetInput(m_porteriorStr.c_str());
-            m_topMapper   ->SetInput(m_superiorStr.c_str());
-            m_bottomMapper->SetInput(m_inferiorStr.c_str());
-            break;
-        case ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS: // Frontal
-            m_rightMapper ->SetInput(m_leftStr.c_str());
-            m_leftMapper  ->SetInput(m_rightStr.c_str());
-            m_topMapper   ->SetInput(m_superiorStr.c_str());
-            m_bottomMapper->SetInput(m_inferiorStr.c_str());
-            break;
-        case ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS: // Axial
-            m_rightMapper ->SetInput(m_leftStr.c_str());
-            m_leftMapper  ->SetInput(m_rightStr.c_str());
-            m_topMapper   ->SetInput(m_anteriorStr.c_str());
-            m_bottomMapper->SetInput(m_porteriorStr.c_str());
-            break;
-        default:
-            m_rightMapper ->SetInput("");
-            m_leftMapper  ->SetInput("");
-            m_topMapper   ->SetInput("");
-            m_bottomMapper->SetInput("");
-            SLM_ASSERT("bad orientation : " << orientation, 0);
+            case ::fwComEd::helper::MedicalImageAdaptor::X_AXIS: // Sagittal
+                m_rightMapper->SetInput(m_anteriorStr.c_str());
+                m_leftMapper->SetInput(m_porteriorStr.c_str());
+                m_topMapper->SetInput(m_superiorStr.c_str());
+                m_bottomMapper->SetInput(m_inferiorStr.c_str());
+                break;
+            case ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS: // Frontal
+                m_rightMapper->SetInput(m_leftStr.c_str());
+                m_leftMapper->SetInput(m_rightStr.c_str());
+                m_topMapper->SetInput(m_superiorStr.c_str());
+                m_bottomMapper->SetInput(m_inferiorStr.c_str());
+                break;
+            case ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS: // Axial
+                m_rightMapper->SetInput(m_leftStr.c_str());
+                m_leftMapper->SetInput(m_rightStr.c_str());
+                m_topMapper->SetInput(m_anteriorStr.c_str());
+                m_bottomMapper->SetInput(m_porteriorStr.c_str());
+                break;
+            default:
+                m_rightMapper->SetInput("");
+                m_leftMapper->SetInput("");
+                m_topMapper->SetInput("");
+                m_bottomMapper->SetInput("");
+                SLM_ASSERT("bad orientation : " << orientation, 0);
         }
     }
 
@@ -156,8 +161,13 @@ public:
 
 //------------------------------------------------------------------------------
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT = "updateSliceType";
+
+//------------------------------------------------------------------------------
+
 ImageSliceOrientationText::ImageSliceOrientationText() throw() : m_pimpl( new ImageSliceOrientationTextPImpl )
 {
+    newSlot(s_UPDATE_SLICE_TYPE_SLOT, &ImageSliceOrientationText::updateSliceType, this);
 }
 
 //------------------------------------------------------------------------------
@@ -225,41 +235,23 @@ void ImageSliceOrientationText::setOrientation( Orientation orientation )
     m_pimpl->setOrientation(orientation);
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void ImageSliceOrientationText::doReceive(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void ImageSliceOrientationText::updateSliceType(int from, int to)
 {
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE ))
+    if( to == static_cast<int>(m_orientation) )
     {
-        ::fwData::Object::csptr cObjInfo = msg->getDataInfo( ::fwComEd::ImageMsg::CHANGE_SLICE_TYPE );
-        ::fwData::Object::sptr objInfo = ::boost::const_pointer_cast< ::fwData::Object > ( cObjInfo );
-        ::fwData::Composite::sptr info = ::fwData::Composite::dynamicCast ( objInfo );
-
-        int fromSliceType = ::fwData::Integer::dynamicCast( info->getContainer()["fromSliceType"] )->value();
-        int toSliceType   = ::fwData::Integer::dynamicCast( info->getContainer()["toSliceType"] )->value();
-
-        if( toSliceType == static_cast<int>(m_orientation) )
-        {
-            this->setOrientation( static_cast< Orientation >( fromSliceType ));
-        }
-        else if(fromSliceType == static_cast<int>(m_orientation))
-        {
-            this->setOrientation( static_cast< Orientation >( toSliceType ));
-        }
+        this->setOrientation( static_cast< Orientation >( from ));
     }
-    else if (msg->hasEvent(::fwComEd::ImageMsg::BUFFER)
-              || msg->hasEvent(::fwComEd::ImageMsg::NEW_IMAGE)
-              ||msg->hasEvent(::fwComEd::ImageMsg::MODIFIED))
+    else if(from == static_cast<int>(m_orientation))
     {
-        this->doStop();
-        this->doStart();
-        this->doUpdate();
+        this->setOrientation( static_cast< Orientation >( to ));
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSliceOrientationText::configuring() throw(fwTools::Failed)
+void ImageSliceOrientationText::doConfigure() throw(fwTools::Failed)
 {
 
     ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("config");
@@ -272,6 +264,18 @@ void ImageSliceOrientationText::configuring() throw(fwTools::Failed)
 
     m_initialOrientation = srvconfig.get("initialOrientation","axial");
     SLM_TRACE("initialOrientation " + m_initialOrientation);
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ImageSliceOrientationText::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

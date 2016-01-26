@@ -1,59 +1,62 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwGui/IMenuBarSrv.hpp"
+#include "fwGui/registry/worker.hpp"
 
 #include <fwCore/base.hpp>
-#include <fwTools/fwID.hpp>
 #include <fwServices/Base.hpp>
-
-#include "fwGui/IMenuBarSrv.hpp"
+#include <fwTools/fwID.hpp>
+#include <fwThread/Worker.hpp>
+#include <fwThread/Worker.hxx>
 
 namespace fwGui
 {
 
 IMenuBarSrv::IMenuBarSrv() : m_hideMenus(false)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 IMenuBarSrv::~IMenuBarSrv()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void IMenuBarSrv::initialize()
 {
 
-        m_registrar = ::fwGui::registrar::MenuBarRegistrar::New(this->getID());
-        // find ViewRegistryManager configuration
-        std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
-        SLM_ASSERT("Registry section is mandatory.", !vectRegistrar.empty() );
+    m_registrar = ::fwGui::registrar::MenuBarRegistrar::New(this->getID());
+    // find ViewRegistryManager configuration
+    std::vector < ConfigurationType > vectRegistrar = m_configuration->find("registry");
+    SLM_ASSERT("Registry section is mandatory.", !vectRegistrar.empty() );
 
-        if(!vectRegistrar.empty())
+    if(!vectRegistrar.empty())
+    {
+        m_registrarConfig = vectRegistrar.at(0);
+        m_registrar->initialize(m_registrarConfig);
+    }
+
+    // find gui configuration
+    std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
+    SLM_ASSERT("Gui section is mandatory.", !vectGui.empty() );
+
+    if(!vectGui.empty())
+    {
+        // find LayoutManager configuration
+        std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
+        SLM_ASSERT("layout section is mandatory.", !vectLayoutMng.empty() );
+        if(!vectLayoutMng.empty())
         {
-            m_registrarConfig = vectRegistrar.at(0);
-            m_registrar->initialize(m_registrarConfig);
+            m_layoutConfig = vectLayoutMng.at(0);
+            this->initializeLayoutManager(m_layoutConfig);
         }
-
-        // find gui configuration
-        std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
-        SLM_ASSERT("Gui section is mandatory.", !vectGui.empty() );
-
-        if(!vectGui.empty())
-        {
-            // find LayoutManager configuration
-            std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");
-            SLM_ASSERT("layout section is mandatory.", !vectLayoutMng.empty() );
-            if(!vectLayoutMng.empty())
-            {
-                m_layoutConfig = vectLayoutMng.at(0);
-                this->initializeLayoutManager(m_layoutConfig);
-            }
-        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +65,11 @@ void IMenuBarSrv::create()
 {
     ::fwGui::container::fwMenuBar::sptr menuBar = m_registrar->getParent();
     SLM_ASSERT("Parent menuBar is unknown.", menuBar);
-    m_layoutManager->createLayout(menuBar);
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >( [&]
+        {
+            m_layoutManager->createLayout(menuBar);
+        }) ).wait();
 
     m_registrar->manage(m_layoutManager->getMenus());
 }
@@ -72,7 +79,11 @@ void IMenuBarSrv::create()
 void IMenuBarSrv::destroy()
 {
     m_registrar->unmanage();
-    m_layoutManager->destroyLayout();
+
+    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        {
+            m_layoutManager->destroyLayout();
+        })).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -83,11 +94,17 @@ void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
 
     if (m_hideMenus)
     {
-        m_layoutManager->menuIsVisible(menu, false);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >( [&]
+            {
+                m_layoutManager->menuIsVisible(menu, false);
+            }) ).wait();
     }
     else
     {
-        m_layoutManager->menuIsEnabled(menu, false);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >(
+                                                             [&] {
+                m_layoutManager->menuIsEnabled(menu, false);
+            })).wait();
     }
 }
 
@@ -99,11 +116,17 @@ void IMenuBarSrv::menuServiceStarting(std::string menuSrvSID)
 
     if (m_hideMenus)
     {
-        m_layoutManager->menuIsVisible(menu, true);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuIsVisible(menu, true);
+            })).wait();
     }
     else
     {
-        m_layoutManager->menuIsEnabled(menu, true);
+        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            {
+                m_layoutManager->menuIsEnabled(menu, true);
+            }) ).wait();
     }
 }
 
@@ -112,12 +135,13 @@ void IMenuBarSrv::menuServiceStarting(std::string menuSrvSID)
 void IMenuBarSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
     OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
-            layoutConfig->getName() == "layout");
+                layoutConfig->getName() == "layout");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
-                                                 ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY);
+        ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY);
     m_layoutManager = ::fwGui::layoutManager::IMenuBarLayoutManager::dynamicCast(guiObj);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY, m_layoutManager);
+    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY,
+                m_layoutManager);
 
     m_layoutManager->initialize(layoutConfig);
 }

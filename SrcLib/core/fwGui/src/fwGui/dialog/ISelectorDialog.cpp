@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,13 +12,15 @@ namespace fwGui
 namespace dialog
 {
 
-const ISelectorDialog::FactoryRegistryKeyType ISelectorDialog::REGISTRY_KEY =  "::fwGui::dialog::SelectorDialog";
+const ISelectorDialog::FactoryRegistryKeyType ISelectorDialog::REGISTRY_KEY = "::fwGui::dialog::SelectorDialog";
 
 ISelectorDialog::ISelectorDialog()
-{}
+{
+}
 
 ISelectorDialog::~ISelectorDialog()
-{}
+{
+}
 
 } //namespace dialog
 } // namespace fwGui

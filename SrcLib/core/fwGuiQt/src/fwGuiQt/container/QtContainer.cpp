@@ -1,18 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwGuiQt/container/QtContainer.hpp"
 
 #include <QDockWidget>
-#include <QWidget>
-#include <QList>
 #include <QLayout>
+#include <QList>
 #include <QMetaObject>
-
-#include "fwGuiQt/container/QtContainer.hpp"
+#include <QWidget>
 
 namespace fwGuiQt
 {
@@ -22,20 +20,23 @@ namespace container
 //-----------------------------------------------------------------------------
 
 QtContainer::QtContainer(::fwGui::GuiBaseObject::Key key) throw() : m_container(0)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 QtContainer::~QtContainer() throw()
 {
-   SLM_ASSERT( "Error during destruction : The qt container included in this class is still allocated, please call destroyContainer() before.", m_container == 0 );
+    SLM_ASSERT(
+        "Error during destruction : The qt container included in this class is still allocated, please call destroyContainer() before.",
+        m_container == 0 );
 }
 
 //-----------------------------------------------------------------------------
 
 void QtContainer::clean()
 {
-    SLM_ASSERT("Sorry, QWidget not yet initialized, cleaning impossible", m_container);
+    SLM_ASSERT("The QWidget is not yet initialized, cleaning is thus impossible", m_container);
 
     m_container->adjustSize();
     if (m_container->layout())
@@ -48,7 +49,7 @@ void QtContainer::clean()
 
 void QtContainer::destroyContainer()
 {
-    SLM_ASSERT("Sorry, QWidget not yet initialized", m_container);
+    SLM_ASSERT("The QWidget is not yet initialized", m_container);
     if(m_container)
     {
         delete m_container;
@@ -74,7 +75,7 @@ QWidget* QtContainer::getQtContainer()
 
 bool QtContainer::isShownOnScreen()
 {
-    SLM_ASSERT("Sorry, QtContainer not yet initialized, cleaning impossible", m_container);
+    SLM_ASSERT("The QtContainer is not yet initialized, cleaning is thus impossible", m_container);
     return m_container->isVisible();
 }
 
@@ -82,8 +83,8 @@ bool QtContainer::isShownOnScreen()
 
 void QtContainer::setVisible(bool isVisible)
 {
-    SLM_ASSERT("Sorry, QtContainer not yet initialized, cleaning impossible", m_container);
-    QWidget* parent = m_container->parentWidget();
+    SLM_ASSERT("The QtContainer is not yet initialized, cleaning is thus impossible", m_container);
+    QWidget* parent   = m_container->parentWidget();
     QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
     if(dock)
     {

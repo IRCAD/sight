@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWCAMP_CAMP_MAPPROPERTYIMPL_HXX__
-#define __FWCAMP_CAMP_MAPPROPERTYIMPL_HXX__
+#ifndef __FWCAMP_CAMP_DETAIL_MAPPROPERTYIMPL_HXX__
+#define __FWCAMP_CAMP_DETAIL_MAPPROPERTYIMPL_HXX__
 
 #include <camp/userobject.hpp>
 
@@ -20,7 +20,7 @@ namespace detail
 template <typename A>
 MapPropertyImpl<A>::MapPropertyImpl(const std::string& name, const A& accessor) :
     camp::MapProperty(name, camp::mapType<ValueType>())
-   ,m_accessor(accessor)
+    ,m_accessor(accessor)
 {
 }
 
@@ -32,10 +32,10 @@ std::size_t MapPropertyImpl<A>::getSize(const UserObject& object) const
 template <typename A>
 void MapPropertyImpl<A>::set(const UserObject& object, const Value& key, const Value& value) const
 {
-    const typename Mapper::KeyType& typedKey = key.to< typename Mapper::KeyType >();
+    const typename Mapper::KeyType& typedKey      = key.to< typename Mapper::KeyType >();
     const typename Mapper::MappedType& typedValue = value.to< typename Mapper::MappedType >();
 
-    Mapper::set(map(object), typedKey  ,typedValue );
+    Mapper::set(map(object), typedKey,typedValue );
 }
 
 
@@ -49,7 +49,7 @@ MapProperty::ValuePair MapPropertyImpl<A>::getElement(const UserObject& object, 
 
 template <typename A>
 typename MapPropertyImpl<A>::MapType&
-MapPropertyImpl<A>::map(const UserObject& object) const
+MapPropertyImpl<A>::map(const UserObject &object) const
 {
     return m_accessor.get(object.get<typename A::ClassType>());
 }
@@ -67,4 +67,4 @@ struct PropertyMapper<A, camp::mappingType>
 } // namespace detail
 } // namespace camp
 
-#endif /* __FWCAMP_CAMP_MAPPROPERTYIMPL_HXX__*/
+#endif /* __FWCAMP_CAMP_DETAIL_MAPPROPERTYIMPL_HXX__*/

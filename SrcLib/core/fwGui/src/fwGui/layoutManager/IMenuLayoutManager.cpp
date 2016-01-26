@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,11 +8,9 @@
  * @file fwGui/layoutManager/IMenuLayoutManager.cpp
  * @brief This file defines the implementation of the base class for managing a menu.
  *
- * 
+ *
  * @date 2009-2010
  */
-
-#include <boost/foreach.hpp>
 
 #include "fwGui/layoutManager/IMenuLayoutManager.hpp"
 
@@ -26,12 +24,14 @@ const IMenuLayoutManager::RegistryKeyType IMenuLayoutManager::REGISTRY_KEY = "::
 //-----------------------------------------------------------------------------
 
 IMenuLayoutManager::IMenuLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 IMenuLayoutManager::~IMenuLayoutManager()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -41,43 +41,43 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
                 configuration->getName() == "layout");
 
 
-    ::fwRuntime::ConfigurationElementContainer::Iterator iter ;
-    for( iter = configuration->begin() ; iter != configuration->end() ; ++iter )
+    ::fwRuntime::ConfigurationElementContainer::Iterator iter;
+    for( iter = configuration->begin(); iter != configuration->end(); ++iter )
     {
         if( (*iter)->getName() == "menuItem" )
         {
             ConfigurationType menuItem = *iter;
             ActionInfo info;
 
-            SLM_ASSERT("Depreciated tag <state>", ! menuItem->hasAttribute("state"));
-            SLM_ASSERT("Depreciated tag <enable>", ! menuItem->hasAttribute("enable"));
+            SLM_ASSERT("Depreciated tag <state>", !menuItem->hasAttribute("state"));
+            SLM_ASSERT("Depreciated tag <enable>", !menuItem->hasAttribute("enable"));
 
             SLM_ASSERT("missing <name> attribute", menuItem->hasAttribute("name"));
             if( menuItem->hasAttribute("name") )
             {
-                info.m_name = menuItem->getExistingAttributeValue("name") ;
+                info.m_name = menuItem->getExistingAttributeValue("name");
             }
 
             if( menuItem->hasAttribute("shortcut") )
             {
-                info.m_shortcut = menuItem->getExistingAttributeValue("shortcut") ;
+                info.m_shortcut = menuItem->getExistingAttributeValue("shortcut");
             }
 
             if( menuItem->hasAttribute("icon") )
             {
-                info.m_icon = menuItem->getExistingAttributeValue("icon") ;
+                info.m_icon = menuItem->getExistingAttributeValue("icon");
             }
 
             if( menuItem->hasAttribute("style") )
             {
-                std::string style = menuItem->getExistingAttributeValue("style") ;
+                std::string style = menuItem->getExistingAttributeValue("style");
                 info.m_isCheckable = (style == "check");
-                info.m_isRadio = (style == "radio");
+                info.m_isRadio     = (style == "radio");
             }
 
             if( menuItem->hasAttribute("specialAction") )
             {
-                std::string specialActionName = menuItem->getExistingAttributeValue("specialAction") ;
+                std::string specialActionName = menuItem->getExistingAttributeValue("specialAction");
                 if (specialActionName == "DEFAULT")
                 {
                     info.m_type = DEFAULT;
@@ -110,8 +110,8 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
         {
             ActionInfo info;
             info.m_isSeparator = true;
-            info.m_type = SEPARATOR;
-            m_actionInfo.push_back( info ) ;
+            info.m_type        = SEPARATOR;
+            m_actionInfo.push_back( info );
         }
 
         if( (*iter)->getName() == "menu" )
@@ -120,9 +120,9 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
             info.m_isMenu = true;
             if( (*iter)->hasAttribute("name") )
             {
-                info.m_name = (*iter)->getExistingAttributeValue("name") ;
+                info.m_name = (*iter)->getExistingAttributeValue("name");
             }
-            m_actionInfo.push_back( info ) ;
+            m_actionInfo.push_back( info );
         }
     }
 }
@@ -131,12 +131,12 @@ void IMenuLayoutManager::initialize( ConfigurationType configuration)
 
 void IMenuLayoutManager::destroyActions()
 {
-    BOOST_FOREACH( ::fwGui::container::fwMenuItem::sptr menuItem, m_menuItems)
+    for( ::fwGui::container::fwMenuItem::sptr menuItem :  m_menuItems)
     {
         menuItem->destroyContainer();
     }
     m_menuItems.clear();
-    BOOST_FOREACH( ::fwGui::container::fwMenu::sptr menu, m_menus)
+    for( ::fwGui::container::fwMenu::sptr menu :  m_menus)
     {
         menu->destroyContainer();
     }

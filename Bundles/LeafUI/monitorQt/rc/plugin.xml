@@ -1,4 +1,4 @@
-<plugin id="monitorQt" class="::monitorQt::Plugin">
+<plugin id="monitorQt" class="::monitorQt::Plugin" version="@DASH_VERSION@" >
 
     <library name="monitorQt" />
     <requirement id="monitor" />

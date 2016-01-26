@@ -1,15 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+
+#include "fwTools/System.hpp"
+
+#include <fwCore/base.hpp>
+#ifdef ANDROID
+#include <fwRuntime/Runtime.hpp>
+#endif
+
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/make_shared.hpp>
 #include <boost/regex.hpp>
-#include <boost/foreach.hpp>
-
 #include <boost/lexical_cast.hpp>
 
 // for PID
@@ -23,9 +28,7 @@
 #include <signal.h>
 #endif
 
-#include <fwCore/base.hpp>
 
-#include "fwTools/System.hpp"
 
 
 #define F4S_TMP_EXT "fw4spl-tmp"
@@ -37,10 +40,11 @@ std::string System::s_tempPrefix;
 
 struct RemoveTemporaryFolder
 {
-    typedef ::boost::shared_ptr< RemoveTemporaryFolder > sptr;
+    typedef std::shared_ptr< RemoveTemporaryFolder > sptr;
 
     RemoveTemporaryFolder(const ::boost::filesystem::path &path) : m_path(path)
-    {}
+    {
+    }
 
     ~RemoveTemporaryFolder()
     {
@@ -67,7 +71,7 @@ static struct CleanZombies
 
 int System::getPID() throw()
 {
-    int pid=0;
+    int pid = 0;
 #ifdef WIN32
     pid = _getpid();
 #else
@@ -88,6 +92,14 @@ const ::boost::filesystem::path &System::getTempPath() throw()
     {
         return sysTmp;
     }
+#ifdef ANDROID
+    sysTmp = ::fwRuntime::Runtime::getDefault()->getWorkingPath()/"tmp";
+    if(!fs::exists(sysTmp))
+    {
+        bool res = fs::create_directories(sysTmp);
+        SLM_ASSERT(" Failed to create '"+sysTmp.string()+"' path", res);
+    }
+#else
 
     ::boost::system::error_code err;
     sysTmp = fs::temp_directory_path(err);
@@ -100,10 +112,9 @@ const ::boost::filesystem::path &System::getTempPath() throw()
         fs::path fallback("/tmp");
 #endif
         OSLM_ERROR("Temporary Path Error : " << err.message() << ". " << "Falling back to " << fallback );
-
         sysTmp = fallback;
     }
-
+#endif
     return sysTmp;
 }
 
@@ -119,7 +130,7 @@ const ::boost::filesystem::path createUniqueFolder(const ::boost::filesystem::pa
     {
         tmpDir = fs::unique_path(folderUniquePath);
 
-        if(! fs::exists(tmpDir))
+        if(!fs::exists(tmpDir))
         {
             fs::create_directories(tmpDir);
 
@@ -144,7 +155,7 @@ const ::boost::filesystem::path System::getTemporaryFolder(const std::string& su
         if(!subFolderPrefix.empty())
         {
             const std::string subDirName = subFolderPrefix + "-" + "%%%%%%%%%%%%";
-            fs::path tmpSubDir = createUniqueFolder(tmpDirPath/subDirName);
+            fs::path tmpSubDir           = createUniqueFolder(tmpDirPath/subDirName);
             return tmpSubDir;
         }
 
@@ -154,13 +165,13 @@ const ::boost::filesystem::path System::getTemporaryFolder(const std::string& su
     const fs::path &sysTmp = getTempPath();
 
     const std::string tmpDirName = s_tempPrefix + (s_tempPrefix.empty() ? "" : "-") + "%%%%%%%%%%%%." F4S_TMP_EXT;
-    fs::path tmpDir = createUniqueFolder(sysTmp/tmpDirName);
+    fs::path tmpDir              = createUniqueFolder(sysTmp/tmpDirName);
     tmpDirPath = tmpDir;    // tmpDirPath always set to root tmp dir
 
     fs::path pidFile = tmpDir / (::boost::lexical_cast<std::string>(getPID()) + ".pid");
     fs::fstream( pidFile, std::ios::out ).close();
 
-    autoRemoveTempFolder = ::boost::make_shared<RemoveTemporaryFolder>(tmpDirPath);
+    autoRemoveTempFolder = std::make_shared<RemoveTemporaryFolder>(tmpDirPath);
 
     if(!subFolderPrefix.empty())
     {
@@ -188,7 +199,7 @@ bool System::isProcessRunning(int pid) throw()
         return true;
     }
 #else
-    return kill(pid,0) == 0 ;
+    return kill(pid,0) == 0;
 #endif
 
     return true;
@@ -207,7 +218,7 @@ int System::tempFolderPID(const ::boost::filesystem::path &dir) throw()
 
     int pid = 0;
 
-    for( ; i != endIter; ++i )
+    for(; i != endIter; ++i )
     {
         // Skip if not a dir
         if( !fs::is_regular_file( i->status() ) )
@@ -230,7 +241,8 @@ int System::tempFolderPID(const ::boost::filesystem::path &dir) throw()
             break;
         }
         catch (boost::bad_lexical_cast&)
-        {}
+        {
+        }
 
     }
     return pid;
@@ -249,7 +261,7 @@ void System::cleanZombies(const ::boost::filesystem::path &dir) throw()
     fs::directory_iterator i( dir );
     fs::directory_iterator endIter;
 
-    for( ; i != endIter; ++i )
+    for(; i != endIter; ++i )
     {
         // Skip if not a dir
         if( !fs::is_directory( i->status() ) )
@@ -269,7 +281,7 @@ void System::cleanZombies(const ::boost::filesystem::path &dir) throw()
     }
 
 
-    BOOST_FOREACH( const fs::path &foundTmpDir, allTempFolders)
+    for( const fs::path &foundTmpDir :  allTempFolders)
     {
         int pid = tempFolderPID(foundTmpDir);
 

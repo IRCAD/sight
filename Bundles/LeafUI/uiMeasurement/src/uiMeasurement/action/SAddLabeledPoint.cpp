@@ -1,50 +1,52 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "uiMeasurement/action/SAddLabeledPoint.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwComEd/Dictionary.hpp>
+
 #include <fwCore/base.hpp>
 
-#include <exception>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/ObjectMsg.hpp>
-
+#include <fwData/Boolean.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
-#include <fwData/Boolean.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/PointListMsg.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
-#include "uiMeasurement/action/SAddLabeledPoint.hpp"
+#include <fwServices/Base.hpp>
+
+#include <exception>
 
 namespace uiMeasurement
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiMeasurement::action::SAddLabeledPoint , ::fwData::PointList ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMeasurement::action::SAddLabeledPoint, ::fwData::PointList );
 
 
 //------------------------------------------------------------------------------
 
 
 SAddLabeledPoint::SAddLabeledPoint( ) throw()
-         : m_count(1)
-{}
+    : m_count(1)
+{
+}
 
 //------------------------------------------------------------------------------
 
 SAddLabeledPoint::~SAddLabeledPoint() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -74,7 +76,7 @@ bool SAddLabeledPoint::defineLabel(std::string &name)
         m_count++;
         res = true;
     }
-    return res ;
+    return res;
 }
 
 
@@ -97,13 +99,16 @@ void SAddLabeledPoint::updating() throw(::fwTools::Failed)
 
         // append to point the label
         ::fwData::String::sptr label = ::fwData::String::New();
-        label->value() = value;
-        newPoint->setField( ::fwComEd::Dictionary::m_labelId , label );
+        label->value()               = value;
+        newPoint->setField( ::fwComEd::Dictionary::m_labelId, label );
 
         // notify
-        ::fwComEd::PointListMsg::sptr msgPointList = ::fwComEd::PointListMsg::New();
-        msgPointList->addEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED, newPoint );
-        ::fwServices::IEditionService::notify( this->getSptr(), landmarks, msgPointList);
+        auto sig =
+            landmarks->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_ADDED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit(newPoint);
+        }
     }
 }
 
@@ -120,11 +125,6 @@ void SAddLabeledPoint::starting() throw (::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::actionServiceStarting();
 }
-
-//------------------------------------------------------------------------------
-
-void SAddLabeledPoint::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw (::fwTools::Failed)
-{}
 
 //------------------------------------------------------------------------------
 

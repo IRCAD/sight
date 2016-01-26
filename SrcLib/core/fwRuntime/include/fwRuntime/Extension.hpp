@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_EXTENSION_HPP
-#define _FWRUNTIME_EXTENSION_HPP
+#ifndef __FWRUNTIME_EXTENSION_HPP__
+#define __FWRUNTIME_EXTENSION_HPP__
 
 #include <string>
 #include <libxml/tree.h>
 
-#include <boost/shared_ptr.hpp>
 
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/BundleElement.hpp"
@@ -26,7 +25,7 @@ struct Bundle;
 
 namespace io
 {
-    struct BundleDescriptorReader;
+struct BundleDescriptorReader;
 } // namespace io
 
 
@@ -34,9 +33,10 @@ namespace io
  * @brief   Defines the extension class.
  * @struct  Extension
  * @date    2004-2009
- * 
+ *
  */
-struct Extension : public BundleElement, public ConfigurationElementContainer
+struct Extension : public BundleElement,
+                   public ConfigurationElementContainer
 {
     friend struct ::fwRuntime::io::BundleDescriptorReader;
 
@@ -97,35 +97,36 @@ struct Extension : public BundleElement, public ConfigurationElementContainer
      */
     FWRUNTIME_API Validity validate();
 
-protected:
+    protected:
 
-    /**
-     * @brief       Constructor.
-     *
-     * @param[in]   bundle  a pointer to the bundle the extension is attached to
-     * @param[in]   id      a string containing the extension identifier
-     * @param[in]   point   a string containing the extension point identifier
-     * @param[in]   xmlNode a pointer to the xml node that represents the extension
-     *
-     * @todo        test parameters validity
-     */
-    Extension( ::boost::shared_ptr<Bundle> bundle, const std::string & id, const std::string & point, const xmlNodePtr xmlNode );
+        /**
+         * @brief       Constructor.
+         *
+         * @param[in]   bundle  a pointer to the bundle the extension is attached to
+         * @param[in]   id      a string containing the extension identifier
+         * @param[in]   point   a string containing the extension point identifier
+         * @param[in]   xmlNode a pointer to the xml node that represents the extension
+         *
+         * @todo        test parameters validity
+         */
+        Extension( std::shared_ptr<Bundle> bundle, const std::string & id, const std::string & point,
+                   const xmlNodePtr xmlNode );
 
 
-private:
+    private:
 
-    const std::string   m_id;       ///< A string containing the extension identifier.
-    const std::string   m_point;    ///< A string containing the extension point identifier the extension will be connected to.
-    xmlDocPtr           m_xmlDoc;   ///< A pointer to the xml document that contains the xml node representing the extension
-    xmlNodePtr          m_xmlNode;  ///< A pointer to the xml node that represents the extension
-    Validity            m_validity; ///< The validity state of the extension
+        const std::string m_id;     ///< A string containing the extension identifier.
+        const std::string m_point;  ///< A string containing the extension point identifier the extension will be connected to.
+        xmlDocPtr m_xmlDoc;         ///< A pointer to the xml document that contains the xml node representing the extension
+        xmlNodePtr m_xmlNode;       ///< A pointer to the xml node that represents the extension
+        Validity m_validity;        ///< The validity state of the extension
 
-    /**
-     * @brief   Assignment operator.
-     *
-     * @remark  Assignment is forbidden.
-     */
-    void operator=(const Extension&) throw();
+        /**
+         * @brief   Assignment operator.
+         *
+         * @remark  Assignment is forbidden.
+         */
+        void operator=(const Extension&) throw();
 
 };
 
@@ -133,4 +134,4 @@ private:
 } // namespace fwRuntime
 
 
-#endif // #define _FWRUNTIME_EXTENSION_HPP
+#endif // __FWRUNTIME_EXTENSION_HPP__

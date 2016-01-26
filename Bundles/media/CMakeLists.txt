@@ -1,2 +1,2 @@
-fwBundle(media 0.1)
+fwLoadProperties()
 

@@ -1,12 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 
-#ifndef _BINDING_PLUGIN_HPP_
-#define _BINDING_PLUGIN_HPP_
+#ifndef __BINDING_PLUGIN_HPP__
+#define __BINDING_PLUGIN_HPP__
 
 
 #include <fwRuntime/Plugin.hpp>
@@ -16,9 +16,9 @@
 namespace binding
 {
 /**
-* @brief   This class is started when the bundles is loaded.
-* @class   Plugin
-*/
+ * @brief   This class is started when the bundles is loaded.
+ * @class   Plugin
+ */
 
 class BINDING_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
@@ -40,4 +40,4 @@ public:
 } // namespace binding
 
 
-#endif //_BINDING_PLUGIN_HPP_
+#endif //__BINDING_PLUGIN_HPP__

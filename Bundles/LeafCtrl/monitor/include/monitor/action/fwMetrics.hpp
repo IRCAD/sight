@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __MONITOR_FWMETRICS_HPP__
-#define __MONITOR_FWMETRICS_HPP__
+#ifndef __MONITOR_ACTION_FWMETRICS_HPP__
+#define __MONITOR_ACTION_FWMETRICS_HPP__
 
 #include <fwGui/IActionSrv.hpp>
 
@@ -22,15 +22,15 @@ class MONITOR_CLASS_API fwMetrics : public ::fwGui::IActionSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (fwMetrics)( ::fwGui::IActionSrv ) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (fwMetrics)( ::fwGui::IActionSrv ) );
 
     /// Does nothing
-    MONITOR_API fwMetrics() throw() ;
+    MONITOR_API fwMetrics() throw();
 
     /// Does nothing
-    MONITOR_API virtual ~fwMetrics() throw() ;
+    MONITOR_API virtual ~fwMetrics() throw();
 
-protected :
+protected:
 
     /// Calls classic IAction methods to configure
     void configuring() throw (::fwTools::Failed);
@@ -49,5 +49,5 @@ protected :
 
 } // namespace monitor
 
-#endif //__MONITOR_FWMETRICS_HPP__
+#endif //__MONITOR_ACTION_FWMETRICS_HPP__
 

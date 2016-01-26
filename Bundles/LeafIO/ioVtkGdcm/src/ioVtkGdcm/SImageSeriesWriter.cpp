@@ -1,19 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ioVtkGdcm/SImageSeriesWriter.hpp"
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
 #include <fwCore/base.hpp>
+
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 
-#include <fwTools/ProgressToLogger.hpp>
-
-#include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
@@ -26,23 +31,25 @@
 
 #include <vtkGdcmIO/ImageSeriesWriter.hpp>
 
-#include "ioVtkGdcm/SImageSeriesWriter.hpp"
-
-
 namespace ioVtkGdcm
 {
 
-fwServicesRegisterMacro( ::io::IWriter , ::ioVtkGdcm::SImageSeriesWriter , ::fwMedData::ImageSeries ) ;
+fwServicesRegisterMacro( ::io::IWriter, ::ioVtkGdcm::SImageSeriesWriter, ::fwMedData::ImageSeries );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
 SImageSeriesWriter::SImageSeriesWriter() throw()
-{}
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
 
 //------------------------------------------------------------------------------
 
 SImageSeriesWriter::~SImageSeriesWriter() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -56,8 +63,8 @@ void SImageSeriesWriter::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
 
-    ::fwData::location::Folder::sptr  result;
-    result= ::fwData::location::Folder::dynamicCast( dialogFile.show() );
+    ::fwData::location::Folder::sptr result;
+    result = ::fwData::location::Folder::dynamicCast( dialogFile.show() );
     if (result)
     {
         _sDefaultPath = result->getFolder();
@@ -73,12 +80,14 @@ void SImageSeriesWriter::configureWithIHM()
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::starting() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::stopping() throw(::fwTools::Failed)
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -93,7 +102,7 @@ void SImageSeriesWriter::updating() throw(::fwTools::Failed)
         {
             ::fwGui::dialog::MessageDialog dialog;
             dialog.setMessage("Folder '"+folder.string()+"' isn't empty, files can be overwritten."
-                    "\nDo you want to continue ?");
+                              "\nDo you want to continue ?");
             dialog.setTitle("Folder not empty.");
             dialog.setIcon(::fwGui::dialog::MessageDialog::QUESTION);
             dialog.addButton( ::fwGui::dialog::MessageDialog::YES_NO );
@@ -127,11 +136,10 @@ void SImageSeriesWriter::updating() throw(::fwTools::Failed)
     }
 }
 
-
 //------------------------------------------------------------------------------
 
 void SImageSeriesWriter::saveImageSeries( const ::boost::filesystem::path folder,
-        ::fwMedData::ImageSeries::sptr series )
+                                          ::fwMedData::ImageSeries::sptr series )
 {
     ::vtkGdcmIO::ImageSeriesWriter::sptr writer = ::vtkGdcmIO::ImageSeriesWriter::New();
 
@@ -140,20 +148,10 @@ void SImageSeriesWriter::saveImageSeries( const ::boost::filesystem::path folder
     loc->setFolder(folder);
     writer->setLocation(loc);
 
-    fwGui::dialog::ProgressDialog::sptr progressMeterGUI;
-
-    if(::fwGui::isBackendLoaded())
-    {
-         progressMeterGUI = fwGui::dialog::ProgressDialog::New();
-         progressMeterGUI->setTitle("Saving series...");
-    }
+    m_sigJobCreated->emit(writer->getJob());
 
     try
     {
-        if(progressMeterGUI)
-        {
-            writer->addHandler( *progressMeterGUI );
-        }
         writer->write();
     }
     catch (const std::exception & e)
@@ -161,12 +159,12 @@ void SImageSeriesWriter::saveImageSeries( const ::boost::filesystem::path folder
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning", "Warning during saving", ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ std::string generateStudyInstanceUid()
 {
     using namespace ::boost::posix_time;
 
-    ptime now = microsec_clock::local_time();
+    ptime now         = microsec_clock::local_time();
     time_facet* facet = new time_facet("%f%S%M%H%d%m");
 
     std::stringstream ss;

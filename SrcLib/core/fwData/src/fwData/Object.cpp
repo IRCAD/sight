@@ -1,42 +1,44 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/bind.hpp>
-
+//FIXME :This needs to be include first for GCC
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+//
 #include "fwData/factory/new.hpp"
 #include "fwData/Object.hpp"
 
+#include <functional>
 
 namespace fwData
 {
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType Object::s_OBJECT_MODIFIED_SIG = "objectModified";
+const ::fwCom::Signals::SignalKeyType Object::s_MODIFIED_SIG       = "modified";
+const ::fwCom::Signals::SignalKeyType Object::s_ADDED_FIELDS_SIG   = "addedFields";
+const ::fwCom::Signals::SignalKeyType Object::s_CHANGED_FIELDS_SIG = "changedFields";
+const ::fwCom::Signals::SignalKeyType Object::s_REMOVED_FIELDS_SIG = "removedFields";
 
 //------------------------------------------------------------------------------
 
 Object::Object()
 {
-    // Init
-    m_sigObjectModified = ObjectModifiedSignalType::New();
+    newSignal< ModifiedSignalType >(s_MODIFIED_SIG);
+    newSignal< AddedFieldsSignalType >(s_ADDED_FIELDS_SIG);
+    newSignal< ChangedFieldsSignalType >(s_CHANGED_FIELDS_SIG);
+    newSignal< RemovedFieldsSignalType >(s_REMOVED_FIELDS_SIG);
 
-    // Register
-    m_signals( s_OBJECT_MODIFIED_SIG,  m_sigObjectModified);
-
-#ifdef COM_LOG
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
 }
 
 //------------------------------------------------------------------------------
 
 Object::~Object()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -71,8 +73,8 @@ Object::FieldNameVectorType Object::getFieldNames() const
 {
     FieldNameVectorType names;
     std::transform( m_fields.begin(), m_fields.end(),
-            std::back_inserter(names),
-            ::boost::bind(& FieldMapType::value_type::first, _1) );
+                    std::back_inserter(names),
+                    std::bind(&FieldMapType::value_type::first, std::placeholders::_1) );
     return names;
 }
 
@@ -113,7 +115,6 @@ void Object::updateFields( const FieldMapType & fieldMap )
     m_fields.insert(fieldMap.begin(), fieldMap.end());
 }
 
-
 //-----------------------------------------------------------------------------
 
 void Object::fieldShallowCopy(const ::fwData::Object::csptr &source)
@@ -142,7 +143,7 @@ void Object::fieldDeepCopy(const ::fwData::Object::csptr &source, DeepCopyCacheT
 {
     m_fields.clear();
     const ::fwData::Object::FieldMapType &sourceFields = source->getFields();
-    BOOST_FOREACH(const ::fwData::Object::FieldMapType::value_type &elt, sourceFields)
+    for(const ::fwData::Object::FieldMapType::value_type &elt : sourceFields)
     {
         this->setField(elt.first, ::fwData::Object::copy(elt.second, cache));
     }
@@ -153,7 +154,7 @@ void Object::fieldDeepCopy(const ::fwData::Object::csptr &source, DeepCopyCacheT
 void Object::shallowCopy(const ::fwData::Object::csptr &source )
 {
     FwCoreNotUsedMacro(source);
-    OSLM_FATAL("shallowCopy not implemented for : " << this->getClassname() );
+    SLM_FATAL("shallowCopy not implemented for : " + this->getClassname() );
 }
 
 //-----------------------------------------------------------------------------
@@ -191,19 +192,6 @@ void Object::shallowCopy(const ::fwData::Object::csptr &source )
 
 //-----------------------------------------------------------------------------
 
-#ifdef COM_LOG
-void Object::setID( ::fwTools::fwID::IDType newID )
-{
-    if( ! this->hasID() ||
-        this->getID( ::fwTools::fwID::MUST_EXIST ) != newID )
-    {
-        this->::fwTools::fwID::setID( newID );
-    }
 
-    std::string lightID = this->getLightID( ::fwTools::fwID::MUST_EXIST );
-
-    ::fwCom::HasSignals::m_signals.setID( lightID + "::" );
-}
-#endif
 
 } // namespace fwData

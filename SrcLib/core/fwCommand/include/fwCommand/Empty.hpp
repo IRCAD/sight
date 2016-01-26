@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMMAND_EMPTY_HPP_
-#define _FWCOMMAND_EMPTY_HPP_
+#ifndef __FWCOMMAND_EMPTY_HPP__
+#define __FWCOMMAND_EMPTY_HPP__
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -24,7 +23,7 @@ namespace fwCommand
 class FWCOMMAND_CLASS_API Empty : public ICommand
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (Empty)(ICommand), (( )), ::boost::make_shared< Empty > );
+    fwCoreClassDefinitionsWithFactoryMacro( (Empty)(ICommand), (( )), std::make_shared< Empty > );
 
     // Overrides.
     FWCOMMAND_API const boost::uint32_t  getSize() const;
@@ -44,4 +43,4 @@ public:
 } // namespace fwCommand
 
 
-#endif //#ifndef _FWCOMMAND_EMPTY_HPP_
+#endif // __FWCOMMAND_EMPTY_HPP__

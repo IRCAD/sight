@@ -1,4 +1,4 @@
-<plugin class="::uiPython::Plugin" id="uiPython">
+<plugin class="::uiPython::Plugin" id="uiPython" version="@DASH_VERSION@" >
 
     <library name="uiPython" />
 

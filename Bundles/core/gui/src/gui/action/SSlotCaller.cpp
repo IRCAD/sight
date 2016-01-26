@@ -1,42 +1,47 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/regex.hpp>
+#include "gui/action/SSlotCaller.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/fwID.hpp>
-
-#include <fwRuntime/helper.hpp>
-#include <fwRuntime/Extension.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include "gui/action/SSlotCaller.hpp"
+#include <fwRuntime/Extension.hpp>
+#include <fwRuntime/helper.hpp>
+
+#include <fwServices/Base.hpp>
+
+#include <fwTools/fwID.hpp>
+
+#include <boost/regex.hpp>
 
 namespace gui
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::gui::action::SSlotCaller , ::fwData::Object ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::gui::action::SSlotCaller, ::fwData::Object );
 
 //-----------------------------------------------------------------------------
 
 SSlotCaller::SSlotCaller() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 SSlotCaller::~SSlotCaller() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -66,17 +71,17 @@ void SSlotCaller::info(std::ostream &_sstream )
 
 void SSlotCaller::updating() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
 
-    BOOST_FOREACH(SlotInfoType info, m_slotInfos)
+    for(SlotInfoType info :  m_slotInfos)
     {
         HasSlotIDType HasSlotId = info.first;
         ::fwCom::Slots::SlotKeyType slotKey = info.second;
 
         if (::fwTools::fwID::exist(HasSlotId))
         {
-            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(HasSlotId);
-            ::fwCom::HasSlots::sptr hasSlots = ::boost::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
+            ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(HasSlotId);
+            ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
             SLM_ASSERT("Object with id " << HasSlotId << " is not a HasSlots", hasSlots);
 
             ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotKey);
@@ -88,16 +93,9 @@ void SSlotCaller::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SSlotCaller::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------
-
 void SSlotCaller::configuring() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC() ;
+    SLM_TRACE_FUNC();
     this->initialize();
 
     ConfigurationType cfg = m_configuration->findConfigurationElement("slots");
@@ -108,7 +106,7 @@ void SSlotCaller::configuring() throw( ::fwTools::Failed )
     ::boost::smatch match;
     std::string src, uid, key;
 
-    BOOST_FOREACH(ConfigurationType elem,  slotCfgs.getElements())
+    for(ConfigurationType elem :   slotCfgs.getElements())
     {
         src = elem->getValue();
         if( ::boost::regex_match(src, match, re) )

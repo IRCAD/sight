@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -96,11 +96,11 @@ void SeriesDBTest::testImportSeriesDB()
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(mesh1, mesh2);
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+    for( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
     {
         OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
     }
-    CPPUNIT_ASSERT_MESSAGE("Object Not equal" , props->size() == 0 );
+    CPPUNIT_ASSERT_MESSAGE("Object Not equal", props->size() == 0 );
 }
 
 //------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void SeriesDBTest::testImportSeriesDB()
 bool isLoaded(::fwMemory::BufferObject::sptr bo)
 {
     ::fwMemory::BufferManager::csptr manager = ::fwMemory::BufferManager::getDefault();
-    const ::fwMemory::BufferManager::BufferInfoMapType mapInfos =  manager->getBufferInfos().get();
+    const ::fwMemory::BufferManager::BufferInfoMapType mapInfos = manager->getBufferInfos().get();
 
     ::fwMemory::BufferManager::BufferInfoMapType::const_iterator iter = mapInfos.find(bo->getBufferPointer());
     CPPUNIT_ASSERT_MESSAGE("BufferInfo not found.", iter != mapInfos.end());

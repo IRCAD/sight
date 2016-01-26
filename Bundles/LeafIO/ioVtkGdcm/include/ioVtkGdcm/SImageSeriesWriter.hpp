@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,21 @@
 #ifndef __IOVTKGDCM_SIMAGESERIESWRITER_HPP__
 #define __IOVTKGDCM_SIMAGESERIESWRITER_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
-
+#include "ioVtkGdcm/config.hpp"
 #include <io/IWriter.hpp>
 
-#include "ioVtkGdcm/config.hpp"
+#include <boost/filesystem/path.hpp>
+#include <string>
 
 namespace fwMedData
 {
-    class ImageSeries;
+class ImageSeries;
 }
 
+namespace fwJobs
+{
+class IJob;
+}
 
 namespace ioVtkGdcm
 {
@@ -30,8 +33,10 @@ namespace ioVtkGdcm
 class IOVTKGDCM_CLASS_API SImageSeriesWriter : public ::io::IWriter
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (SImageSeriesWriter)( ::io::IWriter) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (SImageSeriesWriter)( ::io::IWriter) );
+
+    typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
     /**
      * @brief   constructor
@@ -61,9 +66,11 @@ protected:
     /// Return path type managed by the service, here FOLDER
     IOVTKGDCM_API ::io::IOPathType getIOPathType() const;
 
-private :
+private:
 
     void saveImageSeries( const ::boost::filesystem::path folder, SPTR(::fwMedData::ImageSeries) series );
+
+    SPTR(JobCreatedSignalType) m_sigJobCreated;
 };
 
 } // namespace ioVtkGdcm

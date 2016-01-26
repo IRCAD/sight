@@ -1,17 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP_
-#define _SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP_
+#ifndef __SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP__
+#define __SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP__
+
+#include "scene2D/adaptor/IAdaptor.hpp"
 
 #include <fwData/TransferFunction.hpp>
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
-#include <scene2D/adaptor/IAdaptor.hpp>
 
 namespace scene2D
 {
@@ -19,18 +20,19 @@ namespace adaptor
 {
 
 
-class SCENE2D_CLASS_API TransferFunction : public ::fwComEd::helper::MedicalImageAdaptor, public ::scene2D::adaptor::IAdaptor
+class SCENE2D_CLASS_API TransferFunction : public ::fwComEd::helper::MedicalImageAdaptor,
+                                           public ::scene2D::adaptor::IAdaptor
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TransferFunction)(::scene2D::adaptor::IAdaptor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (TransferFunction)(::scene2D::adaptor::IAdaptor) );
 
     /// Enumeration of authorized line types
     enum LineType
-   {
-      PLAIN,
-      DOTTED
-   };
+    {
+        PLAIN,
+        DOTTED
+    };
 
     /// Constructor, add handle events TRANSFERFUNCTION and WINDOWING.
     SCENE2D_API TransferFunction() throw();
@@ -38,28 +40,37 @@ public:
     /// Basic destructor, do nothing.
     SCENE2D_API virtual ~TransferFunction() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    SCENE2D_API virtual KeyConnectionsType getObjSrvConnections() const;
+
 protected:
     /**
-    * @brief Configuring the TransferFunction adaptor.
-    *
-    * Example of configuration
-    * @verbatim
-    <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="myImage">
+     * @brief Configuring the TransferFunction adaptor.
+     *
+     * Example of configuration
+     * @verbatim
+       <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="myImage">
         <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/>
-    </adaptor>
-    @endverbatim
-    * - \<config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/\> : Set the config.
-    *
-    * \b lineColor : no mandatory (default value : black) : Set the color of the lines between the TF points.
-    *
-    * \b circleColor : no mandatory (default value : black) : Set the outline color of the circles representing the TF points.
-    *
-    * \b xAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : Set the x Axis of the TF layer.
-    *
-    * \b yAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : Set the y Axis of the TF layer.
-    *
-    * \b zValue : no mandatory (default value : 0) : Set the zValue of the TF layer (the higher the zValue, the higher the layer is).
-    */
+       </adaptor>
+       @endverbatim
+     * - \<config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/\> : Set the config.
+     *
+     * \b lineColor : no mandatory (default value : black) : Set the color of the lines between the TF points.
+     *
+     * \b circleColor : no mandatory (default value : black) : Set the outline color of the circles representing the TF points.
+     *
+     * \b xAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : Set the x Axis of the TF layer.
+     *
+     * \b yAxis : no mandatory (default value : ::scene2D::data::Axis::New() : m_origin (0), m_scale (1), m_scaleType (LINEAR)) : Set the y Axis of the TF layer.
+     *
+     * \b zValue : no mandatory (default value : 0) : Set the zValue of the TF layer (the higher the zValue, the higher the layer is).
+     */
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
 
     /// Initialize the layer m_layer (QGraphicsGroupItem), m_circleWidth and m_circleHeight from the viewport
@@ -69,9 +80,6 @@ protected:
     /// Call buildTFPoints(), buildCircles(), buildLinesAndPolygons() and buildLayer() to build the tf points map,
     ///  the circles vector, the lines and polygons vector, and to add'em all to the layer and add it to the scene.
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
-
-    /// If the message is TRANSFERFUNCTION or WINDOWING, call DoUpdate().
-    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// @todo
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
@@ -83,6 +91,13 @@ protected:
     /// Iterate m_circles vector (and in parallel m_TFPoints map) and, as the case, call the function associated
     ///  to a specific event.
     SCENE2D_API void processInteraction( SPTR(::scene2D::data::Event) _event );
+
+
+    /// Called when transfer function points are modified.
+    SCENE2D_API virtual void updatingTFPoints();
+
+    /// Called when transfer function windowing is modified.
+    SCENE2D_API virtual void updatingTFWindowing(double window, double level);
 
 private:
 
@@ -100,7 +115,7 @@ private:
     /// From an iterator on the m_TFPoints map, create a QGraphicsEllipseItem, give it the appropriated color
     ///  and pen, and return it.
     SCENE2D_API QGraphicsEllipseItem* buildCircle(::fwData::TransferFunction::TFValueType value,
-                                    ::fwData::TransferFunction::TFColor color);
+                                                  ::fwData::TransferFunction::TFColor color);
 
     /// Remove all line and polygon items from the scene, clear the m_linesAndPolygons vector, and push it back
     ///  lines and gradient polygons generated from m_circles.
@@ -133,13 +148,15 @@ private:
     /// point in the tf points map, create a new one with the new coord as key and alpha, rescale the tf map
     /// to 0-1 and update the image tf.
     SCENE2D_API void mouseMoveEvent(QGraphicsEllipseItem* circle,
-            ::fwData::TransferFunction::TFValueType tfPoint, ::scene2D::data::Event::sptr _event);
+                                    ::fwData::TransferFunction::TFValueType tfPoint,
+                                    ::scene2D::data::Event::sptr _event);
 
     /// Reset the circle pen to the selected circle
     SCENE2D_API void mouseButtonReleaseEvent(QGraphicsEllipseItem* circle, ::scene2D::data::Event::sptr _event);
 
     /// Erase the selected point
-    SCENE2D_API void rightButtonEvent(::fwData::TransferFunction::TFValueType tfPoint, ::scene2D::data::Event::sptr _event);
+    SCENE2D_API void rightButtonEvent(::fwData::TransferFunction::TFValueType tfPoint,
+                                      ::scene2D::data::Event::sptr _event);
 
     /// Create a new point without modifying the TF (placed between the 2 encompassing points with linear
     /// interpolation)
@@ -193,5 +210,5 @@ private:
 } // namespace scene2D
 
 
-#endif // _SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP_
+#endif // __SCENE2D_ADAPTOR_TRANSFERFUNCTION_HPP__
 

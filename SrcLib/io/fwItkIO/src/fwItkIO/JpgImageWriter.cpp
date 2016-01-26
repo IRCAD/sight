@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,7 +43,7 @@ namespace fwItkIO
 //------------------------------------------------------------------------------
 
 JpgImageWriter::JpgImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
-        ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
+    ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
 {
     SLM_TRACE_FUNC();
 }
@@ -66,13 +66,13 @@ struct JpgITKSaverFunctor
     }
     struct Parameter
     {
-        std::string                   m_filename;
-        ::fwData::Image::sptr         m_dataImage;
+        std::string m_filename;
+        ::fwData::Image::sptr m_dataImage;
         ::fwItkIO::JpgImageWriter::sptr m_fwWriter;
     };
 
     template<class PIXELTYPE>
-    void operator()( const  Parameter &param )
+    void operator()( const Parameter &param )
     {
         OSLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  fwTools::DynamicType::string<PIXELTYPE>() );
 
@@ -83,7 +83,8 @@ struct JpgITKSaverFunctor
         // Il faut dont creer une ImageIO a la mano (*1*): affecter l'observation  sur IO (*2*) et mettre le IO dans le reader (voir *3*)
 
         // Reader IO (*1*)
-        typename itk::ImageIOBase::Pointer imageIOWrite = itk::ImageIOFactory::CreateImageIO( "image.jpg", itk::ImageIOFactory::WriteMode);
+        typename itk::ImageIOBase::Pointer imageIOWrite = itk::ImageIOFactory::CreateImageIO( "image.jpg",
+                                                                                              itk::ImageIOFactory::WriteMode);
         assert( imageIOWrite.IsNotNull() );
 
         // create writer
@@ -93,7 +94,7 @@ struct JpgITKSaverFunctor
         typename WriterType::Pointer writer = WriterType::New();
 
         // set observation (*2*)
-        itk::LightProcessObject::Pointer castHelper= (itk::LightProcessObject *)(imageIOWrite.GetPointer());
+        itk::LightProcessObject::Pointer castHelper = (itk::LightProcessObject *)(imageIOWrite.GetPointer());
         assert( castHelper.IsNotNull() );
         Progressor progress(castHelper, param.m_fwWriter, param.m_filename);
 
@@ -112,7 +113,7 @@ struct JpgITKSaverFunctor
             if(iter != poolTF->end())
             {
                 ::fwData::TransferFunction::sptr tf;
-                tf = ::fwData::TransferFunction::dynamicCast(iter->second);
+                tf  = ::fwData::TransferFunction::dynamicCast(iter->second);
                 min = tf->getWLMinMax().first;
                 max = tf->getWLMinMax().second;
             }
@@ -132,7 +133,7 @@ struct JpgITKSaverFunctor
 
         writer->SetInput( rescaleFilter->GetOutput() );
 
-        typedef itk::NumericSeriesFileNames    NameGeneratorType;
+        typedef itk::NumericSeriesFileNames NameGeneratorType;
 
         NameGeneratorType::Pointer nameGenerator = NameGeneratorType::New();
 
@@ -160,17 +161,18 @@ void JpgImageWriter::write()
     assert( m_object.lock() );
 
     JpgITKSaverFunctor::Parameter saverParam;
-    saverParam.m_filename =  this->getFolder().string();
+    saverParam.m_filename  = this->getFolder().string();
     saverParam.m_dataImage = this->getConcreteObject();
-    saverParam.m_fwWriter =  this->getSptr();
+    saverParam.m_fwWriter  = this->getSptr();
     assert( saverParam.m_dataImage );
 
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , JpgITKSaverFunctor >::invoke( saverParam.m_dataImage->getPixelType(), saverParam );
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, JpgITKSaverFunctor >::invoke(
+        saverParam.m_dataImage->getPixelType(), saverParam );
 }
 
 //------------------------------------------------------------------------------
 
-std::string  JpgImageWriter::extension()
+std::string JpgImageWriter::extension()
 {
     return ".jpg";
 }

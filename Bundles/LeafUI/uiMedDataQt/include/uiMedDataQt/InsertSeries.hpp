@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,6 @@
 
 #include <fwData/Object.hpp>
 #include <fwData/factory/new.hpp>
-#include <fwData/macros.hpp>
 
 #include <fwMedData/Series.hpp>
 
@@ -26,7 +25,8 @@ class UIMEDDATAQT_CLASS_API InsertSeries : public ::fwMedData::Series
 {
 
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (InsertSeries)(::fwData::Object), (()), ::fwData::factory::New< InsertSeries >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (InsertSeries)(::fwData::Object), (()),
+                                            ::fwData::factory::New< InsertSeries >);
 
     /**
      * @brief Constructor

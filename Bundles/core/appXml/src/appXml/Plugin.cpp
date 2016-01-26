@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,22 +19,24 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 //------------------------------------------------------------------------------
 
 Plugin::Plugin() throw() : m_configurationName(""),m_parametersName("")
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 Plugin::~Plugin() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void Plugin::start() throw( ::fwRuntime::RuntimeException )
 {
     SLM_FATAL_IF("Bundle appXml, missing param config in profile", !this->getBundle()->hasParameter("config"));
-    m_configurationName =  this->getBundle()->getParameterValue("config") ;
+    m_configurationName = this->getBundle()->getParameterValue("config");
     if( this->getBundle()->hasParameter("parameters") )
     {
-        m_parametersName =  this->getBundle()->getParameterValue("parameters") ;
+        m_parametersName = this->getBundle()->getParameterValue("parameters");
     }
 }
 
@@ -42,36 +44,37 @@ void Plugin::start() throw( ::fwRuntime::RuntimeException )
 
 void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 {
-    SLM_ASSERT("Sorry, the OSR is already initialized.", ! m_appConfigMng );
-    SLM_ASSERT("Sorry, configuration name parameter is not initialized.", !m_configurationName.empty());
+    SLM_ASSERT("The OSR is already initialized.", !m_appConfigMng );
+    SLM_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
 
     m_appConfigMng = ::fwServices::AppConfigManager::New();
 
     if( m_parametersName.empty() )
     {
         const ::fwServices::registry::AppConfig::FieldAdaptorType fields;
-        ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_configurationName, fields );
-        m_appConfigMng->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
+        m_appConfigMng->setConfig( m_configurationName, fields );
     }
     else
     {
-        const ::fwServices::registry::AppConfig::FieldAdaptorType & fields = ::fwServices::registry::AppConfigParameters::getDefault()->getParameters( m_parametersName );
-        ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( m_configurationName, fields );
-        m_appConfigMng->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
+        const ::fwServices::registry::AppConfig::FieldAdaptorType & fields =
+            ::fwServices::registry::AppConfigParameters::getDefault()->getParameters( m_parametersName );
+        m_appConfigMng->setConfig( m_configurationName, fields );
     }
+
     m_appConfigMng->launch();
 }
 
 //------------------------------------------------------------------------------
 
 void Plugin::stop() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
 void Plugin::uninitialize() throw()
 {
-    SLM_ASSERT("Sorry, the OSR is not initialized.", m_appConfigMng );
+    SLM_ASSERT("The OSR is not initialized.", m_appConfigMng );
     m_appConfigMng->stopAndDestroy();
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/shared_ptr.hpp>
 
 #include <fwCore/macros.hpp>
 
@@ -17,7 +16,7 @@
 
 namespace fwData
 {
-    class Object;
+class Object;
 }
 
 namespace fwDataCamp
@@ -34,19 +33,19 @@ namespace fwDataCamp
  * @throw ::fwDataCamp::exception::ObjectNotFound
  */
 FWDATACAMP_API SPTR(::fwData::Object) getObject( SPTR(::fwData::Object) object,
-                                                          const std::string & path,
-                                                          bool raiseException = false);
+                                                 const std::string & path,
+                                                 bool raiseException = false);
 
 /**
  * @see fwDataCamp.getObject
  */
 template< class DATATYPE >
 SPTR(DATATYPE) getObject( SPTR(::fwData::Object) object,
-                             const std::string & path,
-                             bool raiseException = false )
+                          const std::string & path,
+                          bool raiseException = false )
 {
     SPTR(::fwData::Object) subObject = getObject( object, path, raiseException );
-    SPTR(DATATYPE) casteDdata = ::boost::dynamic_pointer_cast<DATATYPE>( subObject );
+    SPTR(DATATYPE) casteDdata        = ::std::dynamic_pointer_cast<DATATYPE>( subObject );
     return casteDdata;
 }
 

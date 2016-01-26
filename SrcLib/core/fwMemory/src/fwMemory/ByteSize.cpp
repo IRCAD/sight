@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,10 +16,10 @@ namespace fwMemory
 {
 
 
-const ::boost::uint64_t ByteSize::Bytes = 1 ;
+const ::boost::uint64_t ByteSize::Bytes = 1;
 
 // SI units
-const ::boost::uint64_t ByteSize::KB = 1000LL ;
+const ::boost::uint64_t ByteSize::KB = 1000LL;
 const ::boost::uint64_t ByteSize::MB = 1000000LL;
 const ::boost::uint64_t ByteSize::GB = 1000000000LL;
 const ::boost::uint64_t ByteSize::TB = 1000000000000LL;
@@ -57,7 +57,7 @@ ByteSize::ByteSize ( double size, UnitType unit ) : m_size(0)
                || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     if(size < 0)
     {
-        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast , "Bad size : " << size << " < 0");
+        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast, "Bad size : " << size << " < 0");
     }
     this->setSize(size, unit);
 }
@@ -83,7 +83,7 @@ ByteSize& ByteSize::operator= ( double size )
 {
     if(size < 0)
     {
-        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast , "Bad size : " << size << " < 0");
+        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast, "Bad size : " << size << " < 0");
     }
 
     this->setSize(size);
@@ -114,7 +114,7 @@ void ByteSize::setSize ( double size, UnitType unit )
 {
     if(size < 0)
     {
-        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast , "Bad size : " << size << " < 0");
+        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast, "Bad size : " << size << " < 0");
     }
 
     SLM_ASSERT("Bad Unit",
@@ -128,14 +128,14 @@ void ByteSize::setSize ( double size, UnitType unit )
 void ByteSize::setSize ( const std::string &size )
 {
     SizeType newSize = 0;
-    bool r = parseSize(size, newSize);
+    bool r           = parseSize(size, newSize);
     if(r)
     {
         m_size = newSize;
     }
     else
     {
-        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast , "Bad size : " << size );
+        FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast, "Bad size : " << size );
     }
 }
 
@@ -145,23 +145,23 @@ std::string ByteSize::unitToString(ByteSize::UnitType unit)
 {
     switch ( unit )
     {
-        case Bytes :
+        case Bytes:
             return "Bytes";
-        case KB :
+        case KB:
             return "KB";
-        case GB :
+        case GB:
             return "GB";
-        case MB :
+        case MB:
             return "MB";
-        case TB :
+        case TB:
             return "TB";
-        case KiB :
+        case KiB:
             return "KiB";
-        case GiB :
+        case GiB:
             return "GiB";
-        case MiB :
+        case MiB:
             return "MiB";
-        case TiB :
+        case TiB:
             return "TiB";
     }
     SLM_ASSERT("Bad Unit",
@@ -189,38 +189,38 @@ bool ByteSize::parseSize(const std::string &s, SizeType& size)
     std::string::const_iterator first = s.begin();
     std::string::const_iterator last  = s.end();
 
-    ByteSize::SizeType intSize = 0;
-    double floatSize = 0;
+    ByteSize::SizeType intSize    = 0;
+    double floatSize              = 0;
     ByteSize::SizeType multiplier = ByteSize::Bytes;
 
     symbols<char, ByteSize::SizeType> unit;
 
     unit.add
-        ( "b"    , ByteSize::Bytes ) ( "byte", ByteSize::Bytes ) ( "bytes", ByteSize::Bytes )
-        ( "kb"   , ByteSize::KB  )
-        ( "mb"   , ByteSize::MB  )
-        ( "gb"   , ByteSize::GB  )
-        ( "tb"   , ByteSize::TB  )
-        ( "pb"   , ByteSize::PB  )
-        ( "k"  , ByteSize::KiB ) ( "kib"  , ByteSize::KiB )
-        ( "m"  , ByteSize::MiB ) ( "mib"  , ByteSize::MiB )
-        ( "g"  , ByteSize::GiB ) ( "gib"  , ByteSize::GiB )
-        ( "t"  , ByteSize::TiB ) ( "tib"  , ByteSize::TiB )
-        ( "p"  , ByteSize::PiB ) ( "pib"  , ByteSize::PiB )
-        ;
+        ( "b", ByteSize::Bytes ) ( "byte", ByteSize::Bytes ) ( "bytes", ByteSize::Bytes )
+        ( "kb", ByteSize::KB  )
+        ( "mb", ByteSize::MB  )
+        ( "gb", ByteSize::GB  )
+        ( "tb", ByteSize::TB  )
+        ( "pb", ByteSize::PB  )
+        ( "k", ByteSize::KiB ) ( "kib", ByteSize::KiB )
+        ( "m", ByteSize::MiB ) ( "mib", ByteSize::MiB )
+        ( "g", ByteSize::GiB ) ( "gib", ByteSize::GiB )
+        ( "t", ByteSize::TiB ) ( "tib", ByteSize::TiB )
+        ( "p", ByteSize::PiB ) ( "pib", ByteSize::PiB )
+    ;
 
 
     bool r = false;
     r = phrase_parse(first, last,
                      //  Begin grammar
                      (
-                      ( *space >>
-                       ( &((double_) >> no_case[-unit] >> *space >> eoi)
-                         >> double_[ ref(floatSize) = _1 ] >> no_case[-unit[ ref(multiplier) = _1 ]] )
-                       | ( &((ulong_long) >> no_case[-unit]  >> *space >> eoi)
-                           >> ulong_long[ ref(intSize) = _1 ] >> no_case[-unit[ ref(multiplier) = _1 ]] )
-                      )
-                      >> *space >> eoi
+                         ( *space >>
+                           ( &((double_) >> no_case[-unit] >> *space >> eoi)
+                             >> double_[ ref(floatSize) = _1 ] >> no_case[-unit[ ref(multiplier) = _1 ]] )
+                           | ( &((ulong_long) >> no_case[-unit]  >> *space >> eoi)
+                               >> ulong_long[ ref(intSize) = _1 ] >> no_case[-unit[ ref(multiplier) = _1 ]] )
+                         )
+                         >> *space >> eoi
                      ),
                      //  End grammar
 
@@ -240,7 +240,7 @@ bool ByteSize::parseSize(const std::string &s, SizeType& size)
     {
         if(floatSize < 0)
         {
-            FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast , "Bad size : " << floatSize << " < 0");
+            FW_RAISE_EXCEPTION_MSG( ::fwMemory::exception::BadCast, "Bad size : " << floatSize << " < 0");
         }
 
         size = static_cast< ByteSize::SizeType >(floatSize * multiplier);
@@ -260,7 +260,7 @@ std::string ByteSize::getSizeAsString( UnitType unit )
                (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB)  || (unit == PB)
                || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB));
     std::stringstream sstr;
-    sstr << std::noshowpoint ;
+    sstr << std::noshowpoint;
 
     if(unit == Bytes)
     {
@@ -279,8 +279,8 @@ std::string ByteSize::getSizeAsString( UnitType unit )
 
 std::string ByteSize::getHumanReadableSize( StandardType standard )
 {
-    static UnitType si []  = {Bytes, KB,  MB,  GB,  TB,  PB};
-    static UnitType iec [] = {Bytes, KiB, MiB, GiB, TiB, PiB};
+    static UnitType si []          = {Bytes, KB,  MB,  GB,  TB,  PB};
+    static UnitType iec []         = {Bytes, KiB, MiB, GiB, TiB, PiB};
     const size_t sizeOfStandardSet = 5;
 
     UnitType *unitSet = iec;
@@ -289,8 +289,8 @@ std::string ByteSize::getHumanReadableSize( StandardType standard )
         unitSet = si;
     }
 
-    size_t i ;
-    for ( i = 1 ; i < sizeOfStandardSet ; ++i )
+    size_t i;
+    for ( i = 1; i < sizeOfStandardSet; ++i )
     {
         if (m_size < unitSet[i])
         {

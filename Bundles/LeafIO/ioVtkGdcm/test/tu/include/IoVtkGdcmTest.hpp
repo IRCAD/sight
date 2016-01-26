@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTKGDCM_TEST_TU_IOVTKGDCMTEST_HPP__
-#define __IOVTKGDCM_TEST_TU_IOVTKGDCMTEST_HPP__
+#ifndef __IOVTKGDCM_UT_IOVTKGDCMTEST_HPP__
+#define __IOVTKGDCM_UT_IOVTKGDCMTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -19,11 +19,11 @@ namespace ut
  */
 class IoVtkGdcmTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( IoVtkGdcmTest );
-    CPPUNIT_TEST( seriesDBReaderTest );
-    CPPUNIT_TEST( seriesDBLazyReaderTest );
-    CPPUNIT_TEST( imageSeriesWriterTest );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( IoVtkGdcmTest );
+CPPUNIT_TEST( seriesDBReaderTest );
+CPPUNIT_TEST( seriesDBLazyReaderTest );
+CPPUNIT_TEST( imageSeriesWriterTest );
+CPPUNIT_TEST_SUITE_END();
 
 public:
     // interface
@@ -40,4 +40,4 @@ public:
 } //namespace ut
 } //namespace ioVtkGdcm
 
-#endif //__IOVTKGDCM_TEST_TU_IOVTKGDCMTEST_HPP__
+#endif //__IOVTKGDCM_UT_IOVTKGDCMTEST_HPP__

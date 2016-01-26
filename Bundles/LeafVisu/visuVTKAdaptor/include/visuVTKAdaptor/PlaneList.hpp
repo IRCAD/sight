@@ -1,16 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_PLANELIST_HPP_
-#define _VISUVTKADAPTOR_PLANELIST_HPP_
+#ifndef __VISUVTKADAPTOR_PLANELIST_HPP__
+#define __VISUVTKADAPTOR_PLANELIST_HPP__
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#ifndef ANDROID
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
+#include <fwServices/helper/SigSlotConnection.hpp>
 
 
 class vtkCommand;
@@ -19,35 +23,61 @@ namespace visuVTKAdaptor
 {
 
 
-class VISUVTKADAPTOR_CLASS_API PlaneList: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API PlaneList : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PlaneList)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (PlaneList)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API PlaneList() throw();
 
     VISUVTKADAPTOR_API virtual ~PlaneList() throw();
 
-    void setPlaneCollectionId(::fwRenderVTK::VtkRenderService::VtkObjectIdType id) { m_planeCollectionId = id; }
+    void setPlaneCollectionId(::fwRenderVTK::SRender::VtkObjectIdType id)
+    {
+        m_planeCollectionId = id;
+    }
 
-    ::fwRenderVTK::VtkRenderService::VtkObjectIdType getPlaneCollectionId() { return m_planeCollectionId; }
+    ::fwRenderVTK::SRender::VtkObjectIdType getPlaneCollectionId() const
+    {
+        return m_planeCollectionId;
+    }
 
 protected:
+
+    /// Type of signal emitted when plane selection changed
+    typedef  ::fwCom::Signal< void (::fwData::Plane::sptr) > SelectedignalType;
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
-
+    /// Slot: Update plane selection
+    void updateSelection(::fwData::Plane::sptr plane);
 
     vtkCommand * m_rightButtonCommand;
-    ::fwRenderVTK::VtkRenderService::VtkObjectIdType m_planeCollectionId;
+    ::fwRenderVTK::SRender::VtkObjectIdType m_planeCollectionId;
+
+    /// Store connections to planes adaptors.
+    ::fwServices::helper::SigSlotConnection::sptr m_planeConnections;
+
+private:
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Update planes (call doStop-soStart())
+    void updatePlanes();
+
+    /// Show/hide planes
+    void showPlanes(bool visible);
+    /**
+     * @}
+     */
 };
 
 
@@ -55,4 +85,6 @@ protected:
 
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_PLANELIST_HPP_
+#endif // ANDROID
+
+#endif // __VISUVTKADAPTOR_PLANELIST_HPP__

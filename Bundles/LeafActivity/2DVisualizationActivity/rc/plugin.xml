@@ -1,8 +1,7 @@
-<plugin id="2DVisualizationActivity">
+<plugin id="2DVisualizationActivity" version="@DASH_VERSION@" >
 
     <requirement id="servicesReg" />
     <requirement id="gui" />
-    <requirement id="guiQt" />
     <requirement id="uiMeasurement" />
     <requirement id="uiMeasurementQt" />
     <requirement id="ctrlSelection" />

@@ -2,7 +2,8 @@
 set( NAME activities )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-set( DEPENDENCIES
+set( DEPENDENCIES 
+    fwCore 
     fwActivities
     fwCom
     fwComEd
@@ -14,6 +15,6 @@ set( DEPENDENCIES
     fwServices
     fwTools
     gui
-    )
+)
 set( REQUIREMENTS  )
 

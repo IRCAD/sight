@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWATOMSPATCH_ISemanticPatch_HPP__
-#define __FWATOMSPATCH_ISemanticPatch_HPP__
+#ifndef __FWATOMSPATCH_ISEMANTICPATCH_HPP__
+#define __FWATOMSPATCH_ISEMANTICPATCH_HPP__
 
 #include <string>
 
@@ -18,7 +18,7 @@
 
 namespace fwAtoms
 {
-    class Object;
+class Object;
 }
 
 namespace fwAtomsPatch
@@ -56,17 +56,17 @@ public:
      * @pre previous and current objects must have the same classname and version.
      */
     FWATOMSPATCH_API virtual void apply(const SPTR(::fwAtoms::Object)& previous,
-             const SPTR(::fwAtoms::Object)& current,
-             ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
+                                        const SPTR(::fwAtoms::Object)& current,
+                                        ::fwAtomsPatch::IPatch::NewVersionsType& newVersions);
 
     /**
      * @brief Returns true if patch is applicable into the context from origin to target versions.
      * @note This method is thread safe.
      */
     FWATOMSPATCH_API virtual bool isApplicable(
-            const std::string& context,
-            const std::string& originVersion,
-            const std::string& targetVersion) const;
+        const std::string& context,
+        const std::string& originVersion,
+        const std::string& targetVersion) const;
 
 protected:
 
@@ -79,13 +79,14 @@ protected:
 
         Context(const std::string& context, const std::string& originVersion, const std::string& targetVersion)
             : m_context(context), m_originVersion(originVersion), m_targetVersion(targetVersion)
-        {}
+        {
+        }
 
         bool operator==(const Context& b) const
         {
             return m_context == b.m_context
-                && m_originVersion == b.m_originVersion
-                && m_targetVersion == b.m_targetVersion;
+                   && m_originVersion == b.m_originVersion
+                   && m_targetVersion == b.m_targetVersion;
         }
     };
 
@@ -114,4 +115,4 @@ protected:
 
 
 } //fwAtomsPatch
-#endif /* __FWATOMSPATCH_ISemanticPatch_HPP__ */
+#endif /* __FWATOMSPATCH_ISEMANTICPATCH_HPP__ */

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _IODATA_PLUGIN_HPP_
-#define _IODATA_PLUGIN_HPP_
+#ifndef __IODATA_PLUGIN_HPP__
+#define __IODATA_PLUGIN_HPP__
 
 #include <fwRuntime/Plugin.hpp>
 
@@ -38,4 +38,4 @@ struct Plugin : public ::fwRuntime::Plugin
 
 } // namespace ioData
 
-#endif //_IODATA_PLUGIN_HPP_
+#endif //__IODATA_PLUGIN_HPP__

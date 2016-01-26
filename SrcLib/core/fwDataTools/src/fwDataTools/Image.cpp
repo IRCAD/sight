@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "fwDataTools/Image.hpp"
 
 #include <fwTools/Combinatory.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
@@ -10,9 +12,6 @@
 #include <fwTools/IntrinsicTypes.hpp>
 
 #include <fwComEd/helper/Array.hpp>
-
-#include "fwDataTools/Image.hpp"
-
 
 namespace fwDataTools
 {
@@ -34,9 +33,9 @@ struct RoiApplyer
     void operator()( RoiApplyerParam & p )
     {
         typedef IMAGE_TYPE ImgType;
-        typedef ROI_TYPE   RoiType;
+        typedef ROI_TYPE RoiType;
 
-        SLM_ASSERT( "Null image pointer" , p.img && p.roi);
+        SLM_ASSERT( "Null image pointer", p.img && p.roi);
 
         ::fwData::Array::sptr imgData;
         ::fwData::Array::sptr roiData;
@@ -46,15 +45,15 @@ struct RoiApplyer
 
         ::fwComEd::helper::Array imgHelper(imgData);
         ::fwComEd::helper::Array roiHelper(roiData);
-        SLM_ASSERT( "Null data array pointer" , imgData && roiData);
-        SLM_ASSERT( "Null data buffers" , imgHelper.getBuffer() && roiHelper.getBuffer());
+        SLM_ASSERT( "Null data array pointer", imgData && roiData);
+        SLM_ASSERT( "Null data buffers", imgHelper.getBuffer() && roiHelper.getBuffer());
 
-        ImgType *imIt = imgHelper.begin<ImgType>();
+        ImgType *imIt  = imgHelper.begin<ImgType>();
         RoiType *roiIt = roiHelper.begin<RoiType>();
 
         const ImgType *imEnd = imIt + imgData->getNumberOfElements();
 
-        for ( ; imIt != imEnd ; ++imIt, ++roiIt)
+        for (; imIt != imEnd; ++imIt, ++roiIt)
         {
             if (*roiIt == 0)
             {
@@ -71,7 +70,7 @@ struct RoiApplyerCaller
     template<typename IMAGE_TYPE>
     void operator()( RoiApplyerParam & p )
     {
-        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , RoiApplyer<IMAGE_TYPE> >::invoke( p.roi->getPixelType() , p );
+        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RoiApplyer<IMAGE_TYPE> >::invoke( p.roi->getPixelType(), p );
     }
 };
 
@@ -89,7 +88,7 @@ void Image::applyRoi( ::fwData::Image::sptr image, ::fwData::Image::sptr roi )
     param.roi = roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RoiApplyerCaller >::invoke( image->getPixelType() , param );
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RoiApplyerCaller >::invoke( image->getPixelType(), param );
 }
 
 
@@ -122,24 +121,25 @@ struct RoiTester
         ::fwData::Array::sptr imgRoiApplyedData;
         ::fwData::Array::sptr roiData;
 
-        imgData = p.img->getDataArray();
+        imgData           = p.img->getDataArray();
         imgRoiApplyedData = p.imgRoiApplyed->getDataArray();
-        roiData = p.roi->getDataArray();
+        roiData           = p.roi->getDataArray();
 
         ::fwComEd::helper::Array imgHelper(imgData);
         ::fwComEd::helper::Array roiHelper(roiData);
         ::fwComEd::helper::Array imgRoiApplyedHelper(imgRoiApplyedData);
 
         SLM_ASSERT( "Null data array pointer", imgData && roiData && imgRoiApplyedData);
-        SLM_ASSERT( "Null data buffers", imgHelper.getBuffer() && roiHelper.getBuffer() && imgRoiApplyedHelper.getBuffer() );
+        SLM_ASSERT( "Null data buffers",
+                    imgHelper.getBuffer() && roiHelper.getBuffer() && imgRoiApplyedHelper.getBuffer() );
 
-        ImgType *imIt     = imgHelper.begin<ImgType>();
-        ImgType *imRoiIt  = imgRoiApplyedHelper.begin<ImgType>();
-        RoiType *roiIt    = roiHelper.begin<RoiType>();
+        ImgType *imIt    = imgHelper.begin<ImgType>();
+        ImgType *imRoiIt = imgRoiApplyedHelper.begin<ImgType>();
+        RoiType *roiIt   = roiHelper.begin<RoiType>();
 
         const ImgType *imEnd = imIt + imgData->getNumberOfElements();
 
-        for ( ; result && imIt != imEnd ; ++imIt, ++roiIt, ++imRoiIt)
+        for (; result && imIt != imEnd; ++imIt, ++roiIt, ++imRoiIt)
         {
             result = result && ( (*roiIt == 0) ? (*imRoiIt == 0) : (*imIt == *imRoiIt) );
         }
@@ -153,7 +153,7 @@ struct RoiTesterCaller
     template<typename IMAGE_TYPE>
     void operator()( RoiTesterParam & p )
     {
-        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes , RoiTester<IMAGE_TYPE> >::invoke( p.roi->getPixelType() , p );
+        ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RoiTester<IMAGE_TYPE> >::invoke( p.roi->getPixelType(), p );
     }
 };
 
@@ -163,15 +163,15 @@ bool Image::isRoiApplyed( ::fwData::Image::sptr image, ::fwData::Image::sptr roi
 {
     SLM_ASSERT( "Null image pointers", image && imgRoiApplyed && roi);
     SLM_ASSERT( "Images have different size",
-            image->getSize() == imgRoiApplyed->getSize() && image->getSize() == roi->getSize());
+                image->getSize() == imgRoiApplyed->getSize() && image->getSize() == roi->getSize());
 
     RoiTesterParam param;
-    param.img = image;
+    param.img           = image;
     param.imgRoiApplyed = imgRoiApplyed;
-    param.roi = roi;
+    param.roi           = roi;
 
     // Due to link failure, we use two dispatcher calls instead of one with a cross-product type list
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RoiTesterCaller >::invoke( image->getPixelType() , param );
+    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RoiTesterCaller >::invoke( image->getPixelType(), param );
 
     return param.result;
 }

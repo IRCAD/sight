@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,8 +45,8 @@ PatientEditor::PatientEditor(QWidget *parent) : QWidget(parent)
     layout->addRow(tr("&Birthdate"), m_txtBirthdate);
     layout->addRow(tr("&Sex"), m_cbSex);
 
-    QObject::connect(m_txtName, SIGNAL(textChanged(const QString&)), this, SLOT(onNameChanged(const QString&)));
-    QObject::connect(m_txtBirthdate, SIGNAL(textChanged(const QString&)), this, SLOT(onBirthChanged(const QString&)));
+    QObject::connect(m_txtName, SIGNAL(textChanged(const QString &)), this, SLOT(onNameChanged(const QString &)));
+    QObject::connect(m_txtBirthdate, SIGNAL(textChanged(const QString &)), this, SLOT(onBirthChanged(const QString &)));
 
     QGroupBox* group = new QGroupBox(tr("Patient"));
     group->setLayout(layout);
@@ -68,9 +68,8 @@ PatientEditor::~PatientEditor()
 bool PatientEditor::isValid() const
 {
     return !m_txtName->text().trimmed().isEmpty()
-        && m_txtName->text().trimmed().toStdString() != s_NEW_PATIENT_TEXT
-        && !m_txtBirthdate->text().trimmed().isEmpty();
-;
+           && m_txtName->text().trimmed().toStdString() != s_NEW_PATIENT_TEXT
+           && !m_txtBirthdate->text().trimmed().isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -110,7 +109,7 @@ void PatientEditor::onBirthChanged(const QString& text)
 SPTR(::fwMedData::Patient) PatientEditor::getPatient() const
 {
     ::fwMedData::Patient::sptr srcPatient = m_series->getPatient();
-    ::fwMedData::Patient::sptr patient = ::fwMedData::Patient::New();
+    ::fwMedData::Patient::sptr patient    = ::fwMedData::Patient::New();
     patient->setName(m_txtName->text().trimmed().toStdString());
     patient->setBirthdate(m_txtBirthdate->text().trimmed().toStdString());
     patient->setPatientId(srcPatient->getPatientId());
@@ -142,9 +141,9 @@ SPTR(::fwMedData::Patient) PatientEditor::getPatient() const
     ::boost::algorithm::trim(sexStr);
 
     const bool same = srcPatient->getName() == name
-        && srcPatient->getBirthdate() == birth
-        && (compareSex ? (srcPatientSex == sexStr) : true)
-        && srcPatient->getPatientId() == patient->getPatientId();
+                      && srcPatient->getBirthdate() == birth
+                      && (compareSex ? (srcPatientSex == sexStr) : true)
+                      && srcPatient->getPatientId() == patient->getPatientId();
 
     ::fwData::String::sptr fieldPatient = srcPatient->getField< ::fwData::String >(s_NEW_PATIENT_FIELD_NAME);
     if(fieldPatient || !same)
@@ -157,7 +156,7 @@ SPTR(::fwMedData::Patient) PatientEditor::getPatient() const
 
 //-----------------------------------------------------------------------------
 
-void PatientEditor::setSeries(SPTR(::fwMedData::Series) series)
+void PatientEditor::setSeries(SPTR(::fwMedData::Series)series)
 {
     SLM_ASSERT("Given series is null", series);
     m_series = series;

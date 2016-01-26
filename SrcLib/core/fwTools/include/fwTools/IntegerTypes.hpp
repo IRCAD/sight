@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,13 +13,13 @@ namespace fwTools
 {
 
 typedef ::boost::mpl::vector<
-                signed char , unsigned char,
-                signed short, unsigned short,
-                signed int  , unsigned int
+        signed char, unsigned char,
+        signed short, unsigned short,
+        signed int, unsigned int
 #ifndef DEBUG
-                ,signed long , unsigned long
+        ,signed long, unsigned long
 #endif
-              >::type IntegerTypes;
+        >::type IntegerTypes;
 
 
 } // end namespace fwTools

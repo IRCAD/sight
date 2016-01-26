@@ -1,0 +1,11 @@
+
+set( NAME @BUNDLE_NAME@ )
+set( VERSION 0.1 )
+set( TYPE BUNDLE )
+set( DEPENDENCIES
+        fwCore
+        fwServices 
+        fwRuntime
+)
+set( REQUIREMENTS  )
+

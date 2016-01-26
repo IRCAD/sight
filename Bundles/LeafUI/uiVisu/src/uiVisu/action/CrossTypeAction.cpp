@@ -1,55 +1,60 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "uiVisu/action/CrossTypeAction.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwCore/base.hpp>
 
-#include <boost/assign/list_of.hpp>
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/trim.hpp>
-
-#include <fwData/Image.hpp>
 #include <fwData/Float.hpp>
-
-#include <fwComEd/ImageMsg.hpp>
+#include <fwData/Image.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include "uiVisu/action/CrossTypeAction.hpp"
-#include "fwServices/IEditionService.hpp"
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/trim.hpp>
+
+#include <boost/assign/list_of.hpp>
+
 
 namespace uiVisu
 {
 namespace action
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::uiVisu::action::CrossTypeAction , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiVisu::action::CrossTypeAction, ::fwData::Image );
 
+static const ::fwCom::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
 std::map< std::string, float >
 CrossTypeAction::m_scaleConversion
-        = ::boost::assign::map_list_of(std::string("full"),1.0)
-                                      (std::string("half"),0.5)
-                                      (std::string("hide"),0.0);
+    = ::boost::assign::map_list_of(std::string("full"),1.0)
+          (std::string("half"),0.5)
+          (std::string("hide"),0.0);
 
 CrossTypeAction::CrossTypeAction() throw()
 {
-    //handlingEventOff();
+    m_sigCrossTypeModified = newSignal< CrossTypeModifiedSignalType >(s_CROSS_TYPE_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
 CrossTypeAction::~CrossTypeAction() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -89,14 +94,7 @@ void CrossTypeAction::configuring() throw(fwTools::Failed)
 
 void CrossTypeAction::updating() throw(::fwTools::Failed)
 {
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-
-    ::fwData::Float::sptr dataInfo = ::fwData::Float::New();
-    dataInfo->value() = m_scaleConversion[m_crossType];
-
-    ::fwComEd::ImageMsg::sptr imageMsg = ::fwComEd::ImageMsg::New();
-    imageMsg->addEvent( "CROSS_TYPE", dataInfo );
-    ::fwServices::IEditionService::notify(this->getSptr(), image, imageMsg);
+    m_sigCrossTypeModified->asyncEmit(m_scaleConversion[m_crossType]);
 }
 
 //------------------------------------------------------------------------------
@@ -104,11 +102,6 @@ void CrossTypeAction::updating() throw(::fwTools::Failed)
 void CrossTypeAction::swapping() throw(::fwTools::Failed)
 {
 
-}
-//------------------------------------------------------------------------------
-
-void CrossTypeAction::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed)
-{
 }
 
 //------------------------------------------------------------------------------

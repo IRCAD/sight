@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,14 @@
 #ifndef __VISUVTKADAPTOR_IMAGESERIES_HPP__
 #define __VISUVTKADAPTOR_IMAGESERIES_HPP__
 
-#include <vector>
+#include "visuVTKAdaptor/config.hpp"
+#include "visuVTKAdaptor/NegatoMPR.hpp"
 
 #include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
-#include "visuVTKAdaptor/NegatoMPR.hpp"
+#include <vector>
 
 namespace visuVTKAdaptor
 {
@@ -30,15 +30,24 @@ class VISUVTKADAPTOR_CLASS_API ImageSeries : public ::fwComEd::helper::MedicalIm
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageSeries)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageSeries)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API ImageSeries() throw();
 
     VISUVTKADAPTOR_API virtual ~ImageSeries() throw();
 
-    void setAllowAlphaInTF(bool allow) {m_allowAlphaInTF = allow;};
-    void setInterpolation(bool interpolation){m_interpolation = interpolation;};
-    void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
+    void setAllowAlphaInTF(bool allow)
+    {
+        m_allowAlphaInTF = allow;
+    }
+    void setInterpolation(bool interpolation)
+    {
+        m_interpolation = interpolation;
+    }
+    void setVtkImageSourceId(std::string id)
+    {
+        m_imageSourceId = id;
+    }
 
 protected:
 
@@ -46,7 +55,7 @@ protected:
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
 
     /// Configure the adaptor.
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     /// Calls doUpdate()
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
@@ -56,9 +65,6 @@ protected:
 
     /// Stops and unregister image subservice.
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
-
-    /// Does nothing.
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     /// Sets adaptor slice mode (NO_SLICE, ONE_SLICE, THREE_SLICES)
     void setSliceMode(NegatoMPR::SliceMode sliceMode);

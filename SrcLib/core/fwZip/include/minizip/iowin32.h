@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 /* iowin32.h -- IO base function header for compress/uncompress .zip
      Version 1.1, February 14h, 2010
      part of the MiniZip project - ( http://www.winimage.com/zLibDll/minizip.html )
@@ -9,7 +15,11 @@
 
          For more info read MiniZip_info.txt
 
-*/
+ */
+
+#ifndef __MINIZIP_IOWIN32_H__
+#define __MINIZIP_IOWIN32_H__
+
 #ifdef _WIN32
 
 #include <windows.h>
@@ -30,3 +40,4 @@ MINIZIP_API void fill_win32_filefunc64W OF((zlib_filefunc64_def* pzlib_filefunc_
 #endif
 
 #endif //_WIN32
+#endif //__MINIZIP_IOWIN32_H__

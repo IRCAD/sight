@@ -1,10 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "visuVTKAdaptor/Mesh.hpp"
+#include "visuVTKAdaptor/ModelSeries.hpp"
+#include "visuVTKAdaptor/Reconstruction.hpp"
+#include "visuVTKAdaptor/Texture.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -14,65 +17,58 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
+#include <fwMedData/ModelSeries.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwMedData/ModelSeries.hpp>
-
-#include <fwComEd/ModelSeriesMsg.hpp>
-
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
 
-#include "visuVTKAdaptor/Reconstruction.hpp"
-#include "visuVTKAdaptor/Mesh.hpp"
-#include "visuVTKAdaptor/ModelSeries.hpp"
-#include "visuVTKAdaptor/Texture.hpp"
-
-
-
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ModelSeries, ::fwMedData::ModelSeries ) ;
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ModelSeries, ::fwMedData::ModelSeries );
 
 namespace visuVTKAdaptor
 {
 
 const ::fwCom::Signals::SignalKeyType ModelSeries::s_TEXTURE_APPLIED_SIG = "textureApplied";
 
+const ::fwCom::Slots::SlotKeyType ModelSeries::s_UPDATE_NORMAL_MODE_SLOT   = "updateNormalMode";
+const ::fwCom::Slots::SlotKeyType ModelSeries::s_SHOW_RECONSTRUCTIONS_SLOT = "showReconstructions";
+
+//------------------------------------------------------------------------------
+
 ModelSeries::ModelSeries() throw() :
-    m_sigTextureApplied(TextureAppliedSignalType::New())
+    m_sigTextureApplied(TextureAppliedSignalType::New()),
+    m_autoResetCamera(true)
 {
     m_clippingPlanes = "";
-    m_autoResetCamera = true;
 
     ::fwCom::HasSignals::m_signals(s_TEXTURE_APPLIED_SIG, m_sigTextureApplied);
 
-#ifdef COM_LOG
-   ::fwCom::HasSignals::m_signals.setID();
-#endif
+    m_slotUpdateNormalMode    = ::fwCom::newSlot(&ModelSeries::updateNormalMode, this);
+    m_slotShowReconstructions = ::fwCom::newSlot(&ModelSeries::showReconstructions, this);
+    ::fwCom::HasSlots::m_slots(s_UPDATE_NORMAL_MODE_SLOT, m_slotUpdateNormalMode)
+        (s_SHOW_RECONSTRUCTIONS_SLOT, m_slotShowReconstructions);
+
+    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
 
 //------------------------------------------------------------------------------
 
 ModelSeries::~ModelSeries() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::configuring() throw(fwTools::Failed)
+void ModelSeries::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
 
     this->setClippingPlanes( m_configuration->getAttributeValue("clippingplanes") );
-
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
-    }
 
     if (m_configuration->hasAttribute("autoresetcamera") )
     {
@@ -109,20 +105,20 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
 
     if(!m_textureAdaptorUID.empty())
     {
-        ::fwRenderVTK::VtkRenderService::sptr renderService = this->getRenderService();
+        ::fwRenderVTK::SRender::sptr renderService      = this->getRenderService();
         ::fwRenderVTK::IVtkAdaptorService::sptr adaptor = renderService->getAdaptor(m_textureAdaptorUID);
-        ::visuVTKAdaptor::Texture::sptr textureAdaptor = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
+        ::visuVTKAdaptor::Texture::sptr textureAdaptor  = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
 
         SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
         m_connections->connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
                                ::visuVTKAdaptor::Texture::s_APPLY_TEXTURE_SLOT);
     }
 
-    BOOST_FOREACH( ::fwData::Reconstruction::sptr reconstruction, modelSeries->getReconstructionDB() )
+    for( ::fwData::Reconstruction::sptr reconstruction :  modelSeries->getReconstructionDB() )
     {
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
-                ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
-        ( reconstruction, "::visuVTKAdaptor::Reconstruction" );
+            ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
+                ( reconstruction, "::visuVTKAdaptor::Reconstruction" );
         SLM_ASSERT("service not instanced", service);
 
         service->setTransformId( this->getTransformId() );
@@ -131,7 +127,7 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
         service->setRenderService(this->getRenderService());
         service->setAutoRender( this->getAutoRender() );
         ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor =
-                ::visuVTKAdaptor::Reconstruction::dynamicCast(service);
+            ::visuVTKAdaptor::Reconstruction::dynamicCast(service);
         renconstructionAdaptor->setClippingPlanes( m_clippingPlanes );
         renconstructionAdaptor->setAutoResetCamera(m_autoResetCamera);
         service->start();
@@ -153,7 +149,7 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
             ::fwData::Material::sptr material = meshAdaptor->getMaterial();
             SLM_ASSERT("Missing material", material);
 
-            fwServicesNotifyMacro( meshAdaptor->getLightID(), m_sigTextureApplied, (material));
+            m_sigTextureApplied->asyncEmit(material);
         }
     }
 }
@@ -175,39 +171,55 @@ void ModelSeries::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ModelSeries::updateNormalMode(std::uint8_t mode, std::string recID)
 {
-    if ( msg->hasEvent(::fwComEd::ModelSeriesMsg::SHOW_RECONSTRUCTIONS) )
+    for( ServiceVector::value_type service :  m_subServices)
     {
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
-        bool showRec;
-        showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
-
-        BOOST_FOREACH( ServiceVector::value_type service, m_subServices)
+        if(!service.expired())
         {
-            if(!service.expired())
+            ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor
+                = ::visuVTKAdaptor::Reconstruction::dynamicCast(service.lock());
+            if (renconstructionAdaptor && renconstructionAdaptor->getObject()->getID() == recID)
             {
-                ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor
-                 = ::visuVTKAdaptor::Reconstruction::dynamicCast(service.lock());
-                if (renconstructionAdaptor)
-                {
-                    renconstructionAdaptor->setForceHide( !showRec );
-                }
+                renconstructionAdaptor->updateNormalMode(mode);
+                break;
             }
         }
+    }
+}
 
-        OSLM_INFO( "Receive event ShowReconstruction : " << showRec );
-        this->setVtkPipelineModified();
-    }
-    else if ( msg->hasEvent(::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION) )
-    {
-        this->doUpdate();
-    }
-    else if ( msg->hasEvent(::fwComEd::ModelSeriesMsg::REMOVED_RECONSTRUCTIONS) )
-    {
-        this->doStop();
-    }
+//------------------------------------------------------------------------------
 
+void ModelSeries::showReconstructions(bool show)
+{
+    ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
+
+    for( ServiceVector::value_type service :  m_subServices)
+    {
+        if(!service.expired())
+        {
+            ::visuVTKAdaptor::Reconstruction::sptr renconstructionAdaptor
+                = ::visuVTKAdaptor::Reconstruction::dynamicCast(service.lock());
+            if (renconstructionAdaptor)
+            {
+                renconstructionAdaptor->setForceHide( !show );
+            }
+        }
+    }
+    this->setVtkPipelineModified();
+    this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ModelSeries::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

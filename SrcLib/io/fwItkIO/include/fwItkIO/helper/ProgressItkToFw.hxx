@@ -1,8 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWITKIO_HELPER_PROGRESSITKTOFW_HXX__
+#define __FWITKIO_HELPER_PROGRESSITKTOFW_HXX__
 
 #include <limits>
 #include <sstream>
@@ -21,7 +24,9 @@ class LocalCommand : public itk::Command
 {
 public:
 
-    LocalCommand() {};
+    LocalCommand()
+    {
+    }
 
     typedef LocalCommand Self;
     typedef itk::SmartPointer<LocalCommand>      Pointer;
@@ -30,10 +35,13 @@ public:
     void Execute(itk::Object *caller, const itk::EventObject &event)
     {
         itk::LightProcessObject* po = dynamic_cast<itk::LightProcessObject*>(caller);
-        if( !po ) return;
+        if( !po )
+        {
+            return;
+        }
         float percent = po->GetProgress();
         OSLM_TRACE("LocalCommand::Execute '" << m_msg << "' " << percent );
-        m_adviser->notifyProgress( percent , m_msg );
+        m_adviser->notifyProgress( percent, m_msg );
     }
 
     void Execute(const itk::Object *caller, const itk::EventObject &event)
@@ -49,15 +57,16 @@ public:
 //------------------------------------------------------------------------------
 
 template<typename OBSERVEE >
-ProgressItkToFw<OBSERVEE >::ProgressItkToFw(OBSERVEE observee, SPTR(::fwTools::ProgressAdviser) observer, std::string msg)
-: m_observee( observee), m_obsTag(std::numeric_limits<unsigned long>::max()), m_initialized(false)
+ProgressItkToFw<OBSERVEE >::ProgressItkToFw(OBSERVEE observee, SPTR(::fwTools::ProgressAdviser)observer,
+                                            std::string msg)
+    : m_observee( observee), m_obsTag(std::numeric_limits<unsigned long>::max()), m_initialized(false)
 {
     typename LocalCommand::Pointer itkCallBack;
-    itkCallBack = LocalCommand::New();
-    itkCallBack->m_msg = msg;
+    itkCallBack            = LocalCommand::New();
+    itkCallBack->m_msg     = msg;
     itkCallBack->m_adviser = observer;
-    m_obsTag = m_observee->AddObserver(itk::ProgressEvent(), itkCallBack );
-    m_initialized = true;
+    m_obsTag               = m_observee->AddObserver(itk::ProgressEvent(), itkCallBack );
+    m_initialized          = true;
 }
 
 //------------------------------------------------------------------------------
@@ -73,3 +82,4 @@ ProgressItkToFw<OBSERVEE >::~ProgressItkToFw()
 
 }
 
+#endif // __FWITKIO_HELPER_PROGRESSITKTOFW_HXX__

@@ -1,4 +1,4 @@
-<plugin id="guiQt" class="::guiQt::Plugin">
+<plugin id="guiQt" class="::guiQt::Plugin" version="@DASH_VERSION@" >
     <library name="guiQt" />
 
     <requirement id="dataReg" />
@@ -21,6 +21,18 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::view::IView</type>
         <service>::guiQt::editor::DynamicView</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::guiQt::editor::SSignalButton</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::guiQt::editor::SSelectionMenuButton</service>
         <object>::fwData::Object</object>
     </extension>
 

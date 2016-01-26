@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,16 +46,16 @@ void Patient1Test::createTest()
 
     CPPUNIT_ASSERT(patientCreator);
     const std::string& classname = patientCreator->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::Patient") == classname );
-    const std::string& objectVersion =  patientCreator->getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == objectVersion );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Patient") == classname );
+    const std::string& objectVersion = patientCreator->getObjectVersion();
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
     ::fwAtoms::Object::sptr patient = patientCreator->create();
 
     const std::string& patientClassname = ::fwAtomsPatch::helper::getClassname(patient);
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::Patient") == patientClassname );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Patient") == patientClassname );
     const std::string& patientObjectVersion = ::fwAtomsPatch::helper::getVersion(patient);
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == patientObjectVersion );
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == patientObjectVersion );
 
     CPPUNIT_ASSERT(patient->getAttribute("name"));
     CPPUNIT_ASSERT(patient->getAttribute("patient_id"));
@@ -70,18 +70,18 @@ void Patient1Test::copyTest()
     Patient1 patientCreator;
 
     const std::string& classname = patientCreator.getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::Patient") == classname );
-    const std::string& objectVersion =  patientCreator.getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == objectVersion );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Patient") == classname );
+    const std::string& objectVersion = patientCreator.getObjectVersion();
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersion );
 
     Patient1* patientCreator2 = new Patient1(patientCreator);
 
     CPPUNIT_ASSERT(patientCreator2);
     const std::string& classnamePatientCreator2 = patientCreator2->getObjectClassname();
-    CPPUNIT_ASSERT_MESSAGE("Classname must be equal" , std::string("::fwMedData::Patient") == classnamePatientCreator2 );
+    CPPUNIT_ASSERT_MESSAGE("Classname must be equal", std::string("::fwMedData::Patient") == classnamePatientCreator2 );
 
-    const std::string& objectVersionPatientCreator2 =  patientCreator2->getObjectVersion();
-    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal" , std::string("1") == objectVersionPatientCreator2 );
+    const std::string& objectVersionPatientCreator2 = patientCreator2->getObjectVersion();
+    CPPUNIT_ASSERT_MESSAGE("ObjectVersion must be equal", std::string("1") == objectVersionPatientCreator2 );
 
     delete(patientCreator2);
 }

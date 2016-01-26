@@ -1,13 +1,38 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "uiImageQt/WindowLevel.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwComEd/Dictionary.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwComEd/helper/Composite.hpp>
+
+#include <fwCore/base.hpp>
+
+#include <fwData/Composite.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/TransferFunction.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwGuiQt/widget/QRangeSlider.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include <QApplication>
 #include <QComboBox>
-#include <QGridLayout>
 #include <QDoubleValidator>
+#include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
@@ -15,59 +40,30 @@
 #include <QToolButton>
 #include <QWidget>
 
-#include <boost/math/special_functions/fpclassify.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/TransferFunction.hpp>
-
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/TransferFunctionMsg.hpp>
-#include <fwComEd/helper/Composite.hpp>
-
-#include <fwCore/base.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
-
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-#include <fwGuiQt/widget/QRangeSlider.hpp>
-
-
-#include "uiImageQt/WindowLevel.hpp"
+#include <functional>
 
 namespace uiImage
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor , ::uiImage::WindowLevel , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::WindowLevel, ::fwData::Image );
 
 //------------------------------------------------------------------------------
 
 WindowLevel::WindowLevel() throw()
 {
     m_widgetDynamicRangeMin   = -1024.;
-    m_widgetDynamicRangeWidth =  4000.;
-    m_autoWindowing = false;
-    m_imageMin = -200;
-    m_imageMax = 300;
-    m_isNotifying = false;
-    m_useImageGreyLevelTF = false;
+    m_widgetDynamicRangeWidth = 4000.;
+    m_autoWindowing           = false;
+    m_useImageGreyLevelTF     = false;
 
-    //this->installTFSelectionEventHandler(this);
-    //this->addNewHandledEvent(::fwComEd::ImageMsg::BUFFER);
-    //this->addNewHandledEvent( ::fwComEd::TransferFunctionMsg::WINDOWING );
+    this->installTFSlots(this);
 }
 
 //------------------------------------------------------------------------------
 
 WindowLevel::~WindowLevel() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -76,7 +72,8 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget * const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -145,26 +142,33 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_valueTextMin, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
     QObject::connect(m_valueTextMax, SIGNAL(editingFinished()), this, SLOT(onTextEditingFinished()));
-    QObject::connect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )) , this, SLOT(onWindowLevelWidgetChanged( double, double )));
+    QObject::connect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this,
+                     SLOT(onWindowLevelWidgetChanged( double, double )));
     QObject::connect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
     QObject::connect(m_toggleAutoButton, SIGNAL(toggled( bool )), this, SLOT(onToggleAutoWL( bool )));
-    QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this, SLOT(onDynamicRangeSelectionChanged( QAction * )));
+    QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this,
+                     SLOT(onDynamicRangeSelectionChanged( QAction * )));
 
-    this->installTFObserver( this->getSptr() );
+    this->installTFConnections();
 }
 
 //------------------------------------------------------------------------------
 
 void WindowLevel::stopping() throw(::fwTools::Failed)
 {
-    this->removeTFObserver();
-    QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this, SLOT(onDynamicRangeSelectionChanged( QAction * )));
+    this->removeTFConnections();
+    QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this,
+                        SLOT(onDynamicRangeSelectionChanged( QAction * )));
     QObject::disconnect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
-    QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this, SLOT(onWindowLevelWidgetChanged( double, double )));
-    QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
-    QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( QString )), this, SLOT(onTextEditingFinished( QString )));
+    QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this,
+                        SLOT(onWindowLevelWidgetChanged( double, double )));
+    QObject::disconnect(m_valueTextMin, SIGNAL(editingFinished( )), this,
+                        SLOT(onTextEditingFinished( )));
+    QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( )), this,
+                        SLOT(onTextEditingFinished( )));
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
 
     // deletes contained widgets
     this->getContainer()->clean();
@@ -186,14 +190,16 @@ void WindowLevel::configuring() throw(fwTools::Failed)
     if (config->hasAttribute("autoWindowing"))
     {
         std::string autoWindowing = config->getExistingAttributeValue("autoWindowing");
-        SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!", autoWindowing == "yes" || autoWindowing == "no");
+        SLM_ASSERT("Bad value for 'autoWindowing' attribute. It must be 'yes' or 'no'!",
+                   autoWindowing == "yes" || autoWindowing == "no");
         m_autoWindowing = (autoWindowing == "yes");
     }
 
     if ( config->hasAttribute("useImageGreyLevelTF") )
     {
         std::string useImageGreyLevelTF = config->getExistingAttributeValue("useImageGreyLevelTF");
-        SLM_ASSERT("Bad value for 'useImageGreyLevelTF' attribute. It must be 'yes' or 'no'!", useImageGreyLevelTF == "yes" || useImageGreyLevelTF == "no");
+        SLM_ASSERT("Bad value for 'useImageGreyLevelTF' attribute. It must be 'yes' or 'no'!",
+                   useImageGreyLevelTF == "yes" || useImageGreyLevelTF == "no");
         m_useImageGreyLevelTF = (useImageGreyLevelTF == "yes");
     }
 
@@ -210,14 +216,14 @@ void WindowLevel::updating() throw(::fwTools::Failed)
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     this->setEnabled(imageIsValid);
 
-    this->updateTransferFunction(image, this->getSptr());
+    this->updateTransferFunction(image);
     if(imageIsValid)
     {
         this->updateImageInfos(image);
 
         // test if service must use image grey level tf ( when another tf pool is defined )
         if( m_useImageGreyLevelTF &&
-            ! this->getTFSelectionFwID().empty() )
+            !this->getTFSelectionFwID().empty() )
         {
             ::fwData::TransferFunction::sptr newTF = this->getImageGreyLevelTF();
             this->swapCurrentTFAndNotify( newTF );
@@ -242,35 +248,32 @@ void WindowLevel::updating() throw(::fwTools::Failed)
 
 void WindowLevel::swapping() throw(::fwTools::Failed)
 {
-    this->removeTFObserver();
+    this->removeTFConnections();
     this->updating();
-    this->installTFObserver( this->getSptr() );
+    this->installTFConnections();
 }
+
 //------------------------------------------------------------------------------
 
-void WindowLevel::receiving( ::fwServices::ObjectMsg::csptr msg ) throw(::fwTools::Failed)
+void WindowLevel::updatingTFPoints()
 {
-    SLM_TRACE_FUNC();
+    this->updating();
+}
 
-    this->upadteTFObserver(msg, this->getSptr());
+//------------------------------------------------------------------------------
 
-    if (msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ))
-    {
-        this->updating();
-    }
-    if (msg->hasEvent( ::fwComEd::TransferFunctionMsg::WINDOWING ))
-    {
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+void WindowLevel::updatingTFWindowing(double window, double level)
+{
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-        bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-        SLM_ASSERT("Image is not valid",imageIsValid);
-        this->updateTransferFunction(image, this->getSptr());
+    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    SLM_ASSERT("Image is not valid",imageIsValid);
+    this->updateTransferFunction(image);
 
-        ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
-        SLM_ASSERT("TransferFunction null pointer", pTF);
-        ::fwData::TransferFunction::TFValuePairType minMax = pTF->getWLMinMax();
-        this->onImageWindowLevelChanged( minMax.first, minMax.second );
-    }
+    ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
+    SLM_ASSERT("TransferFunction null pointer", pTF);
+    ::fwData::TransferFunction::TFValuePairType minMax = pTF->getWLMinMax();
+    this->onImageWindowLevelChanged( minMax.first, minMax.second );
 }
 
 //------------------------------------------------------------------------------
@@ -324,20 +327,22 @@ double WindowLevel::toWindowLevel(double _val)
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
+void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 {
-    m_imageMin = _imageMin;
-    m_imageMax = _imageMax;
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    if (!m_isNotifying)
+    this->getTransferFunction()->setWLMinMax( ::fwData::TransferFunction::TFValuePairType(_imageMin, _imageMax) );
+    auto sig = tf->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
+        ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
     {
-        this->notifyWindowLevel(_imageMin, _imageMax);
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+        sig->asyncEmit( tf->getWindow(), tf->getLevel());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
+void WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 {
     double imageMin = this->toWindowLevel(_min);
     double imageMax = this->toWindowLevel(_max);
@@ -350,9 +355,9 @@ void  WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
 {
     WindowLevelMinMaxType wl = this->getImageWindowMinMax();
-    double min = m_widgetDynamicRangeMin;
-    double max = m_widgetDynamicRangeWidth + min;
-    int index = action->data().toInt();
+    double min               = m_widgetDynamicRangeMin;
+    double max               = m_widgetDynamicRangeWidth + min;
+    int index                = action->data().toInt();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     switch (index)
@@ -361,11 +366,11 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
             break;
         case 1: // -1024; 1023
             min = -1024;
-            max =  1023;
+            max = 1023;
             break;
         case 2: // -100; 300
             min = -100;
-            max =  300;
+            max = 300;
             break;
         case 3: // Fit Window/Level
             min = std::min(wl.first, wl.second);
@@ -386,7 +391,7 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onImageWindowLevelChanged(double _imageMin, double _imageMax)
+void WindowLevel::onImageWindowLevelChanged(double _imageMin, double _imageMax)
 {
     this->updateWidgetMinMax( _imageMin, _imageMax );
     this->updateTextWindowLevel( _imageMin, _imageMax );
@@ -394,54 +399,7 @@ void  WindowLevel::onImageWindowLevelChanged(double _imageMin, double _imageMax)
 
 //------------------------------------------------------------------------------
 
-// Check if service that registered the callback is still alive
-struct WLCallback
-{
-    typedef void result_type;
-
-    WLCallback(WindowLevel::sptr wl)
-    {
-        m_wl = wl;
-    }
-
-    void operator()()
-    {
-        if ( !m_wl.expired() )
-        {
-            m_wl.lock()->notifyWindowLevelCallback();
-        }
-    }
-
-    WindowLevel::wptr m_wl;
-};
-
-void  WindowLevel::notifyWindowLevel(double _imageMin, double _imageMax)
-{
-    m_notifiedImageMin = _imageMin;
-    m_notifiedImageMax = _imageMax;
-
-    this->setWindowLevel(m_imageMin, m_imageMax);
-    ::fwComEd::TransferFunctionMsg::sptr msg = this->notifyTFWindowing(this->getSptr());
-    msg->setMessageCallback(::boost::bind( WLCallback(WindowLevel::dynamicCast(this->getSptr())) ));
-
-    m_isNotifying = true;
-}
-
-//------------------------------------------------------------------------------
-
-void  WindowLevel::notifyWindowLevelCallback()
-{
-    m_isNotifying = false;
-
-    if (m_notifiedImageMin != m_imageMin || m_notifiedImageMax != m_imageMax)
-    {
-        this->updateImageWindowLevel(m_imageMin, m_imageMax);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void  WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
+void WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 {
     m_valueTextMin->setText(QString("%1").arg(_imageMin));
     m_valueTextMax->setText(QString("%1").arg(_imageMax));
@@ -449,7 +407,7 @@ void  WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onToggleTF(bool squareTF)
+void WindowLevel::onToggleTF(bool squareTF)
 {
     bool usedGreyLevelTF = false;
 
@@ -469,9 +427,9 @@ void  WindowLevel::onToggleTF(bool squareTF)
     {
         // test if service must use image grey level tf ( when another tf pool is defined )
         if(     m_useImageGreyLevelTF &&
-                ! this->getTFSelectionFwID().empty() )
+                !this->getTFSelectionFwID().empty() )
         {
-            newTF = this->getImageGreyLevelTF();
+            newTF           = this->getImageGreyLevelTF();
             usedGreyLevelTF = true;
         }
         else
@@ -487,29 +445,35 @@ void  WindowLevel::onToggleTF(bool squareTF)
 
     if ( usedGreyLevelTF )
     {
-        this->notifyTFWindowing( this->getSptr() );
+        // Send signal
+        auto sig = newTF->signal< ::fwData::TransferFunction::WindowingModifiedSignalType >(
+            ::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdateTFWindowing));
+            sig->asyncEmit( newTF->getWindow(), newTF->getLevel());
+        }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onToggleAutoWL(bool autoWL)
+void WindowLevel::onToggleAutoWL(bool autoWL)
 {
-     m_autoWindowing = autoWL;
+    m_autoWindowing = autoWL;
 
-     if (m_autoWindowing)
-     {
-         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-         double min, max;
-         ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-         this->updateImageWindowLevel(min, max);
-         this->onImageWindowLevelChanged(min, max);
-     }
+    if (m_autoWindowing)
+    {
+        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+        double min, max;
+        ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+        this->updateImageWindowLevel(min, max);
+        this->onImageWindowLevelChanged(min, max);
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void  WindowLevel::onTextEditingFinished()
+void WindowLevel::onTextEditingFinished()
 {
     double min, max;
     if(this->getWidgetDoubleValue(m_valueTextMin, min) && this->getWidgetDoubleValue(m_valueTextMax, max))
@@ -523,7 +487,7 @@ void  WindowLevel::onTextEditingFinished()
 
 bool WindowLevel::getWidgetDoubleValue(QLineEdit *widget, double &val)
 {
-    bool ok=false;
+    bool ok = false;
     val = widget->text().toDouble(&ok);
 
     QPalette palette;
@@ -543,7 +507,8 @@ bool WindowLevel::getWidgetDoubleValue(QLineEdit *widget, double &val)
 
 void WindowLevel::setEnabled(bool enable)
 {
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget * const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
     container->setEnabled(enable);
@@ -557,7 +522,7 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
     {
         max = min + 1.e-05;
     }
-    m_widgetDynamicRangeMin = min;
+    m_widgetDynamicRangeMin   = min;
     m_widgetDynamicRangeWidth = max - min;
 
     m_dynamicRangeSelection->setText(QString("%1, %2 ").arg(min).arg(max));
@@ -573,7 +538,7 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 
     // Create pool
     ::fwComEd::helper::Image helper(image);
-    helper.createTransferFunctionPool( this->getSptr() ); // do nothing if image tf pool already exist
+    helper.createTransferFunctionPool(); // do nothing if image tf pool already exist
 
     // Get pool
     const std::string poolFieldName = ::fwComEd::Dictionary::m_transferFunctionCompositeId;
@@ -593,12 +558,23 @@ void WindowLevel::swapCurrentTFAndNotify( ::fwData::TransferFunction::sptr newTF
     // Change TF
     std::string tfSelectionFwID = this->getTFSelectionFwID();
     ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( tfSelectionFwID ) );
-    OSLM_ASSERT( "Sorry, object with fwID " << tfSelectionFwID << " doesn't exist.", pool );
+    OSLM_ASSERT( "The object with the fwID " << tfSelectionFwID << " doesn't exist.", pool );
     ::fwComEd::helper::Composite compositeHelper( pool );
     compositeHelper.swap( this->getSelectedTFKey(), newTF );
 
     // Notify change
-    compositeHelper.notify( this->getSptr() );
+    compositeHelper.notify();
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType WindowLevel::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
 }
 
 //------------------------------------------------------------------------------

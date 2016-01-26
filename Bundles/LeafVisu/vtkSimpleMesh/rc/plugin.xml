@@ -1,10 +1,10 @@
-<plugin id="vtkSimpleMesh" class="::vtkSimpleMesh::Plugin">
+<plugin id="vtkSimpleMesh" class="::vtkSimpleMesh::Plugin" version="@DASH_VERSION@" >
     <library name="vtkSimpleMesh" />
 
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRender::IRender</type>
-        <service>::vtkSimpleMesh::RendererService</service>
+        <service>::vtkSimpleMesh::SRenderer</service>
         <object>::fwData::Mesh</object>
     </extension>
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,41 +21,47 @@ class vtkTextMapper;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API Text: public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKADAPTOR_CLASS_API Text : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Text)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (Text)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Text();
     VISUVTKADAPTOR_API virtual ~Text() throw();
 
     VISUVTKADAPTOR_API virtual void setText(const std::string &str);
-    virtual const std::string& getText(){return m_text;};
+    std::string getText() const
+    {
+        return m_text;
+    }
 
 protected:
 
     VISUVTKADAPTOR_API virtual void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API virtual void doStop() throw(fwTools::Failed);
-    virtual void doSwap() throw(fwTools::Failed){};
-    virtual void doUpdate() throw(fwTools::Failed){};
-    virtual void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed){};
+    virtual void doSwap() throw(fwTools::Failed)
+    {
+    }
+    virtual void doUpdate() throw(fwTools::Failed)
+    {
+    }
 
     /**
      * @brief Configure the adaptor
      *
      * Example :
-     @verbatim
-     <adaptor id="text" class="::visuVTKAdaptor::Text" objectId="imageSeries">
+       @verbatim
+       <adaptor id="text" class="::visuVTKAdaptor::Text" objectId="imageSeries">
         <config renderer="default" text="@patient.name" color="#ff0000" fontSize="16" />
-     </adaptor>
+       </adaptor>
 
-     <adaptor id="text2" class="::visuVTKAdaptor::Text" objectId="imageSeries">
+       <adaptor id="text2" class="::visuVTKAdaptor::Text" objectId="imageSeries">
         <config renderer="default" vAlign='top' hAlign='center'>
         <text>Text to display<text>
         </config>
-     </adaptor>
-     @endverbatim
+       </adaptor>
+       @endverbatim
      *
      * - text : text to display. If a valid Seshat object attribute path is detected, the associated
      *   value is used. Otherwise, it uses the given value in XML configuration.
@@ -68,7 +74,7 @@ protected:
      *   (see second example). This is useful for multiline text. The same rules
      *   that for the attribute are applied.
      */
-    VISUVTKADAPTOR_API virtual void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API virtual void doConfigure() throw(fwTools::Failed);
 
     std::string m_text;
 

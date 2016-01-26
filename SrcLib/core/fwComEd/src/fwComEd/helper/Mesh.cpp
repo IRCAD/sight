@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,8 @@ Mesh::Mesh( ::fwData::Mesh::sptr mesh ) : m_mesh (mesh)
 //-----------------------------------------------------------------------------
 
 Mesh::~Mesh()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -43,12 +44,12 @@ void Mesh::updateLock()
     m_helperCellData        = ::fwComEd::helper::Array::New(m_mesh->getCellDataArray());
     m_helperCellDataOffsets = ::fwComEd::helper::Array::New(m_mesh->getCellDataOffsetsArray());
 
-    ::fwData::Array::sptr pointColors  =  m_mesh->getPointColorsArray();
-    ::fwData::Array::sptr cellColors   =  m_mesh->getCellColorsArray();
-    ::fwData::Array::sptr pointNormals =  m_mesh->getPointNormalsArray();
-    ::fwData::Array::sptr cellNormals  =  m_mesh->getCellNormalsArray();
-    ::fwData::Array::sptr pointTexCoords =  m_mesh->getPointTexCoordsArray();
-    ::fwData::Array::sptr cellTexCoords  =  m_mesh->getCellTexCoordsArray();
+    ::fwData::Array::sptr pointColors    = m_mesh->getPointColorsArray();
+    ::fwData::Array::sptr cellColors     = m_mesh->getCellColorsArray();
+    ::fwData::Array::sptr pointNormals   = m_mesh->getPointNormalsArray();
+    ::fwData::Array::sptr cellNormals    = m_mesh->getCellNormalsArray();
+    ::fwData::Array::sptr pointTexCoords = m_mesh->getPointTexCoordsArray();
+    ::fwData::Array::sptr cellTexCoords  = m_mesh->getCellTexCoordsArray();
 
     if(pointColors)
     {
@@ -80,7 +81,7 @@ void Mesh::updateLock()
 
 ::fwData::Mesh::Id Mesh::insertNextPoint(const ::fwData::Mesh::PointValueType p[3]) throw(::fwData::Exception)
 {
-    ::fwData::Mesh::Id nbPoints = m_mesh->getNumberOfPoints();
+    ::fwData::Mesh::Id nbPoints  = m_mesh->getNumberOfPoints();
     ::fwData::Array::sptr points = m_mesh->getPointsArray();
     size_t allocatedPts = points->empty() ? 0 : points->getSize().at(0);
     if( allocatedPts <= nbPoints )
@@ -169,23 +170,23 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
                                         size_t nb) throw(::fwData::Exception)
 {
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'NO_CELL'",
-            type != ::fwData::Mesh::NO_CELL || nb == 0);
+               type != ::fwData::Mesh::NO_CELL || nb == 0);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POINT'",
-            type != ::fwData::Mesh::POINT || nb == 1);
+               type != ::fwData::Mesh::POINT || nb == 1);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'EDGE'",
-            type != ::fwData::Mesh::EDGE || nb == 2);
+               type != ::fwData::Mesh::EDGE || nb == 2);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'TRIANGLE'",
-            type != ::fwData::Mesh::TRIANGLE || nb == 3);
+               type != ::fwData::Mesh::TRIANGLE || nb == 3);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'QUAD'",
-            type != ::fwData::Mesh::QUAD || nb == 4);
+               type != ::fwData::Mesh::QUAD || nb == 4);
     SLM_ASSERT("Bad number of points ("<< nb << ") for cell type: 'POLY'",
-            type != ::fwData::Mesh::POLY || nb > 4);
+               type != ::fwData::Mesh::POLY || nb > 4);
 
-    ::fwData::Mesh::Id cellsDataSize = m_mesh->getCellDataSize();
-    ::fwData::Mesh::Id nbCells = m_mesh->getNumberOfCells();
-    ::fwData::Array::sptr cellTypes = m_mesh->getCellTypesArray();
+    ::fwData::Mesh::Id cellsDataSize      = m_mesh->getCellDataSize();
+    ::fwData::Mesh::Id nbCells            = m_mesh->getNumberOfCells();
+    ::fwData::Array::sptr cellTypes       = m_mesh->getCellTypesArray();
     ::fwData::Array::sptr cellDataOffsets = m_mesh->getCellDataOffsetsArray();
-    ::fwData::Array::sptr cellData = m_mesh->getCellDataArray();
+    ::fwData::Array::sptr cellData        = m_mesh->getCellDataArray();
 
     size_t allocatedCellTypes       = cellTypes->empty() ? 0 : cellTypes->getSize().at(0);
     size_t allocatedCellDataOffsets = cellDataOffsets->empty() ? 0 : cellDataOffsets->getSize().at(0);
@@ -212,8 +213,8 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
     m_helperCellTypes->setItem(list_of(nbCells), t);
 
     ::fwData::Mesh::CellValueType *buf = reinterpret_cast< ::fwData::Mesh::CellValueType* >(
-            m_helperCellData->getBufferPtr(list_of(cellsDataSize), 0, sizeof(::fwData::Mesh::CellValueType))
-            );
+        m_helperCellData->getBufferPtr(list_of(cellsDataSize), 0, sizeof(::fwData::Mesh::CellValueType))
+        );
     std::copy(cell, cell+nb, buf);
 
     const ::fwData::Mesh::CellDataOffsetType id[1] = {cellsDataSize};
@@ -269,9 +270,9 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 ::fwData::Mesh::PointsMultiArrayType Mesh::getPoints() const
 {
     return ::fwData::Mesh::PointsMultiArrayType(
-            static_cast< ::fwData::Mesh::PointsMultiArrayType::element* >(m_helperPoints->getBuffer()),
-            ::boost::extents[m_mesh->getNumberOfPoints()][3]
-            );
+        static_cast< ::fwData::Mesh::PointsMultiArrayType::element* >(m_helperPoints->getBuffer()),
+        ::boost::extents[m_mesh->getNumberOfPoints()][3]
+        );
 }
 
 //------------------------------------------------------------------------------
@@ -279,9 +280,9 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 ::fwData::Mesh::CellTypesMultiArrayType Mesh::getCellTypes() const
 {
     return ::fwData::Mesh::CellTypesMultiArrayType(
-            static_cast< ::fwData::Mesh::CellTypesMultiArrayType::element *> (m_helperCellTypes->getBuffer()),
-            boost::extents[m_mesh->getNumberOfCells()]
-            );
+        static_cast< ::fwData::Mesh::CellTypesMultiArrayType::element *> (m_helperCellTypes->getBuffer()),
+        boost::extents[m_mesh->getNumberOfCells()]
+        );
 }
 
 //------------------------------------------------------------------------------
@@ -289,9 +290,9 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 ::fwData::Mesh::CellDataMultiArrayType Mesh::getCellData() const
 {
     return ::fwData::Mesh::CellDataMultiArrayType(
-            static_cast< ::fwData::Mesh::CellDataMultiArrayType::element * >(m_helperCellData->getBuffer()),
-            ::boost::extents[m_mesh->getCellDataSize()]
-            );
+        static_cast< ::fwData::Mesh::CellDataMultiArrayType::element * >(m_helperCellData->getBuffer()),
+        ::boost::extents[m_mesh->getCellDataSize()]
+        );
 }
 
 //------------------------------------------------------------------------------
@@ -299,9 +300,9 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 ::fwData::Mesh::CellDataOffsetsMultiArrayType Mesh::getCellDataOffsets() const
 {
     return ::fwData::Mesh::CellDataOffsetsMultiArrayType(
-            static_cast< ::fwData::Mesh::CellDataOffsetsMultiArrayType::element *>(m_helperCellDataOffsets->getBuffer()),
-            ::boost::extents[m_mesh->getNumberOfCells()]
-            );
+        static_cast< ::fwData::Mesh::CellDataOffsetsMultiArrayType::element *>(m_helperCellDataOffsets->getBuffer()),
+        ::boost::extents[m_mesh->getNumberOfCells()]
+        );
 }
 
 //------------------------------------------------------------------------------
@@ -310,9 +311,9 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 {
     ::fwData::Array::sptr pointColors = m_mesh->getPointColorsArray();
     return ::fwData::Mesh::PointColorsMultiArrayType(
-            static_cast< ::fwData::Mesh::PointColorsMultiArrayType::element *>(m_helperPointColors->getBuffer()),
-            ::boost::extents[m_mesh->getNumberOfPoints()][pointColors->getNumberOfComponents()]
-            );
+        static_cast< ::fwData::Mesh::PointColorsMultiArrayType::element *>(m_helperPointColors->getBuffer()),
+        ::boost::extents[m_mesh->getNumberOfPoints()][pointColors->getNumberOfComponents()]
+        );
 }
 
 //------------------------------------------------------------------------------
@@ -321,9 +322,9 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 {
     ::fwData::Array::sptr cellColors = m_mesh->getCellColorsArray();
     return ::fwData::Mesh::CellColorsMultiArrayType(
-            static_cast< ::fwData::Mesh::CellColorsMultiArrayType::element *>(m_helperCellColors->getBuffer()),
-            ::boost::extents[m_mesh->getNumberOfCells()][cellColors->getNumberOfComponents()]
-            );
+        static_cast< ::fwData::Mesh::CellColorsMultiArrayType::element *>(m_helperCellColors->getBuffer()),
+        ::boost::extents[m_mesh->getNumberOfCells()][cellColors->getNumberOfComponents()]
+        );
 }
 
 //------------------------------------------------------------------------------
@@ -332,9 +333,9 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 {
     ::fwData::Array::sptr pointNormals = m_mesh->getPointNormalsArray();
     return ::fwData::Mesh::PointNormalsMultiArrayType(
-            static_cast< ::fwData::Mesh::PointNormalsMultiArrayType::element *>(m_helperPointNormals->getBuffer()),
-            ::boost::extents[m_mesh->getNumberOfPoints()][pointNormals->getNumberOfComponents()]
-            );
+        static_cast< ::fwData::Mesh::PointNormalsMultiArrayType::element *>(m_helperPointNormals->getBuffer()),
+        ::boost::extents[m_mesh->getNumberOfPoints()][pointNormals->getNumberOfComponents()]
+        );
 }
 
 //------------------------------------------------------------------------------
@@ -343,9 +344,9 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 {
     ::fwData::Array::sptr cellNormals = m_mesh->getCellNormalsArray();
     return ::fwData::Mesh::CellNormalsMultiArrayType(
-            static_cast< ::fwData::Mesh::CellNormalsMultiArrayType::element *>(m_helperCellNormals->getBuffer()),
-            ::boost::extents[m_mesh->getNumberOfCells()][cellNormals->getNumberOfComponents()]
-            );
+        static_cast< ::fwData::Mesh::CellNormalsMultiArrayType::element *>(m_helperCellNormals->getBuffer()),
+        ::boost::extents[m_mesh->getNumberOfCells()][cellNormals->getNumberOfComponents()]
+        );
 }
 
 //------------------------------------------------------------------------------
@@ -354,9 +355,9 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 {
     ::fwData::Array::sptr pointTexCoords = m_mesh->getPointTexCoordsArray();
     return ::fwData::Mesh::PointTexCoordsMultiArrayType(
-            static_cast< ::fwData::Mesh::PointTexCoordsMultiArrayType::element *>(m_helperPointTexCoords->getBuffer()),
-            ::boost::extents[m_mesh->getNumberOfPoints()][pointTexCoords->getNumberOfComponents()]
-            );
+        static_cast< ::fwData::Mesh::PointTexCoordsMultiArrayType::element *>(m_helperPointTexCoords->getBuffer()),
+        ::boost::extents[m_mesh->getNumberOfPoints()][pointTexCoords->getNumberOfComponents()]
+        );
 }
 
 //------------------------------------------------------------------------------
@@ -365,9 +366,9 @@ void Mesh::setCellTexCoord(::fwData::Mesh::Id id, const ::fwData::Mesh::TexCoord
 {
     ::fwData::Array::sptr cellTexCoords = m_mesh->getCellTexCoordsArray();
     return ::fwData::Mesh::CellTexCoordsMultiArrayType(
-            static_cast< ::fwData::Mesh::CellTexCoordsMultiArrayType::element *>(m_helperCellTexCoords->getBuffer()),
-            ::boost::extents[m_mesh->getNumberOfCells()][cellTexCoords->getNumberOfComponents()]
-            );
+        static_cast< ::fwData::Mesh::CellTexCoordsMultiArrayType::element *>(m_helperCellTexCoords->getBuffer()),
+        ::boost::extents[m_mesh->getNumberOfCells()][cellTexCoords->getNumberOfComponents()]
+        );
 }
 
 //------------------------------------------------------------------------------
@@ -384,13 +385,15 @@ bool Mesh::isClosed()
     bool isClosed = false;
 
     ::fwData::Mesh::Id cellDataSize = m_mesh->getCellDataSize();
-    ::fwData::Mesh::Id nbOfCells = m_mesh->getNumberOfCells();
+    ::fwData::Mesh::Id nbOfCells    = m_mesh->getNumberOfCells();
 
-    ::fwData::Mesh::CellValueType* cellDataBegin = m_helperCellData->begin< ::fwData::Mesh::CellValueType >();
-    ::fwData::Mesh::CellValueType* cellDataEnd = cellDataBegin + cellDataSize;
-    ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsBegin = m_helperCellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
+    ::fwData::Mesh::CellValueType* cellDataBegin =
+        m_helperCellData->begin< ::fwData::Mesh::CellValueType >();
+    ::fwData::Mesh::CellValueType* cellDataEnd               = cellDataBegin + cellDataSize;
+    ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsBegin =
+        m_helperCellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
     ::fwData::Mesh::CellDataOffsetType* cellDataOffsetsEnd = cellDataOffsetsBegin + nbOfCells;
-    ::fwData::Mesh::CellTypes* cellTypesBegin = m_helperCellTypes->begin< ::fwData::Mesh::CellTypes >();
+    ::fwData::Mesh::CellTypes* cellTypesBegin              = m_helperCellTypes->begin< ::fwData::Mesh::CellTypes >();
 
     isClosed = ::fwMath::isBorderlessSurface(cellDataBegin,
                                              cellDataEnd, cellDataOffsetsBegin,

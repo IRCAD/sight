@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,22 +41,24 @@ std::string BundleDescriptorReader::POINT("point");
 
 //------------------------------------------------------------------------------
 
-const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBundles(const ::boost::filesystem::path& location) throw(RuntimeException)
+const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBundles(
+    const ::boost::filesystem::path& location) throw(RuntimeException)
 {
     // Normalizes the path.
     ::boost::filesystem::path normalizedPath(location);
     normalizedPath.normalize();
 
     // Asserts that the repository is a valid directory path.
-    if(::boost::filesystem::exists(normalizedPath) == false || ::boost::filesystem::is_directory(normalizedPath) == false)
+    if(::boost::filesystem::exists(normalizedPath) == false ||
+       ::boost::filesystem::is_directory(normalizedPath) == false)
     {
         throw RuntimeException("'" + normalizedPath.string() + "': not a directory.");
     }
 
     // Walk through the repository entries.
     BundleContainer bundles;
-    ::boost::filesystem::directory_iterator   currentEntry(normalizedPath);
-    ::boost::filesystem::directory_iterator   endEntry;
+    ::boost::filesystem::directory_iterator currentEntry(normalizedPath);
+    ::boost::filesystem::directory_iterator endEntry;
     for(; currentEntry != endEntry; ++currentEntry)
     {
         ::boost::filesystem::path entryPath = *currentEntry;
@@ -82,14 +84,15 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::filesystem::path& location) throw(RuntimeException)
+std::shared_ptr<Bundle> BundleDescriptorReader::createBundle(const ::boost::filesystem::path& location) throw(
+    RuntimeException)
 {
-    ::boost::shared_ptr<Bundle> bundle;
+    std::shared_ptr<Bundle> bundle;
     // Get the descriptor location.
     ::boost::filesystem::path completeLocation = location;
     if(!completeLocation.is_complete())
     {
-        completeLocation = ::boost::filesystem::current_path() / location;
+        completeLocation = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / location;
     }
 
     ::boost::filesystem::path descriptorLocation(location / "plugin.xml");
@@ -101,20 +104,17 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     // Validation
     std::ostringstream fileLocation;
     fileLocation << "share/fwRuntime_" <<  FWRUNTIME_VER << "/plugin.xsd";
-    const ::boost::filesystem::path pluginXSDLocation( ::boost::filesystem::current_path() / fileLocation.str() );
+    const ::boost::filesystem::path pluginXSDLocation(
+        ::fwRuntime::Runtime::getDefault()->getWorkingPath() / fileLocation.str() );
 
-    Validator   validator(pluginXSDLocation);
+    Validator validator(pluginXSDLocation);
     if( validator.validate(descriptorLocation) == false )
     {
         throw RuntimeException("Invalid bundle descriptor file. " + validator.getErrorLog());
     }
 
     // Get the document.
-#if BOOST_FILESYSTEM_VERSION > 2
     xmlDocPtr document = xmlParseFile(  descriptorLocation.string().c_str() );
-#else
-    xmlDocPtr document = xmlParseFile(  descriptorLocation.native_file_string().c_str() );
-#endif
     if(document == 0)
     {
         throw RuntimeException("Unable to read the bundle descriptor file.");
@@ -146,21 +146,22 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     catch(std::exception& exception)
     {
         xmlFreeDoc(document);
-        throw ;
+        throw;
     }
     return bundle;
 }
 
 //-----------------------------------------------------------------------------
 
-::boost::shared_ptr<Bundle> BundleDescriptorReader::createBundleFromXmlPlugin( const ::boost::filesystem::path & location ) throw ( RuntimeException )
+std::shared_ptr<Bundle> BundleDescriptorReader::createBundleFromXmlPlugin( const ::boost::filesystem::path & location )
+throw ( RuntimeException )
 {
-    ::boost::shared_ptr<Bundle> bundle;
+    std::shared_ptr<Bundle> bundle;
     // Get the descriptor location.
     ::boost::filesystem::path tmpCompleteLocation = location;
     if(!tmpCompleteLocation.is_complete())
     {
-        tmpCompleteLocation = ::boost::filesystem::current_path() / location;
+        tmpCompleteLocation = ::fwRuntime::Runtime::getDefault()->getWorkingPath() / location;
     }
     tmpCompleteLocation.normalize();
 
@@ -175,7 +176,8 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     // Validation
     std::ostringstream fileLocation;
     fileLocation << "share/fwRuntime_" <<  FWRUNTIME_VER << "/plugin.xsd";
-    const ::boost::filesystem::path pluginXSDLocation( ::boost::filesystem::current_path() / fileLocation.str() );
+    const ::boost::filesystem::path pluginXSDLocation(
+        ::fwRuntime::Runtime::getDefault()->getWorkingPath() / fileLocation.str() );
 
     Validator validator(pluginXSDLocation);
     if( validator.validate(descriptorLocation) == false )
@@ -184,11 +186,7 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     }
 
     // Get the document.
-#if BOOST_FILESYSTEM_VERSION > 2
     xmlDocPtr document = xmlParseFile(  descriptorLocation.string().c_str() );
-#else
-    xmlDocPtr document = xmlParseFile(  descriptorLocation.native_file_string().c_str() );
-#endif
     if(document == 0)
     {
         throw RuntimeException("Unable to read the bundle descriptor file.");
@@ -217,14 +215,16 @@ const BundleDescriptorReader::BundleContainer BundleDescriptorReader::createBund
     catch(std::exception& exception)
     {
         xmlFreeDoc(document);
-        throw ;
+        throw;
     }
     return bundle;
 }
 
 //-----------------------------------------------------------------------------
 
-ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException)
+ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(xmlNodePtr node,
+                                                                               const std::shared_ptr<Bundle> bundle)
+throw(RuntimeException)
 {
     //xmlKeepBlanksDefault(0);
     // Creates the configuration element.
@@ -249,8 +249,9 @@ ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(x
         {
             std::string value((const char*) curChild->content);
             // Even whitespace (non XML_TEXT_NODE) are considered as valid XML_TEXT_NODE
-            OSLM_WARN_IF("Bundle : " << ( bundle ? bundle->getIdentifier() : "<None>" ) << ", node: " << name << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
-                    (value.find("\n")!=std::string::npos || value.find("\t")!=std::string::npos));
+            OSLM_WARN_IF(
+                "Bundle : " << ( bundle ? bundle->getIdentifier() : "<None>" ) << ", node: " << name << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
+                (value.find("\n")!=std::string::npos || value.find("\t")!=std::string::npos));
 
             configurationElement->setValue( configurationElement->getValue() + value );
             continue;
@@ -276,7 +277,9 @@ ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(x
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<Extension> BundleDescriptorReader::processExtension(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException)
+std::shared_ptr<Extension> BundleDescriptorReader::processExtension(xmlNodePtr node,
+                                                                    const std::shared_ptr<Bundle> bundle) throw(
+    RuntimeException)
 {
     // Processes all extension attributes.
     xmlAttrPtr curAttr;
@@ -298,7 +301,7 @@ ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(x
     }
 
     // Creates the extension instance.
-    ::boost::shared_ptr<Extension> extension(new Extension(bundle, identifier, point, node));
+    std::shared_ptr<Extension> extension(new Extension(bundle, identifier, point, node));
 
     // Processes child nodes which are configuration elements.
     xmlNodePtr curChild;
@@ -317,7 +320,9 @@ ConfigurationElement::sptr BundleDescriptorReader::processConfigurationElement(x
 
 //------------------------------------------------------------------------------
 
-BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processPoint(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException)
+BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processPoint(xmlNodePtr node,
+                                                                                     const std::shared_ptr<Bundle> bundle)
+throw(RuntimeException)
 {
     // Creates the extension instance.
     xmlAttrPtr curAttr;
@@ -337,10 +342,10 @@ BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processP
             continue;
         }
     }
-    ::boost::shared_ptr<ExtensionPoint> extensionPoint(new ExtensionPoint(bundle, identifier, schema));
+    std::shared_ptr<ExtensionPoint> extensionPoint(new ExtensionPoint(bundle, identifier, schema));
 
     // Processes child nodes which declare identifier as extensions.
-    std::vector< ::boost::shared_ptr<Extension> > extensionContainer ;
+    std::vector< std::shared_ptr<Extension> > extensionContainer;
     xmlNodePtr curChild;
     for(curChild = node->children; curChild != 0; curChild = curChild->next)
     {
@@ -348,22 +353,24 @@ BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processP
         {
             if( xmlStrcmp(curChild->name, (const xmlChar*) IMPLEMENTS.c_str()) == 0 )
             {
-                std::string extensionId =  (const char*) curChild->children->content ;
-                ::boost::shared_ptr<Extension> extension(new Extension(bundle, identifier , extensionId, curChild));
-                extensionContainer.push_back( extension ) ;
+                std::string extensionId = (const char*) curChild->children->content;
+                std::shared_ptr<Extension> extension(new Extension(bundle, identifier, extensionId, curChild));
+                extensionContainer.push_back( extension );
             }
         }
     }
 
-    return PointExtensionsPairType( extensionPoint, extensionContainer ) ;
+    return PointExtensionsPairType( extensionPoint, extensionContainer );
 }
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<ExtensionPoint> BundleDescriptorReader::processExtensionPoint(xmlNodePtr node, const ::boost::shared_ptr<Bundle> bundle) throw(RuntimeException)
+std::shared_ptr<ExtensionPoint> BundleDescriptorReader::processExtensionPoint(xmlNodePtr node,
+                                                                              const std::shared_ptr<Bundle> bundle)
+throw(RuntimeException)
 {
     // Processes all extension attributes.
-    xmlAttrPtr  curAttr;
+    xmlAttrPtr curAttr;
     std::string identifier;
     std::string schema;
     for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
@@ -381,7 +388,7 @@ BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processP
         }
     }
     // Creates the extension instance.
-    ::boost::shared_ptr<ExtensionPoint> point(new ExtensionPoint(bundle, identifier, schema));
+    std::shared_ptr<ExtensionPoint> point(new ExtensionPoint(bundle, identifier, schema));
 
     // Job's done.
     return point;
@@ -389,7 +396,7 @@ BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processP
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<dl::Library> BundleDescriptorReader::processLibrary(xmlNodePtr node) throw(RuntimeException)
+std::shared_ptr<dl::Library> BundleDescriptorReader::processLibrary(xmlNodePtr node) throw(RuntimeException)
 {
     // Processes all plugin attributes.
     xmlAttrPtr curAttr;
@@ -404,18 +411,20 @@ BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processP
     }
 
     // Creates the library
-    ::boost::shared_ptr<dl::Library> library( new dl::Library(name) );
+    std::shared_ptr<dl::Library> library( new dl::Library(name) );
     return library;
 }
 
 //------------------------------------------------------------------------------
 
-::boost::shared_ptr<Bundle> BundleDescriptorReader::processPlugin(xmlNodePtr node, const ::boost::filesystem::path& location) throw(RuntimeException)
+std::shared_ptr<Bundle> BundleDescriptorReader::processPlugin(xmlNodePtr node,
+                                                              const ::boost::filesystem::path& location) throw(
+    RuntimeException)
 {
     // Creates the bundle.
-    ::boost::shared_ptr<Bundle> bundle;
+    std::shared_ptr<Bundle> bundle;
     // Processes all plugin attributes.
-    xmlAttrPtr  curAttr;
+    xmlAttrPtr curAttr;
     std::string bundleIdentifier;
     std::string version;
     std::string pluginClass;
@@ -447,11 +456,11 @@ BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processP
     }
     if(pluginClass.empty() == true)
     {
-        bundle = ::boost::shared_ptr<Bundle>( new Bundle(location, bundleIdentifier, version) );
+        bundle = std::shared_ptr<Bundle>( new Bundle(location, bundleIdentifier, version) );
     }
     else
     {
-        bundle = ::boost::shared_ptr<Bundle>( new Bundle(location, bundleIdentifier, version, pluginClass) );
+        bundle = std::shared_ptr<Bundle>( new Bundle(location, bundleIdentifier, version, pluginClass) );
     }
 
     // Processes all child nodes.
@@ -467,7 +476,7 @@ BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processP
         // Extension declaration.
         if(xmlStrcmp(curChild->name, (const xmlChar*) EXTENSION.c_str()) == 0)
         {
-            ::boost::shared_ptr<Extension> extension(processExtension(curChild, bundle));
+            std::shared_ptr<Extension> extension(processExtension(curChild, bundle));
             bundle->addExtension(extension);
             continue;
         }
@@ -475,7 +484,7 @@ BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processP
         // Extension point declaration.
         if(xmlStrcmp(curChild->name, (const xmlChar*) EXTENSION_POINT.c_str()) == 0)
         {
-            ::boost::shared_ptr<ExtensionPoint> point(processExtensionPoint(curChild, bundle));
+            std::shared_ptr<ExtensionPoint> point(processExtensionPoint(curChild, bundle));
             bundle->addExtensionPoint(point);
             continue;
         }
@@ -483,7 +492,7 @@ BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processP
         // Library declaration.
         if(xmlStrcmp(curChild->name, (const xmlChar*) LIBRARY.c_str()) == 0)
         {
-            ::boost::shared_ptr<dl::Library> library(processLibrary(curChild));
+            std::shared_ptr<dl::Library> library(processLibrary(curChild));
             bundle->addLibrary(library);
             continue;
         }
@@ -491,14 +500,14 @@ BundleDescriptorReader::PointExtensionsPairType BundleDescriptorReader::processP
         // Requirement declaration.
         if(xmlStrcmp(curChild->name, (const xmlChar*) REQUIREMENT.c_str()) == 0)
         {
-            const std::string   requirement(processRequirement(curChild));
+            const std::string requirement(processRequirement(curChild));
             bundle->addRequirement(requirement);
         }
 
         // Point declaration.
         if(xmlStrcmp(curChild->name, (const xmlChar*) POINT.c_str()) == 0)
         {
-            SLM_FATAL("Sorry, this xml element  ( <point ... > </point> ) is depreciated (" + location.string() + ")" );
+            SLM_FATAL("This xml element  ( <point ... > </point> ) is deprecated (" + location.string() + ")" );
         }
     }
 

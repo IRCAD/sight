@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCORE_HIRESTIMER_HPP_
-#define _FWCORE_HIRESTIMER_HPP_
+#ifndef __FWCORE_HIRESTIMER_HPP__
+#define __FWCORE_HIRESTIMER_HPP__
 
 #ifdef WIN32
 #include <windows.h>
@@ -28,7 +28,7 @@ namespace fwCore
 class FWCORE_CLASS_API HiResTimer : public BaseObject
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro( (HiResTimer)(BaseObject), (()), new HiResTimer) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (HiResTimer)(BaseObject), (()), new HiResTimer);
 
     /**
      * @name Constructor/Destructor
@@ -56,7 +56,7 @@ public:
      * @param initial_value Initial value in microseconds from which the timer
      * will start to count.
      */
-    FWCORE_API void   reset(::fwCore::HiResClock::HiResClockType initial_value=0.);
+    FWCORE_API void   reset(::fwCore::HiResClock::HiResClockType initial_value = 0.);
 
 
     /**
@@ -101,9 +101,9 @@ private:
     /**
      * @brief timer status.
      */
-    bool   m_stopped;
+    bool m_stopped;
 };
 
 } //namespace fwCore
 
-#endif // _FWCORE_HIRESTIMER_HPP_
+#endif // __FWCORE_HIRESTIMER_HPP__

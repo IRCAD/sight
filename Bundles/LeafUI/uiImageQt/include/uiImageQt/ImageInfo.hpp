@@ -1,24 +1,26 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIMAGEQT_IMAGEINFO_HPP
-#define _UIIMAGEQT_IMAGEINFO_HPP
+#ifndef __UIIMAGEQT_IMAGEINFO_HPP__
+#define __UIIMAGEQT_IMAGEINFO_HPP__
 
+#include "uiImageQt/config.hpp"
 
-#include <QObject>
-#include <QLineEdit>
-#include <QPointer>
-
-#include <fwTools/Failed.hpp>
+#include <fwComEd/PickingInfo.hpp>
 
 #include <fwData/Point.hpp>
 
+#include <fwTools/Failed.hpp>
+
 #include <gui/editor/IEditor.hpp>
 
-#include "uiImageQt/config.hpp"
+#include <QLineEdit>
+#include <QObject>
+#include <QPointer>
+
 
 namespace uiImage
 {
@@ -26,20 +28,21 @@ namespace uiImage
 /**
  * @brief   ImageInfo service allows to display image pixel information.
  * @class   ImageInfo
- * 
+ *
  * @date    2010.
  */
-class UIIMAGEQT_CLASS_API ImageInfo : public QObject, public ::gui::editor::IEditor
+class UIIMAGEQT_CLASS_API ImageInfo : public QObject,
+                                      public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageInfo)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageInfo)(::gui::editor::IEditor) );
 
-    UIIMAGEQT_API ImageInfo() throw() ;
+    UIIMAGEQT_API ImageInfo() throw();
 
-    UIIMAGEQT_API virtual ~ImageInfo() throw() ;
+    UIIMAGEQT_API virtual ~ImageInfo() throw();
 
 protected:
 
@@ -49,19 +52,19 @@ protected:
     /// Stops editor.
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Receive InteractionMsg and updates text informations
-    virtual void receiving( ::boost::shared_ptr< const fwServices::ObjectMsg > _msg ) throw(::fwTools::Failed);
-
     virtual void updating() throw(::fwTools::Failed);
 
     virtual void swapping() throw(::fwTools::Failed);
 
     virtual void configuring() throw( ::fwTools::Failed);
 
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 
 private:
+
+    /// Slot: get the picking information
+    void getInteraction(::fwComEd::PickingInfo info);
 
     QPointer< QLineEdit >   m_valueText;
 
@@ -69,4 +72,4 @@ private:
 
 } // uiImage
 
-#endif /*_UIIMAGEQT_IMAGEINFO_HPP*/
+#endif /*__UIIMAGEQT_IMAGEINFO_HPP__*/

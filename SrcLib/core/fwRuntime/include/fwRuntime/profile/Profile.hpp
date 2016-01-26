@@ -1,22 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWRUNTIME_PROFILE_PROFILE_HPP_
-#define _FWRUNTIME_PROFILE_PROFILE_HPP_
+#ifndef __FWRUNTIME_PROFILE_PROFILE_HPP__
+#define __FWRUNTIME_PROFILE_PROFILE_HPP__
 
-#include <vector>
+#include "fwRuntime/config.hpp"
+#include <fwCore/base.hpp>
 
 #include <boost/function.hpp>
 #include <boost/utility.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/make_shared.hpp>
 
-#include "fwCore/base.hpp"
+#include <vector>
 
-#include "fwRuntime/config.hpp"
-
+#ifdef ANDROID
+class android_app;
+#endif
 
 namespace fwRuntime
 {
@@ -24,7 +27,6 @@ namespace fwRuntime
 /**
  * @namespace   ::fwRuntime::profile
  * @brief       Namespace ::fwRuntime::profile
- * @date    2007-2009
  */
 namespace profile
 {
@@ -38,8 +40,7 @@ class Uninitializer;
 
 /**
  * @brief   Implements a bundle set profile.
- * @class  Profile
- * @date    2007-2009
+ * @class   Profile
  */
 class Profile : public ::fwCore::BaseObject
 {
@@ -48,7 +49,7 @@ public:
     typedef std::vector< std::string >  ParamsContainer;
     typedef ::boost::function< int () > RunCallbackType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject), (()), new Profile) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Profile)(BaseObject), (()), std::make_shared< Profile >);
 
     /**
      * @brief   Constructor : does nothing.
@@ -116,65 +117,107 @@ public:
     /**
      * @brief   Return profile name.
      */
-    std::string getName() { return m_sName; }
+    std::string getName() const
+    {
+        return m_sName;
+    }
 
     /**
      * @brief       Set profile name.
      *
      * @param[in]   _sName  profile name
      */
-    void setName(std::string _sName) { m_sName = _sName; }
+    void setName(std::string _sName)
+    {
+        m_sName = _sName;
+    }
 
     /// Get profile m_filePath
-    ::boost::filesystem::path getFilePath() {return  m_filePath; } const
+    ::boost::filesystem::path getFilePath() const
+    {
+        return m_filePath;
+    }
 
     /// Set profile m_filePath
-    void setFilePath( const ::boost::filesystem::path& _filePath) { m_filePath = _filePath; }
+    void setFilePath(const ::boost::filesystem::path& _filePath)
+    {
+        m_filePath = _filePath;
+    }
 
     /**
      * @brief   Return profile version.
      */
-    std::string getVersion() { return m_sVersion; }
+    std::string getVersion() const
+    {
+        return m_sVersion;
+    }
 
     /**
      * @brief       Set profile version.
      *
      * @param[in]   _sVersion   profile version
      */
-    void setVersion(std::string _sVersion) { m_sVersion = _sVersion; }
-
-
+    void setVersion(std::string _sVersion)
+    {
+        m_sVersion = _sVersion;
+    }
 
     /**
      * @brief   Return profile CheckSingleInstance.
      */
-    bool getCheckSingleInstance() { return m_checkSingleInstance; }
+    bool getCheckSingleInstance() const
+    {
+        return m_checkSingleInstance;
+    }
 
     /**
      * @brief       Set profile CheckSingleInstance.
      *
      * @param[in]   _checkSingleInstance    profile CheckSingleInstance
      */
-    void setCheckSingleInstance(bool _checkSingleInstance) { m_checkSingleInstance = _checkSingleInstance; }
+    void setCheckSingleInstance(bool _checkSingleInstance)
+    {
+        m_checkSingleInstance = _checkSingleInstance;
+    }
 
-    FWRUNTIME_API ParamsContainer getParams();
+#ifdef ANDROID
+    /// Returns android native activity interface
+    android_app* getApp() const
+    {
+        return m_app;
+    }
+    void setApp(android_app* app)
+    {
+        m_app = app;
+    }
+#endif
+    ParamsContainer getParams() const
+    {
+        return m_params;
+    }
 
     FWRUNTIME_API void setParams(const ParamsContainer &params);
     FWRUNTIME_API void setParams(int argc, char** argv);
 
     /**
-     * @brief Returns a reference on internal arg count.
+     * @brief Returns internal arg count.
      * The returned int shall not be modified. This is provided for external
      * library needs (QApplication contructor for example)
      */
-    FWRUNTIME_API int& getRawArgCount();
+    int& getRawArgCount()
+    {
+        return m_argc;
+    }
 
     /**
      * @brief Returns a raw pointer on internal arguments.
      * The returned data shall not be modified. This is provided for external
      * library needs (QApplication contructor for example)
      */
-    FWRUNTIME_API char** getRawParams();
+    char** getRawParams() const
+    {
+        return m_argv;
+    }
 
 private:
 
@@ -184,23 +227,25 @@ private:
     typedef std::vector< SPTR(Initializer) >   InitializerContainer;
     typedef std::vector< SPTR(Uninitializer) > UninitializerContainer;
 
-    ActivaterContainer        m_activaters;     ///< all managed activators
-    StarterContainer          m_starters;       ///< all managed starters
-    StopperContainer          m_stoppers;       ///< all managed stoppers
-    InitializerContainer      m_initializers;   ///< all managed initializers
-    UninitializerContainer    m_uninitializers; ///< all managed uninitializers
+    ActivaterContainer m_activaters;            ///< all managed activators
+    StarterContainer m_starters;                ///< all managed starters
+    StopperContainer m_stoppers;                ///< all managed stoppers
+    InitializerContainer m_initializers;        ///< all managed initializers
+    UninitializerContainer m_uninitializers;    ///< all managed uninitializers
 
-    std::string         m_sName;            ///< name profile
-    std::string         m_sVersion;         ///< profile app version
+    std::string m_sName;                    ///< name profile
+    std::string m_sVersion;                 ///< profile app version
     ::boost::filesystem::path m_filePath;   ///< xml parsed file used to generate profile
 
-    bool                m_checkSingleInstance;
-
-    ParamsContainer     m_params;
-    int                 m_argc;
-    char              **m_argv;
-
+    bool m_checkSingleInstance;
     RunCallbackType m_run;
+
+#ifdef ANDROID
+    android_app* m_app; ///< native android activity interface
+#endif
+    ParamsContainer m_params;
+    int m_argc;
+    char**          m_argv;
 };
 
 
@@ -223,4 +268,4 @@ FWRUNTIME_API Profile::sptr getCurrentProfile();
 
 
 
-#endif /*_FWRUNTIME_PROFILE_PROFILE_HPP_*/
+#endif /*__FWRUNTIME_PROFILE_PROFILE_HPP__*/

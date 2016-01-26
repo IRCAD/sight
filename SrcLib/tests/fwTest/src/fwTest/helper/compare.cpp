@@ -1,35 +1,58 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
+#include "fwTest/helper/compare.hpp"
 
 #include <fwData/Object.hpp>
-
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include "fwTest/helper/compare.hpp"
+#include <boost/algorithm/string.hpp>
+
 
 namespace fwTest
 {
 namespace helper
 {
 
-bool compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp, ExcludeSetType excludeCompare)
+bool compare(
+    ::fwData::Object::sptr objRef,
+    ::fwData::Object::sptr objComp,
+    ExcludeSetType excludeCompare,
+    ExcludeSetType excludeByPrefix)
 {
     ::fwDataCamp::visitor::CompareObjects visitor;
     visitor.compare(objRef, objComp);
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = visitor.getDifferences();
-    BOOST_FOREACH(const ExcludeSetType::value_type& key, excludeCompare)
+
+    for(const ExcludeSetType::value_type& key: excludeCompare)
     {
         props->erase(key);
     }
-    BOOST_FOREACH( ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop, (*props) )
+
+    std::set< ::fwDataCamp::visitor::CompareObjects::PropsMapType::key_type > propsKey;
+    for(const ::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type &prop: *props)
     {
-        OSLM_ERROR( "new object difference found : " << prop.first << " '" << prop.second << "'" );
+        bool erased = false;
+        for(const ExcludeSetType::value_type& key: excludeByPrefix)
+        {
+            if(::boost::starts_with(prop.first, key))
+            {
+                propsKey.insert(prop.first);
+                erased = true;
+            }
+        }
+
+        OSLM_ERROR_IF("new object difference found : " << prop.first << " '" << prop.second << "'", !erased);
     }
+
+    for(const ::fwDataCamp::visitor::CompareObjects::PropsMapType::key_type &key: propsKey)
+    {
+        props->erase(key);
+    }
+
     return props->empty();
 }
 

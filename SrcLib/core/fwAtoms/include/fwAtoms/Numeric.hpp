@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWATOMS_BASE_NUMERIC_HPP_
-#define _FWATOMS_BASE_NUMERIC_HPP_
+#ifndef __FWATOMS_NUMERIC_HPP__
+#define __FWATOMS_NUMERIC_HPP__
 
 #include <string>
 
@@ -21,13 +21,13 @@ namespace fwAtoms
 {
 
 /**
-* @brief Storing a  numeric value
-**/
+ * @brief Storing a  numeric value
+ **/
 class FWATOMS_CLASS_API Numeric : public Base
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (Numeric)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Numeric >) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (Numeric)(::fwAtoms::Base), (()), ::fwAtoms::factory::New< Numeric >);
 
 
     typedef enum
@@ -46,12 +46,15 @@ public:
      * @param key Private construction key
      */
     Numeric(::fwAtoms::Base::Key key)
-    {}
+    {
+    }
 
     /**
      * @brief   Destructor
      */
-    virtual ~Numeric() {}
+    virtual ~Numeric()
+    {
+    }
 
 
     /**
@@ -70,19 +73,28 @@ public:
     /**
      * @brief returns Atom type
      */
-    ::fwAtoms::Base::AtomType type() const {return ::fwAtoms::Base::NUMERIC;}
+    ::fwAtoms::Base::AtomType type() const
+    {
+        return ::fwAtoms::Base::NUMERIC;
+    }
 
     /**
      * @brief Returns currently held numeric type
      */
-    NumericType variantType() const {return static_cast< NumericType >(m_value.which());}
+    NumericType variantType() const
+    {
+        return static_cast< NumericType >(m_value.which());
+    }
 
     /**
      * @brief Returns const reference to numeric's variant
      *
      * @return
      */
-    const ValueType &getVariant() const {return m_value;}
+    const ValueType &getVariant() const
+    {
+        return m_value;
+    }
 
     /**
      * @brief Returns a string representing the currently held numeric value
@@ -132,5 +144,5 @@ protected:
 
 
 
-#endif /* _FWATOMS_BASE_NUMERIC_HPP_ */
+#endif /* __FWATOMS_NUMERIC_HPP__ */
 

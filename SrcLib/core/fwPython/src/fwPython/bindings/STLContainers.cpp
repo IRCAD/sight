@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ template <class T>
 std::string getString(std::vector<T> &v)
 {
     std::string res;
-    res +=  fwTools::getString(v.begin(),v.end());
+    res += fwTools::getString(v.begin(),v.end());
     return res;
 }
 
@@ -35,10 +35,12 @@ std::string getString(std::vector<T> &v)
 template< typename VECTOR >
 VECTOR *vectorFromList( ::boost::python::list  &ns )
 {
-    unsigned long  len = ::boost::python::len(ns);
-    VECTOR *vect = new VECTOR( len );
-    for (unsigned long i=0; i<len; ++i )
+    unsigned long len = ::boost::python::len(ns);
+    VECTOR *vect      = new VECTOR( len );
+    for (unsigned long i = 0; i<len; ++i )
+    {
         (*vect)[i] = ::boost::python::extract<typename VECTOR::value_type> (ns[i]);
+    }
     return vect;
 }
 
@@ -54,13 +56,13 @@ void wrap_vector()
     className += "Container";
     std::string docString = std::string( "binding of " ) + ::fwCore::Demangler(typeid(T)).getClassname();
     class_< T  >( className.c_str(), docString.c_str(), init< typename T::size_type > () )
-        .def("__init__", make_constructor( vectorFromList< T > ))
-        // install wrapper to __len__, __getitem__, __setitem__, __delitem__, __iter__ and __contains.
-        .def(vector_indexing_suite< T >())
+    .def("__init__", make_constructor( vectorFromList< T > ))
+    // install wrapper to __len__, __getitem__, __setitem__, __delitem__, __iter__ and __contains.
+    .def(vector_indexing_suite< T >())
 
-        // allow a pretty print
-        .def("__str__", getString< typename T::value_type >)
-        ;
+    // allow a pretty print
+    .def("__str__", getString< typename T::value_type >)
+    ;
 }
 //------------------------------------------------------------------------------
 

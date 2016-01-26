@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,15 +38,15 @@ void PatientTest::tearDown()
 
 void PatientTest::propertiesTest()
 {
-    const std::string name = "Patient Name";
-    const std::string patient_id = "42";
-    const std::string birth_date = "19830214";
-    const std::string sex = "M";
+    const std::string name                                    = "Patient Name";
+    const std::string patient_id                              = "42";
+    const std::string birth_date                              = "19830214";
+    const std::string sex                                     = "M";
     const ::DataCampHelper::PropertiesNameType dataProperties = list_of("fields")
-                                                                       ("name")
-                                                                       ("patient_id")
-                                                                       ("birth_date")
-                                                                       ("sex");
+                                                                    ("name")
+                                                                    ("patient_id")
+                                                                    ("birth_date")
+                                                                    ("sex");
 
     ::fwMedData::Patient::sptr obj = ::fwMedData::Patient::New();
     obj->setName(name);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,6 @@
 
 #include <boost/any.hpp>
 #include <boost/asio/io_service.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/thread.hpp>
 
 #include <fwCore/base.hpp>
@@ -33,21 +31,23 @@ class Timer;
  * @brief   This class creates and manages a task loop.
  * The default implementation create a loop in a new thread.
  *
- * 
+ *
  * @date   2012.
  */
 class FWTHREAD_CLASS_API Worker : public ::fwCore::BaseObject
 {
 public:
     typedef ::fwCore::HiResClock::HiResClockType PeriodType;
-    typedef ::boost::function< void() > TaskType;
-    typedef ::boost::any                ExitReturnType;
+    typedef ::boost::function< void () > TaskType;
+    typedef ::boost::any ExitReturnType;
 
     typedef ::boost::shared_future< ExitReturnType > FutureType;
 
     fwCoreClassDefinitionsWithFactoryMacro( (Worker)(::fwCore::BaseObject), (()), defaultFactory );
 
-    Worker(){}
+    Worker()
+    {
+    }
 
     /// Waits for the last task to be processed and stops the loop
     FWTHREAD_API virtual void stop() = 0;
@@ -79,7 +79,7 @@ public:
      * @brief Returns a boost::shared_future associated with the execution of Worker's loop
      * @warning Calling getFuture() may be blocking if it is required by a specific implementation (for example, the Qt implementation).
      */
-    FWTHREAD_API virtual FutureType getFuture()
+    virtual FutureType getFuture()
     {
         return m_future;
     }

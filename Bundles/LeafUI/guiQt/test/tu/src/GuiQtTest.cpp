@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,9 +15,6 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/AppConfigManager.hpp>
 #include <fwServices/registry/AppConfig.hpp>
-
-#include <fwGuiQt/App.hpp>
-
 
 #include "GuiQtTest.hpp"
 
@@ -56,12 +53,13 @@ void GuiQtTest::testDefaultFrame()
     frameConfig.put("service.gui.frame.minSize.<xmlattr>.height", "600");
 
     ::fwServices::IService::sptr srv;
-    srv = ::fwServices::registry::ServiceFactory::getDefault()->create(  "::fwGui::IFrameSrv", "::gui::frame::DefaultFrame" );
+    srv = ::fwServices::registry::ServiceFactory::getDefault()->create(  "::fwGui::IFrameSrv",
+                                                                         "::gui::frame::SDefaultFrame" );
     CPPUNIT_ASSERT(srv);
 
-    ::fwServices::OSR::registerService( object , srv );
+    ::fwServices::OSR::registerService( object, srv );
 
-    srv->setConfiguration( frameConfig ) ;
+    srv->setConfiguration( frameConfig );
     srv->configure();
     srv->start();
 
@@ -80,9 +78,12 @@ void GuiQtTest::testDefaultFrame()
 
 void GuiQtTest::testTuto01()
 {
+    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
+    CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
+
     ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
-    ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( "tutoBasicConfig" );
-    appConfigMng->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
+    appConfigMng->setConfig( "tutoBasicConfig" );
+
     appConfigMng->launch();
     appConfigMng->stopAndDestroy();
 }
@@ -91,9 +92,12 @@ void GuiQtTest::testTuto01()
 
 void GuiQtTest::testTuto02()
 {
+    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
+    CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
+
     ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
-    ::fwRuntime::ConfigurationElement::csptr config = ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig( "tutoDataServiceBasicConfig" );
-    appConfigMng->setConfig( ::fwRuntime::ConfigurationElement::constCast( config ) );
+    appConfigMng->setConfig( "tutoDataServiceBasicConfig" );
+
     appConfigMng->launch();
     appConfigMng->stopAndDestroy();
 }

@@ -1,20 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VISUVTKADAPTOR_IMAGESLICE_HPP_
-#define _VISUVTKADAPTOR_IMAGESLICE_HPP_
+#ifndef __VISUVTKADAPTOR_IMAGESLICE_HPP__
+#define __VISUVTKADAPTOR_IMAGESLICE_HPP__
+
+#include "visuVTKAdaptor/config.hpp"
 
 #include <fwCom/Connection.hpp>
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
+#include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
+#include <fwServices/helper/SigSlotConnection.hpp>
+
 
 class vtkImageActor;
 class vtkLookupTable;
@@ -29,36 +33,67 @@ namespace visuVTKAdaptor
 {
 
 /**
-* @brief Adaptor to display only one slice of an image
-*/
-class VISUVTKADAPTOR_CLASS_API ImageSlice: public ::fwComEd::helper::MedicalImageAdaptor, public ::fwRenderVTK::IVtkAdaptorService
+ * @brief Adaptor to display only one slice of an image
+ */
+class VISUVTKADAPTOR_CLASS_API ImageSlice : public ::fwComEd::helper::MedicalImageAdaptor,
+                                            public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageSlice)(::fwRenderVTK::IVtkAdaptorService) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageSlice)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API ImageSlice() throw();
 
     VISUVTKADAPTOR_API virtual ~ImageSlice() throw();
 
-    void setCtrlImageId(std::string id)      {m_ctrlImageId = id;};
-    void setCtrlImage(::fwData::Image::sptr image)      {m_ctrlImage = image;};
-    void setVtkImageSourceId(std::string id) {m_imageSourceId = id;};
-    void setVtkImageSource(vtkObject *obj)   {m_imageSource = obj;};
-    void setInterpolation(bool interpolation){m_interpolation = interpolation;};
+    void setCtrlImageId(std::string id)
+    {
+        m_ctrlImageId = id;
+    }
+    void setCtrlImage(::fwData::Image::sptr image)
+    {
+        m_ctrlImage = image;
+    }
+    void setVtkImageSourceId(std::string id)
+    {
+        m_imageSourceId = id;
+    }
+    void setVtkImageSource(vtkObject *obj)
+    {
+        m_imageSource = obj;
+    }
+    void setInterpolation(bool interpolation)
+    {
+        m_interpolation = interpolation;
+    }
 
-    void setActorOpacity(double actorOpacity) {m_actorOpacity = actorOpacity;};
+    void setActorOpacity(double actorOpacity)
+    {
+        m_actorOpacity = actorOpacity;
+    }
 
-    void setUseImageTF(bool use)               {m_useImageTF = use;};
+    void setUseImageTF(bool use)
+    {
+        m_useImageTF = use;
+    }
 
-protected :
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_CHECK_CTRL_IMAGE_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_CHECK_CTRL_IMAGE_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_CHECK_CTRL_IMAGE_SLOT
+     */
+    VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+protected:
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    VISUVTKADAPTOR_API void doReceive(::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed);
 
     /**
      * @brief Configures the service
@@ -79,7 +114,7 @@ protected :
      * - \b vtkimagesource (optional): source image, used for blend
      * - \b actorOpacity (optional, default=1.0): actor opacity (float)
      */
-    VISUVTKADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     virtual void buildPipeline();
@@ -91,7 +126,7 @@ protected :
 
     void updateOutline();
     void updateImage( ::fwData::Image::sptr ImageSlice  );
-    void updateSliceIndex( ::fwData::Image::sptr ImageSlice );
+    void updateImageSliceIndex( ::fwData::Image::sptr ImageSlice );
 
 
     std::string m_ctrlImageId;
@@ -110,13 +145,29 @@ protected :
     vtkPolyDataMapper *m_planeOutlineMapper;
     vtkActor *m_planeOutlineActor;
 
-    ::fwCom::Connection m_connection;
+    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+
+private:
+
+    /**
+     * @name Slots
+     * @{
+     */
+    /// Slot: Check if ctrl image changed and update scene
+    void checkCtrlImage();
+
+    /// Slot: update image slice index
+    void updateSliceIndex(int axial, int frontal, int sagittal);
+
+    /// Slot: update image slice type
+    void updateSliceType(int from, int to);
+    /**
+     * @}
+     */
 
 };
 
 
-
-
 } //namespace visuVTKAdaptor
 
-#endif // _VISUVTKADAPTOR_IMAGESLICE_HPP_
+#endif // __VISUVTKADAPTOR_IMAGESLICE_HPP__

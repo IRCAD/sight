@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,12 @@
 #ifndef __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
 #define __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
 
-#include <vector>
+#include "fwData/factory/new.hpp"
+#include "fwData/Object.hpp"
+
+#include <array>
 #include <iostream>
 #include <assert.h>
-
-#include "fwData/Object.hpp"
-#include "fwData/factory/new.hpp"
 
 fwCampAutoDeclareDataMacro((fwData)(TransformationMatrix3D), FWDATA_API);
 
@@ -25,14 +25,14 @@ namespace fwData
 class FWDATA_CLASS_API TransformationMatrix3D : public Object
 {
 
-public :
+public:
     fwCoreClassDefinitionsWithFactoryMacro( (TransformationMatrix3D)(::fwData::Object),
-            (()), ::fwData::factory::New< TransformationMatrix3D >) ;
+                                            (()), ::fwData::factory::New< TransformationMatrix3D >);
 
     fwCampMakeFriendDataMacro((fwData)(TransformationMatrix3D));
 
     typedef double TM3DType;
-    typedef std::vector<TM3DType> TMCoefArray;
+    typedef std::array<TM3DType, 16> TMCoefArray;
 
     /**
      * @brief Constructor
@@ -49,14 +49,16 @@ public :
     /// Defines deep copy
     FWDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
 
-
-    fwGettersSettersDocMacro(Coefficients, vCoefficients, TMCoefArray, the elements of the matrix)
+    /// Getters/setters
+    TMCoefArray & getRefCoefficients ();
+    const TMCoefArray & getCoefficients () const;
+    void setCoefficients (const TMCoefArray& _vCoefficients);
 
     /**
      * @{
      * @brief Get/Set value of the coefficient in the given position (matrix[l][c])
      */
-    FWDATA_API double getCoefficient(size_t l, size_t c) const;
+    FWDATA_API TM3DType getCoefficient(size_t l, size_t c) const;
     FWDATA_API void setCoefficient(size_t l, size_t c, TM3DType val);
     /// @}
 
@@ -77,13 +79,52 @@ public :
         return s;
     }
 
-protected :
+protected:
 
     //! Matrix coefficient number (4x4). m_vCoefficients[0] to m_vCoefficients[3] is the first row of the matrix
     TMCoefArray m_vCoefficients;
 };
 
-}; // namespace fwData
+//-----------------------------------------------------------------------------
+
+inline TransformationMatrix3D::TMCoefArray &TransformationMatrix3D::getRefCoefficients()
+{
+    return this->m_vCoefficients;
+}
+
+//-----------------------------------------------------------------------------
+
+inline const TransformationMatrix3D::TMCoefArray &TransformationMatrix3D::getCoefficients() const
+{
+    return this->m_vCoefficients;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void TransformationMatrix3D::setCoefficients(const TransformationMatrix3D::TMCoefArray& _vCoefficients)
+{
+    this->m_vCoefficients = _vCoefficients;
+}
+
+//------------------------------------------------------------------------------
+
+inline TransformationMatrix3D::TM3DType TransformationMatrix3D::getCoefficient(size_t l, size_t c) const
+{
+    size_t pos = l * MATRIX_SIZE + c;
+    return m_vCoefficients.at(pos);
+}
+
+//------------------------------------------------------------------------------
+
+inline void TransformationMatrix3D::setCoefficient(size_t l, size_t c, TransformationMatrix3D::TM3DType val)
+{
+    size_t pos = l * MATRIX_SIZE + c;
+    m_vCoefficients.at(pos) = val;
+}
+
+//-----------------------------------------------------------------------------
+
+} // namespace fwData
 
 #endif // __FWDATA_TRANSFORMATIONMATRIX3D_HPP__
 

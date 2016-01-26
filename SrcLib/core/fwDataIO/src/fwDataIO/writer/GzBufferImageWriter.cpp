@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,13 +29,15 @@ namespace writer
 //------------------------------------------------------------------------------
 
 GzBufferImageWriter::GzBufferImageWriter(::fwDataIO::writer::IObjectWriter::Key key)
-: ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
-{}
+    : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+{
+}
 
 //------------------------------------------------------------------------------
 
 GzBufferImageWriter::~GzBufferImageWriter()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -44,7 +46,7 @@ void GzBufferImageWriter::write()
     assert( getFile().empty() ==  false );
 
     ::fwData::Image::sptr image = getConcreteObject();
-    OSLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->className()) ;
+    OSLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->className());
 
     /// test if can open archive
     gzFile rawFile = gzopen( getFile().string().c_str(), "wb1");
@@ -52,7 +54,7 @@ void GzBufferImageWriter::write()
     if ( rawFile == 0 )
     {
         std::string str = "GzBufferImageWriter::write unable to open ";
-        str+= getFile().string();
+        str += getFile().string();
         gzclose(rawFile);
         throw std::ios_base::failure(str);
     }
@@ -62,13 +64,13 @@ void GzBufferImageWriter::write()
     // file is OK : process now
     size_t imageSizeInBytes = image->getSizeInBytes();
 
-    char *ptr = static_cast<char*>(imageHelper.getBuffer());
+    char *ptr           = static_cast<char*>(imageHelper.getBuffer());
     size_t writtenBytes = 0;
 
     int uncompressedbyteswrited;
 
     while ( writtenBytes < imageSizeInBytes
-           && (uncompressedbyteswrited = gzwrite(rawFile, ptr+writtenBytes, imageSizeInBytes-writtenBytes)) > 0 )
+            && (uncompressedbyteswrited = gzwrite(rawFile, ptr+writtenBytes, imageSizeInBytes-writtenBytes)) > 0 )
     {
         writtenBytes += uncompressedbyteswrited;
     }
@@ -80,14 +82,14 @@ void GzBufferImageWriter::write()
     if ( uncompressedbyteswrited != 0 && writtenBytes==imageSizeInBytes)
     {
         std::string str = "GzBufferImageWriter::write unable to write ";
-        str+=  getFile().string();
+        str += getFile().string();
         throw std::ios_base::failure(str);
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::string  GzBufferImageWriter::extension()
+std::string GzBufferImageWriter::extension()
 {
     return ".raw.gz";
 }

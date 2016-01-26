@@ -1,4 +1,4 @@
-<plugin id="servicesReg" class="::servicesReg::Plugin" >
+<plugin id="servicesReg" class="::servicesReg::Plugin" version="@DASH_VERSION@" >
 
     <library name="servicesReg" />
 
@@ -63,6 +63,12 @@
         <type>::fwServices::IXMLParser</type>
         <service>::fwComEd::parser::StringParser</service>
         <object>::fwData::String</object>
+    </extension>
+     
+     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IXMLParser</type>
+        <service>::fwComEd::parser::TransferFunction</service>
+        <object>::fwData::TransferFunction</object>
     </extension>
      
     <extension implements="::fwServices::registry::ServiceFactory">

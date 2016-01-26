@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>3DVisualization</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
@@ -15,7 +14,7 @@
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Negato1" align="center" />
@@ -33,7 +32,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="3D MPR Axial view" icon="Bundles/media_0-1/icons/icon-axial.png" />
@@ -85,7 +84,7 @@
             </service>
 
 
-            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Manage organs colors" style="check" shortcut="F9" icon="Bundles/media_0-1/icons/ManageOrgan.png" />
@@ -97,9 +96,9 @@
                 </gui>
                 <registry>
                     <menuItem sid="${GENERIC_UID}_action_organManager" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_AxialViewMPR3D" start="no" />
-                    <menuItem sid="${GENERIC_UID}_action_FrontalViewMPR3D" start="no" />
-                    <menuItem sid="${GENERIC_UID}_action_SagittalViewMPR3D" start="no" />
+                    <menuItem sid="${GENERIC_UID}_action_AxialViewMPR3D" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_FrontalViewMPR3D" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_SagittalViewMPR3D" start="yes" />
                 </registry>
             </service>
 
@@ -109,6 +108,8 @@
                         <parameters>
                             <parameter replace="ORGAN_MANAGER_MODELSERIES" by="${modelSeriesUid}" />
                             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                            <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+                            <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
                         </parameters>
                     </appConfig>
                 </config>
@@ -123,11 +124,33 @@
                             <parameter replace="orientation" by="axial" />
                             <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato1" />
                             <parameter replace="patient_name" by="${patient_name}" />
+                            <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel" />
+                            <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
+                            <parameter replace="Medical3DCameraUID" by="${GENERIC_UID}_Medical3DCameraUID" />
+                            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
                         </parameters>
                     </appConfig>
                 </config>
             </service>
+            
+            
+            <service uid="${GENERIC_UID}_action_SagittalViewMPR3D" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_Medical3DCameraUID/setSagittal</slot>
+                </slots>
+            </service>
 
+            <service uid="${GENERIC_UID}_action_FrontalViewMPR3D" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_Medical3DCameraUID/setFrontal</slot>
+                </slots>
+            </service>
+
+            <service uid="${GENERIC_UID}_action_AxialViewMPR3D" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_Medical3DCameraUID/setAxial</slot>
+                </slots>
+            </service>
 
 
             <item key="OptionalInputImageCompositeKey">
@@ -148,6 +171,7 @@
                                                 <parameter replace="orientation" by="frontal" />
                                                 <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato2" />
                                                 <parameter replace="patient_name" by="${patient_name}" />
+                                                <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
                                             </parameters>
                                         </appConfig>
                                     </config>
@@ -161,6 +185,7 @@
                                                 <parameter replace="orientation" by="sagittal" />
                                                 <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato3" />
                                                 <parameter replace="patient_name" by="${patient_name}" />
+                                                <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
                                             </parameters>
                                         </appConfig>
                                     </config>
@@ -190,20 +215,13 @@
                                     <crossType>full</crossType>
                                 </service>
 
-                                <service uid="${GENERIC_UID}_action_SagittalViewMPR3D" type="::fwGui::IActionSrv" impl="::uiVisu::action::CameraOrientationAction" autoConnect="no">
-                                    <orientation>sagittal</orientation>
-                                </service>
-
-                                <service uid="${GENERIC_UID}_action_FrontalViewMPR3D" type="::fwGui::IActionSrv" impl="::uiVisu::action::CameraOrientationAction" autoConnect="no">
-                                    <orientation>frontal</orientation>
-                                </service>
-
-                                <service uid="${GENERIC_UID}_action_AxialViewMPR3D" type="::fwGui::IActionSrv" impl="::uiVisu::action::CameraOrientationAction" autoConnect="no">
-                                    <orientation>axial</orientation>
-                                </service>
-
                                 <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-
+                                
+                                <proxy channel="crossTypeChannel">
+                                    <signal>${GENERIC_UID}_ActionHideCross/crossTypeModified</signal>
+                                    <signal>${GENERIC_UID}_ActionShowNormalCross/crossTypeModified</signal>
+                                    <signal>${GENERIC_UID}_ActionShowFullCross/crossTypeModified</signal>
+                                </proxy>
 
                             </object>
                         </config>
@@ -215,7 +233,7 @@
                         <config>
                             <object id="OptionalInputImageKey" type="::fwData::Image">
 
-                                <service uid="${GENERIC_UID}_ModifyLayout" type="::fwGui::IActionSrv" impl="::gui::action::ModifyLayoutActionSrv" autoConnect="no">
+                                <service uid="${GENERIC_UID}_ModifyLayout" type="::fwGui::IActionSrv" impl="::gui::action::SModifyLayout" autoConnect="no">
                                     <config>
                                         <show wid="${GENERIC_UID}_view_negato2" />
                                         <show wid="${GENERIC_UID}_view_negato3" />

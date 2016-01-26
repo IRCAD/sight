@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,8 +26,8 @@ Object::~Object()
 // ----------------------------------------------------------------------------
 
 void Object::addAttribute(const std::string& name,
-                ::fwAtoms::Base::sptr value,
-                conditions::Abstract::sptr condition)
+                          ::fwAtoms::Base::sptr value,
+                          conditions::Abstract::sptr condition)
 {
     if(m_object->getAttributes().find(name) == m_object->getAttributes().end())
     {
@@ -35,8 +35,8 @@ void Object::addAttribute(const std::string& name,
         {
             m_object->setAttribute(name, value);
             fwAtomsPatchAddAttributeLogMacro("'"
-                    + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
-                    + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
+                                             + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
+                                             + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
         }
     }
     else
@@ -48,30 +48,30 @@ void Object::addAttribute(const std::string& name,
 // ----------------------------------------------------------------------------
 
 void Object::addOrReplaceAttribute(const std::string& name,
-                ::fwAtoms::Base::sptr value,
-                conditions::Abstract::sptr condition)
+                                   ::fwAtoms::Base::sptr value,
+                                   conditions::Abstract::sptr condition)
 {
     if(m_object->getAttributes().find(name) != m_object->getAttributes().end())
     {
         m_object->eraseAttribute(name);
         fwAtomsPatchEraseAttributeLogMacro("'"
-                + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
-                + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
+                                           + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
+                                           + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
     }
 
     if(condition->test(value))
     {
         m_object->setAttribute(name, value);
         fwAtomsPatchAddAttributeLogMacro("'"
-                + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
-                + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
+                                         + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
+                                         + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
     }
 }
 
 // ----------------------------------------------------------------------------
 
 void Object::removeAttribute(const std::string& name,
-                        conditions::Abstract::sptr condition)
+                             conditions::Abstract::sptr condition)
 {
     ::fwAtoms::Object::AttributesType::const_iterator it = m_object->getAttributes().find(name);
 
@@ -81,8 +81,8 @@ void Object::removeAttribute(const std::string& name,
         {
             m_object->eraseAttribute(name);
             fwAtomsPatchEraseAttributeLogMacro("'"
-                    + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
-                    + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
+                                               + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
+                                               + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
         }
     }
     else
@@ -94,16 +94,16 @@ void Object::removeAttribute(const std::string& name,
 // ----------------------------------------------------------------------------
 
 void Object::replaceAttribute(const std::string& name,
-                          ::fwAtoms::Base::sptr newValue,
-                          conditions::Abstract::sptr condition)
+                              ::fwAtoms::Base::sptr newValue,
+                              conditions::Abstract::sptr condition)
 {
     ::fwAtoms::Object::AttributesType::const_iterator cIt = m_object->getAttributes().find(name);
 
     if(cIt != m_object->getAttributes().end())
     {
         fwAtomsPatchReplaceAttributeLogMacro("'"
-                + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
-                + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
+                                             + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
+                                             + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
 
         if(condition->test(cIt->second, newValue))
         {
@@ -113,8 +113,8 @@ void Object::replaceAttribute(const std::string& name,
         {
             m_object->setAttribute(name, condition->getDefaultValue());
             fwAtomsPatchOutOfRangeLogMacro("Value '" + name
-                                + "' is out of range, using default value : '"
-                                + condition->getDefaultValue()->getString() + "'");
+                                           + "' is out of range, using default value : '"
+                                           + condition->getDefaultValue()->getString() + "'");
         }
     }
     else
@@ -136,11 +136,11 @@ void Object::renameAttribute(const std::string& name, const std::string& newName
         {
             ::fwAtoms::Base::sptr base = m_object->getAttribute(name);
             fwAtomsPatchEraseAttributeLogMacro("'"
-                    + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
-                    + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
+                                               + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
+                                               + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + name + "'");
             fwAtomsPatchAddAttributeLogMacro("'"
-                    + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
-                    + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + newName + "'");
+                                             + ::fwAtomsPatch::helper::getClassname(m_object) + "|"
+                                             + ::fwAtomsPatch::helper::getVersion(m_object) + "' : '" + newName + "'");
             m_object->setAttribute(newName, base);
             m_object->eraseAttribute(name);
         }

@@ -1,21 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-
-#include <QMainWindow>
-#include <QToolBar>
-#include <QHBoxLayout>
+#include "fwGuiQt/builder/ToolBarBuilder.hpp"
+#include "fwGuiQt/container/QtContainer.hpp"
+#include "fwGuiQt/container/QtToolBarContainer.hpp"
 
 #include <fwGui/registry/macros.hpp>
 
-#include "fwGuiQt/container/QtContainer.hpp"
-#include "fwGuiQt/container/QtToolBarContainer.hpp"
-#include "fwGuiQt/builder/ToolBarBuilder.hpp"
-
+#include <QHBoxLayout>
+#include <QMainWindow>
+#include <QToolBar>
 
 
 fwGuiRegisterMacro( ::fwGui::builder::ToolBarBuilder, ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
@@ -29,20 +26,22 @@ namespace builder
 //-----------------------------------------------------------------------------
 
 ToolBarBuilder::ToolBarBuilder(::fwGui::GuiBaseObject::Key key)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ToolBarBuilder::~ToolBarBuilder()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent )
 {
     m_parent = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
-    SLM_ASSERT("Sorry, the parent container is not a QtContainer", m_parent);
-    QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() ) ;
+    SLM_ASSERT("The parent container is not a QtContainer", m_parent);
+    QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
 
     QToolBar *toolBar = new QToolBar(QObject::tr("ToolBar"));
     toolBar->setIconSize( QSize(m_toolBitmapSize.first, m_toolBitmapSize.second) );
@@ -56,18 +55,18 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
         Qt::ToolBarArea area;
         switch (m_aligment)
         {
-        case TOP:
-            area = Qt::TopToolBarArea;
-            break;
-        case BOTTOM:
-            area = Qt::BottomToolBarArea;
-            break;
-        case RIGHT:
-            area = Qt::RightToolBarArea;
-            break;
-        case LEFT:
-            area = Qt::LeftToolBarArea;
-            break;
+            case TOP:
+                area = Qt::TopToolBarArea;
+                break;
+            case BOTTOM:
+                area = Qt::BottomToolBarArea;
+                break;
+            case RIGHT:
+                area = Qt::RightToolBarArea;
+                break;
+            case LEFT:
+                area = Qt::LeftToolBarArea;
+                break;
         }
         window->addToolBar( area, toolBar );
 
@@ -81,22 +80,22 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
         QBoxLayout * layout = qobject_cast<QBoxLayout*> ( widget->layout() );
         switch (m_aligment)
         {
-        case TOP:
-            layout->setDirection(QBoxLayout::TopToBottom);
-            toolBar->setOrientation(Qt::Horizontal);
-            break;
-        case BOTTOM:
-            layout->setDirection(QBoxLayout::BottomToTop);
-            toolBar->setOrientation(Qt::Horizontal);
-            break;
-        case RIGHT:
-            layout->setDirection(QBoxLayout::RightToLeft);
-            toolBar->setOrientation(Qt::Vertical);
-            break;
-        case LEFT:
-            layout->setDirection(QBoxLayout::LeftToRight);
-            toolBar->setOrientation(Qt::Vertical);
-            break;
+            case TOP:
+                layout->setDirection(QBoxLayout::TopToBottom);
+                toolBar->setOrientation(Qt::Horizontal);
+                break;
+            case BOTTOM:
+                layout->setDirection(QBoxLayout::BottomToTop);
+                toolBar->setOrientation(Qt::Horizontal);
+                break;
+            case RIGHT:
+                layout->setDirection(QBoxLayout::RightToLeft);
+                toolBar->setOrientation(Qt::Vertical);
+                break;
+            case LEFT:
+                layout->setDirection(QBoxLayout::LeftToRight);
+                toolBar->setOrientation(Qt::Vertical);
+                break;
         }
         SLM_ASSERT("Parent container layout must have be a QVBoxLayout", layout);
         layout->insertWidget(0, toolBar, 0);
@@ -111,13 +110,14 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
 
 void ToolBarBuilder::destroyToolBar()
 {
-    SLM_ASSERT("Sorry, ToolBar not initialized", m_toolBar);
-    SLM_ASSERT("Sorry, the parent container is not a QtContainer", m_parent);
-    QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() ) ;
+    SLM_ASSERT("The ToolBar is not initialized", m_toolBar);
+    SLM_ASSERT("The parent's container is not a QtContainer", m_parent);
+    QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
 
     if (window)
     {
-        ::fwGuiQt::container::QtToolBarContainer::sptr qtToolBar = ::fwGuiQt::container::QtToolBarContainer::dynamicCast(m_toolBar);
+        ::fwGuiQt::container::QtToolBarContainer::sptr qtToolBar =
+            ::fwGuiQt::container::QtToolBarContainer::dynamicCast(m_toolBar);
         QToolBar * toolbar = qtToolBar->getQtToolBar();
         window->removeToolBar( toolbar );
     }

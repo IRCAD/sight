@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWDATAIO_TEST_TU_TRIANTEST_HPP_
-#define _FWDATAIO_TEST_TU_TRIANTEST_HPP_
+#ifndef __FWDATAIO_UT_TRIANTEST_HPP__
+#define __FWDATAIO_UT_TRIANTEST_HPP__
 
 #include <boost/filesystem/operations.hpp>
 
@@ -23,11 +23,11 @@ namespace ut
  */
 class TrianTest : public CPPUNIT_NS::TestFixture
 {
-    CPPUNIT_TEST_SUITE( TrianTest );
-    CPPUNIT_TEST( test_1 );
-    CPPUNIT_TEST( test_2 );
-    CPPUNIT_TEST( file_load_test );
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE( TrianTest );
+CPPUNIT_TEST( test_1 );
+CPPUNIT_TEST( test_2 );
+CPPUNIT_TEST( file_load_test );
+CPPUNIT_TEST_SUITE_END();
 
 
 public:
@@ -50,4 +50,4 @@ protected:
 } //namespace ut
 } //namespace fwDataIO
 
-#endif //_FWDATAIO_TEST_TU_TRIANTEST_HPP_
+#endif //__FWDATAIO_UT_TRIANTEST_HPP__

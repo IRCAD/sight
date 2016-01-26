@@ -1,15 +1,26 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>BasicFrameConfig</id>
-    <type>parameters</type>
-    <parameters>
+    <parameters><!-- Declared the required parameters -->
+        <!--
+            GENERIC_UID is defined by SConfigLauncher. It allows to create unique identifier in case where the
+            configuration is launched multiple times -
+        -->
         <param name="GENERIC_UID" />
+        <!-- 
+            CLOSE_CONFIG_CHANNEL is defined by SConfigLauncher. It allows to connect the frame signal "closed" to the 
+            SConfigLauncher slot "stopConfig".
+            The default value "DummyChannel" is used if the paramter CLOSE_CONFIG_CHANNEL is not defined (for example if
+            the configuration is launched from another service. 
+         -->
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <!-- imageUid is defined by the previous configuration that called the SConfigLauncher. -->
         <param name="imageUid" />
     </parameters>
     <config>
 
         <object uid="${imageUid}" src="ref" type="::fwData::Image">
 
-            <service uid="${GENERIC_UID}_BasicViewerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="${GENERIC_UID}_BasicViewerFrame" impl="::gui::frame::SDefaultFrame">
                 <window onclose="notify" />
                 <gui>
                     <frame>
@@ -22,8 +33,11 @@
                 </registry>
             </service>
 
-            <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="${GENERIC_UID}_SecondView" autoConnect="yes">
-            </service>
+            <service uid="${GENERIC_UID}_SecondView" impl="::vtkSimpleNegato::SRenderer" autoConnect="yes" />
+
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>${GENERIC_UID}_BasicViewerFrame/closed</signal>
+            </proxy>
 
             <start uid="${GENERIC_UID}_BasicViewerFrame" />
             <start uid="${GENERIC_UID}_SecondView" />

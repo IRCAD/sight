@@ -1,62 +1,61 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iterator>
-#include <algorithm>
-#include <functional>
-
-#include <boost/foreach.hpp>
-#include <boost/function.hpp>
-
-#include <fwData/PointList.hpp>
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Material.hpp>
-
-#include <fwComEd/PointListMsg.hpp>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <vtkCubeSource.h>
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
+#ifndef ANDROID
 
 #include "visuVTKAdaptor/PointList.hpp"
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList ) ;
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwData/Material.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
+#include <algorithm>
+#include <iterator>
+#include <functional>
+
+#include <vtkActor.h>
+#include <vtkCubeSource.h>
+#include <vtkPolyDataMapper.h>
+
+#include <boost/function.hpp>
+
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PointList, ::fwData::PointList );
 
 namespace visuVTKAdaptor
 {
+
+static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT     = "addPoint";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
 
 //------------------------------------------------------------------------------
 
 PointList::PointList() throw()
 {
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED );
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED );
-    //addNewHandledEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED );
+    newSlot(s_ADD_POINT_SLOT, &PointList::addPoint, this);
+    newSlot(s_UPDATE_SPLINE_SLOT, &PointList::updateSpline, this);
 }
 
 //------------------------------------------------------------------------------
 
 PointList::~PointList() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
-void PointList::configuring() throw(fwTools::Failed)
+void PointList::doConfigure() throw(fwTools::Failed)
 {
-
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 }
 
 //------------------------------------------------------------------------------
@@ -78,26 +77,23 @@ void PointList::doUpdate() throw(fwTools::Failed)
     this->createServices( points );
 }
 
-//------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
-void PointList::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void PointList::addPoint(::fwData::Point::sptr /*point*/)
 {
-    SLM_TRACE_FUNC();
+    m_oldWeakPointList = m_weakPointList;
+    m_weakPointList    = this->getWeakPointList();
+    this->doUpdate();
+    this->setVtkPipelineModified();
+}
 
-    if ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_REMOVED )
-         || ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_MODIFIED )) )
-    {
-        this->doStop();
-        this->doUpdate();
-        setVtkPipelineModified();
-    }
-    else if ( msg->hasEvent( ::fwComEd::PointListMsg::ELEMENT_ADDED ))
-    {
-        m_oldWeakPointList = m_weakPointList;
-        m_weakPointList    = this->getWeakPointList();
-        this->doUpdate();
-        setVtkPipelineModified();
-    }
+//----------------------------------------------------------------------------------------------------------------
+
+void PointList::updateSpline()
+{
+    this->doStop();
+    this->doUpdate();
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
@@ -121,12 +117,11 @@ void PointList::doStop() throw(fwTools::Failed)
 
 void PointList::createServices(WeakPointListType &wPtList)
 {
-
-    BOOST_FOREACH( ::fwData::Point::wptr wpt, wPtList )
+    for( ::fwData::Point::wptr wpt :  wPtList )
     {
         SLM_ASSERT("Point Expired", !wpt.expired());
 
-        ::fwData::Point::sptr pt = wpt.lock();
+        ::fwData::Point::sptr pt                        = wpt.lock();
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
             ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
                 ( pt, "::visuVTKAdaptor::Point" );
@@ -166,14 +161,16 @@ PointList::WeakPointListType PointList::getNewPoints()
 //            std::back_inserter(newPoints)
 //            );
     bool isFound;
-    BOOST_FOREACH(::fwData::Point::wptr point, m_weakPointList)
+    for(::fwData::Point::wptr point :  m_weakPointList)
     {
         isFound = false;
-        BOOST_FOREACH(::fwData::Point::wptr oldPoint, m_oldWeakPointList)
+        for(::fwData::Point::wptr oldPoint :  m_oldWeakPointList)
         {
             isFound = (point.lock() == oldPoint.lock());
             if(isFound)
+            {
                 break;
+            }
         }
         if(!isFound)
         {
@@ -185,4 +182,17 @@ PointList::WeakPointListType PointList::getNewPoints()
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsType PointList::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::PointList::s_MODIFIED_SIG, s_UPDATE_SPLINE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace visuVTKAdaptor
+
+#endif // ANDROID

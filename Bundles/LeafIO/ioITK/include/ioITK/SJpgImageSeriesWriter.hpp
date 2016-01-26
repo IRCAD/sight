@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,19 +12,19 @@
 
 #include <io/IWriter.hpp>
 
-#include "ioITK/export.hpp"
+#include "ioITK/config.hpp"
 
 namespace ioITK
 {
 
 /**
-* @brief Write an image to jpg format
-**/
+ * @brief Write an image to jpg format
+ **/
 class IOITK_CLASS_API SJpgImageSeriesWriter : public ::io::IWriter
 {
 
-public :
-    fwCoreServiceClassDefinitionsMacro ( (SJpgImageSeriesWriter)( ::io::IWriter) ) ;
+public:
+    fwCoreServiceClassDefinitionsMacro ( (SJpgImageSeriesWriter)( ::io::IWriter) );
 
     IOITK_API SJpgImageSeriesWriter() throw();
 
@@ -42,10 +42,7 @@ protected:
     IOITK_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed) {} ;
-
-    /// Override
-    IOITK_API void info(std::ostream &_sstream ) ;
+    IOITK_API void info(std::ostream &_sstream );
 
     /// Override
     IOITK_API virtual void configureWithIHM();

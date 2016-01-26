@@ -1,29 +1,36 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VTKIO_MODELSERIESOBJWRITER_HPP__
-#define __VTKIO_MODELSERIESOBJWRITER_HPP__
+#ifndef __FWVTKIO_MODELSERIESOBJWRITER_HPP__
+#define __FWVTKIO_MODELSERIESOBJWRITER_HPP__
 
-#include <boost/filesystem/path.hpp>
-
-#include <fwDataIO/writer/GenericObjectWriter.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwTools/ProgressAdviser.hpp>
+#ifndef ANDROID
 
 #include "fwVtkIO/config.hpp"
 
+#include <fwDataIO/writer/GenericObjectWriter.hpp>
+#include <fwData/location/Folder.hpp>
+
+#include <boost/filesystem/path.hpp>
+
 namespace fwData
 {
-    class Reconstruction;
+class Reconstruction;
 }
 
 namespace fwMedData
 {
-    class ModelSeries;
+class ModelSeries;
 }
+
+namespace fwJobs
+{
+class Observer;
+}
+
 
 namespace fwVtkIO
 {
@@ -35,37 +42,44 @@ namespace fwVtkIO
  * Write a ::fwData::Reconstruction as .obj file using the VTK lib and the obj format.
  */
 class ModelSeriesObjWriter : public ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >,
-                             public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >,
-                             public ::fwTools::ProgressAdviser
+                             public ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro(
-            (ModelSeriesObjWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >),
-            (()),
-            ::fwDataIO::writer::factory::New< ModelSeriesObjWriter >
-            );
+        (ModelSeriesObjWriter)( ::fwDataIO::writer::GenericObjectWriter< ::fwMedData::ModelSeries >),
+        (()),
+        ::fwDataIO::writer::factory::New< ModelSeriesObjWriter >
+        );
 
     fwCoreAllowSharedFromThis();
 
     //! Constructor.
-    VTKIO_API ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key key);
+    FWVTKIO_API ModelSeriesObjWriter(::fwDataIO::writer::IObjectWriter::Key key);
 
     //! Destructor.
-    VTKIO_API ~ModelSeriesObjWriter();
+    FWVTKIO_API ~ModelSeriesObjWriter();
 
     //! Writing operator.
-    VTKIO_API void write();
+    FWVTKIO_API void write();
 
     /**
      * @return ".obj"
      */
-    VTKIO_API std::string extension();
+    FWVTKIO_API std::string extension();
 
+    /// @return internal job
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+
+private:
+
+    ///Internal job
+    SPTR(::fwJobs::Observer) m_job;
 };
 
 } // namespace fwVtkIO
 
-#endif // __VTKIO_MODELSERIESOBJWRITER_HPP__
+#endif // ANDROID
 
+#endif //__FWVTKIO_MODELSERIESOBJWRITER_HPP__

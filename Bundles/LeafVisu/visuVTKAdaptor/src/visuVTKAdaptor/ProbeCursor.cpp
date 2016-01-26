@@ -1,49 +1,51 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/foreach.hpp>
-#include <boost/format.hpp>
+#include "visuVTKAdaptor/ImageText.hpp"
+#include "visuVTKAdaptor/ProbeCursor.hpp"
 
-
-#include <fwData/Integer.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/ImageMsg.hpp>
 #include <fwComEd/helper/Image.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/TransferFunction.hpp>
+
+#include <fwRenderVTK/vtk/Helpers.hpp>
+
 #include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <vtkRenderWindowInteractor.h>
 #include <vtkAbstractPropPicker.h>
-#include <vtkInteractorStyleImage.h>
+#include <vtkActor.h>
+#include <vtkCellArray.h>
+#include <vtkCellData.h>
 #include <vtkCommand.h>
-
+#include <vtkInteractorStyleImage.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
+#include <vtkRenderWindowInteractor.h>
 #include <vtkTextActor.h>
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
-#include <vtkProperty.h>
-
-#include <vtkActor.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkPolyData.h>
-#include <vtkCellArray.h>
-#include <vtkCellData.h>
 #include <vtkTransform.h>
 
-#include "fwRenderVTK/vtk/Helpers.hpp"
-#include "visuVTKAdaptor/ImageText.hpp"
 
-#include "visuVTKAdaptor/ProbeCursor.hpp"
+#include <boost/format.hpp>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image ) ;
+
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ProbeCursor, ::fwData::Image );
 
 
 #define START_PROBE_EVENT vtkCommand::LeftButtonPressEvent
@@ -59,19 +61,20 @@ class ProbingCallback : public vtkCommand
 {
 public:
     static ProbingCallback *New()
-    { return new ProbingCallback(); }
-
-    ProbingCallback()
-        : m_priority(-1),
-          m_mouseMoveObserved(false)
     {
-        m_picker = NULL;
+        return new ProbingCallback();
+    }
+
+    ProbingCallback() :
+        m_picker(nullptr),
+        m_priority(-1),
+        m_mouseMoveObserved(false)
+    {
         this->PassiveObserverOff();
     }
 
     ~ProbingCallback()
     {
-
     }
 
     virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
@@ -94,7 +97,7 @@ public:
                     m_mouseMoveObserved = true;
                     SetAbortFlag(1);
                     m_adaptor->setVisibility(true);
-                    m_adaptor->StartProbeCursor();
+                    m_adaptor->startProbeCursor();
                     process();
                     m_adaptor->getInteractor()->AddObserver(vtkCommand::MouseMoveEvent, this, m_priority);
                 }
@@ -119,7 +122,7 @@ public:
         display[1] = y;
         display[2] = 0;
 
-        return  m_picker->Pick( display , m_adaptor->getRenderer() );
+        return m_picker->Pick( display, m_adaptor->getRenderer() );
     }
 
 
@@ -150,29 +153,29 @@ public:
         m_priority = priority;
     }
 
-protected :
+protected:
     ProbeCursor::sptr m_adaptor;
     vtkAbstractPropPicker *m_picker;
-    float    m_priority;
+    float m_priority;
 
     bool m_mouseMoveObserved;
 
 };
 
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+
 //------------------------------------------------------------------------------
 
-ProbeCursor::ProbeCursor() throw()
-: m_priority(.6)
-, m_textActor(vtkActor2D::New())
-, m_textMapper(vtkTextMapper::New())
-, m_cursorPolyData( vtkPolyData::New() )
-, m_cursorMapper  ( vtkPolyDataMapper::New() )
-, m_cursorActor(    vtkActor::New() )
+ProbeCursor::ProbeCursor() throw() :
+    m_priority(.6),
+    m_vtkObserver(nullptr),
+    m_textActor(vtkActor2D::New()),
+    m_textMapper(vtkTextMapper::New()),
+    m_cursorPolyData( vtkPolyData::New() ),
+    m_cursorMapper(vtkPolyDataMapper::New() ),
+    m_cursorActor(vtkActor::New() )
 {
-    ////handlingEventOff();
-    //addNewHandledEvent( ::fwComEd::ImageMsg::BUFFER );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::NEW_IMAGE );
-    //addNewHandledEvent( ::fwComEd::ImageMsg::SLICE_INDEX );
+    newSlot(s_UPDATE_SLICE_INDEX_SLOT, &ProbeCursor::updateSliceIndex, this);
 }
 
 //------------------------------------------------------------------------------
@@ -183,9 +186,9 @@ ProbeCursor::~ProbeCursor() throw()
     m_textActor->Delete();
 
     m_cursorActor->Delete();
-    m_cursorActor = NULL;
+    m_cursorActor = nullptr;
     m_cursorMapper->Delete();
-    m_cursorMapper = NULL;
+    m_cursorMapper = nullptr;
     m_cursorPolyData->Delete();
 }
 
@@ -195,22 +198,13 @@ void ProbeCursor::setVisibility( bool visibility )
     m_textActor->SetVisibility(visibility);
     m_cursorActor->SetVisibility(visibility);
     this->setVtkPipelineModified();
-    this->updating();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::configuring() throw(fwTools::Failed)
+void ProbeCursor::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    if(m_configuration->hasAttribute("transform") )
-    {
-        this->setTransformId( m_configuration->getAttributeValue("transform") );
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -271,6 +265,9 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
 
 void ProbeCursor::doUpdate() throw(fwTools::Failed)
 {
+    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    this->updateImageInfos(image);
+    this->setVisibility(false);
 }
 
 //------------------------------------------------------------------------------
@@ -288,30 +285,22 @@ void ProbeCursor::doStop() throw(fwTools::Failed)
     this->getInteractor()->RemoveObservers(START_PROBE_EVENT, m_vtkObserver);
     this->getInteractor()->RemoveObservers(STOP_PROBE_EVENT, m_vtkObserver);
     m_vtkObserver->Delete();
-    m_vtkObserver = NULL;
+    m_vtkObserver = nullptr;
     this->removeAllPropFromRenderer();
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void ProbeCursor::doReceive( ::fwServices::ObjectMsg::csptr msg) throw(fwTools::Failed)
+void ProbeCursor::updateSliceIndex(int axial, int frontal, int sagittal)
 {
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::BUFFER ) || ( msg->hasEvent( ::fwComEd::ImageMsg::NEW_IMAGE )) )
-    {
-        ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-        this->updateImageInfos(image);
-        this->setVisibility(false);
-    }
-
-    if ( msg->hasEvent( ::fwComEd::ImageMsg::SLICE_INDEX ) )
-    {
-        ::fwComEd::ImageMsg::dynamicConstCast(msg)->getSliceIndex( m_axialIndex, m_frontalIndex, m_sagittalIndex);
-    }
+    m_axialIndex->value()    = axial;
+    m_frontalIndex->value()  = frontal;
+    m_sagittalIndex->value() = sagittal;
 }
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::StartProbeCursor( )
+void ProbeCursor::startProbeCursor( )
 {
 }
 
@@ -332,7 +321,7 @@ void ProbeCursor::updateView( double world[3] )
          index[0]>= image->getSize()[0] ||
          index[1]>= image->getSize()[1] ||
          index[2]>= image->getSize()[2]
-        )
+         )
     {
         txt = "(---,---,---)";
         m_textMapper->SetInput(txt.c_str());
@@ -351,7 +340,7 @@ void ProbeCursor::updateView( double world[3] )
         this->computeCrossExtremity( index, worldCross);
 
         vtkPoints* points = m_cursorPolyData->GetPoints();
-        for ( int i=0; i < 4; ++i)
+        for ( int i = 0; i < 4; ++i)
         {
             OSLM_TRACE("p=" << worldCross[i][0] << "," << worldCross[i][2] << "," << worldCross[i][2] << "," );
             points->SetPoint(i,worldCross[i]);
@@ -359,12 +348,12 @@ void ProbeCursor::updateView( double world[3] )
         m_cursorPolyData->Modified();
     }
     this->setVtkPipelineModified();
-    this->updating();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldCross[4][3] )
+void ProbeCursor::computeCrossExtremity( const int probeSlice[3], double worldCross[4][3] )
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
@@ -375,7 +364,7 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
     sliceIndex[0] = m_sagittalIndex->value();
 
     double probeWorld[3]; // probe index in world positioning system
-    for (int dim=0; dim<3; ++dim )
+    for (int dim = 0; dim<3; ++dim )
     {
         if ( probeSlice[dim]==sliceIndex[dim] ) // FIXME if (sliceIndex==probeWorld)
         {
@@ -384,18 +373,18 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
         probeWorld[dim] = probeSlice[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
     }
 
-    for ( int p=0; p<2; ++p )
+    for ( int p = 0; p<2; ++p )
     {
-        for (int dim=0; dim<3; ++dim )
+        for (int dim = 0; dim<3; ++dim )
         {
-            worldCross[p][dim] = probeWorld[dim];
+            worldCross[p][dim]   = probeWorld[dim];
             worldCross[p+2][dim] = probeWorld[dim];
             if ( (dim + p + 1)%3 == m_orientation )
             {
-                worldCross[p][dim] = image->getOrigin().at(dim);
-                ::fwData::Image::SizeType::value_type size = image->getSize().at(dim)-1;
+                worldCross[p][dim]                               = image->getOrigin().at(dim);
+                ::fwData::Image::SizeType::value_type size       = image->getSize().at(dim)-1;
                 ::fwData::Image::SpacingType::value_type spacing = image->getSpacing().at(dim);
-                worldCross[p+2][dim] =  size * spacing + image->getOrigin().at(dim);
+                worldCross[p+2][dim]                             = size * spacing + image->getOrigin().at(dim);
             }
         }
     }
@@ -406,22 +395,22 @@ void ProbeCursor::computeCrossExtremity( const int probeSlice[3] , double worldC
 void ProbeCursor::buildPolyData()
 {
     // point are stored Left,right,up,down
-    int nbPoints = 4;
-    vtkPoints* points   = vtkPoints::New(VTK_DOUBLE);
+    int nbPoints      = 4;
+    vtkPoints* points = vtkPoints::New(VTK_DOUBLE);
     points->SetNumberOfPoints(nbPoints);
     int i;
     for (i = 0; i < nbPoints; i++)
     {
-        points->SetPoint(i, 0.0, 0.0 , 0.0);
+        points->SetPoint(i, 0.0, 0.0, 0.0);
     }
 
     vtkCellArray *cells = vtkCellArray::New();
     cells->Allocate(cells->EstimateSize(nbPoints,2));
 
     vtkIdType pts[2];
-    pts[0]=0;pts[1]=2;
+    pts[0] = 0; pts[1] = 2;
     cells->InsertNextCell(2,pts);
-    pts[0]=1;pts[1]=3;
+    pts[0] = 1; pts[1] = 3;
     cells->InsertNextCell(2,pts);
 
     m_cursorPolyData->SetPoints(points);
@@ -431,5 +420,18 @@ void ProbeCursor::buildPolyData()
     this->setVtkPipelineModified();
 }
 
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsType ProbeCursor::getObjSrvConnections() const
+{
+    KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor

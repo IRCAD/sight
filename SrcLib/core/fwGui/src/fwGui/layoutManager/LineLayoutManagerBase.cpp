@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,11 +8,8 @@
  * @file fwGui/layoutManager/LineLayoutManagerBase.cpp
  * @brief This file defines the implementation of the class for managing a line layout geometry.
  *
- * 
- * @date 2009-2010
  */
 
-#include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <fwCore/base.hpp>
@@ -26,36 +23,38 @@ namespace layoutManager
 {
 //-----------------------------------------------------------------------------
 
-const LineLayoutManagerBase::RegistryKeyType LineLayoutManagerBase::REGISTRY_KEY =  "::fwGui::LineLayoutManager";
+const LineLayoutManagerBase::RegistryKeyType LineLayoutManagerBase::REGISTRY_KEY = "::fwGui::LineLayoutManager";
 
 //-----------------------------------------------------------------------------
 
 LineLayoutManagerBase::LineLayoutManagerBase() : m_orientation(VERTICAL)
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 LineLayoutManagerBase::~LineLayoutManagerBase()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void LineLayoutManagerBase::initialize( ConfigurationType configuration)
 {
     OSLM_ASSERT("Bad configuration name "<<configuration->getName()<< ", must be layout",
-            configuration->getName() == "layout");
+                configuration->getName() == "layout");
 
     std::vector < ConfigurationType > vectOrientation = configuration->find("orientation");
 
-    SLM_FATAL_IF( "missing orientation configuration" , vectOrientation.empty() );
+    SLM_FATAL_IF( "missing orientation configuration", vectOrientation.empty() );
     SLM_ASSERT("<orientation> tag must have value attribute", vectOrientation.at(0)->hasAttribute("value"));
-    std::string orientation = vectOrientation.at(0)->getExistingAttributeValue("value") ;
+    std::string orientation = vectOrientation.at(0)->getExistingAttributeValue("value");
     SLM_ASSERT("Wrong value '"<< orientation <<"' for 'orientation' attribute (require vertical or horizontal)",
-            orientation == "vertical" || orientation == "horizontal");
-    m_orientation = (orientation == "vertical")? VERTICAL:HORIZONTAL ;
+               orientation == "vertical" || orientation == "horizontal");
+    m_orientation = (orientation == "vertical") ? VERTICAL : HORIZONTAL;
 
     m_views.clear();
-    BOOST_FOREACH (ConfigurationType view, configuration->getElements())
+    for (ConfigurationType view : configuration->getElements())
     {
         if( view->getName() == "spacer" )
         {
@@ -68,43 +67,43 @@ void LineLayoutManagerBase::initialize( ConfigurationType configuration)
             ViewInfo vi;
             if( view->hasAttribute("proportion") )
             {
-                std::string proportion = view->getExistingAttributeValue("proportion") ;
-                vi.m_proportion = ::boost::lexical_cast< int >(proportion) ;
+                std::string proportion = view->getExistingAttributeValue("proportion");
+                vi.m_proportion = ::boost::lexical_cast< int >(proportion);
             }
             if( view->hasAttribute("border") )
             {
-                std::string border = view->getExistingAttributeValue("border") ;
-                vi.m_border = ::boost::lexical_cast< int >(border) ;
+                std::string border = view->getExistingAttributeValue("border");
+                vi.m_border = ::boost::lexical_cast< int >(border);
             }
             if( view->hasAttribute("caption") )
             {
-                vi.m_caption.first = true;
-                vi.m_caption.second = view->getExistingAttributeValue("caption") ;
+                vi.m_caption.first  = true;
+                vi.m_caption.second = view->getExistingAttributeValue("caption");
             }
             if( view->hasAttribute("minWidth") )
             {
-                std::string width = view->getExistingAttributeValue("minWidth") ;
-                vi.m_minSize.first = ::boost::lexical_cast< int >(width) ;
+                std::string width = view->getExistingAttributeValue("minWidth");
+                vi.m_minSize.first = ::boost::lexical_cast< int >(width);
             }
             if( view->hasAttribute("minHeight") )
             {
-                std::string height = view->getExistingAttributeValue("minHeight") ;
-                vi.m_minSize.second = ::boost::lexical_cast< int >(height) ;
+                std::string height = view->getExistingAttributeValue("minHeight");
+                vi.m_minSize.second = ::boost::lexical_cast< int >(height);
             }
             if( view->hasAttribute("visible") )
             {
-                std::string visible = view->getExistingAttributeValue("visible") ;
+                std::string visible = view->getExistingAttributeValue("visible");
                 OSLM_ASSERT("Incorrect value for \"visible\" attribute "<<visible,
-                        (visible == "true") || (visible == "false") ||
-                        (visible == "yes") || (visible == "no"));
+                            (visible == "true") || (visible == "false") ||
+                            (visible == "yes") || (visible == "no"));
                 vi.m_visible = ((visible == "true") || (visible == "yes"));
             }
             if( view->hasAttribute("useScrollBar") )
             {
-                std::string useScrollBar = view->getExistingAttributeValue("useScrollBar") ;
+                std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
                 OSLM_ASSERT("Incorrect value for \"useScrollBar\" attribute "<<useScrollBar,
-                        (useScrollBar == "yes") || (useScrollBar == "no"));
-                vi.m_useScrollBar = (useScrollBar=="yes") ;
+                            (useScrollBar == "yes") || (useScrollBar == "no"));
+                vi.m_useScrollBar = (useScrollBar=="yes");
             }
             m_views.push_back(vi);
         }

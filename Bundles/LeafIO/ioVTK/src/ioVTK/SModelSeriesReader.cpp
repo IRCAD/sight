@@ -1,47 +1,59 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/operations.hpp>
+#include "ioVTK/SMeshWriter.hpp"
+#include "ioVTK/SModelSeriesReader.hpp"
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/ObjectMsg.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 
 #include <fwCore/base.hpp>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
 #include <fwData/location/Folder.hpp>
-#include <fwData/location/MultiFiles.hpp>
 #include <fwData/location/ILocation.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
-
-#include <fwComEd/ModelSeriesMsg.hpp>
+#include <fwData/location/MultiFiles.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/Reconstruction.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/ILocationDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+
+#include <fwServices/Base.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTools/UUID.hpp>
 
 #include <fwVtkIO/MeshReader.hpp>
 
-#include "ioVTK/MeshWriterService.hpp"
-#include "ioVTK/SModelSeriesReader.hpp"
+#include <boost/filesystem/operations.hpp>
 
 
 namespace ioVTK
 {
 
-fwServicesRegisterMacro( ::io::IReader , ::ioVTK::SModelSeriesReader , ::fwMedData::ModelSeries ) ;
+fwServicesRegisterMacro( ::io::IReader, ::ioVTK::SModelSeriesReader, ::fwMedData::ModelSeries );
+
+static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
+
+//------------------------------------------------------------------------------
+
+SModelSeriesReader::SModelSeriesReader() throw()
+{
+    m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
+}
 
 //------------------------------------------------------------------------------
 
@@ -64,7 +76,7 @@ void SModelSeriesReader::configureWithIHM()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::MultiFiles::sptr  result;
+    ::fwData::location::MultiFiles::sptr result;
     result = ::fwData::location::MultiFiles::dynamicCast( dialogFile.show() );
     if (result)
     {
@@ -110,13 +122,14 @@ void SModelSeriesReader::updating() throw(::fwTools::Failed)
     if(  this->hasLocationDefined() )
     {
         // Retrieve dataStruct associated with this service
-        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >() ;
+        ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
 
         ::fwMedData::ModelSeries::ReconstructionVectorType recDB = modelSeries->getReconstructionDB();
-        BOOST_FOREACH(const ::fwData::location::ILocation::PathType& file, this->getFiles())
+        ::fwMedData::ModelSeries::ReconstructionVectorType addedRecs;
+        for(const ::fwData::location::ILocation::PathType& file :  this->getFiles())
         {
             ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
             this->loadMesh(file, mesh);
@@ -126,13 +139,17 @@ void SModelSeriesReader::updating() throw(::fwTools::Failed)
             rec->setIsVisible(true);
             rec->setOrganName(file.stem().string());
             recDB.push_back(rec);
+            addedRecs.push_back(rec);
         }
         cursor.setDefaultCursor();
         modelSeries->setReconstructionDB(recDB);
 
-        ::fwComEd::ModelSeriesMsg::sptr msg = ::fwComEd::ModelSeriesMsg::New();
-        msg->addEvent( ::fwComEd::ModelSeriesMsg::ADD_RECONSTRUCTION ) ;
-        ::fwServices::IEditionService::notify(this->getSptr(), modelSeries, msg);
+        auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType >(
+            ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit(addedRecs);
+        }
     }
 }
 
@@ -145,10 +162,10 @@ void SModelSeriesReader::loadMesh( const ::boost::filesystem::path file, ::fwDat
     reader->setObject(mesh);
     reader->setFile(file);
 
+    m_sigJobCreated->emit(reader->getJob());
+
     try
     {
-        ::fwGui::dialog::ProgressDialog progressMeterGUI("Loading Mesh");
-        reader->addHandler( progressMeterGUI );
         ::fwData::mt::ObjectWriteLock lock(mesh);
         reader->read();
     }
@@ -157,16 +174,16 @@ void SModelSeriesReader::loadMesh( const ::boost::filesystem::path file, ::fwDat
         std::stringstream stream;
         stream << "Warning during loading : " << e.what();
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                stream.str(),
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            stream.str(),
+            ::fwGui::dialog::IMessageDialog::WARNING);
     }
     catch( ... )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Warning",
-                "Warning during loading.",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+            "Warning",
+            "Warning during loading.",
+            ::fwGui::dialog::IMessageDialog::WARNING);
     }
 }
 

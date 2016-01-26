@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,19 +19,19 @@ public:
     ~Plugin() throw();
 
     /**
-    * @brief Start method.
-    *
-    * This method is used by runtime in order to initialize the bundle.
-    *
-    * @exception ::fwRuntime::RuntimeException
-    */
+     * @brief Start method.
+     *
+     * This method is used by runtime in order to initialize the bundle.
+     *
+     * @exception ::fwRuntime::RuntimeException
+     */
     void start() throw(::fwRuntime::RuntimeException);
 
     /**
-    * @brief Stop method.
-    *
-    * This method is used by runtime in order to close the bundle.
-    */
+     * @brief Stop method.
+     *
+     * This method is used by runtime in order to close the bundle.
+     */
     void stop() throw();
 
 };

@@ -1,15 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _FWCOMED_MEDICALIMAGEADAPTOR_HPP_
-#define _FWCOMED_MEDICALIMAGEADAPTOR_HPP_
+#ifndef __FWCOMED_HELPER_MEDICALIMAGEADAPTOR_HPP__
+#define __FWCOMED_HELPER_MEDICALIMAGEADAPTOR_HPP__
 
-#include <vector>
+#include "fwComEd/helper/ImageGetter.hpp"
+#include "fwComEd/config.hpp"
 
-#include <fwCom/Connection.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
@@ -18,9 +20,7 @@
 
 #include <fwServices/helper/SigSlotConnection.hpp>
 
-#include "fwComEd/TransferFunctionMsg.hpp"
-#include "fwComEd/helper/ImageGetter.hpp"
-#include "fwComEd/export.hpp"
+#include <vector>
 
 
 namespace fwComEd
@@ -43,11 +43,12 @@ public:
 
 
     /// Image orientation
-    typedef enum {
+    typedef enum
+    {
         X_AXIS = 0,
         Y_AXIS,
         Z_AXIS
-    } Orientation ;
+    } Orientation;
 
     /// Destructor. Do nothing.
     FWCOMED_API virtual ~MedicalImageAdaptor();
@@ -56,7 +57,10 @@ public:
     FWCOMED_API virtual void setOrientation( Orientation orientation );
 
     /// Return the image orientation.
-    Orientation getOrientation(){ return m_orientation; }
+    Orientation getOrientation() const
+    {
+        return m_orientation;
+    }
 
 
 
@@ -218,7 +222,7 @@ protected:
     FWCOMED_API void updateImageInfos( ::fwData::Image::sptr image  );
 
     /// Update the transfer function information
-    FWCOMED_API void updateTransferFunction( ::fwData::Image::sptr image, ::fwServices::IService::sptr srv );
+    FWCOMED_API void updateTransferFunction( ::fwData::Image::sptr image );
 
     /// Return the image
     FWCOMED_API ::fwData::Image::sptr getImage();
@@ -236,24 +240,84 @@ protected:
     /// Sagittal slice index
     ::fwData::Integer::sptr m_sagittalIndex;
 
-    // Install TF pool event handler (CHANGED_KEYS, ADDED_KEYS and REMOVED_KEYS)
-    FWCOMED_API void installTFSelectionEventHandler( ::fwServices::IService* srv );
+    /**
+     * @name Connections to transfer function
+     * @{
+     */
 
-    // Install TF Observer ( com channel )
-    FWCOMED_API void installTFObserver( ::fwServices::IService::sptr srv );
+    /// Install connections to listen TF modifications
+    FWCOMED_API void installTFConnections();
 
-    // Remove TF Observer ( com channel )
-    FWCOMED_API void removeTFObserver();
+    /// Remove the TF connections
+    FWCOMED_API void removeTFConnections();
 
-    FWCOMED_API bool upadteTFObserver(::fwServices::ObjectMsg::csptr msg, ::fwServices::IService::sptr srv);
+    /**
+     *  @brief Called when transfer function points are modified.
+     *
+     *  It must be reimplemented to upadte TF.
+     */
+    FWCOMED_API virtual void updatingTFPoints();
 
-    // Helper to send a windowing notification in the current tf
-    FWCOMED_API ::fwComEd::TransferFunctionMsg::sptr notifyTFWindowing( ::fwServices::IService::sptr srv );
+    /**
+     *  @brief Called when transfer function windowing is modified.
+     *
+     *  It must be reimplemented to upadte TF.
+     */
+    FWCOMED_API virtual void updatingTFWindowing(double window, double level);
 
-private :
+    /**
+     * @brief Install the slots to managed TF modifications.
+     *
+     * Creates slots to listen TF selection Composite and TransferFunction signals.
+     *
+     * @warning It must be called in the service constructor
+     */
+    FWCOMED_API void installTFSlots(::fwCom::HasSlots* hasslots);
 
-    ::fwCom::Connection m_tfSelectionConnection;
-    ::fwCom::Connection m_tfConnection;
+    /// Slot: add objects
+    void addObjects(::fwData::Composite::ContainerType objects);
+
+    /// Slot: change objects
+    void changeObjects(::fwData::Composite::ContainerType newObjects, ::fwData::Composite::ContainerType oldObjects);
+
+    /// Slot: remove objects
+    void removeObjects(::fwData::Composite::ContainerType objects);
+
+    /// Slot: called when transfer function points are modified
+    void updateTFPoints();
+
+    /// Slot: called when transfer function windowing is modified
+    void updateTFWindowing(double window, double level);
+
+    typedef ::fwCom::Slot<void (::fwData::Composite::ContainerType)> AddedObjectsSlotType;
+    typedef ::fwCom::Slot<void (::fwData::Composite::ContainerType,
+                                ::fwData::Composite::ContainerType)> ChangedObjectsSlotType;
+    typedef ::fwCom::Slot<void (::fwData::Composite::ContainerType)> RemovedObjectsSlotType;
+    typedef ::fwCom::Slot<void ()> UpdateTFPointsSlotType;
+    typedef ::fwCom::Slot<void (double, double)> UpdateTFWindowingSlotType;
+
+    /// Slot called when objects are added into the composite
+    AddedObjectsSlotType::sptr m_slotAddedObjects;
+
+    /// Slot called when objects are changed into the composite
+    ChangedObjectsSlotType::sptr m_slotChangedObjects;
+
+    /// Slot called when objects are removed from the composite
+    RemovedObjectsSlotType::sptr m_slotRemovedObjects;
+
+    /// Slot called when transfer function points are modified
+    UpdateTFPointsSlotType::sptr m_slotUpdateTFPoints;
+
+    /// Slot called when transfer function windowing is modified
+    UpdateTFWindowingSlotType::sptr m_slotUpdateTFWindowing;
+    /**
+     * @}
+     */
+
+private:
+
+    ::fwServices::helper::SigSlotConnection::sptr m_tfSelectionConnections;
+    ::fwServices::helper::SigSlotConnection::sptr m_tfConnections;
 
     /// Transfer function selection
     ::fwData::Composite::wptr m_tfSelection;
@@ -266,12 +330,13 @@ private :
 
 };
 
-struct Image0 {} ;
-struct Image1 {} ;
+struct Image0 {};
+struct Image1 {};
 
 template < typename IMAGEID >
 class FWCOMED_CLASS_API MedicalImageAdaptorTpl : public MedicalImageAdaptor
-{};
+{
+};
 
 typedef MedicalImageAdaptorTpl<Image0> MedicalImageAdaptorImg0;
 typedef MedicalImageAdaptorTpl<Image1> MedicalImageAdaptorImg1;
@@ -281,7 +346,7 @@ typedef MedicalImageAdaptorTpl<Image1> MedicalImageAdaptorImg1;
 template< typename FLOAT_ARRAY_3 >
 void MedicalImageAdaptor::getImageSpacing(FLOAT_ARRAY_3 spacing)
 {
-    ::fwData::Image::sptr image = this->getImage();;
+    ::fwData::Image::sptr image = this->getImage();
 
     const ::fwData::Image::SpacingType imSpacing = image->getSpacing();
     std::copy(imSpacing.begin(), imSpacing.end(), spacing);
@@ -306,9 +371,11 @@ void MedicalImageAdaptor::worldToSliceIndex(const WORLD world, INT_INDEX index )
     this->getImageSpacing(spacing);
     double origin[3];
     this->getImageOrigin(origin);
-    for ( int i=0 ; i<3 ; ++i )
+    for ( int i = 0; i<3; ++i )
     {
-        index[i] = static_cast< int >( ( (world[i] - origin[i])/spacing[i] ) + ( ( (world[i] - origin[i])/spacing[i] ) >= 0 ? 0.5 : -0.5 ) );
+        index[i] =
+            static_cast< int >( ( (world[i] - origin[i])/spacing[i] ) +
+                                ( ( (world[i] - origin[i])/spacing[i] ) >= 0 ? 0.5 : -0.5 ) );
     }
 }
 
@@ -341,5 +408,5 @@ void MedicalImageAdaptor::worldToImageSliceIndex(const WORLD world, INT_INDEX in
 
 } //namespace fwComEd
 
-#endif // _FWCOMED_MEDICALIMAGEADAPTOR_HPP_
+#endif // __FWCOMED_HELPER_MEDICALIMAGEADAPTOR_HPP__
 

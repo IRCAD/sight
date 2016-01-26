@@ -1,21 +1,26 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _VTKIO_MESHREADER_HPP_
-#define _VTKIO_MESHREADER_HPP_
+#ifndef __FWVTKIO_MESHREADER_HPP__
+#define __FWVTKIO_MESHREADER_HPP__
 
-#include <boost/filesystem/path.hpp>
+#include "fwVtkIO/config.hpp"
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 #include <fwData/location/SingleFile.hpp>
-#include <fwTools/ProgressAdviser.hpp>
 
 #include <fwData/Mesh.hpp>
 
-#include "fwVtkIO/config.hpp"
+#include <boost/filesystem/path.hpp>
+
+namespace fwJobs
+{
+class Observer;
+class IJob;
+}
 
 namespace fwVtkIO
 {
@@ -23,38 +28,43 @@ namespace fwVtkIO
 /**
  * @brief   Read a mesh.
  * @class   MeshReader
- * 
- * @date    2011.
  *
  * Read a VTK Mesh using the VTK lib
  */
 
 class MeshReader : public ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >,
-                             public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >,
-                             public ::fwTools::ProgressAdviser
+                   public ::fwData::location::enableSingleFile< ::fwDataIO::reader::IObjectReader >
 {
 
-public :
+public:
 
     fwCoreClassDefinitionsWithFactoryMacro((MeshReader)( ::fwDataIO::reader::GenericObjectReader< ::fwData::Mesh >),
                                            (()),
                                            ::fwDataIO::reader::factory::New< MeshReader >
-                                          );
+                                           );
     fwCoreAllowSharedFromThis();
 
     //! @brief Constructor.
-    VTKIO_API MeshReader(::fwDataIO::reader::IObjectReader::Key key);
+    FWVTKIO_API MeshReader(::fwDataIO::reader::IObjectReader::Key key);
 
     //! @brief Destructor.
-    VTKIO_API ~MeshReader();
+    FWVTKIO_API ~MeshReader();
 
     //! @brief Reading operator.
-    VTKIO_API void read();
+    FWVTKIO_API void read();
 
     /// @return ".vtk"
-    VTKIO_API  std::string extension();
+    FWVTKIO_API std::string extension();
+    /// @return internal job
+    FWVTKIO_API SPTR(::fwJobs::IJob) getJob() const;
+
+private:
+
+    ///Internal job
+    SPTR(::fwJobs::Observer) m_job;
+
 };
 
 } // namespace fwVtkIO
 
-#endif // _VTKIO_MESHREADER_HPP_
+#endif // __FWVTKIO_MESHREADER_HPP__

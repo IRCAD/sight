@@ -1,20 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef FWGUIQT_SELECTORDIALOG_HPP_
-#define FWGUIQT_SELECTORDIALOG_HPP_
+#ifndef __FWGUIQT_DIALOG_SELECTORDIALOG_HPP__
+#define __FWGUIQT_DIALOG_SELECTORDIALOG_HPP__
 
-#include <vector>
 
-#include <QDialog>
-#include <QString>
-#include <QWidget>
+#include "fwGuiQt/config.hpp"
 
 #include <fwGui/dialog/ISelectorDialog.hpp>
-#include "fwGuiQt/config.hpp"
+
+#include <vector>
 
 namespace fwGuiQt
 {
@@ -25,11 +23,10 @@ namespace dialog
 /**
  * @brief   SelectorDialog allowing the choice of an element among severals (_selections)
  * @class   SelectorDialog
- * 
+ *
  * @date    2009.
  */
-
-class FWGUIQT_CLASS_API SelectorDialog : public ::fwGui::dialog::ISelectorDialog,  public QDialog
+class FWGUIQT_CLASS_API SelectorDialog : public ::fwGui::dialog::ISelectorDialog
 {
 public:
 
@@ -37,7 +34,7 @@ public:
                                             (()),
                                             ::fwGui::factory::New< SelectorDialog > );
 
-    FWGUIQT_API SelectorDialog(::fwGui::GuiBaseObject::Key key) ;
+    FWGUIQT_API SelectorDialog(::fwGui::GuiBaseObject::Key key);
 
     FWGUIQT_API virtual ~SelectorDialog();
 
@@ -59,9 +56,10 @@ public:
     /// Set the message
     FWGUIQT_API virtual void setMessage(const std::string &msg);
 
-private :
+private:
 
     std::vector< std::string > m_selections;
+
     /// Dialog box message
     std::string m_message;
     std::string m_title;
@@ -70,4 +68,4 @@ private :
 } // namespace dialog
 } // namespace fwGuiQt
 
-#endif /*FWGUIQT_SELECTORDIALOG_HPP_*/
+#endif /*__FWGUIQT_DIALOG_SELECTORDIALOG_HPP__*/

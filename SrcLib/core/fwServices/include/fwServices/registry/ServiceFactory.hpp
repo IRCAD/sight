@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,34 +7,18 @@
 #ifndef __FWSERVICES_REGISTRY_SERVICEFACTORY_HPP__
 #define __FWSERVICES_REGISTRY_SERVICEFACTORY_HPP__
 
-#include <map>
-
-#include <boost/unordered_map.hpp>
-
-#include <boost/tuple/tuple.hpp>
-
-#include <fwCore/mt/types.hpp>
-
 #include "fwServices/config.hpp"
 
-#if defined(_WIN32) && _MSC_VER > 1499 // Visual C++ 2008 only
-#include <boost/functional/hash/hash.hpp>
-namespace std
-{
-namespace tr1
-{
-template<typename a>
-class hash< std::pair<a, a> >
-{
-public:
-   size_t operator()(const std::pair<a, a> &p) const
-   {
-      return ::boost::hash_value(p);
-   }
-};
-} //namespace tr1
-} //namespace std
-#endif
+#include <fwTools/Object.hpp>
+#include <fwCore/mt/types.hpp>
+
+#include <fwRuntime/Bundle.hpp>
+
+#include <boost/function.hpp>
+#include <boost/unordered_map.hpp>
+#include <boost/tuple/tuple.hpp>
+
+#include <map>
 
 namespace fwServices
 {
@@ -46,29 +30,30 @@ namespace registry
 
 /**
  * @class ServiceInfo
- * 
+ *
  */
 class FWSERVICES_CLASS_API ServiceInfo : public ::fwTools::Object
 {
-    public :
-        typedef ::boost::function< SPTR(::fwServices::IService)() > FactoryType;
+public:
+    typedef ::boost::function< SPTR(::fwServices::IService)() > FactoryType;
 
-        fwCoreClassDefinitionsWithFactoryMacro( (ServiceInfo)(::fwTools::Object), (()), ::boost::make_shared< ServiceInfo > );
+    fwCoreClassDefinitionsWithFactoryMacro( (ServiceInfo)(::fwTools::Object), (()),
+                                            std::make_shared< ServiceInfo > );
 
-        std::string serviceType;
-        std::string objectImpl;
-        /// service description.
-        std::string desc;
+    std::string serviceType;
+    std::string objectImpl;
+    /// service description.
+    std::string desc;
 
-        ::boost::shared_ptr< ::fwRuntime::Bundle > bundle;
+    std::shared_ptr< ::fwRuntime::Bundle > bundle;
 
-        FactoryType factory;
+    FactoryType factory;
 };
 
 
 /**
  * @class ServiceFactory
- * 
+ *
  */
 class FWSERVICES_CLASS_API ServiceFactory : public ::fwCore::BaseObject
 {
@@ -81,7 +66,7 @@ public:
 
     typedef ::boost::unordered_map< StringPair, bool > SupportMapType;
 
-    fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory) ;
+    fwCoreClassDefinitionsWithFactoryMacro( (ServiceFactory)(::fwCore::BaseObject), (()), new ServiceFactory);
 
     /// Return the unique Instance, create it if required at first access
     FWSERVICES_API static ServiceFactory::sptr getDefault();
@@ -101,19 +86,21 @@ public:
     FWSERVICES_API void clearFactory();
 
     /// return a vector of service implementation
-    FWSERVICES_API  std::vector< std::string > getImplementationIdFromObjectAndType(const std::string& object, const std::string& type) const;
+    FWSERVICES_API std::vector< std::string > getImplementationIdFromObjectAndType(const std::string& object,
+                                                                                   const std::string& type) const;
 
     /// return the default service implementation for an object
-    FWSERVICES_API std::string getDefaultImplementationIdFromObjectAndType( const std::string& object, const std::string& type ) const;
+    FWSERVICES_API std::string getDefaultImplementationIdFromObjectAndType( const std::string& object,
+                                                                            const std::string& type ) const;
 
     /// return the associated object implementation.
-    FWSERVICES_API  std::string getObjectImplementation(const std::string& srvImpl) const;
+    FWSERVICES_API std::string getObjectImplementation(const std::string& srvImpl) const;
 
     /// return the service description.
-    FWSERVICES_API  std::string getServiceDescription(const std::string& srvImpl) const;
+    FWSERVICES_API std::string getServiceDescription(const std::string& srvImpl) const;
 
     /// Check if the service with given object and implementation is valid
-    FWSERVICES_API  bool checkServiceValidity(const std::string & object, const std::string & srvImpl) const;
+    FWSERVICES_API bool checkServiceValidity(const std::string & object, const std::string & srvImpl) const;
 
     /**
      * @brief Check whether an object (object) supports service of type srvType
@@ -125,25 +112,26 @@ public:
      * @brief Check whether an object (object) supports service of type srvType and implementation srvImpl
      * @return true if service type supported
      */
-    FWSERVICES_API bool support(const std::string & object, const std::string & srvType, const std::string & srvImpl) const;
+    FWSERVICES_API bool support(const std::string & object, const std::string & srvType,
+                                const std::string & srvImpl) const;
 
     /**
      * @brief returns the registered factory keys.
      */
     FWSERVICES_API virtual KeyVectorType getFactoryKeys() const;
 
-protected :
+protected:
 
     typedef std::map< KeyType, ServiceInfo::sptr > SrvRegContainer;
 
     /// Container of service information
     SrvRegContainer m_srvImplTosrvInfo;
-    SupportMapType  m_supportMap;
+    SupportMapType m_supportMap;
 
     mutable ::fwCore::mt::ReadWriteMutex m_srvImplTosrvInfoMutex;
     mutable ::fwCore::mt::ReadWriteMutex m_supportMapMutex;
 
-private :
+private:
 
     /**
      * @brief print services informations

@@ -1,35 +1,37 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/assign/list_of.hpp>
-#include <boost/filesystem/operations.hpp>
-
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/System.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
-
-#include <fwDataCamp/visitor/CompareObjects.hpp>
+#include "IoItkTest.hpp"
 
 #include <fwData/Object.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwDataTools/Image.hpp>
+
+#include <fwGui/registry/worker.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/SeriesDB.hpp>
+
+#include <fwRuntime/EConfigurationElement.hpp>
+
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
 
-#include <fwDataTools/Image.hpp>
+#include <fwThread/Worker.hpp>
 
-#include <fwServices/registry/ServiceFactory.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwTools/dateAndTime.hpp>
+#include <fwTools/System.hpp>
 
+#include <boost/assign/list_of.hpp>
+#include <boost/filesystem/operations.hpp>
 
-#include "IoItkTest.hpp"
 
 using namespace ::boost::assign;
 
@@ -49,6 +51,8 @@ static const double EPSILON = 0.00001;
 void IoItkTest::setUp()
 {
     // Set up context before running a test.
+    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
+    ::fwGui::registry::worker::init(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -56,21 +60,22 @@ void IoItkTest::setUp()
 void IoItkTest::tearDown()
 {
     // Clean up after the test run.
+    ::fwGui::registry::worker::reset();
 }
 
 //------------------------------------------------------------------------------
 
 void executeService(
-        const SPTR(::fwData::Object)& obj,
-        const std::string& srvType,
-        const std::string& srvImpl,
-        const SPTR(::fwRuntime::EConfigurationElement)& cfg )
+    const SPTR(::fwData::Object)& obj,
+    const std::string& srvType,
+    const std::string& srvImpl,
+    const SPTR(::fwRuntime::EConfigurationElement)& cfg )
 {
     ::fwServices::IService::sptr srv
         = ::fwServices::registry::ServiceFactory::getDefault()->create(srvType, srvImpl);
 
     CPPUNIT_ASSERT(srv);
-    ::fwServices::OSR::registerService( obj , srv );
+    ::fwServices::OSR::registerService( obj, srv );
     srv->setConfiguration(cfg);
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
     CPPUNIT_ASSERT_NO_THROW(srv->start());
@@ -95,7 +100,7 @@ void IoItkTest::testImageSeriesWriterJPG()
     ::boost::filesystem::create_directories(path);
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg    = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr folderCfg = ::fwRuntime::EConfigurationElement::New("folder");
     folderCfg->setValue(path.string());
     srvCfg->addConfigurationElement(folderCfg);
@@ -121,7 +126,7 @@ void IoItkTest::testImageWriterJPG()
     ::boost::filesystem::create_directories( path );
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg    = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr folderCfg = ::fwRuntime::EConfigurationElement::New("folder");
     folderCfg->setValue(path.string());
     srvCfg->addConfigurationElement(folderCfg);
@@ -154,7 +159,7 @@ void IoItkTest::testSaveLoadInr()
     ::boost::filesystem::create_directories( PATH.parent_path() );
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
     fileCfg->setValue(PATH.string());
     srvCfg->addConfigurationElement(fileCfg);
@@ -184,7 +189,7 @@ void IoItkTest::testSaveLoadInr()
 
 void IoItkTest::ImageSeriesInrTest()
 {
-    ::fwData::Image::sptr image = ::fwData::Image::New();
+    ::fwData::Image::sptr image                = ::fwData::Image::New();
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwMedData::ImageSeries::New();
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
@@ -199,7 +204,7 @@ void IoItkTest::ImageSeriesInrTest()
     ::boost::filesystem::create_directories( PATH.parent_path() );
 
     // Create Config
-    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
     fileCfg->setValue(PATH.string());
     srvCfg->addConfigurationElement(fileCfg);
@@ -234,9 +239,9 @@ void IoItkTest::SeriesDBInrTest()
      * - skin.inr.gz : mask skin, type uint8, size: 512x512x134, spacing 0.781:0.781:1.6
      */
     const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "fw4spl/image/inr/image.inr.gz";
-    const ::boost::filesystem::path skinFile = ::fwTest::Data::dir() / "fw4spl/image/inr/skin.inr.gz";
+    const ::boost::filesystem::path skinFile  = ::fwTest::Data::dir() / "fw4spl/image/inr/skin.inr.gz";
     // Create Config
-    ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr srvCfg       = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr fileImageCfg = ::fwRuntime::EConfigurationElement::New("file");
     fileImageCfg->setValue(imageFile.string());
     srvCfg->addConfigurationElement(fileImageCfg);
@@ -250,7 +255,7 @@ void IoItkTest::SeriesDBInrTest()
     executeService( sdb, "::io::IReader", "::ioITK::SInrSeriesDBReader", srvCfg );
 
     ::fwData::Image::SpacingType spacing = list_of(0.781)(0.781)(1.6);
-    ::fwData::Image::SizeType size = list_of(512)(512)(134);
+    ::fwData::Image::SizeType size       = list_of(512)(512)(134);
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), sdb->getContainer().size());
     ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::dynamicCast(sdb->getContainer()[0]);

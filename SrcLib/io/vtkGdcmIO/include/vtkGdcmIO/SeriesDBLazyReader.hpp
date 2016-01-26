@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,9 @@
 #ifndef __VTKGDCMIO_SERIESDBLAZYREADER_HPP__
 #define __VTKGDCMIO_SERIESDBLAZYREADER_HPP__
 
-#include <gdcmScanner.h>
+#include "vtkGdcmIO/config.hpp"
 
 #include <fwCore/macros.hpp>
-
-#include <fwTools/ProgressAdviser.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
@@ -19,7 +17,7 @@
 
 #include <fwDataIO/reader/GenericObjectReader.hpp>
 
-#include "vtkGdcmIO/config.hpp"
+#include <gdcmScanner.h>
 
 namespace fwMedData
 {
@@ -32,6 +30,11 @@ class SeriesDB;
 class Study;
 }
 
+namespace fwJobs
+{
+class Observer;
+}
+
 namespace vtkGdcmIO
 {
 
@@ -41,22 +44,21 @@ namespace vtkGdcmIO
  * @brief Reads DICOM data from a directory path in order to create a SeriesDB object in lazy mode.
  */
 class SeriesDBLazyReader : public ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >,
-                             public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader > ,
-                             public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader > ,
-                             public ::fwTools::ProgressAdviser
+                           public ::fwData::location::enableFolder< ::fwDataIO::reader::IObjectReader >,
+                           public ::fwData::location::enableMultiFiles< ::fwDataIO::reader::IObjectReader >
 {
 
-public :
+public:
 
     typedef std::vector< std::string > SeriesFilesType;
 
     typedef std::map< std::string, SeriesFilesType > MapSeriesType;
 
     fwCoreClassDefinitionsWithFactoryMacro(
-                    (SeriesDBLazyReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
-                    (()),
-                    ::fwDataIO::reader::factory::New< SeriesDBLazyReader >
-                    );
+        (SeriesDBLazyReader)( ::fwDataIO::reader::GenericObjectReader< ::fwMedData::SeriesDB >),
+        (()),
+        ::fwDataIO::reader::factory::New< SeriesDBLazyReader >
+        );
 
     fwCoreAllowSharedFromThis();
 
@@ -69,7 +71,10 @@ public :
     /// Reads DICOM data from configured path and fills SeriesDB object. Use lazy reading process to read images.
     VTKGDCMIO_API void read();
 
-private :
+    /// @return internal job
+    VTKGDCMIO_API SPTR(::fwJobs::IJob) getJob() const;
+
+private:
 
     /**
      * @brief Creates a SeriesDB from the data contained in the given directory path.
@@ -112,6 +117,9 @@ private :
 
     /// Select some dicom tags and scan information in all filenames
     void scanFiles( gdcm::Scanner & scanner, const std::vector< std::string > & filenames );
+
+    ///Internal job
+    SPTR(::fwJobs::Observer) m_job;
 };
 
 } // namespace vtkGdcmIO

@@ -1,193 +1,180 @@
+<plugin id="Tuto05Mesher" version="@DASH_VERSION@">
 
-<plugin id="Tuto05Mesher">
-
+    <requirement id="dataReg" />
     <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>MesherConfig</id>
-        <type>parameters</type>
         <config>
-        
 
-        <!--  Composite data creation. -->
-        <object type="::fwData::Composite">
-
-            <!-- Frame & View -->
 
             <!--
-                Service associated to the Composite data :
-                main window creation.
+                The main data object is ::fwData::Composite.
+                A Composite, can contains sub-objects associated to a key.
             -->
-            <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
-                <gui>
-                    <frame>
-                        <name>Mesher</name>
-                        <icon>Bundles/Tuto05Mesher_0-1/tuto.ico</icon>
-                        <minSize width="800" height="600" />
-                    </frame>
-                    <menuBar />
-                </gui>
-                <registry>
-                    <menuBar sid="myMenuBar" start="yes" />
-                    <view sid="myDefaultView" start="yes" />
-                </registry>
-            </service>
+            <object type="::fwData::Composite">
 
-            <service uid="myDefaultView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="horizontal" />
-                        <view caption="Image view" />
-                        <view caption="Mesh view" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="RenderingImage" start="yes" />
-                    <view sid="RenderingMesh" start="yes" />
-                </registry>
-            </service>
+                <!-- Frame & View -->
 
+                <service uid="myFrame" impl="::gui::frame::SDefaultFrame">
+                    <gui>
+                        <frame>
+                            <name>Mesher</name>
+                            <icon>Bundles/Tuto05Mesher_0-1/tuto.ico</icon>
+                            <minSize width="800" height="600" />
+                        </frame>
+                        <menuBar />
+                    </gui>
+                    <registry>
+                        <menuBar sid="myMenuBar" start="yes" />
+                        <view sid="myDefaultView" start="yes" />
+                    </registry>
+                </service>
 
-            <!-- Menu Bar, Menus & Actions -->
-
-
-            <service uid="myMenuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menu name="File" />
-                        <menu name="Mesher" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menu sid="menuFile" start="yes" />
-                    <menu sid="menuMesher" start="yes" />
-                </registry>
-            </service>
+                <!--
+                    Default view service:
+                    The type '::fwGui::LineLayoutManager' represents a layout where the view are aligned
+                    horizontally or vertically (set orientation value 'horizontal' or 'vertical').
+                    It is possible to add a 'proportion' attribute for the <view> to defined the proportion
+                    used by the view compared to the others.
+                -->
+                <service uid="myDefaultView" impl="::gui::view::SDefaultView">
+                    <gui>
+                        <layout type="::fwGui::LineLayoutManager">
+                            <orientation value="horizontal" />
+                            <view caption="Image view" />
+                            <view caption="Mesh view" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="RenderingImage" start="yes" />
+                        <view sid="RenderingMesh" start="yes" />
+                    </registry>
+                </service>
 
 
-            <service uid="menuFile" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="Open image file" shortcut="Ctrl+O" />
-                        <menuItem name="Save image" />
-                        <separator />
-                        <menuItem name="Open mesh file" shortcut="Ctrl+M" />
-                        <menuItem name="Save mesh" />
-                        <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="actionOpenImageFile" start="yes" />
-                    <menuItem sid="actionSaveImageFile" start="yes" />
-                    <menuItem sid="actionOpenMeshFile" start="yes" />
-                    <menuItem sid="actionSaveMeshFile" start="yes" />
-                    <menuItem sid="actionQuit" start="yes" />
-                </registry>
-            </service>
+                <!-- Menu Bar, Menus & Actions -->
 
 
-            <service uid="menuMesher" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="Compute Mesh (VTK)" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="actionCreateVTKMesh" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="actionQuit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
-
-
-
-            <!--
-                Service associated to the Composite data :
-                menu services creation.
-                Actions in relationship with images and meshe
-            -->
-            <service uid="actionOpenImageFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                <start uid="readerPathImageFile" />
-            </service>
-
-            <service uid="actionSaveImageFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                <start uid="writerImageFile" />
-            </service>
-
-            <service uid="actionOpenMeshFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                <start uid="readerPathMeshFile" />
-            </service>
-
-            <service uid="actionSaveMeshFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
-                <start uid="writerMeshFile" />
-            </service>
-
-            <service uid="actionCreateVTKMesh" type="::fwGui::IActionSrv" impl="::opVTKMesh::action::VTKMeshCreation" autoConnect="no">
-                <image uid="myImage" />
-                <mesh uid="myMesh" />
-                <percentReduction value="0" />
-            </service>
+                <service uid="myMenuBar" impl="::gui::aspect::SDefaultMenuBar">
+                    <gui>
+                        <layout>
+                            <menu name="File" />
+                            <menu name="Mesher" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menu sid="menuFile" start="yes" />
+                        <menu sid="menuMesher" start="yes" />
+                    </registry>
+                </service>
 
 
-            <!--
-                Image object creation Services contained between the tags <object> and </object>
-                are associated to the Image data.
-            -->
-            <item key="myImage">
-                <object uid="myImage" type="::fwData::Image">
+                <service uid="menuFile" impl="::gui::aspect::SDefaultMenu">
+                    <gui>
+                        <layout>
+                            <menuItem name="Open image file" shortcut="Ctrl+O" />
+                            <menuItem name="Save image" />
+                            <separator />
+                            <menuItem name="Open mesh file" shortcut="Ctrl+M" />
+                            <menuItem name="Save mesh" />
+                            <separator />
+                            <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menuItem sid="actionOpenImageFile" start="yes" />
+                        <menuItem sid="actionSaveImageFile" start="yes" />
+                        <menuItem sid="actionOpenMeshFile" start="yes" />
+                        <menuItem sid="actionSaveMeshFile" start="yes" />
+                        <menuItem sid="actionQuit" start="yes" />
+                    </registry>
+                </service>
 
-                    <!--
-                    Services associated to the Image data :
-                    Visualization, reading and writing service creation.
-                    -->
-                    <service impl="::vtkSimpleNegato::RendererService" type="::fwRender::IRender" uid="RenderingImage" autoConnect="yes" />
 
-                    <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoConnect="no">
-                        <type mode="reader" />
-                    </service>
+                <service uid="menuMesher" impl="::gui::aspect::SDefaultMenu">
+                    <gui>
+                        <layout>
+                            <menuItem name="Compute Mesh (VTK)" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <menuItem sid="actionCreateVTKMesh" start="yes" />
+                    </registry>
+                </service>
 
-                    <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="writerImageFile" autoConnect="no">
-                        <type mode="writer" />
-                    </service>
+                <service uid="actionQuit" impl="::gui::action::SQuit" />
 
-                </object>
-            </item>
+                <service uid="actionOpenImageFile" impl="::gui::action::SStarter">
+                    <start uid="readerPathImageFile" />
+                </service>
 
-            <!--
-                Mesh object creation. Services contained between the tags <object> and </object> are
-                associated to the Mesh data.
-             -->
-            <item key="myMesh">
-                <object uid="myMesh" type="::fwData::Mesh">
+                <service uid="actionSaveImageFile" impl="::gui::action::SStarter">
+                    <start uid="writerImageFile" />
+                </service>
 
-                    <!--
-                        Services associated to the Mesh data :
-                        Visualization, reading and writing service creation.
-                    -->
-                    <service impl="::vtkSimpleMesh::RendererService" type="::fwRender::IRender" uid="RenderingMesh" autoConnect="yes"/>
+                <service uid="actionOpenMeshFile" impl="::gui::action::SStarter">
+                    <start uid="readerPathMeshFile" />
+                </service>
 
-                    <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathMeshFile" autoConnect="no">
-                        <type mode="reader" />
-                    </service>
+                <service uid="actionSaveMeshFile" impl="::gui::action::SStarter">
+                    <start uid="writerMeshFile" />
+                </service>
 
-                    <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="writerMeshFile" autoConnect="no">
-                        <type mode="writer" />
-                    </service>
+                <service uid="actionCreateVTKMesh" impl="::opVTKMesh::action::SMeshCreation">
+                    <image uid="myImageUID" />
+                    <mesh uid="myMeshUID" />
+                    <percentReduction value="0" />
+                </service>
 
-                </object>
-            </item>
 
-            <!--
-                In order to start the different services, it does not need to follow the objects creation order. Note that the services associated to the Image and Mesh data are not started
-                between the tags corresponding to these two data definitions but, before the end of the Composite data definition.
-            -->
-            <start uid="myFrame" />
+                <!-- Image object associated to the key 'myImage' -->
+                <item key="myImage">
+                    <object uid="myImageUID" type="::fwData::Image">
 
-            
+                        <!--
+                            Services associated to the Image data :
+                            Visualization, reading and writing service creation.
+                        -->
+                        <service uid="RenderingImage" impl="::vtkSimpleNegato::SRenderer" autoConnect="yes" />
 
-        </object>
-    
+                        <service uid="readerPathImageFile" impl="::uiIO::editor::SIOSelector">
+                            <type mode="reader" />
+                        </service>
+
+                        <service uid="writerImageFile" impl="::uiIO::editor::SIOSelector">
+                            <type mode="writer" />
+                        </service>
+
+                    </object>
+                </item>
+
+                <!-- Mesh object associated to the key 'myMesh' -->
+                <item key="myMesh">
+                    <object uid="myMeshUID" type="::fwData::Mesh">
+
+                        <!--
+                            Services associated to the Mesh data :
+                            Visualization, reading and writing service creation.
+                        -->
+                        <service uid="RenderingMesh" impl="::vtkSimpleMesh::SRenderer" autoConnect="yes" />
+
+                        <service uid="readerPathMeshFile" impl="::uiIO::editor::SIOSelector">
+                            <type mode="reader" />
+                        </service>
+
+                        <service uid="writerMeshFile" impl="::uiIO::editor::SIOSelector">
+                            <type mode="writer" />
+                        </service>
+
+                    </object>
+                </item>
+
+                <start uid="myFrame" />
+
+            </object>
+
         </config>
     </extension>
-</plugin>    
+</plugin> 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,20 +17,22 @@ namespace fwGui
 namespace dialog
 {
 
-const ILocationDialog::FactoryRegistryKeyType ILocationDialog::REGISTRY_KEY =  "::fwGui::dialog::LocationDialog";
+const ILocationDialog::FactoryRegistryKeyType ILocationDialog::REGISTRY_KEY = "::fwGui::dialog::LocationDialog";
 
-const std::string ILocationDialog::SOFTWARE_UI           = "SOFTWARE_UI";
-const std::string ILocationDialog::DLG_DEFAULT_LOCATION  = "DLG_DEFAULT_LOCATION" ;
+const std::string ILocationDialog::SOFTWARE_UI          = "SOFTWARE_UI";
+const std::string ILocationDialog::DLG_DEFAULT_LOCATION = "DLG_DEFAULT_LOCATION";
 
 //-----------------------------------------------------------------------------
 
 ILocationDialog::ILocationDialog()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ILocationDialog::~ILocationDialog()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -51,7 +53,7 @@ const std::string& ILocationDialog::getTitle()
 void ILocationDialog::setDefaultLocation( ::fwData::location::ILocation::sptr loc)
 {
     ::fwData::location::SingleFile::csptr singleFile = ::fwData::location::SingleFile::dynamicConstCast(loc);
-    ::fwData::location::Folder::csptr folder = ::fwData::location::Folder::dynamicConstCast(loc);
+    ::fwData::location::Folder::csptr folder         = ::fwData::location::Folder::dynamicConstCast(loc);
     SLM_FATAL_IF( "Unsupported location",  !singleFile && !folder );
     m_defaultLocaction = loc;
 }
@@ -78,7 +80,7 @@ const ::boost::filesystem::path ILocationDialog::getDefaultLocation()
     }
 
     ::fwData::location::SingleFile::csptr singleFile = ::fwData::location::SingleFile::dynamicConstCast(location);
-    ::fwData::location::Folder::csptr folder = ::fwData::location::Folder::dynamicConstCast(location);
+    ::fwData::location::Folder::csptr folder         = ::fwData::location::Folder::dynamicConstCast(location);
     if (singleFile)
     {
         defaultPath = singleFile->getPath();
@@ -109,11 +111,12 @@ void ILocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr lo
     ::fwData::Composite::sptr prefUI;
 
     // Get preferences
-    std::vector< ::fwServices::IService::sptr > preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
+    std::vector< ::fwServices::IService::sptr > preferencesServicesList = ::fwServices::OSR::getServices(
+        "::preferences::IPreferencesService");
     if(!preferencesServicesList.empty())
     {
         ::fwServices::IService::sptr prefService = preferencesServicesList[0];
-        ::fwData::Composite::sptr prefs = prefService->getObject< ::fwData::Composite >();
+        ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
 
         ::fwData::Composite::sptr framesUI;
         // Retrieves software UI pref
@@ -123,7 +126,7 @@ void ILocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr lo
         }
         else
         {
-            framesUI = ::fwData::Composite::New();
+            framesUI                                 = ::fwData::Composite::New();
             (*prefs)[ ILocationDialog::SOFTWARE_UI ] = framesUI;
         }
         // Retrieves associated dialog UI pref
@@ -133,7 +136,7 @@ void ILocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr lo
         }
         else
         {
-            prefUI = ::fwData::Composite::New();
+            prefUI                          = ::fwData::Composite::New();
             (*framesUI)[ this->getTitle() ] = prefUI;
         }
     }

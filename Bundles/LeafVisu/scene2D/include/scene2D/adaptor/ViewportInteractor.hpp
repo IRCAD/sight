@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _SCENE2D_VIEWPORTINTERACTOR_HPP_
-#define _SCENE2D_VIEWPORTINTERACTOR_HPP_
+#ifndef __SCENE2D_ADAPTOR_VIEWPORTINTERACTOR_HPP__
+#define __SCENE2D_ADAPTOR_VIEWPORTINTERACTOR_HPP__
 
-#include <scene2D/adaptor/IAdaptor.hpp>
+#include "scene2D/adaptor/IAdaptor.hpp"
 
 namespace scene2D
 {
@@ -23,7 +23,7 @@ class ViewportInteractor : public ::scene2D::adaptor::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ViewportInteractor)(::scene2D::adaptor::IAdaptor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ViewportInteractor)(::scene2D::adaptor::IAdaptor) );
 
     ViewportInteractor() throw();
 
@@ -36,8 +36,6 @@ protected:
     SCENE2D_API void doStart()    throw ( ::fwTools::Failed );
 
     SCENE2D_API void doUpdate()    throw ( ::fwTools::Failed );
-
-    SCENE2D_API void doReceive( fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     SCENE2D_API void doSwap()    throw ( ::fwTools::Failed );
 
@@ -55,4 +53,4 @@ protected:
 }   // namespace adaptor
 }   // namespace scene2D
 
-#endif  // _SCENE2D_VIEWPORTINTERACTOR_HPP_
+#endif  // __SCENE2D_ADAPTOR_VIEWPORTINTERACTOR_HPP__

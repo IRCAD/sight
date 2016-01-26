@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UIIMAGEQT_IMAGETRANSPARENCY_HPP
-#define _UIIMAGEQT_IMAGETRANSPARENCY_HPP
+#ifndef __UIIMAGEQT_IMAGETRANSPARENCY_HPP__
+#define __UIIMAGEQT_IMAGETRANSPARENCY_HPP__
 
 
 #include <QObject>
@@ -28,20 +28,30 @@ namespace uiImage
 /**
  * @brief   ImageTransparency service allows to change image transparency.
  * @class   ImageTransparency
- * 
- * @date    2011.
  */
-class UIIMAGEQT_CLASS_API ImageTransparency : public QObject, public ::gui::editor::IEditor
+class UIIMAGEQT_CLASS_API ImageTransparency : public QObject,
+                                              public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImageTransparency)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (ImageTransparency)(::gui::editor::IEditor) );
 
-    UIIMAGEQT_API ImageTransparency() throw() ;
+    UIIMAGEQT_API ImageTransparency() throw();
 
-    UIIMAGEQT_API virtual ~ImageTransparency() throw() ;
+    UIIMAGEQT_API virtual ~ImageTransparency() throw();
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_TRANSPARENCY_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    UIIMAGEQT_API virtual KeyConnectionsType getObjSrvConnections() const;
 
 protected:
     /// Starts editor.
@@ -50,16 +60,13 @@ protected:
     /// Stops editor.
     virtual void stopping() throw(::fwTools::Failed);
 
-    /// Receive InteractionMsg and updates text informations
-    virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
     virtual void updating() throw(::fwTools::Failed);
 
     virtual void swapping() throw(::fwTools::Failed);
 
     virtual void configuring() throw( ::fwTools::Failed);
 
-    virtual void info( std::ostream &_sstream ) ;
+    virtual void info( std::ostream &_sstream );
 
 protected Q_SLOTS:
 
@@ -92,4 +99,4 @@ private:
 
 } // uiImage
 
-#endif /*_UIIMAGEQT_IMAGETRANSPARENCY_HPP*/
+#endif /*__UIIMAGEQT_IMAGETRANSPARENCY_HPP__*/

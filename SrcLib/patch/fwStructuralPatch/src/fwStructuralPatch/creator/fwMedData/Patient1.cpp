@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@ namespace fwMedData
 Patient1::Patient1()
 {
     m_classname = "::fwMedData::Patient";
-    m_version = "1";
+    m_version   = "1";
 }
 
 // ----------------------------------------------------------------------------
@@ -44,10 +44,10 @@ Patient1::Patient1( const Patient1 &cpy ) : ::fwAtomsPatch::IStructuralCreator(c
     ::fwAtoms::Object::sptr patient = this->createObjBase();
     ::fwAtomsPatch::helper::Object helper(patient);
 
-    helper.addAttribute("name" , ::fwAtoms::String::New(""));
-    helper.addAttribute("patient_id" , ::fwAtoms::String::New(""));
-    helper.addAttribute("birth_date" , ::fwAtoms::String::New(""));
-    helper.addAttribute("sex" , ::fwAtoms::String::New(""));
+    helper.addAttribute("name", ::fwAtoms::String::New(""));
+    helper.addAttribute("patient_id", ::fwAtoms::String::New(""));
+    helper.addAttribute("birth_date", ::fwAtoms::String::New(""));
+    helper.addAttribute("sex", ::fwAtoms::String::New(""));
 
     return patient;
 }

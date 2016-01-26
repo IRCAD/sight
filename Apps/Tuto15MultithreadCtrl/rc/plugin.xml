@@ -1,22 +1,24 @@
-﻿<plugin id="Tuto15MultithreadCtrl" class="::Tuto15MultithreadCtrl::Plugin">
+﻿<plugin id="Tuto15MultithreadCtrl" class="::Tuto15MultithreadCtrl::Plugin" version="@DASH_VERSION@" >
 
-    <requirement id="servicesReg" />
     <library name="Tuto15MultithreadCtrl" />
 
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IService</type>
+        <type>::fwServices::IController</type>
         <service>::Tuto15MultithreadCtrl::SReadArray</service>
         <object>::fwData::Array</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IService</type>
+        <type>::fwServices::IController</type>
         <service>::Tuto15MultithreadCtrl::SShowArray</service>
         <object>::fwData::Array</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IService</type>
+        <type>::fwServices::IController</type>
         <service>::Tuto15MultithreadCtrl::SIncrementArray</service>
         <object>::fwData::Array</object>
     </extension>
