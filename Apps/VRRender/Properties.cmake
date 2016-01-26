@@ -34,6 +34,7 @@ set( REQUIREMENTS
     3DVisualizationActivity
     blendActivity
     volumeRenderingActivity
+    ioActivity
     media
     ioAtoms
     patchMedicalData

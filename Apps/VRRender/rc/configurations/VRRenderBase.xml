@@ -7,21 +7,20 @@
     <config>
         <object uid="seriesDB" type="::fwMedData::SeriesDB">
 
-            <service uid="action_open" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
-                <IOSelectorSrvConfig name="SDBOpenIOSelectorConfig" />
+            <service uid="action_open" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger">
+                <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
             </service>
-            <service uid="action_save" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
+            <service uid="action_save" type="::fwGui::IActionSrv" impl="::gui::action::SStarter">
                 <start uid="SDBWriter" />
             </service>
-            <service uid="SDBWriter" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector" autoConnect="no">
+            <service uid="SDBWriter" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector">
                 <type mode="writer" />
                 <selection mode="include" />
                 <addSelection service="::ioAtoms::SWriter" />
                 <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
             </service>
 
-
-            <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
+            <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame">
                 <gui>
                     <frame>
                         <name>${appName}</name>
@@ -36,7 +35,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
+            <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -51,7 +50,7 @@
                 </registry>
             </service>
 
-            <service uid="menu_file" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
+            <service uid="menu_file" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
                         <menuItem name="Open" shortcut="Ctrl+O" />
@@ -66,7 +65,7 @@
                 </registry>
             </service>
 
-            <service uid="menu_monitor" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
+            <service uid="menu_monitor" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
                         <menuItem name="ClassFactoryRegistry information"/>
@@ -93,7 +92,7 @@
                  </registry>
             </service>
 
-            <service uid="menu_help" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
+            <service uid="menu_help" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu">
                 <gui>
                     <layout>
                         <menuItem name="About" specialAction="ABOUT" />
@@ -109,17 +108,17 @@
                 </registry>
             </service>
 
-            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
+            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" />
 
-            <service uid="action_about" type="::fwGui::IActionSrv" impl="::uiGeneric::action::SShowAbout" autoConnect="no">
+            <service uid="action_about" type="::fwGui::IActionSrv" impl="::uiGeneric::action::SShowAbout">
                 <filename id="Bundles/VRRender_0-9/about/about.html" />
             </service>
 
-            <service uid="action_acknowledgments" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAcknowledgments" autoConnect="no">
+            <service uid="action_acknowledgments" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAcknowledgments">
                 <filename id="Bundles/VRRender_0-9/documentations/ack.html" />
             </service>
 
-            <service uid="action_openBrowser" type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
+            <service uid="action_openBrowser" type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService">
                 <url>http://www.ircad.fr/softwares/vr-render/Software.php</url>
             </service>
 
@@ -130,35 +129,44 @@
                             <parameter replace="SERIESDB" by="seriesDB" />
                             <parameter replace="ICON_PATH" by="${appIconPath}" />
                             <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicView" />
+                            <parameter replace="PROGRESS_CHANNEL" by="progressStatus" />
                         </parameters>
                     </appConfig>
                 </config>
             </service>
 
+            <service uid="progress_statusbar" impl="::gui::editor::SJobBar" />
 
-            <service uid="action_fwMetrics" type="::fwGui::IActionSrv" impl="::monitor::action::fwMetrics" autoConnect="no" />
-            <service uid="action_MemInfo" type="::fwGui::IActionSrv" impl="::monitor::action::MemoryInfo" autoConnect="no" />
-            <service uid="action_incMemConsum" type="::fwGui::IActionSrv" impl="::monitor::action::MemoryConsumption" autoConnect="no">
+            <service uid="action_fwMetrics" type="::fwGui::IActionSrv" impl="::monitor::action::fwMetrics" />
+            <service uid="action_MemInfo" type="::fwGui::IActionSrv" impl="::monitor::action::MemoryInfo" />
+            <service uid="action_incMemConsum" type="::fwGui::IActionSrv" impl="::monitor::action::MemoryConsumption">
                 <config mode="increase" value="256" />
             </service>
-            <service uid="action_decMemConsum" type="::fwGui::IActionSrv" impl="::monitor::action::MemoryConsumption" autoConnect="no">
+            <service uid="action_decMemConsum" type="::fwGui::IActionSrv" impl="::monitor::action::MemoryConsumption">
                 <config mode="decrease" />
             </service>
 
-            <service uid="action_ClassFactoryRegistryInfo" type="::fwGui::IActionSrv" impl="::monitor::action::ClassFactoryRegistryInfo" autoConnect="no" />
-            <service uid="action_ComponentsTree" type="::fwGui::IActionSrv" impl="::monitor::action::ComponentsTree" autoConnect="no" />
-            <service uid="action_ChangeDumpStatus" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
+            <service uid="action_ClassFactoryRegistryInfo" type="::fwGui::IActionSrv" impl="::monitor::action::ClassFactoryRegistryInfo" />
+            <service uid="action_ComponentsTree" type="::fwGui::IActionSrv" impl="::monitor::action::ComponentsTree" />
+            <service uid="action_ChangeDumpStatus" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher">
                 <config>
                     <appConfig id="DumpFrameConfig" />
                 </config>
             </service>
-            <service uid="dumpAll" impl="::monitor::action::SDumpAll" type="::fwGui::IActionSrv" autoConnect="no" />
+            <service uid="dumpAll" impl="::monitor::action::SDumpAll" type="::fwGui::IActionSrv" />
+
+
+            <proxy channel="progressStatus">
+                <signal>SDBWriter/jobCreated</signal>
+                <slot>progress_statusbar/showJob</slot>
+            </proxy>
 
             <proxy channel="dynamicView">
                 <slot>dynamicView/createTab</slot>
             </proxy>
 
             <start uid="mainFrame" />
+            <start uid="progress_statusbar" />
         </object>
 
     </config>

@@ -6,18 +6,59 @@
         <param name="SERIESDB" />
         <param name="WID_PARENT" />
         <param name="DYNAMICVIEW_CHANNEL" default="channel" />
+        <param name="PROGRESS_CHANNEL" default="progressChannel" />
         <param name="ICON_PATH" />
     </parameters>
     <config>
 
         <object type="::fwData::Composite">
 
-            <xi:include href="MenuAndViewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+            <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="yes">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view caption="Information" align="center" minWidth="200" />
+                        <view caption="Preview" align="bottom" minHeight="200" />
+                    </layout>
+                    <toolBar />
+                </gui>
+                <registry>
+                    <parent wid="${WID_PARENT}" />
+                    <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
+                    <view sid="${GENERIC_UID}_selector" start="yes" />
+                    <view wid="${GENERIC_UID}_preview" />
+                </registry>
+            </service>
 
+            
+
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <menuItem name="Import" icon="Bundles/media_0-1/icons/Import.svg" />
+                        <menuItem name="Export" icon="Bundles/media_0-1/icons/Export.svg" />
+                        <menuItem name="Launch activity" icon="Bundles/media_0-1/icons/Launch_activity.svg" />
+                        <separator />
+                        <menuItem name="2D visualization" icon="Bundles/media_0-1/icons/icon-2D.png" />
+                        <menuItem name="3D visualization" icon="Bundles/media_0-1/icons/icon-3D.png" />
+                        <menuItem name="Volume rendering" icon="Bundles/media_0-1/icons/icon-VR.png" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="${GENERIC_UID}_action_import" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_exportSeries" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_newActivity" start="yes" />
+
+                    <menuItem sid="${GENERIC_UID}_action_2DVisualization" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_3DVisualization" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_volumeRendering" start="yes" />
+                </registry>
+            </service>
+            
+            
             <item key="seriesDB">
-                <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" >
-                    <service uid="${GENERIC_UID}_action_import" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
-                        <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderSeriesDBReader" />
+                <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref">
+                    <service uid="${GENERIC_UID}_action_import" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger">
+                        <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
                     </service>
                     <service uid="${GENERIC_UID}_selector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
                         <selectionId>${GENERIC_UID}_selections</selectionId>
@@ -36,10 +77,10 @@
                             <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
                         </configs>
                     </service>
-                    <service uid="${GENERIC_UID}_action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                    <service uid="${GENERIC_UID}_action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes">
                         <config>
                             <parameters>
-                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="SERIESDB" by="seriesDB" />
                                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                             </parameters>
                             <filter>
@@ -50,10 +91,10 @@
                         </config>
                     </service>
 
-                    <service uid="${GENERIC_UID}_action_2DVisualization" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                    <service uid="${GENERIC_UID}_action_2DVisualization" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes">
                         <config>
                             <parameters>
-                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="SERIESDB" by="seriesDB" />
                                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                             </parameters>
                             <filter>
@@ -63,10 +104,10 @@
                         </config>
                     </service>
 
-                    <service uid="${GENERIC_UID}_action_3DVisualization" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                    <service uid="${GENERIC_UID}_action_3DVisualization" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes">
                         <config>
                             <parameters>
-                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="SERIESDB" by="seriesDB" />
                                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                             </parameters>
                             <filter>
@@ -76,10 +117,10 @@
                         </config>
                     </service>
 
-                    <service uid="${GENERIC_UID}_action_volumeRendering" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                    <service uid="${GENERIC_UID}_action_volumeRendering" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes">
                         <config>
                             <parameters>
-                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="SERIESDB" by="seriesDB" />
                                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                             </parameters>
                             <filter>
@@ -89,7 +130,7 @@
                         </config>
                     </service>
 
-                    <service uid="${GENERIC_UID}_action_exportSeries" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                    <service uid="${GENERIC_UID}_action_exportSeries" impl="::activities::action::SActivityLauncher" autoConnect="yes">
                         <config>
                             <mode>immediate</mode>
                             <parameters>
@@ -105,20 +146,15 @@
                 </object>
             </item>
 
-            <connect>
-                <signal>${GENERIC_UID}_action_import/jobCreated</signal>
-                <slot>${GENERIC_UID}_progress_statusbar/showJob</slot>
-            </connect>
-
-            <connect>
-                <signal>SDBWriter/jobCreated</signal>
-                <slot>${GENERIC_UID}_progress_statusbar/showJob</slot>
-            </connect>
 
             <connect>
                 <signal>${GENERIC_UID}_selector/seriesDoubleClicked</signal>
                 <slot>${GENERIC_UID}_action_newActivity/launchSeries</slot>
             </connect>
+
+            <proxy channel="${PROGRESS_CHANNEL}">
+                <signal>${GENERIC_UID}_action_import/jobCreated</signal>
+            </proxy>
 
             <proxy channel="${DYNAMICVIEW_CHANNEL}">
                 <signal>${GENERIC_UID}_action_newActivity/activityLaunched</signal>
@@ -129,7 +165,6 @@
 
             <start uid="${GENERIC_UID}_mainview" />
             <start uid="${GENERIC_UID}_seriesViewer" />
-            <start uid="${GENERIC_UID}_progress_statusbar" />
 
         </object>
 
