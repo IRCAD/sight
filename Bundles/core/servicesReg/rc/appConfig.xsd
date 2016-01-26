@@ -73,6 +73,7 @@
         <xs:attribute name='impl' type='xs:string' use="required" />
         <xs:attribute name='autoConnect' type='AutoConnectType' />
         <xs:attribute name='worker' type='xs:string' />
+        <xs:attribute name='config' type='xs:string' />
     </xs:complexType>
    
     <!-- Connection Type -->
