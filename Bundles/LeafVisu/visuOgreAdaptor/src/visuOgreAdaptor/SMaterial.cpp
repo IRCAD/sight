@@ -601,10 +601,10 @@ void SMaterial::updateSchemeSupport()
         m_schemesSupported.push_back(techSchemeName);
     }
     ::fwRenderOgre::Layer::sptr currentLayer = this->getRenderService()->getLayer(m_layerID);
-    if(currentLayer->isDefaultCompositorEnabled())
+    if(currentLayer->isCoreCompositorEnabled())
     {
-        currentLayer->getDefaultCompositor()->updateTechniquesSupported(m_materialName, m_schemesSupported);
-        currentLayer->getDefaultCompositor()->update();
+        currentLayer->getCoreCompositor()->updateTechniquesSupported(m_materialName, m_schemesSupported);
+        currentLayer->getCoreCompositor()->update();
     }
 }
 

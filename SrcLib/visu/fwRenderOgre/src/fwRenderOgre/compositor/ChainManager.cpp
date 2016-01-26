@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwRenderOgre/compositor/CompositorChainManager.hpp"
+#include "fwRenderOgre/compositor/ChainManager.hpp"
 
 #include <fwCore/spyLog.hpp>
 
@@ -15,27 +15,30 @@
 namespace fwRenderOgre
 {
 
+namespace compositor
+{
+
 //-----------------------------------------------------------------------------
 
-const CompositorChainManager::CompositorIdType CompositorChainManager::FINAL_CHAIN_COMPOSITOR = "FinalChainCompositor";
+const ChainManager::CompositorIdType ChainManager::FINAL_CHAIN_COMPOSITOR = "FinalChainCompositor";
 
 //-----------------------------------------------------------------------------
 
-CompositorChainManager::CompositorChainManager()
+ChainManager::ChainManager()
     : m_ogreViewport(0)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-CompositorChainManager::CompositorChainManager(::Ogre::Viewport* ogreViewport)
+ChainManager::ChainManager(::Ogre::Viewport* ogreViewport)
     : m_ogreViewport(ogreViewport)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void CompositorChainManager::addAvailableCompositor(CompositorIdType compositorName)
+void ChainManager::addAvailableCompositor(CompositorIdType compositorName)
 {
     ::Ogre::CompositorManager* compositorManager = this->getCompositorManager();
     bool needFinalCompositorSwap(false);
@@ -62,7 +65,7 @@ void CompositorChainManager::addAvailableCompositor(CompositorIdType compositorN
 
 //-----------------------------------------------------------------------------
 
-void CompositorChainManager::clearCompositorChain()
+void ChainManager::clearCompositorChain()
 {
     m_compositorChain.clear();
     this->getCompositorManager()->removeCompositorChain(m_ogreViewport);
@@ -70,7 +73,7 @@ void CompositorChainManager::clearCompositorChain()
 
 //-----------------------------------------------------------------------------
 
-void CompositorChainManager::updateCompositorState(CompositorIdType compositorName, bool isEnabled)
+void ChainManager::updateCompositorState(CompositorIdType compositorName, bool isEnabled)
 {
     // If there isn't any compositor available, the update operation can't be done
     if(!m_compositorChain.empty())
@@ -89,7 +92,7 @@ void CompositorChainManager::updateCompositorState(CompositorIdType compositorNa
 
 //-----------------------------------------------------------------------------
 
-void CompositorChainManager::setCompositorChain(std::vector<CompositorIdType> compositors)
+void ChainManager::setCompositorChain(std::vector<CompositorIdType> compositors)
 {
     this->clearCompositorChain();
 
@@ -114,7 +117,7 @@ void CompositorChainManager::setCompositorChain(std::vector<CompositorIdType> co
 
 //-----------------------------------------------------------------------------
 
-void CompositorChainManager::addFinalCompositor()
+void ChainManager::addFinalCompositor()
 {
     m_compositorChain.push_back(CompositorType(FINAL_CHAIN_COMPOSITOR, true));
     this->getCompositorManager()->addCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
@@ -123,11 +126,13 @@ void CompositorChainManager::addFinalCompositor()
 
 //-----------------------------------------------------------------------------
 
-::Ogre::CompositorManager* CompositorChainManager::getCompositorManager()
+::Ogre::CompositorManager* ChainManager::getCompositorManager()
 {
     return ::Ogre::CompositorManager::getSingletonPtr();
 }
 
 //-----------------------------------------------------------------------------
+
+} // namespace compositor
 
 } // namespace fwRenderOgre

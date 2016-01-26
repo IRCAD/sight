@@ -224,7 +224,7 @@ void SRender::configureLayer( ConfigurationType conf )
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
 
-    ogreLayer->setDefaultCompositorEnabled(id == "default", transparencyTechnique, useCelShading, nbPeel);
+    ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, useCelShading, nbPeel);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);
 
     // Finally, the layer is pushed in the map

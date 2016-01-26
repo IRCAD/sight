@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_COMPOSITOR_DEFAULTCOMPOSITOR_HPP__
-#define __FWRENDEROGRE_COMPOSITOR_DEFAULTCOMPOSITOR_HPP__
+#ifndef __FWRENDEROGRE_COMPOSITOR_CORE_HPP__
+#define __FWRENDEROGRE_COMPOSITOR_CORE_HPP__
 
 #include <fwCore/BaseObject.hpp>
 
@@ -26,32 +26,35 @@ enum transparencyTechnique { DEFAULT, DEPTHPEELING, DUALDEPTHPEELING, WEIGHTEDBL
 namespace fwRenderOgre
 {
 
+namespace compositor
+{
+
 /**
- * @class DefaultCompositor
+ * @class Core
  * Manages principal compositor for a layer's 3D scene
  */
-class FWRENDEROGRE_CLASS_API DefaultCompositor :
-    public ::fwCore::BaseObject//,
-    //TODO : Manage occlusion query
-    //    The current commented ligns in this class are standing for occlusion query purposes
-    //    An example of working occlusion query is used in the experimental branch flavien_sg rev 76
-    //public ::Ogre::FrameListener,
-    //public ::Ogre::RenderTargetListener,
-    //public ::Ogre::RenderObjectListener
+class FWRENDEROGRE_CLASS_API Core : public ::fwCore::BaseObject
+                                    //,
+                                    //TODO : Manage occlusion query
+                                    //    The current commented ligns in this class are standing for occlusion query purposes
+                                    //    An example of working occlusion query is used in the experimental branch flavien_sg rev 76
+                                    //public ::Ogre::FrameListener,
+                                    //public ::Ogre::RenderTargetListener,
+                                    //public ::Ogre::RenderObjectListener
 
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (DefaultCompositor)(::fwRenderOgre::DefaultCompositor), (()),
-                                            new DefaultCompositor);
+    fwCoreClassDefinitionsWithFactoryMacro( (Core)(::fwRenderOgre::compositor::Core), (()),
+                                            new Core);
     fwCoreAllowSharedFromThis();
-    //fwCoreServiceClassDefinitionsMacro( (DefaultCompositor)(::fwCore::BaseObject) )
+    //fwCoreServiceClassDefinitionsMacro( (Core)(::fwCore::BaseObject) )
 
     /// Default Compositor, one per "default" layer
-    FWRENDEROGRE_API DefaultCompositor();
+    FWRENDEROGRE_API Core();
 
     /// Destructor of default compositor
-    FWRENDEROGRE_API ~DefaultCompositor();
+    FWRENDEROGRE_API ~Core();
 
     /// Return the OIT selected
     FWRENDEROGRE_API transparencyTechnique getTransparencyTechnique();
@@ -172,6 +175,8 @@ private:
     static const std::string FINAL_CHAIN_COMPOSITOR;
 };
 
-} //namespace fwRenderOgre
+} // namespace compositor
 
-#endif // __FWRENDEROGRE_COMPOSITOR_DEFAULTCOMPOSITOR_HPP__
+} // namespace fwRenderOgre
+
+#endif // __FWRENDEROGRE_COMPOSITOR_CORE_HPP__

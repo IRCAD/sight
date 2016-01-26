@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRenderOgre/compositor/DefaultCompositor.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
 
@@ -21,13 +21,16 @@
 namespace fwRenderOgre
 {
 
+namespace compositor
+{
+
 // ----------------------------------------------------------------------------
 
-const std::string DefaultCompositor::FINAL_CHAIN_COMPOSITOR = "FinalChainCompositor";
+const std::string Core::FINAL_CHAIN_COMPOSITOR = "FinalChainCompositor";
 
 // ----------------------------------------------------------------------------
 
-DefaultCompositor::DefaultCompositor() :
+Core::Core() :
     //m_transparencyTechniqueMaxDepth(8),
     m_transparencyTechnique(DEFAULT),
     m_transparencyTechniqueName("Default"),
@@ -54,34 +57,34 @@ DefaultCompositor::DefaultCompositor() :
 
 //-----------------------------------------------------------------------------
 
-DefaultCompositor::~DefaultCompositor()
+Core::~Core()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-transparencyTechnique DefaultCompositor::getTransparencyTechnique()
+transparencyTechnique Core::getTransparencyTechnique()
 {
     return m_transparencyTechnique;
 }
 
 //-----------------------------------------------------------------------------
 
-int DefaultCompositor::getTransparencyDepth()
+int Core::getTransparencyDepth()
 {
     return m_numPass;
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultCompositor::setViewport(::Ogre::Viewport* viewport)
+void Core::setViewport(::Ogre::Viewport* viewport)
 {
     m_viewport = viewport;
 }
 
 //-----------------------------------------------------------------------------
 
-bool DefaultCompositor::setTransparencyTechnique(transparencyTechnique technique)
+bool Core::setTransparencyTechnique(transparencyTechnique technique)
 {
     ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, m_transparencyTechniqueName,
                                                                         false );
@@ -99,7 +102,7 @@ bool DefaultCompositor::setTransparencyTechnique(transparencyTechnique technique
 
 //-----------------------------------------------------------------------------
 
-void DefaultCompositor::update()
+void Core::update()
 {
     switch (m_transparencyTechnique)
     {
@@ -134,14 +137,14 @@ void DefaultCompositor::update()
 
 //-----------------------------------------------------------------------------
 
-/*void DefaultCompositor::setTransparencyMaxDepth(int depth)
+/*void Core::setTransparencyMaxDepth(int depth)
    {
     m_transparencyTechniqueMaxDepth = depth;
    }*/
 
 //-----------------------------------------------------------------------------
 
-void DefaultCompositor::setTransparencyDepth(int depth)
+void Core::setTransparencyDepth(int depth)
 {
     ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, m_transparencyTechniqueName,
                                                                         false );
@@ -150,14 +153,14 @@ void DefaultCompositor::setTransparencyDepth(int depth)
 
 //-----------------------------------------------------------------------------
 
-void DefaultCompositor::setupDefaultTransparency()
+void Core::setupDefaultTransparency()
 {
     ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, "Default", true );
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultCompositor::setupTransparency()
+void Core::setupTransparency()
 {
     // Check if compositor is already existing
     ::Ogre::CompositorChain* compChain =
@@ -214,7 +217,7 @@ void DefaultCompositor::setupTransparency()
 
 //-----------------------------------------------------------------------------
 
-void DefaultCompositor::setTransparencyDepthOfDepthPeeling(int depth)
+void Core::setTransparencyDepthOfDepthPeeling(int depth)
 {
     ::Ogre::CompositionTechnique* dpCompTech = m_compositorInstance->getTechnique();
 
@@ -293,7 +296,7 @@ void DefaultCompositor::setTransparencyDepthOfDepthPeeling(int depth)
 
 //-----------------------------------------------------------------------------
 
-void DefaultCompositor::setTransparencyDepthOfDualDepthPeeling(int depth)
+void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
 {
     ::Ogre::CompositionTechnique* dpCompTech = m_compositorInstance->getTechnique();
 
@@ -366,7 +369,7 @@ void DefaultCompositor::setTransparencyDepthOfDualDepthPeeling(int depth)
 
 //-----------------------------------------------------------------------------
 
-void DefaultCompositor::setTransparencyDepthOfHybridTransparency(int depth)
+void Core::setTransparencyDepthOfHybridTransparency(int depth)
 {
     ::Ogre::CompositionTechnique* dpCompTech = m_compositorInstance->getTechnique();
 
@@ -560,7 +563,7 @@ void DefaultCompositor::setTransparencyDepthOfHybridTransparency(int depth)
 
 //-------------------------------------------------------------------------------------
 
-/*void DefaultCompositor::setupQueries()
+/*void Core::setupQueries()
    {
     // Create the occlusion queries to be used in this sample
     try
@@ -588,7 +591,7 @@ void DefaultCompositor::setTransparencyDepthOfHybridTransparency(int depth)
 
    //-------------------------------------------------------------------------------------
 
-   void DefaultCompositor::notifyRenderSingleObject(::Ogre::Renderable* rend, const ::Ogre::Pass* pass,
+   void Core::notifyRenderSingleObject(::Ogre::Renderable* rend, const ::Ogre::Pass* pass,
                                                  const ::Ogre::AutoParamDataSource* source,
                                                  const ::Ogre::LightList* pLightList,
                                                  bool suppressRenderStateChanges)
@@ -688,7 +691,7 @@ void DefaultCompositor::setTransparencyDepthOfHybridTransparency(int depth)
 
    //-------------------------------------------------------------------------------------
 
-   bool DefaultCompositor::frameRenderingQueued(const Ogre::FrameEvent& evt)
+   bool Core::frameRenderingQueued(const Ogre::FrameEvent& evt)
    {
     if(m_renderWindow->isClosed())
        {
@@ -713,7 +716,7 @@ void DefaultCompositor::setTransparencyDepthOfHybridTransparency(int depth)
 
 //-----------------------------------------------------------------------------
 
-bool DefaultCompositor::setCelShadingActivated(bool celShadingActivated)
+bool Core::setCelShadingActivated(bool celShadingActivated)
 {
     ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, m_transparencyTechniqueName,
                                                                         false );
@@ -733,7 +736,7 @@ bool DefaultCompositor::setCelShadingActivated(bool celShadingActivated)
 
 //-----------------------------------------------------------------------------
 
-bool DefaultCompositor::isCelShadingActivated()
+bool Core::isCelShadingActivated()
 {
     return m_useCelShading;
 }
@@ -741,15 +744,15 @@ bool DefaultCompositor::isCelShadingActivated()
 
 //-----------------------------------------------------------------------------
 
-bool DefaultCompositor::isCelShadingSupported()
+bool Core::isCelShadingSupported()
 {
     return m_OITTechniquesSupported[m_transparencyTechnique].second;
 }
 
 //-----------------------------------------------------------------------------
 
-void DefaultCompositor::updateTechniquesSupported(::Ogre::String materialName,
-                                                  std::vector< Ogre::String > schemesSupported)
+void Core::updateTechniquesSupported(::Ogre::String materialName,
+                                     std::vector< Ogre::String > schemesSupported)
 {
     // OIT techniques supported + Cel Shading supported :
     // DepthPeeling - DualDepthPeeling - WeightedBlended - HybridTransparency
@@ -792,7 +795,7 @@ void DefaultCompositor::updateTechniquesSupported(::Ogre::String materialName,
 
 //-----------------------------------------------------------------------------
 
-void DefaultCompositor::updateTechniqueSupported()
+void Core::updateTechniqueSupported()
 {
     // Every OIT technique supposed supported
     for(int i = 0; i < NB_OF_TECH; i++)
@@ -830,11 +833,13 @@ void DefaultCompositor::updateTechniqueSupported()
 
 //-----------------------------------------------------------------------------
 
-bool DefaultCompositor::isOITTechniqueSupported(transparencyTechnique technique)
+bool Core::isOITTechniqueSupported(transparencyTechnique technique)
 {
     return m_OITTechniquesSupported[technique].first;
 }
 
 //-----------------------------------------------------------------------------
+
+} // namespace compositor
 
 } // namespace fwRenderOgre

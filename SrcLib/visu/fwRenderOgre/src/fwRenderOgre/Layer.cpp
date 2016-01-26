@@ -52,13 +52,13 @@ Layer::Layer() :
     m_sceneManager(nullptr),
     m_renderWindow(nullptr),
     m_viewport(nullptr),
-    m_hasDefaultCompositor(false),
+    m_hasCoreCompositor(false),
     m_hasCompositorChain(false),
     m_sceneCreated(false),
     m_rawCompositorChain(""),
-    m_defaultCompositor(nullptr),
-    m_defaultCompositorTransaprencyTechnique(DEFAULT),
-    m_defaultCompositorUseCelShading(false),
+    m_coreCompositor(nullptr),
+    m_transparencyTechnique(DEFAULT),
+    m_useCelShading(false),
     m_nbPeel(8),
     m_compositorChainManager(),
     m_depth(1),
@@ -210,9 +210,9 @@ void Layer::createScene()
     //this->addCompositor(m_compositorName);
     //this->setCompositorEnabled(m_compositorName);
 
-    if(m_hasDefaultCompositor)
+    if(m_hasCoreCompositor)
     {
-        this->setupDefaultCompositor();
+        this->setupCore();
     }
 
     if(m_hasCompositorChain)
@@ -344,7 +344,8 @@ void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::s
     m_connections->disconnect();
 
     m_moveInteractor = interactor;
-    m_moveInteractor->resizeEvent(m_renderWindow->getWidth(), m_renderWindow->getHeight());
+    m_moveInteractor->resizeEvent(static_cast<int>(m_renderWindow->getWidth()),
+                                  static_cast<int>(m_renderWindow->getHeight()) );
 
     m_connections->connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RESET_CAMERA_SIG,
                            this->getSptr(), s_RESET_CAMERA_SLOT);
@@ -593,27 +594,27 @@ void Layer::setBackgroundScale(float topScale, float botScale)
 
 //-------------------------------------------------------------------------------------
 
-void Layer::setDefaultCompositorEnabled(bool hasDefaultCompositor, std::string transparencyTechnique,
-                                        std::string useCelShading, std::string nbPeel)
+void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique,
+                                     std::string useCelShading, std::string nbPeel)
 {
-    m_hasDefaultCompositor = hasDefaultCompositor;
+    m_hasCoreCompositor = enabled;
     if(transparencyTechnique != "")
     {
         if(transparencyTechnique == "DepthPeeling")
         {
-            m_defaultCompositorTransaprencyTechnique = DEPTHPEELING;
+            m_transparencyTechnique = DEPTHPEELING;
         }
         else if(transparencyTechnique == "DualDepthPeeling")
         {
-            m_defaultCompositorTransaprencyTechnique = DUALDEPTHPEELING;
+            m_transparencyTechnique = DUALDEPTHPEELING;
         }
         else if(transparencyTechnique == "WeightedBlendedOIT")
         {
-            m_defaultCompositorTransaprencyTechnique = WEIGHTEDBLENDEDOIT;
+            m_transparencyTechnique = WEIGHTEDBLENDEDOIT;
         }
         else if(transparencyTechnique == "HybridTransparency")
         {
-            m_defaultCompositorTransaprencyTechnique = HYBRIDTRANSPARENCY;
+            m_transparencyTechnique = HYBRIDTRANSPARENCY;
         }
         else
         {
@@ -624,7 +625,7 @@ void Layer::setDefaultCompositorEnabled(bool hasDefaultCompositor, std::string t
     {
         if(useCelShading == "yes")
         {
-            m_defaultCompositorUseCelShading = true;
+            m_useCelShading = true;
         }
     }
     if(nbPeel != "")
@@ -635,9 +636,9 @@ void Layer::setDefaultCompositorEnabled(bool hasDefaultCompositor, std::string t
 
 //-------------------------------------------------------------------------------------
 
-void Layer::setCompositorChainEnabled(bool hasDefaultCompositorChain, std::string compositorChain)
+void Layer::setCompositorChainEnabled(bool hasCoreChain, std::string compositorChain)
 {
-    m_hasCompositorChain = hasDefaultCompositorChain;
+    m_hasCompositorChain = hasCoreChain;
 
     if(m_hasCompositorChain)
     {
@@ -647,9 +648,9 @@ void Layer::setCompositorChainEnabled(bool hasDefaultCompositorChain, std::strin
 
 //-------------------------------------------------------------------------------------
 
-bool Layer::isDefaultCompositorEnabled()
+bool Layer::isCoreCompositorEnabled()
 {
-    return m_hasDefaultCompositor;
+    return m_hasCoreCompositor;
 }
 
 //-------------------------------------------------------------------------------------
@@ -661,17 +662,17 @@ bool Layer::isCompositorChainEnabled()
 
 //-------------------------------------------------------------------------------------
 
-void Layer::setupDefaultCompositor()
+void Layer::setupCore()
 {
     // Needed to setup compositors in GL3Plus, Ogre creates render targets
     m_renderService.lock()->makeCurrent();
 
-    m_defaultCompositor = fwRenderOgre::DefaultCompositor::New();
-    m_defaultCompositor->setViewport(m_viewport);
-    m_defaultCompositor->setTransparencyTechnique(m_defaultCompositorTransaprencyTechnique);
-    m_defaultCompositor->setCelShadingActivated(m_defaultCompositorUseCelShading);
-    m_defaultCompositor->setTransparencyDepth(m_nbPeel);
-    m_defaultCompositor->update();
+    m_coreCompositor = fwRenderOgre::compositor::Core::New();
+    m_coreCompositor->setViewport(m_viewport);
+    m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
+    m_coreCompositor->setCelShadingActivated(m_useCelShading);
+    m_coreCompositor->setTransparencyDepth(m_nbPeel);
+    m_coreCompositor->update();
 }
 
 //-------------------------------------------------------------------------------------
@@ -706,14 +707,14 @@ std::vector< std::string > Layer::trimSemicolons(std::string input)
 
 //-------------------------------------------------------------------------------------
 
-::fwRenderOgre::DefaultCompositor::sptr Layer::getDefaultCompositor()
+::fwRenderOgre::compositor::Core::sptr Layer::getCoreCompositor()
 {
-    return m_defaultCompositor;
+    return m_coreCompositor;
 }
 
 //-------------------------------------------------------------------------------------
 
-CompositorChainManager::CompositorChainType Layer::getCompositorChain()
+::fwRenderOgre::compositor::ChainManager::CompositorChainType Layer::getCompositorChain()
 {
     return m_compositorChainManager.getCompositorChain();
 }
@@ -722,7 +723,7 @@ CompositorChainManager::CompositorChainType Layer::getCompositorChain()
 
 std::string Layer::getFinalChainCompositorName() const
 {
-    return CompositorChainManager::FINAL_CHAIN_COMPOSITOR;
+    return ::fwRenderOgre::compositor::ChainManager::FINAL_CHAIN_COMPOSITOR;
 }
 
 //-------------------------------------------------------------------------------------

@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "uiVisuOgre/SDefaultCompositorEditor.hpp"
+#include "uiVisuOgre/SCoreCompositorEditor.hpp"
 
 #include <fwData/Composite.hpp>
 
@@ -14,7 +14,7 @@
 #include <fwServices/IService.hxx>
 
 #include <fwRenderOgre/SRender.hpp>
-#include <fwRenderOgre/compositor/DefaultCompositor.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
 
 #include <material/Plugin.hpp>
 
@@ -38,25 +38,25 @@
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SDefaultCompositorEditor, ::fwData::Composite);
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SCoreCompositorEditor, ::fwData::Composite);
 
 //------------------------------------------------------------------------------
 
-SDefaultCompositorEditor::SDefaultCompositorEditor() throw() :
-    m_currentDefaultCompositor(nullptr),
+SCoreCompositorEditor::SCoreCompositorEditor() throw() :
+    m_currentCore(nullptr),
     m_isLayerSelected(false)
 {
 }
 
 //------------------------------------------------------------------------------
 
-SDefaultCompositorEditor::~SDefaultCompositorEditor() throw()
+SCoreCompositorEditor::~SCoreCompositorEditor() throw()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
+void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
 {
     this->create();
 
@@ -167,7 +167,7 @@ void SDefaultCompositorEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::stopping() throw(::fwTools::Failed)
+void SCoreCompositorEditor::stopping() throw(::fwTools::Failed)
 {
     QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
 
@@ -177,7 +177,7 @@ void SDefaultCompositorEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::refreshRenderers()
+void SCoreCompositorEditor::refreshRenderers()
 {
     m_layersBox->clear();
 
@@ -193,7 +193,7 @@ void SDefaultCompositorEditor::refreshRenderers()
         for(auto &layerMap : render->getLayers())
         {
             // Adds default layers (3D scene)
-            if(layerMap.second->isDefaultCompositorEnabled())
+            if(layerMap.second->isCoreCompositorEnabled())
             {
                 const std::string id       = layerMap.first;
                 const std::string renderID = render->getID();
@@ -209,22 +209,22 @@ void SDefaultCompositorEditor::refreshRenderers()
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::configuring() throw(::fwTools::Failed)
+void SCoreCompositorEditor::configuring() throw(::fwTools::Failed)
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::updating() throw(::fwTools::Failed)
+void SCoreCompositorEditor::updating() throw(::fwTools::Failed)
 {
-    m_currentDefaultCompositor->update();
+    m_currentCore->update();
     m_currentLayer->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::onSelectedLayerItem(int index)
+void SCoreCompositorEditor::onSelectedLayerItem(int index)
 {
     if(!m_isLayerSelected)
     {
@@ -243,13 +243,13 @@ void SDefaultCompositorEditor::onSelectedLayerItem(int index)
     }
 
     // Reloads buttons to match layer's parameters
-    m_currentLayer             = m_layers[static_cast<size_t>(index)];
-    m_currentDefaultCompositor = m_currentLayer->getDefaultCompositor();
+    m_currentLayer = m_layers[static_cast<size_t>(index)];
+    m_currentCore  = m_currentLayer->getCoreCompositor();
 
     // If the layer is not yet started, we can't use its default compositor
-    if(m_currentDefaultCompositor)
+    if(m_currentCore)
     {
-        switch (m_currentDefaultCompositor->getTransparencyTechnique())
+        switch (m_currentCore->getTransparencyTechnique())
         {
             case DEFAULT:
                 m_transparencyButtonGroup->button(0)->setChecked(true);
@@ -267,19 +267,19 @@ void SDefaultCompositorEditor::onSelectedLayerItem(int index)
                 m_transparencyButtonGroup->button(4)->setChecked(true);
                 break;
         }
-        m_useCelShadingCheckBox->setChecked(m_currentDefaultCompositor->isCelShadingActivated());
-        m_transparencyDepthSlider->setValue(m_currentDefaultCompositor->getTransparencyDepth());
+        m_useCelShadingCheckBox->setChecked(m_currentCore->isCelShadingActivated());
+        m_transparencyDepthSlider->setValue(m_currentCore->getTransparencyDepth());
         this->update();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::onUseCelShading(int state)
+void SCoreCompositorEditor::onUseCelShading(int state)
 {
-    if(m_currentDefaultCompositor)
+    if(m_currentCore)
     {
-        bool celShadingSupported = m_currentDefaultCompositor->setCelShadingActivated(state == Qt::Checked);
+        bool celShadingSupported = m_currentCore->setCelShadingActivated(state == Qt::Checked);
         if(!celShadingSupported)
         {
             m_useCelShadingCheckBox->setChecked(false);
@@ -291,52 +291,52 @@ void SDefaultCompositorEditor::onUseCelShading(int state)
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::onEditTransparencyDepth(int depth)
+void SCoreCompositorEditor::onEditTransparencyDepth(int depth)
 {
-    if(m_currentDefaultCompositor)
+    if(m_currentCore)
     {
-        m_currentDefaultCompositor->setTransparencyDepth(depth);
+        m_currentCore->setTransparencyDepth(depth);
         this->update();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::onEditTransparency(int index)
+void SCoreCompositorEditor::onEditTransparency(int index)
 {
-    if(m_currentDefaultCompositor)
+    if(m_currentCore)
     {
         bool transparencyUpdated = false;
         switch (index)
         {
             case 0:
-                transparencyUpdated = m_currentDefaultCompositor->setTransparencyTechnique(DEFAULT);
+                transparencyUpdated = m_currentCore->setTransparencyTechnique(DEFAULT);
                 break;
             case 1:
-                transparencyUpdated = m_currentDefaultCompositor->setTransparencyTechnique(DEPTHPEELING);
+                transparencyUpdated = m_currentCore->setTransparencyTechnique(DEPTHPEELING);
                 break;
             case 2:
-                transparencyUpdated = m_currentDefaultCompositor->setTransparencyTechnique(DUALDEPTHPEELING);
+                transparencyUpdated = m_currentCore->setTransparencyTechnique(DUALDEPTHPEELING);
                 break;
             case 3:
-                transparencyUpdated = m_currentDefaultCompositor->setTransparencyTechnique(WEIGHTEDBLENDEDOIT);
+                transparencyUpdated = m_currentCore->setTransparencyTechnique(WEIGHTEDBLENDEDOIT);
                 break;
             case 4:
-                transparencyUpdated = m_currentDefaultCompositor->setTransparencyTechnique(HYBRIDTRANSPARENCY);
+                transparencyUpdated = m_currentCore->setTransparencyTechnique(HYBRIDTRANSPARENCY);
                 break;
         }
 
         if(transparencyUpdated)
         {
             bool celShadingSupported =
-                m_currentDefaultCompositor->setCelShadingActivated(m_useCelShadingCheckBox->isChecked());
-            m_useCelShadingCheckBox->setChecked(m_currentDefaultCompositor->isCelShadingActivated());
+                m_currentCore->setCelShadingActivated(m_useCelShadingCheckBox->isChecked());
+            m_useCelShadingCheckBox->setChecked(m_currentCore->isCelShadingActivated());
             m_useCelShadingCheckBox->setCheckable(celShadingSupported);
         }
         else
         {
             m_transparencyButtonGroup->button(0)->setChecked(true);
-            m_currentDefaultCompositor->setCelShadingActivated(false);
+            m_currentCore->setCelShadingActivated(false);
             m_useCelShadingCheckBox->setChecked(false);
             m_useCelShadingCheckBox->setCheckable(false);
         }

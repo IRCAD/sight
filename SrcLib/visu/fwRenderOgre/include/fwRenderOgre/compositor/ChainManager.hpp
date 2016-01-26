@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWRENDEROGRE_COMPOSITOR_COMPOSITORCHAINMANAGER_HPP__
-#define __FWRENDEROGRE_COMPOSITOR_COMPOSITORCHAINMANAGER_HPP__
+#ifndef __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__
+#define __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__
 
 #include <fwCore/BaseObject.hpp>
 
@@ -22,20 +22,23 @@ class Viewport;
 namespace fwRenderOgre
 {
 
-class FWRENDEROGRE_CLASS_API CompositorChainManager : public ::fwCore::BaseObject
+namespace compositor
+{
+
+class FWRENDEROGRE_CLASS_API ChainManager : public ::fwCore::BaseObject
 {
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro( (CompositorChainManager)(::fwRenderOgre::CompositorChainManager), (()),
-                                            new CompositorChainManager);
+    fwCoreClassDefinitionsWithFactoryMacro( (ChainManager)(::fwRenderOgre::compositor::ChainManager), (()),
+                                            new ChainManager);
     fwCoreAllowSharedFromThis();
 
     typedef std::string CompositorIdType;
     typedef std::pair<CompositorIdType, bool> CompositorType;
     typedef std::vector<CompositorType> CompositorChainType;
 
-    FWRENDEROGRE_API CompositorChainManager();
-    FWRENDEROGRE_API CompositorChainManager(::Ogre::Viewport* ogreViewport);
+    FWRENDEROGRE_API ChainManager();
+    FWRENDEROGRE_API ChainManager(::Ogre::Viewport* ogreViewport);
 
     /// Inserts the new compositor in the compositor chain vector
     FWRENDEROGRE_API void addAvailableCompositor(CompositorIdType compositorName);
@@ -92,20 +95,22 @@ private:
 //-----------------------------------------------------------------------------
 // Inline method(s)
 
-inline CompositorChainManager::CompositorChainType CompositorChainManager::getCompositorChain()
+inline ChainManager::CompositorChainType ChainManager::getCompositorChain()
 {
     return m_compositorChain;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void CompositorChainManager::setOgreViewport(::Ogre::Viewport* viewport)
+inline void ChainManager::setOgreViewport(::Ogre::Viewport* viewport)
 {
     m_ogreViewport = viewport;
 }
 
 //-----------------------------------------------------------------------------
 
+} // namespace compositor
+
 } // namespace fwRenderOgre
 
-#endif // __FWRENDEROGRE_COMPOSITOR_COMPOSITORCHAINMANAGER_HPP__
+#endif // __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__

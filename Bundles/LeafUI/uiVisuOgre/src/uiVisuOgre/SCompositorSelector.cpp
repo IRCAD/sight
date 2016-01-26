@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -217,7 +217,7 @@ void SCompositorSelector::checkEnabledCompositors()
 
             auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
                                                 m_layerCompositorChain.end(),
-                                                ::fwRenderOgre::CompositorChainManager::FindCompositorByName(
+                                                ::fwRenderOgre::compositor::ChainManager::FindCompositorByName(
                                                     currentCompositorName));
 
             if(layerCompositor != m_layerCompositorChain.end())
@@ -249,7 +249,7 @@ bool SCompositorSelector::isEnabledCompositor(std::string compositorName)
 {
     auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
                                         m_layerCompositorChain.end(),
-                                        ::fwRenderOgre::CompositorChainManager::FindCompositorByName(
+                                        ::fwRenderOgre::compositor::ChainManager::FindCompositorByName(
                                             compositorName));
 
     if(layerCompositor != m_layerCompositorChain.end())

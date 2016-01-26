@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __UIVISUOGRE_SDEFAULTCOMPOSITOREDITOR_HPP__
-#define __UIVISUOGRE_SDEFAULTCOMPOSITOREDITOR_HPP__
+#ifndef __UIVISUOGRE_SCORECOMPOSITOREDITOR_HPP__
+#define __UIVISUOGRE_SCORECOMPOSITOREDITOR_HPP__
 
 #include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/compositor/DefaultCompositor.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -33,29 +33,29 @@ namespace uiVisuOgre
 
 /**
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
- * @class   SDefaultCompositorEditor
+ * @class   SCoreCompositorEditor
  */
-class UIVISUOGRE_CLASS_API SDefaultCompositorEditor : public QObject,
-                                                      public ::gui::editor::IEditor
+class UIVISUOGRE_CLASS_API SCoreCompositorEditor : public QObject,
+                                                   public ::gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SDefaultCompositorEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro ( (SCoreCompositorEditor)(::gui::editor::IEditor) );
 
     /// Constructor.
-    UIVISUOGRE_API SDefaultCompositorEditor() throw();
+    UIVISUOGRE_API SCoreCompositorEditor() throw();
 
     /// Destructor. Does nothing
-    UIVISUOGRE_API virtual ~SDefaultCompositorEditor() throw();
+    UIVISUOGRE_API virtual ~SCoreCompositorEditor() throw();
 
 protected:
 
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SDefaultCompositorEditorInstance" impl="::uiVisuOgre::SDefaultCompositorEditor" type="::gui::editor::IEditor">
+        <service uid="SCoreCompositorEditorInstance" impl="::uiVisuOgre::SCoreCompositorEditor" type="::gui::editor::IEditor">
              <parameter>param</parameter>
         </service>
        @endcode
@@ -77,7 +77,7 @@ protected:
 
     std::vector< ::fwRenderOgre::Layer::sptr > m_layers;
     ::fwRenderOgre::Layer::sptr m_currentLayer;
-    ::fwRenderOgre::DefaultCompositor::sptr m_currentDefaultCompositor;
+    ::fwRenderOgre::compositor::Core::sptr m_currentCore;
 
 protected Q_SLOTS:
 
@@ -110,4 +110,4 @@ private:
 
 } // uiVisuOgre
 
-#endif // __UIVISUOGRE_SDEFAULTCOMPOSITOREDITOR_HPP__
+#endif // __UIVISUOGRE_SCORECOMPOSITOREDITOR_HPP__
