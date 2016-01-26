@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,13 +46,16 @@ void AppConfigParametersTest::setUp()
     runtime->addBundles(location);
     CPPUNIT_ASSERT(runtime->bundlesBegin() !=  runtime->bundlesEnd());
 
-    // Test bundle servicesReg
     std::shared_ptr< ::fwRuntime::Bundle > bundle = runtime->findBundle("servicesReg");
+    CPPUNIT_ASSERT_MESSAGE("'servicesReg bundle not found !'",bundle);
     bundle->setEnable(true);
+    CPPUNIT_ASSERT(bundle->isEnable());
 
     // Test bundle servicesReg
     std::shared_ptr< ::fwRuntime::Bundle > bundle2 = runtime->findBundle("AppConfigParametersTest");
+    CPPUNIT_ASSERT_MESSAGE("'AppConfigParametersTest' bundle not found",bundle2);
     bundle2->setEnable(true);
+    CPPUNIT_ASSERT(bundle2->isEnable());
 
     ::fwServices::registry::AppConfigParameters::sptr appConfigParam;
     appConfigParam = ::fwServices::registry::AppConfigParameters::getDefault();
