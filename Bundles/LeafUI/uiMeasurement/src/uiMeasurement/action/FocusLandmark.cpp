@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -85,7 +85,7 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Add landmarks");
         messageBox.setMessage(
-            "Sorry, it is impossible to add image landmarks. There is not loaded image in the software." );
+            "It is impossible to add image landmarks. There is no loaded image in the software." );
         messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
         messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
         messageBox.show();
@@ -106,7 +106,7 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Focus landmarks");
             messageBox.setMessage(
-                "Sorry, it is impossible to focus image landmarks. There are not defined landmarks for this selected image." );
+                "It is impossible to focus image landmarks. There are no defined landmarks for this selected image." );
             messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
             messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
@@ -166,7 +166,8 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
                 else
                 {
                     ::fwGui::dialog::MessageDialog::showMessageDialog("Focus landmarks",
-                                                                      "Sorry, it is impossible to focus image landmarks: landmark outside image.",
+                                                                      "It is impossible to focus image landmarks: "
+                                                                      "landmark is outside image.",
                                                                       ::fwGui::dialog::IMessageDialog::WARNING);
                 }
             }

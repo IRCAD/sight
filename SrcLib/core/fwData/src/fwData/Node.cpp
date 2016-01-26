@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -122,7 +122,7 @@ void Node::shallowCopy(const Object::csptr &_source )
     if( other->getObject())
     {
         ::fwTools::Object::sptr object = ::fwData::factory::New( other->getObject()->getClassname() );
-        OSLM_ASSERT("Sorry, instantiate "<<other->getObject()->getClassname()<< " failed", object );
+        OSLM_ASSERT("The instantiation of '"<<other->getObject()->getClassname()<< "' failed", object );
         m_object = ::fwData::Object::dynamicCast(object);
         m_object->shallowCopy( other->m_object );
     }

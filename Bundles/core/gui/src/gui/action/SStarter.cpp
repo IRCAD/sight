@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -83,7 +83,7 @@ void SStarter::updating() throw( ::fwTools::Failed )
     {
         ActionType action = m_uuidServices.at(i).second;
         IDSrvType uid     = m_uuidServices.at(i).first;
-        bool srv_exists   = ::fwTools::fwID::exist(uid  );
+        bool srv_exists   = ::fwTools::fwID::exist(uid);
 
         // Manage special action
         if ( action == START_IF_EXISTS )
@@ -160,7 +160,9 @@ void SStarter::updating() throw( ::fwTools::Failed )
                 }
                 default:
                 {
-                    SLM_FATAL("Sorry, this action type is not managed");
+                    OSLM_FATAL("There is no action ("<< action
+                                                     <<") type corresponding to the action id requested for " << uid <<
+                               ".");
                     break;
                 }
             }
@@ -169,7 +171,7 @@ void SStarter::updating() throw( ::fwTools::Failed )
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
                 "Service unavailable",
-                "Sorry, the service is unavailable.",
+                "The service is unavailable.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
 
             OSLM_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
@@ -212,7 +214,7 @@ void SStarter::configuring() throw( ::fwTools::Failed )
         }
         else
         {
-            OSLM_WARN("Sorry this type of \"actionType\":" << actionType <<" is not managed by SStarter");
+            OSLM_WARN("The \"actionType\":" << actionType <<" is not managed by SStarter");
             continue;
         }
         SLM_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));

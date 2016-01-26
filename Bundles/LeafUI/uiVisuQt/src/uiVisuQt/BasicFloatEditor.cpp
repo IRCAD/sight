@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -98,7 +98,7 @@ void BasicFloatEditor::configuring() throw(fwTools::Failed)
 void BasicFloatEditor::updating() throw(::fwTools::Failed)
 {
     ::fwData::Float::sptr floatObj = this->getObject< ::fwData::Float >();
-    SLM_ASSERT("Sorry, the object is null", floatObj);
+    SLM_ASSERT("The given float object is null", floatObj);
 
     std::stringstream ss;
     ss << floatObj->value();

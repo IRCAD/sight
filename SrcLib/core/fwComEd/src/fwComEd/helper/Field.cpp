@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -117,8 +117,9 @@ void Field::notify(fwServices::IService::sptr _serviceSource)
 
         sig->asyncEmit(m_removedFields);
     }
-    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
-                m_addedFields.empty() && m_newChangedFields.empty() && m_removedFields.empty());
+    OSLM_INFO_IF("No changes were found on the fields of the object '" + m_object.lock()->getID()
+                 + "', nothing to notify.",
+                 m_addedFields.empty() && m_newChangedFields.empty() && m_removedFields.empty());
 }
 
 //-----------------------------------------------------------------------------

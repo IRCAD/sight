@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -507,7 +507,7 @@ std::shared_ptr<Bundle> BundleDescriptorReader::processPlugin(xmlNodePtr node,
         // Point declaration.
         if(xmlStrcmp(curChild->name, (const xmlChar*) POINT.c_str()) == 0)
         {
-            SLM_FATAL("Sorry, this xml element  ( <point ... > </point> ) is depreciated (" + location.string() + ")" );
+            SLM_FATAL("This xml element  ( <point ... > </point> ) is deprecated (" + location.string() + ")" );
         }
     }
 

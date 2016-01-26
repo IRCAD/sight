@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,7 +54,7 @@ void ImageSeries::configuring() throw(fwTools::Failed)
     {
         std::string value(m_configuration->getAttributeValue("mode"));
         std::transform(value.begin(), value.end(), value.begin(), tolower);
-        OSLM_ASSERT("Sorry, bad value "<<value<<" for attribute mode.",
+        OSLM_ASSERT("Bad value "<<value<<" for attribute mode, it should either be '3d' or '2d'.",
                     value == "3d" || value == "2d");
         this->set3dMode(value == "3d");
     }

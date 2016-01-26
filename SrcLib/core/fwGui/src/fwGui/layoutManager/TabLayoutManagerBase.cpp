@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -60,7 +60,7 @@ void TabLayoutManagerBase::initialize( ConfigurationType configuration)
         if( view->hasAttribute("selected") )
         {
             std::string isSelected = view->getExistingAttributeValue("selected");
-            OSLM_ASSERT("Sorry, value "<<isSelected<<" is not correct for attribute isSelected.",
+            OSLM_ASSERT("The value "<<isSelected<<" it's incorrect, it should either be yes or no.",
                         isSelected == "yes" || isSelected == "no");
             vi.m_isSelect = (isSelected == "yes");
         }

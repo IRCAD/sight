@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -136,7 +136,7 @@ void SnapshotEditor::onSnapButton()
     }
     else
     {
-        std::string msgInfo("Sorry, it is not possible to snapshot the negato view. This view is not shown on screen.");
+        std::string msgInfo("It is not possible to snapshot the negato view. This view is not shown on screen.");
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Negato view snapshot");
         messageBox.setMessage( msgInfo );

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -105,8 +105,8 @@ void SeriesDB::notify()
 
     }
 
-    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
-                m_addedSeries.empty() && m_removedSeries.empty());
+    OSLM_INFO_IF("No changes were found on the SeriesDB '" + m_seriesDB.lock()->getID() + "', nothing to notify.",
+                 m_addedSeries.empty() && m_removedSeries.empty());
 }
 
 //-----------------------------------------------------------------------------

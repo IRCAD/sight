@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -57,7 +57,7 @@ bool Object::refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgEl
 
 void Object::updating( ) throw(fwTools::Failed)
 {
-    SLM_FATAL("Sorry, this method is depreciated");
+    SLM_FATAL("This method is deprecated, and thus, shouldn't be used.");
 }
 
 
@@ -84,23 +84,24 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
             if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
                 buildMode = elem->getExistingAttributeValue( OBJECT_BUILD_MODE );
-                OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.",
+                OSLM_ASSERT( "The buildMode \""<< buildMode <<"\" is not supported, it should either be BUILD_OBJECT "
+                             "or GET_OBJECT.",
                              buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
 
 
-            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" .",
+            SLM_ASSERT( "The xml element \"item\" must have an attribute named \"key\" .",
                         elem->hasAttribute("key") );
             std::string key = elem->getExistingAttributeValue("key");
-            SLM_ASSERT( "Sorry, the xml element \"item\" must have an attribute named \"key\" not empty.",
+            SLM_ASSERT( "The xml element \"item\" must have an attribute named \"key\" whick is not empty.",
                         !key.empty() );
-            SLM_ASSERT( "Sorry, xml element item must have one (and only one) xml sub-element \"object\".",
+            SLM_ASSERT( "The xml element \"item\" must have one (and only one) xml sub-element \"object\".",
                         elem->size() == 1 && (*(elem->getElements().begin()))->getName() == "object" );
 
             if( buildMode == BUILD_OBJECT )
             {
                 // Test if key already exist in object
-                OSLM_ASSERT("Sorry the key "<< key <<" already exists in the object.", !associatedObject->getField(
+                OSLM_ASSERT("The key "<< key <<" already exists in the object.", !associatedObject->getField(
                                 key ) );
 
                 // Create and manage object config

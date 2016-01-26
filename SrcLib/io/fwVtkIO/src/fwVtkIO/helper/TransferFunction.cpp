@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,8 @@ void TransferFunction::toVtkLookupTable(
     bool allowTransparency,
     unsigned int size )
 {
-    SLM_WARN_IF( "Sorry, This transfer function conversion not managed clamped TF.", tf->getIsClamped() );
+    SLM_WARN_IF( "This transfer function conversion is not managed, transfer function is clamped.",
+                 tf->getIsClamped() );
 
     // Configures basic parameters
     lt->SetNumberOfTableValues( size );

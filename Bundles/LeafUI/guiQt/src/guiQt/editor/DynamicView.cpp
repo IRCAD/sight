@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -145,7 +145,7 @@ void DynamicView::configuring() throw(fwTools::Failed)
 
     if(this->getConfigTree().get_child("service").count("config") > 0)
     {
-        SLM_ASSERT("Sorry you must have one (and only one) <config/> element.",
+        SLM_ASSERT("There must be one (and only one) <config/> element.",
                    this->getConfigTree().get_child("service").count("config") == 1 );
         const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
         const ::fwServices::IService::ConfigType &config   = srvconfig.get_child("config");
@@ -251,7 +251,7 @@ void DynamicView::launchTab(DynamicViewInfo& info)
     if(m_tabIDList.find(info.tabID) != m_tabIDList.end() )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("New tab",
-                                                          "Sorry, the tab " + info.title + " cannot be opened twice.",
+                                                          "The tab " + info.title + " cannot be opened twice.",
                                                           ::fwGui::dialog::IMessageDialog::WARNING);
         return;
     }
@@ -360,7 +360,7 @@ void DynamicView::closeTab( int index, bool forceClose )
     else
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Close tab",
-                                                          "Sorry, the tab " + info.title + " can not be closed.",
+                                                          "The tab " + info.title + " can not be closed.",
                                                           ::fwGui::dialog::IMessageDialog::INFO);
     }
 }

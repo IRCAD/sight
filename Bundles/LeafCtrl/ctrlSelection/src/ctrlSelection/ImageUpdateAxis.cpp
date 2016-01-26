@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -81,10 +81,12 @@ void ImageUpdateAxis::configuring()  throw ( ::fwTools::Failed )
     SLM_ASSERT("Problem with configuration for ImageUpdateAxis type, one element \"axis\" must be present", m_configuration->findAllConfigurationElement(
                    "axis").size() == 1 );
 
-    SLM_FATAL_IF( "Sorry, attribute \"uid\" is missing", !config->hasAttribute("uid") );
+    SLM_FATAL_IF( "The attribute \"uid\" is missing, it represents the fwID of the ::fwData::Float to update",
+                  !config->hasAttribute("uid") );
     m_floatID = config->getExistingAttributeValue("uid");
 
-    SLM_FATAL_IF( "Sorry, attribute \"orientation\" is missing", !config->hasAttribute("orientation") );
+    SLM_FATAL_IF( "The attribute \"orientation\" is missing, it represents the image orientation "
+                  "(axial, frontal or sagittal)", !config->hasAttribute("orientation") );
     std::string orientation = config->getExistingAttributeValue("orientation");
     ::boost::algorithm::trim(orientation);
     ::boost::algorithm::to_lower(orientation);

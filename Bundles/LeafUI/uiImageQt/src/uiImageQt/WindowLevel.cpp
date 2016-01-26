@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -558,7 +558,7 @@ void WindowLevel::swapCurrentTFAndNotify( ::fwData::TransferFunction::sptr newTF
     // Change TF
     std::string tfSelectionFwID = this->getTFSelectionFwID();
     ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( tfSelectionFwID ) );
-    OSLM_ASSERT( "Sorry, object with fwID " << tfSelectionFwID << " doesn't exist.", pool );
+    OSLM_ASSERT( "The object with the fwID " << tfSelectionFwID << " doesn't exist.", pool );
     ::fwComEd::helper::Composite compositeHelper( pool );
     compositeHelper.swap( this->getSelectedTFKey(), newTF );
 

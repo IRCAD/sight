@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,8 +44,8 @@ void Plugin::start() throw( ::fwRuntime::RuntimeException )
 
 void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 {
-    SLM_ASSERT("Sorry, the OSR is already initialized.", !m_appConfigMng );
-    SLM_ASSERT("Sorry, configuration name parameter is not initialized.", !m_configurationName.empty());
+    SLM_ASSERT("The OSR is already initialized.", !m_appConfigMng );
+    SLM_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
 
     m_appConfigMng = ::fwServices::AppConfigManager::New();
 
@@ -74,7 +74,7 @@ void Plugin::stop() throw()
 
 void Plugin::uninitialize() throw()
 {
-    SLM_ASSERT("Sorry, the OSR is not initialized.", m_appConfigMng );
+    SLM_ASSERT("The OSR is not initialized.", m_appConfigMng );
     m_appConfigMng->stopAndDestroy();
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,16 +41,17 @@ void IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr
             item != handleEvents.end();
             ++item )
     {
-        SLM_FATAL_IF( "Sorry, attribute \"compositeKey\" is missing", !(*item)->hasAttribute("compositeKey") );
+        SLM_FATAL_IF( "The attribute \"compositeKey\" is missing", !(*item)->hasAttribute("compositeKey") );
         std::string compositeKey = (*item)->getExistingAttributeValue("compositeKey");
 
-        SLM_FATAL_IF( "Sorry, attribute \"onEvent\" is missing", !(*item)->hasAttribute("onEvent") );
+        SLM_FATAL_IF( "The attribute \"onEvent\" is missing", !(*item)->hasAttribute("onEvent") );
         std::string onEvent = (*item)->getExistingAttributeValue("onEvent");
 
-        SLM_FATAL_IF( "Sorry, attribute \"fromUID\" is missing", !(*item)->hasAttribute("fromUID") );
+        SLM_FATAL_IF( "The attribute \"fromUID\" is missing", !(*item)->hasAttribute("fromUID") );
         std::string fromUID = (*item)->getExistingAttributeValue("fromUID");
 
-        SLM_FATAL_IF( "Sorry, attribute \"actionType\" is missing", !(*item)->hasAttribute("actionType") );
+        SLM_FATAL_IF( "The attribute \"actionType\" is missing, the actionType must be ADD, ADD_OR_SWAP, SWAP, REMOVE,"
+                      "REMOVE_IF_PRESENT or DO_NOTHING", !(*item)->hasAttribute("actionType") );
         std::string actionType = (*item)->getExistingAttributeValue("actionType");
 
         ActionType action;
@@ -80,7 +81,8 @@ void IUpdaterSrv::configureManagedEvents(::fwRuntime::ConfigurationElement::sptr
         }
         else
         {
-            SLM_FATAL("Sorry this type of \"actionType\" is not managed by ObjFromMsgUpdaterSrv type");
+            SLM_FATAL("This type of \"actionType\" is not managed by ObjFromMsgUpdaterSrv type, The actionType"
+                      "should be  ADD, ADD_OR_SWAP, SWAP, REMOVE, REMOVE_IF_PRESENT and DO_NOTHING");
         }
 
         OSLM_INFO(
@@ -147,7 +149,7 @@ void IUpdaterSrv::updateComposite(::fwData::Composite::sptr pComposite, ::fwData
             }
             default:
             {
-                SLM_FATAL("Sorry, this action type is not managed");
+                SLM_FATAL("This action type is not managed");
                 break;
             }
         }

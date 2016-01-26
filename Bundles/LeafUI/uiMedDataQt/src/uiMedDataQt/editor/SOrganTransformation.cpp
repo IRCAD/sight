@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -174,7 +174,7 @@ void SOrganTransformation::refresh()
         if (::fwTools::fwID::exist(m_TMSUid))
         {
             pComposite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_TMSUid));
-            SLM_ASSERT("Sorry, '"<< m_TMSUid <<"' object is not a composite", pComposite);
+            SLM_ASSERT("The object '"<< m_TMSUid <<"' is not a composite", pComposite);
         }
 
         for(::fwData::Reconstruction::sptr rec :  series->getReconstructionDB())
@@ -215,7 +215,7 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem *currentItem)
     if (::fwTools::fwID::exist(m_TMSUid))
     {
         pComposite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_TMSUid));
-        SLM_ASSERT("Sorry, '"<< m_TMSUid <<"' object is not a composite", pComposite);
+        SLM_ASSERT("The object '"<< m_TMSUid <<"' is not a composite", pComposite);
 
         ::std::string item_name                        = currentItem->text().toStdString();
         ::fwData::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,7 +47,7 @@ void IGuiContainerSrv::initialize()
     std::vector < ConfigurationType > vectGui = m_configuration->find("gui");
     if( !vectGui.empty() )
     {
-        SLM_ASSERT("Sorry, no <registry> tag is allowed in <gui> section", vectGui.at(0)->find("registry").empty());
+        SLM_ASSERT("No <registry> tag is allowed in the <gui> section", vectGui.at(0)->find("registry").empty());
 
         // find view LayoutManager configuration
         std::vector < ConfigurationType > vectLayoutMng = vectGui.at(0)->find("layout");

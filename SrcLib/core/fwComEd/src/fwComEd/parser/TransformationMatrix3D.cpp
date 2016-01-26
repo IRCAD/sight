@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ namespace parser
 
 void TransformationMatrix3D::updating( ) throw(fwTools::Failed)
 {
-    SLM_FATAL("Sorry, this method is depreciated.");
+    SLM_FATAL("This method is deprecated, and thus shouldn't be used.");
 }
 
 //------------------------------------------------------------------------------

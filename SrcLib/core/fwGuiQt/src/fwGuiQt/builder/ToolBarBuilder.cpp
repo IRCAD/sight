@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,7 +40,7 @@ ToolBarBuilder::~ToolBarBuilder()
 void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent )
 {
     m_parent = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
-    SLM_ASSERT("Sorry, the parent container is not a QtContainer", m_parent);
+    SLM_ASSERT("The parent container is not a QtContainer", m_parent);
     QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
 
     QToolBar *toolBar = new QToolBar(QObject::tr("ToolBar"));
@@ -110,8 +110,8 @@ void ToolBarBuilder::createToolBar( ::fwGui::container::fwContainer::sptr parent
 
 void ToolBarBuilder::destroyToolBar()
 {
-    SLM_ASSERT("Sorry, ToolBar not initialized", m_toolBar);
-    SLM_ASSERT("Sorry, the parent container is not a QtContainer", m_parent);
+    SLM_ASSERT("The ToolBar is not initialized", m_toolBar);
+    SLM_ASSERT("The parent's container is not a QtContainer", m_parent);
     QMainWindow *window = qobject_cast<QMainWindow*> ( m_parent->getQtContainer() );
 
     if (window)

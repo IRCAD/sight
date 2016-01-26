@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -120,7 +120,7 @@ void Code::configuring() throw(fwTools::Failed)
 void Code::updating() throw(::fwTools::Failed)
 {
     ::fwData::String::sptr stringObj = this->getObject< ::fwData::String >();
-    SLM_ASSERT("Sorry, the object is null", stringObj);
+    SLM_ASSERT("The given string object is null", stringObj);
 
     m_valueCtrl->setText(QString::fromStdString(stringObj->value()));
     OSLM_TRACE(stringObj->getID() << " updated value : " << stringObj->value());

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -366,7 +366,7 @@ TransferFunction::TFColor TransferFunction::getLinearColor( TFValueType value ) 
 const TransferFunction::TFColor& TransferFunction::getTFColor( TFValueType value ) const
 {
     TFDataType::const_iterator itr = m_tfData.find(value);
-    SLM_ASSERT("Sorry not defined in the TF.", itr != m_tfData.end());
+    OSLM_ASSERT("The value "<< value <<" is not defined in the transfer function.", itr != m_tfData.end());
     return itr->second;
 }
 //------------------------------------------------------------------------------

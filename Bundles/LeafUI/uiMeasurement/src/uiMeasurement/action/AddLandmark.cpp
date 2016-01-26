@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -91,7 +91,7 @@ void AddLandmark::updating() throw(::fwTools::Failed)
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Add landmarks",
-            "Sorry, it is impossible to add image landmarks. There is not loaded image in the software.",
+            "It is impossible to add image landmarks. There is no loaded image in the software.",
             ::fwGui::dialog::IMessageDialog::WARNING);
         return;
     }

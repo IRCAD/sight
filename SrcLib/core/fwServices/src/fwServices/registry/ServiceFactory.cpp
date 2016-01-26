@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -155,9 +155,8 @@ IService::sptr ServiceFactory::create( const std::string & _srvImpl ) const
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( _srvImpl );
 
-    OSLM_ASSERT("Sorry don't find in ServiceFactory the service called "
-                << _srvImpl,
-                iter != m_srvImplTosrvInfo.end() );
+    OSLM_ASSERT("The service called " << _srvImpl << " does not exist in the ServiceFactory "
+                , iter != m_srvImplTosrvInfo.end() );
 
     ServiceInfo::sptr info = iter->second;
 
@@ -169,15 +168,13 @@ IService::sptr ServiceFactory::create( const std::string & _srvImpl ) const
     }
     else
     {
-        OSLM_ASSERT( "Sorry a bundle must declare the factory "
+        OSLM_ASSERT( "A bundle must declare the factory named"
                      << _srvImpl
-                     <<". Service declaration is missing (or misspelled) in a bundle plugin ?",
+                     <<", the service declaration might be missing (or misspelled) in a bundle plugin.",
                      info->bundle );
-        OSLM_ASSERT( "Sorry bundle is already load ( "
-                     << info->bundle->getIdentifier() << " ) , factory "
-                     << _srvImpl
-                     << " is still missing. Service declaration is missing (or misspelled) in a .cpp file ?",
-                     !info->bundle->isStarted() );
+        OSLM_ASSERT( "The bundle '" + info->bundle->getIdentifier() + "' is already loaded and the factory '"
+                     + _srvImpl + "' is still missing. The service declaration might be missing (or misspelled)"
+                     "in a .cpp file.", !info->bundle->isStarted() );
 
         lock.unlock(); // bundle->start() may trigger calls to addFactory
         info->bundle->start();
@@ -185,10 +182,11 @@ IService::sptr ServiceFactory::create( const std::string & _srvImpl ) const
 
         ::fwRuntime::profile::getCurrentProfile()->setup();
 
-        SLM_ASSERT( "Sorry after bundle loading ( "
-                    << info->bundle->getIdentifier() << " ) , factory "
-                    << _srvImpl << " is still missing. Service declaration is missing (or misspelled) in a cpp file ?",
-                    info->factory );
+        SLM_ASSERT(
+            "After loading the bundle " << info->bundle->getIdentifier() << " , factory "
+                                        << _srvImpl << " is still missing. The service declaration might be missing (or misspelled) "
+            "in a cpp file.",
+            info->factory );
 
         service = info->factory();
     }
@@ -213,12 +211,12 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
     {
         ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
 
-        OSLM_ASSERT("Sorry don't find in ServiceFactory the service called "
-                    << _srvImpl,
+        OSLM_ASSERT("The service called " << _srvImpl << " does not exist in the ServiceFactory."
+                    ,
                     m_srvImplTosrvInfo.find( _srvImpl ) != m_srvImplTosrvInfo.end() );
 
         OSLM_ASSERT(
-            "Sorry, type of service must correspond. "
+            "Conflincting types were defined for this service, "
             << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType,
             _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType);
     }
@@ -347,7 +345,7 @@ std::vector< std::string > ServiceFactory::getImplementationIdFromObjectAndType(
 std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const std::string& object,
                                                                          const std::string& type ) const
 {
-    SLM_ASSERT("Sorry, this case is not managed ", object != "::fwData::Object" );
+    SLM_ASSERT("This case is not managed ", object != "::fwData::Object" );
 
     std::string serviceImpl  = "";
     bool genericImplIsFound  = false;
@@ -361,9 +359,9 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
         {
             if ( srvInfo->objectImpl == object )
             {
-                OSLM_ASSERT("Sorry, method has already found a specific ("
+                OSLM_ASSERT("Method has already found a specific ("
                             << serviceImpl <<" != " << srv.first
-                            << ") service for the object (" << srvInfo->objectImpl << ").",
+                            << ") service for the object " << srvInfo->objectImpl << ".",
                             !specificImplIsFound );
 
                 specificImplIsFound = true;
@@ -371,7 +369,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
             }
             else if ( srvInfo->objectImpl == "::fwData::Object" )
             {
-                OSLM_ASSERT("Sorry, method has already found a generic service for the object ("
+                OSLM_ASSERT("Method has already found a generic service for the object ("
                             << srvInfo->objectImpl << ").",
                             !genericImplIsFound );
 
@@ -384,7 +382,7 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
         }
     }
 
-    OSLM_ASSERT("Sorry, default implementation is not found for this type of service "<<type, !serviceImpl.empty() );
+    OSLM_ASSERT("A default implementation is not found for this type of service "<<type, !serviceImpl.empty() );
 
     return serviceImpl;
 }

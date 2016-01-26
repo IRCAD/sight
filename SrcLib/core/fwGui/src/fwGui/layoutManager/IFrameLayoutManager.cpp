@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -75,7 +75,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
     if(!icon.empty())
     {
         m_frameInfo.m_iconPath = ::boost::filesystem::path( icon.at(0)->getValue() );
-        OSLM_ASSERT("Sorry, icon "<< m_frameInfo.m_iconPath << " doesn't exist",
+        OSLM_ASSERT("The icon "<< m_frameInfo.m_iconPath << " doesn't exist, please ensure that the path is correct",
                     ::boost::filesystem::exists(m_frameInfo.m_iconPath));
     }
 
@@ -113,7 +113,7 @@ void IFrameLayoutManager::initialize( ConfigurationType configuration)
         }
         else
         {
-            OSLM_FATAL("Sorry, style "<<style<< " is unknown.");
+            OSLM_FATAL("The style "<<style<< " is unknown, it should be DEFAULT, STAY_ON_TOP or MODAL.");
         }
     }
     this->readConfig();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -112,8 +112,10 @@ void STranslate::configuring()  throw ( ::fwTools::Failed )
         const ::fwServices::IService::ConfigType &translate = v.second;
         const ::fwServices::IService::ConfigType xmlattr    = translate.get_child("<xmlattr>");
 
-        SLM_FATAL_IF( "Sorry, attribute \"fromKey\" is missing", xmlattr.count("fromKey") != 1 );
-        SLM_FATAL_IF( "Sorry, attribute \"toKey\" is missing", xmlattr.count("toKey") != 1 );
+        SLM_FATAL_IF( "The attribute \"fromKey\" is missing, it represents the key of the object in the source "
+                      "composite that will be translated", xmlattr.count("fromKey") != 1 );
+        SLM_FATAL_IF("The attribute \"toKey\" is missing, it represents the the key of the object in the current"
+                     "composite that will contain the translation", xmlattr.count("toKey") != 1);
 
         std::string fromKey = xmlattr.get<std::string>("fromKey");
         std::string toKey   = xmlattr.get<std::string>("toKey");

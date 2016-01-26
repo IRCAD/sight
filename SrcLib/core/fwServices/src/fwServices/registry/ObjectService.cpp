@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -123,8 +123,8 @@ void ObjectService::registerService( ::fwData::Object::sptr object, ::fwServices
 
 void ObjectService::internalRegisterService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service)
 {
-    OSLM_ASSERT("Sorry, this service "<< service->getClassname()
-                                      << " is not valid for object " << object->getClassname(),
+    OSLM_ASSERT("This service "<< service->getClassname()
+                               << " is not valid for the object " << object->getClassname(),
                 ServiceFactory::getDefault()->checkServiceValidity(object->getClassname(), service->getClassname())
                 );
 
@@ -157,7 +157,7 @@ void ObjectService::swapService( ::fwData::Object::sptr objDst, ::fwServices::IS
 void ObjectService::unregisterService( ::fwServices::IService::sptr service )
 {
     SLM_TRACE_FUNC();
-    OSLM_ASSERT( "Sorry, the service ( "<< service->getID() <<" ) must be stop before unregister it.",
+    OSLM_ASSERT( "The service ( "<< service->getID() <<" ) must be stop before being unregistered.",
                  service->isStopped() );
     // TODO verify that there are no com channel on this service.
     this->removeFromContainer( service );

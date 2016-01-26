@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -92,8 +92,8 @@ void Vector::notify()
             ::fwData::Vector::s_REMOVED_OBJECTS_SIG);
         sig->asyncEmit(m_removedObjects);
     }
-    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
-                m_addedObjects.empty() && m_removedObjects.empty());
+    OSLM_INFO_IF("No changes were found on the vector '" + m_vector.lock()->getID() + "', nothing to notify.",
+                 m_addedObjects.empty() && m_removedObjects.empty());
 }
 
 //-----------------------------------------------------------------------------

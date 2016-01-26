@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -64,9 +64,9 @@ void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     this->initialize();
     ::fwRuntime::ConfigurationElement::sptr configuration = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("Sorry, analyzed configuration is not conformed.", configuration);
+    SLM_ASSERT("Analyzed configuration is not conformed, config element is missing.", configuration);
 
-    SLM_ASSERT("Sorry, analyzed configuration is not conformed.", configuration->getName() == "config");
+    SLM_ASSERT("Analyzed configuration is not conformed.", configuration->getName() == "config");
     if ( configuration->hasAttribute("selectedTFKey") )
     {
         m_selectedTFKey = configuration->getAttributeValue("selectedTFKey");
@@ -111,7 +111,7 @@ void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());
     m_container = qtContainer->getQtContainer();
-    SLM_ASSERT("Sorry, the qt container is not valid", m_container);
+    SLM_ASSERT("The qt container is not valid", m_container);
 
     // Buttons creation
     m_pTransferFunctionPreset = new QComboBox(m_container);

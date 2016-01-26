@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -290,7 +290,7 @@ vtkTransform * VtkRenderService::createVtkTransform( ConfigurationType conf )
             !(elem == vtkTransformXmlElem->end());
             ++elem )
     {
-        SLM_ASSERT("Sorry, the name of xml element must be concatenate.", (*elem)->getName() == "concatenate" );
+        SLM_ASSERT("The name of the xml element must be concatenate.", (*elem)->getName() == "concatenate" );
 
         std::string transformId = (*elem)->getValue();
 

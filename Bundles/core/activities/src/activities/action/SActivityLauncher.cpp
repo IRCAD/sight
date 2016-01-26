@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -112,14 +112,14 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
     m_parameters.clear();
     if(this->getConfigTree().get_child("service").count("config") > 0)
     {
-        SLM_ASSERT("Sorry you must have one (and only one) <config/> element.",
+        SLM_ASSERT("There must be one (and only one) <config/> element.",
                    this->getConfigTree().get_child("service").count("config") == 1 );
 
         const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
         const ::fwServices::IService::ConfigType &config   = srvconfig.get_child("config");
 
         m_mode = config.get_optional<std::string>("mode").get_value_or("message");
-        SLM_ASSERT("SActivityLauncher mode must be 'immediate' or 'message'",
+        SLM_ASSERT("SActivityLauncher mode must be either 'immediate' or 'message'",
                    "message" == m_mode || "immediate" == m_mode);
 
         if(config.count("parameters") == 1 )
@@ -131,12 +131,12 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
                 m_parameters.push_back( parameter );
             }
         }
-        OSLM_ASSERT("At most 1 <parameters> tag is allowed", config.count("parameters") < 2);
+        OSLM_ASSERT("A maximum of 1 <parameters> tag is allowed", config.count("parameters") < 2);
 
         if(config.count("filter") == 1 )
         {
             const ::fwServices::IService::ConfigType &configFilter = config.get_child("filter");
-            OSLM_ASSERT("At most 1 <mode> tag is allowed", configFilter.count("mode") < 2);
+            OSLM_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
             const std::string mode = configFilter.get< std::string >("mode");
             OSLM_ASSERT("'" << mode << "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
@@ -148,7 +148,7 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
                 m_keys.push_back(v.second.get<std::string>(""));
             }
         }
-        OSLM_ASSERT("At most 1 <filter> tag is allowed", config.count("filter") < 2);
+        OSLM_ASSERT("A maximum of 1 <filter> tag is allowed", config.count("filter") < 2);
 
         if(config.count("quickLaunch") == 1 )
         {
@@ -159,8 +159,8 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
                 const ::fwServices::IService::ConfigType &association = v.second;
                 const ::fwServices::IService::ConfigType xmlattr      = association.get_child("<xmlattr>");
 
-                SLM_FATAL_IF( "Sorry, attribute \"type\" is missing", xmlattr.count("type") != 1 );
-                SLM_FATAL_IF( "Sorry, attribute \"id\" is missing", xmlattr.count("id") != 1 );
+                SLM_FATAL_IF( "The attribute \"type\" is missing", xmlattr.count("type") != 1 );
+                SLM_FATAL_IF( "The attribute \"id\" is missing", xmlattr.count("id") != 1 );
 
                 std::string type = xmlattr.get<std::string>("type");
                 std::string id   = xmlattr.get<std::string>("id");
@@ -168,7 +168,7 @@ void SActivityLauncher::configuring() throw(fwTools::Failed)
                 m_quickLaunch[type] = id;
             }
         }
-        SLM_ASSERT("At most 1 <quickLaunch> tag is allowed", config.count("quickLaunch") < 2);
+        SLM_ASSERT("A maximum of 1 <quickLaunch> tag is allowed", config.count("quickLaunch") < 2);
     }
 }
 

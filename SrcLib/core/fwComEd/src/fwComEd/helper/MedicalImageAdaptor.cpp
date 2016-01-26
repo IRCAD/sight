@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -272,8 +272,8 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image )
         {
             ::fwData::Composite::sptr tfSelection =
                 ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
-            OSLM_ASSERT( "Sorry, object with fwID " << m_tfSelectionFwID << " doesn't exist.", tfSelection );
-            OSLM_ASSERT( "Sorry, selectedTFKey must be defined, check your configuration.", !m_selectedTFKey.empty() );
+            OSLM_ASSERT( "The object with the fwID '" + m_tfSelectionFwID + "' doesn't exist.", tfSelection );
+            OSLM_ASSERT( "The selectedTFKey must be defined, check your configuration.", !m_selectedTFKey.empty() );
             if ( tfSelection->find( m_selectedTFKey ) == tfSelection->end() )
             {
                 ::fwData::TransferFunction::sptr tfGreyLevel = ::fwData::TransferFunction::createDefaultTF();
@@ -382,7 +382,7 @@ const std::string & MedicalImageAdaptor::getSelectedTFKey() const
 
 void MedicalImageAdaptor::parseTFConfig( ::fwRuntime::ConfigurationElement::sptr configuration )
 {
-    SLM_ASSERT("Sorry, analyzed configuration is not conformed.", configuration->getName() == "config");
+    SLM_ASSERT("The analyzed configuration is not conformed.", configuration->getName() == "config");
     if ( configuration->hasAttribute("selectedTFKey") )
     {
         m_selectedTFKey = configuration->getAttributeValue("selectedTFKey");
@@ -503,7 +503,7 @@ void MedicalImageAdaptor::addObjects(::fwData::Composite::ContainerType objects)
 void MedicalImageAdaptor::changeObjects(::fwData::Composite::ContainerType newObjects,
                                         ::fwData::Composite::ContainerType oldObjects)
 {
-    SLM_ASSERT( "Sorry, TF observer must exist", m_tfConnections );
+    SLM_ASSERT( "A TF observer must exist, use installTFConnections() to create it properly.", m_tfConnections );
     ::fwData::Composite::iterator iter = newObjects.find(this->getSelectedTFKey());
     if( iter != newObjects.end())
     {
@@ -525,7 +525,7 @@ void MedicalImageAdaptor::changeObjects(::fwData::Composite::ContainerType newOb
 
 void MedicalImageAdaptor::removeObjects(::fwData::Composite::ContainerType objects)
 {
-    SLM_ASSERT( "Sorry, TF observer must exist", m_tfConnections );
+    SLM_ASSERT("A TF observer must exist, use installTFConnections() to create it properly.", m_tfConnections);
     ::fwData::Composite::iterator iter = objects.find(this->getSelectedTFKey());
     if( iter != objects.end())
     {

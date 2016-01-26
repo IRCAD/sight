@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -67,8 +67,8 @@ protected:
      *      changeObjects, removeObjects are connected to composite signal,  and the objects are translated on start if
      *      they are present.
      * - \b translate: objects to translate from source composite to current composite
-     *   - \b fromKey: key of the object into source composite
-     *   - \b toKey: key of the object into current composite
+     *   - \b fromKey: key of the object in the source composite
+     *   - \b toKey: key of the object in the current composite
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 

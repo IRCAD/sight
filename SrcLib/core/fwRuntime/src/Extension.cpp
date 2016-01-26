@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -97,7 +97,7 @@ Extension::Validity Extension::validate()
 
     // Validates the extension.
     std::shared_ptr< io::Validator >   validator( point->getExtensionValidator() );
-    OSLM_ASSERT("Sorry, validator creation failed for point "<<point->getIdentifier(), validator );
+    OSLM_ASSERT("The validator creation failed for the point "<<point->getIdentifier(), validator );
 
     // Check extension XML Node <extension id="xxx" implements="yyy" >...</extension>
     validator->clearErrorLog();

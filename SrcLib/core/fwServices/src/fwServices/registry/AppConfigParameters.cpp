@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -59,8 +59,8 @@ void AppConfigParameters::parseBundleInformation()
         }
         ::fwCore::mt::WriteLock lock(m_registryMutex);
         Registry::const_iterator iter = m_reg.find( extensionId );
-        SLM_ASSERT("Sorry, the id " <<  extensionId
-                                    << " already exists in the application configuration parameter registry",
+        SLM_ASSERT("The id " <<  extensionId
+                             << " already exists in the application configuration parameter registry",
                    iter == m_reg.end());
         m_reg[extensionId] = parameters;
     }
@@ -86,7 +86,7 @@ const AppConfig::FieldAdaptorType & AppConfigParameters::getParameters( const st
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );
-    SLM_ASSERT("Sorry, the id " <<  extensionId << " is not found in the application configuration parameter registry",
+    SLM_ASSERT("The id " <<  extensionId << " is not found in the application configuration parameter registry",
                iter != m_reg.end());
     return iter->second;
 }

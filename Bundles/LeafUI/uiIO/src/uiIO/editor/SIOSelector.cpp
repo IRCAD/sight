@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -83,10 +83,11 @@ void SIOSelector::configuring() throw( ::fwTools::Failed )
 
         if( (*iter)->getName() == "selection" )
         {
-            SLM_ASSERT( "Sorry, xml elemenet <selection> must have attribute 'mode'.", (*iter)->hasAttribute("mode"));
+            SLM_ASSERT( "The xml element <selection> must have the attribute 'mode'.", (*iter)->hasAttribute("mode"));
             std::string mode = (*iter)->getExistingAttributeValue("mode");
             m_servicesAreExcluded = ( mode == "exclude" );
-            SLM_ASSERT( "Sorry, xml attribut <mode> must be 'exclude' or 'include'.",
+            SLM_ASSERT( "The xml attribute <mode> must be 'include' (to add the selection to selector list ) or "
+                        "'exclude' (to exclude the selection of the selector list).",
                         mode == "exclude" || mode == "include" );
             OSLM_DEBUG( "mode => " << mode );
         }
@@ -98,7 +99,7 @@ void SIOSelector::configuring() throw( ::fwTools::Failed )
                 vectorIsAlreadyCleared = true;
                 m_selectedServices.clear();
             }
-            SLM_ASSERT( "Sorry, xml elemenet <addSelection> must have attribute 'service'.",
+            SLM_ASSERT( "The xml elemenet <addSelection> must have the attribute 'service'.",
                         (*iter)->hasAttribute("service"));
             m_selectedServices.push_back( (*iter)->getExistingAttributeValue("service") );
             OSLM_DEBUG( "add selection => " << (*iter)->getExistingAttributeValue("service") );
@@ -106,18 +107,18 @@ void SIOSelector::configuring() throw( ::fwTools::Failed )
 
         if( (*iter)->getName() == "type" )
         {
-            SLM_ASSERT( "Sorry, xml elemenet <type> must have attribute 'mode'.", (*iter)->hasAttribute("mode"));
+            SLM_ASSERT( "The xml elemenet <type> must have the attribute 'mode'.", (*iter)->hasAttribute("mode"));
             std::string mode = (*iter)->getExistingAttributeValue("mode");
-            SLM_ASSERT( "Sorry, xml attribut <mode> must be 'writer' or 'reader'.",
-                        mode == "writer" || mode == "reader" );
+            SLM_ASSERT("The xml attribute <mode> must be 'reader' (to open file) or 'writer' (to write a new file).",
+                       mode == "writer" || mode == "reader" );
             m_mode = ( mode == "writer" ) ? WRITER_MODE : READER_MODE;
             OSLM_DEBUG( "mode => " << mode );
         }
 
         if( (*iter)->getName() == "config" )
         {
-            SLM_ASSERT( "Sorry, xml elemenet <config> must have attribute 'id'.", (*iter)->hasAttribute("id"));
-            SLM_ASSERT( "Sorry, xml elemenet <config> must have attribute 'service'.",
+            SLM_ASSERT( "The xml element <config> must have the attribute 'id'.", (*iter)->hasAttribute("id"));
+            SLM_ASSERT( "The xml element <config> must have the attribute 'service'.",
                         (*iter)->hasAttribute("service"));
             std::string configId  = (*iter)->getExistingAttributeValue("id");
             std::string configSrv = (*iter)->getExistingAttributeValue("service");
@@ -267,7 +268,7 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
                 srvCfg              = ::fwServices::registry::ServiceConfig::getDefault()->getServiceConfig(
                     m_serviceToConfig[extensionId], extensionId );
                 SLM_ASSERT(
-                    "Sorry, there is not service configuration of type ::fwServices::registry::ServiceConfig found",
+                    "No service configuration of type ::fwServices::registry::ServiceConfig was found",
                     srvCfg );
             }
 
@@ -362,7 +363,7 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
         {
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Reader not found");
-            messageBox.setMessage( "Sorry, there are not available readers for this data type." );
+            messageBox.setMessage( "There are not available readers for this data type." );
             messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
             messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
@@ -371,7 +372,7 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
         {
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Writer not found");
-            messageBox.setMessage( "Sorry, there are not available writers for this data type." );
+            messageBox.setMessage( "There are not available writers for this data type." );
             messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
             messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();

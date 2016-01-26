@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,8 @@ Composite::~Composite()
 
 void Composite::add( std::string _compositeKey, ::fwData::Object::sptr _newObject )
 {
-    OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must not exist in composite.",
+    OSLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                   "object to be added.",
                    m_composite.lock()->find(_compositeKey) != m_composite.lock()->end() );
 
     // Modify composite
@@ -52,7 +53,8 @@ void Composite::add( std::string _compositeKey, ::fwData::Object::sptr _newObjec
 
 void Composite::remove( std::string _compositeKey )
 {
-    OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must exist in composite.",
+    OSLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                   "object to be removed.",
                    m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
 
     // Get old object
@@ -85,7 +87,8 @@ void Composite::clear()
 
 void Composite::swap( std::string _compositeKey, ::fwData::Object::sptr _newObject )
 {
-    OSLM_FATAL_IF( "Sorry the composite key " << _compositeKey << " must exist in composite.",
+    OSLM_FATAL_IF( "The composite key " << _compositeKey << " does not exist in the composite, this is the key of the"
+                   "object to be swapped.",
                    m_composite.lock()->find(_compositeKey) == m_composite.lock()->end() );
 
 
@@ -133,8 +136,8 @@ void Composite::notify()
 
         sig->asyncEmit(m_removedObjects);
     }
-    SLM_INFO_IF("Sorry, this helper cannot notify his message because the message is empty.",
-                m_addedObjects.empty() && m_newChangedObjects.empty() && m_removedObjects.empty());
+    OSLM_INFO_IF("No changes were found on the composite '" + m_composite.lock()->getID() + "', nothing to notify.",
+                 m_addedObjects.empty() && m_newChangedObjects.empty() && m_removedObjects.empty());
 }
 
 //-----------------------------------------------------------------------------

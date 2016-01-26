@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -129,9 +129,9 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
     if( this->m_configuration->size() > 0 )
     {
         ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
-        SLM_ASSERT("Sorry, only one xml element \"sliceIndex\" is accepted.",
+        SLM_ASSERT("Only one xml element \"sliceIndex\" is accepted.",
                    this->m_configuration->size() == 1 && (*iter)->getName() == "sliceIndex" );
-        SLM_ASSERT("Sorry, xml element \"sliceIndex\" is empty.", !(*iter)->getValue().empty() );
+        SLM_ASSERT("The xml element \"sliceIndex\" is empty.", !(*iter)->getValue().empty() );
         std::string orientation = (*iter)->getValue();
         ::boost::algorithm::trim(orientation);
         ::boost::algorithm::to_lower(orientation);

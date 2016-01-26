@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,10 +44,11 @@ void SMeshModifier::configuring() throw( ::fwTools::Failed )
 
     std::vector < ConfigurationType > vectConfig = m_configuration->find("config");
 
-    SLM_ASSERT("Sorry you must have one (and only one) <config functor=... /> element.", vectConfig.size() == 1 );
+    SLM_ASSERT("There must be one (and only one) <config functor=... /> element.", vectConfig.size() == 1 );
     ::fwRuntime::ConfigurationElement::sptr configElement = vectConfig.at(0);
 
-    SLM_ASSERT( "Sorry, missing attribute functor in <config> xml element.", configElement->hasAttribute("functor") );
+    SLM_ASSERT( "There must be a functor attribute in the <config> xml element.",
+                configElement->hasAttribute("functor") );
     m_functor = configElement->getExistingAttributeValue("functor");
     OSLM_ASSERT("Wrong functor name "<<m_functor << " (required GenTriangle, GenQuad or GenTriangleQuad)",
                 m_functor == "ShakeMeshPoint"

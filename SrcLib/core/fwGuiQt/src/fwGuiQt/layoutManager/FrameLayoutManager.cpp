@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,7 +62,7 @@ void FrameLayoutManager::createFrame()
     if(!frameInfo.m_iconPath.empty())
     {
         QIcon icon(QString::fromStdString(frameInfo.m_iconPath.string()));
-        OSLM_ASSERT("Sorry, unable to create an icon instance from " << frameInfo.m_iconPath.string(), !icon.isNull());
+        OSLM_ASSERT("Unable to create an icon instance from " << frameInfo.m_iconPath.string(), !icon.isNull());
         m_qtWindow->setWindowIcon(icon);
     }
     if(!qApp->activeWindow())

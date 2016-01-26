@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,7 +48,7 @@ bool List::refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgEleme
 
 void List::updating( ) throw(fwTools::Failed)
 {
-    SLM_FATAL("Sorry, this method is depreciated.");
+    SLM_FATAL("This method is deprecated, and thus shouldn't be used.");
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
     const std::string GET_OBJECT        = "ref";
 
     ::fwData::List::sptr dataList = ::fwData::List::dynamicCast(_obj);
-    SLM_ASSERT("Sorry, object given in parameter is not a fwData::List",dataList);
+    SLM_ASSERT("The passed object must be a fwData::List",dataList);
 
     for( ::fwRuntime::ConfigurationElement::csptr elem :  m_cfg->getElements() )
     {
@@ -75,7 +75,8 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
             if ( elem->hasAttribute( OBJECT_BUILD_MODE ) )
             {
                 buildMode = elem->getExistingAttributeValue( OBJECT_BUILD_MODE );
-                OSLM_ASSERT( "Sorry, buildMode \""<< buildMode <<"\" is not supported by the application.",
+                OSLM_ASSERT( "The buildMode \""<< buildMode <<"\" is not supported, it should be either BUILD_OBJECT"
+                             "or GET_OBJECT.",
                              buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
 
@@ -90,7 +91,7 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
                 ::fwData::Object::sptr localObj = ctm->getConfigRoot< ::fwData::Object >();
 
                 // Add object
-                SLM_ASSERT("Sorry an ::fwData::List can contain only ::fwData::Object", localObj );
+                SLM_ASSERT("A ::fwData::List can contain only ::fwData::Object", localObj );
                 dataList->getContainer().push_back( localObj );
 
             }
