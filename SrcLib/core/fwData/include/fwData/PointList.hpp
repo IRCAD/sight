@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,6 +62,9 @@ public:
     const PointListContainer & getCRefPoints () const;
 
     void setPoints (const PointListContainer & _vPoints);
+
+    ///Push back a ::fwData::Point in the pointlist
+    void pushBack(const ::fwData::Point::sptr&);
     /// @}
 
     /**
@@ -112,6 +115,13 @@ inline const PointList::PointListContainer & PointList::getCRefPoints () const
 inline void PointList::setPoints (const PointList::PointListContainer & _vPoints)
 {
     this->m_vPoints = _vPoints;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void PointList::pushBack(const ::fwData::Point::sptr& p)
+{
+    this->m_vPoints.push_back(p);
 }
 
 //-----------------------------------------------------------------------------
