@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,6 +63,12 @@ void IToolBarLayoutManager::initialize( ConfigurationType configuration)
             if( toolBarItem->hasAttribute("icon") )
             {
                 info.m_icon = toolBarItem->getExistingAttributeValue("icon");
+            }
+
+            if( toolBarItem->hasAttribute("icon2") )
+            {
+                SLM_ASSERT("'icon' attribute must be defined before 'icon2'", !info.m_icon.empty());
+                info.m_icon2 = toolBarItem->getExistingAttributeValue("icon2");
             }
 
             if( toolBarItem->hasAttribute("style") )

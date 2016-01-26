@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,6 +52,7 @@ public:
             m_name(""),
             m_shortcut(""),
             m_icon(""),
+            m_icon2(""),
             m_isCheckable (false),
             m_isRadio(false),
             m_isSeparator(false),
@@ -65,6 +66,7 @@ public:
         std::string m_name;
         std::string m_shortcut;
         std::string m_icon;
+        std::string m_icon2;
         bool m_isCheckable;
         bool m_isRadio;
         bool m_isSeparator;
@@ -105,8 +107,8 @@ public:
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
                <layout>
-                   <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
-                   <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 2" style="check" icon="Bundles/TutoGui_0-1/icons/system.png" icon2="Bundles/TutoGui_0-1/icons/monkey.png" />
+                   <menuItem name="My item 3" style="check" icon="Bundles/TutoGui_0-1/icons/system.png"/>
                    <separator />
                    <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
                    <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
@@ -133,6 +135,7 @@ public:
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
      *   - \b icon : give the path of the icon file
+     *   - \b icon2 : give the path of the icon file used when the item is checked
      *  - \<menu name="My menu" /\> :
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      *   - \b icon : give the path of the icon file

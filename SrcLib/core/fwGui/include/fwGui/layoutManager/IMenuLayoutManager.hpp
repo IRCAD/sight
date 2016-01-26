@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -106,7 +106,7 @@ public:
        <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
             <gui>
                 <layout>
-                    <menuItem name="My item 1" shortcut="1" style="check" />
+                    <menuItem name="My item 1" shortcut="1" style="check" icon="Bundles/TutoGui_0-1/icons/system.png" />
                     <separator />
                     <menuItem name="My item 2" shortcut="2" style="radio" />
                     <menuItem name="My item 3" shortcut="3" style="radio" />
@@ -132,6 +132,7 @@ public:
      *  - \b shortcut : give the shortcut for this menu item.
      *  - \b style {check|radio} : give the style of the menu item.
      *  - \b specialAction {DEFAULT | QUIT | NEW | ABOUT | HELP}: specify a pre define action. If it isn't define the value is DEFAULT.
+     *   - \b icon : give the path of the icon file
      * - \<menu name="My menu" /\> :
      *  - \b name (mandatory) : give the name of the menu that will appear in the interface.
      * - \<separator/\> : allow to divide the menu by part (draw a line).

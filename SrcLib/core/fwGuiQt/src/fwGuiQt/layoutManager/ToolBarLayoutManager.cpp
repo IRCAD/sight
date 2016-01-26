@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -133,6 +133,11 @@ void ToolBarLayoutManager::createLayout( ::fwGui::container::fwToolBar::sptr par
             if (!actionInfo.m_icon.empty())
             {
                 QIcon icon(QString::fromStdString(actionInfo.m_icon));
+                if (!actionInfo.m_icon2.empty())
+                {
+                    icon.addFile(QString::fromStdString(actionInfo.m_icon2), QSize(), QIcon::Normal, QIcon::On);
+                    icon.addFile(QString::fromStdString(actionInfo.m_icon2), QSize(), QIcon::Active, QIcon::On);
+                }
                 action = toolBar->addAction( icon, QString::fromStdString(actionInfo.m_name) );
             }
             else
