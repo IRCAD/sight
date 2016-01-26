@@ -1,0 +1,13 @@
+fwLoadProperties()
+fwUseForwardInclude(
+        fwComEd
+        fwCore
+        fwData
+        fwMath
+        fwRuntime
+        fwServices
+        fwTools
+        arData
+        extData
+        arServices
+)

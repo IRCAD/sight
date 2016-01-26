@@ -1,16 +1,16 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>calCameraView</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
         <param name="cameraUid" />
         <param name="timeLineUid" />
+        <param name="videoGrabberImpl" />
     </parameters>
     <config>
 
         <object type="::fwData::Composite">
-            <service uid="${GENERIC_UID}_cameraView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_cameraView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -27,7 +27,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <editor />
@@ -70,7 +70,7 @@
                 </slots>
             </service>
 
-           <service uid="${GENERIC_UID}_VideoSlider" impl="::videoQt::editor::SSlider" type="::gui::editor::IEditor" autoConnect="no"/>
+            <service uid="${GENERIC_UID}_VideoSlider" impl="::videoQt::editor::SSlider" type="::gui::editor::IEditor" autoConnect="no" />
 
             <service uid="${GENERIC_UID}_FrameUpdater" type="::fwServices::IController" impl="::videoTools::SFrameUpdater" autoConnect="no">
                 <config>
@@ -79,7 +79,7 @@
                 </config>
             </service>
 
-            <service uid="${GENERIC_UID}_camera" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <service uid="${GENERIC_UID}_camera" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                 <scene renderMode="timer">
                     <renderer id="default" background="0.0" />
                     <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="frame">
@@ -93,7 +93,7 @@
 
             <item key="frameTL">
                 <object uid="${timeLineUid}" type="::extData::FrameTL" src="ref">
-                    <service uid="${GENERIC_UID}_VideoGrabber" impl="::videoQt::SFrameGrabber" autoConnect="no">
+                    <service uid="${GENERIC_UID}_VideoGrabber" impl="${videoGrabberImpl}" autoConnect="no">
                         <cameraFwId>${cameraUid}</cameraFwId>
                     </service>
                 </object>

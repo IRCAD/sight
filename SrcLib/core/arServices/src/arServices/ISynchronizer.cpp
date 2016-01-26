@@ -4,9 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "videoTools/ISynchronizer.hpp"
+#include "arServices/ISynchronizer.hpp"
 
-namespace videoTools
+namespace arServices
 {
 
 // ----------------------------------------------------------------------------
@@ -25,4 +25,4 @@ ISynchronizer::~ISynchronizer() throw ()
 
 // ----------------------------------------------------------------------------
 
-}  // namespace videoTools
+}  // namespace arServices

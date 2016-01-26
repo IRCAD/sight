@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,14 @@
 #ifndef __VIDEOTOOLS_SMATRIXTLSELECTOR_HPP__
 #define __VIDEOTOOLS_SMATRIXTLSELECTOR_HPP__
 
-#include "videoTools/ISynchronizer.hpp"
 #include "videoTools/config.hpp"
 
+#include <arServices/ISynchronizer.hpp>
 #include <fwCore/base.hpp>
 #include <fwCore/HiResClock.hpp>
 #include <fwData/Composite.hpp>
 #include <fwServices/IController.hpp>
 #include <fwThread/Timer.hpp>
-
 
 namespace extData
 {
@@ -35,7 +34,7 @@ namespace videoTools
  * @brief   SMatrixTLSelector service synchronizes video frame and tracking matrixes.
  * @class   SMatrixTLSelector
  */
-class VIDEOTOOLS_CLASS_API SMatrixTLSelector : public ::videoTools::ISynchronizer
+class VIDEOTOOLS_CLASS_API SMatrixTLSelector : public ::arServices::ISynchronizer
 {
 
 public:
@@ -78,7 +77,7 @@ protected:
     /**
      * @brief This method is used to configure the service.
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="synchronizer" impl="::videoTools::SMatrixTLSelector" autoConnect="no" worker="videoWorker">
             <frames>
                 <frame from="frameTL" to="image" />
@@ -100,7 +99,7 @@ protected:
             <framerate>60</framerate>
         </service>
 
-       @endverbatim
+       @endcode
      */
     VIDEOTOOLS_API void configuring() throw (fwTools::Failed);
 

@@ -138,6 +138,9 @@ void Camera::shallowCopy( const ::fwData::Object::csptr& _source )
     m_description           = other->m_description;
     m_cameraID              = other->m_cameraID;
     m_maxFrameRate          = other->m_maxFrameRate;
+    m_pixelFormat           = other->m_pixelFormat;
+    m_videoFile             = other->m_videoFile;
+    m_streamUrl             = other->m_streamUrl;
     m_cameraSource          = other->m_cameraSource;
 }
 
@@ -169,13 +172,15 @@ void Camera::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cach
     m_description  = other->m_description;
     m_cameraID     = other->m_cameraID;
     m_maxFrameRate = other->m_maxFrameRate;
+    m_pixelFormat  = other->m_pixelFormat;
+    m_videoFile    = other->m_videoFile;
+    m_streamUrl    = other->m_streamUrl;
     m_cameraSource = other->m_cameraSource;
 }
 
 // -------------------------------------------------------------------------
 
-void Camera::setDistortionCoefficient(double k1, double k2,
-                                      double p1, double p2, double k3)
+void Camera::setDistortionCoefficient(double k1, double k2, double p1, double p2, double k3)
 {
     m_distortionCoefficient[0] = k1;
     m_distortionCoefficient[1] = k2;

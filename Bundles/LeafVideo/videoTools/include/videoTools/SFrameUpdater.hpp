@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -53,14 +53,14 @@ protected:
     /**
      * @brief Configuring method.
      *
-     * @verbatim
+     * @code{.xml}
        <service impl="::videoTools::SFrameUpdater">
         <config>
             <frameTLKey>frameTL</frameTLKey>
             <imageKey>image</imageKey>
         </config>
        </service>
-       @endverbatim
+       @endcode
      * - \b frameTLKey represents the key of the frame timeline contained in this service composite.
      * - \b imageKey represents the key of the image contained in the visu composite.
      */

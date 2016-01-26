@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,14 +47,12 @@ SPointList::~SPointList() throw()
 
 //------------------------------------------------------------------------------
 
-void SPointList::configuring() throw(fwTools::Failed)
+void SPointList::doConfigure() throw(fwTools::Failed)
 {
 
     SLM_TRACE_FUNC();
 
     SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
-    this->setPickerId( m_configuration->getAttributeValue("picker") );
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
     m_imageId = m_configuration->getAttributeValue("imageId");
     SLM_ASSERT("missing 'imageId' attibrute in SPointList configuration", m_imageId != "");
 

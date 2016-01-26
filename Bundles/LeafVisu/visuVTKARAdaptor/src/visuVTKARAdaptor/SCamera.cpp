@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,6 @@
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::SCamera,
                          ::fwData::TransformationMatrix3D );
-
 
 namespace visuVTKARAdaptor
 {
@@ -70,6 +69,8 @@ static const double s_farPlane  = 10000;
 
 //------------------------------------------------------------------------------
 
+const ::fwCom::Signals::SignalKeyType SCamera::s_POSITION_MODIFIED_SIG = "positionModified";
+
 const ::fwCom::Slots::SlotKeyType SCamera::s_CALIBRATE_SLOT = "calibrate";
 
 //------------------------------------------------------------------------------
@@ -78,6 +79,7 @@ SCamera::SCamera() throw() :
     m_transOrig(nullptr),
     m_cameraCommand(CameraCallback::New(this))
 {
+    newSignal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
     m_slotCalibrate = newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
 }
 
@@ -89,12 +91,10 @@ SCamera::~SCamera() throw()
 
 //------------------------------------------------------------------------------
 
-void SCamera::configuring() throw(fwTools::Failed)
+void SCamera::doConfigure() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
-
+    SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
     m_cameraUID = m_configuration->getAttributeValue("cameraUID");
 }
 
@@ -173,6 +173,7 @@ void SCamera::updateFromVtk()
     vtkPerspectiveTransform* trans = vtkPerspectiveTransform::New();
     trans->Identity();
     trans->SetupCamera(camera->GetPosition(), camera->GetFocalPoint(), camera->GetViewUp());
+    this->calibrate();
 
     trans->Inverse();
     trans->Concatenate(m_transOrig);
@@ -242,6 +243,10 @@ void SCamera::updateFromTMatrix3D()
     trans->Delete();
 
     this->requestRender();
+
+    // notify that the camera position is modified
+    auto sig = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+    sig->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,11 +52,11 @@ public:
 
     /**
      * @brief Configuring method : This method is used to configure the service.
-     * @verbatim
+     * @code{.xml}
        <service impl="::uiCalibration::SCameraSeriesEditor" >
             <camIndex>...</camIndex>
        </service>
-       @endverbatim
+       @endcode
      * - \b camIndex (optional, default: 1): index of the camera in cameraSeries used to display extrinsic matrix
      */
     UICALIBRATION_API void configuring() throw(fwTools::Failed);

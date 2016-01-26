@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,8 +47,21 @@ public:
     /// Destructor
     virtual ~SCamera() throw();
 
+    /**
+     * @name Signals API
+     * @{
+     */
+    VISUVTKARADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
+    typedef ::fwCom::Signal<void ()> PositionModifiedSignalType;
+    ///@}
+
+    /**
+     * @name Slots API
+     * @{
+     */
     VISUVTKARADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT;
     typedef ::fwCom::Slot<void ()> CalibrateSlotType;
+    ///@}
 
     /// Update Camera position from VTK.
     VISUVTKARADAPTOR_API void updateFromVtk();
@@ -59,15 +72,15 @@ protected:
     VISUVTKARADAPTOR_API void doStart() throw(fwTools::Failed);
 
     /**
-     * @verbatim
+     * @code{.xml}
        <adaptor id="camera" class="::visuVTKARAdaptor::SCamera" objectId="transform">
         <config renderer="default" cameraUID="..." />
        </adaptor>
-       @endverbatim
+       @endcode
      * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
      * - \b cameraUID (optional): defines the uid of the camera (used to calibrate the vtk camera)
      */
-    VISUVTKARADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     /// Calls doStop() and doStart()
     VISUVTKARADAPTOR_API void doSwap() throw(fwTools::Failed);

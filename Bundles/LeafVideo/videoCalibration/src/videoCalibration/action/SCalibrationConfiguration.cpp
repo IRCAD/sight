@@ -82,7 +82,7 @@ void SCalibrationConfiguration::configuring() throw(fwTools::Failed)
 
     ::fwServices::IService::ConfigType configuration = this->getConfigTree();
 
-    SLM_ASSERT("Sorry you must have one (and only one) <config/> element.",
+    SLM_ASSERT("There must be one (and only one) <config/> element.",
                this->getConfigTree().get_child("service").count("config") == 1 );
 
     const ::fwServices::IService::ConfigType srvconfig = configuration.get_child("service");

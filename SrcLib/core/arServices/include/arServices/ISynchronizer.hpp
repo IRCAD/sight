@@ -4,20 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOTOOLS_ISYNCHRONIZER_HPP__
-#define __VIDEOTOOLS_ISYNCHRONIZER_HPP__
+#ifndef __ARSERVICES_ISYNCHRONIZER_HPP__
+#define __ARSERVICES_ISYNCHRONIZER_HPP__
 
-#include "videoTools/config.hpp"
+#include "arServices/config.hpp"
 
 #include <fwServices/IService.hpp>
 
-namespace videoTools
+namespace arServices
 {
 /**
  * @brief   ISynchronizer service synchronize objects from timelines
  * @class   ISynchronizer
  */
-class VIDEOTOOLS_CLASS_API ISynchronizer : public fwServices::IService
+class ARSERVICES_CLASS_API ISynchronizer : public fwServices::IService
 {
 
 public:
@@ -27,14 +27,14 @@ public:
     /**
      * @brief Constructor.
      */
-    VIDEOTOOLS_API ISynchronizer() throw ();
+    ARSERVICES_API ISynchronizer() throw ();
 
     /**
      * @brief Destructor.
      */
-    VIDEOTOOLS_API virtual ~ISynchronizer() throw ();
+    ARSERVICES_API virtual ~ISynchronizer() throw ();
 
 };
 
-} //namespace videoTools
-#endif  // __VIDEOTOOLS_ISYNCHRONIZER_HPP__
+} //namespace arServices
+#endif  // __ARSERVICES_ISYNCHRONIZER_HPP__

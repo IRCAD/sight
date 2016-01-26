@@ -8,7 +8,6 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
 #include <fwCom/Slots.hxx>
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
@@ -16,8 +15,6 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/Base.hpp>
-
-
 
 fwServicesRegisterMacro(::fwServices::IController, ::maths::SSwitchMatrices, ::fwData::TransformationMatrix3D);
 
@@ -35,10 +32,7 @@ SSwitchMatrices::SSwitchMatrices() throw () :
     newSlot(s_SWITCH_SLOT, &SSwitchMatrices::switchMatrix, this);
     newSlot(s_SWITCH_TO_SLOT, &SSwitchMatrices::switchToMatrix, this);
 
-#ifdef COM_LOG
-    ::fwCom::HasSlots::m_slots.setID();
-#endif
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 // ----------------------------------------------------------------------------
@@ -61,9 +55,6 @@ void SSwitchMatrices::configuring() throw (::fwTools::Failed)
 
 void SSwitchMatrices::starting() throw (fwTools::Failed)
 {
-
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
-
     for( TransformMatrix &currentMatrix : m_matrixVector)
     {
         ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(currentMatrix.m_uid);
@@ -103,6 +94,7 @@ void SSwitchMatrices::updating() throw (fwTools::Failed)
 }
 
 // ----------------------------------------------------------------------------
+
 void SSwitchMatrices::switchMatrix() throw (fwTools::Failed)
 {
     ++m_indexOfDesiredMatrix;
@@ -114,7 +106,8 @@ void SSwitchMatrices::switchMatrix() throw (fwTools::Failed)
 }
 
 // ----------------------------------------------------------------------------
-void SSwitchMatrices::switchToMatrix(int index) throw (fwTools::Failed)
+
+void SSwitchMatrices::switchToMatrix(size_t index) throw (fwTools::Failed)
 {
     if(index < m_matrixVector.size())
     {

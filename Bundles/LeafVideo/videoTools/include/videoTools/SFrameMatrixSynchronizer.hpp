@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __VIDEOTOOLS_SFRAMEMATRIXSYNCHRONIZER_HPP__
 #define __VIDEOTOOLS_SFRAMEMATRIXSYNCHRONIZER_HPP__
 
-#include "videoTools/ISynchronizer.hpp"
 #include "videoTools/config.hpp"
 
+#include <arServices/ISynchronizer.hpp>
 #include <fwCore/base.hpp>
 #include <fwCore/HiResClock.hpp>
 #include <fwData/Composite.hpp>
@@ -35,7 +35,7 @@ namespace videoTools
  * @brief   SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
  * @class   SFrameMatrixSynchronizer
  */
-class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::videoTools::ISynchronizer
+class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISynchronizer
 {
 
 public:
@@ -69,8 +69,8 @@ protected:
     /**
      * @brief This method is used to configure the service.
      *
-     * @verbatim
-       <service impl="::videoTools::SFrameMatrixSynchronizer" type="::videoTools::ISynchronizer">
+     * @code{.xml}
+       <service impl="::videoTools::SFrameMatrixSynchronizer" type="::arServices::ISynchronizer">
            <frames>
                <frame from="frame1TL" to="frame1" />
                <frame from="frame2TL" to="frame2" />
@@ -88,7 +88,7 @@ protected:
            </matrices>
            <framerate>30</framerate>
        </service>
-       @endverbatim
+       @endcode
      * - \b frames defines the frameTL to synchronize.
      *   - \b from: key of the frame timeline to extract image.
      *   - \b to: key of the image where to extract the image.
@@ -100,10 +100,10 @@ protected:
      */
     VIDEOTOOLS_API void configuring() throw (fwTools::Failed);
 
-    /// This method is used to initialize the service.
+    /// This method is used to initialize the timer and get the TLs & Matrixes.
     VIDEOTOOLS_API void starting() throw (fwTools::Failed);
 
-    /// Does nothing.
+    /// Stops timer and clear TLs & Matrixes.
     VIDEOTOOLS_API void stopping() throw (fwTools::Failed);
 
     /// Does nothing.
@@ -116,34 +116,33 @@ protected:
     {
     }
 
-    /// Synchronize
+    /// Synchronizes TLs
     VIDEOTOOLS_API void synchronize();
 
 private:
 
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
     ::fwCore::HiResClock::HiResClockType m_tolerance; ///< Tolerance to take into account matrix
 
-    bool m_imagesInitialized;
+    bool m_imagesInitialized; ///< Check if output images are initialized
 
     /// registers FrameTL keys to synchronize and the associated fwData::Image keys
     FrameKeysType m_frameKeys;
 
     /// registers TrackerTL keys to synchronize and the associated fwData::TransformationMatrix3D keys
     MatrixKeysType m_matrixKeys;
-    ///< registers frame timeline with its id in composite
+    /// registers frame timeline with its id in composite
     FrameTLKeyType m_frameTLs;
-    ///< registers matrix timeline with its id in composite
+    /// registers matrix timeline with its id in composite
     MatrixTLKeyType m_matrixTLs;
-    ///< registers frames with associated timeline key
+    /// registers frames with associated timeline key
     ImageKeyType m_images;
-    ///< registers matrices with associated timeline key
+    /// registers matrices with associated timeline key
     MatrixKeyType m_matrices;
 
-    ///< Time step used for the update
+    /// Time step used for the update
     unsigned int m_timeStep;
 
-    ///< Timer used for the update
+    /// Timer used for the update
     ::fwThread::Timer::sptr m_timer;
 };
 

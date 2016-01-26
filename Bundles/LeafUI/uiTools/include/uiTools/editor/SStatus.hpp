@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _UITOOLS_EDITOR_SAURORASTATUS_HPP_
-#define _UITOOLS_EDITOR_SAURORASTATUS_HPP_
+#ifndef __UITOOLS_EDITOR_SSTATUS_HPP__
+#define __UITOOLS_EDITOR_SSTATUS_HPP__
 
 #include <QPointer>
 #include <QLabel>
@@ -81,13 +81,13 @@ protected:
     /**
      * @brief Configures the status tooltip
      *
-     * @verbatim
+     * @code{.xml}
        <service uid="..." impl="::uiTools::editor::SStatus>
            <red>Stopped</red>
            <green>Tracking</green>
            <orange>Started</orange>
        </service>
-       @endverbatim
+       @endcode
      */
     virtual void configuring() throw(fwTools::Failed);
 
@@ -125,6 +125,6 @@ private:
 } // namespace editor
 } // namespace uiTools
 
-#endif /*_UITOOLS_EDITOR_SAURORASTATUS_HPP_*/
+#endif /*__UITOOLS_EDITOR_SSTATUS_HPP__*/
 
 
